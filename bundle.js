@@ -1,141 +1,269 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
-
-var EngineDocument = require("./EngineDocument.js");
-
-var Engine = {};
-
-Engine.createDocument = function (funcs) {
-	return new EngineDocument(funcs);
-};
-
-
-module.exports = Engine;
-
-},{"./EngineDocument.js":2}],2:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var EngineDocument = (function () {
-	function EngineDocument(funcs) {
-		this._funcs = funcs;
-		this.data = {};
-		this._document = {};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-		this._render();
+var TemplateHelper = require("./TemplateHelper.js");
+
+var Component = (function () {
+	function Component(props) {
+		_classCallCheck(this, Component);
+
+		this._vDom = [];
+		this.props = this.props || {};
+		this.props.template = {};
+		this._templateHelper = new TemplateHelper(this.props);
+
+		//call init
+		this.init.call(this.props, this._templateHelper);
+
+		//then apply the observer for this class
+		Object.observe(this.props, this._propChange.bind(this));
 	}
 
-	_prototypeProperties(EngineDocument, null, {
+	_prototypeProperties(Component, null, {
 		mount: {
-			value: function mount(virtualDom) {
-				//we run the init and get the properties
-				this._funcs.init.call(this, this.data);
-
-				//do a render
-				this._document = this._funcs.render.call(this, this.data);
-
-				debugger;
-				//use the window.document
-				if (virtualDom == null) {}
+			value: function mount(elem) {
+				//then compile the template
+				this._compileTemplate();
 			},
 			writable: true,
 			configurable: true
 		},
-		_render: {
-			value: function _render() {
-				//check the diff
+		getTemplateHelper: {
+			value: function getTemplateHelper() {
+				return this._templateHelper;
+			},
+			writable: true,
+			configurable: true
+		},
+		_compileTemplate: {
+			value: function _compileTemplate() {
+				var i = 0;
 
-				requestAnimationFrame(this._render.bind(this));
+				this._vDom = [];
+
+				var nextLevel = function (elements, root) {
+					var i = 0,
+					    vElem = "",
+					    nextElem = [];
+
+					//build up a vDom element
+					vElem = { tag: elements[0] };
+					//now go through its properties
+					for (i = 1; i < elements.length; i++) {
+						if (Array.isArray(elements[i])) {
+							nextLevel(elements[i], vElem);
+						} else {
+							debugger;
+							//otherwise, it could be a properties object with class etc
+						}
+					}
+					//push the vElem to the vDom
+					if (Array.isArray(root)) {
+						root.push(vElem);
+					} else {
+						root.children = vElem;
+					}
+				};
+
+				for (i = 0; i < this.props.template.length; i++) {
+					nextLevel(this.props.template[i], this._vDom);
+				};
+
+				debugger;
+			},
+			writable: true,
+			configurable: true
+		},
+		_propChange: {
+			value: function _propChange(changes) {
+				debugger;
 			},
 			writable: true,
 			configurable: true
 		}
 	});
 
-	return EngineDocument;
+	return Component;
 })();
 
 ;
 
-module.exports = EngineDocument;
+module.exports = Component;
 
-},{}],3:[function(require,module,exports){
+},{"./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
 "use strict";
 
-var ListNavigation = function () {};
+var Component = require("./Component.js");
 
-module.exports = ListNavigation;
+var Engine = {};
 
-},{}],4:[function(require,module,exports){
+Engine.Component = Component;
+
+module.exports = Engine;
+
+},{"./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/*
+
+  List of supported helpers
+
+  ==================
+  if statements
+  ==================
+
+  $.if(isFalse => {expression}, ...)
+  $.if(isTrue => {expression}, ...)
+  $.if(isNull => {expression}, ...)
+  $.if(isEmpty => {expression}, ...)
+  $.if(isArray => {expression}, ...)
+  $.if(isNumber => {expression}, ...)
+  $.if(isString => {expression}, ...)
+
+  ==================
+  loop statements
+  ==================
+
+  $.for(startVal, endVal, incrementer, ...)
+  $.forEach(items, (item, index, array) => ...)
+  $.do(while => {expression}, ...)
+  $.do(until => {expression}, ...)
+
+*/
+
+var TemplateHelper = (function () {
+  function TemplateHelper(props) {
+    _classCallCheck(this, TemplateHelper);
+
+    this._props = props;
+  }
+
+  _prototypeProperties(TemplateHelper, null, {
+    forEach: {
+      value: function forEach() {},
+      writable: true,
+      configurable: true
+    },
+    text: {
+      value: function text() {},
+      writable: true,
+      configurable: true
+    },
+    "if": {
+      value: function _if(expression) {
+        var successes = [],
+            i = 0;
+
+        if (arguments[1].length > 1) {
+          for (i = 1; i < arguments[1].length; i++) {
+            successes.push(arguments[1][i]);
+          }
+        }
+
+        return {
+          type: "if",
+          name: this._getParamNames(arguments[0]),
+          expression: expression,
+          success: successes
+        };
+      },
+      writable: true,
+      configurable: true
+    },
+    _getParamNames: {
+      value: function _getParamNames(fn) {
+        var funStr = fn.toString();
+        return funStr.slice(funStr.indexOf("(") + 1, funStr.indexOf(")")).match(/([^\s,]+)/g);
+      },
+      writable: true,
+      configurable: true
+    }
+  });
+
+  return TemplateHelper;
+})();
+
+;
+
+module.exports = TemplateHelper;
+
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
+"use strict";
+
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
 var Engine = require("./EngineJS/Engine.js");
 
-//Server on NodeJS
-var virtualDom = {};
+var Demo = (function (_Engine$Component) {
+	function Demo() {
+		_classCallCheck(this, Demo);
 
-var MyApp = (function () {
-	function MyApp(isServer) {
-		this._document = null;
-		this._isServer = isServer;
-		this._initDocument();
+		//we define all our properties
+		this.props = {
+			todos: [],
+			title: "",
+			formId: ""
+		};
+
+		_get(_Engine$Component.prototype, "constructor", this).call(this);
 	}
 
-	_prototypeProperties(MyApp, null, {
-		_initDocument: {
-			value: function _initDocument() {
-				this._document = Engine.createDocument({
-					init: function (data) {
-						data.cssFiles = ["foo.css", "bar.css"];
-						data.myName = "Dominic";
-					},
+	_inherits(Demo, _Engine$Component);
 
-					render: function (data) {
-						var ListNavigation = require("./components/ListNavigation.js");
+	_prototypeProperties(Demo, null, {
+		click: {
+			value: function click(e) {},
+			writable: true,
+			configurable: true
+		},
+		init: {
+			value: function init($) {
+				var _this = this;
+				//$ = templateHelper shorthand
 
-						return {
-							html: {
-								head: {
-									title: "Hello world",
-									link: data.cssFiles.forEach(function (cssFile) {
-										return { _rel: "stylesheet", _type: "text/css", _href: cssFile };
-									})
-								},
-								body: {
-									header: {
-										//a web component, so add the "-" for W3 compliance and link it to our web componenet
-										"list-navigation": ListNavigation()
-									},
-									div: {
-										span: "my name is ${ data.myName }"
-									}
-								}
-							}
-						};
-					}
-				});
+				this.todos = ["Clean the dishes", "Cook the dinner", "Code some coding", "Comment on stuff"];
 
-				if (this.isServer === true) {
-					this._document.mount(virtualDom);
-				} else {
-					this._document.mount();
-				}
+				this.title = "Todo Demo";
+				this.formId = "todo-form";
+
+				this.template = [["div", ["header", ["h1", "Example " + this.title]]], ["div#main",
+				//example of a truthy statement
+				$["if"](function (isTrue) {
+					return _this.todos.length > 0;
+				}, ["div", ["span.counter", $.text("There are " + this.todos.length + " todos!")]]),
+				//example of a falsey statement
+				$["if"](function (isFalse) {
+					return _this.todos.length > 0;
+				}, ["div", ["span.no-todos", $.text("There are no todos!")]])], ["ul.todos", $.forEach(this.todos, function (todo, index) {
+					return ["li.todo", ["h2", "A todo"], ["span", index + ": " + todo]];
+				})], ["form", { id: this.formId, method: "post", action: "#" }, ["div.form-control", ["input", { name: "first_name", type: "text" }]], ["button", { type: "submit", onClick: this.click }, "Submit!"]]];
 			},
 			writable: true,
 			configurable: true
 		}
 	});
 
-	return MyApp;
-})();
+	return Demo;
+})(Engine.Component);
 
 ;
 
-new MyApp(false);
+window.Demo = Demo;
 
-},{"./EngineJS/Engine.js":1,"./components/ListNavigation.js":3}]},{},[4])
+},{"./EngineJS/Engine.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);

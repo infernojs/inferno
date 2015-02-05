@@ -2,65 +2,74 @@
 
 var Engine = require('./EngineJS/Engine.js');
 
-//Server on NodeJS
-var virtualDom = {};
+class Demo extends Engine.Component {
 
-class MyApp {
+	constructor() {
+		//we define all our properties
+		this.props = {
+			todos: [],
+			title: "",
+			formId: ""
+		}
 
-	constructor(isServer) {
-		this._document = null;
-		this._isServer = isServer;
-		this._initDocument();
+		super();
 	}
 
-	_initDocument() {
+	click(e) {
 
-		this._document = Engine.createDocument({
-			init: function(data) {
-				data.cssFiles = [
-					"foo.css",
-					"bar.css"
-				];
-				data.myName = "Dominic";
-				data.pageTitle = "Dominic";
-			},
+	}
 
-			render: function(data) {
-				var ListNavigation = require('./components/ListNavigation.js');
-				var Dom = Engine.Dom;
+	init($) {
+		//$ = templateHelper shorthand
 
-				return {
-					html: {
-						head: {
-							title: "Hello world - ${ data.pageTitle }",
-							//two different ways of doing it
-							//	link: new Engine.ForEach(data.cssFiles, cssFile => {
-							//		return { _rel: "stylesheet", _type: "text/css", _href: cssFile }
-							//	}),
-							//or this way, this way is faster to write :)
-							link: new Dom.Stylesheets(data.cssFiles)
-						},
-						body: {
-							header: {
-								//a web component, so add the "-" for W3 compliance and link it to our web componenet
-								"list-navigation": ListNavigation()
-							},
-							div: {
-								span: "my name is ${ data.myName }"
-							}
-						}
-					}
-				}
-			}
-		});
+		this.todos = [
+			"Clean the dishes",
+			"Cook the dinner",
+			"Code some coding",
+			"Comment on stuff"
+		];
 
-		if(this.isServer === true) {
-			this._document.mount(virtualDom);
-		} else {
-			this._document.mount();
-		}
-	};
+		this.title = "Todo Demo";
+		this.formId = "todo-form";
+
+		this.template = [
+			["div",
+				["header",
+					["h1", "Example " + this.title]
+				]
+			],
+			['div#main',
+				//example of a truthy statement
+				$.if(isTrue => this.todos.length > 0,
+					['div',
+						['span.counter', $.text("There are " + this.todos.length + " todos!")]
+					]
+				),
+				//example of a falsey statement
+				$.if(isFalse => this.todos.length > 0,
+					['div',
+						['span.no-todos', $.text("There are no todos!")]
+					]
+				)
+			],
+			['ul.todos',
+				$.forEach(this.todos, (todo, index) =>
+					['li.todo',
+						['h2', "A todo"],
+						['span', index + ": " + todo]
+					]
+				)
+			],
+			['form', {id: this.formId, method: "post", action: "#"},
+				['div.form-control',
+					['input', {name: "first_name", type: "text"}]
+				],
+				['button', {type: "submit", onClick: this.click},
+					"Submit!"
+				]
+			]
+		];
+	}
 };
 
-new MyApp(false);
-
+window.Demo = Demo;
