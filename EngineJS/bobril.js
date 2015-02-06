@@ -246,6 +246,7 @@ var b = (function (window, document) {
         var element = c.element;
         if (!ch)
             return;
+
         if (!isArray(ch)) {
             if (typeof ch === "string") {
                 if (hasTextContent) {

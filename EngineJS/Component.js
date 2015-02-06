@@ -1,6 +1,7 @@
 var TemplateHelper = require('./TemplateHelper.js');
 var b = require('./bobril.js');
 
+
 class Component {
 
 	constructor(props) {
@@ -30,7 +31,58 @@ class Component {
 
 	_render() {
 		b.init(function () {
-			return this._compiled;
+
+			var render = [],
+					renderNode = null;
+
+			renderNode = function(node, root) {
+				var i = 0;
+				if(Array.isArray(node)) {
+					for(i = 0; i < node.length; i++) {
+						renderNode(node[i], root);
+					}
+				} else {
+					if(node.elems != null) {
+						if(node.elems.$type != null) {
+							node.children = this._templateHelper.render(node.elems);
+						} else if(Array.isArray(node.elems)) {
+							for(i = 0; i < node.elems.length; i++) {
+								renderNode(node.elems[i], node);
+							}
+						} else {
+							renderNode(node.elems, node);
+						}
+						delete node.elems;
+					}
+					debugger;
+					if(Array.isArray(root)) {
+						root.push(node);
+					} else {
+						root.children = root.children || [];
+						root.children.push(node);
+					}
+				}
+				// for (var i in node) {
+				//
+				// 		if(root.children != null) {
+				// 			this._pushToNode(root.children, node);
+				// 		} else {
+				// 			this._pushToNode(root, node);
+				// 		}
+				// 	}
+				// 	if(node[i].children != null) {
+				// 		renderNode(node[i].children, Array.isArray(node) ? root : node);
+				// 	}
+				//
+				// }
+			}.bind(this)
+
+			renderNode(this._compiled, render)
+
+			debugger;
+
+
+			return render;
 		}.bind(this));
 	}
 
@@ -47,7 +99,8 @@ class Component {
 					helperElem = {},
 					tag = '',
 					classes = [],
-					ids = [];
+					ids = [],
+					attrs = [];
 
 			tag = elements[0];
 
@@ -77,7 +130,7 @@ class Component {
 			//now go through its properties
 			for(i = 1; i < elements.length; i++) {
 				if(Array.isArray(elements[i])) {
-					elem.children = elem.children || [];
+					elem.elems = elem.elems || [];
 					nextLevel(elements[i], elem);
 				} else {
 
@@ -89,50 +142,79 @@ class Component {
 					else if(elements[i].type === "if") {
 						//lets store this in the object so it knows
 						helperElem = {};
-						helperElem.children = [];
-						helperElem.tag = "if";
-						helperElem.condition = elements[i].$condition;
-						helperElem.expression = elements[i].$expression.bind(this.props);
-						for(j = 0; j < elements[i].$template.length; j++) {
-							nextLevel(elements[i].$template[j], helperElem);
+						helperElem.elems = [];
+						helperElem.$type = "if";
+						switch(elements[i].condition) {
+							case "isTrue":
+								helperElem.$condition = true;
+								break;
+							case "isFalse":
+								helperElem.$condition = false;
+								break;
+							case "isNull":
+								helperElem.$condition = null;
+								break;
+							case "isZero":
+								helperElem.$condition = 0;
+								break;
+						}
+						helperElem.$expression = elements[i].expression.bind(this.props);
+						for(j = 0; j < elements[i].elems.length; j++) {
+							nextLevel(elements[i].elems[j], helperElem);
 						}
 						//then store the helper in the elem
-						elem.children = elem.children || [];
-						elem.children.push(helperElem);
+						elem.elems = elem.elems || [];
+						elem.elems.push(helperElem);
 					}
 					//handle for statements
 					else if(elements[i].type === "for") {
 						helperElem = {};
-						helperElem.children = [];
-						if(elements[i].$condition === "each") {
-							helperElem.tag = "forEach";
-							helperElem.items = elements[i].$items;
-							for(j = 0; j < elements[i].$template.length; j++) {
-								nextLevel(elements[i].$template[j], helperElem);
+						helperElem.elems = [];
+						if(elements[i].condition === "each") {
+							helperElem.$type = "forEach";
+							helperElem.$items = elements[i].items;
+							for(j = 0; j < elements[i].template.length; j++) {
+								nextLevel(elements[i].template[j], helperElem);
 							}
 							//then store the helper in the elem
-							elem.children = elem.children || [];
-							elem.children.push(helperElem);
+							elem.elems = elem.elems || [];
+							elem.elems.push(helperElem);
 						}
 					}
 					//handle it if it's a text value
 					else if(elements[i].type === "bind") {
 						helperElem = {};
-						helperElem.tag = "bind";
-						helperElem.condition = elements[i].$condition;
-						helperElem.expression = elements[i].$expression.bind(this.props);
+						helperElem.$type = "bind";
+						helperElem.$condition = elements[i].condition;
+						helperElem.elems = elements[i].elems;
 						//then store the helper in the elem
-						elem.children = helperElem;
+						elem.elems = helperElem;
 					}
 					//check if the value is simply a string
 					else if(typeof elements[i] === "string") {
-						elem.children = elements[i];
+						elem.elems = elements[i];
 					}
 					//otherwise, it could be a properties object with class etc
 					else {
+						elem['attrs'] = {};
 						//go through each property and add it to the elem
 						for(j in elements[i]) {
-							elem[j] = elements[i][j];
+							//check the key and see if its on the elem or in attrs
+							switch(j) {
+								case "className":
+								case "style":
+								case "id":
+									elem[j] = elements[i][j];
+									break;
+								case "type":
+								case "value":
+								case "placeholder":
+								case "method":
+								case "action":
+								default:
+									elem['attrs'][j] = elements[i][j];
+									break;
+							}
 						}
 					}
 
@@ -142,7 +224,7 @@ class Component {
 			if(Array.isArray(root)) {
 				root.push(elem);
 			} else {
-				root.children.push(elem);
+				root.elems.push(elem);
 			}
 		}.bind(this);
 
@@ -152,7 +234,8 @@ class Component {
 	}
 
 	_propChange(changes) {
-		debugger;
+		//for now we can simply invalidate
+		b.invalidate();
 	}
 
 };

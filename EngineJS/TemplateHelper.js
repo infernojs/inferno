@@ -9,6 +9,7 @@
   $.if(isFalse => {expression}, ...)
   $.if(isTrue => {expression}, ...)
   $.if(isNull => {expression}, ...)
+  $.if(isZero => {expression}, ...)
   $.if(isEmpty => {expression}, ...)
   $.if(isArray => {expression}, ...)
   $.if(isNumber => {expression}, ...)
@@ -40,43 +41,56 @@ class TemplateHelper {
     this._props = props;
   }
 
+  render(node) {
+  	if(node.$type === "if") {
+  		if(node.$expression() === node.$condition) {
+  			return node.elems;
+  		} else {
+  			return null;
+  		}
+  	} else if(node.$type === "bind") {
+  		return node.elems();
+  	}
+  	return null;
+  }
+
   for(values, template) {
     var condition = this._getParamNames(arguments[0])[0];
 
     switch(condition) {
       case "each":
         return {
-          $type: "for",
-          $condition: "each",
-          $items: values,
-          $template: template()
+          type: "for",
+          condition: "each",
+          items: values,
+          template: template()
         }
     }
   }
 
-  bind(expression) {
+  bind(elems) {
     return {
-      $type: "bind",
-      $condition: this._getParamNames(arguments[0])[0],
-      $expression: expression
+      type: "bind",
+      condition: this._getParamNames(arguments[0])[0],
+      elems: elems
     }
   }
 
   if(expression) {
-    var templates = [],
+    var elems = [],
         i = 0;
 
     if(arguments[1].length > 1) {
       for(i = 1; i < arguments[1].length; i++) {
-        templates.push(arguments[1][i]);
+        elems.push(arguments[1][i]);
       }
     }
 
     return {
-      $type: "if",
-      $condition: this._getParamNames(arguments[0])[0],
-      $expression: expression,
-      $template: templates
+      type: "if",
+      condition: this._getParamNames(arguments[0])[0],
+      expression: expression,
+      elems: elems
     }
   }
 

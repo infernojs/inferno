@@ -35,7 +35,7 @@ class Demo extends Engine.Component {
 		this.template = [
 			["div",
 				["header",
-					["h1", "Example " + $.bind(text => this.title)]
+					["h1", $.bind(text => "Example " + this.title)]
 				]
 			],
 			['div#main',
