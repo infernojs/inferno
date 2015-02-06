@@ -1,325 +1,6 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/dominicg/EngineJS/EngineJS/Component.js":[function(require,module,exports){
-"use strict";
-
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-var TemplateHelper = require("./TemplateHelper.js");
-var b = require("./bobril.js");
-
-var Component = (function () {
-	function Component(props) {
-		_classCallCheck(this, Component);
-
-		this._compiled = [];
-		this.props = this.props || {};
-		this.props.template = {};
-		this._templateHelper = new TemplateHelper(this.props);
-
-		//call init
-		this.init.call(this.props, this._templateHelper);
-
-		//then compile the template
-		this._compileTemplate();
-
-		//then apply the observer for this class
-		Object.observe(this.props, this._propChange.bind(this));
-	}
-
-	_prototypeProperties(Component, null, {
-		mount: {
-			value: function mount(elem) {
-				b.setRootNode(elem);
-				this._render();
-			},
-			writable: true,
-			configurable: true
-		},
-		getTemplateHelper: {
-			value: function getTemplateHelper() {
-				return this._templateHelper;
-			},
-			writable: true,
-			configurable: true
-		},
-		_render: {
-			value: function _render() {
-				b.init((function () {
-					return this._compiled;
-				}).bind(this));
-			},
-			writable: true,
-			configurable: true
-		},
-		_compileTemplate: {
-			value: function _compileTemplate() {
-				var i = 0;
-
-				this._compiled = [];
-
-				var nextLevel = (function (elements, root) {
-					var i = 0,
-					    j = 0,
-					    elem = "",
-					    nextElem = [],
-					    helperElem = {},
-					    tag = "",
-					    classes = [],
-					    ids = [];
-
-					tag = elements[0];
-
-					//tag may have .className or #id in it, so we need to take them out
-					if (tag.indexOf(".") > -1) {
-						classes = tag.split(".");
-						tag = classes[0];
-						classes.shift();
-					}
-
-					if (tag.indexOf("#") > -1) {
-						ids = tag.split("#");
-						tag = ids[0];
-						ids.shift();
-					}
-
-					//build up a vDom element
-					elem = { tag: tag };
-					//apply ids and classNames
-					if (classes.length > 0) {
-						elem.className = classes.join(" ");
-					}
-					if (ids.length > 0) {
-						elem.id = ids.join("");
-					}
-
-					//now go through its properties
-					for (i = 1; i < elements.length; i++) {
-						if (Array.isArray(elements[i])) {
-							elem.children = elem.children || [];
-							nextLevel(elements[i], elem);
-						} else {
-							//see if there is nothing
-							if (elements[i] == null) {
-								continue;
-							}
-							//check if the element is a templatehelper function
-							else if (elements[i].type === "if") {
-								//lets store this in the object so it knows
-								helperElem = {};
-								helperElem.children = [];
-								helperElem.tag = "if";
-								helperElem.condition = elements[i].$condition;
-								helperElem.expression = elements[i].$expression.bind(this.props);
-								for (j = 0; j < elements[i].$template.length; j++) {
-									nextLevel(elements[i].$template[j], helperElem);
-								}
-								//then store the helper in the elem
-								elem.children = elem.children || [];
-								elem.children.push(helperElem);
-							}
-							//handle for statements
-							else if (elements[i].type === "for") {
-								helperElem = {};
-								helperElem.children = [];
-								if (elements[i].$condition === "each") {
-									helperElem.tag = "forEach";
-									helperElem.items = elements[i].$items;
-									for (j = 0; j < elements[i].$template.length; j++) {
-										nextLevel(elements[i].$template[j], helperElem);
-									}
-									//then store the helper in the elem
-									elem.children = elem.children || [];
-									elem.children.push(helperElem);
-								}
-							}
-							//handle it if it's a text value
-							else if (elements[i].type === "bind") {
-								helperElem = {};
-								helperElem.tag = "bind";
-								helperElem.condition = elements[i].$condition;
-								helperElem.expression = elements[i].$expression.bind(this.props);
-								//then store the helper in the elem
-								elem.children = helperElem;
-							}
-							//check if the value is simply a string
-							else if (typeof elements[i] === "string") {
-								elem.children = elements[i];
-							}
-							//otherwise, it could be a properties object with class etc
-							else {
-								//go through each property and add it to the elem
-								for (j in elements[i]) {
-									elem[j] = elements[i][j];
-								}
-							}
-						}
-					}
-					//push the elem to the compiled template
-					if (Array.isArray(root)) {
-						root.push(elem);
-					} else {
-						root.children.push(elem);
-					}
-				}).bind(this);
-
-				for (i = 0; i < this.props.template.length; i++) {
-					nextLevel(this.props.template[i], this._compiled);
-				};
-			},
-			writable: true,
-			configurable: true
-		},
-		_propChange: {
-			value: function _propChange(changes) {
-				debugger;
-			},
-			writable: true,
-			configurable: true
-		}
-	});
-
-	return Component;
-})();
-
-;
-
-module.exports = Component;
-
-},{"./TemplateHelper.js":"/Users/dominicg/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Users/dominicg/EngineJS/EngineJS/bobril.js"}],"/Users/dominicg/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
-"use strict";
-
-var Component = require("./Component.js");
-
-var Engine = {};
-
-Engine.Component = Component;
-
-module.exports = Engine;
-
-},{"./Component.js":"/Users/dominicg/EngineJS/EngineJS/Component.js"}],"/Users/dominicg/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
-"use strict";
-
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-/*
-
-  List of supported helpers
-
-  ==================
-  if statements
-  ==================
-
-  $.if(isFalse => {expression}, ...)
-  $.if(isTrue => {expression}, ...)
-  $.if(isNull => {expression}, ...)
-  $.if(isEmpty => {expression}, ...)
-  $.if(isArray => {expression}, ...)
-  $.if(isNumber => {expression}, ...)
-  $.if(isString => {expression}, ...)
-
-  ==================
-  loop statements
-  ==================
-
-  $.for(in => array, (key, array) => [...])
-  $.for(increment => [startNumber, endNumber, amount], (iterator) => [...])
-  $.for(each => items, (item, index, array) => [...])
-  $.do(while => {expression}, ...)
-  $.do(until => {expression}, ...)
-
-  ==================
-  data binding + filters/formatters
-  ==================
-
-  $.bind(text => {expression) //strips all tags
-  $.bind(html => {expression) //strips harmful tags
-  $.bind(none => {expression) //no stripping
-
-*/
-
-var TemplateHelper = (function () {
-  function TemplateHelper(props) {
-    _classCallCheck(this, TemplateHelper);
-
-    this._props = props;
-  }
-
-  _prototypeProperties(TemplateHelper, null, {
-    "for": {
-      value: function _for(values, template) {
-        var condition = this._getParamNames(arguments[0])[0];
-
-        switch (condition) {
-          case "each":
-            return {
-              $type: "for",
-              $condition: "each",
-              $items: values,
-              $template: template()
-            };
-        }
-      },
-      writable: true,
-      configurable: true
-    },
-    bind: {
-      value: function bind(expression) {
-        return {
-          $type: "bind",
-          $condition: this._getParamNames(arguments[0])[0],
-          $expression: expression
-        };
-      },
-      writable: true,
-      configurable: true
-    },
-    "if": {
-      value: function _if(expression) {
-        var templates = [],
-            i = 0;
-
-        if (arguments[1].length > 1) {
-          for (i = 1; i < arguments[1].length; i++) {
-            templates.push(arguments[1][i]);
-          }
-        }
-
-        return {
-          $type: "if",
-          $condition: this._getParamNames(arguments[0])[0],
-          $expression: expression,
-          $template: templates
-        };
-      },
-      writable: true,
-      configurable: true
-    },
-    _getParamNames: {
-      value: function _getParamNames(fn) {
-        var funStr = fn.toString();
-        return funStr.slice(funStr.indexOf("(") + 1, funStr.indexOf(")")).match(/([^\s,]+)/g);
-      },
-      writable: true,
-      configurable: true
-    }
-  });
-
-  return TemplateHelper;
-})();
-
-;
-
-module.exports = TemplateHelper;
-
-},{}],"/Users/dominicg/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
-"use strict";
-
 /// <reference path="bobril.d.ts"/>
 if (typeof window.DEBUG === "undefined") {
-    window.DEBUG = true;
+  window.DEBUG = true;
 }
 
 // IE8 [].map polyfill Reference: http://es5.github.io/#x15.4.4.19
@@ -352,14 +33,15 @@ if (!Array.prototype.map) {
 // Object create polyfill
 if (!Object.create) {
     Object.create = function (o) {
-        function f() {}
+        function f() {
+        }
         f.prototype = o;
         return new f();
     };
 }
 // Object keys polyfill
 if (!Object.keys) {
-    Object.keys = function (obj) {
+    Object.keys = (function (obj) {
         var keys = [];
         for (var i in obj) {
             if (obj.hasOwnProperty(i)) {
@@ -367,25 +49,24 @@ if (!Object.keys) {
             }
         }
         return keys;
-    };
+    });
 }
 // Array isArray polyfill
 if (!Array.isArray) {
-    var objectToString = ({}).toString;
-    Array.isArray = function (a) {
-        return objectToString.call(a) === "[object Array]";
-    };
+    var objectToString = {}.toString;
+    Array.isArray = (function (a) { return objectToString.call(a) === "[object Array]"; });
 }
 var b = (function (window, document) {
     function assert(shoudBeTrue, messageIfFalse) {
-        if (DEBUG && !shoudBeTrue) throw Error(messageIfFalse || "assertion failed");
+        if (DEBUG && !shoudBeTrue)
+            throw Error(messageIfFalse || "assertion failed");
     }
     var isArray = Array.isArray;
     var objectKeys = Object.keys;
     function createTextNode(content) {
         return document.createTextNode(content);
     }
-    var hasTextContent = ("textContent" in createTextNode(""));
+    var hasTextContent = "textContent" in createTextNode("");
     function isObject(value) {
         return typeof value === "object";
     }
@@ -394,14 +75,16 @@ var b = (function (window, document) {
     var updateCall = [];
     var updateInstance = [];
     var setValueCallback = function (el, node, newValue, oldValue) {
-        if (newValue !== oldValue) el.value = newValue;
+        if (newValue !== oldValue)
+            el["value"] = newValue;
     };
     function setSetValue(callback) {
         var prev = setValueCallback;
         setValueCallback = callback;
         return prev;
     }
-    var setStyleCallback = function () {};
+    var setStyleCallback = function () {
+    };
     function setSetStyle(callback) {
         var prev = setStyleCallback;
         setStyleCallback = callback;
@@ -413,40 +96,53 @@ var b = (function (window, document) {
             var rule;
             if (isObject(oldStyle)) {
                 for (rule in oldStyle) {
-                    if (!(rule in newStyle)) el.style[rule] = "";
+                    if (!(rule in newStyle))
+                        el.style[rule] = "";
                 }
                 for (rule in newStyle) {
                     var v = newStyle[rule];
                     if (v !== undefined) {
-                        if (oldStyle[rule] !== v) el.style[rule] = v;
-                    } else {
+                        if (oldStyle[rule] !== v)
+                            el.style[rule] = v;
+                    }
+                    else {
                         el.style[rule] = "";
                     }
                 }
-            } else {
-                if (oldStyle) el.style.cssText = "";
+            }
+            else {
+                if (oldStyle)
+                    el.style.cssText = "";
                 for (rule in newStyle) {
                     var v = newStyle[rule];
-                    if (v !== undefined) el.style[rule] = v;
+                    if (v !== undefined)
+                        el.style[rule] = v;
                 }
             }
-        } else if (newStyle) {
+        }
+        else if (newStyle) {
             el.style.cssText = newStyle;
-        } else {
+        }
+        else {
             if (isObject(oldStyle)) {
                 for (rule in oldStyle) {
                     el.style[rule] = "";
                 }
-            } else if (oldStyle) {
+            }
+            else if (oldStyle) {
                 el.style.cssText = "";
             }
         }
     }
     function setClassName(el, className) {
-        if (inNamespace) el.setAttribute("class", className);else el.className = className;
+        if (inNamespace)
+            el.setAttribute("class", className);
+        else
+            el.className = className;
     }
     function updateElement(n, el, newAttrs, oldAttrs) {
-        if (!newAttrs) return undefined;
+        if (!newAttrs)
+            return undefined;
         var attrName, newAttr, oldAttr, valueOldAttr, valueNewAttr;
         for (attrName in newAttrs) {
             newAttr = newAttrs[attrName];
@@ -460,10 +156,16 @@ var b = (function (window, document) {
             if (oldAttr !== newAttr) {
                 oldAttrs[attrName] = newAttr;
                 if (inNamespace) {
-                    if (attrName === "href") el.setAttributeNS("http://www.w3.org/1999/xlink", "href", newAttr);else el.setAttribute(attrName, newAttr);
-                } else if (attrName in el && !(attrName === "list" || attrName === "form")) {
+                    if (attrName === "href")
+                        el.setAttributeNS("http://www.w3.org/1999/xlink", "href", newAttr);
+                    else
+                        el.setAttribute(attrName, newAttr);
+                }
+                else if (attrName in el && !(attrName === "list" || attrName === "form")) {
                     el[attrName] = newAttr;
-                } else el.setAttribute(attrName, newAttr);
+                }
+                else
+                    el.setAttribute(attrName, newAttr);
             }
         }
         if (valueNewAttr !== undefined) {
@@ -498,13 +200,16 @@ var b = (function (window, document) {
         if (n.tag === "") {
             c.element = createTextNode(c.children);
             return c;
-        } else if (n.tag === "/") {
+        }
+        else if (n.tag === "/") {
             return c;
-        } else if (inSvg || n.tag === "svg") {
+        }
+        else if (inSvg || n.tag === "svg") {
             el = document.createElementNS("http://www.w3.org/2000/svg", n.tag);
             inNamespace = true;
             inSvg = true;
-        } else {
+        }
+        else {
             el = document.createElement(n.tag);
         }
         c.element = el;
@@ -514,10 +219,13 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.attrs) c.attrs = updateElement(c, el, c.attrs, {});
-        if (c.style) updateStyle(c, el, c.style, undefined);
+        if (c.attrs)
+            c.attrs = updateElement(c, el, c.attrs, {});
+        if (c.style)
+            updateStyle(c, el, c.style, undefined);
         var className = c.className;
-        if (className) setClassName(el, className);
+        if (className)
+            setClassName(el, className);
         inNamespace = backupInNamespace;
         inSvg = backupInSvg;
         pushInitCallback(c, false);
@@ -529,18 +237,21 @@ var b = (function (window, document) {
         if (t === "string") {
             return { tag: "", children: n };
         }
-        if (t === "boolean") return null;
+        if (t === "boolean")
+            return null;
         return n;
     }
     function createChildren(c) {
         var ch = c.children;
         var element = c.element;
-        if (!ch) return;
+        if (!ch)
+            return;
         if (!isArray(ch)) {
             if (typeof ch === "string") {
                 if (hasTextContent) {
                     element.textContent = ch;
-                } else {
+                }
+                else {
                     element.innerText = ch;
                 }
                 return;
@@ -548,8 +259,7 @@ var b = (function (window, document) {
             ch = [ch];
         }
         ch = ch.slice(0);
-        var i = 0,
-            l = ch.length;
+        var i = 0, l = ch.length;
         while (i < l) {
             var item = ch[i];
             if (isArray(item)) {
@@ -570,14 +280,16 @@ var b = (function (window, document) {
                 j.element = [];
                 if (before) {
                     before = before.nextSibling;
-                } else {
+                }
+                else {
                     before = element.firstChild;
                 }
                 while (before) {
                     j.element.push(before);
                     before = before.nextSibling;
                 }
-            } else {
+            }
+            else {
                 element.appendChild(j.element);
             }
             i++;
@@ -593,7 +305,8 @@ var b = (function (window, document) {
         }
         var component = c.component;
         if (component) {
-            if (component.destroy) component.destroy(c.ctx, c, c.element);
+            if (component.destroy)
+                component.destroy(c.ctx, c, c.element);
         }
     }
     function removeNode(c) {
@@ -607,9 +320,11 @@ var b = (function (window, document) {
                     pa.removeChild(el[i]);
                 }
             }
-        } else {
+        }
+        else {
             var p = el.parentNode;
-            if (p) p.removeChild(el);
+            if (p)
+                p.removeChild(el);
         }
     }
     var rootFactory;
@@ -617,7 +332,8 @@ var b = (function (window, document) {
     var rootNode = document.body;
     function vdomPath(n) {
         var res = [];
-        if (n == null) return res;
+        if (n == null)
+            return res;
 
         var root = rootNode;
         var nodeStack = [];
@@ -625,19 +341,21 @@ var b = (function (window, document) {
             nodeStack.push(n);
             n = n.parentNode;
         }
-        if (!n) return res;
+        if (!n)
+            return res;
         var currentCacheArray = rootCacheChildren;
         while (nodeStack.length) {
             var currentNode = nodeStack.pop();
-            if (currentCacheArray) for (var i = 0, l = currentCacheArray.length; i < l; i++) {
-                var bn = currentCacheArray[i];
-                if (bn.element === currentNode) {
-                    res.push(bn);
-                    currentCacheArray = bn.children;
-                    currentNode = null;
-                    break;
+            if (currentCacheArray)
+                for (var i = 0, l = currentCacheArray.length; i < l; i++) {
+                    var bn = currentCacheArray[i];
+                    if (bn.element === currentNode) {
+                        res.push(bn);
+                        currentCacheArray = bn.children;
+                        currentNode = null;
+                        break;
+                    }
                 }
-            }
             if (currentNode) {
                 res.push(null);
                 break;
@@ -647,7 +365,8 @@ var b = (function (window, document) {
     }
     function getCacheNode(n) {
         var s = vdomPath(n);
-        if (s.length == 0) return null;
+        if (s.length == 0)
+            return null;
         return s[s.length - 1];
     }
     function updateNode(n, c) {
@@ -658,17 +377,24 @@ var b = (function (window, document) {
         if (component && c.ctx != null) {
             if (component.id !== c.component.id) {
                 bigChange = true;
-            } else {
-                if (component.shouldChange) if (!component.shouldChange(c.ctx, n, c)) return c;
+            }
+            else {
+                if (component.shouldChange)
+                    if (!component.shouldChange(c.ctx, n, c))
+                        return c;
                 c.ctx.data = n.data || {};
                 c.component = component;
-                if (component.render) component.render(c.ctx, n, c);
+                if (component.render)
+                    component.render(c.ctx, n, c);
             }
         }
         var el;
-        if (bigChange || component && c.ctx == null) {} else if (n.tag === "/") {
+        if (bigChange || (component && c.ctx == null)) {
+        }
+        else if (n.tag === "/") {
             el = c.element;
-            if (isArray(el)) el = el[0];
+            if (isArray(el))
+                el = el[0];
             var elprev = el.previousSibling;
             var removeEl = false;
             var parent = el.parentNode;
@@ -679,7 +405,8 @@ var b = (function (window, document) {
             el.insertAdjacentHTML("beforebegin", n.children);
             if (elprev) {
                 elprev = elprev.nextSibling;
-            } else {
+            }
+            else {
                 elprev = parent.firstChild;
             }
             var newElements = [];
@@ -693,19 +420,22 @@ var b = (function (window, document) {
             }
             removeNode(c);
             return n;
-        } else if (n.tag === c.tag && (inSvg || !inNamespace)) {
+        }
+        else if (n.tag === c.tag && (inSvg || !inNamespace)) {
             if (n.tag === "") {
                 if (c.children !== n.children) {
                     c.children = n.children;
                     el = c.element;
                     if (hasTextContent) {
                         el.textContent = c.children;
-                    } else {
+                    }
+                    else {
                         el.nodeValue = c.children;
                     }
                 }
                 return c;
-            } else {
+            }
+            else {
                 if (n.tag === "svg") {
                     inNamespace = true;
                     inSvg = true;
@@ -718,7 +448,8 @@ var b = (function (window, document) {
                         }
                     }
                     el = c.element;
-                    if (c.attrs) c.attrs = updateElement(c, el, n.attrs, c.attrs);
+                    if (c.attrs)
+                        c.attrs = updateElement(c, el, n.attrs, c.attrs);
                     updateStyle(c, el, n.style, c.style);
                     c.style = n.style;
                     var className = n.className;
@@ -750,7 +481,8 @@ var b = (function (window, document) {
             var n = updateInstance[i];
             if (updateCall[i]) {
                 n.component.postUpdateDom(n.ctx, n, n.element);
-            } else {
+            }
+            else {
                 n.component.postInitDom(n.ctx, n, n.element);
             }
         }
@@ -758,22 +490,27 @@ var b = (function (window, document) {
         updateInstance = [];
     }
     function updateChildren(element, newChildren, cachedChildren, parentNode) {
-        if (newChildren == null) newChildren = [];
+        if (newChildren == null)
+            newChildren = [];
         if (!isArray(newChildren)) {
-            if (typeof newChildren === "string" && !isArray(cachedChildren)) {
-                if (newChildren === cachedChildren) return cachedChildren;
+            if ((typeof newChildren === "string") && !isArray(cachedChildren)) {
+                if (newChildren === cachedChildren)
+                    return cachedChildren;
                 if (hasTextContent) {
                     element.textContent = newChildren;
-                } else {
+                }
+                else {
                     element.innerText = newChildren;
                 }
                 return newChildren;
             }
             newChildren = [newChildren];
         }
-        if (cachedChildren == null) cachedChildren = [];
+        if (cachedChildren == null)
+            cachedChildren = [];
         if (!isArray(cachedChildren)) {
-            if (element.firstChild) element.removeChild(element.firstChild);
+            if (element.firstChild)
+                element.removeChild(element.firstChild);
             cachedChildren = [];
         }
         newChildren = newChildren.slice(0);
@@ -812,7 +549,8 @@ var b = (function (window, document) {
                     newEnd--;
                     cachedEnd--;
                     cachedChildren[cachedEnd] = updateNode(newChildren[newEnd], cachedChildren[cachedEnd]);
-                    if (newIndex < newEnd && cachedIndex < cachedEnd) continue;
+                    if (newIndex < newEnd && cachedIndex < cachedEnd)
+                        continue;
                 }
                 break;
             }
@@ -874,7 +612,9 @@ var b = (function (window, document) {
             if (key != null) {
                 assert(!(key in cachedKeys));
                 cachedKeys[key] = cachedIndex;
-            } else deltaKeyless--;
+            }
+            else
+                deltaKeyless--;
         }
         var keyLess = -deltaKeyless - deltaKeyless;
         for (; newIndex < newEnd; newIndex++) {
@@ -883,7 +623,9 @@ var b = (function (window, document) {
             if (key != null) {
                 assert(!(key in newKeys));
                 newKeys[key] = newIndex;
-            } else deltaKeyless++;
+            }
+            else
+                deltaKeyless++;
         }
         keyLess += deltaKeyless;
         var delta = 0;
@@ -908,10 +650,12 @@ var b = (function (window, document) {
                 newIndex++;
                 while (newIndex < newEnd) {
                     key = newChildren[newIndex].key;
-                    if (key != null) break;
+                    if (key != null)
+                        break;
                     newIndex++;
                 }
-                if (key == null) break;
+                if (key == null)
+                    break;
             }
             var akpos = cachedKeys[key];
             if (akpos === undefined) {
@@ -939,7 +683,8 @@ var b = (function (window, document) {
                 cachedChildren[cachedIndex] = updateNode(newChildren[newIndex], cachedChildren[cachedIndex]);
                 newIndex++;
                 cachedIndex++;
-            } else {
+            }
+            else {
                 // Move
                 cachedChildren.splice(cachedIndex, 0, cachedChildren[akpos + delta]);
                 delta++;
@@ -981,9 +726,10 @@ var b = (function (window, document) {
             newIndex++;
         }
         // Without any keyless nodes we are done
-        if (!keyLess) return cachedChildren;
+        if (!keyLess)
+            return cachedChildren;
         // calculate common (old and new) keyless
-        keyLess = keyLess - Math.abs(deltaKeyless) >> 1;
+        keyLess = (keyLess - Math.abs(deltaKeyless)) >> 1;
         // reorder just nonkeyed nodes
         newIndex = backupNewIndex;
         cachedIndex = backupCachedIndex;
@@ -1017,11 +763,13 @@ var b = (function (window, document) {
                         cachedLength--;
                         deltaKeyless++;
                         assert(cachedIndex !== cachedEnd, "there still need to exist key node");
-                        if (cachedChildren[cachedIndex].key != null) break;
+                        if (cachedChildren[cachedIndex].key != null)
+                            break;
                     }
                     continue;
                 }
-                while (cachedChildren[cachedIndex].key == null) cachedIndex++;
+                while (cachedChildren[cachedIndex].key == null)
+                    cachedIndex++;
                 assert(key === cachedChildren[cachedIndex].key);
                 cachedChildren.splice(newIndex, 0, cachedChildren[cachedIndex]);
                 cachedChildren.splice(cachedIndex + 1, 1);
@@ -1038,7 +786,8 @@ var b = (function (window, document) {
                 keyLess--;
                 newIndex++;
                 cachedIndex++;
-            } else {
+            }
+            else {
                 cachedChildren.splice(newIndex, 0, createNode(newChildren[newIndex], parentNode));
                 cachedEnd++;
                 cachedLength++;
@@ -1061,20 +810,21 @@ var b = (function (window, document) {
     var nativeRaf = window.requestAnimationFrame;
     if (nativeRaf) {
         nativeRaf(function (param) {
-            if (param === +param) hasNativeRaf = true;
+            if (param === +param)
+                hasNativeRaf = true;
         });
     }
-    var now = Date.now || function () {
-        return new Date().getTime();
-    };
+    var now = Date.now || (function () { return (new Date).getTime(); });
     var startTime = now();
     var lastTickTime = 0;
     function requestAnimationFrame(callback) {
         if (hasNativeRaf) {
             nativeRaf(callback);
-        } else {
+        }
+        else {
             var delay = 50 / 3 + lastTickTime - now();
-            if (delay < 0) delay = 0;
+            if (delay < 0)
+                delay = 0;
             window.setTimeout(function () {
                 lastTickTime = now();
                 callback(lastTickTime - startTime);
@@ -1095,40 +845,42 @@ var b = (function (window, document) {
     }
     function emitEvent(name, ev, target, node) {
         var events = regEvents[name];
-        if (events) for (var i = 0; i < events.length; i++) {
-            if (events[i](ev, target, node)) return true;
-        }
+        if (events)
+            for (var i = 0; i < events.length; i++) {
+                if (events[i](ev, target, node))
+                    return true;
+            }
         return false;
     }
     function addListener(el, name) {
-        if (name[0] == "!") return;
+        if (name[0] == "!")
+            return;
         function enhanceEvent(ev) {
             ev = ev || window.event;
             var t = ev.target || ev.srcElement || el;
             var n = getCacheNode(t);
             emitEvent(name, ev, t, n);
         }
-        if ("on" + name in window) el = window;
+        if (("on" + name) in window)
+            el = window;
         if (el.addEventListener) {
             el.addEventListener(name, enhanceEvent);
-        } else {
+        }
+        else {
             el.attachEvent("on" + name, enhanceEvent);
         }
     }
     var eventsCaptured = false;
     function initEvents() {
-        if (eventsCaptured) return;
+        if (eventsCaptured)
+            return;
         eventsCaptured = true;
         var eventNames = objectKeys(registryEvents);
         for (var j = 0; j < eventNames.length; j++) {
             var eventName = eventNames[j];
             var arr = registryEvents[eventName];
-            arr = arr.sort(function (a, b) {
-                return a.priority - b.priority;
-            });
-            regEvents[eventName] = arr.map(function (v) {
-                return v.callback;
-            });
+            arr = arr.sort(function (a, b) { return a.priority - b.priority; });
+            regEvents[eventName] = arr.map(function (v) { return v.callback; });
         }
         registryEvents = null;
         for (var i = 0; i < eventNames.length; i++) {
@@ -1140,12 +892,14 @@ var b = (function (window, document) {
             var node = cache[i];
             if (node.ctx != null && node.ctx[ctxInvalidated] === frame) {
                 cache[i] = updateNode(cloneNode(node), node);
-            } else if (isArray(node.children)) {
+            }
+            else if (isArray(node.children)) {
                 selectedUpdate(node.children);
             }
         }
     }
-    var afterFrameCallback = function () {};
+    var afterFrameCallback = function () {
+    };
     function setAfterFrame(callback) {
         var res = afterFrameCallback;
         afterFrameCallback = callback;
@@ -1160,20 +914,24 @@ var b = (function (window, document) {
             fullRecreateRequested = false;
             var newChildren = rootFactory();
             rootCacheChildren = updateChildren(rootNode, newChildren, rootCacheChildren, null);
-        } else {
+        }
+        else {
             selectedUpdate(rootCacheChildren);
         }
         callPostCallbacks();
         afterFrameCallback(rootCacheChildren);
     }
     function invalidate(ctx) {
-        if (fullRecreateRequested) return;
+        if (fullRecreateRequested)
+            return;
         if (ctx != null) {
             ctx[ctxInvalidated] = frame + 1;
-        } else {
+        }
+        else {
             fullRecreateRequested = true;
         }
-        if (scheduled) return;
+        if (scheduled)
+            return;
         scheduled = true;
         requestAnimationFrame(update);
     }
@@ -1190,11 +948,13 @@ var b = (function (window, document) {
             if (c) {
                 var m = c[name];
                 if (m) {
-                    if (m.call(c, node.ctx, param)) return true;
+                    if (m.call(c, node.ctx, param))
+                        return true;
                 }
                 m = c.shouldStopBubble;
                 if (m) {
-                    if (m.call(c, node.ctx, name, param)) break;
+                    if (m.call(c, node.ctx, name, param))
+                        break;
                 }
             }
             node = node.parent;
@@ -1205,7 +965,8 @@ var b = (function (window, document) {
         var _this = this;
         return function () {
             var result = f1.apply(_this, arguments);
-            if (result) return result;
+            if (result)
+                return result;
             return f2.apply(_this, arguments);
         };
     }
@@ -1217,10 +978,12 @@ var b = (function (window, document) {
                 var m = c2[i];
                 var origM = c1[i];
                 if (i === "id") {
-                    res[i] = (origM != null ? origM : "") + "/" + m;
-                } else if (typeof m === "function" && origM != null && typeof origM === "function") {
+                    res[i] = ((origM != null) ? origM : "") + "/" + m;
+                }
+                else if (typeof m === "function" && origM != null && typeof origM === "function") {
                     res[i] = merge(origM, m);
-                } else {
+                }
+                else {
                     res[i] = m;
                 }
             }
@@ -1246,16 +1009,22 @@ var b = (function (window, document) {
         return node;
     }
     function assign(target, source) {
-        if (target == null) target = {};
-        if (source != null) for (var propname in source) {
-            if (!source.hasOwnProperty(propname)) continue;
-            target[propname] = source[propname];
-        }
+        if (target == null)
+            target = {};
+        if (source != null)
+            for (var propname in source) {
+                if (!source.hasOwnProperty(propname))
+                    continue;
+                target[propname] = source[propname];
+            }
         return target;
     }
     function preventDefault(event) {
         var pd = event.preventDefault;
-        if (pd) pd.call(event);else event.returnValue = false;
+        if (pd)
+            pd.call(event);
+        else
+            event.returnValue = false;
     }
     function cloneNodeArray(a) {
         a = a.slice(0);
@@ -1263,7 +1032,8 @@ var b = (function (window, document) {
             var n = a[i];
             if (isArray(n)) {
                 a[i] = cloneNodeArray(n);
-            } else if (isObject(n)) {
+            }
+            else if (isObject(n)) {
                 a[i] = cloneNode(n);
             }
         }
@@ -1281,16 +1051,15 @@ var b = (function (window, document) {
         if (ch) {
             if (isArray(ch)) {
                 r.children = cloneNodeArray(ch);
-            } else if (isObject(ch)) {
+            }
+            else if (isObject(ch)) {
                 r.children = cloneNode(ch);
             }
         }
         return r;
     }
     return {
-        setRootNode: function (root) {
-            rootNode = root;
-        },
+        setRootNode: function(root) { rootNode = root; },
         createNode: createNode,
         updateNode: updateNode,
         updateChildren: updateChildren,
@@ -1300,22 +1069,14 @@ var b = (function (window, document) {
         init: init,
         setAfterFrame: setAfterFrame,
         isArray: isArray,
-        uptime: function () {
-            return uptime;
-        },
+        uptime: function () { return uptime; },
         now: now,
-        frame: function () {
-            return frame;
-        },
+        frame: function () { return frame; },
         assign: assign,
-        ieVersion: function () {
-            return document.documentMode;
-        },
+        ieVersion: function () { return document.documentMode; },
         invalidate: invalidate,
         preventDefault: preventDefault,
-        vmlNode: function () {
-            return inNamespace = true;
-        },
+        vmlNode: function () { return inNamespace = true; },
         vdomPath: vdomPath,
         deref: getCacheNode,
         addEvent: addEvent,
@@ -1328,84 +1089,3 @@ var b = (function (window, document) {
 })(window, document);
 
 module.exports = b;
-
-},{}],"/Users/dominicg/EngineJS/index.js":[function(require,module,exports){
-"use strict";
-
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-//EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
-
-var Engine = require("./EngineJS/Engine.js");
-
-var Demo = (function (_Engine$Component) {
-	function Demo() {
-		_classCallCheck(this, Demo);
-
-		//we define all our properties
-		this.props = {
-			todos: [],
-			title: "",
-			formId: ""
-		};
-
-		_get(_Engine$Component.prototype, "constructor", this).call(this);
-	}
-
-	_inherits(Demo, _Engine$Component);
-
-	_prototypeProperties(Demo, null, {
-		click: {
-			value: function click(e) {},
-			writable: true,
-			configurable: true
-		},
-		init: {
-			value: function init($) {
-				var _this = this;
-				//$ = templateHelper shorthand
-
-				this.todos = ["Clean the dishes", "Cook the dinner", "Code some coding", "Comment on stuff"];
-
-				this.title = "Todo Demo";
-				this.formId = "todo-form";
-
-				this.template = [["div", ["header", ["h1", "Example " + $.bind(function (text) {
-					return _this.title;
-				})]]], ["div#main",
-				//example of a truthy statement
-				$["if"](function (isTrue) {
-					return _this.todos.length > 0;
-				}, ["div", ["span.counter", $.bind(function (text) {
-					return "There are " + _this.todos.length + " todos!";
-				})]]),
-				//example of a falsey statement
-				$["if"](function (isFalse) {
-					return _this.todos.length > 0;
-				}, ["div", ["span.no-todos", "There are no todos!"]])], ["ul.todos", $["for"](function (each) {
-					return _this.todos;
-				}, function (todo, index) {
-					return [["li.todo", ["h2", "A todo"], ["span", $.bind(function (text) {
-						return index + ": " + todo;
-					})]], ["div.test", "Foo!"]];
-				})], ["form", { id: this.formId, method: "post", action: "#" }, ["div.form-control", ["input", { name: "first_name", type: "text" }]], ["button", { type: "submit", onClick: this.click }, "Submit!"]]];
-			},
-			writable: true,
-			configurable: true
-		}
-	});
-
-	return Demo;
-})(Engine.Component);
-
-;
-
-window.Demo = Demo;
-
-},{"./EngineJS/Engine.js":"/Users/dominicg/EngineJS/EngineJS/Engine.js"}]},{},["/Users/dominicg/EngineJS/index.js"]);

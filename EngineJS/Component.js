@@ -1,9 +1,10 @@
 var TemplateHelper = require('./TemplateHelper.js');
+var b = require('./bobril.js');
 
 class Component {
 
 	constructor(props) {
-		this._vDom = [];
+		this._compiled = [];
 		this.props = this.props || {};
 		this.props.template = {};
 		this._templateHelper = new TemplateHelper(this.props);
@@ -11,28 +12,37 @@ class Component {
 		//call init
 		this.init.call(this.props, this._templateHelper);
 
+		//then compile the template
+		this._compileTemplate();
+
 		//then apply the observer for this class
 		Object.observe(this.props, this._propChange.bind(this));
 	}
 
 	mount(elem) {
-		//then compile the template
-		this._compileTemplate();
+		b.setRootNode(elem);
+		this._render();
 	}
 
 	getTemplateHelper() {
 		return this._templateHelper;
 	}
 
+	_render() {
+		b.init(function () {
+			return this._compiled;
+		}.bind(this));
+	}
+
 	_compileTemplate() {
 		var i = 0;
 
-		this._vDom = [];
+		this._compiled = [];
 
 		var nextLevel = function(elements, root) {
 			var i = 0,
 					j = 0,
-					vElem = "",
+					elem = "",
 					nextElem = [],
 					helperElem = {},
 					tag = '',
@@ -55,20 +65,20 @@ class Component {
 			}
 
 			//build up a vDom element
-			vElem = { tag: tag };
+			elem = { tag: tag };
 			//apply ids and classNames
 			if(classes.length > 0) {
-				vElem.className = classes.join(' ');
+				elem.className = classes.join(' ');
 			}
 			if(ids.length > 0) {
-				vElem.id = ids.join('');
+				elem.id = ids.join('');
 			}
 
 			//now go through its properties
 			for(i = 1; i < elements.length; i++) {
 				if(Array.isArray(elements[i])) {
-					vElem.children = vElem.children || [];
-					nextLevel(elements[i], vElem);
+					elem.children = elem.children || [];
+					nextLevel(elements[i], elem);
 				} else {
 
 					//see if there is nothing
@@ -81,51 +91,64 @@ class Component {
 						helperElem = {};
 						helperElem.children = [];
 						helperElem.tag = "if";
-						helperElem.condition = elements[i].condition;
-						helperElem.expression = elements[i].expression.bind(this.props);
-						for(j = 0; j < elements[i].success.length; j++) {
-							nextLevel(elements[i].success[j], helperElem);
+						helperElem.condition = elements[i].$condition;
+						helperElem.expression = elements[i].$expression.bind(this.props);
+						for(j = 0; j < elements[i].$template.length; j++) {
+							nextLevel(elements[i].$template[j], helperElem);
 						}
-						//then store the helper in the vElem
-						vElem.children = vElem.children || [];
-						vElem.children.push(helperElem);
+						//then store the helper in the elem
+						elem.children = elem.children || [];
+						elem.children.push(helperElem);
+					}
+					//handle for statements
+					else if(elements[i].type === "for") {
+						helperElem = {};
+						helperElem.children = [];
+						if(elements[i].$condition === "each") {
+							helperElem.tag = "forEach";
+							helperElem.items = elements[i].$items;
+							for(j = 0; j < elements[i].$template.length; j++) {
+								nextLevel(elements[i].$template[j], helperElem);
+							}
+							//then store the helper in the elem
+							elem.children = elem.children || [];
+							elem.children.push(helperElem);
+						}
 					}
 					//handle it if it's a text value
 					else if(elements[i].type === "bind") {
 						helperElem = {};
 						helperElem.tag = "bind";
-						helperElem.condition = elements[i].condition;
-						helperElem.expression = elements[i].expression.bind(this.props);
-						//then store the helper in the vElem
-						vElem.children = helperElem;
+						helperElem.condition = elements[i].$condition;
+						helperElem.expression = elements[i].$expression.bind(this.props);
+						//then store the helper in the elem
+						elem.children = helperElem;
 					}
 					//check if the value is simply a string
 					else if(typeof elements[i] === "string") {
-						vElem.children = elements[i];
+						elem.children = elements[i];
 					}
 					//otherwise, it could be a properties object with class etc
 					else {
-						//go through each property and add it to the vElem
+						//go through each property and add it to the elem
 						for(j in elements[i]) {
-							vElem[j] = elements[i][j];
+							elem[j] = elements[i][j];
 						}
 					}
 
 				}
 			}
-			//push the vElem to the vDom
+			//push the elem to the compiled template
 			if(Array.isArray(root)) {
-				root.push(vElem);
+				root.push(elem);
 			} else {
-				root.children.push(vElem);
+				root.children.push(elem);
 			}
 		}.bind(this);
 
 		for(i = 0; i < this.props.template.length; i++) {
-			nextLevel(this.props.template[i], this._vDom);
+			nextLevel(this.props.template[i], this._compiled);
 		};
-
-		debugger;
 	}
 
 	_propChange(changes) {

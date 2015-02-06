@@ -53,12 +53,13 @@ class Demo extends Engine.Component {
 				)
 			],
 			['ul.todos',
-				$.forEach(this.todos, (todo, index) =>
+				$.for(each => this.todos, (todo, index) => [
 					['li.todo',
 						['h2', "A todo"],
-						['span', index + ": " + todo]
-					]
-				)
+						['span', $.bind(text => index + ": " + todo)]
+					],
+					['div.test', "Foo!"]
+				])
 			],
 			['form', {id: this.formId, method: "post", action: "#"},
 				['div.form-control',
