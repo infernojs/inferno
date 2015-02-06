@@ -1,15 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var TemplateHelper = require("./TemplateHelper.js");
 
@@ -77,7 +71,7 @@ var Component = (function () {
 								helperElem = {};
 								helperElem.children = [];
 								helperElem.tag = "if";
-								helperElem.condition = elements[i].name;
+								helperElem.condition = elements[i].condition;
 								helperElem.expression = elements[i].expression.bind(this.props);
 								for (j = 0; j < elements[i].success.length; j++) {
 									nextLevel(elements[i].success[j], helperElem);
@@ -87,7 +81,14 @@ var Component = (function () {
 								vElem.children.push(helperElem);
 							}
 							//handle it if it's a text value
-							else if (elements[i].type === "bind") {}
+							else if (elements[i].type === "bind") {
+								helperElem = {};
+								helperElem.tag = "bind";
+								helperElem.condition = elements[i].condition;
+								helperElem.expression = elements[i].expression.bind(this.props);
+								//then store the helper in the vElem
+								vElem.children = helperElem;
+							}
 							//check if the value is simply a string
 							else if (typeof elements[i] === "string") {
 								vElem.children = elements[i];
@@ -131,11 +132,6 @@ var Component = (function () {
 
 module.exports = Component;
 
-
-
-
-
-
 },{"./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
 "use strict";
 
@@ -150,15 +146,9 @@ module.exports = Engine;
 },{"./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 /*
 
@@ -209,7 +199,13 @@ var TemplateHelper = (function () {
       configurable: true
     },
     bind: {
-      value: function bind() {},
+      value: function bind(expression) {
+        return {
+          type: "bind",
+          condition: this._getParamNames(arguments[0])[0],
+          expression: expression
+        };
+      },
       writable: true,
       configurable: true
     },
@@ -250,15 +246,6 @@ var TemplateHelper = (function () {
 ;
 
 module.exports = TemplateHelper;
-
-
-
-
-
-
-
-
-
 
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
 "use strict";

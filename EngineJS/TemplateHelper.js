@@ -43,8 +43,12 @@ class TemplateHelper {
 
   }
 
-  bind() {
-
+  bind(expression) {
+    return {
+      type: "bind",
+      condition: this._getParamNames(arguments[0])[0],
+      expression: expression
+    }
   }
 
   if(expression) {

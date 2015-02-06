@@ -56,7 +56,7 @@ class Component {
 						helperElem = {};
 						helperElem.children = [];
 						helperElem.tag = "if";
-						helperElem.condition = elements[i].name;
+						helperElem.condition = elements[i].condition;
 						helperElem.expression = elements[i].expression.bind(this.props);
 						for(j = 0; j < elements[i].success.length; j++) {
 							nextLevel(elements[i].success[j], helperElem);
@@ -67,6 +67,12 @@ class Component {
 					}
 					//handle it if it's a text value
 					else if(elements[i].type === "bind") {
+						helperElem = {};
+						helperElem.tag = "bind";
+						helperElem.condition = elements[i].condition;
+						helperElem.expression = elements[i].expression.bind(this.props);
+						//then store the helper in the vElem
+						vElem.children = helperElem;
 					}
 					//check if the value is simply a string
 					else if(typeof elements[i] === "string") {
