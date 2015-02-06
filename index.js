@@ -35,20 +35,20 @@ class Demo extends Engine.Component {
 		this.template = [
 			["div",
 				["header",
-					["h1", "Example " + this.title]
+					["h1", "Example " + $.bind(text => this.title)]
 				]
 			],
 			['div#main',
 				//example of a truthy statement
 				$.if(isTrue => this.todos.length > 0,
 					['div',
-						['span.counter', $.text("There are " + this.todos.length + " todos!")]
+						['span.counter', $.bind(text => "There are " + this.todos.length + " todos!")]
 					]
 				),
 				//example of a falsey statement
 				$.if(isFalse => this.todos.length > 0,
 					['div',
-						['span.no-todos', $.text("There are no todos!")]
+						['span.no-todos', "There are no todos!"]
 					]
 				)
 			],

@@ -1,9 +1,15 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+};
 
 var TemplateHelper = require("./TemplateHelper.js");
 
@@ -45,29 +51,60 @@ var Component = (function () {
 
 				this._vDom = [];
 
-				var nextLevel = function (elements, root) {
+				var nextLevel = (function (elements, root) {
 					var i = 0,
+					    j = 0,
 					    vElem = "",
-					    nextElem = [];
+					    nextElem = [],
+					    helperElem = {};
 
 					//build up a vDom element
 					vElem = { tag: elements[0] };
+
 					//now go through its properties
 					for (i = 1; i < elements.length; i++) {
 						if (Array.isArray(elements[i])) {
+							vElem.children = vElem.children || [];
 							nextLevel(elements[i], vElem);
 						} else {
-							debugger;
+							//see if there is nothing
+							if (elements[i] == null) {
+								continue;
+							}
+							//check if the element is a templatehelper function
+							else if (elements[i].type === "if") {
+								//lets store this in the object so it knows
+								helperElem = {};
+								helperElem.children = [];
+								helperElem.tag = "if";
+								helperElem.condition = elements[i].name;
+								helperElem.expression = elements[i].expression.bind(this.props);
+								for (j = 0; j < elements[i].success.length; j++) {
+									nextLevel(elements[i].success[j], helperElem);
+								}
+								//then store the helper in the vElem
+								vElem.children = vElem.children || [];
+								vElem.children.push(helperElem);
+							}
+							//handle it if it's a text value
+							else if (elements[i].type === "bind") {}
+							//check if the value is simply a string
+							else if (typeof elements[i] === "string") {
+								vElem.children = elements[i];
+							}
 							//otherwise, it could be a properties object with class etc
+							else {
+								debugger;
+							}
 						}
 					}
 					//push the vElem to the vDom
 					if (Array.isArray(root)) {
 						root.push(vElem);
 					} else {
-						root.children = vElem;
+						root.children.push(vElem);
 					}
-				};
+				}).bind(this);
 
 				for (i = 0; i < this.props.template.length; i++) {
 					nextLevel(this.props.template[i], this._vDom);
@@ -94,6 +131,11 @@ var Component = (function () {
 
 module.exports = Component;
 
+
+
+
+
+
 },{"./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
 "use strict";
 
@@ -108,9 +150,15 @@ module.exports = Engine;
 },{"./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
 
 /*
 
@@ -137,6 +185,14 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
   $.do(while => {expression}, ...)
   $.do(until => {expression}, ...)
 
+  ==================
+  data binding + filters/formatters
+  ==================
+
+  $.bind(text => {expression) //strips all tags
+  $.bind(html => {expression) //strips harmful tags
+  $.bind(none => {expression) //no stripping
+
 */
 
 var TemplateHelper = (function () {
@@ -152,8 +208,8 @@ var TemplateHelper = (function () {
       writable: true,
       configurable: true
     },
-    text: {
-      value: function text() {},
+    bind: {
+      value: function bind() {},
       writable: true,
       configurable: true
     },
@@ -170,7 +226,7 @@ var TemplateHelper = (function () {
 
         return {
           type: "if",
-          name: this._getParamNames(arguments[0]),
+          condition: this._getParamNames(arguments[0])[0],
           expression: expression,
           success: successes
         };
@@ -194,6 +250,15 @@ var TemplateHelper = (function () {
 ;
 
 module.exports = TemplateHelper;
+
+
+
+
+
+
+
+
+
 
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
 "use strict";
@@ -242,15 +307,19 @@ var Demo = (function (_Engine$Component) {
 				this.title = "Todo Demo";
 				this.formId = "todo-form";
 
-				this.template = [["div", ["header", ["h1", "Example " + this.title]]], ["div#main",
+				this.template = [["div", ["header", ["h1", "Example " + $.bind(function (text) {
+					return _this.title;
+				})]]], ["div#main",
 				//example of a truthy statement
 				$["if"](function (isTrue) {
 					return _this.todos.length > 0;
-				}, ["div", ["span.counter", $.text("There are " + this.todos.length + " todos!")]]),
+				}, ["div", ["span.counter", $.bind(function (text) {
+					return "There are " + _this.todos.length + " todos!";
+				})]]),
 				//example of a falsey statement
 				$["if"](function (isFalse) {
 					return _this.todos.length > 0;
-				}, ["div", ["span.no-todos", $.text("There are no todos!")]])], ["ul.todos", $.forEach(this.todos, function (todo, index) {
+				}, ["div", ["span.no-todos", "There are no todos!"]])], ["ul.todos", $.forEach(this.todos, function (todo, index) {
 					return ["li.todo", ["h2", "A todo"], ["span", index + ": " + todo]];
 				})], ["form", { id: this.formId, method: "post", action: "#" }, ["div.form-control", ["input", { name: "first_name", type: "text" }]], ["button", { type: "submit", onClick: this.click }, "Submit!"]]];
 			},

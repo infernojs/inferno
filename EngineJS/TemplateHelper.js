@@ -23,6 +23,14 @@
   $.do(while => {expression}, ...)
   $.do(until => {expression}, ...)
 
+  ==================
+  data binding + filters/formatters
+  ==================
+
+  $.bind(text => {expression) //strips all tags
+  $.bind(html => {expression) //strips harmful tags
+  $.bind(none => {expression) //no stripping
+
 */
 
 class TemplateHelper {
@@ -35,7 +43,7 @@ class TemplateHelper {
 
   }
 
-  text() {
+  bind() {
 
   }
 
@@ -48,10 +56,10 @@ class TemplateHelper {
         successes.push(arguments[1][i]);
       }
     }
-    
+
     return {
       type: "if",
-      name: this._getParamNames(arguments[0]),
+      condition: this._getParamNames(arguments[0])[0],
       expression: expression,
       success: successes
     }
