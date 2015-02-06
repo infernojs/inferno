@@ -34,10 +34,35 @@ class Component {
 					j = 0,
 					vElem = "",
 					nextElem = [],
-					helperElem = {};
+					helperElem = {},
+					tag = '',
+					classes = [],
+					ids = [];
+
+			tag = elements[0];
+
+			//tag may have .className or #id in it, so we need to take them out
+			if(tag.indexOf(".") > -1) {
+				classes = tag.split(".");
+				tag = classes[0];
+				classes.shift();
+			}
+
+			if(tag.indexOf("#") > -1) {
+				ids = tag.split("#");
+				tag = ids[0];
+				ids.shift();
+			}
 
 			//build up a vDom element
-			vElem = { tag: elements[0] };
+			vElem = { tag: tag };
+			//apply ids and classNames
+			if(classes.length > 0) {
+				vElem.className = classes.join(' ');
+			}
+			if(ids.length > 0) {
+				vElem.id = ids.join('');
+			}
 
 			//now go through its properties
 			for(i = 1; i < elements.length; i++) {
@@ -80,7 +105,10 @@ class Component {
 					}
 					//otherwise, it could be a properties object with class etc
 					else {
-						debugger;
+						//go through each property and add it to the vElem
+						for(j in elements[i]) {
+							vElem[j] = elements[i][j];
+						}
 					}
 
 				}

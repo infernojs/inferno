@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/dominicg/EngineJS/EngineJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -50,10 +50,35 @@ var Component = (function () {
 					    j = 0,
 					    vElem = "",
 					    nextElem = [],
-					    helperElem = {};
+					    helperElem = {},
+					    tag = "",
+					    classes = [],
+					    ids = [];
+
+					tag = elements[0];
+
+					//tag may have .className or #id in it, so we need to take them out
+					if (tag.indexOf(".") > -1) {
+						classes = tag.split(".");
+						tag = classes[0];
+						classes.shift();
+					}
+
+					if (tag.indexOf("#") > -1) {
+						ids = tag.split("#");
+						tag = ids[0];
+						ids.shift();
+					}
 
 					//build up a vDom element
-					vElem = { tag: elements[0] };
+					vElem = { tag: tag };
+					//apply ids and classNames
+					if (classes.length > 0) {
+						vElem.className = classes.join(" ");
+					}
+					if (ids.length > 0) {
+						vElem.id = ids.join("");
+					}
 
 					//now go through its properties
 					for (i = 1; i < elements.length; i++) {
@@ -95,7 +120,10 @@ var Component = (function () {
 							}
 							//otherwise, it could be a properties object with class etc
 							else {
-								debugger;
+								//go through each property and add it to the vElem
+								for (j in elements[i]) {
+									vElem[j] = elements[i][j];
+								}
 							}
 						}
 					}
@@ -132,7 +160,7 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
+},{"./TemplateHelper.js":"/Users/dominicg/EngineJS/EngineJS/TemplateHelper.js"}],"/Users/dominicg/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
@@ -143,7 +171,7 @@ Engine.Component = Component;
 
 module.exports = Engine;
 
-},{"./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
+},{"./Component.js":"/Users/dominicg/EngineJS/EngineJS/Component.js"}],"/Users/dominicg/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -247,7 +275,7 @@ var TemplateHelper = (function () {
 
 module.exports = TemplateHelper;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/index.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -322,4 +350,4 @@ var Demo = (function (_Engine$Component) {
 
 window.Demo = Demo;
 
-},{"./EngineJS/Engine.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);
+},{"./EngineJS/Engine.js":"/Users/dominicg/EngineJS/EngineJS/Engine.js"}]},{},["/Users/dominicg/EngineJS/index.js"]);
