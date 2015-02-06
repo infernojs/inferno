@@ -44,17 +44,17 @@ class TemplateHelper {
   render(node) {
   	if(node.$type === "if") {
   		if(node.$expression() === node.$condition) {
-  			return node.elems;
+  			return node.$toRender;
   		} else {
   			return null;
   		}
   	} else if(node.$type === "bind") {
-  		return node.elems();
+  		return node.$toRender();
   	}
   	return null;
   }
 
-  for(values, template) {
+  for(values, children) {
     var condition = this._getParamNames(arguments[0])[0];
 
     switch(condition) {
@@ -63,26 +63,26 @@ class TemplateHelper {
           type: "for",
           condition: "each",
           items: values,
-          template: template()
+          children: children()
         }
     }
   }
 
-  bind(elems) {
+  bind(children) {
     return {
       type: "bind",
       condition: this._getParamNames(arguments[0])[0],
-      elems: elems
+      children: children
     }
   }
 
   if(expression) {
-    var elems = [],
+    var children = [],
         i = 0;
 
     if(arguments[1].length > 1) {
       for(i = 1; i < arguments[1].length; i++) {
-        elems.push(arguments[1][i]);
+        children.push(arguments[1][i]);
       }
     }
 
@@ -90,7 +90,7 @@ class TemplateHelper {
       type: "if",
       condition: this._getParamNames(arguments[0])[0],
       expression: expression,
-      elems: elems
+      children: children
     }
   }
 

@@ -31,58 +31,38 @@ class Component {
 
 	_render() {
 		b.init(function () {
-
-			var render = [],
-					renderNode = null;
-
-			renderNode = function(node, root) {
+			var renderHelpers = function(node) {
 				var i = 0;
 				if(Array.isArray(node)) {
 					for(i = 0; i < node.length; i++) {
-						renderNode(node[i], root);
+						renderHelpers(node[i]);
 					}
 				} else {
-					if(node.elems != null) {
-						if(node.elems.$type != null) {
-							node.children = this._templateHelper.render(node.elems);
-						} else if(Array.isArray(node.elems)) {
-							for(i = 0; i < node.elems.length; i++) {
-								renderNode(node.elems[i], node);
+					if(node.children == null) {
+						//no children (luck bastard)
+						if(node.$type != null) {
+							node.children = this._templateHelper.render(node);
+						}
+					}
+					if(node.children != null) {
+						if(node.children.$type != null) {
+							node.children.children = this._templateHelper.render(node.children);
+						}
+						if(Array.isArray(node.children)) {
+							for(i = 0; i < node.children.length; i++) {
+								renderHelpers(node.children[i], node);
 							}
 						} else {
-							renderNode(node.elems, node);
+							renderHelpers(node.children, node);
 						}
-						delete node.elems;
-					}
-					debugger;
-					if(Array.isArray(root)) {
-						root.push(node);
-					} else {
-						root.children = root.children || [];
-						root.children.push(node);
 					}
 				}
-				// for (var i in node) {
-				//
-				// 		if(root.children != null) {
-				// 			this._pushToNode(root.children, node);
-				// 		} else {
-				// 			this._pushToNode(root, node);
-				// 		}
-				// 	}
-				// 	if(node[i].children != null) {
-				// 		renderNode(node[i].children, Array.isArray(node) ? root : node);
-				// 	}
-				//
-				// }
 			}.bind(this)
-
-			renderNode(this._compiled, render)
-
+			//re-render the helpers within our template
+			renderHelpers(this._compiled)
+			//return the rendered
 			debugger;
-
-
-			return render;
+			return this._compiled;
 		}.bind(this));
 	}
 
@@ -130,7 +110,7 @@ class Component {
 			//now go through its properties
 			for(i = 1; i < elements.length; i++) {
 				if(Array.isArray(elements[i])) {
-					elem.elems = elem.elems || [];
+					elem.children = elem.children || [];
 					nextLevel(elements[i], elem);
 				} else {
 
@@ -142,7 +122,7 @@ class Component {
 					else if(elements[i].type === "if") {
 						//lets store this in the object so it knows
 						helperElem = {};
-						helperElem.elems = [];
+						helperElem.$toRender = [];
 						helperElem.$type = "if";
 						switch(elements[i].condition) {
 							case "isTrue":
@@ -159,26 +139,26 @@ class Component {
 								break;
 						}
 						helperElem.$expression = elements[i].expression.bind(this.props);
-						for(j = 0; j < elements[i].elems.length; j++) {
-							nextLevel(elements[i].elems[j], helperElem);
+						for(j = 0; j < elements[i].children.length; j++) {
+							nextLevel(elements[i].children[j], helperElem);
 						}
 						//then store the helper in the elem
-						elem.elems = elem.elems || [];
-						elem.elems.push(helperElem);
+						elem.children = elem.children || [];
+						elem.children.push(helperElem);
 					}
 					//handle for statements
 					else if(elements[i].type === "for") {
 						helperElem = {};
-						helperElem.elems = [];
+						helperElem.$toRender = [];
 						if(elements[i].condition === "each") {
 							helperElem.$type = "forEach";
 							helperElem.$items = elements[i].items;
-							for(j = 0; j < elements[i].template.length; j++) {
-								nextLevel(elements[i].template[j], helperElem);
+							for(j = 0; j < elements[i].children.length; j++) {
+								nextLevel(elements[i].children[j], helperElem);
 							}
 							//then store the helper in the elem
-							elem.elems = elem.elems || [];
-							elem.elems.push(helperElem);
+							elem.children = elem.children || [];
+							elem.children.push(helperElem);
 						}
 					}
 					//handle it if it's a text value
@@ -186,13 +166,13 @@ class Component {
 						helperElem = {};
 						helperElem.$type = "bind";
 						helperElem.$condition = elements[i].condition;
-						helperElem.elems = elements[i].elems;
+						helperElem.$toRender = elements[i].children;
 						//then store the helper in the elem
-						elem.elems = helperElem;
+						elem.children = helperElem;
 					}
 					//check if the value is simply a string
 					else if(typeof elements[i] === "string") {
-						elem.elems = elements[i];
+						elem.children = elements[i];
 					}
 					//otherwise, it could be a properties object with class etc
 					else {
@@ -223,8 +203,10 @@ class Component {
 			//push the elem to the compiled template
 			if(Array.isArray(root)) {
 				root.push(elem);
+			} else if(root.$toRender != null) {
+				root.$toRender.push(elem);
 			} else {
-				root.elems.push(elem);
+				root.children.push(elem);
 			}
 		}.bind(this);
 

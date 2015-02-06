@@ -187,6 +187,9 @@ var b = (function (window, document) {
         var backupInNamespace = inNamespace;
         var backupInSvg = inSvg;
         var component = c.component;
+        if(!c) {
+          return;
+        }
         if (component) {
             c.ctx = { data: c.data || {}, me: c };
             if (component.init) {
@@ -247,6 +250,10 @@ var b = (function (window, document) {
         if (!ch)
             return;
 
+        if (ch.$type != null && ch.children != null) {
+          ch = ch.children;
+        }
+
         if (!isArray(ch)) {
             if (typeof ch === "string") {
                 if (hasTextContent) {
@@ -263,13 +270,16 @@ var b = (function (window, document) {
         var i = 0, l = ch.length;
         while (i < l) {
             var item = ch[i];
+            if (item.$type != null && item.children != null) {
+              item = item.children;
+            }
             if (isArray(item)) {
                 ch.splice.apply(ch, [i, 1].concat(item));
                 l = ch.length;
                 continue;
             }
             item = normalizeNode(item);
-            if (item == null) {
+            if (item == null || item.children === null) {
                 ch.splice(i, 1);
                 l--;
                 continue;

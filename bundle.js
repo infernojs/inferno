@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/dominicg/EngineJS/EngineJS/Component.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -47,57 +47,38 @@ var Component = (function () {
 		_render: {
 			value: function _render() {
 				b.init((function () {
-					var render = [],
-					    renderNode = null;
-
-					renderNode = (function (node, root) {
+					var renderHelpers = (function (node) {
 						var i = 0;
 						if (Array.isArray(node)) {
 							for (i = 0; i < node.length; i++) {
-								renderNode(node[i], root);
+								renderHelpers(node[i]);
 							}
 						} else {
-							if (node.elems != null) {
-								if (node.elems.$type != null) {
-									node.children = this._templateHelper.render(node.elems);
-								} else if (Array.isArray(node.elems)) {
-									for (i = 0; i < node.elems.length; i++) {
-										renderNode(node.elems[i], node);
+							if (node.children == null) {
+								//no children (luck bastard)
+								if (node.$type != null) {
+									node.children = this._templateHelper.render(node);
+								}
+							}
+							if (node.children != null) {
+								if (node.children.$type != null) {
+									node.children.children = this._templateHelper.render(node.children);
+								}
+								if (Array.isArray(node.children)) {
+									for (i = 0; i < node.children.length; i++) {
+										renderHelpers(node.children[i], node);
 									}
 								} else {
-									renderNode(node.elems, node);
+									renderHelpers(node.children, node);
 								}
-								delete node.elems;
-							}
-							debugger;
-							if (Array.isArray(root)) {
-								root.push(node);
-							} else {
-								root.children = root.children || [];
-								root.children.push(node);
 							}
 						}
-						// for (var i in node) {
-						//
-						// 		if(root.children != null) {
-						// 			this._pushToNode(root.children, node);
-						// 		} else {
-						// 			this._pushToNode(root, node);
-						// 		}
-						// 	}
-						// 	if(node[i].children != null) {
-						// 		renderNode(node[i].children, Array.isArray(node) ? root : node);
-						// 	}
-						//
-						// }
 					}).bind(this);
-
-					renderNode(this._compiled, render);
-
+					//re-render the helpers within our template
+					renderHelpers(this._compiled);
+					//return the rendered
 					debugger;
-
-
-					return render;
+					return this._compiled;
 				}).bind(this));
 			},
 			writable: true,
@@ -148,7 +129,7 @@ var Component = (function () {
 					//now go through its properties
 					for (i = 1; i < elements.length; i++) {
 						if (Array.isArray(elements[i])) {
-							elem.elems = elem.elems || [];
+							elem.children = elem.children || [];
 							nextLevel(elements[i], elem);
 						} else {
 							//see if there is nothing
@@ -159,7 +140,7 @@ var Component = (function () {
 							else if (elements[i].type === "if") {
 								//lets store this in the object so it knows
 								helperElem = {};
-								helperElem.elems = [];
+								helperElem.$toRender = [];
 								helperElem.$type = "if";
 								switch (elements[i].condition) {
 									case "isTrue":
@@ -176,26 +157,26 @@ var Component = (function () {
 										break;
 								}
 								helperElem.$expression = elements[i].expression.bind(this.props);
-								for (j = 0; j < elements[i].elems.length; j++) {
-									nextLevel(elements[i].elems[j], helperElem);
+								for (j = 0; j < elements[i].children.length; j++) {
+									nextLevel(elements[i].children[j], helperElem);
 								}
 								//then store the helper in the elem
-								elem.elems = elem.elems || [];
-								elem.elems.push(helperElem);
+								elem.children = elem.children || [];
+								elem.children.push(helperElem);
 							}
 							//handle for statements
 							else if (elements[i].type === "for") {
 								helperElem = {};
-								helperElem.elems = [];
+								helperElem.$toRender = [];
 								if (elements[i].condition === "each") {
 									helperElem.$type = "forEach";
 									helperElem.$items = elements[i].items;
-									for (j = 0; j < elements[i].template.length; j++) {
-										nextLevel(elements[i].template[j], helperElem);
+									for (j = 0; j < elements[i].children.length; j++) {
+										nextLevel(elements[i].children[j], helperElem);
 									}
 									//then store the helper in the elem
-									elem.elems = elem.elems || [];
-									elem.elems.push(helperElem);
+									elem.children = elem.children || [];
+									elem.children.push(helperElem);
 								}
 							}
 							//handle it if it's a text value
@@ -203,13 +184,13 @@ var Component = (function () {
 								helperElem = {};
 								helperElem.$type = "bind";
 								helperElem.$condition = elements[i].condition;
-								helperElem.elems = elements[i].elems;
+								helperElem.$toRender = elements[i].children;
 								//then store the helper in the elem
-								elem.elems = helperElem;
+								elem.children = helperElem;
 							}
 							//check if the value is simply a string
 							else if (typeof elements[i] === "string") {
-								elem.elems = elements[i];
+								elem.children = elements[i];
 							}
 							//otherwise, it could be a properties object with class etc
 							else {
@@ -239,8 +220,10 @@ var Component = (function () {
 					//push the elem to the compiled template
 					if (Array.isArray(root)) {
 						root.push(elem);
+					} else if (root.$toRender != null) {
+						root.$toRender.push(elem);
 					} else {
-						root.elems.push(elem);
+						root.children.push(elem);
 					}
 				}).bind(this);
 
@@ -268,7 +251,7 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./TemplateHelper.js":"/Users/dominicg/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Users/dominicg/EngineJS/EngineJS/bobril.js"}],"/Users/dominicg/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
+},{"./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
@@ -279,7 +262,7 @@ Engine.Component = Component;
 
 module.exports = Engine;
 
-},{"./Component.js":"/Users/dominicg/EngineJS/EngineJS/Component.js"}],"/Users/dominicg/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
+},{"./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -335,12 +318,12 @@ var TemplateHelper = (function () {
       value: function render(node) {
         if (node.$type === "if") {
           if (node.$expression() === node.$condition) {
-            return node.elems;
+            return node.$toRender;
           } else {
             return null;
           }
         } else if (node.$type === "bind") {
-          return node.elems();
+          return node.$toRender();
         }
         return null;
       },
@@ -348,7 +331,7 @@ var TemplateHelper = (function () {
       configurable: true
     },
     "for": {
-      value: function _for(values, template) {
+      value: function _for(values, children) {
         var condition = this._getParamNames(arguments[0])[0];
 
         switch (condition) {
@@ -357,7 +340,7 @@ var TemplateHelper = (function () {
               type: "for",
               condition: "each",
               items: values,
-              template: template()
+              children: children()
             };
         }
       },
@@ -365,11 +348,11 @@ var TemplateHelper = (function () {
       configurable: true
     },
     bind: {
-      value: function bind(elems) {
+      value: function bind(children) {
         return {
           type: "bind",
           condition: this._getParamNames(arguments[0])[0],
-          elems: elems
+          children: children
         };
       },
       writable: true,
@@ -377,12 +360,12 @@ var TemplateHelper = (function () {
     },
     "if": {
       value: function _if(expression) {
-        var elems = [],
+        var children = [],
             i = 0;
 
         if (arguments[1].length > 1) {
           for (i = 1; i < arguments[1].length; i++) {
-            elems.push(arguments[1][i]);
+            children.push(arguments[1][i]);
           }
         }
 
@@ -390,7 +373,7 @@ var TemplateHelper = (function () {
           type: "if",
           condition: this._getParamNames(arguments[0])[0],
           expression: expression,
-          elems: elems
+          children: children
         };
       },
       writable: true,
@@ -413,7 +396,7 @@ var TemplateHelper = (function () {
 
 module.exports = TemplateHelper;
 
-},{}],"/Users/dominicg/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -584,6 +567,9 @@ var b = (function (window, document) {
         var backupInNamespace = inNamespace;
         var backupInSvg = inSvg;
         var component = c.component;
+        if (!c) {
+            return;
+        }
         if (component) {
             c.ctx = { data: c.data || {}, me: c };
             if (component.init) {
@@ -636,6 +622,10 @@ var b = (function (window, document) {
         var element = c.element;
         if (!ch) return;
 
+        if (ch.$type != null && ch.children != null) {
+            ch = ch.children;
+        }
+
         if (!isArray(ch)) {
             if (typeof ch === "string") {
                 if (hasTextContent) {
@@ -652,13 +642,16 @@ var b = (function (window, document) {
             l = ch.length;
         while (i < l) {
             var item = ch[i];
+            if (item.$type != null && item.children != null) {
+                item = item.children;
+            }
             if (isArray(item)) {
                 ch.splice.apply(ch, [i, 1].concat(item));
                 l = ch.length;
                 continue;
             }
             item = normalizeNode(item);
-            if (item == null) {
+            if (item == null || item.children === null) {
                 ch.splice(i, 1);
                 l--;
                 continue;
@@ -1429,7 +1422,15 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-},{}],"/Users/dominicg/EngineJS/index.js":[function(require,module,exports){
+
+
+
+
+
+
+
+
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -1508,4 +1509,4 @@ var Demo = (function (_Engine$Component) {
 
 window.Demo = Demo;
 
-},{"./EngineJS/Engine.js":"/Users/dominicg/EngineJS/EngineJS/Engine.js"}]},{},["/Users/dominicg/EngineJS/index.js"]);
+},{"./EngineJS/Engine.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);
