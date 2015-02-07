@@ -8,7 +8,7 @@
   <script src="http://fb.me/react-0.12.2.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/0.10.6/vue.js"></script>
   <script src="http://cdn.jsdelivr.net/mithril/0.1.22/mithril.min.js"></script>
-  <script src="morph.js"></script>
+  <script src="inferno.js"></script>
   <style>
     p {
       font: 12px/16px Arial;
@@ -63,7 +63,7 @@
 <button onclick="runRawdog()">Animate with nothing</button>
 <button onclick="runMithril()">Animate with Mithril (vdom)</button>
 <button onclick="runMithrilConfig()">Animate with Mithril (config)</button>
-<button onclick="runMorph()">Animate with Morph</button>
+<button onclick="runInferno()">Animate with Inferno</button>
 
 <p id="timing">&nbsp;</p>
 <div id="gridcontainer">
@@ -381,19 +381,19 @@ window.runReact = function() {
       };
   })();
 
-  //Morph
+  //Inferno
   (function(){
 
-    window.runMorph = function() {
+    window.runInferno = function() {
         reset();
-        var morphBenchmark = new MorphBenchmark();
-        morphBenchmark.mount(document.getElementById('gridcontainer'));
+        var infernoBenchmark = new InfernoBenchmark();
+        infernoBenchmark.mount(document.getElementById('gridcontainer'));
         morphBenchmark.animation
 
         setTimeout(function () {
             startClock();
             benchmarkLoop(function() {
-              morphBenchmark.animateBoxes();
+              infernoBenchmark.animateBoxes();
             });
         }, 300);
     };

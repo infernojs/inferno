@@ -1,8 +1,8 @@
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
-var Engine = require('./EngineJS/Engine.js');
+var Engine = require('./InfernoJS/Inferno.js');
 
-class MorphBenchmark extends Engine.Component {
+class InfernoBenchmark extends Inferno.Component {
 
   constructor() {
 
@@ -26,7 +26,7 @@ class MorphBenchmark extends Engine.Component {
 
     //loop through all our virtual objects and apply the updates
     for(var i = 0; i < this.boxElems.length; i++) {
-      this.boxElems[i].update({style: newStyle}, count]);
+      this.boxElems[i].update({style: newStyle}, count);
     }
   }
 

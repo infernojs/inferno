@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js":[function(require,module,exports){
 "use strict";
 
 var Compiler = function (elements, root) {
@@ -142,7 +142,7 @@ var Compiler = function (elements, root) {
 
 module.exports = Compiler;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -163,6 +163,8 @@ var Component = (function () {
 
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
+
+		debugger;
 
 		//then compile the template
 		this._compileTemplate(this);
@@ -267,21 +269,21 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
 var Compiler = require("./Compiler.js");
 
-var Engine = {};
+var Inferno = {};
 
-Engine.Component = Component;
+Inferno.Component = Component;
 
-Engine.Compiler = Compiler;
+Inferno.Compiler = Compiler;
 
-module.exports = Engine;
+module.exports = Inferno;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -456,7 +458,7 @@ var TemplateHelper = (function () {
 
 module.exports = TemplateHelper;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -1515,9 +1517,9 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
-var Engine = require("./EngineJS/Engine.js");
+var Engine = require("./InfernoJS/Inferno.js");
 
-var Demo = (function (_Engine$Component) {
+var Demo = (function (_Inferno$Component) {
 	function Demo() {
 		_classCallCheck(this, Demo);
 
@@ -1527,10 +1529,10 @@ var Demo = (function (_Engine$Component) {
 		this.title = "Todo Demo";
 		this.formId = "todo-form";
 
-		_get(_Engine$Component.prototype, "constructor", this).call(this);
+		_get(_Inferno$Component.prototype, "constructor", this).call(this);
 	}
 
-	_inherits(Demo, _Engine$Component);
+	_inherits(Demo, _Inferno$Component);
 
 	_prototypeProperties(Demo, null, {
 		_clickSubmit: {
@@ -1572,10 +1574,10 @@ var Demo = (function (_Engine$Component) {
 	});
 
 	return Demo;
-})(Engine.Component);
+})(Inferno.Component);
 
 ;
 
 window.Demo = Demo;
 
-},{"./EngineJS/Engine.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);
+},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);

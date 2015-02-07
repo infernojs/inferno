@@ -1,8 +1,8 @@
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
-var Engine = require('./EngineJS/Engine.js');
+var Engine = require('./InfernoJS/Inferno.js');
 
-class Demo extends Engine.Component {
+class Demo extends Inferno.Component {
 
 	constructor() {
 		//we declare all our properties

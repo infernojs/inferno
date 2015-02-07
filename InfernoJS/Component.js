@@ -12,6 +12,8 @@ class Component {
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
 
+		debugger;
+
 		//then compile the template
 		this._compileTemplate(this);
 

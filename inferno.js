@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js":[function(require,module,exports){
 "use strict";
 
 var Compiler = function (elements, root) {
@@ -142,9 +142,7 @@ var Compiler = function (elements, root) {
 
 module.exports = Compiler;
 
-
-
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -165,6 +163,8 @@ var Component = (function () {
 
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
+
+		debugger;
 
 		//then compile the template
 		this._compileTemplate(this);
@@ -269,21 +269,21 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
 var Compiler = require("./Compiler.js");
 
-var Engine = {};
+var Inferno = {};
 
-Engine.Component = Component;
+Inferno.Component = Component;
 
-Engine.Compiler = Compiler;
+Inferno.Compiler = Compiler;
 
-module.exports = Engine;
+module.exports = Inferno;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -458,7 +458,7 @@ var TemplateHelper = (function () {
 
 module.exports = TemplateHelper;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -615,6 +615,20 @@ var b = (function (window, document) {
         }
         return oldAttrs;
     }
+    function nodeAccessor(c) {
+        return {
+            update: function (attrs, children) {
+                if (attrs.style) {
+                    for (var i in attrs.style) {
+                        c.element.style[i] = attrs.style[i];
+                    }
+                }
+                if (typeof children === "string") {
+                    c.element.firstChild.nodeValue = children;
+                }
+            }
+        };
+    }
     function pushInitCallback(c, aupdate) {
         var cc = c.component;
         if (cc) {
@@ -661,8 +675,8 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.onDomCreated) {
-            c.onDomCreated.call(rootContext, c.element);
+        if (c.onCreated) {
+            c.onCreated.call(rootContext, nodeAccessor(c));
         }
         if (c.attrs) c.attrs = updateElement(c, el, c.attrs, {});
         if (c.style) updateStyle(c, el, c.style, undefined);
@@ -1490,7 +1504,6 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js":[function(require,module,exports){
 "use strict";
 
@@ -1504,40 +1517,44 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
-var Engine = require("./EngineJS/Engine.js");
+var Engine = require("./InfernoJS/Inferno.js");
 
-var MorphBenchmark = (function (_Engine$Component) {
-  function MorphBenchmark() {
-    _classCallCheck(this, MorphBenchmark);
+var InfernoBenchmark = (function (_Inferno$Component) {
+  function InfernoBenchmark() {
+    _classCallCheck(this, InfernoBenchmark);
 
     this.count = 0;
     this.boxElems = [];
 
-    _get(_Engine$Component.prototype, "constructor", this).call(this);
+    _get(_Inferno$Component.prototype, "constructor", this).call(this);
   }
 
-  _inherits(MorphBenchmark, _Engine$Component);
+  _inherits(InfernoBenchmark, _Inferno$Component);
 
-  _prototypeProperties(MorphBenchmark, null, {
+  _prototypeProperties(InfernoBenchmark, null, {
     animateBoxes: {
       value: function animateBoxes() {
         this.count++;
 
         var count = this.count % 100;
 
-        var style = "top:" + Math.sin(this.count / 10) * 10 + "px;" + "left:" + Math.cos(this.count / 10) * 10 + "px;" + "background:rgb(0,0," + this.count % 255 + ")";
+        //animate the style
+        var newStyle = {
+          top: Math.sin(this.count / 10) * 10 + "px;",
+          left: Math.cos(this.count / 10) * 10 + "px;",
+          background: "rgb(0,0," + this.count % 255 + ")"
+        };
 
+        //loop through all our virtual objects and apply the updates
         for (var i = 0; i < this.boxElems.length; i++) {
-          this.boxElems[i].setAttribute("style", style);
-          //faster than innerHTML or textContent
-          this.boxElems[i].firstChild.nodeValue = count;
+          this.boxElems[i].update({ style: newStyle }, count);
         }
       },
       writable: true,
       configurable: true
     },
-    storeBoxElem: {
-      value: function storeBoxElem(element) {
+    addBox: {
+      value: function addBox(element) {
         this.boxElems.push(element);
       },
       writable: true,
@@ -1556,7 +1573,7 @@ var MorphBenchmark = (function (_Engine$Component) {
         }, function (i) {
           return [["div.box-view",
           //set it to 0 to begin with, don't bind to a variable
-          ["div.box", { id: "box-" + i, onDomCreated: _this.storeBoxElem }, "0"]]];
+          ["div.box", { id: "box-" + i, onCreated: _this.addBox }, "0"]]];
         })]];
       },
       writable: true,
@@ -1564,11 +1581,11 @@ var MorphBenchmark = (function (_Engine$Component) {
     }
   });
 
-  return MorphBenchmark;
-})(Engine.Component);
+  return InfernoBenchmark;
+})(Inferno.Component);
 
 ;
 
 window.MorphBenchmark = MorphBenchmark;
 
-},{"./EngineJS/Engine.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js"]);
+},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js"]);
