@@ -19,8 +19,8 @@ class InfernoBenchmark extends Inferno.Component {
 
     //animate the style
     var newStyle = {
-      top: (Math.sin(this.count / 10) * 10) + "px;",
-      left: (Math.cos(this.count / 10) * 10) + "px;",
+      top: (Math.sin(this.count / 10) * 10) + "px",
+      left: (Math.cos(this.count / 10) * 10) + "px",
       background: "rgb(0,0," + (this.count % 255) +")"
     };
 

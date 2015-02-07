@@ -181,7 +181,7 @@ var b = (function (window, document) {
               c.element.style[i] = attrs.style[i];
             }
           }
-          if(typeof children === "string") {
+          if(children != null) {
             c.element.firstChild.nodeValue = children;
           }
         }

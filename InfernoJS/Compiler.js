@@ -112,7 +112,7 @@ var Compiler = function(elements, root) {
 					switch(j) {
 						case "className":
 						case "style":
-						case "onDomCreated":
+						case "onCreated":
 							elem[j] = elements[i][j];
 							break;
             case "id":
