@@ -173,6 +173,20 @@ var b = (function (window, document) {
         }
         return oldAttrs;
     }
+    function nodeAccessor(c) {
+      return {
+        update: function(attrs, children) {
+          if(attrs.style) {
+            for(var i in attrs.style) {
+              c.element.style[i] = attrs.style[i];
+            }
+          }
+          if(typeof children === "string") {
+            c.element.firstChild.nodeValue = children;
+          }
+        }
+      }
+    }
     function pushInitCallback(c, aupdate) {
         var cc = c.component;
         if (cc) {
@@ -222,8 +236,8 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.onDomCreated) {
-          c.onDomCreated.call(rootContext, c.element);
+        if (c.onCreated) {
+          c.onCreated.call(rootContext, nodeAccessor(c));
         }
         if (c.attrs)
             c.attrs = updateElement(c, el, c.attrs, {});

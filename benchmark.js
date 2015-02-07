@@ -17,18 +17,20 @@ class MorphBenchmark extends Engine.Component {
 
     var count = this.count % 100;
 
-    var style = "top:" + (Math.sin(this.count / 10) * 10) + "px;" +
-          "left:" + (Math.cos(this.count / 10) * 10) + "px;" +
-          "background:rgb(0,0," + (this.count % 255) +")";
+    //animate the style
+    var newStyle = {
+      top: (Math.sin(this.count / 10) * 10) + "px;",
+      left: (Math.cos(this.count / 10) * 10) + "px;",
+      background: "rgb(0,0," + (this.count % 255) +")"
+    };
 
+    //loop through all our virtual objects and apply the updates
     for(var i = 0; i < this.boxElems.length; i++) {
-      this.boxElems[i].setAttribute("style", style);
-      //faster than innerHTML or textContent
-      this.boxElems[i].firstChild.nodeValue = count;
+      this.boxElems[i].update({style: newStyle}, count]);
     }
   }
 
-  storeBoxElem(element) {
+  addBox(element) {
     this.boxElems.push(element);
   }
 
@@ -42,7 +44,7 @@ class MorphBenchmark extends Engine.Component {
         $.for(increment => [0, N, 1], i => [
           ['div.box-view',
             //set it to 0 to begin with, don't bind to a variable
-            ['div.box', {id: "box-" + i, onDomCreated: this.storeBoxElem}, "0"]
+            ['div.box', {id: "box-" + i, onCreated: this.addBox}, "0"]
           ]
         ])
       ],
