@@ -1,144 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js":[function(require,module,exports){
-"use strict";
-
-var Compiler = function (elements, root) {
-	var i = 0,
-	    j = 0,
-	    elem = "",
-	    nextElem = [],
-	    helperElem = {},
-	    tag = "",
-	    classes = [],
-	    ids = [],
-	    attrs = [];
-
-	tag = elements[0];
-
-	//tag may have .className or #id in it, so we need to take them out
-	if (tag.indexOf(".") > -1) {
-		classes = tag.split(".");
-		tag = classes[0];
-		classes.shift();
-	}
-
-	if (tag.indexOf("#") > -1) {
-		ids = tag.split("#");
-		tag = ids[0];
-		ids.shift();
-	}
-
-	//build up a vDom element
-	elem = { tag: tag };
-	//apply ids and classNames
-	if (classes.length > 0) {
-		elem.className = classes.join(" ");
-	}
-	if (ids.length > 0) {
-		elem.id = ids.join("");
-	}
-
-	//now go through its properties
-	for (i = 1; i < elements.length; i++) {
-		if (Array.isArray(elements[i])) {
-			elem.children = elem.children || [];
-			Compiler(elements[i], elem);
-		} else {
-			//see if there is nothing
-			if (elements[i] == null) {
-				continue;
-			}
-			//check if the element is a templatehelper function
-			else if (elements[i].type === "if") {
-				//lets store this in the object so it knows
-				helperElem = {};
-				helperElem.$toRender = [];
-				helperElem.$type = "if";
-				switch (elements[i].condition) {
-					case "isTrue":
-						helperElem.$condition = true;
-						break;
-					case "isFalse":
-						helperElem.$condition = false;
-						break;
-					case "isNull":
-						helperElem.$condition = null;
-						break;
-					case "isZero":
-						helperElem.$condition = 0;
-						break;
-				}
-				helperElem.$expression = elements[i].expression;
-				for (j = 0; j < elements[i].children.length; j++) {
-					Compiler(elements[i].children[j], helperElem);
-				}
-				//then store the helper in the elem
-				elem.children = elem.children || [];
-				elem.children.push(helperElem);
-			}
-			//handle for statements
-			else if (elements[i].type === "for") {
-				helperElem = {};
-				helperElem.$toRender = [];
-				if (elements[i].condition === "each") {
-					helperElem.$type = "forEach";
-					helperElem.$items = elements[i].items;
-					helperElem.$toRender = elements[i].children;
-					//then store the helper in the elem
-					elem.children = elem.children || [];
-					elem.children.push(helperElem);
-				}
-			}
-			//handle it if it's a text value
-			else if (elements[i].type === "bind") {
-				helperElem = {};
-				helperElem.$type = "bind";
-				helperElem.$condition = elements[i].condition;
-				helperElem.$toRender = elements[i].children;
-				//then store the helper in the elem
-				elem.children = helperElem;
-			}
-			//check if the value is simply a string
-			else if (typeof elements[i] === "string") {
-				elem.children = elements[i];
-			}
-			//otherwise, it could be a properties object with class etc
-			else {
-				elem.attrs = {};
-				//go through each property and add it to the elem
-				for (j in elements[i]) {
-					//check the key and see if its on the elem or in attrs
-					switch (j) {
-						case "className":
-						case "style":
-						case "id":
-						case "storeRef":
-							elem[j] = elements[i][j];
-							break;
-						case "type":
-						case "value":
-						case "placeholder":
-						case "method":
-						case "action":
-						default:
-							elem.attrs[j] = elements[i][j];
-							break;
-					}
-				}
-			}
-		}
-	}
-	if (Array.isArray(root)) {
-		root.push(elem);
-	} else if (root.$toRender != null) {
-		root.$toRender.push(elem);
-	} else {
-		root.children.push(elem);
-	}
-};
-
-module.exports = Compiler;
-
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -146,7 +6,6 @@ var _prototypeProperties = function (child, staticProps, instanceProps) { if (st
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var TemplateHelper = require("./TemplateHelper.js");
-var Compiler = require("./Compiler.js");
 var b = require("./bobril.js");
 
 
@@ -161,7 +20,7 @@ var Component = (function () {
 		this._template = this.initTemplate(this._templateHelper) || {};
 
 		//then compile the template
-		this._compileTemplate(this);
+		this._compileTemplate();
 
 		//then apply the observer for this class
 		//Object.observe(this.props, this._propChange.bind(this));
@@ -235,8 +94,146 @@ var Component = (function () {
 
 				this._compiled = [];
 
+				var nextLevel = (function (elements, root) {
+					var i = 0,
+					    j = 0,
+					    elem = "",
+					    nextElem = [],
+					    helperElem = {},
+					    tag = "",
+					    classes = [],
+					    ids = [],
+					    attrs = [];
+
+					tag = elements[0];
+
+					//tag may have .className or #id in it, so we need to take them out
+					if (tag.indexOf(".") > -1) {
+						classes = tag.split(".");
+						tag = classes[0];
+						classes.shift();
+					}
+
+					if (tag.indexOf("#") > -1) {
+						ids = tag.split("#");
+						tag = ids[0];
+						ids.shift();
+					}
+
+					//build up a vDom element
+					elem = { tag: tag };
+					//apply ids and classNames
+					if (classes.length > 0) {
+						elem.className = classes.join(" ");
+					}
+					if (ids.length > 0) {
+						elem.id = ids.join("");
+					}
+
+					//now go through its properties
+					for (i = 1; i < elements.length; i++) {
+						if (Array.isArray(elements[i])) {
+							elem.children = elem.children || [];
+							nextLevel(elements[i], elem);
+						} else {
+							//see if there is nothing
+							if (elements[i] == null) {
+								continue;
+							}
+							//check if the element is a templatehelper function
+							else if (elements[i].type === "if") {
+								//lets store this in the object so it knows
+								helperElem = {};
+								helperElem.$toRender = [];
+								helperElem.$type = "if";
+								switch (elements[i].condition) {
+									case "isTrue":
+										helperElem.$condition = true;
+										break;
+									case "isFalse":
+										helperElem.$condition = false;
+										break;
+									case "isNull":
+										helperElem.$condition = null;
+										break;
+									case "isZero":
+										helperElem.$condition = 0;
+										break;
+								}
+								helperElem.$expression = elements[i].expression;
+								for (j = 0; j < elements[i].children.length; j++) {
+									nextLevel(elements[i].children[j], helperElem);
+								}
+								//then store the helper in the elem
+								elem.children = elem.children || [];
+								elem.children.push(helperElem);
+							}
+							//handle for statements
+							else if (elements[i].type === "for") {
+								helperElem = {};
+								helperElem.$toRender = [];
+								if (elements[i].condition === "each") {
+									helperElem.$type = "forEach";
+									helperElem.$items = elements[i].items;
+									for (j = 0; j < elements[i].children.length; j++) {
+										nextLevel(elements[i].children[j], helperElem);
+									}
+									//then store the helper in the elem
+									elem.children = elem.children || [];
+									elem.children.push(helperElem);
+								}
+							}
+							//handle it if it's a text value
+							else if (elements[i].type === "bind") {
+								helperElem = {};
+								helperElem.$type = "bind";
+								helperElem.$condition = elements[i].condition;
+								helperElem.$toRender = elements[i].children;
+								//then store the helper in the elem
+								elem.children = helperElem;
+							}
+							//check if the value is simply a string
+							else if (typeof elements[i] === "string") {
+								elem.children = elements[i];
+							}
+							//otherwise, it could be a properties object with class etc
+							else {
+								elem.attrs = {};
+								//go through each property and add it to the elem
+								for (j in elements[i]) {
+									//check the key and see if its on the elem or in attrs
+									switch (j) {
+										case "className":
+										case "style":
+										case "id":
+										case "storeRef":
+											elem[j] = elements[i][j];
+											break;
+										case "type":
+										case "value":
+										case "placeholder":
+										case "method":
+										case "action":
+										default:
+											elem.attrs[j] = elements[i][j];
+											break;
+									}
+								}
+							}
+						}
+					}
+					//push the elem to the compiled template
+					if (Array.isArray(root)) {
+						root.push(elem);
+					} else if (root.$toRender != null) {
+						root.$toRender.push(elem);
+					} else {
+						root.children.push(elem);
+					}
+				}).bind(this);
+
 				for (i = 0; i < this._template.length; i++) {
-					Compiler.call(this, this._template[i], this._compiled);
+					nextLevel(this._template[i], this._compiled);
 				};
 			},
 			writable: true,
@@ -259,28 +256,29 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
+},{"./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
-var Compiler = require("./Compiler.js");
 
 var Engine = {};
 
 Engine.Component = Component;
 
-Engine.Compiler = Compiler;
-
 module.exports = Engine;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
+},{"./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-var Compiler = require("./Compiler.js");
+var _classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
 
 /*
 
@@ -322,20 +320,11 @@ var Compiler = require("./Compiler.js");
 var TemplateHelper = (function () {
   function TemplateHelper(comp) {
     _classCallCheck(this, TemplateHelper);
-
-    this._comp = comp;
   }
 
   _prototypeProperties(TemplateHelper, null, {
     render: {
       value: function render(node) {
-        var i = 0,
-            j = 0,
-            items = [],
-            children = [],
-            subChildren = [],
-            template = {};
-
         if (node.$type === "if") {
           if (node.$expression() === node.$condition) {
             return node.$toRender;
@@ -344,18 +333,8 @@ var TemplateHelper = (function () {
           }
         } else if (node.$type === "bind") {
           return node.$toRender();
-        } else if (node.$type === "forEach") {
-          items = node.$items();
-          children = [];
-          for (i = 0; i < items.length; i++) {
-            subChildren = [];
-            template = node.$toRender.call(this._comp, items[i], i, items);
-            for (j = 0; j < template.length; j++) {
-              Compiler.call(this, template[j], subChildren);
-            }
-            children.push(subChildren);
-          }
-          return children;
+        } else if (node.$type === "for") {
+          debugger;
         }
         return null;
       },
@@ -372,7 +351,7 @@ var TemplateHelper = (function () {
               type: "for",
               condition: "each",
               items: values,
-              children: children
+              children: children()
             };
         }
       },
@@ -428,7 +407,10 @@ var TemplateHelper = (function () {
 
 module.exports = TemplateHelper;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
+
+
+
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -1457,7 +1439,7 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -1472,84 +1454,60 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var Engine = require("./EngineJS/Engine.js");
 
-var Demo = (function (_Engine$Component) {
-	function Demo() {
-		_classCallCheck(this, Demo);
+var MorphBenchmark = (function (_Engine$Component) {
+  function MorphBenchmark() {
+    _classCallCheck(this, MorphBenchmark);
 
-		//we declare all our properties
-		this.todos = ["Clean the dishes", "Cook the dinner", "Code some coding", "Comment on stuff"];
+    this.range = _.range(N), this.count = 0;
+    this.boxElems = [];
 
-		this.colours = ["red", "blue", "green"];
-		this.colourIndex = 0;
+    _get(_Engine$Component.prototype, "constructor", this).call(this);
+  }
 
-		//just to show the flexibility, this array will store all our header dom nodes in our template
-		this.headerElems = [];
+  _inherits(MorphBenchmark, _Engine$Component);
 
-		this.title = "Todo Demo";
-		this.formId = "todo-form";
+  _prototypeProperties(MorphBenchmark, null, {
+    animateBoxes: {
+      value: function animateBoxes() {
+        this.count++;
 
-		_get(_Engine$Component.prototype, "constructor", this).call(this);
-	}
+        var count = this.count % 100;
 
-	_inherits(Demo, _Engine$Component);
+        var style = "top:" + Math.sin(this.count / 10) * 10 + "px;" + "left:" + Math.cos(this.count / 10) * 10 + "px;" + "background:rgb(0,0," + this.count % 255 + ")";
 
-	_prototypeProperties(Demo, null, {
-		_clickSubmit: {
-			value: function _clickSubmit(e) {
-				debugger;
-			},
-			writable: true,
-			configurable: true
-		},
-		animate: {
-			value: function animate() {
-				for (var i = 0; i < this.headerElems.length; i++) {
-					this.headerElems[i].style.color = this.colours[this.colourIndex];
-				}
-				this.colourIndex++;
-				if (this.colourIndex === 4) {
-					this.colourIndex = 0;
-				}
-			},
-			writable: true,
-			configurable: true
-		},
-		initTemplate: {
-			value: function initTemplate(templateHelper) {
-				var _this = this;
-				//$ = templateHelper shorthand
-				var $ = templateHelper;
+        for (var i = 0; i < this.boxElems.length; i++) {
+          this.boxElems[i].style = style;
+          //faster than innerHTML or textContent
+          this.boxElems[i].firstChild.nodeValue = count;
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    initTemplate: {
+      value: function initTemplate(templateHelper) {
+        var _this = this;
+        //$ = templateHelper shorthand
+        var $ = templateHelper;
 
-				return [["div", ["header", ["h1", { storeRef: this.headerElems }, $.bind(function (text) {
-					return "Example " + _this.title;
-				})]]], ["div#main",
-				//example of a truthy statement
-				$["if"](function (isTrue) {
-					return _this.todos.length > 0;
-				}, ["div", ["span.counter", $.bind(function (text) {
-					return "There are " + _this.todos.length + " todos!";
-				})]]),
-				//example of a falsey statement
-				$["if"](function (isFalse) {
-					return _this.todos.length > 0;
-				}, ["div", ["span.no-todos", "There are no todos!"]])], ["ul.todos", $["for"](function (each) {
-					return _this.todos;
-				}, function (todo, index) {
-					return [["li.todo", ["h2", { storeRef: _this.headerElems }, "A todo"], ["span", $.bind(function (text) {
-						return index + ": " + todo;
-					})]], ["div.test", "Foo!"]];
-				})], ["form", { id: this.formId, method: "post", action: "#" }, ["div.form-control", ["input", { name: "first_name", type: "text" }]], ["button", { type: "submit", onClick: this._clickSubmit }, "Submit!"]]];
-			},
-			writable: true,
-			configurable: true
-		}
-	});
+        return [["div#grid", $["for"](function (increment) {
+          return _this.range;
+        }, function (i) {
+          return [["div.box-view",
+          //set it to 0 to begin with, don't bind to a variable
+          ["div.box", { id: "box" + i, storeRef: _this.boxElems }, "0"]]];
+        })]];
+      },
+      writable: true,
+      configurable: true
+    }
+  });
 
-	return Demo;
+  return MorphBenchmark;
 })(Engine.Component);
 
 ;
 
-window.Demo = Demo;
+window.MorphBenchmark = MorphBenchmark;
 
-},{"./EngineJS/Engine.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);
+},{"./EngineJS/Engine.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js"]);

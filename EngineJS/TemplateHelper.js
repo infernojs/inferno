@@ -1,3 +1,5 @@
+var Compiler = require('./Compiler.js');
+
 /*
 
   List of supported helpers
@@ -37,11 +39,18 @@
 
 class TemplateHelper {
 
-  constructor(props) {
-    this._props = props;
+  constructor(comp) {
+    this._comp = comp;
   }
 
   render(node) {
+    var i = 0,
+        j = 0,
+        items = [],
+        children = [],
+        subChildren = [],
+        template = {};
+
   	if(node.$type === "if") {
   		if(node.$expression() === node.$condition) {
   			return node.$toRender;
@@ -50,7 +59,19 @@ class TemplateHelper {
   		}
   	} else if(node.$type === "bind") {
   		return node.$toRender();
-  	}
+    } else if(node.$type === "forEach") {
+      items = node.$items();
+      children = [];
+      for(i = 0; i < items.length; i++) {
+        subChildren = [];
+        template = node.$toRender.call(this._comp, items[i], i, items);
+        for(j = 0; j < template.length; j++) {
+          Compiler.call(this, template[j], subChildren);
+        }
+        children.push(subChildren);
+      }
+      return children;
+    }
   	return null;
   }
 
@@ -63,7 +84,7 @@ class TemplateHelper {
           type: "for",
           condition: "each",
           items: values,
-          children: children()
+          children: children
         }
     }
   }

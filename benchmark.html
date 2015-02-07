@@ -1,0 +1,544 @@
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="http://underscorejs.org/underscore-min.js"></script>
+  <script src="http://backbonejs.org/backbone-min.js"></script>
+  <script src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js"></script>
+  <script src="https://rawgithub.com/ebryn/0bbe6639da1166bef3ee/raw/c5f715bbee4200d328065fdb34b0bb49f2d748cf/ember-htmlbars-dont-use-me-anywhere-else.prod.js"></script>
+  <script src="http://fb.me/react-0.12.2.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/0.10.6/vue.js"></script>
+  <script src="http://cdn.jsdelivr.net/mithril/0.1.22/mithril.min.js"></script>
+  <script src="morph.js"></script>
+  <style>
+    p {
+      font: 12px/16px Arial;
+      margin: 10px 10px 15px;
+    }
+
+    button {
+      font: bold 14px/14px Arial;
+      margin-left: 10px;
+    }
+
+    #grid {
+      margin: 10px;
+    }
+
+    #timing {
+      clear: both;
+      padding-top: 10px;
+    }
+
+    .box-view {
+      width: 20px; height: 20px;
+      float: left;
+      position: relative;
+      margin: 8px;
+    }
+
+    .box {
+      border-radius: 100px;
+      width: 20px; height: 10px;
+      padding: 5px 0;
+      color: #fff;
+      font: 10px/10px Arial;
+      text-align: center;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+<p>
+    This is a fork of <a href="http://jsfiddle.net/jashkenas/CGSd5/" target="_top">jashkenas's Ember/Backbone</a> benchmark to include Vue.js.
+    Note that this is just a simple benchmark: you wouldn't be doing this in an actual app.
+</p>
+
+<p>The original fork was clocking the loops synchronously which was not accurate. This fork fixes that, and also gives a 300ms pause
+  before clock starts to offset initialization time.</p>
+
+<button onclick="runBackbone()">Animate with Backbone</button>
+<button onclick="runEmber()">Animate with Ember+HTMLBars</button>
+<button onclick="runReact()">Animate with React</button>
+<button onclick="runVue()">Animate with Vue</button>
+<button onclick="runRawdog()">Animate with nothing</button>
+<button onclick="runMithril()">Animate with Mithril (vdom)</button>
+<button onclick="runMithrilConfig()">Animate with Mithril (config)</button>
+<button onclick="runMorph()">Animate with Morph</button>
+
+<p id="timing">&nbsp;</p>
+<div id="gridcontainer">
+<div id="grid"></div>
+</div>
+
+
+<script type="x-template" id="underscore-template">
+  <div class="box" id="box-<%= number %>" style="top: <%= top %>px; left: <%= left %>px; background: rgb(0,0,<%= color %>);">
+    <%= content %>
+  </div>
+</script>
+
+<script type="text/x-htmlbars" id="htmlbars-box">
+    <div class="box" id="{{number}}" style="{{style}}"> {{content}}</div>
+</script>
+
+<script type="x-template" id="vue-template">
+    <div class="box" v-style="style">{{content}}</div>
+</script>
+</body>
+<script>
+// Change N to change the number of drawn circles.
+
+var N = 500;
+
+// The Backbone implementation:
+(function(){
+
+var Box = Backbone.Model.extend({
+
+    defaults: {
+        top: 0,
+        left: 0,
+        color: 0,
+        content: 0
+    },
+
+    initialize: function() {
+        this.count = 0;
+    },
+
+    tick: function() {
+        var count = this.count += 1;
+        this.set({
+            top: Math.sin(count / 10) * 10,
+            left: Math.cos(count / 10) * 10,
+            color: (count) % 255,
+            content: count % 100
+        });
+    }
+
+});
+
+
+var BoxView = Backbone.View.extend({
+
+    className: 'box-view',
+
+    template: _.template($('#underscore-template').html()),
+
+    initialize: function() {
+        this.model.bind('change', this.render, this);
+    },
+
+    render: function() {
+        this.$el.html(this.template(this.model.attributes));
+        return this;
+    }
+
+});
+
+var boxes;
+
+var backboneInit = function() {
+    boxes = _.map(_.range(N), function(i) {
+        var box = new Box({number: i});
+        var view = new BoxView({model: box});
+        $('#grid').append(view.render().el);
+        return box;
+    });
+};
+
+var backboneAnimate = function() {
+    for (var i = 0, l = boxes.length; i < l; i++) {
+      boxes[i].tick();
+    }
+};
+
+window.runBackbone = function() {
+    reset();
+    backboneInit();
+    setTimeout(function () {
+          startClock();
+          benchmarkLoop(backboneAnimate);
+    }, 300);
+};
+
+})();
+
+// The Ember implementation:
+(function(){
+
+var Box = Ember.Object.extend({
+
+    top: 0,
+    left: 0,
+    content: 0,
+    count: 0,
+
+    tick: function() {
+        var count = this.get('count') + 1;
+        this.set('count', count);
+        this.set('top', Math.sin(count / 10) * 10);
+        this.set('left', Math.cos(count / 10) * 10);
+        this.set('color', count % 255);
+        this.set('content', count % 100);
+        this.set('style', this.computeStyle());
+    },
+
+    computeStyle: function() {
+        return 'top: ' + this.get('top') + 'px; left: ' +  this.get('left') +'px; background: rgb(0,0,' + this.get('color') + ');';
+    }
+
+});
+
+var htmlbarsTemplate = Ember.HTMLBars.compile($('#htmlbars-box').text().trim());
+
+var BoxView = Ember.View.extend({
+    usingHTMLBars: true,
+    template: htmlbarsTemplate,
+    classNames: ['box-view']
+});
+
+var boxes;
+
+// var App = Ember.Application.create();
+
+var emberInit = function() {
+    boxes = _.map(_.range(N), function(i) {
+        var box = Box.create();
+        var view = BoxView.create({context: box});
+        view.appendTo('#grid');
+        box.set('number', i);
+        return box;
+    });
+};
+
+var emberAnimate = function() {
+    Ember.run(function() {
+        for (var i = 0, l = boxes.length; i < l; i++) {
+          boxes[i].tick();
+        }
+    });
+};
+
+
+window.runEmber = function() {
+    reset();
+    emberInit();
+    setTimeout(function () {
+          startClock();
+          benchmarkLoop(emberAnimate);
+    }, 300);
+};
+
+})();
+
+// The React implementation:
+(function(){
+
+var BoxView = React.createClass({
+
+    render: function() {
+        var count = this.props.count + 1;
+        return (
+            React.DOM.div(
+                {className: "box-view"},
+                React.DOM.div(
+                    {
+                        className: "box",
+                        style: {
+                            top: Math.sin(count / 10) * 10,
+                            left: Math.cos(count / 10) * 10,
+                            background: 'rgb(0, 0,' + count % 255 + ')'
+                        }
+                    },
+                    count % 100
+                )
+            )
+        );
+    }
+
+});
+
+var BoxesView = React.createClass({
+
+    render: function() {
+        var boxes = _.map(_.range(N), function(i) {
+            return BoxView({key: i, count: this.props.count});
+        }, this);
+        return React.DOM.div(null, boxes);
+    }
+
+});
+
+var counter;
+var reactInit = function() {
+    counter = -1;
+    reactAnimate();
+};
+
+var reactAnimate = function() {
+    React.renderComponent(
+        BoxesView({count: counter++}),
+        document.getElementById('grid')
+    );
+};
+
+window.runReact = function() {
+    reset();
+    reactInit();
+    setTimeout(function () {
+          startClock();
+          benchmarkLoop(reactAnimate);
+    }, 300);
+};
+
+})();
+
+  // mithril
+  (function() {
+    var boxes = {}
+    boxes.controller = function() {
+      this.range = _.range(N)
+      this.count = 0
+
+      this.tick = function() {
+        this.count++
+        m.redraw()
+      }
+    }
+    boxes.view = function(ctrl) {
+      var style = "top:" + (Math.sin(ctrl.count / 10) * 10) + "px;" +
+            "left:" + (Math.cos(ctrl.count / 10) * 10) + "px;" +
+            "background:rgb(0,0," + (ctrl.count % 255) +")"
+      var count = ctrl.count % 100
+      /*
+      return m("#grid", ctrl.range.map(function(i) {
+        return m(".box-view", m(".box", {id: "box-" + i, style: style}, count))
+      }))
+      */
+      return {tag: "div", attrs: {id: "grid"}, children: ctrl.range.map(function(i) {
+        return {tag: "div", attrs: {className: "box-view"}, children: {
+          tag: "div", attrs: {className: "box", id: "box-" + i, style: style}, children: count
+        }}
+      })}
+    }
+
+      window.runMithril = function () {
+          reset();
+          var ctrl = m.module(document.getElementById('gridcontainer'), boxes);
+
+          setTimeout(function () {
+              startClock();
+              benchmarkLoop(function () {
+                  ctrl.tick();
+              });
+          }, 300);
+      };
+  })();
+
+
+  // mithril (config)
+  (function() {
+    var boxes = {}
+    boxes.controller = function() {
+      this.range = _.range(N)
+      this.count = 0
+
+      var elements = []
+      this.config = function(el, init) {
+        if (init) return
+        elements.push(el)
+      }
+
+      this.tick = function() {
+        this.count++
+        var style = "top:" + (Math.sin(this.count / 10) * 10) + "px;" +
+              "left:" + (Math.cos(this.count / 10) * 10) + "px;" +
+              "background:rgb(0,0," + (this.count % 255) +")"
+        var count = this.count % 100
+        for (var i = 0, el; el = elements[i]; i++) {
+          el.setAttribute("style", style)
+          el.innerHTML = count
+        }
+      }
+    }
+    boxes.view = function(ctrl) {
+      return m("#grid", ctrl.range.map(function(i) {
+        return m(".box-view", m(".box", {id: "box" + i, config: ctrl.config}))
+      }))
+    }
+
+      window.runMithrilConfig = function () {
+          reset();
+          var ctrl = m.module(document.getElementById('gridcontainer'), boxes);
+
+          setTimeout(function () {
+              startClock();
+              benchmarkLoop(function () {
+                ctrl.tick();
+              });
+          }, 300);
+      };
+  })();
+
+  //Morph
+  (function(){
+
+    window.runMorph = function() {
+
+        var morphBenchmark = new MorphBenchmark();
+        morphBenchmark.mount(document.getElementById('gridcontainer'));
+        morphBenchmark.animation
+
+        setTimeout(function () {
+            startClock();
+            benchmarkLoop(function() {
+              morphBenchmark.animateBoxes();
+            });
+        }, 300);
+    };
+
+  })();
+
+  // rawdog
+  (function(){
+
+  var BoxView = function(number){
+      this.el = document.createElement('div');
+      this.el.className = 'box-view';
+      this.el.innerHTML = '<div class="box" id="box-' + number + '"></div>';
+      this.count = 0;
+      this.render()
+  }
+
+  BoxView.prototype.render = function(){
+       var count = this.count
+       var el = this.el.firstChild
+       el.style.top = Math.sin(count / 10) * 10 + 'px';
+       el.style.left = Math.cos(count / 10) * 10 + 'px';
+       el.style.background = 'rgb(0,0,' + count % 255 + ')';
+       el.textContent = String(count % 100);
+  }
+
+  BoxView.prototype.tick = function(){
+      this.count++;
+      this.render();
+  }
+
+  var boxes;
+
+  var init = function() {
+      boxes = _.map(_.range(N), function(i) {
+          var view = new BoxView(i);
+          $('#grid').append(view.el);
+          return view;
+      });
+  };
+
+  var animate = function() {
+      for (var i = 0, l = boxes.length; i < l; i++) {
+        boxes[i].tick();
+      }
+  };
+
+  window.runRawdog = function() {
+      reset();
+      init();
+      setTimeout(function () {
+            startClock();
+            benchmarkLoop(animate);
+      }, 300);
+  };
+
+  })();
+
+  // The Vue implementation:
+  (function(){
+
+      var Box = Vue.extend({
+          template: '#vue-template',
+          className: 'box-view',
+          data: {
+              number: 0,
+              count: 0,
+              top: 0,
+              left: 0,
+              bg: 0,
+              content: ''
+          },
+          methods: {
+              tick: function () {
+                  var c = ++this.count
+                  this.top = Math.sin(c / 10) * 10
+                  this.left = Math.cos(c / 10) * 10
+                  this.bg = c % 255
+                  this.content = c % 100
+              }
+          },
+          computed: {
+              style: function () {
+                  return 'top:' + this.top + 'px;' +
+                      'left: ' + this.left + 'px;' +
+                      'background-color: rgb(0,0,' + this.bg + ')'
+              }
+          }
+      })
+
+      var boxes = [];
+
+      var vueInit = function() {
+          boxes.forEach(function (box) {
+              box.$destroy();
+          });
+          boxes = _.map(_.range(N), function(i) {
+              var box = new Box()
+              box.number = i
+              box.$appendTo('#grid')
+              return box
+          });
+      };
+
+      var vueAnimate = function() {
+          for (var i = 0, l = boxes.length; i < l; i++) {
+            boxes[i].tick();
+          }
+      };
+
+      window.runVue = function() {
+        reset();
+        vueInit();
+        setTimeout(function () {
+            startClock();
+            benchmarkLoop(vueAnimate);
+        }, 300);
+      };
+
+  })();
+
+  window.timeout = null;
+  window.totalTime = null;
+  window.loopCount = null;
+  window.startDate = null;
+  window.reset = function() {
+      $('#grid').empty();
+      $('#timing').html('&nbsp;');
+      clearTimeout(timeout);
+  };
+  window.startClock = function () {
+      loopCount = 0;
+      totalTime = 0;
+      startDate = Date.now();
+  }
+
+  window.benchmarkLoop = function(fn) {
+      totalTime += Date.now() - startDate;
+      startDate = Date.now();
+      fn();
+      loopCount++;
+      if (loopCount % 20 === 0) {
+          $('#timing').text('Performed ' + loopCount + ' iterations in ' + totalTime + ' ms (average ' + (totalTime / loopCount).toFixed(2) + ' ms per loop).');
+      }
+      timeout = _.defer(benchmarkLoop, fn);
+  };
+</script>
+</head>

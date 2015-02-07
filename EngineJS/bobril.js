@@ -222,6 +222,9 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
+        if (c.storeRef) {
+          c.storeRef.push(c.element);
+        }
         if (c.attrs)
             c.attrs = updateElement(c, el, c.attrs, {});
         if (c.style)
