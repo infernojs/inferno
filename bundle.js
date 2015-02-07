@@ -145,9 +145,15 @@ module.exports = Compiler;
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+};
 
 var TemplateHelper = require("./TemplateHelper.js");
 var Compiler = require("./Compiler.js");
@@ -163,8 +169,6 @@ var Component = (function () {
 
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
-
-		debugger;
 
 		//then compile the template
 		this._compileTemplate(this);
@@ -268,6 +272,7 @@ var Component = (function () {
 ;
 
 module.exports = Component;
+
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
