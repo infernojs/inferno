@@ -1,4 +1,150 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js":[function(require,module,exports){
+"use strict";
+
+var Compiler = function (elements, root) {
+	var i = 0,
+	    j = 0,
+	    elem = "",
+	    nextElem = [],
+	    helperElem = {},
+	    tag = "",
+	    classes = [],
+	    ids = [],
+	    attrs = [];
+
+	tag = elements[0];
+
+	//tag may have .className or #id in it, so we need to take them out
+	if (tag.indexOf(".") > -1) {
+		classes = tag.split(".");
+		tag = classes[0];
+		classes.shift();
+	}
+
+	if (tag.indexOf("#") > -1) {
+		ids = tag.split("#");
+		tag = ids[0];
+		ids.shift();
+	}
+
+	//build up a vDom element
+	elem = { tag: tag };
+	//apply ids and classNames
+	if (classes.length > 0) {
+		elem.className = classes.join(" ");
+	}
+	if (ids.length > 0) {
+		elem.attrs = elem.attrs || {};
+		elem.attrs.id = ids.join("");
+	}
+
+	//now go through its properties
+	for (i = 1; i < elements.length; i++) {
+		if (Array.isArray(elements[i])) {
+			elem.children = elem.children || [];
+			Compiler(elements[i], elem);
+		} else {
+			//see if there is nothing
+			if (elements[i] == null) {
+				continue;
+			}
+			//check if the element is a templatehelper function
+			else if (elements[i].type === "if") {
+				//lets store this in the object so it knows
+				helperElem = {};
+				helperElem.$toRender = [];
+				helperElem.$type = "if";
+				switch (elements[i].condition) {
+					case "isTrue":
+						helperElem.$condition = true;
+						break;
+					case "isFalse":
+						helperElem.$condition = false;
+						break;
+					case "isNull":
+						helperElem.$condition = null;
+						break;
+					case "isZero":
+						helperElem.$condition = 0;
+						break;
+				}
+				helperElem.$expression = elements[i].expression;
+				for (j = 0; j < elements[i].children.length; j++) {
+					Compiler(elements[i].children[j], helperElem);
+				}
+				//then store the helper in the elem
+				elem.children = elem.children || [];
+				elem.children.push(helperElem);
+			}
+			//handle for statements
+			else if (elements[i].type === "for") {
+				helperElem = {};
+				helperElem.$toRender = [];
+				if (elements[i].condition === "each") {
+					helperElem.$type = "forEach";
+					helperElem.$items = elements[i].items;
+				} else if (elements[i].condition === "increment") {
+					helperElem.$type = "for";
+					helperElem.$bounds = elements[i].bounds;
+				}
+				helperElem.$toRender = elements[i].children;
+				//then store the helper in the elem
+				elem.children = elem.children || [];
+				elem.children.push(helperElem);
+			}
+			//handle it if it's a text value
+			else if (elements[i].type === "bind") {
+				helperElem = {};
+				helperElem.$type = "bind";
+				helperElem.$condition = elements[i].condition;
+				helperElem.$toRender = elements[i].children;
+				//then store the helper in the elem
+				elem.children = helperElem;
+			}
+			//check if the value is simply a string
+			else if (typeof elements[i] === "string") {
+				elem.children = elements[i];
+			}
+			//otherwise, it could be a properties object with class etc
+			else {
+				elem.attrs = {};
+				//go through each property and add it to the elem
+				for (j in elements[i]) {
+					//check the key and see if its on the elem or in attrs
+					switch (j) {
+						case "className":
+						case "style":
+						case "onDomCreated":
+							elem[j] = elements[i][j];
+							break;
+						case "id":
+						case "type":
+						case "value":
+						case "placeholder":
+						case "method":
+						case "action":
+						default:
+							elem.attrs[j] = elements[i][j];
+							break;
+					}
+				}
+			}
+		}
+	}
+	if (Array.isArray(root)) {
+		root.push(elem);
+	} else if (root.$toRender != null) {
+		root.$toRender.push(elem);
+	} else {
+		root.children.push(elem);
+	}
+};
+
+module.exports = Compiler;
+
+
+
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -6,6 +152,7 @@ var _prototypeProperties = function (child, staticProps, instanceProps) { if (st
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var TemplateHelper = require("./TemplateHelper.js");
+var Compiler = require("./Compiler.js");
 var b = require("./bobril.js");
 
 
@@ -20,7 +167,7 @@ var Component = (function () {
 		this._template = this.initTemplate(this._templateHelper) || {};
 
 		//then compile the template
-		this._compileTemplate();
+		this._compileTemplate(this);
 
 		//then apply the observer for this class
 		//Object.observe(this.props, this._propChange.bind(this));
@@ -29,6 +176,8 @@ var Component = (function () {
 	_prototypeProperties(Component, null, {
 		mount: {
 			value: function mount(elem) {
+				//clear the contents
+				elem.innerHTML = "";
 				b.setRootNode(elem);
 				this._render();
 			},
@@ -82,7 +231,10 @@ var Component = (function () {
 					//re-render the helpers within our template
 					renderHelpers(this._compiled);
 					//return the rendered
-					return this._compiled;
+					return {
+						compiled: this._compiled,
+						context: this
+					};
 				}).bind(this));
 			},
 			writable: true,
@@ -91,149 +243,10 @@ var Component = (function () {
 		_compileTemplate: {
 			value: function _compileTemplate() {
 				var i = 0;
-
 				this._compiled = [];
 
-				var nextLevel = (function (elements, root) {
-					var i = 0,
-					    j = 0,
-					    elem = "",
-					    nextElem = [],
-					    helperElem = {},
-					    tag = "",
-					    classes = [],
-					    ids = [],
-					    attrs = [];
-
-					tag = elements[0];
-
-					//tag may have .className or #id in it, so we need to take them out
-					if (tag.indexOf(".") > -1) {
-						classes = tag.split(".");
-						tag = classes[0];
-						classes.shift();
-					}
-
-					if (tag.indexOf("#") > -1) {
-						ids = tag.split("#");
-						tag = ids[0];
-						ids.shift();
-					}
-
-					//build up a vDom element
-					elem = { tag: tag };
-					//apply ids and classNames
-					if (classes.length > 0) {
-						elem.className = classes.join(" ");
-					}
-					if (ids.length > 0) {
-						elem.id = ids.join("");
-					}
-
-					//now go through its properties
-					for (i = 1; i < elements.length; i++) {
-						if (Array.isArray(elements[i])) {
-							elem.children = elem.children || [];
-							nextLevel(elements[i], elem);
-						} else {
-							//see if there is nothing
-							if (elements[i] == null) {
-								continue;
-							}
-							//check if the element is a templatehelper function
-							else if (elements[i].type === "if") {
-								//lets store this in the object so it knows
-								helperElem = {};
-								helperElem.$toRender = [];
-								helperElem.$type = "if";
-								switch (elements[i].condition) {
-									case "isTrue":
-										helperElem.$condition = true;
-										break;
-									case "isFalse":
-										helperElem.$condition = false;
-										break;
-									case "isNull":
-										helperElem.$condition = null;
-										break;
-									case "isZero":
-										helperElem.$condition = 0;
-										break;
-								}
-								helperElem.$expression = elements[i].expression;
-								for (j = 0; j < elements[i].children.length; j++) {
-									nextLevel(elements[i].children[j], helperElem);
-								}
-								//then store the helper in the elem
-								elem.children = elem.children || [];
-								elem.children.push(helperElem);
-							}
-							//handle for statements
-							else if (elements[i].type === "for") {
-								helperElem = {};
-								helperElem.$toRender = [];
-								if (elements[i].condition === "each") {
-									helperElem.$type = "forEach";
-									helperElem.$items = elements[i].items;
-									for (j = 0; j < elements[i].children.length; j++) {
-										nextLevel(elements[i].children[j], helperElem);
-									}
-									//then store the helper in the elem
-									elem.children = elem.children || [];
-									elem.children.push(helperElem);
-								}
-							}
-							//handle it if it's a text value
-							else if (elements[i].type === "bind") {
-								helperElem = {};
-								helperElem.$type = "bind";
-								helperElem.$condition = elements[i].condition;
-								helperElem.$toRender = elements[i].children;
-								//then store the helper in the elem
-								elem.children = helperElem;
-							}
-							//check if the value is simply a string
-							else if (typeof elements[i] === "string") {
-								elem.children = elements[i];
-							}
-							//otherwise, it could be a properties object with class etc
-							else {
-								elem.attrs = {};
-								//go through each property and add it to the elem
-								for (j in elements[i]) {
-									//check the key and see if its on the elem or in attrs
-									switch (j) {
-										case "className":
-										case "style":
-										case "id":
-										case "storeRef":
-											elem[j] = elements[i][j];
-											break;
-										case "type":
-										case "value":
-										case "placeholder":
-										case "method":
-										case "action":
-										default:
-											elem.attrs[j] = elements[i][j];
-											break;
-									}
-								}
-							}
-						}
-					}
-					//push the elem to the compiled template
-					if (Array.isArray(root)) {
-						root.push(elem);
-					} else if (root.$toRender != null) {
-						root.$toRender.push(elem);
-					} else {
-						root.children.push(elem);
-					}
-				}).bind(this);
-
 				for (i = 0; i < this._template.length; i++) {
-					nextLevel(this._template[i], this._compiled);
+					Compiler.call(this, this._template[i], this._compiled);
 				};
 			},
 			writable: true,
@@ -256,29 +269,28 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Engine.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
+var Compiler = require("./Compiler.js");
 
 var Engine = {};
 
 Engine.Component = Component;
 
+Engine.Compiler = Compiler;
+
 module.exports = Engine;
 
-},{"./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var Compiler = require("./Compiler.js");
 
 /*
 
@@ -320,11 +332,21 @@ var _classCallCheck = function (instance, Constructor) {
 var TemplateHelper = (function () {
   function TemplateHelper(comp) {
     _classCallCheck(this, TemplateHelper);
+
+    this._comp = comp;
   }
 
   _prototypeProperties(TemplateHelper, null, {
     render: {
       value: function render(node) {
+        var i = 0,
+            j = 0,
+            items = [],
+            children = [],
+            subChildren = [],
+            template = {},
+            bounds = [];
+
         if (node.$type === "if") {
           if (node.$expression() === node.$condition) {
             return node.$toRender;
@@ -333,8 +355,30 @@ var TemplateHelper = (function () {
           }
         } else if (node.$type === "bind") {
           return node.$toRender();
+        } else if (node.$type === "forEach") {
+          items = node.$items();
+          children = [];
+          for (i = 0; i < items.length; i++) {
+            subChildren = [];
+            template = node.$toRender.call(this._comp, items[i], i, items);
+            for (j = 0; j < template.length; j++) {
+              Compiler.call(this, template[j], subChildren);
+            }
+            children.push(subChildren);
+          }
+          return children;
         } else if (node.$type === "for") {
-          debugger;
+          bounds = node.$bounds();
+          children = [];
+          for (i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
+            subChildren = [];
+            template = node.$toRender.call(this._comp, i);
+            for (j = 0; j < template.length; j++) {
+              Compiler.call(this, template[j], subChildren);
+            }
+            children.push(subChildren);
+          }
+          return children;
         }
         return null;
       },
@@ -351,7 +395,14 @@ var TemplateHelper = (function () {
               type: "for",
               condition: "each",
               items: values,
-              children: children()
+              children: children
+            };
+          case "increment":
+            return {
+              type: "for",
+              condition: "increment",
+              bounds: values,
+              children: children
             };
         }
       },
@@ -407,10 +458,7 @@ var TemplateHelper = (function () {
 
 module.exports = TemplateHelper;
 
-
-
-
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/EngineJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -613,8 +661,8 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.storeRef) {
-            c.storeRef.push(c.element);
+        if (c.onDomCreated) {
+            c.onDomCreated.call(rootContext, c.element);
         }
         if (c.attrs) c.attrs = updateElement(c, el, c.attrs, {});
         if (c.style) updateStyle(c, el, c.style, undefined);
@@ -723,6 +771,7 @@ var b = (function (window, document) {
         }
     }
     var rootFactory;
+    var rootContext;
     var rootCacheChildren = [];
     var rootNode = document.body;
     function vdomPath(n) {
@@ -1268,7 +1317,9 @@ var b = (function (window, document) {
         scheduled = false;
         if (fullRecreateRequested) {
             fullRecreateRequested = false;
-            var newChildren = rootFactory();
+            var factory = rootFactory();
+            var newChildren = factory.compiled;
+            rootContext = factory.context;
             rootCacheChildren = updateChildren(rootNode, newChildren, rootCacheChildren, null);
         } else {
             selectedUpdate(rootCacheChildren);
@@ -1439,6 +1490,7 @@ var b = (function (window, document) {
 
 module.exports = b;
 
+
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js":[function(require,module,exports){
 "use strict";
 
@@ -1458,7 +1510,7 @@ var MorphBenchmark = (function (_Engine$Component) {
   function MorphBenchmark() {
     _classCallCheck(this, MorphBenchmark);
 
-    this.range = _.range(N), this.count = 0;
+    this.count = 0;
     this.boxElems = [];
 
     _get(_Engine$Component.prototype, "constructor", this).call(this);
@@ -1476,10 +1528,17 @@ var MorphBenchmark = (function (_Engine$Component) {
         var style = "top:" + Math.sin(this.count / 10) * 10 + "px;" + "left:" + Math.cos(this.count / 10) * 10 + "px;" + "background:rgb(0,0," + this.count % 255 + ")";
 
         for (var i = 0; i < this.boxElems.length; i++) {
-          this.boxElems[i].style = style;
+          this.boxElems[i].setAttribute("style", style);
           //faster than innerHTML or textContent
           this.boxElems[i].firstChild.nodeValue = count;
         }
+      },
+      writable: true,
+      configurable: true
+    },
+    storeBoxElem: {
+      value: function storeBoxElem(element) {
+        this.boxElems.push(element);
       },
       writable: true,
       configurable: true
@@ -1490,12 +1549,14 @@ var MorphBenchmark = (function (_Engine$Component) {
         //$ = templateHelper shorthand
         var $ = templateHelper;
 
-        return [["div#grid", $["for"](function (increment) {
-          return _this.range;
+        return [["div#grid",
+        //same as for(i = 0; i < N; i = i + 1)
+        $["for"](function (increment) {
+          return [0, N, 1];
         }, function (i) {
           return [["div.box-view",
           //set it to 0 to begin with, don't bind to a variable
-          ["div.box", { id: "box" + i, storeRef: _this.boxElems }, "0"]]];
+          ["div.box", { id: "box-" + i, onDomCreated: _this.storeBoxElem }, "0"]]];
         })]];
       },
       writable: true,

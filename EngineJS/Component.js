@@ -20,6 +20,8 @@ class Component {
 	}
 
 	mount(elem) {
+		//clear the contents
+		elem.innerHTML = "";
 		b.setRootNode(elem);
 		this._render();
 	}
@@ -64,13 +66,15 @@ class Component {
 			//re-render the helpers within our template
 			renderHelpers(this._compiled)
 			//return the rendered
-			return this._compiled;
+			return {
+				compiled: this._compiled,
+				context: this
+			};
 		}.bind(this));
 	}
 
 	_compileTemplate() {
 		var i = 0;
-
 		this._compiled = [];
 
 		for(i = 0; i < this._template.length; i++) {

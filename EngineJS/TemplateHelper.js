@@ -49,7 +49,8 @@ class TemplateHelper {
         items = [],
         children = [],
         subChildren = [],
-        template = {};
+        template = {},
+        bounds = [];
 
   	if(node.$type === "if") {
   		if(node.$expression() === node.$condition) {
@@ -71,6 +72,18 @@ class TemplateHelper {
         children.push(subChildren);
       }
       return children;
+    } else if(node.$type === "for") {
+      bounds = node.$bounds();
+      children = [];
+      for(i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
+        subChildren = [];
+        template = node.$toRender.call(this._comp, i);
+        for(j = 0; j < template.length; j++) {
+          Compiler.call(this, template[j], subChildren);
+        }
+        children.push(subChildren);
+      }
+      return children;
     }
   	return null;
   }
@@ -84,6 +97,13 @@ class TemplateHelper {
           type: "for",
           condition: "each",
           items: values,
+          children: children
+        }
+      case "increment":
+        return {
+          type: "for",
+          condition: "increment",
+          bounds: values,
           children: children
         }
     }

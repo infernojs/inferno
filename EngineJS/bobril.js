@@ -222,8 +222,8 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.storeRef) {
-          c.storeRef.push(c.element);
+        if (c.onDomCreated) {
+          c.onDomCreated.call(rootContext, c.element);
         }
         if (c.attrs)
             c.attrs = updateElement(c, el, c.attrs, {});
@@ -342,6 +342,7 @@ var b = (function (window, document) {
         }
     }
     var rootFactory;
+    var rootContext;
     var rootCacheChildren = [];
     var rootNode = document.body;
     function vdomPath(n) {
@@ -926,7 +927,9 @@ var b = (function (window, document) {
         scheduled = false;
         if (fullRecreateRequested) {
             fullRecreateRequested = false;
-            var newChildren = rootFactory();
+            var factory = rootFactory();
+            var newChildren = factory.compiled;
+            rootContext = factory.context;
             rootCacheChildren = updateChildren(rootNode, newChildren, rootCacheChildren, null);
         }
         else {

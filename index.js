@@ -13,12 +13,6 @@ class Demo extends Engine.Component {
 			"Comment on stuff"
 		];
 
-		this.colours = ["red", "blue", "green"];
-		this.colourIndex = 0;
-
-		//just to show the flexibility, this array will store all our header dom nodes in our template
-		this.headerElems = [];
-
 		this.title = "Todo Demo";
 		this.formId = "todo-form";
 
@@ -29,16 +23,6 @@ class Demo extends Engine.Component {
 		debugger;
 	}
 
-	animate() {
-		for(var i = 0; i < this.headerElems.length; i++) {
-			this.headerElems[i].style.color = this.colours[this.colourIndex];
-		}
-		this.colourIndex++;
-		if(this.colourIndex === 4) {
-			this.colourIndex = 0;
-		}
-	}
-
 	initTemplate(templateHelper) {
 		//$ = templateHelper shorthand
 		var $ = templateHelper;
@@ -46,7 +30,7 @@ class Demo extends Engine.Component {
 		return [
 			["div",
 				["header",
-					["h1", {storeRef: this.headerElems}, $.bind(text => "Example " + this.title)]
+					["h1", $.bind(text => "Example " + this.title)]
 				]
 			],
 			['div#main',
@@ -66,7 +50,7 @@ class Demo extends Engine.Component {
 			['ul.todos',
 				$.for(each => this.todos, (todo, index) => [
 					['li.todo',
-						['h2', {storeRef: this.headerElems}, "A todo"],
+						['h2', "A todo"],
 						['span', $.bind(text => index + ": " + todo)]
 					],
 					['div.test', "Foo!"]

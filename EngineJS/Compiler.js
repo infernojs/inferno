@@ -31,7 +31,8 @@ var Compiler = function(elements, root) {
 		elem.className = classes.join(' ');
 	}
 	if(ids.length > 0) {
-		elem.id = ids.join('');
+    elem.attrs = elem.attrs || {};
+		elem.attrs.id = ids.join('');
 	}
 
 	//now go through its properties
@@ -80,11 +81,14 @@ var Compiler = function(elements, root) {
 				if(elements[i].condition === "each") {
 					helperElem.$type = "forEach";
 					helperElem.$items = elements[i].items;
-					helperElem.$toRender = elements[i].children;
-					//then store the helper in the elem
-					elem.children = elem.children || [];
-					elem.children.push(helperElem);
-				}
+				} else if(elements[i].condition === "increment") {
+          helperElem.$type = "for";
+          helperElem.$bounds = elements[i].bounds;
+        }
+        helperElem.$toRender = elements[i].children;
+        //then store the helper in the elem
+        elem.children = elem.children || [];
+        elem.children.push(helperElem);
 			}
 			//handle it if it's a text value
 			else if(elements[i].type === "bind") {
@@ -108,10 +112,10 @@ var Compiler = function(elements, root) {
 					switch(j) {
 						case "className":
 						case "style":
-						case "id":
-						case "storeRef":
+						case "onDomCreated":
 							elem[j] = elements[i][j];
 							break;
+            case "id":
 						case "type":
 						case "value":
 						case "placeholder":

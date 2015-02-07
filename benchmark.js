@@ -6,7 +6,6 @@ class MorphBenchmark extends Engine.Component {
 
   constructor() {
 
-    this.range = _.range(N),
     this.count = 0;
     this.boxElems = [];
 
@@ -23,10 +22,14 @@ class MorphBenchmark extends Engine.Component {
           "background:rgb(0,0," + (this.count % 255) +")";
 
     for(var i = 0; i < this.boxElems.length; i++) {
-      this.boxElems[i].style = style;
+      this.boxElems[i].setAttribute("style", style);
       //faster than innerHTML or textContent
       this.boxElems[i].firstChild.nodeValue = count;
     }
+  }
+
+  storeBoxElem(element) {
+    this.boxElems.push(element);
   }
 
   initTemplate(templateHelper) {
@@ -35,10 +38,11 @@ class MorphBenchmark extends Engine.Component {
 
     return [
       ["div#grid",
-        $.for(increment => this.range, (i) => [
+        //same as for(i = 0; i < N; i = i + 1)
+        $.for(increment => [0, N, 1], i => [
           ['div.box-view',
             //set it to 0 to begin with, don't bind to a variable
-            ['div.box', {id: "box" + i, storeRef: this.boxElems}, "0"]
+            ['div.box', {id: "box-" + i, onDomCreated: this.storeBoxElem}, "0"]
           ]
         ])
       ],

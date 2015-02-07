@@ -34,7 +34,8 @@ var Compiler = function (elements, root) {
 		elem.className = classes.join(" ");
 	}
 	if (ids.length > 0) {
-		elem.id = ids.join("");
+		elem.attrs = elem.attrs || {};
+		elem.attrs.id = ids.join("");
 	}
 
 	//now go through its properties
@@ -82,11 +83,14 @@ var Compiler = function (elements, root) {
 				if (elements[i].condition === "each") {
 					helperElem.$type = "forEach";
 					helperElem.$items = elements[i].items;
-					helperElem.$toRender = elements[i].children;
-					//then store the helper in the elem
-					elem.children = elem.children || [];
-					elem.children.push(helperElem);
+				} else if (elements[i].condition === "increment") {
+					helperElem.$type = "for";
+					helperElem.$bounds = elements[i].bounds;
 				}
+				helperElem.$toRender = elements[i].children;
+				//then store the helper in the elem
+				elem.children = elem.children || [];
+				elem.children.push(helperElem);
 			}
 			//handle it if it's a text value
 			else if (elements[i].type === "bind") {
@@ -110,10 +114,10 @@ var Compiler = function (elements, root) {
 					switch (j) {
 						case "className":
 						case "style":
-						case "id":
-						case "storeRef":
+						case "onDomCreated":
 							elem[j] = elements[i][j];
 							break;
+						case "id":
 						case "type":
 						case "value":
 						case "placeholder":
@@ -170,6 +174,8 @@ var Component = (function () {
 	_prototypeProperties(Component, null, {
 		mount: {
 			value: function mount(elem) {
+				//clear the contents
+				elem.innerHTML = "";
 				b.setRootNode(elem);
 				this._render();
 			},
@@ -223,7 +229,10 @@ var Component = (function () {
 					//re-render the helpers within our template
 					renderHelpers(this._compiled);
 					//return the rendered
-					return this._compiled;
+					return {
+						compiled: this._compiled,
+						context: this
+					};
 				}).bind(this));
 			},
 			writable: true,
@@ -232,7 +241,6 @@ var Component = (function () {
 		_compileTemplate: {
 			value: function _compileTemplate() {
 				var i = 0;
-
 				this._compiled = [];
 
 				for (i = 0; i < this._template.length; i++) {
@@ -334,7 +342,8 @@ var TemplateHelper = (function () {
             items = [],
             children = [],
             subChildren = [],
-            template = {};
+            template = {},
+            bounds = [];
 
         if (node.$type === "if") {
           if (node.$expression() === node.$condition) {
@@ -350,6 +359,18 @@ var TemplateHelper = (function () {
           for (i = 0; i < items.length; i++) {
             subChildren = [];
             template = node.$toRender.call(this._comp, items[i], i, items);
+            for (j = 0; j < template.length; j++) {
+              Compiler.call(this, template[j], subChildren);
+            }
+            children.push(subChildren);
+          }
+          return children;
+        } else if (node.$type === "for") {
+          bounds = node.$bounds();
+          children = [];
+          for (i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
+            subChildren = [];
+            template = node.$toRender.call(this._comp, i);
             for (j = 0; j < template.length; j++) {
               Compiler.call(this, template[j], subChildren);
             }
@@ -372,6 +393,13 @@ var TemplateHelper = (function () {
               type: "for",
               condition: "each",
               items: values,
+              children: children
+            };
+          case "increment":
+            return {
+              type: "for",
+              condition: "increment",
+              bounds: values,
               children: children
             };
         }
@@ -631,8 +659,8 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.storeRef) {
-            c.storeRef.push(c.element);
+        if (c.onDomCreated) {
+            c.onDomCreated.call(rootContext, c.element);
         }
         if (c.attrs) c.attrs = updateElement(c, el, c.attrs, {});
         if (c.style) updateStyle(c, el, c.style, undefined);
@@ -741,6 +769,7 @@ var b = (function (window, document) {
         }
     }
     var rootFactory;
+    var rootContext;
     var rootCacheChildren = [];
     var rootNode = document.body;
     function vdomPath(n) {
@@ -1286,7 +1315,9 @@ var b = (function (window, document) {
         scheduled = false;
         if (fullRecreateRequested) {
             fullRecreateRequested = false;
-            var newChildren = rootFactory();
+            var factory = rootFactory();
+            var newChildren = factory.compiled;
+            rootContext = factory.context;
             rootCacheChildren = updateChildren(rootNode, newChildren, rootCacheChildren, null);
         } else {
             selectedUpdate(rootCacheChildren);
@@ -1479,12 +1510,6 @@ var Demo = (function (_Engine$Component) {
 		//we declare all our properties
 		this.todos = ["Clean the dishes", "Cook the dinner", "Code some coding", "Comment on stuff"];
 
-		this.colours = ["red", "blue", "green"];
-		this.colourIndex = 0;
-
-		//just to show the flexibility, this array will store all our header dom nodes in our template
-		this.headerElems = [];
-
 		this.title = "Todo Demo";
 		this.formId = "todo-form";
 
@@ -1501,26 +1526,13 @@ var Demo = (function (_Engine$Component) {
 			writable: true,
 			configurable: true
 		},
-		animate: {
-			value: function animate() {
-				for (var i = 0; i < this.headerElems.length; i++) {
-					this.headerElems[i].style.color = this.colours[this.colourIndex];
-				}
-				this.colourIndex++;
-				if (this.colourIndex === 4) {
-					this.colourIndex = 0;
-				}
-			},
-			writable: true,
-			configurable: true
-		},
 		initTemplate: {
 			value: function initTemplate(templateHelper) {
 				var _this = this;
 				//$ = templateHelper shorthand
 				var $ = templateHelper;
 
-				return [["div", ["header", ["h1", { storeRef: this.headerElems }, $.bind(function (text) {
+				return [["div", ["header", ["h1", $.bind(function (text) {
 					return "Example " + _this.title;
 				})]]], ["div#main",
 				//example of a truthy statement
@@ -1535,7 +1547,7 @@ var Demo = (function (_Engine$Component) {
 				}, ["div", ["span.no-todos", "There are no todos!"]])], ["ul.todos", $["for"](function (each) {
 					return _this.todos;
 				}, function (todo, index) {
-					return [["li.todo", ["h2", { storeRef: _this.headerElems }, "A todo"], ["span", $.bind(function (text) {
+					return [["li.todo", ["h2", "A todo"], ["span", $.bind(function (text) {
 						return index + ": " + todo;
 					})]], ["div.test", "Foo!"]];
 				})], ["form", { id: this.formId, method: "post", action: "#" }, ["div.form-control", ["input", { name: "first_name", type: "text" }]], ["button", { type: "submit", onClick: this._clickSubmit }, "Submit!"]]];
