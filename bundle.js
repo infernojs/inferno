@@ -1517,7 +1517,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
-var Engine = require("./InfernoJS/Inferno.js");
+var Inferno = require("./InfernoJS/Inferno.js");
 
 var Demo = (function (_Inferno$Component) {
 	function Demo() {
