@@ -43,20 +43,24 @@ class TemplateHelper {
     this._comp = comp;
   }
 
-  render(node) {
+  process(node) {
     var i = 0,
         j = 0,
         items = [],
         children = [],
         template = {},
         bounds = [];
-
   	if(node.$type === "if") {
   		if(node.$expression() === node.$condition) {
   			return node.$toRender;
   		} else {
   			return null;
   		}
+    } else if(node.$type === "render") {
+      return {
+        component: node.$component,
+        data: { tag: node.$tag }
+      };
   	} else if(node.$type === "text") {
       //check for formatters
   		return node.$toRender();
@@ -66,7 +70,7 @@ class TemplateHelper {
       for(i = 0; i < items.length; i++) {
         template = node.$toRender.call(this._comp, items[i], i, items);
         for(j = 0; j < template.length; j++) {
-          Compiler.call(this, template[j], children, 0);
+          Compiler.compileDsl.call(this, template[j], children, 0);
         }
       }
       return children;
@@ -76,7 +80,7 @@ class TemplateHelper {
       for(i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
         template = node.$toRender.call(this._comp, i);
         for(j = 0; j < template.length; j++) {
-          Compiler.call(this, template[j], children, 0);
+          Compiler.compileDsl.call(this, template[j], children, 0);
         }
       }
       return children;
@@ -109,20 +113,19 @@ class TemplateHelper {
     return {
       $type: "text",
       condition: this._getParamNames(arguments[0])[0],
-      children: children
+      $toRender: children
+    }
+  }
+
+  render(tag, component) {
+    return {
+      $type: "render",
+      $tag: tag,
+      $component: component
     }
   }
 
   if(expression) {
-    // var children = [],
-    //     i = 0;
-    //
-    // if(arguments.length > 1) {
-    //   for(i = 1; i < arguments.length; i++) {
-    //     children.push(arguments[i]);
-    //   }
-    // }
-
     return {
       $type: "if",
       condition: this._getParamNames(arguments[0])[0],

@@ -28,7 +28,14 @@ class Component {
 		//clear the contents
 		elem.innerHTML = "";
 		b.setRootNode(elem);
-		this._render();
+		//now we let bobril generate the dom to start with
+		b.init(function () {
+			//return the rendered
+			return {
+				compiled: this._createVirtualDom(),
+				context: this
+			};
+		}.bind(this));
 	}
 
 	getTemplateHelper() {
@@ -53,74 +60,89 @@ class Component {
 		watch(this, toWatch, this._propChange.bind(this));
 	}
 
-	_render() {
-		b.init(function () {
-			var createVirtualDom = function(node, parent) {
-				var i = 0;
-				if(Array.isArray(node)) {
-					for(i = 0; i < node.length; i++) {
-						if(Array.isArray(parent)) {
-							createVirtualDom(node[i], parent);
-						} else {
-							createVirtualDom(node[i], parent.children);
-						}
-					}
-				} else {
-					var vNode = {};
-					vNode.children = [];
-					if(node.tag != null) {
-						vNode.tag = node.tag;
-					}
-					if(node.className != null) {
-						vNode.className = node.className;
-					}
-					if(node.style != null) {
-						vNode.style = node.style;
-					}
-					if(node.attrs != null) {
-						vNode.attrs = node.attrs;
-					}
-					if(node.children == null) {
-						//no children (luck bastard)
-						if(node.$type != null) {
-							node.children = this._templateHelper.render(node);
-						}
-						if(Array.isArray(node.children)) {
-							createVirtualDom(node.children, vNode);
-						} else {
-							vNode.children = node.children;
-						}
-					}
-					if(node.children != null) {
-						if(node.$type != null) {
-							node.children = this._templateHelper.render(node);
-						}
-						if(Array.isArray(node.children)) {
-							createVirtualDom(node.children, vNode);
-						} else {
-							vNode.children = node.children;
-						}
-					}
-					if(vNode.children !== null) {
-						if(Array.isArray(parent)) {
-							parent.push(vNode);
-						} else {
-							parent.children.push(vDom);
-						}
+	_createVirtualDom() {
+		var createVirtualDom = function(node, parent) {
+			var i = 0,
+					comp = null;
+			if(Array.isArray(node)) {
+				for(i = 0; i < node.length; i++) {
+					if(Array.isArray(parent)) {
+						createVirtualDom(node[i], parent);
+					} else {
+						createVirtualDom(node[i], parent.children);
 					}
 				}
+			} else {
+				var vNode = {};
+				vNode.children = [];
+				if(node.tag != null) {
+					vNode.tag = node.tag;
+				}
+				if(node.className != null) {
+					if(typeof node.className === "string") {
+						vNode.className = node.className;
+					} else if(node.className.$type != null) {
+						vNode.className = this._templateHelper.process(node.className);
+					}
+				}
+				if(node.style != null) {
+					vNode.style = node.style;
+				}
+				if(node.attrs != null) {
+					vNode.attrs = node.attrs;
+				}
+				if(node.children == null) {
+					//no children (luck bastard)
+					if(node.$type != null && node.$type !== "render") {
+						node.children = this._templateHelper.process(node);
+					} else if(node.$type === "render") {
+						comp = this._templateHelper.process(node);
+						vNode.component = comp.component;
+						vNode.data = comp.data;
+					}
+					if(Array.isArray(node.children)) {
+						createVirtualDom(node.children, vNode);
+					} else {
+						vNode.children = node.children;
+					}
+				}
+				if(node.children != null) {
+					if(node.$type != null && node.$type !== "render") {
+						node.children = this._templateHelper.process(node);
+					} else if(node.$type === "render") {
+						comp = this._templateHelper.process(vNode);
+						vNode.component = comp.component;
+						vNode.data = comp.data;
+					}
 
-			}.bind(this)
+					if(Array.isArray(node.children)) {
+						createVirtualDom(node.children, vNode);
+					} else {
+						vNode.children = node.children;
+					}
+				}
+				if(vNode.children !== null || node.$type === "render") {
+					if(Array.isArray(parent)) {
+						parent.push(vNode);
+					} else {
+						parent.children.push(vDom);
+					}
+				}
+			}
 
-			var vDom = [];
-			//using the compiled template, handle the handlers so we have a new vDom
-			createVirtualDom(this._compiled, vDom)
-			//return the rendered
-			return {
-				compiled: vDom,
-				context: this
-			};
-		}.bind(this));
+		}.bind(this)
+
+		var vDom = [];
+		//using the compiled template, handle the handlers so we have a new vDom
+		createVirtualDom(this._compiled, vDom)
+
+		return vDom;
+	}
+
+	render(ctx, me) {
+		me.tag = ctx.data.tag;
+		//generate children from this component's own vdom
+		me.children = this._createVirtualDom();
 	}
 
 	_compileTemplate() {
@@ -128,7 +150,7 @@ class Component {
 		this._compiled = [];
 
 		for(i = 0; i < this._template.length; i++) {
-			Compiler.call(this, this._template[i], this._compiled);
+			Compiler.compileDsl.call(this, this._template[i], this._compiled);
 		};
 	}
 

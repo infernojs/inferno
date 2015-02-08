@@ -1,15 +1,16 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js":[function(require,module,exports){
 "use strict";
 
-var Compiler = function (elements, root, index) {
+var Compiler = {};
+
+Compiler.compileDsl = function (elements, root, index) {
 	var i = 0,
 	    j = 0,
 	    elem = "",
 	    nextElem = [],
 	    tag = "",
-	    classes = [],
-	    ids = [],
-	    attrs = [];
+	    attrs = [],
+	    compiledTag;
 
 
 	//build up a vDom element
@@ -23,12 +24,12 @@ var Compiler = function (elements, root, index) {
 				continue;
 			}
 			elem.children = elem.children || [];
-			Compiler(elements[i], elem, i);
+			Compiler.compileDsl(elements[i], elem, i);
 		}
 	} else {
 		if (Array.isArray(elements)) {
 			elem.children = elem.children || [];
-			Compiler(elements, elem, i);
+			Compiler.compileDsl(elements, elem, i);
 		} else {
 			//check if the element is a templatehelper function
 			if (elements.$type === "if") {
@@ -50,7 +51,7 @@ var Compiler = function (elements, root, index) {
 						break;
 				}
 				root.$expression = elements.expression;
-				Compiler(elements.children, root, 0);
+				Compiler.compileDsl(elements.children, root, 0);
 			}
 			//handle for statements
 			else if (elements.$type === "for") {
@@ -63,6 +64,10 @@ var Compiler = function (elements, root, index) {
 					root.$bounds = elements.bounds;
 				}
 				root.$toRender = elements.children;
+			} else if (elements.$type === "render") {
+				elem.$type = "render";
+				elem.$component = elements.$component;
+				elem.$tag = elements.$tag;
 			}
 			//handle it if it's a text value
 			else if (elements.$type === "text") {
@@ -75,28 +80,16 @@ var Compiler = function (elements, root, index) {
 				if (root.tag == null && index === 0) {
 					tag = elements;
 					//tag may have .className or #id in it, so we need to take them out
-					if (tag.indexOf(".") > -1) {
-						classes = tag.split(".");
-						tag = classes[0];
-						classes.shift();
-					}
-
-					if (tag.indexOf("#") > -1) {
-						ids = tag.split("#");
-						tag = ids[0];
-						ids.shift();
-					}
-
+					compiledTag = Compiler.compileTag(tag);
 					//apply ids and classNames
-					if (classes.length > 0) {
-						root.className = classes.join(" ");
+					if (compiledTag.classes.length > 0) {
+						root.className = compiledTag.classes.join(" ");
 					}
-					if (ids.length > 0) {
+					if (compiledTag.ids.length > 0) {
 						root.attrs = elem.attrs || {};
-						root.attrs.id = ids.join("");
+						root.attrs.id = compiledTag.ids.join("");
 					}
-
-					root.tag = tag;
+					root.tag = compiledTag.tag;
 				} else {
 					root.children = elements;
 				}
@@ -142,7 +135,33 @@ var Compiler = function (elements, root, index) {
 	}
 };
 
+Compiler.compileTag = function (tag) {
+	var classes = [],
+	    ids = [];
+
+	if (tag.indexOf(".") > -1) {
+		classes = tag.split(".");
+		tag = classes[0];
+		classes.shift();
+	}
+	if (tag.indexOf("#") > -1) {
+		ids = tag.split("#");
+		tag = ids[0];
+		ids.shift();
+	}
+	return {
+		tag: tag,
+		ids: ids,
+		classes: classes
+	};
+};
+
 module.exports = Compiler;
+
+
+
+
+
 
 
 
@@ -153,15 +172,9 @@ module.exports = Compiler;
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var TemplateHelper = require("./TemplateHelper.js");
 var Compiler = require("./Compiler.js");
@@ -194,7 +207,14 @@ var Component = (function () {
 				//clear the contents
 				elem.innerHTML = "";
 				b.setRootNode(elem);
-				this._render();
+				//now we let bobril generate the dom to start with
+				b.init((function () {
+					//return the rendered
+					return {
+						compiled: this._createVirtualDom(),
+						context: this
+					};
+				}).bind(this));
 			},
 			writable: true,
 			configurable: true
@@ -230,78 +250,92 @@ var Component = (function () {
 			writable: true,
 			configurable: true
 		},
-		_render: {
-			value: function _render() {
-				b.init((function () {
-					var createVirtualDom = (function (node, parent) {
-						var i = 0;
-						if (Array.isArray(node)) {
-							for (i = 0; i < node.length; i++) {
-								if (Array.isArray(parent)) {
-									createVirtualDom(node[i], parent);
-								} else {
-									createVirtualDom(node[i], parent.children);
-								}
-							}
-						} else {
-							var vNode = {};
-							vNode.children = [];
-							if (node.tag != null) {
-								vNode.tag = node.tag;
-							}
-							if (node.className != null) {
-								if (typeof node.className === "string") {
-									vNode.className = node.className;
-								} else if (node.className.$type != null) {
-									vNode.className = this._templateHelper.render(node.className);
-								}
-							}
-							if (node.style != null) {
-								vNode.style = node.style;
-							}
-							if (node.attrs != null) {
-								vNode.attrs = node.attrs;
-							}
-							if (node.children == null) {
-								//no children (luck bastard)
-								if (node.$type != null) {
-									node.children = this._templateHelper.render(node);
-								}
-								if (Array.isArray(node.children)) {
-									createVirtualDom(node.children, vNode);
-								} else {
-									vNode.children = node.children;
-								}
-							}
-							if (node.children != null) {
-								if (node.$type != null) {
-									node.children = this._templateHelper.render(node);
-								}
-								if (Array.isArray(node.children)) {
-									createVirtualDom(node.children, vNode);
-								} else {
-									vNode.children = node.children;
-								}
-							}
-							if (vNode.children !== null) {
-								if (Array.isArray(parent)) {
-									parent.push(vNode);
-								} else {
-									parent.children.push(vDom);
-								}
+		_createVirtualDom: {
+			value: function _createVirtualDom() {
+				var createVirtualDom = (function (node, parent) {
+					var i = 0,
+					    comp = null;
+					if (Array.isArray(node)) {
+						for (i = 0; i < node.length; i++) {
+							if (Array.isArray(parent)) {
+								createVirtualDom(node[i], parent);
+							} else {
+								createVirtualDom(node[i], parent.children);
 							}
 						}
-					}).bind(this);
+					} else {
+						var vNode = {};
+						vNode.children = [];
+						if (node.tag != null) {
+							vNode.tag = node.tag;
+						}
+						if (node.className != null) {
+							if (typeof node.className === "string") {
+								vNode.className = node.className;
+							} else if (node.className.$type != null) {
+								vNode.className = this._templateHelper.process(node.className);
+							}
+						}
+						if (node.style != null) {
+							vNode.style = node.style;
+						}
+						if (node.attrs != null) {
+							vNode.attrs = node.attrs;
+						}
+						if (node.children == null) {
+							//no children (luck bastard)
+							if (node.$type != null && node.$type !== "render") {
+								node.children = this._templateHelper.process(node);
+							} else if (node.$type === "render") {
+								comp = this._templateHelper.process(node);
+								vNode.component = comp.component;
+								vNode.data = comp.data;
+							}
+							if (Array.isArray(node.children)) {
+								createVirtualDom(node.children, vNode);
+							} else {
+								vNode.children = node.children;
+							}
+						}
+						if (node.children != null) {
+							if (node.$type != null && node.$type !== "render") {
+								node.children = this._templateHelper.process(node);
+							} else if (node.$type === "render") {
+								comp = this._templateHelper.process(vNode);
+								vNode.component = comp.component;
+								vNode.data = comp.data;
+							}
 
-					var vDom = [];
-					//using the compiled template, handle the handlers so we have a new vDom
-					createVirtualDom(this._compiled, vDom);
-					//return the rendered
-					return {
-						compiled: vDom,
-						context: this
-					};
-				}).bind(this));
+							if (Array.isArray(node.children)) {
+								createVirtualDom(node.children, vNode);
+							} else {
+								vNode.children = node.children;
+							}
+						}
+						if (vNode.children !== null || node.$type === "render") {
+							if (Array.isArray(parent)) {
+								parent.push(vNode);
+							} else {
+								parent.children.push(vDom);
+							}
+						}
+					}
+				}).bind(this);
+
+				var vDom = [];
+				//using the compiled template, handle the handlers so we have a new vDom
+				createVirtualDom(this._compiled, vDom);
+
+				return vDom;
+			},
+			writable: true,
+			configurable: true
+		},
+		render: {
+			value: function render(ctx, me) {
+				me.tag = ctx.data.tag;
+				//generate children from this component's own vdom
+				me.children = this._createVirtualDom();
 			},
 			writable: true,
 			configurable: true
@@ -312,7 +346,7 @@ var Component = (function () {
 				this._compiled = [];
 
 				for (i = 0; i < this._template.length; i++) {
-					Compiler.call(this, this._template[i], this._compiled);
+					Compiler.compileDsl.call(this, this._template[i], this._compiled);
 				};
 			},
 			writable: true,
@@ -335,10 +369,6 @@ var Component = (function () {
 
 module.exports = Component;
 
-
-
-
-
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js","./watch.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/watch.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
@@ -356,15 +386,9 @@ module.exports = Inferno;
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var Compiler = require("./Compiler.js");
 
@@ -413,21 +437,25 @@ var TemplateHelper = (function () {
   }
 
   _prototypeProperties(TemplateHelper, null, {
-    render: {
-      value: function render(node) {
+    process: {
+      value: function process(node) {
         var i = 0,
             j = 0,
             items = [],
             children = [],
             template = {},
             bounds = [];
-
         if (node.$type === "if") {
           if (node.$expression() === node.$condition) {
             return node.$toRender;
           } else {
             return null;
           }
+        } else if (node.$type === "render") {
+          return {
+            component: node.$component,
+            data: { tag: node.$tag }
+          };
         } else if (node.$type === "text") {
           //check for formatters
           return node.$toRender();
@@ -437,7 +465,7 @@ var TemplateHelper = (function () {
           for (i = 0; i < items.length; i++) {
             template = node.$toRender.call(this._comp, items[i], i, items);
             for (j = 0; j < template.length; j++) {
-              Compiler.call(this, template[j], children, 0);
+              Compiler.compileDsl.call(this, template[j], children, 0);
             }
           }
           return children;
@@ -447,7 +475,7 @@ var TemplateHelper = (function () {
           for (i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
             template = node.$toRender.call(this._comp, i);
             for (j = 0; j < template.length; j++) {
-              Compiler.call(this, template[j], children, 0);
+              Compiler.compileDsl.call(this, template[j], children, 0);
             }
           }
           return children;
@@ -492,17 +520,19 @@ var TemplateHelper = (function () {
       writable: true,
       configurable: true
     },
+    render: {
+      value: function render(tag, component) {
+        return {
+          $type: "render",
+          $tag: tag,
+          $component: component
+        };
+      },
+      writable: true,
+      configurable: true
+    },
     "if": {
       value: function _if(expression) {
-        // var children = [],
-        //     i = 0;
-        //
-        // if(arguments.length > 1) {
-        //   for(i = 1; i < arguments.length; i++) {
-        //     children.push(arguments[i]);
-        //   }
-        // }
-
         return {
           $type: "if",
           condition: this._getParamNames(arguments[0])[0],
@@ -529,11 +559,6 @@ var TemplateHelper = (function () {
 ;
 
 module.exports = TemplateHelper;
-
-
-
-
-
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
@@ -2325,112 +2350,116 @@ module.exports = b;
 });
 /* not supported */
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/ladders.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _get = function get(object, property, receiver) {
-	var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-		var parent = Object.getPrototypeOf(object);if (parent === null) {
-			return undefined;
-		} else {
-			return get(parent, property, receiver);
-		}
-	} else if ("value" in desc && desc.writable) {
-		return desc.value;
-	} else {
-		var getter = desc.get;if (getter === undefined) {
-			return undefined;
-		}return getter.call(receiver);
-	}
-};
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _inherits = function (subClass, superClass) {
-	if (typeof superClass !== "function" && superClass !== null) {
-		throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-};
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
 var Inferno = require("./InfernoJS/Inferno.js");
 
-var Demo = (function (_Inferno$Component) {
-	function Demo() {
-		_classCallCheck(this, Demo);
 
-		//we declare all our properties
-		this.todos = ["Clean the dishes", "Cook the dinner", "Code some coding", "Comment on stuff"];
-
-		this.testClassName = "foo-bar";
-
-		this.title = "Todo Demo";
-		this.formId = "todo-form";
+var Bar = (function (_Inferno$Component) {
+	function Bar() {
+		_classCallCheck(this, Bar);
 
 		_get(_Inferno$Component.prototype, "constructor", this).call(this);
 	}
 
-	_inherits(Demo, _Inferno$Component);
+	_inherits(Bar, _Inferno$Component);
 
-	_prototypeProperties(Demo, null, {
-		_clickSubmit: {
-			value: function _clickSubmit(e) {
-				debugger;
-			},
-			writable: true,
-			configurable: true
-		},
+	_prototypeProperties(Bar, null, {
 		initTemplate: {
 			value: function initTemplate(templateHelper) {
-				var _this = this;
 				//$ = templateHelper shorthand
 				var $ = templateHelper;
 
-				return [["div", ["header", ["h1", $.text(function (none) {
-					return "Example " + _this.title;
-				}, ["this.title"])]]], ["div#test", { className: $.text(function (none) {
-						return _this.testClassName;
-					}) }, "Test text"], ["div#main",
-				//example of a truthy statement
-				["div", $["if"](function (isTrue) {
-					return _this.todos.length > 0;
-				},
-				//on a $.bind() the 2nd param is an internal hint to improve performance
-				//this would likely be automatically added on some post compile process
-				["span.counter", $.text(function (none) {
-					return "There are " + _this.todos.length + " todos!";
-				}, ["this.todos"])])],
-				//example of a falsey statement
-				["div", $["if"](function (isFalse) {
-					return _this.todos.length > 0;
-				}, ["span.no-todos", "There are no todos!"])]], ["ul.todos", $["for"](function (each) {
-					return _this.todos;
-				}, function (todo, index) {
-					return [["li.todo", ["h2", "A todo"], ["span", $.text(function (none) {
-						return index + ": " + todo;
-					})]], ["div.test", "Foo!"]];
-				})], ["form", { id: this.formId, method: "post", action: "#" }, ["div.form-control", ["input", { name: "first_name", type: "text" }]], ["button", { type: "submit", onClick: this._clickSubmit }, "Submit!"]]];
+				return [["div.ladder-cell"], ["div.ladder-cell"], ["div.ladder-cell"]];
 			},
 			writable: true,
 			configurable: true
 		}
 	});
 
-	return Demo;
+	return Bar;
 })(Inferno.Component);
 
 ;
 
-window.Demo = Demo;
+var Component = (function (_Inferno$Component2) {
+	function Component() {
+		_classCallCheck(this, Component);
 
+		this.bars = [new Bar(true), new Bar(true), new Bar(true), new Bar(true), new Bar(true), new Bar(false), new Bar(false), new Bar(false), new Bar(false), new Bar(false)];
 
-},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);
+		_get(_Inferno$Component2.prototype, "constructor", this).call(this);
+	}
+
+	_inherits(Component, _Inferno$Component2);
+
+	_prototypeProperties(Component, null, {
+		initTemplate: {
+			value: function initTemplate(templateHelper) {
+				var _this = this;
+				//$ = templateHelper shorthand
+				var $ = templateHelper;
+
+				return [["div.ladder", ["header", "Apple (AAPL)"]], ["div.bars", $["for"](function (each) {
+					return _this.bars;
+				}, function (bar) {
+					return [$.render("div.ladder-row", bar)];
+				})]];
+			},
+			writable: true,
+			configurable: true
+		}
+	});
+
+	return Component;
+})(Inferno.Component);
+
+var LaddersApp = (function (_Inferno$Component3) {
+	function LaddersApp() {
+		_classCallCheck(this, LaddersApp);
+
+		//we declare all our properties
+		this.components = [new Component(), new Component(), new Component(), new Component(), new Component(), new Component()];
+
+		_get(_Inferno$Component3.prototype, "constructor", this).call(this);
+	}
+
+	_inherits(LaddersApp, _Inferno$Component3);
+
+	_prototypeProperties(LaddersApp, null, {
+		initTemplate: {
+			value: function initTemplate(templateHelper) {
+				var _this = this;
+				//$ = templateHelper shorthand
+				var $ = templateHelper;
+
+				return [["div.components", $["for"](function (each) {
+					return _this.components;
+				}, function (component) {
+					return [$.render("div.component", component)];
+				})]];
+			},
+			writable: true,
+			configurable: true
+		}
+	});
+
+	return LaddersApp;
+})(Inferno.Component);
+
+;
+
+window.LaddersApp = LaddersApp;
+
+},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/ladders.js"]);

@@ -1,12 +1,13 @@
-var Compiler = function(elements, root, index) {
+var Compiler = {};
+
+Compiler.compileDsl = function(elements, root, index) {
 	var i = 0,
 			j = 0,
 			elem = "",
 			nextElem = [],
 			tag = '',
-			classes = [],
-			ids = [],
-			attrs = [];
+			attrs = [],
+			compiledTag;
 
 
 	//build up a vDom element
@@ -20,12 +21,12 @@ var Compiler = function(elements, root, index) {
 				continue;
 			}
 			elem.children = elem.children || [];
-			Compiler(elements[i], elem, i);
+			Compiler.compileDsl(elements[i], elem, i);
 		}
 	} else {
 		if(Array.isArray(elements)) {
 			elem.children = elem.children || [];
-			Compiler(elements, elem, i);
+			Compiler.compileDsl(elements, elem, i);
 		} else {
 			//check if the element is a templatehelper function
 			if(elements.$type === "if") {
@@ -47,7 +48,7 @@ var Compiler = function(elements, root, index) {
 						break;
 				}
 				root.$expression = elements.expression;
-				Compiler(elements.children, root, 0);
+				Compiler.compileDsl(elements.children, root, 0);
 			}
 			//handle for statements
 			else if(elements.$type === "for") {
@@ -61,39 +62,32 @@ var Compiler = function(elements, root, index) {
 				}
 				root.$toRender = elements.children;
 			}
+			else if(elements.$type === "render") {
+				elem.$type = "render";
+				elem.$component = elements.$component;
+				elem.$tag = elements.$tag;
+			}
 			//handle it if it's a text value
 			else if(elements.$type === "text") {
 				root.$type = "text";
 				root.$condition = elements.condition;
-				root.$toRender = elements.children;
+				root.$toRender = elements.$toRender;
 			}
 			//check if the value is simply a string
 			else if(typeof elements === "string") {
 				if(root.tag == null && index === 0) {
 					tag = elements;
 					//tag may have .className or #id in it, so we need to take them out
-					if(tag.indexOf(".") > -1) {
-						classes = tag.split(".");
-						tag = classes[0];
-						classes.shift();
-					}
-
-					if(tag.indexOf("#") > -1) {
-						ids = tag.split("#");
-						tag = ids[0];
-						ids.shift();
-					}
-
+					compiledTag = Compiler.compileTag(tag)
 					//apply ids and classNames
-					if(classes.length > 0) {
-						root.className = classes.join(' ');
+					if(compiledTag.classes.length > 0) {
+						root.className = compiledTag.classes.join(' ');
 					}
-					if(ids.length > 0) {
+					if(compiledTag.ids.length > 0) {
 						root.attrs = elem.attrs || {};
-						root.attrs.id = ids.join('');
+						root.attrs.id = compiledTag.ids.join('');
 					}
-
-					root.tag = tag;
+					root.tag = compiledTag.tag;
 				} else {
 					root.children = elements;
 				}
@@ -137,6 +131,27 @@ var Compiler = function(elements, root, index) {
   } else {
     root.children.push(elem);
   }
+}
+
+Compiler.compileTag = function(tag) {
+	var classes = [],
+			ids = [];
+
+	if(tag.indexOf(".") > -1) {
+		classes = tag.split(".");
+		tag = classes[0];
+		classes.shift();
+	}
+	if(tag.indexOf("#") > -1) {
+		ids = tag.split("#");
+		tag = ids[0];
+		ids.shift();
+	}
+	return {
+		tag: tag,
+		ids: ids,
+		classes: classes
+	}
 }
 
 module.exports = Compiler;
