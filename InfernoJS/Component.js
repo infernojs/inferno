@@ -55,17 +55,40 @@ class Component {
 
 	_render() {
 		b.init(function () {
-			var renderHelpers = function(node) {
+			var createVirtualDom = function(node, parent) {
 				var i = 0;
 				if(Array.isArray(node)) {
 					for(i = 0; i < node.length; i++) {
-						renderHelpers(node[i]);
+						if(Array.isArray(parent)) {
+							createVirtualDom(node[i], parent);
+						} else {
+							createVirtualDom(node[i], parent.children);
+						}
 					}
 				} else {
+					var vNode = {};
+					vNode.children = [];
+					if(node.tag != null) {
+						vNode.tag = node.tag;
+					}
+					if(node.className != null) {
+						vNode.className = node.className;
+					}
+					if(node.style != null) {
+						vNode.style = node.style;
+					}
+					if(node.attrs != null) {
+						vNode.attrs = node.attrs;
+					}
 					if(node.children == null) {
 						//no children (luck bastard)
 						if(node.$type != null) {
 							node.children = this._templateHelper.render(node);
+						}
+						if(Array.isArray(node.children)) {
+							createVirtualDom(node.children, vNode);
+						} else {
+							vNode.children = node.children;
 						}
 					}
 					if(node.children != null) {
@@ -73,18 +96,28 @@ class Component {
 							node.children = this._templateHelper.render(node);
 						}
 						if(Array.isArray(node.children)) {
-							for(i = 0; i < node.children.length; i++) {
-								renderHelpers(node.children[i], node);
-							}
+							createVirtualDom(node.children, vNode);
+						} else {
+							vNode.children = node.children;
+						}
+					}
+					if(vNode.children !== null) {
+						if(Array.isArray(parent)) {
+							parent.push(vNode);
+						} else {
+							parent.children.push(vDom);
 						}
 					}
 				}
+
 			}.bind(this)
-			//re-render the helpers within our template
-			renderHelpers(this._compiled)
+
+			var vDom = [];
+			//using the compiled template, handle the handlers so we have a new vDom
+			createVirtualDom(this._compiled, vDom)
 			//return the rendered
 			return {
-				compiled: this._compiled,
+				compiled: vDom,
 				context: this
 			};
 		}.bind(this));

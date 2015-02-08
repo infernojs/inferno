@@ -48,7 +48,6 @@ class TemplateHelper {
         j = 0,
         items = [],
         children = [],
-        subChildren = [],
         template = {},
         bounds = [];
 
@@ -65,24 +64,20 @@ class TemplateHelper {
       items = node.$items();
       children = [];
       for(i = 0; i < items.length; i++) {
-        subChildren = [];
         template = node.$toRender.call(this._comp, items[i], i, items);
         for(j = 0; j < template.length; j++) {
-          Compiler.call(this, template[j], subChildren, 0);
+          Compiler.call(this, template[j], children, 0);
         }
-        children.push(subChildren);
       }
       return children;
     } else if(node.$type === "for") {
       bounds = node.$bounds();
       children = [];
       for(i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
-        subChildren = [];
         template = node.$toRender.call(this._comp, i);
         for(j = 0; j < template.length; j++) {
-          Compiler.call(this, template[j], subChildren, 0);
+          Compiler.call(this, template[j], children, 0);
         }
-        children.push(subChildren);
       }
       return children;
     }

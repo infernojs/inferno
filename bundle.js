@@ -144,23 +144,12 @@ var Compiler = function (elements, root, index) {
 
 module.exports = Compiler;
 
-
-
-
-
-
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var TemplateHelper = require("./TemplateHelper.js");
 var Compiler = require("./Compiler.js");
@@ -232,17 +221,40 @@ var Component = (function () {
 		_render: {
 			value: function _render() {
 				b.init((function () {
-					var renderHelpers = (function (node) {
+					var createVirtualDom = (function (node, parent) {
 						var i = 0;
 						if (Array.isArray(node)) {
 							for (i = 0; i < node.length; i++) {
-								renderHelpers(node[i]);
+								if (Array.isArray(parent)) {
+									createVirtualDom(node[i], parent);
+								} else {
+									createVirtualDom(node[i], parent.children);
+								}
 							}
 						} else {
+							var vNode = {};
+							vNode.children = [];
+							if (node.tag != null) {
+								vNode.tag = node.tag;
+							}
+							if (node.className != null) {
+								vNode.className = node.className;
+							}
+							if (node.style != null) {
+								vNode.style = node.style;
+							}
+							if (node.attrs != null) {
+								vNode.attrs = node.attrs;
+							}
 							if (node.children == null) {
 								//no children (luck bastard)
 								if (node.$type != null) {
 									node.children = this._templateHelper.render(node);
+								}
+								if (Array.isArray(node.children)) {
+									createVirtualDom(node.children, vNode);
+								} else {
+									vNode.children = node.children;
 								}
 							}
 							if (node.children != null) {
@@ -250,18 +262,27 @@ var Component = (function () {
 									node.children = this._templateHelper.render(node);
 								}
 								if (Array.isArray(node.children)) {
-									for (i = 0; i < node.children.length; i++) {
-										renderHelpers(node.children[i], node);
-									}
+									createVirtualDom(node.children, vNode);
+								} else {
+									vNode.children = node.children;
+								}
+							}
+							if (vNode.children !== null) {
+								if (Array.isArray(parent)) {
+									parent.push(vNode);
+								} else {
+									parent.children.push(vDom);
 								}
 							}
 						}
 					}).bind(this);
-					//re-render the helpers within our template
-					renderHelpers(this._compiled);
+
+					var vDom = [];
+					//using the compiled template, handle the handlers so we have a new vDom
+					createVirtualDom(this._compiled, vDom);
 					//return the rendered
 					return {
-						compiled: this._compiled,
+						compiled: vDom,
 						context: this
 					};
 				}).bind(this));
@@ -298,12 +319,6 @@ var Component = (function () {
 
 module.exports = Component;
 
-
-
-
-
-
-
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js","./watch.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/watch.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
@@ -321,15 +336,9 @@ module.exports = Inferno;
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var Compiler = require("./Compiler.js");
 
@@ -384,7 +393,6 @@ var TemplateHelper = (function () {
             j = 0,
             items = [],
             children = [],
-            subChildren = [],
             template = {},
             bounds = [];
 
@@ -401,24 +409,20 @@ var TemplateHelper = (function () {
           items = node.$items();
           children = [];
           for (i = 0; i < items.length; i++) {
-            subChildren = [];
             template = node.$toRender.call(this._comp, items[i], i, items);
             for (j = 0; j < template.length; j++) {
-              Compiler.call(this, template[j], subChildren, 0);
+              Compiler.call(this, template[j], children, 0);
             }
-            children.push(subChildren);
           }
           return children;
         } else if (node.$type === "for") {
           bounds = node.$bounds();
           children = [];
           for (i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
-            subChildren = [];
             template = node.$toRender.call(this._comp, i);
             for (j = 0; j < template.length; j++) {
-              Compiler.call(this, template[j], subChildren, 0);
+              Compiler.call(this, template[j], children, 0);
             }
-            children.push(subChildren);
           }
           return children;
         }
@@ -499,7 +503,6 @@ var TemplateHelper = (function () {
 ;
 
 module.exports = TemplateHelper;
-
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
@@ -2294,13 +2297,37 @@ module.exports = b;
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+var _get = function get(object, property, receiver) {
+	var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+		var parent = Object.getPrototypeOf(object);if (parent === null) {
+			return undefined;
+		} else {
+			return get(parent, property, receiver);
+		}
+	} else if ("value" in desc && desc.writable) {
+		return desc.value;
+	} else {
+		var getter = desc.get;if (getter === undefined) {
+			return undefined;
+		}return getter.call(receiver);
+	}
+};
 
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+var _inherits = function (subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+};
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
@@ -2312,6 +2339,8 @@ var Demo = (function (_Inferno$Component) {
 
 		//we declare all our properties
 		this.todos = ["Clean the dishes", "Cook the dinner", "Code some coding", "Comment on stuff"];
+
+		this.testClassName = "foo-bar";
 
 		this.title = "Todo Demo";
 		this.formId = "todo-form";
@@ -2337,7 +2366,9 @@ var Demo = (function (_Inferno$Component) {
 
 				return [["div", ["header", ["h1", $.text(function (none) {
 					return "Example " + _this.title;
-				}, ["this.title"])]]], ["div#main",
+				}, ["this.title"])]]], ["div#test", { className: $.text(function (none) {
+						return _this.testClassName;
+					}) }, "Test text"], ["div#main",
 				//example of a truthy statement
 				["div", $["if"](function (isTrue) {
 					return _this.todos.length > 0;
@@ -2369,5 +2400,6 @@ var Demo = (function (_Inferno$Component) {
 ;
 
 window.Demo = Demo;
+
 
 },{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);

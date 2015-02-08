@@ -13,6 +13,8 @@ class Demo extends Inferno.Component {
 			"Comment on stuff"
 		];
 
+		this.testClassName = "foo-bar";
+
 		this.title = "Todo Demo";
 		this.formId = "todo-form";
 
@@ -32,6 +34,9 @@ class Demo extends Inferno.Component {
 				["header",
 					["h1", $.text(none => "Example " + this.title, ["this.title"])]
 				]
+			],
+			['div#test', {className: $.text(none => this.testClassName)},
+				"Test text"
 			],
 			['div#main',
 				//example of a truthy statement
