@@ -28,12 +28,12 @@ var Compiler = require('./Compiler.js');
   $.do(until => {expression}, ...)
 
   ==================
-  data binding + filters/formatters
+  text filters/formatters
   ==================
 
-  $.bind(text => {expression) //strips all tags
-  $.bind(html => {expression) //strips harmful tags
-  $.bind(none => {expression) //no stripping
+  $.text(escape => {expression}, [hinting...]) //escapes all html
+  $.text(html => {expression}, [hinting...]) //allows safe html
+  $.text(none => {expression}, [hinting...]) //no stripping
 
 */
 
@@ -58,7 +58,8 @@ class TemplateHelper {
   		} else {
   			return null;
   		}
-  	} else if(node.$type === "bind") {
+  	} else if(node.$type === "text") {
+      //check for formatters
   		return node.$toRender();
     } else if(node.$type === "forEach") {
       items = node.$items();
@@ -67,7 +68,7 @@ class TemplateHelper {
         subChildren = [];
         template = node.$toRender.call(this._comp, items[i], i, items);
         for(j = 0; j < template.length; j++) {
-          Compiler.call(this, template[j], subChildren);
+          Compiler.call(this, template[j], subChildren, 0);
         }
         children.push(subChildren);
       }
@@ -79,7 +80,7 @@ class TemplateHelper {
         subChildren = [];
         template = node.$toRender.call(this._comp, i);
         for(j = 0; j < template.length; j++) {
-          Compiler.call(this, template[j], subChildren);
+          Compiler.call(this, template[j], subChildren, 0);
         }
         children.push(subChildren);
       }
@@ -94,14 +95,14 @@ class TemplateHelper {
     switch(condition) {
       case "each":
         return {
-          type: "for",
+          $type: "for",
           condition: "each",
           items: values,
           children: children
         }
       case "increment":
         return {
-          type: "for",
+          $type: "for",
           condition: "increment",
           bounds: values,
           children: children
@@ -109,29 +110,29 @@ class TemplateHelper {
     }
   }
 
-  bind(children) {
+  text(children) {
     return {
-      type: "bind",
+      $type: "text",
       condition: this._getParamNames(arguments[0])[0],
       children: children
     }
   }
 
   if(expression) {
-    var children = [],
-        i = 0;
-
-    if(arguments[1].length > 1) {
-      for(i = 1; i < arguments[1].length; i++) {
-        children.push(arguments[1][i]);
-      }
-    }
+    // var children = [],
+    //     i = 0;
+    //
+    // if(arguments.length > 1) {
+    //   for(i = 1; i < arguments.length; i++) {
+    //     children.push(arguments[i]);
+    //   }
+    // }
 
     return {
-      type: "if",
+      $type: "if",
       condition: this._getParamNames(arguments[0])[0],
       expression: expression,
-      children: children
+      children: arguments[1]
     }
   }
 

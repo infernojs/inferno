@@ -1,22 +1,27 @@
 var TemplateHelper = require('./TemplateHelper.js');
 var Compiler = require('./Compiler.js');
 var b = require('./bobril.js');
+var b = require('./bobril.js');
+var WatchJS = require("./watch.js")
+var watch = WatchJS.watch;
+var unwatch = WatchJS.unwatch;
+var callWatchers = WatchJS.callWatchers;
 
+var defaultProps = {
+
+};
 
 class Component {
 
 	constructor() {
 		this._compiled = [];
 		this._templateHelper = new TemplateHelper();
-
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
-
 		//then compile the template
 		this._compileTemplate(this);
-
-		//then apply the observer for this class
-		//Object.observe(this.props, this._propChange.bind(this));
+		//init the watchers on user defined properties
+		this._initPropWatchers();
 	}
 
 	mount(elem) {
@@ -32,6 +37,20 @@ class Component {
 
 	updateElement(node) {
 		b.updateNode(node);
+	}
+
+	_initPropWatchers() {
+		var toWatch = [],
+				prop = '';
+
+		for(prop in this) {
+			if(prop.charAt(0) !== '_') {
+				//add to list of props to watch
+				toWatch.push(prop);
+			}
+		}
+
+		watch(this, toWatch, this._propChange.bind(this));
 	}
 
 	_render() {
@@ -50,15 +69,13 @@ class Component {
 						}
 					}
 					if(node.children != null) {
-						if(node.children.$type != null) {
-							node.children.children = this._templateHelper.render(node.children);
+						if(node.$type != null) {
+							node.children = this._templateHelper.render(node);
 						}
 						if(Array.isArray(node.children)) {
 							for(i = 0; i < node.children.length; i++) {
 								renderHelpers(node.children[i], node);
 							}
-						} else {
-							renderHelpers(node.children, node);
 						}
 					}
 				}

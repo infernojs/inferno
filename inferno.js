@@ -318,12 +318,10 @@ var Compiler = require("./Compiler.js");
   $.do(until => {expression}, ...)
 
   ==================
-  data binding + filters/formatters
+  filters/formatters
   ==================
 
-  $.bind(text => {expression) //strips all tags
-  $.bind(html => {expression) //strips harmful tags
-  $.bind(none => {expression) //no stripping
+  $.text`templte literal text goes here, with ${ variables } or ${ funcs() } too`
 
 */
 
@@ -351,7 +349,8 @@ var TemplateHelper = (function () {
           } else {
             return null;
           }
-        } else if (node.$type === "bind") {
+        } else if (node.$type === "text") {
+          debugger;
           return node.$toRender();
         } else if (node.$type === "forEach") {
           items = node.$items();
@@ -408,9 +407,11 @@ var TemplateHelper = (function () {
       configurable: true
     },
     bind: {
-      value: function bind(children) {
+      value: function bind() {
+        //get all the arguments
+        debugger;
         return {
-          type: "bind",
+          type: "text",
           condition: this._getParamNames(arguments[0])[0],
           children: children
         };
@@ -1502,46 +1503,16 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-
-
-
-
-
-
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _get = function get(object, property, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-};
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
@@ -1615,10 +1586,5 @@ var InfernoBenchmark = (function (_Inferno$Component) {
 ;
 
 window.InfernoBenchmark = InfernoBenchmark;
-
-
-
-
-
 
 },{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js"]);

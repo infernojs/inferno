@@ -4,18 +4,19 @@ var Inferno = require('./InfernoJS/Inferno.js');
 
 class InfernoBenchmark extends Inferno.Component {
 
+  //properties starting with _underscore are not observed by default
   constructor() {
 
-    this.count = 0;
-    this.boxElems = [];
+    this._count = 0;
+    this._boxElems = [];
 
     super();
   }
 
   animateBoxes() {
-    this.count++
+    this._count++
 
-    var count = this.count % 100;
+    var count = this._count % 100;
 
     //animate the style
     var newStyle = {
@@ -25,13 +26,13 @@ class InfernoBenchmark extends Inferno.Component {
     };
 
     //loop through all our virtual objects and apply the updates
-    for(var i = 0; i < this.boxElems.length; i++) {
-      this.boxElems[i].update({style: newStyle}, count);
+    for(var i = 0; i < this._boxElems.length; i++) {
+      this._boxElems[i].update({style: newStyle}, count);
     }
   }
 
   addBox(element) {
-    this.boxElems.push(element);
+    this._boxElems.push(element);
   }
 
   initTemplate(templateHelper) {
