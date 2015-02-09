@@ -121,6 +121,7 @@ class TemplateHelper {
   }
 
   render(tag, component, data) {
+    this._comp.addSubComponent(component);
     return {
       $type: "render",
       $tag: tag,

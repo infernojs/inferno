@@ -15,10 +15,6 @@ class NumberBar extends Inferno.Component {
 		super();
 	}
 
-	onUpdate() {
-		this.barClass = "numberbar-bar numberbar-bar-" + this.type;
-	}
-
 	_getNumberBarStyle() {
 		var background, color;
 
@@ -58,7 +54,7 @@ class NumberBar extends Inferno.Component {
 	initTemplate($) {
 		return [
 			['div.numberbar', {style: this._getNumberBarStyle},
-				['div', {className: $.text(none => this.barClass), style: this._getBarStyle}],
+				['div', {className: $.text(none => "numberbar-bar numberbar-bar-" + this.type), style: this._getBarStyle}],
 				['div.numberbar-number', $.text(none => this.number)]
 			],
 		];
@@ -68,7 +64,7 @@ class NumberBar extends Inferno.Component {
 class LadderRow extends Inferno.Component {
 
 	constructor() {
-		this.price = 0;
+		this.priceLevel = {};
 		super();
 	}
 
@@ -77,24 +73,24 @@ class LadderRow extends Inferno.Component {
 		var bidData = function() {
 			return {
 				type: "bid",
-				number: this.bidAmount,
-				maxNumber: this.maxAmount,
-				maxBarWidth: this.maxBarWidth
+				number: this.priceLevel.bidVolume,
+				maxNumber: ordersModel.maxVolume,
+				maxBarWidth: "120"
 			}
 		}.bind(this)
 
 		var askData = function() {
 			return {
 				type: "ask",
-				number: this.askAmount,
-				maxNumber: this.maxAmount,
-				maxBarWidth: this.maxBarWidth
+				number: this.priceLevel.askVolume,
+				maxNumber: ordersModel.maxVolume,
+				maxBarWidth: "120"
 			}
 		}.bind(this)
 
 		return [
 			$.render('div.ladder-cell', new NumberBar(), bidData),
-			['div', {className: "ladder-cell ladder-cell-price"}, $.text(none => this.price)],
+			['div', {className: "ladder-cell ladder-cell-price"}, $.text(none => this.priceLevel.price)],
 			$.render('div.ladder-cell', new NumberBar(), askData)
 		];
 	}
@@ -103,18 +99,13 @@ class LadderRow extends Inferno.Component {
 class Ladder extends Inferno.Component {
 
 	constructor() {
-		this.ladderRows = ordersModel.levels.map(function(row, index) {
 
+		this.ladderRows = ordersModel.levels.map(function(priceLevel, index) {
 			return {
 				ladderRow: new LadderRow(),
 				props: function() {
 					return {
-						price: row.price,
-						bidAmount: row.bidVolume,
-						askAmount: row.askVolume,
-						key: row.key,
-						maxBarWidth: "120",
-						maxAmount: ordersModel.maxVolume
+						priceLevel: priceLevel
 					}
 				}
 			}
@@ -125,6 +116,15 @@ class Ladder extends Inferno.Component {
 		}.bind(this), THROTTLE + (Math.floor(Math.random() * 120)) - 60);
 
 		super();
+	}
+
+	//optional way of boosting performance by letting Inferno what it can optimise
+	dependencies() {
+		//outline what things affect this particular component (not child components)
+		return [
+			//e.g. if the amount of ladder rows changes, it will affect this component
+			this.ladderRows.length
+		];
 	}
 
 	initTemplate($) {

@@ -7,9 +7,6 @@ var watch = WatchJS.watch;
 var unwatch = WatchJS.unwatch;
 var callWatchers = WatchJS.callWatchers;
 
-var defaultProps = {
-
-};
 
 class Component {
 
@@ -17,7 +14,10 @@ class Component {
 		this._compiled = [];
 		this._propsToWatch = [];
 		this._lastTick = 0;
-		this._templateHelper = new TemplateHelper();
+		this._ctx = null;
+		this._subComponents = [];
+		this._lastDependencyCheck = []
+		this._templateHelper = new TemplateHelper(this);
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
 		//then compile the template
@@ -28,11 +28,36 @@ class Component {
 	}
 
 	forceUpdate() {
-		var t = Date.now();
-		if(t > this._lastTick + 17) {
-			b.invalidate();
-			this._lastTick = t;
+		var t = Date.now(),
+				skipUpdateThis = false;
+
+		//check if we need to update ourselves
+		if(this.dependencies != null) {
+			var dependencies = this.dependencies();
+			if(this._compareArrays(dependencies, this._lastDependencyCheck)) {
+				//then only update children
+				for(var i = 0; i < this._subComponents.length; i++) {
+					this._subComponents[i].forceUpdate();
+				}
+				skipUpdateThis = true;
+			} else {
+				this._lastDependencyCheck = dependencies;
+				console.log('updating', dependencies);
+				skipUpdateThis = false;
+			}
 		}
+
+		if(skipUpdateThis === false) {
+			if(t > this._lastTick + 17) {
+				if(this._ctx != null) {
+					b.invalidate(this._ctx);
+				} else {
+					b.invalidate();
+				}
+				this._lastTick = t;
+			}
+		}
+
 	}
 
 	mount(elem) {
@@ -55,6 +80,30 @@ class Component {
 
 	updateElement(node) {
 		b.updateNode(node);
+	}
+
+	_compareArrays(array1, array2) {
+			// if the other array is a falsy value, return
+			if (!array2)
+					return false;
+
+			// compare lengths - can save a lot of time
+			if (array1.length != array2.length)
+					return false;
+
+			for (var i = 0, l=array1.length; i < l; i++) {
+					// Check if we have nested arrays
+					if (array1[i] instanceof Array && array2[i] instanceof Array) {
+							// recurse into the nested arrays
+							if(array1[i].equals(array2[i]))
+									return false;
+					}
+					else if (array1[i] != array2[i]) {
+							// Warning - two different object instances will never be equal: {x:20} != {x:20}
+							return false;
+					}
+			}
+			return true;
 	}
 
 	_initPropWatchers() {
@@ -158,7 +207,7 @@ class Component {
 
 		var vDom = [];
 		//using the compiled template, handle the handlers so we have a new vDom
-		createVirtualDom(this._compiled, vDom)
+		createVirtualDom(this._compiled, vDom);
 
 		return vDom;
 	}
@@ -167,6 +216,8 @@ class Component {
 		var props = ctx.data.props,
 				compiledTag = {},
 				i = 0;
+
+		this._ctx = ctx;
 
 		if(ctx.data.props != null) {
 			props = ctx.data.props();
@@ -192,6 +243,10 @@ class Component {
 		}
 		//generate children from this component's own vdom
 		me.children = this._createVirtualDom();
+	}
+
+	addSubComponent(subCompnent) {
+		this._subComponents.push(subCompnent);
 	}
 
 	_compileTemplate() {

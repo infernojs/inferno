@@ -159,6 +159,7 @@ Compiler.compileTag = function (tag) {
 
 module.exports = Compiler;
 
+
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
@@ -181,7 +182,6 @@ var watch = WatchJS.watch;
 var unwatch = WatchJS.unwatch;
 var callWatchers = WatchJS.callWatchers;
 
-var defaultProps = {};
 
 var Component = (function () {
 	function Component() {
@@ -190,7 +190,10 @@ var Component = (function () {
 		this._compiled = [];
 		this._propsToWatch = [];
 		this._lastTick = 0;
-		this._templateHelper = new TemplateHelper();
+		this._ctx = null;
+		this._subComponents = [];
+		this._lastDependencyCheck = [];
+		this._templateHelper = new TemplateHelper(this);
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
 		//then compile the template
@@ -203,10 +206,34 @@ var Component = (function () {
 	_prototypeProperties(Component, null, {
 		forceUpdate: {
 			value: function forceUpdate() {
-				var t = Date.now();
-				if (t > this._lastTick + 17) {
-					b.invalidate();
-					this._lastTick = t;
+				var t = Date.now(),
+				    skipUpdateThis = false;
+
+				//check if we need to update ourselves
+				if (this.dependencies != null) {
+					var dependencies = this.dependencies();
+					if (this._compareArrays(dependencies, this._lastDependencyCheck)) {
+						//then only update children
+						for (var i = 0; i < this._subComponents.length; i++) {
+							this._subComponents[i].forceUpdate();
+						}
+						skipUpdateThis = true;
+					} else {
+						this._lastDependencyCheck = dependencies;
+						console.log("updating", dependencies);
+						skipUpdateThis = false;
+					}
+				}
+
+				if (skipUpdateThis === false) {
+					if (t > this._lastTick + 17) {
+						if (this._ctx != null) {
+							b.invalidate(this._ctx);
+						} else {
+							b.invalidate();
+						}
+						this._lastTick = t;
+					}
 				}
 			},
 			writable: true,
@@ -239,6 +266,29 @@ var Component = (function () {
 		updateElement: {
 			value: function updateElement(node) {
 				b.updateNode(node);
+			},
+			writable: true,
+			configurable: true
+		},
+		_compareArrays: {
+			value: function _compareArrays(array1, array2) {
+				// if the other array is a falsy value, return
+				if (!array2) return false;
+
+				// compare lengths - can save a lot of time
+				if (array1.length != array2.length) return false;
+
+				for (var i = 0, l = array1.length; i < l; i++) {
+					// Check if we have nested arrays
+					if (array1[i] instanceof Array && array2[i] instanceof Array) {
+						// recurse into the nested arrays
+						if (array1[i].equals(array2[i])) return false;
+					} else if (array1[i] != array2[i]) {
+						// Warning - two different object instances will never be equal: {x:20} != {x:20}
+						return false;
+					}
+				}
+				return true;
 			},
 			writable: true,
 			configurable: true
@@ -365,6 +415,8 @@ var Component = (function () {
 				    compiledTag = {},
 				    i = 0;
 
+				this._ctx = ctx;
+
 				if (ctx.data.props != null) {
 					props = ctx.data.props();
 					//best to also disable the watcher here?
@@ -389,6 +441,13 @@ var Component = (function () {
 				}
 				//generate children from this component's own vdom
 				me.children = this._createVirtualDom();
+			},
+			writable: true,
+			configurable: true
+		},
+		addSubComponent: {
+			value: function addSubComponent(subCompnent) {
+				this._subComponents.push(subCompnent);
 			},
 			writable: true,
 			configurable: true
@@ -439,12 +498,19 @@ Inferno.Compiler = Compiler;
 
 module.exports = Inferno;
 
+
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
 
 var Compiler = require("./Compiler.js");
 
@@ -581,6 +647,7 @@ var TemplateHelper = (function () {
     },
     render: {
       value: function render(tag, component, data) {
+        this._comp.addSubComponent(component);
         return {
           $type: "render",
           $tag: tag,
@@ -619,6 +686,7 @@ var TemplateHelper = (function () {
 ;
 
 module.exports = TemplateHelper;
+
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
@@ -1658,6 +1726,7 @@ var b = (function (window, document) {
 
 module.exports = b;
 
+
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/watch.js":[function(require,module,exports){
 /**
  * DEVELOPED BY
@@ -2309,7 +2378,6 @@ module.exports = b;
                     subj.watcher.call(subj.obj, "root", "differentattr", difference, subj.actual);
                 }
                 subj.actual = clone(subj.obj);
-
             } else {
                 var difference = getObjDiff(subj.obj[subj.prop], subj.actual);
 
@@ -2403,23 +2471,48 @@ module.exports = b;
     WatchJS.watch = watch;
     WatchJS.unwatch = unwatch;
     WatchJS.callWatchers = callWatchers;
-    WatchJS.suspend = suspend; // suspend watchers   
+    WatchJS.suspend = suspend; // suspend watchers  
     WatchJS.onChange = trackChange; // track changes made to object or  it's property and return a single change object
 
     return WatchJS;
 });
 /* not supported */
 
+
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/ladders.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+var _get = function get(object, property, receiver) {
+	var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+		var parent = Object.getPrototypeOf(object);if (parent === null) {
+			return undefined;
+		} else {
+			return get(parent, property, receiver);
+		}
+	} else if ("value" in desc && desc.writable) {
+		return desc.value;
+	} else {
+		var getter = desc.get;if (getter === undefined) {
+			return undefined;
+		}return getter.call(receiver);
+	}
+};
 
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+var _inherits = function (subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+};
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
@@ -2442,13 +2535,6 @@ var NumberBar = (function (_Inferno$Component) {
 	_inherits(NumberBar, _Inferno$Component);
 
 	_prototypeProperties(NumberBar, null, {
-		onUpdate: {
-			value: function onUpdate() {
-				this.barClass = "numberbar-bar numberbar-bar-" + this.type;
-			},
-			writable: true,
-			configurable: true
-		},
 		_getNumberBarStyle: {
 			value: function _getNumberBarStyle() {
 				var background, color;
@@ -2495,7 +2581,7 @@ var NumberBar = (function (_Inferno$Component) {
 			value: function initTemplate($) {
 				var _this = this;
 				return [["div.numberbar", { style: this._getNumberBarStyle }, ["div", { className: $.text(function (none) {
-						return _this.barClass;
+						return "numberbar-bar numberbar-bar-" + _this.type;
 					}), style: this._getBarStyle }], ["div.numberbar-number", $.text(function (none) {
 					return _this.number;
 				})]]];
@@ -2512,7 +2598,7 @@ var LadderRow = (function (_Inferno$Component2) {
 	function LadderRow() {
 		_classCallCheck(this, LadderRow);
 
-		this.price = 0;
+		this.priceLevel = {};
 		_get(_Inferno$Component2.prototype, "constructor", this).call(this);
 	}
 
@@ -2527,23 +2613,23 @@ var LadderRow = (function (_Inferno$Component2) {
 				var bidData = (function () {
 					return {
 						type: "bid",
-						number: this.bidAmount,
-						maxNumber: this.maxAmount,
-						maxBarWidth: this.maxBarWidth
+						number: this.priceLevel.bidVolume,
+						maxNumber: ordersModel.maxVolume,
+						maxBarWidth: "120"
 					};
 				}).bind(this);
 
 				var askData = (function () {
 					return {
 						type: "ask",
-						number: this.askAmount,
-						maxNumber: this.maxAmount,
-						maxBarWidth: this.maxBarWidth
+						number: this.priceLevel.askVolume,
+						maxNumber: ordersModel.maxVolume,
+						maxBarWidth: "120"
 					};
 				}).bind(this);
 
 				return [$.render("div.ladder-cell", new NumberBar(), bidData), ["div", { className: "ladder-cell ladder-cell-price" }, $.text(function (none) {
-					return _this.price;
+					return _this.priceLevel.price;
 				})], $.render("div.ladder-cell", new NumberBar(), askData)];
 			},
 			writable: true,
@@ -2560,17 +2646,12 @@ var Ladder = (function (_Inferno$Component3) {
 	function Ladder() {
 		_classCallCheck(this, Ladder);
 
-		this.ladderRows = ordersModel.levels.map((function (row, index) {
+		this.ladderRows = ordersModel.levels.map((function (priceLevel, index) {
 			return {
 				ladderRow: new LadderRow(),
 				props: function () {
 					return {
-						price: row.price,
-						bidAmount: row.bidVolume,
-						askAmount: row.askVolume,
-						key: row.key,
-						maxBarWidth: "120",
-						maxAmount: ordersModel.maxVolume
+						priceLevel: priceLevel
 					};
 				}
 			};
@@ -2586,6 +2667,18 @@ var Ladder = (function (_Inferno$Component3) {
 	_inherits(Ladder, _Inferno$Component3);
 
 	_prototypeProperties(Ladder, null, {
+		dependencies: {
+
+			//optional way of boosting performance by letting Inferno what it can optimise
+			value: function dependencies() {
+				//outline what things affect this particular component (not child components)
+				return [
+				//e.g. if the amount of ladder rows changes, it will affect this component
+				this.ladderRows.length];
+			},
+			writable: true,
+			configurable: true
+		},
 		initTemplate: {
 			value: function initTemplate($) {
 				var _this = this;
@@ -2639,5 +2732,7 @@ var LaddersApp = (function (_Inferno$Component4) {
 ;
 
 window.LaddersApp = LaddersApp;
+
+
 
 },{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/ladders.js"]);
