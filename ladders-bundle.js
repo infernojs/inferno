@@ -220,7 +220,6 @@ var Component = (function () {
 						skipUpdateThis = true;
 					} else {
 						this._lastDependencyCheck = dependencies;
-						console.log("updating", dependencies);
 						skipUpdateThis = false;
 					}
 				}
@@ -482,6 +481,8 @@ var Component = (function () {
 module.exports = Component;
 //watch(this, this._propsToWatch, this._propChange.bind(this));
 //unwatch(this, this._propsToWatch);
+
+
 
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js","./watch.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/watch.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){

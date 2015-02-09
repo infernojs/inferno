@@ -42,7 +42,6 @@ class Component {
 				skipUpdateThis = true;
 			} else {
 				this._lastDependencyCheck = dependencies;
-				console.log('updating', dependencies);
 				skipUpdateThis = false;
 			}
 		}
