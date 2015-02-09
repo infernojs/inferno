@@ -28,7 +28,7 @@ class Component {
 	}
 
 	forceUpdate() {
-		var t = Date.now(),
+		var t,
 				skipUpdateThis = false;
 
 		//check if we need to update ourselves
@@ -47,6 +47,7 @@ class Component {
 		}
 
 		if(skipUpdateThis === false) {
+			t = Date.now();
 			if(t > this._lastTick + 17) {
 				if(this._ctx != null) {
 					b.invalidate(this._ctx);

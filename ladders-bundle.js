@@ -206,7 +206,7 @@ var Component = (function () {
 	_prototypeProperties(Component, null, {
 		forceUpdate: {
 			value: function forceUpdate() {
-				var t = Date.now(),
+				var t,
 				    skipUpdateThis = false;
 
 				//check if we need to update ourselves
@@ -225,6 +225,7 @@ var Component = (function () {
 				}
 
 				if (skipUpdateThis === false) {
+					t = Date.now();
 					if (t > this._lastTick + 17) {
 						if (this._ctx != null) {
 							b.invalidate(this._ctx);
@@ -481,8 +482,6 @@ var Component = (function () {
 module.exports = Component;
 //watch(this, this._propsToWatch, this._propChange.bind(this));
 //unwatch(this, this._propsToWatch);
-
-
 
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js","./watch.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/watch.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
@@ -2733,7 +2732,6 @@ var LaddersApp = (function (_Inferno$Component4) {
 ;
 
 window.LaddersApp = LaddersApp;
-
 
 
 },{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/ladders.js"]);

@@ -86,7 +86,7 @@
   </style>
 </head>
 <body class="transitions">
-  <div id="app"></app>
+
   <script src='https://rawgit.com/MikeMcl/big.js/master/big.js'></script>
   <script src="mithril.min.js"></script>
   <script>
@@ -267,6 +267,11 @@
 
     Ladder.controller = function() {
 
+      setInterval(function() {
+        m.redraw()
+      }.bind(this), THROTTLE + (Math.floor(Math.random() * 120)) - 60);
+
+
       this.ladderRows = ordersModel.levels.map(function(priceLevel, index) {
         return {
           ladderRow: new LadderRow.controller(),
@@ -277,7 +282,7 @@
     };
 
     Ladder.view = function(ctrl) {
-      return m("div.component", [
+      return [
         m("div.ladder", [
           m('header', "Apple (AAPL)"),
         ]),
@@ -286,7 +291,7 @@
             return LadderRow.view(data.ladderRow, data.priceLevel);
           })
         ])
-      ]);
+      ];
     };
 
     var LaddersApp = {};
@@ -295,9 +300,6 @@
     LaddersApp.controller = function() {
       this.ladders = [];
 
-      setInterval(function() {
-        m.redraw()
-      }.bind(this), THROTTLE + (Math.floor(Math.random() * 120)) - 60);
 
       for(var i = 0; i < NUMBER_OF_LADDERS; i++) {
         this.ladders.push(new Ladder.controller());
@@ -316,8 +318,19 @@
     };
 
     var ordersModel = new OrdersModel();
+
+    var app = document.createElement('div');
+    app.className = "containers"
+
     //initialize
-    m.module(document.getElementById("app"), LaddersApp);
+    for(var i = 0; i < NUMBER_OF_LADDERS; i++) {
+      var sub = document.createElement('div');
+      sub.className = "component";
+      document.body.appendChild(sub);
+      m.module(sub, Ladder);
+    }
+
+
   </script>
 </body>
 </html>
