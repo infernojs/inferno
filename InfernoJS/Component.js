@@ -15,6 +15,8 @@ class Component {
 
 	constructor() {
 		this._compiled = [];
+		this._propsToWatch = [];
+		this._lastTick = 0;
 		this._templateHelper = new TemplateHelper();
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
@@ -22,6 +24,15 @@ class Component {
 		this._compileTemplate(this);
 		//init the watchers on user defined properties
 		this._initPropWatchers();
+		this._enableWatchers();
+	}
+
+	forceUpdate() {
+		var t = Date.now();
+		if(t > this._lastTick + 17) {
+			b.invalidate();
+			this._lastTick = t;
+		}
 	}
 
 	mount(elem) {
@@ -47,17 +58,26 @@ class Component {
 	}
 
 	_initPropWatchers() {
-		var toWatch = [],
-				prop = '';
+		var prop = '';
 
 		for(prop in this) {
 			if(prop.charAt(0) !== '_') {
 				//add to list of props to watch
-				toWatch.push(prop);
+				this._propsToWatch.push(prop);
 			}
 		}
+	}
 
-		watch(this, toWatch, this._propChange.bind(this));
+	_enableWatchers() {
+		//watch(this, this._propsToWatch, this._propChange.bind(this));
+	}
+
+	_disableWatchers() {
+		//unwatch(this, this._propsToWatch);
+	}
+
+	_isFunction(obj) {
+		return !!(obj && obj.constructor && obj.call && obj.apply);
 	}
 
 	_createVirtualDom() {
@@ -78,15 +98,19 @@ class Component {
 				if(node.tag != null) {
 					vNode.tag = node.tag;
 				}
+				if(node.style != null) {
+					if(this._isFunction(node.style)) {
+						vNode.style = node.style.call(this);
+					} else {
+						vNode.style = node.style;
+					}
+				}
 				if(node.className != null) {
 					if(typeof node.className === "string") {
 						vNode.className = node.className;
 					} else if(node.className.$type != null) {
 						vNode.className = this._templateHelper.process(node.className);
 					}
-				}
-				if(node.style != null) {
-					vNode.style = node.style;
 				}
 				if(node.attrs != null) {
 					vNode.attrs = node.attrs;
@@ -140,7 +164,32 @@ class Component {
 	}
 
 	render(ctx, me) {
-		me.tag = ctx.data.tag;
+		var props = ctx.data.props,
+				compiledTag = {},
+				i = 0;
+
+		if(ctx.data.props != null) {
+			props = ctx.data.props();
+			//best to also disable the watcher here?
+			//apply the props to this object
+			this._disableWatchers();
+			for(i in props) {
+				this[i] = props[i];
+			}
+			this._enableWatchers();
+			if(this.onUpdate != null) {
+				this.onUpdate();
+			}
+		}
+		//handle the tag
+		compiledTag = Compiler.compileTag(ctx.data.tag);
+		me.tag = compiledTag.tag;
+		if(compiledTag.classes.length > 0) {
+			me.className = compiledTag.classes;
+		}
+		if(compiledTag.ids.length > 0) {
+			me.attr.id = compiledTag.ids;
+		}
 		//generate children from this component's own vdom
 		me.children = this._createVirtualDom();
 	}
@@ -150,7 +199,7 @@ class Component {
 		this._compiled = [];
 
 		for(i = 0; i < this._template.length; i++) {
-			Compiler.compileDsl.call(this, this._template[i], this._compiled);
+			Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
 		};
 	}
 

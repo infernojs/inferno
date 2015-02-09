@@ -67,6 +67,7 @@ Compiler.compileDsl = function (elements, root, index) {
 			} else if (elements.$type === "render") {
 				elem.$type = "render";
 				elem.$component = elements.$component;
+				elem.$data = elements.$data;
 				elem.$tag = elements.$tag;
 			}
 			//handle it if it's a text value
@@ -158,23 +159,18 @@ Compiler.compileTag = function (tag) {
 
 module.exports = Compiler;
 
-
-
-
-
-
-
-
-
-
-
-
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+};
 
 var TemplateHelper = require("./TemplateHelper.js");
 var Compiler = require("./Compiler.js");
@@ -192,6 +188,8 @@ var Component = (function () {
 		_classCallCheck(this, Component);
 
 		this._compiled = [];
+		this._propsToWatch = [];
+		this._lastTick = 0;
 		this._templateHelper = new TemplateHelper();
 		//init the template
 		this._template = this.initTemplate(this._templateHelper) || {};
@@ -199,9 +197,21 @@ var Component = (function () {
 		this._compileTemplate(this);
 		//init the watchers on user defined properties
 		this._initPropWatchers();
+		this._enableWatchers();
 	}
 
 	_prototypeProperties(Component, null, {
+		forceUpdate: {
+			value: function forceUpdate() {
+				var t = Date.now();
+				if (t > this._lastTick + 17) {
+					b.invalidate();
+					this._lastTick = t;
+				}
+			},
+			writable: true,
+			configurable: true
+		},
 		mount: {
 			value: function mount(elem) {
 				//clear the contents
@@ -235,17 +245,31 @@ var Component = (function () {
 		},
 		_initPropWatchers: {
 			value: function _initPropWatchers() {
-				var toWatch = [],
-				    prop = "";
+				var prop = "";
 
 				for (prop in this) {
 					if (prop.charAt(0) !== "_") {
 						//add to list of props to watch
-						toWatch.push(prop);
+						this._propsToWatch.push(prop);
 					}
 				}
-
-				watch(this, toWatch, this._propChange.bind(this));
+			},
+			writable: true,
+			configurable: true
+		},
+		_enableWatchers: {
+			value: function _enableWatchers() {},
+			writable: true,
+			configurable: true
+		},
+		_disableWatchers: {
+			value: function _disableWatchers() {},
+			writable: true,
+			configurable: true
+		},
+		_isFunction: {
+			value: function _isFunction(obj) {
+				return !!(obj && obj.constructor && obj.call && obj.apply);
 			},
 			writable: true,
 			configurable: true
@@ -269,15 +293,19 @@ var Component = (function () {
 						if (node.tag != null) {
 							vNode.tag = node.tag;
 						}
+						if (node.style != null) {
+							if (this._isFunction(node.style)) {
+								vNode.style = node.style.call(this);
+							} else {
+								vNode.style = node.style;
+							}
+						}
 						if (node.className != null) {
 							if (typeof node.className === "string") {
 								vNode.className = node.className;
 							} else if (node.className.$type != null) {
 								vNode.className = this._templateHelper.process(node.className);
 							}
-						}
-						if (node.style != null) {
-							vNode.style = node.style;
 						}
 						if (node.attrs != null) {
 							vNode.attrs = node.attrs;
@@ -333,7 +361,32 @@ var Component = (function () {
 		},
 		render: {
 			value: function render(ctx, me) {
-				me.tag = ctx.data.tag;
+				var props = ctx.data.props,
+				    compiledTag = {},
+				    i = 0;
+
+				if (ctx.data.props != null) {
+					props = ctx.data.props();
+					//best to also disable the watcher here?
+					//apply the props to this object
+					this._disableWatchers();
+					for (i in props) {
+						this[i] = props[i];
+					}
+					this._enableWatchers();
+					if (this.onUpdate != null) {
+						this.onUpdate();
+					}
+				}
+				//handle the tag
+				compiledTag = Compiler.compileTag(ctx.data.tag);
+				me.tag = compiledTag.tag;
+				if (compiledTag.classes.length > 0) {
+					me.className = compiledTag.classes;
+				}
+				if (compiledTag.ids.length > 0) {
+					me.attr.id = compiledTag.ids;
+				}
 				//generate children from this component's own vdom
 				me.children = this._createVirtualDom();
 			},
@@ -346,7 +399,7 @@ var Component = (function () {
 				this._compiled = [];
 
 				for (i = 0; i < this._template.length; i++) {
-					Compiler.compileDsl.call(this, this._template[i], this._compiled);
+					Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
 				};
 			},
 			writable: true,
@@ -368,6 +421,9 @@ var Component = (function () {
 ;
 
 module.exports = Component;
+//watch(this, this._propsToWatch, this._propChange.bind(this));
+//unwatch(this, this._propsToWatch);
+
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js","./watch.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/watch.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
@@ -454,18 +510,21 @@ var TemplateHelper = (function () {
         } else if (node.$type === "render") {
           return {
             component: node.$component,
-            data: { tag: node.$tag }
+            data: {
+              props: node.$data,
+              tag: node.$tag
+            }
           };
         } else if (node.$type === "text") {
           //check for formatters
-          return node.$toRender();
+          return node.$toRender() + "";
         } else if (node.$type === "forEach") {
           items = node.$items();
           children = [];
           for (i = 0; i < items.length; i++) {
             template = node.$toRender.call(this._comp, items[i], i, items);
             for (j = 0; j < template.length; j++) {
-              Compiler.compileDsl.call(this, template[j], children, 0);
+              Compiler.compileDsl.call(this._comp, template[j], children, 0);
             }
           }
           return children;
@@ -475,7 +534,7 @@ var TemplateHelper = (function () {
           for (i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
             template = node.$toRender.call(this._comp, i);
             for (j = 0; j < template.length; j++) {
-              Compiler.compileDsl.call(this, template[j], children, 0);
+              Compiler.compileDsl.call(this._comp, template[j], children, 0);
             }
           }
           return children;
@@ -521,10 +580,11 @@ var TemplateHelper = (function () {
       configurable: true
     },
     render: {
-      value: function render(tag, component) {
+      value: function render(tag, component, data) {
         return {
           $type: "render",
           $tag: tag,
+          $data: data,
           $component: component
         };
       },
@@ -2365,56 +2425,174 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var Inferno = require("./InfernoJS/Inferno.js");
 
+var NumberBar = (function (_Inferno$Component) {
+	function NumberBar() {
+		_classCallCheck(this, NumberBar);
 
-var Bar = (function (_Inferno$Component) {
-	function Bar() {
-		_classCallCheck(this, Bar);
-
+		this.type = "";
+		this.barClass = "";
+		this.selected = false;
+		this.mouseOver = false;
+		this.maxBarWidth = 0;
+		this.number = 0;
+		this.maxNumber = 0;
 		_get(_Inferno$Component.prototype, "constructor", this).call(this);
 	}
 
-	_inherits(Bar, _Inferno$Component);
+	_inherits(NumberBar, _Inferno$Component);
 
-	_prototypeProperties(Bar, null, {
+	_prototypeProperties(NumberBar, null, {
+		onUpdate: {
+			value: function onUpdate() {
+				this.barClass = "numberbar-bar numberbar-bar-" + this.type;
+			},
+			writable: true,
+			configurable: true
+		},
+		_getNumberBarStyle: {
+			value: function _getNumberBarStyle() {
+				var background, color;
+
+				if (this.selected) {
+					background = "rgb(100,100,100)";
+					color = "#ffffff";
+				} else if (this.mouseOver) {
+					background = "rgb(200,200,200)";
+					color = "";
+				} else {
+					background = "";
+					color = "";
+				}
+
+				return {
+					backgroundColor: background,
+					color: color
+				};
+			},
+			writable: true,
+			configurable: true
+		},
+		_getBarStyle: {
+			value: function _getBarStyle() {
+				var ratio = this.number / this.maxNumber;
+				var value = ratio * this.maxBarWidth + "px";
+				var display = this.mouseOver || this.selected ? "none" : "";
+				var translate = (1 - ratio) * 100;
+
+				if (this.type === "ask") {
+					translate = -translate;
+				}
+
+				return {
+					display: display,
+					transform: "translateX(" + translate + "%)"
+				};
+			},
+			writable: true,
+			configurable: true
+		},
 		initTemplate: {
-			value: function initTemplate(templateHelper) {
-				//$ = templateHelper shorthand
-				var $ = templateHelper;
-
-				return [["div.ladder-cell"], ["div.ladder-cell"], ["div.ladder-cell"]];
+			value: function initTemplate($) {
+				var _this = this;
+				return [["div.numberbar", { style: this._getNumberBarStyle }, ["div", { className: $.text(function (none) {
+						return _this.barClass;
+					}), style: this._getBarStyle }], ["div.numberbar-number", $.text(function (none) {
+					return _this.number;
+				})]]];
 			},
 			writable: true,
 			configurable: true
 		}
 	});
 
-	return Bar;
+	return NumberBar;
+})(Inferno.Component);
+
+var LadderRow = (function (_Inferno$Component2) {
+	function LadderRow() {
+		_classCallCheck(this, LadderRow);
+
+		this.price = 0;
+		_get(_Inferno$Component2.prototype, "constructor", this).call(this);
+	}
+
+	_inherits(LadderRow, _Inferno$Component2);
+
+	_prototypeProperties(LadderRow, null, {
+		initTemplate: {
+			value: function initTemplate($) {
+				var _this = this;
+
+
+				var bidData = (function () {
+					return {
+						type: "bid",
+						number: this.bidAmount,
+						maxNumber: this.maxAmount,
+						maxBarWidth: this.maxBarWidth
+					};
+				}).bind(this);
+
+				var askData = (function () {
+					return {
+						type: "ask",
+						number: this.askAmount,
+						maxNumber: this.maxAmount,
+						maxBarWidth: this.maxBarWidth
+					};
+				}).bind(this);
+
+				return [$.render("div.ladder-cell", new NumberBar(), bidData), ["div", { className: "ladder-cell ladder-cell-price" }, $.text(function (none) {
+					return _this.price;
+				})], $.render("div.ladder-cell", new NumberBar(), askData)];
+			},
+			writable: true,
+			configurable: true
+		}
+	});
+
+	return LadderRow;
 })(Inferno.Component);
 
 ;
 
-var Component = (function (_Inferno$Component2) {
-	function Component() {
-		_classCallCheck(this, Component);
+var Ladder = (function (_Inferno$Component3) {
+	function Ladder() {
+		_classCallCheck(this, Ladder);
 
-		this.bars = [new Bar(true), new Bar(true), new Bar(true), new Bar(true), new Bar(true), new Bar(false), new Bar(false), new Bar(false), new Bar(false), new Bar(false)];
+		this.ladderRows = ordersModel.levels.map((function (row, index) {
+			return {
+				ladderRow: new LadderRow(),
+				props: function () {
+					return {
+						price: row.price,
+						bidAmount: row.bidVolume,
+						askAmount: row.askVolume,
+						key: row.key,
+						maxBarWidth: "120",
+						maxAmount: ordersModel.maxVolume
+					};
+				}
+			};
+		}).bind(this));
 
-		_get(_Inferno$Component2.prototype, "constructor", this).call(this);
+		setInterval((function () {
+			this.forceUpdate();
+		}).bind(this), THROTTLE + Math.floor(Math.random() * 120) - 60);
+
+		_get(_Inferno$Component3.prototype, "constructor", this).call(this);
 	}
 
-	_inherits(Component, _Inferno$Component2);
+	_inherits(Ladder, _Inferno$Component3);
 
-	_prototypeProperties(Component, null, {
+	_prototypeProperties(Ladder, null, {
 		initTemplate: {
-			value: function initTemplate(templateHelper) {
+			value: function initTemplate($) {
 				var _this = this;
-				//$ = templateHelper shorthand
-				var $ = templateHelper;
-
 				return [["div.ladder", ["header", "Apple (AAPL)"]], ["div.bars", $["for"](function (each) {
-					return _this.bars;
-				}, function (bar) {
-					return [$.render("div.ladder-row", bar)];
+					return _this.ladderRows;
+				}, function (ladderRow) {
+					return [$.render("div.ladder-row", ladderRow.ladderRow, ladderRow.props)];
 				})]];
 			},
 			writable: true,
@@ -2422,32 +2600,32 @@ var Component = (function (_Inferno$Component2) {
 		}
 	});
 
-	return Component;
+	return Ladder;
 })(Inferno.Component);
 
-var LaddersApp = (function (_Inferno$Component3) {
+var LaddersApp = (function (_Inferno$Component4) {
 	function LaddersApp() {
 		_classCallCheck(this, LaddersApp);
 
-		//we declare all our properties
-		this.components = [new Component(), new Component(), new Component(), new Component(), new Component(), new Component()];
+		this.ladders = [];
 
-		_get(_Inferno$Component3.prototype, "constructor", this).call(this);
+		for (var i = 0; i < NUMBER_OF_LADDERS; i++) {
+			this.ladders.push(new Ladder());
+		}
+
+		_get(_Inferno$Component4.prototype, "constructor", this).call(this);
 	}
 
-	_inherits(LaddersApp, _Inferno$Component3);
+	_inherits(LaddersApp, _Inferno$Component4);
 
 	_prototypeProperties(LaddersApp, null, {
 		initTemplate: {
-			value: function initTemplate(templateHelper) {
+			value: function initTemplate($) {
 				var _this = this;
-				//$ = templateHelper shorthand
-				var $ = templateHelper;
-
 				return [["div.components", $["for"](function (each) {
-					return _this.components;
-				}, function (component) {
-					return [$.render("div.component", component)];
+					return _this.ladders;
+				}, function (ladder) {
+					return [$.render("div.component", ladder)];
 				})]];
 			},
 			writable: true,

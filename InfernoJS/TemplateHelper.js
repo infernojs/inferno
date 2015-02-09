@@ -59,18 +59,21 @@ class TemplateHelper {
     } else if(node.$type === "render") {
       return {
         component: node.$component,
-        data: { tag: node.$tag }
+        data: {
+          props: node.$data,
+          tag: node.$tag
+        }
       };
   	} else if(node.$type === "text") {
       //check for formatters
-  		return node.$toRender();
+  		return node.$toRender() + "";
     } else if(node.$type === "forEach") {
       items = node.$items();
       children = [];
       for(i = 0; i < items.length; i++) {
         template = node.$toRender.call(this._comp, items[i], i, items);
         for(j = 0; j < template.length; j++) {
-          Compiler.compileDsl.call(this, template[j], children, 0);
+          Compiler.compileDsl.call(this._comp, template[j], children, 0);
         }
       }
       return children;
@@ -80,7 +83,7 @@ class TemplateHelper {
       for(i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
         template = node.$toRender.call(this._comp, i);
         for(j = 0; j < template.length; j++) {
-          Compiler.compileDsl.call(this, template[j], children, 0);
+          Compiler.compileDsl.call(this._comp, template[j], children, 0);
         }
       }
       return children;
@@ -117,10 +120,11 @@ class TemplateHelper {
     }
   }
 
-  render(tag, component) {
+  render(tag, component, data) {
     return {
       $type: "render",
       $tag: tag,
+      $data: data,
       $component: component
     }
   }

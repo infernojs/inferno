@@ -65,6 +65,7 @@ Compiler.compileDsl = function(elements, root, index) {
 			else if(elements.$type === "render") {
 				elem.$type = "render";
 				elem.$component = elements.$component;
+				elem.$data = elements.$data;
 				elem.$tag = elements.$tag;
 			}
 			//handle it if it's a text value
