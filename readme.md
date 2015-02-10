@@ -72,5 +72,5 @@ to utilise the full power of JavaScript to manipulate how templates are rendered
 
 Convenient helper functions are provided (`$` in the above example) to allow for
 typical template logic flow handling like that offered in other templating libraries
-(Handlebars, Knockout, Angular) without compromising on performance, testability or
+(Handlebars, Knockout, Angular, etc) without compromising on performance, testability or
 readability.
