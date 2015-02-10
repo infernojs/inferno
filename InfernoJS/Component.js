@@ -143,8 +143,8 @@ class Component {
 						}
 					}
 				}
-				if(node.onCreated != null) {
-					vNode.onCreated = node.onCreated;
+				if(node.onDomCreated != null) {
+					vNode.onDomCreated = node.onDomCreated;
 				}
 				if(node.children == null) {
 					//no children (luck bastard)
@@ -232,8 +232,9 @@ class Component {
 	_compileTemplate() {
 		var i = 0;
 		this._compiled = [];
-
-		Compiler.compileDsl.call(this._comp, this._template, this._compiled);
+		for(i = 0; i < this._template.length; i++) {
+			Compiler.compileDsl.call(this, this._template[i], this._compiled);
+		};
 	}
 
 	_propChange(changes) {

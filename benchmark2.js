@@ -2,60 +2,38 @@
 
 var Inferno = require('./InfernoJS/Inferno.js');
 
-class Box extends Inferno.Component {
-
-  constructor() {
-    this.count = 0;
-    this.i = 0;
-    super();
-  }
-
-  getStyle() {
-    return {
-      top: (Math.sin(this.count / 10) * 10) + "px",
-      left: (Math.cos(this.count / 10) * 10) + "px",
-      background: "rgb(0,0," + (this.count % 255) +")"
-    };
-  }
-
-  initTemplate($) {
-    return ['div.box', {id: $.text(none => "box-" + this.i), style: this.getStyle}, $.text(none => this.count % 100)];
-  }
-}
-
 class InfernoBenchmark2 extends Inferno.Component {
 
   //properties starting with _underscore are not observed by default
   constructor() {
-    this.count = 0;
-    this.boxes = [];
-
-    for(var i = 0; i < N; i++) {
-      this.boxes.push(new Box());
-    }
-
+    this._count = 0;
     super();
   }
 
-  dependencies() {
-    return [
-      //update the set of boxes only if their length changes
-      this.boxes.length
-    ]
+  animateBoxes() {
+    this._count++
+    this.forceUpdate();
   }
 
-  animateBoxes() {
-    this.count++
-    this.forceUpdate();
+  getStyle() {
+    return {
+      top: (Math.sin(this._count / 10) * 10) + "px",
+      left: (Math.cos(this._count / 10) * 10) + "px",
+      background: "rgb(0,0," + (this._count % 255) +")"
+    };
   }
 
   initTemplate($) {
     return [
       ["div#grid",
-        $.for(each => this.boxes, (box, i) => [
-          $.render('div.box-view', box, props => ({ count: this.count, i: i }))
+        //same as for(i = 0; i < N; i = i + 1)
+        $.for(increment => [0, N, 1], i => [
+          ['div.box-view',
+            //set it to 0 to begin with, don't bind to a variable
+            ['div.box', {id: $.text(none => "box-" + i), style: this.getStyle}, $.text(none => this._count % 100)]
+          ]
         ])
-      ],
+      ]
     ];
   }
 };

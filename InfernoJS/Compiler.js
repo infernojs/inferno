@@ -102,7 +102,7 @@ Compiler.compileDsl = function(elements, root, index) {
 					switch(j) {
 						case "className":
 						case "style":
-						case "onCreated":
+						case "onDomCreated":
 							root[j] = elements[j];
 							break;
 						case "id":
@@ -119,7 +119,6 @@ Compiler.compileDsl = function(elements, root, index) {
 			}
 		}
 	}
-
 	//check if the object is empty
 	if(Object.keys(elem).length === 0) {
 		return;

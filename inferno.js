@@ -104,7 +104,7 @@ Compiler.compileDsl = function (elements, root, index) {
 					switch (j) {
 						case "className":
 						case "style":
-						case "onCreated":
+						case "onDomCreated":
 							root[j] = elements[j];
 							break;
 						case "id":
@@ -121,7 +121,6 @@ Compiler.compileDsl = function (elements, root, index) {
 			}
 		}
 	}
-
 	//check if the object is empty
 	if (Object.keys(elem).length === 0) {
 		return;
@@ -158,6 +157,8 @@ Compiler.compileTag = function (tag) {
 };
 
 module.exports = Compiler;
+
+
 
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
@@ -325,9 +326,16 @@ var Component = (function () {
 						}
 						if (node.attrs != null) {
 							vNode.attrs = node.attrs;
+							if (node.attrs.id != null) {
+								if (typeof node.attrs.id === "string") {
+									vNode.attrs.id = node.attrs.id;
+								} else if (node.attrs.id.$type != null) {
+									vNode.attrs.id = this._templateHelper.process(node.attrs.id);
+								}
+							}
 						}
-						if (node.onCreated != null) {
-							vNode.onCreated = node.onCreated;
+						if (node.onDomCreated != null) {
+							vNode.onDomCreated = node.onDomCreated;
 						}
 						if (node.children == null) {
 							//no children (luck bastard)
@@ -423,9 +431,10 @@ var Component = (function () {
 			value: function _compileTemplate() {
 				var i = 0;
 				this._compiled = [];
-
+				debugger;
+				//Compiler.compileDsl.call(this, this._template, this._compiled);
 				for (i = 0; i < this._template.length; i++) {
-					Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
+					Compiler.compileDsl.call(this, this._template[i], this._compiled);
 				};
 			},
 			writable: true,
@@ -447,6 +456,13 @@ var Component = (function () {
 ;
 
 module.exports = Component;
+
+
+
+
+
+
+
 
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
@@ -802,20 +818,6 @@ var b = (function (window, document) {
         }
         return oldAttrs;
     }
-    function nodeAccessor(c) {
-        return {
-            update: function (attrs, children) {
-                if (attrs.style) {
-                    for (var i in attrs.style) {
-                        c.element.style[i] = attrs.style[i];
-                    }
-                }
-                if (children != null) {
-                    c.element.firstChild.nodeValue = children;
-                }
-            }
-        };
-    }
     function pushInitCallback(c, aupdate) {
         var cc = c.component;
         if (cc) {
@@ -862,8 +864,8 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.onCreated) {
-            c.onCreated.call(rootContext, nodeAccessor(c));
+        if (c.onDomCreated) {
+            c.onDomCreated.call(rootContext, c.element);
         }
         if (c.attrs) c.attrs = updateElement(c, el, c.attrs, {});
         if (c.style) updateStyle(c, el, c.style, undefined);
@@ -1683,13 +1685,6 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-
-
-
-
-
-
-
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js":[function(require,module,exports){
 "use strict";
 
@@ -1758,7 +1753,10 @@ var InfernoBenchmark = (function (_Inferno$Component) {
 
         //loop through all our virtual objects and apply the updates
         for (var i = 0; i < this._boxElems.length; i++) {
-          this._boxElems[i].update({ style: newStyle }, count);
+          for (var s in newStyle) {
+            this._boxElems[i].style[s] = newStyle[s];
+          }
+          this._boxElems[i].firstChild.nodeValue = count;
         }
       },
       writable: true,
@@ -1772,20 +1770,8 @@ var InfernoBenchmark = (function (_Inferno$Component) {
       configurable: true
     },
     initTemplate: {
-      value: function initTemplate(templateHelper) {
-        var _this = this;
-        //$ = templateHelper shorthand
-        var $ = templateHelper;
-
-        return [["div#grid",
-        //same as for(i = 0; i < N; i = i + 1)
-        $["for"](function (increment) {
-          return [0, N, 1];
-        }, function (i) {
-          return [["div.box-view",
-          //set it to 0 to begin with, don't bind to a variable
-          ["div.box", { id: "box-" + i, onCreated: _this.addBox }, "0"]]];
-        })]];
+      value: function initTemplate($) {
+        return ["div.box"];
       },
       writable: true,
       configurable: true
