@@ -12,7 +12,6 @@ natively available.
 
 Here is an example component written with Inferno:
 
-//EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
 ```javascript
 var Inferno = require('./InfernoJS/Inferno.js');
@@ -66,3 +65,12 @@ class Demo extends Inferno.Component {
 
 window.Demo = Demo;
 ```
+
+As you can see from the `initTemplate($)` method above, Inferno introduces its own
+DSL for creating the DOM. This DSL is fully 100% JavaScript code, allowing developers
+to utilise the full power of JavaScript to manipulate how templates are rendered.
+
+Convenient helper functions are provided (`$` in the above example) to allow for
+typical template logic flow handling like that offered in other templating libraries
+(Handlebars, Knockout, Angular) without compromising on performance, testability or
+readability.
