@@ -9,6 +9,7 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/0.10.6/vue.js"></script>
   <script src="http://cdn.jsdelivr.net/mithril/0.1.22/mithril.min.js"></script>
   <script src="inferno.js"></script>
+  <script src="inferno2.js"></script>
   <style>
     p {
       font: 12px/16px Arial;
@@ -63,7 +64,8 @@
 <button onclick="runRawdog()">Animate with nothing</button>
 <button onclick="runMithril()">Animate with Mithril (vdom)</button>
 <button onclick="runMithrilConfig()">Animate with Mithril (config)</button>
-<button onclick="runInferno()">Animate with Inferno</button>
+<button onclick="runInferno2()">Animate with Inferno</button>
+<button onclick="runInferno()">Animate with Inferno (different path)</button>
 
 <p id="timing">&nbsp;</p>
 <div id="gridcontainer">
@@ -393,6 +395,24 @@ window.runReact = function() {
             startClock();
             benchmarkLoop(function() {
               infernoBenchmark.animateBoxes();
+            });
+        }, 300);
+    };
+
+  })();
+
+  //Inferno2
+  (function(){
+
+    window.runInferno2 = function() {
+        reset();
+        var infernoBenchmark2 = new InfernoBenchmark2();
+        infernoBenchmark2.mount(document.getElementById('gridcontainer'));
+
+        setTimeout(function () {
+            startClock();
+            benchmarkLoop(function() {
+              infernoBenchmark2.animateBoxes();
             });
         }, 300);
     };

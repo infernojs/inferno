@@ -2,17 +2,11 @@ var TemplateHelper = require('./TemplateHelper.js');
 var Compiler = require('./Compiler.js');
 var b = require('./bobril.js');
 var b = require('./bobril.js');
-var WatchJS = require("./watch.js")
-var watch = WatchJS.watch;
-var unwatch = WatchJS.unwatch;
-var callWatchers = WatchJS.callWatchers;
-
 
 class Component {
 
 	constructor() {
 		this._compiled = [];
-		this._propsToWatch = [];
 		this._lastTick = 0;
 		this._ctx = null;
 		this._subComponents = [];
@@ -22,9 +16,6 @@ class Component {
 		this._template = this.initTemplate(this._templateHelper) || {};
 		//then compile the template
 		this._compileTemplate(this);
-		//init the watchers on user defined properties
-		this._initPropWatchers();
-		this._enableWatchers();
 	}
 
 	forceUpdate() {
@@ -106,25 +97,6 @@ class Component {
 			return true;
 	}
 
-	_initPropWatchers() {
-		var prop = '';
-
-		for(prop in this) {
-			if(prop.charAt(0) !== '_') {
-				//add to list of props to watch
-				this._propsToWatch.push(prop);
-			}
-		}
-	}
-
-	_enableWatchers() {
-		//watch(this, this._propsToWatch, this._propChange.bind(this));
-	}
-
-	_disableWatchers() {
-		//unwatch(this, this._propsToWatch);
-	}
-
 	_isFunction(obj) {
 		return !!(obj && obj.constructor && obj.call && obj.apply);
 	}
@@ -163,6 +135,16 @@ class Component {
 				}
 				if(node.attrs != null) {
 					vNode.attrs = node.attrs;
+					if(node.attrs.id != null) {
+						if(typeof node.attrs.id === "string") {
+							vNode.attrs.id = node.attrs.id;
+						} else if(node.attrs.id.$type != null) {
+							vNode.attrs.id = this._templateHelper.process(node.attrs.id);
+						}
+					}
+				}
+				if(node.onCreated != null) {
+					vNode.onCreated = node.onCreated;
 				}
 				if(node.children == null) {
 					//no children (luck bastard)
@@ -223,11 +205,9 @@ class Component {
 			props = ctx.data.props();
 			//best to also disable the watcher here?
 			//apply the props to this object
-			this._disableWatchers();
 			for(i in props) {
 				this[i] = props[i];
 			}
-			this._enableWatchers();
 			if(this.onUpdate != null) {
 				this.onUpdate();
 			}
@@ -253,9 +233,7 @@ class Component {
 		var i = 0;
 		this._compiled = [];
 
-		for(i = 0; i < this._template.length; i++) {
-			Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
-		};
+		Compiler.compileDsl.call(this._comp, this._template, this._compiled);
 	}
 
 	_propChange(changes) {

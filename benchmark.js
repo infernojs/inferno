@@ -20,9 +20,9 @@ class InfernoBenchmark extends Inferno.Component {
 
     //animate the style
     var newStyle = {
-      top: (Math.sin(this.count / 10) * 10) + "px",
-      left: (Math.cos(this.count / 10) * 10) + "px",
-      background: "rgb(0,0," + (this.count % 255) +")"
+      top: (Math.sin(this._count / 10) * 10) + "px",
+      left: (Math.cos(this._count / 10) * 10) + "px",
+      background: "rgb(0,0," + (this._count % 255) +")"
     };
 
     //loop through all our virtual objects and apply the updates

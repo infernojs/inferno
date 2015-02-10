@@ -325,6 +325,13 @@ var Component = (function () {
 						}
 						if (node.attrs != null) {
 							vNode.attrs = node.attrs;
+							if (node.attrs.id != null) {
+								if (typeof node.attrs.id === "string") {
+									vNode.attrs.id = node.attrs.id;
+								} else if (node.attrs.id.$type != null) {
+									vNode.attrs.id = this._templateHelper.process(node.attrs.id);
+								}
+							}
 						}
 						if (node.onCreated != null) {
 							vNode.onCreated = node.onCreated;
@@ -424,9 +431,7 @@ var Component = (function () {
 				var i = 0;
 				this._compiled = [];
 
-				for (i = 0; i < this._template.length; i++) {
-					Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
-				};
+				Compiler.compileDsl.call(this._comp, this._template, this._compiled);
 			},
 			writable: true,
 			configurable: true
@@ -447,6 +452,9 @@ var Component = (function () {
 ;
 
 module.exports = Component;
+
+
+
 
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
@@ -1683,14 +1691,7 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-
-
-
-
-
-
-
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark2.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) {
@@ -1729,62 +1730,90 @@ var _classCallCheck = function (instance, Constructor) {
 
 var Inferno = require("./InfernoJS/Inferno.js");
 
-var InfernoBenchmark = (function (_Inferno$Component) {
-  //properties starting with _underscore are not observed by default
-  function InfernoBenchmark() {
-    _classCallCheck(this, InfernoBenchmark);
+var Box = (function (_Inferno$Component) {
+  function Box() {
+    _classCallCheck(this, Box);
 
-    this._count = 0;
-    this._boxElems = [];
-
+    this.count = 0;
+    this.i = 0;
     _get(_Inferno$Component.prototype, "constructor", this).call(this);
   }
 
-  _inherits(InfernoBenchmark, _Inferno$Component);
+  _inherits(Box, _Inferno$Component);
 
-  _prototypeProperties(InfernoBenchmark, null, {
-    animateBoxes: {
-      value: function animateBoxes() {
-        this._count++;
-
-        var count = this._count % 100;
-
-        //animate the style
-        var newStyle = {
-          top: Math.sin(this._count / 10) * 10 + "px",
-          left: Math.cos(this._count / 10) * 10 + "px",
-          background: "rgb(0,0," + this._count % 255 + ")"
+  _prototypeProperties(Box, null, {
+    getStyle: {
+      value: function getStyle() {
+        return {
+          top: Math.sin(this.count / 10) * 10 + "px",
+          left: Math.cos(this.count / 10) * 10 + "px",
+          background: "rgb(0,0," + this.count % 255 + ")"
         };
-
-        //loop through all our virtual objects and apply the updates
-        for (var i = 0; i < this._boxElems.length; i++) {
-          this._boxElems[i].update({ style: newStyle }, count);
-        }
-      },
-      writable: true,
-      configurable: true
-    },
-    addBox: {
-      value: function addBox(element) {
-        this._boxElems.push(element);
       },
       writable: true,
       configurable: true
     },
     initTemplate: {
-      value: function initTemplate(templateHelper) {
+      value: function initTemplate($) {
         var _this = this;
-        //$ = templateHelper shorthand
-        var $ = templateHelper;
+        return ["div.box", { id: $.text(function (none) {
+            return "box-" + _this.i;
+          }), style: this.getStyle }, $.text(function (none) {
+          return _this.count % 100;
+        })];
+      },
+      writable: true,
+      configurable: true
+    }
+  });
 
-        return [["div#grid",
-        //same as for(i = 0; i < N; i = i + 1)
-        $["for"](function (increment) {
-          return [0, N, 1];
-        }, function (i) {
-          return [["div.box-view",
-          //set it to 0 to begin with, don't bind to a variable
-          ["div.box", { id: "box-" + i, onCreated: _this.addBox }, "0"]]];
+  return Box;
+})(Inferno.Component);
+
+var InfernoBenchmark2 = (function (_Inferno$Component2) {
+  //properties starting with _underscore are not observed by default
+  function InfernoBenchmark2() {
+    _classCallCheck(this, InfernoBenchmark2);
+
+    this.count = 0;
+    this.boxes = [];
+
+    for (var i = 0; i < N; i++) {
+      this.boxes.push(new Box());
+    }
+
+    _get(_Inferno$Component2.prototype, "constructor", this).call(this);
+  }
+
+  _inherits(InfernoBenchmark2, _Inferno$Component2);
+
+  _prototypeProperties(InfernoBenchmark2, null, {
+    dependencies: {
+      value: function dependencies() {
+        return [
+        //update the set of boxes only if their length changes
+        this.boxes.length];
+      },
+      writable: true,
+      configurable: true
+    },
+    animateBoxes: {
+      value: function animateBoxes() {
+        this.count++;
+        this.forceUpdate();
+      },
+      writable: true,
+      configurable: true
+    },
+    initTemplate: {
+      value: function initTemplate($) {
+        var _this = this;
+        return [["div#grid", $["for"](function (each) {
+          return _this.boxes;
+        }, function (box, i) {
+          return [$.render("div.box-view", box, function (props) {
+            return { count: _this.count, i: i };
+          })];
         })]];
       },
       writable: true,
@@ -1792,12 +1821,12 @@ var InfernoBenchmark = (function (_Inferno$Component) {
     }
   });
 
-  return InfernoBenchmark;
+  return InfernoBenchmark2;
 })(Inferno.Component);
 
 ;
 
-window.InfernoBenchmark = InfernoBenchmark;
+window.InfernoBenchmark2 = InfernoBenchmark2;
 
 
 
@@ -1807,5 +1836,4 @@ window.InfernoBenchmark = InfernoBenchmark;
 
 
 
-
-},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/benchmark.js"]);
+},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/benchmark2.js"]);
