@@ -32,7 +32,7 @@ class Demo extends Inferno.Component {
 		return [
 			["div",
 				["header",
-					["h1", $.text(none => "Example " + this.title, ["this.title"])]
+					["h1", $.text(none => "Example " + this.title)]
 				]
 			],
 			['div#test', {className: $.text(none => this.testClassName)},
@@ -43,7 +43,7 @@ class Demo extends Inferno.Component {
 				['div', $.if(isTrue => this.todos.length > 0,
 					//on a $.bind() the 2nd param is an internal hint to improve performance
 					//this would likely be automatically added on some post compile process
-					['span.counter', $.text(none => "There are " + this.todos.length + " todos!", ["this.todos"])]
+					['span.counter', $.text(none => "There are " + this.todos.length + " todos!")]
 				)],
 				//example of a falsey statement
 				['div', $.if(isFalse => this.todos.length > 0,
