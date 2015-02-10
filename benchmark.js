@@ -39,7 +39,7 @@ class InfernoBenchmark extends Inferno.Component {
   }
 
   initTemplate($) {
-    return
+    return [
       ["div#grid",
         //same as for(i = 0; i < N; i = i + 1)
         $.for(increment => [0, N, 1], i => [
@@ -48,7 +48,7 @@ class InfernoBenchmark extends Inferno.Component {
             ['div.box', {id: "box-" + i, onDomCreated: this.addBox}, "0"]
           ]
         ])
-
+      ]
     ];
   }
 };

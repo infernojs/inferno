@@ -104,7 +104,7 @@ Compiler.compileDsl = function (elements, root, index) {
 					switch (j) {
 						case "className":
 						case "style":
-						case "onCreated":
+						case "onDomCreated":
 							root[j] = elements[j];
 							break;
 						case "id":
@@ -121,7 +121,6 @@ Compiler.compileDsl = function (elements, root, index) {
 			}
 		}
 	}
-
 	//check if the object is empty
 	if (Object.keys(elem).length === 0) {
 		return;
@@ -327,8 +326,8 @@ var Component = (function () {
 								}
 							}
 						}
-						if (node.onCreated != null) {
-							vNode.onCreated = node.onCreated;
+						if (node.onDomCreated != null) {
+							vNode.onDomCreated = node.onDomCreated;
 						}
 						if (node.children == null) {
 							//no children (luck bastard)
@@ -424,8 +423,9 @@ var Component = (function () {
 			value: function _compileTemplate() {
 				var i = 0;
 				this._compiled = [];
-
-				Compiler.compileDsl.call(this._comp, this._template, this._compiled);
+				for (i = 0; i < this._template.length; i++) {
+					Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
+				};
 			},
 			writable: true,
 			configurable: true
@@ -800,20 +800,6 @@ var b = (function (window, document) {
         }
         return oldAttrs;
     }
-    function nodeAccessor(c) {
-        return {
-            update: function (attrs, children) {
-                if (attrs.style) {
-                    for (var i in attrs.style) {
-                        c.element.style[i] = attrs.style[i];
-                    }
-                }
-                if (children != null) {
-                    c.element.firstChild.nodeValue = children;
-                }
-            }
-        };
-    }
     function pushInitCallback(c, aupdate) {
         var cc = c.component;
         if (cc) {
@@ -860,8 +846,8 @@ var b = (function (window, document) {
                 component.postRender(c.ctx, n);
             }
         }
-        if (c.onCreated) {
-            c.onCreated.call(rootContext, nodeAccessor(c));
+        if (c.onDomCreated) {
+            c.onDomCreated.call(rootContext, c.element);
         }
         if (c.attrs) c.attrs = updateElement(c, el, c.attrs, {});
         if (c.style) updateStyle(c, el, c.style, undefined);
