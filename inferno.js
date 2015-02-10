@@ -431,8 +431,6 @@ var Component = (function () {
 			value: function _compileTemplate() {
 				var i = 0;
 				this._compiled = [];
-				debugger;
-				//Compiler.compileDsl.call(this, this._template, this._compiled);
 				for (i = 0; i < this._template.length; i++) {
 					Compiler.compileDsl.call(this, this._template[i], this._compiled);
 				};
@@ -456,6 +454,8 @@ var Component = (function () {
 ;
 
 module.exports = Component;
+
+
 
 
 

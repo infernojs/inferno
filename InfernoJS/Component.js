@@ -233,7 +233,7 @@ class Component {
 		var i = 0;
 		this._compiled = [];
 		for(i = 0; i < this._template.length; i++) {
-			Compiler.compileDsl.call(this, this._template[i], this._compiled);
+			Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
 		};
 	}
 
