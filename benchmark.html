@@ -10,6 +10,8 @@
   <script src="http://cdn.jsdelivr.net/mithril/0.1.22/mithril.min.js"></script>
   <script src="inferno.js"></script>
   <script src="inferno2.js"></script>
+  <script src="bobril.js"></script>
+  <script src="cito.js"></script>
   <style>
     p {
       font: 12px/16px Arial;
@@ -63,9 +65,11 @@
 <button onclick="runVue()">Animate with Vue</button>
 <button onclick="runRawdog()">Animate with nothing</button>
 <button onclick="runMithril()">Animate with Mithril (vdom)</button>
-<button onclick="runMithrilConfig()">Animate with Mithril (raw dom)</button>
+<!-- <button onclick="runMithrilConfig()">Animate with Mithril (raw dom)</button> -->
 <button onclick="runInferno2()">Animate with Inferno</button>
-<button onclick="runInferno()">Animate with Inferno (raw dom)</button>
+<!-- <button onclick="runInferno()">Animate with Inferno (raw dom)</button> -->
+<button onclick="runBobril()">Animate with Bobril</button>
+<button onclick="runCito()">Animate with Cito</button>
 
 <p id="timing">&nbsp;</p>
 <div id="gridcontainer">
@@ -413,6 +417,122 @@ window.runReact = function() {
             startClock();
             benchmarkLoop(function() {
               infernoBenchmark2.animateBoxes();
+            });
+        }, 300);
+    };
+
+  })();
+
+  //Bobril
+  (function(){
+
+    function App() {
+      this.count = 0;
+      this.render();
+    }
+
+    App.prototype.getStyle = function() {
+      return {
+        top: (Math.sin(this.count / 10) * 10) + "px",
+        left: (Math.cos(this.count / 10) * 10) + "px",
+        background: "rgb(0,0," + (this.count % 255) +")"
+      };
+    }
+
+    App.prototype.createBoxes = function() {
+      var boxes = [];
+      for(var i = 0 ; i < N; i++) {
+        boxes.push(
+          {tag: 'div', className: "box-view", children: {
+            tag: "div", className: "box", style: this.getStyle(), children: (this.count % 100) + ''
+          }}
+        )
+      }
+      return boxes;
+    }
+
+    App.prototype.render = function() {
+      b.init(function () {
+        var view = [
+          {tag: "div", attrs: {id: "grid"}, children: this.createBoxes()}
+        ];
+        return view;
+      }.bind(this));
+    }
+
+    App.prototype.update = function() {
+      this.count ++;
+      b.invalidate();
+    }
+
+
+    window.runBobril = function() {
+        reset();
+        var app = new App();
+
+
+        setTimeout(function () {
+            startClock();
+            benchmarkLoop(function() {
+              app.update();
+            });
+        }, 300);
+    };
+
+  })();
+
+  //Cito
+  (function(){
+
+    function App() {
+      this.count = 0;
+      this.container = document.getElementById('gridcontainer');
+      this.node = cito.vdom.append(this.container, this.getTree());
+
+    }
+
+    App.prototype.getStyle = function() {
+      return {
+        top: (Math.sin(this.count / 10) * 10) + "px",
+        left: (Math.cos(this.count / 10) * 10) + "px",
+        background: "rgb(0,0," + (this.count % 255) +")"
+      };
+    }
+
+    App.prototype.createBoxes = function() {
+      var boxes = [];
+      for(var i = 0 ; i < N; i++) {
+        boxes.push(
+          {tag: 'div', attrs: {"class": "box-view"}, children: {
+            tag: "div", attrs: {"class": "box", style: this.getStyle()}, children: (this.count % 100) + ''
+          }}
+        )
+      }
+      return boxes;
+    }
+
+    App.prototype.getTree = function() {
+      return {tag: "div", attrs: {id: "grid"}, children: this.createBoxes()};
+    }
+
+    App.prototype.update = function() {
+      this.count ++;
+      cito.vdom.update(this.node, this.getTree());
+    }
+
+
+    window.runCito = function() {
+        reset();
+        //for some reason reset does not work with cito
+        var grid = document.getElementById('grid');
+        grid.parentNode.removeChild(grid);
+        var app = new App();
+
+
+        setTimeout(function () {
+            startClock();
+            benchmarkLoop(function() {
+              app.update();
             });
         }, 300);
     };
