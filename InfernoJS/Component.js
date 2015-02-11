@@ -92,6 +92,7 @@ class Component {
 		var createVirtualDom = function(render, root) {
 			var i = 0;
 			var s = 0;
+			var attrKey = null;
 			var vNode = null;
 
 			for(i = 0; i < render.length; i++) {
@@ -112,6 +113,17 @@ class Component {
 						} else {
 							vNode = this._createVnode(render[i][0]);
 							vNode.parent = root;
+							//now add our attributes
+							if(render[i][1] != null) {
+								for(attrKey in render[i][1]) {
+									if(attrKey === 'style' || attrKey === 'className') {
+										vNode[attrKey] = render[i][1][attrKey];
+									} else {
+										vNode['attrs'] = vNode['attrs'] || [];
+										vNode['attrs'][attrKey] = render[i][1][attrKey];
+									}
+								}
+							}
 							if(Array.isArray(root)) {
 								root.push(vNode);
 							} else {
@@ -131,7 +143,6 @@ class Component {
 		}.bind(this)
 
 		var vDom = [];
-
 		createVirtualDom(this.render(), vDom);
 
 		return vDom;

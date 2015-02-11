@@ -161,15 +161,9 @@ module.exports = Compiler;
 },{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var b = require("./bobril.js");
 var Compiler = require("./Compiler.js");
@@ -273,6 +267,7 @@ var Component = (function () {
 				var createVirtualDom = (function (render, root) {
 					var i = 0;
 					var s = 0;
+					var attrKey = null;
 					var vNode = null;
 
 					for (i = 0; i < render.length; i++) {
@@ -293,6 +288,17 @@ var Component = (function () {
 								} else {
 									vNode = this._createVnode(render[i][0]);
 									vNode.parent = root;
+									//now add our attributes
+									if (render[i][1] != null) {
+										for (attrKey in render[i][1]) {
+											if (attrKey === "style" || attrKey === "className") {
+												vNode[attrKey] = render[i][1][attrKey];
+											} else {
+												vNode.attrs = vNode.attrs || [];
+												vNode.attrs[attrKey] = render[i][1][attrKey];
+											}
+										}
+									}
 									if (Array.isArray(root)) {
 										root.push(vNode);
 									} else {
@@ -311,7 +317,6 @@ var Component = (function () {
 				}).bind(this);
 
 				var vDom = [];
-
 				createVirtualDom(this.render(), vDom);
 
 				return vDom;
@@ -386,12 +391,6 @@ var Component = (function () {
 ;
 
 module.exports = Component;
-
-
-
-
-
-
 
 },{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
@@ -1492,7 +1491,7 @@ var Demo = (function (_Inferno$Component) {
       value: function render() {
         var _this = this;
         return [["div#grid"], this.numberOfBoxes.times(function (i) {
-          return [["div", { className: "box", id: "box-" + i, style: _this.getStyle() }], _this._count % 100, ["/div"]];
+          return [["div.box-view"], ["div", { className: "box", id: "box-" + i, style: _this.getStyle() }], _this._count % 100, ["/div"], ["/div"]];
         }), ["/div"]];
       },
       writable: true,

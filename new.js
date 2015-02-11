@@ -38,8 +38,10 @@ class Demo extends Inferno.Component {
     return [
       ['div#grid'],
         this.numberOfBoxes.times(i => [
-          ['div', {className: "box", id: `box-${i}`, style: this.getStyle()}],
-            (this._count % 100),
+          ['div.box-view'],
+            ['div', {className: "box", id: `box-${i}`, style: this.getStyle()}],
+              (this._count % 100),
+            ['/div'],
           ['/div']
         ]),
       ['/div']
