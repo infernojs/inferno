@@ -10,6 +10,10 @@ with a clean way of doing so. Inferno intentionally leverages ES6, thus requires
 a transpiler (such as 6to5) till classes, arrow functions and other features become
 natively available.
 
+Inferno leverages a very fast virtual DOM (Bobril) to ensure maxmimum performance.
+Although Inferno is in its very early stages of development, its performance in
+benchmarks bests ever other framework out there (including React and Mithril).
+
 Here is an example component written with Inferno:
 
 
@@ -18,47 +22,59 @@ var Inferno = require('./InfernoJS/Inferno.js');
 
 class Demo extends Inferno.Component {
 
-  //this is where we setup our variables
   constructor() {
+    //we declare all our properties
     this.todos = [
       "Clean the dishes",
       "Cook the dinner",
       "Code some coding",
       "Comment on stuff"
     ];
-    this.title = "Todo Demo";
+
     this.testClassName = "foo-bar";
+    this.title = "Todo Demo";
+
     super();
   }
 
-  //our component's template is setup in this function
-  //$ = templateHelper shorthand
-  initTemplate($) {
+  render($) {
+    //$ = RenderHelper, to reduce lines of code and to simplify workflow
     return [
-      ["div",
-        ["header",
-          ["h1", $.text(none => "Example " + this.title)]
-        ]
-      ],
-      ['div#main',
-        //example of a truthy statement
-        ['div', $.if(isTrue => this.todos.length > 0,
-          ['span.counter', $.text(none => "There are " + this.todos.length + " todos!")]
-        )],
-        //example of a falsey statement
-        ['div', $.if(isFalse => this.todos.length > 0,
-          ['span.no-todos', "There are no todos!"]
-        )]
-      ],
-      ['ul.todos',
-        $.for(each => this.todos, (todo, index) => [
-          ['li.todo',
-            ['h2', "A todo"],
-            ['span', $.text(none => index + ": " + todo)]
+      ['div'],
+        ['header'],
+          ['h1'],
+            `Example ${ this.title }`,
+          ['/h1'],
+        ['/header'],
+      ['/div'],
+      ['div', {className: this.testClassName}],
+        'Test text',
+      ['/div'],
+      ['div#main'],
+        ['div'],
+          //example of a truthy helper
+          $.if(this.todos.length > 0, [
+            ['span.counter'],
+              `There are ${ this.todos.length } todos!`,
+            ['/span']
           ],
-          ['div.test', "Foo!"]
-        ])
-      ]
+          //else
+          [
+            ['span.no-todos'],
+              "There are no todos!",
+            ['/span']
+          ]),
+        ['/div'],
+      ['/div'],
+      ['ul.todos'],
+        //usage of forEach helper
+        $.forEach(this.todos, (todo, index) => [
+          ['li.todo'],
+            ['h2'],"A todo",['/h2'],
+            ['span'], `${ index }: ${ todo }`,['/span'],
+          ['/li']
+        ]),
+      ['/ul']
     ];
   }
 };
@@ -66,11 +82,11 @@ class Demo extends Inferno.Component {
 window.Demo = Demo;
 ```
 
-As you can see from the `initTemplate($)` method above, Inferno introduces its own
-DSL for creating the DOM. This DSL is fully 100% JavaScript code, allowing developers
+As you can see from the `render($)` method above, Inferno introduces its own
+DSL for creating the DOM, with strong similarities to HTML. This DSL is fully 100% JavaScript code, allowing developers
 to utilise the full power of JavaScript to manipulate how templates are rendered.
 
 Convenient helper functions are provided (`$` in the above example) to allow for
-typical template logic flow handling like that offered in other templating libraries
+typical logic flow handling like that offered in other templating libraries
 (Handlebars, Knockout, Angular, etc) without compromising on performance, testability or
-readability.
+readability of the code.

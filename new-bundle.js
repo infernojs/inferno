@@ -167,6 +167,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var b = require("./bobril.js");
 var Compiler = require("./Compiler.js");
+var RenderHelpers = require("./RenderHelpers.js");
 
 var Component = (function () {
 	function Component() {
@@ -175,7 +176,8 @@ var Component = (function () {
 		this._ctx = null;
 		this._subComponents = [];
 		this._lastDependencyCheck = [];
-		this.render();
+		this._renderHelpers = new RenderHelpers(this);
+		this.render(this._renderHelpers);
 	}
 
 	_prototypeProperties(Component, null, {
@@ -278,6 +280,8 @@ var Component = (function () {
 									createVirtualDom(render[i][s], vNode);
 								}
 							}
+							//if we have a function, we need to execute it to get its contents
+							else if (Array.isArray(render[i][0])) {}
 							//if its not an array, then its a tag field, and the start/end of a dom node
 							else {
 								if (render[i][0].charAt(0) === "/") {
@@ -301,7 +305,10 @@ var Component = (function () {
 									} else {
 										r.children.push(vNode);
 									}
-									r = vNode;
+									//check if this tag does not need a close tag
+									if (vNode.tag !== "input") {
+										r = vNode;
+									}
 								}
 							}
 						}
@@ -314,7 +321,7 @@ var Component = (function () {
 				}).bind(this);
 
 				var vDom = [];
-				createVirtualDom(this.render(), vDom);
+				createVirtualDom(this.render(this._renderHelpers), vDom);
 
 				return vDom;
 			},
@@ -390,7 +397,7 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./bobril.js":"/Users/dominicg/EngineJS/InfernoJS/bobril.js"}],"/Users/dominicg/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
+},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./RenderHelpers.js":"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js","./bobril.js":"/Users/dominicg/EngineJS/InfernoJS/bobril.js"}],"/Users/dominicg/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
@@ -404,7 +411,60 @@ Inferno.Compiler = Compiler;
 
 module.exports = Inferno;
 
-},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Users/dominicg/EngineJS/InfernoJS/Component.js"}],"/Users/dominicg/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
+},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Users/dominicg/EngineJS/InfernoJS/Component.js"}],"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js":[function(require,module,exports){
+"use strict";
+
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/*
+
+  List of supported helpers
+
+  ==================
+  if statements
+  ==================
+
+  $.if({expression}, true, false)
+
+  ==================
+  loop statements
+  ==================
+
+  $.forEach(Array, (item, key, array) => [...])
+  $.times(Number, (iterator) => [...])
+
+*/
+
+var RenderHelpers = (function () {
+  function RenderHelpers(comp) {
+    _classCallCheck(this, RenderHelpers);
+
+    this._comp = comp;
+  }
+
+  _prototypeProperties(RenderHelpers, null, {
+    forEach: {
+      value: function forEach(values, output) {},
+      writable: true,
+      configurable: true
+    },
+    "if": {
+      value: function _if(expression, truthy, falsey) {},
+      writable: true,
+      configurable: true
+    }
+  });
+
+  return RenderHelpers;
+})();
+
+;
+
+module.exports = RenderHelpers;
+
+},{}],"/Users/dominicg/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
