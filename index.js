@@ -14,7 +14,6 @@ class Demo extends Inferno.Component {
 		];
 
 		this.testClassName = "foo-bar";
-
 		this.title = "Todo Demo";
 		this.formId = "todo-form";
 
@@ -45,9 +44,7 @@ class Demo extends Inferno.Component {
 						['span.counter'],
 							`There are ${ this.todos.length } todos!`,
 						['/span']
-					],
-					//else
-					[
+					], [ //else
 						['span.no-todos'],
 							"There are no todos!",
 						['/span']

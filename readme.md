@@ -57,9 +57,7 @@ class Demo extends Inferno.Component {
             ['span.counter'],
               `There are ${ this.todos.length } todos!`,
             ['/span']
-          ],
-          //else
-          [
+          ], [ //else
             ['span.no-todos'],
               "There are no todos!",
             ['/span']
