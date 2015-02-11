@@ -171,21 +171,17 @@ var _classCallCheck = function (instance, Constructor) {
 	}
 };
 
-var TemplateHelper = require("./TemplateHelper.js");
+var b = require("./bobril.js");
 var Compiler = require("./Compiler.js");
-var b = require("./bobril.js");
-var b = require("./bobril.js");
 
 var Component = (function () {
 	function Component() {
 		_classCallCheck(this, Component);
 
-		this._compiled = [];
 		this._lastTick = 0;
 		this._ctx = null;
 		this._subComponents = [];
 		this._lastDependencyCheck = [];
-		//then compile the template
 		this.render();
 	}
 
@@ -274,11 +270,71 @@ var Component = (function () {
 		},
 		_createVirtualDom: {
 			value: function _createVirtualDom() {
-				var template = this.render();
+				var createVirtualDom = (function (render, root) {
+					var i = 0;
+					var s = 0;
+					var vNode = null;
 
-				debugger;
+					for (i = 0; i < render.length; i++) {
+						//likely to be a text node or the openings
+						//check if this is an array (a dom node)
+						if (Array.isArray(render[i])) {
+							//if we have another array, then we're dealing with children for the last vNode
+							//generally this is from a closure, such as forEach(), map() or times()
+							if (Array.isArray(render[i][0])) {
+								for (s = 0; s < render[i].length; s++) {
+									createVirtualDom(render[i][s], vNode);
+								}
+							}
+							//if its not an array, then its a tag field, and the start/end of a dom node
+							else {
+								if (render[i][0].charAt(0) === "/") {
+									root = root.parent;
+								} else {
+									vNode = this._createVnode(render[i][0]);
+									vNode.parent = root;
+									if (Array.isArray(root)) {
+										root.push(vNode);
+									} else {
+										root.children.push(vNode);
+									}
+									root = vNode;
+								}
+							}
+						}
+						//if its not an array, then its a textNode/nodeValue
+						else {
+							//make sure it's converted text with (+ '')
+							root.children = render[i] + "";
+						}
+					}
+				}).bind(this);
+
+				var vDom = [];
+
+				createVirtualDom(this.render(), vDom);
 
 				return vDom;
+			},
+			writable: true,
+			configurable: true
+		},
+		_createVnode: {
+			value: function _createVnode(data) {
+				//lets make a dom node
+				var vNode = {};
+				//it will have children, so lets create that array
+				vNode.children = [];
+				//the first part of the array is the tag
+				var tagData = Compiler.compileTag(data);
+				vNode.tag = tagData.tag;
+				if (tagData.classes != null) {
+					vNode["class"] = tagData.classes.join(" ");
+				}
+				if (tagData.ids != null) {
+					vNode.id = tagData.ids.join("");
+				}
+				return vNode;
 			},
 			writable: true,
 			configurable: true
@@ -337,8 +393,7 @@ module.exports = Component;
 
 
 
-
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./TemplateHelper.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
@@ -352,189 +407,7 @@ Inferno.Compiler = Compiler;
 
 module.exports = Inferno;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/TemplateHelper.js":[function(require,module,exports){
-"use strict";
-
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-var Compiler = require("./Compiler.js");
-
-/*
-
-  List of supported helpers
-
-  ==================
-  if statements
-  ==================
-
-  $.if(isFalse => {expression}, ...)
-  $.if(isTrue => {expression}, ...)
-  $.if(isNull => {expression}, ...)
-  $.if(isZero => {expression}, ...)
-  $.if(isEmpty => {expression}, ...)
-  $.if(isArray => {expression}, ...)
-  $.if(isNumber => {expression}, ...)
-  $.if(isString => {expression}, ...)
-
-  ==================
-  loop statements
-  ==================
-
-  $.for(in => array, (key, array) => [...])
-  $.for(increment => [startNumber, endNumber, amount], (iterator) => [...])
-  $.for(each => items, (item, index, array) => [...])
-  $.do(while => {expression}, ...)
-  $.do(until => {expression}, ...)
-
-  ==================
-  text filters/formatters
-  ==================
-
-  $.text(escape => {expression}, [hinting...]) //escapes all html
-  $.text(html => {expression}, [hinting...]) //allows safe html
-  $.text(none => {expression}, [hinting...]) //no stripping
-
-*/
-
-var TemplateHelper = (function () {
-  function TemplateHelper(comp) {
-    _classCallCheck(this, TemplateHelper);
-
-    this._comp = comp;
-  }
-
-  _prototypeProperties(TemplateHelper, null, {
-    process: {
-      value: function process(node) {
-        var i = 0,
-            j = 0,
-            items = [],
-            children = [],
-            template = {},
-            bounds = [];
-        if (node.$type === "if") {
-          if (node.$expression() === node.$condition) {
-            return node.$toRender;
-          } else {
-            return null;
-          }
-        } else if (node.$type === "render") {
-          return {
-            component: node.$component,
-            data: {
-              props: node.$data,
-              tag: node.$tag
-            }
-          };
-        } else if (node.$type === "text") {
-          //check for formatters
-          return node.$toRender() + "";
-        } else if (node.$type === "forEach") {
-          items = node.$items();
-          children = [];
-          for (i = 0; i < items.length; i++) {
-            template = node.$toRender.call(this._comp, items[i], i, items);
-            for (j = 0; j < template.length; j++) {
-              Compiler.compileDsl.call(this._comp, template[j], children, 0);
-            }
-          }
-          return children;
-        } else if (node.$type === "for") {
-          bounds = node.$bounds();
-          children = [];
-          for (i = bounds[0]; i < bounds[1]; i = i + bounds[2]) {
-            template = node.$toRender.call(this._comp, i);
-            for (j = 0; j < template.length; j++) {
-              Compiler.compileDsl.call(this._comp, template[j], children, 0);
-            }
-          }
-          return children;
-        }
-        return null;
-      },
-      writable: true,
-      configurable: true
-    },
-    "for": {
-      value: function _for(values, children) {
-        var condition = this._getParamNames(arguments[0])[0];
-
-        switch (condition) {
-          case "each":
-            return {
-              $type: "for",
-              condition: "each",
-              items: values,
-              children: children
-            };
-          case "increment":
-            return {
-              $type: "for",
-              condition: "increment",
-              bounds: values,
-              children: children
-            };
-        }
-      },
-      writable: true,
-      configurable: true
-    },
-    text: {
-      value: function text(children) {
-        return {
-          $type: "text",
-          condition: this._getParamNames(arguments[0])[0],
-          $toRender: children
-        };
-      },
-      writable: true,
-      configurable: true
-    },
-    render: {
-      value: function render(tag, component, data) {
-        this._comp.addSubComponent(component);
-        return {
-          $type: "render",
-          $tag: tag,
-          $data: data,
-          $component: component
-        };
-      },
-      writable: true,
-      configurable: true
-    },
-    "if": {
-      value: function _if(expression) {
-        return {
-          $type: "if",
-          condition: this._getParamNames(arguments[0])[0],
-          expression: expression,
-          children: arguments[1]
-        };
-      },
-      writable: true,
-      configurable: true
-    },
-    _getParamNames: {
-      value: function _getParamNames(fn) {
-        var funStr = fn.toString();
-        return funStr.slice(funStr.indexOf("(") + 1, funStr.indexOf(")")).match(/([^\s,]+)/g);
-      },
-      writable: true,
-      configurable: true
-    }
-  });
-
-  return TemplateHelper;
-})();
-
-;
-
-module.exports = TemplateHelper;
-
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -1558,58 +1431,44 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/benchmark2.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/new.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _get = function get(object, property, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-};
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
 var Inferno = require("./InfernoJS/Inferno.js");
 
-var InfernoBenchmark2 = (function (_Inferno$Component) {
+if (!Number.prototype.times) {
+  Number.prototype.times = function (callback) {
+    var results = [];
+    for (var i = 0; i < this; i++) {
+      results.push(callback(i));
+    }
+    return results;
+  };
+}
+
+var Demo = (function (_Inferno$Component) {
   //properties starting with _underscore are not observed by default
-  function InfernoBenchmark2() {
-    _classCallCheck(this, InfernoBenchmark2);
+  function Demo() {
+    _classCallCheck(this, Demo);
 
     this._count = 0;
+    this.numberOfBoxes = 50;
     _get(_Inferno$Component.prototype, "constructor", this).call(this);
   }
 
-  _inherits(InfernoBenchmark2, _Inferno$Component);
+  _inherits(Demo, _Inferno$Component);
 
-  _prototypeProperties(InfernoBenchmark2, null, {
+  _prototypeProperties(Demo, null, {
     animateBoxes: {
       value: function animateBoxes() {
         this._count++;
@@ -1629,37 +1488,23 @@ var InfernoBenchmark2 = (function (_Inferno$Component) {
       writable: true,
       configurable: true
     },
-    initTemplate: {
-      value: function initTemplate($) {
+    render: {
+      value: function render() {
         var _this = this;
-        return [["div#grid",
-        //same as for(i = 0; i < N; i = i + 1)
-        $["for"](function (increment) {
-          return [0, N, 1];
-        }, function (i) {
-          return [["div.box-view",
-          //set it to 0 to begin with, don't bind to a variable
-          ["div.box", { id: $.text(function (none) {
-              return "box-" + i;
-            }), style: _this.getStyle }, $.text(function (none) {
-            return _this._count % 100;
-          })]]];
-        })]];
+        return [["div#grid"], this.numberOfBoxes.times(function (i) {
+          return [["div", { className: "box", id: "box-" + i, style: _this.getStyle() }], _this._count % 100, ["/div"]];
+        }), ["/div"]];
       },
       writable: true,
       configurable: true
     }
   });
 
-  return InfernoBenchmark2;
+  return Demo;
 })(Inferno.Component);
 
 ;
 
-window.InfernoBenchmark2 = InfernoBenchmark2;
+window.Demo = Demo;
 
-
-
-
-
-},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/benchmark2.js"]);
+},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/new.js"]);

@@ -1,21 +1,14 @@
-var TemplateHelper = require('./TemplateHelper.js');
+var b = require('./bobril.js');
 var Compiler = require('./Compiler.js');
-var b = require('./bobril.js');
-var b = require('./bobril.js');
 
 class Component {
 
 	constructor() {
-		this._compiled = [];
 		this._lastTick = 0;
 		this._ctx = null;
 		this._subComponents = [];
 		this._lastDependencyCheck = []
-		this._templateHelper = new TemplateHelper(this);
-		//init the template
-		this._template = this.initTemplate(this._templateHelper) || {};
-		//then compile the template
-		this._compileTemplate(this);
+		this.render();
 	}
 
 	forceUpdate() {
@@ -65,13 +58,6 @@ class Component {
 		}.bind(this));
 	}
 
-	getTemplateHelper() {
-		return this._templateHelper;
-	}
-
-	updateElement(node) {
-		b.updateNode(node);
-	}
 
 	_compareArrays(array1, array2) {
 			// if the other array is a falsy value, return
@@ -102,145 +88,107 @@ class Component {
 	}
 
 	_createVirtualDom() {
-		var createVirtualDom = function(node, parent) {
-			var i = 0,
-					comp = null;
-			if(Array.isArray(node)) {
-				for(i = 0; i < node.length; i++) {
-					if(Array.isArray(parent)) {
-						createVirtualDom(node[i], parent);
-					} else {
-						createVirtualDom(node[i], parent.children);
+
+		var createVirtualDom = function(render, root) {
+			var i = 0;
+			var s = 0;
+			var vNode = null;
+
+			for(i = 0; i < render.length; i++) {
+				//likely to be a text node or the openings
+				//check if this is an array (a dom node)
+				if(Array.isArray(render[i])) {
+					//if we have another array, then we're dealing with children for the last vNode
+					//generally this is from a closure, such as forEach(), map() or times()
+					if(Array.isArray(render[i][0])) {
+						for(s = 0; s < render[i].length; s++) {
+							createVirtualDom(render[i][s], vNode)
+						}
 					}
-				}
-			} else {
-				var vNode = {};
-				vNode.children = [];
-				if(node.tag != null) {
-					vNode.tag = node.tag;
-				}
-				if(node.style != null) {
-					if(this._isFunction(node.style)) {
-						vNode.style = node.style.call(this);
-					} else {
-						vNode.style = node.style;
-					}
-				}
-				if(node.className != null) {
-					if(typeof node.className === "string") {
-						vNode.className = node.className;
-					} else if(node.className.$type != null) {
-						vNode.className = this._templateHelper.process(node.className);
-					}
-				}
-				if(node.attrs != null) {
-					vNode.attrs = node.attrs;
-					if(node.attrs.id != null) {
-						if(typeof node.attrs.id === "string") {
-							vNode.attrs.id = node.attrs.id;
-						} else if(node.attrs.id.$type != null) {
-							vNode.attrs.id = this._templateHelper.process(node.attrs.id);
+					//if its not an array, then its a tag field, and the start/end of a dom node
+					else {
+						if(render[i][0].charAt(0) === "/") {
+							root = root.parent;
+						} else {
+							vNode = this._createVnode(render[i][0]);
+							vNode.parent = root;
+							if(Array.isArray(root)) {
+								root.push(vNode);
+							} else {
+								root.children.push(vNode);
+							}
+							root = vNode;
 						}
 					}
 				}
-				if(node.onDomCreated != null) {
-					vNode.onDomCreated = node.onDomCreated;
+				//if its not an array, then its a textNode/nodeValue
+				else {
+					//make sure it's converted text with (+ '')
+					root.children = render[i] + '';
 				}
-				if(node.children == null) {
-					//no children (luck bastard)
-					if(node.$type != null && node.$type !== "render") {
-						node.children = this._templateHelper.process(node);
-					} else if(node.$type === "render") {
-						comp = this._templateHelper.process(node);
-						vNode.component = comp.component;
-						vNode.data = comp.data;
-					}
-					if(Array.isArray(node.children)) {
-						createVirtualDom(node.children, vNode);
-					} else {
-						vNode.children = node.children;
-					}
-				}
-				if(node.children != null) {
-					if(node.$type != null && node.$type !== "render") {
-						node.children = this._templateHelper.process(node);
-					} else if(node.$type === "render") {
-						comp = this._templateHelper.process(vNode);
-						vNode.component = comp.component;
-						vNode.data = comp.data;
-					}
 
-					if(Array.isArray(node.children)) {
-						createVirtualDom(node.children, vNode);
-					} else {
-						vNode.children = node.children;
-					}
-				}
-				if(vNode.children !== null || node.$type === "render") {
-					if(Array.isArray(parent)) {
-						parent.push(vNode);
-					} else {
-						parent.children.push(vDom);
-					}
-				}
 			}
-
 		}.bind(this)
 
 		var vDom = [];
-		//using the compiled template, handle the handlers so we have a new vDom
-		createVirtualDom(this._compiled, vDom);
+
+		createVirtualDom(this.render(), vDom);
 
 		return vDom;
 	}
 
-	render(ctx, me) {
-		var props = ctx.data.props,
-				compiledTag = {},
-				i = 0;
-
-		this._ctx = ctx;
-
-		if(ctx.data.props != null) {
-			props = ctx.data.props();
-			//best to also disable the watcher here?
-			//apply the props to this object
-			for(i in props) {
-				this[i] = props[i];
-			}
-			if(this.onUpdate != null) {
-				this.onUpdate();
-			}
+	_createVnode(data) {
+		//lets make a dom node
+		var vNode = {};
+		//it will have children, so lets create that array
+		vNode.children = [];
+		//the first part of the array is the tag
+		var tagData = Compiler.compileTag(data);
+		vNode.tag = tagData.tag;
+		if(tagData.classes != null) {
+			vNode.class = tagData.classes.join(' ');
 		}
-		//handle the tag
-		compiledTag = Compiler.compileTag(ctx.data.tag);
-		me.tag = compiledTag.tag;
-		if(compiledTag.classes.length > 0) {
-			me.className = compiledTag.classes;
+		if(tagData.ids != null) {
+			vNode.id = tagData.ids.join('');
 		}
-		if(compiledTag.ids.length > 0) {
-			me.attr.id = compiledTag.ids;
-		}
-		//generate children from this component's own vdom
-		me.children = this._createVirtualDom();
+		return vNode;
 	}
+
+	// render(ctx, me) {
+	// 	var props = ctx.data.props,
+	// 			compiledTag = {},
+	// 			i = 0;
+	//
+	// 	this._ctx = ctx;
+	//
+	// 	if(ctx.data.props != null) {
+	// 		props = ctx.data.props();
+	// 		//best to also disable the watcher here?
+	// 		//apply the props to this object
+	// 		for(i in props) {
+	// 			this[i] = props[i];
+	// 		}
+	// 		if(this.onUpdate != null) {
+	// 			this.onUpdate();
+	// 		}
+	// 	}
+	// 	//handle the tag
+	// 	compiledTag = Compiler.compileTag(ctx.data.tag);
+	// 	me.tag = compiledTag.tag;
+	// 	if(compiledTag.classes.length > 0) {
+	// 		me.className = compiledTag.classes;
+	// 	}
+	// 	if(compiledTag.ids.length > 0) {
+	// 		me.attr.id = compiledTag.ids;
+	// 	}
+	// 	//generate children from this component's own vdom
+	// 	me.children = this._createVirtualDom();
+	// }
 
 	addSubComponent(subCompnent) {
 		this._subComponents.push(subCompnent);
 	}
 
-	_compileTemplate() {
-		var i = 0;
-		this._compiled = [];
-		for(i = 0; i < this._template.length; i++) {
-			Compiler.compileDsl.call(this._comp, this._template[i], this._compiled);
-		};
-	}
-
-	_propChange(changes) {
-		//for now we can simply invalidate
-		b.invalidate();
-	}
 
 };
 

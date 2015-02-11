@@ -35,16 +35,9 @@ function template() {
     ]
   ];
 
-  return `
-    <div>
-      <header>
-        <h1>${ this.title }</h1>
-      </header>
-    </div>
-    <div id="#main">
-      <x-for each=${ this.todos } as=${ todo }>
-        <span class="counter">There are ${ this.todos.length } todos!</span>
-      </x-for>
-    </div>
-  `;
-}
+
+  return
+    div().
+      header().
+        h1(this.title).
+      header()
