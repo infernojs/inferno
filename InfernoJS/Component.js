@@ -1,14 +1,15 @@
 var b = require('./bobril.js');
 var Compiler = require('./Compiler.js');
+var RenderHelpers = require('./RenderHelpers.js');
 
 class Component {
 
 	constructor() {
-		this._lastTick = 0;
 		this._ctx = null;
 		this._subComponents = [];
 		this._lastDependencyCheck = []
-		this.render();
+		this._renderHelpers = new RenderHelpers(this);
+		this.render(this._renderHelpers);
 	}
 
 	forceUpdate() {
@@ -31,14 +32,10 @@ class Component {
 		}
 
 		if(skipUpdateThis === false) {
-			t = Date.now();
-			if(t > this._lastTick + 17) {
-				if(this._ctx != null) {
-					b.invalidate(this._ctx);
-				} else {
-					b.invalidate();
-				}
-				this._lastTick = t;
+			if(this._ctx != null) {
+				b.invalidate(this._ctx);
+			} else {
+				b.invalidate();
 			}
 		}
 
@@ -51,8 +48,9 @@ class Component {
 		//now we let bobril generate the dom to start with
 		b.init(function () {
 			//return the rendered
+			var vDom = this._createVirtualDom();
 			return {
-				compiled: this._createVirtualDom(),
+				compiled: vDom,
 				context: this
 			};
 		}.bind(this));
@@ -94,6 +92,7 @@ class Component {
 			var s = 0;
 			var attrKey = null;
 			var vNode = null;
+			var r = root;
 
 			for(i = 0; i < render.length; i++) {
 				//likely to be a text node or the openings
@@ -106,15 +105,19 @@ class Component {
 							createVirtualDom(render[i][s], vNode)
 						}
 					}
+					//if we have a function, we need to execute it to get its contents
+					else if(Array.isArray(render[i][0])) {
+					}
 					//if its not an array, then its a tag field, and the start/end of a dom node
 					else {
 						if(render[i][0].charAt(0) === "/") {
-							root = root.parent;
+							r = r.parent;
 						} else {
 							vNode = this._createVnode(render[i][0]);
-							vNode.parent = root;
+							vNode.parent = r;
 							//now add our attributes
 							if(render[i][1] != null) {
+								vNode.attrs = vNode.attrs || {};
 								for(attrKey in render[i][1]) {
 									if(attrKey === 'style' || attrKey === 'className') {
 										vNode[attrKey] = render[i][1][attrKey];
@@ -123,26 +126,29 @@ class Component {
 									}
 								}
 							}
-							if(Array.isArray(root)) {
-								root.push(vNode);
+							if(Array.isArray(r)) {
+								r.push(vNode);
 							} else {
-								root.children.push(vNode);
+								r.children.push(vNode);
 							}
-							root = vNode;
+							//check if this tag does not need a close tag
+							if(vNode.tag !== 'input') {
+								r = vNode;
+							}
 						}
 					}
 				}
 				//if its not an array, then its a textNode/nodeValue
 				else {
 					//make sure it's converted text with (+ '')
-					root.children = render[i] + '';
+					r.children = render[i] + '';
 				}
 
 			}
 		}.bind(this)
 
 		var vDom = [];
-		createVirtualDom(this.render(), vDom);
+		createVirtualDom(this.render(this._renderHelpers), vDom);
 
 		return vDom;
 	}
@@ -152,8 +158,6 @@ class Component {
 		var vNode = {};
 		//it will have children, so lets create that array
 		vNode.children = [];
-		//create the attrs object
-		vNode.attrs = [];
 		//the first part of the array is the tag
 		var tagData = Compiler.compileTag(data);
 		vNode.tag = tagData.tag;
@@ -161,6 +165,7 @@ class Component {
 			vNode.className = tagData.classes.join(' ');
 		}
 		if(tagData.ids != null) {
+			vNode.attrs = vNode.attrs || {};
 			vNode.attrs.id = tagData.ids.join('');
 		}
 		return vNode;

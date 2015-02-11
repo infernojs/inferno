@@ -36,10 +36,10 @@ class InfernoBenchmark3 extends Inferno.Component {
 
   render() {
     return [
-      ['div#grid'],
+      ['div'],
         this.numberOfBoxes.times(i => [
           ['div.box-view'],
-            ['div', {className: "box", id: `box-${i}`, style: this.getStyle()}],
+            ['div.box', {className: "box", id: `box-${i}`, style: this.getStyle()}],
               (this._count % 100),
             ['/div'],
           ['/div']
