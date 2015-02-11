@@ -12,12 +12,12 @@ if (!Number.prototype.times) {
   };
 }
 
-class Demo extends Inferno.Component {
+class InfernoBenchmark3 extends Inferno.Component {
 
   //properties starting with _underscore are not observed by default
   constructor() {
     this._count = 0;
-    this.numberOfBoxes = 50;
+    this.numberOfBoxes = N;
     super();
   }
 
@@ -51,4 +51,4 @@ class Demo extends Inferno.Component {
 
 };
 
-window.Demo = Demo;
+window.InfernoBenchmark3 = InfernoBenchmark3;

@@ -119,7 +119,6 @@ class Component {
 									if(attrKey === 'style' || attrKey === 'className') {
 										vNode[attrKey] = render[i][1][attrKey];
 									} else {
-										vNode['attrs'] = vNode['attrs'] || [];
 										vNode['attrs'][attrKey] = render[i][1][attrKey];
 									}
 								}
@@ -153,14 +152,16 @@ class Component {
 		var vNode = {};
 		//it will have children, so lets create that array
 		vNode.children = [];
+		//create the attrs object
+		vNode.attrs = [];
 		//the first part of the array is the tag
 		var tagData = Compiler.compileTag(data);
 		vNode.tag = tagData.tag;
 		if(tagData.classes != null) {
-			vNode.class = tagData.classes.join(' ');
+			vNode.className = tagData.classes.join(' ');
 		}
 		if(tagData.ids != null) {
-			vNode.id = tagData.ids.join('');
+			vNode.attrs.id = tagData.ids.join('');
 		}
 		return vNode;
 	}
