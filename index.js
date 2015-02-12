@@ -5,17 +5,21 @@ var Inferno = require('./InfernoJS/Inferno.js');
 class Demo extends Inferno.Component {
 
 	constructor() {
-		//we declare all our properties
+		//variables with no underscore prefix "_" are classified as "props"
+		//these props should never be directly modified within a component or its children
+		//props should only be input into the component
 		this.todos = [
 			"Clean the dishes",
 			"Cook the dinner",
 			"Code some coding",
 			"Comment on stuff"
 		];
-
 		this.testClassName = "foo-bar";
 		this.title = "Todo Demo";
-		this.formId = "todo-form";
+
+		//variables with a prefixed underscore "_" are classified as "state" objects
+		//these are not meant to have any visibility outside of this component
+		this._formId = "todo-form";
 
 		super();
 	}
@@ -56,7 +60,7 @@ class Demo extends Inferno.Component {
 				$.forEach(this.todos, (todo, index) => [
 					['li.todo'],
 						['h2'],"A todo",['/h2'],
-						['span'], `${ index }: ${ todo }`,['/span'],
+						['span'], `${ index }: ${ todo }`, ['/span'],
 					['/li']
 				]),
 			['/ul'],

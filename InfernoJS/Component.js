@@ -100,13 +100,14 @@ class Component {
 				if(Array.isArray(render[i])) {
 					//if we have another array, then we're dealing with children for the last vNode
 					//generally this is from a closure, such as forEach(), map() or times()
-					if(Array.isArray(render[i][0])) {
+					if(Array.isArray(render[i][0][0])) {
 						for(s = 0; s < render[i].length; s++) {
 							createVirtualDom(render[i][s], vNode)
 						}
 					}
-					//if we have a function, we need to execute it to get its contents
+					//if we have an array here, it's most likely from an if() helper
 					else if(Array.isArray(render[i][0])) {
+						createVirtualDom(render[i], vNode)
 					}
 					//if its not an array, then its a tag field, and the start/end of a dom node
 					else {
@@ -161,10 +162,10 @@ class Component {
 		//the first part of the array is the tag
 		var tagData = Compiler.compileTag(data);
 		vNode.tag = tagData.tag;
-		if(tagData.classes != null) {
+		if(tagData.classes.length > 0) {
 			vNode.className = tagData.classes.join(' ');
 		}
-		if(tagData.ids != null) {
+		if(tagData.ids.length > 0) {
 			vNode.attrs = vNode.attrs || {};
 			vNode.attrs.id = tagData.ids.join('');
 		}
