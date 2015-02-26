@@ -30,6 +30,54 @@ class Demo extends Inferno.Component {
 
 	render($) {
 		//$ = RenderHelper, to reduce lines of code and to simplify workflow
+		
+		//you can use quickhand syntax to give elements classes and ids
+		//<div.foo>, <span#bar>
+
+		//you can also optionally close the elements with the quickhand to allow for easier
+		//reading and syntax checking
+
+		return `
+			<div>
+				<header>
+					<h1>
+						Example ${ this.title }
+					</h1>
+				</header>
+			</div>
+			<div className=${ this.testClassName }>
+				Test text
+			</div>
+			<div#main>
+				<div>
+					${
+						$.if(this.todos.length > 0, `
+							<span.counter>
+								There are ${ this.todos.length } todos!
+							</span>
+						`).else(`
+							<span.no-todos>
+								There are no todos!
+							</span>
+						`)
+					}
+				</div>
+				<ul.todos>
+					${
+						$.forEach(this.todos, (todo, index) => `
+							<li.todo>
+								<h2>A todo</h2>
+								<span>${ index }: ${ todo }</span>
+							</li>
+						`)
+					}
+				</ul.todos>
+			</div#main>
+		`
+	}
+
+	render($) {
+		//$ = RenderHelper, to reduce lines of code and to simplify workflow
 		return [
 			['div'],
 				['header'],

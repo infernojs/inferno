@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/dominicg/EngineJS/InfernoJS/Compiler.js":[function(require,module,exports){
 "use strict";
 
 var Compiler = {};
@@ -158,18 +158,12 @@ Compiler.compileTag = function (tag) {
 
 module.exports = Compiler;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var b = require("./bobril.js");
 var Compiler = require("./Compiler.js");
@@ -281,13 +275,15 @@ var Component = (function () {
 						if (Array.isArray(render[i])) {
 							//if we have another array, then we're dealing with children for the last vNode
 							//generally this is from a closure, such as forEach(), map() or times()
-							if (Array.isArray(render[i][0])) {
+							if (Array.isArray(render[i][0][0])) {
 								for (s = 0; s < render[i].length; s++) {
 									createVirtualDom(render[i][s], vNode);
 								}
 							}
-							//if we have a function, we need to execute it to get its contents
-							else if (Array.isArray(render[i][0])) {}
+							//if we have an array here, it's most likely from an if() helper
+							else if (Array.isArray(render[i][0])) {
+								createVirtualDom(render[i], vNode);
+							}
 							//if its not an array, then its a tag field, and the start/end of a dom node
 							else {
 								if (render[i][0].charAt(0) === "/") {
@@ -343,10 +339,10 @@ var Component = (function () {
 				//the first part of the array is the tag
 				var tagData = Compiler.compileTag(data);
 				vNode.tag = tagData.tag;
-				if (tagData.classes != null) {
+				if (tagData.classes.length > 0) {
 					vNode.className = tagData.classes.join(" ");
 				}
-				if (tagData.ids != null) {
+				if (tagData.ids.length > 0) {
 					vNode.attrs = vNode.attrs || {};
 					vNode.attrs.id = tagData.ids.join("");
 				}
@@ -403,15 +399,7 @@ var Component = (function () {
 
 module.exports = Component;
 
-
-
-
-
-
-
-
-
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./RenderHelpers.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/RenderHelpers.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
+},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./RenderHelpers.js":"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js","./bobril.js":"/Users/dominicg/EngineJS/InfernoJS/bobril.js"}],"/Users/dominicg/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
@@ -425,18 +413,12 @@ Inferno.Compiler = Compiler;
 
 module.exports = Inferno;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/RenderHelpers.js":[function(require,module,exports){
+},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Users/dominicg/EngineJS/InfernoJS/Component.js"}],"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 /*
 
@@ -466,12 +448,25 @@ var RenderHelpers = (function () {
 
   _prototypeProperties(RenderHelpers, null, {
     forEach: {
-      value: function forEach(values, output) {},
+      value: function forEach(values, output) {
+        var length = values.length,
+            results = [];
+        for (var i = 0; i < length; i++) {
+          results.push(output.call(this._comp, values[i], i, values));
+        }
+        return results;
+      },
       writable: true,
       configurable: true
     },
     "if": {
-      value: function _if(expression, truthy, falsey) {},
+      value: function _if(expression, truthy, falsey) {
+        if (expression === true) {
+          return truthy;
+        } else {
+          return falsey;
+        }
+      },
       writable: true,
       configurable: true
     }
@@ -484,15 +479,7 @@ var RenderHelpers = (function () {
 
 module.exports = RenderHelpers;
 
-
-
-
-
-
-
-
-
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -1516,40 +1503,16 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/new.js":[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/new.js":[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _get = function get(object, property, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-};
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
@@ -1616,12 +1579,4 @@ var InfernoBenchmark3 = (function (_Inferno$Component) {
 
 window.InfernoBenchmark3 = InfernoBenchmark3;
 
-
-
-
-
-
-
-
-
-},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/new.js"]);
+},{"./InfernoJS/Inferno.js":"/Users/dominicg/EngineJS/InfernoJS/Inferno.js"}]},{},["/Users/dominicg/EngineJS/new.js"]);
