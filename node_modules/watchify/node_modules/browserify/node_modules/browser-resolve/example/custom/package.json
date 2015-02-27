@@ -1,7 +1,0 @@
-{
-  "name": "custom",
-  "version": "0.0.0",
-  "browser": {
-    "./main.js": "custom.js"
-  }
-}
