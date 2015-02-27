@@ -48,9 +48,8 @@ class Component {
 		//now we let bobril generate the dom to start with
 		b.init(function () {
 			//return the rendered
-			var vDom = this._createVirtualDom();
 			return {
-				compiled: vDom,
+				compiled: this.render(this._renderHelpers),
 				context: this
 			};
 		}.bind(this));
@@ -84,75 +83,6 @@ class Component {
 		return !!(obj && obj.constructor && obj.call && obj.apply);
 	}
 
-	_createVirtualDom() {
-
-		var createVirtualDom = function(render, root) {
-			var i = 0;
-			var s = 0;
-			var attrKey = null;
-			var vNode = null;
-			var r = root;
-
-			for(i = 0; i < render.length; i++) {
-				//likely to be a text node or the openings
-				//check if this is an array (a dom node)
-				if(Array.isArray(render[i])) {
-					//if we have another array, then we're dealing with children for the last vNode
-					//generally this is from a closure, such as forEach(), map() or times()
-					if(Array.isArray(render[i][0][0])) {
-						for(s = 0; s < render[i].length; s++) {
-							createVirtualDom(render[i][s], vNode)
-						}
-					}
-					//if we have an array here, it's most likely from an if() helper
-					else if(Array.isArray(render[i][0])) {
-						createVirtualDom(render[i], vNode)
-					}
-					//if its not an array, then its a tag field, and the start/end of a dom node
-					else {
-						if(render[i][0].charAt(0) === "/") {
-							r = r.parent;
-						} else {
-							vNode = this._createVnode(render[i][0]);
-							vNode.parent = r;
-							//now add our attributes
-							if(render[i][1] != null) {
-								vNode.attrs = vNode.attrs || {};
-								for(attrKey in render[i][1]) {
-									if(attrKey === 'style' || attrKey === 'className') {
-										vNode[attrKey] = render[i][1][attrKey];
-									} else {
-										vNode['attrs'][attrKey] = render[i][1][attrKey];
-									}
-								}
-							}
-							if(Array.isArray(r)) {
-								r.push(vNode);
-							} else {
-								r.children.push(vNode);
-							}
-							//check if this tag does not need a close tag
-							if(vNode.tag !== 'input') {
-								r = vNode;
-							}
-						}
-					}
-				}
-				//if its not an array, then its a textNode/nodeValue
-				else {
-					//make sure it's converted text with (+ '')
-					r.children = render[i] + '';
-				}
-
-			}
-		}.bind(this)
-
-		var vDom = [];
-		createVirtualDom(this.render(this._renderHelpers), vDom);
-
-		return vDom;
-	}
-
 	_createVnode(data) {
 		//lets make a dom node
 		var vNode = {};
@@ -171,36 +101,6 @@ class Component {
 		return vNode;
 	}
 
-	// render(ctx, me) {
-	// 	var props = ctx.data.props,
-	// 			compiledTag = {},
-	// 			i = 0;
-	//
-	// 	this._ctx = ctx;
-	//
-	// 	if(ctx.data.props != null) {
-	// 		props = ctx.data.props();
-	// 		//best to also disable the watcher here?
-	// 		//apply the props to this object
-	// 		for(i in props) {
-	// 			this[i] = props[i];
-	// 		}
-	// 		if(this.onUpdate != null) {
-	// 			this.onUpdate();
-	// 		}
-	// 	}
-	// 	//handle the tag
-	// 	compiledTag = Compiler.compileTag(ctx.data.tag);
-	// 	me.tag = compiledTag.tag;
-	// 	if(compiledTag.classes.length > 0) {
-	// 		me.className = compiledTag.classes;
-	// 	}
-	// 	if(compiledTag.ids.length > 0) {
-	// 		me.attr.id = compiledTag.ids;
-	// 	}
-	// 	//generate children from this component's own vdom
-	// 	me.children = this._createVirtualDom();
-	// }
 
 	addSubComponent(subCompnent) {
 		this._subComponents.push(subCompnent);

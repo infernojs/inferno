@@ -1,136 +1,178 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/dominicg/EngineJS/InfernoJS/Compiler.js":[function(require,module,exports){
 "use strict";
 
 var Compiler = {};
 
-Compiler.compileDsl = function (elements, root, index) {
-	var i = 0,
-	    j = 0,
-	    elem = "",
-	    nextElem = [],
-	    tag = "",
-	    attrs = [],
-	    compiledTag;
+Compiler.compileAttr = function (text) {
+	var compiled = {};
+	var attrName = "";
+	var currentSring = "";
+	var inValue = false;
+	var char = "";
 
-	//build up a vDom element
-	elem = {};
-
-	//if we have an element with an array of elements, go through them
-	if (Array.isArray(elements)) {
-		for (i = 0; i < elements.length; i++) {
-			//see if there is nothing
-			if (elements[i] == null) {
-				continue;
+	for (var i = 0; i < text.length; i++) {
+		char = text[i];
+		if (char === "=") {
+			attrName = currentSring;
+			currentSring = "";
+		} else if (char === "\"" || char === "'") {
+			if (inValue === false) {
+				inValue = true;
+			} else {
+				compiled[attrName] = currentSring;
+				currentSring = "";
+				inValue = false;
 			}
-			elem.children = elem.children || [];
-			Compiler.compileDsl(elements[i], elem, i);
-		}
-	} else {
-		if (Array.isArray(elements)) {
-			elem.children = elem.children || [];
-			Compiler.compileDsl(elements, elem, i);
 		} else {
-			//check if the element is a templatehelper function
-			if (elements.$type === "if") {
-				//lets store this in the object so it knows
-				root.$toRender = [];
-				root.$type = "if";
-				switch (elements.condition) {
-					case "isTrue":
-						root.$condition = true;
-						break;
-					case "isFalse":
-						root.$condition = false;
-						break;
-					case "isNull":
-						root.$condition = null;
-						break;
-					case "isZero":
-						root.$condition = 0;
-						break;
+			if (char === " " && inValue === true || char !== " ") {
+				currentSring += char;
+			}
+		}
+	};
+	return compiled;
+};
+
+Compiler.compileHtml = function (text) {
+	var compiled = [];
+	var insideTag = false;
+	var char = "";
+	var currentSring = "";
+	var tagName = "";
+	var tagChild = false;
+	var textNode = "";
+	var hasTag = false;
+	var attrText = false;
+
+	for (var i = 0; i < text.length; i++) {
+		char = text[i];
+		if (char === "<") {
+			insideTag = true;
+			if (tagChild === true) {
+				textNode = currentSring.trim();
+				if (textNode) {
+					compiled.push(textNode);
 				}
-				root.$expression = elements.expression;
-				Compiler.compileDsl(elements.children, root, 0);
+			} else {
+				attrText = currentSring.trim();
 			}
-			//handle for statements
-			else if (elements.$type === "for") {
-				root.$toRender = [];
-				if (elements.condition === "each") {
-					root.$type = "forEach";
-					root.$items = elements.items;
-				} else if (elements.condition === "increment") {
-					root.$type = "for";
-					root.$bounds = elements.bounds;
-				}
-				root.$toRender = elements.children;
-			} else if (elements.$type === "render") {
-				elem.$type = "render";
-				elem.$component = elements.$component;
-				elem.$data = elements.$data;
-				elem.$tag = elements.$tag;
-			}
-			//handle it if it's a text value
-			else if (elements.$type === "text") {
-				root.$type = "text";
-				root.$condition = elements.condition;
-				root.$toRender = elements.$toRender;
-			}
-			//check if the value is simply a string
-			else if (typeof elements === "string") {
-				if (root.tag == null && index === 0) {
-					tag = elements;
-					//tag may have .className or #id in it, so we need to take them out
-					compiledTag = Compiler.compileTag(tag);
-					//apply ids and classNames
-					if (compiledTag.classes.length > 0) {
-						root.className = compiledTag.classes.join(" ");
-					}
-					if (compiledTag.ids.length > 0) {
-						root.attrs = elem.attrs || {};
-						root.attrs.id = compiledTag.ids.join("");
-					}
-					root.tag = compiledTag.tag;
+			currentSring = "";
+		} else if (char === ">") {
+			insideTag = false;
+			tagName = currentSring.trim();
+			if (tagName) {
+				if (tagName.charAt(0) === "/") {
+					tagChild = false;
+					compiled.push([tagName]);
 				} else {
-					root.children = elements;
+					if (hasTag === false) {
+						tagChild = true;
+						compiled.push([tagName]);
+						hasTag = true;
+					} else {
+						//this is an attribute, so lets set it to the property
+						compiled[compiled.length - 1].push(Compiler.compileAttr(currentSring.trim()));
+						hasTag = false;
+					}
+				}
+				hasTag = false;
+			}
+			currentSring = "";
+		} else if (char === " ") {
+			//if we are in a tag
+			if (insideTag === true && hasTag == false) {
+				tagName = currentSring.trim();
+				currentSring = "";
+				if (tagName) {
+					compiled.push([tagName]);
+					hasTag = true;
+				}
+			} else {
+				currentSring += char;
+			}
+		} else {
+			if (char !== "\n") {
+				currentSring += char;
+			}
+		}
+	}
+	return compiled;
+};
+
+Compiler.createVirtualNode = function (data) {
+	//lets make a dom node
+	var vNode = {};
+	//it will have children, so lets create that array
+	vNode.children = [];
+	//the first part of the array is the tag
+	var tagData = Compiler.compileTag(data);
+	vNode.tag = tagData.tag;
+	if (tagData.classes.length > 0) {
+		vNode.className = tagData.classes.join(" ");
+	}
+	if (tagData.ids.length > 0) {
+		vNode.attrs = vNode.attrs || {};
+		vNode.attrs.id = tagData.ids.join("");
+	}
+	return vNode;
+};
+
+Compiler.createVirtualDom = function (render, root) {
+	var i = 0;
+	var s = 0;
+	var attrKey = null;
+	var vNode = null;
+	var r = root;
+
+	for (i = 0; i < render.length; i++) {
+		//likely to be a text node or the openings
+		//check if this is an array (a dom node)
+		if (Array.isArray(render[i])) {
+			//if we have another array, then we're dealing with children for the last vNode
+			//generally this is from a closure, such as forEach(), map() or times()
+			if (Array.isArray(render[i][0][0])) {
+				for (s = 0; s < render[i].length; s++) {
+					Compiler.createVirtualDom(render[i][s], vNode);
 				}
 			}
-			//otherwise, it could be a properties object with class etc
+			//if we have an array here, it's most likely from an if() helper
+			else if (Array.isArray(render[i][0])) {
+				Compiler.createVirtualDom(render[i], vNode);
+			}
+			//if its not an array, then its a tag field, and the start/end of a dom node
 			else {
-				root.attrs = {};
-				//go through each property and add it to the elem
-				for (j in elements) {
-					//check the key and see if its on the elem or in attrs
-					switch (j) {
-						case "className":
-						case "style":
-						case "onDomCreated":
-							root[j] = elements[j];
-							break;
-						case "id":
-						case "type":
-						case "value":
-						case "placeholder":
-						case "method":
-						case "action":
-						default:
-							root.attrs[j] = elements[j];
-							break;
+				if (render[i][0].charAt(0) === "/") {
+					r = r.parent;
+				} else {
+					vNode = Compiler.createVirtualNode(render[i][0]);
+					vNode.parent = r;
+					//now add our attributes
+					if (render[i][1] != null) {
+						vNode.attrs = vNode.attrs || {};
+						for (attrKey in render[i][1]) {
+							if (attrKey === "style" || attrKey === "className") {
+								vNode[attrKey] = render[i][1][attrKey];
+							} else {
+								vNode.attrs[attrKey] = render[i][1][attrKey];
+							}
+						}
+					}
+					if (Array.isArray(r)) {
+						r.push(vNode);
+					} else {
+						r.children.push(vNode);
+					}
+					//check if this tag does not need a close tag
+					if (vNode.tag !== "input") {
+						r = vNode;
 					}
 				}
 			}
 		}
-	}
-	//check if the object is empty
-	if (Object.keys(elem).length === 0) {
-		return;
-	}
-
-	if (Array.isArray(root)) {
-		root.push(elem);
-	} else if (root.$toRender != null) {
-		root.$toRender.push(elem);
-	} else {
-		root.children.push(elem);
+		//if its not an array, then its a textNode/nodeValue
+		else {
+			//make sure it's converted text with (+ '')
+			r.children = render[i] + "";
+		}
 	}
 };
 
@@ -157,7 +199,7 @@ Compiler.compileTag = function (tag) {
 
 module.exports = Compiler;
 
-},{}],2:[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -219,9 +261,8 @@ var Component = (function () {
 				//now we let bobril generate the dom to start with
 				b.init((function () {
 					//return the rendered
-					var vDom = this._createVirtualDom();
 					return {
-						compiled: vDom,
+						compiled: this.render(this._renderHelpers),
 						context: this
 					};
 				}).bind(this));
@@ -232,18 +273,16 @@ var Component = (function () {
 		_compareArrays: {
 			value: function _compareArrays(array1, array2) {
 				// if the other array is a falsy value, return
-				if (!array2) {
-					return false;
-				} // compare lengths - can save a lot of time
-				if (array1.length != array2.length) {
-					return false;
-				}for (var i = 0, l = array1.length; i < l; i++) {
+				if (!array2) return false;
+
+				// compare lengths - can save a lot of time
+				if (array1.length != array2.length) return false;
+
+				for (var i = 0, l = array1.length; i < l; i++) {
 					// Check if we have nested arrays
 					if (array1[i] instanceof Array && array2[i] instanceof Array) {
 						// recurse into the nested arrays
-						if (array1[i].equals(array2[i])) {
-							return false;
-						}
+						if (array1[i].equals(array2[i])) return false;
 					} else if (array1[i] != array2[i]) {
 						// Warning - two different object instances will never be equal: {x:20} != {x:20}
 						return false;
@@ -257,77 +296,6 @@ var Component = (function () {
 		_isFunction: {
 			value: function _isFunction(obj) {
 				return !!(obj && obj.constructor && obj.call && obj.apply);
-			},
-			writable: true,
-			configurable: true
-		},
-		_createVirtualDom: {
-			value: function _createVirtualDom() {
-
-				var createVirtualDom = (function (render, root) {
-					var i = 0;
-					var s = 0;
-					var attrKey = null;
-					var vNode = null;
-					var r = root;
-
-					for (i = 0; i < render.length; i++) {
-						//likely to be a text node or the openings
-						//check if this is an array (a dom node)
-						if (Array.isArray(render[i])) {
-							//if we have another array, then we're dealing with children for the last vNode
-							//generally this is from a closure, such as forEach(), map() or times()
-							if (Array.isArray(render[i][0][0])) {
-								for (s = 0; s < render[i].length; s++) {
-									createVirtualDom(render[i][s], vNode);
-								}
-							}
-							//if we have an array here, it's most likely from an if() helper
-							else if (Array.isArray(render[i][0])) {
-								createVirtualDom(render[i], vNode);
-							}
-							//if its not an array, then its a tag field, and the start/end of a dom node
-							else {
-								if (render[i][0].charAt(0) === "/") {
-									r = r.parent;
-								} else {
-									vNode = this._createVnode(render[i][0]);
-									vNode.parent = r;
-									//now add our attributes
-									if (render[i][1] != null) {
-										vNode.attrs = vNode.attrs || {};
-										for (attrKey in render[i][1]) {
-											if (attrKey === "style" || attrKey === "className") {
-												vNode[attrKey] = render[i][1][attrKey];
-											} else {
-												vNode.attrs[attrKey] = render[i][1][attrKey];
-											}
-										}
-									}
-									if (Array.isArray(r)) {
-										r.push(vNode);
-									} else {
-										r.children.push(vNode);
-									}
-									//check if this tag does not need a close tag
-									if (vNode.tag !== "input") {
-										r = vNode;
-									}
-								}
-							}
-						}
-						//if its not an array, then its a textNode/nodeValue
-						else {
-							//make sure it's converted text with (+ '')
-							r.children = render[i] + "";
-						}
-					}
-				}).bind(this);
-
-				var vDom = [];
-				createVirtualDom(this.render(this._renderHelpers), vDom);
-
-				return vDom;
 			},
 			writable: true,
 			configurable: true
@@ -354,38 +322,6 @@ var Component = (function () {
 			configurable: true
 		},
 		addSubComponent: {
-
-			// render(ctx, me) {
-			// 	var props = ctx.data.props,
-			// 			compiledTag = {},
-			// 			i = 0;
-			//
-			// 	this._ctx = ctx;
-			//
-			// 	if(ctx.data.props != null) {
-			// 		props = ctx.data.props();
-			// 		//best to also disable the watcher here?
-			// 		//apply the props to this object
-			// 		for(i in props) {
-			// 			this[i] = props[i];
-			// 		}
-			// 		if(this.onUpdate != null) {
-			// 			this.onUpdate();
-			// 		}
-			// 	}
-			// 	//handle the tag
-			// 	compiledTag = Compiler.compileTag(ctx.data.tag);
-			// 	me.tag = compiledTag.tag;
-			// 	if(compiledTag.classes.length > 0) {
-			// 		me.className = compiledTag.classes;
-			// 	}
-			// 	if(compiledTag.ids.length > 0) {
-			// 		me.attr.id = compiledTag.ids;
-			// 	}
-			// 	//generate children from this component's own vdom
-			// 	me.children = this._createVirtualDom();
-			// }
-
 			value: function addSubComponent(subCompnent) {
 				this._subComponents.push(subCompnent);
 			},
@@ -401,7 +337,7 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./Compiler.js":1,"./RenderHelpers.js":4,"./bobril.js":5}],3:[function(require,module,exports){
+},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./RenderHelpers.js":"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js","./bobril.js":"/Users/dominicg/EngineJS/InfernoJS/bobril.js"}],"/Users/dominicg/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
@@ -411,11 +347,17 @@ var Inferno = {};
 
 Inferno.Component = Component;
 
-Inferno.Compiler = Compiler;
+//takes some html and returns Bobril compatible vdom
+Inferno.compile = function (html) {
+  var arrayDsl = Compiler.compileHtml(html);
+  var vDom = [];
+  Compiler.createVirtualDom(arrayDsl, vDom);
+  return vDom;
+};
 
 module.exports = Inferno;
 
-},{"./Compiler.js":1,"./Component.js":2}],4:[function(require,module,exports){
+},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Users/dominicg/EngineJS/InfernoJS/Component.js"}],"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js":[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -461,82 +403,6 @@ var RenderHelpers = (function () {
       writable: true,
       configurable: true
     },
-    compile: {
-      value: function compile(text) {
-        var compiled = [];
-
-        var insideTag = false;
-        var char = "";
-        var currentSring = "";
-        var tagName = "";
-        var tagChild = false;
-        var textNode = "";
-        var tagAttr = false;
-        var hasTag = false;
-        var attrText = false;
-
-        for (var i = 0; i < text.length; i++) {
-          char = text[i];
-
-          if (char === "<") {
-            insideTag = true;
-            if (tagChild === true) {
-              textNode = currentSring.trim();
-              if (textNode) {
-                compiled.push(textNode);
-              }
-            } else {
-              attrText = currentSring.trim();
-            }
-            currentSring = "";
-          } else if (char === ">") {
-            insideTag = false;
-            tagName = currentSring.trim();
-
-            if (tagName) {
-              if (tagName.charAt(0) === "/") {
-                tagChild = false;
-                compiled.push([tagName]);
-              } else {
-                if (hasTag === false) {
-                  tagChild = true;
-                  compiled.push([tagName]);
-                  hasTag = true;
-                } else {
-                  hasTag = false;
-                }
-              }
-              hasTag = false;
-            }
-
-            currentSring = "";
-          } else if (char === " ") {
-            //if we are in a tag
-            if (insideTag === true) {
-              tagName = currentSring.trim();
-              currentSring = "";
-              if (tagName) {
-                compiled.push([tagName]);
-                hasTag = true;
-              }
-            } else {
-              currentSring += char;
-            }
-          } else {
-            if (char !== "\n") {
-              currentSring += char;
-            } else {
-              if (tagChild === true) {
-                tagAttr = true;
-              }
-            }
-          }
-        }
-        return compiled;
-      },
-      writable: true,
-      configurable: true
-    },
     "if": {
       value: function _if(expression, truthy, falsey) {
         if (expression === true) {
@@ -557,7 +423,7 @@ var RenderHelpers = (function () {
 
 module.exports = RenderHelpers;
 
-},{}],5:[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -636,7 +502,7 @@ var b = (function (window, document) {
     var inSvg = false;
     var updateCall = [];
     var updateInstance = [];
-    var setValueCallback = function setValueCallback(el, node, newValue, oldValue) {
+    var setValueCallback = function (el, node, newValue, oldValue) {
         if (newValue !== oldValue) el.value = newValue;
     };
     function setSetValue(callback) {
@@ -644,7 +510,7 @@ var b = (function (window, document) {
         setValueCallback = callback;
         return prev;
     }
-    var setStyleCallback = function setStyleCallback() {};
+    var setStyleCallback = function () {};
     function setSetStyle(callback) {
         var prev = setStyleCallback;
         setStyleCallback = callback;
@@ -689,9 +555,8 @@ var b = (function (window, document) {
         if (inNamespace) el.setAttribute("class", className);else el.className = className;
     }
     function updateElement(n, el, newAttrs, oldAttrs) {
-        if (!newAttrs) {
-            return undefined;
-        }var attrName, newAttr, oldAttr, valueOldAttr, valueNewAttr;
+        if (!newAttrs) return undefined;
+        var attrName, newAttr, oldAttr, valueOldAttr, valueNewAttr;
         for (attrName in newAttrs) {
             newAttr = newAttrs[attrName];
             oldAttr = oldAttrs[attrName];
@@ -779,16 +644,14 @@ var b = (function (window, document) {
         if (t === "string") {
             return { tag: "", children: n };
         }
-        if (t === "boolean") {
-            return null;
-        }return n;
+        if (t === "boolean") return null;
+        return n;
     }
     function createChildren(c) {
         var ch = c.children;
         var element = c.element;
-        if (!ch) {
-            return;
-        }if (!isArray(ch)) {
+        if (!ch) return;
+        if (!isArray(ch)) {
             if (typeof ch === "string") {
                 if (hasTextContent) {
                     element.textContent = ch;
@@ -870,17 +733,16 @@ var b = (function (window, document) {
     var rootNode = document.body;
     function vdomPath(n) {
         var res = [];
-        if (n == null) {
-            return res;
-        }var root = rootNode;
+        if (n == null) return res;
+
+        var root = rootNode;
         var nodeStack = [];
         while (n && n !== root) {
             nodeStack.push(n);
             n = n.parentNode;
         }
-        if (!n) {
-            return res;
-        }var currentCacheArray = rootCacheChildren;
+        if (!n) return res;
+        var currentCacheArray = rootCacheChildren;
         while (nodeStack.length) {
             var currentNode = nodeStack.pop();
             if (currentCacheArray) for (var i = 0, l = currentCacheArray.length; i < l; i++) {
@@ -901,9 +763,8 @@ var b = (function (window, document) {
     }
     function getCacheNode(n) {
         var s = vdomPath(n);
-        if (s.length == 0) {
-            return null;
-        }return s[s.length - 1];
+        if (s.length == 0) return null;
+        return s[s.length - 1];
     }
     function updateNode(n, c) {
         var component = n.component;
@@ -914,9 +775,8 @@ var b = (function (window, document) {
             if (component.id !== c.component.id) {
                 bigChange = true;
             } else {
-                if (component.shouldChange) if (!component.shouldChange(c.ctx, n, c)) {
-                    return c;
-                }c.ctx.data = n.data || {};
+                if (component.shouldChange) if (!component.shouldChange(c.ctx, n, c)) return c;
+                c.ctx.data = n.data || {};
                 c.component = component;
                 if (component.render) component.render(c.ctx, n, c);
             }
@@ -1017,9 +877,8 @@ var b = (function (window, document) {
         if (newChildren == null) newChildren = [];
         if (!isArray(newChildren)) {
             if (typeof newChildren === "string" && !isArray(cachedChildren)) {
-                if (newChildren === cachedChildren) {
-                    return cachedChildren;
-                }if (hasTextContent) {
+                if (newChildren === cachedChildren) return cachedChildren;
+                if (hasTextContent) {
                     element.textContent = newChildren;
                 } else {
                     element.innerText = newChildren;
@@ -1238,9 +1097,8 @@ var b = (function (window, document) {
             newIndex++;
         }
         // Without any keyless nodes we are done
-        if (!keyLess) {
-            return cachedChildren;
-        } // calculate common (old and new) keyless
+        if (!keyLess) return cachedChildren;
+        // calculate common (old and new) keyless
         keyLess = keyLess - Math.abs(deltaKeyless) >> 1;
         // reorder just nonkeyed nodes
         newIndex = backupNewIndex;
@@ -1354,16 +1212,13 @@ var b = (function (window, document) {
     function emitEvent(name, ev, target, node) {
         var events = regEvents[name];
         if (events) for (var i = 0; i < events.length; i++) {
-            if (events[i](ev, target, node)) {
-                return true;
-            }
+            if (events[i](ev, target, node)) return true;
         }
         return false;
     }
     function addListener(el, name) {
-        if (name[0] == "!") {
-            return;
-        }function enhanceEvent(ev) {
+        if (name[0] == "!") return;
+        function enhanceEvent(ev) {
             ev = ev || window.event;
             var t = ev.target || ev.srcElement || el;
             var n = getCacheNode(t);
@@ -1378,9 +1233,8 @@ var b = (function (window, document) {
     }
     var eventsCaptured = false;
     function initEvents() {
-        if (eventsCaptured) {
-            return;
-        }eventsCaptured = true;
+        if (eventsCaptured) return;
+        eventsCaptured = true;
         var eventNames = objectKeys(registryEvents);
         for (var j = 0; j < eventNames.length; j++) {
             var eventName = eventNames[j];
@@ -1407,7 +1261,7 @@ var b = (function (window, document) {
             }
         }
     }
-    var afterFrameCallback = function afterFrameCallback() {};
+    var afterFrameCallback = function () {};
     function setAfterFrame(callback) {
         var res = afterFrameCallback;
         afterFrameCallback = callback;
@@ -1431,16 +1285,14 @@ var b = (function (window, document) {
         afterFrameCallback(rootCacheChildren);
     }
     function invalidate(ctx) {
-        if (fullRecreateRequested) {
-            return;
-        }if (ctx != null) {
+        if (fullRecreateRequested) return;
+        if (ctx != null) {
             ctx[ctxInvalidated] = frame + 1;
         } else {
             fullRecreateRequested = true;
         }
-        if (scheduled) {
-            return;
-        }scheduled = true;
+        if (scheduled) return;
+        scheduled = true;
         requestAnimationFrame(update);
     }
     function init(factory) {
@@ -1456,9 +1308,7 @@ var b = (function (window, document) {
             if (c) {
                 var m = c[name];
                 if (m) {
-                    if (m.call(c, node.ctx, param)) {
-                        return true;
-                    }
+                    if (m.call(c, node.ctx, param)) return true;
                 }
                 m = c.shouldStopBubble;
                 if (m) {
@@ -1556,7 +1406,7 @@ var b = (function (window, document) {
         return r;
     }
     return {
-        setRootNode: function setRootNode(root) {
+        setRootNode: function (root) {
             rootNode = root;
         },
         createNode: createNode,
@@ -1568,40 +1418,20 @@ var b = (function (window, document) {
         init: init,
         setAfterFrame: setAfterFrame,
         isArray: isArray,
-        uptime: (function (_uptime) {
-            var _uptimeWrapper = function uptime() {
-                return _uptime.apply(this, arguments);
-            };
-
-            _uptimeWrapper.toString = function () {
-                return _uptime.toString();
-            };
-
-            return _uptimeWrapper;
-        })(function () {
+        uptime: function () {
             return uptime;
-        }),
+        },
         now: now,
-        frame: (function (_frame) {
-            var _frameWrapper = function frame() {
-                return _frame.apply(this, arguments);
-            };
-
-            _frameWrapper.toString = function () {
-                return _frame.toString();
-            };
-
-            return _frameWrapper;
-        })(function () {
+        frame: function () {
             return frame;
-        }),
+        },
         assign: assign,
-        ieVersion: function ieVersion() {
+        ieVersion: function () {
             return document.documentMode;
         },
         invalidate: invalidate,
         preventDefault: preventDefault,
-        vmlNode: function vmlNode() {
+        vmlNode: function () {
             return inNamespace = true;
         },
         vdomPath: vdomPath,
@@ -1617,9 +1447,8 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-},{}],6:[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/index.js":[function(require,module,exports){
 "use strict";
-
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -1647,7 +1476,7 @@ var Demo = (function (_Inferno$Component) {
 		//these are not meant to have any visibility outside of this component
 		this._formId = "todo-form";
 
-		_get(Object.getPrototypeOf(Demo.prototype), "constructor", this).call(this);
+		_get(_Inferno$Component.prototype, "constructor", this).call(this);
 	}
 
 	_inherits(Demo, _Inferno$Component);
@@ -1670,9 +1499,10 @@ var Demo = (function (_Inferno$Component) {
 				//you can also optionally close the elements with the quickhand to allow for easier
 				//reading and syntax checking
 
-				return $.compile("\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>\n\t\t\t\t\t\tExample " + this.title + "\n\t\t\t\t\t</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div className=" + this.testClassName + ">\n\t\t\t\tTest text\n\t\t\t</div>\n\t\t\t<div#main>\n\t\t\t\t<div>\n\t\t\t\t\t" + $["if"](this.todos.length > 0, "\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are " + this.todos.length + " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t", "\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t") + "\n\t\t\t\t</div>\n\t\t\t\t<ul.todos>\n\t\t\t\t\t" + $.forEach(this.todos, function (todo, index) {
+				//Remember to pass the HTML through Inferno.compile(...)
+				return Inferno.compile("\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>\n\t\t\t\t\t\tExample " + this.title + "\n\t\t\t\t\t</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div className=\"" + this.testClassName + "\">\n\t\t\t\tTest text\n\t\t\t</div>\n\t\t\t<div#main>\n\t\t\t\t<div>\n\t\t\t\t\t" + $["if"](this.todos.length > 0, "\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are " + this.todos.length + " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t", "\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t") + "\n\t\t\t\t</div>\n\t\t\t\t<ul.todos>\n\t\t\t\t\t" + $.forEach(this.todos, function (todo, index) {
 					return "\n\t\t\t\t\t\t\t<li.todo>\n\t\t\t\t\t\t\t\t<h2>A todo</h2>\n\t\t\t\t\t\t\t\t<span>" + index + ": " + todo + "</span>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t";
-				}) + "\n\t\t\t\t</ul.todos>\n\t\t\t</div#main>\n\t\t");
+				}) + "\n\t\t\t\t</ul.todos>\n\t\t\t\t<section>\n\t\t\t\t\t<form action=\"#\" method=\"post\">\n\t\t\t\t\t\t<div class=\"form-control\">\n\t\t\t\t\t\t\t<input type=\"text\" placeholder=\"Enter your name\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</section>\n\t\t\t</div#main>\n\t\t");
 			},
 			writable: true,
 			configurable: true
@@ -1685,4 +1515,4 @@ var Demo = (function (_Inferno$Component) {
 window.Demo = Demo;
 /* else */
 
-},{"./InfernoJS/Inferno.js":3}]},{},[6]);
+},{"./InfernoJS/Inferno.js":"/Users/dominicg/EngineJS/InfernoJS/Inferno.js"}]},{},["/Users/dominicg/EngineJS/index.js"]);

@@ -1,137 +1,179 @@
 var Compiler = {};
 
-Compiler.compileDsl = function(elements, root, index) {
-	var i = 0,
-			j = 0,
-			elem = "",
-			nextElem = [],
-			tag = '',
-			attrs = [],
-			compiledTag;
+Compiler.compileAttr = function(text) {
+	var compiled = {};
+	var attrName = '';
+	var currentSring = '';
+	var inValue = false;
+	var char = '';
 
-
-	//build up a vDom element
-	elem = {};
-
-	//if we have an element with an array of elements, go through them
-	if(Array.isArray(elements)) {
-		for(i = 0; i < elements.length; i++) {
-			//see if there is nothing
-			if(elements[i] == null) {
-				continue;
+	for(var i = 0; i < text.length; i++) {
+		char = text[i];
+		if(char === "=") {
+			attrName = currentSring;
+			currentSring = '';
+		} else if(char === '"' || char === "'") {
+			if(inValue === false) {
+				inValue = true;
+			} else {
+				compiled[attrName] = currentSring;
+				currentSring = '';
+				inValue = false;
 			}
-			elem.children = elem.children || [];
-			Compiler.compileDsl(elements[i], elem, i);
-		}
-	} else {
-		if(Array.isArray(elements)) {
-			elem.children = elem.children || [];
-			Compiler.compileDsl(elements, elem, i);
 		} else {
-			//check if the element is a templatehelper function
-			if(elements.$type === "if") {
-				//lets store this in the object so it knows
-				root.$toRender = [];
-				root.$type = "if";
-				switch(elements.condition) {
-					case "isTrue":
-						root.$condition = true;
-						break;
-					case "isFalse":
-						root.$condition = false;
-						break;
-					case "isNull":
-						root.$condition = null;
-						break;
-					case "isZero":
-						root.$condition = 0;
-						break;
+			if((char === " " && inValue === true) || char !== " ") {
+				currentSring += char;
+			}
+		}
+	};
+	return compiled;
+};
+
+Compiler.compileHtml = function(text) {
+	var compiled = [];
+	var insideTag = false;
+	var char = '';
+	var currentSring = '';
+	var tagName = '';
+	var tagChild = false;
+	var textNode = '';
+	var hasTag = false;
+	var attrText = false;
+
+	for(var i = 0; i < text.length; i++) {
+		char = text[i];
+		if(char === "<") {
+			insideTag = true;
+			if(tagChild === true) {
+				textNode = currentSring.trim();
+				if(textNode) {
+					compiled.push(textNode);
 				}
-				root.$expression = elements.expression;
-				Compiler.compileDsl(elements.children, root, 0);
+			} else {
+				attrText = currentSring.trim();
 			}
-			//handle for statements
-			else if(elements.$type === "for") {
-				root.$toRender = [];
-				if(elements.condition === "each") {
-					root.$type = "forEach";
-					root.$items = elements.items;
-				} else if(elements.condition === "increment") {
-					root.$type = "for";
-					root.$bounds = elements.bounds;
-				}
-				root.$toRender = elements.children;
-			}
-			else if(elements.$type === "render") {
-				elem.$type = "render";
-				elem.$component = elements.$component;
-				elem.$data = elements.$data;
-				elem.$tag = elements.$tag;
-			}
-			//handle it if it's a text value
-			else if(elements.$type === "text") {
-				root.$type = "text";
-				root.$condition = elements.condition;
-				root.$toRender = elements.$toRender;
-			}
-			//check if the value is simply a string
-			else if(typeof elements === "string") {
-				if(root.tag == null && index === 0) {
-					tag = elements;
-					//tag may have .className or #id in it, so we need to take them out
-					compiledTag = Compiler.compileTag(tag)
-					//apply ids and classNames
-					if(compiledTag.classes.length > 0) {
-						root.className = compiledTag.classes.join(' ');
-					}
-					if(compiledTag.ids.length > 0) {
-						root.attrs = elem.attrs || {};
-						root.attrs.id = compiledTag.ids.join('');
-					}
-					root.tag = compiledTag.tag;
+			currentSring = '';
+		} else if(char === ">") {
+			insideTag = false;
+			tagName = currentSring.trim();
+			if(tagName) {
+				if(tagName.charAt(0) === "/") {
+					tagChild = false;
+					compiled.push([tagName]);
 				} else {
-					root.children = elements;
+					if(hasTag === false) {
+						tagChild = true;
+						compiled.push([tagName]);
+						hasTag = true;
+					} else {
+						//this is an attribute, so lets set it to the property
+						compiled[compiled.length - 1].push(
+							Compiler.compileAttr(currentSring.trim())
+						);
+						hasTag = false;
+					}
+				}
+				hasTag = false;
+			}
+			currentSring = '';
+		} else if(char === " ") {
+			//if we are in a tag
+			if(insideTag === true && hasTag == false) {
+				tagName = currentSring.trim();
+				currentSring = '';
+				if(tagName) {
+					compiled.push([tagName]);
+					hasTag = true;
+				}
+			} else {
+				currentSring += char;
+			}
+		} else {
+			if(char !== "\n") {
+				currentSring += char;
+			}
+		}
+	}
+	return compiled;
+};
+
+Compiler.createVirtualNode = function(data) {
+	//lets make a dom node
+	var vNode = {};
+	//it will have children, so lets create that array
+	vNode.children = [];
+	//the first part of the array is the tag
+	var tagData = Compiler.compileTag(data);
+	vNode.tag = tagData.tag;
+	if(tagData.classes.length > 0) {
+		vNode.className = tagData.classes.join(' ');
+	}
+	if(tagData.ids.length > 0) {
+		vNode.attrs = vNode.attrs || {};
+		vNode.attrs.id = tagData.ids.join('');
+	}
+	return vNode;
+}
+
+Compiler.createVirtualDom = function(render, root) {
+	var i = 0;
+	var s = 0;
+	var attrKey = null;
+	var vNode = null;
+	var r = root;
+
+	for(i = 0; i < render.length; i++) {
+		//likely to be a text node or the openings
+		//check if this is an array (a dom node)
+		if(Array.isArray(render[i])) {
+			//if we have another array, then we're dealing with children for the last vNode
+			//generally this is from a closure, such as forEach(), map() or times()
+			if(Array.isArray(render[i][0][0])) {
+				for(s = 0; s < render[i].length; s++) {
+					Compiler.createVirtualDom(render[i][s], vNode)
 				}
 			}
-			//otherwise, it could be a properties object with class etc
+			//if we have an array here, it's most likely from an if() helper
+			else if(Array.isArray(render[i][0])) {
+				Compiler.createVirtualDom(render[i], vNode)
+			}
+			//if its not an array, then its a tag field, and the start/end of a dom node
 			else {
-				root['attrs'] = {};
-				//go through each property and add it to the elem
-				for(j in elements) {
-					//check the key and see if its on the elem or in attrs
-					switch(j) {
-						case "className":
-						case "style":
-						case "onDomCreated":
-							root[j] = elements[j];
-							break;
-						case "id":
-						case "type":
-						case "value":
-						case "placeholder":
-						case "method":
-						case "action":
-						default:
-							root['attrs'][j] = elements[j];
-							break;
+				if(render[i][0].charAt(0) === "/") {
+					r = r.parent;
+				} else {
+					vNode = Compiler.createVirtualNode(render[i][0]);
+					vNode.parent = r;
+					//now add our attributes
+					if(render[i][1] != null) {
+						vNode.attrs = vNode.attrs || {};
+						for(attrKey in render[i][1]) {
+							if(attrKey === 'style' || attrKey === 'className') {
+								vNode[attrKey] = render[i][1][attrKey];
+							} else {
+								vNode['attrs'][attrKey] = render[i][1][attrKey];
+							}
+						}
+					}
+					if(Array.isArray(r)) {
+						r.push(vNode);
+					} else {
+						r.children.push(vNode);
+					}
+					//check if this tag does not need a close tag
+					if(vNode.tag !== 'input') {
+						r = vNode;
 					}
 				}
 			}
 		}
+		//if its not an array, then its a textNode/nodeValue
+		else {
+			//make sure it's converted text with (+ '')
+			r.children = render[i] + '';
+		}
 	}
-	//check if the object is empty
-	if(Object.keys(elem).length === 0) {
-		return;
-	}
-
-  if(Array.isArray(root)) {
-    root.push(elem);
-	} else if(root.$toRender != null) {
-		root.$toRender.push(elem);
-  } else {
-    root.children.push(elem);
-  }
-}
+};
 
 Compiler.compileTag = function(tag) {
 	var classes = [],
@@ -152,6 +194,6 @@ Compiler.compileTag = function(tag) {
 		ids: ids,
 		classes: classes
 	}
-}
+};
 
 module.exports = Compiler;

@@ -1,3 +1,4 @@
+"use strict";
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
 var Inferno = require('./InfernoJS/Inferno.js');
@@ -37,7 +38,8 @@ class Demo extends Inferno.Component {
 		//you can also optionally close the elements with the quickhand to allow for easier
 		//reading and syntax checking
 
-		return $.compile(`
+		//Remember to pass the HTML through Inferno.compile(...)
+		return Inferno.compile(`
 			<div>
 				<header>
 					<h1>
@@ -45,7 +47,7 @@ class Demo extends Inferno.Component {
 					</h1>
 				</header>
 			</div>
-			<div className=${ this.testClassName }>
+			<div className="${ this.testClassName }">
 				Test text
 			</div>
 			<div#main>
@@ -72,6 +74,13 @@ class Demo extends Inferno.Component {
 						`)
 					}
 				</ul.todos>
+				<section>
+					<form action="#" method="post">
+						<div class="form-control">
+							<input type="text" placeholder="Enter your name">
+						</div>
+					</form>
+				</section>
 			</div#main>
 		`);
 	}
