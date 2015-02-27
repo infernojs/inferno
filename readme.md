@@ -96,6 +96,21 @@ class Demo extends Inferno.Component {
 window.Demo = Demo;
 ```
 
+To mount an Inferno component, simply use:
+
+```
+
+<div id="app"></div>
+
+<script>
+
+  var demo = new Demo();
+  demo.mount( document.getElementById('app') );
+
+</script>
+
+```
+
 As you can see from the `render($)` method above, Inferno introduces its own
 DSL for creating the DOM, with strong similarities to HTML. This DSL is fully 100% JavaScript code, allowing developers
 to utilise the full power of JavaScript to manipulate how templates are rendered.
