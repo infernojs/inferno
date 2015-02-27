@@ -1,0 +1,7 @@
+benchmark/
+test/
+coverage/
+.*
+Makefile
+v8.log
+

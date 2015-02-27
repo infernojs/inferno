@@ -56,7 +56,6 @@ class Component {
 		}.bind(this));
 	}
 
-
 	_compareArrays(array1, array2) {
 			// if the other array is a falsy value, return
 			if (!array2)

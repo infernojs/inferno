@@ -1,0 +1,10 @@
+{
+    "main": "./index.js",
+    "browser": {
+        "foobar": "module-b",
+        "querystring": "module-c"
+    },
+    "browserify": {
+        "transform": "deamdify"
+    }
+}

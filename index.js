@@ -30,14 +30,14 @@ class Demo extends Inferno.Component {
 
 	render($) {
 		//$ = RenderHelper, to reduce lines of code and to simplify workflow
-		
+
 		//you can use quickhand syntax to give elements classes and ids
 		//<div.foo>, <span#bar>
 
 		//you can also optionally close the elements with the quickhand to allow for easier
 		//reading and syntax checking
 
-		return `
+		return $.compile(`
 			<div>
 				<header>
 					<h1>
@@ -55,7 +55,7 @@ class Demo extends Inferno.Component {
 							<span.counter>
 								There are ${ this.todos.length } todos!
 							</span>
-						`).else(`
+						`, /* else */ `
 							<span.no-todos>
 								There are no todos!
 							</span>
@@ -73,55 +73,8 @@ class Demo extends Inferno.Component {
 					}
 				</ul.todos>
 			</div#main>
-		`
+		`);
 	}
-
-	render($) {
-		//$ = RenderHelper, to reduce lines of code and to simplify workflow
-		return [
-			['div'],
-				['header'],
-					['h1'],
-						`Example ${ this.title }`,
-					['/h1'],
-				['/header'],
-			['/div'],
-			['div', {className: this.testClassName}],
-				'Test text',
-			['/div'],
-			['div#main'],
-				['div'],
-					//example of a truthy helper
-					$.if(this.todos.length > 0, [
-						['span.counter'],
-							`There are ${ this.todos.length } todos!`,
-						['/span']
-					], [ //else
-						['span.no-todos'],
-							"There are no todos!",
-						['/span']
-					]),
-				['/div'],
-			['/div'],
-			['ul.todos'],
-				//usage of forEach helper
-				$.forEach(this.todos, (todo, index) => [
-					['li.todo'],
-						['h2'],"A todo",['/h2'],
-						['span'], `${ index }: ${ todo }`, ['/span'],
-					['/li']
-				]),
-			['/ul'],
-			['form', {id: this.formId, method: "post", action: "#"}],
-				['div.form-control'],
-					['input', {name: "first_name", type: "text"}],
-				['/div'],
-				['button', {type: "submit", onClick: this._clickSubmit}],
-					"Submit!",
-				['/button'],
-			['/form']
-		];
-	}
-};
+}
 
 window.Demo = Demo;

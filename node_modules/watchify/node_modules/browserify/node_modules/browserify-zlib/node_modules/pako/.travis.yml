@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "0.10"
+before_script: "npm install"
+script: make $COMMAND
+env:
+  matrix:
+    - COMMAND=test
+    - COMMAND=test-browser
+  global:
+    - secure: FsU9623CV4X1G3WHvq2H0XHjDYxvfSMdWdKrAuTSZB9TsJlQ0UAIKbHNBzxSBo6/1xv1ZYyuPZvJnrkHAqNOVGYr0MiIINPt0jDmM3anl03lbaVwwpWcwxgslFGbfVufKKKrYAPF0UDS6uNeZtYP4fs2xlao7F9BaanpARiK5TY=
+    - secure: PZeRlTvq67EBo1yXthMK2bKeCn5fVA3qCtFZ0m38XZDi8cj6wfXaLGoELrrtSNGFhZt2xU0DLQ+w0y2vC+gTOzWqbAw1Cedri97c514oX+QFvDqRKCbrKkGR9DHW6jUxOL1YrSfto21+CEsZEcQsYBTYFwnAKxmT3UIXCCgU+JI=

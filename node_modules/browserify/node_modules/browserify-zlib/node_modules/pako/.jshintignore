@@ -1,0 +1,6 @@
+.git/
+node_modules/
+benchmark/implementations
+coverage/
+dist/
+test/browser/pako.js

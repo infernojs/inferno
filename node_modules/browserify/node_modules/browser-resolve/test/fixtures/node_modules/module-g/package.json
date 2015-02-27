@@ -1,0 +1,6 @@
+{
+    "main": "./index.js",
+    "browser": {
+        "foobar": "./foobar-browser.js"
+    }
+}

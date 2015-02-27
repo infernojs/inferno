@@ -1,0 +1,2 @@
+require('foobar');
+require('querystring');

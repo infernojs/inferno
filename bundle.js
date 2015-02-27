@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
 var Compiler = {};
@@ -11,7 +11,6 @@ Compiler.compileDsl = function (elements, root, index) {
 	    tag = "",
 	    attrs = [],
 	    compiledTag;
-
 
 	//build up a vDom element
 	elem = {};
@@ -158,18 +157,12 @@ Compiler.compileTag = function (tag) {
 
 module.exports = Compiler;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js":[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var b = require("./bobril.js");
 var Compiler = require("./Compiler.js");
@@ -239,16 +232,18 @@ var Component = (function () {
 		_compareArrays: {
 			value: function _compareArrays(array1, array2) {
 				// if the other array is a falsy value, return
-				if (!array2) return false;
-
-				// compare lengths - can save a lot of time
-				if (array1.length != array2.length) return false;
-
-				for (var i = 0, l = array1.length; i < l; i++) {
+				if (!array2) {
+					return false;
+				} // compare lengths - can save a lot of time
+				if (array1.length != array2.length) {
+					return false;
+				}for (var i = 0, l = array1.length; i < l; i++) {
 					// Check if we have nested arrays
 					if (array1[i] instanceof Array && array2[i] instanceof Array) {
 						// recurse into the nested arrays
-						if (array1[i].equals(array2[i])) return false;
+						if (array1[i].equals(array2[i])) {
+							return false;
+						}
 					} else if (array1[i] != array2[i]) {
 						// Warning - two different object instances will never be equal: {x:20} != {x:20}
 						return false;
@@ -268,6 +263,7 @@ var Component = (function () {
 		},
 		_createVirtualDom: {
 			value: function _createVirtualDom() {
+
 				var createVirtualDom = (function (render, root) {
 					var i = 0;
 					var s = 0;
@@ -405,13 +401,7 @@ var Component = (function () {
 
 module.exports = Component;
 
-
-
-
-
-
-
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./RenderHelpers.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/RenderHelpers.js","./bobril.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
+},{"./Compiler.js":1,"./RenderHelpers.js":4,"./bobril.js":5}],3:[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
@@ -425,18 +415,12 @@ Inferno.Compiler = Compiler;
 
 module.exports = Inferno;
 
-},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Component.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/RenderHelpers.js":[function(require,module,exports){
+},{"./Compiler.js":1,"./Component.js":2}],4:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 /*
 
@@ -477,6 +461,82 @@ var RenderHelpers = (function () {
       writable: true,
       configurable: true
     },
+    compile: {
+      value: function compile(text) {
+        var compiled = [];
+
+        var insideTag = false;
+        var char = "";
+        var currentSring = "";
+        var tagName = "";
+        var tagChild = false;
+        var textNode = "";
+        var tagAttr = false;
+        var hasTag = false;
+        var attrText = false;
+
+        for (var i = 0; i < text.length; i++) {
+          char = text[i];
+
+          if (char === "<") {
+            insideTag = true;
+            if (tagChild === true) {
+              textNode = currentSring.trim();
+              if (textNode) {
+                compiled.push(textNode);
+              }
+            } else {
+              attrText = currentSring.trim();
+            }
+            currentSring = "";
+          } else if (char === ">") {
+            insideTag = false;
+            tagName = currentSring.trim();
+
+            if (tagName) {
+              if (tagName.charAt(0) === "/") {
+                tagChild = false;
+                compiled.push([tagName]);
+              } else {
+                if (hasTag === false) {
+                  tagChild = true;
+                  compiled.push([tagName]);
+                  hasTag = true;
+                } else {
+                  hasTag = false;
+                }
+              }
+              hasTag = false;
+            }
+
+            currentSring = "";
+          } else if (char === " ") {
+            //if we are in a tag
+            if (insideTag === true) {
+              tagName = currentSring.trim();
+              currentSring = "";
+              if (tagName) {
+                compiled.push([tagName]);
+                hasTag = true;
+              }
+            } else {
+              currentSring += char;
+            }
+          } else {
+            if (char !== "\n") {
+              currentSring += char;
+            } else {
+              if (tagChild === true) {
+                tagAttr = true;
+              }
+            }
+          }
+        }
+        return compiled;
+      },
+      writable: true,
+      configurable: true
+    },
     "if": {
       value: function _if(expression, truthy, falsey) {
         if (expression === true) {
@@ -497,12 +557,7 @@ var RenderHelpers = (function () {
 
 module.exports = RenderHelpers;
 
-
-
-
-
-
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -581,7 +636,7 @@ var b = (function (window, document) {
     var inSvg = false;
     var updateCall = [];
     var updateInstance = [];
-    var setValueCallback = function (el, node, newValue, oldValue) {
+    var setValueCallback = function setValueCallback(el, node, newValue, oldValue) {
         if (newValue !== oldValue) el.value = newValue;
     };
     function setSetValue(callback) {
@@ -589,7 +644,7 @@ var b = (function (window, document) {
         setValueCallback = callback;
         return prev;
     }
-    var setStyleCallback = function () {};
+    var setStyleCallback = function setStyleCallback() {};
     function setSetStyle(callback) {
         var prev = setStyleCallback;
         setStyleCallback = callback;
@@ -634,8 +689,9 @@ var b = (function (window, document) {
         if (inNamespace) el.setAttribute("class", className);else el.className = className;
     }
     function updateElement(n, el, newAttrs, oldAttrs) {
-        if (!newAttrs) return undefined;
-        var attrName, newAttr, oldAttr, valueOldAttr, valueNewAttr;
+        if (!newAttrs) {
+            return undefined;
+        }var attrName, newAttr, oldAttr, valueOldAttr, valueNewAttr;
         for (attrName in newAttrs) {
             newAttr = newAttrs[attrName];
             oldAttr = oldAttrs[attrName];
@@ -723,14 +779,16 @@ var b = (function (window, document) {
         if (t === "string") {
             return { tag: "", children: n };
         }
-        if (t === "boolean") return null;
-        return n;
+        if (t === "boolean") {
+            return null;
+        }return n;
     }
     function createChildren(c) {
         var ch = c.children;
         var element = c.element;
-        if (!ch) return;
-        if (!isArray(ch)) {
+        if (!ch) {
+            return;
+        }if (!isArray(ch)) {
             if (typeof ch === "string") {
                 if (hasTextContent) {
                     element.textContent = ch;
@@ -812,16 +870,17 @@ var b = (function (window, document) {
     var rootNode = document.body;
     function vdomPath(n) {
         var res = [];
-        if (n == null) return res;
-
-        var root = rootNode;
+        if (n == null) {
+            return res;
+        }var root = rootNode;
         var nodeStack = [];
         while (n && n !== root) {
             nodeStack.push(n);
             n = n.parentNode;
         }
-        if (!n) return res;
-        var currentCacheArray = rootCacheChildren;
+        if (!n) {
+            return res;
+        }var currentCacheArray = rootCacheChildren;
         while (nodeStack.length) {
             var currentNode = nodeStack.pop();
             if (currentCacheArray) for (var i = 0, l = currentCacheArray.length; i < l; i++) {
@@ -842,8 +901,9 @@ var b = (function (window, document) {
     }
     function getCacheNode(n) {
         var s = vdomPath(n);
-        if (s.length == 0) return null;
-        return s[s.length - 1];
+        if (s.length == 0) {
+            return null;
+        }return s[s.length - 1];
     }
     function updateNode(n, c) {
         var component = n.component;
@@ -854,8 +914,9 @@ var b = (function (window, document) {
             if (component.id !== c.component.id) {
                 bigChange = true;
             } else {
-                if (component.shouldChange) if (!component.shouldChange(c.ctx, n, c)) return c;
-                c.ctx.data = n.data || {};
+                if (component.shouldChange) if (!component.shouldChange(c.ctx, n, c)) {
+                    return c;
+                }c.ctx.data = n.data || {};
                 c.component = component;
                 if (component.render) component.render(c.ctx, n, c);
             }
@@ -956,8 +1017,9 @@ var b = (function (window, document) {
         if (newChildren == null) newChildren = [];
         if (!isArray(newChildren)) {
             if (typeof newChildren === "string" && !isArray(cachedChildren)) {
-                if (newChildren === cachedChildren) return cachedChildren;
-                if (hasTextContent) {
+                if (newChildren === cachedChildren) {
+                    return cachedChildren;
+                }if (hasTextContent) {
                     element.textContent = newChildren;
                 } else {
                     element.innerText = newChildren;
@@ -1176,8 +1238,9 @@ var b = (function (window, document) {
             newIndex++;
         }
         // Without any keyless nodes we are done
-        if (!keyLess) return cachedChildren;
-        // calculate common (old and new) keyless
+        if (!keyLess) {
+            return cachedChildren;
+        } // calculate common (old and new) keyless
         keyLess = keyLess - Math.abs(deltaKeyless) >> 1;
         // reorder just nonkeyed nodes
         newIndex = backupNewIndex;
@@ -1291,13 +1354,16 @@ var b = (function (window, document) {
     function emitEvent(name, ev, target, node) {
         var events = regEvents[name];
         if (events) for (var i = 0; i < events.length; i++) {
-            if (events[i](ev, target, node)) return true;
+            if (events[i](ev, target, node)) {
+                return true;
+            }
         }
         return false;
     }
     function addListener(el, name) {
-        if (name[0] == "!") return;
-        function enhanceEvent(ev) {
+        if (name[0] == "!") {
+            return;
+        }function enhanceEvent(ev) {
             ev = ev || window.event;
             var t = ev.target || ev.srcElement || el;
             var n = getCacheNode(t);
@@ -1312,8 +1378,9 @@ var b = (function (window, document) {
     }
     var eventsCaptured = false;
     function initEvents() {
-        if (eventsCaptured) return;
-        eventsCaptured = true;
+        if (eventsCaptured) {
+            return;
+        }eventsCaptured = true;
         var eventNames = objectKeys(registryEvents);
         for (var j = 0; j < eventNames.length; j++) {
             var eventName = eventNames[j];
@@ -1340,7 +1407,7 @@ var b = (function (window, document) {
             }
         }
     }
-    var afterFrameCallback = function () {};
+    var afterFrameCallback = function afterFrameCallback() {};
     function setAfterFrame(callback) {
         var res = afterFrameCallback;
         afterFrameCallback = callback;
@@ -1364,14 +1431,16 @@ var b = (function (window, document) {
         afterFrameCallback(rootCacheChildren);
     }
     function invalidate(ctx) {
-        if (fullRecreateRequested) return;
-        if (ctx != null) {
+        if (fullRecreateRequested) {
+            return;
+        }if (ctx != null) {
             ctx[ctxInvalidated] = frame + 1;
         } else {
             fullRecreateRequested = true;
         }
-        if (scheduled) return;
-        scheduled = true;
+        if (scheduled) {
+            return;
+        }scheduled = true;
         requestAnimationFrame(update);
     }
     function init(factory) {
@@ -1387,7 +1456,9 @@ var b = (function (window, document) {
             if (c) {
                 var m = c[name];
                 if (m) {
-                    if (m.call(c, node.ctx, param)) return true;
+                    if (m.call(c, node.ctx, param)) {
+                        return true;
+                    }
                 }
                 m = c.shouldStopBubble;
                 if (m) {
@@ -1485,7 +1556,7 @@ var b = (function (window, document) {
         return r;
     }
     return {
-        setRootNode: function (root) {
+        setRootNode: function setRootNode(root) {
             rootNode = root;
         },
         createNode: createNode,
@@ -1497,20 +1568,40 @@ var b = (function (window, document) {
         init: init,
         setAfterFrame: setAfterFrame,
         isArray: isArray,
-        uptime: function () {
+        uptime: (function (_uptime) {
+            var _uptimeWrapper = function uptime() {
+                return _uptime.apply(this, arguments);
+            };
+
+            _uptimeWrapper.toString = function () {
+                return _uptime.toString();
+            };
+
+            return _uptimeWrapper;
+        })(function () {
             return uptime;
-        },
+        }),
         now: now,
-        frame: function () {
+        frame: (function (_frame) {
+            var _frameWrapper = function frame() {
+                return _frame.apply(this, arguments);
+            };
+
+            _frameWrapper.toString = function () {
+                return _frame.toString();
+            };
+
+            return _frameWrapper;
+        })(function () {
             return frame;
-        },
+        }),
         assign: assign,
-        ieVersion: function () {
+        ieVersion: function ieVersion() {
             return document.documentMode;
         },
         invalidate: invalidate,
         preventDefault: preventDefault,
-        vmlNode: function () {
+        vmlNode: function vmlNode() {
             return inNamespace = true;
         },
         vdomPath: vdomPath,
@@ -1526,40 +1617,16 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/index.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-	if (staticProps) Object.defineProperties(child, staticProps);if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _get = function get(object, property, receiver) {
-	var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-		var parent = Object.getPrototypeOf(object);if (parent === null) {
-			return undefined;
-		} else {
-			return get(parent, property, receiver);
-		}
-	} else if ("value" in desc && desc.writable) {
-		return desc.value;
-	} else {
-		var getter = desc.get;if (getter === undefined) {
-			return undefined;
-		}return getter.call(receiver);
-	}
-};
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _inherits = function (subClass, superClass) {
-	if (typeof superClass !== "function" && superClass !== null) {
-		throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-};
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-var _classCallCheck = function (instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-};
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
@@ -1580,7 +1647,7 @@ var Demo = (function (_Inferno$Component) {
 		//these are not meant to have any visibility outside of this component
 		this._formId = "todo-form";
 
-		_get(_Inferno$Component.prototype, "constructor", this).call(this);
+		_get(Object.getPrototypeOf(Demo.prototype), "constructor", this).call(this);
 	}
 
 	_inherits(Demo, _Inferno$Component);
@@ -1596,14 +1663,16 @@ var Demo = (function (_Inferno$Component) {
 		render: {
 			value: function render($) {
 				//$ = RenderHelper, to reduce lines of code and to simplify workflow
-				return [["div"], ["header"], ["h1"], "Example " + this.title, ["/h1"], ["/header"], ["/div"], ["div", { className: this.testClassName }], "Test text", ["/div"], ["div#main"], ["div"],
-				//example of a truthy helper
-				$["if"](this.todos.length > 0, [["span.counter"], "There are " + this.todos.length + " todos!", ["/span"]], [//else
-				["span.no-todos"], "There are no todos!", ["/span"]]), ["/div"], ["/div"], ["ul.todos"],
-				//usage of forEach helper
-				$.forEach(this.todos, function (todo, index) {
-					return [["li.todo"], ["h2"], "A todo", ["/h2"], ["span"], "" + index + ": " + todo, ["/span"], ["/li"]];
-				}), ["/ul"], ["form", { id: this.formId, method: "post", action: "#" }], ["div.form-control"], ["input", { name: "first_name", type: "text" }], ["/div"], ["button", { type: "submit", onClick: this._clickSubmit }], "Submit!", ["/button"], ["/form"]];
+
+				//you can use quickhand syntax to give elements classes and ids
+				//<div.foo>, <span#bar>
+
+				//you can also optionally close the elements with the quickhand to allow for easier
+				//reading and syntax checking
+
+				return $.compile("\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>\n\t\t\t\t\t\tExample " + this.title + "\n\t\t\t\t\t</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div className=" + this.testClassName + ">\n\t\t\t\tTest text\n\t\t\t</div>\n\t\t\t<div#main>\n\t\t\t\t<div>\n\t\t\t\t\t" + $["if"](this.todos.length > 0, "\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are " + this.todos.length + " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t", "\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t") + "\n\t\t\t\t</div>\n\t\t\t\t<ul.todos>\n\t\t\t\t\t" + $.forEach(this.todos, function (todo, index) {
+					return "\n\t\t\t\t\t\t\t<li.todo>\n\t\t\t\t\t\t\t\t<h2>A todo</h2>\n\t\t\t\t\t\t\t\t<span>" + index + ": " + todo + "</span>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t";
+				}) + "\n\t\t\t\t</ul.todos>\n\t\t\t</div#main>\n\t\t");
 			},
 			writable: true,
 			configurable: true
@@ -1613,20 +1682,7 @@ var Demo = (function (_Inferno$Component) {
 	return Demo;
 })(Inferno.Component);
 
-;
-
 window.Demo = Demo;
+/* else */
 
-
-
-
-
-
-
-
-
-
-
-
-
-},{"./InfernoJS/Inferno.js":"/Volumes/StorageVol/Sites/www/EngineJS/InfernoJS/Inferno.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/index.js"]);
+},{"./InfernoJS/Inferno.js":3}]},{},[6]);

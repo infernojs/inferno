@@ -1,0 +1,2 @@
+// entry
+require('./foo');

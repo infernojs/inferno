@@ -1,0 +1,6 @@
+{
+    "main": "./index.js",
+    "browser": {
+        "url": "./url-browser.js"
+    }
+}
