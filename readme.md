@@ -98,7 +98,7 @@ window.Demo = Demo;
 
 To mount an Inferno component, simply use:
 
-```
+```html
 
 <div id="app"></div>
 
