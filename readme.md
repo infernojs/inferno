@@ -12,7 +12,7 @@ natively available.
 
 Inferno leverages a very fast virtual DOM (Bobril) to ensure maxmimum performance.
 Although Inferno is in its very early stages of development, its performance in
-benchmarks bests ever other framework out there (including React and Mithril).
+benchmarks bests every other framework out there (including React and Mithril).
 
 Here is an example component written with Inferno:
 
