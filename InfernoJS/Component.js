@@ -1,6 +1,4 @@
 var b = require('./bobril.js');
-var Compiler = require('./Compiler.js');
-var RenderHelpers = require('./RenderHelpers.js');
 
 class Component {
 
@@ -8,8 +6,6 @@ class Component {
 		this._ctx = null;
 		this._subComponents = [];
 		this._lastDependencyCheck = []
-		this._renderHelpers = new RenderHelpers(this);
-		this.render(this._renderHelpers);
 	}
 
 	forceUpdate() {
@@ -49,7 +45,7 @@ class Component {
 		b.init(function () {
 			//return the rendered
 			return {
-				compiled: this.render(this._renderHelpers),
+				compiled: this.render(),
 				context: this
 			};
 		}.bind(this));

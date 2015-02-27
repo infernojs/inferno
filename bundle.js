@@ -207,8 +207,6 @@ var _prototypeProperties = function (child, staticProps, instanceProps) { if (st
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var b = require("./bobril.js");
-var Compiler = require("./Compiler.js");
-var RenderHelpers = require("./RenderHelpers.js");
 
 var Component = (function () {
 	function Component() {
@@ -217,8 +215,6 @@ var Component = (function () {
 		this._ctx = null;
 		this._subComponents = [];
 		this._lastDependencyCheck = [];
-		this._renderHelpers = new RenderHelpers(this);
-		this.render(this._renderHelpers);
 	}
 
 	_prototypeProperties(Component, null, {
@@ -262,7 +258,7 @@ var Component = (function () {
 				b.init((function () {
 					//return the rendered
 					return {
-						compiled: this.render(this._renderHelpers),
+						compiled: this.render(),
 						context: this
 					};
 				}).bind(this));
@@ -337,93 +333,18 @@ var Component = (function () {
 
 module.exports = Component;
 
-},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./RenderHelpers.js":"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js","./bobril.js":"/Users/dominicg/EngineJS/InfernoJS/bobril.js"}],"/Users/dominicg/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
+},{"./bobril.js":"/Users/dominicg/EngineJS/InfernoJS/bobril.js"}],"/Users/dominicg/EngineJS/InfernoJS/Inferno.js":[function(require,module,exports){
 "use strict";
 
 var Component = require("./Component.js");
-var Compiler = require("./Compiler.js");
 
 var Inferno = {};
 
 Inferno.Component = Component;
 
-//takes some html and returns Bobril compatible vdom
-Inferno.compile = function (html) {
-  var arrayDsl = Compiler.compileHtml(html);
-  var vDom = [];
-  Compiler.createVirtualDom(arrayDsl, vDom);
-  return vDom;
-};
-
 module.exports = Inferno;
 
-},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js","./Component.js":"/Users/dominicg/EngineJS/InfernoJS/Component.js"}],"/Users/dominicg/EngineJS/InfernoJS/RenderHelpers.js":[function(require,module,exports){
-"use strict";
-
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-/*
-
-  List of supported helpers
-
-  ==================
-  if statements
-  ==================
-
-  $.if({expression}, true, false)
-
-  ==================
-  loop statements
-  ==================
-
-  $.forEach(Array, (item, key, array) => [...])
-  $.times(Number, (iterator) => [...])
-
-*/
-
-var RenderHelpers = (function () {
-  function RenderHelpers(comp) {
-    _classCallCheck(this, RenderHelpers);
-
-    this._comp = comp;
-  }
-
-  _prototypeProperties(RenderHelpers, null, {
-    forEach: {
-      value: function forEach(values, output) {
-        var length = values.length,
-            results = [];
-        for (var i = 0; i < length; i++) {
-          results.push(output.call(this._comp, values[i], i, values));
-        }
-        return results;
-      },
-      writable: true,
-      configurable: true
-    },
-    "if": {
-      value: function _if(expression, truthy, falsey) {
-        if (expression === true) {
-          return truthy;
-        } else {
-          return falsey;
-        }
-      },
-      writable: true,
-      configurable: true
-    }
-  });
-
-  return RenderHelpers;
-})();
-
-;
-
-module.exports = RenderHelpers;
-
-},{}],"/Users/dominicg/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
+},{"./Component.js":"/Users/dominicg/EngineJS/InfernoJS/Component.js"}],"/Users/dominicg/EngineJS/InfernoJS/bobril.js":[function(require,module,exports){
 "use strict";
 
 /// <reference path="bobril.d.ts"/>
@@ -1447,7 +1368,46 @@ var b = (function (window, document) {
 
 module.exports = b;
 
-},{}],"/Users/dominicg/EngineJS/index.js":[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/InfernoJS/vdml.js":[function(require,module,exports){
+"use strict";
+
+/*
+
+  VDML = Virtual Dom Markup Language
+
+*/
+
+var Compiler = require("./Compiler.js");
+
+function vdml(html) {
+  var arrayDsl = Compiler.compileHtml(html);
+  var vDom = [];
+  Compiler.createVirtualDom(arrayDsl, vDom);
+  return vDom;
+}
+
+vdml.helpers = {
+  forEach: function (values, output) {
+    var length = values.length,
+        results = [];
+    for (var i = 0; i < length; i++) {
+      results.push(output.call(this._comp, values[i], i, values));
+    }
+    return results;
+  },
+
+  "if": function (expression, truthy, falsey) {
+    if (expression === true) {
+      return truthy;
+    } else {
+      return falsey;
+    }
+  }
+};
+
+module.exports = vdml;
+
+},{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js"}],"/Users/dominicg/EngineJS/index.js":[function(require,module,exports){
 "use strict";
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
@@ -1460,6 +1420,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
 var Inferno = require("./InfernoJS/Inferno.js");
+var vdml = require("./InfernoJS/vdml.js");
 
 var Demo = (function (_Inferno$Component) {
 	function Demo() {
@@ -1490,8 +1451,9 @@ var Demo = (function (_Inferno$Component) {
 			configurable: true
 		},
 		render: {
-			value: function render($) {
-				//$ = RenderHelper, to reduce lines of code and to simplify workflow
+			value: function render() {
+				var $ = vdml.helpers;
+				//$ = VDML helpers, to reduce lines of code and to simplify workflow
 
 				//you can use quickhand syntax to give elements classes and ids
 				//<div.foo>, <span#bar>
@@ -1499,8 +1461,8 @@ var Demo = (function (_Inferno$Component) {
 				//you can also optionally close the elements with the quickhand to allow for easier
 				//reading and syntax checking
 
-				//Remember to pass the HTML through Inferno.compile(...)
-				return Inferno.compile("\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>\n\t\t\t\t\t\tExample " + this.title + "\n\t\t\t\t\t</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div className=\"" + this.testClassName + "\">\n\t\t\t\tTest text\n\t\t\t</div>\n\t\t\t<div#main>\n\t\t\t\t<div>\n\t\t\t\t\t" + $["if"](this.todos.length > 0, "\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are " + this.todos.length + " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t", "\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t") + "\n\t\t\t\t</div>\n\t\t\t\t<ul.todos>\n\t\t\t\t\t" + $.forEach(this.todos, function (todo, index) {
+				//Pass our markup through vdml so it generates a nice virtual dom
+				return vdml("\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>\n\t\t\t\t\t\tExample " + this.title + "\n\t\t\t\t\t</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div className=\"" + this.testClassName + "\">\n\t\t\t\tTest text\n\t\t\t</div>\n\t\t\t<div#main>\n\t\t\t\t<div>\n\t\t\t\t\t" + $["if"](this.todos.length > 0, "\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are " + this.todos.length + " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t", "\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t") + "\n\t\t\t\t</div>\n\t\t\t\t<ul.todos>\n\t\t\t\t\t" + $.forEach(this.todos, function (todo, index) {
 					return "\n\t\t\t\t\t\t\t<li.todo>\n\t\t\t\t\t\t\t\t<h2>A todo</h2>\n\t\t\t\t\t\t\t\t<span>" + index + ": " + todo + "</span>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t";
 				}) + "\n\t\t\t\t</ul.todos>\n\t\t\t\t<section>\n\t\t\t\t\t<form action=\"#\" method=\"post\">\n\t\t\t\t\t\t<div class=\"form-control\">\n\t\t\t\t\t\t\t<input type=\"text\" placeholder=\"Enter your name\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</section>\n\t\t\t</div#main>\n\t\t");
 			},
@@ -1515,4 +1477,4 @@ var Demo = (function (_Inferno$Component) {
 window.Demo = Demo;
 /* else */
 
-},{"./InfernoJS/Inferno.js":"/Users/dominicg/EngineJS/InfernoJS/Inferno.js"}]},{},["/Users/dominicg/EngineJS/index.js"]);
+},{"./InfernoJS/Inferno.js":"/Users/dominicg/EngineJS/InfernoJS/Inferno.js","./InfernoJS/vdml.js":"/Users/dominicg/EngineJS/InfernoJS/vdml.js"}]},{},["/Users/dominicg/EngineJS/index.js"]);

@@ -19,6 +19,7 @@ Here is an example component written with Inferno:
 
 ```javascript
 var Inferno = require('./InfernoJS/Inferno.js');
+var vdml = require('./InfernoJS/vdml.js');
 
 class Demo extends Inferno.Component {
 
@@ -38,15 +39,16 @@ class Demo extends Inferno.Component {
   }
 
   render($) {
-    //$ = RenderHelper, to reduce lines of code and to simplify workflow
+    var $ = vdml.helpers;
+    //$ = VDML helpers, to reduce lines of code and to simplify workflow
     //you can use quickhand syntax to give elements classes and ids
     //<div.foo>, <span#bar>
 
     //you can also optionally close the elements with the quickhand to allow for easier
     //reading and syntax checking
 
-    //Remember to pass the HTML through Inferno.compile(...)
-    return Inferno.compile(`
+    //Pass our markup through vdml so it generates a nice virtual dom
+    return vdml(`
       <div>
         <header>
           <h1>

@@ -2,6 +2,7 @@
 //EngineJS is a for true light-weight, ultra-fast isomorphic "React-like" framework
 
 var Inferno = require('./InfernoJS/Inferno.js');
+var vdml = require('./InfernoJS/vdml.js');
 
 class Demo extends Inferno.Component {
 
@@ -29,8 +30,9 @@ class Demo extends Inferno.Component {
 		debugger;
 	}
 
-	render($) {
-		//$ = RenderHelper, to reduce lines of code and to simplify workflow
+	render() {
+		var $ = vdml.helpers;
+		//$ = VDML helpers, to reduce lines of code and to simplify workflow
 
 		//you can use quickhand syntax to give elements classes and ids
 		//<div.foo>, <span#bar>
@@ -38,8 +40,8 @@ class Demo extends Inferno.Component {
 		//you can also optionally close the elements with the quickhand to allow for easier
 		//reading and syntax checking
 
-		//Remember to pass the HTML through Inferno.compile(...)
-		return Inferno.compile(`
+		//Pass our markup through vdml so it generates a nice virtual dom
+		return vdml(`
 			<div>
 				<header>
 					<h1>
