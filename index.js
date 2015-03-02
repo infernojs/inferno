@@ -34,57 +34,47 @@ class Demo extends Inferno.Component {
 		var $ = vdml.helpers;
 		//$ = VDML helpers, to reduce lines of code and to simplify workflow
 
-		//you can use quickhand syntax to give elements classes and ids
-		//<div.foo>, <span#bar>
-
-		//you can also optionally close the elements with the quickhand to allow for easier
-		//reading and syntax checking
-
-		//Pass our markup through vdml so it generates a nice virtual dom
-		return vdml(`
+		//Pass our markup through our template tagged function so it generates a nice virtual dom
+		return t`
 			<div>
 				<header>
-					<h1>
-						Example ${ this.title }
-					</h1>
+					<h1>Example ${ this.title }</h1>
 				</header>
 			</div>
-			<div className="${ this.testClassName }">
-				Test text
-			</div>
-			<div#main>
+			<div className="${ this.testClassName }">Test text</div>
+			<div id="main">
 				<div>
 					${
-						$.if(this.todos.length > 0, `
+						$.if(this.todos.length > 0, t`
 							<span.counter>
 								There are ${ this.todos.length } todos!
 							</span>
-						`, /* else */ `
+						`, /* else */ t`
 							<span.no-todos>
 								There are no todos!
 							</span>
 						`)
 					}
 				</div>
-				<ul.todos>
+				<ul className="todos">
 					${
-						$.forEach(this.todos, (todo, index) => `
-							<li.todo>
+						$.forEach(this.todos, (todo, index) => t`
+							<li className="todo">
 								<h2>A todo</h2>
 								<span>${ index }: ${ todo }</span>
 							</li>
 						`)
 					}
-				</ul.todos>
+				</ul>
 				<section>
 					<form action="#" method="post">
 						<div class="form-control">
-							<input type="text" placeholder="Enter your name">
+							<input type="text" placeholder="Enter your name" />
 						</div>
 					</form>
 				</section>
-			</div#main>
-		`);
+			</div>
+		`;
 	}
 }
 
