@@ -1,47 +1,217 @@
-<script>
+<html>
+<head>
+  <title>VirtualTemplate JS Demo</title>
+</head>
+<body>
+  <div id="app"></div>
 
-  var $ = {
-    if: function(expression) {
+  <script src="cito.js"></script>
+  <script>
+  //this is the actual micro library
+  var vt = (function() {
+
+    function vt(template) {
+      var props = [];
+      var placeholders = [];
+      var fullHtml = '';
+      var i = 0;
+      var vDom = [];
+
+      for(i = 1; i < arguments.length; i++) {
+        props.push(arguments[i])
+        placeholders.push("$" + i);
+      }
+      for(i = 0; i < template.length; i++) {
+        if(i === template.length - 1) {
+          fullHtml += template[i];
+        } else {
+          fullHtml += template[i] + placeholders[i];
+        }
+      }
+      template.join(placeholders);
+      vDom = getVdom(fullHtml, placeholders, props);
+      return vDom;
+    }
+
+    vt.if = function(expression, truthy) {
       if(expression) {
-        return $;
+        return {
+          else: function() {
+            return truthy;
+          }
+        };
       } else {
         return {
-          then: function() {
-            return {
-              else: function() {
-
-              }
-            };
+          else: function(falsey) {
+            return falsey;
           }
         }
       }
-    },
-    then: function() {
-      return $;
-    },
-    else: function() {
-      return $;
     }
-  }
 
+    function getVdom(html, placeholders, props) {
+      var char = '';
+      var lastChar = '';
+      var i = 0;
+      var s = 0;
+      var root = [];
+      var insideTag = false;
+      var tagContent = '';
+      var tagName = '';
+      var vElement = null;
+      var childText = '';
+      var parent = root;
+      var tagData = [];
+
+      for(i = 0; i < html.length; i++) {
+        char = html[i];
+
+        if(char === "<") {
+          insideTag = true;
+        } else if(char === ">" && insideTag === true) {
+          //check if first character is a close tag
+          if(tagContent[0] === "/") {
+            if(childText.trim() !== "") {
+              //check if childText contains one of our placeholders
+              for(s = 0 ; s < placeholders.length; s++) {
+                if(childText.indexOf(placeholders[s]) > -1) {
+                  if(Array.isArray(props[s])) {
+                    //set the children to this object
+                    parent.children = props[s];
+                    childText = null;
+                    break;
+                  } else if( typeof props[s] === "string" ) {
+                    childText = childText.replace(placeholders[s], props[s]);
+                  } else {
+                    //TODO
+                  }
+                }
+              }
+              if(childText !== null) {
+                parent.children = childText;
+              }
+            }
+            parent = parent.parent;
+            delete vElement.parent;
+          } else {
+            //check if there any spaces in the tagContent, if not, we have our tagName
+            if(tagContent.indexOf(" ") === -1) {
+              tagName = tagContent;
+            } else {
+              tagData = getTagData(tagContent);
+              tagName = tagData.tag;
+            }
+            //now we create out vElement
+            vElement = {
+              tag: tagName,
+              attrs: tagData.attrs || {},
+              children: []
+            };
+
+            if(Array.isArray(parent)) {
+              parent.push(vElement);
+            } else {
+              parent.children.push(vElement);
+            }
+            vElement.parent = parent;
+            parent = vElement;
+          }
+          insideTag = false;
+          tagContent = '';
+          childText = '';
+        } else if (insideTag === true) {
+          tagContent += char;
+          lastChar = char;
+        } else {
+          childText += char;
+          lastChar = char;
+        }
+      }
+      //remove parents from the root's decendants
+      for(i = 0; i < root.length; i++) {
+        delete root[i].parent;
+      }
+      return root;
+    }
+
+    function getTagData(tagText) {
+      var parts = [];
+      var char = '';
+      var lastChar = '';
+      var i = 0;
+      var s = 0;
+      var currentString = '';
+      var inQuotes = false;
+      var attrParts = [];
+      var attrs = {};
+      for(i = 0; i < tagText.length; i++) {
+        char = tagText[i];
+        if(char === " " && inQuotes === false) {
+          parts.push(currentString);
+          currentString = '';
+        } else if(char === "'") {
+          inQuotes = !inQuotes;
+        } else if(char === '"') {
+            inQuotes = !inQuotes;
+        } else {
+          currentString += char;
+        }
+      }
+      if(currentString !== "") {
+        parts.push(currentString);
+      }
+      currentString = '';
+      for(i = 1; i < parts.length; i++) {
+        //find the frist "="
+        attrParts = [];
+        for(s = 0; s < parts[i].length; s++) {
+          char = parts[i][s];
+          if(char === "=") {
+            attrParts.push(currentString);
+            currentString = '';
+          } else {
+            currentString += char;
+            lastChar = char;
+          }
+        }
+        if(currentString != "") {
+          attrParts.push(currentString);
+        }
+        if(attrParts.length > 1) {
+          attrs[attrParts[0]] = attrParts[1];
+        }
+      }
+      return {
+        tag: parts[0],
+        attrs: attrs
+      }
+    };
+
+    return vt;
+  })();
+
+  //define a variable to show this bit working
   var foo = "foo";
-
-  var obj = t`
-    <div>
-      <div>
+  //specify some markup using ES6 template literals
+  //remember to wrap the tags in vt`...`
+  var vdom = vt`
+    <div class="lev1">
+      <div class="lev2">
         there is ${ foo } bar!
       </div>
-      <div>
+      <div class="lev2">
         ${
-          $.if(true).then(t`
-            <div>
-              <div>
+          //this uses a built-in if(exp, ...).else(...) function to help write
+          //nice concise code without having to write boilerplate functions to do it
+          vt.if(true, vt`
+            <div class="lev3">
+              <div class="lev4">
                 Truthy!
               </div>
             </div>`
-          ).else(t`
-            <div>
-              <div>
+          ).else(vt`
+            <div class="lev3">
+              <div class="lev4">
                 Falsey!
               </div>
             </div>`
@@ -50,105 +220,12 @@
       </div>
     </div>
   `;
+  //vdom can now be passed to cito.js
+  console.log(vdom);
+  //we we have to pass in a dummy node, because cito doesn't support roots being arrays
+  var dummyNode = {tag: "div", children: vdom};
+  cito.vdom.append(document.getElementById('app'), dummyNode);
 
-  console.log(obj);
-
-  function getVdom(html, placeholders, props) {
-    var char = '';
-    var lastChar = '';
-    var i = 0;
-    var s = 0;
-    var root = [];
-    var insideTag = false;
-    var tagContent = '';
-    var tagName = '';
-    var vElement = null;
-    var childText = '';
-    var parent = root;
-    var tagData = [];
-
-    for(i = 0; i < html.length; i++) {
-      char = html[i];
-
-      if(char === "<") {
-        insideTag = true;
-      } else if(char === ">" && insideTag === true) {
-        //check if first character is a close tag
-        if(tagContent[0] === "/") {
-          if(childText.trim() !== "") {
-            //check if childText contains one of our placeholders
-            for(s = 0 ; s < placeholders.length; s++) {
-              if(childText.indexOf(placeholders[s]) > -1) {
-                debugger;
-                if(Array.isArray(props[s])) {
-                  debugger;
-                } else if( typeof props[s] === "string" ) {
-                  childText = childText.replace(placeholders[s], props[s]);
-                } else {
-                  //likely a function
-                }
-              }
-            }
-            parent.children = childText;
-          }
-          parent = parent.parent;
-        } else {
-          //check if there any spaces in the tagContent, if not, we have our tagName
-          if(tagContent.indexOf(" ") === -1) {
-            tagName = tagContent;
-          } else {
-            tagData = tagContent.split(" ")[0];
-          }
-          //now we create out vElement
-          vElement = {
-            tag: tagName,
-            attrs: tagName.attrs || [],
-            children: []
-          };
-
-          if(Array.isArray(parent)) {
-            parent.push(vElement);
-          } else {
-            parent.children.push(vElement);
-          }
-          vElement.parent = parent;
-          parent = vElement;
-        }
-        insideTag = false;
-        tagContent = '';
-        childText = '';
-      } else if (insideTag === true) {
-        tagContent += char;
-        lastChar = char;
-      } else {
-        childText += char;
-        lastChar = char;
-      }
-    }
-    return root;
-  }
-
-  function t(template) {
-    var props = [];
-    var placeholders = [];
-    var fullHtml = '';
-    var i = 0;
-    var vDom = [];
-
-    for(i = 1; i < arguments.length; i++) {
-      props.push(arguments[i])
-      placeholders.push("$" + i);
-    }
-    for(i = 0; i < template.length; i++) {
-      if(i === template.length - 1) {
-        fullHtml += template[i];
-      } else {
-        fullHtml += template[i] + placeholders[i];
-      }
-    }
-    template.join(placeholders);
-    vDom = getVdom(fullHtml, placeholders, props);
-    return vDom;
-  }
-
-</script>
+  </script>
+</body>
+</html>

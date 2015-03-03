@@ -1,1 +1,1167 @@
-var cito=window.cito||{};!function(e,n,t){"use strict";function r(e){return"string"==typeof e}function i(e){return e instanceof Array}function a(e){return"function"==typeof e}function o(e){return e.then!==t}function l(e,n){var r=typeof e;return"string"===r?e={tag:"#",children:e}:"function"===r&&(e=e(n),e=e===t?n:l(e,n)),e}function f(e,n,t){var r,i=e[n];if(i&&o(i)){r={};var a=!0;i.then(function(i){a?r=l(i,t):e[n]===r&&un.update(r,i)}),a=!1}else r=l(i,t);return i!==r&&(e[n]=r),r}function d(e,n,r){var l=n;if(n)if(o(n)){n=[];var f=!0;l.then(function(t){f?n=d(e,t,r):e.children===n&&un.updateChildren(e,t)}),f=!1}else a(n)&&(n=n(r),n===t&&(n=r));var s,c,u=i(n);return u?1===n.length?(s=!0,c=n[0]):s=!1:(s=!0,c=n),s&&(c&&(c.children||"#"!==c.tag&&"<"!==c.tag)?u||(n=[c]):n=[]),l!==n&&(e.children=n),n}function s(e,n,t){var r,i=n.dom,a=n.domLength||1,o=t&&t.dom;if(i!==o)for(;a--;)r=a>0?i.nextSibling:null,o?e.insertBefore(i,o):e.appendChild(i),i=r}function c(e,n,t){if(e.insertAdjacentHTML){var r,i,a;if(Q||U){var o="beforebegin"===n?e.previousSibling:"beforeend"===n?e.lastChild:null;o&&3===o.nodeType&&(r=o,U&&0===o.length&&(a=!0,o.nodeValue=" "),Q&&(i=o.length))}e.insertAdjacentHTML(n,t),r&&(Q&&r.length!==i&&r.splitText(i),U&&a&&(r.nodeValue=""))}else{var l;if(rn.innerHTML=t,"beforebegin"===n)for(var f=e.parentNode;l=rn.firstChild;)f.insertBefore(l,e);else if("beforeend"===n)for(;l=rn.firstChild;)e.appendChild(l)}}function u(e,n,t,r){if(t){var i=t.dom;if(r){var a=t.domLength||1;1===a?(F(t),e.replaceChild(n,i)):(e.insertBefore(n,i),j(e,t))}else e.insertBefore(n,i)}else e.appendChild(n)}function v(e,n,t,r,i,a){if(tn)return h(e,n,i,a);var o,l=e.tag,f=e.children;if(l){switch(l){case"#":o=X.createTextNode(f);break;case"!":o=X.createComment(f);break;case"<":if(f){var s=n.childNodes,v=s.length;if(i){var g=i.dom,m=g.previousSibling;c(g,"beforebegin",f),o=m?m.nextSibling:n.firstChild}else c(n,"beforeend",f),o=s[v];return e.dom=o,e.domLength=s.length-v,void(a&&i&&j(n,i))}o=X.createTextNode("");break;default:var p;switch(l){case"svg":p="http://www.w3.org/2000/svg";break;case"math":p="http://www.w3.org/1998/Math/MathML";break;default:p=t}return p?(e.ns=p,o=X.createElementNS(p,l)):o=X.createElement(l),e.dom=o,f=d(e,f),tn&&n&&u(n,o,i,a),H(o,e,p,f,0,f.length,f.length>1),T(o,null,null,e,l,e.attrs,e.events),void(!tn&&n&&u(n,o,i,a))}e.dom=o,n&&u(n,o,i,a)}else k(e,f,n,t,r,i,a)}function h(e,n,t,r){var i,a=g(e);if(n){var o;t||n.hasChildNodes()?(t?(o=t.dom.previousSibling,c(t.dom,"beforebegin",a),r&&j(n,t)):(o=n.lastChild,c(n,"beforeend",a)),i=o?o.nextSibling:n.firstChild):(n.innerHTML=a,i=n.firstChild)}else rn.innerHTML=a,i=rn.removeChild(rn.firstChild);if(e.tag)m(i,e,0);else{for(var l=n.firstChild,f=0;l!==i;)l=l.nextSibling,f++;p(n,e,f)}}function g(e,n){var i=e.tag,a=e.children;switch(i){case"#":return b(a)+sn;case"!":return"<!--"+x(a)+"-->";case"<":return a+sn;default:var o;if(i){var l=e.attrs;if("select"===i&&l?n={selectedIndex:l.selectedIndex,value:l.value,optionIndex:0}:"option"===i&&n&&((n.value&&n.value===l.value||n.selectedIndex!==t&&n.selectedIndex===n.optionIndex)&&(l.selected=!0),n.optionIndex++),o="<"+i,l){o+=" ";for(var s in l){var c=l[s];if(c!==!1&&("select"!==i||"value"!==s&&"selectedIndex"!==s))if("textarea"!==i||"value"!==s){if(c===!0)c="";else if("style"===s&&!r(c)){var u="";for(var v in c)u+=v+": "+c[v]+"; ";c=u}o+=" "+y(s,c)}else a=c}}}else o="";a=d(e,a);var h=a.length;if(i&&(o+=">"),1===h&&r(a[0]))o+=b(a[0]),i||(o+=sn);else if(0!==h||i)for(var m=0;h>m;m++)o+=g(f(a,m),n);else o+=sn;return i&&(o+="</"+i+">"),o}}function m(e,n,t){n.dom=e;var i,a;switch(n.tag){case"#":i=e.nodeValue,a=i.indexOf(sn),-1!==a&&(a+1<i.length&&e.splitText(a+1),e.nodeValue=i.substr(0,a));break;case"!":break;case"<":for(var o=0;e;e=e.nextSibling)if(o++,3===e.nodeType)if(i=e.nodeValue,o>1&&i===sn)e.parentNode.removeChild(e),o--;else if(a=i.indexOf(sn),-1!==a){a+1<i.length&&e.splitText(a+1),e.nodeValue=i.substr(0,a);break}return n.domLength=o,t+o;default:var l=n.children,f=l.length;if(1!==f||!r(l[0]))for(var d=e.childNodes,s=0,c=0;f>s;s++){var u=l[s];c=u.tag?m(d[c],u,c):p(e,u,c)}var v=n.events;v&&w(e,n,v)}return t+1}function p(e,n,t){var r=n.children,i=e.childNodes;if(0===r.length){var a=i[t];a.length>1&&a.splitText(1),a.nodeValue="",n.dom=a,t++}else{1===r.length&&f(r,0);for(var o=t,l=0;l<r.length;l++){var d=r[l];t=d.tag?m(i[t],d,t):p(e,d,t)}n.dom=r[0].dom,n.domLength=t-o}return t}function b(e){return e=""+e,en?(rn.innerText=e,e=rn.innerHTML):e=nn?e.split("<").join("&lt;").split(">").join("&gt;").split("&").join("&amp;"):e.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/&/g,"&amp;"),e}function x(e){return e=""+e,e.replace(/-{2,}/g,"-")}function y(e,n){var t=typeof n;return n=""+n,"number"!==t&&(n=nn?n.split('"').join("&quot;").split("&").join("&amp;"):n.replace(/"/g,"&quot;").replace(/&/g,"&amp;")),e+'="'+n+'"'}function k(e,n,t,r,i,a,o){n=d(e,n);var l,s,c=n.length;if(r&&(e.ns=r),0===c)l=X.createTextNode(""),u(t,l,a,o);else{i=i||c>1,s=0;for(var h=0;c>h;h++){var g=f(n,h);v(g,t,r,i,a,!1),s+=g.domLength||1}l=n[0].dom,o&&j(t,a)}e.dom=l,e.domLength=s}function T(e,n,r,i,a,o,l){var f;if(o)for(f in o){var d=o[f];if("style"===f){var s=n&&n[f];s!==d&&L(e,s,o,d)}else"class"===f?e.className=d:N(a,f)?e[f]!==d&&(e[f]=d):n&&n[f]===d||C(e,f,d)}if(n)for(f in n)o&&o[f]!==t||("class"===f?e.className="":N(a,f)||e.removeAttribute(f));if(l&&w(e,i,l,r),r)for(var c in r)l&&l[c]||A(e,c)}function C(e,n,t){if(t===!1)e.removeAttribute(n);else{t===!0&&(t="");var r,i=n.indexOf(":");if(-1!==i){var a=n.substr(0,i);switch(a){case"xlink":r="http://www.w3.org/1999/xlink"}}r?e.setAttributeNS(r,n,t):e.setAttribute(n,t)}}function L(e,n,i,a){var o;if(!(r(a)||fn&&n&&!r(n))){var l="";if(a)for(o in a)l+=o+": "+a[o]+"; ";a=l,fn||(i.style=a)}var f=e.style;if(r(a))f.cssText=a;else{if(a)for(o in a){var d=a[o];if(!n||n[o]!==d){var s=d.indexOf("!important");if(-1!==s)f.setProperty(o,d.substr(0,s),"important");else{if(n){var c=n[o];c&&-1!==c.indexOf("!important")&&f.removeProperty(o)}f.setProperty(o,d,"")}}}if(n)for(o in n)a&&a[o]!==t||f.removeProperty(o)}}function w(e,n,t,r){e.virtualNode=n;for(var i in t)r&&r[i]||M(e,i)}function N(e,n){switch(e){case"input":return"value"===n||"checked"===n;case"textarea":return"value"===n;case"select":return"value"===n||"selectedIndex"===n;case"option":return"selected"===n}}function M(e,n){if(on)e.addEventListener(n,O,!1);else{var t="on"+n;t in e?e[t]=O:e.attachEvent(t,O)}}function A(e,n){if(on)e.removeEventListener(n,O,!1);else{var t="on"+n;t in e?e[t]=null:e.detachEvent(t,O)}}function E(e){return r(e)?e:"#"===e.tag?e.children:null}function H(e,n,t,r,i,a,o,l){if(0===i&&1===a&&!o){var d=r[0],s=E(d);if(null!==s)return void I(e,s);if("<"===d.tag)return void(e.innerHTML=d.children)}for(;a>i;i++)v(f(r,i),e,t,o,l)}function S(e,n,t,r){if(0===t&&1===r&&1===n.length){var i=n[0];if(!i.dom){for(var a;a=e.firstChild;)e.removeChild(a);return}}for(;r>t;t++)j(e,n[t])}function j(e,n){F(n);for(var t,r=n.dom,i=n.domLength||1;i--;)t=i>0?r.nextSibling:null,e.removeChild(r),r=t}function I(e,n){an?e.textContent=n:e.innerText=n}function P(e,n,t,r){var i=r[0],a=n[0],o=E(i),l=0!==t,f=!1;if(null!==o){if(!l){var d=E(a);f=null!==d,l=o!==d}l&&(f||G(n),I(e,o))}else"<"===i.tag?(l||(f="<"===a.tag,l=!f||i.children!==a.children),l&&(f||G(n),e.innerHTML=i.children)):l=!1;return l||f}function V(e,n,t,r,i,a,o){if(i=d(n,i,r),i!==r){var l=r.length-1,c=i.length-1;if(a=a||c>0,0!==c||a||!P(e,r,l,i)){if(0===l){var u=f(r,0);u.dom||(u.dom=e.firstChild,"<"===u.tag&&(u.domLength=e.childNodes.length))}var h,g=0,m=0,p=!0;e:for(;p&&l>=g&&c>=m;){p=!1;var b,x,y,k;for(b=r[g],y=f(i,m,b);b.key===y.key;){if(h=r[g+1]||o,W(b,y,e,t,a,h),g++,m++,g>l||m>c)break e;b=r[g],y=f(i,m,b),p=!0}for(x=r[l],k=f(i,c);x.key===k.key;){if(h=i[c+1]||o,W(x,k,e,t,a,h),l--,c--,g>l||m>c)break e;x=r[l],k=f(i,c),p=!0}for(;b.key===k.key;){if(h=i[c+1]||o,W(b,k,e,t,a,h),s(e,k,h),g++,c--,g>l||m>c)break e;b=r[g],k=f(i,c),p=!0}for(;x.key===y.key;){if(h=r[g]||o,W(x,y,e,t,h),s(e,y,h),l--,m++,g>l||m>c)break e;x=r[l],y=f(i,m),p=!0}}if(g>l)h=f(i,c+1)||o,H(e,n,t,i,m,c+1,a,h);else if(m>c)S(e,r,g,l+1);else{var T,C,L=r[l+1],w={};for(T=l;T>=g;T--)C=r[T],C.next=L,w[C.key]=C,L=C;for(h=f(i,c+1)||o,T=c;T>=m;T--){var N=i[T],M=N.key;C=w[M],C?(w[M]=null,L=C.next,W(C,N,e,t,a,h),(L&&L.key)!==(h&&h.key)&&s(e,N,h)):v(N,e,t,a,h),h=N}for(T=g;l>=T;T++)C=r[T],null!==w[C.key]&&j(e,C)}}}}function O(e){e=R(e,this);var n=e.currentTarget,t=n.virtualNode.events[e.type];if(i(t)){for(var r=0,a=t.length;a>r;r++)if(K(t[r],n,e),cn){cn=!1;break}}else K(t,n,e)}function B(){this.defaultPrevented=!0,this.returnValue=!1}function D(){this.cancelBubble=!0}function q(){cn=!0,this.stopPropagation()}function R(e,t){return e||(e=n.event,e.preventDefault||(e.preventDefault=B,e.stopPropagation=D,e.defaultPrevented=e.returnValue===!1,e.target=e.srcElement),e.currentTarget=t.nodeType?t:e.target),e.stopImmediatePropagation=q,e}function K(e,n,t){try{e.call(n,t)===!1&&t.preventDefault()}catch(r){$.error(r.stack||r)}}function W(e,n,t,r,i,a){if(n!==e){var o,l=n.tag,f=e.children,d=n.children;if(e.tag!==l)v(n,t,r,i,e,!0);else if(l)switch(o=e.dom,l){case"#":case"!":f!==d&&(o.nodeValue=d),n.dom=o;break;case"<":f!==d?v(n,t,s,i,e,!0):(n.dom=e.dom,n.domLength=e.domLength);break;default:var s=e.ns;s&&(n.ns=s),n.dom=o,V(o,n,s,f,d,!1),T(o,e.attrs,e.events,n,l,n.attrs,n.events)}else z(e,f,n,d,t,r,i,a)}}function z(e,n,t,r,i,a,o,l){if(r=d(t,r,n),r!==n){var f,s,c=n.length,v=r.length;if(a&&(t.ns=a),o=o||v>1,0===v)0===c?f=e.dom:(S(i,n,0,n.length),f=X.createTextNode(""),u(i,f,l));else if(0===c)i.removeChild(e.dom),k(t,r,i,a,o,l);else if(V(i,t,a,n,r,o,l),v>0){f=r[0].dom,s=0;for(var h=0;v>h;h++)s+=r[h].domLength||1}t.dom=f,t.domLength=s}}function F(e){if(!r(e)){var n=e.dom;if(n){var i=e.events;if(i)for(var a in i)A(n,a);n.virtualNode&&(n.virtualNode=t)}var o=e.children;r(o)||G(o)}}function G(e){for(var n=0,t=e.length;t>n;n++)F(e[n])}function J(e,n){var r;for(r in e)n[r]=e[r];for(r in n)e[r]===t&&(n[r]=t)}var Q,U,X=n.document,Y=n.navigator,Z=function(){},$=n.console||{warn:Z,error:Z},_=Y.userAgent,en=-1!==_.indexOf("WebKit"),nn=-1!==_.indexOf("Chrome"),tn=-1!==_.indexOf("Trident"),rn=X.createElement("div"),an="textContent"in X,on="addEventListener"in X,ln="createRange"in X,fn="setProperty"in rn.style,dn=X.createElement("p");dn.insertAdjacentHTML&&(dn.appendChild(X.createTextNode("a")),dn.insertAdjacentHTML("beforeend","b"),Q=1===dn.childNodes.length,dn=X.createElement("p"),dn.appendChild(X.createTextNode("")),dn.insertAdjacentHTML("beforeend","<b>"),U=3!==dn.firstChild.nodeType);var sn="",cn=(ln?X.createRange():null,!1),un=e.vdom={create:function(e){return e=l(e),v(e),e},append:function(e,n){return n=l(n),v(n,e),n},update:function(e,n){return n=l(n,e),W(e,n,e.dom.parentNode),J(n,e),e},updateChildren:function(e,n){var t=e.children;n=d(e,n,t),V(e.dom,e,e.ns,t,n),e.children=n},remove:function(e){var n=e.dom.parentNode;j(n,e)}}}(cito,window);
+/*
+ * Copyright (c) 2015, Joel Richard
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+var cito = window.cito || {};
+(function (cito, window, undefined) {
+    'use strict';
+
+    var document = window.document,
+        navigator = window.navigator,
+        noop = function () {},
+        console = window.console || {warn: noop, error: noop};
+
+    var userAgent = navigator.userAgent,
+        isWebKit = userAgent.indexOf('WebKit') !== -1,
+        isFirefox = userAgent.indexOf('Chrome') !== -1,
+        isTrident = userAgent.indexOf('Trident') !== -1;
+
+    var helperDiv = document.createElement('div'),
+        supportsTextContent = 'textContent' in document,
+        supportsEventListener = 'addEventListener' in document,
+        supportsRange = 'createRange' in document,
+        supportsCssSetProperty = 'setProperty' in helperDiv.style;
+
+    function isString(value) {
+        return typeof value === 'string';
+    }
+
+    function isArray(value) {
+        return value instanceof Array;
+    }
+
+    function isFunction(value) {
+        return typeof value === 'function';
+    }
+
+    function isPromise(value) {
+        return value.then !== undefined;
+    }
+
+    function norm(node, oldNode) {
+        var type = typeof node;
+        if (type === 'string') {
+            node = {tag: '#', children: node};
+        } else if (type === 'function') {
+            node = node(oldNode);
+            node = (node === undefined) ? oldNode : norm(node, oldNode);
+        }
+        return node;
+    }
+
+    function normIndex(children, i, oldChild) {
+        var origChild = children[i], child;
+        if (origChild && isPromise(origChild)) {
+            child = {};
+            var immediate = true;
+            origChild.then(function (newChild) {
+                if (immediate) {
+                    child = norm(newChild, oldChild);
+                } else if (children[i] === child) {
+                    vdom.update(child, newChild);
+                }
+            });
+            immediate = false;
+        } else {
+            child = norm(origChild, oldChild);
+        }
+        if (origChild !== child) {
+            children[i] = child;
+        }
+        return child;
+    }
+
+    function normChildren(node, children, oldChildren) {
+        var origChildren = children;
+        if (children) {
+            // TODO move promise support into utility function
+            if (isPromise(children)) {
+                children = [];
+                var immediate = true;
+                origChildren.then(function (newChildren) {
+                    if (immediate) {
+                        children = normChildren(node, newChildren, oldChildren);
+                    }
+                    // TODO if the parent has been updated too, then this is misleading
+                    else if (node.children === children) {
+                        vdom.updateChildren(node, newChildren);
+                    }
+                });
+                immediate = false;
+            } else if (isFunction(children)) {
+                children = children(oldChildren);
+                if (children === undefined) {
+                    children = oldChildren;
+                }
+            }
+        }
+
+        // TODO convert to array only after only child optimization
+        var childrenIsArray = isArray(children),
+            hasOnlyChild, onlyChild;
+        if (!childrenIsArray) {
+            hasOnlyChild = true;
+            onlyChild = children;
+        } else if (children.length === 1) {
+            hasOnlyChild = true;
+            onlyChild = children[0];
+        } else {
+            hasOnlyChild = false;
+        }
+        if (hasOnlyChild) {
+            // Ignore falsy and empty text/html nodes because no node would be created for them
+            if (!onlyChild || (!onlyChild.children && (onlyChild.tag === '#' || onlyChild.tag === '<'))) {
+                children = [];
+            } else if (!childrenIsArray) {
+                children = [onlyChild];
+            }
+        }
+
+        if (origChildren !== children) {
+            node.children = children;
+        }
+        return children;
+    }
+
+    function moveChild(domElement, child, nextChild) {
+        var domChild = child.dom, domLength = child.domLength || 1,
+            domNextChild,
+            domRefChild = nextChild && nextChild.dom;
+        if (domChild !== domRefChild) {
+            while (domLength--) {
+                domNextChild = (domLength > 0) ? domChild.nextSibling : null;
+                if (domRefChild) {
+                    domElement.insertBefore(domChild, domRefChild);
+                } else {
+                    domElement.appendChild(domChild);
+                }
+                domChild = domNextChild;
+            }
+        }
+    }
+
+    var iah_el = document.createElement('p'), iah_normalizes, iah_ignoresEmptyText;
+    if (iah_el.insertAdjacentHTML) {
+        iah_el.appendChild(document.createTextNode('a'));
+        iah_el.insertAdjacentHTML('beforeend', 'b');
+        iah_normalizes = (iah_el.childNodes.length === 1);
+
+        iah_el = document.createElement('p');
+        iah_el.appendChild(document.createTextNode(''));
+        iah_el.insertAdjacentHTML('beforeend', '<b>');
+        iah_ignoresEmptyText = (iah_el.firstChild.nodeType !== 3);
+    }
+
+    function insertAdjacentHTML(node, position, htmlContent) {
+        if (node.insertAdjacentHTML) {
+            var prevText, prevTextLength, prevTextEmpty;
+            if (iah_normalizes || iah_ignoresEmptyText) {
+                var prevNode = (position === 'beforebegin') ? node.previousSibling
+                    : (position === 'beforeend') ? node.lastChild : null;
+                if (prevNode && prevNode.nodeType === 3) {
+                    prevText = prevNode;
+                    if (iah_ignoresEmptyText && prevNode.length === 0) {
+                        prevTextEmpty = true;
+                        prevNode.nodeValue = ' ';
+                    }
+                    if (iah_normalizes) {
+                        prevTextLength = prevNode.length;
+                    }
+                }
+            }
+            node.insertAdjacentHTML(position, htmlContent);
+            if (prevText) {
+                // Split previous text node if it was updated instead of a new one inserted (IE/FF)
+                if (iah_normalizes && prevText.length !== prevTextLength) {
+                    prevText.splitText(prevTextLength);
+                }
+                if (iah_ignoresEmptyText && prevTextEmpty) {
+                    prevText.nodeValue = '';
+                }
+            }
+        } else {
+            var child;
+            helperDiv.innerHTML = htmlContent;
+            if (position === 'beforebegin') {
+                var parentNode = node.parentNode;
+                while (child = helperDiv.firstChild) { // jshint ignore:line
+                    parentNode.insertBefore(child, node);
+                }
+            } else if (position === 'beforeend') {
+                while (child = helperDiv.firstChild) { // jshint ignore:line
+                    node.appendChild(child);
+                }
+            }
+        }
+    }
+
+    function insertChild(domParent, domNode, nextChild, replace) {
+        if (nextChild) {
+            var domNextChild = nextChild.dom;
+            if (replace) {
+                var domLength = nextChild.domLength || 1;
+                if (domLength === 1) {
+                    destroyNode(nextChild);
+                    domParent.replaceChild(domNode, domNextChild);
+                } else {
+                    domParent.insertBefore(domNode, domNextChild);
+                    removeChild(domParent, nextChild);
+                }
+            } else {
+                domParent.insertBefore(domNode, domNextChild);
+            }
+        } else {
+            domParent.appendChild(domNode);
+        }
+    }
+
+    function createNode(node, domParent, parentNs, hasDomSiblings, nextChild, replace) {
+        // TODO evaluate when else to use
+        if (isTrident) {
+            return insertNodeHTML(node, domParent, nextChild, replace);
+        }
+
+        var domNode, tag = node.tag, children = node.children;
+        if (!tag) {
+            createFragment(node, children, domParent, parentNs, hasDomSiblings, nextChild, replace);
+        } else {
+            // Element
+            switch (tag) {
+                case '#':
+                    domNode = document.createTextNode(children);
+                    break;
+                case '!':
+                    domNode = document.createComment(children);
+                    break;
+                case '<':
+                    if (children) {
+                        var domChildren = domParent.childNodes,
+                            prevLength = domChildren.length;
+                        if (nextChild) {
+                            var domNextChild = nextChild.dom,
+                                domPrevChild = domNextChild.previousSibling;
+                            insertAdjacentHTML(domNextChild, 'beforebegin', children);
+                            domNode = domPrevChild ? domPrevChild.nextSibling : domParent.firstChild;
+                        } else {
+                            insertAdjacentHTML(domParent, 'beforeend', children);
+                            domNode = domChildren[prevLength];
+                        }
+                        node.dom = domNode;
+                        node.domLength = domChildren.length - prevLength;
+                        if (replace && nextChild) {
+                            removeChild(domParent, nextChild);
+                        }
+                        return;
+                    } else {
+                        // TODO find solution without dom placeholder
+                        domNode = document.createTextNode('');
+                    }
+                    break;
+                default:
+                    var ns;
+                    switch (tag) {
+                        case 'svg': ns = 'http://www.w3.org/2000/svg'; break;
+                        case 'math': ns = 'http://www.w3.org/1998/Math/MathML'; break;
+                        default: ns = parentNs; break;
+                    }
+                    if (ns) {
+                        node.ns = ns;
+                        domNode = document.createElementNS(ns, tag);
+                    } else {
+                        domNode = document.createElement(tag);
+                    }
+                    node.dom = domNode;
+                    children = normChildren(node, children);
+                    if (isTrident && domParent) {
+                        insertChild(domParent, domNode, nextChild, replace);
+                    }
+                    createChildren(domNode, node, ns, children, 0, children.length, children.length > 1);
+                    updateElement(domNode, null, null, node, tag, node.attrs, node.events);
+                    if (!isTrident && domParent) {
+                        insertChild(domParent, domNode, nextChild, replace);
+                    }
+                    return;
+            }
+            node.dom = domNode;
+            if (domParent) {
+                insertChild(domParent, domNode, nextChild, replace);
+            }
+        }
+    }
+
+    // TODO do not use in loop
+    function insertNodeHTML(node, domParent, nextChild, replace) {
+        var html = createNodeHTML(node), domNode;
+        if (domParent) {
+            var prevNode;
+            if (!nextChild && !domParent.hasChildNodes()) {
+                domParent.innerHTML = html;
+                domNode = domParent.firstChild;
+            } else {
+                if (nextChild) {
+                    prevNode = nextChild.dom.previousSibling;
+                    insertAdjacentHTML(nextChild.dom, 'beforebegin', html);
+                    if (replace) {
+                        // TODO use outerHTML if possible
+                        removeChild(domParent, nextChild);
+                    }
+                } else {
+                    prevNode = domParent.lastChild;
+                    insertAdjacentHTML(domParent, 'beforeend', html);
+                }
+                domNode = prevNode ? prevNode.nextSibling : domParent.firstChild;
+            }
+        } else {
+            // TODO better parsing
+            helperDiv.innerHTML = html;
+            domNode = helperDiv.removeChild(helperDiv.firstChild);
+        }
+        if (node.tag) {
+            postCreateNodeHTML(domNode, node, 0);
+        } else {
+            var domTestNode = domParent.firstChild, domIndex = 0;
+            while (domTestNode !== domNode) {
+                domTestNode = domTestNode.nextSibling;
+                domIndex++;
+            }
+            postCreateFragmentHTML(domParent, node, domIndex);
+        }
+    }
+
+    var endOfText = '\u0003';
+
+    // TODO fix namespace issue in FF
+    // TODO omit all unnecessary endOfText
+    function createNodeHTML(node, context) {
+        var tag = node.tag, children = node.children;
+        switch (tag) {
+            case '#':
+                return escapeContent(children) + endOfText;
+            case '!':
+                return '<!--' + escapeComment(children) + '-->';
+            case '<':
+                return children + endOfText;
+            default:
+                var html;
+                if (tag) {
+                    var attrs = node.attrs;
+                    if (tag === 'select' && attrs) {
+                        context = {selectedIndex: attrs.selectedIndex, value: attrs.value, optionIndex: 0};
+                    } else if (tag === 'option' && context) {
+                        if ((context.value && context.value === attrs.value) ||
+                            (context.selectedIndex !== undefined && context.selectedIndex === context.optionIndex)) {
+                            attrs.selected = true;
+                        }
+                        context.optionIndex++;
+                    }
+                    // TODO validate tag name
+                    html = '<' + tag;
+                    if (attrs) {
+                        html += ' ';
+                        for (var attrName in attrs) {
+                            var attrValue = attrs[attrName];
+                            if (attrValue === false ||
+                                (tag === 'select' && (attrName === 'value' || attrName === 'selectedIndex'))) {
+                                continue;
+                            } else if (tag === 'textarea' && attrName === 'value') {
+                                children = attrValue;
+                                continue;
+                            } else if (attrValue === true) {
+                                attrValue = '';
+                            } else if (attrName === 'style' && !isString(attrValue)) {
+                                var style = '';
+                                for (var propName in attrValue) {
+                                    style += propName + ': ' + attrValue[propName] + '; ';
+                                }
+                                attrValue = style;
+                            }
+                            html += ' ' + escapedAttr(attrName, attrValue);
+                        }
+                    }
+                } else {
+                    html = '';
+                }
+
+                children = normChildren(node, children);
+                var childrenLength = children.length;
+                if (tag) {
+                    html += '>';
+                }
+                if (childrenLength === 1 && isString(children[0])) {
+                    html += escapeContent(children[0]);
+                    if (!tag) {
+                        html += endOfText;
+                    }
+                } else if (childrenLength === 0 && !tag) {
+                    html += endOfText;
+                } else {
+                    for (var i = 0; i < childrenLength; i++) {
+                        html += createNodeHTML(normIndex(children, i), context);
+                    }
+                }
+                if (tag) {
+                    // TODO close only required tags explicitly
+                    html += '</' + tag + '>';
+                }
+                return html;
+        }
+    }
+
+    // TODO avoid using childNodes if possible
+    // TODO merge both post together
+    function postCreateNodeHTML(domNode, node, domIndex) {
+        node.dom = domNode;
+        var text, endIndex;
+        switch (node.tag) {
+            case '#':
+                text = domNode.nodeValue;
+                endIndex = text.indexOf(endOfText);
+                if (endIndex !== -1) {
+                    if (endIndex + 1 < text.length) {
+                        domNode.splitText(endIndex + 1);
+                    }
+                    domNode.nodeValue = text.substr(0, endIndex);
+                }
+                break;
+            case '!': break;
+            case '<':
+                var domLength = 0;
+                for (; domNode; domNode = domNode.nextSibling) {
+                    domLength++;
+                    if (domNode.nodeType === 3) {
+                        text = domNode.nodeValue;
+                        if (domLength > 1 && text === endOfText) {
+                            domNode.parentNode.removeChild(domNode);
+                            domLength--;
+                        } else {
+                            endIndex = text.indexOf(endOfText);
+                            if (endIndex !== -1) {
+                                if (endIndex + 1 < text.length) {
+                                    domNode.splitText(endIndex + 1);
+                                }
+                                domNode.nodeValue = text.substr(0, endIndex);
+                                break;
+                            }
+                        }
+                    }
+                }
+                node.domLength = domLength;
+                return domIndex + domLength;
+            default:
+                var children = node.children,
+                    childrenLength = children.length;
+                if (childrenLength !== 1 || !isString(children[0])) {
+                    var domChildren = domNode.childNodes;
+                    for (var i = 0, childDomIndex = 0; i < childrenLength; i++) {
+                        var child = children[i];
+                        childDomIndex = child.tag ? postCreateNodeHTML(domChildren[childDomIndex], child, childDomIndex)
+                            : postCreateFragmentHTML(domNode, child, childDomIndex);
+                    }
+                }
+                var events = node.events;
+                if (events) {
+                    createEventHandlers(domNode, node, events);
+                }
+                break;
+        }
+        return domIndex + 1;
+    }
+
+    function postCreateFragmentHTML(domParent, node, domIndex) {
+        var children = node.children,
+            domChildren = domParent.childNodes;
+        if (children.length === 0) {
+            var domNode = domChildren[domIndex];
+            if (domNode.length > 1) {
+                domNode.splitText(1);
+            }
+            domNode.nodeValue = '';
+            node.dom = domNode;
+            domIndex++;
+        } else {
+            if (children.length === 1) {
+                normIndex(children, 0);
+            }
+            var startDomIndex = domIndex;
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                domIndex = child.tag ? postCreateNodeHTML(domChildren[domIndex], child, domIndex)
+                    : postCreateFragmentHTML(domParent, child, domIndex);
+            }
+            node.dom = children[0].dom;
+            node.domLength = domIndex - startDomIndex;
+        }
+        return domIndex;
+    }
+
+    function escapeContent(value) {
+        value = '' + value;
+        if (isWebKit) {
+            helperDiv.innerText = value;
+            value = helperDiv.innerHTML;
+        } else if (isFirefox) {
+            value = value.split('<').join('&lt;').split('>').join('&gt;').split('&').join('&amp;');
+        } else {
+            value = value.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;');
+        }
+        return value;
+    }
+
+    function escapeComment(value) {
+        value = '' + value;
+        // TODO print warning if value contains --
+        return value.replace(/-{2,}/g, '-');
+    }
+
+    function escapedAttr(name, value) {
+        var type = typeof value;
+        value = '' + value;
+        if (type !== 'number') {
+            if (isFirefox) {
+                value = value.split('"').join('&quot;').split('&').join('&amp;');
+            } else {
+                value = value.replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+            }
+        }
+        return name + '="' + value + '"';
+    }
+
+    function createFragment(node, children, domParent, parentNs, hasDomSiblings, nextChild, replace) {
+        children = normChildren(node, children);
+        var domNode, domLength,
+            childrenLength = children.length;
+        if (parentNs) {
+            node.ns = parentNs;
+        }
+        if (childrenLength === 0) {
+            // TODO find solution without dom placeholder
+            domNode = document.createTextNode('');
+            insertChild(domParent, domNode, nextChild, replace);
+        } else {
+            hasDomSiblings = hasDomSiblings || childrenLength > 1;
+            domLength = 0;
+            for (var i = 0; i < childrenLength; i++) {
+                var child = normIndex(children, i);
+                createNode(child, domParent, parentNs, hasDomSiblings, nextChild, false);
+                domLength += child.domLength || 1;
+            }
+            domNode = children[0].dom;
+            if (replace) {
+                removeChild(domParent, nextChild);
+            }
+        }
+        node.dom = domNode;
+        node.domLength = domLength;
+    }
+
+    function updateElement(domElement, oldAttrs, oldEvents, element, tag, attrs, events) {
+        // Attributes
+        var attrName;
+        if (attrs) {
+            for (attrName in attrs) {
+                var attrValue = attrs[attrName];
+                if (attrName === 'style') {
+                    var oldAttrValue = oldAttrs && oldAttrs[attrName];
+                    if (oldAttrValue !== attrValue) {
+                        updateStyle(domElement, oldAttrValue, attrs, attrValue);
+                    }
+                } else if (attrName === 'class') {
+                    domElement.className = attrValue;
+                } else if (isInputProperty(tag, attrName)) {
+                    if (domElement[attrName] !== attrValue) {
+                        domElement[attrName] = attrValue;
+                    }
+                } else if (!oldAttrs || oldAttrs[attrName] !== attrValue) {
+                    updateAttribute(domElement, attrName, attrValue);
+                }
+            }
+        }
+        if (oldAttrs) {
+            for (attrName in oldAttrs) {
+                if ((!attrs || attrs[attrName] === undefined)) {
+                    if (attrName === 'class') {
+                        domElement.className = '';
+                    } else if (!isInputProperty(tag, attrName)) {
+                        domElement.removeAttribute(attrName);
+                    }
+                }
+            }
+        }
+
+        // Events
+        if (events) {
+            createEventHandlers(domElement, element, events, oldEvents);
+        }
+        if (oldEvents) {
+            for (var eventType in oldEvents) {
+                if (!events || !events[eventType]) {
+                    removeEventHandler(domElement, eventType);
+                }
+            }
+        }
+    }
+
+    function updateAttribute(domElement, name, value) {
+        if (value === false) {
+            domElement.removeAttribute(name);
+        } else {
+            if (value === true) {
+                value = '';
+            }
+            var colonIndex = name.indexOf(':'), ns;
+            if (colonIndex !== -1) {
+                var prefix = name.substr(0, colonIndex);
+                switch (prefix) {
+                    case 'xlink':
+                        ns = 'http://www.w3.org/1999/xlink';
+                        break;
+                }
+            }
+            if (ns) {
+                domElement.setAttributeNS(ns, name, value);
+            } else {
+                domElement.setAttribute(name, value);
+            }
+        }
+    }
+
+    function updateStyle(domElement, oldStyle, attrs, style) {
+        var propName;
+        if (!isString(style) && (!supportsCssSetProperty || !oldStyle || isString(oldStyle))) {
+            var styleStr = '';
+            if (style) {
+                for (propName in style) {
+                    styleStr += propName + ': ' + style[propName] + '; ';
+                }
+            }
+            style = styleStr;
+            if (!supportsCssSetProperty) {
+                attrs.style = style;
+            }
+        }
+        var domStyle = domElement.style;
+        if (isString(style)) {
+            domStyle.cssText = style;
+        } else {
+            if (style) {
+                for (propName in style) {
+                    // TODO should important properties even be supported?
+                    var propValue = style[propName];
+                    if (!oldStyle || oldStyle[propName] !== propValue) {
+                        var importantIndex = propValue.indexOf('!important');
+                        if (importantIndex !== -1) {
+                            domStyle.setProperty(propName, propValue.substr(0, importantIndex), 'important');
+                        } else {
+                            if (oldStyle) {
+                                var oldPropValue = oldStyle[propName];
+                                if (oldPropValue && oldPropValue.indexOf('!important') !== -1) {
+                                    domStyle.removeProperty(propName);
+                                }
+                            }
+                            domStyle.setProperty(propName, propValue, '');
+                        }
+                    }
+                }
+            }
+            if (oldStyle) {
+                for (propName in oldStyle) {
+                    if (!style || style[propName] === undefined) {
+                        domStyle.removeProperty(propName);
+                    }
+                }
+            }
+        }
+    }
+
+    function createEventHandlers(domElement, element, events, oldEvents) {
+        domElement.virtualNode = element;
+        for (var eventType in events) {
+            if (!oldEvents || !oldEvents[eventType]) {
+                addEventHandler(domElement, eventType);
+            }
+        }
+    }
+
+    function isInputProperty(tag, attrName) {
+        switch (tag) {
+            case 'input':
+                return attrName === 'value' || attrName === 'checked';
+            case 'textarea':
+                return attrName === 'value';
+            case 'select':
+                return attrName === 'value' || attrName === 'selectedIndex';
+            case 'option':
+                return attrName === 'selected';
+        }
+    }
+
+    function addEventHandler(domElement, type) {
+        if (supportsEventListener) {
+            domElement.addEventListener(type, eventHandler, false);
+        } else {
+            var onType = 'on' + type;
+            if (onType in domElement) {
+                domElement[onType] = eventHandler;
+            } else {
+                // TODO bind element to event handler + tests
+                domElement.attachEvent(onType, eventHandler);
+            }
+        }
+    }
+
+    function removeEventHandler(domElement, type) {
+        if (supportsEventListener) {
+            domElement.removeEventListener(type, eventHandler, false);
+        } else {
+            var onType = 'on' + type;
+            if (onType in domElement) {
+                domElement[onType] = null;
+            } else {
+                domElement.detachEvent(onType, eventHandler);
+            }
+        }
+    }
+
+    function getTextIfTextNode(node) {
+        return isString(node) ? node : (node.tag === '#') ? node.children : null;
+    }
+
+    function createChildren(domElement, element, parentNs, children, i, to, hasDomSiblings, nextChild) {
+        if (i === 0 && to === 1 && !hasDomSiblings) {
+            var onlyChild = children[0],
+                onlyChildText = getTextIfTextNode(onlyChild);
+            if (onlyChildText !== null) {
+                setTextContent(domElement, onlyChildText);
+                return;
+            } else if (onlyChild.tag === '<') {
+                domElement.innerHTML = onlyChild.children;
+                return;
+            }
+        }
+        for (; i < to; i++) {
+            if(isArray(children[i])) {
+              createChildren(domElement, element, parentNs, children[i], 0, children[i].length, hasDomSiblings, nextChild);
+            } else {
+              createNode(normIndex(children, i), domElement, parentNs, hasDomSiblings, nextChild);
+            }
+        }
+    }
+
+    var range = supportsRange ? document.createRange() : null;
+
+    function removeChildren(domElement, children, i, to) {
+        if (i === 0 && to === 1 && children.length === 1) {
+            var onlyChild = children[0];
+            if (!onlyChild.dom) {
+                for (var domChild; domChild = domElement.firstChild;) { // jshint ignore:line
+                    domElement.removeChild(domChild);
+                }
+                return;
+            }
+        }
+        for (; i < to; i++) {
+            removeChild(domElement, children[i]);
+        }
+        // TODO use range for better performance with many children
+        // TODO use setStartBefore/setEndAfter for faster range delete
+        /*
+         } else if (hasRange && count === children.length) {
+            for (i = from; i < to; i++) {
+                destroyNode(children[i]);
+            }
+            range.selectNodeContents(domElement);
+            range.deleteContents();
+         */
+    }
+
+    function removeChild(domElement, child) {
+        destroyNode(child);
+        var domChild = child.dom, domLength = child.domLength || 1,
+            domNextChild;
+        while (domLength--) {
+            domNextChild = (domLength > 0) ? domChild.nextSibling : null;
+            domElement.removeChild(domChild);
+            domChild = domNextChild;
+        }
+    }
+
+    function setTextContent(domElement, text) {
+        if (supportsTextContent) {
+            domElement.textContent = text;
+        } else {
+            domElement.innerText = text;
+        }
+    }
+
+    function updateOnlyChild(domElement, oldChildren, oldEndIndex, children) {
+        var child = children[0], oldChild = oldChildren[0],
+            childText = getTextIfTextNode(child),
+            update = (oldEndIndex !== 0),
+            sameType = false;
+        if (childText !== null) {
+            if (!update) {
+                var oldChildText = getTextIfTextNode(oldChild);
+                sameType = (oldChildText !== null);
+                update = (childText !== oldChildText);
+            }
+            if (update) {
+                if (!sameType) {
+                    destroyNodes(oldChildren);
+                }
+                setTextContent(domElement, childText);
+            }
+        } else if (child.tag === '<') {
+            if (!update) {
+                sameType = (oldChild.tag === '<');
+                update = !sameType || (child.children !== oldChild.children);
+            }
+            if (update) {
+                if (!sameType) {
+                    destroyNodes(oldChildren);
+                }
+                domElement.innerHTML = child.children;
+            }
+        } else {
+            update = false;
+        }
+        return update || sameType;
+    }
+
+    function updateChildren(domElement, element, ns, oldChildren, children, hasDomSiblings, outerNextChild) {
+        children = normChildren(element, children, oldChildren);
+        if (children === oldChildren) {
+            return;
+        }
+
+        var oldEndIndex = oldChildren.length - 1,
+            endIndex = children.length - 1;
+        hasDomSiblings = hasDomSiblings || endIndex > 0;
+        if (endIndex === 0 && !hasDomSiblings && updateOnlyChild(domElement, oldChildren, oldEndIndex, children)) {
+            return;
+        }
+
+        if (oldEndIndex === 0) {
+            var oldOnlyChild = normIndex(oldChildren, 0);
+            if (!oldOnlyChild.dom) {
+                oldOnlyChild.dom = domElement.firstChild;
+                if (oldOnlyChild.tag === '<') {
+                    oldOnlyChild.domLength = domElement.childNodes.length;
+                }
+            }
+        }
+
+        var oldStartIndex = 0, startIndex = 0,
+            successful = true,
+            nextChild;
+        outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
+            successful = false;
+            var oldStartChild, oldEndChild, startChild, endChild;
+
+            oldStartChild = oldChildren[oldStartIndex];
+            startChild = normIndex(children, startIndex, oldStartChild);
+            while (oldStartChild.key === startChild.key) {
+                nextChild = oldChildren[oldStartIndex + 1] || outerNextChild;
+                updateNode(oldStartChild, startChild, domElement, ns, hasDomSiblings, nextChild);
+                oldStartIndex++; startIndex++;
+                if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+                    break outer;
+                }
+                oldStartChild = oldChildren[oldStartIndex];
+                startChild = normIndex(children, startIndex, oldStartChild);
+                successful = true;
+            }
+            oldEndChild = oldChildren[oldEndIndex];
+            endChild = normIndex(children, endIndex);
+            while (oldEndChild.key === endChild.key) {
+                nextChild = children[endIndex + 1] || outerNextChild;
+                updateNode(oldEndChild, endChild, domElement, ns, hasDomSiblings, nextChild);
+                oldEndIndex--; endIndex--;
+                if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+                    break outer;
+                }
+                oldEndChild = oldChildren[oldEndIndex];
+                endChild = normIndex(children, endIndex);
+                successful = true;
+            }
+            while (oldStartChild.key === endChild.key) {
+                nextChild = children[endIndex + 1] || outerNextChild;
+                updateNode(oldStartChild, endChild, domElement, ns, hasDomSiblings, nextChild);
+                moveChild(domElement, endChild, nextChild);
+                oldStartIndex++; endIndex--;
+                if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+                    break outer;
+                }
+                oldStartChild = oldChildren[oldStartIndex];
+                endChild = normIndex(children, endIndex);
+                successful = true;
+            }
+            while (oldEndChild.key === startChild.key) {
+                nextChild = oldChildren[oldStartIndex] || outerNextChild;
+                updateNode(oldEndChild, startChild, domElement, ns, nextChild);
+                moveChild(domElement, startChild, nextChild);
+                oldEndIndex--; startIndex++;
+                if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+                    break outer;
+                }
+                oldEndChild = oldChildren[oldEndIndex];
+                startChild = normIndex(children, startIndex);
+                successful = true;
+            }
+        }
+
+        if (oldStartIndex > oldEndIndex) {
+            nextChild = normIndex(children, endIndex + 1) || outerNextChild;
+            createChildren(domElement, element, ns, children, startIndex, endIndex + 1, hasDomSiblings, nextChild);
+        } else if (startIndex > endIndex) {
+            removeChildren(domElement, oldChildren, oldStartIndex, oldEndIndex + 1);
+        } else {
+            var i, oldChild,
+                oldNextChild = oldChildren[oldEndIndex + 1],
+                oldChildrenMap = {};
+            for (i = oldEndIndex; i >= oldStartIndex; i--) {
+                oldChild = oldChildren[i];
+                oldChild.next = oldNextChild;
+                oldChildrenMap[oldChild.key] = oldChild;
+                oldNextChild = oldChild;
+            }
+            nextChild = normIndex(children, endIndex + 1) || outerNextChild;
+            for (i = endIndex; i >= startIndex; i--) {
+                var child = children[i],
+                    key = child.key;
+                oldChild = oldChildrenMap[key];
+                if (oldChild) {
+                    oldChildrenMap[key] = null;
+                    oldNextChild = oldChild.next;
+                    updateNode(oldChild, child, domElement, ns, hasDomSiblings, nextChild);
+                    if ((oldNextChild && oldNextChild.key) !== (nextChild && nextChild.key)) {
+                        moveChild(domElement, child, nextChild);
+                    }
+                } else {
+                    createNode(child, domElement, ns, hasDomSiblings, nextChild);
+                }
+                nextChild = child;
+            }
+            for (i = oldStartIndex; i <= oldEndIndex; i++) {
+                oldChild = oldChildren[i];
+                if (oldChildrenMap[oldChild.key] !== null) {
+                    removeChild(domElement, oldChild);
+                }
+            }
+        }
+    }
+
+    var stopImmediate = false;
+
+    function eventHandler(event) {
+        event = getFixedEvent(event, this); // jshint ignore:line
+        var currentTarget = event.currentTarget,
+            eventHandlers = currentTarget.virtualNode.events[event.type];
+        if (isArray(eventHandlers)) {
+            for (var i = 0, len = eventHandlers.length; i < len; i++) {
+                callEventHandler(eventHandlers[i], currentTarget, event);
+                if (stopImmediate) {
+                    stopImmediate = false;
+                    break;
+                }
+            }
+        } else {
+            callEventHandler(eventHandlers, currentTarget, event);
+        }
+    }
+
+    // jshint ignore:start
+    function preventDefault() {
+        this.defaultPrevented = true;
+        this.returnValue = false;
+    }
+    function stopPropagation() {
+        this.cancelBubble = true;
+    }
+    function stopImmediatePropagation() {
+        stopImmediate = true;
+        this.stopPropagation();
+    }
+    // jshint ignore:end
+
+    function getFixedEvent(event, thisArg) {
+        if (!event) {
+            event = window.event;
+            if (!event.preventDefault) {
+                event.preventDefault = preventDefault;
+                event.stopPropagation = stopPropagation;
+                event.defaultPrevented = (event.returnValue === false);
+                event.target = event.srcElement;
+            }
+            event.currentTarget = thisArg.nodeType ? thisArg : event.target; // jshint ignore:line
+            // TODO further event normalization
+        }
+        event.stopImmediatePropagation = stopImmediatePropagation;
+        return event;
+    }
+
+    function callEventHandler(eventHandler, currentTarget, event) {
+        try {
+            if (eventHandler.call(currentTarget, event) === false) {
+                event.preventDefault();
+            }
+        } catch (e) {
+            console.error(e.stack || e);
+        }
+    }
+
+    function updateNode(oldNode, node, domParent, parentNs, hasDomSiblings, nextChild) {
+        if (node === oldNode) {
+            return;
+        }
+
+        var domNode, tag = node.tag,
+            oldChildren = oldNode.children, children = node.children;
+        if (oldNode.tag !== tag) {
+            createNode(node, domParent, parentNs, hasDomSiblings, oldNode, true);
+        } else if (!tag) {
+            updateFragment(oldNode, oldChildren, node, children, domParent, parentNs, hasDomSiblings, nextChild);
+        } else {
+            // Element
+            domNode = oldNode.dom;
+            switch (tag) {
+                case '#':
+                case '!':
+                    if (oldChildren !== children) {
+                        domNode.nodeValue = children;
+                    }
+                    node.dom = domNode;
+                    break;
+                case '<':
+                    if (oldChildren !== children) {
+                        createNode(node, domParent, ns, hasDomSiblings, oldNode, true);
+                    } else {
+                        node.dom = oldNode.dom;
+                        node.domLength = oldNode.domLength;
+                    }
+                    break;
+                default:
+                    var ns = oldNode.ns;
+                    if (ns) node.ns = ns;
+                    node.dom = domNode;
+                    updateChildren(domNode, node, ns, oldChildren, children, false);
+                    updateElement(domNode, oldNode.attrs, oldNode.events, node, tag, node.attrs, node.events);
+                    break;
+            }
+        }
+    }
+
+    function updateFragment(oldNode, oldChildren, node, children, domParent, parentNs, hasDomSiblings, nextChild) {
+        children = normChildren(node, children, oldChildren);
+        if (children === oldChildren) {
+            return;
+        }
+
+        var domNode, domLength,
+            oldChildrenLength = oldChildren.length,
+            childrenLength = children.length;
+        if (parentNs) {
+            node.ns = parentNs;
+        }
+        hasDomSiblings = hasDomSiblings || childrenLength > 1;
+        if (childrenLength === 0) {
+            if (oldChildrenLength === 0) {
+                domNode = oldNode.dom;
+            } else {
+                removeChildren(domParent, oldChildren, 0, oldChildren.length);
+                // TODO find solution without dom placeholder
+                domNode = document.createTextNode('');
+                insertChild(domParent, domNode, nextChild);
+            }
+        } else if (oldChildrenLength === 0) {
+            domParent.removeChild(oldNode.dom);
+            createFragment(node, children, domParent, parentNs, hasDomSiblings, nextChild);
+        } else {
+            updateChildren(domParent, node, parentNs, oldChildren, children, hasDomSiblings, nextChild);
+            if (childrenLength > 0) {
+                domNode = children[0].dom;
+                domLength = 0;
+                // TODO should be done without extra loop/lazy
+                for (var i = 0; i < childrenLength; i++) {
+                    domLength += children[i].domLength || 1;
+                }
+            }
+        }
+        node.dom = domNode;
+        node.domLength = domLength;
+    }
+
+    function destroyNode(node) {
+        if (!isString(node)) {
+            var domNode = node.dom;
+            if (domNode) {
+                var events = node.events;
+                if (events) {
+                    for (var eventType in events) {
+                        removeEventHandler(domNode, eventType);
+                    }
+                }
+                if (domNode.virtualNode) {
+                    domNode.virtualNode = undefined;
+                }
+            }
+            // TODO call callback
+            var children = node.children;
+            if (!isString(children)) {
+                destroyNodes(children);
+            }
+        }
+    }
+
+    function destroyNodes(nodes) {
+        for (var i = 0, len = nodes.length; i < len; i++) {
+            destroyNode(nodes[i]);
+        }
+    }
+
+    function copyObjectProps(source, target) {
+        var key;
+        for (key in source) {
+            target[key] = source[key];
+        }
+        for (key in target) {
+            if (source[key] === undefined) {
+                target[key] = undefined;
+            }
+        }
+    }
+
+    var vdom = cito.vdom = {
+        create: function (node) {
+            node = norm(node);
+            createNode(node);
+            return node;
+        },
+        append: function (domParent, node) { // TODO params order
+            node = norm(node);
+            createNode(node, domParent);
+            return node;
+        },
+        update: function (oldNode, node) {
+            node = norm(node, oldNode);
+            // TODO should detect first whether the node has already been rendered
+            updateNode(oldNode, node, oldNode.dom.parentNode);
+            copyObjectProps(node, oldNode);
+            return oldNode;
+        },
+        updateChildren: function (element, children) {
+            var oldChildren = element.children;
+            children = normChildren(element, children, oldChildren);
+            updateChildren(element.dom, element, element.ns, oldChildren, children);
+            element.children = children;
+        },
+        remove: function (node) {
+            var domParent = node.dom.parentNode;
+            removeChild(domParent, node);
+        }
+    };
+
+})(cito, window);

@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/dominicg/EngineJS/example/Inferno/Compiler.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/Compiler.js":[function(require,module,exports){
 
 function getTagData(tagText) {
   var parts = [];
@@ -245,7 +245,7 @@ var Compiler = {
 
 module.exports = Compiler;
 
-},{}],"/Users/dominicg/EngineJS/example/Inferno/CustomTag.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/CustomTag.js":[function(require,module,exports){
 
 function CustomTag(tag, tagClass) {
   this._element = null;
@@ -299,7 +299,7 @@ CustomTag.prototype.render = function() {
 
 module.exports = CustomTag;
 
-},{}],"/Users/dominicg/EngineJS/example/Inferno/Template.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/Template.js":[function(require,module,exports){
 var cito = require("./cito.js");
 var Compiler = require("./Compiler.js");
 
@@ -328,7 +328,7 @@ Template.prototype.mount = function(root) {
 
 module.exports = Template;
 
-},{"./Compiler.js":"/Users/dominicg/EngineJS/example/Inferno/Compiler.js","./cito.js":"/Users/dominicg/EngineJS/example/Inferno/cito.js"}],"/Users/dominicg/EngineJS/example/Inferno/cito.js":[function(require,module,exports){
+},{"./Compiler.js":"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/Compiler.js","./cito.js":"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/cito.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/cito.js":[function(require,module,exports){
 /*
  * Copyright (c) 2015, Joel Richard
  *
@@ -1499,7 +1499,7 @@ var cito = window.cito || {};
 
 module.exports = cito;
 
-},{}],"/Users/dominicg/EngineJS/example/Inferno/inferno-src.js":[function(require,module,exports){
+},{}],"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/inferno-src.js":[function(require,module,exports){
 var CustomTag = require('./CustomTag.js');
 var Template = require('./Template.js');
 
@@ -1545,4 +1545,4 @@ window.Inferno = {
   loadFile: loadFile
 };
 
-},{"./CustomTag.js":"/Users/dominicg/EngineJS/example/Inferno/CustomTag.js","./Template.js":"/Users/dominicg/EngineJS/example/Inferno/Template.js"}]},{},["/Users/dominicg/EngineJS/example/Inferno/inferno-src.js"]);
+},{"./CustomTag.js":"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/CustomTag.js","./Template.js":"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/Template.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/inferno-src.js"]);
