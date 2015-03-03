@@ -1,27 +1,30 @@
-<script type="text/inferno">
+<template>
   <div>
     <header>
-      <h1>Example `${ this.title }`</h1>
+      <h1>Example ${ this.title }</h1>
     </header>
   </div>
-  <div class=`${ this.testClassName }`>Test text</div>
+  <div class=${ this.testClassName }>Test text</div>
   <div id="main">
-    <div:if(this.todos.length > 0)>
+    <if ${ this.todos.length > 0 }>
       <span class="counter">
         There are ${ this.todos.length } todos!
       </span>
-    <div:else>
+    </if>
+    <if ${ this.todos.length === 0 }>
       <span class="no-todos">
         There are no todos!
       </span>
-    </div>
+    </if>
     <ul class="todos">
-      <li:for(todo in this.todos) class="todo">
+      <for ${ (todo, index) in this.todos }>
         <li class="todo">
-          <h2>A todo</h2>
-          <span>`${ index }: ${ todo }`</span>
+          <li class="todo">
+            <h2>A todo</h2>
+            <span>${ index + ': ' + todo }</span>
+          </li>
         </li>
-      </li>
+      </for>
     </ul>
     <section>
       <form action="#" method="post">
@@ -31,4 +34,4 @@
       </form>
     </section>
   </div>
-</script>
+</template>
