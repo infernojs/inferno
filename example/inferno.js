@@ -1,83 +1,144 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/CustomTag.js":[function(require,module,exports){
-var Template = require('./Template.js');
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/dominicg/EngineJS/example/Inferno/Compiler.js":[function(require,module,exports){
 
-function CustomTag(tag, data) {
-  this._element = null;
-  this._tag = tag;
-  this._tagClass = null;
-  this._template = new Template(data.template);
-  this._initCustomElement(data.class);
-};
-
-CustomTag.prototype._convertNamedNodeMapToObject = function(namedNodeMap) {
-  var obj = {};
-  for(var key in namedNodeMap) {
-    if(namedNodeMap[key].nodeName != null) {
-      obj[namedNodeMap[key].nodeName] = namedNodeMap[key].value;
+function getTagData(tagText) {
+  var parts = [];
+  var char = '';
+  var lastChar = '';
+  var i = 0;
+  var s = 0;
+  var currentString = '';
+  var literalString = '';
+  var inQuotes = false;
+  var attrs = [];
+  var attrParts = [];
+  var attr = {};
+  var inLiteral = false;
+  for(i = 0; i < tagText.length; i++) {
+    char = tagText[i];
+    if(char === " " && inQuotes === false) {
+      parts.push(currentString);
+      currentString = '';
+    } else if(char === "'") {
+      inQuotes = !inQuotes;
+    } else if(char === '"') {
+        inQuotes = !inQuotes;
+    } else {
+      currentString += char;
     }
   }
-  return obj;
-};
-
-CustomTag.prototype._initCustomElement = function(tagClass) {
-  //keep a copy of this so we can pass it down the closures
-  var self = this;
-  //create a new HTML custom element
-  this._element = Object.create(HTMLElement.prototype);
-  //setup the customElement functions
-  this._element.createdCallback = function() {
-
-  };
-  this._element.attachedCallback = function() {
-    var attributes = self._convertNamedNodeMapToObject(this.attributes);
-    tagClass = new tagClass(attributes);
-    self._tagClass = tagClass;
-    self._element.tagClass = tagClass;
-    self._template.mount(this);
-  };
-  //register the custom element
-  document.registerElement(this._tag,
-    { prototype: this._element })
-};
-
-module.exports = CustomTag;
-
-},{"./Template.js":"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/Template.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/Template.js":[function(require,module,exports){
-var cito = require("./cito.js");
-
-function Template(templatePath) {
-  this._compiled = null;
-  this._root = null;
-  this._init = false;
-  Inferno.loadTemplate("/EngineJS/example/demo.html").then(function(template) {
-    this._parse(template);
-  }.bind(this))
-};
-
-Template.prototype._parse = function(text) {
-  //strip new lines
-  text = text.replace(/(\r\n|\n|\r|\t)/gm,"");
-  //get the content betweent the template tags
-  text = /<template>(.*)<\/template>/gm.exec(text)[1];
-  //now we have our markup that we want to make into vdom code
-  this.compile(text);
-};
-
-Template.prototype.mount = function(root) {
-  this._root = root;
-};
-
-Template.prototype.render = function() {
-  if(this._root != null && this._compiled != null && this._init === false) {
-    this._init = true;
-    var tempRoot = {tag: 'div', children: this._compiled.call(this._root.tagClass)};
-    cito.vdom.append(this._root, tempRoot);
-  } else if(this._init === false) {
-    requestAnimationFrame(this.render);
+  if(currentString !== "") {
+    parts.push(currentString);
+  }
+  currentString = '';
+  for(i = 1; i < parts.length; i++) {
+    //find the frist "=", exclude things inside literal tags
+    attrParts = [];
+    for(s = 0; s < parts[i].length; s++) {
+      char = parts[i][s];
+      if(char === "=" && inLiteral === false) {
+        attrParts.push('"' + currentString + '"');
+        currentString = '';
+      } else if(char === "{" && lastChar === "$" && inLiteral === false) {
+        inLiteral = true;
+      } else if(char === "}" && inLiteral === true) {
+        inLiteral = false;
+        currentString = currentString.substring(0, currentString.length - 1);
+        currentString += '" + ' + literalString + ' + "';
+        literalString = '';
+      } else if(inLiteral === true) {
+        literalString += char;
+      } else {
+        currentString += char;
+        lastChar = char;
+      }
+    }
+    if(currentString != "") {
+      attrParts.push('"' + currentString + '"');
+    }
+    if(attrParts.length > 1) {
+      attr = {};
+      attr[attrParts[0]] = attrParts[1];
+      attrs.push(attr);
+    }
+  }
+  return {
+    tag: parts[0],
+    attrs: attrs
   }
 };
 
-Template.prototype.compile = function(text) {
+function buildChildren(root, tagParams, childrenProp) {
+  var childrenText = [];
+  var i = 0;
+  if(root.children != null && Array.isArray(root.children)) {
+    childrenText.push("[");
+    for(i = 0; i < root.children.length; i++) {
+      buildFunction(root.children[i], childrenText, i === root.children.length - 1)
+    }
+    childrenText.push("]");
+    tagParams.push((childrenProp ? "children: " : "") + childrenText.join(""));
+  } else if(root.children != null) {
+    tagParams.push((childrenProp ? "children: " : "") + "'" + root.children + "'");
+  }
+};
+
+function buildFunction(root, functionText, isLast) {
+  var i = 0;
+  var tagParams = [];
+  var literalParts = [];
+  if(Array.isArray(root)) {
+    functionText.push("[");
+    for(i = 0; i < root.length; i++) {
+      buildFunction(root[i], functionText, i === root.length - 1);
+    }
+    functionText.push("]");
+  } else {
+    if(root.tag === "if") {
+      functionText.push("(function() {");
+      functionText.push("if(");
+      functionText.push(root.expression);
+      functionText.push("){");
+      buildChildren(root, tagParams, false);
+      functionText.push("return " + tagParams.join(','));
+      functionText.push("}")
+      functionText.push("return [];");
+      functionText.push("}.bind(this))()");
+    } else if(root.tag === "for") {
+      //strip uneeded space and double spaces and then split
+      literalParts = root.expression
+                        .trim()
+                        .replace(", ", ",")
+                        .replace(" ,", ",")
+                        .replace("(", "")
+                        .replace(")", "")
+                        .replace(/ +(?= )/g,'')
+                        .split(" ");
+      functionText.push("(function() {");
+      functionText.push("var result = [];");
+      functionText.push("var " + literalParts[0].split(",")[0] + " = null;");
+      functionText.push("var " + literalParts[0].split(",")[1] + " = 0;");
+      functionText.push("for(var i = 0; i < " + literalParts[2] + ".length; i++){");
+      functionText.push(literalParts[0].split(",")[0] + " = " + literalParts[2] + "[i];");
+      functionText.push(literalParts[0].split(",")[1] + " = i;");
+      buildChildren(root, tagParams, false);
+      functionText.push("result.push(" + tagParams.join(',') + ")");
+      functionText.push("}");
+      functionText.push("return result;");
+      functionText.push("}.bind(this))()");
+    } else {
+      functionText.push("{");
+      tagParams.push("tag: '" + root.tag + "'");
+      buildChildren(root, tagParams, true);
+      functionText.push(tagParams.join(','));
+      functionText.push("}");
+    }
+    if(isLast === false) {
+      functionText.push(",");
+    }
+  }
+};
+
+function compile(text) {
   var char = '';
   var lastChar = '';
   var i = 0, s = 0;
@@ -90,10 +151,7 @@ Template.prototype.compile = function(text) {
   var literalText = '';
   var parent = root;
   var objectLiteral = false;
-  var attrs = [];
-  var attrsTemp = [];
-  var attrsTempPart = [];
-  var attrsTempObj = {};
+  var tagData = [];
 
   for(i = 0; i < text.length; i++) {
     char = text[i];
@@ -112,9 +170,8 @@ Template.prototype.compile = function(text) {
         if(tagContent.indexOf(" ") === -1) {
           tagName = tagContent;
         } else {
-          attrsTemp = tagContent.split(" ");
-          tagName = attrsTemp[0];
-          attrsTemp.shift();
+          tagData = getTagData(tagContent);
+          tagName = tagData.tag;
         }
         //now we create out vElement
         if(tagName === "for" || tagName === "if") {
@@ -124,16 +181,9 @@ Template.prototype.compile = function(text) {
             children: []
           };
         } else {
-          //loop through attributes and turn them into objects
-          for(s = 0; s < attrsTemp.length; s++) {
-            attrsTempPart = attrsTemp[s].split("=");
-            attrsTempObj = {};
-            attrsTempObj[attrsTempPart[0]] = attrsTempPart[1].substring(1, attrsTempPart[1].length - 1);
-            attrs.push(attrsTempObj)
-          }          
           vElement = {
             tag: tagName,
-            attrs: attrs,
+            attrs: tagName.attrs || [],
             children: []
           };
         }
@@ -159,7 +209,7 @@ Template.prototype.compile = function(text) {
       objectLiteral = false;
       tagContent = tagContent.substring(0, tagContent.length - 1);
       //a property
-      tagContent += "\"" + literalText.trim() + "\"";
+      tagContent += '"${' + literalText.trim() + '}"';
     } else if (insideTag === true && objectLiteral === false) {
       tagContent += char;
       lastChar = char;
@@ -177,90 +227,108 @@ Template.prototype.compile = function(text) {
   var functionText = [];
   //then return the virtual dom object
   functionText.push("return ");
-
-  var buildChildren = function(root, tagParams, childrenProp) {
-    var childrenText = [];
-    var i = 0;
-    if(root.children != null && Array.isArray(root.children)) {
-      childrenText.push("[");
-      for(i = 0; i < root.children.length; i++) {
-        buildFunction(root.children[i], childrenText, i === root.children.length - 1)
-      }
-      childrenText.push("]");
-      tagParams.push((childrenProp ? "children: " : "") + childrenText.join(""));
-    } else if(root.children != null) {
-      tagParams.push((childrenProp ? "children: " : "") + "'" + root.children + "'");
-    }
-  };
-
-  var buildFunction = function(root, functionText, isLast) {
-    var i = 0;
-    var tagParams = [];
-    var literalParts = [];
-    if(Array.isArray(root)) {
-      functionText.push("[");
-      for(i = 0; i < root.length; i++) {
-        buildFunction(root[i], functionText, i === root.length - 1);
-      }
-      functionText.push("]");
-    } else {
-      if(root.tag === "if") {
-        functionText.push("(function() {");
-        functionText.push("if(");
-        functionText.push(root.expression);
-        functionText.push("){");
-        buildChildren(root, tagParams, false);
-        functionText.push("return " + tagParams.join(','));
-        functionText.push("}")
-        functionText.push("return [];");
-        functionText.push("}.bind(this))()");
-      } else if(root.tag === "for") {
-        //strip uneeded space and double spaces and then split
-        literalParts = root.expression
-                          .trim()
-                          .replace(", ", ",")
-                          .replace(" ,", ",")
-                          .replace("(", "")
-                          .replace(")", "")
-                          .replace(/ +(?= )/g,'')
-                          .split(" ");
-        functionText.push("(function() {");
-        functionText.push("var result = [];");
-        functionText.push("var " + literalParts[0].split(",")[0] + " = null;");
-        functionText.push("var " + literalParts[0].split(",")[1] + " = 0;");
-        functionText.push("for(var i = 0; i < " + literalParts[2] + ".length; i++){");
-        functionText.push(literalParts[0].split(",")[0] + " = " + literalParts[2] + "[i];");
-        functionText.push(literalParts[0].split(",")[1] + " = i;");
-        buildChildren(root, tagParams, false);
-        functionText.push("result.push(" + tagParams.join(',') + ")");
-        functionText.push("}");
-        functionText.push("return result;");
-        functionText.push("}.bind(this))()");
-      } else {
-        functionText.push("{");
-        tagParams.push("tag: '" + root.tag + "'");
-        buildChildren(root, tagParams, true);
-        functionText.push(tagParams.join(','));
-        functionText.push("}");
-      }
-      if(isLast === false) {
-        functionText.push(",");
-      }
-    }
-  };
   //build our functionText
   buildFunction(root, functionText, false);
   //convert to a string
   functionText = functionText.join('');
   //make the funcitonText into a function
-  this._compiled = new Function(functionText);
-  //then return the new function
-  this.render();
+  return new Function(functionText);
+};
+
+var Compiler = {
+  compile: function(text) {
+    //strip new lines
+    text = text.replace(/(\r\n|\n|\r)/gm,"");
+    return compile(text);
+  },
+};
+
+module.exports = Compiler;
+
+},{}],"/Users/dominicg/EngineJS/example/Inferno/CustomTag.js":[function(require,module,exports){
+
+function CustomTag(tag, tagClass) {
+  this._element = null;
+  this._tag = tag;
+  this._tagClass = null;
+  this._root = null;
+  this._initCustomElement(tagClass);
+};
+
+CustomTag.prototype._convertNamedNodeMapToObject = function(namedNodeMap) {
+  var obj = {};
+  for(var key in namedNodeMap) {
+    if(namedNodeMap[key].nodeName != null) {
+      obj[namedNodeMap[key].nodeName] = namedNodeMap[key].value;
+    }
+  }
+  return obj;
+};
+
+CustomTag.prototype._initCustomElement = function(tagClass) {
+  //keep a copy of this so we can pass it down the closures
+  var self = this;
+  //create a new HTML custom element
+  this._element = Object.create(HTMLElement.prototype);
+  //setup the customElement functions
+  this._element.createdCallback = function() {
+    self._root = this;
+  };
+  this._element.attachedCallback = function() {
+    var attributes = self._convertNamedNodeMapToObject(this.attributes);
+    tagClass = new tagClass(attributes);
+    self._tagClass = tagClass;
+    self._element.tagClass = tagClass;
+    self.render();
+  };
+  //register the custom element
+  document.registerElement(this._tag,
+    { prototype: this._element })
+};
+
+CustomTag.prototype.render = function() {
+  //call the render function on the class
+  if(this._tagClass.render != null) {
+    var template = this._tagClass.render();
+    if(template != null && template.hasMounted() === false) {
+      template.mount(this._root);
+    }
+  }
+  requestAnimationFrame(this.render.bind(this));
+}
+
+module.exports = CustomTag;
+
+},{}],"/Users/dominicg/EngineJS/example/Inferno/Template.js":[function(require,module,exports){
+var cito = require("./cito.js");
+var Compiler = require("./Compiler.js");
+
+function Template(templatePath) {
+  this._compiledTemplate = null;
+  this._root = null;
+  this._mounted = false;
+
+  Inferno.loadFile("/EngineJS/example/demo.html").then(function(text) {
+    this._compiledTemplate = Compiler.compile(text);
+  }.bind(this))
+};
+
+Template.prototype.hasMounted = function() {
+  return this._mounted;
+};
+
+Template.prototype.mount = function(root) {
+  if(this._compiledTemplate != null) {
+    this._root = root;
+    this._mounted = true;
+    var tempRoot = {tag: 'div', children: this._compiledTemplate.call(this._root.tagClass)};
+    cito.vdom.append(this._root, tempRoot);
+  }
 };
 
 module.exports = Template;
 
-},{"./cito.js":"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/cito.js"}],"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/cito.js":[function(require,module,exports){
+},{"./Compiler.js":"/Users/dominicg/EngineJS/example/Inferno/Compiler.js","./cito.js":"/Users/dominicg/EngineJS/example/Inferno/cito.js"}],"/Users/dominicg/EngineJS/example/Inferno/cito.js":[function(require,module,exports){
 /*
  * Copyright (c) 2015, Joel Richard
  *
@@ -1431,14 +1499,16 @@ var cito = window.cito || {};
 
 module.exports = cito;
 
-},{}],"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/inferno-src.js":[function(require,module,exports){
+},{}],"/Users/dominicg/EngineJS/example/Inferno/inferno-src.js":[function(require,module,exports){
 var CustomTag = require('./CustomTag.js');
+var Template = require('./Template.js');
 
 var components = {};
+var templates = {};
 
-function registerTag(tag, data) {
+function registerTag(tag, tagClass) {
   if(components[tag] == null) {
-    components[tag] = new CustomTag(tag, data);
+    components[tag] = new CustomTag(tag, tagClass);
   } else {
     throw Error(
       "Inferno component has already been registered to the tag \"" + tag + "\""
@@ -1446,7 +1516,7 @@ function registerTag(tag, data) {
   }
 };
 
-function loadTemplate(path) {
+function loadFile(path) {
   return new Promise(function(approve, reject) {
 
     function reqListener () {
@@ -1458,11 +1528,21 @@ function loadTemplate(path) {
     oReq.open("get", path, true);
     oReq.send();
   });
-}
+};
+
+function getTemplateFromFile(path) {
+  if(templates[path] != null) {
+    return templates[path];
+  } else {
+    templates[path] = new Template(path);
+    return templates[path];
+  }
+};
 
 window.Inferno = {
   registerTag: registerTag,
-  loadTemplate: loadTemplate
+  getTemplateFromFile: getTemplateFromFile,
+  loadFile: loadFile
 };
 
-},{"./CustomTag.js":"/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/CustomTag.js"}]},{},["/Volumes/StorageVol/Sites/www/EngineJS/example/Inferno/inferno-src.js"]);
+},{"./CustomTag.js":"/Users/dominicg/EngineJS/example/Inferno/CustomTag.js","./Template.js":"/Users/dominicg/EngineJS/example/Inferno/Template.js"}]},{},["/Users/dominicg/EngineJS/example/Inferno/inferno-src.js"]);

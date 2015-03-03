@@ -1,11 +1,10 @@
-var Template = require('./Template.js');
 
-function CustomTag(tag, data) {
+function CustomTag(tag, tagClass) {
   this._element = null;
   this._tag = tag;
   this._tagClass = null;
-  this._template = new Template(data.template);
-  this._initCustomElement(data.class);
+  this._root = null;
+  this._initCustomElement(tagClass);
 };
 
 CustomTag.prototype._convertNamedNodeMapToObject = function(namedNodeMap) {
@@ -25,18 +24,29 @@ CustomTag.prototype._initCustomElement = function(tagClass) {
   this._element = Object.create(HTMLElement.prototype);
   //setup the customElement functions
   this._element.createdCallback = function() {
-
+    self._root = this;
   };
   this._element.attachedCallback = function() {
     var attributes = self._convertNamedNodeMapToObject(this.attributes);
     tagClass = new tagClass(attributes);
     self._tagClass = tagClass;
     self._element.tagClass = tagClass;
-    self._template.mount(this);
+    self.render();
   };
   //register the custom element
   document.registerElement(this._tag,
     { prototype: this._element })
 };
+
+CustomTag.prototype.render = function() {
+  //call the render function on the class
+  if(this._tagClass.render != null) {
+    var template = this._tagClass.render();
+    if(template != null && template.hasMounted() === false) {
+      template.mount(this._root);
+    }
+  }
+  requestAnimationFrame(this.render.bind(this));
+}
 
 module.exports = CustomTag;

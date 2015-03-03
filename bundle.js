@@ -1409,6 +1409,8 @@ module.exports = vdml;
 
 },{"./Compiler.js":"/Users/dominicg/EngineJS/InfernoJS/Compiler.js"}],"/Users/dominicg/EngineJS/index.js":[function(require,module,exports){
 "use strict";
+var _taggedTemplateLiteral = function (strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); };
+
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -1455,16 +1457,10 @@ var Demo = (function (_Inferno$Component) {
 				var $ = vdml.helpers;
 				//$ = VDML helpers, to reduce lines of code and to simplify workflow
 
-				//you can use quickhand syntax to give elements classes and ids
-				//<div.foo>, <span#bar>
-
-				//you can also optionally close the elements with the quickhand to allow for easier
-				//reading and syntax checking
-
-				//Pass our markup through vdml so it generates a nice virtual dom
-				return vdml("\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>\n\t\t\t\t\t\tExample " + this.title + "\n\t\t\t\t\t</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div className=\"" + this.testClassName + "\">\n\t\t\t\tTest text\n\t\t\t</div>\n\t\t\t<div#main>\n\t\t\t\t<div>\n\t\t\t\t\t" + $["if"](this.todos.length > 0, "\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are " + this.todos.length + " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t", "\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t") + "\n\t\t\t\t</div>\n\t\t\t\t<ul.todos>\n\t\t\t\t\t" + $.forEach(this.todos, function (todo, index) {
-					return "\n\t\t\t\t\t\t\t<li.todo>\n\t\t\t\t\t\t\t\t<h2>A todo</h2>\n\t\t\t\t\t\t\t\t<span>" + index + ": " + todo + "</span>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t";
-				}) + "\n\t\t\t\t</ul.todos>\n\t\t\t\t<section>\n\t\t\t\t\t<form action=\"#\" method=\"post\">\n\t\t\t\t\t\t<div class=\"form-control\">\n\t\t\t\t\t\t\t<input type=\"text\" placeholder=\"Enter your name\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</section>\n\t\t\t</div#main>\n\t\t");
+				//Pass our markup through our template tagged function so it generates a nice virtual dom
+				return t(_taggedTemplateLiteral(["\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>Example ", "</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div class=\"", "\">Test text</div>\n\t\t\t<div id=\"main\">\n\t\t\t\t<div>\n\t\t\t\t\t", "\n\t\t\t\t</div>\n\t\t\t\t<ul class=\"todos\">\n\t\t\t\t\t", "\n\t\t\t\t</ul>\n\t\t\t\t<section>\n\t\t\t\t\t<form action=\"#\" method=\"post\">\n\t\t\t\t\t\t<div class=\"form-control\">\n\t\t\t\t\t\t\t<input type=\"text\" placeholder=\"Enter your name\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</section>\n\t\t\t</div>\n\t\t"], ["\n\t\t\t<div>\n\t\t\t\t<header>\n\t\t\t\t\t<h1>Example ", "</h1>\n\t\t\t\t</header>\n\t\t\t</div>\n\t\t\t<div class=\"", "\">Test text</div>\n\t\t\t<div id=\"main\">\n\t\t\t\t<div>\n\t\t\t\t\t", "\n\t\t\t\t</div>\n\t\t\t\t<ul class=\"todos\">\n\t\t\t\t\t", "\n\t\t\t\t</ul>\n\t\t\t\t<section>\n\t\t\t\t\t<form action=\"#\" method=\"post\">\n\t\t\t\t\t\t<div class=\"form-control\">\n\t\t\t\t\t\t\t<input type=\"text\" placeholder=\"Enter your name\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</section>\n\t\t\t</div>\n\t\t"]), this.title, this.testClassName, $["if"](this.todos.length > 0, t(_taggedTemplateLiteral(["\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are ", " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t"], ["\n\t\t\t\t\t\t\t<span.counter>\n\t\t\t\t\t\t\t\tThere are ", " todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t"]), this.todos.length), t(_taggedTemplateLiteral(["\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t"], ["\n\t\t\t\t\t\t\t<span.no-todos>\n\t\t\t\t\t\t\t\tThere are no todos!\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t"]))), $.forEach(this.todos, function (todo, index) {
+					return t(_taggedTemplateLiteral(["\n\t\t\t\t\t\t\t<li class=\"todo\">\n\t\t\t\t\t\t\t\t<h2>A todo</h2>\n\t\t\t\t\t\t\t\t<span>", ": ", "</span>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t"], ["\n\t\t\t\t\t\t\t<li class=\"todo\">\n\t\t\t\t\t\t\t\t<h2>A todo</h2>\n\t\t\t\t\t\t\t\t<span>", ": ", "</span>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t"]), index, todo);
+				}));
 			},
 			writable: true,
 			configurable: true

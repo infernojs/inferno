@@ -41,7 +41,7 @@ class Demo extends Inferno.Component {
 					<h1>Example ${ this.title }</h1>
 				</header>
 			</div>
-			<div className="${ this.testClassName }">Test text</div>
+			<div class="${ this.testClassName }">Test text</div>
 			<div id="main">
 				<div>
 					${
@@ -56,10 +56,10 @@ class Demo extends Inferno.Component {
 						`)
 					}
 				</div>
-				<ul className="todos">
+				<ul class="todos">
 					${
 						$.forEach(this.todos, (todo, index) => t`
-							<li className="todo">
+							<li class="todo">
 								<h2>A todo</h2>
 								<span>${ index }: ${ todo }</span>
 							</li>

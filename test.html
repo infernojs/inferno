@@ -1,0 +1,154 @@
+<script>
+
+  var $ = {
+    if: function(expression) {
+      if(expression) {
+        return $;
+      } else {
+        return {
+          then: function() {
+            return {
+              else: function() {
+
+              }
+            };
+          }
+        }
+      }
+    },
+    then: function() {
+      return $;
+    },
+    else: function() {
+      return $;
+    }
+  }
+
+  var foo = "foo";
+
+  var obj = t`
+    <div>
+      <div>
+        there is ${ foo } bar!
+      </div>
+      <div>
+        ${
+          $.if(true).then(t`
+            <div>
+              <div>
+                Truthy!
+              </div>
+            </div>`
+          ).else(t`
+            <div>
+              <div>
+                Falsey!
+              </div>
+            </div>`
+          )
+        }
+      </div>
+    </div>
+  `;
+
+  console.log(obj);
+
+  function getVdom(html, placeholders, props) {
+    var char = '';
+    var lastChar = '';
+    var i = 0;
+    var s = 0;
+    var root = [];
+    var insideTag = false;
+    var tagContent = '';
+    var tagName = '';
+    var vElement = null;
+    var childText = '';
+    var parent = root;
+    var tagData = [];
+
+    for(i = 0; i < html.length; i++) {
+      char = html[i];
+
+      if(char === "<") {
+        insideTag = true;
+      } else if(char === ">" && insideTag === true) {
+        //check if first character is a close tag
+        if(tagContent[0] === "/") {
+          if(childText.trim() !== "") {
+            //check if childText contains one of our placeholders
+            for(s = 0 ; s < placeholders.length; s++) {
+              if(childText.indexOf(placeholders[s]) > -1) {
+                debugger;
+                if(Array.isArray(props[s])) {
+                  debugger;
+                } else if( typeof props[s] === "string" ) {
+                  childText = childText.replace(placeholders[s], props[s]);
+                } else {
+                  //likely a function
+                }
+              }
+            }
+            parent.children = childText;
+          }
+          parent = parent.parent;
+        } else {
+          //check if there any spaces in the tagContent, if not, we have our tagName
+          if(tagContent.indexOf(" ") === -1) {
+            tagName = tagContent;
+          } else {
+            tagData = tagContent.split(" ")[0];
+          }
+          //now we create out vElement
+          vElement = {
+            tag: tagName,
+            attrs: tagName.attrs || [],
+            children: []
+          };
+
+          if(Array.isArray(parent)) {
+            parent.push(vElement);
+          } else {
+            parent.children.push(vElement);
+          }
+          vElement.parent = parent;
+          parent = vElement;
+        }
+        insideTag = false;
+        tagContent = '';
+        childText = '';
+      } else if (insideTag === true) {
+        tagContent += char;
+        lastChar = char;
+      } else {
+        childText += char;
+        lastChar = char;
+      }
+    }
+    return root;
+  }
+
+  function t(template) {
+    var props = [];
+    var placeholders = [];
+    var fullHtml = '';
+    var i = 0;
+    var vDom = [];
+
+    for(i = 1; i < arguments.length; i++) {
+      props.push(arguments[i])
+      placeholders.push("$" + i);
+    }
+    for(i = 0; i < template.length; i++) {
+      if(i === template.length - 1) {
+        fullHtml += template[i];
+      } else {
+        fullHtml += template[i] + placeholders[i];
+      }
+    }
+    template.join(placeholders);
+    vDom = getVdom(fullHtml, placeholders, props);
+    return vDom;
+  }
+
+</script>

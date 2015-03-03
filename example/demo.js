@@ -9,13 +9,8 @@ function Demo(props) {
   this.title = props.title;
 };
 
-//This will get called by Inferno when a render has finished
-//it's useful to manipualte the dom (for animations or third party scripts)
-Demo.prototype.afterRender = function(dom) {
-
+Demo.prototype.render = function() {
+  return Inferno.getTemplateFromFile("demo.html");
 };
 
-Inferno.registerTag("inferno-demo", {
-  class: Demo,
-  template: "demo.html"
-});
+Inferno.registerTag("inferno-demo", Demo);

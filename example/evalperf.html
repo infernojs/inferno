@@ -1,0 +1,38 @@
+<script>
+
+  var functionCode = 'var str = ""; for(var i = 0; i < 100; i++) { str += i; }; val.push(str)';
+
+  var test1Function = new Function('val', functionCode);
+
+  var test2Function = function(val) {
+      var str = '';
+      for(var i = 0; i < 100; i++) {
+        str += i;
+      }
+      val.push(str);
+  }
+
+  function test1() {
+    var val = [];
+    console.time("test1");
+    for(var i = 0; i < 100000; i++) {
+      test1Function(val);
+    }
+    console.timeEnd("test1");
+    return val;
+  }
+
+  function test2() {
+    var val = [];
+    console.time("test2");
+    for(var i = 0; i < 100000; i++) {
+      test2Function(val);
+    }
+    console.timeEnd("test2");
+    return val;
+  }
+
+  test1();
+  test2();
+
+</script>

@@ -1,37 +1,35 @@
-<template>
-  <div>
-    <header>
-      <h1>Example ${ this.title }</h1>
-    </header>
-  </div>
-  <div class=${ this.testClassName }>Test text</div>
-  <div id="main">
-    <if ${ this.todos.length > 0 }>
-      <span class="counter">
-        There are ${ this.todos.length } todos!
-      </span>
-    </if>
-    <if ${ this.todos.length === 0 }>
-      <span class="no-todos">
-        There are no todos!
-      </span>
-    </if>
-    <ul class="todos">
-      <for ${ (todo, index) in this.todos }>
+<div>
+  <header>
+    <h1>Example ${ this.title }</h1>
+  </header>
+</div>
+<div class=${ this.testClassName }>Test text</div>
+<div id="main">
+  <if ${ this.todos.length > 0 }>
+    <span class="counter">
+      There are ${ this.todos.length } todos!
+    </span>
+  </if>
+  <if ${ this.todos.length === 0 }>
+    <span class="no-todos">
+      There are no todos!
+    </span>
+  </if>
+  <ul class="todos">
+    <for ${ (todo, index) in this.todos }>
+      <li class="todo">
         <li class="todo">
-          <li class="todo">
-            <h2>A todo</h2>
-            <span>${ index + ': ' + todo }</span>
-          </li>
+          <h2>A todo</h2>
+          <span>${ index + ': ' + todo }</span>
         </li>
-      </for>
-    </ul>
-    <section>
-      <form action="#" method="post">
-        <div class="form-control">
-          <input type="text" placeholder="Enter your name" />
-        </div>
-      </form>
-    </section>
-  </div>
-</template>
+      </li>
+    </for>
+  </ul>
+  <section>
+    <form action="#" method="post">
+      <div class="form-control">
+        <input type="text" placeholder="Enter your name" />
+      </div>
+    </form>
+  </section>
+</div>

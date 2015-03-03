@@ -1,10 +1,12 @@
 var CustomTag = require('./CustomTag.js');
+var Template = require('./Template.js');
 
 var components = {};
+var templates = {};
 
-function registerTag(tag, data) {
+function registerTag(tag, tagClass) {
   if(components[tag] == null) {
-    components[tag] = new CustomTag(tag, data);
+    components[tag] = new CustomTag(tag, tagClass);
   } else {
     throw Error(
       "Inferno component has already been registered to the tag \"" + tag + "\""
@@ -12,7 +14,7 @@ function registerTag(tag, data) {
   }
 };
 
-function loadTemplate(path) {
+function loadFile(path) {
   return new Promise(function(approve, reject) {
 
     function reqListener () {
@@ -24,9 +26,19 @@ function loadTemplate(path) {
     oReq.open("get", path, true);
     oReq.send();
   });
-}
+};
+
+function getTemplateFromFile(path) {
+  if(templates[path] != null) {
+    return templates[path];
+  } else {
+    templates[path] = new Template(path);
+    return templates[path];
+  }
+};
 
 window.Inferno = {
   registerTag: registerTag,
-  loadTemplate: loadTemplate
+  getTemplateFromFile: getTemplateFromFile,
+  loadFile: loadFile
 };
