@@ -1,26 +1,47 @@
 var vt = (function() {
 
+  var cache = {};
+
   function vt(template) {
     var props = [];
     var placeholders = [];
     var fullHtml = '';
     var i = 0;
     var vDom = [];
+    var functionString = [];
 
     for(i = 1; i < arguments.length; i++) {
       props.push(arguments[i])
       placeholders.push("$" + i);
     }
-    for(i = 0; i < template.length; i++) {
-      if(i === template.length - 1) {
-        fullHtml += template[i];
-      } else {
-        fullHtml += template[i] + placeholders[i];
+
+    if(cache[template] == null) {
+      for(i = 0; i < template.length; i++) {
+        if(i === template.length - 1) {
+          fullHtml += template[i];
+        } else {
+          fullHtml += template[i] + placeholders[i];
+        }
       }
+      template.join(placeholders);
+      vDom = getVdom(fullHtml, placeholders, props);
+      buildFunction(vDom, functionString, false)
+
+      switch(placeholders.length) {
+        case 0:
+          cache[template] = new Function("return " + functionString.join(''));
+          break;
+        case 1:
+          cache[template] = new Function(placeholders[0], "return " + functionString.join(''));
+          break;
+        case 2:
+          cache[template] = new Function(placeholders[0], placeholders[1], "return " + functionString.join(''));
+          break;
+      }
+
     }
-    template.join(placeholders);
-    vDom = getVdom(fullHtml, placeholders, props);
-    return vDom;
+
+    return cache[template].apply(window, props);
   }
 
   vt.if = function(expression, truthy) {
@@ -39,6 +60,45 @@ var vt = (function() {
     }
   }
 
+  function buildChildren(root, tagParams, childrenProp) {
+    var childrenText = [];
+    var i = 0;
+    if(root.children != null && Array.isArray(root.children)) {
+      childrenText.push("[");
+      for(i = 0; i < root.children.length; i++) {
+        buildFunction(root.children[i], childrenText, i === root.children.length - 1)
+      }
+      childrenText.push("]");
+      tagParams.push((childrenProp ? "children: " : "") + childrenText.join(""));
+    } else if(root.children != null && typeof root.children === "string") {
+      tagParams.push((childrenProp ? "children: " : "") + "`" + root.children + "`");
+    }
+  };
+
+  function buildFunction(root, functionText, isLast) {
+    var i = 0;
+    var tagParams = [];
+    var literalParts = [];
+    if(Array.isArray(root)) {
+      functionText.push("[");
+      for(i = 0; i < root.length; i++) {
+        buildFunction(root[i], functionText, i === root.length - 1);
+      }
+      functionText.push("]");
+    } else {
+
+      functionText.push("{");
+      tagParams.push("tag: '" + root.tag + "'");
+      buildChildren(root, tagParams, true);
+      functionText.push(tagParams.join(','));
+      functionText.push("}");
+
+      if(isLast === false) {
+        functionText.push(",");
+      }
+    }
+  };
+
   function getVdom(html, placeholders, props) {
     var char = '';
     var lastChar = '';
@@ -52,6 +112,8 @@ var vt = (function() {
     var childText = '';
     var parent = root;
     var tagData = [];
+    var skipAppend = false;
+    var newChild = null;
 
     for(i = 0; i < html.length; i++) {
       char = html[i];
@@ -67,13 +129,11 @@ var vt = (function() {
               if(childText.indexOf(placeholders[s]) > -1) {
                 if(Array.isArray(props[s])) {
                   //set the children to this object
-                  parent.children = props[s];
+                  parent.children.push(props[s]);
                   childText = null;
                   break;
                 } else if( typeof props[s] === "string" ) {
-                  childText = childText.replace(placeholders[s], props[s]);
-                } else {
-                  //TODO
+                  childText = childText.replace(placeholders[s], "${" + placeholders[s] + "}");
                 }
               }
             }
