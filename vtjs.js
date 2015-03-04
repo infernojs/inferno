@@ -40,7 +40,6 @@ var vt = (function() {
       }
 
     }
-
     return cache[template].apply(window, props);
   }
 
@@ -66,7 +65,12 @@ var vt = (function() {
     if(root.children != null && Array.isArray(root.children)) {
       childrenText.push("[");
       for(i = 0; i < root.children.length; i++) {
-        buildFunction(root.children[i], childrenText, i === root.children.length - 1)
+        if(typeof root.children[i] === "string") {
+          //its a placeholder, so replace
+          childrenText.push(root.children[i]);
+        } else {
+          buildFunction(root.children[i], childrenText, i === root.children.length - 1)
+        }
       }
       childrenText.push("]");
       tagParams.push((childrenProp ? "children: " : "") + childrenText.join(""));
@@ -129,7 +133,7 @@ var vt = (function() {
               if(childText.indexOf(placeholders[s]) > -1) {
                 if(Array.isArray(props[s])) {
                   //set the children to this object
-                  parent.children.push(props[s]);
+                  parent.children.push(placeholders[s]);
                   childText = null;
                   break;
                 } else if( typeof props[s] === "string" ) {
