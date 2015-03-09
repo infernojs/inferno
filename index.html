@@ -8,13 +8,6 @@
 
       var DemoApp = Inferno.createClass({
 
-        //pre-define our class variables
-        definition: {
-          todos: Inferno.Array,
-          testClassName: Inferno.String,
-          title: Inferno.String
-        },
-
         //called when the tag is created, assign our variables
         created: function() {
           this.todos = [
@@ -86,11 +79,6 @@
       Inferno.registerTag("demo-app", DemoApp);
 
       var Widget = Inferno.createClass({
-
-        definition: {
-          name: Inferno.String,
-          title: Inferno.String
-        },
 
         attached: function( props ) {
           this.name = props.name;
