@@ -8,8 +8,15 @@
 
       var DemoApp = Inferno.createClass({
 
+        //pre-define our class variables
+        definition: {
+          todos: Inferno.Array,
+          testClassName: Inferno.String,
+          title: Inferno.String
+        },
+
+        //called when the tag is created, assign our variables
         created: function() {
-          //define our variables
           this.todos = [
             "Clean the dishes",
             "Cook the dinner",
@@ -17,10 +24,19 @@
             "Comment on stuff"
           ];
           this.testClassName = "foo-bar";
-          this.title = props.title;
-          this._formId = "todo-form";
         },
 
+        //called when the tag is added to the dom
+        attached: function( props ) {
+          this.title = props.title;
+        },
+
+        //called when the tag is removed from the dom
+        detached: function() {
+
+        },
+
+        //renders the contents of the tag
         render: function() {
           return t7`
             <div>
@@ -28,7 +44,9 @@
                 <h1>Example ${ this.title }</h1>
               </header>
             </div>
-            <div class="${ this.testClassName }">Test text</div>
+            <div class="${ this.testClassName }">
+              <demo-widget name="Hello world" title="${ this.title }"></demo-widget>
+            </div>
             <div id="main">
               <div>
                 ${
@@ -66,6 +84,32 @@
       });
 
       Inferno.registerTag("demo-app", DemoApp);
+
+      var Widget = Inferno.createClass({
+
+        definition: {
+          name: Inferno.String,
+          title: Inferno.String
+        },
+
+        attached: function( props ) {
+          this.name = props.name;
+          this.title = props.title;
+        },
+
+        render: function() {
+          return t7`
+            <div>
+              <span>${ name }</span>
+              <div>
+                <span>My parent's title is ${ this.title }</span>
+              </div>
+            </div>
+          `
+        }
+      });
+
+      Inferno.registerTag("demo-widget", Widget);
 
     </script>
   </body>
