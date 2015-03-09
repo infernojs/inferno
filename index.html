@@ -3,12 +3,69 @@
     <title>InfernoJS Demo</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script src="bundle.js"></script>
+    <demo-app title="Todo Demo"></demo-app>
     <script>
 
-      var demo = new Demo();
-      demo.mount(document.getElementById('app'));
+      var DemoApp = Inferno.createClass({
+
+        created: function() {
+          //define our variables
+          this.todos = [
+            "Clean the dishes",
+            "Cook the dinner",
+            "Code some coding",
+            "Comment on stuff"
+          ];
+          this.testClassName = "foo-bar";
+          this.title = props.title;
+          this._formId = "todo-form";
+        },
+
+        render: function() {
+          return t7`
+            <div>
+              <header>
+                <h1>Example ${ this.title }</h1>
+              </header>
+            </div>
+            <div class="${ this.testClassName }">Test text</div>
+            <div id="main">
+              <div>
+                ${
+                  t7.if(this.todos.length > 0, t7`
+                    <span.counter>
+                      There are ${ this.todos.length } todos!
+                    </span>
+                  `).else( t7`
+                    <span.no-todos>
+                      There are no todos!
+                    </span>
+                  `)
+                }
+              </div>
+              <ul class="todos">
+                ${
+                  this.todos.map( (todo, index) => t7`
+                    <li class="todo">
+                      <h2>A todo</h2>
+                      <span>${ index + ': ' + todo }</span>
+                    </li>
+                  `)
+                }
+              </ul>
+              <section>
+                <form action="#" method="post">
+                  <div class="form-control">
+                    <input type="text" placeholder="Enter your name" />
+                  </div>
+                </form>
+              </section>
+            </div>
+          `;
+        }
+      });
+
+      Inferno.registerTag("demo-app", DemoApp);
 
     </script>
   </body>
