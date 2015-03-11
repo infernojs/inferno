@@ -1,0 +1,148 @@
+<html>
+<script>
+
+  var Inferno = (function() {
+
+    function isFunction(functionToCheck) {
+      var getType = {};
+      return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+    }
+
+    function String( val ) {
+      this._boundComponents = [];
+      this._val = val;
+    };
+
+    String.prototype.set = function(val) {
+      if(val != null) {
+        this._val = val;
+        this.emmit();
+      }
+    };
+
+    String.prototype.get = function() {
+      return this._val;
+    };
+
+    String.prototype.toString = function() {
+      return this._val;
+    };
+
+    String.prototype.bindToComponent = function( component ) {
+      this._boundComponents.push(component);
+    };
+
+    String.prototype.emmit = function() {
+      for(var i = 0; i < this._boundComponents.length; i++) {
+        this._boundComponents[i].update();
+      }
+    }
+
+    function Component( data ) {
+      this._lastChecks = [];
+      this._vDom = {};
+      //apply the constructor to this component
+      data.constructor.apply(this);
+      //go through the new properties and bind them to this component
+      this._attachBindings();
+      //handle the template
+      this._template = data.template.apply(this);
+      //do inital update
+      this.update();
+    };
+
+    Component.prototype._attachBindings = function() {
+      for(var key in this) {
+        if(key[0] !== "_") {
+          var obj = this[key];
+          if(!isFunction(obj)) {
+            if(obj instanceof String) {
+              //now set the biders on the object
+              obj.bindToComponent(this);
+              console.log('"' + key + '" has been bound to the component');
+            } else {
+              throw new Error("Inferno Components only support Inferno data types");
+            }
+          }
+        }
+      }
+    };
+
+    Component.prototype.update = function() {
+      var newChecks = this._template.checks();
+      this._render();
+    };
+
+    Component.prototype._renderNode = function(root) {
+      if(Array.isArray(root)) {
+        for(var i = 0; i < root.length; i++) {
+          this._renderNode(root[i]);
+        }
+      } else {
+        if(root.render != null) {
+          root.children = root.render.apply(this);
+        }
+        if(root.children != null && typeof root.children !== "string") {
+          this._renderNode(root.children);
+        }
+      }
+
+    };
+
+    Component.prototype._render = function() {
+      this._vDom = this._template.vdom;
+      this._renderNode(this._vDom);
+      console.log(this._vDom);
+    }
+
+    return {
+      String: String,
+      Component: Component
+    }
+
+  })();
+
+
+  function template() {
+
+    var vdom = {
+      tag: "div",
+      children: [
+        {
+          tag: "div",
+          render: function() { return "Hello my name is " + this.name }
+        }
+      ]
+    };
+
+    var checks = function() {
+      return [
+        {
+          deps: [
+            this.name
+          ],
+          ref: vdom.children[0]
+        }
+      ];
+    }
+
+    return {
+      checks: checks,
+      vdom: vdom
+    }
+
+  }
+
+  var tpl = template();
+
+  var widget = new Inferno.Component({
+    constructor: function() {
+      this.name = new Inferno.String("Dominic");
+    },
+    template: template
+  })
+
+
+
+</script>
+</html>
