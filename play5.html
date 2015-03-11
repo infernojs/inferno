@@ -10,6 +10,8 @@
 
     function Component( data ) {
       this._lastChecks = [];
+      this._propHasChanged = {};
+      this._checkDeps = false;
       this._vDom = {};
       //apply the constructor to this component
       data.constructor.apply(this);
@@ -24,14 +26,20 @@
     Component.prototype._attachBindings = function() {
 
       function applyStringBinding(obj, key, prop) {
+
+        obj._propHasChanged[key] = false;
+
         //now set the biders on the object
         Object.defineProperty(obj, key, {
           get: function() {
             return prop;
           },
           set: function(val) {
-            prop = val;
-            obj.update();
+            if(val !== prop) {
+              prop = val;
+              obj._propHasChanged[key] = true;
+              obj._checkDeps = true;
+            }
           }
         })
       };
@@ -49,53 +57,63 @@
     };
 
     Component.prototype.update = function() {
-      var newChecks = this._template.checks.apply(this);
-      var i = 0;
-      var s = 0;
-      var hasChange = false;
-      var changeList = [];
+      if(this._checkDeps === true) {
+        this._render();
+        this._checkDeps = false;
+      }
+      requestAnimationFrame(this.update.bind(this));
+    };
 
-      if(this._oldChecks != null) {
-        for(i = 0; i < newChecks.length; i++) {
-          for(s = 0; s < newChecks[i].deps.length; s++) {
-            if(newChecks[i].deps[s] !== this._oldChecks[i].deps[s]) {
-              hasChange = true;
-              changeList.push(newChecks[i].ref);
+    Component.prototype._renderNode = function(root, rootChanges, parentHasChanges, path) {
+      var val = null;
+      var hasChanged = false;
+
+      if(Array.isArray(root)) {
+        for(var i = 0; i < root.length; i++) {
+          path += "[" + i + "]";
+          this._renderNode(root[i], rootChanges, hasChanged, path);
+        }
+      } else {
+        //check if this node has any dependencies
+        if(root.deps != null) {
+          //if so we run them and check vs our old deps
+          for(var s = 0; s < root.deps.length; s++) {
+            if(this._propHasChanged[root.deps[s]] === true) {
+              this._propHasChanged[root.deps[s]] = false;
+              //changed
+              hasChanged = true;
+              //if there are no
+              if(parentHasChanges === false) {
+                rootChanges.push({
+                  path: path,
+                  vnode: root
+                });
+              }
             }
           }
         }
-      } else {
-        this._oldChecks = newChecks;
-        hasChange = true;
-      }
-
-      if(hasChange === true) {
-        console.log(changeList);
-        this._oldChecks = newChecks;
-        this._render();
-      }
-    };
-
-    Component.prototype._renderNode = function(root) {
-      if(Array.isArray(root)) {
-        for(var i = 0; i < root.length; i++) {
-          this._renderNode(root[i]);
-        }
-      } else {
-        if(root.render != null) {
+        if(root.render != null && hasChanged === true) {
           root.children = root.render.apply(this);
         }
         if(root.children != null && typeof root.children !== "string") {
-          this._renderNode(root.children);
+          path += ".children"
+          this._renderNode(root.children, rootChanges, hasChanged, path);
         }
       }
 
     };
 
     Component.prototype._render = function() {
-      this._vDom = this._template.vdom;
-      this._renderNode(this._vDom);
-      console.log(this._vDom);
+      var rootChanges = [];
+      var level = 0;
+
+      this._vDom = this._template;
+      this._renderNode(this._vDom, rootChanges, false, "root");
+
+      if(rootChanges.length > 0) {
+        console.log("Detected changes to vdom, changes are:");
+        console.log(rootChanges);
+      }
     }
 
     return {
@@ -108,31 +126,20 @@
 
   function template() {
 
-    var vdom = {
+    return {
       tag: "div",
       children: [
         {
+          deps: [
+            //automatically remove "this" from this.name
+            "name"
+          ],
           tag: "div",
           render: function() { return "Hello my name is " + this.name }
         }
       ]
     };
 
-    var checks = function() {
-      return [
-        {
-          deps: [
-            this.name
-          ],
-          ref: vdom.children[0]
-        }
-      ];
-    }
-
-    return {
-      checks: checks,
-      vdom: vdom
-    }
 
   }
 
