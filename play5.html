@@ -8,36 +8,6 @@
       return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
     }
 
-    function String( val ) {
-      this._boundComponents = [];
-      this._val = val;
-    };
-
-    String.prototype.set = function(val) {
-      if(val != null) {
-        this._val = val;
-        this.emmit();
-      }
-    };
-
-    String.prototype.get = function() {
-      return this._val;
-    };
-
-    String.prototype.toString = function() {
-      return this._val;
-    };
-
-    String.prototype.bindToComponent = function( component ) {
-      this._boundComponents.push(component);
-    };
-
-    String.prototype.emmit = function() {
-      for(var i = 0; i < this._boundComponents.length; i++) {
-        this._boundComponents[i].update();
-      }
-    }
-
     function Component( data ) {
       this._lastChecks = [];
       this._vDom = {};
@@ -52,16 +22,26 @@
     };
 
     Component.prototype._attachBindings = function() {
+
+      function applyStringBinding(obj, key, prop) {
+        //now set the biders on the object
+        Object.defineProperty(obj, key, {
+          get: function() {
+            return prop;
+          },
+          set: function(val) {
+            prop = val;
+            obj.update();
+          }
+        })
+      };
+
       for(var key in this) {
         if(key[0] !== "_") {
           var obj = this[key];
           if(!isFunction(obj)) {
-            if(obj instanceof String) {
-              //now set the biders on the object
-              obj.bindToComponent(this);
-              console.log('"' + key + '" has been bound to the component');
-            } else {
-              throw new Error("Inferno Components only support Inferno data types");
+            if(typeof obj === "string") {
+              applyStringBinding(this, key, obj);
             }
           }
         }
@@ -69,8 +49,31 @@
     };
 
     Component.prototype.update = function() {
-      var newChecks = this._template.checks();
-      this._render();
+      var newChecks = this._template.checks.apply(this);
+      var i = 0;
+      var s = 0;
+      var hasChange = false;
+      var changeList = [];
+
+      if(this._oldChecks != null) {
+        for(i = 0; i < newChecks.length; i++) {
+          for(s = 0; s < newChecks[i].deps.length; s++) {
+            if(newChecks[i].deps[s] !== this._oldChecks[i].deps[s]) {
+              hasChange = true;
+              changeList.push(newChecks[i].ref);
+            }
+          }
+        }
+      } else {
+        this._oldChecks = newChecks;
+        hasChange = true;
+      }
+
+      if(hasChange === true) {
+        console.log(changeList);
+        this._oldChecks = newChecks;
+        this._render();
+      }
     };
 
     Component.prototype._renderNode = function(root) {
@@ -137,7 +140,7 @@
 
   var widget = new Inferno.Component({
     constructor: function() {
-      this.name = new Inferno.String("Dominic");
+      this.name = "Dominic";
     },
     template: template
   })
