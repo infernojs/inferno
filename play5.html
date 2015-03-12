@@ -119,10 +119,9 @@
               //set our array to the new array
               self[prop] = newArray;
               //apply the bindings to the new children
-              applyBinding(self, key, self[prop], key);              
+              applyBinding(self, key, self[prop], key);
               applyArrayBinding(self, key, self[prop]);
               //set props for the new array
-              self._propHasChanged[key] = true;
               self._checkDeps = true;
             }
           });
