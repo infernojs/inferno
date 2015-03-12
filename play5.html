@@ -65,7 +65,10 @@
               self._checkDeps = true;
               //apply a binding to that new value too
               applyBinding(prop, i, prop[prop.length - 1], key + "[" + i + "]");
-              debugger;
+              //set all the children to changed
+              for(i = 0; i < prop.length; i++) {
+                self._propHasChanged[key + "[" + i + "]"] = true;
+              }
             }
           });
         };
