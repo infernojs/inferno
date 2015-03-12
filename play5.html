@@ -6,7 +6,6 @@
   <script>
 
     function template() {
-
       return {
         tag: "div",
         attrs: {
@@ -59,8 +58,6 @@
           }
         ]
       };
-
-
     }
 
     var tpl = template();
@@ -79,7 +76,39 @@
           "Black",
           "White",
           "Silver"
-        ]
+        ];
+        this.people = [
+          {
+            name: "Fred",
+            age: 25,
+            location: "London"
+          },
+          {
+            name: "Bob",
+            age: 47,
+            location: "Birmingham"
+          },
+          {
+            name: "John",
+            age: 33,
+            location: "Cardiff"
+          },
+          {
+            name: "Kenny",
+            age: 18,
+            location: "Edinbourgh"
+          },
+          {
+            name: "Tina",
+            age: 29,
+            location: "Sheffield"
+          },
+          {
+            name: "Albert",
+            age: 49,
+            location: "Kent"
+          }
+        ];
       },
       element: document.getElementById('app'),
       template: template
