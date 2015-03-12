@@ -119,7 +119,10 @@
             }
           }
           if(root.render != null && hasChanged === true) {
-            root.oldChildren = root.children;
+            if(root.children != null) {
+              //TODO
+              root.oldChildren = root.children;
+            }
             root.children = root.render.apply(this);
           }
           if(root.children != null && typeof root.children !== "string") {
