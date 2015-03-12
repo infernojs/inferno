@@ -9,9 +9,31 @@
       function isFunction(functionToCheck) {
         var getType = {};
         return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-      }
+      };
+
+      function byString(o, s) {
+        if(o == null) {
+          return;
+        }
+        s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+        s = s.replace(/^\./, '');           // strip a leading dot
+        var a = s.split('.');
+        var length = a.length - (a.length === 1 ? 1 : 0);
+        for (var i = 0; i < length; ++i) {
+          var n = a[i];
+          if (n in o) {
+              o = o[n];
+          } else {
+              return;
+          }
+        }
+        return o;
+      };
 
       function Component( data ) {
+        //called so byString can come into context (odd Chrome bug)
+        byString();
+
         this._lastChecks = [];
         this._propHasChanged = {};
         this._checkDeps = false;
@@ -43,7 +65,7 @@
             set: function(val) {
               if(val !== prop) {
                 prop = val;
-                self._propHasChanged[key] = true;
+                self._propHasChanged[id] = true;
                 self._checkDeps = true;
               }
             }
@@ -69,6 +91,39 @@
               for(i = 0; i < prop.length; i++) {
                 self._propHasChanged[key + "[" + i + "]"] = true;
               }
+            }
+          });
+
+          Object.defineProperty(prop, "splice", {
+            value: function(start, deleteCount) {
+              //items to add
+              var itemsToAdd = [];
+              for(var i = 2; i < arguments.length; i++) {
+                itemsToAdd[itemsToAdd.length] = arguments[i];
+              }
+              var newArray = [];
+              //now reconstruct new array
+              for(var i = 0; i < prop.length; i++) {
+                if(i >= start && i < start + deleteCount + 1) {
+                  if(itemsToAdd !== null && itemsToAdd.length > 0) {
+                    newArray.push.apply(newArray, itemsToAdd);
+                    itemsToAdd = null;
+                  }
+                  if(deleteCount === 0) {
+                    newArray.push(prop[i]);
+                  }
+                } else {
+                  newArray.push(prop[i]);
+                }
+              }
+              //set our array to the new array
+              self[prop] = newArray;
+              //apply the bindings to the new children
+              applyBinding(self, key, self[prop], key);              
+              applyArrayBinding(self, key, self[prop]);
+              //set props for the new array
+              self._propHasChanged[key] = true;
+              self._checkDeps = true;
             }
           });
         };
@@ -101,6 +156,7 @@
         var hasChanged = false;
         var i = 0;
         var s = 0;
+        var ctx = null;
 
         if(Array.isArray(root)) {
           for(i = 0; i < root.length; i++) {
@@ -126,7 +182,8 @@
               //TODO
               root.oldChildren = root.children;
             }
-            root.children = root.render.apply(this);
+            ctx = byString(this, root.deps[s]);
+            root.children = root.render(ctx);
           }
           if(root.children != null && typeof root.children !== "string") {
             this._renderNode(root.children, rootChanges, hasChanged);
@@ -145,11 +202,18 @@
           this._renderNode(this._vDom, rootChanges, false, "root");
           this._vDom = cito.vdom.append(this._element, this._vDom);
         } else {
-          this._renderNode(this._vDom, rootChanges, false, "root");
+          if(this._init === false) {
+            this._init = true;
+            for(i = 0; i < rootChanges.length; i++) {
+              for(s = 0; s < rootChanges[i].deps.length; s++) {
+                this._propHasChanged[rootChanges[i].deps[s]] = false;
+              }
+            }
+          } else {
+            this._renderNode(this._vDom, rootChanges, false, "root");
 
-          if(rootChanges.length > 0) {
-            //seperated out, for faster performance
-            if(this._init === true) {
+            if(rootChanges.length > 0) {
+              //seperated out, for faster performance
               for(i = 0; i < rootChanges.length; i++) {
                 cito.vdom.updateChildren(
                   rootChanges[i], rootChanges[i].children
@@ -157,14 +221,6 @@
                 for(s = 0; s < rootChanges[i].deps.length; s++) {
                   this._propHasChanged[rootChanges[i].deps[s]] = false;
                 }
-              }
-            }
-          }
-          if(this._init === false) {
-            this._init = true;
-            for(i = 0; i < rootChanges.length; i++) {
-              for(s = 0; s < rootChanges[i].deps.length; s++) {
-                this._propHasChanged[rootChanges[i].deps[s]] = false;
               }
             }
           }
@@ -195,7 +251,7 @@
               "class": "bar"
             },
             tag: "div",
-            render: function() { return "Hello my name is " + this.name }
+            render: function(ctx) { return "Hello my name is " + ctx.name }
           },
           {
             tag: "div",
@@ -205,7 +261,7 @@
                   "name"
                 ],
                 tag: "span",
-                render: function() { return this.name + " is my name!" }
+                render: function(ctx) { return ctx.name + " is my name!" }
               }
             ]
           },
@@ -217,7 +273,7 @@
             deps: [
               "colours"
             ],
-            render: function() { return this.colours.map( function(colour, index) {
+            render: function(ctx) { return ctx.colours.map( function(ctx, index) {
               return {
                 tag: "li",
                 deps: [
@@ -226,7 +282,7 @@
                 attrs: {
                   "class": "colour"
                 },
-                render: function() { return colour }
+                render: function(ctx) { return ctx }
               }
             })}
           }
