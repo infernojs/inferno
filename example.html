@@ -1,18 +1,23 @@
 <html>
+<head>
+  <title>Inferno example</title>
+</head>
 <body>
   <div id="app"></div>
+  <script src="inferno.js"></script>
+  <script src="im7.js"></script>
   <script>
 
     function Template($, state) {
       return Inferno.createElement("div", null,
-        $.text(this.getName, function(name) {
+        $.text(state.getName, function(name) {
           return Inferno.createElement("span", null, name);
         }),
         Inferno.createElement("ul", null,
-          $.map(this.getItems, function(item) {
+          $.each(state.getItems, function(item) {
             return Inferno.createElement("li", null, item);
           })
-        );
+        )
       );
     };
 
@@ -31,11 +36,11 @@
       return this._name;
     }
 
-    Foo.prototype.getItem = function() {
+    Foo.prototype.getItems = function() {
       return this._items;
     }
 
-    Inferno.mount(Foo, Template, document.getElementById(app))
+    Inferno.mount(Foo, Template, document.getElementById("app"))
 
   </script>
 </body>
