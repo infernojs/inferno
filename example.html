@@ -8,39 +8,30 @@
   <script src="im7.js"></script>
   <script>
 
-    function Template($, state) {
+    var myName = im7("Dominic");
+    var className = im7("foo");
+    var items = im7([
+      "Dominic",
+      "Jemma",
+      "Charlie",
+      "Harry"
+    ]);
+
+    function Foo($) {
+      //make our private varaibles
       return Inferno.createElement("div", null,
-        $.text(state.getName, function(name) {
-          return Inferno.createElement("span", null, name);
-        }),
-        Inferno.createElement("ul", null,
-          $.each(state.getItems, function(item) {
-            return Inferno.createElement("li", null, item);
-          })
-        )
+        Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName)),
+        Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName))
+        // Inferno.createElement("ul", null,
+        //   $.repeat(items, function(item) {
+        //     return Inferno.createElement("li", null, $.bind(item));
+        //   })
+        // )
       );
     };
 
-    function Foo() {
-      //make our private varaibles
-      this._name = "Dominic";
-      this._items = im7([
-        "Dominic",
-        "Jemma",
-        "Charlie",
-        "Harry"
-      ]);
-    };
 
-    Foo.prototype.getName = function() {
-      return this._name;
-    }
-
-    Foo.prototype.getItems = function() {
-      return this._items;
-    }
-
-    Inferno.mount(Foo, Template, document.getElementById("app"))
+    Inferno.mount(Foo, document.getElementById("app"))
 
   </script>
 </body>

@@ -109,6 +109,19 @@ var im7 = (function() {
     }
   }
 
+  function ImmutableProp(store) {
+    var ImmutableProp = function() {
+      if (arguments.length) store = arguments[0];
+      return store;
+    };
+
+    ImmutableProp.toJSON = function() {
+      return store;
+    };
+
+    return ImmutableProp;
+  }
+
   //the squencedRecords flag will ensure all child Records structures are unique by their sequence
   function im7(data, squencedRecords) {
     var type = getType(data);
@@ -117,6 +130,8 @@ var im7 = (function() {
       return im7.Vector(data, null, squencedRecords);
     } else if (type === 5) {
       return im7.Record(data, null, squencedRecords);
+    } else if(type === 1) {
+      return ImmutableProp(data);
     }
   };
 
