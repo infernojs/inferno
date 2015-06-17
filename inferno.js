@@ -242,8 +242,6 @@ var Inferno = (function() {
       } else if(node.children != null) {
         createNode(node.children, node.dom);
       }
-    } else if(node instanceof Array) {
-
     } else if(node.type != null && node.type !== BindingTypes.Node) {
       //if its a function, it's most likely our getter/setter
       if(node.type === BindingTypes.Bind) {
@@ -306,6 +304,14 @@ var Inferno = (function() {
             } else if(typeof child !== "string") {
               updateNode(child, node.node.dom);
             }
+          }
+        }
+      } else if(node.node.children instanceof Array) {
+        //go through children and see if any of them have  updated
+        for(l = node.node.children.length; i < l; i++) {
+          child = node.node.children[i];
+          if(typeof child !== "string") {
+            updateNode(child, node.dom);
           }
         }
       }
