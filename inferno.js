@@ -200,7 +200,7 @@ var Inferno = (function() {
   };
 
   function createNode(node, parent) {
-    var i = 0, l = 0, noChange = true, binding = null, val = null;
+    var i = 0, l = 0, binding = null, val = null;
     if(node.tag != null) {
       if(node.dom == null) {
         node.dom = document.createElement(node.tag)
@@ -210,6 +210,7 @@ var Inferno = (function() {
         node.oldAttrs = updateAttributes(node.dom, node.tag, node.attrs, null);
       }
       if(node.children instanceof Array) {
+        var child = null;
         for(l = node.children.length; i < l; i++) {
           createNode(node.children[i], node.dom);
         }
@@ -223,27 +224,26 @@ var Inferno = (function() {
       if(node.type === BindingTypes.Bind) {
         setTextContent(parent, node.val(), false);
       }
+    } else if(typeof node === "string") {
+      setTextContent(parent, node, false);
     } else if (node instanceof BindingNode) {
-      //check bingings match
+      //set oldVal of all the bindings
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i],
         val = binding.val.val();
         if(val !== binding.oldVal) {
           binding.oldVal = val;
-          noChange = false;
         }
       }
-      if(noChange === false) {
-        //there is a change so let's create the node
-        createNode(node.node, parent);
-      }
+      //there is a change so let's create the node
+      createNode(node.node, parent);
     } else {
-      debugger;
+      //debugger;
     }
   };
 
   function updateNode(node, parent, updateChild, updateAttr) {
-    var l = 0, i = 0, noChange = true, binding = null, val = null;
+    var l = 0, i = 0, binding = null, val = null, child = null;
     //we need to find nodes that have bindings (we don't touch static nodes)
     if (node instanceof BindingNode) {
       //check bingings match
@@ -254,7 +254,6 @@ var Inferno = (function() {
         val = binding.val.val();
         if(val !== binding.oldVal) {
           binding.oldVal = val;
-          noChange = false;
           if(binding.category === BindingCategory.Child) {
             updateChild = true;
           } else if(binding.category === BindingCategory.Attribute) {
@@ -262,7 +261,7 @@ var Inferno = (function() {
           }
         }
       }
-      if(noChange === false) {
+      if(updateChild === true || updateAttr === true) {
         //there is a change so let's create the node
         updateNode(node.node, parent, updateChild, updateAttr);
       }
@@ -274,11 +273,12 @@ var Inferno = (function() {
     } else if(node.children instanceof Array) {
       //we loop through all children and update them
       for(l = node.children.length; i < l; i++) {
-        updateNode(node.children[i], node.dom);
+        child = node.children[i];
+        updateNode(child, node.dom);
       }
     } else if(node.children != null && node.dom != null) {
       //update the attrs
-      if(updateAttr === true && node.attrs != null) {
+      if(updateAttr === true) {
         node.oldAttrs = updateAttributes(node.dom, node.tag, node.attrs, node.oldAttrs);
       }
       //otherwise we look into the single child
@@ -286,11 +286,11 @@ var Inferno = (function() {
     }
   };
 
+  var updateNextCycle = false;
+
   function update(rootNode, root) {
-    console.time("Inferno update");
     updateNode(rootNode, root, false, false);
     //window.requestAnimationFrame(update.bind(null, rootNode, root));
-    console.timeEnd("Inferno update");
   };
 
   return Inferno;
