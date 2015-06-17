@@ -110,13 +110,16 @@ var im7 = (function() {
   }
 
   function ImmutableProp(store) {
-    var ImmutableProp = function() {
-      if (arguments.length) store = arguments[0];
-      return store;
+    var _store = store;
+    var ImmutableProp = function(newStore) {
+      if(newStore !== undefined) {
+        _store = newStore;
+      }
+      return _store;
     };
 
     ImmutableProp.toJSON = function() {
-      return store;
+      return _store;
     };
 
     return ImmutableProp;

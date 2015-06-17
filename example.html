@@ -21,34 +21,11 @@
       //make our private varaibles
       return Inferno.createElement("div", null,
         Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName)),
-        Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName)),
         Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName)),
-        Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName)),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("div", {class: "test"}, "static node")
+        Inferno.createElement("div", {class: "test"},
+          "static node",
+          Inferno.createElement("button", {class: "test"}, "Click me!")
+        )
         // Inferno.createElement("ul", null,
         //   $.repeat(items, function(item) {
         //     return Inferno.createElement("li", null, $.bind(item));
@@ -59,29 +36,6 @@
 
     Inferno.mount(Foo, document.getElementById("app"));
 
-    console.log("Update with no data changed");
-    console.time("Inferno update");
-    for(var i = 0; i < 10000; i++) {
-      update();
-    }
-    console.timeEnd("Inferno update");
-
-    console.log("Update with only data changed");
-    console.time("Inferno update");
-    for(var i = 0; i < 10000; i++) {
-      myName("Rand " + (Math.round(Math.random() * 10000)));
-      update();
-    }
-    console.timeEnd("Inferno update");
-
-    console.log("Update with both child and attrs data changed");
-    console.time("Inferno update");
-    for(var i = 0; i < 10000; i++) {
-      myName("Rand " + (Math.round(Math.random() * 10000)));
-      className("foo-" + i);
-      update();
-    }
-    console.timeEnd("Inferno update");
 
   </script>
 </body>

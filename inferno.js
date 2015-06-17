@@ -47,21 +47,23 @@ var Inferno = (function() {
     window.update = update.bind(null, rootNode, root);
   };
 
-  Inferno.createElement = function(tag, attrs, children) {
+  Inferno.createElement = function(tag, attrs, child) {
     var bindings = [],
         key = null,
         i = 2,
         l = 0,
         item = null,
-        oneChild = true;
+        oneChild = true,
+        children = [];
 
     if(arguments.length > 3) {
-      children = [];
       for(l = arguments.length; i < l; i++) {
         item = arguments[i];
         children.push(item);
       }
       oneChild = false;
+    } else {
+      children = child;
     }
 
     var node = {
@@ -73,14 +75,14 @@ var Inferno = (function() {
     };
 
     //determine if we are working with a binding as a child
-    if(oneChild === true && children.type !== undefined) {
+    if(oneChild === true && child.type !== undefined) {
       //we will return a list of bindings
-      bindings.push({val: children, category: BindingCategory.Child});
+      bindings.push({val: child, category: BindingCategory.Child});
     } else if (oneChild === false) {
       //otherwiswe we can look through our children and add the bindings that way
       for(i = 0; i < children.length; i++) {
         //we only want normal bindings, not the nodes
-        if(children[i].type !== null && children[i].type !== BindingTypes.Node) {
+        if(children[i].type !== null && children[i].type !== BindingTypes.Node && typeof children[i] !== "string") {
           bindings.push({val: children[i], category: BindingCategory.Child});
         }
       }
