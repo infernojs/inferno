@@ -40,7 +40,8 @@ var Inferno = (function() {
     var rootNode = template(directives);
 
     createNode(rootNode, root);
-    window.requestAnimationFrame(update.bind(null, rootNode, root));
+    //window.requestAnimationFrame(update.bind(null, rootNode, root));
+    window.update = update.bind(null, rootNode, root);
   };
 
   Inferno.createElement = function(tag, attrs, children) {
@@ -286,8 +287,10 @@ var Inferno = (function() {
   };
 
   function update(rootNode, root) {
+    console.time("Inferno update");
     updateNode(rootNode, root, false, false);
-    window.requestAnimationFrame(update.bind(null, rootNode, root));
+    //window.requestAnimationFrame(update.bind(null, rootNode, root));
+    console.timeEnd("Inferno update");
   };
 
   return Inferno;
