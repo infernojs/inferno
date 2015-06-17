@@ -30,6 +30,9 @@
             Inferno.createElement("div", {class: "test"}, $.bind(deepName))
           )
         ),
+        Inferno.createElement("span", {class: $.bind(className)},
+          Inferno.createElement("div", {class: "test"})
+        ),
         Inferno.createElement("div", {class: "test"},
           "static node",
           Inferno.createElement("button", {class: "test"}, "Click me!")

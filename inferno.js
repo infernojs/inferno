@@ -56,6 +56,10 @@ var Inferno = (function() {
         oneChild = true,
         children = [];
 
+    if(child === undefined) {
+      child = null;
+    }
+
     if(arguments.length > 3) {
       for(l = arguments.length; i < l; i++) {
         item = arguments[i];
@@ -75,7 +79,7 @@ var Inferno = (function() {
     };
 
     //determine if we are working with a binding as a child
-    if(oneChild === true && child.type !== undefined) {
+    if(oneChild === true && child != null && child.type !== null && child.type !== BindingTypes.Node && typeof child !== "string") {
       //we will return a list of bindings
       bindings.push({val: child, category: BindingCategory.Child});
     } else if (oneChild === false) {
@@ -235,7 +239,7 @@ var Inferno = (function() {
             createNode(child, node.dom);
           }
         }
-      } else {
+      } else if(node.children != null) {
         createNode(node.children, node.dom);
       }
     } else if(node instanceof Array) {
@@ -315,7 +319,9 @@ var Inferno = (function() {
       }
     } else if(node.children != null && node.dom != null) {
       //otherwise we look into the single child
-      updateNode(node.children, node.dom);
+      if(node.children != null) {
+        updateNode(node.children, node.dom);
+      }
     }
   };
 
