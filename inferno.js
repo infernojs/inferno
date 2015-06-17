@@ -273,6 +273,7 @@ var Inferno = (function() {
 
       if(updateAttr === true) {
         node.node.oldAttrs = updateAttributes(node.node.dom, node.node.tag, node.node.attrs, node.node.oldAttrs);
+        //if this node has children, process them too
       }
 
       if(updateChild === true) {
