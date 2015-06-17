@@ -10,6 +10,7 @@
 
     var myName = im7("Dominic");
     var className = im7("foo");
+    var deepName = im7("Hello world");
     var items = im7([
       "Dominic",
       "Jemma",
@@ -21,7 +22,14 @@
       //make our private varaibles
       return Inferno.createElement("div", null,
         Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName)),
-        Inferno.createElement("div", {class: "test"}, "static node"),
+        Inferno.createElement("div", {class: "test"},
+          "static node",
+          $.bind(myName),
+          Inferno.createElement("div", {class: "test"},
+            "another static node",
+            Inferno.createElement("div", {class: "test"}, $.bind(deepName))
+          )
+        ),
         Inferno.createElement("div", {class: "test"},
           "static node",
           Inferno.createElement("button", {class: "test"}, "Click me!")

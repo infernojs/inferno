@@ -211,7 +211,7 @@ var Inferno = (function() {
   };
 
   function createNode(node, parent) {
-    var i = 0, l = 0, binding = null, val = null;
+    var i = 0, l = 0, binding = null, val = null, textNode = null, child = null;
     if(node.tag != null) {
       if(node.dom === null) {
         node.dom = document.createElement(node.tag)
@@ -223,7 +223,17 @@ var Inferno = (function() {
       if(node.children instanceof Array) {
         var child = null;
         for(l = node.children.length; i < l; i++) {
-          createNode(node.children[i], node.dom);
+          child = node.children[i];
+          //given this is an array, we need to add a new text node
+          if(typeof child === "string") {
+            textNode = document.createTextNode(child);
+            node.dom.appendChild(textNode);
+          } else if(child.type === BindingTypes.Bind) {
+            textNode = document.createTextNode(child.lastVal);
+            node.dom.appendChild(textNode);
+          } else {
+            createNode(child, node.dom);
+          }
         }
       } else {
         createNode(node.children, node.dom);
@@ -284,14 +294,24 @@ var Inferno = (function() {
           setTextContent(node.node.dom, node.node.children.lastVal, true);
         } else {
           //check if the children is an array, then process that too
-          //debuggger;
+          for(i = 0, l = node.node.children.length; i < l; i++) {
+            child = node.node.children[i];
+            //if this is a binding value, apply value
+            if(child.type != null && child.type === BindingTypes.Bind) {
+              setTextContent(node.node.dom.childNodes[i], child.lastVal, true);
+            } else if(typeof child !== "string") {
+              updateNode(child, node.node.dom);
+            }
+          }
         }
       }
     } else if(node.children instanceof Array) {
       //we loop through all children and update them
       for(l = node.children.length; i < l; i++) {
         child = node.children[i];
-        updateNode(child, node.dom);
+        if(typeof child !== "string") {
+          updateNode(child, node.dom);
+        }
       }
     } else if(node.children != null && node.dom != null) {
       //otherwise we look into the single child
