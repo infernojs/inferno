@@ -72,6 +72,20 @@
               "class": "test"
             },
             children: "static node"
+          },
+          {
+            tag: "span",
+            attrs: {
+              "class": className
+            },
+            children: myName
+          },
+          {
+            tag: "span",
+            attrs: {
+              "class": className
+            },
+            children: myName
           }
         ]
       }
@@ -93,7 +107,15 @@
     }
     console.timeEnd("Cito update");
 
-    console.log("Update with data changed");
+    console.log("Update with only data changed");
+    console.time("Cito update");
+    for(var i = 0; i < 10000; i++) {
+      myName = "Rand " + (Math.round(Math.random() * 10000));
+      update();
+    }
+    console.timeEnd("Cito update");
+
+    console.log("Update with both child and attrs data changed");
     console.time("Cito update");
     for(var i = 0; i < 10000; i++) {
       myName = "Rand " + (Math.round(Math.random() * 10000));
