@@ -44,8 +44,7 @@ var Inferno = (function() {
   };
 
   Inferno.createElement = function(tag, attrs, children) {
-    var dom = document.createElement(tag),
-        bindings = [],
+    var bindings = [],
         key = null,
         i = 2,
         l = 0,
@@ -62,7 +61,7 @@ var Inferno = (function() {
     }
 
     var node = {
-      dom: dom,
+      dom: null,
       children: children,
       tag: tag,
       attrs: attrs
@@ -131,11 +130,7 @@ var Inferno = (function() {
             break;
         }
       }
-      if (ns) {
-        domElement.setAttributeNS(ns, name, value);
-      } else {
-        domElement.setAttribute(name, value);
-      }
+      domElement.setAttribute(name, value);
     }
   }
 
@@ -205,13 +200,18 @@ var Inferno = (function() {
 
   function createNode(node, parent) {
     var i = 0, l = 0, noChange = true, binding = null, val = null;
-    if(node.dom != null) {
+    if(node.tag != null) {
+      if(node.dom == null) {
+        node.dom = document.createElement(node.tag)
+      }
       parent.appendChild(node.dom);
       if(node.attrs != null) {
         node.oldAttrs = updateAttributes(node.dom, node.tag, node.attrs, null);
       }
       if(node.children instanceof Array) {
-        debugger;
+        for(l = node.children.length; i < l; i++) {
+          createNode(node.children[i], node.dom);
+        }
       } else {
         createNode(node.children, node.dom);
       }
@@ -272,7 +272,9 @@ var Inferno = (function() {
       }
     } else if(node.children instanceof Array) {
       //we loop through all children and update them
-      debugger;
+      for(l = node.children.length; i < l; i++) {
+        updateNode(node.children[i], node.dom);
+      }
     } else if(node.children != null && node.dom != null) {
       //update the attrs
       if(updateAttr === true && node.attrs != null) {
