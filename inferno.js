@@ -27,10 +27,11 @@ var Inferno = (function() {
         lastVal: ""
       };
     },
-    repeat: function(value) {
+    repeat: function(value, contruct) {
       return {
         type: BindingTypes.Repeat,
         val: value,
+        contruct: contruct,
         lastVal: ""
       };
     }
@@ -215,7 +216,7 @@ var Inferno = (function() {
   };
 
   function createNode(node, parent) {
-    var i = 0, l = 0, binding = null, val = null, textNode = null, child = null;
+    var i = 0, ii = 0, l = 0, binding = null, val = null, textNode = null, child = null;
     if(node.tag != null) {
       if(node.dom === null) {
         node.dom = document.createElement(node.tag)
@@ -246,16 +247,25 @@ var Inferno = (function() {
       //if its a function, it's most likely our getter/setter
       if(node.type === BindingTypes.Bind) {
         setTextContent(parent, node.lastVal, false);
+      } else if(node.type === BindingTypes.Repeat) {
+        //then itteratoe of the object
+        for(ii = 0; ii < node.val.length; ii++) {
+          child = node.contruct(im7(node.val[ii]));
+          createNode(child, parent);
+        }
       }
     } else if(typeof node === "string") {
       setTextContent(parent, node, false);
     } else if (node.type === BindingTypes.Node) {
       //set lastVal of all the bindings
       for(l = node.bindings.length; i < l; i++) {
-        binding = node.bindings[i],
-        val = binding.val.val();
-        if(val !== binding.val.lastVal) {
+        binding = node.bindings[i];
+        if(binding.val.type === BindingTypes.Bind) {
+          val = binding.val.val();
           binding.val.lastVal = val;
+        } else if(binding.val.type === BindingTypes.Repeat) {
+          //if it's a repeat, get the value and store it as the lastVal
+          binding.val.lastVal = binding.val.val;
         }
       }
       //there is a change so let's create the node
@@ -266,21 +276,21 @@ var Inferno = (function() {
   };
 
   function updateNode(node, parent) {
-    var l = 0, i = 0, binding = null, val = null, child = null;
+    var l = 0, i = 0, binding = null, val = null, child = null, updateChild = false, updateAttr = false;
     //we need to find the Binding Nodes first
     if (node.type != null && node.type === BindingTypes.Node) {
-      var updateChild = false;
-      var updateAttr = false;
       //check bingings match
       for(l = node.bindings.length; i < l; i++) {
-        binding = node.bindings[i],
-        val = binding.val.val();
-        if(val !== binding.val.lastVal) {
-          binding.val.lastVal = val;
-          if(binding.category === BindingCategory.Child) {
-            updateChild = true;
-          } else if(binding.category === BindingCategory.Attribute) {
-            updateAttr = true;
+        binding = node.bindings[i];
+        if(binding.val.type === BindingTypes.Bind) {
+          val = binding.val.val();
+          if(val !== binding.val.lastVal) {
+            binding.val.lastVal = val;
+            if(binding.category === BindingCategory.Child) {
+              updateChild = true;
+            } else if(binding.category === BindingCategory.Attribute) {
+              updateAttr = true;
+            }
           }
         }
       }

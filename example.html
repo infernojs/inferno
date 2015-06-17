@@ -37,12 +37,12 @@
         Inferno.createElement("div", {class: "test"},
           "static node",
           Inferno.createElement("button", {class: "test"}, "Click me!")
+        ),
+        Inferno.createElement("ul", null,
+          $.repeat(items, function(item) {
+            return Inferno.createElement("li", null, $.bind(item));
+          })
         )
-        // Inferno.createElement("ul", null,
-        //   $.repeat(items, function(item) {
-        //     return Inferno.createElement("li", null, $.bind(item));
-        //   })
-        // )
       );
     };
 
