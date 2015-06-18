@@ -8,20 +8,23 @@
   <script src="im7.js"></script>
   <script>
 
-    var myName = im7("Dominic");
-    var className = im7("foo");
-    var deepName = im7("Hello world");
-    var items = im7([
-      "Dominic",
-      "Jemma",
-      "Charlie",
-      "Harry"
-    ]);
+    var state = Inferno.createState({
+      myName: "Dominic";
+      className: "foo",
+      deepName: "Hello world",
+      person: im7({
+        name: "Fred",
+        age: 30
+      })
+    })
 
-    function Foo($) {
+    function Foo() {
+      var echo = Inferno.load("echo");
+
       //make our private varaibles
       return Inferno.createElement("div", null,
-        Inferno.createElement("span", {class: $.bind(className)}, $.bind(myName)),
+        Inferno.createElement("span", {class: echo(className)}, $.bind(myName)),
+        Inferno.createElement("input", {value: $.bind(person.name)}, null),
         Inferno.createElement("div", {class: "test"},
           "static node",
           $.bind(myName),
