@@ -4,7 +4,7 @@ var Inferno = (function() {
   var BindingTypes = {
     Node: 1,
     Bind: 2,
-    Repeat: 3
+    Map: 3
   };
 
   var BindingCategory = {
@@ -27,9 +27,9 @@ var Inferno = (function() {
         lastVal: ""
       };
     },
-    repeat: function(value, contruct) {
+    map: function(value, contruct) {
       return {
-        type: BindingTypes.Repeat,
+        type: BindingTypes.Map,
         val: value,
         contruct: contruct,
         lastVal: ""
@@ -247,7 +247,7 @@ var Inferno = (function() {
       //if its a function, it's most likely our getter/setter
       if(node.type === BindingTypes.Bind) {
         setTextContent(parent, node.lastVal, false);
-      } else if(node.type === BindingTypes.Repeat) {
+      } else if(node.type === BindingTypes.Map) {
         //then itteratoe of the object
         for(ii = 0; ii < node.val.length; ii++) {
           child = node.contruct(im7(node.val[ii]));
@@ -263,8 +263,8 @@ var Inferno = (function() {
         if(binding.val.type === BindingTypes.Bind) {
           val = binding.val.val();
           binding.val.lastVal = val;
-        } else if(binding.val.type === BindingTypes.Repeat) {
-          //if it's a repeat, get the value and store it as the lastVal
+        } else if(binding.val.type === BindingTypes.Map) {
+          //if it's a map, get the value and store it as the lastVal
           binding.val.lastVal = binding.val.val;
         }
       }

@@ -39,7 +39,7 @@
           Inferno.createElement("button", {class: "test"}, "Click me!")
         ),
         Inferno.createElement("ul", null,
-          $.repeat(items, function(item) {
+          $.map(items, function(item) {
             return Inferno.createElement("li", null, $.bind(item));
           })
         )
