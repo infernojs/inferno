@@ -1,9 +1,15 @@
 var Inferno = (function() {
   "use strict";
 
+  if(typeof im7 == "undefined") {
+    throw Error("Inferno requires the im7.js library for its state management");
+    return;
+  }
+
+
   var BindingTypes = {
     Node: 1,
-    Bind: 2,
+    Text: 2,
     Map: 3
   };
 
@@ -14,48 +20,61 @@ var Inferno = (function() {
 
   var supportsTextContent = 'textContent' in document;
 
-  function BindingNode(bindings, node) {
-    this.bindings = bindings;
-    this.node = node;
-  }
+  var Inferno = {};
 
-  var directives = {
-    bind: function(value) {
-      return {
-        type: BindingTypes.Bind,
-        val: value,
-        lastVal: ""
-      };
-    },
-    map: function(value, contruct) {
-      return {
-        type: BindingTypes.Map,
-        val: value,
-        contruct: contruct,
-        lastVal: ""
-      };
-    }
-  }
-
-  var Inferno = {}
-
-  Inferno.mount = function(template, root) {
-    //make a new instance of state
-    var rootNode = template(directives);
-
+  Inferno.append = function appendToDom(template, root) {
+    var rootNode = template();
     createNode(rootNode, root);
-    //window.requestAnimationFrame(update.bind(null, rootNode, root));
-    window.update = update.bind(null, rootNode, root);
+    return rootNode;
   };
 
-  Inferno.createElement = function(tag, attrs, child) {
+  Inferno.update = function updateNode(rootNode, root) {
+    updateNode(rootNode, root);
+  };
+
+  Inferno.mount = function mountToDom(template, state, root) {
+    var rootNode = this.append(template, root);
+    window.requestAnimationFrame(autoUpdate.bind(null, rootNode, state, root));
+  };
+
+  function State(autoUpdateState) {
+    var self = this; //fast than binding
+    this.updated = false;
+
+    function state(data) {
+      return im7(data, false, true, autoUpdateState === true ? self: null);
+    };
+
+    state.hasUpdate = function() {
+      return self.updated;
+    };
+
+    state.finishUpdate = function() {
+      self.updated = false;
+    }
+
+    state.getSelf = function() {
+      return self;
+    }
+
+    return state;
+  };
+
+  Inferno.createState = function createStateFactory(autoUpdateState) {
+    //auto update the state by default
+    return new State(autoUpdateState == null ? true : false);
+  };
+
+  Inferno.createElement = function createElementFactory(tag, attrs, child) {
     var bindings = [],
         key = null,
         i = 2,
         l = 0,
         item = null,
         oneChild = true,
-        children = [];
+        children = [],
+        binding = null,
+        node = null;
 
     if(child === undefined) {
       child = null;
@@ -71,24 +90,20 @@ var Inferno = (function() {
       children = child;
     }
 
-    var node = {
-      dom: null,
-      children: children,
-      tag: tag,
-      attrs: attrs,
-      type: null
-    };
-
-    //determine if we are working with a binding as a child
-    if(oneChild === true && child != null && child.type !== null && child.type !== BindingTypes.Node && typeof child !== "string") {
-      //we will return a list of bindings
-      bindings.push({val: child, category: BindingCategory.Child});
+    //determine if we are working with a state function
+    if(typeof child === "function") {
+      //create a new text binding
+      binding = {val: child, type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
+      children = binding;
+      bindings.push(binding);
     } else if (oneChild === false) {
       //otherwiswe we can look through our children and add the bindings that way
       for(i = 0; i < children.length; i++) {
         //we only want normal bindings, not the nodes
-        if(children[i].type !== null && children[i].type !== BindingTypes.Node && typeof children[i] !== "string") {
-          bindings.push({val: children[i], category: BindingCategory.Child});
+        if(typeof children[i] === "function") {
+          binding = {val: children[i], type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
+          children[i] = binding;
+          bindings.push(binding);
         }
       }
     }
@@ -96,11 +111,21 @@ var Inferno = (function() {
     //then check through our attrs
     if(attrs !== null) {
       for(key in attrs) {
-        if(attrs[key].type != null) {
-          bindings.push({val: attrs[key], category: BindingCategory.Attribute});
+        if(typeof attrs[key] === "function") {
+          binding = {val: attrs[key], type: BindingTypes.Text, category: BindingCategory.Attribute, lastVal: ""};
+          attrs[key] = binding;
+          bindings.push(binding);
         }
       }
     }
+
+    node = {
+      dom: null,
+      children: children,
+      tag: tag,
+      attrs: attrs,
+      type: null
+    };
 
     if(bindings.length === 0) {
       return node;
@@ -159,7 +184,7 @@ var Inferno = (function() {
 
         //if it's a binding, lets get it
         if(attrValue.type !== undefined) {
-          if(attrValue.type === BindingTypes.Bind) {
+          if(attrValue.type === BindingTypes.Text) {
             attrValue = attrValue.lastVal;
           }
         }
@@ -233,7 +258,7 @@ var Inferno = (function() {
           if(typeof child === "string") {
             textNode = document.createTextNode(child);
             node.dom.appendChild(textNode);
-          } else if(child.type === BindingTypes.Bind) {
+          } else if(child.type === BindingTypes.Text) {
             textNode = document.createTextNode(child.lastVal);
             node.dom.appendChild(textNode);
           } else {
@@ -245,7 +270,7 @@ var Inferno = (function() {
       }
     } else if(node.type != null && node.type !== BindingTypes.Node) {
       //if its a function, it's most likely our getter/setter
-      if(node.type === BindingTypes.Bind) {
+      if(node.type === BindingTypes.Text) {
         setTextContent(parent, node.lastVal, false);
       } else if(node.type === BindingTypes.Map) {
         //then itteratoe of the object
@@ -260,12 +285,12 @@ var Inferno = (function() {
       //set lastVal of all the bindings
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
-        if(binding.val.type === BindingTypes.Bind) {
-          val = binding.val.val();
-          binding.val.lastVal = val;
-        } else if(binding.val.type === BindingTypes.Map) {
+        if(binding.type === BindingTypes.Text) {
+          val = binding.val();
+          binding.lastVal = val;
+        } else if(binding.type === BindingTypes.Map) {
           //if it's a map, get the value and store it as the lastVal
-          binding.val.lastVal = binding.val.val;
+          binding.lastVal = binding.val;
         }
       }
       //there is a change so let's create the node
@@ -282,10 +307,10 @@ var Inferno = (function() {
       //check bingings match
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
-        if(binding.val.type === BindingTypes.Bind) {
-          val = binding.val.val();
-          if(val !== binding.val.lastVal) {
-            binding.val.lastVal = val;
+        if(binding.type === BindingTypes.Text) {
+          val = binding.val();
+          if(val !== binding.lastVal) {
+            binding.lastVal = val;
             if(binding.category === BindingCategory.Child) {
               updateChild = true;
             } else if(binding.category === BindingCategory.Attribute) {
@@ -302,14 +327,14 @@ var Inferno = (function() {
 
       if(updateChild === true) {
         //check if node's child is a bind binding (text)
-        if(node.node.children.type != null && node.node.children.type === BindingTypes.Bind) {
+        if(node.node.children.type != null && node.node.children.type === BindingTypes.Text) {
           setTextContent(node.node.dom, node.node.children.lastVal, true);
         } else {
           //check if the children is an array, then process that too
           for(i = 0, l = node.node.children.length; i < l; i++) {
             child = node.node.children[i];
             //if this is a binding value, apply value
-            if(child.type != null && child.type === BindingTypes.Bind) {
+            if(child.type != null && child.type === BindingTypes.Text) {
               setTextContent(node.node.dom.childNodes[i], child.lastVal, true);
             } else if(typeof child !== "string") {
               updateNode(child, node.node.dom);
@@ -343,9 +368,14 @@ var Inferno = (function() {
 
   var updateNextCycle = false;
 
-  function update(rootNode, root) {
-    updateNode(rootNode, root);
-    //window.requestAnimationFrame(update.bind(null, rootNode, root));
+  function autoUpdate(rootNode, state, root) {
+    if(state.hasUpdate() === true) {
+      console.time("Inferno update");
+      updateNode(rootNode, root);
+      state.finishUpdate();
+      console.timeEnd("Inferno update");
+    }
+    window.requestAnimationFrame(autoUpdate.bind(null, rootNode, state, root));
   };
 
   return Inferno;
