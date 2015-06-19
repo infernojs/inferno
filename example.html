@@ -5,13 +5,11 @@
 <body>
   <div id="app"></div>
   <script src="im7.js"></script>
-  <script src="t7.js"></script>
   <script src="inferno.js"></script>
   <script>
 
-    t7`<div></div>`;
-
-    var $ = Inferno.createState();
+    //create a new state instance, we use this to handle our properties
+    var $ = new Inferno.State();
 
     var myName = $("Dominic");
     var className = $("foo");
@@ -26,6 +24,11 @@
       "Charlie",
       "Harry"
     ]);
+    //you pass a computed property the state properties it needs
+    var computedProperty = $([myName, person], function(myName, person) {
+      return "My name is " + myName + ". My friend is called " + person.name
+              + " and he is " + person.age + " years old.";
+    });
 
     function Foo() {
       //make our private varaibles

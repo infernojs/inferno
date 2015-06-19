@@ -39,6 +39,7 @@ var Inferno = (function() {
 
   function State(autoUpdateState) {
     var self = this; //fast than binding
+    var autoUpdateState = autoUpdateState == null ? true : false
     this.updated = false;
 
     function state(data) {
@@ -60,10 +61,7 @@ var Inferno = (function() {
     return state;
   };
 
-  Inferno.createState = function createStateFactory(autoUpdateState) {
-    //auto update the state by default
-    return new State(autoUpdateState == null ? true : false);
-  };
+  Inferno.State = State;
 
   Inferno.createElement = function createElementFactory(tag, attrs, child) {
     var bindings = [],
