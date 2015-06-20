@@ -465,7 +465,9 @@ var t7 = (function() {
     //we need to generate a very quick key that will be used as the function name
     var scriptCode = "";
     var templateKey = null;
-    var tpl = template[0];
+    var tpl = "";
+
+    tpl = template[0];
 
     for(; i < n; i++) {
       functionProps["$" + i] = arguments[i];

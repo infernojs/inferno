@@ -4,29 +4,33 @@
 </head>
 <body>
   <div id="app"></div>
-  <script src="ReactiveState.js"></script>
+  <script src="t7.js"></script>
   <script src="im7.js"></script>
   <script src="inferno.js"></script>
   <script>
 
-    //create a new state instance, we use this to handle our properties
-    var state = new ReactiveState({
+    // var $ = Inferno.GetterSetter;
+    //
+    // var myName = $("Dominic");
+    // var className = $("foo");
+
+    var state = Inferno.createState({
       myName: "Dominic",
-      className: "foo"
+      className: "Foo"
     });
 
     function Foo($) {
       //make our private varaibles
       return Inferno.createElement("div", null,
-        Inferno.createElement("span", {class: state.className}, state.myName),
-        Inferno.createElement("span", {class: state.className}, state.myName),
+        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
+        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("span", {class: state.className}, state.myName),
-        Inferno.createElement("span", {class: state.className}, state.myName),
+        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
+        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
@@ -51,19 +55,19 @@
     };
 
     var app = document.getElementById("app");
-    var rootNode = Inferno.append(Foo, state, app);
+    var rootNode = Inferno.append(Foo, app);
 
-    // console.log("Update with no data changed");
-    // console.time("Inferno update");
-    // for(var i = 0; i < 10000; i++) {
-    //   Inferno.update(rootNode, app);
-    // }
-    // console.timeEnd("Inferno update");
+    console.log("Update with no data changed");
+    console.time("Inferno update");
+    for(var i = 0; i < 10000; i++) {
+      Inferno.update(rootNode, app);
+    }
+    console.timeEnd("Inferno update");
 
     console.log("Update with only data changed");
     console.time("Inferno update");
     for(var i = 0; i < 10000; i++) {
-      state.myName("Rand " + (Math.round(Math.random() * 10000)));
+      state.setMyName("Rand " + (Math.round(Math.random() * 10000)));
       Inferno.update(rootNode, app);
     }
     console.timeEnd("Inferno update");
@@ -71,8 +75,8 @@
     console.log("Update with both child and attrs data changed");
     console.time("Inferno update");
     for(var i = 0; i < 10000; i++) {
-      state.myName("Rand " + (Math.round(Math.random() * 10000)));
-      state.className("foo-" + i);
+      state.setMyName("Rand " + (Math.round(Math.random() * 10000)));
+      state.setClassName("foo-" + i);
       Inferno.update(rootNode, app);
     }
     console.timeEnd("Inferno update");

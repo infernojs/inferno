@@ -4,44 +4,38 @@
 </head>
 <body>
   <div id="app"></div>
-  <script src="ReactiveState.js"></script>
   <script src="im7.js"></script>
   <script src="inferno.js"></script>
   <script src="t7.js"></script>
   <script>
 
-    //create a new state instance, we use this to handle our properties
-    var state = new ReactiveState();
-
-    state.myName = "Dominic";
-    state.myLastName = "Gannaway";
-
-    state.className = "foo";
-    state.deepName = "Deeeep!";
-    state.person = im7({
-      name: "Fred",
-      age: 30
-    });
-    state.items = im7([
-      "Dominic",
-      "Jemma",
-      "Charlie",
-      "Harry"
-    ]);
-    state.items2 = im7([
-      "Dominic",
-      "Jemma",
-      "Charlie",
-      "Harry"
-    ]);
-
-    //an example of a computed propety
-    var myFullName = state.computed(function() {
-      return state.myName + " " + state.myLastName;
+    var state = Inferno.createState({
+      myName: "Dominic",
+      className: "Foo",
+      myLastName: "Gannaway",
+      deepName: "Deeeep!",
+      person: im7({
+        name: "Fred",
+        age: 30
+      }),
+      items: im7([
+        "Dominic",
+        "Jemma",
+        "Charlie",
+        "Harry"
+      ]),
+      items2: im7([
+        "Dominic",
+        "Jemma",
+        "Charlie",
+        "Harry"
+      ])
     });
 
-    //ReactiveState aysnc updates state, we want to force it to sync though
-    state.syncUpdate();
+    //an example of a computed property, pure JS
+    var myFullName = function() {
+      return state.getMyName() + " " + state.getMyLastName();
+    };
 
     function myMap(item) {
       return t7`<li>${ item }</li>`;
@@ -56,28 +50,28 @@
       //make our private varaibles
       return t7`
         <div class="container">
-          <span class=${ state.className }>${ myFullName }</span>
-          <span class=${ state.className }>${ state.myName }</span>
-          <input value=${ state.person.name } />
+          <span class=${ state.getClassName }>${ myFullName }</span>
+          <span class=${ state.getClassName }>${ state.getMyName }</span>
+          <input value=${ "Test" } />
           <div class="test">
-            Static node ${ state.myName }
+            Static node ${ state.getMyName }
             <div class="test">
               another static node
-              <div class="test">${ state.deepName }</div>
+              <div class="test">${ state.getDeepName }</div>
             </div>
-            <span class=${ state.className }>
+            <span class=${ state.getClassName }>
               <div class="test"></div>
-              <div class="test">${ state.deepName }</div>
+              <div class="test">${ state.getDeepName }</div>
             </span>
             <div class="test">
               static node
               <button class="test">Click me!</button>
             </div>
             <ul>
-              ${ map(state.items, myMap) }
+              ${ map(state.getItems, myMap) }
             </ul>
             <ul>
-              ${ map(state.items, myMap2) }
+              ${ map(state.getItems, myMap2) }
             </ul>
           </div>
         </div>

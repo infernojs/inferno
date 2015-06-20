@@ -6,11 +6,6 @@ var Inferno = (function() {
     return;
   }
 
-  if(typeof ReactiveState == "undefined") {
-    throw Error("Inferno requires the ReactiveState.js library for its state management");
-    return;
-  }
-
   var BindingTypes = {
     Node: 1,
     Text: 2,
@@ -24,14 +19,48 @@ var Inferno = (function() {
 
   var supportsTextContent = 'textContent' in document;
 
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+  function State(data) {
+    var keys = Object.keys(data);
+    this._hasChanged = false;
+    for(var i = 0; i < keys.length; i++) {
+      this._initProp(keys[i], data[keys[i]]);
+    }
+  };
+
+  State.prototype._initProp = function(key, value) {
+    var self = this;
+    this["get" + capitalizeFirstLetter(key)] = function() {
+      return value;
+    }
+
+    this["set" + capitalizeFirstLetter(key)] = function(val) {
+      value = val;
+      self._hasChanged = true;
+    }
+  };
+
   var Inferno = {};
 
-  Inferno.append = function appendToDom(template, state, root) {
+  Inferno.GetterSetter = function(value) {
+    return function GetterSetter(newVal) {
+      if(newVal != null) {
+        value = newVal;
+      }
+      return value;
+    }
+  };
+
+  Inferno.createState = function(data) {
+    return new State(data);
+  };
+
+  Inferno.append = function appendToDom(template, root) {
     var rootNode = null;
-    //we toggle the state mode so that ReactiveState gives us State objects back rather than values
-    state.toggleStateMode();
     rootNode = template();
-    state.toggleStateMode();
     createNode(rootNode, root);
     return rootNode;
   };
@@ -41,13 +70,13 @@ var Inferno = (function() {
   };
 
   Inferno.mount = function mountToDom(template, state, root) {
-    var rootNode = this.append(template, state, root);
+    var rootNode = this.append(template, root);
 
-    state.addListener(function() {
-      console.time("Inferno update");
-      updateNode(rootNode, root);
-      console.timeEnd("Inferno update");
-    });
+    // watch.addListener(function() {
+    //   console.time("Inferno update");
+    //   updateNode(rootNode, root);
+    //   console.timeEnd("Inferno update");
+    // });
   };
 
   Inferno.TemplateHelpers = {
