@@ -108,7 +108,11 @@ var t7 = (function() {
     var val = '';
     for(var name in root.attrs) {
       val = root.attrs[name];
-      attrsParams.push("'" + name + "':'" + val + "'");
+      if(val.indexOf("props.") === -1) {
+        attrsParams.push("'" + name + "':'" + val + "'");
+      } else {
+        attrsParams.push("'" + name + "':" + val);
+      }
     }
   };
 
@@ -417,9 +421,9 @@ var t7 = (function() {
           attrs[attrParts[0]] = attrParts[1];
         } else {
           if(attrParts[0] === "key") {
-            key = "' + props." + attrParts[1] + " + '";
+            key = "'props." + attrParts[1];
           } else {
-            attrs[attrParts[0]] = "' + props." + attrParts[1] + " + '";
+            attrs[attrParts[0]] = "props." + attrParts[1];
           }
         }
       }

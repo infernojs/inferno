@@ -87,7 +87,7 @@ var Inferno = (function() {
     }
 
     //determine if we are working with a state function
-    if(typeof child === "function") {
+    if(child instanceof ReactiveState.State) {
       //create a new text binding
       binding = {state: child, type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
       children = binding;
@@ -99,7 +99,7 @@ var Inferno = (function() {
       //otherwiswe we can look through our children and add the bindings that way
       for(i = 0; i < children.length; i++) {
         //we only want normal bindings, not the nodes
-        if(typeof children[i] === "function") {
+        if(children[i] instanceof ReactiveState.State) {
           binding = {state: children[i], type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
           children[i] = binding;
           bindings.push(binding);
@@ -110,7 +110,7 @@ var Inferno = (function() {
     //then check through our attrs
     if(attrs !== null) {
       for(key in attrs) {
-        if(typeof attrs[key] === "function") {
+        if(attrs[key] instanceof ReactiveState.State) {
           binding = {state: attrs[key], type: BindingTypes.Text, category: BindingCategory.Attribute, lastVal: ""};
           attrs[key] = binding;
           bindings.push(binding);
@@ -288,7 +288,7 @@ var Inferno = (function() {
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
         if(binding.type === BindingTypes.Text) {
-          val = binding.state();
+          val = binding.state.value;
           binding.lastVal = val;
         } else if(binding.type === BindingTypes.Map) {
           //if it's a map, get the value and store it as the lastVal
@@ -311,7 +311,7 @@ var Inferno = (function() {
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
         if(binding.type === BindingTypes.Text) {
-          val = binding.state();
+          val = binding.state.value;
           if(val !== binding.lastVal) {
             binding.lastVal = val;
             if(binding.category === BindingCategory.Child) {
