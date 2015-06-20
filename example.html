@@ -4,62 +4,118 @@
 </head>
 <body>
   <div id="app"></div>
+  <script src="ReactiveState.js"></script>
   <script src="im7.js"></script>
   <script src="inferno.js"></script>
+  <script src="t7.js"></script>
   <script>
 
     //create a new state instance, we use this to handle our properties
-    var $ = new Inferno.State();
+    var state = new ReactiveState();
 
-    var myName = $("Dominic");
-    var className = $("foo");
-    var deepName = $("Deeeep!");
-    var person = $({
+    state.myName = "Dominic";
+    state.myLastName = "Gannaway";
+
+    state.className = "foo";
+    state.deepName = "Deeeep!";
+    state.person = im7({
       name: "Fred",
       age: 30
     });
-    var items = $([
+    state.items = im7([
       "Dominic",
       "Jemma",
       "Charlie",
       "Harry"
     ]);
-    //you pass a computed property the state properties it needs
-    var computedProperty = $([myName, person], function(myName, person) {
-      return "My name is " + myName + ". My friend is called " + person.name
-              + " and he is " + person.age + " years old.";
+    state.items2 = im7([
+      "Dominic",
+      "Jemma",
+      "Charlie",
+      "Harry"
+    ]);
+
+    //an example of a computed propety
+    var myFullName = state.computed(function() {
+      return state.myName + " " + state.myLastName;
     });
 
+    //ReactiveState aysnc updates state, we want to force it to sync though
+    state.syncUpdate();
+
+    function myMap(item) {
+      return t7`<li>${ item }</li>`;
+    }
+
+    function myMap2(item) {
+      return t7`<li>My name is ${ item }</li>`;
+    }
+
     function Foo() {
+      var map = Inferno.TemplateHelpers.map;
       //make our private varaibles
-      return Inferno.createElement("div", null,
-        Inferno.createElement("span", {class: className}, myName),
-        Inferno.createElement("input", {value: person.name}, null),
-        Inferno.createElement("div", {class: "test"},
-          "static node",
-          myName,
-          Inferno.createElement("div", {class: "test"},
-            "another static node",
-            Inferno.createElement("div", {class: "test"}, deepName)
-          )
-        ),
-        Inferno.createElement("span", {class: className},
-          Inferno.createElement("div", {class: "test"}),
-          Inferno.createElement("div", {class: "test"}, deepName)
-        ),
-        Inferno.createElement("div", {class: "test"},
-          "static node",
-          Inferno.createElement("button", {class: "test"}, "Click me!")
-        )
-        // Inferno.createElement("ul", null,
-        //   $.map(items, function(item) {
-        //     return Inferno.createElement("li", null, $.bind(item));
-        //   })
-        // )
-      );
+      return t7`
+        <div class="container">
+          <span class=${ state.className }>${ myFullName }</span>
+          <span class=${ state.className }>${ state.myName }</span>
+          <input value=${ state.person.name } />
+          <div class="test">
+            Static node ${ state.myName }
+            <div class="test">
+              another static node
+              <div class="test">${ state.deepName }</div>
+            </div>
+            <span class=${ state.className }>
+              <div class="test"></div>
+              <div class="test">${ state.deepName }</div>
+            </span>
+            <div class="test">
+              static node
+              <button class="test">Click me!</button>
+            </div>
+            <ul>
+              ${ map(state.items, myMap) }
+            </ul>
+            <ul>
+              ${ map(state.items, myMap2) }
+            </ul>
+          </div>
+        </div>
+      `;
+      //
+      // return Inferno.createElement("div", null,
+      //   Inferno.createElement("span", {class: state.className}, state.myName),
+      //   Inferno.createElement("input", {value: state.person.name}, null),
+      //   Inferno.createElement("div", {class: "test"},
+      //     "static node",
+      //     state.myName,
+      //     Inferno.createElement("div", {class: "test"},
+      //       "another static node",
+      //       Inferno.createElement("div", {class: "test"}, state.deepName)
+      //     )
+      //   ),
+      //   Inferno.createElement("span", {class: state.className},
+      //     Inferno.createElement("div", {class: "test"}),
+      //     Inferno.createElement("div", {class: "test"}, state.deepName)
+      //   ),
+      //   Inferno.createElement("div", {class: "test"},
+      //     "static node",
+      //     Inferno.createElement("button", {class: "test"}, "Click me!")
+      //   ),
+      //   Inferno.createElement("ul", null,
+      //     map(state.items, function(item) {
+      //       return Inferno.createElement("li", null, item);
+      //     })
+      //   ),
+      //   Inferno.createElement("ul", null,
+      //     map(state.items, function(item) {
+      //       return Inferno.createElement("li", null, "My name is ", item);
+      //     })
+      //   )
+      // );
     };
 
-    Inferno.mount(Foo, $, document.getElementById("app"));
+    Inferno.mount(Foo, state, document.getElementById("app"));
 
 
   </script>

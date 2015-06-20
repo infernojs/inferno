@@ -51,15 +51,11 @@ var im7 = (function() {
     return entryPoint[key][id];
   };
 
-  function Record(data, deepImmutableProps, immutablePropsState) {
+  function Record(data) {
     var i = 0, key = null;
 
     for(key in data) {
-      if(deepImmutableProps) {
-        this[key] = ImmutableProp(data[key], immutablePropsState);
-      } else {
-        this[key] = data[key];
-      }
+      this[key] = data[key];
     }
 
     this._key = getUniqueKey();
@@ -70,7 +66,7 @@ var im7 = (function() {
     return this._key;
   }
 
-  function ImmutableVector(data, deepImmutableProps) {
+  function ImmutableVector(data) {
     var i = 0,
         l = data.length;
 
@@ -113,39 +109,20 @@ var im7 = (function() {
     }
   }
 
-  function ImmutableProp(store, immutablePropsState) {
-    var _store = store;
-    var ImmutableProp = function(newStore) {
-      if(newStore !== undefined) {
-        _store = newStore;
-        if(immutablePropsState != null) {
-          immutablePropsState.updated = true;
-        }
-      }
-      return _store;
-    };
-
-    ImmutableProp.toJSON = function() {
-      return _store;
-    };
-
-    return ImmutableProp;
-  }
-
   //the squencedRecords flag will ensure all child Records structures are unique by their sequence
-  function im7(data, squencedRecords, deepImmutableProps, immutablePropsState) {
+  function im7(data, squencedRecords) {
     var type = getType(data);
 
     if(type === 4) {
-      return im7.Vector(data, null, squencedRecords, deepImmutableProps, immutablePropsState);
+      return im7.Vector(data, null, squencedRecords);
     } else if (type === 5) {
-      return im7.Record(data, null, squencedRecords, deepImmutableProps, immutablePropsState);
+      return im7.Record(data, null, squencedRecords);
     } else if(type === 1) {
-      return ImmutableProp(data, immutablePropsState);
+      return data;
     }
   };
 
-  im7.Vector = function createVector(data, sequencerRef, squencedRecords, deepImmutableProps, immutablePropsState) {
+  im7.Vector = function createVector(data, sequencerRef, squencedRecords) {
     var i = 0, l = data.length, entryPoint = null, type = 0, item = null;
 
     for(; i < l; i++) {
@@ -154,12 +131,12 @@ var im7 = (function() {
         type = getType(item);
         //if type if 4, we need to make it a Vector
         if(type === 4) {
-          item = im7.Vector(item, sequencerRef, squencedRecords, deepImmutableProps, immutablePropsState);
+          item = im7.Vector(item, sequencerRef, squencedRecords);
           data[i] = item;
         }
         //if type if 5, we need to make it a Record
         else if (type === 5) {
-          item = im7.Record(item, sequencerRef, squencedRecords, deepImmutableProps, immutablePropsState);
+          item = im7.Record(item, sequencerRef, squencedRecords);
           data[i] = item;
         }
         entryPoint = getVectorTreeEntry(entryPoint, item);
@@ -167,13 +144,13 @@ var im7 = (function() {
     }
 
     if(entryPoint.end == undefined) {
-      entryPoint.end = new ImmutableVector(data, deepImmutableProps);
+      entryPoint.end = new ImmutableVector(data);
     }
 
     return entryPoint.end;
   };
 
-  im7.Record = function createRecord(data, sequencerRef, squencedRecords, deepImmutableProps, immutablePropsState) {
+  im7.Record = function createRecord(data, sequencerRef, squencedRecords) {
     var entryPoint = null, key = null, sequencer = null, type = 0, item = null, seqCount = 0, endPoint = null;
 
     if(squencedRecords) {
@@ -192,12 +169,12 @@ var im7 = (function() {
         type = getType(item);
         //if type if 4, we need to make it a Vector
         if(type === 4) {
-          item = im7.Vector(item, sequencer, squencedRecords, deepImmutableProps, immutablePropsState);
+          item = im7.Vector(item, sequencer, squencedRecords);
           data[key] = item;
         }
         //if type if 5, we need to make it a Record
         else if (type === 5) {
-          item = im7.Record(item, sequencer, squencedRecords, deepImmutableProps, immutablePropsState);
+          item = im7.Record(item, sequencer, squencedRecords);
           data[key] = item;
         }
         entryPoint = getRecordTreeEntry(entryPoint, key, item);
@@ -207,7 +184,7 @@ var im7 = (function() {
     endPoint = entryPoint[seqCount];
 
     if(endPoint == undefined) {
-      endPoint = new Record(data, deepImmutableProps, immutablePropsState);
+      endPoint = new Record(data);
       entryPoint[seqCount] = endPoint;
     }
 

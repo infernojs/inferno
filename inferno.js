@@ -34,34 +34,23 @@ var Inferno = (function() {
 
   Inferno.mount = function mountToDom(template, state, root) {
     var rootNode = this.append(template, root);
-    window.requestAnimationFrame(autoUpdate.bind(null, rootNode, state, root));
+    state.addListener(function() {
+      console.time("Inferno update");
+      updateNode(rootNode, root);
+      console.timeEnd("Inferno update");
+    });
   };
 
-  function State(autoUpdateState) {
-    var self = this; //fast than binding
-    var autoUpdateState = autoUpdateState == null ? true : false
-    this.updated = false;
-
-    function state(data) {
-      return im7(data, false, true, autoUpdateState === true ? self: null);
-    };
-
-    state.hasUpdate = function() {
-      return self.updated;
-    };
-
-    state.finishUpdate = function() {
-      self.updated = false;
+  Inferno.TemplateHelpers = {
+    map: function(array, constructor) {
+      return {
+        type: BindingTypes.Map,
+        array: array,
+        constructor: constructor,
+        lastVal: null
+      };
     }
-
-    state.getSelf = function() {
-      return self;
-    }
-
-    return state;
   };
-
-  Inferno.State = State;
 
   Inferno.createElement = function createElementFactory(tag, attrs, child) {
     var bindings = [],
@@ -94,6 +83,9 @@ var Inferno = (function() {
       binding = {val: child, type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
       children = binding;
       bindings.push(binding);
+    } else if(child != null && child.type === BindingTypes.Map) {
+      //handle maps
+      bindings.push(child);
     } else if (oneChild === false) {
       //otherwiswe we can look through our children and add the bindings that way
       for(i = 0; i < children.length; i++) {
@@ -272,8 +264,11 @@ var Inferno = (function() {
         setTextContent(parent, node.lastVal, false);
       } else if(node.type === BindingTypes.Map) {
         //then itteratoe of the object
-        for(ii = 0; ii < node.val.length; ii++) {
-          child = node.contruct(im7(node.val[ii]));
+        node.children = [];
+        val = node.array;
+        for(ii = 0; ii < val.length; ii++) {
+          child = node.constructor(val[ii]);
+          node.children.push(child);
           createNode(child, parent);
         }
       }
@@ -288,7 +283,7 @@ var Inferno = (function() {
           binding.lastVal = val;
         } else if(binding.type === BindingTypes.Map) {
           //if it's a map, get the value and store it as the lastVal
-          binding.lastVal = binding.val;
+          binding.lastVal = binding.array;
         }
       }
       //there is a change so let's create the node
@@ -315,6 +310,13 @@ var Inferno = (function() {
               updateAttr = true;
             }
           }
+        } else if (binding.type === BindingTypes.Map) {
+          //check if our array is not the same as the last one
+          if(binding.array !== binding.lastVal) {
+            //if they don't match, we need to check each of the children to see if they match
+            //we will need to re-construct our children
+            debugger;
+          }
         }
       }
 
@@ -325,15 +327,24 @@ var Inferno = (function() {
 
       if(updateChild === true) {
         //check if node's child is a bind binding (text)
-        if(node.node.children.type != null && node.node.children.type === BindingTypes.Text) {
-          setTextContent(node.node.dom, node.node.children.lastVal, true);
+        if(node.node.children.type != null) {
+          if(node.node.children.type === BindingTypes.Text) {
+            setTextContent(node.node.dom, node.node.children.lastVal, true);
+          } else if(node.node.children.type === BindingTypes.Map) {
+            debugger;
+
+          }
         } else {
           //check if the children is an array, then process that too
           for(i = 0, l = node.node.children.length; i < l; i++) {
             child = node.node.children[i];
             //if this is a binding value, apply value
-            if(child.type != null && child.type === BindingTypes.Text) {
-              setTextContent(node.node.dom.childNodes[i], child.lastVal, true);
+            if(child.type != null) {
+              if(child.type === BindingTypes.Text) {
+                setTextContent(node.node.dom.childNodes[i], child.lastVal, true);
+              } else if (child.type === BindingTypes.Map) {
+                debugger;
+              }
             } else if(typeof child !== "string") {
               updateNode(child, node.node.dom);
             }
@@ -362,18 +373,6 @@ var Inferno = (function() {
         updateNode(node.children, node.dom);
       }
     }
-  };
-
-  var updateNextCycle = false;
-
-  function autoUpdate(rootNode, state, root) {
-    if(state.hasUpdate() === true) {
-      console.time("Inferno update");
-      updateNode(rootNode, root);
-      state.finishUpdate();
-      console.timeEnd("Inferno update");
-    }
-    window.requestAnimationFrame(autoUpdate.bind(null, rootNode, state, root));
   };
 
   return Inferno;
