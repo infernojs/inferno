@@ -32,10 +32,10 @@
       ])
     });
 
-    //an example of a computed property, pure JS
-    var myFullName = function() {
-      return state.getMyName() + " " + state.getMyLastName();
-    };
+    //an example of a computed property
+    var myFullName = state.computed(function() {
+      return state.myName + " " + state.myLastName;
+    });
 
     function myMap(item) {
       return t7`<li>${ item }</li>`;
@@ -50,28 +50,28 @@
       //make our private varaibles
       return t7`
         <div class="container">
-          <span class=${ state.getClassName }>${ myFullName }</span>
-          <span class=${ state.getClassName }>${ state.getMyName }</span>
+          <span class=${ state.className }>${ myFullName }</span>
+          <span class=${ state.className }>${ state.myName }</span>
           <input value=${ "Test" } />
           <div class="test">
-            Static node ${ state.getMyName }
+            Static node ${ state.myName }
             <div class="test">
               another static node
-              <div class="test">${ state.getDeepName }</div>
+              <div class="test">${ state.deepName }</div>
             </div>
-            <span class=${ state.getClassName }>
+            <span class=${ state.className }>
               <div class="test"></div>
-              <div class="test">${ state.getDeepName }</div>
+              <div class="test">${ state.deepName }</div>
             </span>
             <div class="test">
               static node
               <button class="test">Click me!</button>
             </div>
             <ul>
-              ${ map(state.getItems, myMap) }
+              ${ map(state.items, myMap) }
             </ul>
             <ul>
-              ${ map(state.getItems, myMap2) }
+              ${ map(state.items, myMap2) }
             </ul>
           </div>
         </div>

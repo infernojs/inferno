@@ -12,6 +12,11 @@ var Inferno = (function() {
     Map: 3
   };
 
+  var BindingOrigin = {
+    Function: 1,
+    StateObject: 2,
+  };
+
   var BindingCategory = {
     Child: 1,
     Attribute: 2
@@ -24,6 +29,7 @@ var Inferno = (function() {
 
     this._hasChanged = false;
     this._useStateObjects = false;
+    this._listeners = [];
 
     for(var i = 0; i < keys.length; i++) {
       state = {
@@ -47,7 +53,30 @@ var Inferno = (function() {
 
   State.prototype.toggleStateObjects = function() {
     this._useStateObjects = !this._useStateObjects;
-  }
+  };
+
+  State.prototype.addListener = function(callback) {
+    this._listeners.push(callback);
+  };
+
+  State.prototype.computed = function(computedFunction) {
+    //faster than bind
+    var self = this;
+    return function() {
+      var turnBackOn = false;
+      var result = null;
+
+      if(self._useStateObjects === true) {
+        turnBackOn = true;
+        self._useStateObjects = false;
+      }
+      result = computedFunction();
+      if(turnBackOn === true) {
+        self._useStateObjects = true;
+      }
+      return result;
+    }
+  };
 
   var Inferno = {};
 
@@ -57,9 +86,9 @@ var Inferno = (function() {
 
   Inferno.append = function appendToDom(template, state, root) {
     var rootNode = null;
-    state.toggleStateObjects();
+    state._useStateObjects = true;
     rootNode = template();
-    state.toggleStateObjects();
+    state._useStateObjects = false;
     createNode(rootNode, root);
     return rootNode;
   };
@@ -71,11 +100,11 @@ var Inferno = (function() {
   Inferno.mount = function mountToDom(template, state, root) {
     var rootNode = this.append(template, state, root);
 
-    // watch.addListener(function() {
-    //   console.time("Inferno update");
-    //   updateNode(rootNode, root);
-    //   console.timeEnd("Inferno update");
-    // });
+    state.addListener(function() {
+      console.time("Inferno update");
+      updateNode(rootNode, root);
+      console.timeEnd("Inferno update");
+    });
   };
 
   Inferno.TemplateHelpers = {
@@ -114,21 +143,54 @@ var Inferno = (function() {
       children = child;
     }
 
-    //determine if we are working with a state function
-    if(child !== null && child.value != null) {
-      //create a new text binding
-      binding = {state: child, type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
+    //determine if we are working with a binding object
+    if((child !== null && child.value != null) || typeof child === "function") {
+      //makes a Text Binding object that has an on origin of Function
+      if(typeof child === "function") {
+        binding = {
+          state: child,
+          type: BindingTypes.Text,
+          origin: BindingOrigin.Function,
+          category: BindingCategory.Child,
+          lastVal: ""
+        };
+      } else {
+        binding = {
+          state: child,
+          type: BindingTypes.Text,
+          origin: BindingOrigin.StateObject,
+          category: BindingCategory.Child,
+          lastVal: ""
+        };
+      }
       children = binding;
       bindings.push(binding);
     } else if(child != null && child.type === BindingTypes.Map) {
-      //handle maps
+      //TODO handle maps
       bindings.push(child);
     } else if (oneChild === false) {
-      //otherwiswe we can look through our children and add the bindings that way
       for(i = 0; i < children.length; i++) {
-        //we only want normal bindings, not the nodes
-        if(children[i] != null && children[i].value != null) {
-          binding = {state: children[i], type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
+        //We check to see if the child looks like a binding object
+        if((children[i] != null && children[i].value != null) || typeof children[i] === "function") {
+          //makes a Text Binding object that has an on origin of Function
+          if(typeof children[i] === "function") {
+            binding = {
+              state: children[i],
+              type: BindingTypes.Text,
+              origin: BindingOrigin.Function,
+              category: BindingCategory.Child,
+              lastVal: ""
+            };
+          } else {
+            //makes a Text Binding object that has an on origin of StateObject
+            binding = {
+              state: children[i],
+              type: BindingTypes.Text,
+              origin: BindingOrigin.StateObject,
+              category: BindingCategory.Child,
+              lastVal: ""
+            };
+          }
           children[i] = binding;
           bindings.push(binding);
         }
@@ -138,8 +200,24 @@ var Inferno = (function() {
     //then check through our attrs
     if(attrs !== null) {
       for(key in attrs) {
-        if(attrs[key] != null && attrs[key].value != null) {
-          binding = {state: attrs[key], type: BindingTypes.Text, category: BindingCategory.Attribute, lastVal: ""};
+        if((attrs[key] != null && attrs[key].value != null) || typeof attrs[key] === "function") {
+          if(typeof attrs[key] === "function") {
+            binding = {
+              state: attrs[key],
+              type: BindingTypes.Text,
+              origin: BindingOrigin.Function,
+              category: BindingCategory.Attribute,
+              lastVal: ""
+            };
+          } else {
+            binding = {
+              state: attrs[key],
+              type: BindingTypes.Text,
+              origin: BindingOrigin.StateObject,
+              category: BindingCategory.Attribute,
+              lastVal: ""
+            };
+          }
           attrs[key] = binding;
           bindings.push(binding);
         }
@@ -316,7 +394,11 @@ var Inferno = (function() {
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
         if(binding.type === BindingTypes.Text) {
-          val = binding.state.value;
+          if(binding.origin === BindingOrigin.StateObject) {
+            val = binding.state.value;
+          } else {
+            val = binding.state();
+          }
           binding.lastVal = val;
         } else if(binding.type === BindingTypes.Map) {
           //if it's a map, get the value and store it as the lastVal
