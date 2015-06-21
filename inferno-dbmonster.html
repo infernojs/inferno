@@ -15,33 +15,74 @@
 </div>
 
 <script src="inferno.js"></script>
-<script src="t7.js"></script>
 <script src="data.js"></script>
+<script src="t7.js"></script>
 
 <script type="text/javascript">
 
   var rootNode = null;
-  var once = true;
+  var once = false;
   var dbs = [];
+  var body = document.getElementById('body');
   var map = Inferno.TemplateHelpers.map;
 
-  function queries(query) {
-    return t7`
-      <td class="${ 'Query ' + elapsedClassName(query.elapsed) }">
-        <span class="foo">${ formatElapsed(query.elapsed) }</span>
-        <div class="popover left">
-          <div class="popover-content">${ query.query }</div>
-          <div class="arrow"></div>
-        </div>
-      </td>
-    `
+  function getQuery(query) {
+    return query.query;
   }
 
-  function getTopFiveQueries(db) {
+  function getTime(dbIndex, queryIndex) {
+    var query = dbs[dbIndex].topFiveQueries[queryIndex];
+    return formatElapsed(query.elapsed);
+  }
+
+  function getQueryText(dbIndex, queryIndex) {
+    var query = dbs[dbIndex].topFiveQueries[queryIndex];
+    return getQuery(query);
+  }
+
+  function getElapsedClass(dbIndex, queryIndex) {
+    var query = dbs[dbIndex].topFiveQueries[queryIndex];
+    return 'Query ' + elapsedClassName(query.elapsed);
+  }
+
+  function queries(dbIndex, query, queryIndex) {
+    return Inferno.createElement("td", {class: getElapsedClass.bind(null, dbIndex, queryIndex) },
+      Inferno.createElement("span", {class: "foo"},getTime.bind(null, dbIndex, queryIndex)),
+      Inferno.createElement("div", {class: "popover left"},
+        Inferno.createElement("div", {class: "popover-content"}, getQueryText.bind(null, dbIndex, queryIndex)),
+        Inferno.createElement("div", {class: "arrow"}, null)
+      )
+    )
+  }
+
+  //t7 version
+  // function queries(dbIndex, query, queryIndex) {
+  //   return t7`
+  //     <td class="${ getElapsedClass.bind(null, dbIndex, queryIndex) }">
+  //       <span class="foo">${ getTime.bind(null, dbIndex, queryIndex) }</span>
+  //       <div class="popover left">
+  //         <div class="popover-content">${ getQueryText.bind(null, dbIndex, queryIndex) }</div>
+  //         <div class="arrow"></div>
+  //       </div>
+  //     </td>`
+  // }
+
+  function getTop5Queries(index) {
+    var db = dbs[index];
     return db.topFiveQueries;
   }
 
-  function database(db) {
+  function getQueriesLength(index) {
+    var db = dbs[index];
+    return db.queries.length;
+  }
+
+  function getCountClass(index) {
+    var db = dbs[index];
+    return getCountClassName(db);
+  }
+
+  function database(db, index) {
     return t7`
       <tr key="${ db.name }">
 
@@ -50,12 +91,12 @@
         </td>
 
         <td class="query-count">
-          <span class="${ getCountClassName(db) }">
-            ${ db.queries.length }
+          <span class="${ getCountClass.bind(null, index) }">
+            ${ getQueriesLength.bind(null, index) }
           </span>
         </td>
 
-        ${ map(getTopFiveQueries, queries) }
+        ${ map(getTop5Queries.bind(null, index), queries.bind(null, index)) }
 
       </tr>
     `
@@ -65,7 +106,7 @@
     return dbs;
   }
 
-  function table(dbs) {
+  function table() {
     return t7`
       <table class="table table-striped latest-data">
         <tbody>
@@ -80,9 +121,10 @@
 
 
     if(rootNode === null) {
-      rootNode = Inferno.append(table, null, document.getElementById('body'));
+      rootNode = Inferno.append(table, null, body);
     } else {
-      cito.vdom.update(rootNode, table);
+      //cito.vdom.update(rootNode, table);
+      Inferno.update(rootNode, null, body);
     }
 
     Monitoring.renderRate.ping();

@@ -355,8 +355,8 @@ var Inferno = (function() {
   }
 
   function setTextContent(domElement, text, update) {
-    if (text) {
-      if(update) {
+    //if (text) {
+      if(update && domElement.firstChild) {
         domElement.firstChild.nodeValue = text;
       } else {
         if (supportsTextContent) {
@@ -365,14 +365,15 @@ var Inferno = (function() {
           domElement.innerText = text;
         }
       }
-    } else {
-      if (update) {
-        while (domElement.firstChild) {
-          domElement.removeChild(domElement.firstChild);
-        }
-      }
-      domElement.appendChild(emptyTextNode());
-    }
+    //TODO get this working again?
+    //} else {
+      // if (update) {
+      //   while (domElement.firstChild) {
+      //     domElement.removeChild(domElement.firstChild);
+      //   }
+      // }
+      // domElement.appendChild(emptyTextNode());
+    //}
   };
 
   function createNode(node, parent) {
@@ -417,7 +418,7 @@ var Inferno = (function() {
         }
         node.lastVal = val;
         for(ii = 0; ii < val.length; ii++) {
-          child = node.constructor(val[ii]);
+          child = node.constructor(val[ii], ii);
           node.children.push(child);
           createNode(child, parent);
         }
@@ -483,6 +484,13 @@ var Inferno = (function() {
       if(updateAttr === true) {
         node.node.oldAttrs = updateAttributes(node.node.dom, node.node.tag, node.node.attrs, node.node.oldAttrs);
         //if this node has children, process them too
+        if(node.node.children instanceof Array) {
+          for(i = 0; i < node.node.children.length; i++) {
+            if(typeof node.node.children[i] !== "string") {
+              updateNode(node.node.children[i], node.node.dom);
+            }
+          }
+        }
       }
 
       if(updateChild === true) {
@@ -521,6 +529,8 @@ var Inferno = (function() {
     } else if(node.type != null && node.type === BindingTypes.Map) {
       if(node.origin === BindingOrigin.StateObject) {
         val = node.state.value;
+      } else {
+        val = node.function();
       }
       if(node.lastVal !== val) {
         //check all children
@@ -533,12 +543,16 @@ var Inferno = (function() {
             //first we check if the child was a binding
             if(child != null && child.type === BindingTypes.Text) {
               //we can then update the bindings accordingly
+            } else if(child != null && child.type === BindingTypes.Node) {
+              updateNode(child, parent);
+              needsRebuild = false;
             } else {
               //if we have no bindings, will simply look through the child
               for(ii = 0; ii < child.children.length; ii++) {
                 //we need to check if all the children are strings, if so, we simply
                 //need to rebuild this map binding node
-                if(typeof child.children[ii] !== "string") {
+                if(child.children[ii] != null && typeof child.children[ii] !== "string") {
+                  updateNode(child.children[ii], child.dom);
                   needsRebuild = false;
                 }
               }
@@ -547,7 +561,7 @@ var Inferno = (function() {
             //and start again (this is likely as the mapped object has returned no StateObjects)
             if(needsRebuild === true) {
               //build a new child
-              newChild = node.constructor(val[i]);
+              newChild = node.constructor(val[i], i);
               //replace node
               compareAndReplaceNode(child, newChild, parent);
             }

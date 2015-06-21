@@ -204,6 +204,7 @@ var t7 = (function() {
           functionText.push(tagParams.join(',') + ")");
         } else {
           //add a text entry
+          root = root.replace(/(\r\n|\n|\r)/gm,"\\n");
           functionText.push("'" + root + "'");
         }
       }
