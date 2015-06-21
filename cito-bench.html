@@ -4,8 +4,24 @@
 </head>
 <body>
   <div id="app"></div>
+  <div style="margin-top: 20px;" id="time"></div>
   <script src="cito.js"></script>
   <script>
+
+    var timeDiv = document.getElementById("time");
+
+    var lastTime = 0;
+
+    function logTimeStart() {
+      lastTime = window.performance.now();
+    }
+
+    function logTimeEnd(event) {
+      var time = Math.round(window.performance.now() - lastTime) + "ms";
+      var newTimeDiv = document.createElement("div");
+      newTimeDiv.textContent = event + " - " + time
+      timeDiv.appendChild(newTimeDiv);
+    }
 
     var myName = "Dominic";
     var className = "foo";
@@ -241,28 +257,28 @@
     update();
 
     console.log("Update with no data changed");
-    console.time("Cito update");
+    logTimeStart();
     for(var i = 0; i < 10000; i++) {
       update();
     }
-    console.timeEnd("Cito update");
+    logTimeEnd("Cito update");
 
     console.log("Update with only data changed");
-    console.time("Cito update");
+    logTimeStart();
     for(var i = 0; i < 10000; i++) {
       myName = "Rand " + (Math.round(Math.random() * 10000));
       update();
     }
-    console.timeEnd("Cito update");
+    logTimeEnd("Cito update");
 
     console.log("Update with both child and attrs data changed");
-    console.time("Cito update");
+    logTimeStart();
     for(var i = 0; i < 10000; i++) {
       myName = "Rand " + (Math.round(Math.random() * 10000));
       className = "foo-" + i;
       update();
     }
-    console.timeEnd("Cito update");
+    logTimeEnd("Cito update");
 
   </script>
 </body>

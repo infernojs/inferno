@@ -4,15 +4,26 @@
 </head>
 <body>
   <div id="app"></div>
+  <div style="margin-top: 20px;" id="time"></div>
   <script src="t7.js"></script>
   <script src="im7.js"></script>
   <script src="inferno.js"></script>
   <script>
 
-    // var $ = Inferno.GetterSetter;
-    //
-    // var myName = $("Dominic");
-    // var className = $("foo");
+    var timeDiv = document.getElementById("time");
+
+    var lastTime = 0;
+
+    function logTimeStart() {
+      lastTime = window.performance.now();
+    }
+
+    function logTimeEnd(event) {
+      var time = Math.round(window.performance.now() - lastTime) + "ms";
+      var newTimeDiv = document.createElement("div");
+      newTimeDiv.textContent = event + " - " + time
+      timeDiv.appendChild(newTimeDiv);
+    }
 
     var state = Inferno.createState({
       myName: "Dominic",
@@ -22,15 +33,15 @@
     function Foo($) {
       //make our private varaibles
       return Inferno.createElement("div", null,
-        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
-        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
+        Inferno.createElement("span", {class: state.className}, state.myName),
+        Inferno.createElement("span", {class: state.className}, state.myName),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
-        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
-        Inferno.createElement("span", {class: state.getClassName}, state.getMyName),
+        Inferno.createElement("span", {class: state.className}, state.myName),
+        Inferno.createElement("span", {class: state.className}, state.myName),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
         Inferno.createElement("div", {class: "test"}, "static node"),
@@ -55,31 +66,31 @@
     };
 
     var app = document.getElementById("app");
-    var rootNode = Inferno.append(Foo, app);
+    var rootNode = Inferno.append(Foo, state, app);
 
     console.log("Update with no data changed");
-    console.time("Inferno update");
+    logTimeStart();
     for(var i = 0; i < 10000; i++) {
       Inferno.update(rootNode, app);
     }
-    console.timeEnd("Inferno update");
+    logTimeEnd("Inferno update");
 
     console.log("Update with only data changed");
-    console.time("Inferno update");
+    logTimeStart();
     for(var i = 0; i < 10000; i++) {
-      state.setMyName("Rand " + (Math.round(Math.random() * 10000)));
+      state.myName = "Rand " + (Math.round(Math.random() * 10000));
       Inferno.update(rootNode, app);
     }
-    console.timeEnd("Inferno update");
+    logTimeEnd("Inferno update");
 
     console.log("Update with both child and attrs data changed");
-    console.time("Inferno update");
+    logTimeStart();
     for(var i = 0; i < 10000; i++) {
-      state.setMyName("Rand " + (Math.round(Math.random() * 10000)));
-      state.setClassName("foo-" + i);
+      state.myName = "Rand " + (Math.round(Math.random() * 10000));
+      state.className = "foo-" + i ;
       Inferno.update(rootNode, app);
     }
-    console.timeEnd("Inferno update");
+    logTimeEnd("Inferno update");
 
   </script>
 </body>

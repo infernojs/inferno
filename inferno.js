@@ -19,48 +19,47 @@ var Inferno = (function() {
 
   var supportsTextContent = 'textContent' in document;
 
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
   function State(data) {
-    var keys = Object.keys(data);
+    var keys = Object.keys(data), state = null, getter = null, self = this;
+
     this._hasChanged = false;
+    this._useStateObjects = false;
+
     for(var i = 0; i < keys.length; i++) {
-      this._initProp(keys[i], data[keys[i]]);
+      state = {
+        value: data[keys[i]]
+      };
+
+      Object.defineProperty(this, keys[i], {
+        get: function() {
+          if(self._useStateObjects === false) {
+            return this.value;
+          }
+          return this;
+        }.bind(state),
+        set: function(newVal) {
+          this.value = newVal;
+          self._hasChanged = true;
+        }.bind(state)
+      });
     }
   };
 
-  State.prototype._initProp = function(key, value) {
-    var self = this;
-    this["get" + capitalizeFirstLetter(key)] = function() {
-      return value;
-    }
-
-    this["set" + capitalizeFirstLetter(key)] = function(val) {
-      value = val;
-      self._hasChanged = true;
-    }
-  };
+  State.prototype.toggleStateObjects = function() {
+    this._useStateObjects = !this._useStateObjects;
+  }
 
   var Inferno = {};
-
-  Inferno.GetterSetter = function(value) {
-    return function GetterSetter(newVal) {
-      if(newVal != null) {
-        value = newVal;
-      }
-      return value;
-    }
-  };
 
   Inferno.createState = function(data) {
     return new State(data);
   };
 
-  Inferno.append = function appendToDom(template, root) {
+  Inferno.append = function appendToDom(template, state, root) {
     var rootNode = null;
+    state.toggleStateObjects();
     rootNode = template();
+    state.toggleStateObjects();
     createNode(rootNode, root);
     return rootNode;
   };
@@ -70,7 +69,7 @@ var Inferno = (function() {
   };
 
   Inferno.mount = function mountToDom(template, state, root) {
-    var rootNode = this.append(template, root);
+    var rootNode = this.append(template, state, root);
 
     // watch.addListener(function() {
     //   console.time("Inferno update");
@@ -116,7 +115,7 @@ var Inferno = (function() {
     }
 
     //determine if we are working with a state function
-    if(typeof child === "function") {
+    if(child !== null && child.value != null) {
       //create a new text binding
       binding = {state: child, type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
       children = binding;
@@ -128,7 +127,7 @@ var Inferno = (function() {
       //otherwiswe we can look through our children and add the bindings that way
       for(i = 0; i < children.length; i++) {
         //we only want normal bindings, not the nodes
-        if(typeof children[i] === "function") {
+        if(children[i] != null && children[i].value != null) {
           binding = {state: children[i], type: BindingTypes.Text, category: BindingCategory.Child, lastVal: ""};
           children[i] = binding;
           bindings.push(binding);
@@ -139,7 +138,7 @@ var Inferno = (function() {
     //then check through our attrs
     if(attrs !== null) {
       for(key in attrs) {
-        if(typeof attrs[key] === "function") {
+        if(attrs[key] != null && attrs[key].value != null) {
           binding = {state: attrs[key], type: BindingTypes.Text, category: BindingCategory.Attribute, lastVal: ""};
           attrs[key] = binding;
           bindings.push(binding);
@@ -317,7 +316,7 @@ var Inferno = (function() {
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
         if(binding.type === BindingTypes.Text) {
-          val = binding.state();
+          val = binding.state.value;
           binding.lastVal = val;
         } else if(binding.type === BindingTypes.Map) {
           //if it's a map, get the value and store it as the lastVal
@@ -340,7 +339,7 @@ var Inferno = (function() {
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
         if(binding.type === BindingTypes.Text) {
-          val = binding.state();
+          val = binding.state.value;
           if(val !== binding.lastVal) {
             binding.lastVal = val;
             if(binding.category === BindingCategory.Child) {
