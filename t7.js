@@ -142,7 +142,7 @@ var t7 = (function() {
             functionText.push("{tag: '" + root.tag + "'");
 
             if(root.key != null) {
-              tagParams.push("key: '" + root.key + "'");
+              tagParams.push("key: " + root.key);
             }
 
             //build the attrs
@@ -190,7 +190,7 @@ var t7 = (function() {
             buildAttrsParams(root, attrsParams);
 
             if(root.key != null) {
-              attrsParams.push("'key':'" + root.key + "'");
+              attrsParams.push("'key':" + root.key);
             }
 
             tagParams.push("{" + attrsParams.join(',') + "}");
@@ -421,7 +421,7 @@ var t7 = (function() {
           attrs[attrParts[0]] = attrParts[1];
         } else {
           if(attrParts[0] === "key") {
-            key = "'props." + attrParts[1];
+            key = "props." + attrParts[1];
           } else {
             attrs[attrParts[0]] = "props." + attrParts[1];
           }

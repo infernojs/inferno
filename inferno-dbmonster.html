@@ -1,0 +1,101 @@
+<html>
+<head>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="link">
+  You're looking at a Cito+t7<br>
+  version of <a href="https://dbmonster.firebaseapp.com/">DBMonster</a>.<br>
+  <a class="center" href="https://github.com/trueadm/dbmonster">See it on GitHub</a>
+</div>
+
+<div id="body">
+</div>
+
+<script src="inferno.js"></script>
+<script src="t7.js"></script>
+<script src="data.js"></script>
+
+<script type="text/javascript">
+
+  var rootNode = null;
+  var once = true;
+  var dbs = [];
+  var map = Inferno.TemplateHelpers.map;
+
+  function queries(query) {
+    return t7`
+      <td class="${ 'Query ' + elapsedClassName(query.elapsed) }">
+        <span class="foo">${ formatElapsed(query.elapsed) }</span>
+        <div class="popover left">
+          <div class="popover-content">${ query.query }</div>
+          <div class="arrow"></div>
+        </div>
+      </td>
+    `
+  }
+
+  function getTopFiveQueries(db) {
+    return db.topFiveQueries;
+  }
+
+  function database(db) {
+    return t7`
+      <tr key="${ db.name }">
+
+        <td class="dbname">
+          ${ db.name }
+        </td>
+
+        <td class="query-count">
+          <span class="${ getCountClassName(db) }">
+            ${ db.queries.length }
+          </span>
+        </td>
+
+        ${ map(getTopFiveQueries, queries) }
+
+      </tr>
+    `
+  }
+
+  function getDbs() {
+    return dbs;
+  }
+
+  function table(dbs) {
+    return t7`
+      <table class="table table-striped latest-data">
+        <tbody>
+          ${ map(getDbs, database )}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function update() {
+    dbs = getData();
+
+
+    if(rootNode === null) {
+      rootNode = Inferno.append(table, null, document.getElementById('body'));
+    } else {
+      cito.vdom.update(rootNode, table);
+    }
+
+    Monitoring.renderRate.ping();
+
+    if(once === false) {
+      requestAnimationFrame(update);
+    }
+  }
+
+  requestAnimationFrame(update);
+
+</script>
+<script src="lib/memory-stats.js"></script>
+<script src="lib/monitor.js"></script>
+</body>
+</html>

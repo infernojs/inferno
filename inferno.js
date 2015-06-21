@@ -1,11 +1,6 @@
 var Inferno = (function() {
   "use strict";
 
-  if(typeof im7 == "undefined") {
-    throw Error("Inferno requires the im7.js library for immutable objects");
-    return;
-  }
-
   var BindingTypes = {
     Node: 1,
     Text: 2,
@@ -101,9 +96,13 @@ var Inferno = (function() {
 
   Inferno.append = function appendToDom(template, state, root) {
     var rootNode = null;
-    state._useStateObjects = true;
+    if(state != null) {
+      state._useStateObjects = true;
+    }
     rootNode = template();
-    state._useStateObjects = false;
+    if(state != null) {
+      state._useStateObjects = false;
+    }
     createNode(rootNode, root);
     return rootNode;
   };
@@ -127,7 +126,7 @@ var Inferno = (function() {
       if(typeof object === "function") {
         return {
           type: BindingTypes.Map,
-          state: object,
+          function: object,
           origin: BindingOrigin.Function,
           constructor: constructor,
           lastVal: null
