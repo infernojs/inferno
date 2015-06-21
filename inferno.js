@@ -357,7 +357,7 @@ var Inferno = (function() {
 
   function setTextContent(domElement, text, update) {
     if (text) {
-      if(domElement.firstChild) {
+      if(update) {
         domElement.firstChild.nodeValue = text;
       } else {
         if (supportsTextContent) {
