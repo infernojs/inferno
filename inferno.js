@@ -193,7 +193,7 @@ var Inferno = (function() {
       bindings.push(binding);
     } else if(child != null && child.type === BindingTypes.Map) {
       //TODO handle maps
-      debugger;
+      //debugger;
       bindings.push(child);
     } else if (oneChild === false) {
       for(i = 0; i < children.length; i++) {
@@ -357,10 +357,14 @@ var Inferno = (function() {
 
   function setTextContent(domElement, text, update) {
     if (text) {
-      if (supportsTextContent) {
-        domElement.textContent = text;
+      if(domElement.firstChild) {
+        domElement.firstChild.nodeValue = text;
       } else {
-        domElement.innerText = text;
+        if (supportsTextContent) {
+          domElement.textContent = text;
+        } else {
+          domElement.innerText = text;
+        }
       }
     } else {
       if (update) {
@@ -570,7 +574,21 @@ var Inferno = (function() {
   };
 
   function compareAndReplaceNode(oldNode, newNode, parent) {
-    debugger;
+    var i = 0, l = 0;
+    if(oldNode.tag === newNode.tag) {
+      //check if children need re-rendering
+      if(oldNode.children !== newNode.children) {
+        for(i = 0, l = newNode.children.length; i < l; i++) {
+          if(oldNode.children[i] !== newNode.children[i]) {
+            if(typeof oldNode.children[i] === "string" && typeof newNode.children[i] === "string") {
+              setTextContent(oldNode.dom.childNodes[i], newNode.children[i], true);
+            }
+          }
+        }
+      }
+      //check if attributes need re-rendering
+
+    }
   };
 
   return Inferno;
