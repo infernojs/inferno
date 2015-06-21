@@ -56,7 +56,22 @@ var Inferno = (function() {
   };
 
   State.prototype.addListener = function(callback) {
+    //if this is our first listerner, enable to auto checker
+    if(this._listeners.length === 0) {
+      this._checkForChanges();
+    }
     this._listeners.push(callback);
+  };
+
+  State.prototype._checkForChanges = function() {
+    if(this._hasChanged === true) {
+      this._hasChanged = false;
+      for(var i = 0, l = this._listeners.length; i < l; i++) {
+        this._listeners[i]();
+      }
+    }
+
+    requestAnimationFrame(this._checkForChanges.bind(this));
   };
 
   State.prototype.computed = function(computedFunction) {
@@ -108,13 +123,24 @@ var Inferno = (function() {
   };
 
   Inferno.TemplateHelpers = {
-    map: function(array, constructor) {
-      return {
-        type: BindingTypes.Map,
-        array: array,
-        constructor: constructor,
-        lastVal: null
-      };
+    map: function(object, constructor) {
+      if(typeof object === "function") {
+        return {
+          type: BindingTypes.Map,
+          state: object,
+          origin: BindingOrigin.Function,
+          constructor: constructor,
+          lastVal: null
+        };
+      } else {
+        return {
+          type: BindingTypes.Map,
+          state: object,
+          origin: BindingOrigin.StateObject,
+          constructor: constructor,
+          lastVal: null
+        };
+      }
     }
   };
 
@@ -148,7 +174,7 @@ var Inferno = (function() {
       //makes a Text Binding object that has an on origin of Function
       if(typeof child === "function") {
         binding = {
-          state: child,
+          function: child,
           type: BindingTypes.Text,
           origin: BindingOrigin.Function,
           category: BindingCategory.Child,
@@ -167,6 +193,7 @@ var Inferno = (function() {
       bindings.push(binding);
     } else if(child != null && child.type === BindingTypes.Map) {
       //TODO handle maps
+      debugger;
       bindings.push(child);
     } else if (oneChild === false) {
       for(i = 0; i < children.length; i++) {
@@ -175,7 +202,7 @@ var Inferno = (function() {
           //makes a Text Binding object that has an on origin of Function
           if(typeof children[i] === "function") {
             binding = {
-              state: children[i],
+              function: children[i],
               type: BindingTypes.Text,
               origin: BindingOrigin.Function,
               category: BindingCategory.Child,
@@ -203,7 +230,7 @@ var Inferno = (function() {
         if((attrs[key] != null && attrs[key].value != null) || typeof attrs[key] === "function") {
           if(typeof attrs[key] === "function") {
             binding = {
-              state: attrs[key],
+              function: attrs[key],
               type: BindingTypes.Text,
               origin: BindingOrigin.Function,
               category: BindingCategory.Attribute,
@@ -380,7 +407,12 @@ var Inferno = (function() {
       } else if(node.type === BindingTypes.Map) {
         //then itteratoe of the object
         node.children = [];
-        val = node.array;
+        if(node.origin === BindingOrigin.StateObject) {
+          val = node.state.value;
+        } else {
+          val = node.function();
+        }
+        node.lastVal = val;
         for(ii = 0; ii < val.length; ii++) {
           child = node.constructor(val[ii]);
           node.children.push(child);
@@ -397,7 +429,7 @@ var Inferno = (function() {
           if(binding.origin === BindingOrigin.StateObject) {
             val = binding.state.value;
           } else {
-            val = binding.state();
+            val = binding.function();
           }
           binding.lastVal = val;
         } else if(binding.type === BindingTypes.Map) {
@@ -413,7 +445,8 @@ var Inferno = (function() {
   };
 
   function updateNode(node, parent) {
-    var l = 0, i = 0, binding = null, val = null, child = null, updateChild = false, updateAttr = false;
+    var l = 0, i = 0, ii = 0, binding = null, val = null, child = null, newChild = null,
+        updateChild = false, updateAttr = false, needsRebuild = false;
 
     //we need to find the Binding Nodes first
     if (node.type != null && node.type === BindingTypes.Node) {
@@ -421,7 +454,11 @@ var Inferno = (function() {
       for(l = node.bindings.length; i < l; i++) {
         binding = node.bindings[i];
         if(binding.type === BindingTypes.Text) {
-          val = binding.state.value;
+          if(binding.origin === BindingOrigin.StateObject) {
+            val = binding.state.value;
+          } else {
+            val = binding.function();
+          }
           if(val !== binding.lastVal) {
             binding.lastVal = val;
             if(binding.category === BindingCategory.Child) {
@@ -478,6 +515,44 @@ var Inferno = (function() {
           }
         }
       }
+    } else if(node.type != null && node.type === BindingTypes.Map) {
+      if(node.origin === BindingOrigin.StateObject) {
+        val = node.state.value;
+      }
+      if(node.lastVal !== val) {
+        //check all children
+        for(i = 0, l = val.length; i < l; i++) {
+          //check if we have a change in the list
+          if(val[i] !== node.lastVal[i]) {
+            needsRebuild = true;
+            //we need to update the child
+            child  = node.children[i];
+            //first we check if the child was a binding
+            if(child != null && child.type === BindingTypes.Text) {
+              //we can then update the bindings accordingly
+            } else {
+              //if we have no bindings, will simply look through the child
+              for(ii = 0; ii < child.children.length; ii++) {
+                //we need to check if all the children are strings, if so, we simply
+                //need to rebuild this map binding node
+                if(typeof child.children[ii] !== "string") {
+                  needsRebuild = false;
+                }
+              }
+            }
+            //if all the children are strings and we need to rebuild, recall the constructor
+            //and start again (this is likely as the mapped object has returned no StateObjects)
+            if(needsRebuild === true) {
+              //build a new child
+              newChild = node.constructor(val[i]);
+              //replace node
+              compareAndReplaceNode(child, newChild, parent);
+            }
+          }
+        }
+        //finally set lastVal to the new val
+        node.lastVal = val;
+      }
     } else if(node.children instanceof Array) {
       //we loop through all children and update them
       for(l = node.children.length; i < l; i++) {
@@ -492,6 +567,10 @@ var Inferno = (function() {
         updateNode(node.children, node.dom);
       }
     }
+  };
+
+  function compareAndReplaceNode(oldNode, newNode, parent) {
+    debugger;
   };
 
   return Inferno;

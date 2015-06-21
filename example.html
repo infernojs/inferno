@@ -37,15 +37,21 @@
       return state.myName + " " + state.myLastName;
     });
 
+    //remember that maps must NOT contain logic, they are templates only
+    //if you need to handle logic, keep that for computedFunctions and your state
     function myMap(item) {
       return t7`<li>${ item }</li>`;
     }
 
+    //remember that maps must NOT contain logic, they are templates only
+    //if you need to handle logic, keep that for computedFunctions and your state
     function myMap2(item) {
       return t7`<li>My name is ${ item }</li>`;
     }
 
-    function Foo() {
+    //Foo is simply the template endpoint for our basic app, it must NOT contain logic as
+    //it does not get re-rendered (unlike fully virtual DOM frameworks)
+    function Template() {
       var map = Inferno.TemplateHelpers.map;
       //make our private varaibles
       return t7`
@@ -109,7 +115,7 @@
       // );
     };
 
-    Inferno.mount(Foo, state, document.getElementById("app"));
+    Inferno.mount(Template, state, document.getElementById("app"));
 
 
   </script>

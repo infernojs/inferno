@@ -26,8 +26,8 @@ var t7 = (function() {
   }
 
   for(ii = 1; ii < 15; ii++) {
-    functionProps["$" + ii] = null;
-    functionPlaceholders.push("$" + ii);
+    functionProps["__$" + ii + "__"] = null;
+    functionPlaceholders.push("__$" + ii + "__");
   };
 
   selfClosingTags = [
@@ -470,7 +470,7 @@ var t7 = (function() {
     tpl = template[0];
 
     for(; i < n; i++) {
-      functionProps["$" + i] = arguments[i];
+      functionProps["__$" + i + "__"] = arguments[i];
       tpl += template[i];
     };
 
