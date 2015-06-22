@@ -134,10 +134,24 @@ var Inferno = (function() {
     }
   }
 
-  function getStatePath(state, value) {
+  function getStatePath(state, value, stateIndex) {
     //we try to find out where the value exists currently in our state
     //this is obviously easier with immutable data
     var paths = [], foundIt = false;
+    if(stateIndex != null) {
+      if(state[stateIndex] === value) {
+        return stateIndex;
+      }
+      //to improve performance, lets using the state with stateIndex
+      paths.push(stateIndex);
+      var result = getStatePath(state[stateIndex], value, null);
+      if(typeof result === "string"){
+        paths.push(result);
+      } else {
+        paths = paths.concat(result);
+      }
+      return paths;
+    }
     for(var path in state) {
       if(state[path] === value) {
         //easy win, return the key
@@ -152,6 +166,7 @@ var Inferno = (function() {
         foundIt = deepCheckObject(state[path], value, paths);
 
         if(foundIt === true) {
+          debugger;
           return paths;
         }
         //we did not get the value, clear the paths and start again
@@ -175,7 +190,7 @@ var Inferno = (function() {
     }
   }
 
-  function createNode(node, parentNode, parentDom, state, rootState) {
+  function createNode(node, parentNode, parentDom, state, rootState, stateIndex) {
     var i = 0, l = 0, val = "", subNode = null, textNode = null;
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
@@ -191,8 +206,8 @@ var Inferno = (function() {
     if(node.bindAttrs != null) {
       for(i = 0, l = node.bindAttrs.length; i < l; i++) {
         subNode = node.bindAttrs[i];
-        subNode.statePath = getStatePath(state, subNode.initValue);
-        if(typeof subNode.statePath === "string") {
+        subNode.statePath = getStatePath(state, subNode.initValue, stateIndex);
+        if(typeof subNode.statePath === "string" || typeof subNode.statePath === "number") {
           val = state[subNode.statePath];
         } else {
           val = getStateValueFromPaths(state, subNode.statePath);
@@ -209,14 +224,14 @@ var Inferno = (function() {
           textNode = document.createTextNode(node.children[i]);
           node.dom.appendChild(textNode);
         } else {
-          createNode(node.children[i], node, node.dom, state, state);
+          createNode(node.children[i], node, node.dom, state, state, stateIndex);
         }
       }
     }
     //check if we have a child that needs binding
     else if (node.bindChild != null) {
-      node.bindChild.statePath = getStatePath(state, node.bindChild.initValue);
-      if(typeof node.bindChild.statePath === "string") {
+      node.bindChild.statePath = getStatePath(state, node.bindChild.initValue, stateIndex);
+      if(typeof node.bindChild.statePath === "string" || typeof node.bindChild.statePath === "number") {
         val = state[node.bindChild.statePath];
       } else {
         val = getStateValueFromPaths(state, node.bindChild.statePath);
@@ -226,7 +241,7 @@ var Inferno = (function() {
     }
     //check if we have dynamic children that need binding (usually a map or something similar)
     else if (node.bindChildren != null) {
-      node.bindChildren.statePath = getStatePath(state, node.bindChildren.initValue);
+      node.bindChildren.statePath = getStatePath(state, node.bindChildren.initValue, stateIndex);
       val = state[node.bindChildren.statePath];
       node.bindChildren.oldValue = val;
       node.children = [];
@@ -234,7 +249,7 @@ var Inferno = (function() {
       for(i = 0, l = val.length; i < l; i++) {
         subNode = node.bindChildren.constructor(val[i]);
         node.children.push(subNode);
-        createNode(subNode, node.bindChildren, node.dom, val, state);
+        createNode(subNode, node.bindChildren, node.dom, val, state, i);
       }
     }
   };
