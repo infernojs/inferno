@@ -6,7 +6,7 @@
 <body>
 
 <div id="link">
-  You're looking at a Cito+t7<br>
+  You're looking at a Cito+t7 (precompiled)<br>
   version of <a href="https://dbmonster.firebaseapp.com/">DBMonster</a>.<br>
   <a class="center" href="https://github.com/trueadm/dbmonster">See it on GitHub</a>
 </div>
@@ -14,58 +14,97 @@
 <div id="body">
 </div>
 
-<script src="t7.js"></script>
 <script src="cito.js"></script>
 <script src="data.js"></script>
-
+<script src="lib/memory-stats.js"></script>
+<script src="lib/monitor.js"></script>
 <script type="text/javascript">
 
   var rootNode = null;
 
   function queries(query) {
-    return t7`
-      <td class="${ 'Query ' + elapsedClassName(query.elapsed) }">
-        <span class="foo">${ formatElapsed(query.elapsed) }</span>
-        <div class="popover left">
-          <div class="popover-content">${ query.query }</div>
-          <div class="arrow"></div>
-        </div>
-      </td>
-    `
+    return {
+      tag: "td",
+      attrs: {
+        "class": 'Query ' + elapsedClassName(query.elapsed)
+      },
+      children: [
+        {
+          tag: "span",
+          attrs: {
+            "class": "foo"
+          },
+          children: formatElapsed(query.elapsed)
+        },
+        {
+          tag: "div",
+          attrs: {
+            "class": "popover left"
+          },
+          children: [
+            {
+              tag: "div",
+              attrs: {
+                "class": "popover-content"
+              },
+              children: query.query
+            },
+            {
+              tag: "div",
+              attrs: {
+                "class": "arrow"
+              },
+              children: null
+            }
+          ]
+        }
+      ]
+    }
   }
 
   function database(db) {
-    return t7`
-      <tr key="${ db.name }">
-
-        <td class="dbname">
-          ${ db.name }
-        </td>
-
-        <td class="query-count">
-          <span class="${ getCountClassName(db) }">
-            ${ db.queries.length }
-          </span>
-        </td>
-
-        ${ db.topFiveQueries.map( queries) }
-
-      </tr>
-    `
+    return {
+      tag: "tr",
+      key: db.name,
+      children: [
+        {
+          tag: "td",
+          attrs: {
+            "class": "dbname"
+          },
+          children: db.name
+        },
+        {
+          tag: "td",
+          attrs: {
+            "class": "query-count"
+          },
+          children: {
+            tag: "span",
+            attrs: {
+              "class": getCountClassName(db)
+            },
+            children: db.queries.length + ""
+          }
+        },
+      ].concat( db.topFiveQueries.map( queries) )
+    }
   }
-
-  var once = false;
 
   function update() {
     var dbs = getData();
 
-    var table = t7`
-      <table class="table table-striped latest-data">
-        <tbody>
-          ${ dbs.map( database )}
-        </tbody>
-      </table>
-    `;
+    var table = {
+      tag: "table",
+      attrs: {
+        "class": "table table-striped latest-data"
+      },
+      children: {
+        tag: "tbody",
+        children: dbs.map( database )
+      }
+    }
+    window.table = table;
 
     if(rootNode === null) {
       rootNode = cito.vdom.append(document.getElementById('body'), table);
@@ -75,15 +114,11 @@
 
     Monitoring.renderRate.ping();
 
-    if(once === false) {
-      requestAnimationFrame(update);
-    }
+    requestAnimationFrame(update);
   }
 
   requestAnimationFrame(update);
 
 </script>
-<script src="lib/memory-stats.js"></script>
-<script src="lib/monitor.js"></script>
 </body>
 </html>

@@ -7,116 +7,129 @@
   <script src="im7.js"></script>
   <script src="inferno.js"></script>
   <script src="t7.js"></script>
+  <script src="data.js"></script>
   <script>
 
-    var state = Inferno.createState({
+    var state = {
       myName: "Dominic",
-      className: "Foo",
+      className: "foo",
       myLastName: "Gannaway",
       deepName: "Deeeep!",
-      person: im7({
+      person: {
         name: "Fred",
         age: 30
-      }),
-      items: im7([
+      },
+      items: [
         "Dominic",
         "Jemma",
         "Charlie",
         "Harry"
-      ]),
-      items2: im7([
-        "Dominic",
-        "Jemma",
-        "Charlie",
-        "Harry"
-      ])
-    });
-
-    //an example of a computed property
-    var myFullName = state.computed(function() {
-      return state.myName + " " + state.myLastName;
-    });
-
-    //remember that maps must NOT contain logic, they are templates only
-    //if you need to handle logic, keep that for computedFunctions and your state
-    function myMap(item) {
-      return t7`<li>${ item }</li>`;
-    }
-
-    //remember that maps must NOT contain logic, they are templates only
-    //if you need to handle logic, keep that for computedFunctions and your state
-    function myMap2(item) {
-      return t7`<li>My name is ${ item }</li>`;
-    }
-
-    //Foo is simply the template endpoint for our basic app, it must NOT contain logic as
-    //it does not get re-rendered (unlike fully virtual DOM frameworks)
-    function Template() {
-      var map = Inferno.TemplateHelpers.map;
-      //make our private varaibles
-      return t7`
-        <div class="container">
-          <span class=${ state.className }>${ myFullName }</span>
-          <span class=${ state.className }>${ state.myName }</span>
-          <input value=${ "Test" } />
-          <div class="test">
-            Static node ${ state.myName }
-            <div class="test">
-              another static node
-              <div class="test">${ state.deepName }</div>
-            </div>
-            <span class=${ state.className }>
-              <div class="test"></div>
-              <div class="test">${ state.deepName }</div>
-            </span>
-            <div class="test">
-              static node
-              <button class="test">Click me!</button>
-            </div>
-            <ul>
-              ${ map(state.items, myMap) }
-            </ul>
-            <ul>
-              ${ map(state.items, myMap2) }
-            </ul>
-          </div>
-        </div>
-      `;
-      //
-      // return Inferno.createElement("div", null,
-      //   Inferno.createElement("span", {class: state.className}, state.myName),
-      //   Inferno.createElement("input", {value: state.person.name}, null),
-      //   Inferno.createElement("div", {class: "test"},
-      //     "static node",
-      //     state.myName,
-      //     Inferno.createElement("div", {class: "test"},
-      //       "another static node",
-      //       Inferno.createElement("div", {class: "test"}, state.deepName)
-      //     )
-      //   ),
-      //   Inferno.createElement("span", {class: state.className},
-      //     Inferno.createElement("div", {class: "test"}),
-      //     Inferno.createElement("div", {class: "test"}, state.deepName)
-      //   ),
-      //   Inferno.createElement("div", {class: "test"},
-      //     "static node",
-      //     Inferno.createElement("button", {class: "test"}, "Click me!")
-      //   ),
-      //   Inferno.createElement("ul", null,
-      //     map(state.items, function(item) {
-      //       return Inferno.createElement("li", null, item);
-      //     })
-      //   ),
-      //   Inferno.createElement("ul", null,
-      //     map(state.items, function(item) {
-      //       return Inferno.createElement("li", null, "My name is ", item);
-      //     })
-      //   )
-      // );
+      ],
+      dbs: getData()
     };
 
-    Inferno.mount(Template, state, document.getElementById("app"));
 
+    function template() {
+      var map = Inferno.TemplateHelpers.map;
+      var bind = Inferno.TemplateHelpers.bind;
+
+      return {
+        tag: "div",
+        attrs: [
+          {
+            name: "class",
+            value: "container"
+          }
+        ],
+        children: [
+          {
+            tag: "span",
+            bindAttrs: [
+              {
+                name: "class",
+                statePath: "",
+                initValue: state.className,
+                oldValue: null
+              }
+            ],
+            attrs: [
+              {
+                name: "id",
+                value: "test"
+              }
+            ],
+            bindChild: {
+              statePath: "",
+              initValue: state.myName,
+              oldValue: null
+            }
+          },
+          "Random static text FTW!",
+          {
+            tag: "ul",
+            bindChildren: {
+              initValue: state.items,
+              oldValue: null,
+              constructor: function(item) {
+                return {
+                  tag: "li",
+                  attrs: [
+                    {
+                      name: "class",
+                      value: "wow"
+                    }
+                  ],
+                  bindChild: {
+                    statePath: "",
+                    initValue: item,
+                    oldValue: null
+                  }
+                }
+              }
+            }
+          },
+          {
+            tag: "div",
+            attrs: [
+              {
+                name: "class",
+                value: "databases"
+              }
+            ],
+            bindChildren: {
+              initValue: state.dbs,
+              oldValue: null,
+              constructor: function(database) {
+                return {
+                  tag: "div",
+                  attrs: [
+                    {
+                      name: "class",
+                      value: "wow"
+                    }
+                  ],
+                  bindChild: {
+                    statePath: "",
+                    initValue: database.name,
+                    oldValue: null
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    };
+
+    var app = document.getElementById("app");
+    var root = Inferno.append(template, state, app);
+
+    //shortcut for dev purposes
+    function u() {
+      Inferno.update(root, app)
+    };
+
+    u();
 
   </script>
 </body>

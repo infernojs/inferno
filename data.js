@@ -1,7 +1,7 @@
 "use strict";
 
 var ENV = {
-  rows: 200,
+  rows: 1,
   timeout: 0
 };
 
