@@ -109,7 +109,9 @@
     if(rootNode === null) {
       rootNode = cito.vdom.append(document.getElementById('body'), table);
     } else {
+      console.time("cito update")
       cito.vdom.update(rootNode, table);
+      console.timeEnd("cito update")
     }
 
     Monitoring.renderRate.ping();

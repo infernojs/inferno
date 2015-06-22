@@ -16,9 +16,7 @@ var Inferno = (function() {
   };
 
   Inferno.update = function updateRootNode(rootNode, root) {
-    console.time("Inferno update");
     updateNode(rootNode, null, root, state, state);
-    console.timeEnd("Inferno update");
   };
 
   Inferno.mount = function mountToDom(template, state, root) {
@@ -166,6 +164,7 @@ var Inferno = (function() {
         }
         //deep check
         paths.push(path);
+
         foundIt = deepCheckObject(state[path], value, paths);
 
         if(foundIt === true) {
@@ -176,7 +175,6 @@ var Inferno = (function() {
       }
     }
     //no luck
-    //debugger
     return null;
   };
 
@@ -204,10 +202,10 @@ var Inferno = (function() {
         handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
       }
     }
-    //check if we have bindAttrs
-    if(node.bindAttrs != null) {
-      for(i = 0, l = node.bindAttrs.length; i < l; i++) {
-        subNode = node.bindAttrs[i];
+    //check if we have bindAttrsText
+    if(node.bindAttrsText != null) {
+      for(i = 0, l = node.bindAttrsText.length; i < l; i++) {
+        subNode = node.bindAttrsText[i];
         subNode.statePath = getStatePath(state, subNode.initValue, stateIndex);
         if(typeof subNode.statePath === "string" || typeof subNode.statePath === "number") {
           val = state[subNode.statePath];
@@ -215,7 +213,23 @@ var Inferno = (function() {
           val = getStateValueFromPaths(state, subNode.statePath);
         }
         subNode.oldValue = val;
-        handleNodeAttributes(node.tag, node.dom, node.bindAttrs[i].name, val);
+        handleNodeAttributes(node.tag, node.dom, node.bindAttrsText[i].name, val);
+      }
+    }
+    //check if we have bindAttrsText
+    if(node.bindAttrsComputed != null) {
+      for(i = 0, l = node.bindAttrsComputed.length; i < l; i++) {
+        subNode = node.bindAttrsComputed[i];
+        subNode.statePath = getStatePath(state, subNode.initValue, stateIndex);
+        if(typeof subNode.statePath === "string" || typeof subNode.statePath === "number") {
+          val = state[subNode.statePath];
+        } else {
+          val = getStateValueFromPaths(state, subNode.statePath);
+        }
+        subNode.oldValue = val;
+        computedVal = subNode.computed(val);
+        subNode.oldComputed = computedVal;
+        handleNodeAttributes(node.tag, node.dom, node.bindAttrsComputed[i].name, computedVal);
       }
     }
     //check if we have children
@@ -268,14 +282,22 @@ var Inferno = (function() {
     //check if we have dynamic children that are maps
     else if (node.bindMap != null) {
       node.bindMap.statePath = getStatePath(state, node.bindMap.initValue, stateIndex);
-      val = state[node.bindMap.statePath];
+      if(typeof node.bindMap.statePath === "string" || typeof node.bindMap.statePath === "number") {
+        val = state[node.bindMap.statePath];
+      } else {
+        val = getStateValueFromPaths(state, node.bindMap.statePath);
+      }
       node.bindMap.oldValue = val;
       node.children = [];
       //then we construct each of the children
       for(i = 0, l = val.length; i < l; i++) {
         subNode = node.bindMap.constructor(val[i]);
         node.children.push(subNode);
-        createNode(subNode, node.bindMap, node.dom, val, state, i);
+        if(node.dom) {
+          createNode(subNode, node.bindMap, node.dom, val, state, i);
+        } else {
+          createNode(subNode, node.bindMap, parentDom, val, state, i);
+        }
       }
     }
   };
@@ -293,17 +315,17 @@ var Inferno = (function() {
   };
 
   function updateNode(node, parentNode, parentDom, state, rootState) {
-    var i = 0, l = 0, val = null, newState = state;
+    var i = 0, l = 0, val = null, newState = state, computedVal = "", subNode = null, diff = 0;
     //we basically skip everything until we see a bind property
-    if(node.bindAttrs != null) {
-      for(i = 0, l = node.bindAttrs.length; i < l; i++) {
-        if(typeof node.bindAttrs[i].statePath === "string" || typeof node.bindAttrs[i].statePath === "number") {
-          val = state[node.bindAttrs[i].statePath];
+    if(node.bindAttrsText != null) {
+      for(i = 0, l = node.bindAttrsText.length; i < l; i++) {
+        if(typeof node.bindAttrsText[i].statePath === "string" || typeof node.bindAttrsText[i].statePath === "number") {
+          val = state[node.bindAttrsText[i].statePath];
         }
-        if(node.bindAttrs[i].oldValue !== val) {
+        if(node.bindAttrsText[i].oldValue !== val) {
           //update the attr
-          handleNodeAttributes(node.tag, node.dom, node.bindAttrs[i].name, val);
-          node.bindAttrs[i].oldValue = val;
+          handleNodeAttributes(node.tag, node.dom, node.bindAttrsText[i].name, val);
+          node.bindAttrsText[i].oldValue = val;
         }
       }
     }
@@ -313,15 +335,46 @@ var Inferno = (function() {
       if(node.bindMap != null) {
         if(typeof node.bindMap.statePath === "string" || typeof node.bindMap.statePath === "number") {
           val = state[node.bindMap.statePath];
+        } else {
+          val = getStateValueFromPaths(state, node.bindMap.statePath);
         }
         //we fist compare the size in items, if so we may need to add/remove something
         if(val.length !== node.bindMap.oldValue.length){
-          //TODO need to find add/remove items accordingly
-          //debugger;
+
+          //we need to add rows
+          if(val.length > node.bindMap.oldValue.length) {
+            for(i = node.bindMap.oldValue.length; i < val.length; i++) {
+              subNode = node.bindMap.constructor(val[i]);
+              node.children.push(subNode);
+              if(node.dom) {
+                createNode(subNode, node.bindMap, node.dom, val, state, i);
+              } else {
+                createNode(subNode, node.bindMap, parentDom, val, state, i);
+              }
+            }
+          }
+          //remove rows
+          else {
+            //go through the difference in rows and remove them from the dom
+            for(i = val.length; i < node.bindMap.oldValue.length; i++) {
+              if(node.dom) {
+                node.dom.removeChild(node.children[i].dom);
+              } else {
+                parentDom.removeChild(node.children[i].dom);
+              }
+            }
+            //remove the items
+            diff = node.bindMap.oldValue.length - val.length;
+            node.children.splice(-diff,diff)
+          }
+          // if(parentNode.childNodes.length > 7) {
+          //   debugger;
+          // }
         } else {
           //TODO check when sizes are the same but something insdie has changed?
           //!areSame(val, node.bindMap.oldValue)
         }
+        node.bindMap.oldValue = val;
         //then apply the new state
         newState = val;
       }
@@ -333,7 +386,24 @@ var Inferno = (function() {
         updateNode(node.children, node, node.dom, newState, state);
       }
     }
-    //handle binding on a child text
+    //handle binding a computed child text
+    else if (node.bindComputed != null) {
+      if(typeof node.bindComputed.statePath === "string" || typeof node.bindComputed.statePath === "number") {
+        val = state[node.bindComputed.statePath];
+      } else {
+        val = getStateValueFromPaths(state, node.bindComputed.statePath);
+      }
+      if(node.bindComputed.oldVal !== val) {
+        node.bindComputed.oldValue = val;
+        //check computed values
+        computedVal = node.bindComputed.computed(val);
+        if(node.bindComputed.oldComputed !== computedVal) {
+          node.bindComputed.oldComputed = computedVal;
+          setTextContent(node.dom, computedVal, true);
+        }
+      }
+    }
+    //handle binding a child text
     else if (node.bindText) {
       if(typeof node.bindText.statePath === "string" || typeof node.bindText.statePath === "number") {
         val = state[node.bindText.statePath];

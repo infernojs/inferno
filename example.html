@@ -10,23 +10,11 @@
   <script src="inferno.js"></script>
   <script src="t7.js"></script>
   <script src="data.js"></script>
+  <script src="lib/memory-stats.js"></script>
+  <script src="lib/monitor.js"></script>
   <script>
 
     var state = {
-      myName: "Dominic",
-      className: "foo",
-      myLastName: "Gannaway",
-      deepName: "Deeeep!",
-      person: {
-        name: "Fred",
-        age: 30
-      },
-      items: [
-        "Dominic",
-        "Jemma",
-        "Charlie",
-        "Harry"
-      ],
       dbs: getData()
     };
 
@@ -37,122 +25,113 @@
       var computed = Inferno.TemplateHelpers.computed;
 
       return {
-        tag: "div",
+        tag: "table",
         attrs: [
           {
             name: "class",
-            value: "container"
+            value: "table table-striped latest-data"
           }
         ],
-        children: [
-          {
-            tag: "span",
-            bindAttrs: [
-              {
-                name: "class",
-                statePath: "",
-                initValue: state.className,
-                oldValue: null
-              }
-            ],
-            attrs: [
-              {
-                name: "id",
-                value: "test"
-              }
-            ],
-            bindText: {
-              statePath: "",
-              initValue: state.myName,
-              oldValue: null
-            }
-          },
-          "Random static text FTW!",
-          {
-            tag: "ul",
-            bindMap: {
-              initValue: state.items,
-              oldValue: null,
-              constructor: function(item) {
-                return {
-                  tag: "li",
-                  attrs: [
-                    {
-                      name: "class",
-                      value: "wow"
+        children: {
+          tag: "tbody",
+          bindMap: {
+            initValue: state.dbs,
+            oldValue: null,
+            constructor: function(db) {
+              return {
+                tag: "tr",
+                children: [
+                  {
+                    tag: "td",
+                    attrs: [
+                      {
+                        name: "class",
+                        value: "dbname"
+                      }
+                    ],
+                    bindText: {
+                      statePath: "",
+                      initValue: db.name,
+                      oldValue: null
                     }
-                  ],
-                  bindText: {
-                    statePath: "",
-                    initValue: item,
-                    oldValue: null
-                  }
-                }
-              }
-            }
-          },
-          {
-            tag: "table",
-            attrs: [
-              {
-                name: "class",
-                value: "table table-striped latest-data"
-              }
-            ],
-            children: {
-              tag: "tbody",
-              bindMap: {
-                initValue: state.dbs,
-                oldValue: null,
-                constructor: function(db) {
-                  return {
-                    tag: "tr",
-                    children: [
+                  },
+                  {
+                    tag: "td",
+                    attrs: [
                       {
-                        tag: "td",
-                        attrs: [
-                          {
-                            name: "class",
-                            value: "dbname"
-                          }
-                        ],
-                        bindText: {
+                        name: "class",
+                        value: "query-count"
+                      }
+                    ],
+                    children: {
+                      tag: "span",
+                      bindAttrsComputed: [
+                        {
+                          name: "class",
                           statePath: "",
-                          initValue: db.name,
-                          oldValue: null
+                          initValue: db,
+                          computed: getCountClassName,
+                          oldValue: null,
+                          oldComputed: null
                         }
-                      },
-                      {
-                        tag: "td",
-                        attrs: [
-                          {
-                            name: "class",
-                            value: "query-count"
-                          }
-                        ],
-                        children: {
-                          tag: "span",
-                          attrs: {
-                            "class": getCountClassName(db)
-                          },
-                          bindComputed: {
-                            statePath: "",
-                            initValue: db.queries,
-                            computed: function(val) {
-                              return val.length;
-                            },
-                            oldValue: null,
-                            oldComputed: null
-                          }
+                      ],
+                      bindComputed: {
+                        statePath: "",
+                        initValue: db.queries,
+                        computed: function(val) {
+                          return val.length;
+                        },
+                        oldValue: null,
+                        oldComputed: null
+                      }
+                    }
+                  },
+                  {
+                    bindMap: {
+                      initValue: db.topFiveQueries,
+                      oldValue: null,
+                      constructor: function(query) {
+                        return {
+                          tag: "td",
+                          bindAttrsComputed: [
+                            {
+                              name: "class",
+                              statePath: "",
+                              initValue: query.elapsed,
+                              computed: function(elapsed) {
+                                return 'Query ' + elapsedClassName(elapsed);
+                              },
+                              oldValue: null,
+                              oldComputed: null
+                            }
+                          ],
+                          children: [
+                            {
+                              tag: "span",
+                              attrs: [
+                                {
+                                  name: "class",
+                                  value: "foo"
+                                }
+                              ],
+                              bindComputed: {
+                                statePath: "",
+                                initValue: query.elapsed,
+                                computed: formatElapsed,
+                                oldValue: null,
+                                oldComputed: null
+                              }
+                            }
+                          ]
                         }
-                      },
-                    ]
+                      }
+                    }
                   }
-                }
+                ]
               }
             }
           }
-        ]
+        }
       }
     };
 
@@ -161,7 +140,10 @@
 
     //shortcut for dev purposes
     function u() {
+      state.dbs = getData();
       Inferno.update(root, app)
+      Monitoring.renderRate.ping();
+      requestAnimationFrame(u);
     };
 
     u();
