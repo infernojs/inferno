@@ -1,6 +1,8 @@
 <html>
 <head>
   <title>Inferno example</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="app"></div>
@@ -31,7 +33,8 @@
 
     function template() {
       var map = Inferno.TemplateHelpers.map;
-      var bind = Inferno.TemplateHelpers.bind;
+      var text = Inferno.TemplateHelpers.text;
+      var computed = Inferno.TemplateHelpers.computed;
 
       return {
         tag: "div",
@@ -58,7 +61,7 @@
                 value: "test"
               }
             ],
-            bindChild: {
+            bindText: {
               statePath: "",
               initValue: state.myName,
               oldValue: null
@@ -67,7 +70,7 @@
           "Random static text FTW!",
           {
             tag: "ul",
-            bindChildren: {
+            bindMap: {
               initValue: state.items,
               oldValue: null,
               constructor: function(item) {
@@ -79,7 +82,7 @@
                       value: "wow"
                     }
                   ],
-                  bindChild: {
+                  bindText: {
                     statePath: "",
                     initValue: item,
                     oldValue: null
@@ -89,29 +92,61 @@
             }
           },
           {
-            tag: "div",
+            tag: "table",
             attrs: [
               {
                 name: "class",
-                value: "databases"
+                value: "table table-striped latest-data"
               }
             ],
-            bindChildren: {
-              initValue: state.dbs,
-              oldValue: null,
-              constructor: function(database) {
-                return {
-                  tag: "div",
-                  attrs: [
-                    {
-                      name: "class",
-                      value: "wow"
-                    }
-                  ],
-                  bindChild: {
-                    statePath: "",
-                    initValue: database.name,
-                    oldValue: null
+            children: {
+              tag: "tbody",
+              bindMap: {
+                initValue: state.dbs,
+                oldValue: null,
+                constructor: function(db) {
+                  return {
+                    tag: "tr",
+                    children: [
+                      {
+                        tag: "td",
+                        attrs: [
+                          {
+                            name: "class",
+                            value: "dbname"
+                          }
+                        ],
+                        bindText: {
+                          statePath: "",
+                          initValue: db.name,
+                          oldValue: null
+                        }
+                      },
+                      {
+                        tag: "td",
+                        attrs: [
+                          {
+                            name: "class",
+                            value: "query-count"
+                          }
+                        ],
+                        children: {
+                          tag: "span",
+                          attrs: {
+                            "class": getCountClassName(db)
+                          },
+                          bindComputed: {
+                            statePath: "",
+                            initValue: db.queries,
+                            computed: function(val) {
+                              return val.length;
+                            },
+                            oldValue: null,
+                            oldComputed: null
+                          }
+                        }
+                      },
+                    ]
                   }
                 }
               }

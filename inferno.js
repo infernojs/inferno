@@ -32,10 +32,13 @@ var Inferno = (function() {
   };
 
   Inferno.TemplateHelpers = {
-    map: function(statePath, constructor) {
+    map: function(stateValue, constructor) {
 
     },
-    bind: function(statePath) {
+    computed: function(stateValue, computed) {
+
+    },
+    text: function(stateValue) {
 
     }
   };
@@ -166,7 +169,6 @@ var Inferno = (function() {
         foundIt = deepCheckObject(state[path], value, paths);
 
         if(foundIt === true) {
-          debugger;
           return paths;
         }
         //we did not get the value, clear the paths and start again
@@ -174,7 +176,7 @@ var Inferno = (function() {
       }
     }
     //no luck
-    debugger
+    //debugger
     return null;
   };
 
@@ -191,7 +193,7 @@ var Inferno = (function() {
   }
 
   function createNode(node, parentNode, parentDom, state, rootState, stateIndex) {
-    var i = 0, l = 0, val = "", subNode = null, textNode = null;
+    var i = 0, l = 0, val = "", subNode = null, textNode = null, computedVal = "";
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
       parentDom.appendChild(node.dom);
@@ -218,48 +220,84 @@ var Inferno = (function() {
     }
     //check if we have children
     if(node.children != null) {
-      for(i = 0, l = node.children.length; i < l; i++) {
-        //if the child node is simply text, append it
-        if(typeof node.children[i] === "string") {
-          textNode = document.createTextNode(node.children[i]);
+      if(node.children instanceof Array) {
+        for(i = 0, l = node.children.length; i < l; i++) {
+          //if the child node is simply text, append it
+          if(typeof node.children[i] === "string") {
+            textNode = document.createTextNode(node.children[i]);
+            node.dom.appendChild(textNode);
+          } else {
+            createNode(node.children[i], node, node.dom, state, state, stateIndex);
+          }
+        }
+      } else {
+        if(typeof node.children === "string") {
+          textNode = document.createTextNode(node.children);
           node.dom.appendChild(textNode);
         } else {
-          createNode(node.children[i], node, node.dom, state, state, stateIndex);
+          createNode(node.children, node, node.dom, state, state, stateIndex);
         }
       }
     }
-    //check if we have a child that needs binding
-    else if (node.bindChild != null) {
-      node.bindChild.statePath = getStatePath(state, node.bindChild.initValue, stateIndex);
-      if(typeof node.bindChild.statePath === "string" || typeof node.bindChild.statePath === "number") {
-        val = state[node.bindChild.statePath];
+    //check if we have a child computed text that needs binding
+    else if (node.bindComputed != null) {
+      node.bindComputed.statePath = getStatePath(state, node.bindComputed.initValue, stateIndex);
+      if(typeof node.bindComputed.statePath === "string" || typeof node.bindComputed.statePath === "number") {
+        val = state[node.bindComputed.statePath];
       } else {
-        val = getStateValueFromPaths(state, node.bindChild.statePath);
+        val = getStateValueFromPaths(state, node.bindComputed.statePath);
       }
-      node.bindChild.oldValue = val;
+      node.bindComputed.oldValue = val;
+      //now lets work out the computed value
+      computedVal = node.bindComputed.computed(val);
+      node.bindComputed.oldComputed = computedVal;
+      setTextContent(node.dom, computedVal, false);
+    }
+    //check if we have a child text that needs binding
+    else if (node.bindText != null) {
+      //check if we have the standard bindText
+      node.bindText.statePath = getStatePath(state, node.bindText.initValue, stateIndex);
+      if(typeof node.bindText.statePath === "string" || typeof node.bindText.statePath === "number") {
+        val = state[node.bindText.statePath];
+      } else {
+        val = getStateValueFromPaths(state, node.bindText.statePath);
+      }
+      node.bindText.oldValue = val;
       setTextContent(node.dom, val, false);
     }
-    //check if we have dynamic children that need binding (usually a map or something similar)
-    else if (node.bindChildren != null) {
-      node.bindChildren.statePath = getStatePath(state, node.bindChildren.initValue, stateIndex);
-      val = state[node.bindChildren.statePath];
-      node.bindChildren.oldValue = val;
+    //check if we have dynamic children that are maps
+    else if (node.bindMap != null) {
+      node.bindMap.statePath = getStatePath(state, node.bindMap.initValue, stateIndex);
+      val = state[node.bindMap.statePath];
+      node.bindMap.oldValue = val;
       node.children = [];
       //then we construct each of the children
       for(i = 0, l = val.length; i < l; i++) {
-        subNode = node.bindChildren.constructor(val[i]);
+        subNode = node.bindMap.constructor(val[i]);
         node.children.push(subNode);
-        createNode(subNode, node.bindChildren, node.dom, val, state, i);
+        createNode(subNode, node.bindMap, node.dom, val, state, i);
       }
     }
   };
 
+  //sees if two objects are the same, we may be able to do better methods than stringify
+  //but its generally the quickest in most browsers until a native method comes around
+  function areSame(val1, val2) {
+    if(val1 === val2) {
+      return true;
+    }
+    if(JSON.stringify(val1) === JSON.stringify(val2)) {
+      return true;
+    }
+    return false;
+  };
+
   function updateNode(node, parentNode, parentDom, state, rootState) {
-    var i = 0, l = 0, val = null;
+    var i = 0, l = 0, val = null, newState = state;
     //we basically skip everything until we see a bind property
     if(node.bindAttrs != null) {
       for(i = 0, l = node.bindAttrs.length; i < l; i++) {
-        if(typeof node.bindAttrs[i].statePath === "string") {
+        if(typeof node.bindAttrs[i].statePath === "string" || typeof node.bindAttrs[i].statePath === "number") {
           val = state[node.bindAttrs[i].statePath];
         }
         if(node.bindAttrs[i].oldValue !== val) {
@@ -271,17 +309,41 @@ var Inferno = (function() {
     }
     //then we keep moving through children
     if(node.children != null) {
-      for(i = 0, l = node.children.length; i < l; i++) {
-        updateNode(node.children[i], node, node.dom, state);
+      //bindMaps have their own value and state so we need to check this
+      if(node.bindMap != null) {
+        if(typeof node.bindMap.statePath === "string" || typeof node.bindMap.statePath === "number") {
+          val = state[node.bindMap.statePath];
+        }
+        //we fist compare the size in items, if so we may need to add/remove something
+        if(val.length !== node.bindMap.oldValue.length){
+          //TODO need to find add/remove items accordingly
+          //debugger;
+        } else {
+          //TODO check when sizes are the same but something insdie has changed?
+          //!areSame(val, node.bindMap.oldValue)
+        }
+        //then apply the new state
+        newState = val;
+      }
+      if(node.children instanceof Array) {
+        for(i = 0, l = node.children.length; i < l; i++) {
+          updateNode(node.children[i], node, node.dom, newState, state);
+        }
+      } else {
+        updateNode(node.children, node, node.dom, newState, state);
       }
     }
-    //handle binding on a child
-    else if (node.bindChild) {
-      //debugger;
-    }
-    //handle binded children
-    else if (node.bindChildren) {
-      //debugger;
+    //handle binding on a child text
+    else if (node.bindText) {
+      if(typeof node.bindText.statePath === "string" || typeof node.bindText.statePath === "number") {
+        val = state[node.bindText.statePath];
+      } else {
+        val = getStateValueFromPaths(state, node.bindText.statePath);
+      }
+      if(node.bindText.oldValue !== val) {
+        node.bindText.oldValue = val;
+        setTextContent(node.dom, val, true);
+      }
     }
   };
 
