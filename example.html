@@ -14,12 +14,71 @@
   <script src="lib/monitor.js"></script>
   <script>
 
+    var data = {Database: Database};
+    var I = 0;
+    var N = 200;
+
     var state = {
-      dbs: getData()
+      dbs: []
     };
 
+    for (var i = 0; i < N; i++) {
+      state.dbs.push(new data.Database('cluster' + i));
+      state.dbs.push(new data.Database('cluster' + i + 'slave'));
+    }
 
-    function template() {
+    var computed = {
+      getCountClassName: function(db) {
+        var count = db.queries.length;
+        var className = 'label';
+        if (count >= 20) {
+            className += ' label-important';
+        }
+        else if (count >= 10) {
+            className += ' label-warning';
+        }
+        else {
+            className += ' label-success';
+        }
+        return className;
+      }
+    };
+
+    function database(scope, computed) {
+      return {
+        tag: "tr",
+        children: [
+          {
+            tag: "td",
+            attrs: [
+              {
+                name: "class",
+                value: "dbname"
+              }
+            ],
+            children: function(scope, computed) { return scope.name; }
+          },
+          {
+            tag: "td",
+            attrs: {
+              "class": "query-count"
+            },
+            children: {
+              tag: "span",
+              attrs: [
+                {
+                  name: "class",
+                  value: function(scope, computed) { return computed.getCountClassName(scope); }
+                }
+              ],
+              children: function(scope, computed) { return scope.queries.length; }
+            }
+          },
+        ]
+      }
+    }
+
+    function template(scope, computed) {
       var map = Inferno.TemplateHelpers.map;
       var text = Inferno.TemplateHelpers.text;
       var computed = Inferno.TemplateHelpers.computed;
@@ -34,114 +93,20 @@
         ],
         children: {
           tag: "tbody",
-          bindMap: {
-            initValue: state.dbs,
-            oldValue: null,
-            constructor: function(db) {
-              return {
-                tag: "tr",
-                children: [
-                  {
-                    tag: "td",
-                    attrs: [
-                      {
-                        name: "class",
-                        value: "dbname"
-                      }
-                    ],
-                    bindText: {
-                      statePath: "",
-                      initValue: db.name,
-                      oldValue: null
-                    }
-                  },
-                  {
-                    tag: "td",
-                    attrs: [
-                      {
-                        name: "class",
-                        value: "query-count"
-                      }
-                    ],
-                    children: {
-                      tag: "span",
-                      bindAttrsComputed: [
-                        {
-                          name: "class",
-                          statePath: "",
-                          initValue: db,
-                          computed: getCountClassName,
-                          oldValue: null,
-                          oldComputed: null
-                        }
-                      ],
-                      bindComputed: {
-                        statePath: "",
-                        initValue: db.queries,
-                        computed: function(val) {
-                          return val.length;
-                        },
-                        oldValue: null,
-                        oldComputed: null
-                      }
-                    }
-                  },
-                  {
-                    bindMap: {
-                      initValue: db.topFiveQueries,
-                      oldValue: null,
-                      constructor: function(query) {
-                        return {
-                          tag: "td",
-                          bindAttrsComputed: [
-                            {
-                              name: "class",
-                              statePath: "",
-                              initValue: query.elapsed,
-                              computed: function(elapsed) {
-                                return 'Query ' + elapsedClassName(elapsed);
-                              },
-                              oldValue: null,
-                              oldComputed: null
-                            }
-                          ],
-                          children: [
-                            {
-                              tag: "span",
-                              attrs: [
-                                {
-                                  name: "class",
-                                  value: "foo"
-                                }
-                              ],
-                              bindComputed: {
-                                statePath: "",
-                                initValue: query.elapsed,
-                                computed: formatElapsed,
-                                oldValue: null,
-                                oldComputed: null
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
+          children: function(scope, model) { return map(scope.dbs, database) }
         }
       }
     };
 
     var app = document.getElementById("app");
-    var root = Inferno.append(template, state, app);
+    var root = Inferno.append(template, state, computed, app);
 
     //shortcut for dev purposes
     function u() {
-      state.dbs = getData();
-      Inferno.update(root, app)
+      for (var i = 0; i < state.dbs.length; i++) {
+        state.dbs[i].update();
+      };
+      Inferno.update(root, app, state, computed)
       Monitoring.renderRate.ping();
       requestAnimationFrame(u);
     };

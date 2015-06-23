@@ -7,16 +7,15 @@ var Inferno = (function() {
   var Inferno = {};
 
 
-  Inferno.append = function appendToDom(template, state, root) {
-    var rootNode = template();
-
-    createNode(rootNode, null, root, state, state);
+  Inferno.append = function appendToDom(template, state, computed, root) {
+    var rootNode = template(state, computed);
+    createNode(rootNode, null, root, state, computed);
 
     return rootNode;
   };
 
-  Inferno.update = function updateRootNode(rootNode, root) {
-    updateNode(rootNode, null, root, state, state);
+  Inferno.update = function updateRootNode(rootNode, root, state, computed) {
+    updateNode(rootNode, null, root, state, computed);
   };
 
   Inferno.mount = function mountToDom(template, state, root) {
@@ -24,20 +23,24 @@ var Inferno = (function() {
 
     state.addListener(function() {
       console.time("Inferno update");
-      updateNode(rootNode, null, root, state, state);
+      updateNode(rootNode, null, root, state, model);
       console.timeEnd("Inferno update");
     });
   };
 
+  function Map(value, constructor) {
+    this.value = value;
+    this.constructor = constructor;
+  }
+
+  function Text(value, constructor) {
+    this.value = value;
+    this.constructor = constructor;
+  };
+
   Inferno.TemplateHelpers = {
-    map: function(stateValue, constructor) {
-
-    },
-    computed: function(stateValue, computed) {
-
-    },
-    text: function(stateValue) {
-
+    map: function(value, constructor) {
+      return new Map(value, constructor);
     }
   };
 
@@ -116,82 +119,21 @@ var Inferno = (function() {
     }
   };
 
-  function deepCheckObject(object, value, paths) {
-    var i = 0;
-    if(object instanceof Array) {
-      for(i = 0; i < object.length; i++) {
-        if(object[i] === value) {
-          paths.push(i);
-          return true;
-        }
-      }
-    } else if (typeof object === "object") {
-      for(i in object) {
-        if(object[i] === value) {
-          paths.push(i);
-          return true;
-        }
+  function findScopeNameFromeState(state, value) {
+    //value must not be string or number
+    //we use Object.keys as we don't want to get anything other than keys from the object prototype
+    var keys = Object.keys(state), i = 0;
+    for(i = 0; i < keys.length; i++) {
+      if(state[keys[i]] === value) {
+        return keys[i];
       }
     }
-  }
-
-  function getStatePath(state, value, stateIndex) {
-    //we try to find out where the value exists currently in our state
-    //this is obviously easier with immutable data
-    var paths = [], foundIt = false;
-    if(stateIndex != null) {
-      if(state[stateIndex] === value) {
-        return stateIndex;
-      }
-      //to improve performance, lets using the state with stateIndex
-      paths.push(stateIndex);
-      var result = getStatePath(state[stateIndex], value, null);
-      if(typeof result === "string"){
-        paths.push(result);
-      } else {
-        paths = paths.concat(result);
-      }
-      return paths;
-    }
-    for(var path in state) {
-      if(state[path] === value) {
-        //easy win, return the key
-        return path;
-      } else if(typeof state[path] !== "string" && typeof state[path] !== "number") {
-        //check if they "look" like the same object
-        if(JSON.stringify(state[path]) === JSON.stringify(value)) {
-          return path;
-        }
-        //deep check
-        paths.push(path);
-
-        foundIt = deepCheckObject(state[path], value, paths);
-
-        if(foundIt === true) {
-          return paths;
-        }
-        //we did not get the value, clear the paths and start again
-        paths = [];
-      }
-    }
-    //no luck
-    return null;
   };
 
-  function getStateValueFromPaths(state, paths) {
-    //fastest way possible...
-    switch(paths.length) {
-      case 1:
-        return state[paths[0]];
-      case 2:
-        return state[paths[0]][paths[1]];
-      case 3:
-        return state[paths[0]][paths[1]][paths[2]];
-    }
-  }
+  //we want to build a value tree, rather than a node tree, ideally, for faster lookups
+  function createNode(node, parentNode, parentDom, state, computed, stateIndex) {
+    var i = 0, l = 0, subNode = null, val = null, textNode = null;
 
-  function createNode(node, parentNode, parentDom, state, rootState, stateIndex) {
-    var i = 0, l = 0, val = "", subNode = null, textNode = null, computedVal = "";
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
       parentDom.appendChild(node.dom);
@@ -199,220 +141,103 @@ var Inferno = (function() {
     //see if we have any attributes to add
     if(node.attrs != null) {
       for(i = 0, l = node.attrs.length; i < l; i++) {
-        handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
-      }
-    }
-    //check if we have bindAttrsText
-    if(node.bindAttrsText != null) {
-      for(i = 0, l = node.bindAttrsText.length; i < l; i++) {
-        subNode = node.bindAttrsText[i];
-        subNode.statePath = getStatePath(state, subNode.initValue, stateIndex);
-        if(typeof subNode.statePath === "string" || typeof subNode.statePath === "number") {
-          val = state[subNode.statePath];
+        if(typeof node.attrs[i].value !== "string") {
+          val = node.attrs[i].value(state, computed);
+          node.attrs[i].lastVal = val;
+          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
         } else {
-          val = getStateValueFromPaths(state, subNode.statePath);
+          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
         }
-        subNode.oldValue = val;
-        handleNodeAttributes(node.tag, node.dom, node.bindAttrsText[i].name, val);
       }
     }
-    //check if we have bindAttrsText
-    if(node.bindAttrsComputed != null) {
-      for(i = 0, l = node.bindAttrsComputed.length; i < l; i++) {
-        subNode = node.bindAttrsComputed[i];
-        subNode.statePath = getStatePath(state, subNode.initValue, stateIndex);
-        if(typeof subNode.statePath === "string" || typeof subNode.statePath === "number") {
-          val = state[subNode.statePath];
-        } else {
-          val = getStateValueFromPaths(state, subNode.statePath);
-        }
-        subNode.oldValue = val;
-        computedVal = subNode.computed(val);
-        subNode.oldComputed = computedVal;
-        handleNodeAttributes(node.tag, node.dom, node.bindAttrsComputed[i].name, computedVal);
-      }
-    }
-    //check if we have children
+
     if(node.children != null) {
+      //lets find out what is in side
+      if(typeof node.children === "function") {
+        val = node.children(state, computed);
+        if(typeof val === "string" || typeof val === "number") {
+          //likely a binding
+          node.children = new Text(val, node.children);
+          createNode(node.children, node, node.dom, state, computed, stateIndex);
+          textNode = document.createTextNode(val);
+          node.dom.appendChild(textNode);
+          return;
+        } else {
+          node.children = val;
+        }
+      }
+
       if(node.children instanceof Array) {
-        for(i = 0, l = node.children.length; i < l; i++) {
-          //if the child node is simply text, append it
-          if(typeof node.children[i] === "string") {
-            textNode = document.createTextNode(node.children[i]);
+        for(i = 0; i < node.children.length; i++) {
+          if(typeof node.children[i].children === "text") {
+            textNode = document.createTextNode(node.children[i].children);
             node.dom.appendChild(textNode);
           } else {
-            createNode(node.children[i], node, node.dom, state, state, stateIndex);
+            createNode(node.children[i], node, node.dom, state, computed, stateIndex);
           }
         }
-      } else {
-        if(typeof node.children === "string") {
-          textNode = document.createTextNode(node.children);
-          node.dom.appendChild(textNode);
-        } else {
-          createNode(node.children, node, node.dom, state, state, stateIndex);
+      } else if(node.children instanceof Text) {
+
+      } else if(node.children instanceof Map) {
+        node.map = node.children;
+        node.children = [];
+        node.scope = findScopeNameFromeState(state, node.map.value);
+        for(i = 0; i < node.map.value.length; i++) {
+          val = node.map.value[i];
+          subNode = node.map.constructor(val, computed);
+          node.children.push(subNode);
+          createNode(subNode, node, node.dom, val, computed, i);
         }
-      }
-    }
-    //check if we have a child computed text that needs binding
-    else if (node.bindComputed != null) {
-      node.bindComputed.statePath = getStatePath(state, node.bindComputed.initValue, stateIndex);
-      if(typeof node.bindComputed.statePath === "string" || typeof node.bindComputed.statePath === "number") {
-        val = state[node.bindComputed.statePath];
       } else {
-        val = getStateValueFromPaths(state, node.bindComputed.statePath);
-      }
-      node.bindComputed.oldValue = val;
-      //now lets work out the computed value
-      computedVal = node.bindComputed.computed(val);
-      node.bindComputed.oldComputed = computedVal;
-      setTextContent(node.dom, computedVal, false);
-    }
-    //check if we have a child text that needs binding
-    else if (node.bindText != null) {
-      //check if we have the standard bindText
-      node.bindText.statePath = getStatePath(state, node.bindText.initValue, stateIndex);
-      if(typeof node.bindText.statePath === "string" || typeof node.bindText.statePath === "number") {
-        val = state[node.bindText.statePath];
-      } else {
-        val = getStateValueFromPaths(state, node.bindText.statePath);
-      }
-      node.bindText.oldValue = val;
-      setTextContent(node.dom, val, false);
-    }
-    //check if we have dynamic children that are maps
-    else if (node.bindMap != null) {
-      node.bindMap.statePath = getStatePath(state, node.bindMap.initValue, stateIndex);
-      if(typeof node.bindMap.statePath === "string" || typeof node.bindMap.statePath === "number") {
-        val = state[node.bindMap.statePath];
-      } else {
-        val = getStateValueFromPaths(state, node.bindMap.statePath);
-      }
-      node.bindMap.oldValue = val;
-      node.children = [];
-      //then we construct each of the children
-      for(i = 0, l = val.length; i < l; i++) {
-        subNode = node.bindMap.constructor(val[i]);
-        node.children.push(subNode);
-        if(node.dom) {
-          createNode(subNode, node.bindMap, node.dom, val, state, i);
+        if(typeof node.children === "text") {
+
         } else {
-          createNode(subNode, node.bindMap, parentDom, val, state, i);
+          createNode(node.children, node, node.dom, state, computed, stateIndex);
         }
       }
     }
   };
 
-  //sees if two objects are the same, we may be able to do better methods than stringify
-  //but its generally the quickest in most browsers until a native method comes around
-  function areSame(val1, val2) {
-    if(val1 === val2) {
-      return true;
-    }
-    if(JSON.stringify(val1) === JSON.stringify(val2)) {
-      return true;
-    }
-    return false;
-  };
 
-  function updateNode(node, parentNode, parentDom, state, rootState) {
-    var i = 0, l = 0, val = null, newState = state, computedVal = "", subNode = null, diff = 0;
-    //we basically skip everything until we see a bind property
-    if(node.bindAttrsText != null) {
-      for(i = 0, l = node.bindAttrsText.length; i < l; i++) {
-        if(typeof node.bindAttrsText[i].statePath === "string" || typeof node.bindAttrsText[i].statePath === "number") {
-          val = state[node.bindAttrsText[i].statePath];
-        }
-        if(node.bindAttrsText[i].oldValue !== val) {
-          //update the attr
-          handleNodeAttributes(node.tag, node.dom, node.bindAttrsText[i].name, val);
-          node.bindAttrsText[i].oldValue = val;
+  function updateNode(node, parentNode, parentDom, state, computed) {
+    var i = 0, l = 0, val = "";
+
+    if(node.scope != null) {
+      state = state[node.scope];
+    }
+
+    if(node.attrs != null) {
+      for(i = 0; i < node.attrs.length; i++) {
+        //we only care about values that are not text
+        if(typeof node.attrs[i].value !== "string") {
+          //for lack of checking if it's an array, lets assume it is
+          val = node.attrs[i].value(state, computed);
+          if(val !== node.attrs[i].lastVal) {
+            node.attrs[i].lastVal = val;
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+          }
         }
       }
     }
-    //then we keep moving through children
+
     if(node.children != null) {
-      //bindMaps have their own value and state so we need to check this
-      if(node.bindMap != null) {
-        if(typeof node.bindMap.statePath === "string" || typeof node.bindMap.statePath === "number") {
-          val = state[node.bindMap.statePath];
-        } else {
-          val = getStateValueFromPaths(state, node.bindMap.statePath);
-        }
-        //we fist compare the size in items, if so we may need to add/remove something
-        if(val.length !== node.bindMap.oldValue.length){
-
-          //we need to add rows
-          if(val.length > node.bindMap.oldValue.length) {
-            for(i = node.bindMap.oldValue.length; i < val.length; i++) {
-              subNode = node.bindMap.constructor(val[i]);
-              node.children.push(subNode);
-              if(node.dom) {
-                createNode(subNode, node.bindMap, node.dom, val, state, i);
-              } else {
-                createNode(subNode, node.bindMap, parentDom, val, state, i);
-              }
-            }
-          }
-          //remove rows
-          else {
-            //go through the difference in rows and remove them from the dom
-            for(i = val.length; i < node.bindMap.oldValue.length; i++) {
-              if(node.dom) {
-                node.dom.removeChild(node.children[i].dom);
-              } else {
-                parentDom.removeChild(node.children[i].dom);
-              }
-            }
-            //remove the items
-            diff = node.bindMap.oldValue.length - val.length;
-            node.children.splice(-diff,diff)
-          }
-          // if(parentNode.childNodes.length > 7) {
-          //   debugger;
-          // }
-        } else {
-          //TODO check when sizes are the same but something insdie has changed?
-          //!areSame(val, node.bindMap.oldValue)
-        }
-        node.bindMap.oldValue = val;
-        //then apply the new state
-        newState = val;
-      }
       if(node.children instanceof Array) {
-        for(i = 0, l = node.children.length; i < l; i++) {
-          updateNode(node.children[i], node, node.dom, newState, state);
+        for(i = 0; i < node.children.length; i++) {
+          if(node.map) {
+            updateNode(node.children[i], node, node.dom, state[i], computed);
+          } else {
+            updateNode(node.children[i], node, node.dom, state, computed);
+          }
+        }
+      } else if(node.children instanceof Text) {
+        val = node.children.constructor(state, computed);
+        if(node.children.value !== val) {
+          node.children.value = val;
+          //update text
+          setTextContent(node.dom, val, true);
         }
       } else {
-        updateNode(node.children, node, node.dom, newState, state);
-      }
-    }
-    //handle binding a computed child text
-    else if (node.bindComputed != null) {
-      if(typeof node.bindComputed.statePath === "string" || typeof node.bindComputed.statePath === "number") {
-        val = state[node.bindComputed.statePath];
-      } else {
-        val = getStateValueFromPaths(state, node.bindComputed.statePath);
-      }
-      if(node.bindComputed.oldVal !== val) {
-        node.bindComputed.oldValue = val;
-        //check computed values
-        computedVal = node.bindComputed.computed(val);
-        if(node.bindComputed.oldComputed !== computedVal) {
-          node.bindComputed.oldComputed = computedVal;
-          setTextContent(node.dom, computedVal, true);
-        }
-      }
-    }
-    //handle binding a child text
-    else if (node.bindText) {
-      if(typeof node.bindText.statePath === "string" || typeof node.bindText.statePath === "number") {
-        val = state[node.bindText.statePath];
-      } else {
-        val = getStateValueFromPaths(state, node.bindText.statePath);
-      }
-      if(node.bindText.oldValue !== val) {
-        node.bindText.oldValue = val;
-        setTextContent(node.dom, val, true);
+        updateNode(node.children, node, node.dom, state, computed);
       }
     }
   };
