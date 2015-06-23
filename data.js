@@ -44,8 +44,8 @@ Database.prototype.update = function() {
     this.queries = queries;
 };
 
-Database.prototype.getTopFiveQueries = function() {
-    var qs = this.queries.slice();
+Database.prototype.getTopFiveQueries = function(db) {
+    var qs = db.queries.slice();
     qs.sort(function(a, b) {
         return a.elapsed - b.elapsed;
     });

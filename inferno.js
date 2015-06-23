@@ -131,8 +131,8 @@ var Inferno = (function() {
   };
 
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, state, computed, stateIndex) {
-    var i = 0, l = 0, subNode = null, val = null, textNode = null;
+  function createNode(node, parentNode, parentDom, state, computed, index) {
+    var i = 0, l = 0, subNode = null, val = null, textNode = null, hasDynamicAttrs = false;
 
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
@@ -145,9 +145,40 @@ var Inferno = (function() {
           val = node.attrs[i].value(state, computed);
           node.attrs[i].lastVal = val;
           handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+          hasDynamicAttrs = true
         } else {
           handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
         }
+      }
+      if(hasDynamicAttrs === true) {
+        node.hasDynamicAttrs = true;
+      } else {
+        node.hasDynamicAttrs = false;
+      }
+    }
+
+    //this could be a map or some text, let's find out
+    if(typeof node === "function") {
+      val = node(state, computed);
+      //if we're working with a map, replace this child with the Map
+      if(val instanceof Map) {
+        node = parentNode.children[index] = val;
+        //test what the map value is a function
+        if(typeof node.value === "function") {
+          node.scope = node.value;
+          val = node.value(state, computed);
+        } else {
+          //if its not a function then we can try and find the value
+          node.scope = findScopeNameFromeState(state, node.value);
+          val = node.value;
+        }
+        node.children = [];
+        for(i = 0; i < val.length; i++) {
+          subNode = node.constructor(val[i], computed);
+          node.children.push(subNode);
+          createNode(subNode, node, parentDom, val[i], computed, i);
+        }
+        return;
       }
     }
 
@@ -158,7 +189,7 @@ var Inferno = (function() {
         if(typeof val === "string" || typeof val === "number") {
           //likely a binding
           node.children = new Text(val, node.children);
-          createNode(node.children, node, node.dom, state, computed, stateIndex);
+          createNode(node.children, node, node.dom, state, computed, index);
           textNode = document.createTextNode(val);
           node.dom.appendChild(textNode);
           return;
@@ -173,11 +204,9 @@ var Inferno = (function() {
             textNode = document.createTextNode(node.children[i].children);
             node.dom.appendChild(textNode);
           } else {
-            createNode(node.children[i], node, node.dom, state, computed, stateIndex);
+            createNode(node.children[i], node, node.dom, state, computed, i);
           }
         }
-      } else if(node.children instanceof Text) {
-
       } else if(node.children instanceof Map) {
         node.map = node.children;
         node.children = [];
@@ -189,10 +218,11 @@ var Inferno = (function() {
           createNode(subNode, node, node.dom, val, computed, i);
         }
       } else {
-        if(typeof node.children === "text") {
-
+        if(typeof node.children === "string") {
+          textNode = document.createTextNode(node.children);
+          node.dom.appendChild(textNode);
         } else {
-          createNode(node.children, node, node.dom, state, computed, stateIndex);
+          createNode(node.children, node, node.dom, state, computed, index);
         }
       }
     }
@@ -203,18 +233,24 @@ var Inferno = (function() {
     var i = 0, l = 0, val = "";
 
     if(node.scope != null) {
-      state = state[node.scope];
+      if(typeof node.scope === "function") {
+        state = node.scope(state, computed);
+      } else {
+        state = state[node.scope];
+      }
     }
 
     if(node.attrs != null) {
-      for(i = 0; i < node.attrs.length; i++) {
-        //we only care about values that are not text
-        if(typeof node.attrs[i].value !== "string") {
-          //for lack of checking if it's an array, lets assume it is
-          val = node.attrs[i].value(state, computed);
-          if(val !== node.attrs[i].lastVal) {
-            node.attrs[i].lastVal = val;
-            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+      if(node.hasDynamicAttrs === true) {
+        for(i = 0; i < node.attrs.length; i++) {
+          //we only care about values that are not text
+          if(typeof node.attrs[i].value !== "string") {
+            //for lack of checking if it's an array, lets assume it is
+            val = node.attrs[i].value(state, computed);
+            if(val !== node.attrs[i].lastVal) {
+              node.attrs[i].lastVal = val;
+              handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+            }
           }
         }
       }
@@ -223,7 +259,7 @@ var Inferno = (function() {
     if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i++) {
-          if(node.map) {
+          if(node.map || node instanceof Map) {
             updateNode(node.children[i], node, node.dom, state[i], computed);
           } else {
             updateNode(node.children[i], node, node.dom, state, computed);
@@ -241,7 +277,6 @@ var Inferno = (function() {
       }
     }
   };
-
 
   return Inferno;
 })();

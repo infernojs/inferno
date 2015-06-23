@@ -16,7 +16,7 @@
 
     var data = {Database: Database};
     var I = 0;
-    var N = 200;
+    var N = 100;
 
     var state = {
       dbs: []
@@ -41,10 +41,91 @@
             className += ' label-success';
         }
         return className;
+      },
+      elapsedClassName: function(elapsed) {
+        var className = 'Query elapsed';
+        if (elapsed >= 10.0) {
+            className += ' warn_long';
+        }
+        else if (elapsed >= 1.0) {
+            className += ' warn';
+        }
+        else {
+            className += ' short';
+        }
+        return className;
+      },
+      formatElapsed: function(value) {
+        if (!value) return '';
+        var str = parseFloat(value).toFixed(2);
+        if (value > 60) {
+            var minutes = Math.floor(value / 60);
+            var comps = (value % 60).toFixed(2).split('.');
+            var seconds = comps[0].lpad('0', 2);
+            var ms = comps[1];
+            str = minutes + ":" + seconds + "." + ms;
+        }
+        return str;
       }
     };
 
+    function query(scope, computed) {
+      return {
+        tag: "td",
+        attrs: [
+          {
+            name: "class",
+            value: function(scope, computed) { return 'Query ' + computed.elapsedClassName(scope.elapsed); }
+          }
+        ],
+        children: [
+          {
+            tag: "span",
+            attrs: [
+              {
+                name: "class",
+                value: "foo"
+              }
+            ],
+            children: function(scope, computed) { return computed.formatElapsed(scope.elapsed); }
+          },
+          {
+            tag: "div",
+            attrs: [
+              {
+                name: "class",
+                value: "popover left"
+              }
+            ],
+            children: [
+              {
+                tag: "div",
+                attrs: [
+                  {
+                    name: "class",
+                    value: "popover-content"
+                  }
+                ],
+                children: function(scope, computed) { return scope.query; }
+              },
+              {
+                tag: "div",
+                attrs: [
+                  {
+                    name: "class",
+                    value: "arrow"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+
     function database(scope, computed) {
+      var map = Inferno.TemplateHelpers.map;
+
       return {
         tag: "tr",
         children: [
@@ -74,14 +155,13 @@
               children: function(scope, computed) { return scope.queries.length; }
             }
           },
+          function(scope, model) { return map(scope.getTopFiveQueries, query) }
         ]
       }
     }
 
     function template(scope, computed) {
       var map = Inferno.TemplateHelpers.map;
-      var text = Inferno.TemplateHelpers.text;
-      var computed = Inferno.TemplateHelpers.computed;
 
       return {
         tag: "table",
@@ -108,7 +188,7 @@
       };
       Inferno.update(root, app, state, computed)
       Monitoring.renderRate.ping();
-      requestAnimationFrame(u);
+      setTimeout(u, 0);
     };
 
     u();
