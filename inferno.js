@@ -3,45 +3,49 @@ var Inferno = (function() {
 
   var supportsTextContent = 'textContent' in document;
 
-  function InfernoComponent(internals) {
-    var self = this;
+  function InfernoComponent(internals, element) {
     var excludeFunctions = ["constructor", "template"];
 
-    this.element = Object.create(HTMLElement.prototype);
+    this.element = element;
     this.state = {};
     this.props = {};
-
 
     //apply any other functions to this from the internals
     for(var key in internals) {
       if(excludeFunctions.indexOf(key) === -1) {
-        self[key] = internals[key].bind(this);
+        this[key] = internals[key].bind(this);
       }
     }
-
-    this.element.createdCallback = function() {
-      //TODO, add some logic here?
-      self.element = this;
-    };
-
-    this.element.attachedCallback = function() {
-      var attributes = Array.prototype.slice.call(this.attributes);
-      //build up proos
-      for(var i = 0; i < attributes.length; i = i + 1 | 1) {
-        self.props[attributes[i].name] = attributes[i].value;
-      }
-      //call the component constructor
-      internals.constructor.call(self, self.props);
-      //now append it to DOM
-      Inferno.append(internals.template, self, self.element);
-    };
-
   };
 
   var Inferno = {};
 
   Inferno.createComponent = function(internals) {
-    return new InfernoComponent(internals);
+    var instance =  InfernoComponent;
+    var element = Object.create(HTMLElement.prototype);
+    var component = null;
+
+    element.createdCallback = function() {
+      //TODO, add some logic here?
+      component = new InfernoComponent(internals, this);
+    };
+
+    element.attachedCallback = function() {
+      var attributes = Array.prototype.slice.call(this.attributes);
+      //build up proos
+      for(var i = 0; i < attributes.length; i = i + 1 | 1) {
+        component.props[attributes[i].name] = attributes[i].value;
+      }
+      //call the component constructor
+      internals.constructor.call(component, component.props);
+      //now append it to DOM
+      Inferno.append(internals.template, component, this);
+    };
+
+    return {
+      instance: instance,
+      element: element
+    }
   };
 
   Inferno.registerComponent = function(elementName, component) {

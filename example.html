@@ -13,20 +13,26 @@
     var InfernoExample = Inferno.createComponent({
       //this gets called when the custom element/component is added to the page
       constructor: function(props) {
-        this.state.firstName = "Dominic";
-        this.state.lastName = "Gannaway";
+        this.state = {
+          firstName: "Dominic",
+          lastName: "Gannaway",
+          people: [
+            "Bob",
+            "Fred",
+            "Hannah"
+          ]
+        };
       },
       getFullName: function() {
         return this.state.firstName + " " + this.state.lastName;
       },
       template: function() {
-        return {
-          tag: "div",
-          children: {
-            tag: "span",
-            children: function() { return this.getFullName() }
-          }
-        }
+        return t7`
+          <div>
+            <span>${ this.getFullName() }</span>
+            <div>${ this.props.message }</div>
+          </div>
+        `;
       }
     });
 
