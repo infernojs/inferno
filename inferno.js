@@ -63,7 +63,10 @@ var Inferno = (function() {
       return new Map(value, constructor);
     },
     ClipBox: {
-      FixedHeight: 1
+      StaticHeight: 1,
+      StaticWidth: 2,
+      StaticWidthAndHeight: 3,
+      VariableWidthAndHeight: 4 //will be expensive
     }
   };
 
@@ -153,6 +156,10 @@ var Inferno = (function() {
     }
   };
 
+  //Experimental feature, use it by applying: clipBox to a node with a valid value from Inferno.TemplateHelpers.ClipBox
+  //this needs to fire when window resizes, window scrolls (or parent container with overflow scrolls?)
+  //also needs to be called on when amount of items in DOM changes?
+  //also needs to be called on when items in the DOM are display none?
   function handleClipBoxes(clipBoxes) {
     var i = 0,
         clipBox = null,
@@ -173,6 +180,9 @@ var Inferno = (function() {
           top: boundingRect.top + docScrollTop,
           left: boundingRect.left + docScrollLeft
         }
+      }
+      //if it has staticheight, that means it has variable width
+      if(node.clipBox === Inferno.TemplateHelpers.ClipBox.StaticHeight) {
       }
       //find out if the element is not on screen
       if(clipBox.dimensions.top - docScrollTop > docHeight
@@ -219,11 +229,8 @@ var Inferno = (function() {
 
     //if we have box style, it means we must apply the style effects
     if(node.clipBox != null && node.dimensions === undefined) {
-      //see if this is the child or Parent
-      if(node.clipBox === Inferno.TemplateHelpers.ClipBox.FixedHeight) {
-        node.dimensions = null;
-        clipBoxes.push(node);
-      }
+      node.dimensions = null;
+      clipBoxes.push(node);
     }
 
     //this could be a map or some text, let's find out
