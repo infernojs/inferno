@@ -123,7 +123,7 @@ var Inferno = (function() {
     //value must not be string or number
     //we use Object.keys as we don't want to get anything other than keys from the object prototype
     var keys = Object.keys(state), i = 0;
-    for(i = 0; i < keys.length; i++) {
+    for(i = 0; i < keys.length; i = i + 1 | 1) {
       if(state[keys[i]] === value) {
         return keys[i];
       }
@@ -132,7 +132,12 @@ var Inferno = (function() {
 
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
   function createNode(node, parentNode, parentDom, state, computed, index) {
-    var i = 0, l = 0, subNode = null, val = null, textNode = null, hasDynamicAttrs = false;
+    var i = 0, l = 0,
+        subNode = null,
+        val = null,
+        textNode = null,
+        hasDynamicAttrs = false,
+        wasChildDynamic = false;
 
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
@@ -140,7 +145,7 @@ var Inferno = (function() {
     }
     //see if we have any attributes to add
     if(node.attrs != null) {
-      for(i = 0, l = node.attrs.length; i < l; i++) {
+      for(i = 0, l = node.attrs.length; i < l; i = i + 1 | 0) {
         if(typeof node.attrs[i].value !== "string") {
           val = node.attrs[i].value(state, computed);
           node.attrs[i].lastVal = val;
@@ -152,6 +157,7 @@ var Inferno = (function() {
       }
       if(hasDynamicAttrs === true) {
         node.hasDynamicAttrs = true;
+        node.isDynamic = true;
       } else {
         node.hasDynamicAttrs = false;
       }
@@ -173,12 +179,13 @@ var Inferno = (function() {
           val = node.value;
         }
         node.children = [];
-        for(i = 0; i < val.length; i++) {
+        for(i = 0; i < val.length; i = i + 1 | 0) {
           subNode = node.constructor(val[i], computed);
           node.children.push(subNode);
           createNode(subNode, node, parentDom, val[i], computed, i);
         }
-        return;
+        node.isDynamic = true;
+        return true;
       }
     }
 
@@ -192,45 +199,70 @@ var Inferno = (function() {
           createNode(node.children, node, node.dom, state, computed, index);
           textNode = document.createTextNode(val);
           node.dom.appendChild(textNode);
-          return;
+          node.isDynamic = true;
+          return true;
         } else {
           node.children = val;
         }
       }
 
       if(node.children instanceof Array) {
-        for(i = 0; i < node.children.length; i++) {
+        for(i = 0; i < node.children.length; i = i + 1 | 0) {
           if(typeof node.children[i].children === "text") {
             textNode = document.createTextNode(node.children[i].children);
             node.dom.appendChild(textNode);
+            node.isDynamic = true;
           } else {
-            createNode(node.children[i], node, node.dom, state, computed, i);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, state, computed, i);
+            if(wasChildDynamic === true) {
+              node.isDynamic = true;
+            } else if(!node.isDynamic) {
+              node.isDynamic = false;
+            }
           }
         }
       } else if(node.children instanceof Map) {
         node.map = node.children;
         node.children = [];
         node.scope = findScopeNameFromeState(state, node.map.value);
-        for(i = 0; i < node.map.value.length; i++) {
+        for(i = 0; i < node.map.value.length; i = i + 1 | 0) {
           val = node.map.value[i];
           subNode = node.map.constructor(val, computed);
           node.children.push(subNode);
           createNode(subNode, node, node.dom, val, computed, i);
         }
+        node.isDynamic = true;
+        return true;
       } else {
         if(typeof node.children === "string") {
           textNode = document.createTextNode(node.children);
           node.dom.appendChild(textNode);
+          node.isDynamic = true;
+          return true;
         } else {
-          createNode(node.children, node, node.dom, state, computed, index);
+          wasChildDynamic = createNode(node.children, node, node.dom, state, computed, index);
+          if(wasChildDynamic === true) {
+            node.isDynamic = true;
+          } else if(!node.isDynamic) {
+            node.isDynamic = false;
+          }
         }
       }
     }
+
+    if(!node.isDynamic) {
+      node.isDynamic = false;
+    }
+    return false;
   };
 
 
   function updateNode(node, parentNode, parentDom, state, computed) {
     var i = 0, l = 0, val = "";
+
+    if(node.isDynamic === false) {
+      return;
+    }
 
     if(node.scope != null) {
       if(typeof node.scope === "function") {
@@ -242,7 +274,7 @@ var Inferno = (function() {
 
     if(node.attrs != null) {
       if(node.hasDynamicAttrs === true) {
-        for(i = 0; i < node.attrs.length; i++) {
+        for(i = 0; i < node.attrs.length; i = i | 1) {
           //we only care about values that are not text
           if(typeof node.attrs[i].value !== "string") {
             //for lack of checking if it's an array, lets assume it is
@@ -258,11 +290,13 @@ var Inferno = (function() {
 
     if(node.children != null) {
       if(node.children instanceof Array) {
-        for(i = 0; i < node.children.length; i++) {
-          if(node.map || node instanceof Map) {
-            updateNode(node.children[i], node, node.dom, state[i], computed);
-          } else {
-            updateNode(node.children[i], node, node.dom, state, computed);
+        for(i = 0; i < node.children.length; i = i + 1 | 0) {
+          if(node.children[i].isDynamic === true) {
+            if(node.map || node instanceof Map) {
+              updateNode(node.children[i], node, node.dom, state[i], computed);
+            } else {
+              updateNode(node.children[i], node, node.dom, state, computed);
+            }
           }
         }
       } else if(node.children instanceof Text) {
@@ -273,7 +307,9 @@ var Inferno = (function() {
           setTextContent(node.dom, val, true);
         }
       } else {
-        updateNode(node.children, node, node.dom, state, computed);
+        if(node.children.isDynamic === true) {
+          updateNode(node.children, node, node.dom, state, computed);
+        }
       }
     }
   };
