@@ -3,16 +3,58 @@ var Inferno = (function() {
 
   var supportsTextContent = 'textContent' in document;
 
+  function InfernoComponent(internals) {
+    var self = this;
+    var excludeFunctions = ["constructor", "template"];
+
+    this.element = Object.create(HTMLElement.prototype);
+    this.state = {};
+    this.props = {};
+
+
+    //apply any other functions to this from the internals
+    for(var key in internals) {
+      if(excludeFunctions.indexOf(key) === -1) {
+        self[key] = internals[key].bind(this);
+      }
+    }
+
+    this.element.createdCallback = function() {
+      //TODO, add some logic here?
+      self.element = this;
+    };
+
+    this.element.attachedCallback = function() {
+      var attributes = Array.prototype.slice.call(this.attributes);
+      //build up proos
+      for(var i = 0; i < attributes.length; i = i + 1 | 1) {
+        self.props[attributes[i].name] = attributes[i].value;
+      }
+      //call the component constructor
+      internals.constructor.call(self, self.props);
+      //now append it to DOM
+      Inferno.append(internals.template, self, self.element);
+    };
+
+  };
 
   var Inferno = {};
 
+  Inferno.createComponent = function(internals) {
+    return new InfernoComponent(internals);
+  };
 
-  Inferno.append = function appendToDom(template, state, computed, root) {
-    var rootNode = template(state, computed);
+  Inferno.registerComponent = function(elementName, component) {
+    //cache item?
+    document.registerElement(elementName, {prototype: component.element });
+  };
+
+  Inferno.append = function appendToDom(template, context, root) {
+    var rootNode = template.call(context);
     var clipBoxes = [];
     var checkClipBoxes = false;
 
-    createNode(rootNode, null, root, state, computed, null, clipBoxes);
+    createNode(rootNode, null, root, context, context, null, clipBoxes);
     //update all the clipBoxes properties
     handleClipBoxes(clipBoxes);
     window.addEventListener("scroll", function (e) {
@@ -38,15 +80,15 @@ var Inferno = (function() {
     updateNode(rootNode, null, root, state, computed);
   };
 
-  Inferno.mount = function mountToDom(template, state, root) {
-    var rootNode = this.append(template, state, root);
-
-    state.addListener(function() {
-      console.time("Inferno update");
-      updateNode(rootNode, null, root, state, model);
-      console.timeEnd("Inferno update");
-    });
-  };
+  // Inferno.mount = function mountToDom(template, state, root) {
+  //   var rootNode = this.append(template, state, root);
+  //
+  //   state.addListener(function() {
+  //     console.time("Inferno update");
+  //     updateNode(rootNode, null, root, state, model);
+  //     console.timeEnd("Inferno update");
+  //   });
+  // };
 
   function Map(value, constructor) {
     this.value = value;
@@ -145,6 +187,7 @@ var Inferno = (function() {
     }
   };
 
+  //is this even needed? is it too problematic for its worth?
   function findScopeNameFromeState(state, value) {
     //value must not be string or number
     //we use Object.keys as we don't want to get anything other than keys from the object prototype
@@ -154,6 +197,9 @@ var Inferno = (function() {
         return keys[i];
       }
     }
+    //go a level deeper?
+    //check root state too?
+    throw Error("Could not find Map array instance in local scope or template state");
   };
 
   //Experimental feature, use it by applying: clipBox to a node with a valid value from Inferno.TemplateHelpers.ClipBox
@@ -195,7 +241,7 @@ var Inferno = (function() {
   };
 
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, state, computed, index, clipBoxes) {
+  function createNode(node, parentNode, parentDom, state, context, index, clipBoxes) {
     var i = 0, l = 0,
         subNode = null,
         val = null,
@@ -211,7 +257,7 @@ var Inferno = (function() {
     if(node.attrs != null) {
       for(i = 0, l = node.attrs.length; i < l; i = i + 1 | 0) {
         if(typeof node.attrs[i].value !== "string") {
-          val = node.attrs[i].value(state, computed);
+          val = node.attrs[i].value.call(context, state);
           node.attrs[i].lastVal = val;
           handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
           hasDynamicAttrs = true
@@ -242,7 +288,7 @@ var Inferno = (function() {
         //test what the map value is a function
         if(typeof node.value === "function") {
           node.scope = node.value;
-          val = node.value(state, computed);
+          val = node.value.call(context, state);
         } else {
           //if its not a function then we can try and find the value
           node.scope = findScopeNameFromeState(state, node.value);
@@ -250,9 +296,9 @@ var Inferno = (function() {
         }
         node.children = [];
         for(i = 0; i < val.length; i = i + 1 | 0) {
-          subNode = node.constructor(val[i], computed);
+          subNode = node.constructor.call(context, val[i]);
           node.children.push(subNode);
-          createNode(subNode, node, parentDom, val[i], computed, i, clipBoxes);
+          createNode(subNode, node, parentDom, val[i], context, i, clipBoxes);
         }
         node.isDynamic = true;
         return true;
@@ -262,11 +308,11 @@ var Inferno = (function() {
     if(node.children != null) {
       //lets find out what is in side
       if(typeof node.children === "function") {
-        val = node.children(state, computed);
+        val = node.children.call(context, state);
         if(typeof val === "string" || typeof val === "number") {
           //likely a binding
           node.children = new Text(val, node.children);
-          createNode(node.children, node, node.dom, state, computed, index, clipBoxes);
+          createNode(node.children, node, node.dom, state, context, index, clipBoxes);
           textNode = document.createTextNode(val);
           node.dom.appendChild(textNode);
           node.isDynamic = true;
@@ -283,7 +329,7 @@ var Inferno = (function() {
             node.dom.appendChild(textNode);
             node.isDynamic = true;
           } else {
-            wasChildDynamic = createNode(node.children[i], node, node.dom, state, computed, i, clipBoxes);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, state, context, i, clipBoxes);
             if(wasChildDynamic === true) {
               node.isDynamic = true;
             } else if(!node.isDynamic) {
@@ -297,9 +343,9 @@ var Inferno = (function() {
         node.scope = findScopeNameFromeState(state, node.map.value);
         for(i = 0; i < node.map.value.length; i = i + 1 | 0) {
           val = node.map.value[i];
-          subNode = node.map.constructor(val, computed);
+          subNode = node.map.constructor.call(context, val);
           node.children.push(subNode);
-          createNode(subNode, node, node.dom, val, computed, i, clipBoxes);
+          createNode(subNode, node, node.dom, val, context, i, clipBoxes);
         }
         node.isDynamic = true;
         return true;
@@ -310,7 +356,7 @@ var Inferno = (function() {
           node.isDynamic = true;
           return true;
         } else {
-          wasChildDynamic = createNode(node.children, node, node.dom, state, computed, index, clipBoxes);
+          wasChildDynamic = createNode(node.children, node, node.dom, state, context, index, clipBoxes);
           if(wasChildDynamic === true) {
             node.isDynamic = true;
           } else if(!node.isDynamic) {

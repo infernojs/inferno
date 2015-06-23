@@ -1,184 +1,200 @@
 <html>
 <head>
+  <title>Inferno DBMonster</title>
   <link rel="stylesheet" href="bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="app"></div>
+  <script src="inferno.js"></script>
+  <script src="t7.js"></script>
+  <script src="data.js"></script>
+  <script src="lib/memory-stats.js"></script>
+  <script src="lib/monitor.js"></script>
+  <script>
 
-<div id="link">
-  You're looking at a Inferno<br>
-  version of <a href="https://dbmonster.firebaseapp.com/">DBMonster</a>.<br>
-  <a class="center" href="https://github.com/trueadm/dbmonster">See it on GitHub</a>
-</div>
+    var data = {Database: Database};
+    var I = 0;
+    var N = 100;
 
-<div id="body">
-</div>
+    var state = {
+      dbs: []
+    };
 
-<script src="inferno.js"></script>
-<script src="data.js"></script>
-<script src="lib/memory-stats.js"></script>
-<script src="lib/monitor.js"></script>
-<script src="t7.js"></script>
-
-<script type="text/javascript">
-
-  var rootNode = null;
-  var once = false;
-  var dbs = [];
-  var body = document.getElementById('body');
-  var map = Inferno.TemplateHelpers.map;
-
-  function getTime(dbIndex, queryIndex) {
-    var value = dbs[dbIndex].topFiveQueries[queryIndex].elapsed;
-
-    if (!value) return '';
-    var str = parseFloat(value).toFixed(2);
-    if (value > 60) {
-      var minutes = Math.floor(value / 60);
-      var comps = (value % 60).toFixed(2).split('.');
-      var seconds = comps[0].lpad('0', 2);
-      var ms = comps[1];
-      str = minutes + ":" + seconds + "." + ms;
-    }
-    return str;
-  }
-
-  function getQueryText(dbIndex, queryIndex) {
-    return dbs[dbIndex].topFiveQueries[queryIndex].query;
-  }
-
-  function getElapsedClass(dbIndex, queryIndex) {
-    var elapsed = dbs[dbIndex].topFiveQueries[queryIndex].elapsed;
-
-    var className = 'Query elapsed';
-    if (elapsed >= 10.0) {
-      className += ' warn_long';
-    }
-    else if (elapsed >= 1.0) {
-      className += ' warn';
-    }
-    else {
-      className += ' short';
+    for (var i = 0; i < N; i++) {
+      state.dbs.push(new data.Database('cluster' + i));
+      state.dbs.push(new data.Database('cluster' + i + 'slave'));
     }
 
-    return 'Query ' + className;
-  }
+    var computed = {
+      getCountClassName: function(db) {
+        var count = db.queries.length;
+        var className = 'label';
+        if (count >= 20) {
+            className += ' label-important';
+        }
+        else if (count >= 10) {
+            className += ' label-warning';
+        }
+        else {
+            className += ' label-success';
+        }
+        return className;
+      },
+      elapsedClassName: function(elapsed) {
+        var className = 'Query elapsed';
+        if (elapsed >= 10.0) {
+            className += ' warn_long';
+        }
+        else if (elapsed >= 1.0) {
+            className += ' warn';
+        }
+        else {
+            className += ' short';
+        }
+        return className;
+      },
+      formatElapsed: function(value) {
+        if (!value) return '';
+        var str = parseFloat(value).toFixed(2);
+        if (value > 60) {
+            var minutes = Math.floor(value / 60);
+            var comps = (value % 60).toFixed(2).split('.');
+            var seconds = comps[0].lpad('0', 2);
+            var ms = comps[1];
+            str = minutes + ":" + seconds + "." + ms;
+        }
+        return str;
+      }
+    };
 
-  function queries(dbIndex, query, queryIndex) {
-    return Inferno.createElement("td", {class: getElapsedClass.bind(null, dbIndex, queryIndex) },
-      Inferno.createElement("span", {class: "foo"},getTime.bind(null, dbIndex, queryIndex)),
-      Inferno.createElement("div", {class: "popover left"},
-        Inferno.createElement("div", {class: "popover-content"}, getQueryText.bind(null, dbIndex, queryIndex)),
-        Inferno.createElement("div", {class: "arrow"}, null)
-      )
-    )
-    //t7 version
-    // function queries(dbIndex, query, queryIndex) {
-    //   return t7`
-    //     <td class="${ getElapsedClass.bind(null, dbIndex, queryIndex) }">
-    //       <span class="foo">${ getTime.bind(null, dbIndex, queryIndex) }</span>
-    //       <div class="popover left">
-    //         <div class="popover-content">${ getQueryText.bind(null, dbIndex, queryIndex) }</div>
-    //         <div class="arrow"></div>
-    //       </div>
-    //     </td>`
-    // }
-  }
-
-
-
-  function getTop5Queries(index) {
-    var db = dbs[index];
-    return db.topFiveQueries;
-  }
-
-  function getQueriesLength(index) {
-    var db = dbs[index];
-    return db.queries.length;
-  }
-
-  function getCountClass(index) {
-    var count = getLastSample(dbs[index]).queries.length;
-    var className = 'label';
-    if (count >= 20) {
-      className += ' label-important';
-    }
-    else if (count >= 10) {
-      className += ' label-warning';
-    }
-    else {
-      className += ' label-success';
-    }
-    return className;
-  }
-
-  function database(db, index) {
-    return Inferno.createElement("tr", {key: db.name},
-      Inferno.createElement("td", {class: "dbname"}, db.name),
-      Inferno.createElement("td", {class: "query-count"},
-        Inferno.createElement("span", {class: getCountClass.bind(null, index) }, getQueriesLength.bind(null, index))
-      ),
-      map(getTop5Queries.bind(null, index), queries.bind(null, index))
-    )
-    //t7 version
-    // return t7`
-    //   <tr key="${ db.name }">
-    //
-    //     <td class="dbname">
-    //       ${ db.name }
-    //     </td>
-    //
-    //     <td class="query-count">
-    //       <span class="${ getCountClass.bind(null, index) }">
-    //         ${ getQueriesLength.bind(null, index) }
-    //       </span>
-    //     </td>
-    //
-    //     ${ map(getTop5Queries.bind(null, index), queries.bind(null, index)) }
-    //
-    //   </tr>
-    // `
-  }
-
-  function getDbs() {
-    return dbs;
-  }
-
-  function table() {
-    return Inferno.createElement("table", {class: "table table-striped latest-data"},
-      Inferno.createElement("tbody", null,
-        map(getDbs, database )
-      )
-    )
-    //t7 version
-    // return t7`
-    //   <table class="table table-striped latest-data">
-    //     <tbody>
-    //       ${ map(getDbs, database )}
-    //     </tbody>
-    //   </table>
-    // `;
-  }
-
-  function update() {
-    dbs = getData();
-
-    if(rootNode === null) {
-      rootNode = Inferno.append(table, null, body);
-    } else {
-      //cito.vdom.update(rootNode, table);
-      Inferno.update(rootNode, null, body);
+    function query(scope, computed) {
+      return {
+        tag: "td",
+        attrs: [
+          {
+            name: "class",
+            value: function(scope, computed) { return 'Query ' + computed.elapsedClassName(scope.elapsed); }
+          }
+        ],
+        children: [
+          {
+            tag: "span",
+            attrs: [
+              {
+                name: "class",
+                value: "foo"
+              }
+            ],
+            children: function(scope, computed) { return computed.formatElapsed(scope.elapsed); }
+          },
+          {
+            tag: "div",
+            attrs: [
+              {
+                name: "class",
+                value: "popover left"
+              }
+            ],
+            children: [
+              {
+                tag: "div",
+                attrs: [
+                  {
+                    name: "class",
+                    value: "popover-content"
+                  }
+                ],
+                children: function(scope, computed) { return scope.query; }
+              },
+              {
+                tag: "div",
+                attrs: [
+                  {
+                    name: "class",
+                    value: "arrow"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     }
 
-    Monitoring.renderRate.ping();
+    function database(scope, computed) {
+      var map = Inferno.TemplateHelpers.map;
+      var ClipBox = Inferno.TemplateHelpers.ClipBox;
 
-    if(once === false) {
-      requestAnimationFrame(update);
+      return {
+        tag: "tr",
+        clipBox: ClipBox.FixedHeight,
+        children: [
+          {
+            tag: "td",
+            attrs: [
+              {
+                name: "class",
+                value: "dbname"
+              }
+            ],
+            children: function(scope, computed) { return scope.name; }
+          },
+          {
+            tag: "td",
+            attrs: {
+              "class": "query-count"
+            },
+            children: {
+              tag: "span",
+              attrs: [
+                {
+                  name: "class",
+                  value: function(scope, computed) { return computed.getCountClassName(scope); }
+                }
+              ],
+              children: function(scope, computed) { return scope.queries.length; }
+            }
+          },
+          function(scope, model) { return map(scope.getTopFiveQueries, query) }
+        ]
+      }
     }
-  }
 
-  requestAnimationFrame(update);
+    function template(scope, computed) {
+      var map = Inferno.TemplateHelpers.map;
+      var ClipBox = Inferno.TemplateHelpers.ClipBox;
 
-</script>
+      return {
+        tag: "table",
+        attrs: [
+          {
+            name: "class",
+            value: "table table-striped latest-data"
+          }
+        ],
+        children: {
+          tag: "tbody",
+          children: function(scope, model) { return map(scope.dbs, database) }
+        }
+      }
+    };
+
+    var app = document.getElementById("app");
+    var root = Inferno.append(template, state, computed, app);
+
+    //shortcut for dev purposes
+    function u() {
+      for (var i = 0; i < state.dbs.length; i++) {
+        state.dbs[i].update();
+      };
+      Inferno.update(root, app, state, computed)
+      Monitoring.renderRate.ping();
+      setTimeout(u, 0);
+    };
+
+    u();
+
+  </script>
 </body>
 </html>
