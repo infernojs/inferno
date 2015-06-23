@@ -9,8 +9,28 @@ var Inferno = (function() {
 
   Inferno.append = function appendToDom(template, state, computed, root) {
     var rootNode = template(state, computed);
-    createNode(rootNode, null, root, state, computed);
+    var clipBoxes = [];
+    var checkClipBoxes = false;
 
+    createNode(rootNode, null, root, state, computed, null, clipBoxes);
+    //update all the clipBoxes properties
+    handleClipBoxes(clipBoxes);
+    window.addEventListener("scroll", function (e) {
+      checkClipBoxes = true;
+    });
+    window.addEventListener("resize", function (e) {
+      checkClipBoxes = true;
+    });
+
+    var checkedHasScrolled = function() {
+      if(checkClipBoxes === true) {
+        checkClipBoxes = false;
+        handleClipBoxes(clipBoxes);
+      };
+      window.requestAnimationFrame(checkedHasScrolled);
+    };
+    checkedHasScrolled();
+    //return the root node
     return rootNode;
   };
 
@@ -41,6 +61,9 @@ var Inferno = (function() {
   Inferno.TemplateHelpers = {
     map: function(value, constructor) {
       return new Map(value, constructor);
+    },
+    ClipBox: {
+      FixedHeight: 1
     }
   };
 
@@ -130,8 +153,39 @@ var Inferno = (function() {
     }
   };
 
+  function handleClipBoxes(clipBoxes) {
+    var i = 0,
+        clipBox = null,
+        boundingRect = null,
+        docWidth = document.body.clientWidth,
+        docHeight = document.body.clientHeight,
+        docScrollTop = document.body.scrollTop,
+        docScrollLeft = document.body.scrollLeft;
+
+    for(i = 0; i < clipBoxes.length; i = i + 1 | 0) {
+      clipBox = clipBoxes[i];
+      //if it's missing dimensions, lets add them
+      if(clipBox.dimensions === null) {
+        boundingRect = clipBox.dom.getBoundingClientRect();
+        clipBox.dimensions = {
+          height: boundingRect.height,
+          width: boundingRect.width,
+          top: boundingRect.top + docScrollTop,
+          left: boundingRect.left + docScrollLeft
+        }
+      }
+      //find out if the element is not on screen
+      if(clipBox.dimensions.top - docScrollTop > docHeight
+        || clipBox.dimensions.top + clipBox.dimensions.height - docScrollTop < 0) {
+        clipBox.outOfBounds = true;
+      } else {
+        clipBox.outOfBounds = false;
+      }
+    }
+  };
+
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, state, computed, index) {
+  function createNode(node, parentNode, parentDom, state, computed, index, clipBoxes) {
     var i = 0, l = 0,
         subNode = null,
         val = null,
@@ -163,6 +217,15 @@ var Inferno = (function() {
       }
     }
 
+    //if we have box style, it means we must apply the style effects
+    if(node.clipBox != null && node.dimensions === undefined) {
+      //see if this is the child or Parent
+      if(node.clipBox === Inferno.TemplateHelpers.ClipBox.FixedHeight) {
+        node.dimensions = null;
+        clipBoxes.push(node);
+      }
+    }
+
     //this could be a map or some text, let's find out
     if(typeof node === "function") {
       val = node(state, computed);
@@ -182,7 +245,7 @@ var Inferno = (function() {
         for(i = 0; i < val.length; i = i + 1 | 0) {
           subNode = node.constructor(val[i], computed);
           node.children.push(subNode);
-          createNode(subNode, node, parentDom, val[i], computed, i);
+          createNode(subNode, node, parentDom, val[i], computed, i, clipBoxes);
         }
         node.isDynamic = true;
         return true;
@@ -196,7 +259,7 @@ var Inferno = (function() {
         if(typeof val === "string" || typeof val === "number") {
           //likely a binding
           node.children = new Text(val, node.children);
-          createNode(node.children, node, node.dom, state, computed, index);
+          createNode(node.children, node, node.dom, state, computed, index, clipBoxes);
           textNode = document.createTextNode(val);
           node.dom.appendChild(textNode);
           node.isDynamic = true;
@@ -213,7 +276,7 @@ var Inferno = (function() {
             node.dom.appendChild(textNode);
             node.isDynamic = true;
           } else {
-            wasChildDynamic = createNode(node.children[i], node, node.dom, state, computed, i);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, state, computed, i, clipBoxes);
             if(wasChildDynamic === true) {
               node.isDynamic = true;
             } else if(!node.isDynamic) {
@@ -229,7 +292,7 @@ var Inferno = (function() {
           val = node.map.value[i];
           subNode = node.map.constructor(val, computed);
           node.children.push(subNode);
-          createNode(subNode, node, node.dom, val, computed, i);
+          createNode(subNode, node, node.dom, val, computed, i, clipBoxes);
         }
         node.isDynamic = true;
         return true;
@@ -240,7 +303,7 @@ var Inferno = (function() {
           node.isDynamic = true;
           return true;
         } else {
-          wasChildDynamic = createNode(node.children, node, node.dom, state, computed, index);
+          wasChildDynamic = createNode(node.children, node, node.dom, state, computed, index, clipBoxes);
           if(wasChildDynamic === true) {
             node.isDynamic = true;
           } else if(!node.isDynamic) {
@@ -260,7 +323,7 @@ var Inferno = (function() {
   function updateNode(node, parentNode, parentDom, state, computed) {
     var i = 0, l = 0, val = "";
 
-    if(node.isDynamic === false) {
+    if(node.isDynamic === false || node.outOfBounds) {
       return;
     }
 
@@ -291,7 +354,7 @@ var Inferno = (function() {
     if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
-          if(node.children[i].isDynamic === true) {
+          if(node.children[i].isDynamic === true && !node.children[i].outOfBounds) {
             if(node.map || node instanceof Map) {
               updateNode(node.children[i], node, node.dom, state[i], computed);
             } else {

@@ -6,7 +6,6 @@
 </head>
 <body>
   <div id="app"></div>
-  <script src="im7.js"></script>
   <script src="inferno.js"></script>
   <script src="t7.js"></script>
   <script src="data.js"></script>
@@ -125,9 +124,11 @@
 
     function database(scope, computed) {
       var map = Inferno.TemplateHelpers.map;
+      var ClipBox = Inferno.TemplateHelpers.ClipBox;
 
       return {
         tag: "tr",
+        clipBox: ClipBox.FixedHeight,
         children: [
           {
             tag: "td",
@@ -162,6 +163,7 @@
 
     function template(scope, computed) {
       var map = Inferno.TemplateHelpers.map;
+      var ClipBox = Inferno.TemplateHelpers.ClipBox;
 
       return {
         tag: "table",
