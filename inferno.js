@@ -80,8 +80,8 @@ var Inferno = (function() {
     return rootNode;
   };
 
-  Inferno.update = function updateRootNode(rootNode, root, state, computed) {
-    updateNode(rootNode, null, root, state, computed);
+  Inferno.update = function updateRootNode(rootNode, root, context) {
+    updateNode(rootNode, null, root, context, context);
   };
 
   // Inferno.mount = function mountToDom(template, state, root) {
@@ -191,21 +191,6 @@ var Inferno = (function() {
     }
   };
 
-  //is this even needed? is it too problematic for its worth?
-  function findScopeNameFromeState(state, value) {
-    //value must not be string or number
-    //we use Object.keys as we don't want to get anything other than keys from the object prototype
-    var keys = Object.keys(state), i = 0;
-    for(i = 0; i < keys.length; i = i + 1 | 1) {
-      if(state[keys[i]] === value) {
-        return keys[i];
-      }
-    }
-    //go a level deeper?
-    //check root state too?
-    throw Error("Could not find Map array instance in local scope or template state");
-  };
-
   //Experimental feature, use it by applying: clipBox to a node with a valid value from Inferno.TemplateHelpers.ClipBox
   //this needs to fire when window resizes, window scrolls (or parent container with overflow scrolls?)
   //also needs to be called on when amount of items in DOM changes?
@@ -232,7 +217,7 @@ var Inferno = (function() {
         }
       }
       //if it has staticheight, that means it has variable width
-      if(node.clipBox === Inferno.TemplateHelpers.ClipBox.StaticHeight) {
+      if(clipBox.clipBox === Inferno.TemplateHelpers.ClipBox.StaticHeight) {
       }
       //find out if the element is not on screen
       if(clipBox.dimensions.top - docScrollTop > docHeight
@@ -285,17 +270,15 @@ var Inferno = (function() {
 
     //this could be a map or some text, let's find out
     if(typeof node === "function") {
-      val = node(state, computed);
+      val = node.call(context, state);
       //if we're working with a map, replace this child with the Map
       if(val instanceof Map) {
+        val.scope = node;
         node = parentNode.children[index] = val;
         //test what the map value is a function
         if(typeof node.value === "function") {
-          node.scope = node.value;
           val = node.value.call(context, state);
         } else {
-          //if its not a function then we can try and find the value
-          node.scope = findScopeNameFromeState(state, node.value);
           val = node.value;
         }
         node.children = [];
@@ -322,6 +305,9 @@ var Inferno = (function() {
           node.isDynamic = true;
           return true;
         } else {
+          if(val instanceof Map) {
+            node.scope = node.children;
+          }
           node.children = val;
         }
       }
@@ -344,7 +330,6 @@ var Inferno = (function() {
       } else if(node.children instanceof Map) {
         node.map = node.children;
         node.children = [];
-        node.scope = findScopeNameFromeState(state, node.map.value);
         for(i = 0; i < node.map.value.length; i = i + 1 | 0) {
           val = node.map.value[i];
           subNode = node.map.constructor.call(context, val);
@@ -377,7 +362,7 @@ var Inferno = (function() {
   };
 
 
-  function updateNode(node, parentNode, parentDom, state, computed) {
+  function updateNode(node, parentNode, parentDom, state, context) {
     var i = 0, l = 0, val = "";
 
     if(node.isDynamic === false || node.outOfBounds) {
@@ -385,10 +370,11 @@ var Inferno = (function() {
     }
 
     if(node.scope != null) {
-      if(typeof node.scope === "function") {
-        state = node.scope(state, computed);
+      val = node.scope.call(context, state);
+      if(val instanceof Map) {
+        state = val.value;
       } else {
-        state = state[node.scope];
+        state = val;
       }
     }
 
@@ -398,7 +384,7 @@ var Inferno = (function() {
           //we only care about values that are not text
           if(typeof node.attrs[i].value !== "string") {
             //for lack of checking if it's an array, lets assume it is
-            val = node.attrs[i].value(state, computed);
+            val = node.attrs[i].value.call(context, state);
             if(val !== node.attrs[i].lastVal) {
               node.attrs[i].lastVal = val;
               handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
@@ -413,14 +399,14 @@ var Inferno = (function() {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
           if(node.children[i].isDynamic === true && !node.children[i].outOfBounds) {
             if(node.map || node instanceof Map) {
-              updateNode(node.children[i], node, node.dom, state[i], computed);
+              updateNode(node.children[i], node, node.dom, state[i], context);
             } else {
-              updateNode(node.children[i], node, node.dom, state, computed);
+              updateNode(node.children[i], node, node.dom, state, context);
             }
           }
         }
       } else if(node.children instanceof Text) {
-        val = node.children.constructor(state, computed);
+        val = node.children.constructor.call(context, state);
         if(node.children.value !== val) {
           node.children.value = val;
           //update text
@@ -428,7 +414,7 @@ var Inferno = (function() {
         }
       } else {
         if(node.children.isDynamic === true) {
-          updateNode(node.children, node, node.dom, state, computed);
+          updateNode(node.children, node, node.dom, state, context);
         }
       }
     }
