@@ -1,0 +1,71 @@
+<html>
+<head>
+  <title>Inferno example</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body>
+  <example-app id="app" message="Hello world"></example-app>
+
+  <script src="inferno2.js"></script>
+  <script src="t7.js"></script>
+  <script>
+
+    var InfernoExample = Inferno.createComponent({
+      //this gets called when the custom element/component is added to the page
+      constructor: function(props) {
+        this.state.name = "Test";
+        this.state.className = "foo";
+      },
+      template: function() {
+        var map = Inferno.TemplateBindings.map;
+        var text = Inferno.TemplateBindings.text;
+
+        return t7`
+          <div class=${ this.state.className }>
+            <span id="bar">${ this.state.name }</span>
+          </div>
+        `;
+
+        // return {
+        //   rootNode: function() {
+        //     return {
+        //       tag: "div",
+        //       attrs: [
+        //         {
+        //           bindId: 0,
+        //           name: "class",
+        //           value: text(this.state.className)
+        //         }
+        //       ],
+        //       children: [
+        //         {
+        //           bindId: 1,
+        //           attrs: [
+        //             {
+        //               name: "id",
+        //               value: "bar"
+        //             }
+        //           ],
+        //           children: text(this.state.name)
+        //         }
+        //       ]
+        //     }
+        //   },
+        //   bindings: function() {
+        //     return [
+        //       this.state.className
+        //       this.state.name,
+        //     ]
+        //   }
+        // }
+      }
+    });
+
+    Inferno.registerComponent("example-app", InfernoExample);
+
+    var appElement = document.getElementById("app");
+
+
+  </script>
+</body>
+</html>

@@ -73,14 +73,10 @@ var t7 = (function() {
       root.children = root.children.replace(/(\r\n|\n|\r)/gm,"").trim();
       //this ensures its a prop replacement
       if(root.children.substring(0,9) === "props.__$" && root.children.substring(root.children.length - 2) === "__") {
-        tagParams.push((childrenProp ? "children: " : "") + "function(scope){return " + root.children + ";}" );
+        tagParams.push((childrenProp ? "children: " : "") + root.children  );
       } else {
         //find any template strings and replace them
-        if(output === t7.Outputs.Inferno) {
-          root.children = root.children.replace(/(props.__\$.*__)/g, "',function(scope){return $1;},'")
-        } else {
-          root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
-        }
+        root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
         //if the last two characters are ,', replace them with nothing
         if(root.children.substring(root.children.length - 2) === ",'") {
           root.children = root.children.substring(0, root.children.length - 2);
@@ -523,6 +519,22 @@ var t7 = (function() {
       );
 
       scriptCode = functionString.join(',');
+
+      //Inferno requires a different output, one of a node tree and other of an
+      //array of binded values for those nodes
+      if(output === t7.Outputs.Inferno) {
+        var bindingsCode = "[";
+        for(i = 0; i < arguments.length - 1; i++) {
+          if(i === arguments.length - 2) {
+            bindingsCode += "props." + functionPlaceholders[i];
+          } else {
+            bindingsCode += "props." + functionPlaceholders[i] + ",";
+          }
+        }
+        bindingsCode += "]"
+
+        scriptCode = "{rootNode: function(){return " + scriptCode + "}, bindings: function(){return " + bindingsCode + "}}";
+      }
 
       //build a new Function and store it depending if on node or browser
       if(isBrowser === true) {
