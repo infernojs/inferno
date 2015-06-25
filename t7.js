@@ -70,8 +70,25 @@ var t7 = (function() {
       tagParams.push((childrenProp ? "children: " : "") + "[" + childrenText.join(",") + "]");
 
     } else if(root.children != null && typeof root.children === "string") {
-      root.children = root.children.replace(/(\r\n|\n|\r)/gm,"");
-      tagParams.push((childrenProp ? "children: " : "") + "'" + root.children + "'");
+      root.children = root.children.replace(/(\r\n|\n|\r)/gm,"").trim();
+      //this ensures its a prop replacement
+      if(root.children.substring(0,9) === "props.__$" && root.children.substring(root.children.length - 2) === "__") {
+        tagParams.push((childrenProp ? "children: " : "") + "function(scope){return " + root.children + ";}" );
+      } else {
+        //find any template strings and replace them
+        if(output === t7.Outputs.Inferno) {
+          root.children = root.children.replace(/(props.__\$.*__)/g, "',function(scope){return $1;},'")
+        } else {
+          root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
+        }
+        //if the last two characters are ,', replace them with nothing
+        if(root.children.substring(root.children.length - 2) === ",'") {
+          root.children = root.children.substring(0, root.children.length - 2);
+          tagParams.push((childrenProp ? "children: " : "") + "['" + root.children + "]");
+        } else {
+          tagParams.push((childrenProp ? "children: " : "") + "['" + root.children + "']");
+        }
+      }
     }
   };
 
@@ -108,10 +125,22 @@ var t7 = (function() {
     var val = '';
     for(var name in root.attrs) {
       val = root.attrs[name];
-      if(val.indexOf("props.") === -1) {
+      if(val.indexOf("props.__$") === -1) {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
         attrsParams.push("'" + name + "':" + val);
+      }
+    }
+  };
+
+  function buildInfernoAttrsParams(root, attrsParams) {
+    var val = '';
+    for(var name in root.attrs) {
+      val = root.attrs[name];
+      if(val.indexOf("props.__$") === -1) {
+        attrsParams.push("{name:'" + name + "',value:'" + val + "'}");
+      } else {
+        attrsParams.push("{name:'" + name + "',value:function(scope){return " + val + ";}}");
       }
     }
   };
@@ -134,8 +163,8 @@ var t7 = (function() {
     if(root instanceof Array) {
       //throw error about adjacent elements
     } else {
-      //Universal output
-      if(output === t7.Outputs.Universal) {
+      //Universal output or Inferno output
+      if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno) {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
           if(isComponentName(root.tag) === false) {
@@ -147,8 +176,13 @@ var t7 = (function() {
 
             //build the attrs
             if(root.attrs != null) {
-              buildAttrsParams(root, attrsParams);
-              tagParams.push("attrs: {" + attrsParams.join(',') + "}");
+              if(output === t7.Outputs.Inferno) {
+                buildInfernoAttrsParams(root, attrsParams);
+                tagParams.push("attrs: [" + attrsParams.join(',') + "]");
+              } else {
+                buildAttrsParams(root, attrsParams);
+                tagParams.push("attrs: {" + attrsParams.join(',') + "}");
+              }
             }
 
             //build the children for this node
@@ -166,23 +200,15 @@ var t7 = (function() {
           functionText.push("'" + root + "'");
         }
       }
-      //React/Inferno output
-      else if(output === t7.Outputs.React || output === t7.Outputs.Inferno) {
+      //React output
+      else if(output === t7.Outputs.React) {
         //if we have a tag, add an element
         if(root.tag != null) {
           //find out if the tag is a React componenet
-          if(output === t7.Outputs.React) {
-            if(isComponentName(root.tag) === true) {
-              functionText.push("React.createElement(t7.loadComponent('" + root.tag + "')");
-            } else {
-              functionText.push("React.createElement('" + root.tag + "'");
-            }
+          if(isComponentName(root.tag) === true) {
+            functionText.push("React.createElement(t7.loadComponent('" + root.tag + "')");
           } else {
-            if(isComponentName(root.tag) === true) {
-              functionText.push("Inferno.createElement(t7.loadComponent('" + root.tag + "')");
-            } else {
-              functionText.push("Inferno.createElement('" + root.tag + "'");
-            }
+            functionText.push("React.createElement('" + root.tag + "'");
           }
 
           //the props/attrs
@@ -226,7 +252,7 @@ var t7 = (function() {
           if(output === t7.Outputs.Universal) {
             childText = childText.replace(placeholders[s], "' + props." + placeholders[s] + " + '");
           } else {
-            childText = childText.replace(placeholders[s], "',props." + placeholders[s] + ",'");
+            childText = childText.replace(placeholders[s], "props." + placeholders[s]);
           }
         }
       }

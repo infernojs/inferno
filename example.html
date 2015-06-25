@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
-  <example-app message="Hello world"></example-app>
+  <example-app id="app" message="Hello world"></example-app>
 
   <script src="inferno.js"></script>
   <script src="t7.js"></script>
@@ -20,23 +20,39 @@
             "Bob",
             "Fred",
             "Hannah"
-          ]
+          ],
+          dynamicText: "foobar"
         };
+      },
+      onPropChange: function(prop) {
+        //you get notified if someone uupdates your proos!
       },
       getFullName: function() {
         return this.state.firstName + " " + this.state.lastName;
       },
       template: function() {
+        var map = Inferno.TemplateBindings.map;
+        var text = Inferno.TemplateBindings.text;
+
         return t7`
           <div>
-            <span>${ this.getFullName() }</span>
-            <div>${ this.props.message }</div>
+            <span class="test">${ text(this.getFullName()) }</span>
+            <div class=${ text(this.state.dynamicText) }>${ this.props.message }</div>
+            <div><span>The time is ${ text(this.props.time) }</span></div>
           </div>
         `;
       }
     });
 
     Inferno.registerComponent("example-app", InfernoExample);
+
+    var appElement = document.getElementById("app");
+
+    setInterval(function() {
+      //uses valid, currently widely used DOM accessors
+      var date = new Date();
+      appElement.setAttribute("time", date.toTimeString());
+    }, 500);
 
   </script>
 </body>

@@ -24,6 +24,7 @@ var Inferno = (function() {
     var instance =  InfernoComponent;
     var element = Object.create(HTMLElement.prototype);
     var component = null;
+    var rootNode = null;
 
     element.createdCallback = function() {
       //TODO, add some logic here?
@@ -39,7 +40,19 @@ var Inferno = (function() {
       //call the component constructor
       internals.constructor.call(component, component.props);
       //now append it to DOM
-      Inferno.append(internals.template, component, this);
+      rootNode = Inferno.append(internals.template, component, this);
+    };
+
+    element.attributeChangedCallback = function(prop, oldVal, newVal) {
+      if(component.props[prop] == null || component.props[prop] !== newVal) {
+        component.props[prop] = newVal;
+        //fire off to component
+        var returnObj = {}
+        returnObj[prop] = component.props[prop];
+        internals.onPropChange.call(component, returnObj);
+        //finally update the node
+        Inferno.update(rootNode, component, this);
+      }
     };
 
     return {
@@ -101,12 +114,15 @@ var Inferno = (function() {
 
   function Text(value, constructor) {
     this.value = value;
-    this.constructor = constructor;
+    this.constructor = constructor || null;
   };
 
-  Inferno.TemplateHelpers = {
+  Inferno.TemplateBindings = {
     map: function(value, constructor) {
       return new Map(value, constructor);
+    },
+    text: function(value) {
+      return new Text(value);
     },
     ClipBox: {
       StaticHeight: 1,
@@ -191,7 +207,7 @@ var Inferno = (function() {
     }
   };
 
-  //Experimental feature, use it by applying: clipBox to a node with a valid value from Inferno.TemplateHelpers.ClipBox
+  //Experimental feature, use it by applying: clipBox to a node with a valid value from Inferno.TemplateBindings.ClipBox
   //this needs to fire when window resizes, window scrolls (or parent container with overflow scrolls?)
   //also needs to be called on when amount of items in DOM changes?
   //also needs to be called on when items in the DOM are display none?
@@ -217,7 +233,7 @@ var Inferno = (function() {
         }
       }
       //if it has staticheight, that means it has variable width
-      if(clipBox.clipBox === Inferno.TemplateHelpers.ClipBox.StaticHeight) {
+      if(clipBox.clipBox === Inferno.TemplateBindings.ClipBox.StaticHeight) {
       }
       //find out if the element is not on screen
       if(clipBox.dimensions.top - docScrollTop > docHeight
@@ -245,7 +261,17 @@ var Inferno = (function() {
     //see if we have any attributes to add
     if(node.attrs != null) {
       for(i = 0, l = node.attrs.length; i < l; i = i + 1 | 0) {
-        if(typeof node.attrs[i].value !== "string") {
+        if(typeof node.attrs[i].value === "function") {
+          val = node.attrs[i].value.call(context, state);
+          if(val instanceof Text) {
+            val.constructor = node.attrs[i].value;
+            node.attrs[i].value = val;
+            hasDynamicAttrs = true
+          }
+        } else if(node.attrs[i].value instanceof Text) {
+          val = node.attrs[i].value.constructor.call(context, state);
+          //TODO finish this code
+        } else if(typeof node.attrs[i].value !== "string") {
           val = node.attrs[i].value.call(context, state);
           node.attrs[i].lastVal = val;
           handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
@@ -289,6 +315,18 @@ var Inferno = (function() {
         }
         node.isDynamic = true;
         return true;
+      } else if(val instanceof Text) {
+        val.constructor = node;
+        textNode = document.createTextNode("");
+        parentDom.appendChild(textNode);
+        val.dom = textNode;
+        val.isDynamic = true;
+        parentNode.children[index] = val;
+        return true;
+      } else if(typeof val === "string" || typeof val === "number") {
+        textNode = document.createTextNode(val);
+        parentDom.appendChild(textNode);
+        return false;
       }
     }
 
@@ -296,7 +334,7 @@ var Inferno = (function() {
       //lets find out what is in side
       if(typeof node.children === "function") {
         val = node.children.call(context, state);
-        if(typeof val === "string" || typeof val === "number") {
+        if(typeof val === "string" || typeof val === "number" || typeof val === "undefined") {
           //likely a binding
           node.children = new Text(val, node.children);
           createNode(node.children, node, node.dom, state, context, index, clipBoxes);
@@ -314,10 +352,12 @@ var Inferno = (function() {
 
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
-          if(typeof node.children[i].children === "text") {
+          if(typeof node.children[i].children === "string") {
             textNode = document.createTextNode(node.children[i].children);
             node.dom.appendChild(textNode);
-            node.isDynamic = true;
+          } else if(typeof node.children[i] === "string") {
+            textNode = document.createTextNode(node.children[i]);
+            node.dom.appendChild(textNode);
           } else {
             wasChildDynamic = createNode(node.children[i], node, node.dom, state, context, i, clipBoxes);
             if(wasChildDynamic === true) {
@@ -356,9 +396,9 @@ var Inferno = (function() {
     }
 
     if(!node.isDynamic) {
-      node.isDynamic = false;
+      return false;
     }
-    return false;
+    return true;
   };
 
 
@@ -382,8 +422,13 @@ var Inferno = (function() {
       if(node.hasDynamicAttrs === true) {
         for(i = 0; i < node.attrs.length; i = i | 1) {
           //we only care about values that are not text
-          if(typeof node.attrs[i].value !== "string") {
-            //for lack of checking if it's an array, lets assume it is
+          if(node.attrs[i].value instanceof Text) {
+            val = node.attrs[i].value.constructor.call(context, state).value;
+            if(val !== node.attrs[i].value.lastVal) {
+              node.attrs[i].value.lastVal = val;
+              handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+            }
+          } else if(typeof node.attrs[i].value !== "string") {
             val = node.attrs[i].value.call(context, state);
             if(val !== node.attrs[i].lastVal) {
               node.attrs[i].lastVal = val;
@@ -417,6 +462,9 @@ var Inferno = (function() {
           updateNode(node.children, node, node.dom, state, context);
         }
       }
+    } else if(node instanceof Text) {
+      val = node.constructor.call(context, state).value;
+      debugger;
     }
   };
 
