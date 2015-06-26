@@ -22,6 +22,9 @@
           "Edward"
         ]
       },
+      componentWillReceiveProps: function() {
+
+      },
       render: function() {
         var list = Inferno.Render.List;
         return t7`
@@ -52,12 +55,37 @@
 
     var appElement = document.getElementById("app");
 
+    var odd = true;
+
     setInterval(function() {
       //uses valid, currently widely used DOM accessors
       var date = new Date();
-      // appElement.setProps({
-      //   time: date.toTimeString()
-      // });
+      var people = [];
+      odd = !odd;
+      if(!odd) {
+        people = [
+          "Bob",
+          "Dominic",
+          "John",
+          "Edward"
+        ]
+      } else {
+        people = [
+          "Jemma",
+          "Charlie",
+          "Harry",
+          "Kieria"
+        ]
+      }
+
+      var i = 0;
+
+      appElement.setProps({
+        time: date.toTimeString(),
+        people: people,
+        textFieldValue: "value " + i
+      });
+      i++;
     }, 500);
 
   </script>

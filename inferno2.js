@@ -19,6 +19,7 @@ var Inferno = (function() {
   };
 
   InfernoComponent.prototype.setProps = function(props) {
+    debugger;
     for(var key in props ){
       this.props[key] = props[key];
     }
@@ -30,6 +31,10 @@ var Inferno = (function() {
   function ValueNode(value, valueKey) {
     //detect if the value is actually a new node tree
     if(value && value.tag != null) {
+      this.isRoot = true;
+    }
+    //if its an array, this is due to a function returining an array (for example: a map)
+    else if(value && value instanceof Array) {
       this.isRoot = true;
     }
     this.value = value;
@@ -263,7 +268,7 @@ var Inferno = (function() {
 
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
   function createNode(node, parentNode, parentDom, state, values, index, clipBoxes) {
-    var i = 0, l = 0,
+    var i = 0, l = 0, ii = 0,
         subNode = null,
         val = null,
         textNode = null,
@@ -310,7 +315,13 @@ var Inferno = (function() {
             node.children[i].lastValue = values[node.children[i].valueKey];
             //check if we're dealing with a root node
             if(node.children[i].isRoot === true) {
-              createNode(node.children[i].value, node.children[i], node.dom, state, values[node.children[i].valueKey], null, clipBoxes);
+              if(node.children[i].value instanceof Array) {
+                for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
+                  createNode(node.children[i].value[ii], node.children[i], node.dom, state, values[node.children[i].valueKey][ii], ii, clipBoxes);
+                }
+              } else {
+                createNode(node.children[i].value, node.children[i], node.dom, state, values[node.children[i].valueKey], null, clipBoxes);
+              }
             } else {
               textNode = document.createTextNode(node.children[i].value);
               node.dom.appendChild(textNode);
@@ -333,18 +344,29 @@ var Inferno = (function() {
 
 
   function updateNode(node, parentNode, parentDom, state, values) {
-    var i = 0, l = 0, val = "";
+    var i = 0, ii = 0, l = 0, val = "";
 
     if(node.children != null) {
       if(node.children instanceof Array) {
-        for(i = 0; i < node.children.length; i = i + 1|1) {
+        for(i = 0; i < node.children.length; i = i + 1 | 0) {
           if(node.children[i] instanceof ValueNode) {
             //check if the value has changed
             val = values[node.children[i].valueKey];
             if(val !== node.children[i].lastValue) {
               node.children[i].lastValue = val;
-              //update the text
-              setTextContent(node.dom.childNodes[i], val, true);
+              if(val instanceof Array) {
+                for(ii = 0; ii < val.length; ii = ii + 1 | 0) {
+                  if(typeof val[ii] === "string") {
+                    setTextContent(node.dom.childNodes[i], val[ii], true);
+                  } else {
+                    updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
+                  }
+                }
+              } else {
+                node.children[i].lastValue = val;
+                //update the text
+                setTextContent(node.dom.childNodes[i], val, true);
+              }
             }
           } else {
             updateNode(node.children[i], node, node.dom, state, values);

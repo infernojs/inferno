@@ -67,6 +67,9 @@ var t7 = (function() {
               if(output === t7.Outputs.Inferno) {
                 //let's see if we can get all the placeholder values and their keys
                 root.children[i] = root.children[i].replace(/(props.__\$([0-9]*)__)/g, "Inferno.createValueNode($1,$2-1),")
+                if(root.children[i].substring(root.children[i].length - 1) === ",") {
+                  root.children[i] = root.children[i].substring(0, root.children[i].length - 1);
+                }
                 childrenText.push(root.children[i]);
               } else {
                 childrenText.push(root.children[i]);
