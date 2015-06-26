@@ -61,8 +61,17 @@ var t7 = (function() {
     if(root.children != null && root.children instanceof Array) {
       for(i = 0, n = root.children.length; i < n; i++) {
         if(root.children[i] != null) {
-          if(root.children[i][0] === "$") {
-            childrenText.push("{children:" + root.children[i].substring(1) + "}");
+          if(typeof root.children[i] === "string") {
+            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm,"").trim();
+            if(root.children[i].substring(0,9) === "props.__$") {
+              if(output === t7.Outputs.Inferno) {
+                //let's see if we can get all the placeholder values and their keys
+                root.children[i] = root.children[i].replace(/(props.__\$([0-9]*)__)/g, "Inferno.createValueNode($1,$2-1),")
+                childrenText.push(root.children[i]);
+              } else {
+                childrenText.push(root.children[i]);
+              }
+            }
           } else {
             buildFunction(root.children[i], childrenText)
           }
@@ -77,7 +86,7 @@ var t7 = (function() {
       if(root.children.substring(0,9) === "props.__$" && root.children.substring(root.children.length - 2) === "__") {
         if(output === t7.Outputs.Inferno) {
           key = exp.exec(root.children)[1] - 1;
-          tagParams.push((childrenProp ? "children: " : "") + "Inferno.createValueNode(" + root.children + "," + key + ")"  );
+          tagParams.push((childrenProp ? "children: " : "") + "Inferno.createValueNode(" + root.children + "," + key + ")");
         } else {
           tagParams.push((childrenProp ? "children: " : "") + root.children  );
         }
@@ -254,7 +263,7 @@ var t7 = (function() {
       if(childText.indexOf(placeholders[s]) > -1) {
         if(props[placeholders[s]] instanceof Array) {
           //set the children to this object
-          parent.children.push('$props.' + placeholders[s]);
+          parent.children.push('props.' + placeholders[s]);
           //set the child to null so we don't then append it to the parent's child below
           childText = null;
           break;
@@ -312,7 +321,7 @@ var t7 = (function() {
             childText = handleChildTextPlaceholders(childText, parent, props, placeholders, true);
             if(childText !== null && parent.children.length === 0) {
               parent.children = childText;
-            } else {
+            } else if (childText != null) {
               parent.children.push(childText);
             }
           }

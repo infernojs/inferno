@@ -14,13 +14,36 @@
       constructor: function(props) {
         this.state.name = "Test";
         this.state.className = "foo";
+        this.state.textFieldValue = "Text!";
+        this.state.people = [
+          "Bob",
+          "Dominic",
+          "John",
+          "Edward"
+        ]
       },
       render: function() {
+        var list = Inferno.Render.List;
         return t7`
           <div class=${ this.state.className }>
             <span id="bar">${ this.state.name }</span>
-            <div id="time">The time is ${ this.props.time}</div>
+            <div id="time">The time is ${ this.props.time }</div>
+            ${ this._renderForm() }
+            ${ this.state.name }
+            <ul>
+              ${ this.state.people.map(this._renderPerson) }
+            </ul>
           </div>
+        `;
+      },
+      _renderPerson: function(person) {
+        return t7`<li>${ person }</li>`;
+      },
+      _renderForm: function() {
+        return t7`
+          <form>
+            <input type="text" value=${ this.state.textFieldValue } />
+          </form>
         `;
       }
     });
@@ -32,9 +55,9 @@
     setInterval(function() {
       //uses valid, currently widely used DOM accessors
       var date = new Date();
-      appElement.setProps({
-        time: date.toTimeString()
-      });
+      // appElement.setProps({
+      //   time: date.toTimeString()
+      // });
     }, 500);
 
   </script>

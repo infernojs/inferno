@@ -28,11 +28,27 @@ var Inferno = (function() {
   InfernoComponent.prototype.render = function() {};
 
   function ValueNode(value, valueKey) {
+    //detect if the value is actually a new node tree
+    if(value && value.tag != null) {
+      this.isRoot = true;
+    }
     this.value = value;
     this.valueKey = valueKey;
   }
 
+  function RenderList(array, constructor) {
+    this.lastValue = null;
+    this.array = array;
+    this.constructor = constructor;
+  }
+
   var Inferno = {};
+
+  Inferno.Render = {
+    List: function() {
+      return new RenderList(value);
+    }
+  }
 
   Inferno.createComponent = function(internals) {
     var instance =  InfernoComponent;
@@ -257,10 +273,21 @@ var Inferno = (function() {
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
       parentDom.appendChild(node.dom);
+    } else if(node.children instanceof ValueNode && node.isRoot === true) {
+      //we are on a new root node, so we'll need to go through its children and apply the values
+      //based off the valueKey index
+      if(node.children instanceof Array) {
+        for(i = 0; i < node.children.length; i = i + 1 | 0) {
+          createNode(node.value[i], node, parentDom, state, values[node.valueKey], i, clipBoxes);
+        }
+      } else {
+        createNode(node.value, node, parentDom, state, values[node.valueKey], null, clipBoxes);
+      }
+      return true;
     }
 
     if(node.attrs != null) {
-      for(i = 0; i < node.attrs.length; i = i + 1|1) {
+      for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
         //check if this is a dynamic attribute
         if(node.attrs[i].value instanceof ValueNode) {
           node.hasDynamicAttrs = true;
@@ -268,24 +295,26 @@ var Inferno = (function() {
           node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
           handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
         } else {
-            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
+          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
         }
       }
     }
 
     if(node.children != null) {
       if(node.children instanceof Array) {
-        for(i = 0; i < node.children.length; i = i + 1|1) {
+        for(i = 0; i < node.children.length; i = i + 1 | 0) {
           if(typeof node.children[i] === "string" || typeof node.children[i] === "number" || typeof node.children[i] === "undefined") {
             textNode = document.createTextNode(node.children[i]);
             node.dom.appendChild(textNode);
           } else if(node.children[i] instanceof ValueNode) {
-            //if it has a valueKey then it means that its dynamic
-            if(node.children[i].valueKey != null) {
-              node.children[i].lastValue = values[node.children[i].valueKey];
+            node.children[i].lastValue = values[node.children[i].valueKey];
+            //check if we're dealing with a root node
+            if(node.children[i].isRoot === true) {
+              createNode(node.children[i].value, node.children[i], node.dom, state, values[node.children[i].valueKey], null, clipBoxes);
+            } else {
+              textNode = document.createTextNode(node.children[i].value);
+              node.dom.appendChild(textNode);
             }
-            textNode = document.createTextNode(node.children[i].value);
-            node.dom.appendChild(textNode);
           } else {
             createNode(node.children[i], node, node.dom, state, values, i, clipBoxes);
           }
@@ -295,10 +324,8 @@ var Inferno = (function() {
         node.dom.appendChild(textNode);
       } else if(node.children instanceof ValueNode) {
         //if it has a valueKey then it means that its dynamic
-        if(node.children.valueKey != null) {
-          node.children.lastValue = values[node.children.valueKey];
-        }
-        textNode = document.createTextNode(node.children.value);
+        node.children.lastValue = values[node.children.valueKey];
+        textNode = document.createTextNode(node.children.lastValue);
         node.dom.appendChild(textNode);
       }
     }
