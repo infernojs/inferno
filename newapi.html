@@ -11,10 +11,6 @@
   <script>
 
     var InfernoExample = Inferno.createComponent({
-      //this gets called when the custom element/component is added to the page
-      //unlike React, Inferno follows HTML spec. rather than pass "props", you pass attributes
-      //if you want to pass an object (array, object, map etc), simply put $ as a prefix on the
-      //attribute name and it will pass it as a prop
       constructor: function(props) {
         this.state.name = "Test";
         this.state.className = "foo";
@@ -36,7 +32,9 @@
     setInterval(function() {
       //uses valid, currently widely used DOM accessors
       var date = new Date();
-      appElement.setAttribute("time", date.toTimeString());
+      appElement.setProps({
+        time: date.toTimeString()
+      });
     }, 500);
 
   </script>

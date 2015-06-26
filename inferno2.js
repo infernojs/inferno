@@ -18,6 +18,15 @@ var Inferno = (function() {
     }
   };
 
+  InfernoComponent.prototype.setProps = function(props) {
+    for(var key in props ){
+      this.props[key] = props[key];
+    }
+    this.render();
+  };
+
+  InfernoComponent.prototype.render = function() {};
+
   function ValueNode(value, valueKey) {
     this.value = value;
     this.valueKey = valueKey;
@@ -32,8 +41,8 @@ var Inferno = (function() {
     var rootNode = null;
 
     //add some functions to the element prototype
-    element.setAttributes = function() {
-
+    element.setProps = function(props) {
+      component.setProps(props);
     };
 
     element.createdCallback = function() {
@@ -46,6 +55,8 @@ var Inferno = (function() {
       internals.constructor.call(component, component.props);
       //now append it to DOM
       rootNode = Inferno.append(internals.render, component, this);
+
+      component.render = Inferno.update.bind(component, rootNode, this, component, internals.render);
     };
 
     element.attributeChangedCallback = function(name, oldVal, newVal) {
@@ -104,7 +115,10 @@ var Inferno = (function() {
     return rootNode;
   };
 
-  Inferno.update = function updateRootNode(rootNode, root, context, values) {
+  Inferno.update = function updateRootNode(rootNode, root, context, renderFunction) {
+    //make sure we set t7 output to ValuesOnly when rendering the values
+    t7.setOutput(t7.Outputs.ValuesOnly);
+    var values = renderFunction.call(context);
     updateNode(rootNode, null, root, context, values);
   };
 
