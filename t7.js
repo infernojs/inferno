@@ -54,6 +54,8 @@ var t7 = (function() {
     var childrenText = [];
     var i = 0;
     var n = 0;
+    var key = "";
+    var exp = /props.__\$([0-9]*)__/g;
 
     //if the node has children that is an array, handle it with a loop
     if(root.children != null && root.children instanceof Array) {
@@ -73,10 +75,20 @@ var t7 = (function() {
       root.children = root.children.replace(/(\r\n|\n|\r)/gm,"").trim();
       //this ensures its a prop replacement
       if(root.children.substring(0,9) === "props.__$" && root.children.substring(root.children.length - 2) === "__") {
-        tagParams.push((childrenProp ? "children: " : "") + root.children  );
+        if(output === t7.Outputs.Inferno) {
+          key = exp.exec(root.children)[1] - 1;
+          tagParams.push((childrenProp ? "children: " : "") + "Inferno.createValueNode(" + root.children + "," + key + ")"  );
+        } else {
+          tagParams.push((childrenProp ? "children: " : "") + root.children  );
+        }
       } else {
         //find any template strings and replace them
-        root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
+        if(output === t7.Outputs.Inferno) {
+          key = exp.exec(root.children)[1] - 1;
+          root.children = root.children.replace(/(props.__\$.*__)/g, "',Inferno.createValueNode($1," + key + "),'")
+        } else {
+          root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
+        }
         //if the last two characters are ,', replace them with nothing
         if(root.children.substring(root.children.length - 2) === ",'") {
           root.children = root.children.substring(0, root.children.length - 2);
@@ -130,13 +142,15 @@ var t7 = (function() {
   };
 
   function buildInfernoAttrsParams(root, attrsParams) {
-    var val = '';
+    var val = '', key = "";
+    var exp = /props.__\$([0-9]*)__/g;
     for(var name in root.attrs) {
       val = root.attrs[name];
       if(val.indexOf("props.__$") === -1) {
         attrsParams.push("{name:'" + name + "',value:'" + val + "'}");
       } else {
-        attrsParams.push("{name:'" + name + "',value:function(scope){return " + val + ";}}");
+        key = exp.exec(val)[1] - 1;
+        attrsParams.push("{name:'" + name + "',value:Inferno.createValueNode(" + val + "," + key + ")}");
       }
     }
   };
@@ -490,6 +504,11 @@ var t7 = (function() {
     var templateKey = null;
     var tpl = "";
 
+    //For values only, return an array of all the values
+    if(output === t7.Outputs.ValuesOnly) {
+      return [].slice.call(arguments, 1);
+    }
+
     tpl = template[0];
 
     for(; i < n; i++) {
@@ -519,22 +538,6 @@ var t7 = (function() {
       );
 
       scriptCode = functionString.join(',');
-
-      //Inferno requires a different output, one of a node tree and other of an
-      //array of binded values for those nodes
-      if(output === t7.Outputs.Inferno) {
-        var bindingsCode = "[";
-        for(i = 0; i < arguments.length - 1; i++) {
-          if(i === arguments.length - 2) {
-            bindingsCode += "props." + functionPlaceholders[i];
-          } else {
-            bindingsCode += "props." + functionPlaceholders[i] + ",";
-          }
-        }
-        bindingsCode += "]"
-
-        scriptCode = "{rootNode: function(){return " + scriptCode + "}, bindings: function(){return " + bindingsCode + "}}";
-      }
 
       //build a new Function and store it depending if on node or browser
       if(isBrowser === true) {
@@ -598,7 +601,8 @@ var t7 = (function() {
   t7.Outputs = {
     React: 1,
     Universal: 2,
-    Inferno: 3
+    Inferno: 3,
+    ValuesOnly: 4
   };
 
   //set the type to React as default if it exists in global scope

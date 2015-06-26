@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
-  <example-app id="app" message="Hello world"></example-app>
+  <example-app id="app" message="Hello world" $test="123"></example-app>
 
   <script src="inferno2.js"></script>
   <script src="t7.js"></script>
@@ -12,52 +12,20 @@
 
     var InfernoExample = Inferno.createComponent({
       //this gets called when the custom element/component is added to the page
+      //unlike React, Inferno follows HTML spec. rather than pass "props", you pass attributes
+      //if you want to pass an object (array, object, map etc), simply put $ as a prefix on the
+      //attribute name and it will pass it as a prop
       constructor: function(props) {
         this.state.name = "Test";
         this.state.className = "foo";
       },
-      template: function() {
-        var map = Inferno.TemplateBindings.map;
-        var text = Inferno.TemplateBindings.text;
-
+      render: function() {
         return t7`
           <div class=${ this.state.className }>
             <span id="bar">${ this.state.name }</span>
+            <div id="time">The time is ${ this.props.time}</div>
           </div>
         `;
-
-        // return {
-        //   rootNode: function() {
-        //     return {
-        //       tag: "div",
-        //       attrs: [
-        //         {
-        //           bindId: 0,
-        //           name: "class",
-        //           value: text(this.state.className)
-        //         }
-        //       ],
-        //       children: [
-        //         {
-        //           bindId: 1,
-        //           attrs: [
-        //             {
-        //               name: "id",
-        //               value: "bar"
-        //             }
-        //           ],
-        //           children: text(this.state.name)
-        //         }
-        //       ]
-        //     }
-        //   },
-        //   bindings: function() {
-        //     return [
-        //       this.state.className
-        //       this.state.name,
-        //     ]
-        //   }
-        // }
       }
     });
 
@@ -65,6 +33,11 @@
 
     var appElement = document.getElementById("app");
 
+    setInterval(function() {
+      //uses valid, currently widely used DOM accessors
+      var date = new Date();
+      appElement.setAttribute("time", date.toTimeString());
+    }, 500);
 
   </script>
 </body>

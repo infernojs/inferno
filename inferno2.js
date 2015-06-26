@@ -18,6 +18,11 @@ var Inferno = (function() {
     }
   };
 
+  function ValueNode(value, valueKey) {
+    this.value = value;
+    this.valueKey = valueKey;
+  }
+
   var Inferno = {};
 
   Inferno.createComponent = function(internals) {
@@ -26,32 +31,26 @@ var Inferno = (function() {
     var component = null;
     var rootNode = null;
 
+    //add some functions to the element prototype
+    element.setAttributes = function() {
+
+    };
+
     element.createdCallback = function() {
       //TODO, add some logic here?
       component = new InfernoComponent(internals, this);
     };
 
     element.attachedCallback = function() {
-      var attributes = Array.prototype.slice.call(this.attributes);
-      //build up proos
-      for(var i = 0; i < attributes.length; i = i + 1 | 1) {
-        component.props[attributes[i].name] = attributes[i].value;
-      }
       //call the component constructor
       internals.constructor.call(component, component.props);
       //now append it to DOM
-      rootNode = Inferno.append(internals.template, component, this);
+      rootNode = Inferno.append(internals.render, component, this);
     };
 
-    element.attributeChangedCallback = function(prop, oldVal, newVal) {
-      if(component.props[prop] == null || component.props[prop] !== newVal) {
-        component.props[prop] = newVal;
-        //fire off to component
-        var returnObj = {}
-        returnObj[prop] = component.props[prop];
-        internals.onPropChange.call(component, returnObj);
-        //finally update the node
-        Inferno.update(rootNode, component, this);
+    element.attributeChangedCallback = function(name, oldVal, newVal) {
+      if(internals.onAttrChange != null) {
+        internals.onAttrChange.call(component, oldVal, newVal);
       }
     };
 
@@ -61,18 +60,29 @@ var Inferno = (function() {
     }
   };
 
+  Inferno.createValueNode = function(value, valueKey) {
+    return new ValueNode(value, valueKey);
+  };
+
   Inferno.registerComponent = function(elementName, component) {
     //cache item?
     document.registerElement(elementName, {prototype: component.element });
   };
 
-  Inferno.append = function appendToDom(template, context, root) {
-    var template = template.call(context);
+  Inferno.append = function appendToDom(renderFunction, context, root) {
+    var rootNode = null;
+    var values = [];
     var clipBoxes = [];
     var checkClipBoxes = false;
-    var rootNode = template.rootNode();
 
-    createNode(rootNode, null, root, context, template.bindings(), null, clipBoxes);
+    //make sure we set t7 output to Inferno when rendering the rootNode
+    t7.setOutput(t7.Outputs.Inferno);
+    rootNode = renderFunction.call(context);
+    //make sure we set t7 output to ValuesOnly when rendering the values
+    t7.setOutput(t7.Outputs.ValuesOnly);
+    values = renderFunction.call(context);
+
+    createNode(rootNode, null, root, context, values, null, clipBoxes);
     //update all the clipBoxes properties
     handleClipBoxes(clipBoxes);
     window.addEventListener("scroll", function (e) {
@@ -94,8 +104,8 @@ var Inferno = (function() {
     return rootNode;
   };
 
-  Inferno.update = function updateRootNode(rootNode, root, context) {
-    updateNode(rootNode, null, root, context, context);
+  Inferno.update = function updateRootNode(rootNode, root, context, values) {
+    updateNode(rootNode, null, root, context, values);
   };
 
   // Inferno.mount = function mountToDom(template, state, root) {
@@ -107,31 +117,6 @@ var Inferno = (function() {
   //     console.timeEnd("Inferno update");
   //   });
   // };
-
-  function Map(value, constructor) {
-    this.value = value;
-    this.constructor = constructor;
-  }
-
-  function Text(value, constructor) {
-    this.value = value;
-    this.constructor = constructor || null;
-  };
-
-  Inferno.TemplateBindings = {
-    map: function(value, constructor) {
-      return new Map(value, constructor);
-    },
-    text: function(value) {
-      return new Text(value);
-    },
-    ClipBox: {
-      StaticHeight: 1,
-      StaticWidth: 2,
-      StaticWidthAndHeight: 3,
-      VariableWidthAndHeight: 4 //will be expensive
-    }
-  };
 
   // TODO find solution without empty text placeholders
   function emptyTextNode() {
@@ -208,7 +193,7 @@ var Inferno = (function() {
     }
   };
 
-  //Experimental feature, use it by applying: clipBox to a node with a valid value from Inferno.TemplateBindings.ClipBox
+  //Experimental feature
   //this needs to fire when window resizes, window scrolls (or parent container with overflow scrolls?)
   //also needs to be called on when amount of items in DOM changes?
   //also needs to be called on when items in the DOM are display none?
@@ -247,7 +232,7 @@ var Inferno = (function() {
   };
 
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, state, bindings, index, clipBoxes) {
+  function createNode(node, parentNode, parentDom, state, values, index, clipBoxes) {
     var i = 0, l = 0,
         subNode = null,
         val = null,
@@ -255,30 +240,79 @@ var Inferno = (function() {
         hasDynamicAttrs = false,
         wasChildDynamic = false;
 
-
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
       parentDom.appendChild(node.dom);
     }
 
+    if(node.attrs != null) {
+      for(i = 0; i < node.attrs.length; i = i + 1|1) {
+        //check if this is a dynamic attribute
+        if(node.attrs[i].value instanceof ValueNode) {
+          node.hasDynamicAttrs = true;
+          //assign the last value
+          node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
+          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
+        } else {
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
+        }
+      }
+    }
+
     if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1|1) {
-          createNode(node.children[i], node, node.dom, state, bindings, i, clipBoxes);
+          if(typeof node.children[i] === "string" || typeof node.children[i] === "number" || typeof node.children[i] === "undefined") {
+            textNode = document.createTextNode(node.children[i]);
+            node.dom.appendChild(textNode);
+          } else if(node.children[i] instanceof ValueNode) {
+            //if it has a valueKey then it means that its dynamic
+            if(node.children[i].valueKey != null) {
+              node.children[i].lastValue = values[node.children[i].valueKey];
+            }
+            textNode = document.createTextNode(node.children[i].value);
+            node.dom.appendChild(textNode);
+          } else {
+            createNode(node.children[i], node, node.dom, state, values, i, clipBoxes);
+          }
         }
       } else if(typeof node.children === "string") {
         textNode = document.createTextNode(node.children);
         node.dom.appendChild(textNode);
+      } else if(node.children instanceof ValueNode) {
+        //if it has a valueKey then it means that its dynamic
+        if(node.children.valueKey != null) {
+          node.children.lastValue = values[node.children.valueKey];
+        }
+        textNode = document.createTextNode(node.children.value);
+        node.dom.appendChild(textNode);
       }
     }
-
   };
 
 
-  function updateNode(node, parentNode, parentDom, state, context) {
+  function updateNode(node, parentNode, parentDom, state, values) {
     var i = 0, l = 0, val = "";
 
-
+    if(node.children != null) {
+      if(node.children instanceof Array) {
+        for(i = 0; i < node.children.length; i = i + 1|1) {
+          if(node.children[i] instanceof ValueNode) {
+            //check if the value has changed
+            val = values[node.children[i].valueKey];
+            if(val !== node.children[i].lastValue) {
+              node.children[i].lastValue = val;
+              //update the text
+              setTextContent(node.dom.childNodes[i], val, true);
+            }
+          } else {
+            updateNode(node.children[i], node, node.dom, state, values);
+          }
+        }
+      }
+    } else if(node.children instanceof ValueNode) {
+      debugger;
+    }
   };
 
   return Inferno;
