@@ -19,13 +19,20 @@ var Inferno = (function() {
   };
 
   InfernoComponent.prototype.setProps = function(props) {
-    debugger;
+    this.onPropsChange(props);
     for(var key in props ){
       this.props[key] = props[key];
     }
     this.render();
   };
 
+  InfernoComponent.prototype.setState = function(state) {
+    for(var key in state ){
+      this.state[key] = state[key];
+    }
+  };
+
+  InfernoComponent.prototype.onPropsChange = function(props) {};
   InfernoComponent.prototype.render = function() {};
 
   function ValueNode(value, valueKey) {
@@ -78,11 +85,14 @@ var Inferno = (function() {
       rootNode = Inferno.append(internals.render, component, this);
 
       component.render = Inferno.update.bind(component, rootNode, this, component, internals.render);
+      if(internals.onPropsChange) {
+        component.onPropsChange = internals.onPropsChange.bind(component);
+      }
     };
 
     element.attributeChangedCallback = function(name, oldVal, newVal) {
-      if(internals.onAttrChange != null) {
-        internals.onAttrChange.call(component, oldVal, newVal);
+      if(internals.onAttributeChange != null) {
+        internals.onAttributeChange.call(component, oldVal, newVal);
       }
     };
 
@@ -372,9 +382,15 @@ var Inferno = (function() {
             updateNode(node.children[i], node, node.dom, state, values);
           }
         }
+      } else if(node.children instanceof ValueNode) {
+        val = values[node.children.valueKey];
+        if(val !== node.children.lastValue) {
+          node.children.lastValue = val;
+          if(typeof val === "string") {
+            setTextContent(node.dom, val, true);
+          }
+        }
       }
-    } else if(node.children instanceof ValueNode) {
-      debugger;
     }
   };
 

@@ -22,8 +22,12 @@
           "Edward"
         ]
       },
-      componentWillReceiveProps: function() {
-
+      onPropsChange: function(newProps) {
+        if(this.props.people !== newProps.people) {
+          this.setState({
+            people: newProps.people
+          });
+        }
       },
       render: function() {
         var list = Inferno.Render.List;
