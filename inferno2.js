@@ -378,7 +378,7 @@ var Inferno = (function() {
   };
 
   function updateNode(node, parentNode, parentDom, state, values) {
-    var i = 0, ii = 0, l = 0, val = "", childNode = null;
+    var i = 0, ii = 0, s = 0, l = 0, val = "", childNode = null;
 
     if(node.children != null) {
       if(node.children instanceof Array) {
@@ -393,12 +393,16 @@ var Inferno = (function() {
                 if(val.length > node.children[i].lastValue.length) {
                   //easiest way to add another child is to clone the node, so let's clone the first child
                   //TODO check the templates coming back have the same code?
-                  childNode = cloneNode(node.children[i].value[0], node.dom);
-                  node.children[i].value.push(childNode);
+                  for(s = 0; s < val.length - node.children[i].lastValue.length; s = s + 1 | 0) {
+                    childNode = cloneNode(node.children[i].value[0], node.dom);
+                    node.children[i].value.push(childNode);
+                  }
                 } else if(val.length < node.children[i].lastValue.length) {
                   //we need to remove the last node here (unless we add in index functionality)
-                  removeNode(node.children[i].value[node.children[i].value.length - 1], node.dom);
-                  node.children[i].value.pop();
+                  for(s = 0; s < node.children[i].lastValue.length - val.length; s = s + 1 | 0) {
+                    removeNode(node.children[i].value[node.children[i].value.length - 1], node.dom);
+                    node.children[i].value.pop();
+                  }
                 }
                 for(ii = 0; ii < val.length; ii = ii + 1 | 0) {
                   if(typeof val[ii] === "string") {
