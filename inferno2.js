@@ -352,9 +352,33 @@ var Inferno = (function() {
     }
   };
 
+  function cloneAttrs(attrs) {
+    var cloneAttrs = [];
+    //TODO: need to actually do this
+    return cloneAttrs;
+  };
+
+  function cloneNode(node, parentDom) {
+    var cloneNode = {
+      tag: node.tag,
+      dom: node.dom.cloneNode(false),
+      attrs: cloneAttrs(node.attrs)
+    }
+    //TODO: need to actually finish this
+    if(node.children instanceof ValueNode) {
+        cloneNode.children = new ValueNode(node.children.value, node.children.valueKey);
+    }
+    //append the new cloned DOM node to its parentDom
+    parentDom.appendChild(cloneNode.dom);
+    return cloneNode;
+  };
+
+  function removeNode(node, parentDom) {
+    parentDom.removeChild(node.dom);
+  };
 
   function updateNode(node, parentNode, parentDom, state, values) {
-    var i = 0, ii = 0, l = 0, val = "";
+    var i = 0, ii = 0, l = 0, val = "", childNode = null;
 
     if(node.children != null) {
       if(node.children instanceof Array) {
@@ -363,8 +387,19 @@ var Inferno = (function() {
             //check if the value has changed
             val = values[node.children[i].valueKey];
             if(val !== node.children[i].lastValue) {
-              node.children[i].lastValue = val;
               if(val instanceof Array) {
+                //check if the sizes have changed
+                //in this case, our new array has more items so we'll need to add more children
+                if(val.length > node.children[i].lastValue.length) {
+                  //easiest way to add another child is to clone the node, so let's clone the first child
+                  //TODO check the templates coming back have the same code?
+                  childNode = cloneNode(node.children[i].value[0], node.dom);
+                  node.children[i].value.push(childNode);
+                } else if(val.length < node.children[i].lastValue.length) {
+                  //we need to remove the last node here (unless we add in index functionality)
+                  removeNode(node.children[i].value[node.children[i].value.length - 1], node.dom);
+                  node.children[i].value.pop();
+                }
                 for(ii = 0; ii < val.length; ii = ii + 1 | 0) {
                   if(typeof val[ii] === "string") {
                     setTextContent(node.dom.childNodes[i], val[ii], true);
@@ -377,6 +412,7 @@ var Inferno = (function() {
                 //update the text
                 setTextContent(node.dom.childNodes[i], val, true);
               }
+              node.children[i].lastValue = val;
             }
           } else {
             updateNode(node.children[i], node, node.dom, state, values);
