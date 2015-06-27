@@ -32,6 +32,7 @@ var Inferno = (function() {
     }
   };
 
+  InfernoComponent.prototype.constructor = function(props) {};
   InfernoComponent.prototype.onPropsChange = function(props) {};
   InfernoComponent.prototype.render = function() {};
 
@@ -80,7 +81,8 @@ var Inferno = (function() {
 
     element.attachedCallback = function() {
       //call the component constructor
-      internals.constructor.call(component, component.props);
+      component.constructor = internals.constructor.bind(component);
+      component.constructor(component.props);
       //now append it to DOM
       rootNode = Inferno.append(internals.render, component, this);
 
@@ -379,7 +381,17 @@ var Inferno = (function() {
 
   function updateNode(node, parentNode, parentDom, state, values) {
     var i = 0, ii = 0, s = 0, l = 0, val = "", childNode = null;
-
+    if(node.attrs != null && node.hasDynamicAttrs === true) {
+      for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
+        if(node.attrs[i].value instanceof ValueNode) {
+          val = values[node.attrs[i].value.valueKey];
+          if(val !== node.attrs[i].value.lastValue) {
+            node.attrs[i].value.lastValue = val;
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+          }
+        }
+      }
+    }
     if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
@@ -426,7 +438,7 @@ var Inferno = (function() {
         val = values[node.children.valueKey];
         if(val !== node.children.lastValue) {
           node.children.lastValue = val;
-          if(typeof val === "string") {
+          if(typeof val === "string" || typeof val === "number") {
             setTextContent(node.dom, val, true);
           }
         }
