@@ -90,7 +90,7 @@
         };
         this.render();
         Monitoring.renderRate.ping();
-        requestAnimationFrame(this._updateDbs);
+        setTimeout(this._updateDbs, 0);
       },
       render: function() {
         // return t7`
