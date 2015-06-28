@@ -568,6 +568,14 @@ var t7 = (function() {
   //storage for the cache
   t7._cache = {};
 
+  t7.precompile = function(template, values) {
+    if(output === t7.Outputs.ValuesOnly) {
+      return values
+    } else {
+      return template();
+    }
+  };
+
   //a lightweight flow control function
   //expects truthy and falsey to be functions
   t7.if = function(expression, truthy) {

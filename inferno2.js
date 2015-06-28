@@ -34,7 +34,6 @@ var Inferno = (function() {
 
   InfernoComponent.prototype.constructor = function(props) {};
   InfernoComponent.prototype.onPropsChange = function(props) {};
-  InfernoComponent.prototype.render = function() {};
 
   function ValueNode(value, valueKey) {
     //detect if the value is actually a new node tree
@@ -56,12 +55,6 @@ var Inferno = (function() {
   }
 
   var Inferno = {};
-
-  Inferno.Render = {
-    List: function() {
-      return new RenderList(value);
-    }
-  }
 
   Inferno.createComponent = function(internals) {
     var instance =  InfernoComponent;
@@ -300,6 +293,7 @@ var Inferno = (function() {
       } else {
         createNode(node.value, node, parentDom, state, values[node.valueKey], null, clipBoxes);
       }
+      node.children.isDynamic = true;
       return true;
     }
 
@@ -308,6 +302,7 @@ var Inferno = (function() {
         //check if this is a dynamic attribute
         if(node.attrs[i].value instanceof ValueNode) {
           node.hasDynamicAttrs = true;
+          node.isDynamic = true;
           //assign the last value
           node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
           handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
@@ -325,8 +320,10 @@ var Inferno = (function() {
             node.dom.appendChild(textNode);
           } else if(node.children[i] instanceof ValueNode) {
             node.children[i].lastValue = values[node.children[i].valueKey];
+            node.isDynamic = true;
             //check if we're dealing with a root node
             if(node.children[i].isRoot === true) {
+              node.children[i].isDynamic = true;
               if(node.children[i].value instanceof Array) {
                 for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
                   createNode(node.children[i].value[ii], node.children[i], node.dom, state, values[node.children[i].valueKey][ii], ii, clipBoxes);
@@ -339,7 +336,10 @@ var Inferno = (function() {
               node.dom.appendChild(textNode);
             }
           } else {
-            createNode(node.children[i], node, node.dom, state, values, i, clipBoxes);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, state, values, i, clipBoxes);
+            if(wasChildDynamic === true ) {
+              node.isDynamic = true;
+            }
           }
         }
       } else if(typeof node.children === "string") {
@@ -350,8 +350,14 @@ var Inferno = (function() {
         node.children.lastValue = values[node.children.valueKey];
         textNode = document.createTextNode(node.children.lastValue);
         node.dom.appendChild(textNode);
+        node.isDynamic = true;
       }
     }
+
+    if(!node.isDynamic) {
+      return false;
+    }
+    return true;
   };
 
   function cloneAttrs(attrs) {
@@ -381,6 +387,10 @@ var Inferno = (function() {
 
   function updateNode(node, parentNode, parentDom, state, values) {
     var i = 0, ii = 0, s = 0, l = 0, val = "", childNode = null;
+    if(node.isDynamic === false) {
+      return;
+    }
+
     if(node.attrs != null && node.hasDynamicAttrs === true) {
       for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
         if(node.attrs[i].value instanceof ValueNode) {
@@ -395,43 +405,45 @@ var Inferno = (function() {
     if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
-          if(node.children[i] instanceof ValueNode) {
-            //check if the value has changed
-            val = values[node.children[i].valueKey];
-            if(val !== node.children[i].lastValue) {
-              if(val instanceof Array) {
-                //check if the sizes have changed
-                //in this case, our new array has more items so we'll need to add more children
-                if(val.length > node.children[i].lastValue.length) {
-                  //easiest way to add another child is to clone the node, so let's clone the first child
-                  //TODO check the templates coming back have the same code?
-                  for(s = 0; s < val.length - node.children[i].lastValue.length; s = s + 1 | 0) {
-                    childNode = cloneNode(node.children[i].value[0], node.dom);
-                    node.children[i].value.push(childNode);
+          if(node.children[i].isDynamic === true) {
+            if(node.children[i] instanceof ValueNode) {
+              //check if the value has changed
+              val = values[node.children[i].valueKey];
+              if(val !== node.children[i].lastValue) {
+                if(val instanceof Array) {
+                  //check if the sizes have changed
+                  //in this case, our new array has more items so we'll need to add more children
+                  if(val.length > node.children[i].lastValue.length) {
+                    //easiest way to add another child is to clone the node, so let's clone the first child
+                    //TODO check the templates coming back have the same code?
+                    for(s = 0; s < val.length - node.children[i].lastValue.length; s = s + 1 | 0) {
+                      childNode = cloneNode(node.children[i].value[0], node.dom);
+                      node.children[i].value.push(childNode);
+                    }
+                  } else if(val.length < node.children[i].lastValue.length) {
+                    //we need to remove the last node here (unless we add in index functionality)
+                    for(s = 0; s < node.children[i].lastValue.length - val.length; s = s + 1 | 0) {
+                      removeNode(node.children[i].value[node.children[i].value.length - 1], node.dom);
+                      node.children[i].value.pop();
+                    }
                   }
-                } else if(val.length < node.children[i].lastValue.length) {
-                  //we need to remove the last node here (unless we add in index functionality)
-                  for(s = 0; s < node.children[i].lastValue.length - val.length; s = s + 1 | 0) {
-                    removeNode(node.children[i].value[node.children[i].value.length - 1], node.dom);
-                    node.children[i].value.pop();
+                  for(ii = 0; ii < val.length; ii = ii + 1 | 0) {
+                    if(typeof val[ii] === "string") {
+                      setTextContent(node.dom.childNodes[i], val[ii], true);
+                    } else {
+                      updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
+                    }
                   }
+                } else {
+                  node.children[i].lastValue = val;
+                  //update the text
+                  setTextContent(node.dom.childNodes[i], val, true);
                 }
-                for(ii = 0; ii < val.length; ii = ii + 1 | 0) {
-                  if(typeof val[ii] === "string") {
-                    setTextContent(node.dom.childNodes[i], val[ii], true);
-                  } else {
-                    updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
-                  }
-                }
-              } else {
                 node.children[i].lastValue = val;
-                //update the text
-                setTextContent(node.dom.childNodes[i], val, true);
               }
-              node.children[i].lastValue = val;
+            } else {
+              updateNode(node.children[i], node, node.dom, state, values);
             }
-          } else {
-            updateNode(node.children[i], node, node.dom, state, values);
           }
         }
       } else if(node.children instanceof ValueNode) {
