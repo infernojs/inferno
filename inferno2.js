@@ -452,7 +452,7 @@ var Inferno = (function() {
                   createNode(node.children[i].value, node.children[i], node.dom, state, val, null, null, i);
                   //then we want to set the new templatekey
                   node.children[i].templateKey = val.templateKey;
-                  return true;
+                  node.children[i].lastValue = val.values;
                 }
                 val = val.values;
               }
