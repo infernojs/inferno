@@ -434,6 +434,8 @@ var Inferno = (function() {
                 //check to see if the template has changed
                 if(node.children[i].templateKey !== val.templateKey) {
                   //we want to remove the DOM current node
+                  //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
+                  //asking t7 for a fresh template??
                   removeNode(node.children[i].value, node.dom);
                   //and then we want to create the new node (we can simply get it from t7 cache)
                   node.children[i].value = t7.getTemplateFromCache(val.templateKey);
