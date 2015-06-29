@@ -487,16 +487,17 @@ var Inferno = (function() {
                     if(val[ii] != null && val[ii].templateKey != null) {
                       node.children[i].value[ii].templateKey = val[ii].templateKey;
                       val[ii] = val[ii].values;
-                      //TODO finish this
-                      if(typeof val[ii] === "string") {
-                        setTextContent(node.children[i].value[ii].dom, val[ii], true);
-                      } else if(val[ii] instanceof Array) {
-                        for(iii = 0; iii < val[ii].length; iii = iii + 1 | 0) {
-                          if(typeof val[ii][iii] === "string") {
-                            setTextContent(node.children[i].value[ii].dom.childNodes[iii], val[ii][iii], true);
-                          }
-                        }
-                      }
+                      //TODO this is all wrong, it should not go from values
+                      // if(typeof val[ii] === "string") {
+                      //   setTextContent(node.children[i].value[ii].dom, val[ii], true);
+                      // } else if(val[ii] instanceof Array) {
+                      //   for(iii = 0; iii < val[ii].length; iii = iii + 1 | 0) {
+                      //     if(typeof val[ii][iii] === "string" || typeof val[ii][iii] === "number") {
+                      //       debugger;
+                      //       setTextContent(node.children[i].value[ii].dom.childNodes[iii], val[ii][iii], true);
+                      //     }
+                      //   }
+                      // }
                     } else {
                       if(typeof val[ii] === "string") {
                         setTextContent(node.dom.childNodes[i], val[ii], true);
