@@ -272,7 +272,7 @@ var Inferno = (function() {
   };
 
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, state, values, index, clipBoxes) {
+  function createNode(node, parentNode, parentDom, state, values, index, clipBoxes, insertAtIndex) {
     var i = 0, l = 0, ii = 0,
         subNode = null,
         val = null,
@@ -288,7 +288,11 @@ var Inferno = (function() {
 
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
-      parentDom.appendChild(node.dom);
+      if(!insertAtIndex) {
+        parentDom.appendChild(node.dom);
+      } else {
+        parentDom.insertBefore(node.dom, parentDom.childNodes[insertAtIndex]);
+      }
     } else if(node.children instanceof ValueNode && node.isRoot === true) {
       //we are on a new root node, so we'll need to go through its children and apply the values
       //based off the valueKey index
@@ -427,7 +431,16 @@ var Inferno = (function() {
               //check if the value has changed
               val = values[node.children[i].valueKey];
               if(val != null && val.templateKey != null) {
-                node.children[i].templateKey = val.templateKey;
+                //check to see if the template has changed
+                if(node.children[i].templateKey !== val.templateKey) {
+                  //we want to remove the DOM current node
+                  removeNode(node.children[i].value, node.dom);
+                  //and then we want to create the new node (we can simply get it from t7 cache)
+                  node.children[i].value = t7.getTemplateFromCache(val.templateKey);
+                  createNode(node.children[i].value, node.children[i], node.dom, state, val, null, null, i);
+                  //then we want to set the new templatekey
+                  node.children[i].templateKey = val.templateKey;
+                }
                 val = val.values;
               }
               if(val !== node.children[i].lastValue) {

@@ -95,11 +95,12 @@
       }
 
       var i = 0;
+      isOn = !isOn;
 
       appElement.setProps({
         time: date.toTimeString(),
         people: people,
-        isOn: !isOn,
+        isOn: isOn,
         textFieldValue: "value " + i
       });
       i++;

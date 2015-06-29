@@ -17,6 +17,7 @@ var t7 = (function() {
   var functionProps = {};
   var functionPlaceholders = [];
   var output = null;
+  var lastOutput = null;
   var components = {};
   var ii = 1;
   var selfClosingTags = [];
@@ -517,6 +518,7 @@ var t7 = (function() {
     var scriptCode = "";
     var templateKey = null;
     var tpl = template[0];
+    var returnValuesButBuildTemplate = false;
 
     for(; i < n; i++) {
       functionProps["__$" + i + "__"] = arguments[i];
@@ -528,7 +530,13 @@ var t7 = (function() {
 
     //For values only, return an array of all the values
     if(output === t7.Outputs.ValuesOnly) {
-      return {values: [].slice.call(arguments, 1), templateKey: templateKey};
+      if(t7._cache[templateKey] != null) {
+        return {values: [].slice.call(arguments, 1), templateKey: templateKey};
+      } else {
+        returnValuesButBuildTemplate = true;
+        //we then need to change the output to the "last" value
+        output = lastOutput;
+      }
     }
 
     if(t7._cache[templateKey] == null) {
@@ -560,6 +568,11 @@ var t7 = (function() {
       } else {
         t7._cache[templateKey] = new Function('"use strict";var props = arguments[0];return ' + scriptCode + '');
       }
+    }
+
+    if(returnValuesButBuildTemplate === true) {
+      output = t7.Outputs.ValuesOnly;
+      return {values: [].slice.call(arguments, 1), templateKey: templateKey};
     }
 
     return t7._cache[templateKey](functionProps);
@@ -595,7 +608,10 @@ var t7 = (function() {
   };
 
   t7.setOutput = function(newOutput) {
-    output = newOutput;
+    if(output !== newOutput) {
+      lastOutput = output;
+      output = newOutput;
+    }
   };
 
   t7.getOutput = function() {
@@ -612,6 +628,10 @@ var t7 = (function() {
 
   t7.deregisterAllComponents = function() {
     components = {};
+  };
+
+  t7.getTemplateFromCache = function(templateKey) {
+    return t7._cache[templateKey]();
   };
 
   t7.loadComponent = function(componentName) {
