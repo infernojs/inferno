@@ -384,33 +384,35 @@ var Inferno = (function() {
   function cloneNode(node, parentDom) {
     var i = 0;
     var textNode = null;
-    var cloneNode = {
+    var clonedNode = {
       tag: node.tag,
       dom: node.dom.cloneNode(false),
       attrs: cloneAttrs(node.attrs)
     }
 
     if(node.children instanceof ValueNode) {
-      cloneNode.children = new ValueNode(node.children.value, node.children.valueKey);
+      clonedNode.children = new ValueNode(node.children.value, node.children.valueKey);
     } else if(node.children instanceof Array) {
-      cloneNode.children = [];
+      clonedNode.children = [];
       //TODO: need to actually finish this
       for(i = 0; i < node.children.length; i = i + 1 | 0) {
         if(node.children[i] instanceof ValueNode) {
           textNode = document.createTextNode(node.children[i].value);
-          cloneNode.dom.appendChild(textNode);
-          cloneNode.children.push(new ValueNode(node.children[i].value, node.children[i].valueKey));
+          clonedNode.dom.appendChild(textNode);
+          clonedNode.children.push(new ValueNode(node.children[i].value, node.children[i].valueKey));
         } else if (typeof node.children[i] === "string" || typeof node.children[i] === "number") {
           textNode = document.createTextNode(node.children[i]);
-          cloneNode.dom.appendChild(textNode);
-          cloneNode.children.push(node.children[i]);
+          clonedNode.dom.appendChild(textNode);
+          clonedNode.children.push(node.children[i]);
+        } else {
+          cloneNode(node.children[i], clonedNode.dom);
         }
       }
     }
 
     //append the new cloned DOM node to its parentDom
-    parentDom.appendChild(cloneNode.dom);
-    return cloneNode;
+    parentDom.appendChild(clonedNode.dom);
+    return clonedNode;
   };
 
   function removeNode(node, parentDom) {
