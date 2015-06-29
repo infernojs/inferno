@@ -44,7 +44,7 @@
             ${ this.state.name }
             ${this.state.isOn === false
               ? t7`<div>Switch is off!</div>`
-              : t7`<div>Switch is on!</div>`
+              : t7`<div>Switch is on! ${ this.props.time }</div>`
             }
             <ul>
               ${ this.state.people.map(this._renderPerson) }

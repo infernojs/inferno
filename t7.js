@@ -14,8 +14,6 @@ var t7 = (function() {
   var isBrowser = typeof window != "undefined" && document != null;
   var docHead = null;
   //to save time later, we can pre-create a props object structure to re-use
-  var functionProps = {};
-  var functionPlaceholders = [];
   var output = null;
   var lastOutput = null;
   var components = {};
@@ -25,11 +23,6 @@ var t7 = (function() {
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
   }
-
-  for(ii = 1; ii < 15; ii++) {
-    functionProps["__$" + ii + "__"] = null;
-    functionPlaceholders.push("__$" + ii + "__");
-  };
 
   selfClosingTags = [
     'area',
@@ -56,18 +49,20 @@ var t7 = (function() {
     var i = 0;
     var n = 0;
     var key = "";
-    var exp = /props.__\$([0-9]*)__/g;
+    var exp = /__\$props__\[(\d*)\]/g;
+    var matches = null;
 
     //if the node has children that is an array, handle it with a loop
     if(root.children != null && root.children instanceof Array) {
       for(i = 0, n = root.children.length; i < n; i++) {
         if(root.children[i] != null) {
           if(typeof root.children[i] === "string") {
-            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm,"").trim();
-            if(root.children[i].substring(0,9) === "props.__$") {
+            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm,"");
+            matches = root.children[i].match(/__\$props__\[\d*\]/g);
+            if(matches !== null) {
               if(output === t7.Outputs.Inferno) {
                 //let's see if we can get all the placeholder values and their keys
-                root.children[i] = root.children[i].replace(/(props.__\$([0-9]*)__)/g, "Inferno.createValueNode($1,$2-1),")
+                root.children[i] = root.children[i].replace(/(__\$props__\[([0-9]*)\])/g, "Inferno.createValueNode($1,$2),")
                 if(root.children[i].substring(root.children[i].length - 1) === ",") {
                   root.children[i] = root.children[i].substring(0, root.children[i].length - 1);
                 }
@@ -75,6 +70,8 @@ var t7 = (function() {
               } else {
                 childrenText.push(root.children[i]);
               }
+            } else {
+              childrenText.push("'" + root.children[i] + "'");
             }
           } else {
             buildFunction(root.children[i], childrenText)
@@ -87,30 +84,22 @@ var t7 = (function() {
     } else if(root.children != null && typeof root.children === "string") {
       root.children = root.children.replace(/(\r\n|\n|\r)/gm,"").trim();
       //this ensures its a prop replacement
-      if(root.children.substring(0,9) === "props.__$" && root.children.substring(root.children.length - 2) === "__") {
+      matches = root.children.match(/__\$props__\[\d*\]/g);
+      //find any template strings and replace them
+      if(matches !== null) {
         if(output === t7.Outputs.Inferno) {
-          key = exp.exec(root.children)[1] - 1;
-          tagParams.push((childrenProp ? "children: " : "") + "Inferno.createValueNode(" + root.children + "," + key + ")");
+          key = exp.exec(root.children)[1];
+          root.children = root.children.replace(/(__\$props__\[.*\])/g, "',Inferno.createValueNode($1," + key + "),'")
         } else {
-          tagParams.push((childrenProp ? "children: " : "") + root.children  );
+          root.children = root.children.replace(/(__\$props__\[.*\])/g, "',$1,'")
         }
+      }
+      //if the last two characters are ,', replace them with nothing
+      if(root.children.substring(root.children.length - 2) === ",'") {
+        root.children = root.children.substring(0, root.children.length - 2);
+        tagParams.push((childrenProp ? "children: " : "") + "['" + root.children + "]");
       } else {
-        //find any template strings and replace them
-        if(root.children.indexOf("props.__$") > -1) {
-          if(output === t7.Outputs.Inferno) {
-            key = exp.exec(root.children)[1] - 1;
-            root.children = root.children.replace(/(props.__\$.*__)/g, "',Inferno.createValueNode($1," + key + "),'")
-          } else {
-            root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
-          }
-        }
-        //if the last two characters are ,', replace them with nothing
-        if(root.children.substring(root.children.length - 2) === ",'") {
-          root.children = root.children.substring(0, root.children.length - 2);
-          tagParams.push((childrenProp ? "children: " : "") + "['" + root.children + "]");
-        } else {
-          tagParams.push((childrenProp ? "children: " : "") + "['" + root.children + "']");
-        }
+        tagParams.push((childrenProp ? "children: " : "") + "['" + root.children + "']");
       }
     }
   };
@@ -146,9 +135,11 @@ var t7 = (function() {
 
   function buildAttrsParams(root, attrsParams) {
     var val = '';
+    var matches = null;
     for(var name in root.attrs) {
       val = root.attrs[name];
-      if(val.indexOf("props.__$") === -1) {
+      matches = val.match(/__\$props__\[\d*\]/g);
+      if(matches === null) {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
         attrsParams.push("'" + name + "':" + val);
@@ -158,13 +149,15 @@ var t7 = (function() {
 
   function buildInfernoAttrsParams(root, attrsParams) {
     var val = '', key = "";
-    var exp = /props.__\$([0-9]*)__/g;
+    var matches = null;
+    var exp = /__\$props__\[(\d*)\]/g;
     for(var name in root.attrs) {
       val = root.attrs[name];
-      if(val.indexOf("props.__$") === -1) {
+      matches = val.match(/__\$props__\[\d*\]/g);
+      if(matches === null) {
         attrsParams.push("{name:'" + name + "',value:'" + val + "'}");
       } else {
-        key = exp.exec(val)[1] - 1;
+        key = exp.exec(val)[1];
         attrsParams.push("{name:'" + name + "',value:Inferno.createValueNode(" + val + "," + key + ")}");
       }
     }
@@ -262,26 +255,17 @@ var t7 = (function() {
     }
   };
 
-  function handleChildTextPlaceholders(childText, parent, props, placeholders, onlyChild) {
-    var s = 0;
-    var n2 = 0;
-    for(s = 0, n2 = placeholders.length; s < n2; s++) {
-      if(childText.indexOf(placeholders[s]) > -1) {
-        if(props[placeholders[s]] instanceof Array) {
-          //set the children to this object
-          parent.children.push('props.' + placeholders[s]);
-          //set the child to null so we don't then append it to the parent's child below
-          childText = null;
-          break;
-        } else {
-          if(output === t7.Outputs.Universal) {
-            childText = childText.replace(placeholders[s], "' + props." + placeholders[s] + " + '");
-          } else {
-            childText = childText.replace(placeholders[s], "props." + placeholders[s]);
-          }
-        }
+  function handleChildTextPlaceholders(childText, parent, onlyChild) {
+    var i = 0;
+    var parts = childText.split(/(__\$props__\[\d*\])/g)
+    for(i = 0; i < parts.length; i++) {
+      if(parts[i].trim() !== "") {
+        //set the children to this object
+        parent.children.push(parts[i]);
       }
     }
+    childText = null;
+
     return childText;
   }
 
@@ -294,7 +278,7 @@ var t7 = (function() {
     return string;
   }
 
-  function getVdom(html, placeholders, props) {
+  function getVdom(html) {
     var char = '';
     var lastChar = '';
     var i = 0;
@@ -324,7 +308,7 @@ var t7 = (function() {
             //escape quotes etc
             childText = replaceQuotes(childText);
             //check if childText contains one of our placeholders
-            childText = handleChildTextPlaceholders(childText, parent, props, placeholders, true);
+            childText = handleChildTextPlaceholders(childText, parent, true);
             if(childText !== null && parent.children.length === 0) {
               parent.children = childText;
             } else if (childText != null) {
@@ -341,9 +325,7 @@ var t7 = (function() {
             //check the childtext for placeholders
             childText = handleChildTextPlaceholders(
               childText.replace(/(\r\n|\n|\r)/gm,""),
-              parent,
-              props,
-              placeholders
+              parent
             );
             parent.children.push(childText);
             childText = "";
@@ -354,7 +336,7 @@ var t7 = (function() {
             tagName = tagContent;
           } else {
             //get the tag data via the getTagData function
-            tagData = getTagData(tagContent, placeholders);
+            tagData = getTagData(tagContent);
             tagName = tagData.tag;
           }
           //now we create out vElement
@@ -399,7 +381,7 @@ var t7 = (function() {
     return root;
   }
 
-  function getTagData(tagText, placeholders) {
+  function getTagData(tagText) {
     var parts = [];
     var char = '';
     var lastChar = '';
@@ -469,13 +451,14 @@ var t7 = (function() {
         attrParts.push(currentString);
       }
       if(attrParts.length > 1) {
-        if(placeholders.indexOf(attrParts[1]) === -1) {
+        var matches = attrParts[1].match(/__\$props__\[\d*\]/g);
+        if(matches !== null) {
           attrs[attrParts[0]] = attrParts[1];
         } else {
           if(attrParts[0] === "key") {
-            key = "props." + attrParts[1];
+            key = attrParts[1];
           } else {
-            attrs[attrParts[0]] = "props." + attrParts[1];
+            attrs[attrParts[0]] = attrParts[1];
           }
         }
       }
@@ -519,9 +502,9 @@ var t7 = (function() {
     var templateKey = null;
     var tpl = template[0];
     var returnValuesButBuildTemplate = false;
+    var values = [].slice.call(arguments, 1);
 
     for(; i < n; i++) {
-      functionProps["__$" + i + "__"] = arguments[i];
       tpl += template[i];
     };
 
@@ -531,7 +514,7 @@ var t7 = (function() {
     //For values only, return an array of all the values
     if(output === t7.Outputs.ValuesOnly) {
       if(t7._cache[templateKey] != null) {
-        return {values: [].slice.call(arguments, 1), templateKey: templateKey};
+        return {values: values, templateKey: templateKey};
       } else {
         returnValuesButBuildTemplate = true;
         //we then need to change the output to the "last" value
@@ -546,14 +529,14 @@ var t7 = (function() {
         if(i === template.length - 1) {
           fullHtml += template[i];
         } else {
-          fullHtml += template[i] + functionPlaceholders[i];
+          fullHtml += template[i] + "__$props__[" + i + "]";
         }
       }
       //once we have our vDom array, build an optimal function to improve performance
       functionString = [];
       buildFunction(
         //build a vDom from the HTML
-        getVdom(fullHtml, functionPlaceholders, functionProps),
+        getVdom(fullHtml),
         functionString
       );
 
@@ -561,21 +544,21 @@ var t7 = (function() {
 
       //build a new Function and store it depending if on node or browser
       if(isBrowser === true) {
-        scriptString = 't7._cache["' + templateKey + '"]=function(props)';
+        scriptString = 't7._cache["' + templateKey + '"]=function(__$props__)';
         scriptString += '{"use strict";return ' + scriptCode + '}';
 
         addNewScriptFunction(scriptString, templateKey);
       } else {
-        t7._cache[templateKey] = new Function('"use strict";var props = arguments[0];return ' + scriptCode + '');
+        t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];return ' + scriptCode + '');
       }
     }
 
     if(returnValuesButBuildTemplate === true) {
       output = t7.Outputs.ValuesOnly;
-      return {values: [].slice.call(arguments, 1), templateKey: templateKey};
+      return {values: values, templateKey: templateKey};
     }
 
-    return t7._cache[templateKey](functionProps);
+    return t7._cache[templateKey](values);
   };
 
   //storage for the cache
@@ -630,8 +613,8 @@ var t7 = (function() {
     components = {};
   };
 
-  t7.getTemplateFromCache = function(templateKey) {
-    return t7._cache[templateKey]();
+  t7.getTemplateFromCache = function(templateKey, values) {
+    return t7._cache[templateKey](values);
   };
 
   t7.loadComponent = function(componentName) {

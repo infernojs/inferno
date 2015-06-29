@@ -382,15 +382,25 @@ var Inferno = (function() {
   };
 
   function cloneNode(node, parentDom) {
+    var i = 0;
     var cloneNode = {
       tag: node.tag,
       dom: node.dom.cloneNode(false),
       attrs: cloneAttrs(node.attrs)
     }
-    //TODO: need to actually finish this
+
     if(node.children instanceof ValueNode) {
-        cloneNode.children = new ValueNode(node.children.value, node.children.valueKey);
+      cloneNode.children = new ValueNode(node.children.value, node.children.valueKey);
+    } else if(node.children instanceof Array) {
+      cloneNode.children = [];
+      //TODO: need to actually finish this
+      for(i = 0; i < node.children.length; i = i + 1 | 0) {
+        if(node.children[i] instanceof ValueNode) {
+          cloneNode.children.push(new ValueNode(node.children[i].value, node.children[i].valueKey));
+        }
+      }
     }
+
     //append the new cloned DOM node to its parentDom
     parentDom.appendChild(cloneNode.dom);
     return cloneNode;
@@ -401,7 +411,7 @@ var Inferno = (function() {
   };
 
   function updateNode(node, parentNode, parentDom, state, values) {
-    var i = 0, ii = 0, s = 0, l = 0, val = "", childNode = null;
+    var i = 0, ii = 0, iii = 0, s = 0, l = 0, val = "", childNode = null;
     if(node.isDynamic === false) {
       return;
     }
@@ -438,10 +448,11 @@ var Inferno = (function() {
                   //asking t7 for a fresh template??
                   removeNode(node.children[i].value, node.dom);
                   //and then we want to create the new node (we can simply get it from t7 cache)
-                  node.children[i].value = t7.getTemplateFromCache(val.templateKey);
+                  node.children[i].value = t7.getTemplateFromCache(val.templateKey, val.values);
                   createNode(node.children[i].value, node.children[i], node.dom, state, val, null, null, i);
                   //then we want to set the new templatekey
                   node.children[i].templateKey = val.templateKey;
+                  return true;
                 }
                 val = val.values;
               }
@@ -464,10 +475,25 @@ var Inferno = (function() {
                     }
                   }
                   for(ii = 0; ii < val.length; ii = ii + 1 | 0) {
-                    if(typeof val[ii] === "string") {
-                      setTextContent(node.dom.childNodes[i], val[ii], true);
+                    if(val[ii] != null && val[ii].templateKey != null) {
+                      node.children[i].value[ii].templateKey = val[ii].templateKey;
+                      val[ii] = val[ii].values;
+                      //TODO finish this
+                      if(typeof val[ii] === "string") {
+                        setTextContent(node.children[i].value[ii].dom, val[ii], true);
+                      } else if(val[ii] instanceof Array) {
+                        for(iii = 0; iii < val[ii].length; iii = iii + 1 | 0) {
+                          if(typeof val[ii][iii] === "string") {
+                            setTextContent(node.children[i].value[ii].dom, val[ii][iii], true);
+                          }
+                        }
+                      }
                     } else {
-                      updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
+                      if(typeof val[ii] === "string") {
+                        setTextContent(node.dom.childNodes[i], val[ii], true);
+                      } else {
+                        updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
+                      }
                     }
                   }
                 } else {
