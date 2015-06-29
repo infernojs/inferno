@@ -280,6 +280,12 @@ var Inferno = (function() {
         hasDynamicAttrs = false,
         wasChildDynamic = false;
 
+    //we need to get the actual values and the templatekey
+    if(!(values instanceof Array)) {
+      node.templateKey = values.templateKey;
+      values = values.values;
+    }
+
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
       parentDom.appendChild(node.dom);
@@ -320,7 +326,12 @@ var Inferno = (function() {
             node.dom.appendChild(textNode);
           } else if(node.children[i] instanceof ValueNode) {
             node.children[i].lastValue = values[node.children[i].valueKey];
+            if(node.children[i].lastValue != null && node.children[i].lastValue.templateKey != null) {
+              node.children[i].templateKey = node.children[i].lastValue.templateKey;
+              node.children[i].lastValue = node.children[i].lastValue.values;
+            }
             node.isDynamic = true;
+            node.children[i].isDynamic = true;
             //check if we're dealing with a root node
             if(node.children[i].isRoot === true) {
               node.children[i].isDynamic = true;
@@ -391,6 +402,12 @@ var Inferno = (function() {
       return;
     }
 
+    //we need to get the actual values and the templatekey
+    if(!(values instanceof Array)) {
+      node.templateKey = values.templateKey;
+      values = values.values;
+    }
+
     if(node.attrs != null && node.hasDynamicAttrs === true) {
       for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
         if(node.attrs[i].value instanceof ValueNode) {
@@ -409,6 +426,10 @@ var Inferno = (function() {
             if(node.children[i] instanceof ValueNode) {
               //check if the value has changed
               val = values[node.children[i].valueKey];
+              if(val != null && val.templateKey != null) {
+                node.children[i].templateKey = val.templateKey;
+                val = val.values;
+              }
               if(val !== node.children[i].lastValue) {
                 if(val instanceof Array) {
                   //check if the sizes have changed
@@ -435,9 +456,15 @@ var Inferno = (function() {
                     }
                   }
                 } else {
-                  node.children[i].lastValue = val;
-                  //update the text
-                  setTextContent(node.dom.childNodes[i], val, true);
+                  if(val != null && val.templateKey != null) {
+                    node.children[i].templateKey = val.templateKey;
+                    val = values;
+                  }
+                  if(val !== node.children[i].lastValue) {
+                    node.children[i].lastValue = val;
+                    //update the text
+                    setTextContent(node.dom.childNodes[i], val, true);
+                  }
                 }
                 node.children[i].lastValue = val;
               }
@@ -448,6 +475,10 @@ var Inferno = (function() {
         }
       } else if(node.children instanceof ValueNode) {
         val = values[node.children.valueKey];
+        if(val != null && val.templateKey != null) {
+          node.templateKey = val.templateKey;
+          val = values;
+        }
         if(val !== node.children.lastValue) {
           node.children.lastValue = val;
           if(typeof val === "string" || typeof val === "number") {

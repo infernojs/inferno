@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
-  <example-app id="app" message="Hello world" $test="123"></example-app>
+  <example-app id="app" message="Hello world"></example-app>
 
   <script src="inferno2.js"></script>
   <script src="t7.js"></script>
@@ -20,12 +20,18 @@
           "Dominic",
           "John",
           "Edward"
-        ]
+        ],
+        this.state.isOn = false;
       },
       onPropsChange: function(newProps) {
         if(this.props.people !== newProps.people) {
           this.setState({
             people: newProps.people
+          });
+        }
+        if(this.props.switch !== newProps.isOn) {
+          this.setState({
+            isOn: newProps.isOn
           });
         }
       },
@@ -36,6 +42,10 @@
             <div id="time">The time is ${ this.props.time }</div>
             ${ this._renderForm() }
             ${ this.state.name }
+            ${this.state.isOn === false
+              ? t7`<div>Switch is off!</div>`
+              : t7`<div>Switch is on!</div>`
+            }
             <ul>
               ${ this.state.people.map(this._renderPerson) }
             </ul>
@@ -59,6 +69,7 @@
     var appElement = document.getElementById("app");
 
     var odd = true;
+    var isOn = false;
 
     setInterval(function() {
       //uses valid, currently widely used DOM accessors
@@ -88,6 +99,7 @@
       appElement.setProps({
         time: date.toTimeString(),
         people: people,
+        isOn: !isOn,
         textFieldValue: "value " + i
       });
       i++;

@@ -95,11 +95,13 @@ var t7 = (function() {
         }
       } else {
         //find any template strings and replace them
-        if(output === t7.Outputs.Inferno) {
-          key = exp.exec(root.children)[1] - 1;
-          root.children = root.children.replace(/(props.__\$.*__)/g, "',Inferno.createValueNode($1," + key + "),'")
-        } else {
-          root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
+        if(root.children.indexOf("props.__$") > -1) {
+          if(output === t7.Outputs.Inferno) {
+            key = exp.exec(root.children)[1] - 1;
+            root.children = root.children.replace(/(props.__\$.*__)/g, "',Inferno.createValueNode($1," + key + "),'")
+          } else {
+            root.children = root.children.replace(/(props.__\$.*__)/g, "',$1,'")
+          }
         }
         //if the last two characters are ,', replace them with nothing
         if(root.children.substring(root.children.length - 2) === ",'") {
@@ -514,14 +516,7 @@ var t7 = (function() {
     //we need to generate a very quick key that will be used as the function name
     var scriptCode = "";
     var templateKey = null;
-    var tpl = "";
-
-    //For values only, return an array of all the values
-    if(output === t7.Outputs.ValuesOnly) {
-      return [].slice.call(arguments, 1);
-    }
-
-    tpl = template[0];
+    var tpl = template[0];
 
     for(; i < n; i++) {
       functionProps["__$" + i + "__"] = arguments[i];
@@ -530,6 +525,11 @@ var t7 = (function() {
 
     //set our unique key
     templateKey = createTemplateKey(tpl) + output;
+
+    //For values only, return an array of all the values
+    if(output === t7.Outputs.ValuesOnly) {
+      return {values: [].slice.call(arguments, 1), templateKey: templateKey};
+    }
 
     if(t7._cache[templateKey] == null) {
       fullHtml = '';
