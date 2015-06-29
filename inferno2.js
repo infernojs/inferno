@@ -383,6 +383,7 @@ var Inferno = (function() {
 
   function cloneNode(node, parentDom) {
     var i = 0;
+    var textNode = null;
     var cloneNode = {
       tag: node.tag,
       dom: node.dom.cloneNode(false),
@@ -396,7 +397,13 @@ var Inferno = (function() {
       //TODO: need to actually finish this
       for(i = 0; i < node.children.length; i = i + 1 | 0) {
         if(node.children[i] instanceof ValueNode) {
+          textNode = document.createTextNode(node.children[i].value);
+          cloneNode.dom.appendChild(textNode);
           cloneNode.children.push(new ValueNode(node.children[i].value, node.children[i].valueKey));
+        } else if (typeof node.children[i] === "string" || typeof node.children[i] === "number") {
+          textNode = document.createTextNode(node.children[i]);
+          cloneNode.dom.appendChild(textNode);
+          cloneNode.children.push(node.children[i]);
         }
       }
     }
@@ -484,7 +491,7 @@ var Inferno = (function() {
                       } else if(val[ii] instanceof Array) {
                         for(iii = 0; iii < val[ii].length; iii = iii + 1 | 0) {
                           if(typeof val[ii][iii] === "string") {
-                            setTextContent(node.children[i].value[ii].dom, val[ii][iii], true);
+                            setTextContent(node.children[i].value[ii].dom.childNodes[iii], val[ii][iii], true);
                           }
                         }
                       }

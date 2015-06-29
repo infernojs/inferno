@@ -10,6 +10,8 @@
   <script src="t7.js"></script>
   <script>
 
+    var closureVar = 1;
+
     var InfernoExample = Inferno.createComponent({
       constructor: function(props) {
         this.state.name = "Test";
@@ -44,7 +46,7 @@
             ${ this.state.name }
             ${this.state.isOn === false
               ? t7`<div>Switch is off!</div>`
-              : t7`<div>Switch is on! ${ this.props.time }</div>`
+              : t7`<div>Switch is on! <span>${ this.props.time }</span></div>`
             }
             <ul>
               ${ this.state.people.map(this._renderPerson) }
@@ -53,7 +55,7 @@
         `;
       },
       _renderPerson: function(person) {
-        return t7`<li>${ person }</li>`;
+        return t7`<li>${ person }, the number is ${ closureVar }</li>`;
       },
       _renderForm: function() {
         return t7`
