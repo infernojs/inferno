@@ -145,7 +145,8 @@ var Inferno = (function() {
     //make sure we set t7 output to ValuesOnly when rendering the values
     t7.setOutput(t7.Outputs.ValuesOnly);
     var values = renderFunction.call(context);
-    updateNode(rootNode, null, root, context, values);
+    var rootNode = [rootNode];
+    updateNode(rootNode[0], rootNode, root, context, values, 0);
   };
 
   // Inferno.mount = function mountToDom(template, state, root) {
@@ -426,7 +427,7 @@ var Inferno = (function() {
     parentDom.removeChild(node.dom);
   };
 
-  function updateNode(node, parentNode, parentDom, state, values) {
+  function updateNode(node, parentNode, parentDom, state, values, index) {
     var i = 0, ii = 0, s = 0, l = 0, val = "", childNode = null;
     if(node.isDynamic === false) {
       return;
@@ -434,7 +435,16 @@ var Inferno = (function() {
 
     //we need to get the actual values and the templatekey
     if(!(values instanceof Array)) {
-      node.templateKey = values.templateKey;
+      if(node.templateKey !== values.templateKey) {
+        debugger;
+        //remove node
+        removeNode(node, parentDom);
+        //and then we want to create the new node (we can simply get it from t7 cache)
+        node = t7.getTemplateFromCache(values.templateKey, values.values);
+        createNode(node, parentNode, parentDom, state, values.values, null, null, null);
+        parentNode[index] = node;
+        node.templateKey = values.templateKey;
+      }
       values = values.values;
     }
 
@@ -494,7 +504,7 @@ var Inferno = (function() {
                     if(typeof node.children[i].value[ii] === "string") {
                       //TODO - finish
                     } else {
-                      updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
+                      updateNode(node.children[i].value[ii], node.children[i].value, node.dom, state, val[ii], ii);
                     }
                   }
                 } else {
@@ -511,7 +521,7 @@ var Inferno = (function() {
                 node.children[i].lastValue = val;
               }
             } else {
-              updateNode(node.children[i], node, node.dom, state, values);
+              updateNode(node.children[i], node, node.dom, state, values, i);
             }
           }
         }
