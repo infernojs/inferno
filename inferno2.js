@@ -390,6 +390,10 @@ var Inferno = (function() {
       attrs: cloneAttrs(node.attrs)
     }
 
+    if(node.isDynamic === true) {
+      clonedNode.isDynamic = true;
+    }
+
     if(node.children instanceof ValueNode) {
       clonedNode.children = new ValueNode(node.children.value, node.children.valueKey);
     } else if(node.children instanceof Array) {
@@ -407,6 +411,9 @@ var Inferno = (function() {
         } else {
           cloneNode(node.children[i], clonedNode.dom);
         }
+        if(node.children[i].isDynamic === true) {
+          clonedNode.children[i].isDynamic = true;
+        }
       }
     }
 
@@ -420,7 +427,7 @@ var Inferno = (function() {
   };
 
   function updateNode(node, parentNode, parentDom, state, values) {
-    var i = 0, ii = 0, iii = 0, s = 0, l = 0, val = "", childNode = null;
+    var i = 0, ii = 0, s = 0, l = 0, val = "", childNode = null;
     if(node.isDynamic === false) {
       return;
     }
@@ -483,27 +490,11 @@ var Inferno = (function() {
                       node.children[i].value.pop();
                     }
                   }
-                  for(ii = 0; ii < val.length; ii = ii + 1 | 0) {
-                    if(val[ii] != null && val[ii].templateKey != null) {
-                      node.children[i].value[ii].templateKey = val[ii].templateKey;
-                      val[ii] = val[ii].values;
-                      //TODO this is all wrong, it should not go from values
-                      // if(typeof val[ii] === "string") {
-                      //   setTextContent(node.children[i].value[ii].dom, val[ii], true);
-                      // } else if(val[ii] instanceof Array) {
-                      //   for(iii = 0; iii < val[ii].length; iii = iii + 1 | 0) {
-                      //     if(typeof val[ii][iii] === "string" || typeof val[ii][iii] === "number") {
-                      //       debugger;
-                      //       setTextContent(node.children[i].value[ii].dom.childNodes[iii], val[ii][iii], true);
-                      //     }
-                      //   }
-                      // }
+                  for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
+                    if(typeof node.children[i].value[ii] === "string") {
+                      //TODO - finish
                     } else {
-                      if(typeof val[ii] === "string") {
-                        setTextContent(node.dom.childNodes[i], val[ii], true);
-                      } else {
-                        updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
-                      }
+                      updateNode(node.children[i].value[ii], node.children[i], node.dom, state, val[ii]);
                     }
                   }
                 } else {
