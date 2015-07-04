@@ -561,6 +561,17 @@ var t7 = (function() {
     return t7._cache[templateKey](values);
   };
 
+  function normaliseValues(values) {
+    if(values.length > 0) {
+      for(var i = 0; i < values.length; i = i + 1 | 0) {
+        if(values[i].templateKey != null) {
+          values[i] = values[i].values;
+        }
+      }
+    }
+    return values;
+  }
+
   //storage for the cache
   t7._cache = {};
 
@@ -614,7 +625,9 @@ var t7 = (function() {
   };
 
   t7.getTemplateFromCache = function(templateKey, values) {
-    return t7._cache[templateKey](values);
+    //we need to normalie the values so we don't have objects with templateKey and values
+    var newwValues = normaliseValues(values.slice(0));
+    return t7._cache[templateKey](newwValues);
   };
 
   t7.loadComponent = function(componentName) {

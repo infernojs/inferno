@@ -79,7 +79,7 @@ var Inferno = (function() {
       //now append it to DOM
       rootNode = Inferno.append(internals.render, component, this);
 
-      component.render = Inferno.update.bind(component, rootNode, this, component, internals.render);
+      component.render = Inferno.update.bind(component, [rootNode], this, component, internals.render);
       if(internals.onPropsChange) {
         component.onPropsChange = internals.onPropsChange.bind(component);
       }
@@ -145,7 +145,6 @@ var Inferno = (function() {
     //make sure we set t7 output to ValuesOnly when rendering the values
     t7.setOutput(t7.Outputs.ValuesOnly);
     var values = renderFunction.call(context);
-    var rootNode = [rootNode];
     updateNode(rootNode[0], rootNode, root, context, values, 0);
   };
 
@@ -341,8 +340,14 @@ var Inferno = (function() {
             if(node.children[i].isRoot === true) {
               node.children[i].isDynamic = true;
               if(node.children[i].value instanceof Array) {
-                for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                  createNode(node.children[i].value[ii], node.children[i], node.dom, state, values[node.children[i].valueKey][ii], ii, clipBoxes);
+                if(node.children[i].templateKey != null) {
+                  for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, state, values[node.children[i].valueKey].values, ii, clipBoxes);
+                  }
+                } else {
+                  for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, state, values[node.children[i].valueKey][ii], ii, clipBoxes);
+                  }
                 }
               } else {
                 createNode(node.children[i].value, node.children[i], node.dom, state, values[node.children[i].valueKey], null, clipBoxes);
@@ -436,7 +441,6 @@ var Inferno = (function() {
     //we need to get the actual values and the templatekey
     if(!(values instanceof Array)) {
       if(node.templateKey !== values.templateKey) {
-        debugger;
         //remove node
         removeNode(node, parentDom);
         //and then we want to create the new node (we can simply get it from t7 cache)
