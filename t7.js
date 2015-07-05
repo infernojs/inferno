@@ -561,11 +561,61 @@ var t7 = (function() {
     return t7._cache[templateKey](values);
   };
 
-  function normaliseValues(values) {
+  function deepCopy(obj) {
+    if (typeof obj == 'object') {
+      if (isArray(obj)) {
+        var l = obj.length;
+        var r = new Array(l);
+        for (var i = 0; i < l; i++) {
+          r[i] = deepCopy(obj[i]);
+        }
+        return r;
+      } else {
+        var r = {};
+        r.prototype = obj.prototype;
+        for (var k in obj) {
+          r[k] = deepCopy(obj[k]);
+        }
+        return r;
+      }
+    }
+    return obj;
+  }
+
+  var ARRAY_PROPS = {
+    length: 'number',
+    sort: 'function',
+    slice: 'function',
+    splice: 'function'
+  };
+
+  /**
+   * Determining if something is an array in JavaScript
+   * is error-prone at best.
+   */
+  function isArray(obj) {
+    if (obj instanceof Array)
+      return true;
+    // Otherwise, guess:
+    for (var k in ARRAY_PROPS) {
+      if (!(k in obj && typeof obj[k] == ARRAY_PROPS[k]))
+        return false;
+    }
+    return true;
+  }
+
+  function deepTemplates(values) {
+    var i = 0, ii = 0;
     if(values.length > 0) {
-      for(var i = 0; i < values.length; i = i + 1 | 0) {
+      for(i = 0; i < values.length; i = i + 1 | 0) {
         if(values[i].templateKey != null) {
-          values[i] = values[i].values;
+          values[i] = t7.getTemplateFromCache(values[i].templateKey, values[i].values);
+        } else if(values[i] instanceof Array) {
+          for(ii = 0; ii < values[i].length; ii = ii + 1 | 0) {
+            if(values[i][ii].templateKey != null) {
+              values[i][ii] = t7.getTemplateFromCache(values[i][ii].templateKey, values[i][ii].values);
+            }
+          }
         }
       }
     }
@@ -626,7 +676,7 @@ var t7 = (function() {
 
   t7.getTemplateFromCache = function(templateKey, values) {
     //we need to normalie the values so we don't have objects with templateKey and values
-    var newwValues = normaliseValues(values.slice(0));
+    var newwValues = deepTemplates(deepCopy(values));
     return t7._cache[templateKey](newwValues);
   };
 

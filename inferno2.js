@@ -472,6 +472,7 @@ var Inferno = (function() {
               val = values[node.children[i].valueKey];
               if(val != null && val.templateKey != null) {
                 //check to see if the template has changed
+
                 if(node.children[i].templateKey !== val.templateKey) {
                   //we want to remove the DOM current node
                   //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
