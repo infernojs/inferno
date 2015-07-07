@@ -4,7 +4,8 @@
   <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
-  <example-app id="app" message="Hello world"></example-app>
+  <example-app message="Hello world"></example-app>
+  <div id="app"></div>
 
   <script src="inferno2.js"></script>
   <script src="t7.js"></script>
@@ -12,7 +13,7 @@
 
     var closureVar = 1;
 
-    var InfernoExample = Inferno.createComponent({
+    var InfernoExample = Inferno.createClass({
       constructor: function(props) {
         this.state.name = "Test";
         this.state.className = "foo";
@@ -82,49 +83,57 @@
       }
     });
 
-    Inferno.registerComponent("example-app", InfernoExample);
+    Inferno.register("example-app", InfernoExample);
 
-    var appElement = document.getElementById("app");
+    Inferno.render(document.getElementById("app"), t7`
+      <example-app></example-app>
+    `);
 
-    var odd = true;
-    var isOn = false;
-
-    setInterval(function() {
-      //uses valid, currently widely used DOM accessors
-      var date = new Date();
-      var people = [];
-      odd = !odd;
-      if(!odd) {
-        people = [
-          "Bob",
-          "Dominic",
-          "John",
-          "Edward"
-        ]
-      } else {
-        people = [
-          "Jemma",
-          "Charlie",
-          "Harry",
-          "Kieria",
-          "Paul",
-          "Ken"
-        ]
-      }
-
-      var i = 0;
-      isOn = !isOn;
-      closureVar++;
-
-      appElement.setProps({
-        time: date.toTimeString(),
-        people: people,
-        isOn: isOn,
-        textFieldValue: "value " + i
-      });
-
-      i++;
-    }, 500);
+    // var appElement = document.getElementById("app");
+    //
+    // var odd = true;
+    // var isOn = false;
+    //
+    // setInterval(function() {
+    //   //uses valid, currently widely used DOM accessors
+    //   var date = new Date();
+    //   var people = [];
+    //   odd = !odd;
+    //   if(!odd) {
+    //     people = [
+    //       "Bob",
+    //       "Dominic",
+    //       "John",
+    //       "Edward"
+    //     ]
+    //   } else {
+    //     people = [
+    //       "Jemma",
+    //       "Charlie",
+    //       "Harry",
+    //       "Kieria",
+    //       "Paul",
+    //       "Ken"
+    //     ]
+    //   }
+    //
+    //   var i = 0;
+    //   isOn = !isOn;
+    //   closureVar++;
+    //
+    //   console.time("update");
+    //
+    //   appElement.setProps({
+    //     time: date.toTimeString(),
+    //     people: people,
+    //     isOn: isOn,
+    //     textFieldValue: "value " + i
+    //   });
+    //
+    //   console.timeEnd("update");
+    //
+    //   i++;
+    // }, 500);
 
   </script>
 </body>

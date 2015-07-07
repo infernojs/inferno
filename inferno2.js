@@ -56,7 +56,7 @@ var Inferno = (function() {
 
   var Inferno = {};
 
-  Inferno.createComponent = function(internals) {
+  Inferno.createClass = function(internals) {
     var instance =  InfernoComponent;
     var element = Object.create(HTMLElement.prototype);
     var component = null;
@@ -101,7 +101,7 @@ var Inferno = (function() {
     return new ValueNode(value, valueKey);
   };
 
-  Inferno.registerComponent = function(elementName, component) {
+  Inferno.register = function(elementName, component) {
     //cache item?
     document.registerElement(elementName, {prototype: component.element });
   };
@@ -141,12 +141,18 @@ var Inferno = (function() {
     return rootNode;
   };
 
-  Inferno.update = function updateRootNode(rootNode, root, context, renderFunction) {
-    //make sure we set t7 output to ValuesOnly when rendering the values
-    t7.setOutput(t7.Outputs.ValuesOnly);
-    var values = renderFunction.call(context);
-    updateNode(rootNode[0], rootNode, root, context, values, 0);
+  //TODO complete
+  Inferno.render = function() {
+
   };
+
+  //TODO make internal
+  // Inferno.update = function updateRootNode(rootNode, root, context, renderFunction) {
+  //   //make sure we set t7 output to ValuesOnly when rendering the values
+  //   t7.setOutput(t7.Outputs.ValuesOnly);
+  //   var values = renderFunction.call(context);
+  //   updateNode(rootNode[0], rootNode, root, context, values, 0);
+  // };
 
   // Inferno.mount = function mountToDom(template, state, root) {
   //   var rootNode = this.append(template, state, root);
