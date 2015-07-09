@@ -49,7 +49,6 @@ var t7 = (function() {
     var i = 0;
     var n = 0;
     var key = "";
-    var exp = /__\$props__\[(\d*)\]/g;
     var matches = null;
 
     //if the node has children that is an array, handle it with a loop
@@ -79,7 +78,11 @@ var t7 = (function() {
         }
       }
       //push the children code into our tag params code
-      tagParams.push((childrenProp ? "children: " : "") + "[" + childrenText.join(",") + "]");
+      if(childrenText.length === 1) {
+        tagParams.push((childrenProp ? "children: " : "") + childrenText);
+      } else {
+        tagParams.push((childrenProp ? "children: " : "") + "[" + childrenText.join(",") + "]");
+      }
 
     } else if(root.children != null && typeof root.children === "string") {
       root.children = root.children.replace(/(\r\n|\n|\r)/gm,"").trim();
@@ -88,8 +91,7 @@ var t7 = (function() {
       //find any template strings and replace them
       if(matches !== null) {
         if(output === t7.Outputs.Inferno) {
-          key = exp.exec(root.children)[1];
-          root.children = root.children.replace(/(__\$props__\[.*\])/g, "',Inferno.createValueNode($1," + key + "),'")
+          root.children = root.children.replace(/(__\$props__\[([0-9]*)\])/g, "Inferno.createValueNode($1,$2),")
         } else {
           root.children = root.children.replace(/(__\$props__\[.*\])/g, "',$1,'")
         }
@@ -109,14 +111,26 @@ var t7 = (function() {
     var childrenText = [];
     var i = 0;
     var n = 0;
+    var matches = null;
 
     //if the node has children that is an array, handle it with a loop
     if(root.children != null && root.children instanceof Array) {
       //we're building an array in code, so we need an open bracket
       for(i = 0, n = root.children.length; i < n; i++) {
         if(root.children[i] != null) {
-          if(root.children[i][0] === "$") {
-            childrenText.push(root.children[i].substring(1));
+          if(typeof root.children[i] === "string") {
+            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm,"");
+            matches = root.children[i].match(/__\$props__\[\d*\]/g);
+            if(matches != null) {
+              root.children[i] = root.children[i].replace(/(__\$props__\[[0-9]*\])/g, "$1")
+              if(root.children[i].substring(root.children[i].length - 1) === ",") {
+                root.children[i] = root.children[i].substring(0, root.children[i].length - 1);
+              }
+              childrenText.push(root.children[i]);
+            } else {
+              childrenText.push("'" + root.children[i] + "'");
+            }
+
           } else {
             buildFunction(root.children[i], childrenText, i === root.children.length - 1)
           }
@@ -663,7 +677,13 @@ var t7 = (function() {
   };
 
   t7.registerComponent = function(componentName, component) {
-    components[componentName] = component;
+    if(arguments.length === 2) {
+      components[componentName] = component;
+    } else {
+      for(var key in componentName) {
+        components[key] = componentName[key];
+      }
+    }
   };
 
   t7.deregisterComponent = function(componentName) {
