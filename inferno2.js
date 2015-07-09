@@ -18,14 +18,6 @@ var Inferno = (function() {
     }
   };
 
-  InfernoComponent.prototype.setProps = function(props) {
-    this.onPropsChange(props);
-    for(var key in props ){
-      this.props[key] = props[key];
-    }
-    this.render();
-  };
-
   InfernoComponent.prototype.setState = function(state) {
     for(var key in state ){
       this.state[key] = state[key];
@@ -33,7 +25,6 @@ var Inferno = (function() {
   };
 
   InfernoComponent.prototype.constructor = function(props) {};
-  InfernoComponent.prototype.onPropsChange = function(props) {};
 
   function ValueNode(value, valueKey) {
     //detect if the value is actually a new node tree
@@ -60,12 +51,6 @@ var Inferno = (function() {
     var instance =  InfernoComponent;
     var element = Object.create(HTMLElement.prototype);
     var component = null;
-    var rootNode = null;
-
-    //add some functions to the element prototype
-    element.setProps = function(props) {
-      component.setProps(props);
-    };
 
     element.createdCallback = function() {
       //TODO, add some logic here?
@@ -76,19 +61,8 @@ var Inferno = (function() {
       //call the component constructor
       component.constructor = internals.constructor.bind(component);
       component.constructor(component.props);
-      //now append it to DOM
-      rootNode = Inferno.append(internals.render, component, this);
 
-      component.render = Inferno.update.bind(component, [rootNode], this, component, internals.render);
-      if(internals.onPropsChange) {
-        component.onPropsChange = internals.onPropsChange.bind(component);
-      }
-    };
-
-    element.attributeChangedCallback = function(name, oldVal, newVal) {
-      if(internals.onAttributeChange != null) {
-        internals.onAttributeChange.call(component, oldVal, newVal);
-      }
+      Inferno.render(internals.render.bind(component), this);
     };
 
     return {
@@ -106,44 +80,26 @@ var Inferno = (function() {
     document.registerElement(elementName, {prototype: component.element });
   };
 
-  Inferno.append = function appendToDom(renderFunction, context, root) {
+  Inferno.render = function(renderFunction, dom) {
     var rootNode = null;
     var values = [];
-    var clipBoxes = [];
-    var checkClipBoxes = false;
-
-    //make sure we set t7 output to Inferno when rendering the rootNode
-    t7.setOutput(t7.Outputs.Inferno);
-    rootNode = renderFunction.call(context);
-    //make sure we set t7 output to ValuesOnly when rendering the values
-    t7.setOutput(t7.Outputs.ValuesOnly);
-    values = renderFunction.call(context);
-
-    createNode(rootNode, null, root, context, values, null, clipBoxes);
-    //update all the clipBoxes properties
-    handleClipBoxes(clipBoxes);
-    window.addEventListener("scroll", function (e) {
-      checkClipBoxes = true;
-    });
-    window.addEventListener("resize", function (e) {
-      checkClipBoxes = true;
-    });
-
-    var checkedHasScrolled = function() {
-      if(checkClipBoxes === true) {
-        checkClipBoxes = false;
-        handleClipBoxes(clipBoxes);
-      };
-      window.requestAnimationFrame(checkedHasScrolled);
-    };
-    checkedHasScrolled();
-    //return the root node
-    return rootNode;
-  };
-
-  //TODO complete
-  Inferno.render = function() {
-
+    //we check if we have a root on the dom node, if not we need to build up the render
+    if(dom.rootNode == null) {
+      if(typeof renderFunction === "function") {
+        t7.setOutput(t7.Outputs.Inferno);
+        rootNode = renderFunction();
+        t7.setOutput(t7.Outputs.ValuesOnly);
+        values = renderFunction();
+      } else {
+        throw Error("Inferno.render expects first argument to be a function");
+      }
+      createNode(rootNode, null, dom, values, null);
+      dom.rootNode = rootNode;
+    }
+    //otherwise we progress with an update
+    else {
+        debugger;
+    }
   };
 
   //TODO make internal
@@ -239,46 +195,8 @@ var Inferno = (function() {
     }
   };
 
-  //Experimental feature
-  //this needs to fire when window resizes, window scrolls (or parent container with overflow scrolls?)
-  //also needs to be called on when amount of items in DOM changes?
-  //also needs to be called on when items in the DOM are display none?
-  function handleClipBoxes(clipBoxes) {
-    var i = 0,
-        clipBox = null,
-        boundingRect = null,
-        docWidth = document.body.clientWidth,
-        docHeight = document.body.clientHeight,
-        docScrollTop = document.body.scrollTop,
-        docScrollLeft = document.body.scrollLeft;
-
-    for(i = 0; i < clipBoxes.length; i = i + 1 | 0) {
-      clipBox = clipBoxes[i];
-      //if it's missing dimensions, lets add them
-      if(clipBox.dimensions === null) {
-        boundingRect = clipBox.dom.getBoundingClientRect();
-        clipBox.dimensions = {
-          height: boundingRect.height,
-          width: boundingRect.width,
-          top: boundingRect.top + docScrollTop,
-          left: boundingRect.left + docScrollLeft
-        }
-      }
-      //if it has staticheight, that means it has variable width
-      if(clipBox.clipBox === Inferno.TemplateBindings.ClipBox.StaticHeight) {
-      }
-      //find out if the element is not on screen
-      if(clipBox.dimensions.top - docScrollTop > docHeight
-        || clipBox.dimensions.top + clipBox.dimensions.height - docScrollTop < 0) {
-        clipBox.outOfBounds = true;
-      } else {
-        clipBox.outOfBounds = false;
-      }
-    }
-  };
-
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, state, values, index, clipBoxes, insertAtIndex) {
+  function createNode(node, parentNode, parentDom, values, index, insertAtIndex) {
     var i = 0, l = 0, ii = 0,
         subNode = null,
         val = null,
@@ -299,18 +217,6 @@ var Inferno = (function() {
       } else {
         parentDom.insertBefore(node.dom, parentDom.childNodes[insertAtIndex]);
       }
-    } else if(node.children instanceof ValueNode && node.isRoot === true) {
-      //we are on a new root node, so we'll need to go through its children and apply the values
-      //based off the valueKey index
-      if(node.children instanceof Array) {
-        for(i = 0; i < node.children.length; i = i + 1 | 0) {
-          createNode(node.value[i], node, parentDom, state, values[node.valueKey], i, clipBoxes);
-        }
-      } else {
-        createNode(node.value, node, parentDom, state, values[node.valueKey], null, clipBoxes);
-      }
-      node.children.isDynamic = true;
-      return true;
     }
 
     if(node.attrs != null) {
@@ -348,22 +254,22 @@ var Inferno = (function() {
               if(node.children[i].value instanceof Array) {
                 if(node.children[i].templateKey != null) {
                   for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                    createNode(node.children[i].value[ii], node.children[i], node.dom, state, values[node.children[i].valueKey].values, ii, clipBoxes);
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey].values, ii);
                   }
                 } else {
                   for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                    createNode(node.children[i].value[ii], node.children[i], node.dom, state, values[node.children[i].valueKey][ii], ii, clipBoxes);
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey][ii], ii);
                   }
                 }
               } else {
-                createNode(node.children[i].value, node.children[i], node.dom, state, values[node.children[i].valueKey], null, clipBoxes);
+                createNode(node.children[i].value, node.children[i], node.dom, values[node.children[i].valueKey], null);
               }
             } else {
               textNode = document.createTextNode(node.children[i].value);
               node.dom.appendChild(textNode);
             }
           } else {
-            wasChildDynamic = createNode(node.children[i], node, node.dom, state, values, i, clipBoxes);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, values, i);
             if(wasChildDynamic === true ) {
               node.isDynamic = true;
             }
@@ -372,6 +278,18 @@ var Inferno = (function() {
       } else if(typeof node.children === "string") {
         textNode = document.createTextNode(node.children);
         node.dom.appendChild(textNode);
+      } else if(node.children instanceof ValueNode && node.children.isRoot === true) {
+        //we are on a new root node, so we'll need to go through its children and apply the values
+        //based off the valueKey index
+        if(node.children.value instanceof Array) {
+          for(i = 0; i < node.children.value.length; i = i + 1 | 0) {
+            createNode(node.children.value[i], node, node.dom, values[node.children.valueKey], i);
+          }
+        } else {
+          createNode(node.children.value, node, node.dom, values[node.children.valueKey], null);
+        }
+        node.children.isDynamic = true;
+        return true;
       } else if(node.children instanceof ValueNode) {
         //if it has a valueKey then it means that its dynamic
         node.children.lastValue = values[node.children.valueKey];
