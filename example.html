@@ -52,7 +52,7 @@
                   : t7`<div>Switch is on! <span>${ this.time }</span></div>`
                 }
                 <ul>
-                  ${ this.people != null ? this.people.map(this._renderPerson) : null }
+                  ${ this.people != null ? this.people.map(this._renderPerson.bind(this)) : null }
                 </ul>
               </div>
             `;
@@ -71,14 +71,14 @@
           setTimeout(this._handleCounter.bind(this), 100);
         }
         _renderPerson(person) {
-          if(closureVar % 3 === 1) {
-            return t7`<li>${ person }, the number is ${ closureVar }<div>foo</div></li>`;
+          if(this._counter % 3 === 1) {
+            return t7`<li>${ person }, the number is ${ this._counter }<div>foo</div></li>`;
           } else {
-            return t7`<li>${ person }, the magical number is ${ closureVar }<div>foo</div></li>`;
+            return t7`<li>${ person }, the magical number is ${ this._counter }<div>foo</div></li>`;
           }
         }
         _renderForm() {
-          if(closureVar % 3 === 1) {
+          if(closureVar % 2 === 1) {
             return t7`
               <form>
                 <input type="text" value=${ this.textFieldValue } />
