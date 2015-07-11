@@ -49,8 +49,7 @@ var Inferno = (function() {
         props: {},
         lastProps: {}
       })
-      //initial render
-      //Inferno.render(component.render.bind(component), this);
+      component.element = this;
     };
 
     element.sendData = function(data) {
@@ -59,8 +58,14 @@ var Inferno = (function() {
       instance.lastProps = instance.props;
       instance.props = data;
       if(instance.hasAttached === true) {
-        instance.component.update(instance.lastProps, instance.props);
-        Inferno.render(instance.component.render.bind(instance.component), this);
+        if(instance.component.beforeRender) {
+          //TODO check if the props are the same and skip this
+          instance.component.beforeRender(instance.props);
+          Inferno.render(instance.component.render.bind(instance.component), this);
+          if(instance.component.afterRender) {
+            instance.component.afterRender();
+          }
+        }
       }
     };
 
@@ -73,6 +78,9 @@ var Inferno = (function() {
       }
       //initial render
       Inferno.render(instance.component.render.bind(instance.component), this);
+      if(instance.component.afterRender) {
+        instance.component.afterRender();
+      }
     };
 
     element.detachedCallback = function() {

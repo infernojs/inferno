@@ -31,9 +31,9 @@
         detached() {
 
         }
-        update(oldProps, newProps) {
-          this.time = newProps.time;
-          this.people = newProps.people;
+        beforeRender(props) {
+          this.time = props.time;
+          this.people = props.people;
         }
         render() {
           if(closureVar % 5 === 1) {
@@ -57,6 +57,9 @@
               <div>Lol</div>
             `;
           }
+        }
+        afterRender() {
+
         }
         _renderPerson(person) {
           if(closureVar % 3 === 1) {
