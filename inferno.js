@@ -49,7 +49,6 @@ var Inferno = (function() {
         props: {},
         lastProps: {}
       })
-      component.element = this;
     };
 
     element.sendData = function(data) {
@@ -71,7 +70,7 @@ var Inferno = (function() {
 
     element.attachedCallback = function() {
       var instance = instances.get(this);
-
+      instance.component.element = this;
       instance.hasAttached = true;
       if(instance.component.attached) {
         instance.component.attached(instance.props);
