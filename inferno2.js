@@ -195,6 +195,10 @@ var Inferno = (function() {
     }
   };
 
+  function convertAttrsToProps(atts) {
+    debugger;
+  };
+
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
   function createNode(node, parentNode, parentDom, values, index, insertAtIndex) {
     var i = 0, l = 0, ii = 0,
@@ -215,9 +219,7 @@ var Inferno = (function() {
       if(registeredComponents[node.tag] != null) {
         node.isComponent = true;
         //we also give the element some props
-        node.dom.sendData({
-          name: "test"
-        });
+        node.dom.sendData(convertAttrsToProps(node.attrs));
       }
       if(!insertAtIndex) {
         parentDom.appendChild(node.dom);
@@ -226,17 +228,19 @@ var Inferno = (function() {
       }
     }
 
-    if(node.attrs != null) {
-      for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
-        //check if this is a dynamic attribute
-        if(node.attrs[i].value instanceof ValueNode) {
-          node.hasDynamicAttrs = true;
-          node.isDynamic = true;
-          //assign the last value
-          node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
-          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
-        } else {
-          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
+    if(!node.isComponent) {
+      if(node.attrs != null) {
+        for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
+          //check if this is a dynamic attribute
+          if(node.attrs[i].value instanceof ValueNode) {
+            node.hasDynamicAttrs = true;
+            node.isDynamic = true;
+            //assign the last value
+            node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
+          } else {
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
+          }
         }
       }
     }
@@ -372,7 +376,7 @@ var Inferno = (function() {
 
     if(node.isComponent === true) {
       //get the attrs for this element and pass it over
-      node.sendData(null);
+      node.dom.sendData(null);
     }
 
     //we need to get the actual values and the templatekey
