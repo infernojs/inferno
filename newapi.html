@@ -30,7 +30,7 @@
           this.isOn = false;
         }
         attached(props) {
-
+          debugger;
         }
         detached() {
 
@@ -86,8 +86,9 @@
     Inferno.register("example-app", InfernoExample);
 
     setInterval(function() {
+      var date = new Date();
       Inferno.render(function() {
-        return t7`<example-app></example-app>`
+        return t7`<example-app date=${ date }></example-app>`
       }, document.getElementById("app"));
     }, 1000);
 

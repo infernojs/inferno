@@ -38,36 +38,46 @@ var Inferno = (function() {
 
   Inferno.register = function(elementName, Component) {
     var element = Object.create(HTMLElement.prototype);
-    var props = {};
-    var lastProps = {};
-    var hasAttached = false
+    var instances = new WeakMap();
 
     element.createdCallback = function() {
-      //var need to pass props
-      this._component = new Component();
+      var component = new Component();
+
+      instances.set(this, {
+        component: component,
+        hasAttached: false,
+        props: {},
+        lastProps: {}
+      })
       //initial render
-      Inferno.render(this._component.render.bind(this._component), this);
+      Inferno.render(component.render.bind(component), this);
     };
 
     element.sendData = function(data) {
-      lastProps = props;
-      props = data;
-      if(hasAttached === true) {
-        this._component.update(lastProps, props);
+      var instance = instances.get(this);
+
+      instance.lastProps = instance.props;
+      instance.props = data;
+      if(instance.hasAttached === true) {
+        instance.component.update(instance.lastProps, instance.props);
       }
     };
 
     element.attachedCallback = function() {
-      hasAttached = true;
-      if(this._component.attached) {
-          this._component.attached(props);
+      var instance = instances.get(this);
+
+      instance.hasAttached = true;
+      if(instance.component.attached) {
+        instance.component.attached(instance.props);
       }
     };
 
     element.detachedCallback = function() {
-      hasAttached = false;
-      if(this._component.detached) {
-          this._component.detached;
+      var instance = instances.get(this);
+
+      instance.hasAttached = false;
+      if(instance.component.detached) {
+        instance.component.detached();
       }
     };
 
