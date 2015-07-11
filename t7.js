@@ -164,15 +164,13 @@ var t7 = (function() {
   function buildInfernoAttrsParams(root, attrsParams) {
     var val = '', key = "";
     var matches = null;
-    var exp = /__\$props__\[(\d*)\]/g;
     for(var name in root.attrs) {
       val = root.attrs[name];
       matches = val.match(/__\$props__\[\d*\]/g);
       if(matches === null) {
         attrsParams.push("{name:'" + name + "',value:'" + val + "'}");
       } else {
-        key = exp.exec(val)[1];
-        attrsParams.push("{name:'" + name + "',value:Inferno.createValueNode(" + val + "," + key + ")}");
+        attrsParams.push("{name:'" + name + "',value:" + val.replace(/(__\$props__\[([0-9]*)\])/g, "Inferno.createValueNode($1,$2)") + "}");
       }
     }
   };

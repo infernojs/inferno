@@ -4,55 +4,157 @@
   <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
-  <example-app id="app" message="Hello world"></example-app>
+  <example-app message="Hello world"></example-app>
+  <div id="app"></div>
 
   <script src="inferno.js"></script>
   <script src="t7.js"></script>
   <script>
+    "use strict";
 
-    var InfernoExample = Inferno.createComponent({
-      //this gets called when the custom element/component is added to the page
-      constructor: function(props) {
-        this.state = {
-          firstName: "Dominic",
-          lastName: "Gannaway",
-          people: [
-            "Bob",
-            "Fred",
-            "Hannah"
-          ],
-          dynamicText: "foobar"
-        };
-      },
-      onPropChange: function(prop) {
-        //you get notified if someone uupdates your proos!
-      },
-      getFullName: function() {
-        return this.state.firstName + " " + this.state.lastName;
-      },
-      template: function() {
-        var map = Inferno.TemplateBindings.map;
-        var text = Inferno.TemplateBindings.text;
+    var closureVar = 1;
 
-        return t7`
-          <div>
-            <span class="test">${ text(this.getFullName()) }</span>
-            <div class=${ text(this.state.dynamicText) }>${ this.props.message }</div>
-            <div><span>The time is ${ text(this.props.time) }</span></div>
-          </div>
-        `;
-      }
-    });
+    class InfernoExample extends Inferno.Component {
+        constructor() {
+          super();
+          this.name = "Test";
+          this.className = "foo";
+          this.textFieldValue = "Text!";
+          this.people = null;
+          this.time = null;
+          this.isOn = false;
+        }
+        attached(props) {
+          this.time = props.time;
+          this.people = props.people;
+        }
+        detached() {
 
-    Inferno.registerComponent("example-app", InfernoExample);
+        }
+        update(oldProps, newProps) {
+          this.time = newProps.time;
+          this.people = newProps.people;
+        }
+        render() {
+          if(closureVar % 5 === 1) {
+            return t7`
+              <div class=${ this.className }>
+                <span id="bar">${ this.name }</span>
+                <div id="time">The time is ${ this.time }</div>
+                ${ this._renderForm() }
+                ${ this.name }
+                ${this.isOn === false
+                  ? t7`<div>Switch is off!</div>`
+                  : t7`<div>Switch is on! <span>${ this.time }</span></div>`
+                }
+                <ul>
+                  ${ this.people != null ? this.people.map(this._renderPerson) : null }
+                </ul>
+              </div>
+            `;
+          } else {
+            return t7`
+              <div>Lol</div>
+            `;
+          }
+        }
+        _renderPerson(person) {
+          if(closureVar % 3 === 1) {
+            return t7`<li>${ person }, the number is ${ closureVar }<div>foo</div></li>`;
+          } else {
+            return t7`<li>${ person }, the magical number is ${ closureVar }<div>foo</div></li>`;
+          }
+        }
+        _renderForm() {
+          if(closureVar % 3 === 1) {
+            return t7`
+              <form>
+                <input type="text" value=${ this.textFieldValue } />
+              </form>
+            `;
+          } else {
+            return t7`
+              <h2>No form!</h2>
+            `;
+          }
+        }
+    }
 
-    var appElement = document.getElementById("app");
+    Inferno.register("example-app", InfernoExample);
+
+    var odd = true;
 
     setInterval(function() {
-      //uses valid, currently widely used DOM accessors
       var date = new Date();
-      appElement.setAttribute("time", date.toTimeString());
-    }, 500);
+      var people = [];
+      odd = !odd;
+      Inferno.render(function() {
+        if(!odd) {
+          people = [
+            "Bob",
+            "Dominic",
+            "John",
+            "Edward"
+          ]
+        } else {
+          people = [
+            "Jemma",
+            "Charlie",
+            "Harry",
+            "Kieria",
+            "Paul",
+            "Ken"
+          ]
+        }
+        return t7`<example-app time=${ date } people=${ people }></example-app>`
+      }, document.getElementById("app"));
+    }, 1000);
+
+    // var appElement = document.getElementById("app");
+    //
+    // var odd = true;
+    // var isOn = false;
+    //
+    // setInterval(function() {
+    //   //uses valid, currently widely used DOM accessors
+    //   var date = new Date();
+    //   var people = [];
+    //   odd = !odd;
+    //   if(!odd) {
+    //     people = [
+    //       "Bob",
+    //       "Dominic",
+    //       "John",
+    //       "Edward"
+    //     ]
+    //   } else {
+    //     people = [
+    //       "Jemma",
+    //       "Charlie",
+    //       "Harry",
+    //       "Kieria",
+    //       "Paul",
+    //       "Ken"
+    //     ]
+    //   }
+    //
+    //   var i = 0;
+    //   isOn = !isOn;
+    //   closureVar++;
+    //
+    //   console.time("update");
+    //
+    //   appElement.setProps({
+    //     time: date.toTimeString(),
+    //     people: people,
+    //     isOn: isOn,
+    //     textFieldValue: "value " + i
+    //   });
+    //
+    //   console.timeEnd("update");
+    //
+    //   i++;
+    // }, 500);
 
   </script>
 </body>
