@@ -10,84 +10,86 @@
   <script src="inferno2.js"></script>
   <script src="t7.js"></script>
   <script>
+    "use strict";
 
     var closureVar = 1;
 
-    var InfernoExample = Inferno.createClass({
-      constructor: function(props) {
-        this.state.name = "Test";
-        this.state.className = "foo";
-        this.state.textFieldValue = "Text!";
-        this.state.people = [
-          "Bob",
-          "Dominic",
-          "John",
-          "Edward"
-        ],
-        this.state.isOn = false;
-      },
-      onPropsChange: function(newProps) {
-        if(this.props.people !== newProps.people) {
-          this.setState({
-            people: newProps.people
-          });
+    class InfernoExample extends Inferno.Component {
+        constructor() {
+          super();
+          this.name = "Test";
+          this.className = "foo";
+          this.textFieldValue = "Text!";
+          this.people = [
+            "Bob",
+            "Dominic",
+            "John",
+            "Edward"
+          ];
+          this.time = null;
+          this.isOn = false;
         }
-        if(this.props.switch !== newProps.isOn) {
-          this.setState({
-            isOn: newProps.isOn
-          });
+        attached(props) {
+
         }
-      },
-      render: function() {
-        if(closureVar % 5 === 1) {
-          return t7`
-            <div class=${ this.state.className }>
-              <span id="bar">${ this.state.name }</span>
-              <div id="time">The time is ${ this.props.time }</div>
-              ${ this._renderForm() }
-              ${ this.state.name }
-              ${this.state.isOn === false
-                ? t7`<div>Switch is off!</div>`
-                : t7`<div>Switch is on! <span>${ this.props.time }</span></div>`
-              }
-              <ul>
-                ${ this.state.people.map(this._renderPerson) }
-              </ul>
-            </div>
-          `;
-        } else {
-          return t7`
-            <div>Lol</div>
-          `;
+        detached() {
+
         }
-      },
-      _renderPerson: function(person) {
-        if(closureVar % 3 === 1) {
-          return t7`<li>${ person }, the number is ${ closureVar }<div>foo</div></li>`;
-        } else {
-          return t7`<li>${ person }, the magical number is ${ closureVar }<div>foo</div></li>`;
+        update(oldProps, newProps) {
+          debugger;
         }
-      },
-      _renderForm: function() {
-        if(closureVar % 3 === 1) {
-          return t7`
-            <form>
-              <input type="text" value=${ this.state.textFieldValue } />
-            </form>
-          `;
-        } else {
-          return t7`
-            <h2>No form!</h2>
-          `;
+        render() {
+          if(closureVar % 5 === 1) {
+            return t7`
+              <div class=${ this.className }>
+                <span id="bar">${ this.name }</span>
+                <div id="time">The time is ${ this.time }</div>
+                ${ this._renderForm() }
+                ${ this.name }
+                ${this.isOn === false
+                  ? t7`<div>Switch is off!</div>`
+                  : t7`<div>Switch is on! <span>${ this.time }</span></div>`
+                }
+                <ul>
+                  ${ this.people.map(this._renderPerson) }
+                </ul>
+              </div>
+            `;
+          } else {
+            return t7`
+              <div>Lol</div>
+            `;
+          }
         }
-      }
-    });
+        _renderPerson(person) {
+          if(closureVar % 3 === 1) {
+            return t7`<li>${ person }, the number is ${ closureVar }<div>foo</div></li>`;
+          } else {
+            return t7`<li>${ person }, the magical number is ${ closureVar }<div>foo</div></li>`;
+          }
+        }
+        _renderForm() {
+          if(closureVar % 3 === 1) {
+            return t7`
+              <form>
+                <input type="text" value=${ this.textFieldValue } />
+              </form>
+            `;
+          } else {
+            return t7`
+              <h2>No form!</h2>
+            `;
+          }
+        }
+    }
 
     Inferno.register("example-app", InfernoExample);
 
-    Inferno.render(function() {
-      return t7`<example-app></example-app>`
-    }, document.getElementById("app"));
+    setInterval(function() {
+      Inferno.render(function() {
+        return t7`<example-app></example-app>`
+      }, document.getElementById("app"));
+    }, 1000);
 
     // var appElement = document.getElementById("app");
     //

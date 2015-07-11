@@ -2,29 +2,7 @@ var Inferno = (function() {
   "use strict";
 
   var supportsTextContent = 'textContent' in document;
-
-  function InfernoComponent(internals, element) {
-    var excludeFunctions = ["constructor", "template"];
-
-    this.element = element;
-    this.state = {};
-    this.props = {};
-
-    //apply any other functions to this from the internals
-    for(var key in internals) {
-      if(excludeFunctions.indexOf(key) === -1) {
-        this[key] = internals[key].bind(this);
-      }
-    }
-  };
-
-  InfernoComponent.prototype.setState = function(state) {
-    for(var key in state ){
-      this.state[key] = state[key];
-    }
-  };
-
-  InfernoComponent.prototype.constructor = function(props) {};
+  var registeredComponents = {};
 
   function ValueNode(value, valueKey) {
     //detect if the value is actually a new node tree
@@ -47,37 +25,54 @@ var Inferno = (function() {
 
   var Inferno = {};
 
-  Inferno.createClass = function(internals) {
-    var instance =  InfernoComponent;
-    var element = Object.create(HTMLElement.prototype);
-    var component = null;
-
-    element.createdCallback = function() {
-      //TODO, add some logic here?
-      component = new InfernoComponent(internals, this);
-    };
-
-    element.attachedCallback = function() {
-      //call the component constructor
-      component.constructor = internals.constructor.bind(component);
-      component.constructor(component.props);
-
-      Inferno.render(internals.render.bind(component), this);
-    };
-
-    return {
-      instance: instance,
-      element: element
+  class Component {
+    constructor() {
     }
-  };
+  }
+
+  Inferno.Component = Component;
 
   Inferno.createValueNode = function(value, valueKey) {
     return new ValueNode(value, valueKey);
   };
 
-  Inferno.register = function(elementName, component) {
-    //cache item?
-    document.registerElement(elementName, {prototype: component.element });
+  Inferno.register = function(elementName, Component) {
+    var element = Object.create(HTMLElement.prototype);
+    var props = {};
+    var lastProps = {};
+    var hasAttached = false
+
+    element.createdCallback = function() {
+      //var need to pass props
+      this._component = new Component();
+      //initial render
+      Inferno.render(this._component.render.bind(this._component), this);
+    };
+
+    element.sendData = function(data) {
+      lastProps = props;
+      props = data;
+      if(hasAttached === true) {
+        this._component.update(lastProps, props);
+      }
+    };
+
+    element.attachedCallback = function() {
+      hasAttached = true;
+      if(this._component.attached) {
+          this._component.attached(props);
+      }
+    };
+
+    element.detachedCallback = function() {
+      hasAttached = false;
+      if(this._component.detached) {
+          this._component.detached;
+      }
+    };
+
+    registeredComponents[elementName] = Component;
+    document.registerElement(elementName, {prototype: element});
   };
 
   Inferno.render = function(renderFunction, dom) {
@@ -94,11 +89,15 @@ var Inferno = (function() {
         throw Error("Inferno.render expects first argument to be a function");
       }
       createNode(rootNode, null, dom, values, null);
-      dom.rootNode = rootNode;
+      dom.rootNode = [rootNode];
     }
     //otherwise we progress with an update
     else {
-        debugger;
+      if(typeof renderFunction === "function") {
+        t7.setOutput(t7.Outputs.ValuesOnly);
+        values = renderFunction();
+      }
+      updateNode(dom.rootNode[0], dom.rootNode, dom, values, 0);
     }
   };
 
@@ -170,15 +169,6 @@ var Inferno = (function() {
           domElement.innerText = text;
         }
       }
-    //TODO get this working again?
-    //} else {
-      // if (update) {
-      //   while (domElement.firstChild) {
-      //     domElement.removeChild(domElement.firstChild);
-      //   }
-      // }
-      // domElement.appendChild(emptyTextNode());
-    //}
   };
 
   function handleNodeAttributes(tag, domElement, attrName, attrValue) {
@@ -212,6 +202,13 @@ var Inferno = (function() {
 
     if(node.tag != null) {
       node.dom = document.createElement(node.tag);
+      if(registeredComponents[node.tag] != null) {
+        node.isComponent = true;
+        //we also give the element some props
+        node.dom.sendData({
+          name: "test"
+        });
+      }
       if(!insertAtIndex) {
         parentDom.appendChild(node.dom);
       } else {
@@ -356,10 +353,16 @@ var Inferno = (function() {
     parentDom.removeChild(node.dom);
   };
 
-  function updateNode(node, parentNode, parentDom, state, values, index) {
+  function updateNode(node, parentNode, parentDom, values, index) {
     var i = 0, ii = 0, s = 0, l = 0, val = "", childNode = null;
+
     if(node.isDynamic === false) {
       return;
+    }
+
+    if(node.isComponent === true) {
+      //get the attrs for this element and pass it over
+      node.sendData(null);
     }
 
     //we need to get the actual values and the templatekey
@@ -433,7 +436,7 @@ var Inferno = (function() {
                     if(typeof node.children[i].value[ii] === "string") {
                       //TODO - finish
                     } else {
-                      updateNode(node.children[i].value[ii], node.children[i].value, node.dom, state, val[ii], ii);
+                      updateNode(node.children[i].value[ii], node.children[i].value, node.dom, val[ii], ii);
                     }
                   }
                 } else {
@@ -450,7 +453,7 @@ var Inferno = (function() {
                 node.children[i].lastValue = val;
               }
             } else {
-              updateNode(node.children[i], node, node.dom, state, values, i);
+              updateNode(node.children[i], node, node.dom, values, i);
             }
           }
         }
