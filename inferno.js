@@ -26,8 +26,9 @@ var Inferno = (function() {
   var Inferno = {};
 
   class Component {
-    constructor() {
-    }
+    constructor() {}
+    render() {}
+    update() {}
   }
 
   Inferno.Component = Component;
@@ -42,6 +43,7 @@ var Inferno = (function() {
 
     element.createdCallback = function() {
       var component = new Component();
+      component.update = Inferno.render.bind(null, component.render.bind(component), this);
 
       instances.set(this, {
         component: component,

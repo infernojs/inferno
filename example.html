@@ -23,6 +23,8 @@
           this.people = null;
           this.time = null;
           this.isOn = false;
+          this._counter = 0;
+          this._handleCounter();
         }
         attached(props) {
           //we can also access our web component via this.element
@@ -39,6 +41,7 @@
         render() {
           if(closureVar % 5 === 1) {
             return t7`
+              <div>Count is at ${ this._counter }</div>
               <div class=${ this.className }>
                 <span id="bar">${ this.name }</span>
                 <div id="time">The time is ${ this.time }</div>
@@ -61,6 +64,11 @@
         }
         afterRender() {
 
+        }
+        _handleCounter() {
+          this._counter++;
+          this.update();
+          setTimeout(this._handleCounter.bind(this), 100);
         }
         _renderPerson(person) {
           if(closureVar % 3 === 1) {
