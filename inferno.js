@@ -32,7 +32,7 @@ var Inferno = (function() {
   class Component {
     constructor() {}
     render() {}
-    update() {}
+    forceUpdate() {}
   }
 
   Inferno.Component = Component;
@@ -47,7 +47,7 @@ var Inferno = (function() {
 
     element.createdCallback = function() {
       var component = new Component();
-      component.update = Inferno.render.bind(null, component.render.bind(component), this, null);
+      component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), this, null, component);
 
       instances.set(this, {
         component: component,
@@ -67,7 +67,7 @@ var Inferno = (function() {
         if(instance.component.beforeRender) {
           //TODO check if the props are the same and skip this
           instance.component.beforeRender(instance.props);
-          Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners);
+          Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners, instance.component);
           if(instance.component.afterRender) {
             instance.component.afterRender();
           }
@@ -85,7 +85,7 @@ var Inferno = (function() {
       //add listeners
       instance.listeners = addRootDomEventListerners(this)
       //initial render
-      Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners);
+      Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners, instance.component);
       if(instance.component.afterRender) {
         instance.component.afterRender();
       }
@@ -104,7 +104,7 @@ var Inferno = (function() {
     document.registerElement(elementName, {prototype: element});
   };
 
-  Inferno.render = function(render, dom, listeners) {
+  Inferno.render = function(render, dom, listeners, component) {
     var rootNode = null;
     var values = [];
     //we check if we have a root on the dom node, if not we need to build up the render
@@ -116,7 +116,7 @@ var Inferno = (function() {
         values = render;
         rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
       }
-      createNode(rootNode, null, dom, values, null, null, listeners);
+      createNode(rootNode, null, dom, values, null, null, listeners, component);
       dom.rootNode = [rootNode];
     }
     //otherwise we progress with an update
@@ -126,7 +126,7 @@ var Inferno = (function() {
       } else if(render.templateKey) {
         values = render;
       }
-      updateNode(dom.rootNode[0], dom.rootNode, dom, values, 0, listeners);
+      updateNode(dom.rootNode[0], dom.rootNode, dom, values, 0, listeners, component);
     }
   };
 
@@ -217,13 +217,18 @@ var Inferno = (function() {
       click: []
     };
     domNode.addEventListener("click", function(e) {
-      debugger;
+      for(var i = 0; i < listeners.click.length; i = i + 1 | 0) {
+        if(listeners.click[i].target === e.target) {
+          listeners.click[i].callback.call(listeners.click[i].component, e);
+          listeners.click[i].component.forceUpdate();
+        }
+      }
     });
     return listeners;
   };
 
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, values, index, insertAtIndex, listeners) {
+  function createNode(node, parentNode, parentDom, values, index, insertAtIndex, listeners, component) {
     var i = 0, l = 0, ii = 0,
         subNode = null,
         val = null,
@@ -260,7 +265,8 @@ var Inferno = (function() {
             node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
             listeners[events[node.attrs[i].name]].push({
               target: node.dom,
-              callback: node.attrs[i].value.value
+              callback: node.attrs[i].value.value,
+              component: component
             })
             node.hasDynamicAttrs = true;
             node.isDynamic = true;
@@ -300,22 +306,22 @@ var Inferno = (function() {
               if(node.children[i].value instanceof Array) {
                 if(node.children[i].templateKey != null) {
                   for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey].values, ii, null, listeners);
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey].values, ii, null, listeners, component);
                   }
                 } else {
                   for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey][ii], ii, null, listeners);
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey][ii], ii, null, listeners, component);
                   }
                 }
               } else {
-                createNode(node.children[i].value, node.children[i], node.dom, values[node.children[i].valueKey], null, null, listeners);
+                createNode(node.children[i].value, node.children[i], node.dom, values[node.children[i].valueKey], null, null, listeners, component);
               }
             } else {
               textNode = document.createTextNode(node.children[i].value);
               node.dom.appendChild(textNode);
             }
           } else {
-            wasChildDynamic = createNode(node.children[i], node, node.dom, values, i, null, listeners);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, values, i, null, listeners, component);
             if(wasChildDynamic === true ) {
               node.children[i].isDynamic = true;
               node.isDynamic = true;
@@ -330,10 +336,10 @@ var Inferno = (function() {
         //based off the valueKey index
         if(node.children.value instanceof Array) {
           for(i = 0; i < node.children.value.length; i = i + 1 | 0) {
-            createNode(node.children.value[i], node, node.dom, values[node.children.valueKey], i, null, listeners);
+            createNode(node.children.value[i], node, node.dom, values[node.children.valueKey], i, null, listeners, component);
           }
         } else {
-          createNode(node.children.value, node, node.dom, values[node.children.valueKey], null, null, listeners);
+          createNode(node.children.value, node, node.dom, values[node.children.valueKey], null, null, listeners, component);
         }
         node.children.isDynamic = true;
         node.children.lastValue = values[node.children.valueKey];
@@ -404,7 +410,7 @@ var Inferno = (function() {
     parentDom.removeChild(node.dom);
   };
 
-  function updateNode(node, parentNode, parentDom, values, index, listeners) {
+  function updateNode(node, parentNode, parentDom, values, index, listeners, component) {
     var i = 0, s = 0, l = 0, val = "", childNode = null;
 
     if(node.isDynamic === false) {
@@ -418,7 +424,7 @@ var Inferno = (function() {
         removeNode(node, parentDom);
         //and then we want to create the new node (we can simply get it from t7 cache)
         node = t7.getTemplateFromCache(values.templateKey, values.values);
-        createNode(node, parentNode, parentDom, values.values, null, null, listeners);
+        createNode(node, parentNode, parentDom, values.values, null, null, listeners, component);
         parentNode[index] = node;
         node.templateKey = values.templateKey;
       }
@@ -444,7 +450,20 @@ var Inferno = (function() {
       }
     }
 
-    if(node.children != null) {
+    if(node instanceof ValueNode && node.isRoot) {
+      val = values[node.valueKey];
+      if(node.templateKey !== val.templateKey) {
+        //we want to remove the DOM current node
+        //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
+        //asking t7 for a fresh template??
+        removeNode(node.value, parentDom);
+        //and then we want to create the new node (we can simply get it from t7 cache)
+        node.value = t7.getTemplateFromCache(val.templateKey, val.values);
+        createNode(node.value, node, parentDom, val, null, index, listeners);
+        node.templateKey = val.templateKey;
+        node.lastValue = val.values;
+      }
+    } else if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
           if(node.children[i].isDynamic === true) {

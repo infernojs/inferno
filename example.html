@@ -66,12 +66,12 @@
         afterRender() {
 
         }
-        _clickSwitch() {
-          debugger;
+        _clickSwitch(e) {
+          this.isOn = !this.isOn;
         }
         _handleCounter() {
           this._counter++;
-          this.update();
+          this.forceUpdate();
           setTimeout(this._handleCounter.bind(this), 100);
         }
         _renderPerson(person) {
