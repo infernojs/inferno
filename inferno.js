@@ -463,6 +463,11 @@ var Inferno = (function() {
         node.templateKey = val.templateKey;
         node.lastValue = val.values;
       }
+      val = val.values;
+      if(val !== node.lastValue) {
+        debugger;
+        node.lastValue = val;
+      }
     } else if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
