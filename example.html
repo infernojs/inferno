@@ -51,6 +51,7 @@
                   ? t7`<div>Switch is off!</div>`
                   : t7`<div>Switch is on! <span>${ this.time }</span></div>`
                 }
+                <button onClick=${ this._clickSwitch }>Switch!</button>
                 <ul>
                   ${ this.people != null ? this.people.map(this._renderPerson.bind(this)) : null }
                 </ul>
@@ -64,6 +65,9 @@
         }
         afterRender() {
 
+        }
+        _clickSwitch() {
+          debugger;
         }
         _handleCounter() {
           this._counter++;

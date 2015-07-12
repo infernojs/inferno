@@ -4,6 +4,10 @@ var Inferno = (function() {
   var supportsTextContent = 'textContent' in document;
   var registeredComponents = {};
 
+  var events = {
+    "onClick": "click"
+  };
+
   function ValueNode(value, valueKey) {
     //detect if the value is actually a new node tree
     if(value && value.tag != null) {
@@ -43,12 +47,13 @@ var Inferno = (function() {
 
     element.createdCallback = function() {
       var component = new Component();
-      component.update = Inferno.render.bind(null, component.render.bind(component), this);
+      component.update = Inferno.render.bind(null, component.render.bind(component), this, null);
 
       instances.set(this, {
         component: component,
         hasAttached: false,
         props: {},
+        listeners: null,
         lastProps: {}
       })
     };
@@ -62,7 +67,7 @@ var Inferno = (function() {
         if(instance.component.beforeRender) {
           //TODO check if the props are the same and skip this
           instance.component.beforeRender(instance.props);
-          Inferno.render(instance.component.render.bind(instance.component), this);
+          Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners);
           if(instance.component.afterRender) {
             instance.component.afterRender();
           }
@@ -77,8 +82,10 @@ var Inferno = (function() {
       if(instance.component.attached) {
         instance.component.attached(instance.props);
       }
+      //add listeners
+      instance.listeners = addRootDomEventListerners(this)
       //initial render
-      Inferno.render(instance.component.render.bind(instance.component), this);
+      Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners);
       if(instance.component.afterRender) {
         instance.component.afterRender();
       }
@@ -86,8 +93,8 @@ var Inferno = (function() {
 
     element.detachedCallback = function() {
       var instance = instances.get(this);
-
       instance.hasAttached = false;
+      //TODO remove listeners
       if(instance.component.detached) {
         instance.component.detached();
       }
@@ -97,7 +104,7 @@ var Inferno = (function() {
     document.registerElement(elementName, {prototype: element});
   };
 
-  Inferno.render = function(render, dom) {
+  Inferno.render = function(render, dom, listeners) {
     var rootNode = null;
     var values = [];
     //we check if we have a root on the dom node, if not we need to build up the render
@@ -109,7 +116,7 @@ var Inferno = (function() {
         values = render;
         rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
       }
-      createNode(rootNode, null, dom, values, null);
+      createNode(rootNode, null, dom, values, null, null, listeners);
       dom.rootNode = [rootNode];
     }
     //otherwise we progress with an update
@@ -119,7 +126,7 @@ var Inferno = (function() {
       } else if(render.templateKey) {
         values = render;
       }
-      updateNode(dom.rootNode[0], dom.rootNode, dom, values, 0);
+      updateNode(dom.rootNode[0], dom.rootNode, dom, values, 0, listeners);
     }
   };
 
@@ -205,8 +212,18 @@ var Inferno = (function() {
     return props;
   };
 
+  function addRootDomEventListerners(domNode) {
+    var listeners = {
+      click: []
+    };
+    domNode.addEventListener("click", function(e) {
+      debugger;
+    });
+    return listeners;
+  };
+
   //we want to build a value tree, rather than a node tree, ideally, for faster lookups
-  function createNode(node, parentNode, parentDom, values, index, insertAtIndex) {
+  function createNode(node, parentNode, parentDom, values, index, insertAtIndex, listeners) {
     var i = 0, l = 0, ii = 0,
         subNode = null,
         val = null,
@@ -238,15 +255,26 @@ var Inferno = (function() {
     if(!node.isComponent) {
       if(node.attrs != null) {
         for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
-          //check if this is a dynamic attribute
-          if(node.attrs[i].value instanceof ValueNode) {
+          //check if the name matches an event type
+          if(events[node.attrs[i].name] != null) {
+            node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
+            listeners[events[node.attrs[i].name]].push({
+              target: node.dom,
+              callback: node.attrs[i].value.value
+            })
             node.hasDynamicAttrs = true;
             node.isDynamic = true;
-            //assign the last value
-            node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
-            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
           } else {
-            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
+            //check if this is a dynamic attribute
+            if(node.attrs[i].value instanceof ValueNode) {
+              node.hasDynamicAttrs = true;
+              node.isDynamic = true;
+              //assign the last value
+              node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
+              handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
+            } else {
+              handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
+            }
           }
         }
       }
@@ -272,22 +300,22 @@ var Inferno = (function() {
               if(node.children[i].value instanceof Array) {
                 if(node.children[i].templateKey != null) {
                   for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey].values, ii);
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey].values, ii, null, listeners);
                   }
                 } else {
                   for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey][ii], ii);
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey][ii], ii, null, listeners);
                   }
                 }
               } else {
-                createNode(node.children[i].value, node.children[i], node.dom, values[node.children[i].valueKey], null);
+                createNode(node.children[i].value, node.children[i], node.dom, values[node.children[i].valueKey], null, null, listeners);
               }
             } else {
               textNode = document.createTextNode(node.children[i].value);
               node.dom.appendChild(textNode);
             }
           } else {
-            wasChildDynamic = createNode(node.children[i], node, node.dom, values, i);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, values, i, null, listeners);
             if(wasChildDynamic === true ) {
               node.children[i].isDynamic = true;
               node.isDynamic = true;
@@ -302,10 +330,10 @@ var Inferno = (function() {
         //based off the valueKey index
         if(node.children.value instanceof Array) {
           for(i = 0; i < node.children.value.length; i = i + 1 | 0) {
-            createNode(node.children.value[i], node, node.dom, values[node.children.valueKey], i);
+            createNode(node.children.value[i], node, node.dom, values[node.children.valueKey], i, null, listeners);
           }
         } else {
-          createNode(node.children.value, node, node.dom, values[node.children.valueKey], null);
+          createNode(node.children.value, node, node.dom, values[node.children.valueKey], null, null, listeners);
         }
         node.children.isDynamic = true;
         node.children.lastValue = values[node.children.valueKey];
@@ -376,7 +404,7 @@ var Inferno = (function() {
     parentDom.removeChild(node.dom);
   };
 
-  function updateNode(node, parentNode, parentDom, values, index) {
+  function updateNode(node, parentNode, parentDom, values, index, listeners) {
     var i = 0, s = 0, l = 0, val = "", childNode = null;
 
     if(node.isDynamic === false) {
@@ -390,7 +418,7 @@ var Inferno = (function() {
         removeNode(node, parentDom);
         //and then we want to create the new node (we can simply get it from t7 cache)
         node = t7.getTemplateFromCache(values.templateKey, values.values);
-        createNode(node, parentNode, parentDom, values.values, null, null, null);
+        createNode(node, parentNode, parentDom, values.values, null, null, listeners);
         parentNode[index] = node;
         node.templateKey = values.templateKey;
       }
@@ -432,7 +460,7 @@ var Inferno = (function() {
                 setTextContent(node.dom.childNodes[i], val, true);
               }
             } else {
-              updateNode(node.children[i], node, node.dom, values, i);
+              updateNode(node.children[i], node, node.dom, values, i, listeners);
             }
           }
         }
@@ -449,7 +477,7 @@ var Inferno = (function() {
             removeNode(node.children.value, node.dom);
             //and then we want to create the new node (we can simply get it from t7 cache)
             node.children.value = t7.getTemplateFromCache(val.templateKey, val.values);
-            createNode(node.children.value, node.children, node.dom, state, val, null, null, i);
+            createNode(node.children.value, node.children, node.dom, val, null, i, listeners);
             //then we want to set the new templatekey
             node.children.templateKey = val.templateKey;
             node.children.lastValue = val.values;
@@ -478,7 +506,7 @@ var Inferno = (function() {
               if(typeof node.children.value[i] === "string") {
                 //TODO - finish
               } else {
-                updateNode(node.children.value[i], node.children.value, node.dom, val[i], i);
+                updateNode(node.children.value[i], node.children.value, node.dom, val[i], i, listeners);
               }
             }
           }
