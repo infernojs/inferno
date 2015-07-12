@@ -97,27 +97,27 @@ var Inferno = (function() {
     document.registerElement(elementName, {prototype: element});
   };
 
-  Inferno.render = function(renderFunction, dom) {
+  Inferno.render = function(render, dom) {
     var rootNode = null;
     var values = [];
     //we check if we have a root on the dom node, if not we need to build up the render
     if(dom.rootNode == null) {
-      if(typeof renderFunction === "function") {
-        t7.setOutput(t7.Outputs.Inferno);
-        rootNode = renderFunction();
-        t7.setOutput(t7.Outputs.ValuesOnly);
-        values = renderFunction();
-      } else {
-        throw Error("Inferno.render expects first argument to be a function");
+      if(typeof render === "function") {
+        values = render();
+        rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+      } else if(render.templateKey) {
+        values = render;
+        rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
       }
       createNode(rootNode, null, dom, values, null);
       dom.rootNode = [rootNode];
     }
     //otherwise we progress with an update
     else {
-      if(typeof renderFunction === "function") {
-        t7.setOutput(t7.Outputs.ValuesOnly);
-        values = renderFunction();
+      if(typeof render === "function") {
+        values = render();
+      } else if(render.templateKey) {
+        values = render;
       }
       updateNode(dom.rootNode[0], dom.rootNode, dom, values, 0);
     }

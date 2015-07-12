@@ -15,7 +15,6 @@ var t7 = (function() {
   var docHead = null;
   //to save time later, we can pre-create a props object structure to re-use
   var output = null;
-  var lastOutput = null;
   var components = {};
   var ii = 1;
   var selfClosingTags = [];
@@ -521,16 +520,14 @@ var t7 = (function() {
     };
 
     //set our unique key
-    templateKey = createTemplateKey(tpl) + output;
+    templateKey = createTemplateKey(tpl);
 
     //For values only, return an array of all the values
-    if(output === t7.Outputs.ValuesOnly) {
+    if(output === t7.Outputs.Inferno) {
       if(t7._cache[templateKey] != null) {
         return {values: values, templateKey: templateKey};
       } else {
         returnValuesButBuildTemplate = true;
-        //we then need to change the output to the "last" value
-        output = lastOutput;
       }
     }
 
@@ -566,7 +563,6 @@ var t7 = (function() {
     }
 
     if(returnValuesButBuildTemplate === true) {
-      output = t7.Outputs.ValuesOnly;
       return {values: values, templateKey: templateKey};
     }
 
@@ -575,14 +571,14 @@ var t7 = (function() {
 
   function deepCopy(obj) {
     if (typeof obj == 'object') {
-      if (isArray(obj)) {
+      if (obj instanceof Array) {
         var l = obj.length;
         var r = new Array(l);
         for (var i = 0; i < l; i++) {
           r[i] = deepCopy(obj[i]);
         }
         return r;
-      } else {
+      } else if(obj != null) {
         var r = {};
         r.prototype = obj.prototype;
         for (var k in obj) {
@@ -601,26 +597,11 @@ var t7 = (function() {
     splice: 'function'
   };
 
-  /**
-   * Determining if something is an array in JavaScript
-   * is error-prone at best.
-   */
-  function isArray(obj) {
-    if (obj instanceof Array)
-      return true;
-    // Otherwise, guess:
-    for (var k in ARRAY_PROPS) {
-      if (!(k in obj && typeof obj[k] == ARRAY_PROPS[k]))
-        return false;
-    }
-    return true;
-  }
-
   function deepTemplates(values) {
     var i = 0, ii = 0;
     if(values.length > 0) {
       for(i = 0; i < values.length; i = i + 1 | 0) {
-        if(values[i].templateKey != null) {
+        if(values[i] && values[i].templateKey != null) {
           values[i] = t7.getTemplateFromCache(values[i].templateKey, values[i].values);
         } else if(values[i] instanceof Array) {
           for(ii = 0; ii < values[i].length; ii = ii + 1 | 0) {
@@ -638,11 +619,12 @@ var t7 = (function() {
   t7._cache = {};
 
   t7.precompile = function(template, values) {
-    if(output === t7.Outputs.ValuesOnly) {
-      return values
-    } else {
-      return template();
-    }
+    //TODO change
+    // if(output === t7.Outputs.InfernoValues) {
+    //   return values
+    // } else {
+    //   return template();
+    // }
   };
 
   //a lightweight flow control function
@@ -665,7 +647,6 @@ var t7 = (function() {
 
   t7.setOutput = function(newOutput) {
     if(output !== newOutput) {
-      lastOutput = output;
       output = newOutput;
     }
   };
@@ -694,8 +675,8 @@ var t7 = (function() {
 
   t7.getTemplateFromCache = function(templateKey, values) {
     //we need to normalie the values so we don't have objects with templateKey and values
-    var newwValues = deepTemplates(deepCopy(values));
-    return t7._cache[templateKey](newwValues);
+    var newValues = deepTemplates(deepCopy(values));
+    return t7._cache[templateKey](newValues);
   };
 
   t7.loadComponent = function(componentName) {
@@ -705,8 +686,8 @@ var t7 = (function() {
   t7.Outputs = {
     React: 1,
     Universal: 2,
-    Inferno: 3,
-    ValuesOnly: 4
+    InfernoVdom: 3,
+    InfernoValues: 4
   };
 
   //set the type to React as default if it exists in global scope

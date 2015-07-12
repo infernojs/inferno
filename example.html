@@ -100,26 +100,28 @@
       var date = new Date();
       var people = [];
       odd = !odd;
-      Inferno.render(function() {
-        if(!odd) {
-          people = [
-            "Bob",
-            "Dominic",
-            "John",
-            "Edward"
-          ]
-        } else {
-          people = [
-            "Jemma",
-            "Charlie",
-            "Harry",
-            "Kieria",
-            "Paul",
-            "Ken"
-          ]
-        }
-        return t7`<example-app time=${ date } people=${ people }></example-app>`
-      }, document.getElementById("app"));
+      if(!odd) {
+        people = [
+          "Bob",
+          "Dominic",
+          "John",
+          "Edward"
+        ]
+      } else {
+        people = [
+          "Jemma",
+          "Charlie",
+          "Harry",
+          "Kieria",
+          "Paul",
+          "Ken"
+        ]
+      }
+
+      Inferno.render(
+        t7`<example-app time=${ date } people=${ people }></example-app>`,
+        document.getElementById("app")
+      );
     }, 1000);
 
     // var appElement = document.getElementById("app");
