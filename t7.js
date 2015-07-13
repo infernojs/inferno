@@ -308,7 +308,6 @@ var t7 = (function() {
     for(i = 0, n = html.length; i < n; i++) {
       //set the char to the current character in the string
       char = html[i];
-
       if (char === "<") {
         insideTag = true;
       } else if(char === ">" && insideTag === true) {
@@ -361,8 +360,11 @@ var t7 = (function() {
           }
           //push the node we've constructed to the relevant parent
           if(parent === null) {
-            parent = vElement;
-            root = parent;
+            if(root === null) {
+              root = parent = vElement;
+            } else {
+              throw Error("t7 templates must contain only a single root element");
+            }
           } else if (parent instanceof Array) {
             parent.push(vElement);
           } else {
@@ -371,7 +373,11 @@ var t7 = (function() {
           //check if we've just made a self closing tag
           if(selfClosingTags.indexOf(tagName) === -1) {
             //set our node's parent to our current parent
-            vElement.parent = parent;
+            if(parent === vElement) {
+              vElement.parent = null;
+            } else {
+              vElement.parent = parent;
+            }
             //now assign the parent to our new node
             parent = vElement;
           }

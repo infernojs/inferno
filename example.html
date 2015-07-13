@@ -26,6 +26,7 @@
           this.formShow = true;
           this._counter = 0;
           this._handleCounter();
+          this._visible = true;
         }
         attached(props) {
           //we can also access our web component via this.element
@@ -40,32 +41,44 @@
           this.people = props.people;
         }
         render() {
-          if(closureVar % 5 === 1) {
+          if(this._visible) {
             return t7`
-              <div>Count is at ${ this._counter }</div>
-              <div class=${ this.className }>
-                <span id="bar">${ this.name }</span>
-                <div id="time">The time is ${ this.time }</div>
-                ${ this._renderForm() }
-                ${ this.name }
-                ${this.isOn === false
-                  ? t7`<div>Switch is off!</div>`
-                  : t7`<div>Switch is on! <span>${ this.time }</span></div>`
-                }
-                <button onClick=${ this._clickSwitch }>Switch!</button>
-                <ul>
-                  ${ this.people != null ? this.people.map(this._renderPerson.bind(this)) : null }
-                </ul>
+              <div>
+                <button onClick=${ this._hide }>Hide</button>
+                <div>Count is at ${ this._counter }</div>
+                <div class=${ this.className }>
+                  <span id="bar">${ this.name }</span>
+                  <div id="time">The time is ${ this.time }</div>
+                  ${ this._renderForm() }
+                  ${ this.name }
+                  ${this.isOn === false
+                    ? t7`<div>Switch is off!</div>`
+                    : t7`<div>Switch is on! <span>${ this.time }</span></div>`
+                  }
+                  <button onClick=${ this._clickSwitch }>Switch!</button>
+                  <ul>
+                    ${ this.people != null ? this.people.map(this._renderPerson.bind(this)) : null }
+                  </ul>
+                </div>
               </div>
             `;
           } else {
             return t7`
-              <div>Lol</div>
+              <div>
+                <button onClick=${ this._show }>Show</button>
+                <div>Hidden!</div>
+              </div>
             `;
           }
         }
         afterRender() {
 
+        }
+        _hide(e) {
+          this._visible = false;
+        }
+        _show(e) {
+          this._visible = true;
         }
         _clickSwitch(e) {
           this.isOn = !this.isOn;
