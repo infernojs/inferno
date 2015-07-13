@@ -316,6 +316,10 @@ var Inferno = (function() {
               } else {
                 createNode(node.children[i].value, node.children[i], node.dom, values[node.children[i].valueKey], null, null, listeners, component);
               }
+            } else if(node.children[i] instanceof ValueNode) {
+              node.children[i].lastValue = values[node.children[i].valueKey];
+              textNode = document.createTextNode(node.children[i].lastValue);
+              node.dom.appendChild(textNode);
             } else {
               textNode = document.createTextNode(node.children[i].value);
               node.dom.appendChild(textNode);
@@ -452,22 +456,30 @@ var Inferno = (function() {
 
     if(node instanceof ValueNode && node.isRoot) {
       val = values[node.valueKey];
-      if(node.templateKey !== val.templateKey) {
-        //we want to remove the DOM current node
-        //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
-        //asking t7 for a fresh template??
-        removeNode(node.value, parentDom);
-        //and then we want to create the new node (we can simply get it from t7 cache)
-        node.value = t7.getTemplateFromCache(val.templateKey, val.values);
-        createNode(node.value, node, parentDom, val, null, index, listeners);
-        node.templateKey = val.templateKey;
-        node.lastValue = val.values;
+      if(val != null && val.templateKey != null) {
+        if(node.templateKey !== val.templateKey) {
+          //we want to remove the DOM current node
+          //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
+          //asking t7 for a fresh template??
+          removeNode(node.value, parentDom);
+          //and then we want to create the new node (we can simply get it from t7 cache)
+          node.value = t7.getTemplateFromCache(val.templateKey, val.values);
+          createNode(node.value, node, parentDom, val, null, index, listeners);
+          node.templateKey = val.templateKey;
+          node.lastValue = val.values;
+        }
+        val = val.values;
       }
-      val = val.values;
-      if(val !== node.lastValue) {
-        debugger;
+      //if(val !== node.lastValue) {
+        if(node.value.children instanceof Array) {
+          for(i = 0; i < node.value.children.length; i = i + 1 | 0) {
+            if(typeof node.value.children[i] !== "string") {
+              updateNode(node.value.children[i], node.value, node.value.dom, val, i, listeners);
+            }
+          }
+        }
         node.lastValue = val;
-      }
+      //}
     } else if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
@@ -492,8 +504,6 @@ var Inferno = (function() {
         //check if the value has changed
         val = values[node.children.valueKey];
         if(val != null && val.templateKey != null) {
-          //check to see if the template has changed
-
           if(node.children.templateKey !== val.templateKey) {
             //we want to remove the DOM current node
             //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
@@ -527,9 +537,7 @@ var Inferno = (function() {
               }
             }
             for(i = 0; i < node.children.value.length; i = i + 1 | 0) {
-              if(typeof node.children.value[i] === "string") {
-                //TODO - finish
-              } else {
+              if(typeof node.children.value[i] !== "string") {
                 updateNode(node.children.value[i], node.children.value, node.dom, val[i], i, listeners);
               }
             }
@@ -544,7 +552,7 @@ var Inferno = (function() {
         }
         if(val !== node.children.lastValue) {
           node.children.lastValue = val;
-          if(typeof val === "string" || typeof val === "number") {
+          if(typeof val === "string" || typeof val === "number" || val instanceof Date) {
             setTextContent(node.dom, val, true);
           }
         }
