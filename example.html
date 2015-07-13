@@ -105,8 +105,10 @@
             `;
           } else {
             return t7`
-              <h2>No form!</h2>
-              <button onClick=${ this._turnOnForm }>Turn on form</button>
+              <div>
+                <h2>No form!</h2>
+                <button onClick=${ this._turnOnForm }>Turn on form</button>
+              </div>
             `;
           }
         }
@@ -151,52 +153,6 @@
         document.getElementById("app")
       );
     }, 1000);
-
-    // var appElement = document.getElementById("app");
-    //
-    // var odd = true;
-    // var isOn = false;
-    //
-    // setInterval(function() {
-    //   //uses valid, currently widely used DOM accessors
-    //   var date = new Date();
-    //   var people = [];
-    //   odd = !odd;
-    //   if(!odd) {
-    //     people = [
-    //       "Bob",
-    //       "Dominic",
-    //       "John",
-    //       "Edward"
-    //     ]
-    //   } else {
-    //     people = [
-    //       "Jemma",
-    //       "Charlie",
-    //       "Harry",
-    //       "Kieria",
-    //       "Paul",
-    //       "Ken"
-    //     ]
-    //   }
-    //
-    //   var i = 0;
-    //   isOn = !isOn;
-    //   closureVar++;
-    //
-    //   console.time("update");
-    //
-    //   appElement.setProps({
-    //     time: date.toTimeString(),
-    //     people: people,
-    //     isOn: isOn,
-    //     textFieldValue: "value " + i
-    //   });
-    //
-    //   console.timeEnd("update");
-    //
-    //   i++;
-    // }, 500);
 
   </script>
 </body>
