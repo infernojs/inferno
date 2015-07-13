@@ -23,6 +23,7 @@
           this.people = null;
           this.time = null;
           this.isOn = false;
+          this.formShow = true;
           this._counter = 0;
           this._handleCounter();
         }
@@ -82,17 +83,27 @@
           }
         }
         _renderForm() {
-          if(closureVar % 2 === 1) {
+          if(this.formShow) {
             return t7`
               <form>
                 <input type="text" value=${ this.textFieldValue } />
+                <button onClick=${ this._turnOffForm }>Turn off form</button>
               </form>
             `;
           } else {
             return t7`
               <h2>No form!</h2>
+              <button onClick=${ this._turnOnForm }>Turn on form</button>
             `;
           }
+        }
+        _turnOffForm(e) {
+          this.formShow = false;
+          e.preventDefault();
+        }
+        _turnOnForm(e) {
+          this.formShow = true;
+          e.preventDefault();
         }
     }
 
