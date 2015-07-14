@@ -196,8 +196,12 @@ var t7 = (function() {
       if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno) {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
-          if(isComponentName(root.tag) === false) {
-            functionText.push("{tag: '" + root.tag + "'");
+          if(isComponentName(root.tag) === false || output === t7.Outputs.Inferno) {
+            if(isComponentName(root.tag) === true) {
+              functionText.push("{tag: t7.loadComponent('" + root.tag + "')");
+            } else {
+              functionText.push("{tag: '" + root.tag + "'");
+            }
 
             if(root.key != null) {
               tagParams.push("key: " + root.key);

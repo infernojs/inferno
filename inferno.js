@@ -41,11 +41,15 @@ var Inferno = (function() {
 
   Inferno.Component = Component;
 
-  Inferno.createValueNode = function(value, valueKey) {
-    return new ValueNode(value, valueKey);
-  };
+  class WebComponent {
+    constructor() {}
+    render() {}
+    forceUpdate() {}
+  }
 
-  Inferno.register = function(elementName, Component) {
+  Inferno.WebComponent = WebComponent;
+
+  function registerCustomElement(elementName, Component) {
     var element = Object.create(HTMLElement.prototype);
     var instances = new WeakMap();
 
@@ -69,7 +73,7 @@ var Inferno = (function() {
       instance.lastProps = instance.props;
       instance.props = data;
       if(instance.hasAttached === true) {
-        if(instance.component.beforeRender) {
+        if(instance.component.beforeRender && Object.keys(data).length > 0) {
           //TODO check if the props are the same and skip this
           instance.component.beforeRender(instance.props);
           Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners, instance.component);
@@ -105,6 +109,31 @@ var Inferno = (function() {
 
     registeredComponents[elementName] = Component;
     document.registerElement(elementName, {prototype: element});
+  };
+
+  function createComponentInstance(Component, parentDom, props) {
+    var component = new Component(props);
+    var listeners = addRootDomEventListerners(parentDom);
+    component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), parentDom, listeners, component);
+    return component;
+  };
+
+  function registerComponent(elementName, Component) {
+    t7.registerComponent(elementName, createComponentInstance.bind(null, Component));
+  };
+
+  Inferno.createValueNode = function(value, valueKey) {
+    return new ValueNode(value, valueKey);
+  };
+
+  Inferno.register = function(elementName, Component) {
+    if(elementName[0].toLowerCase() === elementName[0] && elementName.indexOf("-") === -1) {
+      throw Error("Invalid element name '" + elementName + "' used for Inferno.register(). Custom elements must be lower-case and contain a hyphon.");
+    } else if(elementName[0].toLowerCase() === elementName[0] && elementName.indexOf("-") > -1) {
+      registerCustomElement(elementName, Component);
+    } else if(elementName[0].toLowerCase() !== elementName[0] && elementName.indexOf("-") === -1) {
+      registerComponent(elementName, Component);
+    }
   };
 
   Inferno.render = function(render, dom, listeners, component) {
@@ -200,13 +229,16 @@ var Inferno = (function() {
 
   function convertAttrsToProps(attrs, values) {
     var props = {};
+    var val = null;
     for(var i = 0; i < attrs.length; i = i + 1 | 0) {
       if(attrs[i].value instanceof ValueNode) {
-        var val = values[attrs[i].value.valueKey];
-        if(attrs[i].value.lastVal !== val) {
-          attrs[i].value.lastVal = val;
+        val = values[attrs[i].value.valueKey];
+        if(val.templateKey) {
+          props[attrs[i].name] = val.values;
+        } else {
           props[attrs[i].name] = val;
         }
+
       } else {
         props[attrs[i].name] = attrs[i].value;
       }
@@ -246,12 +278,41 @@ var Inferno = (function() {
     }
 
     if(node.tag != null) {
+      //if its a component, we make a new instance
+      if(typeof node.tag === "function") {
+        node.dom = document.createDocumentFragment();
+        if(index != null) {
+          node.tag = node.tag(node.dom, convertAttrsToProps(node.attrs, values[index].values));
+        } else {
+          node.tag = node.tag(node.dom, convertAttrsToProps(node.attrs, values.values));
+        }
+        node.tag.forceUpdate();
+        parentDom.appendChild(node.dom);
+      }
+      //if this is a
+      if(node.tag instanceof Component) {
+        if(node.tag.beforeRender) {
+          if(index != null) {
+            node.tag.beforeRender(convertAttrsToProps(node.attrs, values[index].values));
+          } else {
+            node.tag.beforeRender(convertAttrsToProps(node.attrs, values.values));
+          }
+        }
+        node.tag.forceUpdate();
+        return;
+      }
       node.dom = document.createElement(node.tag);
       if(registeredComponents[node.tag] != null) {
         node.isComponent = true;
         node.isDynamic = true;
         //we also give the element some props
-        node.dom.sendData(convertAttrsToProps(node.attrs, values));
+        if(node.attrs != null && node.attrs.length > 0) {
+          if(index != null) {
+            node.dom.sendData(convertAttrsToProps(node.attrs, values[index].values));
+          } else {
+            node.dom.sendData(convertAttrsToProps(node.attrs, values));
+          }
+        }
       }
       if(!insertAtIndex) {
         parentDom.appendChild(node.dom);
@@ -313,7 +374,7 @@ var Inferno = (function() {
                   }
                 } else {
                   for(ii = 0; ii < node.children[i].value.length; ii = ii + 1 | 0) {
-                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey][ii], ii, null, listeners, component);
+                    createNode(node.children[i].value[ii], node.children[i], node.dom, values[node.children[i].valueKey], ii, null, listeners, component);
                   }
                 }
               } else {
@@ -440,7 +501,9 @@ var Inferno = (function() {
 
     if(node.isComponent === true) {
       //get the attrs for this element and pass it over
-      node.dom.sendData(convertAttrsToProps(node.attrs, values));
+      if(node.attrs != null && node.attrs.length > 0) {
+        node.dom.sendData(convertAttrsToProps(node.attrs, values));
+      }
     }
 
     if(!node.isComponent) {
