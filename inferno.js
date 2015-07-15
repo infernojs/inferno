@@ -1,12 +1,8 @@
-//document.RegisterElement polyfill
-/*! (C) WebReflection Mit Style License */
-(function(e,t,n,r){"use strict";function rt(e,t){for(var n=0,r=e.length;n<r;n++)dt(e[n],t)}function it(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],nt(r,b[ot(r)])}function st(e){return function(t){j(t)&&(dt(t,e),rt(t.querySelectorAll(w),e))}}function ot(e){var t=e.getAttribute("is"),n=e.nodeName.toUpperCase(),r=S.call(y,t?v+t.toUpperCase():d+n);return t&&-1<r&&!ut(n,t)?-1:r}function ut(e,t){return-1<w.indexOf(e+'[is="'+t+'"]')}function at(e){var t=e.currentTarget,n=e.attrChange,r=e.prevValue,i=e.newValue;Q&&t.attributeChangedCallback&&e.attrName!=="style"&&t.attributeChangedCallback(e.attrName,n===e[a]?null:r,n===e[l]?null:i)}function ft(e){var t=st(e);return function(e){X.push(t,e.target)}}function lt(e){K&&(K=!1,e.currentTarget.removeEventListener(h,lt)),rt((e.target||t).querySelectorAll(w),e.detail===o?o:s),B&&pt()}function ct(e,t){var n=this;q.call(n,e,t),G.call(n,{target:n})}function ht(e,t){D(e,t),et?et.observe(e,z):(J&&(e.setAttribute=ct,e[i]=Z(e),e.addEventListener(p,G)),e.addEventListener(c,at)),e.createdCallback&&Q&&(e.created=!0,e.createdCallback(),e.created=!1)}function pt(){for(var e,t=0,n=F.length;t<n;t++)e=F[t],E.contains(e)||(F.splice(t,1),dt(e,o))}function dt(e,t){var n,r=ot(e);-1<r&&(tt(e,b[r]),r=0,t===s&&!e[s]?(e[o]=!1,e[s]=!0,r=1,B&&S.call(F,e)<0&&F.push(e)):t===o&&!e[o]&&(e[s]=!1,e[o]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(r in t)return;var i="__"+r+(Math.random()*1e5>>0),s="attached",o="detached",u="extends",a="ADDITION",f="MODIFICATION",l="REMOVAL",c="DOMAttrModified",h="DOMContentLoaded",p="DOMSubtreeModified",d="<",v="=",m=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,g=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],y=[],b=[],w="",E=t.documentElement,S=y.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},x=n.prototype,T=x.hasOwnProperty,N=x.isPrototypeOf,C=n.defineProperty,k=n.getOwnPropertyDescriptor,L=n.getOwnPropertyNames,A=n.getPrototypeOf,O=n.setPrototypeOf,M=!!n.__proto__,_=n.create||function vt(e){return e?(vt.prototype=e,new vt):this},D=O||(M?function(e,t){return e.__proto__=t,e}:L&&k?function(){function e(e,t){for(var n,r=L(t),i=0,s=r.length;i<s;i++)n=r[i],T.call(e,n)||C(e,n,k(t,n))}return function(t,n){do e(t,n);while((n=A(n))&&!N.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),P=e.MutationObserver||e.WebKitMutationObserver,H=(e.HTMLElement||e.Element||e.Node).prototype,B=!N.call(H,E),j=B?function(e){return e.nodeType===1}:function(e){return N.call(H,e)},F=B&&[],I=H.cloneNode,q=H.setAttribute,R=H.removeAttribute,U=t.createElement,z=P&&{attributes:!0,characterData:!0,attributeOldValue:!0},W=P||function(e){J=!1,E.removeEventListener(c,W)},X,V=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,10)},$=!1,J=!0,K=!0,Q=!0,G,Y,Z,et,tt,nt;O||M?(tt=function(e,t){N.call(t,e)||ht(e,t)},nt=ht):(tt=function(e,t){e[i]||(e[i]=n(!0),ht(e,t))},nt=tt),B?(J=!1,function(){var e=k(H,"addEventListener"),t=e.value,n=function(e){var t=new CustomEvent(c,{bubbles:!0});t.attrName=e,t.prevValue=this.getAttribute(e),t.newValue=null,t[l]=t.attrChange=2,R.call(this,e),this.dispatchEvent(t)},r=function(e,t){var n=this.hasAttribute(e),r=n&&this.getAttribute(e),i=new CustomEvent(c,{bubbles:!0});q.call(this,e,t),i.attrName=e,i.prevValue=n?r:null,i.newValue=t,n?i[f]=i.attrChange=1:i[a]=i.attrChange=0,this.dispatchEvent(i)},s=function(e){var t=e.currentTarget,n=t[i],r=e.propertyName,s;n.hasOwnProperty(r)&&(n=n[r],s=new CustomEvent(c,{bubbles:!0}),s.attrName=n.name,s.prevValue=n.value||null,s.newValue=n.value=t[r]||null,s.prevValue==null?s[a]=s.attrChange=0:s[f]=s.attrChange=1,t.dispatchEvent(s))};e.value=function(e,o,u){e===c&&this.attributeChangedCallback&&this.setAttribute!==r&&(this[i]={className:{name:"class",value:this.className}},this.setAttribute=r,this.removeAttribute=n,t.call(this,"propertychange",s)),t.call(this,e,o,u)},C(H,"addEventListener",e)}()):P||(E.addEventListener(c,W),E.setAttribute(i,1),E.removeAttribute(i),J&&(G=function(e){var t=this,n,r,s;if(t===e.target){n=t[i],t[i]=r=Z(t);for(s in r){if(!(s in n))return Y(0,t,s,n[s],r[s],a);if(r[s]!==n[s])return Y(1,t,s,n[s],r[s],f)}for(s in n)if(!(s in r))return Y(2,t,s,n[s],r[s],l)}},Y=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,at(o)},Z=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),t[r]=function(n,r){p=n.toUpperCase(),$||($=!0,P?(et=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new P(function(r){for(var i,s,o=0,u=r.length;o<u;o++)i=r[o],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Q&&s.attributeChangedCallback&&i.attributeName!=="style"&&s.attributeChangedCallback(i.attributeName,i.oldValue,s.getAttribute(i.attributeName)))})}(st(s),st(o)),et.observe(t,{childList:!0,subtree:!0})):(X=[],V(function E(){while(X.length)X.shift().call(null,X.shift());V(E)}),t.addEventListener("DOMNodeInserted",ft(s)),t.addEventListener("DOMNodeRemoved",ft(o))),t.addEventListener(h,lt),t.addEventListener("readystatechange",lt),t.createElement=function(e,n){var r=U.apply(t,arguments),i=""+e,s=S.call(y,(n?v:d)+(n||i).toUpperCase()),o=-1<s;return n&&(r.setAttribute("is",n=n.toLowerCase()),o&&(o=ut(i.toUpperCase(),n))),Q=!t.createElement.innerHTMLHelper,o&&nt(r,b[s]),r},H.cloneNode=function(e){var t=I.call(this,!!e),n=ot(t);return-1<n&&nt(t,b[n]),e&&it(t.querySelectorAll(w)),t});if(-2<S.call(y,v+p)+S.call(y,d+p))throw new Error("A "+n+" type is already registered");if(!m.test(p)||-1<S.call(g,p))throw new Error("The type "+n+" is invalid");var i=function(){return f?t.createElement(l,p):t.createElement(l)},a=r||x,f=T.call(a,u),l=f?r[u].toUpperCase():p,c=y.push((f?v:d)+p)-1,p;return w=w.concat(w.length?",":"",f?l+'[is="'+n.toLowerCase()+'"]':l),i.prototype=b[c]=T.call(a,"prototype")?a.prototype:_(H),rt(t.querySelectorAll(w),s),i}})(window,document,Object,"registerElement");
 
 var Inferno = (function() {
   "use strict";
 
   var supportsTextContent = 'textContent' in document;
-  var registeredComponents = {};
 
   var events = {
     "onClick": "click"
@@ -25,12 +21,6 @@ var Inferno = (function() {
     this.valueKey = valueKey;
   }
 
-  function RenderList(array, constructor) {
-    this.lastValue = null;
-    this.array = array;
-    this.constructor = constructor;
-  }
-
   var Inferno = {};
 
   class Component {
@@ -40,76 +30,6 @@ var Inferno = (function() {
   }
 
   Inferno.Component = Component;
-
-  class WebComponent {
-    constructor() {}
-    render() {}
-    forceUpdate() {}
-  }
-
-  Inferno.WebComponent = WebComponent;
-
-  function registerCustomElement(elementName, Component) {
-    var element = Object.create(HTMLElement.prototype);
-    var instances = new WeakMap();
-
-    element.createdCallback = function() {
-      var component = new Component();
-      var listeners = addRootDomEventListerners(this);
-
-      instances.set(this, {
-        component: component,
-        hasAttached: false,
-        props: {},
-        listeners: listeners,
-        lastProps: {}
-      })
-      component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), this, listeners, component);
-    };
-
-    element.sendData = function(data) {
-      var instance = instances.get(this);
-
-      instance.lastProps = instance.props;
-      instance.props = data;
-      if(instance.hasAttached === true) {
-        if(instance.component.beforeRender && Object.keys(data).length > 0) {
-          //TODO check if the props are the same and skip this
-          instance.component.beforeRender(instance.props);
-          Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners, instance.component);
-          if(instance.component.afterRender) {
-            instance.component.afterRender();
-          }
-        }
-      }
-    };
-
-    element.attachedCallback = function() {
-      var instance = instances.get(this);
-      instance.component.element = this;
-      instance.hasAttached = true;
-      if(instance.component.attached) {
-        instance.component.attached(instance.props);
-      }
-      //initial render
-      Inferno.render(instance.component.render.bind(instance.component), this, instance.listeners, instance.component);
-      if(instance.component.afterRender) {
-        instance.component.afterRender();
-      }
-    };
-
-    element.detachedCallback = function() {
-      var instance = instances.get(this);
-      instance.hasAttached = false;
-      //TODO remove listeners
-      if(instance.component.detached) {
-        instance.component.detached();
-      }
-    };
-
-    registeredComponents[elementName] = Component;
-    document.registerElement(elementName, {prototype: element});
-  };
 
   function createComponentInstance(Component, parentDom, props) {
     var component = new Component(props);
@@ -127,10 +47,8 @@ var Inferno = (function() {
   };
 
   Inferno.register = function(elementName, Component) {
-    if(elementName[0].toLowerCase() === elementName[0] && elementName.indexOf("-") === -1) {
-      throw Error("Invalid element name '" + elementName + "' used for Inferno.register(). Custom elements must be lower-case and contain a hyphon.");
-    } else if(elementName[0].toLowerCase() === elementName[0] && elementName.indexOf("-") > -1) {
-      registerCustomElement(elementName, Component);
+    if(elementName[0].toLowerCase() === elementName[0] && elementName.indexOf("-") > -1) {
+      throw Error("Invalid element name '" + elementName + "' used for Inferno.register(). Component names must start with an uppercase letter, for example 'MyComponent'.");
     } else if(elementName[0].toLowerCase() !== elementName[0] && elementName.indexOf("-") === -1) {
       registerComponent(elementName, Component);
     }
@@ -158,7 +76,7 @@ var Inferno = (function() {
       } else if(render.templateKey) {
         values = render;
       }
-      updateNode(dom.rootNode[0], dom.rootNode, dom, values, 0, listeners, component);
+      updateNode(dom.rootNode[0], dom.rootNode, dom, values, null, listeners, component);
     }
   };
 
@@ -272,48 +190,36 @@ var Inferno = (function() {
         wasChildDynamic = false;
 
     //we need to get the actual values and the templatekey
-    if(!(values instanceof Array)) {
-      node.templateKey = values.templateKey;
-      values = values.values;
+    if(index != null) {
+      if(!(values[index] instanceof Array)) {
+        node.templateKey = values[index].templateKey;
+        values = values[index].values;
+      }
+    } else {
+      if(!(values instanceof Array)) {
+        node.templateKey = values.templateKey;
+        values = values.values;
+      }
     }
 
     if(node.tag != null) {
       //if its a component, we make a new instance
       if(typeof node.tag === "function") {
         node.dom = document.createDocumentFragment();
-        if(index != null) {
-          node.tag = node.tag(node.dom, convertAttrsToProps(node.attrs, values[index].values));
-        } else {
-          node.tag = node.tag(node.dom, convertAttrsToProps(node.attrs, values.values));
-        }
-        node.tag.forceUpdate();
+        node.component = node.tag(node.dom, convertAttrsToProps(node.attrs, values));
+        node.component.forceUpdate();
+        node.isDynamic = true;
         parentDom.appendChild(node.dom);
       }
-      //if this is a
-      if(node.tag instanceof Component) {
-        if(node.tag.beforeRender) {
-          if(index != null) {
-            node.tag.beforeRender(convertAttrsToProps(node.attrs, values[index].values));
-          } else {
-            node.tag.beforeRender(convertAttrsToProps(node.attrs, values.values));
-          }
+      //if this is a component
+      if(node.component instanceof Component) {
+        if(node.component.beforeRender) {
+          node.component.beforeRender(convertAttrsToProps(node.attrs, values));
         }
-        node.tag.forceUpdate();
-        return;
+        node.component.forceUpdate();
+        return true;
       }
       node.dom = document.createElement(node.tag);
-      if(registeredComponents[node.tag] != null) {
-        node.isComponent = true;
-        node.isDynamic = true;
-        //we also give the element some props
-        if(node.attrs != null && node.attrs.length > 0) {
-          if(index != null) {
-            node.dom.sendData(convertAttrsToProps(node.attrs, values[index].values));
-          } else {
-            node.dom.sendData(convertAttrsToProps(node.attrs, values));
-          }
-        }
-      }
       if(!insertAtIndex) {
         parentDom.appendChild(node.dom);
       } else {
@@ -321,30 +227,28 @@ var Inferno = (function() {
       }
     }
 
-    if(!node.isComponent) {
-      if(node.attrs != null) {
-        for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
-          //check if the name matches an event type
-          if(events[node.attrs[i].name] != null) {
-            node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
-            listeners[events[node.attrs[i].name]].push({
-              target: node.dom,
-              callback: node.attrs[i].value.value,
-              component: component
-            })
+    if(node.attrs != null) {
+      for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
+        //check if the name matches an event type
+        if(events[node.attrs[i].name] != null) {
+          node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
+          listeners[events[node.attrs[i].name]].push({
+            target: node.dom,
+            callback: node.attrs[i].value.value,
+            component: component
+          })
+          node.hasDynamicAttrs = true;
+          node.isDynamic = true;
+        } else {
+          //check if this is a dynamic attribute
+          if(node.attrs[i].value instanceof ValueNode) {
             node.hasDynamicAttrs = true;
             node.isDynamic = true;
+            //assign the last value
+            node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
           } else {
-            //check if this is a dynamic attribute
-            if(node.attrs[i].value instanceof ValueNode) {
-              node.hasDynamicAttrs = true;
-              node.isDynamic = true;
-              //assign the last value
-              node.attrs[i].value.lastValue = values[node.attrs[i].value.valueKey];
-              handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value.value);
-            } else {
-              handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
-            }
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, node.attrs[i].value);
           }
         }
       }
@@ -389,7 +293,7 @@ var Inferno = (function() {
               node.dom.appendChild(textNode);
             }
           } else {
-            wasChildDynamic = createNode(node.children[i], node, node.dom, values, i, null, listeners, component);
+            wasChildDynamic = createNode(node.children[i], node, node.dom, values, null, null, listeners, component);
             if(wasChildDynamic === true ) {
               node.children[i].isDynamic = true;
               node.isDynamic = true;
@@ -486,35 +390,45 @@ var Inferno = (function() {
     }
 
     //we need to get the actual values and the templatekey
-    if(!(values instanceof Array)) {
-      if(node.templateKey !== values.templateKey) {
-        //remove node
-        removeNode(node, parentDom);
-        //and then we want to create the new node (we can simply get it from t7 cache)
-        node = t7.getTemplateFromCache(values.templateKey, values.values);
-        createNode(node, parentNode, parentDom, values.values, null, null, listeners, component);
-        parentNode[index] = node;
-        node.templateKey = values.templateKey;
+    if(index != null) {
+      if(!(values[index] instanceof Array)) {
+        if(node.templateKey !== values[index].templateKey) {
+          //TODO, basically copy below
+          node.templateKey = values[index].templateKey;
+        }
+        values = values[index].values;
       }
-      values = values.values;
+    } else {
+      if(!(values instanceof Array)) {
+        if(node.templateKey !== values.templateKey) {
+          //remove node
+          removeNode(node, parentDom);
+          //and then we want to create the new node (we can simply get it from t7 cache)
+          node = t7.getTemplateFromCache(values.templateKey, values.values);
+          createNode(node, parentNode, parentDom, values.values, null, null, listeners, component);
+          parentNode[index] = node;
+          node.templateKey = values.templateKey;
+        }
+        values = values.values;
+      }
     }
 
-    if(node.isComponent === true) {
-      //get the attrs for this element and pass it over
-      if(node.attrs != null && node.attrs.length > 0) {
-        node.dom.sendData(convertAttrsToProps(node.attrs, values));
+    //if this is a component
+    if(node.component instanceof Component) {
+      if(node.component.beforeRender) {
+        node.component.beforeRender(convertAttrsToProps(node.attrs, values));
       }
+      node.component.forceUpdate();
+      return;
     }
 
-    if(!node.isComponent) {
-      if(node.attrs != null && node.hasDynamicAttrs === true) {
-        for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
-          if(node.attrs[i].value instanceof ValueNode) {
-            val = values[node.attrs[i].value.valueKey];
-            if(val !== node.attrs[i].value.lastValue) {
-              node.attrs[i].value.lastValue = val;
-              handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
-            }
+    if(node.attrs != null && node.hasDynamicAttrs === true) {
+      for(i = 0; i < node.attrs.length; i = i + 1 | 0) {
+        if(node.attrs[i].value instanceof ValueNode) {
+          val = values[node.attrs[i].value.valueKey];
+          if(val !== node.attrs[i].value.lastValue) {
+            node.attrs[i].value.lastValue = val;
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
           }
         }
       }
@@ -536,8 +450,15 @@ var Inferno = (function() {
         }
         val = val.values;
       }
-      //if(val !== node.lastValue) {
-        if(node.value.children instanceof Array) {
+      if(val !== node.lastValue) {
+        //array of array here
+        if(node.value instanceof Array) {
+          for(i = 0; i < node.value.length; i = i + 1 | 0) {
+            if(typeof node.value[i] !== "string") {
+              updateNode(node.value[i], node, parentDom, val, i, listeners, component);
+            }
+          }
+        } else if(node.value.children instanceof Array) {
           for(i = 0; i < node.value.children.length; i = i + 1 | 0) {
             if(typeof node.value.children[i] !== "string") {
               updateNode(node.value.children[i], node.value, node.value.dom, val, i, listeners, component);
@@ -545,7 +466,7 @@ var Inferno = (function() {
           }
         }
         node.lastValue = val;
-      //}
+      }
     } else if(node.children != null) {
       if(node.children instanceof Array) {
         for(i = 0; i < node.children.length; i = i + 1 | 0) {
@@ -562,7 +483,7 @@ var Inferno = (function() {
                 setTextContent(node.dom.childNodes[i], val, true);
               }
             } else {
-              updateNode(node.children[i], node, node.dom, values, i, listeners, component);
+              updateNode(node.children[i], node, node.dom, values, null, listeners, component);
             }
           }
         }
@@ -604,7 +525,7 @@ var Inferno = (function() {
             }
             for(i = 0; i < node.children.value.length; i = i + 1 | 0) {
               if(typeof node.children.value[i] !== "string") {
-                updateNode(node.children.value[i], node.children.value, node.dom, val[i], i, listeners, component);
+                updateNode(node.children.value[i], node.children.value, node.dom, val[i], null, listeners, component);
               }
             }
           }

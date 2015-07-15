@@ -23,11 +23,11 @@
       class Query extends Inferno.Component {
         constructor(props) {
           super();
-          this.elpased = props.elpased;
+          this.elapsed = props.elapsed;
           this.query = props.query;
         }
         beforeRender(props) {
-          this.elpased = props.elpased;
+          this.elapsed = props.elapsed;
           this.query = props.query;
         }
         render() {
@@ -129,8 +129,9 @@
 
 
     (function() {
-      class App extends Inferno.WebComponent {
-        attached() {
+      class App extends Inferno.Component {
+        constructor() {
+          super();
           this.dbs = [];
           this._updateDbs = this._updateDbs.bind(this)
           this._updateDbs();
@@ -147,11 +148,11 @@
         }
         render() {
           return t7`
-          <table class="table table-striped latest-data">
-            <tbody>
-              ${ this.dbs.map(this._renderDatabase) }
-            </tbody>
-          </table>
+            <table class="table table-striped latest-data">
+              <tbody>
+                ${ this.dbs.map(this._renderDatabase) }
+              </tbody>
+            </table>
           `;
         }
         _renderDatabase(db) {
@@ -161,14 +162,14 @@
         }
       };
 
-      Inferno.register("dbmonster-app", App);
+      Inferno.register("App", App);
     })();
 
     var app = document.getElementById("app");
 
     function update() {
       Inferno.render(t7`
-        <dbmonster-app />
+        <App />
       `, app)
 
       window.setTimeout(update);
