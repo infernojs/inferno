@@ -77,7 +77,7 @@
             this.dbs.push(new data.Database('cluster' + i));
             this.dbs.push(new data.Database('cluster' + i + 'slave'));
           }
-          //this.forceUpdate();
+          this.forceUpdate();
           Monitoring.renderRate.ping();
           setTimeout(this._updateDbs, 0);
         }
@@ -117,15 +117,9 @@
 
     var app = document.getElementById("app");
 
-    function update() {
-      Inferno.render(t7`
-        <App />
-      `, app)
-
-      window.setTimeout(update);
-    }
-
-    update();
+    Inferno.render(t7`
+      <App />
+    `, app);
 
   </script>
 </body>
