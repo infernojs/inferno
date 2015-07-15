@@ -58,26 +58,38 @@ var Inferno = (function() {
     var rootNode = null;
     var values = [];
     //we check if we have a root on the dom node, if not we need to build up the render
-    if(dom.rootNode == null) {
-      if(typeof render === "function") {
+    if(component == null) {
+      if(dom.rootNode == null) {
+        if(typeof render === "function") {
+          values = render();
+          rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+        } else if(render.templateKey) {
+          values = render;
+          rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+        }
+        createNode(rootNode, null, dom, values, null, null, listeners, component);
+        dom.rootNode = [rootNode];
+      } else {
+        if(typeof render === "function") {
+          values = render();
+        } else if(render.templateKey) {
+          values = render;
+        }
+        updateNode(dom.rootNode[0], dom.rootNode, dom, values, null, listeners, component);
+      }
+    } else {
+      if(component._rootNode == null) {
         values = render();
         rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
-      } else if(render.templateKey) {
-        values = render;
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+        createNode(rootNode, null, dom, values, null, null, listeners, component);
+        component._rootNode = [rootNode];
+      } else {
+        values = render();
+        updateNode(component._rootNode[0], dom.rootNode, dom, values, null, listeners, component);
       }
-      createNode(rootNode, null, dom, values, null, null, listeners, component);
-      dom.rootNode = [rootNode];
     }
     //otherwise we progress with an update
-    else {
-      if(typeof render === "function") {
-        values = render();
-      } else if(render.templateKey) {
-        values = render;
-      }
-      updateNode(dom.rootNode[0], dom.rootNode, dom, values, null, listeners, component);
-    }
+
   };
 
   // TODO find solution without empty text placeholders
@@ -204,11 +216,9 @@ var Inferno = (function() {
     if(node.tag != null) {
       //if its a component, we make a new instance
       if(typeof node.tag === "function") {
-        node.dom = document.createDocumentFragment();
-        node.component = node.tag(node.dom, convertAttrsToProps(node.attrs, values));
+        node.component = node.tag(parentDom, convertAttrsToProps(node.attrs, values));
         node.component.forceUpdate();
         node.isDynamic = true;
-        parentDom.appendChild(node.dom);
       }
       //if this is a component
       if(node.component instanceof Component) {
