@@ -160,7 +160,6 @@ var Inferno = (function() {
       } else {
         props[attrs[i].name] = attrs[i].value;
       }
-
     }
     return props;
   };

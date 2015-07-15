@@ -77,17 +77,19 @@
           super();
           this.name = props.name;
           this.queries = props.queries;
+          this.topFiveQueries = props.topFiveQueries;
         }
         beforeRender(props) {
           this.name = props.name;
           this.queries = props.queries;
+          this.topFiveQueries = props.topFiveQueries;
         }
         render() {
           return t7`
             <tr>
               <td class="dbname">${ this.name }</td>
               <td class="query-count"><span class=${ this._getCountClassName() }>${ this.queries.length }</span></td>
-              ${ this._getTopFiveQueries().map(this._renderQuery) }
+              ${ this.topFiveQueries.map(this._renderQuery) }
             </tr>
           `;
         }
@@ -157,7 +159,7 @@
         }
         _renderDatabase(db) {
           return t7`
-            <Database name=${ db.name } queries=${ db.queries } />
+            <Database name=${ db.name } queries=${ db.queries } topFiveQueries=${ db.getTopFiveQueries() } />
           `;
         }
       };
