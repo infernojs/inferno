@@ -4,7 +4,6 @@
   <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
-  <example-app message="Hello world"></example-app>
   <div id="app"></div>
 
   <script src="inferno.js"></script>
@@ -15,26 +14,18 @@
     var closureVar = 1;
 
     class InfernoExample extends Inferno.Component {
-        constructor() {
+        constructor(props) {
           super();
           this.name = "Test";
           this.className = "foo";
           this.textFieldValue = "Text!";
-          this.people = null;
-          this.time = null;
+          this.people = props.people;
+          this.time = props.time;
           this.isOn = false;
           this.formShow = true;
           this._counter = 0;
           this._handleCounter();
           this._visible = true;
-        }
-        attached(props) {
-          //we can also access our web component via this.element
-          this.time = props.time;
-          this.people = props.people;
-        }
-        detached() {
-
         }
         beforeRender(props) {
           this.time = props.time;
@@ -122,7 +113,7 @@
         }
     }
 
-    Inferno.register("example-app", InfernoExample);
+    Inferno.register("App", InfernoExample);
 
     var odd = true;
 
@@ -149,7 +140,7 @@
       }
 
       Inferno.render(
-        t7`<example-app time=${ date } people=${ people }></example-app>`,
+        t7`<App time=${ date } people=${ people }></App>`,
         document.getElementById("app")
       );
     }, 1000);

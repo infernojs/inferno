@@ -18,6 +18,7 @@ var t7 = (function() {
   var components = {};
   var ii = 1;
   var selfClosingTags = [];
+  var precompile = false;
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -551,6 +552,7 @@ var t7 = (function() {
           fullHtml += template[i] + "__$props__[" + i + "]";
         }
       }
+
       //once we have our vDom array, build an optimal function to improve performance
       functionString = [];
       buildFunction(
@@ -562,13 +564,20 @@ var t7 = (function() {
       scriptCode = functionString.join(',');
 
       //build a new Function and store it depending if on node or browser
-      if(isBrowser === true) {
-        scriptString = 't7._cache["' + templateKey + '"]=function(__$props__)';
-        scriptString += '{"use strict";return ' + scriptCode + '}';
-
-        addNewScriptFunction(scriptString, templateKey);
+      if(precompile === true) {
+        return {
+          templateKey: templateKey,
+          template: '"use strict";var __$props__ = arguments[0];return ' + scriptCode
+        }
       } else {
-        t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];return ' + scriptCode + '');
+        if(isBrowser === true) {
+          scriptString = 't7._cache["' + templateKey + '"]=function(__$props__)';
+          scriptString += '{"use strict";return ' + scriptCode + '}';
+
+          addNewScriptFunction(scriptString, templateKey);
+        } else {
+          t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];return ' + scriptCode);
+        }
       }
     }
 
@@ -628,13 +637,15 @@ var t7 = (function() {
   //storage for the cache
   t7._cache = {};
 
-  t7.precompile = function(template, values) {
-    //TODO change
-    // if(output === t7.Outputs.InfernoValues) {
-    //   return values
-    // } else {
-    //   return template();
-    // }
+  t7.precompile = function(precompiledObj) {
+    if(t7._cache[precompiledObj.templateKey] == null) {
+      t7._cache[precompiledObj.templateKey] = precompiledObj.template;
+    }
+    if(output === t7.Outputs.Inferno) {
+      return precompiledObj
+    } else {
+      return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values);
+    }
   };
 
   //a lightweight flow control function
@@ -656,13 +667,15 @@ var t7 = (function() {
   };
 
   t7.setOutput = function(newOutput) {
-    if(output !== newOutput) {
-      output = newOutput;
-    }
+    output = newOutput;
   };
 
   t7.getOutput = function() {
     return output;
+  };
+
+  t7.setPrecompile = function(val) {
+    precompile = val;
   };
 
   t7.registerComponent = function(componentName, component) {
@@ -696,8 +709,7 @@ var t7 = (function() {
   t7.Outputs = {
     React: 1,
     Universal: 2,
-    InfernoVdom: 3,
-    InfernoValues: 4
+    Inferno: 3,
   };
 
   //set the type to React as default if it exists in global scope

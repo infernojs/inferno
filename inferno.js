@@ -85,7 +85,7 @@ var Inferno = (function() {
         component._rootNode = [rootNode];
       } else {
         values = render();
-        updateNode(component._rootNode[0], dom.rootNode, dom, values, null, listeners, component);
+        updateNode(component._rootNode[0], component._rootNode, dom, values, 0, null, listeners, component);
       }
     }
     //otherwise we progress with an update
@@ -374,12 +374,16 @@ var Inferno = (function() {
           clonedNode.dom.appendChild(textNode);
           clonedNode.children.push(node.children[i]);
         } else {
-          cloneNode(node.children[i], clonedNode.dom);
+          clonedNode.children.push(cloneNode(node.children[i], clonedNode.dom));
         }
         if(node.children[i].isDynamic === true) {
           clonedNode.children[i].isDynamic = true;
         }
       }
+    } else if(typeof node.children === "string" || typeof node.children === "number") {
+      textNode = document.createTextNode(node.children);
+      clonedNode.dom.appendChild(textNode);
+      clonedNode.children = node.children;
     }
 
     //append the new cloned DOM node to its parentDom
@@ -391,25 +395,25 @@ var Inferno = (function() {
     parentDom.removeChild(node.dom);
   };
 
-  function updateNode(node, parentNode, parentDom, values, index, listeners, component) {
+  function updateNode(node, parentNode, parentDom, values, index, valIndex, listeners, component) {
     var i = 0, s = 0, l = 0, val = "", childNode = null;
 
     if(node.isDynamic === false) {
       return;
     }
-
     //we need to get the actual values and the templatekey
-    if(index != null) {
-      if(!(values[index] instanceof Array)) {
-        if(node.templateKey !== values[index].templateKey) {
+    if(valIndex != null) {
+      if(!(values[valIndex] instanceof Array)) {
+        if(node.templateKey !== values[valIndex].templateKey) {
           //TODO, basically copy below
-          node.templateKey = values[index].templateKey;
+          node.templateKey = values[valIndex].templateKey;
         }
-        values = values[index].values;
+        values = values[valIndex].values;
       }
     } else {
       if(!(values instanceof Array)) {
         if(node.templateKey !== values.templateKey) {
+          debugger;
           //remove node
           removeNode(node, parentDom);
           //and then we want to create the new node (we can simply get it from t7 cache)
@@ -464,13 +468,13 @@ var Inferno = (function() {
         if(node.value instanceof Array) {
           for(i = 0; i < node.value.length; i = i + 1 | 0) {
             if(typeof node.value[i] !== "string") {
-              updateNode(node.value[i], node, parentDom, val, i, listeners, component);
+              updateNode(node.value[i], node, parentDom, val, i, i, listeners, component);
             }
           }
         } else if(node.value.children instanceof Array) {
           for(i = 0; i < node.value.children.length; i = i + 1 | 0) {
             if(typeof node.value.children[i] !== "string") {
-              updateNode(node.value.children[i], node.value, node.value.dom, val, i, listeners, component);
+              updateNode(node.value.children[i], node.value, node.value.dom, val, i, null, listeners, component);
             }
           }
         }
@@ -492,7 +496,7 @@ var Inferno = (function() {
                 setTextContent(node.dom.childNodes[i], val, true);
               }
             } else {
-              updateNode(node.children[i], node, node.dom, values, null, listeners, component);
+              updateNode(node.children[i], node, node.dom, values, i, null, listeners, component);
             }
           }
         }
@@ -534,7 +538,7 @@ var Inferno = (function() {
             }
             for(i = 0; i < node.children.value.length; i = i + 1 | 0) {
               if(typeof node.children.value[i] !== "string") {
-                updateNode(node.children.value[i], node.children.value, node.dom, val[i], null, listeners, component);
+                updateNode(node.children.value[i], node.children.value, node.dom, val, i, i, listeners, component);
               }
             }
           }
