@@ -413,7 +413,6 @@ var Inferno = (function() {
     } else {
       if(!(values instanceof Array)) {
         if(node.templateKey !== values.templateKey) {
-          debugger;
           //remove node
           removeNode(node, parentDom);
           //and then we want to create the new node (we can simply get it from t7 cache)
