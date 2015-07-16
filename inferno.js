@@ -24,7 +24,9 @@ var Inferno = (function() {
   var Inferno = {};
 
   class Component {
-    constructor() {}
+    constructor(props) {
+      this.props = props;
+    }
     render() {}
     forceUpdate() {}
   }
@@ -157,25 +159,6 @@ var Inferno = (function() {
     }
   };
 
-  function convertAttrsToProps(attrs, values) {
-    var props = {};
-    var val = null;
-    for(var i = 0; i < attrs.length; i = i + 1 | 0) {
-      if(attrs[i].value instanceof ValueNode) {
-        val = values[attrs[i].value.valueKey];
-        if(val.templateKey) {
-          props[attrs[i].name] = val.values;
-        } else {
-          props[attrs[i].name] = val;
-        }
-
-      } else {
-        props[attrs[i].name] = attrs[i].value;
-      }
-    }
-    return props;
-  };
-
   function addRootDomEventListerners(domNode) {
     var listeners = {
       click: []
@@ -213,21 +196,24 @@ var Inferno = (function() {
       }
     }
 
-    if(node.tag != null) {
+    if(node.component) {
       //if its a component, we make a new instance
-      if(typeof node.tag === "function") {
-        node.component = node.tag(parentDom, convertAttrsToProps(node.attrs, values));
+      if(typeof node.component === "function") {
+        node.component = node.component(parentDom, node.props, values);
         node.component.forceUpdate();
         node.isDynamic = true;
       }
       //if this is a component
       if(node.component instanceof Component) {
-        if(node.component.beforeRender) {
-          node.component.beforeRender(convertAttrsToProps(node.attrs, values));
-        }
+        // if(node.component.beforeRender) {
+        //   node.component.beforeRender(node.props, values);
+        // }
         node.component.forceUpdate();
-        return true;
       }
+      return true;
+    }
+
+    if(node.tag != null) {
       node.dom = document.createElement(node.tag);
       if(!insertAtIndex) {
         parentDom.appendChild(node.dom);
@@ -427,9 +413,9 @@ var Inferno = (function() {
 
     //if this is a component
     if(node.component instanceof Component) {
-      if(node.component.beforeRender) {
-        node.component.beforeRender(convertAttrsToProps(node.attrs, values));
-      }
+      // if(node.component.beforeRender) {
+      //   node.component.beforeRender(node.props, values);
+      // }
       node.component.forceUpdate();
       return;
     }

@@ -1,7 +1,6 @@
 <html>
 <head>
   <title>Inferno example</title>
-  <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
   <div id="app"></div>
@@ -15,21 +14,15 @@
 
     class InfernoExample extends Inferno.Component {
         constructor(props) {
-          super();
+          super(props);
           this.name = "Test";
           this.className = "foo";
           this.textFieldValue = "Text!";
-          this.people = props.people;
-          this.time = props.time;
           this.isOn = false;
           this.formShow = true;
           this._counter = 0;
           this._handleCounter();
           this._visible = true;
-        }
-        beforeRender(props) {
-          this.time = props.time;
-          this.people = props.people;
         }
         render() {
           if(this._visible) {
@@ -39,16 +32,16 @@
                 <div>Count is at ${ this._counter }</div>
                 <div class=${ this.className }>
                   <span id="bar">${ this.name }</span>
-                  <div id="time">The time is ${ this.time }</div>
+                  <div id="time">The time is ${ this.props.time }</div>
                   ${ this._renderForm() }
                   ${ this.name }
                   ${this.isOn === false
                     ? t7`<div>Switch is off!</div>`
-                    : t7`<div>Switch is on! <span>${ this.time }</span></div>`
+                    : t7`<div>Switch is on! <span>${ this.props.time }</span></div>`
                   }
                   <button onClick=${ this._clickSwitch }>Switch!</button>
                   <ul>
-                    ${ this.people != null ? this.people.map(this._renderPerson.bind(this)) : null }
+                    ${ this.props.people != null ? this.props.people.map(this._renderPerson.bind(this)) : null }
                   </ul>
                 </div>
               </div>

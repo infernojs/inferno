@@ -194,20 +194,15 @@ var t7 = (function() {
       //throw error about adjacent elements
     } else {
       //Universal output or Inferno output
-      if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno) {
+      if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno || output === t7.Outputs.Mithril) {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
-          if(isComponentName(root.tag) === false || output === t7.Outputs.Inferno) {
-            if(isComponentName(root.tag) === true) {
-              functionText.push("{tag: t7.loadComponent('" + root.tag + "')");
-            } else {
-              functionText.push("{tag: '" + root.tag + "'");
-            }
-
+          if(isComponentName(root.tag) === false) {
+            functionText.push("{tag: '" + root.tag + "'");
+            //add the key
             if(root.key != null) {
               tagParams.push("key: " + root.key);
             }
-
             //build the attrs
             if(root.attrs != null) {
               if(output === t7.Outputs.Inferno) {
@@ -218,16 +213,21 @@ var t7 = (function() {
                 tagParams.push("attrs: {" + attrsParams.join(',') + "}");
               }
             }
-
             //build the children for this node
             buildUniversalChildren(root, tagParams, true);
-
             functionText.push(tagParams.join(',') + "}");
-
-          } else {
+          } else if(output === t7.Outputs.Universal) {
             //we need to apply the tag components
             buildAttrsParams(root, attrsParams);
             functionText.push("t7.loadComponent('" + root.tag + "')({" + attrsParams.join(',') + "})");
+          } else if(output === t7.Outputs.Mithril) {
+            //we need to apply the tag components
+            buildAttrsParams(root, attrsParams);
+            functionText.push("m.component(t7.loadComponent('" + root.tag + "'),{" + attrsParams.join(',') + "})");
+          } else if(output === t7.Outputs.Inferno) {
+            //we need to apply the tag components
+            buildAttrsParams(root, attrsParams);
+            functionText.push("{component:t7.loadComponent('" + root.tag + "'), props: {" + attrsParams.join(',') + "}}");
           }
         } else {
           //add a text entry
@@ -244,23 +244,19 @@ var t7 = (function() {
           } else {
             functionText.push("React.createElement('" + root.tag + "'");
           }
-
           //the props/attrs
           if(root.attrs != null) {
             buildAttrsParams(root, attrsParams);
-
+            //add the key
             if(root.key != null) {
               attrsParams.push("'key':" + root.key);
             }
-
             tagParams.push("{" + attrsParams.join(',') + "}");
           } else {
             tagParams.push("null");
           }
-
           //build the children for this node
           buildReactChildren(root, tagParams, true);
-
           functionText.push(tagParams.join(',') + ")");
         } else {
           //add a text entry
@@ -290,7 +286,6 @@ var t7 = (function() {
     if(string.indexOf("'") > -1) {
       string = string.replace(/'/g,"\\'")
     }
-
     return string;
   }
 
@@ -519,20 +514,18 @@ var t7 = (function() {
     var n = arguments.length;
     var functionString = null;
     var scriptString = null;
-    //we need to generate a very quick key that will be used as the function name
     var scriptCode = "";
     var templateKey = null;
     var tpl = template[0];
     var returnValuesButBuildTemplate = false;
     var values = [].slice.call(arguments, 1);
 
+    //build the template string
     for(; i < n; i++) {
       tpl += template[i];
     };
-
     //set our unique key
     templateKey = createTemplateKey(tpl);
-
     //For values only, return an array of all the values
     if(output === t7.Outputs.Inferno) {
       if(t7._cache[templateKey] != null) {
@@ -541,7 +534,7 @@ var t7 = (function() {
         returnValuesButBuildTemplate = true;
       }
     }
-
+    //check if we have the template in cache
     if(t7._cache[templateKey] == null) {
       fullHtml = '';
       //put our placeholders around the template parts
@@ -552,7 +545,6 @@ var t7 = (function() {
           fullHtml += template[i] + "__$props__[" + i + "]";
         }
       }
-
       //once we have our vDom array, build an optimal function to improve performance
       functionString = [];
       buildFunction(
@@ -560,9 +552,7 @@ var t7 = (function() {
         getVdom(fullHtml),
         functionString
       );
-
       scriptCode = functionString.join(',');
-
       //build a new Function and store it depending if on node or browser
       if(precompile === true) {
         return {
@@ -584,7 +574,6 @@ var t7 = (function() {
     if(returnValuesButBuildTemplate === true) {
       return {values: values, templateKey: templateKey};
     }
-
     return t7._cache[templateKey](values);
   };
 
@@ -616,26 +605,12 @@ var t7 = (function() {
     splice: 'function'
   };
 
-  function deepTemplates(values) {
-    var i = 0, ii = 0;
-    if(values.length > 0) {
-      for(i = 0; i < values.length; i = i + 1 | 0) {
-        if(values[i] && values[i].templateKey != null) {
-          values[i] = t7.getTemplateFromCache(values[i].templateKey, values[i].values);
-        } else if(values[i] instanceof Array) {
-          for(ii = 0; ii < values[i].length; ii = ii + 1 | 0) {
-            if(values[i][ii].templateKey != null) {
-              values[i][ii] = t7.getTemplateFromCache(values[i][ii].templateKey, values[i][ii].values);
-            }
-          }
-        }
-      }
-    }
-    return values;
-  }
-
   //storage for the cache
   t7._cache = {};
+
+  t7.clearCache = function() {
+    t7._cache = {};
+  };
 
   t7.precompile = function(precompiledObj) {
     if(t7._cache[precompiledObj.templateKey] == null) {
@@ -696,9 +671,32 @@ var t7 = (function() {
     components = {};
   };
 
+  function cleanValues(values, newValues) {
+    var i = 0, ii = 0;
+    if(values.length > 0) {
+      for(i = 0; i < values.length; i = i + 1 | 0) {
+        if(values[i] && values[i].templateKey != null) {
+          newValues[i] = t7.getTemplateFromCache(values[i].templateKey, values[i].values);
+        } else if(values[i] instanceof Array) {
+          newValues[i] = [];
+          for(ii = 0; ii < values[i].length; ii = ii + 1 | 0) {
+            if(values[i][ii].templateKey != null) {
+              newValues[i][ii] = t7.getTemplateFromCache(values[i][ii].templateKey, values[i][ii].values);
+            } else {
+              newValues[i][ii] = values[i][ii];
+            }
+          }
+        } else {
+          newValues[i] = values[i];
+        }
+      }
+    }
+    return values;
+  }
   t7.getTemplateFromCache = function(templateKey, values) {
     //we need to normalie the values so we don't have objects with templateKey and values
-    var newValues = deepTemplates(deepCopy(values));
+    var newValues = []
+    cleanValues(values, newValues);
     return t7._cache[templateKey](newValues);
   };
 
@@ -710,10 +708,12 @@ var t7 = (function() {
     React: 1,
     Universal: 2,
     Inferno: 3,
+    Mithril: 4
   };
 
   //set the type to React as default if it exists in global scope
-  output = typeof React != "undefined" ? t7.Outputs.React : typeof Inferno != "undefined" ? t7.Outputs.Inferno : t7.Outputs.Universal;
+  output = typeof React != "undefined" ? t7.Outputs.React
+    : typeof Inferno != "undefined" ? t7.Outputs.Inferno : t7.Outputs.Universal;
 
   return t7;
 })();
