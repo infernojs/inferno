@@ -1,0 +1,50 @@
+<script>
+
+  var DemoWidget = Inferno.createClass({
+    constructor: function() {
+
+      this.colours = Inferno.Array("red", "green", "blue");
+      this.name = Inferno.String("Hello World");
+      this.className = Inferno.String("foo-bar");
+
+    },
+    render: function() {
+
+      return t7`
+        <div>
+          <span class="${ this.className }">${ this.name }</span>
+          <ul>
+          </ul>
+        </div>
+      `;
+
+    }
+  })
+
+  //creates
+
+  var ImmutableTree = {
+    "b1": {
+      "b2": this.name,
+      "b3": ""
+    }
+  }
+
+  var branches = {
+    "b1": {
+      tag: "div"
+    },
+    "b2": {
+      tag: "span",
+      "class": this.className
+    }
+  }
+
+  //
+  this.className.onChange(function() {
+    branches["b2"].set(
+      "class": this.ClassName
+    )
+  })
+
+</script>

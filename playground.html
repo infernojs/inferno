@@ -1,0 +1,200 @@
+<html>
+<body>
+  <script>
+
+    Array.prototype.immute = function() {
+      var self = this;
+
+      Object.defineProperty(self, "push", {
+        value: function(val) {
+          var newArray = this.slice(0);
+          newArray.push(val);
+          return newArray;
+        }
+      });
+
+      Object.defineProperty(self, "shift", {
+        value: function(val) {
+          var newArray = this.slice(0);
+          newArray.shift();
+          return newArray;
+        }
+      });
+
+      return self;
+    }
+
+    var a = [1,2,3].immute();
+
+
+    function ImmutableArray( array ) {
+      for(var i = 0; i < array.length; i++) {
+        this.push(array[i]);
+
+        var self = this;
+
+        (function(i) {
+          var inGet = false;
+          Object.defineProperty(self, i, {
+            get: function() {
+              debugger;
+              if(!inGet) {
+                inGet = true;
+                return self[i];
+              }
+            },
+            set: function(val) {
+              var newArray = self.slice(0);
+              newArray[i] = val;
+              debugger;
+              self = new ImmutableArray(newArray);
+              return self;
+            }
+          });
+        })(i);
+      }
+      return self;
+    }
+
+    ImmutableArray.prototype = Array.prototype;
+
+    function t7( object ) {
+
+      var self = {
+        object: object
+      };
+
+      if(Array.isArray(object)) {
+        Object.defineProperty(self, "object", {
+          get: function() {
+            return new ImmutableArray(object);
+          },
+          set: function() {
+            debugger;
+          },
+          push: function() {
+            debugger;
+          }
+        });
+      }
+
+      return self.object;
+    }
+
+    var b = t7( [1,2,3] );
+
+
+    //
+    // var Inferno = (function(){
+    //
+    //   function t7Array() {
+    //
+    //   }
+    //
+    //
+    //
+    //
+    //   Array.prototype.asString = function() {
+    //     return "['" + this._arrayString + "']";
+    //   }
+    //
+    //   Array.prototype._push = Array.prototype.push;
+    //
+    //   Array.prototype.push = function( arrayItem ) {
+    //     if(this.length === 0) {
+    //
+    //     } else {
+    //       this._arrayString += "', '" + arrayItem;
+    //     }
+    //     this._push(arrayItem);
+    //     return this;
+    //   }
+    //
+    //   function InfernoArray(store, array, key) {
+    //     var arrayData = "";
+    //
+    //     function buildArrayData(val) {
+    //       val._arrayString = val.join("', '");
+    //     }
+    //
+    //     Object.defineProperty(store, key, {
+    //       set: function(val) {
+    //         buildArrayData(val);
+    //         array = val;
+    //       },
+    //       get: function() {
+    //         return array;
+    //       }
+    //     });
+    //   };
+    //
+    //   InfernoArray.prototype.push = function( arrayItem ) {
+    //     this._data[this._size] = arrayItem;
+    //     this._size ++;
+    //   };
+    //
+    //
+    //   function Store() {
+    //     this._props = [];
+    //     //TODO any default props that need to be here?
+    //   };
+    //
+    //   function convertToImmutable(store, key) {
+    //     var obj = store[key];
+    //
+    //     //strings are already immutable
+    //     if(typeof obj === "string") {
+    //       return;
+    //     }
+    //     else if (Array.isArray(obj) === true) {
+    //       InfernoArray(store, obj, key);
+    //     }
+    //   }
+    //
+    //   function handleProps(store) {
+    //     var key = null;
+    //     for( key in store ) {
+    //       if(key === "_props") {
+    //         continue;
+    //       }
+    //       //create an immutable copy
+    //       if(typeof obj === "string") {
+    //         return;
+    //       }
+    //       convertToImmutable(store, key);
+    //     }
+    //   };
+    //
+    //   function createStore( storeData ) {
+    //     var store = new Store();
+    //
+    //     storeData.defineProps.apply(store);
+    //
+    //     handleProps(store);
+    //
+    //     storeData.getProps.apply(store);
+    //
+    //     return store;
+    //   };
+    //
+    //   return {
+    //     createStore: createStore
+    //   };
+    //
+    // })();
+    //
+    //
+    // var foo = Inferno.createStore({
+    //   defineProps: function() {
+    //     this.name = new String();
+    //     this.people = new Array();
+    //   },
+    //   getProps: function() {
+    //     this.name = "foo",
+    //     this.people = ["Tom", "Adam", "Tina"]
+    //   }
+    // });
+
+  </script>
+</body>
+</html>
