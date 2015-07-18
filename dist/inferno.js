@@ -49,6 +49,7 @@ var Component = (function () {
     _classCallCheck(this, Component);
 
     this.props = props;
+    this.state = {};
   }
 
   _createClass(Component, [{
@@ -57,6 +58,20 @@ var Component = (function () {
   }, {
     key: "forceUpdate",
     value: function forceUpdate() {}
+  }, {
+    key: "setState",
+    value: function setState(newStateItems) {
+      for (var stateItem in newStateItems) {
+        this.state[stateItem] = newStateItems[stateItem];
+      }
+      this.forceUpdate();
+    }
+  }, {
+    key: "replaceState",
+    value: function replaceState(newState) {
+      this.state = newSate;
+      this.forceUpdate();
+    }
   }]);
 
   return Component;
@@ -181,7 +196,8 @@ function addRootDomEventListerners(domNode) {
     for (var i = 0; i < listeners.click.length; i = i + 1 | 0) {
       if (listeners.click[i].target === e.target) {
         listeners.click[i].callback.call(listeners.click[i].component, e);
-        listeners.click[i].component.forceUpdate();
+        //Let's take this out for now
+        //listeners.click[i].component.forceUpdate();
       }
     }
   });
@@ -439,6 +455,12 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
     // if(node.component.beforeRender) {
     //   node.component.beforeRender(node.props, values);
     // }
+    //update the props
+    if (node.propsValueKeys) {
+      for (key in node.propsValueKeys) {
+        node.props[key] = values[node.propsValueKeys[key]];
+      }
+    }
     node.component.forceUpdate();
     return;
   }
@@ -736,6 +758,18 @@ var t7 = (function() {
     }
   };
 
+  function buildAttrsValueKeysParams(root, attrsParams) {
+    var val = '';
+    var matches = null;
+    for(var name in root.attrs) {
+      val = root.attrs[name];
+      matches = val.match(/__\$props__\[\d*\]/g);
+      if(matches !== null) {
+        attrsParams.push("'" + name + "':" + val.replace(/(__\$props__\[([0-9]*)\])/g, "$2"));
+      }
+    }
+  };
+
   function buildInfernoAttrsParams(root, attrsParams) {
     var val = '', key = "";
     var matches = null;
@@ -764,6 +798,7 @@ var t7 = (function() {
     var tagParams = [];
     var literalParts = [];
     var attrsParams = [];
+    var attrsValueKeysParams = [];
 
     if(root instanceof Array) {
       //throw error about adjacent elements
@@ -808,7 +843,8 @@ var t7 = (function() {
             } else if(output === t7.Outputs.Inferno) {
               //we need to apply the tag components
               buildAttrsParams(root, attrsParams);
-              functionText.push("{component:__$components__." + root.tag + ", props: {" + attrsParams.join(',') + "}}");
+              buildAttrsValueKeysParams(root, attrsValueKeysParams);
+              functionText.push("{component:__$components__." + root.tag + ", props: {" + attrsParams.join(',') + "}, propsValueKeys: {" + attrsValueKeysParams.join(",") + "}}");
             }
           }
         } else {

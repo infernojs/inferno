@@ -32,6 +32,7 @@ var Component = (function () {
     _classCallCheck(this, Component);
 
     this.props = props;
+    this.state = {};
   }
 
   _createClass(Component, [{
@@ -40,6 +41,20 @@ var Component = (function () {
   }, {
     key: "forceUpdate",
     value: function forceUpdate() {}
+  }, {
+    key: "setState",
+    value: function setState(newStateItems) {
+      for (var stateItem in newStateItems) {
+        this.state[stateItem] = newStateItems[stateItem];
+      }
+      this.forceUpdate();
+    }
+  }, {
+    key: "replaceState",
+    value: function replaceState(newState) {
+      this.state = newSate;
+      this.forceUpdate();
+    }
   }]);
 
   return Component;
@@ -164,7 +179,8 @@ function addRootDomEventListerners(domNode) {
     for (var i = 0; i < listeners.click.length; i = i + 1 | 0) {
       if (listeners.click[i].target === e.target) {
         listeners.click[i].callback.call(listeners.click[i].component, e);
-        listeners.click[i].component.forceUpdate();
+        //Let's take this out for now
+        //listeners.click[i].component.forceUpdate();
       }
     }
   });
@@ -422,6 +438,12 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
     // if(node.component.beforeRender) {
     //   node.component.beforeRender(node.props, values);
     // }
+    //update the props
+    if (node.propsValueKeys) {
+      for (key in node.propsValueKeys) {
+        node.props[key] = values[node.propsValueKeys[key]];
+      }
+    }
     node.component.forceUpdate();
     return;
   }

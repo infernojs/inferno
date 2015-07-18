@@ -25,9 +25,20 @@ var Inferno = {};
 class Component {
   constructor(props) {
     this.props = props;
+    this.state = {};
   }
   render() {}
   forceUpdate() {}
+  setState(newStateItems) {
+    for(var stateItem in newStateItems) {
+      this.state[stateItem] = newStateItems[stateItem];
+    }
+    this.forceUpdate();
+  }
+  replaceState(newState) {
+    this.state = newSate;
+    this.forceUpdate();
+  }
 }
 
 Inferno.Component = Component;
@@ -149,7 +160,8 @@ function addRootDomEventListerners(domNode) {
     for(var i = 0; i < listeners.click.length; i = i + 1 | 0) {
       if(listeners.click[i].target === e.target) {
         listeners.click[i].callback.call(listeners.click[i].component, e);
-        listeners.click[i].component.forceUpdate();
+        //Let's take this out for now
+        //listeners.click[i].component.forceUpdate();
       }
     }
   });
@@ -397,10 +409,16 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
   }
 
   //if this is a component
-  if(node.component instanceof Component) {
+  if (node.component instanceof Component) {
     // if(node.component.beforeRender) {
     //   node.component.beforeRender(node.props, values);
     // }
+    //update the props
+    if(node.propsValueKeys) {
+      for(key in node.propsValueKeys) {
+        node.props[key] = values[node.propsValueKeys[key]];
+      }
+    }
     node.component.forceUpdate();
     return;
   }
