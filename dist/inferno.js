@@ -349,8 +349,10 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
     } else if (node.children instanceof ValueNode) {
       //if it has a valueKey then it means that its dynamic
       node.children.lastValue = values[node.children.valueKey];
-      textNode = document.createTextNode(node.children.lastValue);
-      node.dom.appendChild(textNode);
+      if (typeof node.children.lastValue === "string" || typeof node.children.lastValue === "number") {
+        textNode = document.createTextNode(node.children.lastValue);
+        node.dom.appendChild(textNode);
+      }
       node.isDynamic = true;
     }
   }
