@@ -621,7 +621,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.5";
+  var version = "0.2.8";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -1207,7 +1207,7 @@ var t7 = (function() {
       if(precompile === true) {
         return {
           templateKey: templateKey,
-          template: '"use strict";var __$props__ = arguments[0];return ' + scriptCode
+          template: '"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];return ' + scriptCode
         }
       } else {
         if(isBrowser === true) {
@@ -1351,16 +1351,19 @@ var t7 = (function() {
     instance.clearCache = t7.clearCache;
     instance.setOutput = t7.setOutput;
     instance.getOutput = t7.getOutput;
-    instance.precompile = t7.precompile;
+    instance.precompile = function(precompiledObj) {
+      return t7.precompile(precompiledObj, components);
+    };
 
     callback(instance);
   };
 
-  t7.precompile = function(precompiledObj) {
+  t7.precompile = function(precompiledObj, components) {
     if(t7._cache[precompiledObj.templateKey] == null) {
       t7._cache[precompiledObj.templateKey] = precompiledObj.template;
     }
     if(output === t7.Outputs.Inferno) {
+      precompiledObj.components = components;
       return precompiledObj
     } else {
       return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values, components);
