@@ -4,16 +4,44 @@ Inferno is a framework for building user-interface components (specifically for 
 page render times, but for sequential and random update render times too. Like React and Mitrhil, Inferno adopts elements of a virtual DOM as a lightweight representation of the
 actual DOM. However, unlike other frameworks that use virtual DOMs, Inferno does not carry out expensive diffs on the virtual DOM, but on the values within the virtual DOM.
 
-## In development
+## Overview
 
-Inferno is still in early development and there are still many missing features and optimisations to be had. Do not use this framework in production environments until a stable
-release has been stated. Features that still need to be completed:
+Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.
 
-- Cloning nodes needs refining and completing
-- More input events need to be added as does the case of the root input delegation source
-- Performance can be slower than desired when dealing with many template keys, refactor needed of template keys returned as values
-- There are currently no tests in place, this needs to be done
-- There is no API documentation or general documentation available
+```javascript
+
+var message = "Hello world";
+
+Inferno.render(
+  t7`<MyComponent message=${ message } />`,
+  document.getElementById("app")
+)
+```
+Furthermore, Inferno also uses ES6 components like React:
+
+```javascript
+t7.module(funciton(t7) {
+  class Component implements Inferno.Component {
+    constructor(props) {
+      super(props);
+      this.state.counter = 0;
+    }
+    render() {
+      return t7`
+        <div>
+          <h1>Header!</h1>
+          <span>Counter is at: ${ this.state.counter }</span>
+        </div>
+      `;
+    }  
+  }
+
+  t7.assign("Component", Component);
+  Inferno.render(`<Component />`, document.body);
+});
+```
+The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
+This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
 
 ## Key Features
 
@@ -33,6 +61,18 @@ Inferno tries to address two problems with creating UI components:
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
 time a framework offered more fun without compromising performance.
 
+## In development
+
+Inferno is still in early development and there are still many missing features and optimisations to be had. Do not use this framework in production environments until a stable
+release has been stated. Features that still need to be completed:
+
+- Cloning nodes needs refining and completing
+- More input events need to be added as does the case of the root input delegation source
+- Performance can be slower than desired when dealing with many template keys, refactor needed of template keys returned as values
+- There are currently no tests in place, this needs to be done
+- There is no API documentation or general documentation available
+
 ## Benchmarks
 
-Links to come!
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
+- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
