@@ -427,12 +427,14 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
   }
 
   if (node.attrs != null && node.hasDynamicAttrs === true) {
-    for (i = 0; i < node.attrs.length; i = i + 1 | 0) {
-      if (node.attrs[i].value instanceof ValueNode) {
-        val = values[node.attrs[i].value.valueKey];
-        if (val !== node.attrs[i].value.lastValue) {
-          node.attrs[i].value.lastValue = val;
-          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+    for (i = 0; i < node.attrs.length; i = i + 1 | 0) if (events[node.attrs[i].name] == null) {
+      {
+        if (node.attrs[i].value instanceof ValueNode) {
+          val = values[node.attrs[i].value.valueKey];
+          if (val !== node.attrs[i].value.lastValue) {
+            node.attrs[i].value.lastValue = val;
+            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
+          }
         }
       }
     }
