@@ -404,6 +404,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
       s = 0,
       l = 0,
       val = "",
+      key = "",
       childNode = null;
 
   if (node.isDynamic === false) {

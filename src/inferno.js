@@ -379,7 +379,7 @@ function removeNode(node, parentDom) {
 };
 
 function updateNode(node, parentNode, parentDom, values, index, valIndex, listeners, component) {
-  var i = 0, s = 0, l = 0, val = "", childNode = null;
+  var i = 0, s = 0, l = 0, val = "", key = "", childNode = null;
 
   if(node.isDynamic === false) {
     return;
