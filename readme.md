@@ -23,12 +23,16 @@ release has been stated. Features that still need to be completed:
 - Inferno is light-weight and compact – it doesn't have routers, controllers or Flux built-in. It doesn't have any hard dependencies other than `t7` (which comes bundled with Inferno).
 - Inferno is isomorphic and can easily be compiled and run on the server (via Node).
 
-## Benchmarks
+## Performance
 
-InfernoJS tries to address two problems with creating UI components:
+Inferno tries to address two problems with creating UI components:
 - Writing large applications in large teams is slow in terms of development and expensive in costs – it shouldn't be.
 - Writing complex applications generally gives poor performance on mobile/tablet/older machines – it shouldn't.
 - Writing intensive modern UIs that require many updates/animations falls apart and becomings overly complicated - it shouldn't be.
 
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
 time a framework offered more fun without compromising performance.
+
+## Benchmarks
+
+Links to come!

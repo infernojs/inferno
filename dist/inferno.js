@@ -621,7 +621,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.1";
+  var version = "0.2.5";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -834,7 +834,7 @@ var t7 = (function() {
             buildUniversalChildren(root, tagParams, true, component);
             functionText.push(tagParams.join(',') + "}");
           } else {
-            if(component === window || component == null) {
+            if(((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
               throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
               return;
             }
@@ -864,7 +864,7 @@ var t7 = (function() {
         if(root.tag != null) {
           //find out if the tag is a React componenet
           if(isComponentName(root.tag) === true) {
-            if(component === window || component == null) {
+            if(((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
               throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
               return;
             }
@@ -1360,7 +1360,7 @@ var t7 = (function() {
     if(t7._cache[precompiledObj.templateKey] == null) {
       t7._cache[precompiledObj.templateKey] = precompiledObj.template;
     }
-    if(output === t7.outputs.Inferno) {
+    if(output === t7.Outputs.Inferno) {
       return precompiledObj
     } else {
       return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values, components);
