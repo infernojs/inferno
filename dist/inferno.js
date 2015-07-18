@@ -94,9 +94,11 @@ Inferno.render = function (render, dom, listeners, component) {
   } else {
     if (component._rootNode == null) {
       values = render();
-      rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
-      createNode(rootNode, null, dom, values, null, null, listeners, component);
-      component._rootNode = [rootNode];
+      if (values) {
+        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
+        createNode(rootNode, null, dom, values, null, null, listeners, component);
+        component._rootNode = [rootNode];
+      }
     } else {
       values = render();
       updateNode(component._rootNode[0], component._rootNode, dom, values, 0, null, listeners, component);
@@ -124,7 +126,7 @@ function isInputProperty(tag, attrName) {
 };
 
 function updateAttribute(domElement, name, value) {
-  if (value === false) {
+  if (value === false || value == null) {
     domElement.removeAttribute(name);
   } else {
     if (value === true) {
