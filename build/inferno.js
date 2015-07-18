@@ -542,7 +542,12 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
             //easiest way to add another child is to clone the node, so let's clone the first child
             //TODO check the templates coming back have the same code?
             for (s = 0; s < val.length - node.children.lastValue.length; s = s + 1 | 0) {
-              childNode = cloneNode(node.children.value[0], node.dom);
+              if (node.children.value.length > 0) {
+                childNode = cloneNode(node.children.value[0], node.dom);
+              } else {
+                childNode = t7.getTemplateFromCache(val[s].templateKey, val[s].values);
+                createNode(childNode, node, node.dom, val, null, i, listeners, component);
+              }
               node.children.value.push(childNode);
             }
           } else if (val.length < node.children.lastValue.length) {

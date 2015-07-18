@@ -559,7 +559,12 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
             //easiest way to add another child is to clone the node, so let's clone the first child
             //TODO check the templates coming back have the same code?
             for (s = 0; s < val.length - node.children.lastValue.length; s = s + 1 | 0) {
-              childNode = cloneNode(node.children.value[0], node.dom);
+              if (node.children.value.length > 0) {
+                childNode = cloneNode(node.children.value[0], node.dom);
+              } else {
+                childNode = t7.getTemplateFromCache(val[s].templateKey, val[s].values);
+                createNode(childNode, node, node.dom, val, null, i, listeners, component);
+              }
               node.children.value.push(childNode);
             }
           } else if (val.length < node.children.lastValue.length) {
@@ -999,6 +1004,7 @@ var t7 = (function() {
             children: [],
             closed: tagContent[tagContent.length - 1] === "/" || selfClosingTags.indexOf(tagName) > -1 ? true : false
           };
+
           if(tagData && tagData.key) {
             vElement.key = tagData.key;
           }
@@ -1014,14 +1020,16 @@ var t7 = (function() {
           } else {
             parent.children.push(vElement);
           }
-          //set our node's parent to our current parent
-          if(parent === vElement) {
-            vElement.parent = null;
-          } else {
-            vElement.parent = parent;
+          if(selfClosingTags.indexOf(tagName) === -1 ) {
+            //set our node's parent to our current parent
+            if(parent === vElement) {
+              vElement.parent = null;
+            } else {
+              vElement.parent = parent;
+            }
+            //now assign the parent to our new node
+            parent = vElement;
           }
-          //now assign the parent to our new node
-          parent = vElement;
         }
         //reset our flags and strings
         insideTag = false;
