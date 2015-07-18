@@ -1,8 +1,19 @@
 # InfernoJS
 
-InfernoJS is a framework for building user-interface components (specifically for the browser's DOM). InfernoJS strives to delivery the best performance for not only initial
+Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno strives to delivery the best performance for not only initial
 page render times, but for sequential and random update render times too. Like React and Mitrhil, Inferno adopts elements of a virtual DOM as a lightweight representation of the
 actual DOM. However, unlike other frameworks that use virtual DOMs, Inferno does not carry out expensive diffs on the virtual DOM, but on the values within the virtual DOM.
+
+## In development
+
+Inferno is still in early development and there are still many missing features and optimisations to be had. Do not use this framework in production environments until a stable
+release has been stated. Features that still need to be completed:
+
+- Cloning nodes needs refining and completing
+- More input events need to be added as does the case of the root input delegation source
+- Performance can be slower than desired when dealing with many template keys, refactor needed of template keys returned as values
+- There are currently no tests in place, this needs to be done
+- There is no API documentation or general documentation available
 
 ## Key Features
 
