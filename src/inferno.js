@@ -1,5 +1,6 @@
 "use strict";
-var t7 = require("t7");
+
+var t7 = require("../t7");
 
 var supportsTextContent = 'textContent' in document;
 
@@ -49,23 +50,26 @@ Inferno.createValueNode = function(value, valueKey) {
 
 Inferno.render = function(render, dom, listeners, component) {
   var rootNode = null;
-  var values = [];
+  var endValue = null;
+  var values = null;
   //we check if we have a root on the dom node, if not we need to build up the render
   if(component == null) {
     if(dom.rootNode == null) {
       if(typeof render === "function") {
         values = render();
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
-      } else if(render.templateKey) {
+        endValue = values[values.length - 1];
+        rootNode = t7.getTemplateFromCache(endValue.templateKey, values, endValue.components);
+      } else {
         values = render;
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
+        endValue = render[values.length - 1];
+        rootNode = t7.getTemplateFromCache(endValue.templateKey, values, endValue.components);
       }
       createNode(rootNode, null, dom, values, null, null, listeners, component);
       dom.rootNode = [rootNode];
     } else {
       if(typeof render === "function") {
         values = render();
-      } else if(render.templateKey) {
+      } else if(render.length > 0) {
         values = render;
       }
       updateNode(dom.rootNode[0], dom.rootNode, dom, values, null, listeners, component);
@@ -73,8 +77,9 @@ Inferno.render = function(render, dom, listeners, component) {
   } else {
     if(component._rootNode == null) {
       values = render();
+      endValue = values[values.length - 1];
       if(values) {
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
+        rootNode = t7.getTemplateFromCache(endValue.templateKey, values, endValue.components);
         createNode(rootNode, null, dom, values, null, null, listeners, component);
         component._rootNode = [rootNode];
       }
@@ -176,18 +181,21 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
       textNode = null,
       hasDynamicAttrs = false,
       wasChildDynamic = false,
-      rootListeners = null;
+      rootListeners = null,
+      endValue = null;
 
   //we need to get the actual values and the templatekey
   if(index != null) {
-    if(!(values[index] instanceof Array)) {
-      node.templateKey = values[index].templateKey;
-      values = values[index].values;
+    endValue = values[index][values[index].length - 1]
+    if(endValue.templateKey) {
+      node.templateKey = endValue.templateKey;
+
     }
+    values = values[index];
   } else {
-    if(!(values instanceof Array)) {
-      node.templateKey = values.templateKey;
-      values = values.values;
+    endValue = values[values.length - 1]
+    if(endValue.templateKey) {
+      node.templateKey = endValue.templateKey;
     }
   }
 
@@ -381,32 +389,30 @@ function removeNode(node, parentDom) {
 };
 
 function updateNode(node, parentNode, parentDom, values, index, valIndex, listeners, component) {
-  var i = 0, s = 0, l = 0, val = "", key = "", childNode = null;
+  var i = 0, s = 0, l = 0, val = "", key = "", childNode = null, endValue = null;
 
   if(node.isDynamic === false) {
     return;
   }
   //we need to get the actual values and the templatekey
   if(valIndex != null) {
-    if(!(values[valIndex] instanceof Array)) {
-      if(node.templateKey !== values[valIndex].templateKey) {
-        //TODO, basically copy below
-        node.templateKey = values[valIndex].templateKey;
-      }
-      values = values[valIndex].values;
+    endValue = values[valIndex][values[valIndex].length - 1];
+    if(node.templateKey !== endValue.templateKey) {
+      //TODO, basically copy below
+      node.templateKey = endValue.templateKey;
     }
+    values = values[valIndex];
+
   } else {
-    if(!(values instanceof Array)) {
-      if(node.templateKey !== values.templateKey) {
-        //remove node
-        removeNode(node, parentDom);
-        //and then we want to create the new node (we can simply get it from t7 cache)
-        node = t7.getTemplateFromCache(values.templateKey, values.values);
-        createNode(node, parentNode, parentDom, values.values, null, null, listeners, component);
-        parentNode[index] = node;
-        node.templateKey = values.templateKey;
-      }
-      values = values.values;
+    endValue = values[values.length - 1];
+    if(node.templateKey !== endValue.templateKey) {
+      //remove node
+      removeNode(node, parentDom);
+      //and then we want to create the new node (we can simply get it from t7 cache)
+      node = t7.getTemplateFromCache(endValue.templateKey, values);
+      createNode(node, parentNode, parentDom, values, null, null, listeners, component);
+      parentNode[index] = node;
+      node.templateKey = endValue.templateKey;
     }
   }
 
@@ -487,7 +493,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
               //update the text
               setTextContent(node.dom.childNodes[i], val, true);
             }
-          } else {
+          } else if(node.children[i] instanceof ValueNode) {
             updateNode(node.children[i], node, node.dom, values, i, null, listeners, component);
           }
         }

@@ -12,6 +12,14 @@ module.exports = function(grunt) {
         }
       }
     },
+    watch: {
+      scripts: {
+        files: ['**/*.js'],
+        options: {
+          spawn: true
+        },
+      },
+    },
     browserify: {
       'dist/inferno.js': ['build/bootstrap.js']
     },
@@ -29,10 +37,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('build', [
     'babel',
     'browserify',
     'uglify'
+  ]);
+
+  grunt.registerTask('watch', [
+    'watch',
+    'babel',
+    'browserify'
   ]);
 }
