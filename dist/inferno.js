@@ -64,27 +64,8 @@ var Component = (function () {
 
 Inferno.Component = Component;
 
-function createComponentInstance(Component, parentDom, props) {
-  var component = new Component(props);
-  var listeners = addRootDomEventListerners(parentDom);
-  component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), parentDom, listeners, component);
-  return component;
-};
-
-function registerComponent(elementName, Component) {
-  t7.registerComponent(elementName, createComponentInstance.bind(null, Component));
-};
-
 Inferno.createValueNode = function (value, valueKey) {
   return new ValueNode(value, valueKey);
-};
-
-Inferno.register = function (elementName, Component) {
-  if (elementName[0].toLowerCase() === elementName[0] && elementName.indexOf("-") > -1) {
-    throw Error("Invalid element name '" + elementName + "' used for Inferno.register(). Component names must start with an uppercase letter, for example 'MyComponent'.");
-  } else if (elementName[0].toLowerCase() !== elementName[0] && elementName.indexOf("-") === -1) {
-    registerComponent(elementName, Component);
-  }
 };
 
 Inferno.render = function (render, dom, listeners, component) {
@@ -95,10 +76,10 @@ Inferno.render = function (render, dom, listeners, component) {
     if (dom.rootNode == null) {
       if (typeof render === "function") {
         values = render();
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
       } else if (render.templateKey) {
         values = render;
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
       }
       createNode(rootNode, null, dom, values, null, null, listeners, component);
       dom.rootNode = [rootNode];
@@ -113,7 +94,7 @@ Inferno.render = function (render, dom, listeners, component) {
   } else {
     if (component._rootNode == null) {
       values = render();
-      rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+      rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
       createNode(rootNode, null, dom, values, null, null, listeners, component);
       component._rootNode = [rootNode];
     } else {
@@ -214,7 +195,8 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
       val = null,
       textNode = null,
       hasDynamicAttrs = false,
-      wasChildDynamic = false;
+      wasChildDynamic = false,
+      rootListeners = null;
 
   //we need to get the actual values and the templatekey
   if (index != null) {
@@ -232,7 +214,9 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
   if (node.component) {
     //if its a component, we make a new instance
     if (typeof node.component === "function") {
-      node.component = node.component(parentDom, node.props, values);
+      node.component = new node.component(node.props);
+      rootListeners = addRootDomEventListerners(parentDom);
+      node.component.forceUpdate = Inferno.render.bind(null, node.component.render.bind(node.component), parentDom, rootListeners, node.component);
       node.component.forceUpdate();
       node.isDynamic = true;
     }
@@ -603,11 +587,9 @@ var t7 = (function() {
   var docHead = null;
   //to save time later, we can pre-create a props object structure to re-use
   var output = null;
-  var components = {};
-  var ii = 1;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.1.0";
+  var version = "0.2.1";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -633,7 +615,7 @@ var t7 = (function() {
   ];
 
   //when creating a new function from a vdom, we'll need to build the vdom's children
-  function buildUniversalChildren(root, tagParams, childrenProp) {
+  function buildUniversalChildren(root, tagParams, childrenProp, component) {
     var childrenText = [];
     var i = 0;
     var n = 0;
@@ -662,7 +644,7 @@ var t7 = (function() {
               childrenText.push("'" + root.children[i] + "'");
             }
           } else {
-            buildFunction(root.children[i], childrenText)
+            buildFunction(root.children[i], childrenText, component)
           }
         }
       }
@@ -696,7 +678,7 @@ var t7 = (function() {
   };
 
   //when creating a new function from a vdom, we'll need to build the vdom's children
-  function buildReactChildren(root, tagParams, childrenProp) {
+  function buildReactChildren(root, tagParams, childrenProp, component) {
     var childrenText = [];
     var i = 0;
     var n = 0;
@@ -721,7 +703,7 @@ var t7 = (function() {
             }
 
           } else {
-            buildFunction(root.children[i], childrenText, i === root.children.length - 1)
+            buildFunction(root.children[i], childrenText, i === root.children.length - 1, component)
           }
         }
       }
@@ -773,7 +755,7 @@ var t7 = (function() {
 
   //This takes a vDom array and builds a new function from it, to improve
   //repeated performance at the cost of building new Functions()
-  function buildFunction(root, functionText) {
+  function buildFunction(root, functionText, component) {
     var i = 0;
     var tagParams = [];
     var literalParts = [];
@@ -786,6 +768,7 @@ var t7 = (function() {
       if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno || output === t7.Outputs.Mithril) {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
+          component
           if(isComponentName(root.tag) === false) {
             functionText.push("{tag: '" + root.tag + "'");
             //add the key
@@ -803,20 +786,26 @@ var t7 = (function() {
               }
             }
             //build the children for this node
-            buildUniversalChildren(root, tagParams, true);
+            buildUniversalChildren(root, tagParams, true, component);
             functionText.push(tagParams.join(',') + "}");
-          } else if(output === t7.Outputs.Universal) {
-            //we need to apply the tag components
-            buildAttrsParams(root, attrsParams);
-            functionText.push("t7.loadComponent('" + root.tag + "')({" + attrsParams.join(',') + "})");
-          } else if(output === t7.Outputs.Mithril) {
-            //we need to apply the tag components
-            buildAttrsParams(root, attrsParams);
-            functionText.push("m.component(t7.loadComponent('" + root.tag + "'),{" + attrsParams.join(',') + "})");
-          } else if(output === t7.Outputs.Inferno) {
-            //we need to apply the tag components
-            buildAttrsParams(root, attrsParams);
-            functionText.push("{component:t7.loadComponent('" + root.tag + "'), props: {" + attrsParams.join(',') + "}}");
+          } else {
+            if(component === window || component == null) {
+              throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
+              return;
+            }
+            if(output === t7.Outputs.Universal) {
+              //we need to apply the tag components
+              buildAttrsParams(root, attrsParams);
+              functionText.push("__$components__." + root.tag + "({" + attrsParams.join(',') + "})");
+            } else if(output === t7.Outputs.Mithril) {
+              //we need to apply the tag components
+              buildAttrsParams(root, attrsParams);
+              functionText.push("m.component(__$components__." + root.tag + ",{" + attrsParams.join(',') + "})");
+            } else if(output === t7.Outputs.Inferno) {
+              //we need to apply the tag components
+              buildAttrsParams(root, attrsParams);
+              functionText.push("{component:__$components__." + root.tag + ", props: {" + attrsParams.join(',') + "}}");
+            }
           }
         } else {
           //add a text entry
@@ -829,7 +818,11 @@ var t7 = (function() {
         if(root.tag != null) {
           //find out if the tag is a React componenet
           if(isComponentName(root.tag) === true) {
-            functionText.push("React.createElement(t7.loadComponent('" + root.tag + "')");
+            if(component === window || component == null) {
+              throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
+              return;
+            }
+            functionText.push("React.createElement(__$components__." + root.tag);
           } else {
             functionText.push("React.createElement('" + root.tag + "'");
           }
@@ -845,7 +838,7 @@ var t7 = (function() {
             tagParams.push("null");
           }
           //build the children for this node
-          buildReactChildren(root, tagParams, true);
+          buildReactChildren(root, tagParams, true, component);
           functionText.push(tagParams.join(',') + ")");
         } else {
           //add a text entry
@@ -868,7 +861,7 @@ var t7 = (function() {
     childText = null;
 
     return childText;
-  }
+  };
 
   function replaceQuotes(string) {
     // string = string.replace(/'/g,"\\'")
@@ -876,9 +869,20 @@ var t7 = (function() {
       string = string.replace(/'/g,"\\'")
     }
     return string;
-  }
+  };
 
-  function getVdom(html) {
+  function applyValues(string, values) {
+    var index = 0;
+    var re = /__\$props__\[([0-9]*)\]/;
+    var placeholders = string.match(/__\$props__\[([0-9]*)\]/g);
+    for(var i = 0; i < placeholders.length; i++) {
+      index = re.exec(placeholders[i])[1];
+      string = string.replace(placeholders[i], values[index]);
+    }
+    return string;
+  };
+
+  function getVdom(html, values) {
     var char = '';
     var lastChar = '';
     var i = 0;
@@ -902,6 +906,12 @@ var t7 = (function() {
       } else if(char === ">" && insideTag === true) {
         //check if first character is a close tag
         if(tagContent[0] === "/") {
+          //bad closing tag
+          if(tagContent !== "/" + parent.tag && selfClosingTags.indexOf(parent.tag) === -1 && !parent.closed) {
+            console.error("Template error: " + applyValues(html, values));
+            throw new Error("Expected corresponding t7 closing tag for '" + parent.tag + "'.");
+            return;
+          }
           //when the childText is not empty
           if(childText.trim() !== "") {
             //escape quotes etc
@@ -916,6 +926,9 @@ var t7 = (function() {
           }
           //move back up the vDom tree
           parent = parent.parent;
+          if(parent) {
+            parent.closed = true;
+          }
         } else {
           //check if we have any content in the childText, if so, it was a text node that needs to be added
           if(childText.trim().length > 0 && !(parent instanceof Array)) {
@@ -942,7 +955,8 @@ var t7 = (function() {
           vElement = {
             tag: tagName,
             attrs: (tagData && tagData.attrs) ? tagData.attrs : {},
-            children: []
+            children: [],
+            closed: tagContent[tagContent.length - 1] === "/" || selfClosingTags.indexOf(tagName) > -1 ? true : false
           };
           if(tagData && tagData.key) {
             vElement.key = tagData.key;
@@ -952,24 +966,21 @@ var t7 = (function() {
             if(root === null) {
               root = parent = vElement;
             } else {
-              throw Error("t7 templates must contain only a single root element");
+              throw new Error("t7 templates must contain only a single root element");
             }
           } else if (parent instanceof Array) {
             parent.push(vElement);
           } else {
             parent.children.push(vElement);
           }
-          //check if we've just made a self closing tag
-          if(selfClosingTags.indexOf(tagName) === -1) {
-            //set our node's parent to our current parent
-            if(parent === vElement) {
-              vElement.parent = null;
-            } else {
-              vElement.parent = parent;
-            }
-            //now assign the parent to our new node
-            parent = vElement;
+          //set our node's parent to our current parent
+          if(parent === vElement) {
+            vElement.parent = null;
+          } else {
+            vElement.parent = parent;
           }
+          //now assign the parent to our new node
+          parent = vElement;
         }
         //reset our flags and strings
         insideTag = false;
@@ -1118,7 +1129,7 @@ var t7 = (function() {
     //For values only, return an array of all the values
     if(output === t7.Outputs.Inferno) {
       if(t7._cache[templateKey] != null) {
-        return {values: values, templateKey: templateKey};
+        return {values: values, templateKey: templateKey, components: this};
       } else {
         returnValuesButBuildTemplate = true;
       }
@@ -1138,8 +1149,9 @@ var t7 = (function() {
       functionString = [];
       buildFunction(
         //build a vDom from the HTML
-        getVdom(fullHtml),
-        functionString
+        getVdom(fullHtml, values),
+        functionString,
+        this
       );
       scriptCode = functionString.join(',');
       //build a new Function and store it depending if on node or browser
@@ -1150,20 +1162,20 @@ var t7 = (function() {
         }
       } else {
         if(isBrowser === true) {
-          scriptString = 't7._cache["' + templateKey + '"]=function(__$props__)';
+          scriptString = 't7._cache["' + templateKey + '"]=function(__$props__, __$components__)';
           scriptString += '{"use strict";return ' + scriptCode + '}';
 
           addNewScriptFunction(scriptString, templateKey);
         } else {
-          t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];return ' + scriptCode);
+          t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];return ' + scriptCode);
         }
       }
     }
 
     if(returnValuesButBuildTemplate === true) {
-      return {values: values, templateKey: templateKey};
+      return {values: values, templateKey: templateKey, components: this};
     }
-    return t7._cache[templateKey](values);
+    return t7._cache[templateKey](values, this);
   };
 
   function deepCopy(obj) {
@@ -1194,76 +1206,6 @@ var t7 = (function() {
     splice: 'function'
   };
 
-  //storage for the cache
-  t7._cache = {};
-
-  t7.clearCache = function() {
-    t7._cache = {};
-  };
-
-  t7.precompile = function(precompiledObj) {
-    if(t7._cache[precompiledObj.templateKey] == null) {
-      t7._cache[precompiledObj.templateKey] = precompiledObj.template;
-    }
-    if(output === t7.Outputs.Inferno) {
-      return precompiledObj
-    } else {
-      return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values);
-    }
-  };
-
-  //a lightweight flow control function
-  //expects truthy and falsey to be functions
-  t7.if = function(expression, truthy) {
-    if(expression) {
-      return {
-        else: function() {
-          return truthy();
-        }
-      };
-    } else {
-      return {
-        else: function(falsey) {
-          return falsey();
-        }
-      }
-    }
-  };
-
-  t7.setOutput = function(newOutput) {
-    output = newOutput;
-  };
-
-  t7.getOutput = function() {
-    return output;
-  };
-
-  t7.setPrecompile = function(val) {
-    precompile = val;
-  };
-
-  t7.registerComponent = function(componentName, component) {
-    if(arguments.length === 2) {
-      components[componentName] = component;
-    } else {
-      for(var key in componentName) {
-        components[key] = componentName[key];
-      }
-    }
-  };
-
-  t7.deregisterComponent = function(componentName) {
-    delete components[componentName];
-  };
-
-  t7.deregisterAllComponents = function() {
-    components = {};
-  };
-
-  t7.getVersion = function() {
-    return version;
-  };
-
   function cleanValues(values, newValues) {
     var i = 0, ii = 0;
     if(values.length > 0) {
@@ -1285,17 +1227,9 @@ var t7 = (function() {
       }
     }
     return values;
-  }
-  t7.getTemplateFromCache = function(templateKey, values) {
-    //we need to normalie the values so we don't have objects with templateKey and values
-    var newValues = []
-    cleanValues(values, newValues);
-    return t7._cache[templateKey](newValues);
   };
 
-  t7.loadComponent = function(componentName) {
-    return components[componentName];
-  };
+  t7._cache = {};
 
   t7.Outputs = {
     React: 1,
@@ -1303,6 +1237,94 @@ var t7 = (function() {
     Inferno: 3,
     Mithril: 4
   };
+
+  t7.getOutput = function() {
+    return output;
+  };
+
+  t7.setPrecompile = function(val) {
+    precompile = val;
+  };
+
+  t7.getVersion = function() {
+    return version;
+  };
+
+  //a lightweight flow control function
+  //expects truthy and falsey to be functions
+  t7.if = function(expression, truthy) {
+    if(expression) {
+      return {
+        else: function() {
+          return truthy();
+        }
+      };
+    } else {
+      return {
+        else: function(falsey) {
+          return falsey();
+        }
+      }
+    }
+  },
+
+  t7.setOutput = function(newOutput) {
+    output = newOutput;
+  };
+
+  t7.clearCache = function() {
+    t7._cache = {};
+  };
+
+  t7.assign = function(compName) {
+    throw new Error("Error assigning component '" + compName+ "'. You can only assign components from within a module. Please check documentation for t7.module().");
+  };
+
+  t7.module = function(callback) {
+    var components = {};
+
+    var instance = function() {
+      return t7.apply(components, arguments);
+    };
+
+    instance.assign = function(name, val) {
+      if(arguments.length === 2) {
+        components[name] = val;
+      } else {
+        for(var key in name) {
+          components[key] = name[key];
+        }
+      }
+    };
+
+    instance.if = t7.if;
+    instance.Outputs = t7.Outputs;
+    instance.clearCache = t7.clearCache;
+    instance.setOutput = t7.setOutput;
+    instance.getOutput = t7.getOutput;
+    instance.precompile = t7.precompile;
+
+    callback(instance);
+  };
+
+  t7.precompile = function(precompiledObj) {
+    if(t7._cache[precompiledObj.templateKey] == null) {
+      t7._cache[precompiledObj.templateKey] = precompiledObj.template;
+    }
+    if(output === t7.outputs.Inferno) {
+      return precompiledObj
+    } else {
+      return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values, components);
+    }
+  };
+
+  t7.getTemplateFromCache = function(templateKey, values, components) {
+    //we need to normalie the values so we don't have objects with templateKey and values
+    var newValues = []
+    cleanValues(values, newValues);
+    return t7._cache[templateKey](newValues, components);
+  };
+
 
   //set the type to React as default if it exists in global scope
   output = typeof React != "undefined" ? t7.Outputs.React

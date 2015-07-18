@@ -32,27 +32,8 @@ class Component {
 
 Inferno.Component = Component;
 
-function createComponentInstance(Component, parentDom, props) {
-  var component = new Component(props);
-  var listeners = addRootDomEventListerners(parentDom);
-  component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), parentDom, listeners, component);
-  return component;
-};
-
-function registerComponent(elementName, Component) {
-  t7.registerComponent(elementName, createComponentInstance.bind(null, Component));
-};
-
 Inferno.createValueNode = function(value, valueKey) {
   return new ValueNode(value, valueKey);
-};
-
-Inferno.register = function(elementName, Component) {
-  if(elementName[0].toLowerCase() === elementName[0] && elementName.indexOf("-") > -1) {
-    throw Error("Invalid element name '" + elementName + "' used for Inferno.register(). Component names must start with an uppercase letter, for example 'MyComponent'.");
-  } else if(elementName[0].toLowerCase() !== elementName[0] && elementName.indexOf("-") === -1) {
-    registerComponent(elementName, Component);
-  }
 };
 
 Inferno.render = function(render, dom, listeners, component) {
@@ -63,10 +44,10 @@ Inferno.render = function(render, dom, listeners, component) {
     if(dom.rootNode == null) {
       if(typeof render === "function") {
         values = render();
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
       } else if(render.templateKey) {
         values = render;
-        rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+        rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
       }
       createNode(rootNode, null, dom, values, null, null, listeners, component);
       dom.rootNode = [rootNode];
@@ -81,7 +62,7 @@ Inferno.render = function(render, dom, listeners, component) {
   } else {
     if(component._rootNode == null) {
       values = render();
-      rootNode = t7.getTemplateFromCache(values.templateKey, values.values);
+      rootNode = t7.getTemplateFromCache(values.templateKey, values.values, values.components);
       createNode(rootNode, null, dom, values, null, null, listeners, component);
       component._rootNode = [rootNode];
     } else {
@@ -180,7 +161,8 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
       val = null,
       textNode = null,
       hasDynamicAttrs = false,
-      wasChildDynamic = false;
+      wasChildDynamic = false,
+      rootListeners = null;
 
   //we need to get the actual values and the templatekey
   if(index != null) {
@@ -198,7 +180,9 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
   if(node.component) {
     //if its a component, we make a new instance
     if(typeof node.component === "function") {
-      node.component = node.component(parentDom, node.props, values);
+      node.component = new node.component(node.props);
+      rootListeners = addRootDomEventListerners(parentDom);
+      node.component.forceUpdate = Inferno.render.bind(null, node.component.render.bind(node.component), parentDom, rootListeners, node.component);
       node.component.forceUpdate();
       node.isDynamic = true;
     }
