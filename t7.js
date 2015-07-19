@@ -744,22 +744,23 @@ var t7 = (function() {
     instance.clearCache = t7.clearCache;
     instance.setOutput = t7.setOutput;
     instance.getOutput = t7.getOutput;
-    instance.precompile = function(precompiledObj) {
-      return t7.precompile(precompiledObj, components);
+    instance.precompile = function(values) {
+      return t7.precompile(values, components);
     };
 
     callback(instance);
   };
 
-  t7.precompile = function(precompiledObj, components) {
-    if(t7._cache[precompiledObj.templateKey] == null) {
-      t7._cache[precompiledObj.templateKey] = precompiledObj.template;
+  t7.precompile = function(values, components) {
+    var endVal = values[values.length - 1];
+    if(t7._cache[endVal.templateKey] == null) {
+      t7._cache[endVal.templateKey] = endVal.template;
     }
     if(output === t7.Outputs.Inferno) {
-      precompiledObj.components = components;
-      return precompiledObj
+      endVal.components = components;
+      return values
     } else {
-      return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values, components);
+      return t7.getTemplateFromCache(endVal.templateKey, values, components);
     }
   };
 

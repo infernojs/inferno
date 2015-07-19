@@ -439,14 +439,14 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
   //we need to get the actual values and the templatekey
   if (valIndex != null) {
     endValue = values[valIndex][values[valIndex].length - 1];
-    if (node.templateKey !== endValue.templateKey) {
+    if (node.templateKey && node.templateKey !== endValue.templateKey) {
       //TODO, basically copy below
       node.templateKey = endValue.templateKey;
     }
     values = values[valIndex];
   } else {
     endValue = values[values.length - 1];
-    if (node.templateKey !== endValue.templateKey) {
+    if (node.templateKey && node.templateKey !== endValue.templateKey) {
       //remove node
       removeNode(node, parentDom);
       //and then we want to create the new node (we can simply get it from t7 cache)
@@ -459,10 +459,6 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
 
   //if this is a component
   if (node.component instanceof Component) {
-    // if(node.component.beforeRender) {
-    //   node.component.beforeRender(node.props, values);
-    // }
-    //update the props
     if (node.propsValueKeys) {
       for (key in node.propsValueKeys) {
         node.props[key] = values[node.propsValueKeys[key]];
@@ -488,19 +484,19 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
 
   if (node instanceof ValueNode && node.isRoot) {
     val = values[node.valueKey];
-    if (val != null && val.templateKey != null) {
-      if (node.templateKey !== val.templateKey) {
+    endValue = val[val.length - 1];
+    if (endValue != null && endValue.templateKey != null) {
+      if (node.value.templateKey !== endValue.templateKey) {
         //we want to remove the DOM current node
         //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
         //asking t7 for a fresh template??
         removeNode(node.value, parentDom);
         //and then we want to create the new node (we can simply get it from t7 cache)
-        node.value = t7.getTemplateFromCache(val.templateKey, val.values);
+        node.value = t7.getTemplateFromCache(endValue.templateKey, val);
         createNode(node.value, node, parentDom, val, null, index, listeners, component);
-        node.templateKey = val.templateKey;
-        node.lastValue = val.values;
+        node.value.templateKey = endValue.templateKey;
+        node.lastValue = values;
       }
-      val = val.values;
     }
     if (val !== node.lastValue) {
       //array of array here
@@ -525,8 +521,9 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
         if (node.children[i].isDynamic === true) {
           if (node.children[i] instanceof ValueNode && !node.children[i].isRoot) {
             val = values[node.children[i].valueKey];
-            if (val != null && val.templateKey != null) {
-              node.children[i].templateKey = val.templateKey;
+            endValue = val[val.length - 1];
+            if (endValue != null && endValue.templateKey != null) {
+              node.children[i].templateKey = endValue.templateKey;
               val = values;
             }
             if (val !== node.children[i].lastValue) {
@@ -534,7 +531,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
               //update the text
               setTextContent(node.dom.childNodes[i], val, true);
             }
-          } else if (node.children[i] instanceof ValueNode) {
+          } else {
             updateNode(node.children[i], node, node.dom, values, i, null, listeners, component);
           }
         }
@@ -542,20 +539,20 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
     } else if (node.children instanceof ValueNode && node.children.isRoot === true) {
       //check if the value has changed
       val = values[node.children.valueKey];
-      if (val != null && val.templateKey != null) {
-        if (node.children.templateKey !== val.templateKey) {
+      endValue = val[val.length - 1];
+      if (endValue != null && endValue.templateKey != null) {
+        if (node.children.templateKey !== endValue.templateKey) {
           //we want to remove the DOM current node
           //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
           //asking t7 for a fresh template??
           removeNode(node.children.value, node.dom);
           //and then we want to create the new node (we can simply get it from t7 cache)
-          node.children.value = t7.getTemplateFromCache(val.templateKey, val.values);
+          node.children.value = t7.getTemplateFromCache(endValue.templateKey, val);
           createNode(node.children.value, node.children, node.dom, val, null, i, listeners, component);
           //then we want to set the new templatekey
-          node.children.templateKey = val.templateKey;
-          node.children.lastValue = val.values;
+          node.children.templateKey = endValue.templateKey;
+          node.children.lastValue = values;
         }
-        val = val.values;
       }
       if (val !== node.children.lastValue) {
         if (val instanceof Array) {
@@ -590,8 +587,9 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
       }
     } else if (node.children instanceof ValueNode) {
       val = values[node.children.valueKey];
-      if (val != null && val.templateKey != null) {
-        node.templateKey = val.templateKey;
+      endValue = val[val.length - 1];
+      if (endValue != null && endValue.templateKey != null) {
+        node.templateKey = endValue.templateKey;
         val = values;
       }
       if (val !== node.children.lastValue) {
@@ -1354,22 +1352,23 @@ var t7 = (function() {
     instance.clearCache = t7.clearCache;
     instance.setOutput = t7.setOutput;
     instance.getOutput = t7.getOutput;
-    instance.precompile = function(precompiledObj) {
-      return t7.precompile(precompiledObj, components);
+    instance.precompile = function(values) {
+      return t7.precompile(values, components);
     };
 
     callback(instance);
   };
 
-  t7.precompile = function(precompiledObj, components) {
-    if(t7._cache[precompiledObj.templateKey] == null) {
-      t7._cache[precompiledObj.templateKey] = precompiledObj.template;
+  t7.precompile = function(values, components) {
+    var endVal = values[values.length - 1];
+    if(t7._cache[endVal.templateKey] == null) {
+      t7._cache[endVal.templateKey] = endVal.template;
     }
     if(output === t7.Outputs.Inferno) {
-      precompiledObj.components = components;
-      return precompiledObj
+      endVal.components = components;
+      return values
     } else {
-      return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values, components);
+      return t7.getTemplateFromCache(endVal.templateKey, values, components);
     }
   };
 
