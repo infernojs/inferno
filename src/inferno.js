@@ -1,12 +1,28 @@
 "use strict";
 
-var t7 = require("../t7");
+var t7 = require("t7");
 
 var supportsTextContent = 'textContent' in document;
 
 var events = {
   "onClick": "click"
 };
+
+var version = "0.1.2";
+
+var cachedNodes = null;
+
+if(typeof window != "undefined") {
+  cachedNodes = {
+    div: document.createElement("div"),
+    span: document.createElement("span"),
+    a: document.createElement("a"),
+    p: document.createElement("p"),
+    li: document.createElement("li"),
+    tr: document.createElement("tr"),
+    td: document.createElement("td")
+  };
+}
 
 function ValueNode(value, valueKey) {
   //detect if the value is actually a new node tree
@@ -219,7 +235,11 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
   }
 
   if(node.tag != null) {
-    node.dom = document.createElement(node.tag);
+    if(cachedNodes !== null && cachedNodes[node.tag]) {
+      node.dom = cachedNodes[node.tag].cloneNode(false)
+    } else {
+      node.dom = document.createElement(node.tag);
+    }
     if(!insertAtIndex) {
       parentDom.appendChild(node.dom);
     } else {

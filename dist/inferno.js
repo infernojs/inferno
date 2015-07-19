@@ -2,7 +2,7 @@
 "use strict";
 
 var Inferno = require("./inferno.js");
-var t7 = require("../t7");
+var t7 = require("t7");
 
 t7.setOutput(t7.Outputs.Inferno);
 
@@ -14,20 +14,36 @@ if (typeof window != "undefined") {
 }
 
 
-},{"../t7":3,"./inferno.js":2}],2:[function(require,module,exports){
+},{"./inferno.js":2,"t7":3}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var t7 = require("../t7");
+var t7 = require("t7");
 
 var supportsTextContent = ("textContent" in document);
 
 var events = {
   "onClick": "click"
 };
+
+var version = "0.1.2";
+
+var cachedNodes = null;
+
+if (typeof window != "undefined") {
+  cachedNodes = {
+    div: document.createElement("div"),
+    span: document.createElement("span"),
+    a: document.createElement("a"),
+    p: document.createElement("p"),
+    li: document.createElement("li"),
+    tr: document.createElement("tr"),
+    td: document.createElement("td")
+  };
+}
 
 function ValueNode(value, valueKey) {
   //detect if the value is actually a new node tree
@@ -255,7 +271,11 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
   }
 
   if (node.tag != null) {
-    node.dom = document.createElement(node.tag);
+    if (cachedNodes !== null && cachedNodes[node.tag]) {
+      node.dom = cachedNodes[node.tag].cloneNode(false);
+    } else {
+      node.dom = document.createElement(node.tag);
+    }
     if (!insertAtIndex) {
       parentDom.appendChild(node.dom);
     } else {
@@ -605,7 +625,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
 module.exports = Inferno;
 
 
-},{"../t7":3}],3:[function(require,module,exports){
+},{"t7":3}],3:[function(require,module,exports){
 /*
 
   t7.js is a small, lightweight library for compiling ES2015 template literals
@@ -1182,8 +1202,7 @@ var t7 = (function() {
     //For values only, return an array of all the values
     if(output === t7.Outputs.Inferno) {
       if(t7._cache[templateKey] != null) {
-        values.push({templateKey: templateKey, components: this});
-        return values;
+        return {values: values, templateKey: templateKey, components: this};
       } else {
         returnValuesButBuildTemplate = true;
       }
@@ -1227,8 +1246,7 @@ var t7 = (function() {
     }
 
     if(returnValuesButBuildTemplate === true) {
-      values.push({templateKey: templateKey, components: this});
-      return values;
+      return {values: values, templateKey: templateKey, components: this};
     }
     return t7._cache[templateKey](values, this);
   };
@@ -1262,21 +1280,26 @@ var t7 = (function() {
   };
 
   function cleanValues(values, newValues) {
-    var i = 0, ii = 0, val = null, endVal = null;
-    for(i = 0; i < values.length; i = i + 1 | 0) {
-      val = values[i];
-      if(val instanceof Array) {
-        endVal = val[val.length - 1];
-        if(endVal.templateKey != null) {
-          newValues[i] = t7.getTemplateFromCache(endVal.templateKey, val);
-        } else {
+    var i = 0, ii = 0;
+    if(values.length > 0) {
+      for(i = 0; i < values.length; i = i + 1 | 0) {
+        if(values[i] && values[i].templateKey != null) {
+          newValues[i] = t7.getTemplateFromCache(values[i].templateKey, values[i].values);
+        } else if(values[i] instanceof Array) {
           newValues[i] = [];
-          cleanValues(values[i], newValues[i]);
+          for(ii = 0; ii < values[i].length; ii = ii + 1 | 0) {
+            if(values[i][ii].templateKey != null) {
+              newValues[i][ii] = t7.getTemplateFromCache(values[i][ii].templateKey, values[i][ii].values);
+            } else {
+              newValues[i][ii] = values[i][ii];
+            }
+          }
+        } else {
+          newValues[i] = values[i];
         }
-      } else {
-        newValues[i] = val;
       }
     }
+    return values;
   };
 
   t7._cache = {};
@@ -1352,23 +1375,22 @@ var t7 = (function() {
     instance.clearCache = t7.clearCache;
     instance.setOutput = t7.setOutput;
     instance.getOutput = t7.getOutput;
-    instance.precompile = function(values) {
-      return t7.precompile(values, components);
+    instance.precompile = function(precompiledObj) {
+      return t7.precompile(precompiledObj, components);
     };
 
     callback(instance);
   };
 
-  t7.precompile = function(values, components) {
-    var endVal = values[values.length - 1];
-    if(t7._cache[endVal.templateKey] == null) {
-      t7._cache[endVal.templateKey] = endVal.template;
+  t7.precompile = function(precompiledObj, components) {
+    if(t7._cache[precompiledObj.templateKey] == null) {
+      t7._cache[precompiledObj.templateKey] = precompiledObj.template;
     }
     if(output === t7.Outputs.Inferno) {
-      endVal.components = components;
-      return values
+      precompiledObj.components = components;
+      return precompiledObj
     } else {
-      return t7.getTemplateFromCache(endVal.templateKey, values, components);
+      return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values, components);
     }
   };
 
