@@ -245,9 +245,6 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
     }
     //if this is a component
     if (node.component instanceof Component) {
-      // if(node.component.beforeRender) {
-      //   node.component.beforeRender(node.props, values);
-      // }
       node.component.forceUpdate();
     }
     return true;

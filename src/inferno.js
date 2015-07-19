@@ -226,9 +226,6 @@ function createNode(node, parentNode, parentDom, values, index, insertAtIndex, l
     }
     //if this is a component
     if(node.component instanceof Component) {
-      // if(node.component.beforeRender) {
-      //   node.component.beforeRender(node.props, values);
-      // }
       node.component.forceUpdate();
     }
     return true;
@@ -422,7 +419,6 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
       node.templateKey = endValue.templateKey;
     }
     values = values[valIndex];
-
   } else {
     endValue = values[values.length - 1];
     if(node.templateKey && node.templateKey !== endValue.templateKey) {

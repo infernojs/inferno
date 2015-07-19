@@ -31,6 +31,18 @@ module.exports = function(grunt) {
         src: 'dist/inferno.js',
         dest: 'dist/inferno.min.js'
       }
+    },
+    'closure-compiler': {
+      frontend: {
+        closurePath: 'closure',
+        js: 'dist/inferno.js',
+        jsOutputFile: 'dist/inferno.min.js',
+        maxBuffer: 2500,
+        options: {
+          compilation_level: 'ADVANCED_OPTIMIZATIONS',
+          language_in: 'ECMASCRIPT5_STRICT'
+        }
+      }
     }
   })
 
@@ -38,11 +50,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-closure-compiler');
 
   grunt.registerTask('build', [
     'babel',
     'browserify',
-    'uglify'
+    'closure-compiler'
+    // 'uglify'
   ]);
 
   grunt.registerTask('watch', [
