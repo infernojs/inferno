@@ -645,7 +645,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.8";
+  var version = "0.2.11";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -1202,7 +1202,8 @@ var t7 = (function() {
     //For values only, return an array of all the values
     if(output === t7.Outputs.Inferno) {
       if(t7._cache[templateKey] != null) {
-        return {values: values, templateKey: templateKey, components: this};
+        values.push({templateKey: templateKey, components: this});
+        return values;
       } else {
         returnValuesButBuildTemplate = true;
       }
@@ -1246,7 +1247,8 @@ var t7 = (function() {
     }
 
     if(returnValuesButBuildTemplate === true) {
-      return {values: values, templateKey: templateKey, components: this};
+      values.push({templateKey: templateKey, components: this});
+      return values;
     }
     return t7._cache[templateKey](values, this);
   };
@@ -1280,26 +1282,21 @@ var t7 = (function() {
   };
 
   function cleanValues(values, newValues) {
-    var i = 0, ii = 0;
-    if(values.length > 0) {
-      for(i = 0; i < values.length; i = i + 1 | 0) {
-        if(values[i] && values[i].templateKey != null) {
-          newValues[i] = t7.getTemplateFromCache(values[i].templateKey, values[i].values);
-        } else if(values[i] instanceof Array) {
-          newValues[i] = [];
-          for(ii = 0; ii < values[i].length; ii = ii + 1 | 0) {
-            if(values[i][ii].templateKey != null) {
-              newValues[i][ii] = t7.getTemplateFromCache(values[i][ii].templateKey, values[i][ii].values);
-            } else {
-              newValues[i][ii] = values[i][ii];
-            }
-          }
+    var i = 0, ii = 0, val = null, endVal = null;
+    for(i = 0; i < values.length; i = i + 1 | 0) {
+      val = values[i];
+      if(val instanceof Array) {
+        endVal = val[val.length - 1];
+        if(endVal.templateKey != null) {
+          newValues[i] = t7.getTemplateFromCache(endVal.templateKey, val);
         } else {
-          newValues[i] = values[i];
+          newValues[i] = [];
+          cleanValues(values[i], newValues[i]);
         }
+      } else {
+        newValues[i] = val;
       }
     }
-    return values;
   };
 
   t7._cache = {};
@@ -1375,22 +1372,23 @@ var t7 = (function() {
     instance.clearCache = t7.clearCache;
     instance.setOutput = t7.setOutput;
     instance.getOutput = t7.getOutput;
-    instance.precompile = function(precompiledObj) {
-      return t7.precompile(precompiledObj, components);
+    instance.precompile = function(values) {
+      return t7.precompile(values, components);
     };
 
     callback(instance);
   };
 
-  t7.precompile = function(precompiledObj, components) {
-    if(t7._cache[precompiledObj.templateKey] == null) {
-      t7._cache[precompiledObj.templateKey] = precompiledObj.template;
+  t7.precompile = function(values, components) {
+    var endVal = values[values.length - 1];
+    if(t7._cache[endVal.templateKey] == null) {
+      t7._cache[endVal.templateKey] = endVal.template;
     }
     if(output === t7.Outputs.Inferno) {
-      precompiledObj.components = components;
-      return precompiledObj
+      endVal.components = components;
+      return values
     } else {
-      return t7.getTemplateFromCache(precompiledObj.templateKey, precompiledObj.values, components);
+      return t7.getTemplateFromCache(endVal.templateKey, values, components);
     }
   };
 
