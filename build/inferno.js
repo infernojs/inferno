@@ -125,7 +125,7 @@ Inferno.render = function (render, dom, listeners, component) {
       } else if (render.length > 0) {
         values = render;
       }
-      updateNode(dom.rootNode[0], dom.rootNode, dom, values, null, listeners, component);
+      updateNode(dom.rootNode[0], dom.rootNode, dom, values, listeners, component);
     }
   } else {
     if (component._rootNode == null) {
@@ -138,7 +138,7 @@ Inferno.render = function (render, dom, listeners, component) {
       }
     } else {
       values = render();
-      updateNode(component._rootNode[0], component._rootNode, dom, values, 0, null, listeners, component);
+      updateNode(component._rootNode[0], component._rootNode, dom, values, 0, listeners, component);
     }
   }
   //otherwise we progress with an update
@@ -443,29 +443,23 @@ function removeNode(node, parentDom) {
   parentDom.removeChild(node.dom);
 };
 
-function updateNode(node, parentNode, parentDom, values, index, valIndex, listeners, component) {
+function updateNode(node, parentNode, parentDom, values, index, listeners, component) {
   var i = 0,
       s = 0,
       l = 0,
       val = "",
       key = "",
+      length = 0,
       childNode = null,
       endValue = null;
 
   if (node.isDynamic === false) {
     return;
   }
-  //we need to get the actual values and the templatekey
-  if (valIndex != null) {
-    endValue = values[valIndex][values[valIndex].length - 1];
-    if (node.templateKey && node.templateKey !== endValue.templateKey) {
-      //TODO, basically copy below
-      node.templateKey = endValue.templateKey;
-    }
-    values = values[valIndex];
-  } else {
+
+  if (node.templateKey != null && values instanceof Array) {
     endValue = values[values.length - 1];
-    if (node.templateKey && node.templateKey !== endValue.templateKey) {
+    if (node.templateKey !== endValue.templateKey) {
       //remove node
       removeNode(node, parentDom);
       //and then we want to create the new node (we can simply get it from t7 cache)
@@ -477,7 +471,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
   }
 
   //if this is a component
-  if (node.component instanceof Component) {
+  if (node.component != null && node.component instanceof Component) {
     if (node.propsValueKeys) {
       for (key in node.propsValueKeys) {
         node.props[key] = values[node.propsValueKeys[key]];
@@ -488,14 +482,12 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
   }
 
   if (node.attrs != null && node.hasDynamicAttrs === true) {
-    for (i = 0; i < node.attrs.length; i = i + 1 | 0) if (events[node.attrs[i].name] == null) {
-      {
-        if (node.attrs[i].value instanceof ValueNode) {
-          val = values[node.attrs[i].value.valueKey];
-          if (val !== node.attrs[i].value.lastValue) {
-            node.attrs[i].value.lastValue = val;
-            handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
-          }
+    for (i = 0, length = node.attrs.length; i < length; i = i + 1 | 0) if (events[node.attrs[i].name] == null) {
+      if (node.attrs[i].value instanceof ValueNode) {
+        val = values[node.attrs[i].value.valueKey];
+        if (val !== node.attrs[i].value.lastValue) {
+          node.attrs[i].value.lastValue = val;
+          handleNodeAttributes(node.tag, node.dom, node.attrs[i].name, val);
         }
       }
     }
@@ -503,8 +495,8 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
 
   if (node instanceof ValueNode && node.isRoot) {
     val = values[node.valueKey];
-    endValue = val[val.length - 1];
-    if (endValue != null && endValue.templateKey != null) {
+    if (node.value.templateKey != null) {
+      endValue = val[val.length - 1];
       if (node.value.templateKey !== endValue.templateKey) {
         //we want to remove the DOM current node
         //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
@@ -520,15 +512,15 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
     if (val !== node.lastValue) {
       //array of array here
       if (node.value instanceof Array) {
-        for (i = 0; i < node.value.length; i = i + 1 | 0) {
-          if (typeof node.value[i] !== "string") {
-            updateNode(node.value[i], node, parentDom, val, i, i, listeners, component);
+        for (i = 0, length = node.value.length; i < length; i = i + 1 | 0) {
+          if (typeof node.value[i] !== "string" || typeof node.value[i] !== "number") {
+            updateNode(node.value[i], node, parentDom, val[i], i, listeners, component);
           }
         }
       } else if (node.value.children instanceof Array) {
-        for (i = 0; i < node.value.children.length; i = i + 1 | 0) {
-          if (typeof node.value.children[i] !== "string") {
-            updateNode(node.value.children[i], node.value, node.value.dom, val, i, null, listeners, component);
+        for (i = 0, length = node.value.children.length; i < length; i = i + 1 | 0) {
+          if (typeof node.value.children[i] !== "string" || typeof node.value.children[i] !== "number") {
+            updateNode(node.value.children[i], node.value, node.value.dom, val, i, listeners, component);
           }
         }
       }
@@ -536,7 +528,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
     }
   } else if (node.children != null) {
     if (node.children instanceof Array) {
-      for (i = 0; i < node.children.length; i = i + 1 | 0) {
+      for (i = 0, length = node.children.length; i < length; i = i + 1 | 0) {
         if (node.children[i].isDynamic === true) {
           if (node.children[i] instanceof ValueNode && !node.children[i].isRoot) {
             val = values[node.children[i].valueKey];
@@ -551,15 +543,15 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
               setTextContent(node.dom.childNodes[i], val, true);
             }
           } else {
-            updateNode(node.children[i], node, node.dom, values, i, null, listeners, component);
+            updateNode(node.children[i], node, node.dom, values, i, listeners, component);
           }
         }
       }
     } else if (node.children instanceof ValueNode && node.children.isRoot === true) {
       //check if the value has changed
       val = values[node.children.valueKey];
-      endValue = val[val.length - 1];
-      if (endValue != null && endValue.templateKey != null) {
+      if (node.children.templateKey != null) {
+        endValue = val[val.length - 1];
         if (node.children.templateKey !== endValue.templateKey) {
           //we want to remove the DOM current node
           //TODO for optimisation do we want to clone this? and if possible, re-use the clone rather than
@@ -567,16 +559,17 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
           removeNode(node.children.value, node.dom);
           //and then we want to create the new node (we can simply get it from t7 cache)
           node.children.value = t7.getTemplateFromCache(endValue.templateKey, val);
-          createNode(node.children.value, node.children, node.dom, val, null, i, listeners, component);
+          createNode(node.children.value, node.children, node.dom, val[i], null, listeners, component);
           //then we want to set the new templatekey
           node.children.templateKey = endValue.templateKey;
           node.children.lastValue = values;
         }
       }
-      if (val !== node.children.lastValue) {
-        if (val instanceof Array) {
-          //check if the sizes have changed
-          //in this case, our new array has more items so we'll need to add more children
+
+      if (val !== node.children.lastValue && val instanceof Array) {
+        //check if the sizes have changed
+        //in this case, our new array has more items so we'll need to add more children
+        if (val.length !== node.children.lastValue.length) {
           if (val.length > node.children.lastValue.length) {
             //easiest way to add another child is to clone the node, so let's clone the first child
             //TODO check the templates coming back have the same code?
@@ -596,19 +589,19 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
               node.children.value.pop();
             }
           }
-          for (i = 0; i < node.children.value.length; i = i + 1 | 0) {
-            if (typeof node.children.value[i] !== "string" && typeof node.children.value[i] !== "number") {
-              updateNode(node.children.value[i], node.children.value, node.dom, val, i, i, listeners, component);
-            }
+        }
+        for (i = 0, length = node.children.value.length; i < length; i = i + 1 | 0) {
+          if (typeof node.children.value[i] === "object") {
+            updateNode(node.children.value[i], node.children.value, node.dom, val[i], i, listeners, component);
           }
         }
         node.children.lastValue = val;
       }
     } else if (node.children instanceof ValueNode) {
       val = values[node.children.valueKey];
-      if (val instanceof Array) {
+      if (node.templateKey != null && val instanceof Array) {
         endValue = val[val.length - 1];
-        if (endValue != null && endValue.templateKey != null) {
+        if (node.templateKey !== endValue.templateKey) {
           node.templateKey = endValue.templateKey;
           val = values;
         }
