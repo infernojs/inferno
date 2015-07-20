@@ -1403,7 +1403,7 @@ var t7 = (function() {
   t7.getTemplateFromCache = function(templateKey, values, components) {
     //we need to normalie the values so we don't have objects with templateKey and values
     var newValues = []
-    if(values.length > 2) {
+    if(values.length > 1) {
       cleanValues(values, newValues);
     } else {
       newValues = values;
