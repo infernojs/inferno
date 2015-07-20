@@ -657,7 +657,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.16";
+  var version = "0.2.18";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -1293,7 +1293,7 @@ var t7 = (function() {
     var i = 0, ii = 0, val = null, endVal = null;
     for(i = 0; i < values.length; i = i + 1 | 0) {
       val = values[i];
-      if(val instanceof Array) {
+      if(val instanceof Array && val.length > 0) {
         endVal = val[val.length - 1];
         if(endVal.templateKey != null) {
           newValues[i] = t7.getTemplateFromCache(endVal.templateKey, val);
