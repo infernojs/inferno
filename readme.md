@@ -1,7 +1,9 @@
 # InfernoJS
 
 Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno achieves great performance for demanding applications by using virtual DOM as a lightweight representation of the
-actual DOM to construct interfaces in a simple manner. However, unlike other frameworks that use virtual DOMs, Inferno does not diff the virtual DOM on each update, but rather it knows what parts of interface are static and only diffs parts that have changed. This technique allows Inferno to achieve blazingly fast DOM operations with very little overhead.
+actual DOM to construct interfaces in a simple manner. However, unlike other frameworks that use virtual DOMs, Inferno does not "diff" the virtual DOM on each update, but rather it carries out a "diff" on the actual values themselves. This technique allows Inferno to achieve lightning fast DOM operations with very little overhead.
+
+Furthermore, Inferno deals exclusively with t7 templates. [t7](https://github.com/trueadm/t7) parses template strings into optimised virtual DOM nodes that Inferno understands. Inferno then takes theses virtual DOM nodes and produces two sets of trees: a DOM tree and a value tree. It can then use both of these trees to intelligently make decisions based on what has changed and what needs to be created/removed/updated.
 
 ## Overview
 
@@ -72,7 +74,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 Inferno.render(t7`<div></div>`, document.body);
 ```
 
-Render a virtual DOM node into the DOM in the supplied container and return a reference to the component. If the t7 template was previously rendered into container, this will
+Render a t7 template into the DOM in the supplied container and return a reference to the component. If the t7 template was previously rendered into container, this will
 perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno component.
 
 ### Inferno.unmountComponentAtNode
@@ -91,7 +93,7 @@ Remove a rendered Inferno component from the DOM and clean up its event handlers
 Inferno.renderToString(t7`<MyComponent></MyComponent>`);
 ```
 
-Render a virtual DOM node to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
+Render a t7 template to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
 
 ### Inferno.createElement
 
