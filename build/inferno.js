@@ -4,7 +4,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var t7 = require("t7");
+var t7 = require("../t7");
 
 var supportsTextContent = ("textContent" in document);
 
@@ -569,7 +569,7 @@ function updateNode(node, parentNode, parentDom, values, index, listeners, compo
       if (val !== node.children.lastValue && val instanceof Array) {
         //check if the sizes have changed
         //in this case, our new array has more items so we'll need to add more children
-        if (val.length !== node.children.lastValue.length) {
+        if (node.children.lastValue != null && val.length !== node.children.lastValue.length) {
           if (val.length > node.children.lastValue.length) {
             //easiest way to add another child is to clone the node, so let's clone the first child
             //TODO check the templates coming back have the same code?
@@ -577,7 +577,8 @@ function updateNode(node, parentNode, parentDom, values, index, listeners, compo
               if (node.children.value.length > 0) {
                 childNode = cloneNode(node.children.value[0], node.dom);
               } else {
-                childNode = t7.getTemplateFromCache(val[s].templateKey, val[s].values);
+                endValue = val[s][val[s].length - 1];
+                childNode = t7.getTemplateFromCache(endValue.templateKey, val[s]);
                 createNode(childNode, node, node.dom, val, null, i, listeners, component);
               }
               node.children.value.push(childNode);
