@@ -656,7 +656,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.12";
+  var version = "0.2.14";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -1239,7 +1239,7 @@ var t7 = (function() {
       if(precompile === true) {
         return {
           templateKey: templateKey,
-          template: '"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];return ' + scriptCode
+          template: 'return ' + scriptCode
         }
       } else {
         if(isBrowser === true) {
