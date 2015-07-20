@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "A framework for building lightning fast user interfaces",
   "main": "inferno.js",
   "scripts": {
