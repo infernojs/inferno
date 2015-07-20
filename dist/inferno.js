@@ -2,7 +2,7 @@
 "use strict";
 
 var Inferno = require("./inferno.js");
-var t7 = require("../t7");
+var t7 = require("t7");
 
 t7.setOutput(t7.Outputs.Inferno);
 
@@ -14,14 +14,14 @@ if (typeof window != "undefined") {
 }
 
 
-},{"../t7":3,"./inferno.js":2}],2:[function(require,module,exports){
+},{"./inferno.js":2,"t7":3}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var t7 = require("../t7");
+var t7 = require("t7");
 
 var supportsTextContent = ("textContent" in document);
 
@@ -637,7 +637,7 @@ function updateNode(node, parentNode, parentDom, values, index, listeners, compo
 module.exports = Inferno;
 
 
-},{"../t7":3}],3:[function(require,module,exports){
+},{"t7":3}],3:[function(require,module,exports){
 /*
 
   t7.js is a small, lightweight library for compiling ES2015 template literals
@@ -657,7 +657,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.15";
+  var version = "0.2.16";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -1410,7 +1410,6 @@ var t7 = (function() {
     }
     return t7._cache[templateKey](newValues, components);
   };
-
 
   //set the type to React as default if it exists in global scope
   output = typeof React != "undefined" ? t7.Outputs.React
