@@ -1,8 +1,8 @@
 # InfernoJS
 
-Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno strives to delivery the best performance for not only initial
-page render times, but for sequential and random update render times too. Like React and Mitrhil, Inferno adopts elements of a virtual DOM as a lightweight representation of the
-actual DOM. However, unlike other frameworks that use virtual DOMs, Inferno does not carry out expensive diffs on the virtual DOM, but on the values within the virtual DOM.
+Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno's key characteristic is performance, under the hood it uses virtual DOM as a lightweight representation of the
+actual DOM. However, unlike other frameworks that use virtual DOMs, Inferno does not diff its virtual DOM on each update, but rather it checks the non-static parts of the virtual DOM and checks parts that have only
+been updated. This technique allows Inferno to achieve blazingly fast DOM operations with very little overhead.
 
 ## Overview
 
