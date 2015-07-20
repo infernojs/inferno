@@ -101,6 +101,13 @@ Inferno.createClass = function (options) {
   return component;
 };
 
+Inferno.unmountComponentAtNode = function (node) {
+  //TODO finish, remove events etc
+  var domParent = node.rootNode[0].dom.parentNode;
+  //this step below is not needed
+  //domParent.removeChild(node.rootNode[0].dom);
+};
+
 Inferno.render = function (render, dom, listeners, component) {
   var rootNode = null;
   var endValue = null;
