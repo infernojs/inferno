@@ -55,8 +55,8 @@ module.exports = function(grunt) {
   grunt.registerTask('build', [
     'babel',
     'browserify',
-    'closure-compiler'
-    // 'uglify'
+    // 'closure-compiler'
+    'uglify'
   ]);
 
   grunt.registerTask('watch', [

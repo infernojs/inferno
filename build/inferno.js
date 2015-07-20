@@ -78,8 +78,27 @@ var Component = (function () {
 
 Inferno.Component = Component;
 
+function PrototypeComponent(props) {
+  this.props = props;
+  this.state = {};
+  if (this.constructor) {
+    this.constructor();
+  }
+};
+
+PrototypeComponent.prototype.forceUpdate = function () {};
+
 Inferno.createValueNode = function (value, valueKey) {
   return new ValueNode(value, valueKey);
+};
+
+Inferno.createClass = function (options) {
+  var component = new PrototypeComponent();
+  // PrototypeComponent.prototype.constructor = options.constructor;
+  for (var property in options) {
+    PrototypeComponent[property] = options[property];
+  }
+  return component;
 };
 
 Inferno.render = function (render, dom, listeners, component) {
@@ -578,7 +597,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
             }
           }
           for (i = 0; i < node.children.value.length; i = i + 1 | 0) {
-            if (typeof node.children.value[i] !== "string") {
+            if (typeof node.children.value[i] !== "string" && typeof node.children.value[i] !== "number") {
               updateNode(node.children.value[i], node.children.value, node.dom, val, i, i, listeners, component);
             }
           }
@@ -587,10 +606,12 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
       }
     } else if (node.children instanceof ValueNode) {
       val = values[node.children.valueKey];
-      endValue = val[val.length - 1];
-      if (endValue != null && endValue.templateKey != null) {
-        node.templateKey = endValue.templateKey;
-        val = values;
+      if (val instanceof Array) {
+        endValue = val[val.length - 1];
+        if (endValue != null && endValue.templateKey != null) {
+          node.templateKey = endValue.templateKey;
+          val = values;
+        }
       }
       if (val !== node.children.lastValue) {
         node.children.lastValue = val;

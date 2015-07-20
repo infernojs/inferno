@@ -95,8 +95,27 @@ var Component = (function () {
 
 Inferno.Component = Component;
 
+function PrototypeComponent(props) {
+  this.props = props;
+  this.state = {};
+  if (this.constructor) {
+    this.constructor();
+  }
+};
+
+PrototypeComponent.prototype.forceUpdate = function () {};
+
 Inferno.createValueNode = function (value, valueKey) {
   return new ValueNode(value, valueKey);
+};
+
+Inferno.createClass = function (options) {
+  var component = new PrototypeComponent();
+  // PrototypeComponent.prototype.constructor = options.constructor;
+  for (var property in options) {
+    PrototypeComponent[property] = options[property];
+  }
+  return component;
 };
 
 Inferno.render = function (render, dom, listeners, component) {
@@ -595,7 +614,7 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
             }
           }
           for (i = 0; i < node.children.value.length; i = i + 1 | 0) {
-            if (typeof node.children.value[i] !== "string") {
+            if (typeof node.children.value[i] !== "string" && typeof node.children.value[i] !== "number") {
               updateNode(node.children.value[i], node.children.value, node.dom, val, i, i, listeners, component);
             }
           }
@@ -604,10 +623,12 @@ function updateNode(node, parentNode, parentDom, values, index, valIndex, listen
       }
     } else if (node.children instanceof ValueNode) {
       val = values[node.children.valueKey];
-      endValue = val[val.length - 1];
-      if (endValue != null && endValue.templateKey != null) {
-        node.templateKey = endValue.templateKey;
-        val = values;
+      if (val instanceof Array) {
+        endValue = val[val.length - 1];
+        if (endValue != null && endValue.templateKey != null) {
+          node.templateKey = endValue.templateKey;
+          val = values;
+        }
       }
       if (val !== node.children.lastValue) {
         node.children.lastValue = val;
@@ -642,7 +663,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.11";
+  var version = "0.2.12";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -834,7 +855,6 @@ var t7 = (function() {
       if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno || output === t7.Outputs.Mithril) {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
-          component
           if(isComponentName(root.tag) === false) {
             functionText.push("{tag: '" + root.tag + "'");
             //add the key
@@ -857,7 +877,6 @@ var t7 = (function() {
           } else {
             if(((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
               throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
-              return;
             }
             if(output === t7.Outputs.Universal) {
               //we need to apply the tag components
@@ -887,7 +906,6 @@ var t7 = (function() {
           if(isComponentName(root.tag) === true) {
             if(((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
               throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
-              return;
             }
             functionText.push("React.createElement(__$components__." + root.tag);
           } else {
@@ -977,7 +995,6 @@ var t7 = (function() {
           if(tagContent !== "/" + parent.tag && selfClosingTags.indexOf(parent.tag) === -1 && !parent.closed) {
             console.error("Template error: " + applyValues(html, values));
             throw new Error("Expected corresponding t7 closing tag for '" + parent.tag + "'.");
-            return;
           }
           //when the childText is not empty
           if(childText.trim() !== "") {
