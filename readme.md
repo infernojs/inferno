@@ -36,7 +36,7 @@ t7.module(funciton(t7) {
   }
 
   t7.assign("Component", Component);
-  Inferno.render(`<Component />`, document.body);
+  Inferno.render(t7`<Component />`, document.body);
 });
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
@@ -49,6 +49,55 @@ This is essential for low-power devices such as tablets and phones, where users 
 - Inferno requires the [t7 template](https://github.com/trueadm/t7) library to parse its templates into optimised Inferno virtual DOM objects.
 - Inferno is light-weight and compact – it doesn't have routers, controllers or Flux built-in. It doesn't have any hard dependencies other than `t7` (which comes bundled with Inferno).
 - Inferno is isomorphic and can easily be compiled and run on the server (via Node).
+
+## Inferno Top-Level API
+
+[This section is still under development]
+
+### Inferno.Component
+
+```javascript
+class MyComponent extends Component {
+  render() {
+    ...
+  }
+}
+```
+
+This is the base class for Inferno Components when they're defined using ES6 classes.
+
+### Inferno.render
+
+```javascript
+Inferno.render(t7`<div></div>`, document.body);
+```
+
+Render a virtual DOM node into the DOM in the supplied container and return a reference to the component. If the t7 template was previously rendered into container, this will
+perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno component.
+
+### Inferno.unmountComponentAtNode
+
+```javascript
+Inferno.unmountComponentAtNode(document.getElementById("myApp"));
+```
+
+Remove a rendered Inferno component from the DOM and clean up its event handlers and state.
+
+### Inferno.renderToString
+
+[Development in progress]
+
+```javascript
+Inferno.renderToString(t7`<MyComponent></MyComponent>`);
+```
+
+Render a virtual DOM node to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
+
+### Inferno.createElement
+
+[Development in progress]
+
+An alternative to using t7 for generating virtual DOM nodes for Inferno.
 
 ## Performance
 
