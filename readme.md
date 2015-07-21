@@ -5,6 +5,8 @@ actual DOM to construct interfaces in a simple manner. However, unlike other fra
 
 Furthermore, Inferno deals exclusively with t7 templates. [t7](https://github.com/trueadm/t7) parses template strings into optimised virtual DOM nodes that Inferno understands. Inferno then takes theses virtual DOM nodes and produces two sets of trees: a DOM tree and a value tree. It can then use both of these trees to intelligently make decisions based on what has changed and what needs to be created/removed/updated.
 
+Note: Inferno is still in early development. Documentation, test coverage and features are a work-in-progress.
+
 ## Overview
 
 Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.
@@ -126,5 +128,6 @@ release has been stated. Features that still need to be completed:
 ## Benchmarks
 
 - [vdom-benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
+- [dbmonster (ES6 classes)](http://infernojs.org/benchmarks/dbmonster/)
+- [dbmonster (no ES6 classes)](http://infernojs.org/benchmarks/dbmonster/inferno-dbmonster-raw-es5.html)
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
