@@ -54,6 +54,13 @@ This is essential for low-power devices such as tablets and phones, where users 
 - Inferno is light-weight and compact – it doesn't have routers, controllers or Flux built-in. It doesn't have any hard dependencies other than `t7` (which comes bundled with Inferno).
 - Inferno is isomorphic and can easily be compiled and run on the server (via Node).
 
+## Benchmarks
+
+- [vdom-benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
+- [dbmonster (ES6 classes)](http://infernojs.org/benchmarks/dbmonster/)
+- [dbmonster (no ES6 classes)](http://infernojs.org/benchmarks/dbmonster/inferno-dbmonster-raw-es5.html)
+- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
+
 ## Inferno Top-Level API
 
 [This section is still under development]
@@ -124,10 +131,3 @@ release has been stated. Features that still need to be completed:
 - More input events need to be added as does the case of the root input delegation source
 - There are currently no tests in place, this needs to be done
 - There is no API documentation or general documentation available
-
-## Benchmarks
-
-- [vdom-benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster (ES6 classes)](http://infernojs.org/benchmarks/dbmonster/)
-- [dbmonster (no ES6 classes)](http://infernojs.org/benchmarks/dbmonster/inferno-dbmonster-raw-es5.html)
-- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
