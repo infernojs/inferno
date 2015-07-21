@@ -117,12 +117,14 @@ Inferno is still in early development and there are still many missing features 
 release has been stated. Features that still need to be completed:
 
 - Cloning nodes needs refining and completing
+- Keyed nodes need adding
+- Refs needs adding
 - More input events need to be added as does the case of the root input delegation source
-- Performance can be slower than desired when dealing with many template keys, refactor needed of template keys returned as values
 - There are currently no tests in place, this needs to be done
 - There is no API documentation or general documentation available
 
 ## Benchmarks
 
+- [vdom-benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
 - [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
