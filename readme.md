@@ -56,7 +56,7 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ## Benchmarks
 
-- [vdom-benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
+- [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
 - [dbmonster (ES6 classes)](http://infernojs.org/benchmarks/dbmonster/)
 - [dbmonster (no ES6 classes)](http://infernojs.org/benchmarks/dbmonster/inferno-dbmonster-raw-es5.html)
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
