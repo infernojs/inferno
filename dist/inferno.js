@@ -60,8 +60,8 @@ if (typeof window != "undefined") {
 }
 
 function addRootDomEventListerners() {
-  if (rootlisteners !== null && initialisedListeners === false) {
-    initialisedListeners = true;
+  initialisedListeners = true;
+  if (rootlisteners !== null) {
     document.addEventListener("click", function (e) {
       for (var i = 0; i < rootlisteners.click.length; i = i + 1 | 0) {
         if (rootlisteners.click[i].target === e.target) {
@@ -236,38 +236,43 @@ function removeChild(domElement, child) {
   }
 }
 
-function createAllChildren(domNode, node, ns, children, inFragment) {
+function createAllChildren(domNode, node, ns, children, inFragment, component) {
   var childrenType = getChildrenType(children);
   if (childrenType > 1) {
     for (var i = 0, childrenLength = children.length; i < childrenLength; i = i + 1 | 0) {
-      createNode(normIndex(children, i), domNode, ns);
+      createNode(normIndex(children, i), domNode, component, ns);
     }
   } else if (childrenType !== 0) {
     var child = getOnlyChild(children, childrenType);
-    if (typeof child === "number") {
-      child = child.toString();
-    }
     if (!inFragment && isString(child)) {
       setTextContent(domNode, child);
     } else {
       child = normOnly(node, child);
-      createNode(child, domNode, ns, null, false, !inFragment);
+      createNode(child, domNode, component, ns, null, false, !inFragment);
     }
   }
 }
 
-function createNode(node, domParent, parentNs, nextChild, replace, isOnlyDomChild) {
+function createNode(node, domParent, component, parentNs, nextChild, replace, isOnlyDomChild) {
   if (isTrident) {
     return insertNodeHTML(node, domParent, nextChild, replace);
   }
 
   //check if this is a value node
   if (node.index !== undefined) {
+    if (typeof node.value === "number") {
+      node.value = node.value.toString();
+    }
     if (typeof node.value === "string") {
       node.lastValue = node.value;
-      setTextContent(domParent, node.value, false);
+      if (isOnlyDomChild) {
+        setTextContent(domParent, node.value, false);
+      } else {
+        domNode = document.createTextNode(node.value);
+        insertChild(domParent, domNode, nextChild, replace);
+      }
     } else {
-      createAllChildren(domParent, node, ns, node.value, false);
+      createAllChildren(domParent, node, ns, node.value, false, component);
     }
     return;
   }
@@ -298,6 +303,7 @@ function createNode(node, domParent, parentNs, nextChild, replace, isOnlyDomChil
         return;
       } else {
         domNode = document.createTextNode(children);
+        insertChild(domParent, domNode, nextChild, replace);
       }
       break;
     default:
@@ -331,14 +337,14 @@ function createNode(node, domParent, parentNs, nextChild, replace, isOnlyDomChil
         if (typeof children === "string") {
           setTextContent(domNode, children, false);
         } else if (node.children.index !== undefined) {
-          createAllChildren(domNode, node, ns, node.children.value, false);
+          createAllChildren(domNode, node, ns, node.children.value, false, component);
         } else {
-          createAllChildren(domNode, node, ns, children, false);
+          createAllChildren(domNode, node, ns, children, false, component);
         }
       }
 
       if (attrs) {
-        updateAttributes(domNode, tag, ns, attrs);
+        updateAttributes(domNode, tag, ns, attrs, null, component);
       }
       if (!isTrident && domParent) {
         insertChild(domParent, domNode, nextChild, replace);
@@ -349,8 +355,6 @@ function createNode(node, domParent, parentNs, nextChild, replace, isOnlyDomChil
     insertChild(domParent, domNode, nextChild, replace);
   }
 }
-
-//addRootDomEventListerners
 
 Inferno.append = function (node, domParent) {
   createNode(node, domParent);
@@ -367,11 +371,13 @@ Inferno.render = function (values, domParent, component) {
     if (component._rootNode === undefined) {
       t7.setValuesOnly(false);
       node = values();
-      createNode(node, domParent);
+      createNode(node, domParent, component);
       component._rootNode = node;
     } else {}
   } else if (domParent.__rootNode === undefined) {
-    //create rootNode
+    if (initialisedListeners === false) {
+      addRootDomEventListerners();
+    }
     node = values.nodeTree(values, values.components);
     createNode(node, domParent);
     domParent.__rootNode = node;
@@ -453,21 +459,34 @@ function isInputProperty(tag, attrName) {
   }
 };
 
-function updateAttributes(domElement, tag, ns, attrs, oldAttrs, recordChanges) {
-  var changes, attrName;
+function updateAttributes(domElement, tag, ns, attrs, oldAttrs, component) {
+  var attrName;
   if (attrs) {
     for (attrName in attrs) {
       var changed = false,
           attrValue = attrs[attrName];
+      if (attrValue.index !== undefined) {
+        if (events[attrName] != null) {
+          //TODO check if event is already added?
+          rootlisteners[events[attrName]].push({
+            target: domElement,
+            callback: attrValue.value,
+            component: component
+          });
+          return;
+        } else {
+          attrValue.lastValue = attrValue.value;
+          attrValue = attrValue.value;
+        }
+      }
       if (attrName === "style") {
         var oldAttrValue = oldAttrs && oldAttrs[attrName];
         if (oldAttrValue !== attrValue) {
-          changed = updateStyle(domElement, oldAttrValue, attrs, attrValue);
+          updateStyle(domElement, oldAttrValue, attrs, attrValue);
         }
       } else if (isInputProperty(tag, attrName)) {
         if (domElement[attrName] !== attrValue) {
           domElement[attrName] = attrValue;
-          changed = true;
         }
       } else if (!oldAttrs || oldAttrs[attrName] !== attrValue) {
         if (attrName === "class" && !ns) {
@@ -475,10 +494,6 @@ function updateAttributes(domElement, tag, ns, attrs, oldAttrs, recordChanges) {
         } else {
           updateAttribute(domElement, attrName, attrValue);
         }
-        changed = true;
-      }
-      if (changed && recordChanges) {
-        (changes || (changes = [])).push(attrName);
       }
     }
   }
@@ -490,13 +505,9 @@ function updateAttributes(domElement, tag, ns, attrs, oldAttrs, recordChanges) {
         } else if (!isInputProperty(tag, attrName)) {
           domElement.removeAttribute(attrName);
         }
-        if (recordChanges) {
-          (changes || (changes = [])).push(attrName);
-        }
       }
     }
   }
-  return changes;
 }
 
 function updateAttribute(domElement, name, value) {
@@ -519,6 +530,54 @@ function updateAttribute(domElement, name, value) {
     domElement.setAttribute(name, value);
   }
 };
+
+function updateStyle(domElement, oldStyle, attrs, style) {
+  var propName;
+  if (!isString(style) && (!supportsCssSetProperty || !oldStyle || isString(oldStyle))) {
+    var styleStr = "";
+    if (style) {
+      for (propName in style) {
+        styleStr += propName + ": " + style[propName] + "; ";
+      }
+    }
+    style = styleStr;
+    if (!supportsCssSetProperty) {
+      attrs.style = style;
+    }
+  }
+  var domStyle = domElement.style;
+  if (isString(style)) {
+    domStyle.cssText = style;
+  } else {
+    if (style) {
+      for (propName in style) {
+        // TODO should important properties even be supported?
+        var propValue = style[propName];
+        if (!oldStyle || oldStyle[propName] !== propValue) {
+          var importantIndex = propValue.indexOf("!important");
+          if (importantIndex !== -1) {
+            domStyle.setProperty(propName, propValue.substr(0, importantIndex), "important");
+          } else {
+            if (oldStyle) {
+              var oldPropValue = oldStyle[propName];
+              if (oldPropValue && oldPropValue.indexOf("!important") !== -1) {
+                domStyle.removeProperty(propName);
+              }
+            }
+            domStyle.setProperty(propName, propValue, "");
+          }
+        }
+      }
+    }
+    if (oldStyle) {
+      for (propName in oldStyle) {
+        if (!style || style[propName] === undefined) {
+          domStyle.removeProperty(propName);
+        }
+      }
+    }
+  }
+}
 
 function setTextContent(domElement, text, update) {
   //if (text) {
@@ -545,22 +604,6 @@ function handleNodeAttributes(tag, domElement, attrName, attrValue) {
   } else {
     updateAttribute(domElement, attrName, attrValue);
   }
-};
-
-function addRootDomEventListerners(domNode) {
-  var listeners = {
-    click: []
-  };
-  domNode.addEventListener("click", function (e) {
-    for (var i = 0; i < listeners.click.length; i = i + 1 | 0) {
-      if (listeners.click[i].target === e.target) {
-        listeners.click[i].callback.call(listeners.click[i].component, e);
-        //Let's take this out for now
-        //listeners.click[i].component.forceUpdate();
-      }
-    }
-  });
-  return listeners;
 };
 
 module.exports = Inferno;
