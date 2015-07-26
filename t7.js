@@ -17,8 +17,7 @@ var t7 = (function() {
   var output = null;
   var selfClosingTags = [];
   var precompile = false;
-  var version = "0.2.18";
-  var valuesOnly = false;
+  var version = "0.2.19";
 
   if(isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
@@ -59,16 +58,7 @@ var t7 = (function() {
             root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm,"");
             matches = root.children[i].match(/__\$props__\[\d*\]/g);
             if(matches !== null) {
-              if(output === t7.Outputs.Inferno) {
-                //let's see if we can get all the placeholder values and their keys
-                root.children[i] = root.children[i].replace(/(__\$props__\[([0-9]*)\])/g, "{value: $1, index: $2}")
-                if(root.children[i].substring(root.children[i].length - 1) === ",") {
-                  root.children[i] = root.children[i].substring(0, root.children[i].length - 1);
-                }
-                childrenText.push(root.children[i]);
-              } else {
-                childrenText.push(root.children[i]);
-              }
+              childrenText.push(root.children[i]);
             } else {
               childrenText.push("'" + root.children[i] + "'");
             }
@@ -90,11 +80,7 @@ var t7 = (function() {
       matches = root.children.match(/__\$props__\[\d*\]/g);
       //find any template strings and replace them
       if(matches !== null) {
-        if(output === t7.Outputs.Inferno) {
-          root.children = root.children.replace(/(__\$props__\[([0-9]*)\])/g, "{value: $1, key: $2}")
-        } else {
-          root.children = root.children.replace(/(__\$props__\[.*\])/g, "',$1,'")
-        }
+        root.children = root.children.replace(/(__\$props__\[.*\])/g, "',$1,'")
       }
       //if the last two characters are ,', replace them with nothing
       if(root.children.substring(root.children.length - 2) === ",'") {
@@ -180,9 +166,9 @@ var t7 = (function() {
       val = root.attrs[name];
       matches = val.match(/__\$props__\[\d*\]/g);
       if(matches === null) {
-        attrsParams.push("'" + name + "':'" + val + "'");
+        attrsParams.push("'_" + name + "':'" + val + "'");
       } else {
-        attrsParams.push("'" + name + "':" + val.replace(/(__\$props__\[([0-9]*)\])/g, "{value: $1, index: $2}"));
+        attrsParams.push("'_" + name + "':" + val.replace(/(__\$props__\[([0-9]*)\])/g, "$1"));
       }
     }
   };
@@ -193,6 +179,14 @@ var t7 = (function() {
     }
     return false;
   };
+
+  function handleInfernoTag(tagName, functionText) {
+    if(Inferno.Tag[tagName.toUpperCase()]) {
+      functionText.push("{dom: null, tag: " + Inferno.Tag[tagName.toUpperCase()]);
+    } else {
+      functionText.push("{dom: null, tag: '" + tagName + "'");
+    }
+  }
 
   //This takes a vDom array and builds a new function from it, to improve
   //repeated performance at the cost of building new Functions()
@@ -211,16 +205,24 @@ var t7 = (function() {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
           if(isComponentName(root.tag) === false) {
-            functionText.push("{tag: '" + root.tag + "'");
+            if(output === t7.Outputs.Inferno) {
+              handleInfernoTag(root.tag, functionText);
+            } else {
+              functionText.push("{tag: " + root.tag + "'");
+            }
             //add the key
             if(root.key != null) {
               tagParams.push("key: " + root.key);
+            } else if(output === t7.Outputs.Inferno) {
+              tagParams.push("key: null");
             }
             //build the attrs
             if(root.attrs != null) {
               if(output === t7.Outputs.Inferno) {
                 buildInfernoAttrsParams(root, attrsParams);
-                tagParams.push("attrs: {" + attrsParams.join(',') + "}");
+                if(attrsParams.length > 0) {
+                  tagParams.push(attrsParams.join(','));
+                }
               } else {
                 buildAttrsParams(root, attrsParams);
                 tagParams.push("attrs: {" + attrsParams.join(',') + "}");
@@ -559,7 +561,6 @@ var t7 = (function() {
     var scriptCode = "";
     var templateKey = null;
     var tpl = template[0];
-    var returnValuesButBuildTemplate = false;
     var values = [].slice.call(arguments, 1);
 
     //build the template string
@@ -568,16 +569,7 @@ var t7 = (function() {
     };
     //set our unique key
     templateKey = createTemplateKey(tpl);
-    //For values only, return an array of all the values
-    if(output === t7.Outputs.Inferno && valuesOnly === true) {
-      if(t7._cache[templateKey] != null) {
-        values.nodeTree = t7._cache[templateKey];
-        values.components = this;
-        return values;
-      } else {
-        returnValuesButBuildTemplate = true;
-      }
-    }
+
     //check if we have the template in cache
     if(t7._cache[templateKey] == null) {
       fullHtml = '';
@@ -614,12 +606,6 @@ var t7 = (function() {
           t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];return ' + scriptCode);
         }
       }
-    }
-
-    if(returnValuesButBuildTemplate === true) {
-      values.nodeTree = t7._cache[templateKey];
-      values.components = this;
-      return values;
     }
     return t7._cache[templateKey](values, this);
   };
@@ -707,10 +693,6 @@ var t7 = (function() {
     instance.precompile = t7.precompile;
 
     callback(instance);
-  };
-
-  t7.setValuesOnly = function(val) {
-    valuesOnly = val;
   };
 
   t7.precompile = function(nodeTree, valueTree) {

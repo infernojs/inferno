@@ -6,8 +6,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var t7 = require("../t7");
 
-t7.setValuesOnly(true);
-
 var supportsTextContent = ("textContent" in document);
 
 var events = {
@@ -19,26 +17,62 @@ var userAgent = navigator.userAgent,
     isFirefox = userAgent.indexOf("Firefox") !== -1,
     isTrident = userAgent.indexOf("Trident") !== -1;
 
-var version = "0.1.2";
+var version = "0.1.24";
 
-var cachedNodes = null;
+var nodeTags = {
+  1: "div",
+  2: "span",
+  3: "a",
+  4: "p",
+  5: "li",
+  6: "td"
+};
+
 var rootlisteners = {
   click: []
 };
 var initialisedListeners = false;
 
+var cachedNodes = null;
+var cachedTextNodes = null;
+var recycledNodes = null;
+
 if (typeof window != "undefined") {
   cachedNodes = {
-    div: document.createElement("div"),
-    span: document.createElement("span"),
-    a: document.createElement("a"),
-    p: document.createElement("p"),
-    li: document.createElement("li"),
-    tr: document.createElement("tr"),
-    td: document.createElement("td")
+    1: document.createElement("div"),
+    2: document.createElement("span"),
+    3: document.createElement("a"),
+    4: document.createElement("p"),
+    5: document.createElement("li"),
+    6: document.createElement("td"),
+    7: document.createElement("td")
   };
+  cachedTextNodes = {
+    1: document.createElement("div"),
+    2: document.createElement("span"),
+    3: document.createElement("a"),
+    4: document.createElement("p"),
+    5: document.createElement("li"),
+    6: document.createElement("td"),
+    7: document.createElement("button")
+  };
+  recycledNodes = {
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: []
+  };
+  cachedTextNodes[1].textContent = " ";
+  cachedTextNodes[2].textContent = " ";
+  cachedTextNodes[3].textContent = " ";
+  cachedTextNodes[4].textContent = " ";
+  cachedTextNodes[5].textContent = " ";
+  cachedTextNodes[6].textContent = " ";
+  cachedTextNodes[7].textContent = " ";
 } else {
-  //we can't add listeners if we're not in the dom
   rootlisteners = null;
 }
 
@@ -58,6 +92,28 @@ function addRootDomEventListerners() {
 };
 
 var Inferno = {};
+
+Inferno.Tag = {
+  DIV: 1,
+  SPAN: 2,
+  A: 3,
+  P: 4,
+  LI: 5,
+  TD: 6,
+  BUTTON: 7
+};
+
+function isString(value) {
+  return typeof value === "string";
+}
+
+function isArray(value) {
+  return value instanceof Array;
+}
+
+function isFunction(value) {
+  return typeof value === "function";
+}
 
 var Component = (function () {
   function Component(props) {
@@ -94,80 +150,389 @@ var Component = (function () {
 
 Inferno.Component = Component;
 
-Inferno.tearDown = function (root) {
+module.exports = Inferno;
+
+Inferno.unmountComponentAtNode = function (root) {
   //TODO finish, remove events etc
-  //removeNode(node.rootNode[0]);
-  // if(node.dom) {
-  //   node.dom.removeChild(node.node[0].dom);
-  // } else {
-  //   node.rootNode[0].dom.innerHTML = "";
-  //   node.rootNode = null;
-  // }
-  var domParent = root.dom.parentNode;
-  removeChild(domParent, root);
-  root = null;
+  var node = root.__rootNode;
+  if (node) {
+    root.removeChild(node.dom);
+    recycleNodes(node);
+    root.__rootNode = null;
+  }
 };
 
-function norm(node, oldNode) {
-  var type = typeof node;
-  if (type === "string") {
-    node = { tag: "#", children: node };
-  } else if (type === "function") {
-    oldNode = node;
-    node = node();
-    node.construct = oldNode;
-    node = node === undefined ? oldNode : norm(node, oldNode);
+function recycleNodes(node) {
+  var i = 0;
+  for (var type in node.toRecycle) {
+    for (i = 0; i < node.toRecycle[type].length; i++) {
+      recycledNodes[type].push(node.toRecycle[type][i]);
+    }
   }
-  return node;
 }
 
-function normIndex(children, i, oldChild) {
-  var origChild = children[i],
-      child = norm(origChild, oldChild);
-  if (origChild !== child) {
-    children[i] = child;
-  }
-  return child;
-}
-
-function normOnly(node, origChild, oldChild) {
-  var child = norm(origChild, oldChild);
-  if (origChild !== child && node) {
-    node.children = child;
-  }
-  return child;
-}
-
-function insertChild(domParent, domNode, nextChild, replace) {
-  if (nextChild) {
-    var domNextChild = nextChild.dom;
-    if (replace) {
-      var domLength = nextChild.domLength || 1;
-      if (domLength === 1) {
-        destroyNode(nextChild);
-        domParent.replaceChild(domNode, domNextChild);
+function createChildren(rootNode, children, parentDom) {
+  var i = 0,
+      childDom = null,
+      childrenType = getChildrenType(children),
+      textNode = null;
+  if (childrenType > 1) {
+    for (i = 0; i < children.length; i++) {
+      if (typeof children[i] === "string") {
+        textNode = document.createTextNode(children[i]);
+        parentDom.appendChild(textNode);
+      } else if (typeof children[i] === "number") {
+        textNode = document.createTextNode(children[i].toString());
+        parentDom.appendChild(textNode);
       } else {
-        domParent.insertBefore(domNode, domNextChild);
-        removeChild(domParent, nextChild);
+        createNode(rootNode, children[i], parentDom);
+      }
+    }
+  } else if (childrenType !== 0) {
+    setTextContent(parentDom, children, false);
+  }
+}
+
+function createAllChildren(parentDom, node, children, inFragment) {
+  children = normChildren(node, children);
+  var childrenType = getChildrenType(children);
+  if (childrenType > 1) {
+    for (var i = 0, childrenLength = children.length; i < childrenLength; i++) {
+      createNode(null, normIndex(children, i), parentDom);
+    }
+  } else if (childrenType !== 0) {
+    var child = getOnlyChild(children, childrenType);
+    if (!inFragment && isString(child)) {
+      setTextContent(parentDom, child);
+    } else {
+      child = normOnly(node, child);
+      createNode(null, child, parentDom, null, false);
+    }
+  }
+}
+
+function getAttrsForNode(node) {
+  var attrs = {};
+  for (var property in node) {
+    if (property[0] === "_") {
+      attrs[property.substr(1)] = node[property];
+    }
+  }
+  return attrs;
+}
+
+function createNode(rootNode, node, parentDom, nextChild, replace) {
+  attachTemplateNode(node);
+
+  var domNode = node.dom;
+  var tag = node.tag;
+  var children = node.children;
+  var skipChildrenCreation = false;
+  var attrs = null;
+
+  if (node.component) {
+    //if its a component, we make a new instance
+    if (typeof node.component === "function") {
+      node.component = new node.component(node.props);
+      node.component.forceUpdate = Inferno.render.bind(null, node.component.render.bind(node.component), parentDom, node.component);
+      node.component.forceUpdate();
+      node.isDynamic = true;
+    }
+    //if this is a component
+    if (node.component instanceof Component) {
+      node.component.forceUpdate();
+    }
+    return;
+  }
+
+  if (tag) {
+    if (typeof children === "string") {
+      if (recycledNodes[tag].length > 0) {
+        domNode = recycledNodes[tag].pop();
+      } else {
+        domNode = cachedTextNodes[tag].cloneNode(true);
+      }
+      domNode.firstChild.nodeValue = children;
+      skipChildrenCreation = true;
+      if (rootNode !== null) {
+        rootNode.toRecycle[tag].push(domNode);
       }
     } else {
-      domParent.insertBefore(domNode, domNextChild);
+      if (typeof tag === "string") {
+        domNode = document.createElement(tag);
+      } else {
+        domNode = document.createElement(nodeTags[tag]);
+      }
+      attrs = getAttrsForNode(node);
     }
-  } else {
-    domParent.appendChild(domNode);
+  }
+
+  node.dom = domNode;
+
+  if (skipChildrenCreation === false && children !== null) {
+    createChildren(rootNode, children, domNode);
+  }
+
+  if (attrs) {
+    updateAttributes(domNode, tag, attrs);
+  }
+
+  if (domNode !== null) {
+    insertChild(parentDom, domNode, nextChild, replace);
   }
 }
 
-function isString(value) {
-  return typeof value === "string";
+function attachTemplateNode(node) {
+  var templateNode = node.templateNode;
+  if (templateNode) {
+    node.tag = templateNode.tag;
+  }
 }
 
-function isArray(value) {
-  return value instanceof Array;
+function updateChildren(parentDom, node, children, oldChildren, outerNextChild) {
+  children = normChildren(node, children, oldChildren);
+  var oldChildrenType = getChildrenType(oldChildren);
+  if (oldChildrenType === 0) {
+    createAllChildren(parentDom, node, children, false);
+    return;
+  }
+  var childrenType = getChildrenType(children),
+      oldChild,
+      child;
+  if (childrenType === 0) {
+    removeAllChildren(parentDom, oldChildren, oldChildrenType);
+    return;
+  } else if (childrenType < 2) {
+    child = getOnlyChild(children, childrenType);
+    if (isString(child)) {
+      if (childrenType === oldChildrenType) {
+        oldChild = getOnlyChild(oldChildren, oldChildrenType);
+        if (child === oldChild) {
+          return;
+        } else if (isString(oldChild)) {
+          parentDom.firstChild.nodeValue = child;
+          return;
+        }
+      }
+      destroyNodes(oldChildren, oldChildrenType);
+      setTextContent(parentDom, child, true);
+      return;
+    } else if (oldChildrenType < 2) {
+      oldChild = normOnlyOld(oldChildren, oldChildrenType, parentDom);
+      child = normOnly(element, child, oldChild);
+      updateNode(child, oldChild, parentDom, null, 0, outerNextChild);
+      return;
+    }
+  }
+
+  if (childrenType === -1) {
+    node.children = children = [children];
+  }
+  if (oldChildrenType < 2) {
+    oldChild = normOnlyOld(oldChildren, oldChildrenType, domParent);
+    if (oldChildrenType === 1) {
+      oldChildren[0] = oldChild;
+    } else {
+      oldChildren = [oldChild];
+    }
+  }
+
+  var oldChildrenLength = oldChildren.length,
+      childrenLength = children.length,
+      oldEndIndex = oldChildrenLength - 1,
+      endIndex = children.length - 1;
+
+  var oldStartIndex = 0,
+      startIndex = 0,
+      successful = true,
+      nextChild;
+
+  outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
+    successful = false;
+    var oldStartChild, oldEndChild, startChild, endChild;
+
+    oldStartChild = oldChildren[oldStartIndex];
+    startChild = normIndex(children, startIndex, oldStartChild);
+    while (oldStartChild.key === startChild.key) {
+      updateNode(startChild, oldStartChild, parentDom, oldChildren, oldStartIndex + 1, outerNextChild);
+      oldStartIndex++;startIndex++;
+      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+        break outer;
+      }
+      oldStartChild = oldChildren[oldStartIndex];
+      startChild = normIndex(children, startIndex, oldStartChild);
+      successful = true;
+    }
+    oldEndChild = oldChildren[oldEndIndex];
+    endChild = normIndex(children, endIndex);
+    while (oldEndChild.key === endChild.key) {
+      updateNode(endChild, oldEndChild, parentDom, children, endIndex + 1, outerNextChild);
+      oldEndIndex--;endIndex--;
+      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+        break outer;
+      }
+      oldEndChild = oldChildren[oldEndIndex];
+      endChild = normIndex(children, endIndex);
+      successful = true;
+    }
+    while (oldStartChild.key === endChild.key) {
+      nextChild = endIndex + 1 < childrenLength ? children[endIndex + 1] : outerNextChild;
+      updateNode(endChild, oldStartChild, parentDom, null, 0, nextChild);
+      moveChild(parentDom, endChild, nextChild);
+      oldStartIndex++;endIndex--;
+      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+        break outer;
+      }
+      oldStartChild = oldChildren[oldStartIndex];
+      endChild = normIndex(children, endIndex);
+      successful = true;
+    }
+    while (oldEndChild.key === startChild.key) {
+      nextChild = oldStartIndex < oldChildrenLength ? oldChildren[oldStartIndex] : outerNextChild;
+      updateNode(startChild, oldEndChild, parentDom, null, 0, nextChild);
+      moveChild(parentDom, startChild, nextChild);
+      oldEndIndex--;startIndex++;
+      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+        break outer;
+      }
+      oldEndChild = oldChildren[oldEndIndex];
+      startChild = normIndex(children, startIndex);
+      successful = true;
+    }
+  }
+
+  if (oldStartIndex > oldEndIndex) {
+    nextChild = endIndex + 1 < childrenLength ? normIndex(children, endIndex + 1) : outerNextChild;
+    for (i = startIndex; i <= endIndex; i++) {
+      createNode(null, normIndex(children, i), parentDom, nextChild);
+    }
+  } else if (startIndex > endIndex) {
+    removeChildren(parentDom, oldChildren, oldStartIndex, oldEndIndex + 1);
+  } else {
+    var i,
+        oldNextChild = oldChildren[oldEndIndex + 1],
+        oldChildrenMap = {};
+    for (i = oldEndIndex; i >= oldStartIndex; i--) {
+      oldChild = oldChildren[i];
+      oldChild.next = oldNextChild;
+      oldChildrenMap[oldChild.key] = oldChild;
+      oldNextChild = oldChild;
+    }
+    nextChild = endIndex + 1 < childrenLength ? normIndex(children, endIndex + 1) : outerNextChild;
+    for (i = endIndex; i >= startIndex; i--) {
+      child = children[i];
+      var key = child.key;
+      oldChild = oldChildrenMap[key];
+      if (oldChild) {
+        oldChildrenMap[key] = null;
+        oldNextChild = oldChild.next;
+        updateNode(child, oldChild, parentDom, null, 0, nextChild);
+        if ((oldNextChild && oldNextChild.key) !== (nextChild && nextChild.key)) {
+          moveChild(parentDom, child, nextChild);
+        }
+      } else {
+        createNode(null, child, parentDom, nextChild);
+      }
+      nextChild = child;
+    }
+    for (i = oldStartIndex; i <= oldEndIndex; i++) {
+      oldChild = oldChildren[i];
+      if (oldChildrenMap[oldChild.key] !== null) {
+        removeChild(parentDom, oldChild);
+      }
+    }
+  }
 }
 
-function isFunction(value) {
-  return typeof value === "function";
+function updateNode(node, oldNode, parentDom, nextChildChildren, nextChildIndex, outerNextChild, isOnlyDomChild) {
+  var tag = node.tag;
+  if (tag && oldNode.tag !== tag) {
+    createNode(null, node, domParent, oldNode, true);
+  } else if (typeof node === "string") {
+    if (node !== oldNode) {
+      parentDom.childNodes[nextChildIndex - 1].nodeValue = node;
+    }
+  } else if (typeof node === "number") {
+    if (node !== oldNode) {
+      parentDom.childNodes[nextChildIndex - 1].nodeValue = node.toString();
+    }
+  } else {
+    var domNode = oldNode.dom,
+        oldChildren = oldNode.children,
+        children = node.children;
+    node.dom = domNode;
+    if (children !== oldChildren) {
+      updateChildren(domNode, node, children, oldChildren);
+    }
+  }
+}
+
+Inferno.render = function (node, dom, component) {
+  var oldNode = null;
+  if (component !== undefined) {
+    if (component._rootNode === undefined) {
+      node = node();
+      initRootNode(node);
+      component._rootNode = node;
+      createNode(node, node, dom);
+    } else {
+      node = node();
+      oldNode = component._rootNode;
+      updateNode(node, oldNode, dom);
+    }
+  } else if (dom.__rootNode === undefined) {
+    if (initialisedListeners === false) {
+      addRootDomEventListerners();
+    }
+    initRootNode(node);
+    createNode(node, node, dom);
+    dom.__rootNode = node;
+  } else {
+    oldNode = dom.__rootNode;
+    updateNode(node, oldNode, dom);
+  }
+};
+
+function initRootNode(node) {
+  node.toRecycle = {
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: []
+  };
+}
+
+function moveChild(parentDom, child, nextChild) {
+  var domChild = child.dom,
+      domLength = child.domLength || 1,
+      domNextChild,
+      domRefChild = nextChild && nextChild.dom;
+  if (domChild !== domRefChild) {
+    while (domLength--) {
+      domNextChild = domLength > 0 ? domChild.nextSibling : null;
+      if (domRefChild) {
+        parentDom.insertBefore(domChild, domRefChild);
+      } else {
+        parentDom.appendChild(domChild);
+      }
+      domChild = domNextChild;
+    }
+  }
+}
+
+function removeAllChildren(parentDom, children, childrenType) {
+  if (childrenType > 1) {
+    removeChildren(parentDom, children, 0, children.length);
+  } else if (childrenType !== 0) {
+    if (isString(children)) {
+      parentDom.removeChild(parentDom.firstChild);
+    } else {
+      removeChild(parentDom, normOnlyOld(children, childrenType, parentDom));
+    }
+  }
 }
 
 function getOnlyChild(children, childrenType) {
@@ -182,253 +547,6 @@ function getChildrenType(children) {
   }
 }
 
-function destroyNode(node) {
-  if (!isString(node)) {
-    var domNode = node.dom;
-    if (domNode) {
-      if (domNode.virtualNode) {
-        domNode.virtualNode = undefined;
-      }
-    }
-    var children = node.children;
-    if (children) {
-      destroyNodes(children, getChildrenType(children));
-    }
-  }
-}
-
-function destroyNodes(nodes, nodesType) {
-  if (nodesType > 1) {
-    for (var i = 0, len = nodes.length; i < len; i = i + 1 | 0) {
-      destroyNode(nodes[i]);
-    }
-  } else if (nodesType !== 0) {
-    destroyNode(getOnlyChild(nodes, nodesType));
-  }
-}
-
-function removeChild(domElement, child) {
-  destroyNode(child);
-  var domChild = child.dom,
-      domLength = child.domLength || 1,
-      domNextChild;
-  while (domLength--) {
-    domNextChild = domLength > 0 ? domChild.nextSibling : null;
-    domElement.removeChild(domChild);
-    domChild = domNextChild;
-  }
-}
-
-function createAllChildren(domNode, node, ns, children, inFragment, component) {
-  var childrenType = getChildrenType(children);
-  if (childrenType > 1) {
-    for (var i = 0, childrenLength = children.length; i < childrenLength; i = i + 1 | 0) {
-      createNode(normIndex(children, i), domNode, component, ns);
-    }
-  } else if (childrenType !== 0) {
-    var child = getOnlyChild(children, childrenType);
-    if (!inFragment && isString(child)) {
-      setTextContent(domNode, child);
-    } else {
-      child = normOnly(node, child);
-      createNode(child, domNode, component, ns, null, false, !inFragment);
-    }
-  }
-}
-
-function createNode(node, domParent, component, parentNs, nextChild, replace, isOnlyDomChild) {
-  if (isTrident) {
-    return insertNodeHTML(node, domParent, nextChild, replace);
-  }
-
-  //check if this is a value node
-  if (node.index !== undefined) {
-    if (typeof node.value === "number") {
-      node.value = node.value.toString();
-    }
-    if (typeof node.value === "string") {
-      node.lastValue = node.value;
-      if (isOnlyDomChild) {
-        setTextContent(domParent, node.value, false);
-      } else {
-        domNode = document.createTextNode(node.value);
-        insertChild(domParent, domNode, nextChild, replace);
-      }
-    } else {
-      createAllChildren(domParent, node, ns, node.value, false, component);
-    }
-    return;
-  }
-
-  if (node.component) {
-    //if its a component, we make a new instance
-    if (typeof node.component === "function") {
-      node.component = new node.component(node.props);
-      node.component.forceUpdate = Inferno.render.bind(null, node.component.render.bind(node.component), domParent, node.component);
-      node.component.forceUpdate();
-      node.isDynamic = true;
-    }
-    //if this is a component
-    if (node.component instanceof Component) {
-      node.component.forceUpdate();
-    }
-    return true;
-  }
-
-  var domNode,
-      tag = node.tag,
-      children = node.children,
-      ns;
-  switch (tag) {
-    case "#":
-      if (isOnlyDomChild) {
-        setTextContent(domParent, children);
-        return;
-      } else {
-        domNode = document.createTextNode(children);
-        insertChild(domParent, domNode, nextChild, replace);
-      }
-      break;
-    default:
-      switch (tag) {
-        case "svg":
-          ns = "http://www.w3.org/2000/svg";break;
-        case "math":
-          ns = "http://www.w3.org/1998/Math/MathML";break;
-        default:
-          ns = parentNs;break;
-      }
-
-      var attrs = node.attrs,
-          is = attrs && attrs.is;
-      if (ns) {
-        node.ns = ns;
-        domNode = is ? document.createElementNS(ns, tag, is) : document.createElementNS(ns, tag);
-      } else {
-        if (cachedNodes[tag]) {
-          domNode = is ? document.createElement(tag, is) : cachedNodes[tag].cloneNode(false);
-        } else {
-          domNode = is ? document.createElement(tag, is) : document.createElement(tag);
-        }
-      }
-      node.dom = domNode;
-      if (isTrident && domParent) {
-        insertChild(domParent, domNode, nextChild, replace);
-      }
-
-      if (children !== undefined) {
-        if (typeof children === "string") {
-          setTextContent(domNode, children, false);
-        } else if (node.children.index !== undefined) {
-          createAllChildren(domNode, node, ns, node.children.value, false, component);
-        } else {
-          createAllChildren(domNode, node, ns, children, false, component);
-        }
-      }
-
-      if (attrs) {
-        updateAttributes(domNode, tag, ns, attrs, null, component);
-      }
-      if (!isTrident && domParent) {
-        insertChild(domParent, domNode, nextChild, replace);
-      }
-      return;
-  }
-  if (domParent) {
-    insertChild(domParent, domNode, nextChild, replace);
-  }
-}
-
-Inferno.append = function (node, domParent) {
-  createNode(node, domParent);
-  return node;
-};
-
-Inferno.update = function (values, node) {
-  updateNode(node, values);
-};
-
-Inferno.render = function (values, domParent, component) {
-  var node = null;
-  if (typeof values === "function" && component !== undefined) {
-    if (component._rootNode === undefined) {
-      t7.setValuesOnly(false);
-      node = values();
-      createNode(node, domParent, component);
-      component._rootNode = node;
-    } else {}
-  } else if (domParent.__rootNode === undefined) {
-    if (initialisedListeners === false) {
-      addRootDomEventListerners();
-    }
-    node = values.nodeTree(values, values.components);
-    createNode(node, domParent);
-    domParent.__rootNode = node;
-  } else {}
-};
-
-function updateChildren(node, children, val) {
-  var i = 0,
-      newNode = null,
-      lastLength = 0;
-  if (children.length !== val.length) {
-    //an item added
-    lastLength = children.length;
-    if (val.length > lastLength) {
-      //simply clone the first node, if we have it
-      for (var i = lastLength; i < val.length; i = i + 1 | 0) {
-        newNode = val[i].nodeTree();
-        createNode(newNode, node.dom);
-        children.push(newNode);
-      }
-    }
-    //an item removeNode
-    else if (val.length < lastLength) {
-      for (var i = val.length; i < lastLength; i = i + 1 | 0) {
-        removeChild(node.dom, children[children.length - 1]);
-        children.pop();
-      }
-    }
-  }
-  for (i = 0; i < children.length; i = i + 1 | 0) {
-    updateNode(children[i], val[i], node.dom, children, i);
-  }
-}
-
-function updateNode(node, values, domParent, parentNode, index) {
-  var i = 0,
-      val = null;
-  if (node.children) {
-    if (node.nodeTree != null && node.nodeTree !== values.nodeTree) {
-      removeChild(domParent, node);
-      t7.setValuesOnly(false);
-      node = values.nodeTree();
-      createNode(node, domParent);
-      parentNode[index] = node;
-    }
-    if (isArray(node.children)) {} else if (node.children.index != null) {
-      val = values[node.children.index];
-      if (node.children.lastVal !== val) {
-        node.children.lastVal = val;
-        if (isArray(node.children.value)) {
-          updateChildren(node, node.children.value, val);
-        } else if (typeof node.children.value === "string") {
-          if (node.children.value !== val) {
-            setTextContent(node.dom, val, true);
-          }
-        }
-      }
-    } else {
-      updateNode(node.children, values, node.dom, node, null);
-    }
-  }
-}
-
-// TODO find solution without empty text placeholders
-function emptyTextNode() {
-  return document.createTextNode("");
-};
-
 function isInputProperty(tag, attrName) {
   switch (tag) {
     case "input":
@@ -442,40 +560,25 @@ function isInputProperty(tag, attrName) {
   }
 };
 
-function updateAttributes(domElement, tag, ns, attrs, oldAttrs, component) {
-  var attrName;
+function updateAttributes(parentDom, tag, attrs, oldAttrs) {
+  var changes, attrName;
   if (attrs) {
     for (attrName in attrs) {
-      var changed = false,
-          attrValue = attrs[attrName];
-      if (attrValue.index !== undefined) {
-        if (events[attrName] != null) {
-          //TODO check if event is already added?
-          rootlisteners[events[attrName]].push({
-            target: domElement,
-            callback: attrValue.value,
-            component: component
-          });
-          return;
-        } else {
-          attrValue.lastValue = attrValue.value;
-          attrValue = attrValue.value;
-        }
-      }
+      var attrValue = attrs[attrName];
       if (attrName === "style") {
         var oldAttrValue = oldAttrs && oldAttrs[attrName];
         if (oldAttrValue !== attrValue) {
           updateStyle(domElement, oldAttrValue, attrs, attrValue);
         }
       } else if (isInputProperty(tag, attrName)) {
-        if (domElement[attrName] !== attrValue) {
-          domElement[attrName] = attrValue;
+        if (parentDom[attrName] !== attrValue) {
+          parentDom[attrName] = attrValue;
         }
       } else if (!oldAttrs || oldAttrs[attrName] !== attrValue) {
-        if (attrName === "class" && !ns) {
-          domElement.className = attrValue;
+        if (attrName === "class") {
+          parentDom.className = attrValue;
         } else {
-          updateAttribute(domElement, attrName, attrValue);
+          updateAttribute(parentDom, attrName, attrValue);
         }
       }
     }
@@ -483,19 +586,133 @@ function updateAttributes(domElement, tag, ns, attrs, oldAttrs, component) {
   if (oldAttrs) {
     for (attrName in oldAttrs) {
       if (!attrs || attrs[attrName] === undefined) {
-        if (attrName === "class" && !ns) {
-          domElement.className = "";
+        if (attrName === "class") {
+          parentDom.className = "";
         } else if (!isInputProperty(tag, attrName)) {
-          domElement.removeAttribute(attrName);
+          parentDom.removeAttribute(attrName);
         }
       }
     }
   }
+  return changes;
 }
 
-function updateAttribute(domElement, name, value) {
+function insertChild(parentDom, domNode, nextChild, replace) {
+  if (nextChild) {
+    var domNextChild = nextChild.dom;
+    if (replace) {
+      var domLength = nextChild.domLength || 1;
+      if (domLength === 1) {
+        destroyNode(nextChild);
+        parentDom.replaceChild(domNode, domNextChild);
+      } else {
+        parentDom.insertBefore(domNode, domNextChild);
+        removeChild(parentDom, nextChild);
+      }
+    } else {
+      parentDom.insertBefore(domNode, domNextChild);
+    }
+  } else {
+    parentDom.appendChild(domNode);
+  }
+}
+
+function normChildren(node, children, oldChildren) {
+  if (isFunction(children)) {
+    children = children(oldChildren);
+    if (children === undefined) {
+      children = oldChildren;
+    }
+    node.children = children;
+  }
+  return children;
+}
+
+function normIndex(children, i, oldChild) {
+  var origChild = children[i],
+      child = norm(origChild, oldChild);
+  if (origChild !== child) {
+    children[i] = child;
+  }
+  return child;
+}
+
+function removeChildren(domParent, children, i, to) {
+  for (; i < to; i++) {
+    removeChild(domParent, children[i]);
+  }
+}
+
+function norm(node, oldNode) {
+  var type = typeof node;
+  if (type === "function") {
+    node = node(oldNode);
+    node = node === undefined ? oldNode : norm(node, oldNode);
+  }
+  return node;
+}
+
+function removeChild(domParent, child) {
+  destroyNode(child);
+  var domChild = child.dom,
+      domLength = child.domLength || 1,
+      domNextChild;
+  while (domLength--) {
+    domNextChild = domLength > 0 ? domChild.nextSibling : null;
+    domParent.removeChild(domChild);
+    domChild = domNextChild;
+  }
+}
+
+function destroyNode(node) {
+  if (!isString(node)) {
+    var domNode = node.dom;
+    if (domNode) {
+      var events = node.events;
+      if (events) {
+        for (var eventType in events) {
+          removeEventHandler(domNode, eventType);
+        }
+        var destroyedHandlers = events.$destroyed;
+        if (destroyedHandlers) {
+          triggerLight(destroyedHandlers, "$destroyed", domNode, node);
+        }
+      }
+      if (domNode.virtualNode) {
+        domNode.virtualNode = undefined;
+      }
+    }
+    var children = node.children;
+    if (children) {
+      destroyNodes(children, getChildrenType(children));
+    }
+  }
+}
+
+function destroyNodes(nodes, nodesType) {
+  if (nodesType > 1) {
+    for (var i = 0, len = nodes.length; i < len; i++) {
+      destroyNode(nodes[i]);
+    }
+  } else if (nodesType !== 0) {
+    destroyNode(getOnlyChild(nodes, nodesType));
+  }
+}
+
+function normOnlyOld(children, childrenType, domParent) {
+  var child = normOnly(null, getOnlyChild(children, childrenType));
+  if (!child.dom) {
+    child.dom = domParent.firstChild;
+    if (child.tag === "<") {
+      child.domLength = domParent.childNodes.length;
+    }
+  }
+  return child;
+}
+
+function updateAttribute(parentDom, name, value) {
   if (value === false || value == null) {
-    domElement.removeAttribute(name);
+    parentDom.removeAttribute(name);
   } else {
     if (value === true) {
       value = "";
@@ -510,88 +727,19 @@ function updateAttribute(domElement, name, value) {
           break;
       }
     }
-    domElement.setAttribute(name, value);
+    parentDom.setAttribute(name, value);
   }
 };
 
-function updateStyle(domElement, oldStyle, attrs, style) {
-  var propName;
-  if (!isString(style) && (!supportsCssSetProperty || !oldStyle || isString(oldStyle))) {
-    var styleStr = "";
-    if (style) {
-      for (propName in style) {
-        styleStr += propName + ": " + style[propName] + "; ";
-      }
-    }
-    style = styleStr;
-    if (!supportsCssSetProperty) {
-      attrs.style = style;
-    }
-  }
-  var domStyle = domElement.style;
-  if (isString(style)) {
-    domStyle.cssText = style;
-  } else {
-    if (style) {
-      for (propName in style) {
-        // TODO should important properties even be supported?
-        var propValue = style[propName];
-        if (!oldStyle || oldStyle[propName] !== propValue) {
-          var importantIndex = propValue.indexOf("!important");
-          if (importantIndex !== -1) {
-            domStyle.setProperty(propName, propValue.substr(0, importantIndex), "important");
-          } else {
-            if (oldStyle) {
-              var oldPropValue = oldStyle[propName];
-              if (oldPropValue && oldPropValue.indexOf("!important") !== -1) {
-                domStyle.removeProperty(propName);
-              }
-            }
-            domStyle.setProperty(propName, propValue, "");
-          }
-        }
-      }
-    }
-    if (oldStyle) {
-      for (propName in oldStyle) {
-        if (!style || style[propName] === undefined) {
-          domStyle.removeProperty(propName);
-        }
-      }
-    }
-  }
-}
-
-function setTextContent(domElement, text, update) {
-  //if (text) {
-  if (update && domElement.firstChild) {
-    domElement.firstChild.nodeValue = text;
+function setTextContent(parentDom, text, update) {
+  if (update && parentDom.firstChild) {
+    parentDom.firstChild.nodeValue = text;
   } else {
     if (supportsTextContent) {
-      domElement.textContent = text;
+      parentDom.textContent = text;
     } else {
-      domElement.innerText = text;
+      parentDom.innerText = text;
     }
   }
 };
-
-function handleNodeAttributes(tag, domElement, attrName, attrValue) {
-  if (attrName === "style") {
-    updateStyle(domElement, oldAttrValue, attrs, attrValue);
-  } else if (isInputProperty(tag, attrName)) {
-    if (domElement[attrName] !== attrValue) {
-      domElement[attrName] = attrValue;
-    }
-  } else if (attrName === "class") {
-    domElement.className = attrValue;
-  } else {
-    updateAttribute(domElement, attrName, attrValue);
-  }
-};
-
-module.exports = Inferno;
-
-//update rootNode
-
-//TODO
 //# sourceMappingURL=inferno.js.map
