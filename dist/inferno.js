@@ -34,7 +34,7 @@ var userAgent = navigator.userAgent,
     isFirefox = userAgent.indexOf("Firefox") !== -1,
     isTrident = userAgent.indexOf("Trident") !== -1;
 
-var version = "0.1.24";
+var version = "0.1.25";
 
 var nodeTags = {
   1: "div",
@@ -463,6 +463,14 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
 
 function updateNode(node, oldNode, parentDom, nextChildChildren, nextChildIndex, outerNextChild, isOnlyDomChild) {
   var tag = node.tag;
+
+  if (node.component != null && oldNode.component != null && oldNode.component instanceof Component) {
+    node.component = oldNode.component;
+    oldNode.component.props = node.props;
+    oldNode.component.forceUpdate();
+    return;
+  }
+
   if (tag && oldNode.tag !== tag) {
     createNode(null, node, domParent, oldNode, true);
   } else if (typeof node === "string") {
@@ -496,6 +504,7 @@ Inferno.render = function (node, dom, component) {
       node = node();
       oldNode = component._rootNode;
       updateNode(node, oldNode, dom);
+      component._rootNode = node;
     }
   } else if (dom.__rootNode === undefined) {
     if (initialisedListeners === false) {
@@ -507,6 +516,7 @@ Inferno.render = function (node, dom, component) {
   } else {
     oldNode = dom.__rootNode;
     updateNode(node, oldNode, dom);
+    dom.__rootNode = node;
   }
 };
 
@@ -911,18 +921,6 @@ var t7 = (function() {
     }
   };
 
-  function buildAttrsValueKeysParams(root, attrsParams) {
-    var val = '';
-    var matches = null;
-    for(var name in root.attrs) {
-      val = root.attrs[name];
-      matches = val.match(/__\$props__\[\d*\]/g);
-      if(matches !== null) {
-        attrsParams.push("'" + name + "':" + val.replace(/(__\$props__\[([0-9]*)\])/g, "$2"));
-      }
-    }
-  };
-
   function buildInfernoAttrsParams(root, attrsParams) {
     var val = '', key = "";
     var matches = null;
@@ -1010,8 +1008,7 @@ var t7 = (function() {
             } else if(output === t7.Outputs.Inferno) {
               //we need to apply the tag components
               buildAttrsParams(root, attrsParams);
-              buildAttrsValueKeysParams(root, attrsValueKeysParams);
-              functionText.push("{component:__$components__." + root.tag + ", props: {" + attrsParams.join(',') + "}, propsValueKeys: {" + attrsValueKeysParams.join(",") + "}}");
+              functionText.push("{component:__$components__." + root.tag + ", props: {" + attrsParams.join(',') + "}}");
             }
           }
         } else {
