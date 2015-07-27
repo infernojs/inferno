@@ -31,12 +31,12 @@
                   <div>Count is at ${ this._counter }</div>
                   <div class=${ this.className }>
                     <span id="bar">${ this.name }</span>
-                    <div id="time">The time is ${ this.props.time }</div>
+                    <div id="time">The time is ${ this.props.time.toString() }</div>
                     ${ this._renderForm() }
                     ${ this.name }
                     ${this.isOn === false
                       ? t7`<div>Switch is off!</div>`
-                      : t7`<div>Switch is on! <span>${ this.props.time }</span></div>`
+                      : t7`<div>Switch is on! <span>${ this.props.time.toString() }</span></div>`
                     }
                     <button onClick=${ this._clickSwitch }>Switch!</button>
                     <ul>
@@ -109,7 +109,7 @@
 
       var odd = true;
 
-      setInterval(function() {
+      function update() {
         var date = new Date();
         var people = [];
         odd = !odd;
@@ -135,7 +135,10 @@
           t7`<App time=${ date } people=${ people }></App>`,
           document.getElementById("app")
         );
-      }, 1000);
+        setTimeout(update, 1000);
+      }
+
+      update();
 
     });
   </script>
