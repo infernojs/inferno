@@ -1,0 +1,166 @@
+<html>
+<body>
+</body>
+<script>
+
+  var Inferno = {};
+
+  function Node(dom, render) {
+    this._attached = false;
+    this.dom = dom;
+    this._className = "";
+    this._text = null;
+    this.key = null;
+    this._children = [];
+    this._childrenRender = {};
+    this._childrenMap = {};
+    this.render = render || null;
+    if(render) {
+      render(this);
+    }
+  }
+
+  Node.prototype.setClass = function(className) {
+    if(this._className !== className) {
+      this.dom.className = className;
+      this._className = className;
+    }
+  };
+
+  Node.prototype.createElement = function(tag, render) {
+    if(this._attached === false) {
+      var childDom = document.createElement(tag);
+      var childNode = new Node(childDom, render);
+      this._children.push(childNode);
+      this._childrenRender[render] = childNode;
+      childNode.attach();
+    } else {
+      render(this._childrenRender[render]);
+    }
+  };
+
+  Node.prototype.createElementWithMap = function(tag, array, keyName, render) {
+    if(this._attached === false) {
+      var childDom = null;
+      var childNode = null;
+      if(!this._childrenMap[render]) {
+        this._childrenMap[render] = [];
+      }
+      for(var i = 0; i < array.length; i++) {
+        childDom = document.createElement(tag);
+        childNode = new Node(childDom, null);
+        if(keyName !== null) {
+          if(array[i][keyName] === undefined) {
+            throw Error("Key property is invalid '" + keyName + "'");
+          } else {
+            childNode.key = array[i][keyName];
+          }
+        }
+        render(childNode, array[i], i);
+        this._children.push(childNode);
+        this._childrenMap[render].push(childNode);
+      }
+    } else {
+      var map = this._childrenMap[render];
+      var key = null;
+      var parentNode = null;
+      var childNodes = null;
+      var swapNode = null;
+      //really basic, poor implemtation of keyed nodes to show this working
+      for(var i = 0; i < array.length; i++) {
+        key = array[i][keyName];
+        for(s = 0; s < map.length; s++) {
+          if(!parentNode) {
+            parentNode = map[s].dom.parentNode;
+            childNodes = parentNode.childNodes;
+          }
+          if(key === map[s].key) {
+            parentNode.insertBefore(map[s].dom, childNodes[i]);
+            swapNode = map[s];
+            map[s] = map[i];
+            map[i] = swapNode;
+            break;
+          }
+        }
+        render(map[i], array[i], i);
+      }
+    }
+  };
+
+  Node.prototype.attach = function() {
+    for(var i = 0; i < this._children.length; i++) {
+      this.dom.appendChild(this._children[i].dom);
+    }
+    this._attached = true;
+  };
+
+  Inferno.render = function(render, dom) {
+    if(dom.rootNode === undefined) {
+      var rootNode = new Node(dom);
+      render(rootNode);
+      rootNode.attach();
+      dom.rootNode = rootNode;
+    } else {
+      render(dom.rootNode);
+    }
+  };
+
+  Node.prototype.setText = function(text) {
+    if(this._text !== text) {
+      if(this._attached === false) {
+        this.dom.textContent = text;
+      } else {
+        this.dom.firstChild.nodeValue = text;
+      }
+      this._text = text;
+    }
+  };
+
+  var render = (function() {
+    function _createNode1(node) {
+      node.setClass(newVal);
+      node.createElement("ul", _createNode2);
+    }
+    function _createNode2(node) {
+      node.setClass("people");
+      node.createElementWithMap("li", people, "id", _createNode3);
+    }
+    function _createNode3(node, person, index) {
+      node.setText(person.name);
+    }
+    function render(rootNode) {
+      rootNode.createElement("div", _createNode1)
+    }
+
+    return render;
+  })();
+
+  var newVal = "";
+  var people = [];
+  var flag = 0;
+
+  function update() {
+    if(flag === 0) {
+      newVal = "foo-bar";
+      people = [{id: 0, name: "bob"}, {id: 1, name: "dom"}, {id:2, name: "paul"}, {id:3, name: "john"}, {id:4, name: "ken"}, {id:5, name: "ted"}];
+      flag = 1;
+    } else if(flag === 1) {
+      people = [{id:5, name: "ted"}, {id:2, name: "paul"}, {id: 1, name: "dom"}, {id:3, name: "john"}, {id: 0, name: "bob"}, {id:4, name: "ken"}];
+      flag = 2;
+    } else if(flag === 2) {
+      people = [{id: 2, name: "jane"}, {id: 1, name: "sarah"}, {id:0, name: "lisa"}, {id:4, name: "rachel"}, {id:5, name: "kieria"}, {id:3, name: "jemma"}];
+      newVal = "hello-world";
+      flag = 0;
+    }
+
+    console.time("render");
+    Inferno.render(render, document.body);
+    console.timeEnd("render");
+
+    setTimeout(update, 1000);
+  }
+
+  update();
+
+</script>
+</html>
