@@ -23,16 +23,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var t7 = require("../t7");
 
-var supportsTextContent = ("textContent" in document);
+var supportsTextContent = ('textContent' in document);
 
 var events = {
   "onClick": "click"
 };
 
 var userAgent = navigator.userAgent,
-    isWebKit = userAgent.indexOf("WebKit") !== -1,
-    isFirefox = userAgent.indexOf("Firefox") !== -1,
-    isTrident = userAgent.indexOf("Trident") !== -1;
+    isWebKit = userAgent.indexOf('WebKit') !== -1,
+    isFirefox = userAgent.indexOf('Firefox') !== -1,
+    isTrident = userAgent.indexOf('Trident') !== -1;
 
 var version = "0.1.25";
 
@@ -152,7 +152,7 @@ Inferno.Tag = {
 };
 
 function isString(value) {
-  return typeof value === "string";
+  return typeof value === 'string';
 }
 
 function isArray(value) {
@@ -160,7 +160,7 @@ function isArray(value) {
 }
 
 function isFunction(value) {
-  return typeof value === "function";
+  return typeof value === 'function';
 }
 
 var Component = (function () {
@@ -680,7 +680,7 @@ function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
         addEventListener(parentDom, component, attrName, attrValue);
         continue;
       }
-      if (attrName === "style") {
+      if (attrName === 'style') {
         var oldAttrValue = oldAttrs && oldAttrs[attrName];
         if (oldAttrValue !== attrValue) {
           updateStyle(domElement, oldAttrValue, attrs, attrValue);
@@ -690,7 +690,7 @@ function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
           parentDom[attrName] = attrValue;
         }
       } else if (!oldAttrs || oldAttrs[attrName] !== attrValue) {
-        if (attrName === "class") {
+        if (attrName === 'class') {
           parentDom.className = attrValue;
         } else {
           updateAttribute(parentDom, attrName, attrValue);
@@ -701,8 +701,8 @@ function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
   if (oldAttrs) {
     for (attrName in oldAttrs) {
       if (!attrs || attrs[attrName] === undefined) {
-        if (attrName === "class") {
-          parentDom.className = "";
+        if (attrName === 'class') {
+          parentDom.className = '';
         } else if (!isInputProperty(tag, attrName)) {
           parentDom.removeAttribute(attrName);
         }
@@ -760,7 +760,7 @@ function removeChildren(parentDom, children, i, to) {
 
 function norm(node, oldNode) {
   var type = typeof node;
-  if (type === "function") {
+  if (type === 'function') {
     node = node(oldNode);
     node = node === undefined ? oldNode : norm(node, oldNode);
   }
@@ -798,7 +798,7 @@ function destroyNode(node) {
         }
         var destroyedHandlers = events.$destroyed;
         if (destroyedHandlers) {
-          triggerLight(destroyedHandlers, "$destroyed", domNode, node);
+          triggerLight(destroyedHandlers, '$destroyed', domNode, node);
         }
       }
       if (domNode.virtualNode) {
@@ -826,7 +826,7 @@ function normOnlyOld(children, childrenType, parentDom) {
   var child = normOnly(null, getOnlyChild(children, childrenType));
   if (!child.dom) {
     child.dom = parentDom.firstChild;
-    if (child.tag === "<") {
+    if (child.tag === '<') {
       child.domLength = parentDom.childNodes.length;
     }
   }
