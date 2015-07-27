@@ -51,72 +51,22 @@ var nodeTags = {
   12: "h5"
 };
 
-var rootlisteners = {
-  click: []
-};
+var rootlisteners = null;
 var initialisedListeners = false;
-
-var cachedNodes = null;
 var cachedTextNodes = null;
 var recycledNodes = null;
 
 if (typeof window != "undefined") {
-  cachedNodes = {
-    1: document.createElement("div"),
-    2: document.createElement("span"),
-    3: document.createElement("a"),
-    4: document.createElement("p"),
-    5: document.createElement("li"),
-    6: document.createElement("td"),
-    7: document.createElement("button"),
-    8: document.createElement("h1"),
-    9: document.createElement("h2"),
-    10: document.createElement("h3"),
-    11: document.createElement("h4"),
-    12: document.createElement("h5")
+  cachedTextNodes = {};
+  recycledNodes = {};
+  for (var _i = 1; _i < 13; _i++) {
+    cachedTextNodes[_i] = document.createElement(nodeTags[_i]);
+    cachedTextNodes[_i].textContent = " ";
+    recycledNodes[_i] = [];
+  }
+  rootlisteners = {
+    click: []
   };
-  cachedTextNodes = {
-    1: document.createElement("div"),
-    2: document.createElement("span"),
-    3: document.createElement("a"),
-    4: document.createElement("p"),
-    5: document.createElement("li"),
-    6: document.createElement("td"),
-    7: document.createElement("button"),
-    8: document.createElement("h1"),
-    9: document.createElement("h2"),
-    10: document.createElement("h3"),
-    11: document.createElement("h4"),
-    12: document.createElement("h5")
-  };
-  recycledNodes = {
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    6: [],
-    7: [],
-    8: [],
-    9: [],
-    10: [],
-    11: [],
-    12: []
-  };
-  cachedTextNodes[1].textContent = " ";
-  cachedTextNodes[2].textContent = " ";
-  cachedTextNodes[3].textContent = " ";
-  cachedTextNodes[4].textContent = " ";
-  cachedTextNodes[5].textContent = " ";
-  cachedTextNodes[6].textContent = " ";
-  cachedTextNodes[7].textContent = " ";
-  cachedTextNodes[8].textContent = " ";
-  cachedTextNodes[9].textContent = " ";
-  cachedTextNodes[10].textContent = " ";
-  cachedTextNodes[11].textContent = " ";
-  cachedTextNodes[12].textContent = " ";
-} else {
-  rootlisteners = null;
 }
 
 function addRootDomEventListerners() {
