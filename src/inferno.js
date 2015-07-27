@@ -21,7 +21,13 @@ var nodeTags = {
   3: "a",
   4: "p",
   5: "li",
-  6: "td"
+  6: "td",
+  7: "button",
+  8: "h1",
+  9: "h2",
+  10: "h3",
+  11: "h4",
+  12: "h5"
 };
 
 var rootlisteners = {
@@ -41,7 +47,12 @@ if (typeof window != "undefined") {
     4: document.createElement("p"),
     5: document.createElement("li"),
     6: document.createElement("td"),
-    7: document.createElement("td")
+    7: document.createElement("button"),
+    8: document.createElement("h1"),
+    9: document.createElement("h2"),
+    10: document.createElement("h3"),
+    11: document.createElement("h4"),
+    12: document.createElement("h5")
   };
   cachedTextNodes = {
     1: document.createElement("div"),
@@ -50,7 +61,12 @@ if (typeof window != "undefined") {
     4: document.createElement("p"),
     5: document.createElement("li"),
     6: document.createElement("td"),
-    7: document.createElement("button")
+    7: document.createElement("button"),
+    8: document.createElement("h1"),
+    9: document.createElement("h2"),
+    10: document.createElement("h3"),
+    11: document.createElement("h4"),
+    12: document.createElement("h5"),
   };
   recycledNodes = {
     1: [],
@@ -59,7 +75,12 @@ if (typeof window != "undefined") {
     4: [],
     5: [],
     6: [],
-    7: []
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: []
   };
   cachedTextNodes[1].textContent = " ";
   cachedTextNodes[2].textContent = " ";
@@ -68,6 +89,11 @@ if (typeof window != "undefined") {
   cachedTextNodes[5].textContent = " ";
   cachedTextNodes[6].textContent = " ";
   cachedTextNodes[7].textContent = " ";
+  cachedTextNodes[8].textContent = " ";
+  cachedTextNodes[9].textContent = " ";
+  cachedTextNodes[10].textContent = " ";
+  cachedTextNodes[11].textContent = " ";
+  cachedTextNodes[12].textContent = " ";
 } else {
   rootlisteners = null;
 }
@@ -97,6 +123,11 @@ Inferno.Tag = {
   LI: 5,
   TD: 6,
   BUTTON: 7,
+  H1: 8,
+  H2: 9,
+  H3: 10,
+  H4: 11,
+  H5: 12
 };
 
 function isString(value) {
@@ -153,18 +184,18 @@ function recycleNodes(node) {
   }
 }
 
-function createChildren(rootNode, children, parentDom) {
+function createChildren(rootNode, children, parentDom, component) {
   var i = 0, childDom = null, childrenType = getChildrenType(children), textNode = null;
   if (childrenType > 1) {
     for(i = 0; i < children.length; i++) {
-      if(typeof children[i] === "string") {
+      if(isString(children[i])) {
         textNode = document.createTextNode(children[i]);
         parentDom.appendChild(textNode);
       } else if (typeof children[i] === "number") {
         textNode = document.createTextNode(children[i].toString());
         parentDom.appendChild(textNode);
       } else {
-        createNode(rootNode, children[i], parentDom);
+        createNode(rootNode, children[i], parentDom, component);
       }
     }
   } else if (childrenType !== 0) {
@@ -172,12 +203,12 @@ function createChildren(rootNode, children, parentDom) {
   }
 }
 
-function createAllChildren(parentDom, node, children, inFragment) {
+function createAllChildren(parentDom, node, component, children, inFragment) {
   children = normChildren(node, children);
   var childrenType = getChildrenType(children);
   if (childrenType > 1) {
     for (var i = 0, childrenLength = children.length; i < childrenLength; i++) {
-      createNode(null, normIndex(children, i), parentDom);
+      createNode(null, normIndex(children, i), parentDom, component);
     }
   } else if (childrenType !== 0) {
     var child = getOnlyChild(children, childrenType);
@@ -185,22 +216,26 @@ function createAllChildren(parentDom, node, children, inFragment) {
       setTextContent(parentDom, child);
     } else {
       child = normOnly(node, child);
-      createNode(null, child, parentDom, null, false);
+      createNode(null, child, parentDom, component, null, false);
     }
   }
 }
 
 function getAttrsForNode(node) {
-  var attrs = {};
+  var attrs = {}, anyAttrs = false;
   for(var property in node) {
     if(property[0] === "_") {
       attrs[property.substr(1)] = node[property];
+      anyAttrs = true;
     }
+  }
+  if(!anyAttrs) {
+    return null;
   }
   return attrs;
 }
 
-function createNode(rootNode, node, parentDom, nextChild, replace) {
+function createNode(rootNode, node, parentDom, component, nextChild, replace) {
   attachTemplateNode(node);
 
   var domNode = node.dom;
@@ -225,7 +260,7 @@ function createNode(rootNode, node, parentDom, nextChild, replace) {
   }
 
   if(tag) {
-    if(typeof children === "string") {
+    if(isString(children)) {
       if(recycledNodes[tag].length > 0) {
         domNode = recycledNodes[tag].pop();
       } else {
@@ -242,18 +277,25 @@ function createNode(rootNode, node, parentDom, nextChild, replace) {
       } else {
         domNode = document.createElement(nodeTags[tag]);
       }
-      attrs = getAttrsForNode(node);
     }
+  } else if(isString(node)) {
+    parentDom.appendChild(document.createTextNode(node));
+    return;
+  } else if(typeof node === "number") {
+    parentDom.appendChild(document.createTextNode(node.toString()));
+    return;
   }
+
+  attrs = getAttrsForNode(node);
 
   node.dom = domNode;
 
   if(skipChildrenCreation === false && children !== null) {
-    createChildren(rootNode, children, domNode);
+    createChildren(rootNode, children, domNode, component);
   }
 
   if(attrs) {
-    updateAttributes(domNode, tag, attrs);
+    updateAttributes(domNode, tag, component, attrs);
   }
 
   if(domNode !== null) {
@@ -268,11 +310,11 @@ function attachTemplateNode(node) {
   }
 }
 
-function updateChildren(parentDom, node, children, oldChildren, outerNextChild) {
+function updateChildren(parentDom, node, component, children, oldChildren, outerNextChild) {
   children = normChildren(node, children, oldChildren);
   var oldChildrenType = getChildrenType(oldChildren);
   if (oldChildrenType === 0) {
-    createAllChildren(parentDom, node, children, false);
+    createAllChildren(parentDom, node, component, children, false);
     return;
   }
   var childrenType = getChildrenType(children), oldChild, child;
@@ -297,7 +339,7 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
     } else if (oldChildrenType < 2) {
       oldChild = normOnlyOld(oldChildren, oldChildrenType, parentDom);
       child = normOnly(element, child, oldChild);
-      updateNode(child, oldChild, parentDom, null, 0, outerNextChild);
+      updateNode(child, oldChild, parentDom, component, null, 0, outerNextChild);
       return;
     }
   }
@@ -306,7 +348,11 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
     node.children = children = [children];
   }
   if (oldChildrenType < 2) {
-    oldChild = normOnlyOld(oldChildren, oldChildrenType, domParent);
+    if(!isString(oldChildren)) {
+      oldChild = normOnlyOld(oldChildren, oldChildrenType, parentDom);
+    } else {
+      oldChild = oldChildren;
+    }
     if (oldChildrenType === 1) {
       oldChildren[0] = oldChild;
     } else {
@@ -330,7 +376,7 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
     oldStartChild = oldChildren[oldStartIndex];
     startChild = normIndex(children, startIndex, oldStartChild);
     while (oldStartChild.key === startChild.key) {
-      updateNode(startChild, oldStartChild, parentDom, oldChildren, oldStartIndex + 1, outerNextChild);
+      updateNode(startChild, oldStartChild, parentDom, component, oldChildren, oldStartIndex + 1, outerNextChild);
       oldStartIndex++; startIndex++;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
         break outer;
@@ -342,7 +388,7 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
     oldEndChild = oldChildren[oldEndIndex];
     endChild = normIndex(children, endIndex);
     while (oldEndChild.key === endChild.key) {
-      updateNode(endChild, oldEndChild, parentDom, children, endIndex + 1, outerNextChild);
+      updateNode(endChild, oldEndChild, parentDom, component, children, endIndex + 1, outerNextChild);
       oldEndIndex--; endIndex--;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
           break outer;
@@ -353,7 +399,7 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
     }
     while (oldStartChild.key === endChild.key) {
       nextChild = (endIndex + 1 < childrenLength) ? children[endIndex + 1] : outerNextChild;
-      updateNode(endChild, oldStartChild, parentDom, null, 0, nextChild);
+      updateNode(endChild, oldStartChild, parentDom, component, null, 0, nextChild);
       moveChild(parentDom, endChild, nextChild);
       oldStartIndex++; endIndex--;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
@@ -365,7 +411,7 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
     }
     while (oldEndChild.key === startChild.key) {
       nextChild = (oldStartIndex < oldChildrenLength) ? oldChildren[oldStartIndex] : outerNextChild;
-      updateNode(startChild, oldEndChild, parentDom,  null, 0, nextChild);
+      updateNode(startChild, oldEndChild, parentDom, component, null, 0, nextChild);
       moveChild(parentDom, startChild, nextChild);
       oldEndIndex--; startIndex++;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
@@ -380,7 +426,7 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
   if (oldStartIndex > oldEndIndex) {
     nextChild = (endIndex + 1 < childrenLength) ? normIndex(children, endIndex + 1) : outerNextChild;
     for (i = startIndex; i <= endIndex; i++) {
-      createNode(null, normIndex(children, i), parentDom, nextChild);
+      createNode(null, normIndex(children, i), parentDom, component, nextChild);
     }
   } else if (startIndex > endIndex) {
     removeChildren(parentDom, oldChildren, oldStartIndex, oldEndIndex + 1);
@@ -401,12 +447,12 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
          if (oldChild) {
              oldChildrenMap[key] = null;
              oldNextChild = oldChild.next;
-             updateNode(child, oldChild, parentDom, null, 0, nextChild);
+             updateNode(child, oldChild, parentDom, component, null, 0, nextChild);
              if ((oldNextChild && oldNextChild.key) !== (nextChild && nextChild.key)) {
                  moveChild(parentDom, child, nextChild);
              }
          } else {
-             createNode(null, child, parentDom, nextChild);
+             createNode(null, child, parentDom, component, nextChild);
          }
          nextChild = child;
      }
@@ -419,7 +465,7 @@ function updateChildren(parentDom, node, children, oldChildren, outerNextChild) 
   }
 }
 
-function updateNode(node, oldNode, parentDom, nextChildChildren, nextChildIndex, outerNextChild, isOnlyDomChild) {
+function updateNode(node, oldNode, parentDom, component, nextChildChildren, nextChildIndex, outerNextChild, isOnlyDomChild) {
   var tag = node.tag;
 
   if (node.component != null && oldNode.component != null && oldNode.component instanceof Component) {
@@ -430,8 +476,8 @@ function updateNode(node, oldNode, parentDom, nextChildChildren, nextChildIndex,
   }
 
   if (tag && oldNode.tag !== tag) {
-    createNode(null, node, domParent, oldNode, true);
-  } else if (typeof node === "string") {
+    createNode(null, node, parentDom, component, oldNode, true);
+  } else if (isString(node)) {
     if(node !== oldNode) {
       parentDom.childNodes[nextChildIndex - 1].nodeValue = node;
     }
@@ -442,10 +488,18 @@ function updateNode(node, oldNode, parentDom, nextChildChildren, nextChildIndex,
   } else {
     var domNode = oldNode.dom,
         oldChildren = oldNode.children,
-        children = node.children;
+        children = node.children,
+        attrs = getAttrsForNode(node),
+        oldAttrs = getAttrsForNode(oldNode);
+
       node.dom = domNode;
+
       if (children !== oldChildren) {
-        updateChildren(domNode, node, children, oldChildren);
+        updateChildren(domNode, node, component, children, oldChildren);
+      }
+
+      if (attrs !== oldAttrs) {
+        updateAttributes(domNode, tag, component, attrs, oldAttrs)
       }
   }
 }
@@ -457,11 +511,11 @@ Inferno.render = function(node, dom, component) {
       node = node();
       initRootNode(node);
       component._rootNode = node;
-      createNode(node, node, dom);
+      createNode(node, node, dom, component);
     } else {
       node = node();
       oldNode = component._rootNode;
-      updateNode(node, oldNode, dom);
+      updateNode(node, oldNode, dom, component);
       component._rootNode = node;
     }
   } else if(dom.__rootNode === undefined) {
@@ -486,7 +540,12 @@ function initRootNode(node) {
     4: [],
     5: [],
     6: [],
-    7: []
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: []
   };
 }
 
@@ -544,11 +603,39 @@ function isInputProperty(tag, attrName) {
   }
 };
 
-function updateAttributes(parentDom, tag, attrs, oldAttrs) {
+function addEventListener(parentDom, component, listenerName, callback) {
+  rootlisteners[events[listenerName]].push({
+    target: parentDom,
+    callback: callback,
+    component: component
+  });
+}
+
+function clearEventListeners(parentDom, component, listenerName) {
+  var listeners = rootlisteners[events[listenerName]];
+  var index = 0;
+  while(index < listeners.length) {
+    if(listeners[index].target === parentDom) {
+      listeners.splice(index, 1);
+      index = 0;
+    }
+    index++;
+  }
+}
+
+function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
   var changes, attrName;
   if (attrs) {
     for (attrName in attrs) {
       var attrValue = attrs[attrName];
+      if(oldAttrs && oldAttrs[attrName] === attrs[attrName]) {
+        continue;
+      }
+      if(events[attrName] != null) {
+        clearEventListeners(parentDom, component, attrName);
+        addEventListener(parentDom, component, attrName, attrValue);
+        continue;
+      }
       if (attrName === 'style') {
         var oldAttrValue = oldAttrs && oldAttrs[attrName];
         if (oldAttrValue !== attrValue) {
@@ -621,28 +708,36 @@ function normIndex(children, i, oldChild) {
   return child;
 }
 
-function removeChildren(domParent, children, i, to) {
+function removeChildren(parentDom, children, i, to) {
   for (; i < to; i++) {
-    removeChild(domParent, children[i]);
+    removeChild(parentDom, children[i]);
   }
 }
 
 function norm(node, oldNode) {
-    var type = typeof node;
-    if (type === 'function') {
-      node = node(oldNode);
-      node = (node === undefined) ? oldNode : norm(node, oldNode);
-    }
-    return node;
+  var type = typeof node;
+  if (type === 'function') {
+    node = node(oldNode);
+    node = (node === undefined) ? oldNode : norm(node, oldNode);
+  }
+  return node;
 }
 
-function removeChild(domParent, child) {
+function normOnly(node, origChild, oldChild) {
+  var child = norm(origChild, oldChild);
+  if (origChild !== child && node) {
+    node.children = child;
+  }
+  return child;
+}
+
+function removeChild(parentDom, child) {
   destroyNode(child);
   var domChild = child.dom, domLength = child.domLength || 1,
     domNextChild;
   while (domLength--) {
     domNextChild = (domLength > 0) ? domChild.nextSibling : null;
-    domParent.removeChild(domChild);
+    parentDom.removeChild(domChild);
     domChild = domNextChild;
   }
 }
@@ -682,12 +777,12 @@ function destroyNode(node) {
    }
  }
 
-function normOnlyOld(children, childrenType, domParent) {
+function normOnlyOld(children, childrenType, parentDom) {
   var child = normOnly(null, getOnlyChild(children, childrenType));
   if (!child.dom) {
-    child.dom = domParent.firstChild;
+    child.dom = parentDom.firstChild;
     if (child.tag === '<') {
-      child.domLength = domParent.childNodes.length;
+      child.domLength = parentDom.childNodes.length;
     }
   }
   return child;
@@ -715,13 +810,18 @@ function updateAttribute(parentDom, name, value) {
 };
 
 function setTextContent(parentDom, text, update) {
-  if (update && parentDom.firstChild) {
-    parentDom.firstChild.nodeValue = text;
-  } else {
+  if (text) {
     if (supportsTextContent) {
       parentDom.textContent = text;
     } else {
       parentDom.innerText = text;
     }
+  } else {
+    if (update) {
+      while (domElement.firstChild) {
+        parentDom.removeChild(parentDom.firstChild);
+      }
+    }
+    parentDom.appendChild(emptyTextNode());
   }
 };
