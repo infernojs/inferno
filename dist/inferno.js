@@ -751,8 +751,8 @@ function destroyNode(node) {
           triggerLight(destroyedHandlers, '$destroyed', domNode, node);
         }
       }
-      if (domNode.virtualNode) {
-        domNode.virtualNode = undefined;
+      if (domNode.__rootNode) {
+        domNode.__rootNode = null;
       }
     }
     var children = node.children;
