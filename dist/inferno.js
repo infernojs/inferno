@@ -43,12 +43,13 @@ var nodeTags = {
   3: "p",
   4: "li",
   5: "td",
-  6: "button",
-  7: "h1",
-  8: "h2",
-  9: "h3",
-  10: "h4",
-  11: "h5"
+  6: "th",
+  7: "button",
+  8: "h1",
+  9: "h2",
+  10: "h3",
+  11: "h4",
+  12: "h5"
 };
 
 var rootlisteners = null;
@@ -93,12 +94,13 @@ Inferno.Tag = {
   P: 3,
   LI: 4,
   TD: 5,
-  BUTTON: 6,
-  H1: 7,
-  H2: 8,
-  H3: 9,
-  H4: 10,
-  H5: 11
+  TH: 6,
+  BUTTON: 7,
+  H1: 8,
+  H2: 9,
+  H3: 10,
+  H4: 11,
+  H5: 12
 };
 
 Inferno.Hint = {
@@ -158,6 +160,9 @@ module.exports = Inferno;
 Inferno.unmountComponentAtNode = function (root) {
   //TODO finish, remove events etc
   var node = root.__rootNode;
+  if (node && node.component) {
+    node = node.component.__rootNode;
+  }
   if (node) {
     root.removeChild(node.dom);
     recycleNodes(node);
@@ -190,7 +195,12 @@ function createChildren(rootNode, children, parentDom, component, hint) {
         createNode(rootNode, children[i], parentDom, component);
       }
     }
-  } else if (childrenType !== 0) {
+  } else {
+    if (children == null) {
+      children = "";
+    } else if (!isString(children)) {
+      children = children.toString();
+    }
     setTextContent(parentDom, children, false);
   }
 }
@@ -347,7 +357,7 @@ function updateChildren(parentDom, node, component, children, oldChildren, outer
       return;
     } else if (oldChildrenType < 2) {
       oldChild = normOnlyOld(oldChildren, oldChildrenType, parentDom);
-      child = normOnly(element, child, oldChild);
+      child = normOnly(node, child, oldChild);
       updateNode(child, oldChild, parentDom, component, null, 0, outerNextChild);
       return;
     }
@@ -531,16 +541,16 @@ function updateNode(node, oldNode, parentDom, component, nextChildChildren, next
 Inferno.render = function (node, dom, component) {
   var oldNode = null;
   if (component !== undefined) {
-    if (component._rootNode === undefined) {
+    if (component.__rootNode === undefined) {
       node = node();
       initRootNode(node);
-      component._rootNode = node;
+      component.__rootNode = node;
       createNode(node, node, dom, component);
     } else {
       node = node();
-      oldNode = component._rootNode;
+      oldNode = component.__rootNode;
       updateNode(node, oldNode, dom, component);
-      component._rootNode = node;
+      component.__rootNode = node;
     }
   } else if (dom.__rootNode == null) {
     if (initialisedListeners === false) {
@@ -824,6 +834,10 @@ function updateAttribute(parentDom, name, value) {
     parentDom.setAttribute(name, value);
   }
 };
+
+function emptyTextNode() {
+  return document.createTextNode('');
+}
 
 function setTextContent(parentDom, text, update) {
   if (text) {
