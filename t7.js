@@ -147,20 +147,6 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, attrsParams) {
-    var val = '', key = "";
-    var matches = null;
-    for(var name in root.attrs) {
-      val = root.attrs[name];
-      matches = val.match(/__\$props__\[\d*\]/g);
-      if(matches === null) {
-        attrsParams.push("'_" + name + "':'" + val + "'");
-      } else {
-        attrsParams.push("'_" + name + "':" + val.replace(/(__\$props__\[([0-9]*)\])/g, "$1"));
-      }
-    }
-  };
-
   function isComponentName(tagName) {
     if(tagName[0] === tagName[0].toUpperCase()) {
       return true;
@@ -169,7 +155,7 @@ var t7 = (function() {
   };
 
   function handleInfernoTag(tagName, functionText) {
-    if(Inferno.Tag[tagName.toUpperCase()]) {
+    if(Inferno.Tag[tagName.toUpperCase()] != null) {
       functionText.push("{dom: null, tag: " + Inferno.Tag[tagName.toUpperCase()]);
     } else {
       functionText.push("{dom: null, tag: '" + tagName + "'");
@@ -207,9 +193,9 @@ var t7 = (function() {
             //build the attrs
             if(root.attrs != null) {
               if(output === t7.Outputs.Inferno) {
-                buildInfernoAttrsParams(root, attrsParams);
+                buildAttrsParams(root, attrsParams);
                 if(attrsParams.length > 0) {
-                  tagParams.push(attrsParams.join(','));
+                  tagParams.push("attrs: {" + attrsParams.join(',') + "}");
                 }
               } else {
                 buildAttrsParams(root, attrsParams);

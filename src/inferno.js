@@ -13,21 +13,21 @@ var userAgent = navigator.userAgent,
     isFirefox = userAgent.indexOf('Firefox') !== -1,
     isTrident = userAgent.indexOf('Trident') !== -1;
 
-var version = "0.1.25";
+var version = "0.1.27";
 
 var nodeTags = {
-  1: "div",
-  2: "span",
-  3: "a",
-  4: "p",
-  5: "li",
-  6: "td",
-  7: "button",
-  8: "h1",
-  9: "h2",
-  10: "h3",
-  11: "h4",
-  12: "h5"
+  0: "div",
+  1: "span",
+  2: "a",
+  3: "p",
+  4: "li",
+  5: "td",
+  6: "button",
+  7: "h1",
+  8: "h2",
+  9: "h3",
+  10: "h4",
+  11: "h5"
 };
 
 var rootlisteners = null;
@@ -36,12 +36,12 @@ var cachedTextNodes = null;
 var recycledNodes = null;
 
 if (typeof window != "undefined") {
-  cachedTextNodes = {};
-  recycledNodes = {};
-  for(let i = 1; i < 13; i++) {
-    cachedTextNodes[i] = document.createElement(nodeTags[i]);
-    cachedTextNodes[i].textContent = " ";
-    recycledNodes[i] = [];
+  cachedTextNodes = [];
+  recycledNodes = [];
+  for (var _i = 0; _i < 12; _i++) {
+    cachedTextNodes[_i] = document.createElement(nodeTags[_i]);
+    cachedTextNodes[_i].textContent = " ";
+    recycledNodes[_i] = [];
   }
   rootlisteners = {
     click: []
@@ -66,18 +66,23 @@ function addRootDomEventListerners() {
 var Inferno = {};
 
 Inferno.Tag = {
-  DIV: 1,
-  SPAN: 2,
-  A: 3,
-  P: 4,
-  LI: 5,
-  TD: 6,
-  BUTTON: 7,
-  H1: 8,
-  H2: 9,
-  H3: 10,
-  H4: 11,
-  H5: 12
+  DIV: 0,
+  SPAN: 1,
+  A: 2,
+  P: 3,
+  LI: 4,
+  TD: 5,
+  BUTTON: 6,
+  H1: 7,
+  H2: 8,
+  H3: 9,
+  H4: 10,
+  H5: 11
+};
+
+Inferno.Hint = {
+  TEXT: 1,
+  CONTAINER: 2
 };
 
 function isString(value) {
@@ -115,10 +120,10 @@ Inferno.Component = Component;
 
 module.exports = Inferno;
 
-Inferno.unmountComponentAtNode = function(root) {
+Inferno.unmountComponentAtNode = function (root) {
   //TODO finish, remove events etc
   var node = root.__rootNode;
-  if(node) {
+  if (node) {
     root.removeChild(node.dom);
     recycleNodes(node);
     root.__rootNode = null;
@@ -127,18 +132,20 @@ Inferno.unmountComponentAtNode = function(root) {
 
 function recycleNodes(node) {
   var i = 0;
-  for(var type in node.toRecycle) {
-    for(i = 0; i < node.toRecycle[type].length; i++) {
+  for (var type in node.toRecycle) {
+    for (i = 0; i < node.toRecycle[type].length; i++) {
       recycledNodes[type].push(node.toRecycle[type][i]);
     }
   }
 }
 
-function createChildren(rootNode, children, parentDom, component) {
-  var i = 0, childDom = null, childrenType = getChildrenType(children), textNode = null;
-  if (childrenType > 1) {
-    for(i = 0; i < children.length; i++) {
-      if(isString(children[i])) {
+function createChildren(rootNode, children, parentDom, component, hint) {
+  var i = 0,
+      textNode = null;
+
+  if (hint === Inferno.Hint.CONTAINER || isArray(children)) {
+    for (i = 0; i < children.length; i++) {
+      if (isString(children[i])) {
         textNode = document.createTextNode(children[i]);
         parentDom.appendChild(textNode);
       } else if (typeof children[i] === "number") {
@@ -186,76 +193,90 @@ function getAttrsForNode(node) {
 }
 
 function createNode(rootNode, node, parentDom, component, nextChild, replace) {
-  attachTemplateNode(node);
-
-  var domNode = node.dom;
+  var template = node.template;
   var tag = node.tag;
+  var domNode = node.dom;
+  var hint = node.hint;
   var children = node.children;
   var skipChildrenCreation = false;
-  var attrs = null;
+  var attrs = node.attrs;
 
-  if(node.component) {
-    //if its a component, we make a new instance
-    if(typeof node.component === "function") {
+  if(template != null) {
+    if(template.tag != undefined) {
+      tag = template.tag;
+    }
+    if(template.hint != undefined) {
+      hint = template.hint;
+    }
+    if(template.children != undefined) {
+      children = template.children;
+    }
+  }
+
+  if (node.component !== undefined) {
+    if (typeof node.component === "function") {
       node.component = new node.component(node.props);
       node.component.forceUpdate = Inferno.render.bind(null, node.component.render.bind(node.component), parentDom, node.component);
       node.component.forceUpdate();
       node.isDynamic = true;
     }
-    //if this is a component
-    if(node.component instanceof Component) {
+    if (node.component instanceof Component) {
       node.component.forceUpdate();
     }
     return;
   }
 
-  if(tag) {
-    if(isString(children)) {
-      if(recycledNodes[tag].length > 0) {
+  if (tag != null) {
+    if (hint === Inferno.Hint.TEXT || isString(children)) {
+      if (recycledNodes[tag].length > 0) {
         domNode = recycledNodes[tag].pop();
       } else {
         domNode = cachedTextNodes[tag].cloneNode(true);
       }
       domNode.firstChild.nodeValue = children;
       skipChildrenCreation = true;
-      if(rootNode !== null) {
+      if (rootNode !== null) {
         rootNode.toRecycle[tag].push(domNode);
       }
     } else {
-      if(typeof tag === "string") {
+      if (typeof tag === "string") {
         domNode = document.createElement(tag);
       } else {
         domNode = document.createElement(nodeTags[tag]);
       }
     }
-  } else if(isString(node)) {
-    parentDom.appendChild(document.createTextNode(node));
-    return;
-  } else if(typeof node === "number") {
-    parentDom.appendChild(document.createTextNode(node.toString()));
+  } else if (tag === undefined) {
+    if (isString(node)) {
+      parentDom.appendChild(document.createTextNode(node));
+    } else {
+      parentDom.appendChild(document.createTextNode(node.toString()));
+    }
     return;
   }
-
-  attrs = getAttrsForNode(node);
 
   node.dom = domNode;
 
-  if(skipChildrenCreation === false && children !== null) {
-    createChildren(rootNode, children, domNode, component);
+  if (skipChildrenCreation === false && children !== null) {
+    createChildren(rootNode, children, domNode, component, hint);
   }
 
-  if(attrs) {
+  if (attrs) {
     updateAttributes(domNode, tag, component, attrs);
   }
 
-  if(domNode !== null) {
+  if (domNode !== null) {
     insertChild(parentDom, domNode, nextChild, replace);
   }
 }
 
 function attachTemplateNode(node) {
   var templateNode = node.templateNode;
-  if(templateNode) {
+  if (templateNode) {
+    node.tag = templateNode.tag;
+  }
+}function attachTemplateNode(node) {
+  var templateNode = node.templateNode;
+  if (templateNode) {
     node.tag = templateNode.tag;
   }
 }
@@ -416,48 +437,61 @@ function updateChildren(parentDom, node, component, children, oldChildren, outer
 }
 
 function updateNode(node, oldNode, parentDom, component, nextChildChildren, nextChildIndex, outerNextChild, isOnlyDomChild) {
-  var tag = node.tag;
+  var domNode = oldNode.dom,
+      oldChildren = oldNode.children,
+      children = node.children,
+      attrs = node.attrs,
+      oldAttrs = oldNode.attrs,
+      oldComponent = oldNode.component;
 
-  if (node.component != null && oldNode.component != null && oldNode.component instanceof Component) {
-    node.component = oldNode.component;
-    oldNode.component.props = node.props;
-    oldNode.component.forceUpdate();
+  if (node.component != null && oldComponent != null && oldComponent instanceof Component) {
+    node.component = oldComponent;
+    oldComponent.props = node.props;
+    oldComponent.forceUpdate();
     return;
   }
 
-  if (tag && oldNode.tag !== tag) {
-    createNode(null, node, parentDom, component, oldNode, true);
-  } else if (isString(node)) {
-    if(node !== oldNode) {
-      parentDom.childNodes[nextChildIndex - 1].nodeValue = node;
+  if (!node.template || (node.template !== oldNode.template)) {
+    var oldTag = oldNode.tag;
+    var tag = node.tag;
+
+    if(node.tag == null && node.template && node.template.tag != null) {
+      tag = node.template.tag;
     }
-  } else if (typeof node === "number") {
-    if(node !== oldNode) {
-      parentDom.childNodes[nextChildIndex - 1].nodeValue = node.toString();
+    if(oldNode.tag == null && oldNode.template && oldNode.template.tag != null) {
+      oldNode = oldNode.template.tag;
     }
-  } else {
-    var domNode = oldNode.dom,
-        oldChildren = oldNode.children,
-        children = node.children,
-        attrs = getAttrsForNode(node),
-        oldAttrs = getAttrsForNode(oldNode);
-
-      node.dom = domNode;
-
-      if (children !== oldChildren) {
-        updateChildren(domNode, node, component, children, oldChildren);
+    if(tag && oldTag !== tag) {
+      createNode(null, node, parentDom, component, oldNode, true);
+      return;
+    } else if(tag === undefined) {
+      if (isString(node)) {
+        if (node !== oldNode) {
+          parentDom.childNodes[nextChildIndex - 1].nodeValue = node;
+        }
+      } else if (typeof node === "number") {
+        if (node !== oldNode) {
+          parentDom.childNodes[nextChildIndex - 1].nodeValue = node.toString();
+        }
       }
+      return;
+    }
+  }
 
-      if (attrs !== oldAttrs) {
-        updateAttributes(domNode, tag, component, attrs, oldAttrs)
-      }
+  node.dom = domNode;
+
+  if (children !== oldChildren) {
+    updateChildren(domNode, node, component, children, oldChildren);
+  }
+  if (attrs && attrs !== oldAttrs) {
+    updateAttributes(domNode, tag, component, attrs, oldAttrs);
   }
 }
 
-Inferno.render = function(node, dom, component) {
+Inferno.render = function (node, dom, component) {
   var oldNode = null;
-  if(component !== undefined) {
-    if(component._rootNode === undefined) {
+  if (component !== undefined) {
+    if (component._rootNode === undefined) {
       node = node();
       initRootNode(node);
       component._rootNode = node;
@@ -468,8 +502,8 @@ Inferno.render = function(node, dom, component) {
       updateNode(node, oldNode, dom, component);
       component._rootNode = node;
     }
-  } else if(dom.__rootNode === undefined) {
-    if(initialisedListeners === false) {
+  } else if (dom.__rootNode == null) {
+    if (initialisedListeners === false) {
       addRootDomEventListerners();
     }
     initRootNode(node);
@@ -478,25 +512,15 @@ Inferno.render = function(node, dom, component) {
   } else {
     oldNode = dom.__rootNode;
     updateNode(node, oldNode, dom);
-    dom.__rootNode = node;
   }
 };
 
 function initRootNode(node) {
-  node.toRecycle = {
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    6: [],
-    7: [],
-    8: [],
-    9: [],
-    10: [],
-    11: [],
-    12: []
-  };
+  var size = recycledNodes.length;
+  node.toRecycle = new Array(12);
+  for(var i = 0; i < size; i++) {
+    node.toRecycle[i] = [];
+  }
 }
 
 function moveChild(parentDom, child, nextChild) {
