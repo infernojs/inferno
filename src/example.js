@@ -22,32 +22,23 @@ function map(array, constructor) {
   return {type: map, array, array, constructor: constructor};
 }
 
-beginRender() {
-  var newVal = "asfdsafsa";
-  var people = ["bob", "dom", "paul"];
+component() {
+  return render(rootNode, init) {
 
-  return template() {
+    var newVal = "asfdsafsa";
+    var people = [{id: 0, name: "bob"}, {id: 1, name: "dom"], {id:0, name: "paul"}];
 
     var node1 = null;
     var node2 = null;
 
-    return {
-      nodes: [
-        node1 = {tag: "div", dom: bla, class: "foo", children: [node2, node3, node4]},
-        node2 = {tag: "span", children: "test1"},
-        node3 = {tag: "span", children: "test2"},
-        node4 = {tag: "span", children: "test3"}
-      ],
-      update:[
-        updateNode(node1, function(node) {
-          updateClass(node, newVal)
-        }),
-        updateChildren(node1, map(people, function(node, person) {
-          updateChildren(node, person);
-        }))
-      ]
-    };
+    if(init === false) {
+      rootNode.renderChild("div", function(node) {
+        node.setClass(newVal);
+
+        node.renderChildren()
+      })
+    }
   }
 }
 
-beginRender();
+component();
