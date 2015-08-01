@@ -24,7 +24,7 @@ Furthermore, Inferno also uses ES6 components like React:
 
 ```javascript
 t7.module(funciton(t7) {
-  class Component implements Inferno.Component {
+  class Component extends Inferno.Component {
     constructor(props) {
       super(props);
       this.state.counter = 0;
