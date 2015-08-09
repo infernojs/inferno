@@ -92,6 +92,83 @@ var t7 = (function() {
     }
   };
 
+  function buildInfernoTemplate(root, valueCounter, parentNodeName, tagParams, templateParams, component) {
+    //TODO this entire function is horrible, needs a revist and refactor
+    var nodeName = parentNodeName ? parentNodeName + "_" : "n_";
+    var child = null, matches, valueName = "";
+
+    if(root.children instanceof Array) {
+      for(var i = 0; i < root.children.length; i++) {
+        child = root.children[i];
+        if(typeof child === "string" && root.children.length === 1) {
+          matches = child.match(/__\$props__\[\d*\]/g);
+          if(matches === null) {
+            if(!parentNodeName) {
+              templateParams.push("root.textContent='" + child + "';");
+            } else {
+              templateParams.push(parentNodeName +  ".textContent='" + child + "';");
+            }
+          } else {
+            valueName = "fragment.$v" + valueCounter.index;
+            templateParams.push("if(typeof " + valueName + " === 'string' | typeof " + valueName + " === 'number') {");
+            if(!parentNodeName) {
+              templateParams.push("root.textContent=" + valueName + ";");
+            } else {
+              templateParams.push(parentNodeName +  ".textContent=" + valueName + ";");
+            }
+            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT;");
+            templateParams.push("} else {");
+            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + " instanceof Array ? Inferno.Type.LIST : Inferno.Type.FRAGMENT);");
+            templateParams.push("}");
+            if(!parentNodeName) {
+              templateParams.push("fragment.$e" + valueCounter.index + " = root;");
+            } else {
+              templateParams.push("fragment.$e" + valueCounter.index + " = " + parentNodeName + ";");
+            }
+            tagParams.push("$v" + valueCounter.index + ": " + child);
+            valueCounter.index++;
+          }
+        } else if(typeof child === "string" && root.children.length > 1) {
+          matches = child.match(/__\$props__\[\d*\]/g);
+          if(matches === null) {
+            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child + "');");
+          } else {
+            valueName = "fragment.$v" + valueCounter.index;
+            templateParams.push("var " + nodeName + i + ";");
+            templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
+            templateParams.push(nodeName + i + " = Inferno.dom.createText(" + valueName + ");");
+            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT;");
+            templateParams.push("} else {");
+            templateParams.push(nodeName + i + " = Inferno.dom.createEmpty();");
+            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + " instanceof Array ? Inferno.Type.LIST_REPLACE : Inferno.Type.FRAGMENT_REPLACE);");
+            templateParams.push("}");
+            templateParams.push("fragment.$e" + valueCounter.index + " = " + nodeName + i + ";");
+            tagParams.push("$v" + valueCounter.index + ": " + child);
+            valueCounter.index++;
+          }
+          if(!parentNodeName) {
+            templateParams.push("root.appendChild(" +  nodeName + i + ");");
+          } else {
+            templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+          }
+        } else if(child != null) {
+          if(child.tag) {
+            templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
+            if(child.children) {
+              buildInfernoTemplate(child, valueCounter, nodeName + i, tagParams, templateParams, component);
+            }
+            if(!parentNodeName) {
+              templateParams.push("root.appendChild(" +  nodeName + i + ");");
+            } else {
+              templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+            }
+          }
+        }
+      }
+    }
+    templateParams.push("fragment.valuesLength = " + valueCounter.index + ";");
+  }
+
   //when creating a new function from a vdom, we'll need to build the vdom's children
   function buildReactChildren(root, tagParams, childrenProp, component) {
     var childrenText = [];
@@ -147,20 +224,6 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, attrsParams) {
-    var val = '', key = "";
-    var matches = null;
-    for(var name in root.attrs) {
-      val = root.attrs[name];
-      matches = val.match(/__\$props__\[\d*\]/g);
-      if(matches === null) {
-        attrsParams.push("'_" + name + "':'" + val + "'");
-      } else {
-        attrsParams.push("'_" + name + "':" + val.replace(/(__\$props__\[([0-9]*)\])/g, "$1"));
-      }
-    }
-  };
-
   function isComponentName(tagName) {
     if(tagName[0] === tagName[0].toUpperCase()) {
       return true;
@@ -168,17 +231,9 @@ var t7 = (function() {
     return false;
   };
 
-  function handleInfernoTag(tagName, functionText) {
-    if(Inferno.Tag[tagName.toUpperCase()]) {
-      functionText.push("{dom: null, tag: " + Inferno.Tag[tagName.toUpperCase()]);
-    } else {
-      functionText.push("{dom: null, tag: '" + tagName + "'");
-    }
-  }
-
   //This takes a vDom array and builds a new function from it, to improve
   //repeated performance at the cost of building new Functions()
-  function buildFunction(root, functionText, component) {
+  function buildFunction(root, functionText, component, templateKey) {
     var i = 0;
     var tagParams = [];
     var literalParts = [];
@@ -189,32 +244,19 @@ var t7 = (function() {
       //throw error about adjacent elements
     } else {
       //Universal output or Inferno output
-      if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno || output === t7.Outputs.Mithril) {
+      if(output === t7.Outputs.Universal || output === t7.Outputs.Mithril) {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
           if(isComponentName(root.tag) === false) {
-            if(output === t7.Outputs.Inferno) {
-              handleInfernoTag(root.tag, functionText);
-            } else {
-              functionText.push("{tag: " + root.tag + "'");
-            }
+            functionText.push("{tag: " + root.tag + "'");
             //add the key
             if(root.key != null) {
               tagParams.push("key: " + root.key);
-            } else if(output === t7.Outputs.Inferno) {
-              tagParams.push("key: null");
             }
             //build the attrs
             if(root.attrs != null) {
-              if(output === t7.Outputs.Inferno) {
-                buildInfernoAttrsParams(root, attrsParams);
-                if(attrsParams.length > 0) {
-                  tagParams.push(attrsParams.join(','));
-                }
-              } else {
-                buildAttrsParams(root, attrsParams);
-                tagParams.push("attrs: {" + attrsParams.join(',') + "}");
-              }
+              buildAttrsParams(root, attrsParams);
+              tagParams.push("attrs: {" + attrsParams.join(',') + "}");
             }
             //build the children for this node
             buildUniversalChildren(root, tagParams, true, component);
@@ -231,15 +273,54 @@ var t7 = (function() {
               //we need to apply the tag components
               buildAttrsParams(root, attrsParams);
               functionText.push("m.component(__$components__." + root.tag + ",{" + attrsParams.join(',') + "})");
-            } else if(output === t7.Outputs.Inferno) {
-              //we need to apply the tag components
-              buildAttrsParams(root, attrsParams);
-              functionText.push("{component:__$components__." + root.tag + ", props: {" + attrsParams.join(',') + "}}");
             }
           }
         } else {
           //add a text entry
           functionText.push("'" + root + "'");
+        }
+      }
+      //Inferno output
+      else if(output === t7.Outputs.Inferno) {
+        //inferno is a bit more complicated, it requires both a fragment "vdom" and a template to be generated
+        var key = root.key;
+        if(root.key === undefined) {
+          key = null;
+        }
+        var template = "null";
+        var component = null;
+        var props = null;
+        var templateParams = [];
+
+        if(isComponentName(root.tag) === true) {
+          buildAttrsParams(root, attrsParams);
+          component = "__$components__." + root.tag;
+          props = " {" + attrsParams.join(',') + "}";
+        } else {
+          templateParams.push("var root = Inferno.dom.createElement('" + root.tag + "');");
+          if(root.attrs) {
+            buildAttrsParams(root, attrsParams);
+            templateParams.push("Inferno.dom.addAttributes(root, {" + attrsParams.join(",") + "});");
+          }
+        }
+
+        if(root.children.length > 0) {
+          buildInfernoTemplate(root, {index: 0}, null, tagParams, templateParams, component);
+          templateParams.push("fragment.dom = root;");
+          var scriptCode = templateParams.join("\n");
+          if(isBrowser === true) {
+            addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment){"use strict";\n' + scriptCode + '}', templateKey);
+          } else {
+            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];\n' + scriptCode);
+          }
+          t7._templateCache[templateKey].key = templateKey;
+          template = 't7._templateCache["' + templateKey + '"]';
+        }
+
+        if(component !== null) {
+          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+        } else {
+          functionText.push("{dom: null, key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
         }
       }
       //React output
@@ -382,7 +463,7 @@ var t7 = (function() {
           //now we create out vElement
           vElement = {
             tag: tagName,
-            attrs: (tagData && tagData.attrs) ? tagData.attrs : {},
+            attrs: (tagData && tagData.attrs) ? tagData.attrs : null,
             children: [],
             closed: tagContent[tagContent.length - 1] === "/" || selfClosingTags.indexOf(tagName) > -1 ? true : false
           };
@@ -574,7 +655,8 @@ var t7 = (function() {
         //build a vDom from the HTML
         getVdom(fullHtml, values),
         functionString,
-        this
+        this,
+        templateKey
       );
       scriptCode = functionString.join(',');
       //build a new Function and store it depending if on node or browser
@@ -605,6 +687,7 @@ var t7 = (function() {
   };
 
   t7._cache = {};
+  t7._templateCache = {};
 
   t7.Outputs = {
     React: 1,
@@ -649,6 +732,7 @@ var t7 = (function() {
 
   t7.clearCache = function() {
     t7._cache = {};
+    t7._templateCache = {};
   };
 
   t7.assign = function(compName) {
@@ -682,16 +766,8 @@ var t7 = (function() {
     callback(instance);
   };
 
-  t7.precompile = function(nodeTree, valueTree) {
-    if(output === t7.Outputs.Inferno && valuesOnly === true) {
-      var values = valueTree();
-      values.nodeTree = nodeTree;
-      return values;
-    } else {
-      var node = nodeTree();
-      node.nodeTree = nodeTree;
-      return node;
-    }
+  t7.precompile = function() {
+
   };
 
   //set the type to React as default if it exists in global scope

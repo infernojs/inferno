@@ -23,51 +23,32 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var t7 = require("../t7");
 
-var supportsTextContent = ('textContent' in document);
+var supportsTextContent = ("textContent" in document);
+
+var isBrowser = false;
+
+if (typeof window != "undefined") {
+  isBrowser = true;
+}
+
+var events = {
+  "onClick": "click"
+};
 
 var events = {
   "onClick": "click"
 };
 
 var userAgent = navigator.userAgent,
-    isWebKit = userAgent.indexOf('WebKit') !== -1,
-    isFirefox = userAgent.indexOf('Firefox') !== -1,
-    isTrident = userAgent.indexOf('Trident') !== -1;
+    isWebKit = userAgent.indexOf("WebKit") !== -1,
+    isFirefox = userAgent.indexOf("Firefox") !== -1,
+    isTrident = userAgent.indexOf("Trident") !== -1;
 
-var version = "0.1.25";
+var version = "0.2.2";
 
-var nodeTags = {
-  1: "div",
-  2: "span",
-  3: "a",
-  4: "p",
-  5: "li",
-  6: "td",
-  7: "button",
-  8: "h1",
-  9: "h2",
-  10: "h3",
-  11: "h4",
-  12: "h5"
-};
-
+var recycledFragments = {};
 var rootlisteners = null;
 var initialisedListeners = false;
-var cachedTextNodes = null;
-var recycledNodes = null;
-
-if (typeof window != "undefined") {
-  cachedTextNodes = {};
-  recycledNodes = {};
-  for (var _i = 1; _i < 13; _i++) {
-    cachedTextNodes[_i] = document.createElement(nodeTags[_i]);
-    cachedTextNodes[_i].textContent = " ";
-    recycledNodes[_i] = [];
-  }
-  rootlisteners = {
-    click: []
-  };
-}
 
 function addRootDomEventListerners() {
   initialisedListeners = true;
@@ -86,23 +67,20 @@ function addRootDomEventListerners() {
 
 var Inferno = {};
 
-Inferno.Tag = {
-  DIV: 1,
-  SPAN: 2,
-  A: 3,
-  P: 4,
-  LI: 5,
-  TD: 6,
-  BUTTON: 7,
-  H1: 8,
-  H2: 9,
-  H3: 10,
-  H4: 11,
-  H5: 12
+Inferno.Type = {
+  TEXT: 0,
+  FRAGMENT: 1,
+  LIST: 2,
+  FRAGMENT_REPLACE: 3,
+  LIST_REPLACE: 4
 };
 
 function isString(value) {
-  return typeof value === 'string';
+  return typeof value === "string";
+}
+
+function isNumber(value) {
+  return typeof value === "number";
 }
 
 function isArray(value) {
@@ -110,7 +88,7 @@ function isArray(value) {
 }
 
 function isFunction(value) {
-  return typeof value === 'function';
+  return typeof value === "function";
 }
 
 var Component = (function () {
@@ -148,439 +126,325 @@ var Component = (function () {
 
 Inferno.Component = Component;
 
-module.exports = Inferno;
+Inferno.dom = {};
 
-Inferno.unmountComponentAtNode = function (root) {
-  //TODO finish, remove events etc
-  var node = root.__rootNode;
-  if (node) {
-    root.removeChild(node.dom);
-    recycleNodes(node);
-    root.__rootNode = null;
+Inferno.dom.createElement = function (tag) {
+  if (isBrowser) {
+    return document.createElement(tag);
   }
 };
 
-function recycleNodes(node) {
+Inferno.dom.createText = function (text) {
+  if (isBrowser) {
+    return document.createTextNode(text);
+  }
+};
+
+Inferno.dom.createEmpty = function (text) {
+  if (isBrowser) {
+    return document.createTextNode("");
+  }
+};
+
+Inferno.dom.addAttributes = function (node, attrs) {
+  debugger;
+};
+
+Inferno.dom.createFragment = function () {
+  if (isBrowser) {
+    return document.createDocumentFragment();
+  }
+};
+
+Inferno.unmountComponentAtNode = function (dom) {
+  var context = getContext(dom);
+  if (context !== null) {
+    removeFragment(context, dom, context.fragment);
+    recycleFragments(context);
+    removeContext(dom);
+  }
+};
+
+function recycleFragments(context) {
   var i = 0;
-  for (var type in node.toRecycle) {
-    for (i = 0; i < node.toRecycle[type].length; i++) {
-      recycledNodes[type].push(node.toRecycle[type][i]);
-    }
-  }
-}
-
-function createChildren(rootNode, children, parentDom, component) {
-  var i = 0,
-      childDom = null,
-      childrenType = getChildrenType(children),
-      textNode = null;
-  if (childrenType > 1) {
-    for (i = 0; i < children.length; i++) {
-      if (isString(children[i])) {
-        textNode = document.createTextNode(children[i]);
-        parentDom.appendChild(textNode);
-      } else if (typeof children[i] === "number") {
-        textNode = document.createTextNode(children[i].toString());
-        parentDom.appendChild(textNode);
-      } else {
-        createNode(rootNode, children[i], parentDom, component);
+  for (var type in context.toRecycle) {
+    for (i = 0; i < context.toRecycle[type].length; i++) {
+      if (!recycledFragments[type]) {
+        recycledFragments[type] = [];
       }
-    }
-  } else if (childrenType !== 0) {
-    setTextContent(parentDom, children, false);
-  }
-}
-
-function createAllChildren(parentDom, node, component, children, inFragment) {
-  children = normChildren(node, children);
-  var childrenType = getChildrenType(children);
-  if (childrenType > 1) {
-    for (var i = 0, childrenLength = children.length; i < childrenLength; i++) {
-      createNode(null, normIndex(children, i), parentDom, component);
-    }
-  } else if (childrenType !== 0) {
-    var child = getOnlyChild(children, childrenType);
-    if (!inFragment && isString(child)) {
-      setTextContent(parentDom, child);
-    } else {
-      child = normOnly(node, child);
-      createNode(null, child, parentDom, component, null, false);
+      recycledFragments[type].push(context.toRecycle[type][i]);
     }
   }
 }
 
-function getAttrsForNode(node) {
-  var attrs = {},
-      anyAttrs = false;
-  for (var property in node) {
-    if (property[0] === "_") {
-      attrs[property.substr(1)] = node[property];
-      anyAttrs = true;
-    }
-  }
-  if (!anyAttrs) {
+function getRecycledFragment(templateKey) {
+  var fragments = recycledFragments[templateKey];
+  if (!fragments || fragments.length === 0) {
     return null;
   }
-  return attrs;
+  return fragments.pop();
 }
 
-function createNode(rootNode, node, parentDom, component, nextChild, replace) {
-  attachTemplateNode(node);
-
-  var domNode = node.dom;
-  var tag = node.tag;
-  var children = node.children;
-  var skipChildrenCreation = false;
-  var attrs = null;
-
-  if (node.component) {
-    //if its a component, we make a new instance
-    if (typeof node.component === "function") {
-      node.component = new node.component(node.props);
-      node.component.forceUpdate = Inferno.render.bind(null, node.component.render.bind(node.component), parentDom, node.component);
-      node.component.forceUpdate();
-      node.isDynamic = true;
-    }
-    //if this is a component
-    if (node.component instanceof Component) {
-      node.component.forceUpdate();
-    }
-    return;
-  }
-
-  if (tag) {
-    if (isString(children)) {
-      if (recycledNodes[tag].length > 0) {
-        domNode = recycledNodes[tag].pop();
-      } else {
-        domNode = cachedTextNodes[tag].cloneNode(true);
-      }
-      domNode.firstChild.nodeValue = children;
-      skipChildrenCreation = true;
-      if (rootNode !== null) {
-        rootNode.toRecycle[tag].push(domNode);
-      }
-    } else {
-      if (typeof tag === "string") {
-        domNode = document.createElement(tag);
-      } else {
-        domNode = document.createElement(nodeTags[tag]);
-      }
-    }
-  } else if (isString(node)) {
-    parentDom.appendChild(document.createTextNode(node));
-    return;
-  } else if (typeof node === "number") {
-    parentDom.appendChild(document.createTextNode(node.toString()));
-    return;
-  }
-
-  attrs = getAttrsForNode(node);
-
-  node.dom = domNode;
-
-  if (skipChildrenCreation === false && children !== null) {
-    createChildren(rootNode, children, domNode, component);
-  }
-
-  if (attrs) {
-    updateAttributes(domNode, tag, component, attrs);
-  }
-
-  if (domNode !== null) {
-    insertChild(parentDom, domNode, nextChild, replace);
+function attachFragmentList(context, list, parentDom, component) {
+  for (var i = 0; i < list.length; i++) {
+    attachFragment(context, list[i], parentDom, component);
   }
 }
 
-function attachTemplateNode(node) {
-  var templateNode = node.templateNode;
-  if (templateNode) {
-    node.tag = templateNode.tag;
-  }
-}
+function updateFragmentList(context, oldList, list, parentDom, component, outerNextFragment) {
+  var oldListLength = oldList.length;
+  var listLength = list.length;
 
-function updateChildren(parentDom, node, component, children, oldChildren, outerNextChild) {
-  children = normChildren(node, children, oldChildren);
-  var oldChildrenType = getChildrenType(oldChildren);
-  if (oldChildrenType === 0) {
-    createAllChildren(parentDom, node, component, children, false);
+  if (listLength === 0) {
+    removeFragments(context, parentDom, oldList, 0, oldListLength);
+    return;
+  } else if (oldListLength === 0) {
+    attachFragmentList(context, list, parentDom, component);
     return;
   }
-  var childrenType = getChildrenType(children),
-      oldChild,
-      child;
-  if (childrenType === 0) {
-    removeAllChildren(parentDom, oldChildren, oldChildrenType);
-    return;
-  } else if (childrenType < 2) {
-    child = getOnlyChild(children, childrenType);
-    if (isString(child)) {
-      if (childrenType === oldChildrenType) {
-        oldChild = getOnlyChild(oldChildren, oldChildrenType);
-        if (child === oldChild) {
-          return;
-        } else if (isString(oldChild)) {
-          parentDom.firstChild.nodeValue = child;
-          return;
-        }
-      }
-      destroyNodes(oldChildren, oldChildrenType);
-      setTextContent(parentDom, child, true);
-      return;
-    } else if (oldChildrenType < 2) {
-      oldChild = normOnlyOld(oldChildren, oldChildrenType, parentDom);
-      child = normOnly(element, child, oldChild);
-      updateNode(child, oldChild, parentDom, component, null, 0, outerNextChild);
-      return;
-    }
-  }
 
-  if (childrenType === -1) {
-    node.children = children = [children];
-  }
-  if (oldChildrenType < 2) {
-    if (!isString(oldChildren)) {
-      oldChild = normOnlyOld(oldChildren, oldChildrenType, parentDom);
-    } else {
-      oldChild = oldChildren;
-    }
-    if (oldChildrenType === 1) {
-      oldChildren[0] = oldChild;
-    } else {
-      oldChildren = [oldChild];
-    }
-  }
-
-  var oldChildrenLength = oldChildren.length,
-      childrenLength = children.length,
-      oldEndIndex = oldChildrenLength - 1,
-      endIndex = children.length - 1;
-
+  var oldEndIndex = oldListLength - 1;
+  var endIndex = listLength - 1;
   var oldStartIndex = 0,
-      startIndex = 0,
-      successful = true,
-      nextChild;
+      startIndex = 0;
+  var successful = true;
+  var nextItem;
+  var oldItem, item;
 
   outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
     successful = false;
-    var oldStartChild, oldEndChild, startChild, endChild;
+    var oldStartItem, oldEndItem, startItem, endItem, doUpdate;
 
-    oldStartChild = oldChildren[oldStartIndex];
-    startChild = normIndex(children, startIndex, oldStartChild);
-    while (oldStartChild.key === startChild.key) {
-      updateNode(startChild, oldStartChild, parentDom, component, oldChildren, oldStartIndex + 1, outerNextChild);
+    oldStartItem = oldList[oldStartIndex];
+    startItem = list[startIndex];
+    while (oldStartItem.key === startItem.key) {
+      updateFragment(context, oldStartItem, startItem, parentDom, component);
       oldStartIndex++;startIndex++;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
         break outer;
       }
-      oldStartChild = oldChildren[oldStartIndex];
-      startChild = normIndex(children, startIndex, oldStartChild);
+      oldStartItem = oldList[oldStartIndex];
+      startItem = list[startIndex];
       successful = true;
     }
-    oldEndChild = oldChildren[oldEndIndex];
-    endChild = normIndex(children, endIndex);
-    while (oldEndChild.key === endChild.key) {
-      updateNode(endChild, oldEndChild, parentDom, component, children, endIndex + 1, outerNextChild);
+    oldEndItem = oldList[oldEndIndex];
+    endItem = list[endIndex];
+    while (oldEndItem.key === endItem.key) {
+      updateFragment(context, oldEndItem, endItem, parentDom, component);
       oldEndIndex--;endIndex--;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
         break outer;
       }
-      oldEndChild = oldChildren[oldEndIndex];
-      endChild = normIndex(children, endIndex);
+      oldEndItem = oldList[oldEndIndex];
+      endItem = list[endIndex];
       successful = true;
     }
-    while (oldStartChild.key === endChild.key) {
-      nextChild = endIndex + 1 < childrenLength ? children[endIndex + 1] : outerNextChild;
-      updateNode(endChild, oldStartChild, parentDom, component, null, 0, nextChild);
-      moveChild(parentDom, endChild, nextChild);
+    while (oldStartItem.key === endItem.key) {
+      nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
+      updateFragment(context, oldStartItem, endItem, parentDom, component);
+      moveFragment(parentDom, endItem, nextItem);
       oldStartIndex++;endIndex--;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
         break outer;
       }
-      oldStartChild = oldChildren[oldStartIndex];
-      endChild = normIndex(children, endIndex);
+      oldStartItem = oldList[oldStartIndex];
+      endItem = list[endIndex];
       successful = true;
     }
-    while (oldEndChild.key === startChild.key) {
-      nextChild = oldStartIndex < oldChildrenLength ? oldChildren[oldStartIndex] : outerNextChild;
-      updateNode(startChild, oldEndChild, parentDom, component, null, 0, nextChild);
-      moveChild(parentDom, startChild, nextChild);
+    while (oldEndItem.key === startItem.key) {
+      nextItem = oldStartIndex < oldListLength ? oldList[oldStartIndex] : outerNextFragment;
+      updateFragment(context, oldEndItem, startItem, parentDom, component);
+      moveFragment(parentDom, startItem, nextItem);
       oldEndIndex--;startIndex++;
       if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
         break outer;
       }
-      oldEndChild = oldChildren[oldEndIndex];
-      startChild = normIndex(children, startIndex);
+      oldEndItem = oldList[oldEndIndex];
+      startItem = list[startIndex];
       successful = true;
     }
   }
-
   if (oldStartIndex > oldEndIndex) {
-    nextChild = endIndex + 1 < childrenLength ? normIndex(children, endIndex + 1) : outerNextChild;
+    nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
     for (i = startIndex; i <= endIndex; i++) {
-      createNode(null, normIndex(children, i), parentDom, component, nextChild);
+      item = list[i];
+      attachFragment(context, item, parentDom, component, nextItem);
     }
   } else if (startIndex > endIndex) {
-    removeChildren(parentDom, oldChildren, oldStartIndex, oldEndIndex + 1);
+    removeFragments(context, parentDom, oldList, oldStartIndex, oldEndIndex + 1);
   } else {
     var i,
-        oldNextChild = oldChildren[oldEndIndex + 1],
-        oldChildrenMap = {};
+        oldNextItem = oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1];
+    var oldListMap = {};
     for (i = oldEndIndex; i >= oldStartIndex; i--) {
-      oldChild = oldChildren[i];
-      oldChild.next = oldNextChild;
-      oldChildrenMap[oldChild.key] = oldChild;
-      oldNextChild = oldChild;
+      oldItem = oldList[i];
+      oldItem.next = oldNextItem;
+      oldListMap[oldItem.key] = oldItem;
+      oldNextItem = oldItem;
     }
-    nextChild = endIndex + 1 < childrenLength ? normIndex(children, endIndex + 1) : outerNextChild;
+    nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
     for (i = endIndex; i >= startIndex; i--) {
-      child = children[i];
-      var key = child.key;
-      oldChild = oldChildrenMap[key];
-      if (oldChild) {
-        oldChildrenMap[key] = null;
-        oldNextChild = oldChild.next;
-        updateNode(child, oldChild, parentDom, component, null, 0, nextChild);
-        if ((oldNextChild && oldNextChild.key) !== (nextChild && nextChild.key)) {
-          moveChild(parentDom, child, nextChild);
+      item = list[i];
+      var key = item.key;
+      oldItem = oldListMap[key];
+      if (oldItem) {
+        oldListMap[key] = null;
+        oldNextItem = oldItem.next;
+        updateFragment(context, oldItem, item, parentDom, component);
+        if (parentDom.nextSibling != (nextItem && nextItem.dom)) {
+          moveFragment(parentDom, item, nextItem);
         }
       } else {
-        createNode(null, child, parentDom, component, nextChild);
+        attachFragment(context, item, parentDom, component, nextItem);
       }
-      nextChild = child;
+      nextItem = item;
     }
     for (i = oldStartIndex; i <= oldEndIndex; i++) {
-      oldChild = oldChildren[i];
-      if (oldChildrenMap[oldChild.key] !== null) {
-        removeChild(parentDom, oldChild);
+      oldItem = oldList[i];
+      if (oldListMap[oldItem.key] !== null) {
+        removeFragment(context, parentDom, oldItem);
       }
     }
   }
 }
 
-function updateNode(node, oldNode, parentDom, component, nextChildChildren, nextChildIndex, outerNextChild, isOnlyDomChild) {
-  var tag = node.tag;
+function updateFragment(context, oldFragment, fragment, parentDom, component) {
+  if (oldFragment.template !== fragment.template) {
+    attachFragment(context, fragment, parentDom, component, oldFragment, true);
+  } else {
+    if (oldFragment.component) {
+      fragment.component = oldFragment.component;
+      return;
+    }
 
-  if (node.component != null && oldNode.component != null && oldNode.component instanceof Component) {
-    node.component = oldNode.component;
-    oldNode.component.props = node.props;
-    oldNode.component.forceUpdate();
+    var element = oldFragment.$e1;
+    var template = oldFragment.$t1;
+
+    fragment.dom = oldFragment.dom;
+    fragment.$e1 = element;
+    fragment.$t1 = template;
+
+    if (oldFragment.$v1 !== fragment.$v1) {
+      switch (template) {
+        case Inferno.Type.LIST:
+          updateFragmentList(context, oldFragment.$v1, fragment.$v1, element, component);
+          break;
+        case Inferno.Type.TEXT:
+          fragment.$e1.firstChild.nodeValue = fragment.$v1;
+          break;
+      }
+    }
+  }
+}
+
+function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
+  var component = fragment.component;
+
+  if (component) {
+    if (typeof component === "function") {
+      component = fragment.component = new component(fragment.props);
+      component.context = null;
+      component.forceUpdate = Inferno.render.bind(null, fragment.component.render.bind(fragment.component), parentDom, fragment.component);
+      component.forceUpdate();
+    }
     return;
   }
 
-  if (tag && oldNode.tag !== tag) {
-    createNode(null, node, parentDom, component, oldNode, true);
-  } else if (isString(node)) {
-    if (node !== oldNode) {
-      parentDom.childNodes[nextChildIndex - 1].nodeValue = node;
-    }
-  } else if (typeof node === "number") {
-    if (node !== oldNode) {
-      parentDom.childNodes[nextChildIndex - 1].nodeValue = node.toString();
-    }
+  var recycledFragment = null;
+  var template = fragment.template;
+  var templateKey = template.key;
+
+  if (context.shouldRecycle === true) {
+    recycledFragment = getRecycledFragment(templateKey);
+  }
+
+  if (recycledFragment !== null) {
+    updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
-    var domNode = oldNode.dom,
-        oldChildren = oldNode.children,
-        children = node.children,
-        attrs = getAttrsForNode(node),
-        oldAttrs = getAttrsForNode(oldNode);
-
-    node.dom = domNode;
-
-    if (children !== oldChildren) {
-      updateChildren(domNode, node, component, children, oldChildren);
+    template(fragment);
+    var valuesLength = fragment.valuesLength;
+    for (var i = 0; i < valuesLength; i++) {
+      switch (fragment["$t" + i]) {
+        case Inferno.Type.LIST:
+          attachFragmentList(context, fragment["$v" + i], fragment["$e" + i], component);
+          break;
+        case Inferno.Type.LIST_REPLACE:
+          debugger;
+          break;
+        case Inferno.Type.FRAGMENT:
+          debugger;
+          break;
+        case Inferno.Type.FRAGMENT_REPLACE:
+          attachFragment(context, fragment["$v" + i], parentDom, component, fragment["$e" + i], true);
+          break;
+      }
     }
+  }
 
-    if (attrs !== oldAttrs) {
-      updateAttributes(domNode, tag, component, attrs, oldAttrs);
+  insertFragment(context, parentDom, fragment.dom, nextFragment, replace);
+}
+
+var contexts = [];
+
+function removeContext(dom) {
+  for (var i = 0; i < contexts.length; i++) {
+    if (contexts[i].dom === dom) {
+      contexts.splice(i, 1);
+      return;
     }
   }
 }
 
-Inferno.render = function (node, dom, component) {
-  var oldNode = null;
-  if (component !== undefined) {
-    if (component._rootNode === undefined) {
-      node = node();
-      initRootNode(node);
-      component._rootNode = node;
-      createNode(node, node, dom, component);
+function getContext(dom) {
+  for (var i = 0; i < contexts.length; i++) {
+    if (contexts[i].dom === dom) {
+      return contexts[i];
+    }
+  }
+  return null;
+}
+
+Inferno.render = function (fragment, dom, component) {
+  var context;
+  if (component === undefined) {
+    context = getContext(dom);
+    if (context === null) {
+      context = {
+        toRecycle: {},
+        fragment: fragment,
+        dom: dom,
+        shouldRecycle: true
+      };
+      attachFragment(context, fragment, dom, component);
+      contexts.push(context);
     } else {
-      node = node();
-      oldNode = component._rootNode;
-      updateNode(node, oldNode, dom, component);
-      component._rootNode = node;
+      updateFragment(context, context.fragment, fragment, dom, component, false);
+      context.fragment = fragment;
     }
-  } else if (dom.__rootNode === undefined) {
-    if (initialisedListeners === false) {
-      addRootDomEventListerners();
-    }
-    initRootNode(node);
-    createNode(node, node, dom);
-    dom.__rootNode = node;
   } else {
-    oldNode = dom.__rootNode;
-    updateNode(node, oldNode, dom);
-    dom.__rootNode = node;
+    if (component.context === null) {
+      var generatedFragment = fragment();
+      context = component.context = {
+        toRecycle: {},
+        fragment: generatedFragment,
+        dom: dom,
+        shouldRecycle: true
+      };
+      attachFragment(context, generatedFragment, dom, component);
+    } else {}
   }
 };
 
-function initRootNode(node) {
-  node.toRecycle = {
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    6: [],
-    7: [],
-    8: [],
-    9: [],
-    10: [],
-    11: [],
-    12: []
-  };
-}
+function moveFragment(parentDom, item, nextItem) {
+  var domItem = item.dom,
+      domRefItem = nextItem && nextItem.dom;
 
-function moveChild(parentDom, child, nextChild) {
-  var domChild = child.dom,
-      domLength = child.domLength || 1,
-      domNextChild,
-      domRefChild = nextChild && nextChild.dom;
-  if (domChild !== domRefChild) {
-    while (domLength--) {
-      domNextChild = domLength > 0 ? domChild.nextSibling : null;
-      if (domRefChild) {
-        parentDom.insertBefore(domChild, domRefChild);
-      } else {
-        parentDom.appendChild(domChild);
-      }
-      domChild = domNextChild;
-    }
-  }
-}
-
-function removeAllChildren(parentDom, children, childrenType) {
-  if (childrenType > 1) {
-    removeChildren(parentDom, children, 0, children.length);
-  } else if (childrenType !== 0) {
-    if (isString(children)) {
-      parentDom.removeChild(parentDom.firstChild);
+  if (domItem !== domRefItem) {
+    if (domRefItem) {
+      parentDom.insertBefore(domItem, domRefItem);
     } else {
-      removeChild(parentDom, normOnlyOld(children, childrenType, parentDom));
+      parentDom.appendChild(domItem);
     }
-  }
-}
-
-function getOnlyChild(children, childrenType) {
-  return childrenType === 1 ? children[0] : children;
-}
-
-function getChildrenType(children) {
-  if (isArray(children)) {
-    return children.length;
-  } else {
-    return children || isString(children) ? -1 : 0;
   }
 }
 
@@ -630,7 +494,7 @@ function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
         addEventListener(parentDom, component, attrName, attrValue);
         continue;
       }
-      if (attrName === 'style') {
+      if (attrName === "style") {
         var oldAttrValue = oldAttrs && oldAttrs[attrName];
         if (oldAttrValue !== attrValue) {
           updateStyle(domElement, oldAttrValue, attrs, attrValue);
@@ -640,7 +504,7 @@ function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
           parentDom[attrName] = attrValue;
         }
       } else if (!oldAttrs || oldAttrs[attrName] !== attrValue) {
-        if (attrName === 'class') {
+        if (attrName === "class") {
           parentDom.className = attrValue;
         } else {
           updateAttribute(parentDom, attrName, attrValue);
@@ -651,8 +515,8 @@ function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
   if (oldAttrs) {
     for (attrName in oldAttrs) {
       if (!attrs || attrs[attrName] === undefined) {
-        if (attrName === 'class') {
-          parentDom.className = '';
+        if (attrName === "class") {
+          parentDom.className = "";
         } else if (!isInputProperty(tag, attrName)) {
           parentDom.removeAttribute(attrName);
         }
@@ -662,125 +526,49 @@ function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
   return changes;
 }
 
-function insertChild(parentDom, domNode, nextChild, replace) {
-  if (nextChild) {
-    var domNextChild = nextChild.dom;
+function insertFragment(context, parentDom, domNode, nextFragment, replace) {
+  var noDestroy = false;
+  if (nextFragment) {
+    var domNextFragment = nextFragment.dom;
+    if (!domNextFragment) {
+      domNextFragment = nextFragment;
+      parentDom = domNextFragment.parentNode;
+      noDestroy = true;
+    }
     if (replace) {
-      var domLength = nextChild.domLength || 1;
-      if (domLength === 1) {
-        destroyNode(nextChild);
-        parentDom.replaceChild(domNode, domNextChild);
-      } else {
-        parentDom.insertBefore(domNode, domNextChild);
-        removeChild(parentDom, nextChild);
+      if (noDestroy === false) {
+        destroyFragment(context, nextFragment);
       }
+      parentDom.replaceChild(domNode, domNextFragment);
     } else {
-      parentDom.insertBefore(domNode, domNextChild);
+      parentDom.insertBefore(domNode, domNextFragment);
     }
   } else {
     parentDom.appendChild(domNode);
   }
 }
 
-function normChildren(node, children, oldChildren) {
-  if (isFunction(children)) {
-    children = children(oldChildren);
-    if (children === undefined) {
-      children = oldChildren;
-    }
-    node.children = children;
-  }
-  return children;
-}
-
-function normIndex(children, i, oldChild) {
-  var origChild = children[i],
-      child = norm(origChild, oldChild);
-  if (origChild !== child) {
-    children[i] = child;
-  }
-  return child;
-}
-
-function removeChildren(parentDom, children, i, to) {
+function removeFragments(context, parentDom, fragments, i, to) {
   for (; i < to; i++) {
-    removeChild(parentDom, children[i]);
+    removeFragment(context, parentDom, fragments[i]);
   }
 }
 
-function norm(node, oldNode) {
-  var type = typeof node;
-  if (type === 'function') {
-    node = node(oldNode);
-    node = node === undefined ? oldNode : norm(node, oldNode);
-  }
-  return node;
+function removeFragment(context, parentDom, item) {
+  var domItem = item.dom;
+  destroyFragment(context, item);
+  parentDom.removeChild(domItem);
 }
 
-function normOnly(node, origChild, oldChild) {
-  var child = norm(origChild, oldChild);
-  if (origChild !== child && node) {
-    node.children = child;
-  }
-  return child;
-}
-
-function removeChild(parentDom, child) {
-  destroyNode(child);
-  var domChild = child.dom,
-      domLength = child.domLength || 1,
-      domNextChild;
-  while (domLength--) {
-    domNextChild = domLength > 0 ? domChild.nextSibling : null;
-    parentDom.removeChild(domChild);
-    domChild = domNextChild;
-  }
-}
-
-function destroyNode(node) {
-  if (!isString(node)) {
-    var domNode = node.dom;
-    if (domNode) {
-      var events = node.events;
-      if (events) {
-        for (var eventType in events) {
-          removeEventHandler(domNode, eventType);
-        }
-        var destroyedHandlers = events.$destroyed;
-        if (destroyedHandlers) {
-          triggerLight(destroyedHandlers, '$destroyed', domNode, node);
-        }
-      }
-      if (domNode.__rootNode) {
-        domNode.__rootNode = null;
-      }
+function destroyFragment(context, fragment) {
+  var templateKey = fragment.template.key;
+  if (context.shouldRecycle === true) {
+    var toRecycleForKey = context.toRecycle[templateKey];
+    if (!toRecycleForKey) {
+      context.toRecycle[templateKey] = toRecycleForKey = [];
     }
-    var children = node.children;
-    if (children) {
-      destroyNodes(children, getChildrenType(children));
-    }
+    toRecycleForKey.push(fragment);
   }
-}
-
-function destroyNodes(nodes, nodesType) {
-  if (nodesType > 1) {
-    for (var i = 0, len = nodes.length; i < len; i++) {
-      destroyNode(nodes[i]);
-    }
-  } else if (nodesType !== 0) {
-    destroyNode(getOnlyChild(nodes, nodesType));
-  }
-}
-
-function normOnlyOld(children, childrenType, parentDom) {
-  var child = normOnly(null, getOnlyChild(children, childrenType));
-  if (!child.dom) {
-    child.dom = parentDom.firstChild;
-    if (child.tag === '<') {
-      child.domLength = parentDom.childNodes.length;
-    }
-  }
-  return child;
 }
 
 function updateAttribute(parentDom, name, value) {
@@ -820,6 +608,8 @@ function setTextContent(parentDom, text, update) {
     parentDom.appendChild(emptyTextNode());
   }
 };
+
+module.exports = Inferno;
 
 
 },{"../t7":3}],3:[function(require,module,exports){
@@ -917,6 +707,83 @@ var t7 = (function() {
     }
   };
 
+  function buildInfernoTemplate(root, valueCounter, parentNodeName, tagParams, templateParams, component) {
+    //TODO this entire function is horrible, needs a revist and refactor
+    var nodeName = parentNodeName ? parentNodeName + "_" : "n_";
+    var child = null, matches, valueName = "";
+
+    if(root.children instanceof Array) {
+      for(var i = 0; i < root.children.length; i++) {
+        child = root.children[i];
+        if(typeof child === "string" && root.children.length === 1) {
+          matches = child.match(/__\$props__\[\d*\]/g);
+          if(matches === null) {
+            if(!parentNodeName) {
+              templateParams.push("root.textContent='" + child + "';");
+            } else {
+              templateParams.push(parentNodeName +  ".textContent='" + child + "';");
+            }
+          } else {
+            valueName = "fragment.$v" + valueCounter.index;
+            templateParams.push("if(typeof " + valueName + " === 'string' | typeof " + valueName + " === 'number') {");
+            if(!parentNodeName) {
+              templateParams.push("root.textContent=" + valueName + ";");
+            } else {
+              templateParams.push(parentNodeName +  ".textContent=" + valueName + ";");
+            }
+            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT;");
+            templateParams.push("} else {");
+            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + " instanceof Array ? Inferno.Type.LIST : Inferno.Type.FRAGMENT);");
+            templateParams.push("}");
+            if(!parentNodeName) {
+              templateParams.push("fragment.$e" + valueCounter.index + " = root;");
+            } else {
+              templateParams.push("fragment.$e" + valueCounter.index + " = " + parentNodeName + ";");
+            }
+            tagParams.push("$v" + valueCounter.index + ": " + child);
+            valueCounter.index++;
+          }
+        } else if(typeof child === "string" && root.children.length > 1) {
+          matches = child.match(/__\$props__\[\d*\]/g);
+          if(matches === null) {
+            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child + "');");
+          } else {
+            valueName = "fragment.$v" + valueCounter.index;
+            templateParams.push("var " + nodeName + i + ";");
+            templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
+            templateParams.push(nodeName + i + " = Inferno.dom.createText(" + valueName + ");");
+            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT;");
+            templateParams.push("} else {");
+            templateParams.push(nodeName + i + " = Inferno.dom.createEmpty();");
+            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + " instanceof Array ? Inferno.Type.LIST_REPLACE : Inferno.Type.FRAGMENT_REPLACE);");
+            templateParams.push("}");
+            templateParams.push("fragment.$e" + valueCounter.index + " = " + nodeName + i + ";");
+            tagParams.push("$v" + valueCounter.index + ": " + child);
+            valueCounter.index++;
+          }
+          if(!parentNodeName) {
+            templateParams.push("root.appendChild(" +  nodeName + i + ");");
+          } else {
+            templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+          }
+        } else if(child != null) {
+          if(child.tag) {
+            templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
+            if(child.children) {
+              buildInfernoTemplate(child, valueCounter, nodeName + i, tagParams, templateParams, component);
+            }
+            if(!parentNodeName) {
+              templateParams.push("root.appendChild(" +  nodeName + i + ");");
+            } else {
+              templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+            }
+          }
+        }
+      }
+    }
+    templateParams.push("fragment.valuesLength = " + valueCounter.index + ";");
+  }
+
   //when creating a new function from a vdom, we'll need to build the vdom's children
   function buildReactChildren(root, tagParams, childrenProp, component) {
     var childrenText = [];
@@ -972,20 +839,6 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, attrsParams) {
-    var val = '', key = "";
-    var matches = null;
-    for(var name in root.attrs) {
-      val = root.attrs[name];
-      matches = val.match(/__\$props__\[\d*\]/g);
-      if(matches === null) {
-        attrsParams.push("'_" + name + "':'" + val + "'");
-      } else {
-        attrsParams.push("'_" + name + "':" + val.replace(/(__\$props__\[([0-9]*)\])/g, "$1"));
-      }
-    }
-  };
-
   function isComponentName(tagName) {
     if(tagName[0] === tagName[0].toUpperCase()) {
       return true;
@@ -993,17 +846,9 @@ var t7 = (function() {
     return false;
   };
 
-  function handleInfernoTag(tagName, functionText) {
-    if(Inferno.Tag[tagName.toUpperCase()]) {
-      functionText.push("{dom: null, tag: " + Inferno.Tag[tagName.toUpperCase()]);
-    } else {
-      functionText.push("{dom: null, tag: '" + tagName + "'");
-    }
-  }
-
   //This takes a vDom array and builds a new function from it, to improve
   //repeated performance at the cost of building new Functions()
-  function buildFunction(root, functionText, component) {
+  function buildFunction(root, functionText, component, templateKey) {
     var i = 0;
     var tagParams = [];
     var literalParts = [];
@@ -1014,32 +859,19 @@ var t7 = (function() {
       //throw error about adjacent elements
     } else {
       //Universal output or Inferno output
-      if(output === t7.Outputs.Universal || output === t7.Outputs.Inferno || output === t7.Outputs.Mithril) {
+      if(output === t7.Outputs.Universal || output === t7.Outputs.Mithril) {
         //if we have a tag, add an element, check too for a component
         if(root.tag != null) {
           if(isComponentName(root.tag) === false) {
-            if(output === t7.Outputs.Inferno) {
-              handleInfernoTag(root.tag, functionText);
-            } else {
-              functionText.push("{tag: " + root.tag + "'");
-            }
+            functionText.push("{tag: " + root.tag + "'");
             //add the key
             if(root.key != null) {
               tagParams.push("key: " + root.key);
-            } else if(output === t7.Outputs.Inferno) {
-              tagParams.push("key: null");
             }
             //build the attrs
             if(root.attrs != null) {
-              if(output === t7.Outputs.Inferno) {
-                buildInfernoAttrsParams(root, attrsParams);
-                if(attrsParams.length > 0) {
-                  tagParams.push(attrsParams.join(','));
-                }
-              } else {
-                buildAttrsParams(root, attrsParams);
-                tagParams.push("attrs: {" + attrsParams.join(',') + "}");
-              }
+              buildAttrsParams(root, attrsParams);
+              tagParams.push("attrs: {" + attrsParams.join(',') + "}");
             }
             //build the children for this node
             buildUniversalChildren(root, tagParams, true, component);
@@ -1056,15 +888,54 @@ var t7 = (function() {
               //we need to apply the tag components
               buildAttrsParams(root, attrsParams);
               functionText.push("m.component(__$components__." + root.tag + ",{" + attrsParams.join(',') + "})");
-            } else if(output === t7.Outputs.Inferno) {
-              //we need to apply the tag components
-              buildAttrsParams(root, attrsParams);
-              functionText.push("{component:__$components__." + root.tag + ", props: {" + attrsParams.join(',') + "}}");
             }
           }
         } else {
           //add a text entry
           functionText.push("'" + root + "'");
+        }
+      }
+      //Inferno output
+      else if(output === t7.Outputs.Inferno) {
+        //inferno is a bit more complicated, it requires both a fragment "vdom" and a template to be generated
+        var key = root.key;
+        if(root.key === undefined) {
+          key = null;
+        }
+        var template = "null";
+        var component = null;
+        var props = null;
+        var templateParams = [];
+
+        if(isComponentName(root.tag) === true) {
+          buildAttrsParams(root, attrsParams);
+          component = "__$components__." + root.tag;
+          props = " {" + attrsParams.join(',') + "}";
+        } else {
+          templateParams.push("var root = Inferno.dom.createElement('" + root.tag + "');");
+          if(root.attrs) {
+            buildAttrsParams(root, attrsParams);
+            templateParams.push("Inferno.dom.addAttributes(root, {" + attrsParams.join(",") + "});");
+          }
+        }
+
+        if(root.children.length > 0) {
+          buildInfernoTemplate(root, {index: 0}, null, tagParams, templateParams, component);
+          templateParams.push("fragment.dom = root;");
+          var scriptCode = templateParams.join("\n");
+          if(isBrowser === true) {
+            addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment){"use strict";\n' + scriptCode + '}', templateKey);
+          } else {
+            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];\n' + scriptCode);
+          }
+          t7._templateCache[templateKey].key = templateKey;
+          template = 't7._templateCache["' + templateKey + '"]';
+        }
+
+        if(component !== null) {
+          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+        } else {
+          functionText.push("{dom: null, key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
         }
       }
       //React output
@@ -1207,7 +1078,7 @@ var t7 = (function() {
           //now we create out vElement
           vElement = {
             tag: tagName,
-            attrs: (tagData && tagData.attrs) ? tagData.attrs : {},
+            attrs: (tagData && tagData.attrs) ? tagData.attrs : null,
             children: [],
             closed: tagContent[tagContent.length - 1] === "/" || selfClosingTags.indexOf(tagName) > -1 ? true : false
           };
@@ -1399,7 +1270,8 @@ var t7 = (function() {
         //build a vDom from the HTML
         getVdom(fullHtml, values),
         functionString,
-        this
+        this,
+        templateKey
       );
       scriptCode = functionString.join(',');
       //build a new Function and store it depending if on node or browser
@@ -1430,6 +1302,7 @@ var t7 = (function() {
   };
 
   t7._cache = {};
+  t7._templateCache = {};
 
   t7.Outputs = {
     React: 1,
@@ -1474,6 +1347,7 @@ var t7 = (function() {
 
   t7.clearCache = function() {
     t7._cache = {};
+    t7._templateCache = {};
   };
 
   t7.assign = function(compName) {
@@ -1507,16 +1381,8 @@ var t7 = (function() {
     callback(instance);
   };
 
-  t7.precompile = function(nodeTree, valueTree) {
-    if(output === t7.Outputs.Inferno && valuesOnly === true) {
-      var values = valueTree();
-      values.nodeTree = nodeTree;
-      return values;
-    } else {
-      var node = nodeTree();
-      node.nodeTree = nodeTree;
-      return node;
-    }
+  t7.precompile = function() {
+
   };
 
   //set the type to React as default if it exists in global scope
