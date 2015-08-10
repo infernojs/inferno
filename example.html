@@ -69,7 +69,7 @@
           _handleCounter() {
             this._counter++;
             this.forceUpdate();
-            setTimeout(this._handleCounter.bind(this), 100);
+            setTimeout(this._handleCounter.bind(this), 200);
           }
           _renderPerson(person) {
             if(this._counter % 3 === 1) {
