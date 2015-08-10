@@ -287,21 +287,27 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
   if(oldFragment.template !== fragment.template) {
     attachFragment(context, fragment, parentDom, component, oldFragment, true);
   } else {
-    if(oldFragment.component) {
-      fragment.component = oldFragment.component;
+    var fragmentComponent = oldFragment.component;
+
+    if (fragmentComponent) {
+      fragmentComponent.props = fragment.props;
+      fragmentComponent.forceUpdate();
+      fragment.component = fragmentComponent;
       return;
     }
+
     var element, template, valuesLength = oldFragment.valuesLength;
 
     fragment.dom = oldFragment.dom;
     fragment.valuesLength = valuesLength;
 
     for(var i = 0; i < valuesLength; i++) {
+      template = oldFragment['$t' + i];
+      element =  oldFragment['$e' + i];
+      fragment['$e' + i] = element;
+      fragment['$t' + i] = template;
+
       if(oldFragment['$v' + i] !== fragment['$v' + i]) {
-        template = oldFragment['$t' + i];
-        element =  oldFragment['$e' + i];
-        fragment['$e' + i] = element;
-        fragment['$t' + i] = template;
         switch(template) {
           case Inferno.Type.LIST:
             updateFragmentList(context, oldFragment['$v' + i], fragment['$v' + i], element, component);

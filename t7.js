@@ -110,7 +110,7 @@ var t7 = (function() {
             }
           } else {
             valueName = "fragment.$v" + valueCounter.index;
-            templateParams.push("if(typeof " + valueName + " === 'string' | typeof " + valueName + " === 'number') {");
+            templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
             if(!parentNodeName) {
               templateParams.push("root.textContent=" + valueName + ";");
             } else {
