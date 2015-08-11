@@ -50,6 +50,12 @@ var recycledFragments = {};
 var rootlisteners = null;
 var initialisedListeners = false;
 
+if (typeof window != "undefined") {
+  rootlisteners = {
+    click: []
+  };
+}
+
 function addRootDomEventListerners() {
   initialisedListeners = true;
   if (rootlisteners !== null) {
@@ -57,8 +63,6 @@ function addRootDomEventListerners() {
       for (var i = 0; i < rootlisteners.click.length; i = i + 1 | 0) {
         if (rootlisteners.click[i].target === e.target) {
           rootlisteners.click[i].callback.call(rootlisteners.click[i].component || null, e);
-          //Let's take this out for now
-          //listeners.click[i].component.forceUpdate();
         }
       }
     });
@@ -151,6 +155,13 @@ Inferno.dom.addAttributes = function (node, attrs, component) {
   var attrName, attrVal;
   for (attrName in attrs) {
     attrVal = attrs[attrName];
+
+    if (events[attrName] != null) {
+      clearEventListeners(node, component, attrName);
+      addEventListener(node, component, attrName, attrVal);
+      continue;
+    }
+
     switch (attrName) {
       case "class":
       case "className":
@@ -349,6 +360,7 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
       if (oldFragment["$v" + i] !== fragment["$v" + i]) {
         switch (template) {
           case Inferno.Type.LIST:
+          case Inferno.Type.LIST_REPLACE:
             updateFragmentList(context, oldFragment["$v" + i], fragment["$v" + i], element, component);
             break;
           case Inferno.Type.TEXT:
@@ -356,6 +368,10 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             break;
           case Inferno.Type.TEXT_DIRECT:
             element.nodeValue = fragment["$v" + i];
+            break;
+          case Inferno.Type.FRAGMENT:
+          case Inferno.Type.FRAGMENT_REPLACE:
+            updateFragment(context, oldFragment["$v" + i], fragment["$v" + i], element, component);
             break;
         }
       }
@@ -402,6 +418,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
           break;
         case Inferno.Type.FRAGMENT_REPLACE:
           attachFragment(context, fragment["$v" + i], parentDom, component, fragment["$e" + i], true);
+          fragment["$e" + i] = fragment["$v" + i].dom.parentNode;
           break;
       }
     }
@@ -433,6 +450,9 @@ function getContext(dom) {
 Inferno.render = function (fragment, dom, component) {
   var context, generatedFragment;
   if (component === undefined) {
+    if (initialisedListeners === false) {
+      addRootDomEventListerners();
+    }
     context = getContext(dom);
     if (context === null) {
       context = {

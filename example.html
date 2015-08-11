@@ -14,33 +14,35 @@
       class InfernoExample extends Inferno.Component {
           constructor(props) {
             super(props);
-            this.name = "Test";
-            this.className = "foo";
-            this.textFieldValue = "Text!";
-            this.isOn = false;
-            this.formShow = true;
-            this._counter = 0;
-            this._handleCounter();
-            this._visible = true;
+            this.state = {
+              visible: true,
+              counter: 0,
+              formShow: true,
+              isOn: false,
+              className: "foo",
+              name: "test",
+              textFieldValue: "Text!"
+            };
+            this.handleCounter();
           }
           render() {
-            if(this._visible) {
+            if(this.state.visible) {
               return t7`
                 <div class="main">
-                  <button onClick=${ this._hide }>Hide</button>
-                  <div>Count is at ${ this._counter }</div>
-                  <div class=${ this.className }>
-                    <span id="bar">${ this.name }</span>
+                  <button onClick=${ this.hide }>Hide</button>
+                  <div>Count is at ${ this.state.counter }</div>
+                  <div class=${ this.state.className }>
+                    <span id="bar">${ this.state.name }</span>
                     <div id="time">The time is ${ this.props.time.toString() }</div>
-                    ${ this._renderForm() }
-                    ${ this.name }
-                    ${this.isOn === false
+                    ${ this.renderForm() }
+                    ${ this.state.name }
+                    ${this.state.isOn === false
                       ? t7`<div>Switch is off!</div>`
                       : t7`<div>Switch is on! <span>${ this.props.time.toString() }</span></div>`
                     }
-                    <button onClick=${ this._clickSwitch }>Switch!</button>
+                    <button onClick=${ this.clickSwitch }>Switch!</button>
                     <ul>
-                      ${ this.props.people != null ? this.props.people.map(this._renderPerson.bind(this)) : null }
+                      ${ this.props.people != null ? this.props.people.map(this.renderPerson.bind(this)) : null }
                     </ul>
                   </div>
                 </div>
@@ -48,60 +50,68 @@
             } else {
               return t7`
                 <div>
-                  <button onClick=${ this._show }>Show</button>
+                  <button onClick=${ this.show }>Show</button>
                   <div>Hidden!</div>
                 </div>
               `;
             }
           }
-          afterRender() {
-
-          }
-          _hide(e) {
-            this._visible = false;
-          }
-          _show(e) {
-            this._visible = true;
-          }
-          _clickSwitch(e) {
-            this.isOn = !this.isOn;
-          }
-          _handleCounter() {
-            this._counter++;
-            this.forceUpdate();
-            setTimeout(this._handleCounter.bind(this), 2000);
-          }
-          _renderPerson(person) {
-            if(this._counter % 3 === 1) {
-              return t7`<li>${ person }, the number is ${ this._counter }<div>foo</div></li>`;
+          renderPerson(person) {
+            if(this.state.counter % 3 === 1) {
+              return t7`<li>${ person }, the number is ${ this.state.counter }<div>foo</div></li>`;
             } else {
-              return t7`<li>${ person }, the magical number is ${ this._counter }<div>foo</div></li>`;
+              return t7`<li>${ person }, the magical number is ${ this.state.counter }<div>foo</div></li>`;
             }
           }
-          _renderForm() {
-            if(this.formShow) {
+          renderForm() {
+            if(this.state.formShow) {
               return t7`
                 <form>
-                  <input type="text" value=${ this.textFieldValue } />
-                  <button onClick=${ this._turnOffForm }>Turn off form</button>
+                  <input type="text" value=${ this.state.textFieldValue } />
+                  <button onClick=${ this.turnOffForm }>Turn off form</button>
                 </form>
               `;
             } else {
               return t7`
                 <div>
                   <h2>No form!</h2>
-                  <button onClick=${ this._turnOnForm }>Turn on form</button>
+                  <button onClick=${ this.turnOnForm }>Turn on form</button>
                 </div>
               `;
             }
           }
-          _turnOffForm(e) {
-            this.formShow = false;
+          turnOffForm(e) {
+            this.setState({
+              formShow: false
+            });
             e.preventDefault();
           }
-          _turnOnForm(e) {
-            this.formShow = true;
+          turnOnForm(e) {
+            this.setState({
+              formShow: true
+            });
             e.preventDefault();
+          }
+          hide(e) {
+            this.setState({
+              visible: false
+            });
+          }
+          show(e) {
+            this.setState({
+              visible: true
+            });
+          }
+          clickSwitch(e) {
+            this.setState({
+              isOn: !this.state.isOn
+            });
+          }
+          handleCounter() {
+            this.setState({
+              counter: this.state.counter + 1
+            });
+            setTimeout(this.handleCounter.bind(this), 2000);
           }
       }
 
