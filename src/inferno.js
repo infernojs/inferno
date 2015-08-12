@@ -148,22 +148,9 @@ Inferno.unmountComponentAtNode = function(dom) {
   var context = getContext(dom);
   if(context !== null) {
     removeFragment(context, dom, context.fragment);
-    recycleFragments(context);
     removeContext(dom);
   }
 };
-
-function recycleFragments(context) {
-  var i = 0;
-  for (var type in context.toRecycle) {
-    for (i = 0; i < context.toRecycle[type].length; i++) {
-      if(!recycledFragments[type]) {
-        recycledFragments[type] = [];
-      }
-      recycledFragments[type].push(context.toRecycle[type][i]);
-    }
-  }
-}
 
 function getRecycledFragment(templateKey) {
   var fragments = recycledFragments[templateKey];
@@ -295,7 +282,7 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
 }
 
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
-  if(oldFragment.template !== fragment.template) {
+  if (oldFragment.template.key !== fragment.template.key) {
     attachFragment(context, fragment, parentDom, component, oldFragment, true);
   } else {
     var fragmentComponent = oldFragment.component;
@@ -307,34 +294,29 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
       return;
     }
 
-    var element, template, valuesLength = oldFragment.valuesLength;
+    var template = oldFragment.$t0;
+    var element = oldFragment.$e0;
 
     fragment.dom = oldFragment.dom;
-    fragment.valuesLength = valuesLength;
+    fragment.$e0 = element;
+    fragment.$t0 = template;
 
-    for(var i = 0; i < valuesLength; i++) {
-      template = oldFragment['$t' + i];
-      element =  oldFragment['$e' + i];
-      fragment['$e' + i] = element;
-      fragment['$t' + i] = template;
-
-      if(oldFragment['$v' + i] !== fragment['$v' + i]) {
-        switch(template) {
-          case Inferno.Type.LIST:
-          case Inferno.Type.LIST_REPLACE:
-            updateFragmentList(context, oldFragment['$v' + i], fragment['$v' + i], element, component);
-            break;
-          case Inferno.Type.TEXT:
-            element.firstChild.nodeValue = fragment['$v' + i];
-            break;
-          case Inferno.Type.TEXT_DIRECT:
-            element.nodeValue = fragment['$v' + i];
-            break;
-          case Inferno.Type.FRAGMENT:
-          case Inferno.Type.FRAGMENT_REPLACE:
-            updateFragment(context, oldFragment['$v' + i], fragment['$v' + i], element, component);
-            break;
-        }
+    if (oldFragment.$v0 !== fragment.$v0) {
+      switch (template) {
+        case Inferno.Type.LIST:
+        case Inferno.Type.LIST_REPLACE:
+          updateFragmentList(context, oldFragment.$v0, fragment.$v0, element, component);
+          break;
+        case Inferno.Type.TEXT:
+          element.firstChild.nodeValue = fragment.$v0;
+          break;
+        case Inferno.Type.TEXT_DIRECT:
+          element.nodeValue = fragment.$v0;
+          break;
+        case Inferno.Type.FRAGMENT:
+        case Inferno.Type.FRAGMENT_REPLACE:
+          updateFragment(context, oldFragment.$v0, fragment.$v0, element, component);
+          break;
       }
     }
   }
@@ -355,33 +337,30 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 
   var recycledFragment = null;
   var template = fragment.template;
-  var templateKey = template.key;
+  var templateKey = fragment.template.key;
 
-  if(context.shouldRecycle === true) {
+  if (context.shouldRecycle === true) {
     recycledFragment = getRecycledFragment(templateKey);
   }
 
-  if(recycledFragment !== null) {
+  if (recycledFragment !== null) {
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
     template(fragment, component);
-    var valuesLength = fragment.valuesLength;
-    for(var i = 0; i < valuesLength; i++) {
-      switch(fragment["$t" + i]) {
-        case Inferno.Type.LIST:
-          attachFragmentList(context, fragment["$v" + i], fragment["$e" + i], component);
-          break;
-        case Inferno.Type.LIST_REPLACE:
-          debugger;
-          break;
-        case Inferno.Type.FRAGMENT:
-          debugger;
-          break;
-        case Inferno.Type.FRAGMENT_REPLACE:
-          attachFragment(context, fragment["$v" + i], parentDom, component, fragment["$e" + i], true);
-          fragment["$e" + i] = fragment["$v" + i].dom.parentNode;
-          break;
-      }
+    switch (fragment.$t0) {
+      case Inferno.Type.LIST:
+        attachFragmentList(context, fragment.$v0, fragment.$e0, component);
+        break;
+      case Inferno.Type.LIST_REPLACE:
+        //debugger;
+        break;
+      case Inferno.Type.FRAGMENT:
+        //debugger;
+        break;
+      case Inferno.Type.FRAGMENT_REPLACE:
+        attachFragment(context, fragment.$v0, parentDom, component, fragment.$e0, true);
+        fragment.$e0 = fragment.$v0.dom.parentNode;
+        break;
     }
   }
 
@@ -411,13 +390,12 @@ function getContext(dom) {
 Inferno.render = function (fragment, dom, component) {
   var context, generatedFragment;
   if (component === undefined) {
-    if(initialisedListeners === false) {
+    if (initialisedListeners === false) {
       addRootDomEventListerners();
     }
     context = getContext(dom);
     if (context === null) {
       context = {
-        toRecycle: {},
         fragment: fragment,
         dom: dom,
         shouldRecycle: true
@@ -429,10 +407,9 @@ Inferno.render = function (fragment, dom, component) {
       context.fragment = fragment;
     }
   } else {
-    if(component.context === null) {
+    if (component.context === null) {
       generatedFragment = fragment();
       context = component.context = {
-        toRecycle: {},
         fragment: generatedFragment,
         dom: dom,
         shouldRecycle: true
@@ -493,51 +470,6 @@ function clearEventListeners(parentDom, component, listenerName) {
   }
 }
 
-function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
-  var changes, attrName;
-  if (attrs) {
-    for (attrName in attrs) {
-      var attrValue = attrs[attrName];
-      if (oldAttrs && oldAttrs[attrName] === attrs[attrName]) {
-        continue;
-      }
-      if (events[attrName] != null) {
-        clearEventListeners(parentDom, component, attrName);
-        addEventListener(parentDom, component, attrName, attrValue);
-        continue;
-      }
-      if (attrName === 'style') {
-        var oldAttrValue = oldAttrs && oldAttrs[attrName];
-        if (oldAttrValue !== attrValue) {
-          updateStyle(domElement, oldAttrValue, attrs, attrValue);
-        }
-      } else if (isInputProperty(tag, attrName)) {
-        if (parentDom[attrName] !== attrValue) {
-          parentDom[attrName] = attrValue;
-        }
-      } else if (!oldAttrs || oldAttrs[attrName] !== attrValue) {
-        if (attrName === 'class') {
-          parentDom.className = attrValue;
-        } else {
-          updateAttribute(parentDom, attrName, attrValue);
-        }
-      }
-    }
-  }
-  if (oldAttrs) {
-    for (attrName in oldAttrs) {
-      if (!attrs || attrs[attrName] === undefined) {
-        if (attrName === 'class') {
-          parentDom.className = '';
-        } else if (!isInputProperty(tag, attrName)) {
-          parentDom.removeAttribute(attrName);
-        }
-      }
-    }
-  }
-  return changes;
-}
-
 function insertFragment(context, parentDom, domNode, nextFragment, replace) {
   var noDestroy = false;
   if (nextFragment) {
@@ -574,35 +506,14 @@ function removeFragment(context, parentDom, item) {
 
 function destroyFragment(context, fragment) {
   var templateKey = fragment.template.key;
-  if(context.shouldRecycle === true) {
-    var toRecycleForKey = context.toRecycle[templateKey];
+  if (context.shouldRecycle === true) {
+    var toRecycleForKey = recycledFragments[templateKey];
     if (!toRecycleForKey) {
-    	context.toRecycle[templateKey] = toRecycleForKey = [];
+      recycledFragments[templateKey] = toRecycleForKey = [];
     }
-    toRecycleForKey.push(fragment)
+    toRecycleForKey.push(fragment);
   }
 }
-
-function updateAttribute(parentDom, name, value) {
-  if (value === false || value == null) {
-    parentDom.removeAttribute(name);
-  } else {
-    if (value === true) {
-      value = "";
-    }
-    var colonIndex = name.indexOf(":"),
-        ns;
-    if (colonIndex !== -1) {
-      var prefix = name.substr(0, colonIndex);
-      switch (prefix) {
-        case "xlink":
-          ns = "http://www.w3.org/1999/xlink";
-          break;
-      }
-    }
-    parentDom.setAttribute(name, value);
-  }
-};
 
 function setTextContent(parentDom, text, update) {
   if (text) {

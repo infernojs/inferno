@@ -394,10 +394,10 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
           attachFragmentList(context, fragment["$v" + i], fragment["$e" + i], component);
           break;
         case Inferno.Type.LIST_REPLACE:
-          debugger;
+          //debugger;
           break;
         case Inferno.Type.FRAGMENT:
-          debugger;
+          //debugger;
           break;
         case Inferno.Type.FRAGMENT_REPLACE:
           attachFragment(context, fragment["$v" + i], parentDom, component, fragment["$e" + i], true);

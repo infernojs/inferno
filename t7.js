@@ -328,7 +328,6 @@ var t7 = (function() {
 
         if(root.children.length > 0) {
           buildInfernoTemplate(root, valueCounter, null, tagParams, templateParams, component);
-          templateParams.push("fragment.valuesLength = " + valueCounter.index + ";");
           templateParams.push("fragment.dom = root;");
           var scriptCode = templateParams.join("\n");
           if(isBrowser === true) {
