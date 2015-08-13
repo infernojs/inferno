@@ -335,14 +335,13 @@ var t7 = (function() {
           } else {
             t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];\n' + scriptCode);
           }
-          t7._templateCache[templateKey].key = templateKey;
           template = 't7._templateCache["' + templateKey + '"]';
         }
 
         if(component !== null) {
-          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + ", templateKey: " + templateKey + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
         } else {
-          functionText.push("{dom: null, key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+          functionText.push("{dom: null, key: " + key + ", template: " + template + ", templateKey: " + templateKey + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
         }
       }
       //React output

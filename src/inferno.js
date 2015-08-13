@@ -282,7 +282,7 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
 }
 
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
-  if (oldFragment.template.key !== fragment.template.key) {
+  if (oldFragment.templateKey !== fragment.templateKey) {
     attachFragment(context, fragment, parentDom, component, oldFragment, true);
   } else {
     var fragmentComponent = oldFragment.component;
@@ -294,29 +294,30 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
       return;
     }
 
-    var template = oldFragment.$t0;
-    var element = oldFragment.$e0;
-
     fragment.dom = oldFragment.dom;
-    fragment.$e0 = element;
-    fragment.$t0 = template;
 
-    if (oldFragment.$v0 !== fragment.$v0) {
-      switch (template) {
-        case Inferno.Type.LIST:
-        case Inferno.Type.LIST_REPLACE:
-          updateFragmentList(context, oldFragment.$v0, fragment.$v0, element, component);
-          break;
-        case Inferno.Type.TEXT:
-          element.firstChild.nodeValue = fragment.$v0;
-          break;
-        case Inferno.Type.TEXT_DIRECT:
-          element.nodeValue = fragment.$v0;
-          break;
-        case Inferno.Type.FRAGMENT:
-        case Inferno.Type.FRAGMENT_REPLACE:
-          updateFragment(context, oldFragment.$v0, fragment.$v0, element, component);
-          break;
+    if(fragment.$v !== undefined) {
+      var $e = oldFragment.$e;
+      var $t = oldFragment.$t;
+      fragment.$e = $e;
+      fragment.$t = $t;
+      if(fragment.$v !== oldFragment.$v) {
+        switch ($t) {
+          case Inferno.Type.LIST:
+          case Inferno.Type.LIST_REPLACE:
+            updateFragmentList(context, oldFragment.$v, fragment.$v, $e, component);
+            return;
+          case Inferno.Type.TEXT:
+            $e.firstChild.nodeValue = fragment.$v;
+            return;
+          case Inferno.Type.TEXT_DIRECT:
+            $e.nodeValue = fragment.$v;
+            return;
+          case Inferno.Type.FRAGMENT:
+          case Inferno.Type.FRAGMENT_REPLACE:
+            updateFragment(context, oldFragment.$v, fragment.$v, $e, component);
+            return;
+        }
       }
     }
   }
@@ -337,7 +338,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 
   var recycledFragment = null;
   var template = fragment.template;
-  var templateKey = fragment.template.key;
+  var templateKey = fragment.templateKey;
 
   if (context.shouldRecycle === true) {
     recycledFragment = getRecycledFragment(templateKey);
@@ -347,20 +348,23 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
     template(fragment, component);
-    switch (fragment.$t0) {
-      case Inferno.Type.LIST:
-        attachFragmentList(context, fragment.$v0, fragment.$e0, component);
-        break;
-      case Inferno.Type.LIST_REPLACE:
-        //debugger;
-        break;
-      case Inferno.Type.FRAGMENT:
-        //debugger;
-        break;
-      case Inferno.Type.FRAGMENT_REPLACE:
-        attachFragment(context, fragment.$v0, parentDom, component, fragment.$e0, true);
-        fragment.$e0 = fragment.$v0.dom.parentNode;
-        break;
+
+    if(fragment.$v !== undefined) {
+      switch (fragment.$t) {
+        case Inferno.Type.LIST:
+          attachFragmentList(context, fragment.$v, fragment.$e, component);
+          break;
+        case Inferno.Type.LIST_REPLACE:
+          //debugger;
+          break;
+        case Inferno.Type.FRAGMENT:
+          //debugger;
+          break;
+        case Inferno.Type.FRAGMENT_REPLACE:
+          attachFragment(context, fragment.$v, parentDom, component, fragment.$e, true);
+          fragment.$e = fragment.$v.dom.parentNode;
+          break;
+      }
     }
   }
 
@@ -505,7 +509,7 @@ function removeFragment(context, parentDom, item) {
 }
 
 function destroyFragment(context, fragment) {
-  var templateKey = fragment.template.key;
+  var templateKey = fragment.templateKey;
   if (context.shouldRecycle === true) {
     var toRecycleForKey = recycledFragments[templateKey];
     if (!toRecycleForKey) {

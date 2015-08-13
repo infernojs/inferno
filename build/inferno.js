@@ -166,22 +166,9 @@ Inferno.unmountComponentAtNode = function (dom) {
   var context = getContext(dom);
   if (context !== null) {
     removeFragment(context, dom, context.fragment);
-    recycleFragments(context);
     removeContext(dom);
   }
 };
-
-function recycleFragments(context) {
-  var i = 0;
-  for (var type in context.toRecycle) {
-    for (i = 0; i < context.toRecycle[type].length; i++) {
-      if (!recycledFragments[type]) {
-        recycledFragments[type] = [];
-      }
-      recycledFragments[type].push(context.toRecycle[type][i]);
-    }
-  }
-}
 
 function getRecycledFragment(templateKey) {
   var fragments = recycledFragments[templateKey];
@@ -315,7 +302,7 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
 }
 
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
-  if (oldFragment.template !== fragment.template) {
+  if (oldFragment.templateKey !== fragment.templateKey) {
     attachFragment(context, fragment, parentDom, component, oldFragment, true);
   } else {
     var fragmentComponent = oldFragment.component;
@@ -327,39 +314,51 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
       return;
     }
 
-    var element,
-        template,
-        valuesLength = oldFragment.valuesLength;
+    var template = oldFragment.$t0;
+    var element = oldFragment.$e0;
 
     fragment.dom = oldFragment.dom;
-    fragment.valuesLength = valuesLength;
+    fragment.$e0 = element;
+    fragment.$t0 = template;
 
-    for (var i = 0; i < valuesLength; i++) {
-      template = oldFragment["$t" + i];
-      element = oldFragment["$e" + i];
-      fragment["$e" + i] = element;
-      fragment["$t" + i] = template;
-
-      if (oldFragment["$v" + i] !== fragment["$v" + i]) {
-        switch (template) {
-          case Inferno.Type.LIST:
-          case Inferno.Type.LIST_REPLACE:
-            updateFragmentList(context, oldFragment["$v" + i], fragment["$v" + i], element, component);
-            break;
-          case Inferno.Type.TEXT:
-            element.firstChild.nodeValue = fragment["$v" + i];
-            break;
-          case Inferno.Type.TEXT_DIRECT:
-            element.nodeValue = fragment["$v" + i];
-            break;
-          case Inferno.Type.FRAGMENT:
-          case Inferno.Type.FRAGMENT_REPLACE:
-            updateFragment(context, oldFragment["$v" + i], fragment["$v" + i], element, component);
-            break;
-        }
+    if (oldFragment.$v0 !== fragment.$v0) {
+      switch (template) {
+        case Inferno.Type.LIST:
+        case Inferno.Type.LIST_REPLACE:
+          updateFragmentList(context, oldFragment.$v0, fragment.$v0, element, component);
+          break;
+        case Inferno.Type.TEXT:
+          element.firstChild.nodeValue = fragment.$v0;
+          break;
+        case Inferno.Type.TEXT_DIRECT:
+          element.nodeValue = fragment.$v0;
+          break;
+        case Inferno.Type.FRAGMENT:
+        case Inferno.Type.FRAGMENT_REPLACE:
+          updateFragment(context, oldFragment.$v0, fragment.$v0, element, component);
+          break;
       }
     }
   }
+}
+
+function attachFragmentValue(context, fragment, $v, $e, $t, elementKey, parentDom, component) {
+  switch ($t) {
+    case Inferno.Type.LIST:
+      attachFragmentList(context, $v, $e, component);
+      return true;
+    case Inferno.Type.LIST_REPLACE:
+      //debugger;
+      return true;
+    case Inferno.Type.FRAGMENT:
+      //debugger;
+      return true;
+    case Inferno.Type.FRAGMENT_REPLACE:
+      attachFragment(context, $v, parentDom, component, $e, true);
+      fragment[elementKey] = $v.dom.parentNode;
+      return true;
+  }
+  return true;
 }
 
 function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
@@ -377,7 +376,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 
   var recycledFragment = null;
   var template = fragment.template;
-  var templateKey = template.key;
+  var templateKey = fragment.templateKey;
 
   if (context.shouldRecycle === true) {
     recycledFragment = getRecycledFragment(templateKey);
@@ -387,24 +386,8 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
     template(fragment, component);
-    var valuesLength = fragment.valuesLength;
-    for (var i = 0; i < valuesLength; i++) {
-      switch (fragment["$t" + i]) {
-        case Inferno.Type.LIST:
-          attachFragmentList(context, fragment["$v" + i], fragment["$e" + i], component);
-          break;
-        case Inferno.Type.LIST_REPLACE:
-          //debugger;
-          break;
-        case Inferno.Type.FRAGMENT:
-          //debugger;
-          break;
-        case Inferno.Type.FRAGMENT_REPLACE:
-          attachFragment(context, fragment["$v" + i], parentDom, component, fragment["$e" + i], true);
-          fragment["$e" + i] = fragment["$v" + i].dom.parentNode;
-          break;
-      }
-    }
+    //May be anti-pattern and ugly, but this is the most performant method you can do (faster than looping through an array in every browser tested)
+    if (fragment.$v0 !== undefined && attachFragmentValue(context, fragment, fragment.$v0, fragment.$e0, fragment.$t0, "$e0", parentDom, component) && fragment.$v1 !== undefined && attachFragmentValue(context, fragment, fragment.$v1, fragment.$e1, fragment.$t1, "$e1", parentDom, component) && fragment.$v2 !== undefined && attachFragmentValue(context, fragment, fragment.$v2, fragment.$e2, fragment.$t2, "$e2", parentDom, component) && fragment.$v3 !== undefined && attachFragmentValue(context, fragment, fragment.$v3, fragment.$e3, fragment.$t3, "$e3", parentDom, component) && fragment.$v4 !== undefined && attachFragmentValue(context, fragment, fragment.$v4, fragment.$e4, fragment.$t4, "$e4", parentDom, component) && fragment.$v5 !== undefined && attachFragmentValue(context, fragment, fragment.$v5, fragment.$e5, fragment.$t5, "$e5", parentDom, component) && fragment.$v6 !== undefined && attachFragmentValue(context, fragment, fragment.$v6, fragment.$e6, fragment.$t6, "$e6", parentDom, component) && fragment.$v7 !== undefined && attachFragmentValue(context, fragment, fragment.$v7, fragment.$e7, fragment.$t7, "$e7", parentDom, component) && fragment.$v8 !== undefined && attachFragmentValue(context, fragment, fragment.$v8, fragment.$e8, fragment.$t8, "$e8", parentDom, component) && fragment.$v9 !== undefined && attachFragmentValue(context, fragment, fragment.$v9, fragment.$e9, fragment.$t9, "$e9", parentDom, component)) {}
   }
 
   insertFragment(context, parentDom, fragment.dom, nextFragment, replace);
@@ -439,7 +422,6 @@ Inferno.render = function (fragment, dom, component) {
     context = getContext(dom);
     if (context === null) {
       context = {
-        toRecycle: {},
         fragment: fragment,
         dom: dom,
         shouldRecycle: true
@@ -454,7 +436,6 @@ Inferno.render = function (fragment, dom, component) {
     if (component.context === null) {
       generatedFragment = fragment();
       context = component.context = {
-        toRecycle: {},
         fragment: generatedFragment,
         dom: dom,
         shouldRecycle: true
@@ -515,51 +496,6 @@ function clearEventListeners(parentDom, component, listenerName) {
   }
 }
 
-function updateAttributes(parentDom, tag, component, attrs, oldAttrs) {
-  var changes, attrName;
-  if (attrs) {
-    for (attrName in attrs) {
-      var attrValue = attrs[attrName];
-      if (oldAttrs && oldAttrs[attrName] === attrs[attrName]) {
-        continue;
-      }
-      if (events[attrName] != null) {
-        clearEventListeners(parentDom, component, attrName);
-        addEventListener(parentDom, component, attrName, attrValue);
-        continue;
-      }
-      if (attrName === "style") {
-        var oldAttrValue = oldAttrs && oldAttrs[attrName];
-        if (oldAttrValue !== attrValue) {
-          updateStyle(domElement, oldAttrValue, attrs, attrValue);
-        }
-      } else if (isInputProperty(tag, attrName)) {
-        if (parentDom[attrName] !== attrValue) {
-          parentDom[attrName] = attrValue;
-        }
-      } else if (!oldAttrs || oldAttrs[attrName] !== attrValue) {
-        if (attrName === "class") {
-          parentDom.className = attrValue;
-        } else {
-          updateAttribute(parentDom, attrName, attrValue);
-        }
-      }
-    }
-  }
-  if (oldAttrs) {
-    for (attrName in oldAttrs) {
-      if (!attrs || attrs[attrName] === undefined) {
-        if (attrName === "class") {
-          parentDom.className = "";
-        } else if (!isInputProperty(tag, attrName)) {
-          parentDom.removeAttribute(attrName);
-        }
-      }
-    }
-  }
-  return changes;
-}
-
 function insertFragment(context, parentDom, domNode, nextFragment, replace) {
   var noDestroy = false;
   if (nextFragment) {
@@ -595,36 +531,15 @@ function removeFragment(context, parentDom, item) {
 }
 
 function destroyFragment(context, fragment) {
-  var templateKey = fragment.template.key;
+  var templateKey = fragment.templateKey;
   if (context.shouldRecycle === true) {
-    var toRecycleForKey = context.toRecycle[templateKey];
+    var toRecycleForKey = recycledFragments[templateKey];
     if (!toRecycleForKey) {
-      context.toRecycle[templateKey] = toRecycleForKey = [];
+      recycledFragments[templateKey] = toRecycleForKey = [];
     }
     toRecycleForKey.push(fragment);
   }
 }
-
-function updateAttribute(parentDom, name, value) {
-  if (value === false || value == null) {
-    parentDom.removeAttribute(name);
-  } else {
-    if (value === true) {
-      value = "";
-    }
-    var colonIndex = name.indexOf(":"),
-        ns;
-    if (colonIndex !== -1) {
-      var prefix = name.substr(0, colonIndex);
-      switch (prefix) {
-        case "xlink":
-          ns = "http://www.w3.org/1999/xlink";
-          break;
-      }
-    }
-    parentDom.setAttribute(name, value);
-  }
-};
 
 function setTextContent(parentDom, text, update) {
   if (text) {
