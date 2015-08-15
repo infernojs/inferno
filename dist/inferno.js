@@ -319,7 +319,7 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
 }
 
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
-  if (oldFragment.templateKey !== fragment.templateKey) {
+  if (oldFragment.template !== fragment.template) {
     attachFragment(context, fragment, parentDom, component, oldFragment, true);
   } else {
     var fragmentComponent = oldFragment.component;
@@ -331,51 +331,58 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
       return;
     }
 
-    var template = oldFragment.$t0;
-    var element = oldFragment.$e0;
-
     fragment.dom = oldFragment.dom;
-    fragment.$e0 = element;
-    fragment.$t0 = template;
 
-    if (oldFragment.$v0 !== fragment.$v0) {
-      switch (template) {
-        case Inferno.Type.LIST:
-        case Inferno.Type.LIST_REPLACE:
-          updateFragmentList(context, oldFragment.$v0, fragment.$v0, element, component);
-          break;
-        case Inferno.Type.TEXT:
-          element.firstChild.nodeValue = fragment.$v0;
-          break;
-        case Inferno.Type.TEXT_DIRECT:
-          element.nodeValue = fragment.$v0;
-          break;
-        case Inferno.Type.FRAGMENT:
-        case Inferno.Type.FRAGMENT_REPLACE:
-          updateFragment(context, oldFragment.$v0, fragment.$v0, element, component);
-          break;
+    if (fragment.templateValue !== undefined) {
+      var element = oldFragment.templateElement;
+      var type = oldFragment.templateType;
+      fragment.templateElement = element;
+      fragment.templateType = type;
+      if (fragment.templateValue !== oldFragment.templateValue) {
+        switch (type) {
+          case Inferno.Type.LIST:
+          case Inferno.Type.LIST_REPLACE:
+            updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
+            return;
+          case Inferno.Type.TEXT:
+            element.firstChild.nodeValue = fragment.templateValue;
+            return;
+          case Inferno.Type.TEXT_DIRECT:
+            element.nodeValue = fragment.templateValue;
+            return;
+          case Inferno.Type.FRAGMENT:
+          case Inferno.Type.FRAGMENT_REPLACE:
+            updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
+            return;
+        }
+      }
+    } else if (fragment.templateValues !== undefined) {
+      for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
+        var element = oldFragment.templateElements[i];
+        var type = oldFragment.templateTypes[i];
+        fragment.templateElements[i] = element;
+        fragment.templateTypes[i] = type;
+        if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
+          switch (type) {
+            case Inferno.Type.LIST:
+            case Inferno.Type.LIST_REPLACE:
+              updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+              break;
+            case Inferno.Type.TEXT:
+              element.firstChild.nodeValue = fragment.templateValues[i];
+              break;
+            case Inferno.Type.TEXT_DIRECT:
+              element.nodeValue = fragment.templateValues[i];
+              break;
+            case Inferno.Type.FRAGMENT:
+            case Inferno.Type.FRAGMENT_REPLACE:
+              updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+              break;
+          }
+        }
       }
     }
   }
-}
-
-function attachFragmentValue(context, fragment, $v, $e, $t, elementKey, parentDom, component) {
-  switch ($t) {
-    case Inferno.Type.LIST:
-      attachFragmentList(context, $v, $e, component);
-      return true;
-    case Inferno.Type.LIST_REPLACE:
-      //debugger;
-      return true;
-    case Inferno.Type.FRAGMENT:
-      //debugger;
-      return true;
-    case Inferno.Type.FRAGMENT_REPLACE:
-      attachFragment(context, $v, parentDom, component, $e, true);
-      fragment[elementKey] = $v.dom.parentNode;
-      return true;
-  }
-  return true;
 }
 
 function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
@@ -393,7 +400,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 
   var recycledFragment = null;
   var template = fragment.template;
-  var templateKey = fragment.templateKey;
+  var templateKey = template.key;
 
   if (context.shouldRecycle === true) {
     recycledFragment = getRecycledFragment(templateKey);
@@ -403,8 +410,44 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
     template(fragment, component);
-    //May be anti-pattern and ugly, but this is the most performant method you can do (faster than looping through an array in every browser tested)
-    if (fragment.$v0 !== undefined && attachFragmentValue(context, fragment, fragment.$v0, fragment.$e0, fragment.$t0, "$e0", parentDom, component) && fragment.$v1 !== undefined && attachFragmentValue(context, fragment, fragment.$v1, fragment.$e1, fragment.$t1, "$e1", parentDom, component) && fragment.$v2 !== undefined && attachFragmentValue(context, fragment, fragment.$v2, fragment.$e2, fragment.$t2, "$e2", parentDom, component) && fragment.$v3 !== undefined && attachFragmentValue(context, fragment, fragment.$v3, fragment.$e3, fragment.$t3, "$e3", parentDom, component) && fragment.$v4 !== undefined && attachFragmentValue(context, fragment, fragment.$v4, fragment.$e4, fragment.$t4, "$e4", parentDom, component) && fragment.$v5 !== undefined && attachFragmentValue(context, fragment, fragment.$v5, fragment.$e5, fragment.$t5, "$e5", parentDom, component) && fragment.$v6 !== undefined && attachFragmentValue(context, fragment, fragment.$v6, fragment.$e6, fragment.$t6, "$e6", parentDom, component) && fragment.$v7 !== undefined && attachFragmentValue(context, fragment, fragment.$v7, fragment.$e7, fragment.$t7, "$e7", parentDom, component) && fragment.$v8 !== undefined && attachFragmentValue(context, fragment, fragment.$v8, fragment.$e8, fragment.$t8, "$e8", parentDom, component) && fragment.$v9 !== undefined && attachFragmentValue(context, fragment, fragment.$v9, fragment.$e9, fragment.$t9, "$e9", parentDom, component)) {}
+
+    if (fragment.templateValue !== undefined) {
+      switch (fragment.$t) {
+        case Inferno.Type.LIST:
+          attachFragmentList(context, fragment.$v, fragment.$e, component);
+          break;
+        case Inferno.Type.LIST_REPLACE:
+          //debugger;
+          break;
+        case Inferno.Type.FRAGMENT:
+          //debugger;
+          break;
+        case Inferno.Type.FRAGMENT_REPLACE:
+          attachFragment(context, fragment.$v, parentDom, component, fragment.$e, true);
+          fragment.$e = fragment.$v.dom.parentNode;
+          break;
+      }
+    } else if (fragment.templateValues !== undefined) {
+      for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
+        var element = fragment.templateElements[i];
+        var value = fragment.templateValues[i];
+        switch (fragment.templateTypes[i]) {
+          case Inferno.Type.LIST:
+            attachFragmentList(context, value, element, component);
+            break;
+          case Inferno.Type.LIST_REPLACE:
+            //debugger;
+            break;
+          case Inferno.Type.FRAGMENT:
+            //debugger;
+            break;
+          case Inferno.Type.FRAGMENT_REPLACE:
+            attachFragment(context, value, parentDom, component, element, true);
+            fragment.templateElements[i] = value.dom.parentNode;
+            break;
+        }
+      }
+    }
   }
 
   insertFragment(context, parentDom, fragment.dom, nextFragment, replace);
@@ -548,7 +591,7 @@ function removeFragment(context, parentDom, item) {
 }
 
 function destroyFragment(context, fragment) {
-  var templateKey = fragment.templateKey;
+  var templateKey = fragment.template.key;
   if (context.shouldRecycle === true) {
     var toRecycleForKey = recycledFragments[templateKey];
     if (!toRecycleForKey) {
@@ -673,7 +716,7 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoTemplate(root, valueCounter, parentNodeName, tagParams, templateParams, component) {
+  function buildInfernoTemplate(root, valueCounter, parentNodeName, templateValues, templateParams, component) {
     //TODO this entire function is horrible, needs a revist and refactor
     var nodeName = parentNodeName ? parentNodeName + "_" : "n_";
     var child = null, matches, valueName = "";
@@ -690,23 +733,23 @@ var t7 = (function() {
               templateParams.push(parentNodeName +  ".textContent='" + child + "';");
             }
           } else {
-            valueName = "fragment.$v" + valueCounter.index;
+            valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
             if(!parentNodeName) {
               templateParams.push("root.textContent=" + valueName + ";");
             } else {
               templateParams.push(parentNodeName +  ".textContent=" + valueName + ";");
             }
-            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT;");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT;");
             templateParams.push("} else {");
-            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + ".constructor === Array ? Inferno.Type.LIST : Inferno.Type.FRAGMENT);");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = (" + valueName + ".constructor === Array ? Inferno.Type.LIST : Inferno.Type.FRAGMENT);");
             templateParams.push("}");
             if(!parentNodeName) {
-              templateParams.push("fragment.$e" + valueCounter.index + " = root;");
+              templateParams.push("fragment.templateElements[" + valueCounter.index + "] = root;");
             } else {
-              templateParams.push("fragment.$e" + valueCounter.index + " = " + parentNodeName + ";");
+              templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + parentNodeName + ";");
             }
-            tagParams.push("$v" + valueCounter.index + ": " + child);
+            templateValues.push(child);
             valueCounter.index++;
           }
         } else if(typeof child === "string" && root.children.length > 1) {
@@ -714,17 +757,17 @@ var t7 = (function() {
           if(matches === null) {
             templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child + "');");
           } else {
-            valueName = "fragment.$v" + valueCounter.index;
+            valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("var " + nodeName + i + ";");
             templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
             templateParams.push(nodeName + i + " = Inferno.dom.createText(" + valueName + ");");
-            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT_DIRECT;");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT_DIRECT;");
             templateParams.push("} else {");
             templateParams.push(nodeName + i + " = Inferno.dom.createEmpty();");
-            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + ".constructor === Array ? Inferno.Type.LIST_REPLACE : Inferno.Type.FRAGMENT_REPLACE);");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = (" + valueName + ".constructor === Array ? Inferno.Type.LIST_REPLACE : Inferno.Type.FRAGMENT_REPLACE);");
             templateParams.push("}");
-            templateParams.push("fragment.$e" + valueCounter.index + " = " + nodeName + i + ";");
-            tagParams.push("$v" + valueCounter.index + ": " + child);
+            templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + nodeName + i + ";");
+            templateValues.push(child);
             valueCounter.index++;
           }
           if(!parentNodeName) {
@@ -736,11 +779,11 @@ var t7 = (function() {
           if(child.tag) {
             templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
             if(child.children) {
-              buildInfernoTemplate(child, valueCounter, nodeName + i, tagParams, templateParams, component);
+              buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
             }
             if(child.attrs) {
               var attrsParams = [];
-              buildInfernoAttrsParams(child, attrsParams, tagParams, valueCounter);
+              buildInfernoAttrsParams(child, attrsParams, templateValues, valueCounter);
               templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
             }
             if(!parentNodeName) {
@@ -795,7 +838,7 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, attrsParams, tagParams, valueCounter) {
+  function buildInfernoAttrsParams(root, attrsParams, templateValues, valueCounter) {
     var val = '', valueName;
     var matches = null;
     for(var name in root.attrs) {
@@ -804,9 +847,9 @@ var t7 = (function() {
       if(matches === null) {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
-        valueName = "fragment.$v" + valueCounter.index;
+        valueName = "fragment.templateValues[" + valueCounter.index + "]";
         attrsParams.push("'" + name + "':" + valueName);
-        tagParams.push("$v" + valueCounter.index + ": " + val);
+        templateValues.push(val);
         valueCounter.index++;
       }
     }
@@ -907,22 +950,38 @@ var t7 = (function() {
           }
         }
 
+        var templateValues = [];
+
         if(root.children.length > 0) {
-          buildInfernoTemplate(root, valueCounter, null, tagParams, templateParams, component);
+          buildInfernoTemplate(root, valueCounter, null, templateValues, templateParams, component);
           templateParams.push("fragment.dom = root;");
           var scriptCode = templateParams.join("\n");
+          if(templateValues.length === 1) {
+            scriptCode = scriptCode.replace(/fragment.templateValues\[0\]/g, "fragment.templateValue");
+            scriptCode = scriptCode.replace(/fragment.templateElements\[0\]/g, "fragment.templateElement");
+            scriptCode = scriptCode.replace(/fragment.templateTypes\[0\]/g, "fragment.templateType");
+          }
           if(isBrowser === true) {
             addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, component){"use strict";\n' + scriptCode + '}', templateKey);
           } else {
             t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];\n' + scriptCode);
           }
+          t7._templateCache[templateKey].key = templateKey;
           template = 't7._templateCache["' + templateKey + '"]';
         }
 
+        var templateValuesString = "";
+
+        if(templateValues.length === 1) {
+          templateValuesString = "templateValue: " + templateValues[0] + ", templateElements: null, templateTypes: null"
+        } else if (templateValues.length > 1) {
+          templateValuesString = "templateValues: [" + templateValues.join(", ") + "], templateElements: Array(" + templateValues.length + "), templateTypes: Array(" + templateValues.length + ")"
+        }
+
         if(component !== null) {
-          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + ", templateKey: " + templateKey + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + templateValuesString : "") + "}");
         } else {
-          functionText.push("{dom: null, key: " + key + ", template: " + template + ", templateKey: " + templateKey + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+          functionText.push("{dom: null, key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + templateValuesString : "") + "}");
         }
       }
       //React output

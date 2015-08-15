@@ -92,7 +92,7 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoTemplate(root, valueCounter, parentNodeName, tagParams, templateParams, component) {
+  function buildInfernoTemplate(root, valueCounter, parentNodeName, templateValues, templateParams, component) {
     //TODO this entire function is horrible, needs a revist and refactor
     var nodeName = parentNodeName ? parentNodeName + "_" : "n_";
     var child = null, matches, valueName = "";
@@ -109,23 +109,23 @@ var t7 = (function() {
               templateParams.push(parentNodeName +  ".textContent='" + child + "';");
             }
           } else {
-            valueName = "fragment.$v" + valueCounter.index;
+            valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
             if(!parentNodeName) {
               templateParams.push("root.textContent=" + valueName + ";");
             } else {
               templateParams.push(parentNodeName +  ".textContent=" + valueName + ";");
             }
-            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT;");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT;");
             templateParams.push("} else {");
-            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + ".constructor === Array ? Inferno.Type.LIST : Inferno.Type.FRAGMENT);");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = (" + valueName + ".constructor === Array ? Inferno.Type.LIST : Inferno.Type.FRAGMENT);");
             templateParams.push("}");
             if(!parentNodeName) {
-              templateParams.push("fragment.$e" + valueCounter.index + " = root;");
+              templateParams.push("fragment.templateElements[" + valueCounter.index + "] = root;");
             } else {
-              templateParams.push("fragment.$e" + valueCounter.index + " = " + parentNodeName + ";");
+              templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + parentNodeName + ";");
             }
-            tagParams.push("$v" + valueCounter.index + ": " + child);
+            templateValues.push(child);
             valueCounter.index++;
           }
         } else if(typeof child === "string" && root.children.length > 1) {
@@ -133,17 +133,17 @@ var t7 = (function() {
           if(matches === null) {
             templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child + "');");
           } else {
-            valueName = "fragment.$v" + valueCounter.index;
+            valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("var " + nodeName + i + ";");
             templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
             templateParams.push(nodeName + i + " = Inferno.dom.createText(" + valueName + ");");
-            templateParams.push("fragment.$t" + valueCounter.index + " = Inferno.Type.TEXT_DIRECT;");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT_DIRECT;");
             templateParams.push("} else {");
             templateParams.push(nodeName + i + " = Inferno.dom.createEmpty();");
-            templateParams.push("fragment.$t" + valueCounter.index + " = (" + valueName + ".constructor === Array ? Inferno.Type.LIST_REPLACE : Inferno.Type.FRAGMENT_REPLACE);");
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = (" + valueName + ".constructor === Array ? Inferno.Type.LIST_REPLACE : Inferno.Type.FRAGMENT_REPLACE);");
             templateParams.push("}");
-            templateParams.push("fragment.$e" + valueCounter.index + " = " + nodeName + i + ";");
-            tagParams.push("$v" + valueCounter.index + ": " + child);
+            templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + nodeName + i + ";");
+            templateValues.push(child);
             valueCounter.index++;
           }
           if(!parentNodeName) {
@@ -155,11 +155,11 @@ var t7 = (function() {
           if(child.tag) {
             templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
             if(child.children) {
-              buildInfernoTemplate(child, valueCounter, nodeName + i, tagParams, templateParams, component);
+              buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
             }
             if(child.attrs) {
               var attrsParams = [];
-              buildInfernoAttrsParams(child, attrsParams, tagParams, valueCounter);
+              buildInfernoAttrsParams(child, attrsParams, templateValues, valueCounter);
               templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
             }
             if(!parentNodeName) {
@@ -214,7 +214,7 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, attrsParams, tagParams, valueCounter) {
+  function buildInfernoAttrsParams(root, attrsParams, templateValues, valueCounter) {
     var val = '', valueName;
     var matches = null;
     for(var name in root.attrs) {
@@ -223,9 +223,9 @@ var t7 = (function() {
       if(matches === null) {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
-        valueName = "fragment.$v" + valueCounter.index;
+        valueName = "fragment.templateValues[" + valueCounter.index + "]";
         attrsParams.push("'" + name + "':" + valueName);
-        tagParams.push("$v" + valueCounter.index + ": " + val);
+        templateValues.push(val);
         valueCounter.index++;
       }
     }
@@ -326,22 +326,38 @@ var t7 = (function() {
           }
         }
 
+        var templateValues = [];
+
         if(root.children.length > 0) {
-          buildInfernoTemplate(root, valueCounter, null, tagParams, templateParams, component);
+          buildInfernoTemplate(root, valueCounter, null, templateValues, templateParams, component);
           templateParams.push("fragment.dom = root;");
           var scriptCode = templateParams.join("\n");
+          if(templateValues.length === 1) {
+            scriptCode = scriptCode.replace(/fragment.templateValues\[0\]/g, "fragment.templateValue");
+            scriptCode = scriptCode.replace(/fragment.templateElements\[0\]/g, "fragment.templateElement");
+            scriptCode = scriptCode.replace(/fragment.templateTypes\[0\]/g, "fragment.templateType");
+          }
           if(isBrowser === true) {
             addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, component){"use strict";\n' + scriptCode + '}', templateKey);
           } else {
             t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];\n' + scriptCode);
           }
+          t7._templateCache[templateKey].key = templateKey;
           template = 't7._templateCache["' + templateKey + '"]';
         }
 
+        var templateValuesString = "";
+
+        if(templateValues.length === 1) {
+          templateValuesString = "templateValue: " + templateValues[0] + ", templateElements: null, templateTypes: null"
+        } else if (templateValues.length > 1) {
+          templateValuesString = "templateValues: [" + templateValues.join(", ") + "], templateElements: Array(" + templateValues.length + "), templateTypes: Array(" + templateValues.length + ")"
+        }
+
         if(component !== null) {
-          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + ", templateKey: " + templateKey + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+          functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + templateValuesString : "") + "}");
         } else {
-          functionText.push("{dom: null, key: " + key + ", template: " + template + ", templateKey: " + templateKey + (root.children.length > 0 ? ", " + tagParams.join(',') : "") + "}");
+          functionText.push("{dom: null, key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + templateValuesString : "") + "}");
         }
       }
       //React output

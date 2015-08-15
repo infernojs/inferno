@@ -282,7 +282,7 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
 }
 
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
-  if (oldFragment.templateKey !== fragment.templateKey) {
+  if (oldFragment.template !== fragment.template) {
     attachFragment(context, fragment, parentDom, component, oldFragment, true);
   } else {
     var fragmentComponent = oldFragment.component;
@@ -296,27 +296,52 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
 
     fragment.dom = oldFragment.dom;
 
-    if(fragment.$v !== undefined) {
-      var $e = oldFragment.$e;
-      var $t = oldFragment.$t;
-      fragment.$e = $e;
-      fragment.$t = $t;
-      if(fragment.$v !== oldFragment.$v) {
-        switch ($t) {
+    if(fragment.templateValue !== undefined) {
+      var element = oldFragment.templateElement;
+      var type = oldFragment.templateType;
+      fragment.templateElement = element;
+      fragment.templateType = type;
+      if(fragment.templateValue !== oldFragment.templateValue) {
+        switch (type) {
           case Inferno.Type.LIST:
           case Inferno.Type.LIST_REPLACE:
-            updateFragmentList(context, oldFragment.$v, fragment.$v, $e, component);
+            updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
             return;
           case Inferno.Type.TEXT:
-            $e.firstChild.nodeValue = fragment.$v;
+            element.firstChild.nodeValue = fragment.templateValue;
             return;
           case Inferno.Type.TEXT_DIRECT:
-            $e.nodeValue = fragment.$v;
+            element.nodeValue = fragment.templateValue;
             return;
           case Inferno.Type.FRAGMENT:
           case Inferno.Type.FRAGMENT_REPLACE:
-            updateFragment(context, oldFragment.$v, fragment.$v, $e, component);
+            updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
             return;
+        }
+      }
+    } else if(fragment.templateValues !== undefined) {
+      for(var i = 0, length = fragment.templateValues.length; i < length; i++) {
+        var element = oldFragment.templateElements[i];
+        var type = oldFragment.templateTypes[i];
+        fragment.templateElements[i] = element;
+        fragment.templateTypes[i] = type;
+        if(fragment.templateValues[i] !== oldFragment.templateValues[i]) {
+          switch (type) {
+            case Inferno.Type.LIST:
+            case Inferno.Type.LIST_REPLACE:
+              updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+              break;
+            case Inferno.Type.TEXT:
+              element.firstChild.nodeValue = fragment.templateValues[i];
+              break;
+            case Inferno.Type.TEXT_DIRECT:
+              element.nodeValue = fragment.templateValues[i];
+              break;
+            case Inferno.Type.FRAGMENT:
+            case Inferno.Type.FRAGMENT_REPLACE:
+              updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+              break;
+          }
         }
       }
     }
@@ -338,7 +363,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 
   var recycledFragment = null;
   var template = fragment.template;
-  var templateKey = fragment.templateKey;
+  var templateKey = template.key;
 
   if (context.shouldRecycle === true) {
     recycledFragment = getRecycledFragment(templateKey);
@@ -349,7 +374,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
   } else {
     template(fragment, component);
 
-    if(fragment.$v !== undefined) {
+    if(fragment.templateValue !== undefined) {
       switch (fragment.$t) {
         case Inferno.Type.LIST:
           attachFragmentList(context, fragment.$v, fragment.$e, component);
@@ -364,6 +389,26 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
           attachFragment(context, fragment.$v, parentDom, component, fragment.$e, true);
           fragment.$e = fragment.$v.dom.parentNode;
           break;
+        }
+    } else if(fragment.templateValues !== undefined) {
+      for(var i = 0, length = fragment.templateValues.length; i < length; i++) {
+        var element = fragment.templateElements[i];
+        var value = fragment.templateValues[i];
+        switch (fragment.templateTypes[i]) {
+          case Inferno.Type.LIST:
+            attachFragmentList(context, value, element, component);
+            break;
+          case Inferno.Type.LIST_REPLACE:
+            //debugger;
+            break;
+          case Inferno.Type.FRAGMENT:
+            //debugger;
+            break;
+          case Inferno.Type.FRAGMENT_REPLACE:
+            attachFragment(context, value, parentDom, component, element, true);
+            fragment.templateElements[i] = value.dom.parentNode;
+            break;
+        }
       }
     }
   }
@@ -509,7 +554,7 @@ function removeFragment(context, parentDom, item) {
 }
 
 function destroyFragment(context, fragment) {
-  var templateKey = fragment.templateKey;
+  var templateKey = fragment.template.key;
   if (context.shouldRecycle === true) {
     var toRecycleForKey = recycledFragments[templateKey];
     if (!toRecycleForKey) {
