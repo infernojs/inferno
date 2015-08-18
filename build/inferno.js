@@ -395,9 +395,9 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
     template(fragment, component);
 
     if (fragment.templateValue !== undefined) {
-      switch (fragment.$t) {
+      switch (fragment.templateType) {
         case Inferno.Type.LIST:
-          attachFragmentList(context, fragment.$v, fragment.$e, component);
+          attachFragmentList(context, fragment.templateValue, fragment.templateElement, component);
           break;
         case Inferno.Type.LIST_REPLACE:
           //debugger;
@@ -406,8 +406,8 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
           //debugger;
           break;
         case Inferno.Type.FRAGMENT_REPLACE:
-          attachFragment(context, fragment.$v, parentDom, component, fragment.$e, true);
-          fragment.$e = fragment.$v.dom.parentNode;
+          attachFragment(context, fragment.templateValue, parentDom, component, fragment.templateElement, true);
+          fragment.templateElement = fragment.templateValue.dom.parentNode;
           break;
       }
     } else if (fragment.templateValues !== undefined) {
