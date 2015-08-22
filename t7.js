@@ -104,7 +104,7 @@ var t7 = (function() {
           matches = child.match(/__\$props__\[\d*\]/g);
           if(matches === null) {
             if(!parentNodeName) {
-              templateParams.push("root.textContent='" + child + "';");
+              templateParams.push("root.textContent=(" + child + " === '' ? ' ' : " + child + ");");
             } else {
               templateParams.push(parentNodeName +  ".textContent='" + child + "';");
             }
@@ -114,7 +114,7 @@ var t7 = (function() {
             if(!parentNodeName) {
               templateParams.push("root.textContent=" + valueName + ";");
             } else {
-              templateParams.push(parentNodeName +  ".textContent=" + valueName + ";");
+              templateParams.push(parentNodeName +  ".textContent=(" + valueName + " === '' ? ' ' : " + valueName + ");");
             }
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT;");
             templateParams.push("} else {");
@@ -159,7 +159,7 @@ var t7 = (function() {
             }
             if(child.attrs) {
               var attrsParams = [];
-              buildInfernoAttrsParams(child, attrsParams, templateValues, valueCounter);
+              buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
               templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
             }
             if(!parentNodeName) {
@@ -214,7 +214,7 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, attrsParams, templateValues, valueCounter) {
+  function buildInfernoAttrsParams(root, rootElement, attrsParams, templateValues, templateParams, valueCounter) {
     var val = '', valueName;
     var matches = null;
     for(var name in root.attrs) {
@@ -224,6 +224,14 @@ var t7 = (function() {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
         valueName = "fragment.templateValues[" + valueCounter.index + "]";
+        switch(name) {
+          case "class":
+            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CLASS;");
+            break;
+          default:
+            break;
+        }
+        templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
         attrsParams.push("'" + name + "':" + valueName);
         templateValues.push(val);
         valueCounter.index++;
@@ -313,6 +321,7 @@ var t7 = (function() {
         var props = null;
         var templateParams = [];
         var valueCounter = {index: 0};
+        var templateValues = [];
 
         if(isComponentName(root.tag) === true) {
           buildAttrsParams(root, attrsParams);
@@ -321,12 +330,10 @@ var t7 = (function() {
         } else {
           templateParams.push("var root = Inferno.dom.createElement('" + root.tag + "');");
           if(root.attrs) {
-            buildInfernoAttrsParams(root, attrsParams, tagParams, valueCounter);
+            buildInfernoAttrsParams(root, "root", attrsParams, templateValues, templateParams, valueCounter);
             templateParams.push("Inferno.dom.addAttributes(root, {" + attrsParams.join(",") + "}, component);");
           }
         }
-
-        var templateValues = [];
 
         if(root.children.length > 0) {
           buildInfernoTemplate(root, valueCounter, null, templateValues, templateParams, component);
@@ -698,10 +705,18 @@ var t7 = (function() {
       scriptCode = functionString.join(',');
       //build a new Function and store it depending if on node or browser
       if(precompile === true) {
-        return {
-          templateKey: templateKey,
-          template: 'return ' + scriptCode
+        if(output === t7.Outputs.Inferno) {
+          return {
+            templateKey: templateKey,
+            inlineObject: scriptCode
+          }
+        } else {
+          return {
+            templateKey: templateKey,
+            template: 'return ' + scriptCode
+          }
         }
+        return;
       } else {
         if(isBrowser === true) {
           scriptString = 't7._cache["' + templateKey + '"]=function(__$props__, __$components__)';
@@ -731,6 +746,10 @@ var t7 = (function() {
     Universal: 2,
     Inferno: 3,
     Mithril: 4
+  };
+
+  t7.getTemplateCache = function(id) {
+    return t7._templateCache[id];
   };
 
   t7.getOutput = function() {
@@ -792,6 +811,10 @@ var t7 = (function() {
         }
       }
     };
+
+    instance.loadComponent = function(name) {
+      return components[name];
+    }
 
     instance.if = t7.if;
     instance.Outputs = t7.Outputs;

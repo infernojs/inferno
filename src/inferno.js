@@ -56,7 +56,8 @@ Inferno.Type = {
   FRAGMENT: 2,
   LIST: 3,
   FRAGMENT_REPLACE: 4,
-  LIST_REPLACE: 5
+  LIST_REPLACE: 5,
+  ATTR_CLASS: 6
 };
 
 function isString(value) {
@@ -317,6 +318,9 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
           case Inferno.Type.FRAGMENT_REPLACE:
             updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
             return;
+          case Inferno.Type.ATTR_CLASS:
+            debugger;
+            return;
         }
       }
     } else if(fragment.templateValues !== undefined) {
@@ -340,6 +344,9 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             case Inferno.Type.FRAGMENT:
             case Inferno.Type.FRAGMENT_REPLACE:
               updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+              break;
+            case Inferno.Type.ATTR_CLASS:
+              element.className = fragment.templateValues[i];
               break;
           }
         }
@@ -399,7 +406,11 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
             attachFragmentList(context, value, element, component);
             break;
           case Inferno.Type.LIST_REPLACE:
-            //debugger;
+            var nodeList = document.createDocumentFragment();
+            var placeholderNode = fragment.templateElements[i];
+            attachFragmentList(context, value, nodeList, component);
+            placeholderNode.parentNode.replaceChild(nodeList, placeholderNode);
+            fragment.templateElements[i] = nodeList;
             break;
           case Inferno.Type.FRAGMENT:
             //debugger;
