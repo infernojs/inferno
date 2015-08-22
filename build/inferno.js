@@ -27,7 +27,7 @@ var userAgent = navigator.userAgent,
     isFirefox = userAgent.indexOf("Firefox") !== -1,
     isTrident = userAgent.indexOf("Trident") !== -1;
 
-var version = "0.2.2";
+var version = "0.2.3";
 
 var recycledFragments = {};
 var rootlisteners = null;
@@ -61,7 +61,22 @@ Inferno.Type = {
   LIST: 3,
   FRAGMENT_REPLACE: 4,
   LIST_REPLACE: 5,
-  ATTR_CLASS: 6
+  ATTR_CLASS: 6,
+  ATTR_ID: 6,
+  ATTR_DISABLED: 7,
+  ATTR_SELECTED: 8,
+  ATTR_CHECKED: 9,
+  ATTR_VALUE: 10,
+  ATTR_STYLE: 11,
+  ATTR_HREF: 12,
+  ATTR_LABEL: 13,
+  ATTR_TYPE: 14,
+  ATTR_PLACEHOLDER: 15,
+  ATTR_NAME: 16,
+  ATTR_WIDTH: 17,
+  ATTR_HEIGHT: 18,
+  //will contain other "custom" types, like rowspan etc or custom data-attributes
+  ATTR_OTHER: {}
 };
 
 function isString(value) {
@@ -150,6 +165,9 @@ Inferno.dom.addAttributes = function (node, attrs, component) {
       case "class":
       case "className":
         node.className = attrVal;
+        break;
+      case "id":
+        node.id = attrVal;
         break;
       default:
         node[attrName] = attrVal;
@@ -303,6 +321,14 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
 }
 
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
+  if (fragment === null) {
+    removeFragment(context, parentDom, oldFragment);
+    return;
+  }
+  if (oldFragment === null) {
+    attachFragment(context, fragment, parentDom, component);
+    return;
+  }
   if (oldFragment.template !== fragment.template) {
     attachFragment(context, fragment, parentDom, component, oldFragment, true);
   } else {
@@ -339,7 +365,7 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
             return;
           case Inferno.Type.ATTR_CLASS:
-            debugger;
+            //debugger;
             return;
         }
       }
@@ -367,6 +393,22 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
               break;
             case Inferno.Type.ATTR_CLASS:
               element.className = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_ID:
+              element.id = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_VALUE:
+              element.value = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_WIDTH:
+              element.width = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_HEIGHT:
+              element.height = fragment.templateValues[i];
+              break;
+            //custom attribute, so simply setAttribute it
+            default:
+              element.setAttribute(type, fragment.templateValues[i]);
               break;
           }
         }
