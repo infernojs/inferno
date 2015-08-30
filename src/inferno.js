@@ -72,7 +72,8 @@ Inferno.Type = {
   ATTR_WIDTH: 17,
   ATTR_HEIGHT: 18,
   //will contain other "custom" types, like rowspan etc or custom data-attributes
-  ATTR_OTHER: {}
+  ATTR_OTHER: {},
+  COMPONENT_PROPS: {}
 };
 
 function isString(value) {
@@ -108,6 +109,8 @@ class Component {
     this.state = newSate;
     this.forceUpdate();
   }
+  componentDidMount() {}
+  componentWillMount() {}
 }
 
 Inferno.Component = Component;
@@ -118,6 +121,15 @@ Inferno.dom.createElement = function(tag) {
   if(isBrowser) {
     return document.createElement(tag);
   }
+};
+
+Inferno.dom.createComponent = function(parentDom, t7component, props) {
+  var component = new t7component(props);
+  component.context = null;
+  component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), parentDom, component);
+  component.forceUpdate();
+
+  return component;
 };
 
 Inferno.dom.createText = function(text) {
@@ -132,12 +144,12 @@ Inferno.dom.createEmpty = function(text) {
   }
 };
 
-Inferno.dom.addAttributes = function(node, attrs, component) {
+Inferno.dom.addAttributes = function (node, attrs, component) {
   var attrName, attrVal;
   for (attrName in attrs) {
     attrVal = attrs[attrName];
 
-    if(events[attrName] != null) {
+    if (events[attrName] != null) {
       clearEventListeners(node, component, attrName);
       addEventListener(node, component, attrName, attrVal);
       continue;
@@ -151,8 +163,17 @@ Inferno.dom.addAttributes = function(node, attrs, component) {
       case "id":
         node.id = attrVal;
         break;
+      case "disabled":
+        node.disabled = attrVal;
+        break;
+      case "selected":
+        node.selected = attrVal;
+        break;
+      case "checked":
+        node.checked = attrVal;
+        break;
       default:
-        node[attrName] = attrVal;
+        node.setAttribute(attrName, attrVal);
     }
   }
 };
@@ -350,6 +371,7 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
         }
       }
     } else if(fragment.templateValues !== undefined) {
+      var componentsToUpdate = [], s = 0;
       for(var i = 0, length = fragment.templateValues.length; i < length; i++) {
         var element = oldFragment.templateElements[i];
         var type = oldFragment.templateTypes[i];
@@ -374,6 +396,18 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             case Inferno.Type.ATTR_CLASS:
               element.className = fragment.templateValues[i];
               break;
+            case Inferno.Type.ATTR_CHECKED:
+              element.checked = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_SELECTED:
+              element.selected = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_DISABLED:
+              element.disabled = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_HREF:
+              element.href = fragment.templateValues[i];
+              break;
             case Inferno.Type.ATTR_ID:
               element.id = fragment.templateValues[i];
               break;
@@ -386,11 +420,35 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             case Inferno.Type.ATTR_HEIGHT:
               element.height = fragment.templateValues[i];
               break;
-            //custom attribute, so simply setAttribute it
+
             default:
-              element.setAttribute(type, fragment.templateValues[i]);
+              //custom attribute, so simply setAttribute it
+              if(!element.props) {
+                if(events[type] != null) {
+                } else {
+                  element.setAttribute(type, fragment.templateValues[i]);
+                }
+              }
+              //component prop, update it
+              else {
+                element.props[type] = fragment.templateValues[i];
+                var alreadyInQueue = false;
+                for(s = 0; s < componentsToUpdate.length; s++) {
+                  if(componentsToUpdate[s] === element) {
+                    alreadyInQueue = true;
+                  }
+                }
+                if(alreadyInQueue === false) {
+                  componentsToUpdate.push(element);
+                }
+              }
               break;
           }
+        }
+      }
+      if(componentsToUpdate.length > 0) {
+        for(s = 0; s < componentsToUpdate.length; s++) {
+          componentsToUpdate[s].forceUpdate();
         }
       }
     }
@@ -421,7 +479,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
   if (recycledFragment !== null) {
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
-    template(fragment, component);
+    template(fragment, component, fragment.t7ref);
 
     if(fragment.templateValue !== undefined) {
       switch (fragment.templateType) {
@@ -516,7 +574,9 @@ Inferno.render = function (fragment, dom, component) {
         dom: dom,
         shouldRecycle: true
       };
+      component.componentWillMount();
       attachFragment(context, generatedFragment, dom, component);
+      component.componentDidMount();
     } else {
       generatedFragment = fragment();
       context = component.context;

@@ -110,7 +110,7 @@ var t7 = (function() {
             }
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
-            templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
+            templateParams.push("if(typeof " + valueName + " !== 'object') {");
             if(!parentNodeName) {
               templateParams.push("root.textContent=" + valueName + ";");
             } else {
@@ -131,11 +131,11 @@ var t7 = (function() {
         } else if(typeof child === "string" && root.children.length > 1) {
           matches = child.match(/__\$props__\[\d*\]/g);
           if(matches === null) {
-            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child + "');");
+            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child.replace(/(\r\n|\n|\r)/gm,"") + "');");
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("var " + nodeName + i + ";");
-            templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
+            templateParams.push("if(typeof " + valueName + " !== 'object') {");
             templateParams.push(nodeName + i + " = Inferno.dom.createText(" + valueName + ");");
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT_DIRECT;");
             templateParams.push("} else {");
@@ -153,19 +153,30 @@ var t7 = (function() {
           }
         } else if(child != null) {
           if(child.tag) {
-            templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
-            if(child.children) {
-              buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
-            }
-            if(child.attrs) {
-              var attrsParams = [];
-              buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
-              templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
-            }
-            if(!parentNodeName) {
-              templateParams.push("root.appendChild(" +  nodeName + i + ");");
+            if(isComponentName(child.tag) === true) {
+              valueCounter.t7Required = true;
+              var props = [];
+              var propRefs = [];
+              if(child.attrs) {
+                buildInfernoAttrsParams(child, nodeName + i, props, templateValues, templateParams, valueCounter, propRefs);
+              }
+              templateParams.push("var " + nodeName + i + " = Inferno.dom.createComponent(" + (!parentNodeName ? "root" : parentNodeName) + ", t7.loadComponent('" + child.tag + "'), {" + props.join(",") + "});");
+              templateParams.push(propRefs.join(""));
             } else {
-              templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+              templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
+              if(child.attrs) {
+                var attrsParams = [];
+                buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
+                templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
+              }
+              if(child.children) {
+                buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
+              }
+              if(!parentNodeName) {
+                templateParams.push("root.appendChild(" +  nodeName + i + ");");
+              } else {
+                templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+              }
             }
           }
         }
@@ -214,7 +225,7 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, rootElement, attrsParams, templateValues, templateParams, valueCounter) {
+  function buildInfernoAttrsParams(root, rootElement, attrsParams, templateValues, templateParams, valueCounter, propRefs) {
     var val = '', valueName;
     var matches = null;
     for(var name in root.attrs) {
@@ -224,56 +235,63 @@ var t7 = (function() {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
         valueName = "fragment.templateValues[" + valueCounter.index + "]";
-        switch(name) {
-          case "class":
-          case "className":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CLASS;");
-            break;
-          case "id":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_ID;");
-            break;
-          case "value":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_VALUE;");
-            break;
-          case "width":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_WIDTH;");
-            break;
-          case "height":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HEIGHT;");
-            break;
-          case "type":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_TYPE;");
-            break;
-          case "name":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_NAME;");
-            break;
-          case "href":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HREF;");
-            break;
-          case "disabled":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_DISABLED;");
-            break;
-          case "checked":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CHECKED;");
-            break;
-          case "selected":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_SELECTED;");
-            break;
-          case "label":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_LABEL;");
-            break;
-          case "style":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_STYLE;");
-            break;
-          case "placeholder":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_PLACEHOLDER;");
-            break;
-          default:
-            templateParams.push("if(Inferno.Type.ATTR_OTHER." + name + " === undefined) { Inferno.Type.ATTR_OTHER." + name + " = '" + name + "'; }");
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_OTHER." + name + ";");
-            break;
+        if(!propRefs) {
+          switch(name) {
+            case "class":
+            case "className":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CLASS;");
+              break;
+            case "id":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_ID;");
+              break;
+            case "value":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_VALUE;");
+              break;
+            case "width":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_WIDTH;");
+              break;
+            case "height":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HEIGHT;");
+              break;
+            case "type":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_TYPE;");
+              break;
+            case "name":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_NAME;");
+              break;
+            case "href":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HREF;");
+              break;
+            case "disabled":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_DISABLED;");
+              break;
+            case "checked":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CHECKED;");
+              break;
+            case "selected":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_SELECTED;");
+              break;
+            case "label":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_LABEL;");
+              break;
+            case "style":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_STYLE;");
+              break;
+            case "placeholder":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_PLACEHOLDER;");
+              break;
+            default:
+              templateParams.push("if(Inferno.Type.ATTR_OTHER." + name + " === undefined) { Inferno.Type.ATTR_OTHER." + name + " = '" + name + "'; }");
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_OTHER." + name + ";");
+              break;
+          }
+          templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
+        } else {
+          templateParams.push("if(Inferno.Type.COMPONENT_PROPS." + name + " === undefined) { Inferno.Type.COMPONENT_PROPS." + name + " = '" + name + "'; }");
+          templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.COMPONENT_PROPS." + name + ";");
+          propRefs.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
         }
-        templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
+
         attrsParams.push("'" + name + "':" + valueName);
         templateValues.push(val);
         valueCounter.index++;
@@ -362,7 +380,7 @@ var t7 = (function() {
         var component = null;
         var props = null;
         var templateParams = [];
-        var valueCounter = {index: 0};
+        var valueCounter = {index: 0, t7Required: false};
         var templateValues = [];
 
         if(isComponentName(root.tag) === true) {
@@ -389,7 +407,7 @@ var t7 = (function() {
           if(isBrowser === true) {
             addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, component){"use strict";\n' + scriptCode + '}', templateKey);
           } else {
-            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];\n' + scriptCode);
+            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];var t7 = arguments[2];\n' + scriptCode);
           }
           t7._templateCache[templateKey].key = templateKey;
           template = 't7._templateCache["' + templateKey + '"]';
@@ -398,9 +416,9 @@ var t7 = (function() {
         var templateValuesString = "";
 
         if(templateValues.length === 1) {
-          templateValuesString = "templateValue: " + templateValues[0] + ", templateElements: null, templateTypes: null"
+          templateValuesString = "templateValue: " + templateValues[0] + ", templateElements: null, templateTypes: null, t7ref: t7";
         } else if (templateValues.length > 1) {
-          templateValuesString = "templateValues: [" + templateValues.join(", ") + "], templateElements: Array(" + templateValues.length + "), templateTypes: Array(" + templateValues.length + ")"
+          templateValuesString = "templateValues: [" + templateValues.join(", ") + "], templateElements: Array(" + templateValues.length + "), templateTypes: Array(" + templateValues.length + "), t7ref: t7";
         }
 
         if(component !== null) {
@@ -761,12 +779,12 @@ var t7 = (function() {
         return;
       } else {
         if(isBrowser === true) {
-          scriptString = 't7._cache["' + templateKey + '"]=function(__$props__, __$components__)';
+          scriptString = 't7._cache["' + templateKey + '"]=function(__$props__, __$components__, t7)';
           scriptString += '{"use strict";return ' + scriptCode + '}';
 
           addNewScriptFunction(scriptString, templateKey);
         } else {
-          t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];return ' + scriptCode);
+          t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];var t7 = arguments[2];return ' + scriptCode);
         }
       }
     }

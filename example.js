@@ -17,6 +17,12 @@ t7.module(function(t7) {
         };
         this.handleCounter();
       }
+      componentWillMount() {
+        console.log("Component will mount");
+      }
+      componentDidMount() {
+        console.log("Component did mount");
+      }
       render() {
         if(this.state.visible) {
           return t7`

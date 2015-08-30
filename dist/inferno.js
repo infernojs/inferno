@@ -93,7 +93,8 @@ Inferno.Type = {
   ATTR_WIDTH: 17,
   ATTR_HEIGHT: 18,
   //will contain other "custom" types, like rowspan etc or custom data-attributes
-  ATTR_OTHER: {}
+  ATTR_OTHER: {},
+  COMPONENT_PROPS: {}
 };
 
 function isString(value) {
@@ -140,6 +141,12 @@ var Component = (function () {
       this.state = newSate;
       this.forceUpdate();
     }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {}
+  }, {
+    key: "componentWillMount",
+    value: function componentWillMount() {}
   }]);
 
   return Component;
@@ -153,6 +160,15 @@ Inferno.dom.createElement = function (tag) {
   if (isBrowser) {
     return document.createElement(tag);
   }
+};
+
+Inferno.dom.createComponent = function (parentDom, t7component, props) {
+  var component = new t7component(props);
+  component.context = null;
+  component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), parentDom, component);
+  component.forceUpdate();
+
+  return component;
 };
 
 Inferno.dom.createText = function (text) {
@@ -186,8 +202,17 @@ Inferno.dom.addAttributes = function (node, attrs, component) {
       case "id":
         node.id = attrVal;
         break;
+      case "disabled":
+        node.disabled = attrVal;
+        break;
+      case "selected":
+        node.selected = attrVal;
+        break;
+      case "checked":
+        node.checked = attrVal;
+        break;
       default:
-        node[attrName] = attrVal;
+        node.setAttribute(attrName, attrVal);
     }
   }
 };
@@ -387,6 +412,8 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
         }
       }
     } else if (fragment.templateValues !== undefined) {
+      var componentsToUpdate = [],
+          s = 0;
       for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
         var element = oldFragment.templateElements[i];
         var type = oldFragment.templateTypes[i];
@@ -411,6 +438,18 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             case Inferno.Type.ATTR_CLASS:
               element.className = fragment.templateValues[i];
               break;
+            case Inferno.Type.ATTR_CHECKED:
+              element.checked = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_SELECTED:
+              element.selected = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_DISABLED:
+              element.disabled = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_HREF:
+              element.href = fragment.templateValues[i];
+              break;
             case Inferno.Type.ATTR_ID:
               element.id = fragment.templateValues[i];
               break;
@@ -423,11 +462,34 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             case Inferno.Type.ATTR_HEIGHT:
               element.height = fragment.templateValues[i];
               break;
-            //custom attribute, so simply setAttribute it
+
             default:
-              element.setAttribute(type, fragment.templateValues[i]);
+              //custom attribute, so simply setAttribute it
+              if (!element.props) {
+                if (events[type] != null) {} else {
+                  element.setAttribute(type, fragment.templateValues[i]);
+                }
+              }
+              //component prop, update it
+              else {
+                element.props[type] = fragment.templateValues[i];
+                var alreadyInQueue = false;
+                for (s = 0; s < componentsToUpdate.length; s++) {
+                  if (componentsToUpdate[s] === element) {
+                    alreadyInQueue = true;
+                  }
+                }
+                if (alreadyInQueue === false) {
+                  componentsToUpdate.push(element);
+                }
+              }
               break;
           }
+        }
+      }
+      if (componentsToUpdate.length > 0) {
+        for (s = 0; s < componentsToUpdate.length; s++) {
+          componentsToUpdate[s].forceUpdate();
         }
       }
     }
@@ -458,7 +520,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
   if (recycledFragment !== null) {
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
-    template(fragment, component);
+    template(fragment, component, fragment.t7ref);
 
     if (fragment.templateValue !== undefined) {
       switch (fragment.templateType) {
@@ -553,7 +615,9 @@ Inferno.render = function (fragment, dom, component) {
         dom: dom,
         shouldRecycle: true
       };
+      component.componentWillMount();
       attachFragment(context, generatedFragment, dom, component);
+      component.componentDidMount();
     } else {
       generatedFragment = fragment();
       context = component.context;
@@ -787,7 +851,7 @@ var t7 = (function() {
             }
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
-            templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
+            templateParams.push("if(typeof " + valueName + " !== 'object') {");
             if(!parentNodeName) {
               templateParams.push("root.textContent=" + valueName + ";");
             } else {
@@ -808,11 +872,11 @@ var t7 = (function() {
         } else if(typeof child === "string" && root.children.length > 1) {
           matches = child.match(/__\$props__\[\d*\]/g);
           if(matches === null) {
-            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child + "');");
+            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child.replace(/(\r\n|\n|\r)/gm,"") + "');");
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("var " + nodeName + i + ";");
-            templateParams.push("if(typeof " + valueName + " === 'string' || typeof " + valueName + " === 'number') {");
+            templateParams.push("if(typeof " + valueName + " !== 'object') {");
             templateParams.push(nodeName + i + " = Inferno.dom.createText(" + valueName + ");");
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT_DIRECT;");
             templateParams.push("} else {");
@@ -830,19 +894,30 @@ var t7 = (function() {
           }
         } else if(child != null) {
           if(child.tag) {
-            templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
-            if(child.children) {
-              buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
-            }
-            if(child.attrs) {
-              var attrsParams = [];
-              buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
-              templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
-            }
-            if(!parentNodeName) {
-              templateParams.push("root.appendChild(" +  nodeName + i + ");");
+            if(isComponentName(child.tag) === true) {
+              valueCounter.t7Required = true;
+              var props = [];
+              var propRefs = [];
+              if(child.attrs) {
+                buildInfernoAttrsParams(child, nodeName + i, props, templateValues, templateParams, valueCounter, propRefs);
+              }
+              templateParams.push("var " + nodeName + i + " = Inferno.dom.createComponent(" + (!parentNodeName ? "root" : parentNodeName) + ", t7.loadComponent('" + child.tag + "'), {" + props.join(",") + "});");
+              templateParams.push(propRefs.join(""));
             } else {
-              templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+              templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
+              if(child.attrs) {
+                var attrsParams = [];
+                buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
+                templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
+              }
+              if(child.children) {
+                buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
+              }
+              if(!parentNodeName) {
+                templateParams.push("root.appendChild(" +  nodeName + i + ");");
+              } else {
+                templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+              }
             }
           }
         }
@@ -891,7 +966,7 @@ var t7 = (function() {
     }
   };
 
-  function buildInfernoAttrsParams(root, rootElement, attrsParams, templateValues, templateParams, valueCounter) {
+  function buildInfernoAttrsParams(root, rootElement, attrsParams, templateValues, templateParams, valueCounter, propRefs) {
     var val = '', valueName;
     var matches = null;
     for(var name in root.attrs) {
@@ -901,56 +976,63 @@ var t7 = (function() {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
         valueName = "fragment.templateValues[" + valueCounter.index + "]";
-        switch(name) {
-          case "class":
-          case "className":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CLASS;");
-            break;
-          case "id":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_ID;");
-            break;
-          case "value":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_VALUE;");
-            break;
-          case "width":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_WIDTH;");
-            break;
-          case "height":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HEIGHT;");
-            break;
-          case "type":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_TYPE;");
-            break;
-          case "name":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_NAME;");
-            break;
-          case "href":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HREF;");
-            break;
-          case "disabled":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_DISABLED;");
-            break;
-          case "checked":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CHECKED;");
-            break;
-          case "selected":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_SELECTED;");
-            break;
-          case "label":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_LABEL;");
-            break;
-          case "style":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_STYLE;");
-            break;
-          case "placeholder":
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_PLACEHOLDER;");
-            break;
-          default:
-            templateParams.push("if(Inferno.Type.ATTR_OTHER." + name + " === undefined) { Inferno.Type.ATTR_OTHER." + name + " = '" + name + "'; }");
-            templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_OTHER." + name + ";");
-            break;
+        if(!propRefs) {
+          switch(name) {
+            case "class":
+            case "className":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CLASS;");
+              break;
+            case "id":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_ID;");
+              break;
+            case "value":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_VALUE;");
+              break;
+            case "width":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_WIDTH;");
+              break;
+            case "height":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HEIGHT;");
+              break;
+            case "type":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_TYPE;");
+              break;
+            case "name":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_NAME;");
+              break;
+            case "href":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_HREF;");
+              break;
+            case "disabled":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_DISABLED;");
+              break;
+            case "checked":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CHECKED;");
+              break;
+            case "selected":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_SELECTED;");
+              break;
+            case "label":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_LABEL;");
+              break;
+            case "style":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_STYLE;");
+              break;
+            case "placeholder":
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_PLACEHOLDER;");
+              break;
+            default:
+              templateParams.push("if(Inferno.Type.ATTR_OTHER." + name + " === undefined) { Inferno.Type.ATTR_OTHER." + name + " = '" + name + "'; }");
+              templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_OTHER." + name + ";");
+              break;
+          }
+          templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
+        } else {
+          templateParams.push("if(Inferno.Type.COMPONENT_PROPS." + name + " === undefined) { Inferno.Type.COMPONENT_PROPS." + name + " = '" + name + "'; }");
+          templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.COMPONENT_PROPS." + name + ";");
+          propRefs.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
         }
-        templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
+
         attrsParams.push("'" + name + "':" + valueName);
         templateValues.push(val);
         valueCounter.index++;
@@ -1039,7 +1121,7 @@ var t7 = (function() {
         var component = null;
         var props = null;
         var templateParams = [];
-        var valueCounter = {index: 0};
+        var valueCounter = {index: 0, t7Required: false};
         var templateValues = [];
 
         if(isComponentName(root.tag) === true) {
@@ -1066,7 +1148,7 @@ var t7 = (function() {
           if(isBrowser === true) {
             addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, component){"use strict";\n' + scriptCode + '}', templateKey);
           } else {
-            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];\n' + scriptCode);
+            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];var t7 = arguments[2];\n' + scriptCode);
           }
           t7._templateCache[templateKey].key = templateKey;
           template = 't7._templateCache["' + templateKey + '"]';
@@ -1075,9 +1157,9 @@ var t7 = (function() {
         var templateValuesString = "";
 
         if(templateValues.length === 1) {
-          templateValuesString = "templateValue: " + templateValues[0] + ", templateElements: null, templateTypes: null"
+          templateValuesString = "templateValue: " + templateValues[0] + ", templateElements: null, templateTypes: null, t7ref: t7";
         } else if (templateValues.length > 1) {
-          templateValuesString = "templateValues: [" + templateValues.join(", ") + "], templateElements: Array(" + templateValues.length + "), templateTypes: Array(" + templateValues.length + ")"
+          templateValuesString = "templateValues: [" + templateValues.join(", ") + "], templateElements: Array(" + templateValues.length + "), templateTypes: Array(" + templateValues.length + "), t7ref: t7";
         }
 
         if(component !== null) {
@@ -1438,12 +1520,12 @@ var t7 = (function() {
         return;
       } else {
         if(isBrowser === true) {
-          scriptString = 't7._cache["' + templateKey + '"]=function(__$props__, __$components__)';
+          scriptString = 't7._cache["' + templateKey + '"]=function(__$props__, __$components__, t7)';
           scriptString += '{"use strict";return ' + scriptCode + '}';
 
           addNewScriptFunction(scriptString, templateKey);
         } else {
-          t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];return ' + scriptCode);
+          t7._cache[templateKey] = new Function('"use strict";var __$props__ = arguments[0];var __$components__ = arguments[1];var t7 = arguments[2];return ' + scriptCode);
         }
       }
     }
