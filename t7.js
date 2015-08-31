@@ -788,7 +788,7 @@ var t7 = (function() {
         }
       }
     }
-    return t7._cache[templateKey](values, this);
+    return t7._cache[templateKey](values, this, t7);
   };
 
   var ARRAY_PROPS = {

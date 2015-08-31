@@ -36,7 +36,19 @@ var events = {
 };
 
 var events = {
-  "onClick": "click"
+  "onClick": "click",
+  "onMouseUp": "mouseup",
+  "onMouseDown": "mousedown",
+  "onMouseMove": "mousemove",
+  "onMouseEnter": "mouseenter",
+  "onMouseLeave": "mouseleave",
+  "onKeyPress": "keypress",
+  "onKeyUp": "keyup",
+  "onKeyDown": "keydown",
+  "onTouchStart": "touchstart",
+  "onTouchEnd": "touchend",
+  "onTouchMove": "touchmove",
+  "onTouchCancel": "touchcancel"
 };
 
 var userAgent = navigator.userAgent,
@@ -194,6 +206,7 @@ Inferno.dom.addAttributes = function (node, attrs, component) {
       continue;
     }
 
+    //to improve creation performance, this attempts to use properties rather than attributes on common types
     switch (attrName) {
       case "class":
       case "className":
@@ -201,6 +214,15 @@ Inferno.dom.addAttributes = function (node, attrs, component) {
         break;
       case "id":
         node.id = attrVal;
+        break;
+      case "href":
+        node.href = attrVal;
+        break;
+      case "value":
+        node.value = attrVal;
+        break;
+      case "name":
+        node.name = attrVal;
         break;
       case "disabled":
         node.disabled = attrVal;
@@ -456,13 +478,27 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             case Inferno.Type.ATTR_VALUE:
               element.value = fragment.templateValues[i];
               break;
+            case Inferno.Type.ATTR_NAME:
+              element.name = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_TYPE:
+              element.type = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_LABEL:
+              element.label = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_PLACEHOLDER:
+              element.placeholder = fragment.templateValues[i];
+              break;
+            case Inferno.Type.ATTR_STYLE:
+              //TODO
+              break;
             case Inferno.Type.ATTR_WIDTH:
               element.width = fragment.templateValues[i];
               break;
             case Inferno.Type.ATTR_HEIGHT:
               element.height = fragment.templateValues[i];
               break;
-
             default:
               //custom attribute, so simply setAttribute it
               if (!element.props) {
@@ -1529,7 +1565,7 @@ var t7 = (function() {
         }
       }
     }
-    return t7._cache[templateKey](values, this);
+    return t7._cache[templateKey](values, this, t7);
   };
 
   var ARRAY_PROPS = {
