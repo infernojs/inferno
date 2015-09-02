@@ -167,7 +167,7 @@ var t7 = (function() {
               if(child.attrs) {
                 var attrsParams = [];
                 buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
-                templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "}, component);");
+                templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "});");
               }
               if(child.children) {
                 buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
@@ -391,7 +391,7 @@ var t7 = (function() {
           templateParams.push("var root = Inferno.dom.createElement('" + root.tag + "');");
           if(root.attrs) {
             buildInfernoAttrsParams(root, "root", attrsParams, templateValues, templateParams, valueCounter);
-            templateParams.push("Inferno.dom.addAttributes(root, {" + attrsParams.join(",") + "}, component);");
+            templateParams.push("Inferno.dom.addAttributes(root, {" + attrsParams.join(",") + "});");
           }
         }
 
@@ -405,9 +405,9 @@ var t7 = (function() {
             scriptCode = scriptCode.replace(/fragment.templateTypes\[0\]/g, "fragment.templateType");
           }
           if(isBrowser === true) {
-            addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, component){"use strict";\n' + scriptCode + '}', templateKey);
+            addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, t7){"use strict";\n' + scriptCode + '}', templateKey);
           } else {
-            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var component = arguments[1];var t7 = arguments[2];\n' + scriptCode);
+            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var t7 = arguments[1];\n' + scriptCode);
           }
           t7._templateCache[templateKey].key = templateKey;
           template = 't7._templateCache["' + templateKey + '"]';

@@ -5,6 +5,7 @@ t7.module(function(t7) {
   class InfernoExample extends Inferno.Component {
       constructor(props) {
         super(props);
+        this.timer = null;
         this.state = {
           visible: true,
           counter: 0,
@@ -16,9 +17,18 @@ t7.module(function(t7) {
           textFieldValue: "Text!"
         };
         this.handleCounter();
+        this.turnOffForm = this.turnOffForm.bind(this);
+        this.turnOnForm = this.turnOnForm.bind(this);
+        this.clickSwitch = this.clickSwitch.bind(this);
+        this.hide = this.hide.bind(this);
+        this.show = this.show.bind(this);
       }
       componentWillMount() {
         console.log("Component will mount");
+      }
+      componentWillUnmount() {
+        window.clearTimeout(this.timer);
+        console.log("Component will unmount");
       }
       componentDidMount() {
         console.log("Component did mount");
@@ -116,7 +126,7 @@ t7.module(function(t7) {
         this.setState({
           counter: this.state.counter + 1
         });
-        setTimeout(this.handleCounter.bind(this), 2000);
+        this.timer = setTimeout(this.handleCounter.bind(this), 2000);
       }
   }
 
@@ -154,5 +164,14 @@ t7.module(function(t7) {
   }
 
   update();
+
+  function clearApp(e) {
+    Inferno.render(t7`<div></div>`, document.getElementById("app"));
+  }
+
+  Inferno.render(
+    t7`<div><button onClick=${ clearApp }>Clear App</button></div>`,
+    document.getElementById("control")
+  );
 
 });

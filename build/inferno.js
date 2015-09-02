@@ -108,6 +108,10 @@ function isFunction(value) {
   return typeof value === "function";
 }
 
+function badUpdate() {
+  console.warn("Update called on a component that is no longer mounted!");
+};
+
 var Component = (function () {
   function Component(props) {
     _classCallCheck(this, Component);
@@ -142,6 +146,9 @@ var Component = (function () {
   }, {
     key: "componentWillMount",
     value: function componentWillMount() {}
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {}
   }]);
 
   return Component;
@@ -231,8 +238,14 @@ Inferno.dom.createFragment = function () {
 Inferno.unmountComponentAtNode = function (dom) {
   var context = getContext(dom);
   if (context !== null) {
-    removeFragment(context, dom, context.fragment);
-    removeContext(dom);
+    var component = context.fragment.component;
+    if (component) {
+      removeFragment(context, dom, component.fragment);
+      unmountComponentAtFragment(component.fragment);
+    } else {
+      removeFragment(context, dom, context.fragment);
+      removeContext(dom);
+    }
   }
 };
 
@@ -248,6 +261,15 @@ function attachFragmentList(context, list, parentDom, component) {
   for (var i = 0; i < list.length; i++) {
     attachFragment(context, list[i], parentDom, component);
   }
+}
+
+function unmountComponentAtFragment(fragment) {
+  var component = fragment.component;
+  component.componentWillUnmount();
+  removeContext(component.context.dom);
+  component.forceUpdate = badUpdate;
+  component.context = null;
+  component = null;
 }
 
 function updateFragmentList(context, oldList, list, parentDom, component, outerNextFragment) {
@@ -377,7 +399,13 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
     return;
   }
   if (oldFragment.template !== fragment.template) {
-    attachFragment(context, fragment, parentDom, component, oldFragment, true);
+    if (oldFragment.component) {
+      var oldComponentFragment = oldFragment.component.context.fragment;
+      unmountComponentAtFragment(oldFragment);
+      attachFragment(context, fragment, parentDom, component, oldComponentFragment, true);
+    } else {
+      attachFragment(context, fragment, parentDom, component, oldFragment, true);
+    }
   } else {
     var fragmentComponent = oldFragment.component;
 
@@ -485,7 +513,10 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
             default:
               //custom attribute, so simply setAttribute it
               if (!element.props) {
-                if (events[type] != null) {} else {
+                if (events[type] != null) {
+                  clearEventListeners(element, component, type);
+                  addEventListener(element, component, type, fragment.templateValues[i]);
+                } else {
                   element.setAttribute(type, fragment.templateValues[i]);
                 }
               }
@@ -539,7 +570,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
   if (recycledFragment !== null) {
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
-    template(fragment, component, fragment.t7ref);
+    template(fragment, fragment.t7ref);
 
     if (fragment.templateValue !== undefined) {
       switch (fragment.templateType) {
@@ -727,7 +758,15 @@ function removeFragment(context, parentDom, item) {
 }
 
 function destroyFragment(context, fragment) {
-  var templateKey = fragment.template.key;
+  var templateKey;
+
+  //long winded approach, but components have their own context which is how we find their template keys
+  if (fragment.component) {
+    templateKey = fragment.component.context.fragment.template.key;
+  } else {
+    templateKey = fragment.template.key;
+  }
+
   if (context.shouldRecycle === true) {
     var toRecycleForKey = recycledFragments[templateKey];
     if (!toRecycleForKey) {
