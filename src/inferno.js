@@ -216,6 +216,43 @@ Inferno.template.createFragment = function() {
   }
 };
 
+//this was added so vdom lovers can still use their beloved vdom API from React :)
+//this won't be performant and should only be used for prototyping/testing/experimenting
+//note, props/attrs will not update with this current implementation
+Inferno.vdom = {};
+
+Inferno.vdom.createElement = function(tag, props, ...children) {
+  console.warn("Inferno.vdom.createElement() is purely experimental, "
+   + "it's performance will be poor and attributes/properities will not update (as of yet)");
+   
+  if(children.length === 1) {
+    children = children[0];
+  }
+  //we need to create a template for this
+  function template(fragment) {
+    var root = Inferno.template.createElement(tag);
+    fragment.templateElement = root;
+
+    if (typeof children !== "object") {
+      fragment.templateType = Inferno.Type.TEXT;
+      root.textContent = children;
+    } else {
+      if (children instanceof Array) {
+        fragment.templateType = Inferno.Type.LIST;
+      } else {
+        fragment.templateType = Inferno.Type.FRAGMENT;
+      }
+    }
+
+    if(props) {
+      Inferno.template.addAttributes(root, props);
+    }
+    fragment.dom = root;
+  }
+
+  return Inferno.createFragment(children, template);
+};
+
 var templateKeyMap = new WeakMap();
 
 //this function is really only intended to be used for DEV purposes
@@ -223,7 +260,7 @@ Inferno.createFragment = function(values, template) {
   if(template.key === undefined) {
     //if the template function is missing a key property, we'll need to make one
     var templateKeyLookup = templateKeyMap.get(template);
-    if(templateKeyLookup === undefined) {
+    if (templateKeyLookup === undefined) {
       var key = Symbol();
       templateKeyMap.set(template, key);
       //this was considerably faster than Symbol()
@@ -679,7 +716,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
           //TODO need to add this
           break;
         case Inferno.Type.FRAGMENT:
-          //TODO do we need this still?
+          attachFragment(context, fragment.templateValue, fragment.templateElement, component);
           break;
         case Inferno.Type.FRAGMENT_REPLACE:
           attachFragment(context, fragment.templateValue, parentDom, component, fragment.templateElement, true);

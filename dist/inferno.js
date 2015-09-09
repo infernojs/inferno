@@ -316,6 +316,46 @@ function (module, exports, __webpack_require__) {
 		}
 	};
 
+	//this was added so vdom lovers can still use their beloved vdom API from React :)
+	//this won't be performant and should only be used for prototyping/testing/experimenting
+	//note, props/attrs will not update with this current implementation
+	Inferno.vdom = {};
+
+	Inferno.vdom.createElement = function (tag, props) {
+		for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+			children[_key - 2] = arguments[_key];
+		}
+
+		console.warn("Inferno.vdom.createElement() is purely experimental, " + "it's performance will be poor and attributes/properities will not update (as of yet)");
+
+		if (children.length === 1) {
+			children = children[0];
+		}
+		//we need to create a template for this
+		function template(fragment) {
+			var root = Inferno.template.createElement(tag);
+			fragment.templateElement = root;
+
+			if (typeof children !== "object") {
+				fragment.templateType = Inferno.Type.TEXT;
+				root.textContent = children;
+			} else {
+				if (children instanceof Array) {
+					fragment.templateType = Inferno.Type.LIST;
+				} else {
+					fragment.templateType = Inferno.Type.FRAGMENT;
+				}
+			}
+
+			if (props) {
+				Inferno.template.addAttributes(root, props);
+			}
+			fragment.dom = root;
+		}
+
+		return Inferno.createFragment(children, template);
+	};
+
 	var templateKeyMap = new WeakMap();
 
 	//this function is really only intended to be used for DEV purposes
@@ -782,7 +822,7 @@ function (module, exports, __webpack_require__) {
 						//TODO need to add this
 						break;
 					case Inferno.Type.FRAGMENT:
-						//TODO do we need this still?
+						attachFragment(context, fragment.templateValue, fragment.templateElement, component);
 						break;
 					case Inferno.Type.FRAGMENT_REPLACE:
 						attachFragment(context, fragment.templateValue, parentDom, component, fragment.templateElement, true);
@@ -1189,13 +1229,13 @@ function (module, exports) {
 								templateParams.push(propRefs.join(""));
 							} else {
 								templateParams.push("var " + nodeName + i + " = Inferno.template.createElement('" + child.tag + "');");
+								if (child.children) {
+									buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
+								}
 								if (child.attrs) {
 									var attrsParams = [];
 									buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
 									templateParams.push("Inferno.template.addAttributes(" + nodeName + i + ", {" + attrsParams.join(",") + "});");
-								}
-								if (child.children) {
-									buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
 								}
 								if (!parentNodeName) {
 									templateParams.push("root.appendChild(" + nodeName + i + ");");
