@@ -1,10 +1,10 @@
 {
   "name": "inferno",
-  "version": "0.1.3",
+  "version": "0.2.3",
   "description": "A framework for building lightning fast user interfaces",
   "main": "inferno.js",
   "scripts": {
-    "preinstall": "npm install -g grunt-cli",
+    "preinstall": "npm install -g gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -15,16 +15,18 @@
     "url": "git+ssh://git@github.com/trueadm/InfernoJS.git"
   },
   "author": "Dominic Gannaway",
-  "license": "ISC",
+  "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/trueadm/InfernoJS/issues"
   },
   "homepage": "https://github.com/trueadm/InfernoJS#readme",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-babel": "^5.0.1",
-    "grunt-browserify": "^3.8.0",
-    "grunt-contrib-uglify": "^0.9.1",
-    "grunt-contrib-watch": "^0.6.1"
+    "gulp": "^3.8.10",
+    "gulp-babel": "^5.2.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.4.0",
+    "gulp-watch": "^3.0.0",
+    "gulp-webpack": "^1.5.0"
   }
 }

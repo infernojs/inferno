@@ -133,19 +133,19 @@ class Component {
 
 Inferno.Component = Component;
 
-Inferno.dom = {};
+Inferno.template = {};
 
 Inferno.setT7Dependency = function(hast7dependency) {
   t7dependency = hast7dependency;
 };
 
-Inferno.dom.createElement = function(tag) {
+Inferno.template.createElement = function(tag) {
   if(isBrowser) {
     return document.createElement(tag);
   }
 };
 
-Inferno.dom.createComponent = function(parentDom, t7component, props) {
+Inferno.template.createComponent = function(parentDom, props, t7component) {
   var component = new t7component(props);
   component.context = null;
   component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), parentDom, component);
@@ -154,19 +154,19 @@ Inferno.dom.createComponent = function(parentDom, t7component, props) {
   return component;
 };
 
-Inferno.dom.createText = function(text) {
+Inferno.template.createText = function(text) {
   if(isBrowser) {
     return document.createTextNode(text);
   }
 };
 
-Inferno.dom.createEmpty = function(text) {
+Inferno.template.createEmptyText = function(text) {
   if(isBrowser) {
     return document.createTextNode("");
   }
 };
 
-Inferno.dom.addAttributes = function (node, attrs, component) {
+Inferno.template.addAttributes = function (node, attrs, component) {
   var attrName, attrVal;
   for (attrName in attrs) {
     attrVal = attrs[attrName];
@@ -210,9 +210,46 @@ Inferno.dom.addAttributes = function (node, attrs, component) {
   }
 };
 
-Inferno.dom.createFragment = function() {
+Inferno.template.createFragment = function() {
   if(isBrowser) {
     return document.createDocumentFragment();
+  }
+};
+
+var templateKeyMap = new WeakMap();
+
+//this function is really only intended to be used for DEV purposes
+Inferno.createFragment = function(values, template) {
+  if(template.key === undefined) {
+    //if the template function is missing a key property, we'll need to make one
+    var templateKeyLookup = templateKeyMap.get(template);
+    if(templateKeyLookup === undefined) {
+      var key = Symbol();
+      templateKeyMap.set(template, key);
+      //this was considerably faster than Symbol()
+      template.key = "tpl" + Math.floor(Math.random() * 100000);
+    }
+  }
+  if(values instanceof Array) {
+    return {
+      dom: null,
+      key: null,
+      next: null,
+      template: template,
+      templateElements: null,
+      templateTypes: null,
+      templateValues: values
+    };
+  } else {
+    return {
+      dom: null,
+      key: null,
+      next: null,
+      template: template,
+      templateElement: null,
+      templateType: null,
+      templateValue: values
+    };
   }
 };
 
@@ -593,7 +630,7 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
     if (fragment.templateValue) {
       //update a single value in the fragement (templateValue rather than templateValues)
       updateFragmentValue(context, oldFragment, fragment, parentDom, component);
-    } else {
+    } else if (fragment.templateValues) {
       //updates all values within the fragment (templateValues is an array)
       updateFragmentValues(context, oldFragment, fragment, parentDom, component);
     }
@@ -649,7 +686,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
           fragment.templateElement = fragment.templateValue.dom.parentNode;
           break;
       }
-    } else {
+    } else if (fragment.templateValues) {
       //if the fragment has multiple values, we must loop through them all and attach them
       //pulling this block of code out into its own function caused strange things to happen
       //with performance. it was faster in Gecko but far slower in v8
@@ -718,8 +755,10 @@ Inferno.render = function (fragment, dom, component) {
       attachFragment(context, fragment, dom, component);
       contexts.push(context);
     } else {
+      var activeElement = document.activeElement;
       updateFragment(context, context.fragment, fragment, dom, component, false);
       context.fragment = fragment;
+      maintainFocus(activeElement);
     }
   } else {
     if (component.context === null) {
@@ -856,5 +895,11 @@ function setTextContent(parentDom, text, update) {
     parentDom.appendChild(emptyTextNode());
   }
 };
+
+function maintainFocus(previousActiveElement) {
+    if (previousActiveElement && previousActiveElement != document.body && previousActiveElement != document.activeElement) {
+        previousActiveElement.focus();
+    }
+}
 
 module.exports = Inferno;
