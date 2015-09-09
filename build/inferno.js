@@ -6,7 +6,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var t7 = require("../t7");
 
-var supportsTextContent = ("textContent" in document);
+var supportsTextContent = ('textContent' in document);
 
 var isBrowser = false;
 
@@ -35,15 +35,16 @@ var events = {
 };
 
 var userAgent = navigator.userAgent,
-    isWebKit = userAgent.indexOf("WebKit") !== -1,
-    isFirefox = userAgent.indexOf("Firefox") !== -1,
-    isTrident = userAgent.indexOf("Trident") !== -1;
+    isWebKit = userAgent.indexOf('WebKit') !== -1,
+    isFirefox = userAgent.indexOf('Firefox') !== -1,
+    isTrident = userAgent.indexOf('Trident') !== -1;
 
 var version = "0.2.3";
 
 var recycledFragments = {};
 var rootlisteners = null;
 var initialisedListeners = false;
+var t7dependency = true;
 
 if (typeof window != "undefined") {
   rootlisteners = {
@@ -93,11 +94,11 @@ Inferno.Type = {
 };
 
 function isString(value) {
-  return typeof value === "string";
+  return typeof value === 'string';
 }
 
 function isNumber(value) {
-  return typeof value === "number";
+  return typeof value === 'number';
 }
 
 function isArray(value) {
@@ -105,7 +106,7 @@ function isArray(value) {
 }
 
 function isFunction(value) {
-  return typeof value === "function";
+  return typeof value === 'function';
 }
 
 function badUpdate() {
@@ -157,6 +158,10 @@ var Component = (function () {
 Inferno.Component = Component;
 
 Inferno.dom = {};
+
+Inferno.setT7Dependency = function (hast7dependency) {
+  t7dependency = hast7dependency;
+};
 
 Inferno.dom.createElement = function (tag) {
   if (isBrowser) {
@@ -389,6 +394,198 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
   }
 }
 
+//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
+//refactored to by more DRY. although, this causes a significant performance cost
+//on the v8 compiler. need to explore how to refactor without introducing this performance cost
+function updateFragmentValue(context, oldFragment, fragment, parentDom, component) {
+  var element = oldFragment.templateElement;
+  var type = oldFragment.templateType;
+
+  fragment.templateElement = element;
+  fragment.templateType = type;
+
+  if (fragment.templateValue !== oldFragment.templateValue) {
+    switch (type) {
+      case Inferno.Type.LIST:
+      case Inferno.Type.LIST_REPLACE:
+        updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
+        return;
+      case Inferno.Type.TEXT:
+        element.firstChild.nodeValue = fragment.templateValue;
+        return;
+      case Inferno.Type.TEXT_DIRECT:
+        element.nodeValue = fragment.templateValue;
+        return;
+      case Inferno.Type.FRAGMENT:
+      case Inferno.Type.FRAGMENT_REPLACE:
+        updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
+        return;
+      case Inferno.Type.ATTR_CLASS:
+        element.className = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_CHECKED:
+        element.checked = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_SELECTED:
+        element.selected = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_DISABLED:
+        element.disabled = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_HREF:
+        element.href = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_ID:
+        element.id = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_VALUE:
+        element.value = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_NAME:
+        element.name = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_TYPE:
+        element.type = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_LABEL:
+        element.label = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_PLACEHOLDER:
+        element.placeholder = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_STYLE:
+        //TODO
+        return;
+      case Inferno.Type.ATTR_WIDTH:
+        element.width = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_HEIGHT:
+        element.height = fragment.templateValue;
+        return;
+      default:
+        if (!element.props) {
+          if (events[type] != null) {
+            clearEventListeners(element, component, type);
+            addEventListener(element, component, type, fragment.templateValue);
+          } else {
+            element.setAttribute(type, fragment.templateValue);
+          }
+        }
+        //component prop, update it
+        else {
+            //TODO make component props work for single value fragments
+          }
+        return;
+    }
+  }
+}
+
+//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
+//refactored to by more DRY. although, this causes a significant performance cost
+//on the v8 compiler. need to explore how to refactor without introducing this performance cost
+function updateFragmentValues(context, oldFragment, fragment, parentDom, component) {
+  var componentsToUpdate = [],
+      i;
+
+  for (i = 0, length = fragment.templateValues.length; i < length; i++) {
+    var element = oldFragment.templateElements[i];
+    var type = oldFragment.templateTypes[i];
+
+    fragment.templateElements[i] = element;
+    fragment.templateTypes[i] = type;
+
+    if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
+      switch (type) {
+        case Inferno.Type.LIST:
+        case Inferno.Type.LIST_REPLACE:
+          updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+          break;
+        case Inferno.Type.TEXT:
+          element.firstChild.nodeValue = fragment.templateValues[i];
+          break;
+        case Inferno.Type.TEXT_DIRECT:
+          element.nodeValue = fragment.templateValues[i];
+          break;
+        case Inferno.Type.FRAGMENT:
+        case Inferno.Type.FRAGMENT_REPLACE:
+          updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+          break;
+        case Inferno.Type.ATTR_CLASS:
+          element.className = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_CHECKED:
+          element.checked = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_SELECTED:
+          element.selected = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_DISABLED:
+          element.disabled = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_HREF:
+          element.href = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_ID:
+          element.id = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_VALUE:
+          element.value = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_NAME:
+          element.name = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_TYPE:
+          element.type = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_LABEL:
+          element.label = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_PLACEHOLDER:
+          element.placeholder = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_STYLE:
+          //TODO
+          break;
+        case Inferno.Type.ATTR_WIDTH:
+          element.width = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_HEIGHT:
+          element.height = fragment.templateValues[i];
+          break;
+        default:
+          //custom attribute, so simply setAttribute it
+          if (!element.props) {
+            if (events[type] != null) {
+              clearEventListeners(element, component, type);
+              addEventListener(element, component, type, fragment.templateValues[i]);
+            } else {
+              element.setAttribute(type, fragment.templateValues[i]);
+            }
+          }
+          //component prop, update it
+          else {
+              element.props[type] = fragment.templateValues[i];
+              var alreadyInQueue = false;
+              for (s = 0; s < componentsToUpdate.length; s++) {
+                if (componentsToUpdate[s] === element) {
+                  alreadyInQueue = true;
+                }
+              }
+              if (alreadyInQueue === false) {
+                componentsToUpdate.push(element);
+              }
+            }
+          break;
+      }
+    }
+  }
+  if (componentsToUpdate.length > 0) {
+    for (i = 0; i < componentsToUpdate.length; i++) {
+      componentsToUpdate[i].forceUpdate();
+    }
+  }
+}
+
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
   if (fragment === null) {
     removeFragment(context, parentDom, oldFragment);
@@ -409,6 +606,7 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
   } else {
     var fragmentComponent = oldFragment.component;
 
+    //if this fragment is a component
     if (fragmentComponent) {
       fragmentComponent.props = fragment.props;
       fragmentComponent.forceUpdate();
@@ -416,132 +614,15 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
       return;
     }
 
+    //ensure we reference the new fragment with the old fragment's DOM node
     fragment.dom = oldFragment.dom;
 
-    if (fragment.templateValue !== undefined) {
-      var element = oldFragment.templateElement;
-      var type = oldFragment.templateType;
-      fragment.templateElement = element;
-      fragment.templateType = type;
-      if (fragment.templateValue !== oldFragment.templateValue) {
-        switch (type) {
-          case Inferno.Type.LIST:
-          case Inferno.Type.LIST_REPLACE:
-            updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
-            return;
-          case Inferno.Type.TEXT:
-            element.firstChild.nodeValue = fragment.templateValue;
-            return;
-          case Inferno.Type.TEXT_DIRECT:
-            element.nodeValue = fragment.templateValue;
-            return;
-          case Inferno.Type.FRAGMENT:
-          case Inferno.Type.FRAGMENT_REPLACE:
-            updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
-            return;
-          case Inferno.Type.ATTR_CLASS:
-            //debugger;
-            return;
-        }
-      }
-    } else if (fragment.templateValues !== undefined) {
-      var componentsToUpdate = [],
-          s = 0;
-      for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
-        var element = oldFragment.templateElements[i];
-        var type = oldFragment.templateTypes[i];
-        fragment.templateElements[i] = element;
-        fragment.templateTypes[i] = type;
-        if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
-          switch (type) {
-            case Inferno.Type.LIST:
-            case Inferno.Type.LIST_REPLACE:
-              updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-              break;
-            case Inferno.Type.TEXT:
-              element.firstChild.nodeValue = fragment.templateValues[i];
-              break;
-            case Inferno.Type.TEXT_DIRECT:
-              element.nodeValue = fragment.templateValues[i];
-              break;
-            case Inferno.Type.FRAGMENT:
-            case Inferno.Type.FRAGMENT_REPLACE:
-              updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-              break;
-            case Inferno.Type.ATTR_CLASS:
-              element.className = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_CHECKED:
-              element.checked = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_SELECTED:
-              element.selected = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_DISABLED:
-              element.disabled = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_HREF:
-              element.href = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_ID:
-              element.id = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_VALUE:
-              element.value = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_NAME:
-              element.name = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_TYPE:
-              element.type = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_LABEL:
-              element.label = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_PLACEHOLDER:
-              element.placeholder = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_STYLE:
-              //TODO
-              break;
-            case Inferno.Type.ATTR_WIDTH:
-              element.width = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_HEIGHT:
-              element.height = fragment.templateValues[i];
-              break;
-            default:
-              //custom attribute, so simply setAttribute it
-              if (!element.props) {
-                if (events[type] != null) {
-                  clearEventListeners(element, component, type);
-                  addEventListener(element, component, type, fragment.templateValues[i]);
-                } else {
-                  element.setAttribute(type, fragment.templateValues[i]);
-                }
-              }
-              //component prop, update it
-              else {
-                element.props[type] = fragment.templateValues[i];
-                var alreadyInQueue = false;
-                for (s = 0; s < componentsToUpdate.length; s++) {
-                  if (componentsToUpdate[s] === element) {
-                    alreadyInQueue = true;
-                  }
-                }
-                if (alreadyInQueue === false) {
-                  componentsToUpdate.push(element);
-                }
-              }
-              break;
-          }
-        }
-      }
-      if (componentsToUpdate.length > 0) {
-        for (s = 0; s < componentsToUpdate.length; s++) {
-          componentsToUpdate[s].forceUpdate();
-        }
-      }
+    if (fragment.templateValue) {
+      //update a single value in the fragement (templateValue rather than templateValues)
+      updateFragmentValue(context, oldFragment, fragment, parentDom, component);
+    } else {
+      //updates all values within the fragment (templateValues is an array)
+      updateFragmentValues(context, oldFragment, fragment, parentDom, component);
     }
   }
 }
@@ -570,25 +651,35 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
   if (recycledFragment !== null) {
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
-    template(fragment, fragment.t7ref);
+    //the user can optionally opt out of using the t7 dependency, thus removing the requirement
+    //to pass the t7 reference into the template constructor
+    if (t7dependency === true) {
+      template(fragment, fragment.t7ref);
+    } else {
+      template(fragment);
+    }
 
-    if (fragment.templateValue !== undefined) {
+    //if this fragment has a single value, we attach only that value
+    if (fragment.templateValue) {
       switch (fragment.templateType) {
         case Inferno.Type.LIST:
           attachFragmentList(context, fragment.templateValue, fragment.templateElement, component);
           break;
         case Inferno.Type.LIST_REPLACE:
-          //debugger;
+          //TODO need to add this
           break;
         case Inferno.Type.FRAGMENT:
-          //debugger;
+          //TODO do we need this still?
           break;
         case Inferno.Type.FRAGMENT_REPLACE:
           attachFragment(context, fragment.templateValue, parentDom, component, fragment.templateElement, true);
           fragment.templateElement = fragment.templateValue.dom.parentNode;
           break;
       }
-    } else if (fragment.templateValues !== undefined) {
+    } else {
+      //if the fragment has multiple values, we must loop through them all and attach them
+      //pulling this block of code out into its own function caused strange things to happen
+      //with performance. it was faster in Gecko but far slower in v8
       for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
         var element = fragment.templateElements[i];
         var value = fragment.templateValues[i];
@@ -604,7 +695,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
             fragment.templateElements[i] = nodeList;
             break;
           case Inferno.Type.FRAGMENT:
-            //debugger;
+            //TODO do we need this still?
             break;
           case Inferno.Type.FRAGMENT_REPLACE:
             attachFragment(context, value, parentDom, component, element, true);

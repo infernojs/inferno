@@ -23,7 +23,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var t7 = require("../t7");
 
-var supportsTextContent = ("textContent" in document);
+var supportsTextContent = ('textContent' in document);
 
 var isBrowser = false;
 
@@ -52,15 +52,16 @@ var events = {
 };
 
 var userAgent = navigator.userAgent,
-    isWebKit = userAgent.indexOf("WebKit") !== -1,
-    isFirefox = userAgent.indexOf("Firefox") !== -1,
-    isTrident = userAgent.indexOf("Trident") !== -1;
+    isWebKit = userAgent.indexOf('WebKit') !== -1,
+    isFirefox = userAgent.indexOf('Firefox') !== -1,
+    isTrident = userAgent.indexOf('Trident') !== -1;
 
 var version = "0.2.3";
 
 var recycledFragments = {};
 var rootlisteners = null;
 var initialisedListeners = false;
+var t7dependency = true;
 
 if (typeof window != "undefined") {
   rootlisteners = {
@@ -110,11 +111,11 @@ Inferno.Type = {
 };
 
 function isString(value) {
-  return typeof value === "string";
+  return typeof value === 'string';
 }
 
 function isNumber(value) {
-  return typeof value === "number";
+  return typeof value === 'number';
 }
 
 function isArray(value) {
@@ -122,7 +123,7 @@ function isArray(value) {
 }
 
 function isFunction(value) {
-  return typeof value === "function";
+  return typeof value === 'function';
 }
 
 function badUpdate() {
@@ -174,6 +175,10 @@ var Component = (function () {
 Inferno.Component = Component;
 
 Inferno.dom = {};
+
+Inferno.setT7Dependency = function (hast7dependency) {
+  t7dependency = hast7dependency;
+};
 
 Inferno.dom.createElement = function (tag) {
   if (isBrowser) {
@@ -406,6 +411,198 @@ function updateFragmentList(context, oldList, list, parentDom, component, outerN
   }
 }
 
+//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
+//refactored to by more DRY. although, this causes a significant performance cost
+//on the v8 compiler. need to explore how to refactor without introducing this performance cost
+function updateFragmentValue(context, oldFragment, fragment, parentDom, component) {
+  var element = oldFragment.templateElement;
+  var type = oldFragment.templateType;
+
+  fragment.templateElement = element;
+  fragment.templateType = type;
+
+  if (fragment.templateValue !== oldFragment.templateValue) {
+    switch (type) {
+      case Inferno.Type.LIST:
+      case Inferno.Type.LIST_REPLACE:
+        updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
+        return;
+      case Inferno.Type.TEXT:
+        element.firstChild.nodeValue = fragment.templateValue;
+        return;
+      case Inferno.Type.TEXT_DIRECT:
+        element.nodeValue = fragment.templateValue;
+        return;
+      case Inferno.Type.FRAGMENT:
+      case Inferno.Type.FRAGMENT_REPLACE:
+        updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
+        return;
+      case Inferno.Type.ATTR_CLASS:
+        element.className = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_CHECKED:
+        element.checked = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_SELECTED:
+        element.selected = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_DISABLED:
+        element.disabled = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_HREF:
+        element.href = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_ID:
+        element.id = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_VALUE:
+        element.value = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_NAME:
+        element.name = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_TYPE:
+        element.type = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_LABEL:
+        element.label = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_PLACEHOLDER:
+        element.placeholder = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_STYLE:
+        //TODO
+        return;
+      case Inferno.Type.ATTR_WIDTH:
+        element.width = fragment.templateValue;
+        return;
+      case Inferno.Type.ATTR_HEIGHT:
+        element.height = fragment.templateValue;
+        return;
+      default:
+        if (!element.props) {
+          if (events[type] != null) {
+            clearEventListeners(element, component, type);
+            addEventListener(element, component, type, fragment.templateValue);
+          } else {
+            element.setAttribute(type, fragment.templateValue);
+          }
+        }
+        //component prop, update it
+        else {
+            //TODO make component props work for single value fragments
+          }
+        return;
+    }
+  }
+}
+
+//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
+//refactored to by more DRY. although, this causes a significant performance cost
+//on the v8 compiler. need to explore how to refactor without introducing this performance cost
+function updateFragmentValues(context, oldFragment, fragment, parentDom, component) {
+  var componentsToUpdate = [],
+      i;
+
+  for (i = 0, length = fragment.templateValues.length; i < length; i++) {
+    var element = oldFragment.templateElements[i];
+    var type = oldFragment.templateTypes[i];
+
+    fragment.templateElements[i] = element;
+    fragment.templateTypes[i] = type;
+
+    if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
+      switch (type) {
+        case Inferno.Type.LIST:
+        case Inferno.Type.LIST_REPLACE:
+          updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+          break;
+        case Inferno.Type.TEXT:
+          element.firstChild.nodeValue = fragment.templateValues[i];
+          break;
+        case Inferno.Type.TEXT_DIRECT:
+          element.nodeValue = fragment.templateValues[i];
+          break;
+        case Inferno.Type.FRAGMENT:
+        case Inferno.Type.FRAGMENT_REPLACE:
+          updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+          break;
+        case Inferno.Type.ATTR_CLASS:
+          element.className = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_CHECKED:
+          element.checked = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_SELECTED:
+          element.selected = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_DISABLED:
+          element.disabled = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_HREF:
+          element.href = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_ID:
+          element.id = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_VALUE:
+          element.value = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_NAME:
+          element.name = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_TYPE:
+          element.type = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_LABEL:
+          element.label = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_PLACEHOLDER:
+          element.placeholder = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_STYLE:
+          //TODO
+          break;
+        case Inferno.Type.ATTR_WIDTH:
+          element.width = fragment.templateValues[i];
+          break;
+        case Inferno.Type.ATTR_HEIGHT:
+          element.height = fragment.templateValues[i];
+          break;
+        default:
+          //custom attribute, so simply setAttribute it
+          if (!element.props) {
+            if (events[type] != null) {
+              clearEventListeners(element, component, type);
+              addEventListener(element, component, type, fragment.templateValues[i]);
+            } else {
+              element.setAttribute(type, fragment.templateValues[i]);
+            }
+          }
+          //component prop, update it
+          else {
+              element.props[type] = fragment.templateValues[i];
+              var alreadyInQueue = false;
+              for (s = 0; s < componentsToUpdate.length; s++) {
+                if (componentsToUpdate[s] === element) {
+                  alreadyInQueue = true;
+                }
+              }
+              if (alreadyInQueue === false) {
+                componentsToUpdate.push(element);
+              }
+            }
+          break;
+      }
+    }
+  }
+  if (componentsToUpdate.length > 0) {
+    for (i = 0; i < componentsToUpdate.length; i++) {
+      componentsToUpdate[i].forceUpdate();
+    }
+  }
+}
+
 function updateFragment(context, oldFragment, fragment, parentDom, component) {
   if (fragment === null) {
     removeFragment(context, parentDom, oldFragment);
@@ -426,6 +623,7 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
   } else {
     var fragmentComponent = oldFragment.component;
 
+    //if this fragment is a component
     if (fragmentComponent) {
       fragmentComponent.props = fragment.props;
       fragmentComponent.forceUpdate();
@@ -433,132 +631,15 @@ function updateFragment(context, oldFragment, fragment, parentDom, component) {
       return;
     }
 
+    //ensure we reference the new fragment with the old fragment's DOM node
     fragment.dom = oldFragment.dom;
 
-    if (fragment.templateValue !== undefined) {
-      var element = oldFragment.templateElement;
-      var type = oldFragment.templateType;
-      fragment.templateElement = element;
-      fragment.templateType = type;
-      if (fragment.templateValue !== oldFragment.templateValue) {
-        switch (type) {
-          case Inferno.Type.LIST:
-          case Inferno.Type.LIST_REPLACE:
-            updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
-            return;
-          case Inferno.Type.TEXT:
-            element.firstChild.nodeValue = fragment.templateValue;
-            return;
-          case Inferno.Type.TEXT_DIRECT:
-            element.nodeValue = fragment.templateValue;
-            return;
-          case Inferno.Type.FRAGMENT:
-          case Inferno.Type.FRAGMENT_REPLACE:
-            updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
-            return;
-          case Inferno.Type.ATTR_CLASS:
-            //debugger;
-            return;
-        }
-      }
-    } else if (fragment.templateValues !== undefined) {
-      var componentsToUpdate = [],
-          s = 0;
-      for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
-        var element = oldFragment.templateElements[i];
-        var type = oldFragment.templateTypes[i];
-        fragment.templateElements[i] = element;
-        fragment.templateTypes[i] = type;
-        if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
-          switch (type) {
-            case Inferno.Type.LIST:
-            case Inferno.Type.LIST_REPLACE:
-              updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-              break;
-            case Inferno.Type.TEXT:
-              element.firstChild.nodeValue = fragment.templateValues[i];
-              break;
-            case Inferno.Type.TEXT_DIRECT:
-              element.nodeValue = fragment.templateValues[i];
-              break;
-            case Inferno.Type.FRAGMENT:
-            case Inferno.Type.FRAGMENT_REPLACE:
-              updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-              break;
-            case Inferno.Type.ATTR_CLASS:
-              element.className = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_CHECKED:
-              element.checked = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_SELECTED:
-              element.selected = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_DISABLED:
-              element.disabled = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_HREF:
-              element.href = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_ID:
-              element.id = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_VALUE:
-              element.value = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_NAME:
-              element.name = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_TYPE:
-              element.type = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_LABEL:
-              element.label = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_PLACEHOLDER:
-              element.placeholder = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_STYLE:
-              //TODO
-              break;
-            case Inferno.Type.ATTR_WIDTH:
-              element.width = fragment.templateValues[i];
-              break;
-            case Inferno.Type.ATTR_HEIGHT:
-              element.height = fragment.templateValues[i];
-              break;
-            default:
-              //custom attribute, so simply setAttribute it
-              if (!element.props) {
-                if (events[type] != null) {
-                  clearEventListeners(element, component, type);
-                  addEventListener(element, component, type, fragment.templateValues[i]);
-                } else {
-                  element.setAttribute(type, fragment.templateValues[i]);
-                }
-              }
-              //component prop, update it
-              else {
-                element.props[type] = fragment.templateValues[i];
-                var alreadyInQueue = false;
-                for (s = 0; s < componentsToUpdate.length; s++) {
-                  if (componentsToUpdate[s] === element) {
-                    alreadyInQueue = true;
-                  }
-                }
-                if (alreadyInQueue === false) {
-                  componentsToUpdate.push(element);
-                }
-              }
-              break;
-          }
-        }
-      }
-      if (componentsToUpdate.length > 0) {
-        for (s = 0; s < componentsToUpdate.length; s++) {
-          componentsToUpdate[s].forceUpdate();
-        }
-      }
+    if (fragment.templateValue) {
+      //update a single value in the fragement (templateValue rather than templateValues)
+      updateFragmentValue(context, oldFragment, fragment, parentDom, component);
+    } else {
+      //updates all values within the fragment (templateValues is an array)
+      updateFragmentValues(context, oldFragment, fragment, parentDom, component);
     }
   }
 }
@@ -587,25 +668,35 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
   if (recycledFragment !== null) {
     updateFragment(context, recycledFragment, fragment, parentDom, component);
   } else {
-    template(fragment, fragment.t7ref);
+    //the user can optionally opt out of using the t7 dependency, thus removing the requirement
+    //to pass the t7 reference into the template constructor
+    if (t7dependency === true) {
+      template(fragment, fragment.t7ref);
+    } else {
+      template(fragment);
+    }
 
-    if (fragment.templateValue !== undefined) {
+    //if this fragment has a single value, we attach only that value
+    if (fragment.templateValue) {
       switch (fragment.templateType) {
         case Inferno.Type.LIST:
           attachFragmentList(context, fragment.templateValue, fragment.templateElement, component);
           break;
         case Inferno.Type.LIST_REPLACE:
-          //debugger;
+          //TODO need to add this
           break;
         case Inferno.Type.FRAGMENT:
-          //debugger;
+          //TODO do we need this still?
           break;
         case Inferno.Type.FRAGMENT_REPLACE:
           attachFragment(context, fragment.templateValue, parentDom, component, fragment.templateElement, true);
           fragment.templateElement = fragment.templateValue.dom.parentNode;
           break;
       }
-    } else if (fragment.templateValues !== undefined) {
+    } else {
+      //if the fragment has multiple values, we must loop through them all and attach them
+      //pulling this block of code out into its own function caused strange things to happen
+      //with performance. it was faster in Gecko but far slower in v8
       for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
         var element = fragment.templateElements[i];
         var value = fragment.templateValues[i];
@@ -621,7 +712,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
             fragment.templateElements[i] = nodeList;
             break;
           case Inferno.Type.FRAGMENT:
-            //debugger;
+            //TODO do we need this still?
             break;
           case Inferno.Type.FRAGMENT_REPLACE:
             attachFragment(context, value, parentDom, component, element, true);
@@ -831,32 +922,45 @@ var t7 = (function() {
   var docHead = null;
   //to save time later, we can pre-create a props object structure to re-use
   var output = null;
-  var selfClosingTags = [];
   var precompile = false;
   var version = "0.3.0";
 
-  if(isBrowser === true) {
+  if (isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
   }
 
-  selfClosingTags = [
-    'area',
-    'base',
-    'br',
-    'col',
-    'command',
-    'embed',
-    'hr',
-    'img',
-    'input',
-    'keygen',
-    'link',
-    'meta',
-    'param',
-    'source',
-    'track',
-    'wbr'
-  ];
+  var selfClosingTags = {
+    area: true,
+    base: true,
+    basefont: true,
+    br: true,
+    col: true,
+    command: true,
+    embed: true,
+    frame: true,
+    hr: true,
+    img: true,
+    input: true,
+    isindex: true,
+    keygen: true,
+    link: true,
+    meta: true,
+    param: true,
+    source: true,
+    track: true,
+    wbr: true,
+
+    //common self closing svg elements
+    path: true,
+    circle: true,
+    ellipse: true,
+    line: true,
+    rect: true,
+    use: true,
+    stop: true,
+    polyline: true,
+    polygon: true
+  };
 
   //when creating a new function from a vdom, we'll need to build the vdom's children
   function buildUniversalChildren(root, tagParams, childrenProp, component) {
@@ -867,13 +971,13 @@ var t7 = (function() {
     var matches = null;
 
     //if the node has children that is an array, handle it with a loop
-    if(root.children != null && root.children instanceof Array) {
-      for(i = 0, n = root.children.length; i < n; i++) {
-        if(root.children[i] != null) {
-          if(typeof root.children[i] === "string") {
-            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm,"");
+    if (root.children != null && root.children instanceof Array) {
+      for (i = 0, n = root.children.length; i < n; i++) {
+        if (root.children[i] != null) {
+          if (typeof root.children[i] === "string") {
+            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm, "");
             matches = root.children[i].match(/__\$props__\[\d*\]/g);
-            if(matches !== null) {
+            if (matches !== null) {
               childrenText.push(root.children[i]);
             } else {
               childrenText.push("'" + root.children[i] + "'");
@@ -884,22 +988,22 @@ var t7 = (function() {
         }
       }
       //push the children code into our tag params code
-      if(childrenText.length === 1) {
+      if (childrenText.length === 1) {
         tagParams.push((childrenProp ? "children: " : "") + childrenText);
-      } else {
+      } else if (childrenText.length > 1) {
         tagParams.push((childrenProp ? "children: " : "") + "[" + childrenText.join(",") + "]");
       }
 
-    } else if(root.children != null && typeof root.children === "string") {
-      root.children = root.children.replace(/(\r\n|\n|\r)/gm,"").trim();
+    } else if (root.children != null && typeof root.children === "string") {
+      root.children = root.children.replace(/(\r\n|\n|\r)/gm, "").trim();
       //this ensures its a prop replacement
       matches = root.children.match(/__\$props__\[\d*\]/g);
       //find any template strings and replace them
-      if(matches !== null) {
+      if (matches !== null) {
         root.children = root.children.replace(/(__\$props__\[.*\])/g, "',$1,'")
       }
       //if the last two characters are ,', replace them with nothing
-      if(root.children.substring(root.children.length - 2) === ",'") {
+      if (root.children.substring(root.children.length - 2) === ",'") {
         root.children = root.children.substring(0, root.children.length - 2);
         tagParams.push((childrenProp ? "children: " : "") + "['" + root.children + "]");
       } else {
@@ -911,32 +1015,33 @@ var t7 = (function() {
   function buildInfernoTemplate(root, valueCounter, parentNodeName, templateValues, templateParams, component) {
     //TODO this entire function is horrible, needs a revist and refactor
     var nodeName = parentNodeName ? parentNodeName + "_" : "n_";
-    var child = null, matches, valueName = "";
+    var child = null,
+      matches, valueName = "";
 
-    if(root.children instanceof Array) {
-      for(var i = 0; i < root.children.length; i++) {
+    if (root.children instanceof Array) {
+      for (var i = 0; i < root.children.length; i++) {
         child = root.children[i];
-        if(typeof child === "string" && root.children.length === 1) {
+        if (typeof child === "string" && root.children.length === 1) {
           matches = child.match(/__\$props__\[\d*\]/g);
-          if(matches === null) {
-            if(!parentNodeName) {
+          if (matches === null) {
+            if (!parentNodeName) {
               templateParams.push("root.textContent=('" + child + "');");
             } else {
-              templateParams.push(parentNodeName +  ".textContent='" + child + "';");
+              templateParams.push(parentNodeName + ".textContent='" + child + "';");
             }
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("if(typeof " + valueName + " !== 'object') {");
-            if(!parentNodeName) {
+            if (!parentNodeName) {
               templateParams.push("root.textContent=" + valueName + ";");
             } else {
-              templateParams.push(parentNodeName +  ".textContent=(" + valueName + " === '' ? ' ' : " + valueName + ");");
+              templateParams.push(parentNodeName + ".textContent=(" + valueName + " === '' ? ' ' : " + valueName + ");");
             }
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT;");
             templateParams.push("} else {");
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = (" + valueName + ".constructor === Array ? Inferno.Type.LIST : Inferno.Type.FRAGMENT);");
             templateParams.push("}");
-            if(!parentNodeName) {
+            if (!parentNodeName) {
               templateParams.push("fragment.templateElements[" + valueCounter.index + "] = root;");
             } else {
               templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + parentNodeName + ";");
@@ -944,10 +1049,10 @@ var t7 = (function() {
             templateValues.push(child);
             valueCounter.index++;
           }
-        } else if(typeof child === "string" && root.children.length > 1) {
+        } else if (typeof child === "string" && root.children.length > 1) {
           matches = child.match(/__\$props__\[\d*\]/g);
-          if(matches === null) {
-            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child.replace(/(\r\n|\n|\r)/gm,"") + "');");
+          if (matches === null) {
+            templateParams.push("var " + nodeName + i + " = Inferno.dom.createText('" + child.replace(/(\r\n|\n|\r)/gm, "") + "');");
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("var " + nodeName + i + ";");
@@ -962,36 +1067,36 @@ var t7 = (function() {
             templateValues.push(child);
             valueCounter.index++;
           }
-          if(!parentNodeName) {
-            templateParams.push("root.appendChild(" +  nodeName + i + ");");
+          if (!parentNodeName) {
+            templateParams.push("root.appendChild(" + nodeName + i + ");");
           } else {
-            templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+            templateParams.push(parentNodeName + ".appendChild(" + nodeName + i + ");");
           }
-        } else if(child != null) {
-          if(child.tag) {
-            if(isComponentName(child.tag) === true) {
+        } else if (child != null) {
+          if (child.tag) {
+            if (isComponentName(child.tag) === true) {
               valueCounter.t7Required = true;
               var props = [];
               var propRefs = [];
-              if(child.attrs) {
+              if (child.attrs) {
                 buildInfernoAttrsParams(child, nodeName + i, props, templateValues, templateParams, valueCounter, propRefs);
               }
               templateParams.push("var " + nodeName + i + " = Inferno.dom.createComponent(" + (!parentNodeName ? "root" : parentNodeName) + ", t7.loadComponent('" + child.tag + "'), {" + props.join(",") + "});");
               templateParams.push(propRefs.join(""));
             } else {
               templateParams.push("var " + nodeName + i + " = Inferno.dom.createElement('" + child.tag + "');");
-              if(child.attrs) {
+              if (child.attrs) {
                 var attrsParams = [];
                 buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
-                templateParams.push("Inferno.dom.addAttributes(" +  nodeName + i + ", {" + attrsParams.join(",") + "});");
+                templateParams.push("Inferno.dom.addAttributes(" + nodeName + i + ", {" + attrsParams.join(",") + "});");
               }
-              if(child.children) {
+              if (child.children) {
                 buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
               }
-              if(!parentNodeName) {
-                templateParams.push("root.appendChild(" +  nodeName + i + ");");
+              if (!parentNodeName) {
+                templateParams.push("root.appendChild(" + nodeName + i + ");");
               } else {
-                templateParams.push(parentNodeName + ".appendChild(" +  nodeName + i + ");");
+                templateParams.push(parentNodeName + ".appendChild(" + nodeName + i + ");");
               }
             }
           }
@@ -1008,16 +1113,16 @@ var t7 = (function() {
     var matches = null;
 
     //if the node has children that is an array, handle it with a loop
-    if(root.children != null && root.children instanceof Array) {
+    if (root.children != null && root.children instanceof Array) {
       //we're building an array in code, so we need an open bracket
-      for(i = 0, n = root.children.length; i < n; i++) {
-        if(root.children[i] != null) {
-          if(typeof root.children[i] === "string") {
-            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm,"");
+      for (i = 0, n = root.children.length; i < n; i++) {
+        if (root.children[i] != null) {
+          if (typeof root.children[i] === "string") {
+            root.children[i] = root.children[i].replace(/(\r\n|\n|\r)/gm, "");
             matches = root.children[i].match(/__\$props__\[\d*\]/g);
-            if(matches != null) {
+            if (matches != null) {
               root.children[i] = root.children[i].replace(/(__\$props__\[[0-9]*\])/g, "$1")
-              if(root.children[i].substring(root.children[i].length - 1) === ",") {
+              if (root.children[i].substring(root.children[i].length - 1) === ",") {
                 root.children[i] = root.children[i].substring(0, root.children[i].length - 1);
               }
               childrenText.push(root.children[i]);
@@ -1031,28 +1136,29 @@ var t7 = (function() {
         }
       }
       //push the children code into our tag params code
-      if(childrenText.length > 0) {
+      if (childrenText.length > 0) {
         tagParams.push(childrenText.join(","));
       }
 
-    } else if(root.children != null && typeof root.children === "string") {
-      root.children = root.children.replace(/(\r\n|\n|\r)/gm,"");
+    } else if (root.children != null && typeof root.children === "string") {
+      root.children = root.children.replace(/(\r\n|\n|\r)/gm, "");
       tagParams.push("'" + root.children + "'");
     }
   };
 
   function buildInfernoAttrsParams(root, rootElement, attrsParams, templateValues, templateParams, valueCounter, propRefs) {
-    var val = '', valueName;
+    var val = '',
+      valueName;
     var matches = null;
-    for(var name in root.attrs) {
+    for (var name in root.attrs) {
       val = root.attrs[name];
       matches = val.match(/__\$props__\[\d*\]/g);
-      if(matches === null) {
+      if (matches === null) {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
         valueName = "fragment.templateValues[" + valueCounter.index + "]";
-        if(!propRefs) {
-          switch(name) {
+        if (!propRefs) {
+          switch (name) {
             case "class":
             case "className":
               templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.ATTR_CLASS;");
@@ -1118,10 +1224,10 @@ var t7 = (function() {
   function buildAttrsParams(root, attrsParams) {
     var val = '';
     var matches = null;
-    for(var name in root.attrs) {
+    for (var name in root.attrs) {
       val = root.attrs[name];
       matches = val.match(/__\$props__\[\d*\]/g);
-      if(matches === null) {
+      if (matches === null) {
         attrsParams.push("'" + name + "':'" + val + "'");
       } else {
         attrsParams.push("'" + name + "':" + val);
@@ -1130,7 +1236,7 @@ var t7 = (function() {
   };
 
   function isComponentName(tagName) {
-    if(tagName[0] === tagName[0].toUpperCase()) {
+    if (tagName[0] === tagName[0].toUpperCase()) {
       return true;
     }
     return false;
@@ -1145,21 +1251,21 @@ var t7 = (function() {
     var attrsParams = [];
     var attrsValueKeysParams = [];
 
-    if(root instanceof Array) {
+    if (root instanceof Array) {
       //throw error about adjacent elements
     } else {
       //Universal output or Inferno output
-      if(output === t7.Outputs.Universal || output === t7.Outputs.Mithril) {
+      if (output === t7.Outputs.Universal || output === t7.Outputs.Mithril) {
         //if we have a tag, add an element, check too for a component
-        if(root.tag != null) {
-          if(isComponentName(root.tag) === false) {
+        if (root.tag != null) {
+          if (isComponentName(root.tag) === false) {
             functionText.push("{tag: '" + root.tag + "'");
             //add the key
-            if(root.key != null) {
+            if (root.key != null) {
               tagParams.push("key: " + root.key);
             }
             //build the attrs
-            if(root.attrs != null) {
+            if (root.attrs != null) {
               buildAttrsParams(root, attrsParams);
               tagParams.push("attrs: {" + attrsParams.join(',') + "}");
             }
@@ -1167,14 +1273,14 @@ var t7 = (function() {
             buildUniversalChildren(root, tagParams, true, component);
             functionText.push(tagParams.join(',') + "}");
           } else {
-            if(((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
+            if (((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
               throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
             }
-            if(output === t7.Outputs.Universal) {
+            if (output === t7.Outputs.Universal) {
               //we need to apply the tag components
               buildAttrsParams(root, attrsParams);
               functionText.push("__$components__." + root.tag + "({" + attrsParams.join(',') + "})");
-            } else if(output === t7.Outputs.Mithril) {
+            } else if (output === t7.Outputs.Mithril) {
               //we need to apply the tag components
               buildAttrsParams(root, attrsParams);
               functionText.push("m.component(__$components__." + root.tag + ",{" + attrsParams.join(',') + "})");
@@ -1186,41 +1292,44 @@ var t7 = (function() {
         }
       }
       //Inferno output
-      else if(output === t7.Outputs.Inferno) {
+      else if (output === t7.Outputs.Inferno) {
         //inferno is a bit more complicated, it requires both a fragment "vdom" and a template to be generated
         var key = root.key;
-        if(root.key === undefined) {
+        if (root.key === undefined) {
           key = null;
         }
         var template = "null";
         var component = null;
         var props = null;
         var templateParams = [];
-        var valueCounter = {index: 0, t7Required: false};
+        var valueCounter = {
+          index: 0,
+          t7Required: false
+        };
         var templateValues = [];
 
-        if(isComponentName(root.tag) === true) {
+        if (isComponentName(root.tag) === true) {
           buildAttrsParams(root, attrsParams);
           component = "__$components__." + root.tag;
           props = " {" + attrsParams.join(',') + "}";
         } else {
           templateParams.push("var root = Inferno.dom.createElement('" + root.tag + "');");
-          if(root.attrs) {
+          if (root.attrs) {
             buildInfernoAttrsParams(root, "root", attrsParams, templateValues, templateParams, valueCounter);
             templateParams.push("Inferno.dom.addAttributes(root, {" + attrsParams.join(",") + "});");
           }
         }
 
-        if(root.children.length > 0) {
+        if (root.children.length > 0) {
           buildInfernoTemplate(root, valueCounter, null, templateValues, templateParams, component);
           templateParams.push("fragment.dom = root;");
           var scriptCode = templateParams.join("\n");
-          if(templateValues.length === 1) {
+          if (templateValues.length === 1) {
             scriptCode = scriptCode.replace(/fragment.templateValues\[0\]/g, "fragment.templateValue");
             scriptCode = scriptCode.replace(/fragment.templateElements\[0\]/g, "fragment.templateElement");
             scriptCode = scriptCode.replace(/fragment.templateTypes\[0\]/g, "fragment.templateType");
           }
-          if(isBrowser === true) {
+          if (isBrowser === true) {
             addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, t7){"use strict";\n' + scriptCode + '}', templateKey);
           } else {
             t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var t7 = arguments[1];\n' + scriptCode);
@@ -1231,25 +1340,25 @@ var t7 = (function() {
 
         var templateValuesString = "";
 
-        if(templateValues.length === 1) {
+        if (templateValues.length === 1) {
           templateValuesString = "templateValue: " + templateValues[0] + ", templateElements: null, templateTypes: null, t7ref: t7";
         } else if (templateValues.length > 1) {
           templateValuesString = "templateValues: [" + templateValues.join(", ") + "], templateElements: Array(" + templateValues.length + "), templateTypes: Array(" + templateValues.length + "), t7ref: t7";
         }
 
-        if(component !== null) {
+        if (component !== null) {
           functionText.push("{dom: null, component: " + component + ", props: " + props + ", key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + templateValuesString : "") + "}");
         } else {
           functionText.push("{dom: null, key: " + key + ", template: " + template + (root.children.length > 0 ? ", " + templateValuesString : "") + "}");
         }
       }
       //React output
-      else if(output === t7.Outputs.React) {
+      else if (output === t7.Outputs.React) {
         //if we have a tag, add an element
-        if(root.tag != null) {
+        if (root.tag != null) {
           //find out if the tag is a React componenet
-          if(isComponentName(root.tag) === true) {
-            if(((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
+          if (isComponentName(root.tag) === true) {
+            if (((typeof window != "undefined" && component === window) || component == null) && precompile === false) {
               throw new Error("Error referencing component '" + root.tag + "'. Components can only be used when within modules. See documentation for more information on t7.module().");
             }
             functionText.push("React.createElement(__$components__." + root.tag);
@@ -1257,10 +1366,10 @@ var t7 = (function() {
             functionText.push("React.createElement('" + root.tag + "'");
           }
           //the props/attrs
-          if(root.attrs != null) {
+          if (root.attrs != null) {
             buildAttrsParams(root, attrsParams);
             //add the key
-            if(root.key != null) {
+            if (root.key != null) {
               attrsParams.push("'key':" + root.key);
             }
             tagParams.push("{" + attrsParams.join(',') + "}");
@@ -1272,7 +1381,7 @@ var t7 = (function() {
           functionText.push(tagParams.join(',') + ")");
         } else {
           //add a text entry
-          root = root.replace(/(\r\n|\n|\r)/gm,"\\n");
+          root = root.replace(/(\r\n|\n|\r)/gm, "\\n");
           functionText.push("'" + root + "'");
         }
       }
@@ -1282,8 +1391,8 @@ var t7 = (function() {
   function handleChildTextPlaceholders(childText, parent, onlyChild) {
     var i = 0;
     var parts = childText.split(/(__\$props__\[\d*\])/g)
-    for(i = 0; i < parts.length; i++) {
-      if(parts[i].trim() !== "") {
+    for (i = 0; i < parts.length; i++) {
+      if (parts[i].trim() !== "") {
         //set the children to this object
         parent.children.push(parts[i]);
       }
@@ -1295,8 +1404,8 @@ var t7 = (function() {
 
   function replaceQuotes(string) {
     // string = string.replace(/'/g,"\\'")
-    if(string.indexOf("'") > -1) {
-      string = string.replace(/'/g,"\\'")
+    if (string.indexOf("'") > -1) {
+      string = string.replace(/'/g, "\\'")
     }
     return string;
   };
@@ -1305,7 +1414,7 @@ var t7 = (function() {
     var index = 0;
     var re = /__\$props__\[([0-9]*)\]/;
     var placeholders = string.match(/__\$props__\[([0-9]*)\]/g);
-    for(var i = 0; i < placeholders.length; i++) {
+    for (var i = 0; i < placeholders.length; i++) {
       index = re.exec(placeholders[i])[1];
       string = string.replace(placeholders[i], values[index]);
     }
@@ -1327,27 +1436,28 @@ var t7 = (function() {
     var tagData = null;
     var skipAppend = false;
     var newChild = null;
+    var hasRootNodeAlready = false;
 
-    for(i = 0, n = html.length; i < n; i++) {
+    for (i = 0, n = html.length; i < n; i++) {
       //set the char to the current character in the string
       char = html[i];
       if (char === "<") {
         insideTag = true;
-      } else if(char === ">" && insideTag === true) {
+      } else if (char === ">" && insideTag === true) {
         //check if first character is a close tag
-        if(tagContent[0] === "/") {
+        if (tagContent[0] === "/") {
           //bad closing tag
-          if(tagContent !== "/" + parent.tag && selfClosingTags.indexOf(parent.tag) === -1 && !parent.closed) {
+          if (tagContent !== "/" + parent.tag && !selfClosingTags[parent.tag] && !parent.closed) {
             console.error("Template error: " + applyValues(html, values));
             throw new Error("Expected corresponding t7 closing tag for '" + parent.tag + "'.");
           }
           //when the childText is not empty
-          if(childText.trim() !== "") {
+          if (childText.trim() !== "") {
             //escape quotes etc
             childText = replaceQuotes(childText);
             //check if childText contains one of our placeholders
             childText = handleChildTextPlaceholders(childText, parent, true);
-            if(childText !== null && parent.children.length === 0) {
+            if (childText !== null && parent.children.length === 0) {
               parent.children = childText;
             } else if (childText != null) {
               parent.children.push(childText);
@@ -1355,24 +1465,24 @@ var t7 = (function() {
           }
           //move back up the vDom tree
           parent = parent.parent;
-          if(parent) {
+          if (parent) {
             parent.closed = true;
           }
         } else {
           //check if we have any content in the childText, if so, it was a text node that needs to be added
-          if(childText.trim().length > 0 && !(parent instanceof Array)) {
+          if (childText.trim().length > 0 && !(parent instanceof Array)) {
             //escape quotes etc
             childText = replaceQuotes(childText);
             //check the childtext for placeholders
             childText = handleChildTextPlaceholders(
-              childText.replace(/(\r\n|\n|\r)/gm,""),
+              childText.replace(/(\r\n|\n|\r)/gm, ""),
               parent
             );
             parent.children.push(childText);
             childText = "";
           }
           //check if there any spaces in the tagContent, if not, we have our tagName
-          if(tagContent.indexOf(" ") === -1) {
+          if (tagContent.indexOf(" ") === -1) {
             tagData = {};
             tagName = tagContent;
           } else {
@@ -1385,27 +1495,31 @@ var t7 = (function() {
             tag: tagName,
             attrs: (tagData && tagData.attrs) ? tagData.attrs : null,
             children: [],
-            closed: tagContent[tagContent.length - 1] === "/" || selfClosingTags.indexOf(tagName) > -1 ? true : false
+            closed: tagContent[tagContent.length - 1] === "/" || selfClosingTags[tagName] ? true : false
           };
 
-          if(tagData && tagData.key) {
+          if (tagData && tagData.key) {
             vElement.key = tagData.key;
           }
           //push the node we've constructed to the relevant parent
-          if(parent === null) {
-            if(root === null) {
+          if (parent === null) {
+            if (hasRootNodeAlready === true) {
+              throw new Error("t7 templates must contain only a single root element");
+            }
+            hasRootNodeAlready = true;
+            if (root === null && vElement.closed === false) {
               root = parent = vElement;
             } else {
-              throw new Error("t7 templates must contain only a single root element");
+              root = vElement;
             }
           } else if (parent instanceof Array) {
             parent.push(vElement);
           } else {
             parent.children.push(vElement);
           }
-          if(selfClosingTags.indexOf(tagName) === -1 ) {
+          if (!selfClosingTags[tagName] && vElement.closed === false) {
             //set our node's parent to our current parent
-            if(parent === vElement) {
+            if (parent === vElement) {
               vElement.parent = null;
             } else {
               vElement.parent = parent;
@@ -1445,22 +1559,22 @@ var t7 = (function() {
     var key = '';
 
     //build the parts of the tag
-    for(i = 0, n = tagText.length; i < n; i++) {
+    for (i = 0, n = tagText.length; i < n; i++) {
       char = tagText[i];
 
-      if(char === " " && inQuotes === false) {
+      if (char === " " && inQuotes === false) {
         parts.push(currentString);
         currentString = '';
-      } else if(char === "'") {
-        if(inQuotes === false) {
+      } else if (char === "'") {
+        if (inQuotes === false) {
           inQuotes = true;
         } else {
           inQuotes = false;
           parts.push(currentString);
           currentString = '';
         }
-      } else if(char === '"') {
-        if(inQuotes === false) {
+      } else if (char === '"') {
+        if (inQuotes === false) {
           inQuotes = true;
         } else {
           inQuotes = false;
@@ -1472,22 +1586,22 @@ var t7 = (function() {
       }
     }
 
-    if(currentString !== "") {
+    if (currentString !== "") {
       parts.push(currentString);
     }
     currentString = '';
 
     //loop through the parts of the tag
-    for(i = 1, n = parts.length; i < n; i++) {
+    for (i = 1, n = parts.length; i < n; i++) {
       attrParts = [];
-      lastChar= '';
+      lastChar = '';
       currentString = '';
 
-      for(s = 0, n2 = parts[i].length; s < n2; s++) {
+      for (s = 0, n2 = parts[i].length; s < n2; s++) {
         char = parts[i][s];
 
         //if the character is =, then we're able to split the attribute name and value
-        if(char === "=") {
+        if (char === "=") {
           attrParts.push(currentString);
           currentString = '';
         } else {
@@ -1496,15 +1610,15 @@ var t7 = (function() {
         }
       }
 
-      if(currentString != "") {
+      if (currentString != "") {
         attrParts.push(currentString);
       }
-      if(attrParts.length > 1) {
+      if (attrParts.length > 1) {
         var matches = attrParts[1].match(/__\$props__\[\d*\]/g);
-        if(matches !== null) {
+        if (matches !== null) {
           attrs[attrParts[0]] = attrParts[1];
         } else {
-          if(attrParts[0] === "key") {
+          if (attrParts[0] === "key") {
             key = attrParts[1];
           } else {
             attrs[attrParts[0]] = attrParts[1];
@@ -1529,11 +1643,12 @@ var t7 = (function() {
   }
 
   function createTemplateKey(tpl) {
-    var hash = 0, i, chr, len;
+    var hash = 0,
+      i, chr, len;
     if (tpl.length == 0) return tpl;
     for (i = 0, len = tpl.length; i < len; i++) {
-      chr   = tpl.charCodeAt(i);
-      hash  = ((hash << 5) - hash) + chr;
+      chr = tpl.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
       hash |= 0;
     }
     return hash;
@@ -1552,18 +1667,18 @@ var t7 = (function() {
     var values = [].slice.call(arguments, 1);
 
     //build the template string
-    for(; i < n; i++) {
+    for (; i < n; i++) {
       tpl += template[i];
     };
     //set our unique key
     templateKey = createTemplateKey(tpl);
 
     //check if we have the template in cache
-    if(t7._cache[templateKey] == null) {
+    if (t7._cache[templateKey] == null) {
       fullHtml = '';
       //put our placeholders around the template parts
-      for(i = 0, n = template.length; i < n; i++) {
-        if(i === template.length - 1) {
+      for (i = 0, n = template.length; i < n; i++) {
+        if (i === template.length - 1) {
           fullHtml += template[i];
         } else {
           fullHtml += template[i] + "__$props__[" + i + "]";
@@ -1580,8 +1695,8 @@ var t7 = (function() {
       );
       scriptCode = functionString.join(',');
       //build a new Function and store it depending if on node or browser
-      if(precompile === true) {
-        if(output === t7.Outputs.Inferno) {
+      if (precompile === true) {
+        if (output === t7.Outputs.Inferno) {
           return {
             templateKey: templateKey,
             inlineObject: scriptCode
@@ -1594,7 +1709,7 @@ var t7 = (function() {
         }
         return;
       } else {
-        if(isBrowser === true) {
+        if (isBrowser === true) {
           scriptString = 't7._cache["' + templateKey + '"]=function(__$props__, __$components__, t7)';
           scriptString += '{"use strict";return ' + scriptCode + '}';
 
@@ -1643,24 +1758,24 @@ var t7 = (function() {
   //a lightweight flow control function
   //expects truthy and falsey to be functions
   t7.if = function(expression, truthy) {
-    if(expression) {
-      return {
-        else: function() {
-          return truthy();
-        }
-      };
-    } else {
-      return {
-        else: function(falsey) {
-          return falsey();
+      if (expression) {
+        return {
+          else: function() {
+            return truthy();
+          }
+        };
+      } else {
+        return {
+          else: function(falsey) {
+            return falsey();
+          }
         }
       }
-    }
-  },
+    },
 
-  t7.setOutput = function(newOutput) {
-    output = newOutput;
-  };
+    t7.setOutput = function(newOutput) {
+      output = newOutput;
+    };
 
   t7.clearCache = function() {
     t7._cache = {};
@@ -1668,7 +1783,7 @@ var t7 = (function() {
   };
 
   t7.assign = function(compName) {
-    throw new Error("Error assigning component '" + compName+ "'. You can only assign components from within a module. Please check documentation for t7.module().");
+    throw new Error("Error assigning component '" + compName + "'. You can only assign components from within a module. Please check documentation for t7.module().");
   };
 
   t7.module = function(callback) {
@@ -1679,10 +1794,10 @@ var t7 = (function() {
     };
 
     instance.assign = function(name, val) {
-      if(arguments.length === 2) {
+      if (arguments.length === 2) {
         components[name] = val;
       } else {
-        for(var key in name) {
+        for (var key in name) {
           components[key] = name[key];
         }
       }
@@ -1707,13 +1822,12 @@ var t7 = (function() {
   };
 
   //set the type to React as default if it exists in global scope
-  output = typeof React != "undefined" ? t7.Outputs.React
-    : typeof Inferno != "undefined" ? t7.Outputs.Inferno : t7.Outputs.Universal;
+  output = typeof React != "undefined" ? t7.Outputs.React : typeof Inferno != "undefined" ? t7.Outputs.Inferno : t7.Outputs.Universal;
 
   return t7;
 })();
 
-if(typeof module != "undefined" && module.exports != null) {
+if (typeof module != "undefined" && module.exports != null) {
   module.exports = t7;
 }
 
