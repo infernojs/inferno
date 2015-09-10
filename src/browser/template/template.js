@@ -15,6 +15,6 @@ export default {
     addProperties: addProperties,
     createElement: ( tag ) => document.createElement( tag ),
     createText: ( text ) => document.createTextNode( text ),
-    createEmpty: () => document.createTextNode( "" ),
+    createEmptyText: () => document.createTextNode( "" ),
     createFragment: () => document.createFragment()
 };

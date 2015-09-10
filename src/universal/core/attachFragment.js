@@ -6,7 +6,7 @@ import insertFragment      from "./insertFragment";
 import render              from "../../browser/core/render";
 import setT7Dependency     from "../../other/setT7Dependency";
 
-let attachFagment = ( context, fragment, parentDom, component, nextFragment, replace ) => {
+let attachFragment = ( context, fragment, parentDom, component, nextFragment, replace ) => {
 
     let fragmentComponent = fragment.component;
 
@@ -43,13 +43,9 @@ let attachFagment = ( context, fragment, parentDom, component, nextFragment, rep
         //the user can optionally opt out of using the t7 dependency, thus removing the requirement
         //to pass the t7 reference into the template constructor
         if ( setT7Dependency() ) {
-
             template( fragment, fragment.t7ref );
-
         } else {
-
             template( fragment );
-
         }
         //if this fragment has a single value, we attach only that value
         if ( fragment.templateValue ) {
@@ -94,7 +90,7 @@ let attachFagment = ( context, fragment, parentDom, component, nextFragment, rep
                         //TODO do we need this still?
                         break;
                     case fragmentTypes.FRAGMENT_REPLACE:
-                        attachFragment( context, value, parentDom, element, true );
+                        attachFragment( context, value, parentDom, component, element, true );
                         fragment.templateElements[i] = value.dom.parentNode;
                         break;
                 }
@@ -109,4 +105,4 @@ let attachFagment = ( context, fragment, parentDom, component, nextFragment, rep
 
 };
 
-export default attachFagment;
+export default attachFragment;
