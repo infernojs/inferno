@@ -3,7 +3,7 @@ import fragmentTypes from "./fragmentTypes";
 import updateFragmentList from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener from "../../browser/events/addEventListener";
-import events from "../../browser/shared/events";
+import events              from "../../browser/events/shared/events";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost

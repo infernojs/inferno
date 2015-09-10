@@ -3,6 +3,8 @@ import fragmentTypes       from "./fragmentTypes";
 import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
+import events              from "../../browser/events/shared/events";
+
 
 export default ( context, oldFragment, fragment, parentDom, component ) => {
 
