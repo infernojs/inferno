@@ -3,8 +3,8 @@ import updateFragment      from "./updateFragment";
 import attachFragmentList  from "./attachFragmentList";
 import fragmentTypes       from "./fragmentTypes";
 import insertFragment      from "./insertFragment";
-import render              from "./render";
-import setT7Dependency     from "../t7/setT7Dependency";
+import render              from "../../browser/core/render";
+import setT7Dependency     from "../../other/setT7Dependency";
 
 let attachFagment = ( context, fragment, parentDom, component, nextFragment, replace ) => {
 

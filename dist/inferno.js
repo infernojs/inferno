@@ -45,1019 +45,78 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	__webpack_require__(2);
-	__webpack_require__(3);
-	__webpack_require__(8);
-	__webpack_require__(9);
-	__webpack_require__(10);
-	__webpack_require__(11);
-	__webpack_require__(7);
-	__webpack_require__(12);
-	__webpack_require__(13);
-	__webpack_require__(5);
-	__webpack_require__(14);
-	__webpack_require__(17);
-	__webpack_require__(19);
-	__webpack_require__(20);
-	__webpack_require__(21);
-	__webpack_require__(45);
-	__webpack_require__(47);
-	__webpack_require__(48);
-	__webpack_require__(24);
-	__webpack_require__(49);
-	__webpack_require__(27);
-	__webpack_require__(26);
-	__webpack_require__(37);
 	__webpack_require__(28);
-	__webpack_require__(29);
-	__webpack_require__(44);
-	__webpack_require__(38);
-	__webpack_require__(33);
-	__webpack_require__(23);
-	__webpack_require__(35);
-	__webpack_require__(30);
+	__webpack_require__(26);
 	__webpack_require__(31);
-	__webpack_require__(50);
-	__webpack_require__(51);
-	__webpack_require__(4);
-	__webpack_require__(52);
-	__webpack_require__(61);
-	__webpack_require__(66);
-	__webpack_require__(67);
-	__webpack_require__(68);
-	__webpack_require__(56);
-	__webpack_require__(58);
-	__webpack_require__(69);
-	__webpack_require__(53);
-	__webpack_require__(64);
-	__webpack_require__(70);
-	__webpack_require__(62);
-	__webpack_require__(71);
-	__webpack_require__(55);
-	__webpack_require__(60);
-	__webpack_require__(72);
-	__webpack_require__(73);
-	__webpack_require__(54);
-	__webpack_require__(59);
-	__webpack_require__(57);
-	__webpack_require__(63);
-	__webpack_require__(16);
-	__webpack_require__(18);
-	__webpack_require__(15);
-	__webpack_require__(22);
-	__webpack_require__(36);
 	__webpack_require__(32);
-	__webpack_require__(43);
+	__webpack_require__(33);
+	__webpack_require__(30);
+	__webpack_require__(6);
+	__webpack_require__(10);
+	__webpack_require__(3);
+	__webpack_require__(23);
+	__webpack_require__(4);
+	__webpack_require__(20);
 	__webpack_require__(34);
-	__webpack_require__(46);
-	__webpack_require__(25);
+	__webpack_require__(35);
+	__webpack_require__(60);
+	__webpack_require__(39);
+	__webpack_require__(36);
+	__webpack_require__(61);
+	__webpack_require__(63);
 	__webpack_require__(41);
 	__webpack_require__(42);
-	__webpack_require__(39);
-	module.exports = __webpack_require__(40);
+	__webpack_require__(52);
+	__webpack_require__(43);
+	__webpack_require__(44);
+	__webpack_require__(59);
+	__webpack_require__(53);
+	__webpack_require__(48);
+	__webpack_require__(38);
+	__webpack_require__(50);
+	__webpack_require__(45);
+	__webpack_require__(46);
+	__webpack_require__(64);
+	__webpack_require__(2);
+	__webpack_require__(8);
+	__webpack_require__(18);
+	__webpack_require__(65);
+	__webpack_require__(66);
+	__webpack_require__(67);
+	__webpack_require__(13);
+	__webpack_require__(15);
+	__webpack_require__(7);
+	__webpack_require__(9);
+	__webpack_require__(25);
+	__webpack_require__(27);
+	__webpack_require__(19);
+	__webpack_require__(68);
+	__webpack_require__(12);
+	__webpack_require__(17);
+	__webpack_require__(69);
+	__webpack_require__(70);
+	__webpack_require__(11);
+	__webpack_require__(16);
+	__webpack_require__(14);
+	__webpack_require__(24);
+	__webpack_require__(22);
+	__webpack_require__(5);
+	__webpack_require__(21);
+	__webpack_require__(37);
+	__webpack_require__(51);
+	__webpack_require__(47);
+	__webpack_require__(58);
+	__webpack_require__(49);
+	__webpack_require__(62);
+	__webpack_require__(40);
+	__webpack_require__(56);
+	__webpack_require__(57);
+	__webpack_require__(54);
+	module.exports = __webpack_require__(55);
 
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports["default"] = "0.2.4";
-	module.exports = exports["default"];
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	var supportsTextContent = ('textContent' in document);
-
-	var isBrowser = false;
-
-	if (typeof window != "undefined") {
-	  isBrowser = true;
-	}
-
-	var events = {
-	  "onClick": "click"
-	};
-
-	var events = {
-	  "onClick": "click",
-	  "onMouseUp": "mouseup",
-	  "onMouseDown": "mousedown",
-	  "onMouseMove": "mousemove",
-	  "onMouseEnter": "mouseenter",
-	  "onMouseLeave": "mouseleave",
-	  "onKeyPress": "keypress",
-	  "onKeyUp": "keyup",
-	  "onKeyDown": "keydown",
-	  "onTouchStart": "touchstart",
-	  "onTouchEnd": "touchend",
-	  "onTouchMove": "touchmove",
-	  "onTouchCancel": "touchcancel"
-	};
-
-	var userAgent = navigator.userAgent,
-	    isWebKit = userAgent.indexOf('WebKit') !== -1,
-	    isFirefox = userAgent.indexOf('Firefox') !== -1,
-	    isTrident = userAgent.indexOf('Trident') !== -1;
-
-	var version = "0.2.3";
-
-	var recycledFragments = {};
-	var rootlisteners = null;
-	var initialisedListeners = false;
-	var t7dependency = true;
-
-	if (typeof window != "undefined") {
-	  rootlisteners = {
-	    click: []
-	  };
-	}
-
-	function addRootDomEventListerners() {
-	  initialisedListeners = true;
-	  if (rootlisteners !== null) {
-	    document.addEventListener("click", function (e) {
-	      for (var i = 0; i < rootlisteners.click.length; i = i + 1 | 0) {
-	        if (rootlisteners.click[i].target === e.target) {
-	          rootlisteners.click[i].callback.call(rootlisteners.click[i].component || null, e);
-	        }
-	      }
-	    });
-	  }
-	};
-
-	var Inferno = {};
-
-	Inferno.Type = {
-	  TEXT: 0,
-	  TEXT_DIRECT: 1,
-	  FRAGMENT: 2,
-	  LIST: 3,
-	  FRAGMENT_REPLACE: 4,
-	  LIST_REPLACE: 5,
-	  ATTR_CLASS: 6,
-	  ATTR_ID: 7,
-	  ATTR_DISABLED: 8,
-	  ATTR_SELECTED: 9,
-	  ATTR_CHECKED: 10,
-	  ATTR_VALUE: 11,
-	  ATTR_STYLE: 12,
-	  ATTR_HREF: 13,
-	  ATTR_LABEL: 14,
-	  ATTR_TYPE: 15,
-	  ATTR_PLACEHOLDER: 16,
-	  ATTR_NAME: 17,
-	  ATTR_WIDTH: 18,
-	  ATTR_HEIGHT: 19,
-	  //will contain other "custom" types, like rowspan etc or custom data-attributes
-	  ATTR_OTHER: {},
-	  COMPONENT_PROPS: {}
-	};
-
-	function isString(value) {
-	  return typeof value === 'string';
-	}
-
-	function isNumber(value) {
-	  return typeof value === 'number';
-	}
-
-	function isArray(value) {
-	  return value instanceof Array;
-	}
-
-	function isFunction(value) {
-	  return typeof value === 'function';
-	}
-
-	function badUpdate() {
-	  console.warn("Update called on a component that is no longer mounted!");
-	};
-
-	Inferno.template = {};
-
-	Inferno.setT7Dependency = function (hast7dependency) {
-	  t7dependency = hast7dependency;
-	};
-
-	Inferno.template.createElement = function (tag) {
-	  if (isBrowser) {
-	    return document.createElement(tag);
-	  }
-	};
-
-	Inferno.template.createComponent = function (parentDom, props, t7component) {
-	  var component = new t7component(props);
-	  component.context = null;
-	  component.forceUpdate = Inferno.render.bind(null, component.render.bind(component), parentDom, component);
-	  component.forceUpdate();
-
-	  return component;
-	};
-
-	Inferno.template.createText = function (text) {
-	  if (isBrowser) {
-	    return document.createTextNode(text);
-	  }
-	};
-
-	Inferno.template.createEmptyText = function (text) {
-	  if (isBrowser) {
-	    return document.createTextNode("");
-	  }
-	};
-
-	Inferno.template.addAttributes = function (node, attrs, component) {
-	  var attrName, attrVal;
-	  for (attrName in attrs) {
-	    attrVal = attrs[attrName];
-
-	    if (events[attrName] != null) {
-	      clearEventListeners(node, component, attrName);
-	      addEventListener(node, component, attrName, attrVal);
-	      continue;
-	    }
-
-	    //to improve creation performance, this attempts to use properties rather than attributes on common types
-	    switch (attrName) {
-	      case "class":
-	      case "className":
-	        node.className = attrVal;
-	        break;
-	      case "id":
-	        node.id = attrVal;
-	        break;
-	      case "href":
-	        node.href = attrVal;
-	        break;
-	      case "value":
-	        node.value = attrVal;
-	        break;
-	      case "name":
-	        node.name = attrVal;
-	        break;
-	      case "disabled":
-	        node.disabled = attrVal;
-	        break;
-	      case "selected":
-	        node.selected = attrVal;
-	        break;
-	      case "checked":
-	        node.checked = attrVal;
-	        break;
-	      default:
-	        node.setAttribute(attrName, attrVal);
-	    }
-	  }
-	};
-
-	Inferno.template.createFragment = function () {
-	  if (isBrowser) {
-	    return document.createDocumentFragment();
-	  }
-	};
-
-	//this was added so vdom lovers can still use their beloved vdom API from React :)
-	//this won't be performant and should only be used for prototyping/testing/experimenting
-	//note, props/attrs will not update with this current implementation
-	Inferno.vdom = {};
-
-	Inferno.vdom.createElement = function (tag, props) {
-	  for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-	    children[_key - 2] = arguments[_key];
-	  }
-
-	  console.warn("Inferno.vdom.createElement() is purely experimental, " + "it's performance will be poor and attributes/properities will not update (as of yet)");
-
-	  if (children.length === 1) {
-	    children = children[0];
-	  }
-	  //we need to create a template for this
-	  function template(fragment) {
-	    var root = Inferno.template.createElement(tag);
-	    fragment.templateElement = root;
-
-	    if (typeof children !== "object") {
-	      fragment.templateType = Inferno.Type.TEXT;
-	      root.textContent = children;
-	    } else {
-	      if (children instanceof Array) {
-	        fragment.templateType = Inferno.Type.LIST;
-	      } else {
-	        fragment.templateType = Inferno.Type.FRAGMENT;
-	      }
-	    }
-
-	    if (props) {
-	      Inferno.template.addAttributes(root, props);
-	    }
-	    fragment.dom = root;
-	  }
-
-	  return Inferno.createFragment(children, template);
-	};
-
-	var templateKeyMap = new WeakMap();
-
-	//this function is really only intended to be used for DEV purposes
-	Inferno.createFragment = function (values, template) {
-	  if (template.key === undefined) {
-	    //if the template function is missing a key property, we'll need to make one
-	    var templateKeyLookup = templateKeyMap.get(template);
-	    if (templateKeyLookup === undefined) {
-	      var key = Symbol();
-	      templateKeyMap.set(template, key);
-	      //this was considerably faster than Symbol()
-	      template.key = "tpl" + Math.floor(Math.random() * 100000);
-	    }
-	  }
-	  if (values instanceof Array) {
-	    return {
-	      dom: null,
-	      key: null,
-	      next: null,
-	      template: template,
-	      templateElements: null,
-	      templateTypes: null,
-	      templateValues: values
-	    };
-	  } else {
-	    return {
-	      dom: null,
-	      key: null,
-	      next: null,
-	      template: template,
-	      templateElement: null,
-	      templateType: null,
-	      templateValue: values
-	    };
-	  }
-	};
-
-	Inferno.unmountComponentAtNode = function (dom) {
-	  var context = getContext(dom);
-	  if (context !== null) {
-	    var component = context.fragment.component;
-	    if (component) {
-	      removeFragment(context, dom, component.fragment);
-	      unmountComponentAtFragment(component.fragment);
-	    } else {
-	      removeFragment(context, dom, context.fragment);
-	      removeContext(dom);
-	    }
-	  }
-	};
-
-	function getRecycledFragment(templateKey) {
-	  var fragments = recycledFragments[templateKey];
-	  if (!fragments || fragments.length === 0) {
-	    return null;
-	  }
-	  return fragments.pop();
-	}
-
-	function attachFragmentList(context, list, parentDom, component) {
-	  for (var i = 0; i < list.length; i++) {
-	    attachFragment(context, list[i], parentDom, component);
-	  }
-	}
-
-	function unmountComponentAtFragment(fragment) {
-	  var component = fragment.component;
-	  component.componentWillUnmount();
-	  removeContext(component.context.dom);
-	  component.forceUpdate = badUpdate;
-	  component.context = null;
-	  component = null;
-	}
-
-	function updateFragmentList(context, oldList, list, parentDom, component, outerNextFragment) {
-	  var oldListLength = oldList.length;
-	  var listLength = list.length;
-
-	  if (listLength === 0) {
-	    removeFragments(context, parentDom, oldList, 0, oldListLength);
-	    return;
-	  } else if (oldListLength === 0) {
-	    attachFragmentList(context, list, parentDom, component);
-	    return;
-	  }
-
-	  var oldEndIndex = oldListLength - 1;
-	  var endIndex = listLength - 1;
-	  var oldStartIndex = 0,
-	      startIndex = 0;
-	  var successful = true;
-	  var nextItem;
-	  var oldItem, item;
-
-	  outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
-	    successful = false;
-	    var oldStartItem, oldEndItem, startItem, endItem, doUpdate;
-
-	    oldStartItem = oldList[oldStartIndex];
-	    startItem = list[startIndex];
-	    while (oldStartItem.key === startItem.key) {
-	      updateFragment(context, oldStartItem, startItem, parentDom, component);
-	      oldStartIndex++;startIndex++;
-	      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-	        break outer;
-	      }
-	      oldStartItem = oldList[oldStartIndex];
-	      startItem = list[startIndex];
-	      successful = true;
-	    }
-	    oldEndItem = oldList[oldEndIndex];
-	    endItem = list[endIndex];
-	    while (oldEndItem.key === endItem.key) {
-	      updateFragment(context, oldEndItem, endItem, parentDom, component);
-	      oldEndIndex--;endIndex--;
-	      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-	        break outer;
-	      }
-	      oldEndItem = oldList[oldEndIndex];
-	      endItem = list[endIndex];
-	      successful = true;
-	    }
-	    while (oldStartItem.key === endItem.key) {
-	      nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-	      updateFragment(context, oldStartItem, endItem, parentDom, component);
-	      moveFragment(parentDom, endItem, nextItem);
-	      oldStartIndex++;endIndex--;
-	      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-	        break outer;
-	      }
-	      oldStartItem = oldList[oldStartIndex];
-	      endItem = list[endIndex];
-	      successful = true;
-	    }
-	    while (oldEndItem.key === startItem.key) {
-	      nextItem = oldStartIndex < oldListLength ? oldList[oldStartIndex] : outerNextFragment;
-	      updateFragment(context, oldEndItem, startItem, parentDom, component);
-	      moveFragment(parentDom, startItem, nextItem);
-	      oldEndIndex--;startIndex++;
-	      if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-	        break outer;
-	      }
-	      oldEndItem = oldList[oldEndIndex];
-	      startItem = list[startIndex];
-	      successful = true;
-	    }
-	  }
-	  if (oldStartIndex > oldEndIndex) {
-	    nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-	    for (i = startIndex; i <= endIndex; i++) {
-	      item = list[i];
-	      attachFragment(context, item, parentDom, component, nextItem);
-	    }
-	  } else if (startIndex > endIndex) {
-	    removeFragments(context, parentDom, oldList, oldStartIndex, oldEndIndex + 1);
-	  } else {
-	    var i,
-	        oldNextItem = oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1];
-	    var oldListMap = {};
-	    for (i = oldEndIndex; i >= oldStartIndex; i--) {
-	      oldItem = oldList[i];
-	      oldItem.next = oldNextItem;
-	      oldListMap[oldItem.key] = oldItem;
-	      oldNextItem = oldItem;
-	    }
-	    nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-	    for (i = endIndex; i >= startIndex; i--) {
-	      item = list[i];
-	      var key = item.key;
-	      oldItem = oldListMap[key];
-	      if (oldItem) {
-	        oldListMap[key] = null;
-	        oldNextItem = oldItem.next;
-	        updateFragment(context, oldItem, item, parentDom, component);
-	        if (parentDom.nextSibling != (nextItem && nextItem.dom)) {
-	          moveFragment(parentDom, item, nextItem);
-	        }
-	      } else {
-	        attachFragment(context, item, parentDom, component, nextItem);
-	      }
-	      nextItem = item;
-	    }
-	    for (i = oldStartIndex; i <= oldEndIndex; i++) {
-	      oldItem = oldList[i];
-	      if (oldListMap[oldItem.key] !== null) {
-	        removeFragment(context, parentDom, oldItem);
-	      }
-	    }
-	  }
-	}
-
-	//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
-	//refactored to by more DRY. although, this causes a significant performance cost
-	//on the v8 compiler. need to explore how to refactor without introducing this performance cost
-	function updateFragmentValue(context, oldFragment, fragment, parentDom, component) {
-	  var element = oldFragment.templateElement;
-	  var type = oldFragment.templateType;
-
-	  fragment.templateElement = element;
-	  fragment.templateType = type;
-
-	  if (fragment.templateValue !== oldFragment.templateValue) {
-	    switch (type) {
-	      case Inferno.Type.LIST:
-	      case Inferno.Type.LIST_REPLACE:
-	        updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
-	        return;
-	      case Inferno.Type.TEXT:
-	        element.firstChild.nodeValue = fragment.templateValue;
-	        return;
-	      case Inferno.Type.TEXT_DIRECT:
-	        element.nodeValue = fragment.templateValue;
-	        return;
-	      case Inferno.Type.FRAGMENT:
-	      case Inferno.Type.FRAGMENT_REPLACE:
-	        updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
-	        return;
-	      case Inferno.Type.ATTR_CLASS:
-	        element.className = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_CHECKED:
-	        element.checked = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_SELECTED:
-	        element.selected = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_DISABLED:
-	        element.disabled = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_HREF:
-	        element.href = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_ID:
-	        element.id = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_VALUE:
-	        element.value = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_NAME:
-	        element.name = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_TYPE:
-	        element.type = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_LABEL:
-	        element.label = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_PLACEHOLDER:
-	        element.placeholder = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_STYLE:
-	        //TODO
-	        return;
-	      case Inferno.Type.ATTR_WIDTH:
-	        element.width = fragment.templateValue;
-	        return;
-	      case Inferno.Type.ATTR_HEIGHT:
-	        element.height = fragment.templateValue;
-	        return;
-	      default:
-	        if (!element.props) {
-	          if (events[type] != null) {
-	            clearEventListeners(element, component, type);
-	            addEventListener(element, component, type, fragment.templateValue);
-	          } else {
-	            element.setAttribute(type, fragment.templateValue);
-	          }
-	        }
-	        //component prop, update it
-	        else {
-	            //TODO make component props work for single value fragments
-	          }
-	        return;
-	    }
-	  }
-	}
-
-	//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
-	//refactored to by more DRY. although, this causes a significant performance cost
-	//on the v8 compiler. need to explore how to refactor without introducing this performance cost
-	function updateFragmentValues(context, oldFragment, fragment, parentDom, component) {
-	  var componentsToUpdate = [],
-	      i;
-
-	  for (i = 0, length = fragment.templateValues.length; i < length; i++) {
-	    var element = oldFragment.templateElements[i];
-	    var type = oldFragment.templateTypes[i];
-
-	    fragment.templateElements[i] = element;
-	    fragment.templateTypes[i] = type;
-
-	    if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
-	      switch (type) {
-	        case Inferno.Type.LIST:
-	        case Inferno.Type.LIST_REPLACE:
-	          updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-	          break;
-	        case Inferno.Type.TEXT:
-	          element.firstChild.nodeValue = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.TEXT_DIRECT:
-	          element.nodeValue = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.FRAGMENT:
-	        case Inferno.Type.FRAGMENT_REPLACE:
-	          updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-	          break;
-	        case Inferno.Type.ATTR_CLASS:
-	          element.className = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_CHECKED:
-	          element.checked = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_SELECTED:
-	          element.selected = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_DISABLED:
-	          element.disabled = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_HREF:
-	          element.href = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_ID:
-	          element.id = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_VALUE:
-	          element.value = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_NAME:
-	          element.name = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_TYPE:
-	          element.type = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_LABEL:
-	          element.label = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_PLACEHOLDER:
-	          element.placeholder = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_STYLE:
-	          //TODO
-	          break;
-	        case Inferno.Type.ATTR_WIDTH:
-	          element.width = fragment.templateValues[i];
-	          break;
-	        case Inferno.Type.ATTR_HEIGHT:
-	          element.height = fragment.templateValues[i];
-	          break;
-	        default:
-	          //custom attribute, so simply setAttribute it
-	          if (!element.props) {
-	            if (events[type] != null) {
-	              clearEventListeners(element, component, type);
-	              addEventListener(element, component, type, fragment.templateValues[i]);
-	            } else {
-	              element.setAttribute(type, fragment.templateValues[i]);
-	            }
-	          }
-	          //component prop, update it
-	          else {
-	              element.props[type] = fragment.templateValues[i];
-	              var alreadyInQueue = false;
-	              for (s = 0; s < componentsToUpdate.length; s++) {
-	                if (componentsToUpdate[s] === element) {
-	                  alreadyInQueue = true;
-	                }
-	              }
-	              if (alreadyInQueue === false) {
-	                componentsToUpdate.push(element);
-	              }
-	            }
-	          break;
-	      }
-	    }
-	  }
-	  if (componentsToUpdate.length > 0) {
-	    for (i = 0; i < componentsToUpdate.length; i++) {
-	      componentsToUpdate[i].forceUpdate();
-	    }
-	  }
-	}
-
-	function updateFragment(context, oldFragment, fragment, parentDom, component) {
-	  if (fragment === null) {
-	    removeFragment(context, parentDom, oldFragment);
-	    return;
-	  }
-	  if (oldFragment === null) {
-	    attachFragment(context, fragment, parentDom, component);
-	    return;
-	  }
-	  if (oldFragment.template !== fragment.template) {
-	    if (oldFragment.component) {
-	      var oldComponentFragment = oldFragment.component.context.fragment;
-	      unmountComponentAtFragment(oldFragment);
-	      attachFragment(context, fragment, parentDom, component, oldComponentFragment, true);
-	    } else {
-	      attachFragment(context, fragment, parentDom, component, oldFragment, true);
-	    }
-	  } else {
-	    var fragmentComponent = oldFragment.component;
-
-	    //if this fragment is a component
-	    if (fragmentComponent) {
-	      fragmentComponent.props = fragment.props;
-	      fragmentComponent.forceUpdate();
-	      fragment.component = fragmentComponent;
-	      return;
-	    }
-
-	    //ensure we reference the new fragment with the old fragment's DOM node
-	    fragment.dom = oldFragment.dom;
-
-	    if (fragment.templateValue) {
-	      //update a single value in the fragement (templateValue rather than templateValues)
-	      updateFragmentValue(context, oldFragment, fragment, parentDom, component);
-	    } else if (fragment.templateValues) {
-	      //updates all values within the fragment (templateValues is an array)
-	      updateFragmentValues(context, oldFragment, fragment, parentDom, component);
-	    }
-	  }
-	}
-
-	function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
-	  var fragmentComponent = fragment.component;
-
-	  if (fragmentComponent) {
-	    if (typeof fragmentComponent === "function") {
-	      fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
-	      fragmentComponent.context = null;
-	      fragmentComponent.forceUpdate = Inferno.render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
-	      fragmentComponent.forceUpdate();
-	    }
-	    return;
-	  }
-
-	  var recycledFragment = null;
-	  var template = fragment.template;
-	  var templateKey = template.key;
-
-	  if (context.shouldRecycle === true) {
-	    recycledFragment = getRecycledFragment(templateKey);
-	  }
-
-	  if (recycledFragment !== null) {
-	    updateFragment(context, recycledFragment, fragment, parentDom, component);
-	  } else {
-	    //the user can optionally opt out of using the t7 dependency, thus removing the requirement
-	    //to pass the t7 reference into the template constructor
-	    if (t7dependency === true) {
-	      template(fragment, fragment.t7ref);
-	    } else {
-	      template(fragment);
-	    }
-
-	    //if this fragment has a single value, we attach only that value
-	    if (fragment.templateValue) {
-	      switch (fragment.templateType) {
-	        case Inferno.Type.LIST:
-	          attachFragmentList(context, fragment.templateValue, fragment.templateElement, component);
-	          break;
-	        case Inferno.Type.LIST_REPLACE:
-	          //TODO need to add this
-	          break;
-	        case Inferno.Type.FRAGMENT:
-	          attachFragment(context, fragment.templateValue, fragment.templateElement, component);
-	          break;
-	        case Inferno.Type.FRAGMENT_REPLACE:
-	          attachFragment(context, fragment.templateValue, parentDom, component, fragment.templateElement, true);
-	          fragment.templateElement = fragment.templateValue.dom.parentNode;
-	          break;
-	      }
-	    } else if (fragment.templateValues) {
-	      //if the fragment has multiple values, we must loop through them all and attach them
-	      //pulling this block of code out into its own function caused strange things to happen
-	      //with performance. it was faster in Gecko but far slower in v8
-	      for (var i = 0, length = fragment.templateValues.length; i < length; i++) {
-	        var element = fragment.templateElements[i];
-	        var value = fragment.templateValues[i];
-	        switch (fragment.templateTypes[i]) {
-	          case Inferno.Type.LIST:
-	            attachFragmentList(context, value, element, component);
-	            break;
-	          case Inferno.Type.LIST_REPLACE:
-	            var nodeList = document.createDocumentFragment();
-	            var placeholderNode = fragment.templateElements[i];
-	            attachFragmentList(context, value, nodeList, component);
-	            placeholderNode.parentNode.replaceChild(nodeList, placeholderNode);
-	            fragment.templateElements[i] = nodeList;
-	            break;
-	          case Inferno.Type.FRAGMENT:
-	            //TODO do we need this still?
-	            break;
-	          case Inferno.Type.FRAGMENT_REPLACE:
-	            attachFragment(context, value, parentDom, component, element, true);
-	            fragment.templateElements[i] = value.dom.parentNode;
-	            break;
-	        }
-	      }
-	    }
-	  }
-
-	  insertFragment(context, parentDom, fragment.dom, nextFragment, replace);
-	}
-
-	var contexts = [];
-
-	function removeContext(dom) {
-	  for (var i = 0; i < contexts.length; i++) {
-	    if (contexts[i].dom === dom) {
-	      contexts.splice(i, 1);
-	      return;
-	    }
-	  }
-	}
-
-	function getContext(dom) {
-	  for (var i = 0; i < contexts.length; i++) {
-	    if (contexts[i].dom === dom) {
-	      return contexts[i];
-	    }
-	  }
-	  return null;
-	}
-
-	Inferno.render = function (fragment, dom, component) {
-	  var context, generatedFragment;
-	  if (component === undefined) {
-	    if (initialisedListeners === false) {
-	      addRootDomEventListerners();
-	    }
-	    context = getContext(dom);
-	    if (context === null) {
-	      context = {
-	        fragment: fragment,
-	        dom: dom,
-	        shouldRecycle: true
-	      };
-	      attachFragment(context, fragment, dom, component);
-	      contexts.push(context);
-	    } else {
-	      var activeElement = document.activeElement;
-	      updateFragment(context, context.fragment, fragment, dom, component, false);
-	      context.fragment = fragment;
-	      maintainFocus(activeElement);
-	    }
-	  } else {
-	    if (component.context === null) {
-	      generatedFragment = fragment();
-	      context = component.context = {
-	        fragment: generatedFragment,
-	        dom: dom,
-	        shouldRecycle: true
-	      };
-	      component.componentWillMount();
-	      attachFragment(context, generatedFragment, dom, component);
-	      component.componentDidMount();
-	    } else {
-	      generatedFragment = fragment();
-	      context = component.context;
-	      updateFragment(context, context.fragment, generatedFragment, dom, component, false);
-	      context.fragment = generatedFragment;
-	    }
-	  }
-	};
-
-	function moveFragment(parentDom, item, nextItem) {
-	  var domItem = item.dom,
-	      domRefItem = nextItem && nextItem.dom;
-
-	  if (domItem !== domRefItem) {
-	    if (domRefItem) {
-	      parentDom.insertBefore(domItem, domRefItem);
-	    } else {
-	      parentDom.appendChild(domItem);
-	    }
-	  }
-	}
-
-	function isInputProperty(tag, attrName) {
-	  switch (tag) {
-	    case "input":
-	      return attrName === "value" || attrName === "checked";
-	    case "textarea":
-	      return attrName === "value";
-	    case "select":
-	      return attrName === "value" || attrName === "selectedIndex";
-	    case "option":
-	      return attrName === "selected";
-	  }
-	};
-
-	function addEventListener(parentDom, component, listenerName, callback) {
-	  rootlisteners[events[listenerName]].push({
-	    target: parentDom,
-	    callback: callback,
-	    component: component
-	  });
-	}
-
-	function clearEventListeners(parentDom, component, listenerName) {
-	  var listeners = rootlisteners[events[listenerName]];
-	  var index = 0;
-	  while (index < listeners.length) {
-	    if (listeners[index].target === parentDom) {
-	      listeners.splice(index, 1);
-	      index = 0;
-	    }
-	    index++;
-	  }
-	}
-
-	function insertFragment(context, parentDom, domNode, nextFragment, replace) {
-	  var noDestroy = false;
-	  if (nextFragment) {
-	    var domNextFragment = nextFragment.dom;
-	    if (!domNextFragment) {
-	      domNextFragment = nextFragment;
-	      parentDom = domNextFragment.parentNode;
-	      noDestroy = true;
-	    }
-	    if (replace) {
-	      if (noDestroy === false) {
-	        destroyFragment(context, nextFragment);
-	      }
-	      parentDom.replaceChild(domNode, domNextFragment);
-	    } else {
-	      parentDom.insertBefore(domNode, domNextFragment);
-	    }
-	  } else {
-	    parentDom.appendChild(domNode);
-	  }
-	}
-
-	function removeFragments(context, parentDom, fragments, i, to) {
-	  for (; i < to; i++) {
-	    removeFragment(context, parentDom, fragments[i]);
-	  }
-	}
-
-	function removeFragment(context, parentDom, item) {
-	  var domItem = item.dom;
-	  destroyFragment(context, item);
-	  parentDom.removeChild(domItem);
-	}
-
-	function destroyFragment(context, fragment) {
-	  var templateKey;
-
-	  //long winded approach, but components have their own context which is how we find their template keys
-	  if (fragment.component) {
-	    templateKey = fragment.component.context.fragment.template.key;
-	  } else {
-	    templateKey = fragment.template.key;
-	  }
-
-	  if (context.shouldRecycle === true) {
-	    var toRecycleForKey = recycledFragments[templateKey];
-	    if (!toRecycleForKey) {
-	      recycledFragments[templateKey] = toRecycleForKey = [];
-	    }
-	    toRecycleForKey.push(fragment);
-	  }
-	}
-
-	function setTextContent(parentDom, text, update) {
-	  if (text) {
-	    if (supportsTextContent) {
-	      parentDom.textContent = text;
-	    } else {
-	      parentDom.innerText = text;
-	    }
-	  } else {
-	    if (update) {
-	      while (domElement.firstChild) {
-	        parentDom.removeChild(parentDom.firstChild);
-	      }
-	    }
-	    parentDom.appendChild(emptyTextNode());
-	  }
-	};
-
-	function maintainFocus(previousActiveElement) {
-	  if (previousActiveElement && previousActiveElement != document.body && previousActiveElement != document.activeElement) {
-	    previousActiveElement.focus();
-	  }
-	}
-
-	module.exports = Inferno;
-
-/***/ },
-/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -1068,23 +127,23 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _universalClassComponent = __webpack_require__(4);
+	var _universalClassComponent = __webpack_require__(2);
 
 	var _universalClassComponent2 = _interopRequireDefault(_universalClassComponent);
 
-	var _browserCoreRender = __webpack_require__(5);
+	var _browserCoreRender = __webpack_require__(3);
 
 	var _browserCoreRender2 = _interopRequireDefault(_browserCoreRender);
 
-	var _InfernoVersion = __webpack_require__(1);
+	var _InfernoVersion = __webpack_require__(28);
 
 	var _InfernoVersion2 = _interopRequireDefault(_InfernoVersion);
 
-	var _t7 = __webpack_require__(6);
+	var _t7 = __webpack_require__(29);
 
 	var _t72 = _interopRequireDefault(_t7);
 
-	var _utilIsBrowser = __webpack_require__(7);
+	var _utilIsBrowser = __webpack_require__(30);
 
 	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
 
@@ -1106,7 +165,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 4 */
+/* 2 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1165,7 +224,98 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 5 */
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _eventsAddRootListener = __webpack_require__(4);
+
+	var _eventsAddRootListener2 = _interopRequireDefault(_eventsAddRootListener);
+
+	var _eventsSharedInitialisedListeners = __webpack_require__(5);
+
+	var _eventsSharedInitialisedListeners2 = _interopRequireDefault(_eventsSharedInitialisedListeners);
+
+	var _varsContexts = __webpack_require__(6);
+
+	var _varsContexts2 = _interopRequireDefault(_varsContexts);
+
+	var _universalCoreGetContext = __webpack_require__(7);
+
+	var _universalCoreGetContext2 = _interopRequireDefault(_universalCoreGetContext);
+
+	var _universalCoreAttachFragment = __webpack_require__(8);
+
+	var _universalCoreAttachFragment2 = _interopRequireDefault(_universalCoreAttachFragment);
+
+	var _universalCoreUpdateFragment = __webpack_require__(11);
+
+	var _universalCoreUpdateFragment2 = _interopRequireDefault(_universalCoreUpdateFragment);
+
+	var _universalCoreMaintainFocus = __webpack_require__(27);
+
+	var _universalCoreMaintainFocus2 = _interopRequireDefault(_universalCoreMaintainFocus);
+
+	exports["default"] = function (fragment, dom, component) {
+
+	        var context, generatedFragment;
+	        if (component === undefined) {
+
+	                if (_eventsSharedInitialisedListeners2["default"] === false) {
+
+	                        (0, _eventsAddRootListener2["default"])();
+	                }
+	                context = (0, _universalCoreGetContext2["default"])(dom);
+	                if (context === null) {
+
+	                        context = {
+	                                fragment: fragment,
+	                                dom: dom,
+	                                shouldRecycle: true
+	                        };
+	                        (0, _universalCoreAttachFragment2["default"])(context, fragment, dom, component);
+	                        _varsContexts2["default"].push(context);
+	                } else {
+
+	                        var activeElement = document.activeElement;
+	                        (0, _universalCoreUpdateFragment2["default"])(context, context.fragment, fragment, dom, component, false);
+	                        context.fragment = fragment;
+	                        (0, _universalCoreMaintainFocus2["default"])(activeElement);
+	                }
+	        } else {
+
+	                if (component.context === null) {
+
+	                        generatedFragment = fragment();
+	                        context = component.context = {
+	                                fragment: generatedFragment,
+	                                dom: dom,
+	                                shouldRecycle: true
+	                        };
+	                        component.componentWillMount();
+	                        (0, _universalCoreAttachFragment2["default"])(context, generatedFragment, dom, component);
+	                        component.componentDidMount();
+	                } else {
+
+	                        generatedFragment = fragment();
+	                        context = component.context;
+	                        (0, _universalCoreUpdateFragment2["default"])(context, context.fragment, generatedFragment, dom, component, false);
+	                        context.fragment = generatedFragment;
+	                }
+	        }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1176,80 +326,51 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _browserEventsAddRootListener = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../browser/events/addRootListener\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _sharedInitialisedListeners = __webpack_require__(5);
 
-	var _browserEventsAddRootListener2 = _interopRequireDefault(_browserEventsAddRootListener);
+	var _sharedInitialisedListeners2 = _interopRequireDefault(_sharedInitialisedListeners);
 
-	var _browserEventsSharedInitialisedListeners = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../browser/events/shared/initialisedListeners\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	exports["default"] = function () {
 
-	var _browserEventsSharedInitialisedListeners2 = _interopRequireDefault(_browserEventsSharedInitialisedListeners);
+	    // has to do this 'hack' else it will become read-only
+	    (0, _sharedInitialisedListeners2["default"])(true);
+	    if (rootlisteners != null) {
 
-	var _varsContexts = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../vars/contexts\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	        // TODO! Take this out into it's own module and do some event cleanup along the road?
+	        document.addEventListener("click", function (e) {
 
-	var _varsContexts2 = _interopRequireDefault(_varsContexts);
+	            for (var i = 0; i < rootlisteners.click.length; i = i + 1 | 0) {
 
-	var _getContext = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./getContext\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	                if (rootlisteners.click[i].target === e.target) {
 
-	var _getContext2 = _interopRequireDefault(_getContext);
+	                    rootlisteners.click[i].callback.call(rootlisteners.click[i].component || null, e);
+	                }
+	            }
+	        });
+	    }
+	};
 
-	var _attachFragment = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./attachFragment\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	module.exports = exports["default"];
 
-	var _attachFragment2 = _interopRequireDefault(_attachFragment);
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
 
-	var _updateFragment = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./updateFragment\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	"use strict";
 
-	var _updateFragment2 = _interopRequireDefault(_updateFragment);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var initialisedListeners = false;
 
-	var _maintainFocus = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./maintainFocus\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	exports["default"] = function (value) {
 
-	var _maintainFocus2 = _interopRequireDefault(_maintainFocus);
+	    if (value) {
 
-	exports["default"] = function (fragment, dom, component) {
-
-	    var context, generatedFragment;
-	    if (component === undefined) {
-
-	        if (_browserEventsSharedInitialisedListeners2["default"] === false) {
-
-	            (0, _browserEventsAddRootListener2["default"])();
-	        }
-	        context = (0, _getContext2["default"])(dom);
-	        if (context === null) {
-
-	            context = {
-	                fragment: fragment,
-	                dom: dom,
-	                shouldRecycle: true
-	            };
-	            (0, _attachFragment2["default"])(context, fragment, dom, component);
-	            _varsContexts2["default"].push(context);
-	        } else {
-
-	            var activeElement = document.activeElement;
-	            (0, _updateFragment2["default"])(context, context.fragment, fragment, dom, component, false);
-	            context.fragment = fragment;
-	            (0, _maintainFocus2["default"])(activeElement);
-	        }
+	        initialisedListeners = value;
 	    } else {
 
-	        if (component.context === null) {
-
-	            generatedFragment = fragment();
-	            context = component.context = {
-	                fragment: generatedFragment,
-	                dom: dom,
-	                shouldRecycle: true
-	            };
-	            component.componentWillMount();
-	            (0, _attachFragment2["default"])(context, generatedFragment, dom, component);
-	            component.componentDidMount();
-	        } else {
-
-	            generatedFragment = fragment();
-	            context = component.context;
-	            (0, _updateFragment2["default"])(context, context.fragment, generatedFragment, dom, component, false);
-	            context.fragment = generatedFragment;
-	        }
+	        return initialisedListeners;
 	    }
 	};
 
@@ -1257,6 +378,1195 @@
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports["default"] = [];
+	module.exports = exports["default"];
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _varsContexts = __webpack_require__(6);
+
+	var _varsContexts2 = _interopRequireDefault(_varsContexts);
+
+	exports["default"] = function (dom) {
+
+	    for (var i = 0; i < _varsContexts2["default"].length; i++) {
+
+	        if (_varsContexts2["default"][i].dom === dom) {
+
+	            return _varsContexts2["default"][i];
+	        }
+	    }
+	    return null;
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _getRecycledFragment = __webpack_require__(9);
+
+	var _getRecycledFragment2 = _interopRequireDefault(_getRecycledFragment);
+
+	var _updateFragment = __webpack_require__(11);
+
+	var _updateFragment2 = _interopRequireDefault(_updateFragment);
+
+	var _attachFragmentList = __webpack_require__(18);
+
+	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
+
+	var _fragmentTypes = __webpack_require__(15);
+
+	var _fragmentTypes2 = _interopRequireDefault(_fragmentTypes);
+
+	var _insertFragment = __webpack_require__(25);
+
+	var _insertFragment2 = _interopRequireDefault(_insertFragment);
+
+	var _browserCoreRender = __webpack_require__(3);
+
+	var _browserCoreRender2 = _interopRequireDefault(_browserCoreRender);
+
+	var _otherSetT7Dependency = __webpack_require__(26);
+
+	var _otherSetT7Dependency2 = _interopRequireDefault(_otherSetT7Dependency);
+
+	var attachFagment = function attachFagment(context, fragment, parentDom, component, nextFragment, replace) {
+
+	    var fragmentComponent = fragment.component;
+
+	    if (fragmentComponent) {
+
+	        if (typeof fragmentComponent === "function") {
+
+	            fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
+	            fragmentComponent.context = null;
+	            fragmentComponent.forceUpdate = Inferno.render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
+	            fragmentComponent.forceUpdate();
+	        }
+	        return;
+	    }
+
+	    var recycledFragment = null,
+	        template = fragment.template,
+	        templateKey = template.key;
+
+	    if (context.shouldRecycle === true) {
+
+	        recycledFragment = (0, _getRecycledFragment2["default"])(templateKey);
+	    }
+
+	    if (recycledFragment !== null) {
+
+	        (0, _updateFragment2["default"])(context, recycledFragment, fragment, parentDom, component);
+	    } else {
+
+	        //the user can optionally opt out of using the t7 dependency, thus removing the requirement
+	        //to pass the t7 reference into the template constructor
+	        if ((0, _otherSetT7Dependency2["default"])()) {
+
+	            template(fragment, fragment.t7ref);
+	        } else {
+
+	            template(fragment);
+	        }
+	        //if this fragment has a single value, we attach only that value
+	        if (fragment.templateValue) {
+
+	            switch (fragment.templateType) {
+	                case _fragmentTypes2["default"].LIST:
+	                    (0, _attachFragmentList2["default"])(context, fragment.templateValue, fragment.templateElement);
+	                    break;
+	                case _fragmentTypes2["default"].LIST_REPLACE:
+	                    attachFragment(context, fragment.templateValue, fragment.templateElement, component);
+	                    break;
+	                case _fragmentTypes2["default"].FRAGMENT:
+	                    //TODO do we need this still?
+	                    break;
+	                case _fragmentTypes2["default"].FRAGMENT_REPLACE:
+	                    attachFragment(context, fragment.templateValue, parentDom, fragment.templateElement, true);
+	                    fragment.templateElement = fragment.templateValue.dom.parentNode;
+	                    break;
+	            }
+	        } else if (fragment.templateValues) {
+
+	            //if the fragment has multiple values, we must loop through them all and attach them
+	            //pulling this block of code out into its own function caused strange things to happen
+	            //with performance. it was faster in Gecko but far slower in v8
+	            for (var i = 0, _length = fragment.templateValues.length; i < _length; i++) {
+
+	                var element = fragment.templateElements[i];
+	                var value = fragment.templateValues[i];
+	                switch (fragment.templateTypes[i]) {
+	                    case _fragmentTypes2["default"].LIST:
+	                        (0, _attachFragmentList2["default"])(context, value, element);
+	                        break;
+	                    case _fragmentTypes2["default"].LIST_REPLACE:
+	                        var nodeList = document.createDocumentFragment();
+	                        var placeholderNode = fragment.templateElements[i];
+	                        (0, _attachFragmentList2["default"])(context, value, nodeList);
+	                        placeholderNode.parentNode.replaceChild(nodeList, placeholderNode);
+	                        fragment.templateElements[i] = nodeList;
+	                        break;
+	                    case _fragmentTypes2["default"].FRAGMENT:
+	                        //TODO do we need this still?
+	                        break;
+	                    case _fragmentTypes2["default"].FRAGMENT_REPLACE:
+	                        attachFragment(context, value, parentDom, element, true);
+	                        fragment.templateElements[i] = value.dom.parentNode;
+	                        break;
+	                }
+	            }
+	        }
+	    }
+
+	    (0, _insertFragment2["default"])(context, parentDom, fragment.dom, nextFragment, replace);
+	};
+
+	exports["default"] = attachFagment;
+	module.exports = exports["default"];
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _varsRecycledFragments = __webpack_require__(10);
+
+	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
+
+	exports["default"] = function (templateKey) {
+
+	    var fragments = _varsRecycledFragments2["default"][templateKey];
+	    if (!fragments || fragments.length === 0) {
+
+	        return null;
+	    }
+	    return fragments.pop();
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports["default"] = {};
+	module.exports = exports["default"];
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _removeFragment = __webpack_require__(12);
+
+	var _removeFragment2 = _interopRequireDefault(_removeFragment);
+
+	var _attachFragment = __webpack_require__(8);
+
+	var _attachFragment2 = _interopRequireDefault(_attachFragment);
+
+	var _updateFragmentValue = __webpack_require__(14);
+
+	var _updateFragmentValue2 = _interopRequireDefault(_updateFragmentValue);
+
+	var _updateFragmentValues = __webpack_require__(24);
+
+	var _updateFragmentValues2 = _interopRequireDefault(_updateFragmentValues);
+
+	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
+
+	        if (fragment === null) {
+
+	                (0, _removeFragment2["default"])(context, parentDom, oldFragment);
+	                return;
+	        }
+	        if (oldFragment === null) {
+
+	                (0, _attachFragment2["default"])(context, fragment, parentDom, component);
+	                return;
+	        }
+	        if (oldFragment.template !== fragment.template) {
+
+	                if (oldFragment.component) {
+
+	                        var oldComponentFragment = oldFragment.component.context.fragment;
+	                        unmountComponentAtFragment(oldFragment);
+	                        (0, _attachFragment2["default"])(context, fragment, parentDom, component, oldComponentFragment, true);
+	                } else {
+
+	                        (0, _attachFragment2["default"])(context, fragment, parentDom, component, oldFragment, true);
+	                }
+	        } else {
+
+	                var fragmentComponent = oldFragment.component;
+
+	                //if this fragment is a component
+	                if (fragmentComponent) {
+
+	                        fragmentComponent.props = fragment.props;
+	                        fragmentComponent.forceUpdate();
+	                        fragment.component = fragmentComponent;
+	                        return;
+	                }
+
+	                //ensure we reference the new fragment with the old fragment's DOM node
+	                fragment.dom = oldFragment.dom;
+
+	                if (fragment.templateValue) {
+
+	                        //update a single value in the fragement (templateValue rather than templateValues)
+	                        (0, _updateFragmentValue2["default"])(context, oldFragment, fragment, parentDom, component);
+	                } else if (fragment.templateValues) {
+
+	                        //updates all values within the fragment (templateValues is an array)
+	                        (0, _updateFragmentValues2["default"])(context, oldFragment, fragment, parentDom, component);
+	                }
+	        }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _destroyFragment = __webpack_require__(13);
+
+	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
+
+	exports["default"] = function (context, parentDom, item) {
+
+	    var domItem = item.dom;
+	    (0, _destroyFragment2["default"])(context, item);
+	    parentDom.removeChild(domItem);
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _removeFragment = __webpack_require__(12);
+
+	var _removeFragment2 = _interopRequireDefault(_removeFragment);
+
+	var _varsRecycledFragments = __webpack_require__(10);
+
+	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
+
+	/**
+	 * Destroy fragment
+	 */
+
+	exports["default"] = function (context, fragment) {
+
+	    var templateKey;
+
+	    //long winded approach, but components have their own context which is how we find their template keys
+	    if (fragment.component) {
+
+	        templateKey = fragment.component.context.fragment.template.key;
+	    } else {
+
+	        templateKey = fragment.template.key;
+	    }
+
+	    if (context.shouldRecycle === true) {
+
+	        var toRecycleForKey = _varsRecycledFragments2["default"][templateKey];
+	        if (!toRecycleForKey) {
+
+	            _varsRecycledFragments2["default"][templateKey] = toRecycleForKey = [];
+	        }
+	        toRecycleForKey.push(fragment);
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _updateFragment = __webpack_require__(11);
+
+	var _updateFragment2 = _interopRequireDefault(_updateFragment);
+
+	var _fragmentTypes = __webpack_require__(15);
+
+	var _fragmentTypes2 = _interopRequireDefault(_fragmentTypes);
+
+	var _updateFragmentList = __webpack_require__(16);
+
+	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
+
+	var _browserEventsClearEventListeners = __webpack_require__(20);
+
+	var _browserEventsClearEventListeners2 = _interopRequireDefault(_browserEventsClearEventListeners);
+
+	var _browserEventsAddEventListener = __webpack_require__(23);
+
+	var _browserEventsAddEventListener2 = _interopRequireDefault(_browserEventsAddEventListener);
+
+	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
+
+	    var element = oldFragment.templateElement;
+	    var type = oldFragment.templateType;
+
+	    fragment.templateElement = element;
+	    fragment.templateType = type;
+
+	    if (fragment.templateValue !== oldFragment.templateValue) {
+
+	        switch (type) {
+	            case _fragmentTypes2["default"].LIST:
+	            case _fragmentTypes2["default"].LIST_REPLACE:
+	                (0, _updateFragmentList2["default"])(context, oldFragment.templateValue, fragment.templateValue, element, component);
+	                return;
+	            case _fragmentTypes2["default"].TEXT:
+	                element.firstChild.nodeValue = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].TEXT_DIRECT:
+	                element.nodeValue = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].FRAGMENT:
+	            case _fragmentTypes2["default"].FRAGMENT_REPLACE:
+	                (0, _updateFragment2["default"])(context, oldFragment.templateValue, fragment.templateValue, element, component);
+	                return;
+	            case _fragmentTypes2["default"].ATTR_CLASS:
+	                element.className = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_CHECKED:
+	                element.checked = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_SELECTED:
+	                element.selected = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_DISABLED:
+	                element.disabled = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_HREF:
+	                element.href = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_ID:
+	                element.id = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_VALUE:
+	                element.value = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_NAME:
+	                element.name = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_TYPE:
+	                element.type = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_LABEL:
+	                element.label = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_PLACEHOLDER:
+	                element.placeholder = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_STYLE:
+	                //TODO
+	                return;
+	            case _fragmentTypes2["default"].ATTR_WIDTH:
+	                element.width = fragment.templateValue;
+	                return;
+	            case _fragmentTypes2["default"].ATTR_HEIGHT:
+	                element.height = fragment.templateValue;
+	                return;
+	            default:
+	                if (!element.props) {
+
+	                    if (events[type] != null) {
+
+	                        (0, _browserEventsClearEventListeners2["default"])(element, component, type);
+	                        (0, _browserEventsAddEventListener2["default"])(element, component, type, fragment.templateValue);
+	                    } else {
+
+	                        element.setAttribute(type, fragment.templateValue);
+	                    }
+	                }
+	                //component prop, update it
+	                else {
+	                        //TODO make component props work for single value fragments
+	                    }
+	                return;
+	        }
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports["default"] = {
+	    TEXT: 0,
+	    TEXT_DIRECT: 1,
+	    FRAGMENT: 2,
+	    LIST: 3,
+	    FRAGMENT_REPLACE: 4,
+	    LIST_REPLACE: 5,
+	    ATTR_CLASS: 6,
+	    ATTR_ID: 7,
+	    ATTR_DISABLED: 8,
+	    ATTR_SELECTED: 9,
+	    ATTR_CHECKED: 10,
+	    ATTR_VALUE: 11,
+	    ATTR_STYLE: 12,
+	    ATTR_HREF: 13,
+	    ATTR_LABEL: 14,
+	    ATTR_TYPE: 15,
+	    ATTR_PLACEHOLDER: 16,
+	    ATTR_NAME: 17,
+	    ATTR_WIDTH: 18,
+	    ATTR_HEIGHT: 19,
+	    //will contain other "custom" types, like rowspan etc or custom data-attributes
+	    ATTR_OTHER: {},
+	    COMPONENT_PROPS: {}
+	};
+	module.exports = exports["default"];
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	            value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _removeFragments = __webpack_require__(17);
+
+	var _removeFragments2 = _interopRequireDefault(_removeFragments);
+
+	var _removeFragment = __webpack_require__(12);
+
+	var _removeFragment2 = _interopRequireDefault(_removeFragment);
+
+	var _attachFragmentList = __webpack_require__(18);
+
+	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
+
+	var _attachFragment = __webpack_require__(8);
+
+	var _attachFragment2 = _interopRequireDefault(_attachFragment);
+
+	var _updateFragment = __webpack_require__(11);
+
+	var _updateFragment2 = _interopRequireDefault(_updateFragment);
+
+	var _moveFragment = __webpack_require__(19);
+
+	var _moveFragment2 = _interopRequireDefault(_moveFragment);
+
+	exports["default"] = function (context, oldList, list, parentDom, component, outerNextFragment) {
+
+	            var oldListLength = oldList.length;
+	            var listLength = list.length;
+
+	            if (listLength === 0) {
+
+	                        (0, _removeFragments2["default"])(context, parentDom, oldList, 0, oldListLength);
+	                        return;
+	            } else if (oldListLength === 0) {
+
+	                        (0, _attachFragmentList2["default"])(context, list, parentDom, component);
+	                        return;
+	            }
+
+	            var oldEndIndex = oldListLength - 1;
+	            var endIndex = listLength - 1;
+	            var oldStartIndex = 0,
+	                startIndex = 0;
+	            var successful = true;
+	            var nextItem;
+	            var oldItem, item;
+
+	            outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
+
+	                        successful = false;
+	                        var oldStartItem, oldEndItem, startItem, endItem, doUpdate;
+
+	                        oldStartItem = oldList[oldStartIndex];
+	                        startItem = list[startIndex];
+	                        while (oldStartItem.key === startItem.key) {
+
+	                                    (0, _updateFragment2["default"])(context, oldStartItem, startItem, parentDom, component);
+	                                    oldStartIndex++;startIndex++;
+	                                    if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+
+	                                                break outer;
+	                                    }
+	                                    oldStartItem = oldList[oldStartIndex];
+	                                    startItem = list[startIndex];
+	                                    successful = true;
+	                        }
+	                        oldEndItem = oldList[oldEndIndex];
+	                        endItem = list[endIndex];
+	                        while (oldEndItem.key === endItem.key) {
+
+	                                    (0, _updateFragment2["default"])(context, oldEndItem, endItem, parentDom, component);
+	                                    oldEndIndex--;endIndex--;
+	                                    if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+
+	                                                break outer;
+	                                    }
+	                                    oldEndItem = oldList[oldEndIndex];
+	                                    endItem = list[endIndex];
+	                                    successful = true;
+	                        }
+	                        while (oldStartItem.key === endItem.key) {
+
+	                                    nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
+	                                    (0, _updateFragment2["default"])(context, oldStartItem, endItem, parentDom, component);
+	                                    (0, _moveFragment2["default"])(parentDom, endItem, nextItem);
+	                                    oldStartIndex++;endIndex--;
+	                                    if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+
+	                                                break outer;
+	                                    }
+	                                    oldStartItem = oldList[oldStartIndex];
+	                                    endItem = list[endIndex];
+	                                    successful = true;
+	                        }
+	                        while (oldEndItem.key === startItem.key) {
+
+	                                    nextItem = oldStartIndex < oldListLength ? oldList[oldStartIndex] : outerNextFragment;
+	                                    (0, _updateFragment2["default"])(context, oldEndItem, startItem, parentDom, component);
+	                                    (0, _moveFragment2["default"])(parentDom, startItem, nextItem);
+	                                    oldEndIndex--;startIndex++;
+	                                    if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+
+	                                                break outer;
+	                                    }
+	                                    oldEndItem = oldList[oldEndIndex];
+	                                    startItem = list[startIndex];
+	                                    successful = true;
+	                        }
+	            }
+	            if (oldStartIndex > oldEndIndex) {
+
+	                        nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
+	                        for (i = startIndex; i <= endIndex; i++) {
+
+	                                    item = list[i];
+	                                    (0, _attachFragment2["default"])(context, item, parentDom, component, nextItem);
+	                        }
+	            } else if (startIndex > endIndex) {
+
+	                        (0, _removeFragments2["default"])(context, parentDom, oldList, oldStartIndex, oldEndIndex + 1);
+	            } else {
+
+	                        var i,
+	                            oldNextItem = oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1];
+	                        var oldListMap = {};
+	                        for (i = oldEndIndex; i >= oldStartIndex; i--) {
+
+	                                    oldItem = oldList[i];
+	                                    oldItem.next = oldNextItem;
+	                                    oldListMap[oldItem.key] = oldItem;
+	                                    oldNextItem = oldItem;
+	                        }
+	                        nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
+	                        for (i = endIndex; i >= startIndex; i--) {
+
+	                                    item = list[i];
+	                                    var key = item.key;
+	                                    oldItem = oldListMap[key];
+	                                    if (oldItem) {
+
+	                                                oldListMap[key] = null;
+	                                                oldNextItem = oldItem.next;
+	                                                (0, _updateFragment2["default"])(context, oldItem, item, parentDom, component);
+	                                                if (parentDom.nextSibling != (nextItem && nextItem.dom)) {
+
+	                                                            (0, _moveFragment2["default"])(parentDom, item, nextItem);
+	                                                }
+	                                    } else {
+
+	                                                (0, _attachFragment2["default"])(context, item, parentDom, component, nextItem);
+	                                    }
+	                                    nextItem = item;
+	                        }
+	                        for (i = oldStartIndex; i <= oldEndIndex; i++) {
+
+	                                    oldItem = oldList[i];
+	                                    if (oldListMap[oldItem.key] !== null) {
+
+	                                                (0, _removeFragment2["default"])(context, parentDom, oldItem);
+	                                    }
+	                        }
+	            }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _removeFragment = __webpack_require__(12);
+
+	var _removeFragment2 = _interopRequireDefault(_removeFragment);
+
+	exports["default"] = function (context, parentDom, fragments, i, to) {
+
+	    for (; i < to; i++) {
+
+	        (0, _removeFragment2["default"])(context, parentDom, fragments[i]);
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _attachFragment = __webpack_require__(8);
+
+	var _attachFragment2 = _interopRequireDefault(_attachFragment);
+
+	exports["default"] = function (context, list, parentDom, component) {
+
+	    for (var i = 0; i < list.length; i++) {
+
+	        (0, _attachFragment2["default"])(context, list[i], parentDom, component);
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports["default"] = function (parentDom, item, nextItem) {
+
+	    var domItem = item.dom,
+	        domRefItem = nextItem && nextItem.dom;
+
+	    if (domItem !== domRefItem) {
+
+	        if (domRefItem) {
+
+	            parentDom.insertBefore(domItem, domRefItem);
+	        } else {
+
+	            parentDom.appendChild(domItem);
+	        }
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _sharedRootlisteners = __webpack_require__(21);
+
+	var _sharedRootlisteners2 = _interopRequireDefault(_sharedRootlisteners);
+
+	var _sharedEvents = __webpack_require__(22);
+
+	var _sharedEvents2 = _interopRequireDefault(_sharedEvents);
+
+	exports["default"] = function (parentDom, component, listenerName) {
+
+	    var listeners = _sharedRootlisteners2["default"][_sharedEvents2["default"][listenerName]];
+	    var index = 0;
+	    while (index < listeners.length) {
+
+	        if (listeners[index].target === parentDom) {
+
+	            listeners.splice(index, 1);
+	            index = 0;
+	        }
+	        index++;
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports["default"] = {
+	    click: []
+	};
+	module.exports = exports["default"];
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports["default"] = {
+	    onBlur: "blur",
+	    onChange: "change",
+	    onClick: "click",
+	    onContextMenu: "contextmenu",
+	    onCopy: "copy",
+	    onCut: "cut",
+	    onDoubleClick: "dblclick",
+	    onDrag: "drag",
+	    onDragEnd: "dragend",
+	    onDragEnter: "dragenter",
+	    onDragExit: "dragexit",
+	    onDragLeave: "dragleave",
+	    onDragOver: "dragover",
+	    onDragStart: "dragstart",
+	    onDrop: "drop",
+	    onError: "error",
+	    onFocus: "focus",
+	    onInput: "input",
+	    onInvalid: "invalid",
+	    onKeyDown: "keydown",
+	    onKeyPress: "keypress",
+	    onKeyUp: "keyup",
+	    onLoad: "load",
+	    onMouseDown: "mousedown",
+	    onMouseEnter: "mouseenter",
+	    onMouseLeave: "mouseleave",
+	    onMouseMove: "mousemove",
+	    onMouseOut: "mouseout",
+	    onMouseOver: "mouseover",
+	    onMouseUp: "mouseup",
+	    onMouseDown: "mousedown",
+	    onMouseMove: "mousemove",
+	    onMouseEnter: "mouseenter",
+	    onMouseLeave: "mouseleave",
+	    onPaste: "paste",
+	    onReset: "reset",
+	    onScroll: "scroll",
+	    onSubmit: "submit",
+	    onTouchCancel: "touchcancel",
+	    onTouchEnd: "touchend",
+	    onTouchMove: "touchmove",
+	    onTouchStart: "touchstart",
+	    onWheel: "wheel"
+	};
+	module.exports = exports["default"];
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _sharedRootlisteners = __webpack_require__(21);
+
+	var _sharedRootlisteners2 = _interopRequireDefault(_sharedRootlisteners);
+
+	var _sharedEvents = __webpack_require__(22);
+
+	var _sharedEvents2 = _interopRequireDefault(_sharedEvents);
+
+	exports["default"] = function (parentDom, component, listenerName, callback) {
+
+	    _sharedRootlisteners2["default"][_sharedEvents2["default"][listenerName]].push({
+	        target: parentDom,
+	        callback: callback,
+	        component: component
+	    });
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _updateFragment = __webpack_require__(11);
+
+	var _updateFragment2 = _interopRequireDefault(_updateFragment);
+
+	var _fragmentTypes = __webpack_require__(15);
+
+	var _fragmentTypes2 = _interopRequireDefault(_fragmentTypes);
+
+	var _updateFragmentList = __webpack_require__(16);
+
+	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
+
+	var _browserEventsClearEventListeners = __webpack_require__(20);
+
+	var _browserEventsClearEventListeners2 = _interopRequireDefault(_browserEventsClearEventListeners);
+
+	var _browserEventsAddEventListener = __webpack_require__(23);
+
+	var _browserEventsAddEventListener2 = _interopRequireDefault(_browserEventsAddEventListener);
+
+	//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
+	//refactored to by more DRY. although, this causes a significant performance cost
+	//on the v8 compiler. need to explore how to refactor without introducing this performance cost
+
+	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
+
+	    var componentsToUpdate = [],
+	        i;
+
+	    for (i = 0, length = fragment.templateValues.length; i < length; i++) {
+
+	        var element = oldFragment.templateElements[i];
+	        var type = oldFragment.templateTypes[i];
+
+	        fragment.templateElements[i] = element;
+	        fragment.templateTypes[i] = type;
+
+	        if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
+
+	            switch (type) {
+	                case _fragmentTypes2["default"].LIST:
+	                case _fragmentTypes2["default"].LIST_REPLACE:
+	                    (0, _updateFragmentList2["default"])(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+	                    break;
+	                case _fragmentTypes2["default"].TEXT:
+	                    element.firstChild.nodeValue = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].TEXT_DIRECT:
+	                    element.nodeValue = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].FRAGMENT:
+	                case _fragmentTypes2["default"].FRAGMENT_REPLACE:
+	                    (0, _updateFragment2["default"])(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_CLASS:
+	                    element.className = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_CHECKED:
+	                    element.checked = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_SELECTED:
+	                    element.selected = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_DISABLED:
+	                    element.disabled = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_HREF:
+	                    element.href = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_ID:
+	                    element.id = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_VALUE:
+	                    element.value = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_NAME:
+	                    element.name = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_TYPE:
+	                    element.type = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_LABEL:
+	                    element.label = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_PLACEHOLDER:
+	                    element.placeholder = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_STYLE:
+	                    //TODO
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_WIDTH:
+	                    element.width = fragment.templateValues[i];
+	                    break;
+	                case _fragmentTypes2["default"].ATTR_HEIGHT:
+	                    element.height = fragment.templateValues[i];
+	                    break;
+	                default:
+	                    //custom attribute, so simply setAttribute it
+	                    if (!element.props) {
+
+	                        if (events[type] != null) {
+
+	                            (0, _browserEventsClearEventListeners2["default"])(element, component, type);
+	                            (0, _browserEventsAddEventListener2["default"])(element, component, type, fragment.templateValues[i]);
+	                        } else {
+
+	                            element.setAttribute(type, fragment.templateValues[i]);
+	                        }
+	                    }
+	                    //component prop, update it
+	                    else {
+
+	                            element.props[type] = fragment.templateValues[i];
+	                            var alreadyInQueue = false;
+	                            for (s = 0; s < componentsToUpdate.length; s++) {
+
+	                                if (componentsToUpdate[s] === element) {
+
+	                                    alreadyInQueue = true;
+	                                }
+	                            }
+	                            if (alreadyInQueue === false) {
+
+	                                componentsToUpdate.push(element);
+	                            }
+	                        }
+	                    break;
+	            }
+	        }
+	    }
+	    if (componentsToUpdate.length > 0) {
+
+	        for (i = 0; i < componentsToUpdate.length; i++) {
+
+	            componentsToUpdate[i].forceUpdate();
+	        }
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _destroyFragment = __webpack_require__(13);
+
+	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
+
+	exports["default"] = function (context, parentDom, domNode, nextFragment, replace) {
+
+	        var noDestroy = false;
+	        if (nextFragment) {
+
+	                var domNextFragment = nextFragment.dom;
+	                if (!domNextFragment) {
+
+	                        domNextFragment = nextFragment;
+	                        parentDom = domNextFragment.parentNode;
+	                        noDestroy = true;
+	                }
+	                if (replace) {
+
+	                        if (noDestroy === false) {
+
+	                                (0, _destroyFragment2["default"])(context, nextFragment);
+	                        }
+	                        parentDom.replaceChild(domNode, domNextFragment);
+	                } else {
+
+	                        parentDom.insertBefore(domNode, domNextFragment);
+	                }
+	        } else {
+
+	                parentDom.appendChild(domNode);
+	        }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	/**
+	 * Both a setter & getter for t7 dependency
+	 */
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var _arguments = arguments;
+	var t7dependency = true;
+
+	exports["default"] = function (hast7dependency) {
+
+	    if (_arguments.length) {
+
+	        t7dependency = hast7dependency;
+	        // if no args, do a return
+	    } else {
+
+	            return t7dependency;
+	        }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports["default"] = function (previousActiveElement) {
+
+	    if (previousActiveElement && previousActiveElement != document.body && previousActiveElement != document.activeElement) {
+
+	        previousActiveElement.focus();
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports["default"] = "0.2.4";
+	module.exports = exports["default"];
+
+/***/ },
+/* 29 */
 /***/ function(module, exports) {
 
 	/*
@@ -2187,7 +2497,7 @@
 
 
 /***/ },
-/* 7 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2205,36 +2515,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	/**
-	 * Both a setter & getter for t7 dependency
-	 */
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	var _arguments = arguments;
-	var t7dependency = true;
-
-	exports["default"] = function (hast7dependency) {
-
-	    if (_arguments.length) {
-
-	        t7dependency = hast7dependency;
-	        // if no args, do a return
-	    } else {
-
-	            return t7dependency;
-	        }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 9 */
+/* 31 */
 /***/ function(module, exports) {
 
 	/**
@@ -2243,27 +2524,27 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	        value: true
 	});
 
 	exports["default"] = function (obj, callback) {
 
-	    if (obj) {
+	        if (obj) {
 
-	        var propName = undefined;
+	                var propName = undefined;
 
-	        for (propName in obj) {
+	                for (propName in obj) {
 
-	            callback(propName, obj[propName]);
+	                        callback(propName, obj[propName]);
+	                }
 	        }
-	    }
-	    return obj;
+	        return obj;
 	};
 
 	module.exports = exports["default"];
 
 /***/ },
-/* 10 */
+/* 32 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2292,7 +2573,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 11 */
+/* 33 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2308,231 +2589,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports["default"] = [];
-	module.exports = exports["default"];
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports["default"] = {};
-	module.exports = exports["default"];
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _sharedRootlisteners = __webpack_require__(15);
-
-	var _sharedRootlisteners2 = _interopRequireDefault(_sharedRootlisteners);
-
-	var _sharedEvents = __webpack_require__(16);
-
-	var _sharedEvents2 = _interopRequireDefault(_sharedEvents);
-
-	exports["default"] = function (parentDom, component, listenerName, callback) {
-
-	    _sharedRootlisteners2["default"][_sharedEvents2["default"][listenerName]].push({
-	        target: parentDom,
-	        callback: callback,
-	        component: component
-	    });
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports["default"] = {
-	    click: []
-	};
-	module.exports = exports["default"];
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports["default"] = {
-	    onBlur: "blur",
-	    onChange: "change",
-	    onClick: "click",
-	    onContextMenu: "contextmenu",
-	    onCopy: "copy",
-	    onCut: "cut",
-	    onDoubleClick: "dblclick",
-	    onDrag: "drag",
-	    onDragEnd: "dragend",
-	    onDragEnter: "dragenter",
-	    onDragExit: "dragexit",
-	    onDragLeave: "dragleave",
-	    onDragOver: "dragover",
-	    onDragStart: "dragstart",
-	    onDrop: "drop",
-	    onError: "error",
-	    onFocus: "focus",
-	    onInput: "input",
-	    onInvalid: "invalid",
-	    onKeyDown: "keydown",
-	    onKeyPress: "keypress",
-	    onKeyUp: "keyup",
-	    onLoad: "load",
-	    onMouseDown: "mousedown",
-	    onMouseEnter: "mouseenter",
-	    onMouseLeave: "mouseleave",
-	    onMouseMove: "mousemove",
-	    onMouseOut: "mouseout",
-	    onMouseOver: "mouseover",
-	    onMouseUp: "mouseup",
-	    onMouseDown: "mousedown",
-	    onMouseMove: "mousemove",
-	    onMouseEnter: "mouseenter",
-	    onMouseLeave: "mouseleave",
-	    onPaste: "paste",
-	    onReset: "reset",
-	    onScroll: "scroll",
-	    onSubmit: "submit",
-	    onTouchCancel: "touchcancel",
-	    onTouchEnd: "touchend",
-	    onTouchMove: "touchmove",
-	    onTouchStart: "touchstart",
-	    onWheel: "wheel"
-	};
-	module.exports = exports["default"];
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _sharedInitialisedListeners = __webpack_require__(18);
-
-	var _sharedInitialisedListeners2 = _interopRequireDefault(_sharedInitialisedListeners);
-
-	exports["default"] = function () {
-
-	    // has to do this 'hack' else it will become read-only
-	    (0, _sharedInitialisedListeners2["default"])(true);
-	    if (rootlisteners != null) {
-
-	        // TODO! Take this out into it's own module and do some event cleanup along the road?
-	        document.addEventListener("click", function (e) {
-
-	            for (var i = 0; i < rootlisteners.click.length; i = i + 1 | 0) {
-
-	                if (rootlisteners.click[i].target === e.target) {
-
-	                    rootlisteners.click[i].callback.call(rootlisteners.click[i].component || null, e);
-	                }
-	            }
-	        });
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	var initialisedListeners = false;
-
-	exports["default"] = function (value) {
-
-	    if (value) {
-
-	        initialisedListeners = value;
-	    } else {
-
-	        return initialisedListeners;
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _sharedRootlisteners = __webpack_require__(15);
-
-	var _sharedRootlisteners2 = _interopRequireDefault(_sharedRootlisteners);
-
-	var _sharedEvents = __webpack_require__(16);
-
-	var _sharedEvents2 = _interopRequireDefault(_sharedEvents);
-
-	exports["default"] = function (parentDom, component, listenerName) {
-
-	    var listeners = _sharedRootlisteners2["default"][_sharedEvents2["default"][listenerName]];
-	    var index = 0;
-	    while (index < listeners.length) {
-
-	        if (listeners[index].target === parentDom) {
-
-	            listeners.splice(index, 1);
-	            index = 0;
-	        }
-	        index++;
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 20 */
+/* 34 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2558,7 +2615,57 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 21 */
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _eventsSharedEvents = __webpack_require__(22);
+
+	var _eventsSharedEvents2 = _interopRequireDefault(_eventsSharedEvents);
+
+	var _eventsClearEventListeners = __webpack_require__(20);
+
+	var _eventsClearEventListeners2 = _interopRequireDefault(_eventsClearEventListeners);
+
+	var _eventsAddEventListener = __webpack_require__(23);
+
+	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
+
+	var _DOMAttrCfg = __webpack_require__(36);
+
+	var _DOMAttrCfg2 = _interopRequireDefault(_DOMAttrCfg);
+
+	exports["default"] = function (node, attrs, component) {
+
+	        var attrName = undefined,
+	            attrVal = undefined;
+	        for (attrName in attrs) {
+
+	                attrVal = attrs[attrName];
+
+	                if (_eventsSharedEvents2["default"][attrName] != null) {
+
+	                        (0, _eventsClearEventListeners2["default"])(node, component, attrName);
+	                        (0, _eventsAddEventListener2["default"])(node, component, attrName, attrVal);
+	                } else {
+
+	                        (0, _DOMAttrCfg2["default"])(attrName).set(node, attrName, attrVal);
+	                }
+	        }
+	};
+
+	;
+	module.exports = exports["default"];
+
+/***/ },
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2569,11 +2676,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _cfgAttrsCfg = __webpack_require__(22);
+	var _cfgAttrsCfg = __webpack_require__(37);
 
 	var _cfgAttrsCfg2 = _interopRequireDefault(_cfgAttrsCfg);
 
-	var _cfgDefaultAttrCfg = __webpack_require__(43);
+	var _cfgDefaultAttrCfg = __webpack_require__(58);
 
 	var _cfgDefaultAttrCfg2 = _interopRequireDefault(_cfgDefaultAttrCfg);
 
@@ -2585,7 +2692,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 22 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2596,35 +2703,35 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setObjStyle = __webpack_require__(23);
+	var _setObjStyle = __webpack_require__(38);
 
 	var _setObjStyle2 = _interopRequireDefault(_setObjStyle);
 
-	var _removeProp = __webpack_require__(28);
+	var _removeProp = __webpack_require__(43);
 
 	var _removeProp2 = _interopRequireDefault(_removeProp);
 
-	var _setPropWithCheck = __webpack_require__(30);
+	var _setPropWithCheck = __webpack_require__(45);
 
 	var _setPropWithCheck2 = _interopRequireDefault(_setPropWithCheck);
 
-	var _boolPropCfg = __webpack_require__(32);
+	var _boolPropCfg = __webpack_require__(47);
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultPropCfg = __webpack_require__(34);
+	var _defaultPropCfg = __webpack_require__(49);
 
 	var _defaultPropCfg2 = _interopRequireDefault(_defaultPropCfg);
 
-	var _boolAttrCfg = __webpack_require__(36);
+	var _boolAttrCfg = __webpack_require__(51);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
-	var _xmlAttrCfg = __webpack_require__(39);
+	var _xmlAttrCfg = __webpack_require__(54);
 
 	var _xmlAttrCfg2 = _interopRequireDefault(_xmlAttrCfg);
 
-	var _xlinkAttrCfg = __webpack_require__(41);
+	var _xlinkAttrCfg = __webpack_require__(56);
 
 	var _xlinkAttrCfg2 = _interopRequireDefault(_xlinkAttrCfg);
 
@@ -2690,28 +2797,28 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 23 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	                value: true
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _cleanValues = __webpack_require__(24);
+	var _cleanValues = __webpack_require__(39);
 
 	var _cleanValues2 = _interopRequireDefault(_cleanValues);
 
-	var _utilsForIn = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../utils/forIn\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _utilForIn = __webpack_require__(31);
 
-	var _utilsForIn2 = _interopRequireDefault(_utilsForIn);
+	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 
-	var _utilsIsArray = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../utils/isArray\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _utilIsArray = __webpack_require__(33);
 
-	var _utilsIsArray2 = _interopRequireDefault(_utilsIsArray);
+	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 
 	/**
 	 * Set CSS styles
@@ -2723,43 +2830,43 @@
 
 	exports["default"] = function (node, propertyName, value) {
 
-	    if (typeof value === "string") {
+	                if (typeof value === "string") {
 
-	        node.cssText = value;
-	    } else {
-	        (function () {
-
-	            var idx = 0,
-	                len = undefined,
-	                style = node[propertyName];
-
-	            (0, _utilsForIn2["default"])(value, function (styleName, styleValue) {
-
-	                if (styleValue != null) {
-
-	                    if ((0, _utilsIsArray2["default"])(styleValue)) {
-
-	                        for (len = styleValue.length; idx < len; idx++) {
-
-	                            style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue[idx]);
-	                        }
-	                    } else {
-
-	                        style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue);
-	                    }
+	                                node.cssText = value;
 	                } else {
+	                                (function () {
 
-	                    style[styleName] = "";
+	                                                var idx = 0,
+	                                                    len = undefined,
+	                                                    style = node[propertyName];
+
+	                                                (0, _utilForIn2["default"])(value, function (styleName, styleValue) {
+
+	                                                                if (styleValue != null) {
+
+	                                                                                if ((0, _utilIsArray2["default"])(styleValue)) {
+
+	                                                                                                for (len = styleValue.length; idx < len; idx++) {
+
+	                                                                                                                style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue[idx]);
+	                                                                                                }
+	                                                                                } else {
+
+	                                                                                                style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue);
+	                                                                                }
+	                                                                } else {
+
+	                                                                                style[styleName] = "";
+	                                                                }
+	                                                });
+	                                })();
 	                }
-	            });
-	        })();
-	    }
 	};
 
 	module.exports = exports["default"];
 
 /***/ },
-/* 24 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2770,7 +2877,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _cfgUnitlessCfg = __webpack_require__(25);
+	var _cfgUnitlessCfg = __webpack_require__(40);
 
 	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
 
@@ -2797,7 +2904,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 25 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2808,15 +2915,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _utilsForIn = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../../utils/forIn\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _utilForIn = __webpack_require__(31);
 
-	var _utilsForIn2 = _interopRequireDefault(_utilsForIn);
+	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 
-	var _prefixes = __webpack_require__(26);
+	var _prefixes = __webpack_require__(41);
 
 	var _prefixes2 = _interopRequireDefault(_prefixes);
 
-	var _prefixKey = __webpack_require__(27);
+	var _prefixKey = __webpack_require__(42);
 
 	var _prefixKey2 = _interopRequireDefault(_prefixKey);
 
@@ -2862,7 +2969,7 @@
 	};
 
 	// convert to vendor prefixed unitless CSS properties
-	(0, _utilsForIn2["default"])(unitless, function (prop, value) {
+	(0, _utilForIn2["default"])(unitless, function (prop, value) {
 
 	    _prefixes2["default"].forEach(function (prefix) {
 
@@ -2873,7 +2980,7 @@
 	/**
 	 * Common snake-cased CSS properties
 	 */
-	(0, _utilsForIn2["default"])({
+	(0, _utilForIn2["default"])({
 	    "animation-iteration-count": true,
 	    "box-flex": true,
 	    "box-flex-group": true,
@@ -2908,7 +3015,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 26 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/**
@@ -2924,7 +3031,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 27 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/**
@@ -2946,7 +3053,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 28 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2957,7 +3064,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeSelectValue = __webpack_require__(29);
+	var _removeSelectValue = __webpack_require__(44);
 
 	var _removeSelectValue2 = _interopRequireDefault(_removeSelectValue);
 
@@ -2983,7 +3090,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 29 */
+/* 44 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3011,7 +3118,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 30 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3022,7 +3129,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setSelectValue = __webpack_require__(31);
+	var _setSelectValue = __webpack_require__(46);
 
 	var _setSelectValue2 = _interopRequireDefault(_setSelectValue);
 
@@ -3043,7 +3150,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 31 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3054,17 +3161,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _utilsInArray = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../utils/inArray\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _utilInArray = __webpack_require__(32);
 
-	var _utilsInArray2 = _interopRequireDefault(_utilsInArray);
+	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 
-	var _utilsIsArray = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../utils/isArray\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _utilIsArray = __webpack_require__(33);
 
-	var _utilsIsArray2 = _interopRequireDefault(_utilsIsArray);
+	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 
 	exports["default"] = function (node, value) {
 
-	    var isMultiple = (0, _utilsIsArray2["default"])(value),
+	    var isMultiple = (0, _utilIsArray2["default"])(value),
 	        options = node.options,
 	        len = options.length;
 
@@ -3079,7 +3186,7 @@
 
 	            if (isMultiple) {
 
-	                optionNode.selected = (0, _utilsInArray2["default"])(value, optionNode.value);
+	                optionNode.selected = (0, _utilInArray2["default"])(value, optionNode.value);
 	            } else {
 
 	                optionNode.selected = optionNode.value == value;
@@ -3091,7 +3198,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 32 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3102,11 +3209,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setBooleanProp = __webpack_require__(33);
+	var _setBooleanProp = __webpack_require__(48);
 
 	var _setBooleanProp2 = _interopRequireDefault(_setBooleanProp);
 
-	var _removeProp = __webpack_require__(28);
+	var _removeProp = __webpack_require__(43);
 
 	var _removeProp2 = _interopRequireDefault(_removeProp);
 
@@ -3117,7 +3224,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 33 */
+/* 48 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3134,7 +3241,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 34 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3145,11 +3252,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setProp = __webpack_require__(35);
+	var _setProp = __webpack_require__(50);
 
 	var _setProp2 = _interopRequireDefault(_setProp);
 
-	var _removeProp = __webpack_require__(28);
+	var _removeProp = __webpack_require__(43);
 
 	var _removeProp2 = _interopRequireDefault(_removeProp);
 
@@ -3160,7 +3267,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 35 */
+/* 50 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3177,7 +3284,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 36 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3188,11 +3295,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeAttr = __webpack_require__(37);
+	var _removeAttr = __webpack_require__(52);
 
 	var _removeAttr2 = _interopRequireDefault(_removeAttr);
 
-	var _setBooleanAttr = __webpack_require__(38);
+	var _setBooleanAttr = __webpack_require__(53);
 
 	var _setBooleanAttr2 = _interopRequireDefault(_setBooleanAttr);
 
@@ -3203,7 +3310,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 37 */
+/* 52 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3220,7 +3327,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 38 */
+/* 53 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3242,7 +3349,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 39 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3253,7 +3360,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xmlCfg = __webpack_require__(40);
+	var _xmlCfg = __webpack_require__(55);
 
 	var _xmlCfg2 = _interopRequireDefault(_xmlCfg);
 
@@ -3270,7 +3377,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 40 */
+/* 55 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3287,7 +3394,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 41 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3298,7 +3405,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xlinkCfg = __webpack_require__(42);
+	var _xlinkCfg = __webpack_require__(57);
 
 	var _xlinkCfg2 = _interopRequireDefault(_xlinkCfg);
 
@@ -3315,7 +3422,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 42 */
+/* 57 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3335,7 +3442,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 43 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3346,11 +3453,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setAttributes = __webpack_require__(44);
+	var _setAttributes = __webpack_require__(59);
 
 	var _setAttributes2 = _interopRequireDefault(_setAttributes);
 
-	var _removeAttr = __webpack_require__(37);
+	var _removeAttr = __webpack_require__(52);
 
 	var _removeAttr2 = _interopRequireDefault(_removeAttr);
 
@@ -3361,7 +3468,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 44 */
+/* 59 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3386,7 +3493,58 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 45 */
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _eventsSharedEvents = __webpack_require__(22);
+
+	var _eventsSharedEvents2 = _interopRequireDefault(_eventsSharedEvents);
+
+	var _eventsClearEventListeners = __webpack_require__(20);
+
+	var _eventsClearEventListeners2 = _interopRequireDefault(_eventsClearEventListeners);
+
+	var _eventsAddEventListener = __webpack_require__(23);
+
+	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
+
+	var _DOMPropsCfg = __webpack_require__(61);
+
+	var _DOMPropsCfg2 = _interopRequireDefault(_DOMPropsCfg);
+
+	exports["default"] = function (node, props, component) {
+
+	        var propName = undefined,
+	            propVal = undefined;
+
+	        for (propName in props) {
+
+	                propVal = props[propName];
+
+	                if (_eventsSharedEvents2["default"][propName] != null) {
+
+	                        (0, _eventsClearEventListeners2["default"])(node, component, propName);
+	                        (0, _eventsAddEventListener2["default"])(node, component, propName, propVal);
+	                } else {
+
+	                        (0, _DOMPropsCfg2["default"])(propName).set(node, propName, propVal);
+	                }
+	        }
+	};
+
+	;
+	module.exports = exports["default"];
+
+/***/ },
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3397,11 +3555,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _cfgPropsCfg = __webpack_require__(46);
+	var _cfgPropsCfg = __webpack_require__(62);
 
 	var _cfgPropsCfg2 = _interopRequireDefault(_cfgPropsCfg);
 
-	var _cfgDefaultPropCfg = __webpack_require__(34);
+	var _cfgDefaultPropCfg = __webpack_require__(49);
 
 	var _cfgDefaultPropCfg2 = _interopRequireDefault(_cfgDefaultPropCfg);
 
@@ -3413,7 +3571,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 46 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3424,27 +3582,27 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setObjStyle = __webpack_require__(23);
+	var _setObjStyle = __webpack_require__(38);
 
 	var _setObjStyle2 = _interopRequireDefault(_setObjStyle);
 
-	var _removeProp = __webpack_require__(28);
+	var _removeProp = __webpack_require__(43);
 
 	var _removeProp2 = _interopRequireDefault(_removeProp);
 
-	var _setPropWithCheck = __webpack_require__(30);
+	var _setPropWithCheck = __webpack_require__(45);
 
 	var _setPropWithCheck2 = _interopRequireDefault(_setPropWithCheck);
 
-	var _boolPropCfg = __webpack_require__(32);
+	var _boolPropCfg = __webpack_require__(47);
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultAttrCfg = __webpack_require__(43);
+	var _defaultAttrCfg = __webpack_require__(58);
 
 	var _defaultAttrCfg2 = _interopRequireDefault(_defaultAttrCfg);
 
-	var _boolAttrCfg = __webpack_require__(36);
+	var _boolAttrCfg = __webpack_require__(51);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
@@ -3510,108 +3668,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _eventsSharedEvents = __webpack_require__(16);
-
-	var _eventsSharedEvents2 = _interopRequireDefault(_eventsSharedEvents);
-
-	var _eventsClearEventListeners = __webpack_require__(19);
-
-	var _eventsClearEventListeners2 = _interopRequireDefault(_eventsClearEventListeners);
-
-	var _eventsAddEventListener = __webpack_require__(14);
-
-	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
-
-	var _DOMAttrCfg = __webpack_require__(21);
-
-	var _DOMAttrCfg2 = _interopRequireDefault(_DOMAttrCfg);
-
-	exports["default"] = function (node, attrs, component) {
-
-	    var attrName = undefined,
-	        attrVal = undefined;
-	    for (attrName in attrs) {
-
-	        attrVal = attrs[attrName];
-
-	        if (_eventsSharedEvents2["default"][attrName] != null) {
-
-	            (0, _eventsClearEventListeners2["default"])(node, component, attrName);
-	            (0, _eventsAddEventListener2["default"])(node, component, attrName, attrVal);
-	        } else {
-
-	            (0, _DOMAttrCfg2["default"])(attrName).set(node, attrName, attrVal);
-	        }
-	    }
-	};
-
-	;
-	module.exports = exports["default"];
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _eventsSharedEvents = __webpack_require__(16);
-
-	var _eventsSharedEvents2 = _interopRequireDefault(_eventsSharedEvents);
-
-	var _eventsClearEventListeners = __webpack_require__(19);
-
-	var _eventsClearEventListeners2 = _interopRequireDefault(_eventsClearEventListeners);
-
-	var _eventsAddEventListener = __webpack_require__(14);
-
-	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
-
-	var _DOMPropsCfg = __webpack_require__(45);
-
-	var _DOMPropsCfg2 = _interopRequireDefault(_DOMPropsCfg);
-
-	exports["default"] = function (node, props, component) {
-
-	    var propName = undefined,
-	        propVal = undefined;
-
-	    for (propName in props) {
-
-	        propVal = props[propName];
-
-	        if (_eventsSharedEvents2["default"][propName] != null) {
-
-	            (0, _eventsClearEventListeners2["default"])(node, component, propName);
-	            (0, _eventsAddEventListener2["default"])(node, component, propName, propVal);
-	        } else {
-
-	            (0, _DOMPropsCfg2["default"])(propName).set(node, propName, propVal);
-	        }
-	    }
-	};
-
-	;
-	module.exports = exports["default"];
-
-/***/ },
-/* 49 */
+/* 63 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3628,7 +3685,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 50 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3639,11 +3696,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _addAttributes = __webpack_require__(47);
+	var _addAttributes = __webpack_require__(35);
 
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 
-	var _addProperties = __webpack_require__(48);
+	var _addProperties = __webpack_require__(60);
 
 	var _addProperties2 = _interopRequireDefault(_addProperties);
 
@@ -3674,1121 +3731,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _utilsForIn = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../../../utils/forIn\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _utilsForIn2 = _interopRequireDefault(_utilsForIn);
-
-	var _sharedPrefixes = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../.././shared/prefixes\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _sharedPrefixes2 = _interopRequireDefault(_sharedPrefixes);
-
-	var _sharedPrefixKey = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \".././shared/prefixKey\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _sharedPrefixKey2 = _interopRequireDefault(_sharedPrefixKey);
-
-	/**
-	 * CSS properties which accept numbers but are not in units of "px".
-	 */
-	var unitless = {
-	    animationIterationCount: true,
-	    boxFlex: true,
-	    boxFlexGroup: true,
-	    boxOrdinalGroup: true,
-	    counterRreset: true,
-	    counterIncrement: true,
-	    columnCount: true,
-	    flex: true,
-	    flexGrow: true,
-	    flexPositive: true,
-	    flexShrink: true,
-	    flexNegative: true,
-	    flexOrder: true,
-	    float: true,
-	    fontWeight: true,
-	    lineClamp: true,
-	    lineHeight: true,
-	    opacity: true,
-	    order: true,
-	    orphans: true,
-	    pitchRange: true,
-	    richness: true,
-	    stress: true,
-	    tabSize: true,
-	    volume: true,
-	    widows: true,
-	    zIndex: true,
-	    zoom: true,
-
-	    // SVG-related properties
-	    stopOpacity: true,
-	    fillOpacity: true,
-	    strokeDashoffset: true,
-	    strokeOpacity: true,
-	    strokeWidth: true
-	};
-
-	// convert to vendor prefixed unitless CSS properties
-	(0, _utilsForIn2["default"])(unitless, function (prop, value) {
-
-	    _sharedPrefixes2["default"].forEach(function (prefix) {
-
-	        unitless[(0, _sharedPrefixKey2["default"])(prefix, prop)] = value;
-	    });
-	});
-
-	/**
-	 * Common snake-cased CSS properties
-	 */
-	(0, _utilsForIn2["default"])({
-	    "animation-iteration-count": true,
-	    "box-flex": true,
-	    "box-flex-group": true,
-	    "box-ordinal-group": true,
-	    "counter-reset": true,
-	    "counter-increment": true,
-	    "column-count": true,
-	    "flex-grow": true,
-	    "flex-positive": true,
-	    "flex-shrink": true,
-	    "flex-negative": true,
-	    "flex-order": true,
-	    "font-weight": true,
-	    "line-clamp": true,
-	    "line-height": true,
-
-	    // SVG-related properties
-	    "stop-opacity": true,
-	    "fill-opacity": true,
-	    "stroke-dashoffset": true,
-	    "stroke-opacity": true,
-	    "stroke-width": true
-	}, function (prop) {
-
-	    _sharedPrefixes2["default"].forEach(function (prefix, value) {
-
-	        unitless[prop] = value;
-	    });
-	});
-
-	exports["default"] = unitless;
-	module.exports = exports["default"];
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _getRecycledFragment = __webpack_require__(53);
-
-	var _getRecycledFragment2 = _interopRequireDefault(_getRecycledFragment);
-
-	var _updateFragment = __webpack_require__(54);
-
-	var _updateFragment2 = _interopRequireDefault(_updateFragment);
-
-	var _attachFragmentList = __webpack_require__(61);
-
-	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
-
-	var _fragmentTypes = __webpack_require__(58);
-
-	var _fragmentTypes2 = _interopRequireDefault(_fragmentTypes);
-
-	var _insertFragment = __webpack_require__(64);
-
-	var _insertFragment2 = _interopRequireDefault(_insertFragment);
-
-	var _render = __webpack_require__(65);
-
-	var _render2 = _interopRequireDefault(_render);
-
-	var _t7SetT7Dependency = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../t7/setT7Dependency\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _t7SetT7Dependency2 = _interopRequireDefault(_t7SetT7Dependency);
-
-	var attachFagment = function attachFagment(context, fragment, parentDom, component, nextFragment, replace) {
-
-	    var fragmentComponent = fragment.component;
-
-	    if (fragmentComponent) {
-
-	        if (typeof fragmentComponent === "function") {
-
-	            fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
-	            fragmentComponent.context = null;
-	            fragmentComponent.forceUpdate = Inferno.render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
-	            fragmentComponent.forceUpdate();
-	        }
-	        return;
-	    }
-
-	    var recycledFragment = null,
-	        template = fragment.template,
-	        templateKey = template.key;
-
-	    if (context.shouldRecycle === true) {
-
-	        recycledFragment = (0, _getRecycledFragment2["default"])(templateKey);
-	    }
-
-	    if (recycledFragment !== null) {
-
-	        (0, _updateFragment2["default"])(context, recycledFragment, fragment, parentDom, component);
-	    } else {
-
-	        //the user can optionally opt out of using the t7 dependency, thus removing the requirement
-	        //to pass the t7 reference into the template constructor
-	        if ((0, _t7SetT7Dependency2["default"])()) {
-
-	            template(fragment, fragment.t7ref);
-	        } else {
-
-	            template(fragment);
-	        }
-	        //if this fragment has a single value, we attach only that value
-	        if (fragment.templateValue) {
-
-	            switch (fragment.templateType) {
-	                case _fragmentTypes2["default"].LIST:
-	                    (0, _attachFragmentList2["default"])(context, fragment.templateValue, fragment.templateElement);
-	                    break;
-	                case _fragmentTypes2["default"].LIST_REPLACE:
-	                    attachFragment(context, fragment.templateValue, fragment.templateElement, component);
-	                    break;
-	                case _fragmentTypes2["default"].FRAGMENT:
-	                    //TODO do we need this still?
-	                    break;
-	                case _fragmentTypes2["default"].FRAGMENT_REPLACE:
-	                    attachFragment(context, fragment.templateValue, parentDom, fragment.templateElement, true);
-	                    fragment.templateElement = fragment.templateValue.dom.parentNode;
-	                    break;
-	            }
-	        } else if (fragment.templateValues) {
-
-	            //if the fragment has multiple values, we must loop through them all and attach them
-	            //pulling this block of code out into its own function caused strange things to happen
-	            //with performance. it was faster in Gecko but far slower in v8
-	            for (var i = 0, _length = fragment.templateValues.length; i < _length; i++) {
-
-	                var element = fragment.templateElements[i];
-	                var value = fragment.templateValues[i];
-	                switch (fragment.templateTypes[i]) {
-	                    case _fragmentTypes2["default"].LIST:
-	                        (0, _attachFragmentList2["default"])(context, value, element);
-	                        break;
-	                    case _fragmentTypes2["default"].LIST_REPLACE:
-	                        var nodeList = document.createDocumentFragment();
-	                        var placeholderNode = fragment.templateElements[i];
-	                        (0, _attachFragmentList2["default"])(context, value, nodeList);
-	                        placeholderNode.parentNode.replaceChild(nodeList, placeholderNode);
-	                        fragment.templateElements[i] = nodeList;
-	                        break;
-	                    case _fragmentTypes2["default"].FRAGMENT:
-	                        //TODO do we need this still?
-	                        break;
-	                    case _fragmentTypes2["default"].FRAGMENT_REPLACE:
-	                        attachFragment(context, value, parentDom, element, true);
-	                        fragment.templateElements[i] = value.dom.parentNode;
-	                        break;
-	                }
-	            }
-	        }
-	    }
-
-	    (0, _insertFragment2["default"])(context, parentDom, fragment.dom, nextFragment, replace);
-	};
-
-	exports["default"] = attachFagment;
-	module.exports = exports["default"];
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _varsRecycledFragments = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../vars/recycledFragments\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
-
-	exports["default"] = function (templateKey) {
-
-	    var fragments = _varsRecycledFragments2["default"][templateKey];
-	    if (!fragments || fragments.length === 0) {
-
-	        return null;
-	    }
-	    return fragments.pop();
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _removeFragment = __webpack_require__(55);
-
-	var _removeFragment2 = _interopRequireDefault(_removeFragment);
-
-	var _attachFragment = __webpack_require__(52);
-
-	var _attachFragment2 = _interopRequireDefault(_attachFragment);
-
-	var _updateFragmentValue = __webpack_require__(57);
-
-	var _updateFragmentValue2 = _interopRequireDefault(_updateFragmentValue);
-
-	var _updateFragmentValues = __webpack_require__(63);
-
-	var _updateFragmentValues2 = _interopRequireDefault(_updateFragmentValues);
-
-	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
-
-	    if (fragment === null) {
-
-	        (0, _removeFragment2["default"])(context, parentDom, oldFragment);
-	        return;
-	    }
-	    if (oldFragment === null) {
-
-	        (0, _attachFragment2["default"])(context, fragment, parentDom, component);
-	        return;
-	    }
-	    if (oldFragment.template !== fragment.template) {
-
-	        if (oldFragment.component) {
-
-	            var oldComponentFragment = oldFragment.component.context.fragment;
-	            unmountComponentAtFragment(oldFragment);
-	            (0, _attachFragment2["default"])(context, fragment, parentDom, component, oldComponentFragment, true);
-	        } else {
-
-	            (0, _attachFragment2["default"])(context, fragment, parentDom, component, oldFragment, true);
-	        }
-	    } else {
-
-	        var fragmentComponent = oldFragment.component;
-
-	        //if this fragment is a component
-	        if (fragmentComponent) {
-
-	            fragmentComponent.props = fragment.props;
-	            fragmentComponent.forceUpdate();
-	            fragment.component = fragmentComponent;
-	            return;
-	        }
-
-	        //ensure we reference the new fragment with the old fragment's DOM node
-	        fragment.dom = oldFragment.dom;
-
-	        if (fragment.templateValue) {
-
-	            //update a single value in the fragement (templateValue rather than templateValues)
-	            (0, _updateFragmentValue2["default"])(context, oldFragment, fragment, parentDom, component);
-	        } else if (fragment.templateValues) {
-
-	            //updates all values within the fragment (templateValues is an array)
-	            (0, _updateFragmentValues2["default"])(context, oldFragment, fragment, parentDom, component);
-	        }
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _destroyFragment = __webpack_require__(56);
-
-	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
-
-	exports["default"] = function (context, parentDom, item) {
-
-	    var domItem = item.dom;
-	    (0, _destroyFragment2["default"])(context, item);
-	    parentDom.removeChild(domItem);
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _removeFragment = __webpack_require__(55);
-
-	var _removeFragment2 = _interopRequireDefault(_removeFragment);
-
-	var _varsRecycledFragments = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \".././vars/recycledFragments\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
-
-	/**
-	 * Destroy fragment
-	 */
-
-	exports["default"] = function (context, fragment) {
-
-	    var templateKey;
-
-	    //long winded approach, but components have their own context which is how we find their template keys
-	    if (fragment.component) {
-
-	        templateKey = fragment.component.context.fragment.template.key;
-	    } else {
-
-	        templateKey = fragment.template.key;
-	    }
-
-	    if (context.shouldRecycle === true) {
-
-	        var toRecycleForKey = _varsRecycledFragments2["default"][templateKey];
-	        if (!toRecycleForKey) {
-
-	            _varsRecycledFragments2["default"][templateKey] = toRecycleForKey = [];
-	        }
-	        toRecycleForKey.push(fragment);
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _updateFragment = __webpack_require__(54);
-
-	var _updateFragment2 = _interopRequireDefault(_updateFragment);
-
-	var _fragmentTypes = __webpack_require__(58);
-
-	var _fragmentTypes2 = _interopRequireDefault(_fragmentTypes);
-
-	var _updateFragmentList = __webpack_require__(59);
-
-	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
-
-	var _browserEventsClearEventListeners = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../browser/events/clearEventListeners\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _browserEventsClearEventListeners2 = _interopRequireDefault(_browserEventsClearEventListeners);
-
-	var _browserEventsAddEventListener = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../browser/events/addEventListener\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _browserEventsAddEventListener2 = _interopRequireDefault(_browserEventsAddEventListener);
-
-	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
-
-	    var element = oldFragment.templateElement;
-	    var type = oldFragment.templateType;
-
-	    fragment.templateElement = element;
-	    fragment.templateType = type;
-
-	    if (fragment.templateValue !== oldFragment.templateValue) {
-
-	        switch (type) {
-	            case _fragmentTypes2["default"].LIST:
-	            case _fragmentTypes2["default"].LIST_REPLACE:
-	                (0, _updateFragmentList2["default"])(context, oldFragment.templateValue, fragment.templateValue, element, component);
-	                return;
-	            case _fragmentTypes2["default"].TEXT:
-	                element.firstChild.nodeValue = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].TEXT_DIRECT:
-	                element.nodeValue = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].FRAGMENT:
-	            case _fragmentTypes2["default"].FRAGMENT_REPLACE:
-	                (0, _updateFragment2["default"])(context, oldFragment.templateValue, fragment.templateValue, element, component);
-	                return;
-	            case _fragmentTypes2["default"].ATTR_CLASS:
-	                element.className = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_CHECKED:
-	                element.checked = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_SELECTED:
-	                element.selected = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_DISABLED:
-	                element.disabled = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_HREF:
-	                element.href = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_ID:
-	                element.id = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_VALUE:
-	                element.value = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_NAME:
-	                element.name = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_TYPE:
-	                element.type = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_LABEL:
-	                element.label = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_PLACEHOLDER:
-	                element.placeholder = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_STYLE:
-	                //TODO
-	                return;
-	            case _fragmentTypes2["default"].ATTR_WIDTH:
-	                element.width = fragment.templateValue;
-	                return;
-	            case _fragmentTypes2["default"].ATTR_HEIGHT:
-	                element.height = fragment.templateValue;
-	                return;
-	            default:
-	                if (!element.props) {
-
-	                    if (events[type] != null) {
-
-	                        (0, _browserEventsClearEventListeners2["default"])(element, component, type);
-	                        (0, _browserEventsAddEventListener2["default"])(element, component, type, fragment.templateValue);
-	                    } else {
-
-	                        element.setAttribute(type, fragment.templateValue);
-	                    }
-	                }
-	                //component prop, update it
-	                else {
-	                        //TODO make component props work for single value fragments
-	                    }
-	                return;
-	        }
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 58 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports["default"] = {
-	    TEXT: 0,
-	    TEXT_DIRECT: 1,
-	    FRAGMENT: 2,
-	    LIST: 3,
-	    FRAGMENT_REPLACE: 4,
-	    LIST_REPLACE: 5,
-	    ATTR_CLASS: 6,
-	    ATTR_ID: 7,
-	    ATTR_DISABLED: 8,
-	    ATTR_SELECTED: 9,
-	    ATTR_CHECKED: 10,
-	    ATTR_VALUE: 11,
-	    ATTR_STYLE: 12,
-	    ATTR_HREF: 13,
-	    ATTR_LABEL: 14,
-	    ATTR_TYPE: 15,
-	    ATTR_PLACEHOLDER: 16,
-	    ATTR_NAME: 17,
-	    ATTR_WIDTH: 18,
-	    ATTR_HEIGHT: 19,
-	    //will contain other "custom" types, like rowspan etc or custom data-attributes
-	    ATTR_OTHER: {},
-	    COMPONENT_PROPS: {}
-	};
-	module.exports = exports["default"];
-
-/***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _removeFragments = __webpack_require__(60);
-
-	var _removeFragments2 = _interopRequireDefault(_removeFragments);
-
-	var _removeFragment = __webpack_require__(55);
-
-	var _removeFragment2 = _interopRequireDefault(_removeFragment);
-
-	var _attachFragmentList = __webpack_require__(61);
-
-	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
-
-	var _attachFragment = __webpack_require__(52);
-
-	var _attachFragment2 = _interopRequireDefault(_attachFragment);
-
-	var _updateFragment = __webpack_require__(54);
-
-	var _updateFragment2 = _interopRequireDefault(_updateFragment);
-
-	var _moveFragment = __webpack_require__(62);
-
-	var _moveFragment2 = _interopRequireDefault(_moveFragment);
-
-	exports["default"] = function (context, oldList, list, parentDom, component, outerNextFragment) {
-
-	    var oldListLength = oldList.length;
-	    var listLength = list.length;
-
-	    if (listLength === 0) {
-
-	        (0, _removeFragments2["default"])(context, parentDom, oldList, 0, oldListLength);
-	        return;
-	    } else if (oldListLength === 0) {
-
-	        (0, _attachFragmentList2["default"])(context, list, parentDom, component);
-	        return;
-	    }
-
-	    var oldEndIndex = oldListLength - 1;
-	    var endIndex = listLength - 1;
-	    var oldStartIndex = 0,
-	        startIndex = 0;
-	    var successful = true;
-	    var nextItem;
-	    var oldItem, item;
-
-	    outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
-
-	        successful = false;
-	        var oldStartItem, oldEndItem, startItem, endItem, doUpdate;
-
-	        oldStartItem = oldList[oldStartIndex];
-	        startItem = list[startIndex];
-	        while (oldStartItem.key === startItem.key) {
-
-	            (0, _updateFragment2["default"])(context, oldStartItem, startItem, parentDom, component);
-	            oldStartIndex++;startIndex++;
-	            if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-
-	                break outer;
-	            }
-	            oldStartItem = oldList[oldStartIndex];
-	            startItem = list[startIndex];
-	            successful = true;
-	        }
-	        oldEndItem = oldList[oldEndIndex];
-	        endItem = list[endIndex];
-	        while (oldEndItem.key === endItem.key) {
-
-	            (0, _updateFragment2["default"])(context, oldEndItem, endItem, parentDom, component);
-	            oldEndIndex--;endIndex--;
-	            if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-
-	                break outer;
-	            }
-	            oldEndItem = oldList[oldEndIndex];
-	            endItem = list[endIndex];
-	            successful = true;
-	        }
-	        while (oldStartItem.key === endItem.key) {
-
-	            nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-	            (0, _updateFragment2["default"])(context, oldStartItem, endItem, parentDom, component);
-	            (0, _moveFragment2["default"])(parentDom, endItem, nextItem);
-	            oldStartIndex++;endIndex--;
-	            if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-
-	                break outer;
-	            }
-	            oldStartItem = oldList[oldStartIndex];
-	            endItem = list[endIndex];
-	            successful = true;
-	        }
-	        while (oldEndItem.key === startItem.key) {
-
-	            nextItem = oldStartIndex < oldListLength ? oldList[oldStartIndex] : outerNextFragment;
-	            (0, _updateFragment2["default"])(context, oldEndItem, startItem, parentDom, component);
-	            (0, _moveFragment2["default"])(parentDom, startItem, nextItem);
-	            oldEndIndex--;startIndex++;
-	            if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-
-	                break outer;
-	            }
-	            oldEndItem = oldList[oldEndIndex];
-	            startItem = list[startIndex];
-	            successful = true;
-	        }
-	    }
-	    if (oldStartIndex > oldEndIndex) {
-
-	        nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-	        for (i = startIndex; i <= endIndex; i++) {
-
-	            item = list[i];
-	            (0, _attachFragment2["default"])(context, item, parentDom, component, nextItem);
-	        }
-	    } else if (startIndex > endIndex) {
-
-	        (0, _removeFragments2["default"])(context, parentDom, oldList, oldStartIndex, oldEndIndex + 1);
-	    } else {
-
-	        var i,
-	            oldNextItem = oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1];
-	        var oldListMap = {};
-	        for (i = oldEndIndex; i >= oldStartIndex; i--) {
-
-	            oldItem = oldList[i];
-	            oldItem.next = oldNextItem;
-	            oldListMap[oldItem.key] = oldItem;
-	            oldNextItem = oldItem;
-	        }
-	        nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-	        for (i = endIndex; i >= startIndex; i--) {
-
-	            item = list[i];
-	            var key = item.key;
-	            oldItem = oldListMap[key];
-	            if (oldItem) {
-
-	                oldListMap[key] = null;
-	                oldNextItem = oldItem.next;
-	                (0, _updateFragment2["default"])(context, oldItem, item, parentDom, component);
-	                if (parentDom.nextSibling != (nextItem && nextItem.dom)) {
-
-	                    (0, _moveFragment2["default"])(parentDom, item, nextItem);
-	                }
-	            } else {
-
-	                (0, _attachFragment2["default"])(context, item, parentDom, component, nextItem);
-	            }
-	            nextItem = item;
-	        }
-	        for (i = oldStartIndex; i <= oldEndIndex; i++) {
-
-	            oldItem = oldList[i];
-	            if (oldListMap[oldItem.key] !== null) {
-
-	                (0, _removeFragment2["default"])(context, parentDom, oldItem);
-	            }
-	        }
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _removeFragment = __webpack_require__(55);
-
-	var _removeFragment2 = _interopRequireDefault(_removeFragment);
-
-	exports["default"] = function (context, parentDom, fragments, i, to) {
-
-	    for (; i < to; i++) {
-
-	        (0, _removeFragment2["default"])(context, parentDom, fragments[i]);
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _attachFragment = __webpack_require__(52);
-
-	var _attachFragment2 = _interopRequireDefault(_attachFragment);
-
-	exports["default"] = function (context, list, parentDom, component) {
-
-	    for (var i = 0; i < list.length; i++) {
-
-	        (0, _attachFragment2["default"])(context, list[i], parentDom, component);
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 62 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (parentDom, item, nextItem) {
-
-	    var domItem = item.dom,
-	        domRefItem = nextItem && nextItem.dom;
-
-	    if (domItem !== domRefItem) {
-
-	        if (domRefItem) {
-
-	            parentDom.insertBefore(domItem, domRefItem);
-	        } else {
-
-	            parentDom.appendChild(domItem);
-	        }
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _updateFragment = __webpack_require__(54);
-
-	var _updateFragment2 = _interopRequireDefault(_updateFragment);
-
-	var _fragmentTypes = __webpack_require__(58);
-
-	var _fragmentTypes2 = _interopRequireDefault(_fragmentTypes);
-
-	var _updateFragmentList = __webpack_require__(59);
-
-	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
-
-	var _browserEventsClearEventListeners = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../browser/events/clearEventListeners\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _browserEventsClearEventListeners2 = _interopRequireDefault(_browserEventsClearEventListeners);
-
-	var _browserEventsAddEventListener = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../browser/events/addEventListener\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _browserEventsAddEventListener2 = _interopRequireDefault(_browserEventsAddEventListener);
-
-	//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
-	//refactored to by more DRY. although, this causes a significant performance cost
-	//on the v8 compiler. need to explore how to refactor without introducing this performance cost
-
-	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
-
-	    var componentsToUpdate = [],
-	        i;
-
-	    for (i = 0, length = fragment.templateValues.length; i < length; i++) {
-
-	        var element = oldFragment.templateElements[i];
-	        var type = oldFragment.templateTypes[i];
-
-	        fragment.templateElements[i] = element;
-	        fragment.templateTypes[i] = type;
-
-	        if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
-
-	            switch (type) {
-	                case _fragmentTypes2["default"].LIST:
-	                case _fragmentTypes2["default"].LIST_REPLACE:
-	                    (0, _updateFragmentList2["default"])(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-	                    break;
-	                case _fragmentTypes2["default"].TEXT:
-	                    element.firstChild.nodeValue = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].TEXT_DIRECT:
-	                    element.nodeValue = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].FRAGMENT:
-	                case _fragmentTypes2["default"].FRAGMENT_REPLACE:
-	                    (0, _updateFragment2["default"])(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_CLASS:
-	                    element.className = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_CHECKED:
-	                    element.checked = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_SELECTED:
-	                    element.selected = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_DISABLED:
-	                    element.disabled = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_HREF:
-	                    element.href = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_ID:
-	                    element.id = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_VALUE:
-	                    element.value = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_NAME:
-	                    element.name = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_TYPE:
-	                    element.type = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_LABEL:
-	                    element.label = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_PLACEHOLDER:
-	                    element.placeholder = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_STYLE:
-	                    //TODO
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_WIDTH:
-	                    element.width = fragment.templateValues[i];
-	                    break;
-	                case _fragmentTypes2["default"].ATTR_HEIGHT:
-	                    element.height = fragment.templateValues[i];
-	                    break;
-	                default:
-	                    //custom attribute, so simply setAttribute it
-	                    if (!element.props) {
-
-	                        if (events[type] != null) {
-
-	                            (0, _browserEventsClearEventListeners2["default"])(element, component, type);
-	                            (0, _browserEventsAddEventListener2["default"])(element, component, type, fragment.templateValues[i]);
-	                        } else {
-
-	                            element.setAttribute(type, fragment.templateValues[i]);
-	                        }
-	                    }
-	                    //component prop, update it
-	                    else {
-
-	                            element.props[type] = fragment.templateValues[i];
-	                            var alreadyInQueue = false;
-	                            for (s = 0; s < componentsToUpdate.length; s++) {
-
-	                                if (componentsToUpdate[s] === element) {
-
-	                                    alreadyInQueue = true;
-	                                }
-	                            }
-	                            if (alreadyInQueue === false) {
-
-	                                componentsToUpdate.push(element);
-	                            }
-	                        }
-	                    break;
-	            }
-	        }
-	    }
-	    if (componentsToUpdate.length > 0) {
-
-	        for (i = 0; i < componentsToUpdate.length; i++) {
-
-	            componentsToUpdate[i].forceUpdate();
-	        }
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 64 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _destroyFragment = __webpack_require__(56);
-
-	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
-
-	exports["default"] = function (context, parentDom, domNode, nextFragment, replace) {
-
-	    var noDestroy = false;
-	    if (nextFragment) {
-
-	        var domNextFragment = nextFragment.dom;
-	        if (!domNextFragment) {
-
-	            domNextFragment = nextFragment;
-	            parentDom = domNextFragment.parentNode;
-	            noDestroy = true;
-	        }
-	        if (replace) {
-
-	            if (noDestroy === false) {
-
-	                (0, _destroyFragment2["default"])(context, nextFragment);
-	            }
-	            parentDom.replaceChild(domNode, domNextFragment);
-	        } else {
-
-	            parentDom.insertBefore(domNode, domNextFragment);
-	        }
-	    } else {
-
-	        parentDom.appendChild(domNode);
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
 /* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports["default"] = render;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _utilIsBrowser = __webpack_require__(7);
-
-	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
-
-	function render(fragment, dom, component) {
-	  var context = undefined,
-	      generatedFragment = undefined;
-
-	  if (component === undefined) {
-	    if (initialisedListeners === false) {
-	      addRootDomEventListerners();
-	    }
-	    context = getContext(dom);
-	    if (context === null) {
-	      context = {
-	        fragment: fragment,
-	        dom: dom,
-	        shouldRecycle: true
-	      };
-	      attachFragment(context, fragment, dom, component);
-	      contexts.push(context);
-	    } else {
-	      if (_utilIsBrowser2["default"]) {
-	        var _activeElement = document.activeElement;
-	      }
-	      updateFragment(context, context.fragment, fragment, dom, component, false);
-	      context.fragment = fragment;
-	      if (_utilIsBrowser2["default"]) {
-	        maintainFocus(activeElement);
-	      }
-	    }
-	  } else {
-	    if (component.context === null) {
-	      generatedFragment = fragment();
-	      context = component.context = {
-	        fragment: generatedFragment,
-	        dom: dom,
-	        shouldRecycle: true
-	      };
-	      component.componentWillMount();
-	      attachFragment(context, generatedFragment, dom, component);
-	      component.componentDidMount();
-	    } else {
-	      generatedFragment = fragment();
-	      context = component.context;
-	      updateFragment(context, context.fragment, generatedFragment, dom, component, false);
-	      context.fragment = generatedFragment;
-	    }
-	  }
-	}
-
-	;
-	module.exports = exports["default"];
-
-/***/ },
-/* 66 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4805,27 +3748,27 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 67 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	        value: true
 	});
 	var _arguments = arguments;
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _createFragment = __webpack_require__(68);
+	var _createFragment = __webpack_require__(67);
 
 	var _createFragment2 = _interopRequireDefault(_createFragment);
 
-	var _fragmentTypes = __webpack_require__(58);
+	var _fragmentTypes = __webpack_require__(15);
 
 	var _fragmentTypes2 = _interopRequireDefault(_fragmentTypes);
 
-	var _browserTemplateAddAttributes = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../browser/template/addAttributes\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _browserTemplateAddAttributes = __webpack_require__(35);
 
 	var _browserTemplateAddAttributes2 = _interopRequireDefault(_browserTemplateAddAttributes);
 
@@ -4837,52 +3780,52 @@
 
 	exports["default"] = function (tag, props) {
 
-	    for (var _len = _arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+	        for (var _len = _arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
 
-	        children[_key - 2] = _arguments[_key];
-	    }
-
-	    console.warn("Inferno.vdom.createElement() is purely experimental, " + "it's performance will be poor and attributes/properities will not update (as of yet)");
-
-	    if (children.length === 1) {
-
-	        children = children[0];
-	    }
-	    //we need to create a template for this
-	    function template(fragment) {
-
-	        var root = document.createElement(tag);
-	        fragment.templateElement = root;
-
-	        if (typeof children !== "object") {
-
-	            fragment.templateType = _fragmentTypes2["default"].TEXT;
-	            root.textContent = children;
-	        } else {
-
-	            if (children instanceof Array) {
-
-	                fragment.templateType = _fragmentTypes2["default"].LIST;
-	            } else {
-
-	                fragment.templateType = _fragmentTypes2["default"].FRAGMENT;
-	            }
+	                children[_key - 2] = _arguments[_key];
 	        }
 
-	        if (props) {
+	        console.warn("Inferno.vdom.createElement() is purely experimental, " + "it's performance will be poor and attributes/properities will not update (as of yet)");
 
-	            Inferno.template.addAttributes(root, props);
+	        if (children.length === 1) {
+
+	                children = children[0];
 	        }
-	        fragment.dom = root;
-	    }
+	        //we need to create a template for this
+	        function template(fragment) {
 
-	    return (0, _createFragment2["default"])(children, template);
+	                var root = document.createElement(tag);
+	                fragment.templateElement = root;
+
+	                if (typeof children !== "object") {
+
+	                        fragment.templateType = _fragmentTypes2["default"].TEXT;
+	                        root.textContent = children;
+	                } else {
+
+	                        if (children instanceof Array) {
+
+	                                fragment.templateType = _fragmentTypes2["default"].LIST;
+	                        } else {
+
+	                                fragment.templateType = _fragmentTypes2["default"].FRAGMENT;
+	                        }
+	                }
+
+	                if (props) {
+
+	                        Inferno.template.addAttributes(root, props);
+	                }
+	                fragment.dom = root;
+	        }
+
+	        return (0, _createFragment2["default"])(children, template);
 	};
 
 	module.exports = exports["default"];
 
 /***/ },
-/* 68 */
+/* 67 */
 /***/ function(module, exports) {
 
 	//this function is really only intended to be used for DEV purposes
@@ -4934,7 +3877,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4945,57 +3888,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _varsContexts = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../vars/contexts\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-	var _varsContexts2 = _interopRequireDefault(_varsContexts);
-
-	exports["default"] = function (dom) {
-
-	    for (var i = 0; i < _varsContexts2["default"].length; i++) {
-
-	        if (_varsContexts2["default"][i].dom === dom) {
-
-	            return _varsContexts2["default"][i];
-	        }
-	    }
-	    return null;
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 70 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (previousActiveElement) {
-
-	    if (previousActiveElement && previousActiveElement != document.body && previousActiveElement != document.activeElement) {
-
-	        previousActiveElement.focus();
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _varsContexts = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../vars/contexts\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _varsContexts = __webpack_require__(6);
 
 	var _varsContexts2 = _interopRequireDefault(_varsContexts);
 
@@ -5016,7 +3909,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 72 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5027,7 +3920,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeContext = __webpack_require__(71);
+	var _removeContext = __webpack_require__(68);
 
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 
@@ -5044,26 +3937,26 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 73 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	        value: true
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeFragment = __webpack_require__(55);
+	var _removeFragment = __webpack_require__(12);
 
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 
-	var _removeContext = __webpack_require__(71);
+	var _removeContext = __webpack_require__(68);
 
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 
-	var _unmountComponentAtFragment = __webpack_require__(72);
+	var _unmountComponentAtFragment = __webpack_require__(69);
 
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
 
@@ -5074,20 +3967,20 @@
 
 	exports["default"] = function (dom) {
 
-	    var context = getContext(dom);
-	    if (context !== null) {
+	        var context = getContext(dom);
+	        if (context !== null) {
 
-	        var component = context.fragment.component;
-	        if (component) {
+	                var component = context.fragment.component;
+	                if (component) {
 
-	            (0, _removeFragment2["default"])(context, dom, component.fragment);
-	            (0, _unmountComponentAtFragment2["default"])(component.fragment);
-	        } else {
+	                        (0, _removeFragment2["default"])(context, dom, component.fragment);
+	                        (0, _unmountComponentAtFragment2["default"])(component.fragment);
+	                } else {
 
-	            (0, _removeFragment2["default"])(context, dom, context.fragment);
-	            (0, _removeContext2["default"])(dom);
+	                        (0, _removeFragment2["default"])(context, dom, context.fragment);
+	                        (0, _removeContext2["default"])(dom);
+	                }
 	        }
-	    }
 	};
 
 	module.exports = exports["default"];

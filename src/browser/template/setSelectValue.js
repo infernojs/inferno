@@ -1,5 +1,5 @@
-import inArray from "../../utils/inArray";
-import isArray from "../../utils/isArray";
+import inArray from "../../util/inArray";
+import isArray from "../../util/isArray";
 
 export default ( node, value ) => {
 

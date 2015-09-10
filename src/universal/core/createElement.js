@@ -1,6 +1,6 @@
 import createFragment from "./createFragment";
 import fragmentTypes  from "./fragmentTypes";
-import addAttributes  from "../browser/template/addAttributes";
+import addAttributes  from "../../browser/template/addAttributes";
 
 //this was added so vdom lovers can still use their beloved vdom API from React :)
 //this won't be performant and should only be used for prototyping/testing/experimenting

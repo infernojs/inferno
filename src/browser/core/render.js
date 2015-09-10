@@ -1,12 +1,12 @@
 "use strict";
 
-import addRootDomEventListerners from "../browser/events/addRootListener";
-import initialisedListeners      from "../browser/events/shared/initialisedListeners";
-import contexts                  from "../vars/contexts";
-import getContext                from "./getContext";
-import attachFragment            from "./attachFragment";
-import updateFragment            from "./updateFragment";
-import maintainFocus             from "./maintainFocus";
+import addRootDomEventListerners from "../events/addRootListener";
+import initialisedListeners      from "../events/shared/initialisedListeners";
+import contexts                  from "../../vars/contexts";
+import getContext                from "../../universal/core/getContext";
+import attachFragment            from "../../universal/core/attachFragment";
+import updateFragment            from "../../universal/core/updateFragment";
+import maintainFocus             from "../../universal/core/maintainFocus";
 
 export default ( fragment, dom, component ) => {
 

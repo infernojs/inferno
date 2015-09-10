@@ -1,5 +1,5 @@
 import removeFragment    from "./removeFragment";
-import recycledFragments from ".././vars/recycledFragments";
+import recycledFragments from "../../vars/recycledFragments";
 
 /**
  * Destroy fragment
