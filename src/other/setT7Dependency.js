@@ -1,6 +1,7 @@
 /**
  * Both a setter & getter for t7 dependency
  */
+
 let t7dependency = true;
 
 export default ( t7dependency ) => {

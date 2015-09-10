@@ -1,3 +1,4 @@
+// Todo! Do we need strict on top of every file?
 "use strict";
 
 import Component              from './universal/class/Component';
@@ -33,4 +34,5 @@ if(isBrowser) {
     global.Inferno = Inferno;
 }
 
+// FIX ME! This is not working. Inferno only get "hooked" on the window object
 export default Inferno;
