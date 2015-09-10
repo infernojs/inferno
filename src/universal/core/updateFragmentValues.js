@@ -1,17 +1,18 @@
-import updateFragment      from "./updateFragment";
-import fragmentTypes       from "./fragmentTypes";
-import updateFragmentList  from "./updateFragmentList";
+import updateFragment from "./updateFragment";
+import fragmentTypes from "./fragmentTypes";
+import updateFragmentList from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
-import addEventListener    from "../../browser/events/addEventListener";
+import addEventListener from "../../browser/events/addEventListener";
+import events from "../../browser/shared/events";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
-export default ( context, oldFragment, fragment, parentDom, component ) => {
+export default (context, oldFragment, fragment, parentDom, component) => {
+    let componentsToUpdate = [],
+        i;
 
-    let componentsToUpdate = [], i;
-
-    for ( i = 0, length = fragment.templateValues.length; i < length; i++ ) {
+    for (i = 0, length = fragment.templateValues.length; i < length; i++) {
 
         var element = oldFragment.templateElements[i];
         var type = oldFragment.templateTypes[i];
@@ -19,12 +20,11 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
         fragment.templateElements[i] = element;
         fragment.templateTypes[i] = type;
 
-        if ( fragment.templateValues[i] !== oldFragment.templateValues[i] ) {
-
-            switch ( type ) {
+        if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
+            switch (type) {
                 case fragmentTypes.LIST:
                 case fragmentTypes.LIST_REPLACE:
-                    updateFragmentList( context, oldFragment.templateValues[i], fragment.templateValues[i], element, component );
+                    updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
                 case fragmentTypes.TEXT:
                     element.firstChild.nodeValue = fragment.templateValues[i];
@@ -34,7 +34,7 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
                     break;
                 case fragmentTypes.FRAGMENT:
                 case fragmentTypes.FRAGMENT_REPLACE:
-                    updateFragment( context, oldFragment.templateValues[i], fragment.templateValues[i], element, component );
+                    updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
                 case fragmentTypes.ATTR_CLASS:
                     element.className = fragment.templateValues[i];
@@ -80,55 +80,34 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
                     break;
                 default:
                     //custom attribute, so simply setAttribute it
-                    if ( !element.props ) {
-
-                        if ( events[type] != null ) {
-
-                            clearEventListeners( element, component, type );
-                            addEventListener( element, component, type, fragment.templateValues[i] );
-
+                    if (!element.props) {
+                        if (events[type] != null) {
+                            clearEventListeners(element, type);
+                            addEventListener(element, type, fragment.templateValues[i]);
                         } else {
-
-                            element.setAttribute( type, fragment.templateValues[i] );
-
+                            element.setAttribute(type, fragment.templateValues[i]);
                         }
-
                     }
                     //component prop, update it
                     else {
-
                         element.props[type] = fragment.templateValues[i];
                         let alreadyInQueue = false;
-                        for ( s = 0; s < componentsToUpdate.length; s++ ) {
-
-                            if ( componentsToUpdate[s] === element ) {
-
+                        for (s = 0; s < componentsToUpdate.length; s++) {
+                            if (componentsToUpdate[s] === element) {
                                 alreadyInQueue = true;
-
                             }
-
                         }
-                        if ( alreadyInQueue === false ) {
-
-                            componentsToUpdate.push( element );
-
+                        if (alreadyInQueue === false) {
+                            componentsToUpdate.push(element);
                         }
-
                     }
                     break;
             }
-
         }
-
     }
-    if ( componentsToUpdate.length > 0 ) {
-
-        for ( i = 0; i < componentsToUpdate.length; i++ ) {
-
+    if (componentsToUpdate.length > 0) {
+        for (i = 0; i < componentsToUpdate.length; i++) {
             componentsToUpdate[i].forceUpdate();
-
         }
-
     }
-
 }

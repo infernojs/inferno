@@ -178,14 +178,15 @@ var t7 = (function() {
               templateParams.push(propRefs.join(""));
             } else {
               templateParams.push("var " + nodeName + i + " = Inferno.template.createElement('" + child.tag + "');");
-              if (child.children) {
-                buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
-              }
               if (child.attrs) {
                 var attrsParams = [];
                 buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
                 templateParams.push("Inferno.template.addAttributes(" + nodeName + i + ", {" + attrsParams.join(",") + "});");
               }
+              if (child.children) {
+                buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
+              }
+
               if (!parentNodeName) {
                 templateParams.push("root.appendChild(" + nodeName + i + ");");
               } else {

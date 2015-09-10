@@ -2,6 +2,7 @@ import removeFragment       from "./removeFragment";
 import attachFragment       from "./attachFragment";
 import updateFragmentValue  from "./updateFragmentValue";
 import updateFragmentValues from "./updateFragmentValues";
+import unmountComponentAtFragment from "./unmountComponentAtFragment";
 
 export default ( context, oldFragment, fragment, parentDom, component ) => {
 
@@ -37,12 +38,10 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
 
         //if this fragment is a component
         if ( fragmentComponent ) {
-
             fragmentComponent.props = fragment.props;
             fragmentComponent.forceUpdate();
             fragment.component = fragmentComponent;
             return;
-
         }
 
         //ensure we reference the new fragment with the old fragment's DOM node

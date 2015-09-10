@@ -12,13 +12,11 @@ export default ( fragment, dom, component ) => {
 
     var context, generatedFragment;
     if ( component === undefined ) {
-
-        if ( initialisedListeners === false ) {
-
+        if ( initialisedListeners() === false ) {
             addRootDomEventListerners();
-
+            initialisedListeners(true);
         }
-		
+
         context = getContext( dom );
 
 		if ( context == null ) {
@@ -36,7 +34,7 @@ export default ( fragment, dom, component ) => {
             var activeElement = document.activeElement;
             updateFragment( context, context.fragment, fragment, dom, component, false );
             context.fragment = fragment;
-            
+
 			// TODO! Move to moveFragment()
             maintainFocus( activeElement );
 

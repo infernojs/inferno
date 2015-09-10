@@ -7,21 +7,16 @@ import render              from "../../browser/core/render";
 import setT7Dependency     from "../../other/setT7Dependency";
 
 let attachFragment = ( context, fragment, parentDom, component, nextFragment, replace ) => {
-
     let fragmentComponent = fragment.component;
 
     if ( fragmentComponent ) {
-
         if ( typeof fragmentComponent === "function" ) {
-
             fragmentComponent = fragment.component = new fragmentComponent( fragment.props );
             fragmentComponent.context = null;
             fragmentComponent.forceUpdate = Inferno.render.bind( null, fragmentComponent.render.bind( fragmentComponent ), parentDom, fragmentComponent );
             fragmentComponent.forceUpdate();
-
         }
         return;
-
     }
 
     let recycledFragment = null,
@@ -29,17 +24,12 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
         templateKey = template.key;
 
     if ( context.shouldRecycle === true ) {
-
         recycledFragment = getRecycledFragment( templateKey );
-
     }
 
     if ( recycledFragment !== null ) {
-
         updateFragment( context, recycledFragment, fragment, parentDom, component );
-
     } else {
-
         //the user can optionally opt out of using the t7 dependency, thus removing the requirement
         //to pass the t7 reference into the template constructor
         if ( setT7Dependency() ) {
@@ -49,7 +39,6 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
         }
         //if this fragment has a single value, we attach only that value
         if ( fragment.templateValue ) {
-
             switch ( fragment.templateType ) {
                 case fragmentTypes.LIST:
                     attachFragmentList( context, fragment.templateValue, fragment.templateElement );
@@ -67,7 +56,6 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
             }
 
         } else if ( fragment.templateValues ) {
-
             //if the fragment has multiple values, we must loop through them all and attach them
             //pulling this block of code out into its own function caused strange things to happen
             //with performance. it was faster in Gecko but far slower in v8
@@ -94,15 +82,11 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
                         fragment.templateElements[i] = value.dom.parentNode;
                         break;
                 }
-
             }
-
         }
-
     }
 
     insertFragment( context, parentDom, fragment.dom, nextFragment, replace );
-
 };
 
 export default attachFragment;

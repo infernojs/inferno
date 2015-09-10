@@ -1,12 +1,11 @@
-import rootlisteners from "./shared/rootlisteners";
+import rootListeners from "./shared/rootListeners";
 import events from "./shared/events";
 
-export default ( parentDom, component, listenerName, callback ) => {
-	
-    rootlisteners[events[listenerName]].push( {
+export default ( parentDom, listenerName, callback ) => {
+
+    rootListeners[events[listenerName]].push( {
         target: parentDom,
-        callback: callback,
-        component: component
+        callback: callback
     } );
 
 };

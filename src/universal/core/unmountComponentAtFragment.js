@@ -1,4 +1,5 @@
 import removeContext from "./removeContext";
+import badUpdate from './badUpdate';
 
 export default ( fragment ) => {
 

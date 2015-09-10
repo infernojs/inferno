@@ -1,4 +1,3 @@
-// Todo! Do we need strict on top of every file?
 "use strict";
 
 import Component              from './universal/class/Component';
@@ -9,8 +8,6 @@ import fragmentTypes          from './universal/core/fragmentTypes';
 import template               from './browser/template/template';
 import isBrowser              from './util/isBrowser';
 import t7                     from '../t7';
-
-// FIX ME! Should this be exposed?
 import setT7Dependency        from './other/setT7Dependency';
 
 // TODO! Find a better way
@@ -34,5 +31,4 @@ if(isBrowser) {
     global.Inferno = Inferno;
 }
 
-// FIX ME! This is not working. Inferno only get "hooked" on the window object
 export default Inferno;

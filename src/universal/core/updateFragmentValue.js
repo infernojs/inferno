@@ -76,8 +76,8 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
 
                     if ( events[type] != null ) {
 
-                        clearEventListeners( element, component, type );
-                        addEventListener( element, component, type, fragment.templateValue );
+                        clearEventListeners( element, type );
+                        addEventListener( element, type, fragment.templateValue );
 
                     } else {
 
