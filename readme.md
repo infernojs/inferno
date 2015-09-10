@@ -1,8 +1,11 @@
 # InfernoJS
 
-Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno strives to delivery the best performance for not only initial
-page render times, but for sequential and random update render times too. Like React and Mitrhil, Inferno adopts elements of a virtual DOM as a lightweight representation of the
-actual DOM. However, unlike other frameworks that use virtual DOMs, Inferno does not carry out expensive diffs on the virtual DOM, but on the values within the virtual DOM.
+Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno achieves great performance for demanding applications by using virtual DOM as a lightweight representation of the
+actual DOM to construct interfaces in a simple manner. However, unlike other frameworks that use virtual DOMs, Inferno does not "diff" the virtual DOM on each update, but rather it carries out a "diff" on the actual values themselves. This technique allows Inferno to achieve lightning fast DOM operations with very little overhead.
+
+Furthermore, Inferno deals exclusively with t7 templates. [t7](https://github.com/trueadm/t7) parses template strings into optimised virtual DOM nodes that Inferno understands. Inferno then takes theses virtual DOM nodes and produces two sets of trees: a DOM tree and a value tree. It can then use both of these trees to intelligently make decisions based on what has changed and what needs to be created/removed/updated.
+
+Note: Inferno is still in early development. Documentation, test coverage and features are a work-in-progress.
 
 ## Overview
 
@@ -21,7 +24,7 @@ Furthermore, Inferno also uses ES6 components like React:
 
 ```javascript
 t7.module(funciton(t7) {
-  class Component implements Inferno.Component {
+  class Component extends Inferno.Component {
     constructor(props) {
       super(props);
       this.state.counter = 0;
@@ -37,7 +40,7 @@ t7.module(funciton(t7) {
   }
 
   t7.assign("Component", Component);
-  Inferno.render(`<Component />`, document.body);
+  Inferno.render(t7`<Component />`, document.body);
 });
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
@@ -50,6 +53,62 @@ This is essential for low-power devices such as tablets and phones, where users 
 - Inferno requires the [t7 template](https://github.com/trueadm/t7) library to parse its templates into optimised Inferno virtual DOM objects.
 - Inferno is light-weight and compact – it doesn't have routers, controllers or Flux built-in. It doesn't have any hard dependencies other than `t7` (which comes bundled with Inferno).
 - Inferno is isomorphic and can easily be compiled and run on the server (via Node).
+
+## Benchmarks
+
+- [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
+- [dbmonster (ES6 classes)](http://infernojs.org/benchmarks/dbmonster/)
+- [dbmonster (no ES6 classes)](http://infernojs.org/benchmarks/dbmonster/inferno-dbmonster-raw-es5.html)
+- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
+
+## Inferno Top-Level API
+
+[This section is still under development]
+
+### Inferno.Component
+
+```javascript
+class MyComponent extends Component {
+  render() {
+    ...
+  }
+}
+```
+
+This is the base class for Inferno Components when they're defined using ES6 classes.
+
+### Inferno.render
+
+```javascript
+Inferno.render(t7`<div></div>`, document.body);
+```
+
+Render a t7 template into the DOM in the supplied container and return a reference to the component. If the t7 template was previously rendered into container, this will
+perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno component.
+
+### Inferno.unmountComponentAtNode
+
+```javascript
+Inferno.unmountComponentAtNode(document.getElementById("myApp"));
+```
+
+Remove a rendered Inferno component from the DOM and clean up its event handlers and state.
+
+### Inferno.renderToString
+
+[Development in progress]
+
+```javascript
+Inferno.renderToString(t7`<MyComponent></MyComponent>`);
+```
+
+Render a t7 template to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
+
+### Inferno.createElement
+
+[Development in progress]
+
+An alternative to using t7 for generating virtual DOM nodes for Inferno.
 
 ## Performance
 
@@ -67,12 +126,8 @@ Inferno is still in early development and there are still many missing features 
 release has been stated. Features that still need to be completed:
 
 - Cloning nodes needs refining and completing
+- Keyed nodes need adding
+- Refs needs adding
 - More input events need to be added as does the case of the root input delegation source
-- Performance can be slower than desired when dealing with many template keys, refactor needed of template keys returned as values
 - There are currently no tests in place, this needs to be done
 - There is no API documentation or general documentation available
-
-## Benchmarks
-
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
-- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)

@@ -6,15 +6,15 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 
 gulp.task('default', function() {
-  gulp.src('src/bootstrap.js')
+  gulp.src('./src/bootstrap.js')
       .pipe(webpack())
-      .pipe(gulp.dest('build'))
+      .pipe(gulp.dest('./build'))
       .pipe(babel())
       .pipe(concat('inferno.js'))
-      .pipe(gulp.dest('dist'))
+      .pipe(gulp.dest('./dist'))
       .pipe(uglify())
       .pipe(rename('inferno.min.js'))
-      .pipe(gulp.dest('dist'))
+      .pipe(gulp.dest('./dist'))
       .on('error', function (error) {
           console.error('' + error);
       });

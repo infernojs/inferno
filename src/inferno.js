@@ -224,7 +224,7 @@ Inferno.vdom = {};
 Inferno.vdom.createElement = function(tag, props, ...children) {
   console.warn("Inferno.vdom.createElement() is purely experimental, "
    + "it's performance will be poor and attributes/properities will not update (as of yet)");
-   
+
   if(children.length === 1) {
     children = children[0];
   }
