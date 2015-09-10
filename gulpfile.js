@@ -4,12 +4,13 @@ var concat = require('gulp-concat');
 var babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var clean = require('gulp-clean');
 
 gulp.task('default', function() {
-  gulp.src('./src/bootstrap.js')
-      .pipe(webpack())
-      .pipe(gulp.dest('./build'))
+  gulp.src('src/**/*.js')
       .pipe(babel())
+      .pipe(gulp.dest('./build'))
+      .pipe(webpack())
       .pipe(concat('inferno.js'))
       .pipe(gulp.dest('./dist'))
       .pipe(uglify())
