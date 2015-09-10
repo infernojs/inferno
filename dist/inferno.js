@@ -61,9 +61,10 @@
 	__webpack_require__(37);
 	__webpack_require__(65);
 	__webpack_require__(36);
+	__webpack_require__(69);
 	__webpack_require__(64);
 	__webpack_require__(40);
-	__webpack_require__(69);
+	__webpack_require__(70);
 	__webpack_require__(44);
 	__webpack_require__(43);
 	__webpack_require__(56);
@@ -81,8 +82,8 @@
 	__webpack_require__(10);
 	__webpack_require__(20);
 	__webpack_require__(30);
-	__webpack_require__(70);
 	__webpack_require__(71);
+	__webpack_require__(72);
 	__webpack_require__(15);
 	__webpack_require__(17);
 	__webpack_require__(9);
@@ -3898,6 +3899,56 @@
 
 /***/ },
 /* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _eventsSharedEvents = __webpack_require__(24);
+
+	var _eventsSharedEvents2 = _interopRequireDefault(_eventsSharedEvents);
+
+	var _eventsClearEventListeners = __webpack_require__(22);
+
+	var _eventsClearEventListeners2 = _interopRequireDefault(_eventsClearEventListeners);
+
+	var _eventsAddEventListener = __webpack_require__(25);
+
+	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
+
+	var _DOMAttrCfg = __webpack_require__(37);
+
+	var _DOMAttrCfg2 = _interopRequireDefault(_DOMAttrCfg);
+
+	exports["default"] = function (node, attrs, component) {
+
+	    var attrName = undefined,
+	        attrVal = undefined;
+	    for (attrName in attrs) {
+
+	        attrVal = attrs[attrName];
+
+	        if (_eventsSharedEvents2["default"][attrName] != null) {
+
+	            (0, _eventsClearEventListeners2["default"])(node, component, attrName);
+	            (0, _eventsAddEventListener2["default"])(node, component, attrName, attrVal);
+	        } else {
+
+	            (0, _DOMAttrCfg2["default"])(attrName).set(node, attrName, attrVal);
+	        }
+	    }
+	};
+
+	;
+	module.exports = exports["default"];
+
+/***/ },
+/* 70 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3914,7 +3965,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3926,7 +3977,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _createFragment = __webpack_require__(71);
+	var _createFragment = __webpack_require__(72);
 
 	var _createFragment2 = _interopRequireDefault(_createFragment);
 
@@ -3991,7 +4042,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
 	//this function is really only intended to be used for DEV purposes
