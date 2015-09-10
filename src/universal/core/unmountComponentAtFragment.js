@@ -2,7 +2,7 @@ import removeContext from "./removeContext";
 
 export default ( fragment ) => {
 
-    var component = fragment.component;
+    let component = fragment.component;
     component.componentWillUnmount();
     removeContext( component.context.dom );
     component.forceUpdate = badUpdate;

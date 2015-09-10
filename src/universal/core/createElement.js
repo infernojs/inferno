@@ -6,11 +6,11 @@ import addAttributes  from "../../browser/template/addAttributes";
 //this won't be performant and should only be used for prototyping/testing/experimenting
 //note, props/attrs will not update with this current implementation
 
-var templateKeyMap = new WeakMap();
+let templateKeyMap = new WeakMap();
 
 export default ( tag, props ) => {
 
-    for ( var _len = arguments.length, children = Array( _len > 2 ? _len - 2 : 0 ), _key = 2; _key < _len; _key++ ) {
+    for ( let _len = arguments.length, children = Array( _len > 2 ? _len - 2 : 0 ), _key = 2; _key < _len; _key++ ) {
 
         children[_key - 2] = arguments[_key];
 
@@ -26,7 +26,7 @@ export default ( tag, props ) => {
     //we need to create a template for this
     function template( fragment ) {
 
-        var root = document.createElement( tag );
+        let root = document.createElement( tag );
         fragment.templateElement = root;
 
         if ( typeof children !== "object" ) {

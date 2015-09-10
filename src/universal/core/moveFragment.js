@@ -1,6 +1,7 @@
+// TODO! Refactor
 export default ( parentDom, item, nextItem ) => {
 
-    var domItem = item.dom,
+    let domItem = item.dom,
     domRefItem = nextItem && nextItem.dom;
 
     if ( domItem !== domRefItem ) {

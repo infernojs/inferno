@@ -1,10 +1,11 @@
 import rootlisteners from "./shared/rootlisteners";
-import events from "./shared/events";
+import events        from "./shared/events";
 
 export default ( parentDom, component, listenerName ) => {
 
-    var listeners = rootlisteners[events[listenerName]];
-    var index = 0;
+    let listeners = rootlisteners[events[listenerName]],
+        index = 0;
+		
     while ( index < listeners.length ) {
 
         if ( listeners[index].target === parentDom ) {

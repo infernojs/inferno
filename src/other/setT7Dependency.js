@@ -3,13 +3,13 @@
  */
 let t7dependency = true;
 
-export default ( hast7dependency ) => {
+export default ( t7dependency ) => {
 
     if ( arguments.length ) {
 
-        t7dependency = hast7dependency;
-    // if no args, do a return 
+        t7dependency = t7dependency;
 
+    // if no args, do a return 
     } else {
 
         return t7dependency;

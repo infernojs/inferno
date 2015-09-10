@@ -2,7 +2,7 @@ import contexts from "../../vars/contexts";
 
 export default ( dom ) => {
 
-    for ( var i = 0; i < contexts.length; i++ ) {
+    for ( let i = 0; i < contexts.length; i++ ) {
 
         if ( contexts[i].dom === dom ) {
 

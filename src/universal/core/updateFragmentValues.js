@@ -9,7 +9,7 @@ import addEventListener    from "../../browser/events/addEventListener";
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
 export default ( context, oldFragment, fragment, parentDom, component ) => {
 
-    var componentsToUpdate = [], i;
+    let componentsToUpdate = [], i;
 
     for ( i = 0, length = fragment.templateValues.length; i < length; i++ ) {
 
@@ -98,7 +98,7 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
                     else {
 
                         element.props[type] = fragment.templateValues[i];
-                        var alreadyInQueue = false;
+                        let alreadyInQueue = false;
                         for ( s = 0; s < componentsToUpdate.length; s++ ) {
 
                             if ( componentsToUpdate[s] === element ) {

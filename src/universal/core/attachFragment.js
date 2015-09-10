@@ -77,15 +77,15 @@ let attachFagment = ( context, fragment, parentDom, component, nextFragment, rep
             //with performance. it was faster in Gecko but far slower in v8
             for ( let i = 0, length = fragment.templateValues.length; i < length; i++ ) {
 
-                var element = fragment.templateElements[i];
-                var value = fragment.templateValues[i];
+                let element = fragment.templateElements[i],
+                    value = fragment.templateValues[i];
                 switch ( fragment.templateTypes[i] ) {
                     case fragmentTypes.LIST:
                         attachFragmentList( context, value, element );
                         break;
                     case fragmentTypes.LIST_REPLACE:
-                        var nodeList = document.createDocumentFragment();
-                        var placeholderNode = fragment.templateElements[i];
+                        let nodeList = document.createDocumentFragment(),
+                            placeholderNode = fragment.templateElements[i];
                         attachFragmentList( context, value, nodeList );
                         placeholderNode.parentNode.replaceChild( nodeList, placeholderNode );
                         fragment.templateElements[i] = nodeList;

@@ -2,10 +2,10 @@ import destroyFragment from "./destroyFragment";
 
 export default ( context, parentDom, domNode, nextFragment, replace ) => {
 
-    var noDestroy = false;
+    let noDestroy = false;
     if ( nextFragment ) {
 
-        var domNextFragment = nextFragment.dom;
+        let domNextFragment = nextFragment.dom;
         if ( !domNextFragment ) {
 
             domNextFragment = nextFragment;

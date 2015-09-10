@@ -18,8 +18,10 @@ export default ( fragment, dom, component ) => {
             addRootDomEventListerners();
 
         }
+		
         context = getContext( dom );
-        if ( context === null ) {
+
+		if ( context == null ) {
 
             context = {
                 fragment: fragment,
@@ -34,13 +36,15 @@ export default ( fragment, dom, component ) => {
             var activeElement = document.activeElement;
             updateFragment( context, context.fragment, fragment, dom, component, false );
             context.fragment = fragment;
+            
+			// TODO! Move to moveFragment()
             maintainFocus( activeElement );
 
         }
 
     } else {
 
-        if ( component.context === null ) {
+        if ( component.context == null ) {
 
             generatedFragment = fragment();
             context = component.context = {

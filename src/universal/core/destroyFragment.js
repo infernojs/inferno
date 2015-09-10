@@ -6,7 +6,7 @@ import recycledFragments from "../../vars/recycledFragments";
  */
 export default ( context, fragment ) => {
 
-    var templateKey;
+    let templateKey;
 
     //long winded approach, but components have their own context which is how we find their template keys
     if ( fragment.component ) {
@@ -21,7 +21,7 @@ export default ( context, fragment ) => {
 
     if ( context.shouldRecycle === true ) {
 
-        var toRecycleForKey = recycledFragments[templateKey];
+        let toRecycleForKey = recycledFragments[templateKey];
         if ( !toRecycleForKey ) {
 
             recycledFragments[templateKey] = toRecycleForKey = [];

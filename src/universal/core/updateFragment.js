@@ -33,7 +33,7 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
 
     } else {
 
-        var fragmentComponent = oldFragment.component;
+        let fragmentComponent = oldFragment.component;
 
         //if this fragment is a component
         if ( fragmentComponent ) {

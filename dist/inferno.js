@@ -53,11 +53,11 @@
 	__webpack_require__(64);
 	__webpack_require__(6);
 	__webpack_require__(10);
+	__webpack_require__(3);
+	__webpack_require__(66);
 	__webpack_require__(23);
 	__webpack_require__(4);
 	__webpack_require__(20);
-	__webpack_require__(3);
-	__webpack_require__(66);
 	__webpack_require__(33);
 	__webpack_require__(61);
 	__webpack_require__(37);
@@ -196,8 +196,10 @@
 
 	"use strict";
 
+	// TODO! Finish this
+
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -205,45 +207,45 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Component = (function () {
-	  function Component(props) {
-	    _classCallCheck(this, Component);
+	    function Component(props) {
+	        _classCallCheck(this, Component);
 
-	    this.props = props;
-	    this.state = {};
-	  }
-
-	  _createClass(Component, [{
-	    key: "render",
-	    value: function render() {}
-	  }, {
-	    key: "forceUpdate",
-	    value: function forceUpdate() {}
-	  }, {
-	    key: "setState",
-	    value: function setState(newStateItems) {
-	      for (var stateItem in newStateItems) {
-	        this.state[stateItem] = newStateItems[stateItem];
-	      }
-	      this.forceUpdate();
+	        this.props = props;
+	        this.state = {};
 	    }
-	  }, {
-	    key: "replaceState",
-	    value: function replaceState(newState) {
-	      this.state = newSate;
-	      this.forceUpdate();
-	    }
-	  }, {
-	    key: "componentDidMount",
-	    value: function componentDidMount() {}
-	  }, {
-	    key: "componentWillMount",
-	    value: function componentWillMount() {}
-	  }, {
-	    key: "componentWillUnmount",
-	    value: function componentWillUnmount() {}
-	  }]);
 
-	  return Component;
+	    _createClass(Component, [{
+	        key: "render",
+	        value: function render() {}
+	    }, {
+	        key: "forceUpdate",
+	        value: function forceUpdate() {}
+	    }, {
+	        key: "setState",
+	        value: function setState(newStateItems) {
+	            for (var stateItem in newStateItems) {
+	                this.state[stateItem] = newStateItems[stateItem];
+	            }
+	            this.forceUpdate();
+	        }
+	    }, {
+	        key: "replaceState",
+	        value: function replaceState(newState) {
+	            this.state = newSate;
+	            this.forceUpdate();
+	        }
+	    }, {
+	        key: "componentDidMount",
+	        value: function componentDidMount() {}
+	    }, {
+	        key: "componentWillMount",
+	        value: function componentWillMount() {}
+	    }, {
+	        key: "componentWillUnmount",
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return Component;
 	})();
 
 	exports["default"] = Component;
@@ -298,8 +300,10 @@
 
 	                        (0, _eventsAddRootListener2["default"])();
 	                }
+
 	                context = (0, _universalCoreGetContext2["default"])(dom);
-	                if (context === null) {
+
+	                if (context == null) {
 
 	                        context = {
 	                                fragment: fragment,
@@ -313,11 +317,13 @@
 	                        var activeElement = document.activeElement;
 	                        (0, _universalCoreUpdateFragment2["default"])(context, context.fragment, fragment, dom, component, false);
 	                        context.fragment = fragment;
+
+	                        // TODO! Move to moveFragment()
 	                        (0, _universalCoreMaintainFocus2["default"])(activeElement);
 	                }
 	        } else {
 
-	                if (component.context === null) {
+	                if (component.context == null) {
 
 	                        generatedFragment = fragment();
 	                        context = component.context = {
@@ -360,9 +366,10 @@
 
 	    // has to do this 'hack' else it will become read-only
 	    (0, _sharedInitialisedListeners2["default"])(true);
+
 	    if (rootlisteners != null) {
 
-	        // TODO! Take this out into it's own module and do some event cleanup along the road?
+	        // FIX ME! Take this out into it's own module and do some event cleanup along the road?
 	        document.addEventListener("click", function (e) {
 
 	            for (var i = 0; i < rootlisteners.click.length; i = i + 1 | 0) {
@@ -548,15 +555,15 @@
 	            //with performance. it was faster in Gecko but far slower in v8
 	            for (var i = 0, _length = fragment.templateValues.length; i < _length; i++) {
 
-	                var element = fragment.templateElements[i];
-	                var value = fragment.templateValues[i];
+	                var element = fragment.templateElements[i],
+	                    value = fragment.templateValues[i];
 	                switch (fragment.templateTypes[i]) {
 	                    case _fragmentTypes2["default"].LIST:
 	                        (0, _attachFragmentList2["default"])(context, value, element);
 	                        break;
 	                    case _fragmentTypes2["default"].LIST_REPLACE:
-	                        var nodeList = document.createDocumentFragment();
-	                        var placeholderNode = fragment.templateElements[i];
+	                        var nodeList = document.createDocumentFragment(),
+	                            placeholderNode = fragment.templateElements[i];
 	                        (0, _attachFragmentList2["default"])(context, value, nodeList);
 	                        placeholderNode.parentNode.replaceChild(nodeList, placeholderNode);
 	                        fragment.templateElements[i] = nodeList;
@@ -751,7 +758,7 @@
 
 	exports["default"] = function (context, fragment) {
 
-	    var templateKey;
+	    var templateKey = undefined;
 
 	    //long winded approach, but components have their own context which is how we find their template keys
 	    if (fragment.component) {
@@ -809,8 +816,8 @@
 
 	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
 
-	    var element = oldFragment.templateElement;
-	    var type = oldFragment.templateType;
+	    var element = oldFragment.templateElement,
+	        type = oldFragment.templateType;
 
 	    fragment.templateElement = element;
 	    fragment.templateType = type;
@@ -1167,6 +1174,7 @@
 /* 19 */
 /***/ function(module, exports) {
 
+	// TODO! Refactor
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -1214,8 +1222,9 @@
 
 	exports["default"] = function (parentDom, component, listenerName) {
 
-	    var listeners = _sharedRootlisteners2["default"][_sharedEvents2["default"][listenerName]];
-	    var index = 0;
+	    var listeners = _sharedRootlisteners2["default"][_sharedEvents2["default"][listenerName]],
+	        index = 0;
+
 	    while (index < listeners.length) {
 
 	        if (listeners[index].target === parentDom) {
@@ -1369,7 +1378,7 @@
 	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
 
 	    var componentsToUpdate = [],
-	        i;
+	        i = undefined;
 
 	    for (i = 0, length = fragment.templateValues.length; i < length; i++) {
 
@@ -1545,11 +1554,12 @@
 	var _arguments = arguments;
 	var t7dependency = true;
 
-	exports["default"] = function (hast7dependency) {
+	exports["default"] = function (t7dependency) {
 
 	    if (_arguments.length) {
 
-	        t7dependency = hast7dependency;
+	        t7dependency = t7dependency;
+
 	        // if no args, do a return
 	    } else {
 
@@ -1584,7 +1594,7 @@
 /***/ function(module, exports) {
 
 	'use strict';
-
+	// TODO! Fix so this get automaticly pulled in from package.json
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -3830,25 +3840,56 @@
 /* 66 */
 /***/ function(module, exports) {
 
+	// FIX ME!! 'blur', 'focus' etc. need to bubble
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 	exports["default"] = {
-	    "onClick": "click",
-	    "onMouseUp": "mouseup",
-	    "onMouseDown": "mousedown",
-	    "onMouseMove": "mousemove",
-	    "onMouseEnter": "mouseenter",
-	    "onMouseLeave": "mouseleave",
-	    "onKeyPress": "keypress",
-	    "onKeyUp": "keyup",
-	    "onKeyDown": "keydown",
-	    "onTouchStart": "touchstart",
-	    "onTouchEnd": "touchend",
-	    "onTouchMove": "touchmove",
-	    "onTouchCancel": "touchcancel"
+	    onBlur: "blur",
+	    onChange: "change",
+	    onClick: "click",
+	    onContextMenu: "contextmenu",
+	    onCopy: "copy",
+	    onCut: "cut",
+	    onDoubleClick: "dblclick",
+	    onDrag: "drag",
+	    onDragEnd: "dragend",
+	    onDragEnter: "dragenter",
+	    onDragExit: "dragexit",
+	    onDragLeave: "dragleave",
+	    onDragOver: "dragover",
+	    onDragStart: "dragstart",
+	    onDrop: "drop",
+	    onError: "error",
+	    onFocus: "focus",
+	    onInput: "input",
+	    onInvalid: "invalid",
+	    onKeyDown: "keydown",
+	    onKeyPress: "keypress",
+	    onKeyUp: "keyup",
+	    onLoad: "load",
+	    onMouseDown: "mousedown",
+	    onMouseEnter: "mouseenter",
+	    onMouseLeave: "mouseleave",
+	    onMouseMove: "mousemove",
+	    onMouseOut: "mouseout",
+	    onMouseOver: "mouseover",
+	    onMouseUp: "mouseup",
+	    onMouseDown: "mousedown",
+	    onMouseMove: "mousemove",
+	    onMouseEnter: "mouseenter",
+	    onMouseLeave: "mouseleave",
+	    onPaste: "paste",
+	    onReset: "reset",
+	    onScroll: "scroll",
+	    onSubmit: "submit",
+	    onTouchCancel: "touchcancel",
+	    onTouchEnd: "touchend",
+	    onTouchMove: "touchmove",
+	    onTouchStart: "touchstart",
+	    onWheel: "wheel"
 	};
 	module.exports = exports["default"];
 
@@ -3919,9 +3960,9 @@
 
 	exports["default"] = function (tag, props) {
 
-	        for (var _len = _arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+	        for (var _len = _arguments.length, _children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
 
-	                children[_key - 2] = _arguments[_key];
+	                _children[_key - 2] = _arguments[_key];
 	        }
 
 	        console.warn("Inferno.vdom.createElement() is purely experimental, " + "it's performance will be poor and attributes/properities will not update (as of yet)");
@@ -3978,12 +4019,8 @@
 
 	    if (template.key === undefined) {
 
-	        //if the template function is missing a key property, we'll need to make one
-	        var templateKeyLookup = templateKeyMap.get(template);
 	        if (templateKeyLookup === undefined) {
 
-	            var key = Symbol();
-	            templateKeyMap.set(template, key);
 	            //this was considerably faster than Symbol()
 	            template.key = "tpl" + Math.floor(Math.random() * 100000);
 	        }

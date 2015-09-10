@@ -6,8 +6,8 @@ import addEventListener    from "../../browser/events/addEventListener";
 
 export default ( context, oldFragment, fragment, parentDom, component ) => {
 
-    var element = oldFragment.templateElement;
-    var type = oldFragment.templateType;
+    let element = oldFragment.templateElement,
+        type = oldFragment.templateType;
 
     fragment.templateElement = element;
     fragment.templateType = type;
