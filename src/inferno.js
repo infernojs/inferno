@@ -13,6 +13,8 @@ import t7                     from '../t7';
 import setT7Dependency        from './other/setT7Dependency';
 
 // TODO! Find a better way
+// Why not make t7 only works for Inferno, and maintain the other versions on another repo? Then we could
+// skip this. Or consider to let someone else make a Babel plugin out of it.
 t7.setOutput(t7.Outputs.Inferno);
 
 let Inferno = {

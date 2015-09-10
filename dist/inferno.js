@@ -53,16 +53,17 @@
 	__webpack_require__(64);
 	__webpack_require__(6);
 	__webpack_require__(10);
-	__webpack_require__(3);
 	__webpack_require__(23);
 	__webpack_require__(4);
 	__webpack_require__(20);
+	__webpack_require__(3);
+	__webpack_require__(66);
 	__webpack_require__(33);
 	__webpack_require__(61);
 	__webpack_require__(37);
 	__webpack_require__(34);
 	__webpack_require__(62);
-	__webpack_require__(66);
+	__webpack_require__(67);
 	__webpack_require__(40);
 	__webpack_require__(41);
 	__webpack_require__(53);
@@ -76,7 +77,6 @@
 	__webpack_require__(45);
 	__webpack_require__(46);
 	__webpack_require__(32);
-	__webpack_require__(67);
 	__webpack_require__(2);
 	__webpack_require__(8);
 	__webpack_require__(18);
@@ -166,6 +166,8 @@
 	var _otherSetT7Dependency2 = _interopRequireDefault(_otherSetT7Dependency);
 
 	// TODO! Find a better way
+	// Why not make t7 only works for Inferno, and maintain the other versions on another repo? Then we could
+	// skip this. Or consider to let someone else make a Babel plugin out of it.
 	_t72['default'].setOutput(_t72['default'].Outputs.Inferno);
 
 	var Inferno = {
@@ -1609,6 +1611,10 @@
 
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 
+	var _getContext = __webpack_require__(7);
+
+	var _getContext2 = _interopRequireDefault(_getContext);
+
 	var _unmountComponentAtFragment = __webpack_require__(31);
 
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
@@ -1620,7 +1626,7 @@
 
 	exports["default"] = function (dom) {
 
-	        var context = getContext(dom);
+	        var context = (0, _getContext2["default"])(dom);
 	        if (context !== null) {
 
 	                var component = context.fragment.component;
@@ -3827,23 +3833,6 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var _uppercasePattern = /([A-Z])/g;
-
-	exports["default"] = function (string) {
-	  return string.replace(_uppercasePattern, "-$1").toLowerCase();
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 67 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 	exports["default"] = {
@@ -3861,6 +3850,23 @@
 	    "onTouchMove": "touchmove",
 	    "onTouchCancel": "touchcancel"
 	};
+	module.exports = exports["default"];
+
+/***/ },
+/* 67 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var _uppercasePattern = /([A-Z])/g;
+
+	exports["default"] = function (string) {
+	  return string.replace(_uppercasePattern, "-$1").toLowerCase();
+	};
+
 	module.exports = exports["default"];
 
 /***/ },

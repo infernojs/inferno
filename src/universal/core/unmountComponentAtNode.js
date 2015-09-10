@@ -1,5 +1,6 @@
 import removeFragment from "./removeFragment";
 import removeContext  from "./removeContext";
+import getContext  from "./getContext";
 import unmountComponentAtFragment  from "./unmountComponentAtFragment";
 
 /**
