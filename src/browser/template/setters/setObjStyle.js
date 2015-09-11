@@ -24,7 +24,8 @@ export default ( node, propertyName, value ) => {
         forIn( value, ( styleName, styleValue ) => {
 		
             if ( styleValue != null ) {
-		 	
+		 	// TODO! Do we need to support array? It's a 'must wanted' 
+			// feature for React, so maybe we should keep this
                 if ( isArray( styleValue ) ) {
 			
                     for ( len = styleValue.length; idx < len; idx++ ) {

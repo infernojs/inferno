@@ -47,25 +47,25 @@
 	__webpack_require__(1);
 	__webpack_require__(32);
 	__webpack_require__(30);
+	__webpack_require__(41);
+	__webpack_require__(50);
+	__webpack_require__(44);
+	__webpack_require__(69);
 	__webpack_require__(7);
 	__webpack_require__(11);
-	__webpack_require__(41);
-	__webpack_require__(49);
-	__webpack_require__(44);
-	__webpack_require__(68);
 	__webpack_require__(3);
 	__webpack_require__(24);
 	__webpack_require__(4);
 	__webpack_require__(21);
 	__webpack_require__(35);
-	__webpack_require__(65);
+	__webpack_require__(66);
 	__webpack_require__(34);
 	__webpack_require__(2);
 	__webpack_require__(9);
 	__webpack_require__(19);
 	__webpack_require__(28);
-	__webpack_require__(70);
 	__webpack_require__(71);
+	__webpack_require__(72);
 	__webpack_require__(14);
 	__webpack_require__(16);
 	__webpack_require__(8);
@@ -85,33 +85,35 @@
 	__webpack_require__(23);
 	__webpack_require__(5);
 	__webpack_require__(22);
+	__webpack_require__(73);
+	__webpack_require__(48);
 	__webpack_require__(37);
-	__webpack_require__(56);
-	__webpack_require__(50);
-	__webpack_require__(63);
-	__webpack_require__(54);
+	__webpack_require__(57);
+	__webpack_require__(51);
+	__webpack_require__(64);
+	__webpack_require__(55);
 	__webpack_require__(36);
-	__webpack_require__(66);
 	__webpack_require__(67);
+	__webpack_require__(68);
 	__webpack_require__(40);
-	__webpack_require__(61);
 	__webpack_require__(62);
-	__webpack_require__(59);
+	__webpack_require__(63);
 	__webpack_require__(60);
+	__webpack_require__(61);
 	__webpack_require__(39);
-	__webpack_require__(72);
+	__webpack_require__(74);
 	__webpack_require__(45);
 	__webpack_require__(46);
-	__webpack_require__(73);
-	__webpack_require__(74);
 	__webpack_require__(75);
-	__webpack_require__(38);
 	__webpack_require__(76);
-	__webpack_require__(47);
-	__webpack_require__(48);
 	__webpack_require__(77);
+	__webpack_require__(38);
 	__webpack_require__(78);
-	module.exports = __webpack_require__(79);
+	__webpack_require__(47);
+	__webpack_require__(49);
+	__webpack_require__(79);
+	__webpack_require__(80);
+	module.exports = __webpack_require__(81);
 
 
 /***/ },
@@ -150,11 +152,11 @@
 
 	var _browserTemplateTemplate2 = _interopRequireDefault(_browserTemplateTemplate);
 
-	var _utilIsBrowser = __webpack_require__(68);
+	var _utilIsBrowser = __webpack_require__(69);
 
 	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
 
-	var _t7 = __webpack_require__(69);
+	var _t7 = __webpack_require__(70);
 
 	var _t72 = _interopRequireDefault(_t7);
 
@@ -1744,11 +1746,11 @@
 
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 
-	var _addProperties = __webpack_require__(65);
+	var _addProperties = __webpack_require__(66);
 
 	var _addProperties2 = _interopRequireDefault(_addProperties);
 
-	var _utilIsBrowser = __webpack_require__(68);
+	var _utilIsBrowser = __webpack_require__(69);
 
 	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
 
@@ -1852,7 +1854,7 @@
 
 	var _attrsCfg2 = _interopRequireDefault(_attrsCfg);
 
-	var _defaultAttrCfg = __webpack_require__(63);
+	var _defaultAttrCfg = __webpack_require__(64);
 
 	var _defaultAttrCfg2 = _interopRequireDefault(_defaultAttrCfg);
 
@@ -1886,23 +1888,23 @@
 
 	var _settersSetPropWithCheck2 = _interopRequireDefault(_settersSetPropWithCheck);
 
-	var _boolPropCfg = __webpack_require__(50);
+	var _boolPropCfg = __webpack_require__(51);
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultPropCfg = __webpack_require__(54);
+	var _defaultPropCfg = __webpack_require__(55);
 
 	var _defaultPropCfg2 = _interopRequireDefault(_defaultPropCfg);
 
-	var _boolAttrCfg = __webpack_require__(56);
+	var _boolAttrCfg = __webpack_require__(57);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
-	var _xmlAttrCfg = __webpack_require__(59);
+	var _xmlAttrCfg = __webpack_require__(60);
 
 	var _xmlAttrCfg2 = _interopRequireDefault(_xmlAttrCfg);
 
-	var _xlinkAttrCfg = __webpack_require__(61);
+	var _xlinkAttrCfg = __webpack_require__(62);
 
 	var _xlinkAttrCfg2 = _interopRequireDefault(_xlinkAttrCfg);
 
@@ -1974,7 +1976,7 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	                value: true
+	  value: true
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -2001,37 +2003,40 @@
 
 	exports["default"] = function (node, propertyName, value) {
 
-	                if (typeof value === "string") {
+	  // FIX ME!! t7 has to be fixed so it handle object literal. Then
+	  // we can remove this 'typeof' check
+	  if (typeof value === "string") {
 
-	                                node.style.cssText = value;
-	                } else {
-	                                (function () {
+	    node.style.cssText = value;
+	  } else {
+	    (function () {
 
-	                                                var idx = 0,
-	                                                    len = undefined,
-	                                                    style = node[propertyName];
+	      var idx = 0,
+	          len = undefined,
+	          style = node[propertyName];
 
-	                                                (0, _utilForIn2["default"])(value, function (styleName, styleValue) {
+	      (0, _utilForIn2["default"])(value, function (styleName, styleValue) {
 
-	                                                                if (styleValue != null) {
+	        if (styleValue != null) {
+	          // TODO! Do we need to support array? It's a 'must wanted'
+	          // feature for React, so maybe we should keep this
+	          if ((0, _utilIsArray2["default"])(styleValue)) {
 
-	                                                                                if ((0, _utilIsArray2["default"])(styleValue)) {
+	            for (len = styleValue.length; idx < len; idx++) {
 
-	                                                                                                for (len = styleValue.length; idx < len; idx++) {
+	              style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue[idx]);
+	            }
+	          } else {
 
-	                                                                                                                style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue[idx]);
-	                                                                                                }
-	                                                                                } else {
+	            style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue);
+	          }
+	        } else {
 
-	                                                                                                style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue);
-	                                                                                }
-	                                                                } else {
-
-	                                                                                style[styleName] = "";
-	                                                                }
-	                                                });
-	                                })();
-	                }
+	          style[styleName] = "";
+	        }
+	      });
+	    })();
+	  }
 	};
 
 	module.exports = exports["default"];
@@ -2345,15 +2350,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setSelectValue = __webpack_require__(48);
+	var _hooksPropHook = __webpack_require__(48);
 
-	var _setSelectValue2 = _interopRequireDefault(_setSelectValue);
+	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
 
 	exports["default"] = function (node, name, value) {
 
-	    if (name === "value" && node.tagName === "SELECT") {
+	    if (_hooksPropHook2["default"][name]) {
 
-	        (0, _setSelectValue2["default"])(node, value);
+	        (0, _hooksPropHook2["default"])(node, name, value);
 	    } else {
 
 	        if (node[name] !== value) {
@@ -2377,7 +2382,65 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _utilInArray = __webpack_require__(49);
+	var _settersSetSelectValue = __webpack_require__(49);
+
+	var _settersSetSelectValue2 = _interopRequireDefault(_settersSetSelectValue);
+
+	var _utilIsArray = __webpack_require__(44);
+
+	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
+
+	var _utilInArray = __webpack_require__(50);
+
+	var _utilInArray2 = _interopRequireDefault(_utilInArray);
+
+	/**
+	 * INTERNAL!!
+	 */
+	var hooks = {
+
+	    value: function value(node, name, _value) {
+
+	        switch (node.tagName) {
+
+	            case SELECT:
+	                (0, _settersSetSelectValue2["default"])(node, _value);
+	                break;
+	            default:
+
+	                if (node[name] !== _value) {
+
+	                    node[name] = _value;
+	                }
+	        }
+	    }
+	};
+
+	// Radios and checkboxes setter
+	["radio", "checkbox"].forEach(function (attr) {
+	    hooks[attr] = function (node, name, value) {
+	        if ((0, _utilIsArray2["default"])(value)) {
+	            return elem.checked = (0, _utilInArray2["default"])(node.value, value) >= 0;
+	        }
+	    };
+	});
+
+	exports["default"] = hooks;
+	module.exports = exports["default"];
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _utilInArray = __webpack_require__(50);
 
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 
@@ -2414,7 +2477,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2443,7 +2506,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2454,11 +2517,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setBooleanProp = __webpack_require__(51);
+	var _setBooleanProp = __webpack_require__(52);
 
 	var _setBooleanProp2 = _interopRequireDefault(_setBooleanProp);
 
-	var _removeProp = __webpack_require__(52);
+	var _removeProp = __webpack_require__(53);
 
 	var _removeProp2 = _interopRequireDefault(_removeProp);
 
@@ -2469,7 +2532,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2486,7 +2549,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2497,7 +2560,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeSelectValue = __webpack_require__(53);
+	var _removeSelectValue = __webpack_require__(54);
 
 	var _removeSelectValue2 = _interopRequireDefault(_removeSelectValue);
 
@@ -2523,7 +2586,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2551,7 +2614,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2562,11 +2625,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setProp = __webpack_require__(55);
+	var _setProp = __webpack_require__(56);
 
 	var _setProp2 = _interopRequireDefault(_setProp);
 
-	var _removeProp = __webpack_require__(52);
+	var _removeProp = __webpack_require__(53);
 
 	var _removeProp2 = _interopRequireDefault(_removeProp);
 
@@ -2577,7 +2640,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2594,7 +2657,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2605,11 +2668,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeAttr = __webpack_require__(57);
+	var _removeAttr = __webpack_require__(58);
 
 	var _removeAttr2 = _interopRequireDefault(_removeAttr);
 
-	var _setBooleanAttr = __webpack_require__(58);
+	var _setBooleanAttr = __webpack_require__(59);
 
 	var _setBooleanAttr2 = _interopRequireDefault(_setBooleanAttr);
 
@@ -2620,7 +2683,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2637,7 +2700,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2659,7 +2722,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2670,7 +2733,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xmlCfg = __webpack_require__(60);
+	var _xmlCfg = __webpack_require__(61);
 
 	var _xmlCfg2 = _interopRequireDefault(_xmlCfg);
 
@@ -2687,7 +2750,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2704,7 +2767,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2715,7 +2778,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xlinkCfg = __webpack_require__(62);
+	var _xlinkCfg = __webpack_require__(63);
 
 	var _xlinkCfg2 = _interopRequireDefault(_xlinkCfg);
 
@@ -2732,7 +2795,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2752,7 +2815,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2763,11 +2826,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setAttributes = __webpack_require__(64);
+	var _setAttributes = __webpack_require__(65);
 
 	var _setAttributes2 = _interopRequireDefault(_setAttributes);
 
-	var _removeAttr = __webpack_require__(57);
+	var _removeAttr = __webpack_require__(58);
 
 	var _removeAttr2 = _interopRequireDefault(_removeAttr);
 
@@ -2778,7 +2841,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2803,7 +2866,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2826,7 +2889,7 @@
 
 	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
 
-	var _cfgDOMPropsCfg = __webpack_require__(66);
+	var _cfgDOMPropsCfg = __webpack_require__(67);
 
 	var _cfgDOMPropsCfg2 = _interopRequireDefault(_cfgDOMPropsCfg);
 
@@ -2860,7 +2923,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2871,11 +2934,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _propsCfg = __webpack_require__(67);
+	var _propsCfg = __webpack_require__(68);
 
 	var _propsCfg2 = _interopRequireDefault(_propsCfg);
 
-	var _defaultPropCfg = __webpack_require__(54);
+	var _defaultPropCfg = __webpack_require__(55);
 
 	var _defaultPropCfg2 = _interopRequireDefault(_defaultPropCfg);
 
@@ -2886,7 +2949,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2909,15 +2972,15 @@
 
 	var _settersSetPropWithCheck2 = _interopRequireDefault(_settersSetPropWithCheck);
 
-	var _boolPropCfg = __webpack_require__(50);
+	var _boolPropCfg = __webpack_require__(51);
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultAttrCfg = __webpack_require__(63);
+	var _defaultAttrCfg = __webpack_require__(64);
 
 	var _defaultAttrCfg2 = _interopRequireDefault(_defaultAttrCfg);
 
-	var _boolAttrCfg = __webpack_require__(56);
+	var _boolAttrCfg = __webpack_require__(57);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
@@ -2983,7 +3046,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3001,7 +3064,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports) {
 
 	/*
@@ -3933,7 +3996,7 @@
 
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3945,7 +4008,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _createFragment = __webpack_require__(71);
+	var _createFragment = __webpack_require__(72);
 
 	var _createFragment2 = _interopRequireDefault(_createFragment);
 
@@ -4010,7 +4073,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
 	//this function is really only intended to be used for DEV purposes
@@ -4058,7 +4121,32 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 72 */
+/* 73 */
+/***/ function(module, exports) {
+
+	/**
+	 * INTERNAL!!
+	 */
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var hooks = {
+
+	    type: function type(node, name, value) {
+
+	        var val = node.value; // value will be lost in IE if type is changed
+	        node.setAttribute(name, "" + value);
+	        node.value = val;
+	    }
+	};
+
+	exports["default"] = hooks;
+	module.exports = exports["default"];
+
+/***/ },
+/* 74 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4075,8 +4163,8 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 73 */
-/***/ function(module, exports) {
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -4084,23 +4172,27 @@
 	    value: true
 	});
 
-	exports["default"] = function (node, name, val) {
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	    if (name === "type" && node.tagName === "INPUT") {
+	var _hooksAttrHook = __webpack_require__(73);
 
-	        var value = node.value; // value will be lost in IE if type is changed
-	        node.setAttribute(name, "" + val);
-	        node.value = value;
+	var _hooksAttrHook2 = _interopRequireDefault(_hooksAttrHook);
+
+	exports["default"] = function (node, name, value) {
+
+	    if (_hooksAttrHook2["default"][name]) {
+
+	        (0, _hooksAttrHook2["default"])(node, name, value);
 	    } else {
 
-	        node.setAttribute(name, "" + val);
+	        node.setAttribute(name, "" + value);
 	    }
 	};
 
 	module.exports = exports["default"];
 
 /***/ },
-/* 74 */
+/* 76 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4122,7 +4214,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 75 */
+/* 77 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4139,7 +4231,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 76 */
+/* 78 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4156,7 +4248,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 77 */
+/* 79 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4173,7 +4265,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 78 */
+/* 80 */
 /***/ function(module, exports) {
 
 	/**
@@ -4189,7 +4281,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 79 */
+/* 81 */
 /***/ function(module, exports) {
 
 	/**

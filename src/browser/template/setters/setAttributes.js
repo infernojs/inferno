@@ -1,15 +1,13 @@
-export default ( node, name, val ) => {
+import HOOK from "../hooks/attrHook";
 
-    if ( name === "type" && ( node.tagName === "INPUT" ) ) {
+export default ( node, name, value ) => {
 
-        const value = node.value; // value will be lost in IE if type is changed
-        node.setAttribute( name, "" + val );
-        node.value = value;
+    if ( HOOK[name] ) {
+
+        HOOK( node, name, value );
 
     } else {
 
-        node.setAttribute( name, "" + val );
-
-    }
-
+       node.setAttribute( name, "" + value );	
+	}
 };

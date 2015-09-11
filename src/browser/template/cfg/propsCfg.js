@@ -1,9 +1,9 @@
-import setObjStyle from "../setters/setObjStyle";
-import removeProp from "../setters/removeProp";
+import setObjStyle      from "../setters/setObjStyle";
+import removeProp       from "../setters/removeProp";
 import setPropWithCheck from "../setters/setPropWithCheck";
-import boolPropCfg from "./boolPropCfg";
-import defaultAttrCfg from "./defaultAttrCfg";
-import boolAttrCfg from "./boolAttrCfg";
+import boolPropCfg      from "./boolPropCfg";
+import defaultAttrCfg   from "./defaultAttrCfg";
+import boolAttrCfg      from "./boolAttrCfg";
 
 /************************** WARNING!! **********************************
  *  Don't do any changes here except if you know what you are          *

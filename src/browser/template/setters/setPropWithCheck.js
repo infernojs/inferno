@@ -1,19 +1,16 @@
-import setSelectValue from "./setSelectValue";
+import HOOK from "../hooks/propHook";
 
 export default ( node, name, value ) => {
 
-    if ( name === "value" && ( node.tagName === "SELECT" ) ) {
+    if ( HOOK[name] ) {
 
-        setSelectValue( node, value );
+        HOOK( node, name, value );
 
     } else {
 
         if ( node[name] !== value ) {
 
             node[name] = value;
-
         }
-
     }
-
 };

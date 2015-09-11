@@ -5,7 +5,6 @@ export default ( name, value ) => {
     if ( value == null || ( value === "" ) ) {
 
         return "";
-
     }
 
     if ( value === 0 || ( unitlessCfg[name] || ( isNaN( value ) ) ) ) {
