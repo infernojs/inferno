@@ -1,3 +1,5 @@
+"use strict";
+
 import updateFragment from "./updateFragment";
 import fragmentTypes from "./fragmentTypes";
 import updateFragmentList from "./updateFragmentList";
@@ -13,9 +15,8 @@ export default (context, oldFragment, fragment, parentDom, component) => {
         i;
 
     for (i = 0, length = fragment.templateValues.length; i < length; i++) {
-
-        var element = oldFragment.templateElements[i];
-        var type = oldFragment.templateTypes[i];
+        let element = oldFragment.templateElements[i];
+        let type = oldFragment.templateTypes[i];
 
         fragment.templateElements[i] = element;
         fragment.templateTypes[i] = type;
@@ -92,7 +93,7 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                     else {
                         element.props[type] = fragment.templateValues[i];
                         let alreadyInQueue = false;
-                        for (s = 0; s < componentsToUpdate.length; s++) {
+                        for (let s = 0; s < componentsToUpdate.length; s++) {
                             if (componentsToUpdate[s] === element) {
                                 alreadyInQueue = true;
                             }

@@ -145,12 +145,12 @@ var t7 = (function() {
         } else if (typeof child === "string" && root.children.length > 1) {
           matches = child.match(/__\$props__\[\d*\]/g);
           if (matches === null) {
-            templateParams.push("var " + nodeName + i + " = Inferno.template.createText('" + child.replace(/(\r\n|\n|\r)/gm, "") + "');");
+            templateParams.push("var " + nodeName + i + " = Inferno.template.createTextNode('" + child.replace(/(\r\n|\n|\r)/gm, "") + "');");
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("var " + nodeName + i + ";");
             templateParams.push("if(typeof " + valueName + " !== 'object') {");
-            templateParams.push(nodeName + i + " = Inferno.template.createText(" + valueName + ");");
+            templateParams.push(nodeName + i + " = Inferno.template.createTextNode(" + valueName + ");");
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.Type.TEXT_DIRECT;");
             templateParams.push("} else {");
             templateParams.push(nodeName + i + " = Inferno.template.createEmptyText();");

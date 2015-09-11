@@ -7,15 +7,13 @@ import events              from "../../browser/events/shared/events";
 
 
 export default ( context, oldFragment, fragment, parentDom, component ) => {
-
-    let element = oldFragment.templateElement,
-        type = oldFragment.templateType;
+    let element = oldFragment.templateElement;
+    let type = oldFragment.templateType;
 
     fragment.templateElement = element;
     fragment.templateType = type;
 
     if ( fragment.templateValue !== oldFragment.templateValue ) {
-
         switch ( type ) {
             case fragmentTypes.LIST:
             case fragmentTypes.LIST_REPLACE:
@@ -75,18 +73,12 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
                 return;
             default:
                 if ( !element.props ) {
-
                     if ( events[type] != null ) {
-
                         clearEventListeners( element, type );
                         addEventListener( element, type, fragment.templateValue );
-
                     } else {
-
                         element.setAttribute( type, fragment.templateValue );
-
                     }
-
                 }
                 //component prop, update it
                 else {

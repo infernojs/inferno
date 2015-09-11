@@ -4,17 +4,10 @@
 
 let t7dependency = true;
 
-export default ( t7dependency ) => {
-
-    if ( arguments.length ) {
-
-        t7dependency = t7dependency;
-
-    // if no args, do a return 
+export default ( set7dependency ) => {
+    if ( set7dependency === true ) {
+        t7dependency = true;
     } else {
-
         return t7dependency;
-
     }
-
 };

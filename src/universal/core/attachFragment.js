@@ -4,7 +4,7 @@ import attachFragmentList  from "./attachFragmentList";
 import fragmentTypes       from "./fragmentTypes";
 import insertFragment      from "./insertFragment";
 import render              from "../../browser/core/render";
-import setT7Dependency     from "../../other/setT7Dependency";
+import t7Dependency        from "../../other/setT7Dependency";
 
 let attachFragment = ( context, fragment, parentDom, component, nextFragment, replace ) => {
     let fragmentComponent = fragment.component;
@@ -32,7 +32,7 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
     } else {
         //the user can optionally opt out of using the t7 dependency, thus removing the requirement
         //to pass the t7 reference into the template constructor
-        if ( setT7Dependency() ) {
+        if ( t7Dependency() ) {
             template( fragment, fragment.t7ref );
         } else {
             template( fragment );
