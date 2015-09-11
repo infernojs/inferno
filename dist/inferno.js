@@ -47,17 +47,16 @@
 	__webpack_require__(1);
 	__webpack_require__(32);
 	__webpack_require__(30);
-	__webpack_require__(7);
-	__webpack_require__(11);
 	__webpack_require__(41);
 	__webpack_require__(49);
 	__webpack_require__(44);
 	__webpack_require__(66);
+	__webpack_require__(7);
+	__webpack_require__(11);
 	__webpack_require__(3);
 	__webpack_require__(24);
 	__webpack_require__(4);
 	__webpack_require__(21);
-	__webpack_require__(68);
 	__webpack_require__(35);
 	__webpack_require__(63);
 	__webpack_require__(34);
@@ -65,8 +64,8 @@
 	__webpack_require__(9);
 	__webpack_require__(19);
 	__webpack_require__(28);
+	__webpack_require__(68);
 	__webpack_require__(69);
-	__webpack_require__(70);
 	__webpack_require__(14);
 	__webpack_require__(16);
 	__webpack_require__(8);
@@ -99,6 +98,7 @@
 	__webpack_require__(60);
 	__webpack_require__(57);
 	__webpack_require__(58);
+	__webpack_require__(70);
 	__webpack_require__(71);
 	__webpack_require__(72);
 	__webpack_require__(73);
@@ -111,8 +111,7 @@
 	__webpack_require__(80);
 	__webpack_require__(81);
 	__webpack_require__(82);
-	__webpack_require__(83);
-	module.exports = __webpack_require__(84);
+	module.exports = __webpack_require__(83);
 
 
 /***/ },
@@ -3851,63 +3850,6 @@
 
 /***/ },
 /* 68 */
-/***/ function(module, exports) {
-
-	// FIX ME!! 'blur', 'focus' etc. need to bubble
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports["default"] = {
-	    onBlur: "blur",
-	    onChange: "change",
-	    onClick: "click",
-	    onContextMenu: "contextmenu",
-	    onCopy: "copy",
-	    onCut: "cut",
-	    onDoubleClick: "dblclick",
-	    onDrag: "drag",
-	    onDragEnd: "dragend",
-	    onDragEnter: "dragenter",
-	    onDragExit: "dragexit",
-	    onDragLeave: "dragleave",
-	    onDragOver: "dragover",
-	    onDragStart: "dragstart",
-	    onDrop: "drop",
-	    onError: "error",
-	    onFocus: "focus",
-	    onInput: "input",
-	    onInvalid: "invalid",
-	    onKeyDown: "keydown",
-	    onKeyPress: "keypress",
-	    onKeyUp: "keyup",
-	    onLoad: "load",
-	    onMouseDown: "mousedown",
-	    onMouseEnter: "mouseenter",
-	    onMouseLeave: "mouseleave",
-	    onMouseMove: "mousemove",
-	    onMouseOut: "mouseout",
-	    onMouseOver: "mouseover",
-	    onMouseUp: "mouseup",
-	    onMouseDown: "mousedown",
-	    onMouseMove: "mousemove",
-	    onMouseEnter: "mouseenter",
-	    onMouseLeave: "mouseleave",
-	    onPaste: "paste",
-	    onReset: "reset",
-	    onScroll: "scroll",
-	    onSubmit: "submit",
-	    onTouchCancel: "touchcancel",
-	    onTouchEnd: "touchend",
-	    onTouchMove: "touchmove",
-	    onTouchStart: "touchstart",
-	    onWheel: "wheel"
-	};
-	module.exports = exports["default"];
-
-/***/ },
-/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3919,7 +3861,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _createFragment = __webpack_require__(70);
+	var _createFragment = __webpack_require__(69);
 
 	var _createFragment2 = _interopRequireDefault(_createFragment);
 
@@ -3984,7 +3926,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports) {
 
 	//this function is really only intended to be used for DEV purposes
@@ -4032,7 +3974,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4070,7 +4012,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4087,7 +4029,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4098,7 +4040,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeSelectValue = __webpack_require__(74);
+	var _removeSelectValue = __webpack_require__(73);
 
 	var _removeSelectValue2 = _interopRequireDefault(_removeSelectValue);
 
@@ -4124,7 +4066,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4152,7 +4094,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4177,7 +4119,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4199,7 +4141,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4216,7 +4158,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4227,7 +4169,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _cleanValues = __webpack_require__(71);
+	var _cleanValues = __webpack_require__(70);
 
 	var _cleanValues2 = _interopRequireDefault(_cleanValues);
 
@@ -4285,7 +4227,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4302,7 +4244,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4313,7 +4255,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setSelectValue = __webpack_require__(81);
+	var _setSelectValue = __webpack_require__(80);
 
 	var _setSelectValue2 = _interopRequireDefault(_setSelectValue);
 
@@ -4334,7 +4276,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4382,7 +4324,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4399,7 +4341,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/**
@@ -4415,7 +4357,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/**
