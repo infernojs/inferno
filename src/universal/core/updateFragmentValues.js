@@ -6,6 +6,7 @@ import updateFragmentList from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
+import DOMAttrCfg          from "../../browser/template/cfg/DOMAttrCfg";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
@@ -36,7 +37,7 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                 case fragmentTypes.FRAGMENT_REPLACE:
                     updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
-                case fragmentTypes.ATTR_CLASS:
+              /*  case fragmentTypes.ATTR_CLASS:
                     element.className = fragment.templateValues[i];
                     break;
                 case fragmentTypes.ATTR_CHECKED:
@@ -77,7 +78,7 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                     break;
                 case fragmentTypes.ATTR_HEIGHT:
                     element.height = fragment.templateValues[i];
-                    break;
+                    break;*/
                 default:
                     //custom attribute, so simply setAttribute it
                     if (!element.props) {
@@ -85,7 +86,7 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                             clearEventListeners(element, type);
                             addEventListener(element, type, fragment.templateValues[i]);
                         } else {
-                            element.setAttribute(type, fragment.templateValues[i]);
+							DOMAttrCfg(attrName).set(element, type, fragment.templateValues[i]);
                         }
                     }
                     //component prop, update it
