@@ -1,7 +1,7 @@
-import setBooleanProp    from ".././setBooleanProp";
-import removeProp from ".././removeProp";
+import setBooleanProp    from "../setters/setBooleanProp";
+import removeBooleanProp from "../setters/removeBooleanProp";
 
 export default {
     set: setBooleanProp,
-    remove: removeProp
+    remove: removeBooleanProp
 };

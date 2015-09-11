@@ -1,7 +1,7 @@
-import removeAttr from ".././removeAttr";
-import setBooleanAttr from ".././setBooleanAttr";
+import removeBooleanAttr from "../setters/removeBooleanAttr";
+import setBooleanAttr    from "../setters/setBooleanAttr";
 
 export default {
     set: setBooleanAttr,
-    remove: removeAttr
+    remove: removeBooleanAttr
 };

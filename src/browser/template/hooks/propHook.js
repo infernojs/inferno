@@ -29,7 +29,7 @@ hooks.remove.value = (node, name) => {
             removeSelectValue( node );
             break;
         default:
-            node[name] = "";
+            node[name] = null;
     }
 }
 	

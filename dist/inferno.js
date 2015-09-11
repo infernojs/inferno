@@ -46,26 +46,26 @@
 
 	__webpack_require__(1);
 	__webpack_require__(32);
+	__webpack_require__(30);
 	__webpack_require__(41);
 	__webpack_require__(48);
 	__webpack_require__(44);
-	__webpack_require__(69);
-	__webpack_require__(30);
+	__webpack_require__(70);
 	__webpack_require__(7);
 	__webpack_require__(11);
 	__webpack_require__(3);
 	__webpack_require__(24);
 	__webpack_require__(4);
 	__webpack_require__(21);
-	__webpack_require__(35);
-	__webpack_require__(66);
-	__webpack_require__(34);
 	__webpack_require__(2);
+	__webpack_require__(35);
+	__webpack_require__(67);
+	__webpack_require__(34);
 	__webpack_require__(9);
 	__webpack_require__(19);
 	__webpack_require__(28);
-	__webpack_require__(71);
 	__webpack_require__(72);
+	__webpack_require__(73);
 	__webpack_require__(14);
 	__webpack_require__(16);
 	__webpack_require__(8);
@@ -85,35 +85,37 @@
 	__webpack_require__(23);
 	__webpack_require__(5);
 	__webpack_require__(22);
-	__webpack_require__(37);
-	__webpack_require__(57);
-	__webpack_require__(51);
-	__webpack_require__(64);
-	__webpack_require__(55);
-	__webpack_require__(36);
-	__webpack_require__(67);
-	__webpack_require__(68);
-	__webpack_require__(40);
-	__webpack_require__(62);
-	__webpack_require__(63);
-	__webpack_require__(60);
-	__webpack_require__(61);
-	__webpack_require__(73);
+	__webpack_require__(65);
 	__webpack_require__(46);
-	__webpack_require__(74);
+	__webpack_require__(37);
+	__webpack_require__(56);
+	__webpack_require__(51);
+	__webpack_require__(63);
+	__webpack_require__(54);
+	__webpack_require__(36);
+	__webpack_require__(68);
+	__webpack_require__(69);
+	__webpack_require__(40);
+	__webpack_require__(61);
+	__webpack_require__(62);
+	__webpack_require__(59);
+	__webpack_require__(60);
+	__webpack_require__(66);
+	__webpack_require__(57);
+	__webpack_require__(53);
 	__webpack_require__(45);
 	__webpack_require__(49);
-	__webpack_require__(75);
-	__webpack_require__(76);
-	__webpack_require__(77);
+	__webpack_require__(64);
+	__webpack_require__(58);
+	__webpack_require__(52);
 	__webpack_require__(38);
-	__webpack_require__(78);
+	__webpack_require__(55);
 	__webpack_require__(50);
 	__webpack_require__(47);
 	__webpack_require__(39);
-	__webpack_require__(79);
-	__webpack_require__(80);
-	module.exports = __webpack_require__(81);
+	__webpack_require__(74);
+	__webpack_require__(42);
+	module.exports = __webpack_require__(43);
 
 
 /***/ },
@@ -152,11 +154,11 @@
 
 	var _browserTemplateTemplate2 = _interopRequireDefault(_browserTemplateTemplate);
 
-	var _utilIsBrowser = __webpack_require__(69);
+	var _utilIsBrowser = __webpack_require__(70);
 
 	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
 
-	var _t7 = __webpack_require__(70);
+	var _t7 = __webpack_require__(71);
 
 	var _t72 = _interopRequireDefault(_t7);
 
@@ -1746,11 +1748,11 @@
 
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 
-	var _addProperties = __webpack_require__(66);
+	var _addProperties = __webpack_require__(67);
 
 	var _addProperties2 = _interopRequireDefault(_addProperties);
 
-	var _utilIsBrowser = __webpack_require__(69);
+	var _utilIsBrowser = __webpack_require__(70);
 
 	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
 
@@ -1829,7 +1831,7 @@
 	                (0, _eventsClearEventListeners2["default"])(node, attrName);
 	                (0, _eventsAddEventListener2["default"])(node, attrName, attrVal);
 	            } else {
-	                (0, _cfgDOMAttrCfg2["default"])(attrName).add(node, attrName, attrVal);
+	                (0, _cfgDOMAttrCfg2["default"])(attrName).set(node, attrName, attrVal);
 	            }
 	        }
 	    });
@@ -1853,7 +1855,7 @@
 
 	var _attrsCfg2 = _interopRequireDefault(_attrsCfg);
 
-	var _defaultAttrCfg = __webpack_require__(64);
+	var _defaultAttrCfg = __webpack_require__(63);
 
 	var _defaultAttrCfg2 = _interopRequireDefault(_defaultAttrCfg);
 
@@ -1891,19 +1893,19 @@
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultPropCfg = __webpack_require__(55);
+	var _defaultPropCfg = __webpack_require__(54);
 
 	var _defaultPropCfg2 = _interopRequireDefault(_defaultPropCfg);
 
-	var _boolAttrCfg = __webpack_require__(57);
+	var _boolAttrCfg = __webpack_require__(56);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
-	var _xmlAttrCfg = __webpack_require__(60);
+	var _xmlAttrCfg = __webpack_require__(59);
 
 	var _xmlAttrCfg2 = _interopRequireDefault(_xmlAttrCfg);
 
-	var _xlinkAttrCfg = __webpack_require__(62);
+	var _xlinkAttrCfg = __webpack_require__(61);
 
 	var _xlinkAttrCfg2 = _interopRequireDefault(_xlinkAttrCfg);
 
@@ -2094,13 +2096,13 @@
 
 	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 
-	var _prefixes = __webpack_require__(42);
+	var _stylesPrefixes = __webpack_require__(42);
 
-	var _prefixes2 = _interopRequireDefault(_prefixes);
+	var _stylesPrefixes2 = _interopRequireDefault(_stylesPrefixes);
 
-	var _prefixKey = __webpack_require__(43);
+	var _stylesPrefixKey = __webpack_require__(43);
 
-	var _prefixKey2 = _interopRequireDefault(_prefixKey);
+	var _stylesPrefixKey2 = _interopRequireDefault(_stylesPrefixKey);
 
 	/**
 	 * CSS properties which accept numbers but are not in units of "px".
@@ -2146,9 +2148,9 @@
 	// convert to vendor prefixed unitless CSS properties
 	(0, _utilForIn2["default"])(unitless, function (prop, value) {
 
-	    _prefixes2["default"].forEach(function (prefix) {
+	    _stylesPrefixes2["default"].forEach(function (prefix) {
 
-	        unitless[(0, _prefixKey2["default"])(prefix, prop)] = value;
+	        unitless[(0, _stylesPrefixKey2["default"])(prefix, prop)] = value;
 	    });
 	});
 
@@ -2180,7 +2182,7 @@
 	    "stroke-width": true
 	}, function (prop) {
 
-	    _prefixes2["default"].forEach(function (prefix, value) {
+	    _stylesPrefixes2["default"].forEach(function (prefix, value) {
 
 	        unitless[prop] = value;
 	    });
@@ -2289,12 +2291,14 @@
 
 	exports["default"] = function (node, name) {
 
-	    if (HOOK.remove[name]) {
+	    var hook = _hooksPropHook2["default"].remove[name];
 
-	        HOOK.remove[name](node, name);
+	    if (hook) {
+
+	        hook[name](node, name);
 	    } else {
-
-	        node[name] = "";
+	        // 'className' is a edge case, and has to be set as empty string
+	        node[name] = name === "className" ? "" : null;
 	    }
 	};
 
@@ -2354,7 +2358,7 @@
 	            (0, _settersRemoveSelectValue2["default"])(node);
 	            break;
 	        default:
-	            node[name] = "";
+	            node[name] = null;
 	    }
 	};
 
@@ -2402,14 +2406,14 @@
 	        options = node.options,
 	        len = options.length;
 
-	    var i = 0,
+	    var idx = 0,
 	        optionNode = undefined;
 
 	    if (value != null) {
 
-	        while (i < len) {
+	        while (idx < len) {
 
-	            optionNode = options[i++];
+	            optionNode = options[idx++];
 
 	            if (isMultiple) {
 
@@ -2500,9 +2504,11 @@
 
 	exports["default"] = function (node, name, value) {
 
-	    if (_hooksPropHook2["default"].add[name]) {
+	    var hook = _hooksPropHook2["default"].set[name];
 
-	        _hooksPropHook2["default"].add(node, name, value);
+	    if (hook) {
+
+	        hook(node, name, value);
 	    } else {
 
 	        if (node[name] !== value) {
@@ -2526,17 +2532,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setBooleanProp = __webpack_require__(52);
+	var _settersSetBooleanProp = __webpack_require__(52);
 
-	var _setBooleanProp2 = _interopRequireDefault(_setBooleanProp);
+	var _settersSetBooleanProp2 = _interopRequireDefault(_settersSetBooleanProp);
 
-	var _removeProp = __webpack_require__(53);
+	var _settersRemoveBooleanProp = __webpack_require__(53);
 
-	var _removeProp2 = _interopRequireDefault(_removeProp);
+	var _settersRemoveBooleanProp2 = _interopRequireDefault(_settersRemoveBooleanProp);
 
 	exports["default"] = {
-	    set: _setBooleanProp2["default"],
-	    remove: _removeProp2["default"]
+	    set: _settersSetBooleanProp2["default"],
+	    remove: _settersRemoveBooleanProp2["default"]
 	};
 	module.exports = exports["default"];
 
@@ -2550,80 +2556,39 @@
 	    value: true
 	});
 
-	exports["default"] = function (node, propertyName, propertyValue) {
-
-	    node[propertyName] = !!propertyValue;
+	exports["default"] = function (node, propName, value) {
+	    // Legacy browsers would fuck this up if we don't force
+	    // the value to be a boolean
+	    node[propName] = !!value;
 	};
 
 	module.exports = exports["default"];
 
 /***/ },
 /* 53 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+					value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	exports["default"] = function (node, propName) {
+					// Set corresponding property to false
+					node[propName] = false;
 
-	var _removeSelectValue = __webpack_require__(54);
+					// Remove the attribute
 
-	var _removeSelectValue2 = _interopRequireDefault(_removeSelectValue);
+					// Todo! Should we remove boolean attrs here as well?
 
-	var defaultPropVals = {};
-
-	function getDefaultPropVal(tag, attrName) {
-
-	    var tagAttrs = defaultPropVals[tag] || (defaultPropVals[tag] = {});
-	    return attrName in tagAttrs ? tagAttrs[attrName] : tagAttrs[attrName] = document.createElement(tag)[attrName];
-	}
-
-	exports["default"] = function (node, name) {
-
-	    if (name === "value" && node.tagName === "SELECT") {
-
-	        (0, _removeSelectValue2["default"])(node);
-	    } else {
-
-	        node[name] = getDefaultPropVal(node.tagName, name);
-	    }
+					//    node.removeAttribute(propName);
 	};
 
 	module.exports = exports["default"];
 
 /***/ },
 /* 54 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (node) {
-
-	    var options = node.options,
-	        len = options.length;
-	    // skip iteration if no length
-	    if (len) {
-
-	        var i = 0;
-
-	        while (i < len) {
-
-	            options[i++].selected = false;
-	        }
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2634,22 +2599,22 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setProp = __webpack_require__(56);
+	var _settersSetProp = __webpack_require__(55);
 
-	var _setProp2 = _interopRequireDefault(_setProp);
+	var _settersSetProp2 = _interopRequireDefault(_settersSetProp);
 
-	var _removeProp = __webpack_require__(53);
+	var _settersRemoveProp = __webpack_require__(45);
 
-	var _removeProp2 = _interopRequireDefault(_removeProp);
+	var _settersRemoveProp2 = _interopRequireDefault(_settersRemoveProp);
 
 	exports["default"] = {
-	    set: _setProp2["default"],
-	    remove: _removeProp2["default"]
+	    set: _settersSetProp2["default"],
+	    remove: _settersRemoveProp2["default"]
 	};
 	module.exports = exports["default"];
 
 /***/ },
-/* 56 */
+/* 55 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2666,7 +2631,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 57 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2677,18 +2642,37 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeAttr = __webpack_require__(58);
+	var _settersRemoveBooleanAttr = __webpack_require__(57);
 
-	var _removeAttr2 = _interopRequireDefault(_removeAttr);
+	var _settersRemoveBooleanAttr2 = _interopRequireDefault(_settersRemoveBooleanAttr);
 
-	var _setBooleanAttr = __webpack_require__(59);
+	var _settersSetBooleanAttr = __webpack_require__(58);
 
-	var _setBooleanAttr2 = _interopRequireDefault(_setBooleanAttr);
+	var _settersSetBooleanAttr2 = _interopRequireDefault(_settersSetBooleanAttr);
 
 	exports["default"] = {
-	    set: _setBooleanAttr2["default"],
-	    remove: _removeAttr2["default"]
+	    set: _settersSetBooleanAttr2["default"],
+	    remove: _settersRemoveBooleanAttr2["default"]
 	};
+	module.exports = exports["default"];
+
+/***/ },
+/* 57 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports["default"] = function (node, propName) {
+	    // Set corresponding property to false
+	    node[propName] = false;
+	    // Remove the attribute
+	    node.removeAttribute(propName);
+	};
+
 	module.exports = exports["default"];
 
 /***/ },
@@ -2701,28 +2685,10 @@
 	    value: true
 	});
 
-	exports["default"] = function (node, name) {
-
-	    node.removeAttribute(name);
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 59 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
 	exports["default"] = function (node, name, attrValue) {
 
 	    // don't set falsy values!
 	    if (attrValue !== false) {
-
 	        // booleans should always be lower cased
 	        node.setAttribute(name, "" + (attrValue == true ? "" : attrValue).toLowerCase());
 	    }
@@ -2731,7 +2697,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 60 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2742,7 +2708,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xmlCfg = __webpack_require__(61);
+	var _xmlCfg = __webpack_require__(60);
 
 	var _xmlCfg2 = _interopRequireDefault(_xmlCfg);
 
@@ -2759,7 +2725,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 61 */
+/* 60 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2776,7 +2742,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 62 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2787,7 +2753,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xlinkCfg = __webpack_require__(63);
+	var _xlinkCfg = __webpack_require__(62);
 
 	var _xlinkCfg2 = _interopRequireDefault(_xlinkCfg);
 
@@ -2804,7 +2770,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2824,6 +2790,32 @@
 	module.exports = exports["default"];
 
 /***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _settersSetAttributes = __webpack_require__(64);
+
+	var _settersSetAttributes2 = _interopRequireDefault(_settersSetAttributes);
+
+	var _settersRemoveAttr = __webpack_require__(66);
+
+	var _settersRemoveAttr2 = _interopRequireDefault(_settersRemoveAttr);
+
+	exports["default"] = {
+	    set: _settersSetAttributes2["default"],
+	    remove: _settersRemoveAttr2["default"]
+	};
+	module.exports = exports["default"];
+
+/***/ },
 /* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2835,18 +2827,23 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _setAttributes = __webpack_require__(65);
+	var _hooksAttrHook = __webpack_require__(65);
 
-	var _setAttributes2 = _interopRequireDefault(_setAttributes);
+	var _hooksAttrHook2 = _interopRequireDefault(_hooksAttrHook);
 
-	var _removeAttr = __webpack_require__(58);
+	exports["default"] = function (node, name, value) {
 
-	var _removeAttr2 = _interopRequireDefault(_removeAttr);
+	    var hook = _hooksAttrHook2["default"].add[name];
 
-	exports["default"] = {
-	    set: _setAttributes2["default"],
-	    remove: _removeAttr2["default"]
+	    if (hook) {
+
+	        hook(node, name, value);
+	    } else {
+
+	        node.setAttribute(name, "" + value); // cast to string
+	    }
 	};
+
 	module.exports = exports["default"];
 
 /***/ },
@@ -2859,23 +2856,38 @@
 	    value: true
 	});
 
-	exports["default"] = function (node, name, val) {
+	var hooks = { add: {}, remove: {} };
 
-	    if (name === "type" && node.tagName === "INPUT") {
+	hooks.add.type = function (node, name, value) {
 
-	        var value = node.value; // value will be lost in IE if type is changed
-	        node.setAttribute(name, "" + val);
-	        node.value = value;
-	    } else {
+	    var val = node.value; // value will be lost in IE if type is changed
 
-	        node.setAttribute(name, "" + val);
-	    }
+	    node.setAttribute(name, "" + value);
+	    node.value = val;
+	};
+
+	exports["default"] = hooks;
+	module.exports = exports["default"];
+
+/***/ },
+/* 66 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports["default"] = function (node, name) {
+
+	    node.removeAttribute(name);
 	};
 
 	module.exports = exports["default"];
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2898,7 +2910,7 @@
 
 	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
 
-	var _cfgDOMPropsCfg = __webpack_require__(67);
+	var _cfgDOMPropsCfg = __webpack_require__(68);
 
 	var _cfgDOMPropsCfg2 = _interopRequireDefault(_cfgDOMPropsCfg);
 
@@ -2922,7 +2934,7 @@
 	                (0, _eventsClearEventListeners2["default"])(node, propName);
 	                (0, _eventsAddEventListener2["default"])(node, propName, propVal);
 	            } else {
-	                (0, _cfgDOMPropsCfg2["default"])(propName).add(node, propName, propVal);
+	                (0, _cfgDOMPropsCfg2["default"])(propName).set(node, propName, propVal);
 	            }
 	        }
 	    });
@@ -2931,7 +2943,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2942,11 +2954,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _propsCfg = __webpack_require__(68);
+	var _propsCfg = __webpack_require__(69);
 
 	var _propsCfg2 = _interopRequireDefault(_propsCfg);
 
-	var _defaultPropCfg = __webpack_require__(55);
+	var _defaultPropCfg = __webpack_require__(54);
 
 	var _defaultPropCfg2 = _interopRequireDefault(_defaultPropCfg);
 
@@ -2957,7 +2969,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2984,11 +2996,11 @@
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultAttrCfg = __webpack_require__(64);
+	var _defaultAttrCfg = __webpack_require__(63);
 
 	var _defaultAttrCfg2 = _interopRequireDefault(_defaultAttrCfg);
 
-	var _boolAttrCfg = __webpack_require__(57);
+	var _boolAttrCfg = __webpack_require__(56);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
@@ -3054,7 +3066,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3072,7 +3084,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports) {
 
 	/*
@@ -4004,7 +4016,7 @@
 
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4016,7 +4028,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _createFragment = __webpack_require__(72);
+	var _createFragment = __webpack_require__(73);
 
 	var _createFragment2 = _interopRequireDefault(_createFragment);
 
@@ -4081,7 +4093,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports) {
 
 	//this function is really only intended to be used for DEV purposes
@@ -4129,131 +4141,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 73 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var hooks = { add: {}, remove: {} };
-
-	hooks.add.type = function (node, name, value) {
-
-	    var val = node.value; // value will be lost in IE if type is changed
-
-	    node.setAttribute(name, "" + value);
-	    node.value = val;
-	};
-
-	exports["default"] = hooks;
-	module.exports = exports["default"];
-
-/***/ },
 /* 74 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (node, name) {
-
-	    node.removeAttribute(name);
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 75 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _hooksAttrHook = __webpack_require__(73);
-
-	var _hooksAttrHook2 = _interopRequireDefault(_hooksAttrHook);
-
-	exports["default"] = function (node, name, value) {
-
-	    if (_hooksAttrHook2["default"].add[name]) {
-
-	        _hooksAttrHook2["default"].add(node, name, value);
-	    } else {
-
-	        node.setAttribute(name, "" + value);
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (node, name, attrValue) {
-
-	    // don't set falsy values!
-	    if (attrValue !== false) {
-	        // booleans should always be lower cased
-	        node.setAttribute(name, "" + (attrValue == true ? "" : attrValue).toLowerCase());
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 77 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (node, propertyName, propertyValue) {
-	    // TODO! Optimize for v8
-	    node[propertyName] = !!propertyValue;
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 78 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (node, propertyName, propertyValue) {
-
-	    node[propertyName] = propertyValue;
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 79 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4265,44 +4153,6 @@
 
 	exports["default"] = function (string) {
 	  return string.replace(_uppercasePattern, "-$1").toLowerCase();
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 80 */
-/***/ function(module, exports) {
-
-	/**
-	 * Support style names that may come passed in prefixed by adding permutations
-	 * of vendor prefixes.
-	 */
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports["default"] = ["Webkit", "O", "Moz", "ms"];
-	module.exports = exports["default"];
-
-/***/ },
-/* 81 */
-/***/ function(module, exports) {
-
-	/**
-	 * @param {string} prefix vendor-specific prefix, eg: Webkit
-	 * @param {string} key style name, eg: transitionDuration
-	 * @return {string} style name prefixed with `prefix`, properly camelCased, eg:
-	 * WebkitTransitionDuration
-	 */
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports["default"] = function (prefix, key) {
-	  return prefix + key.charAt(0).toUpperCase() + key.substring(1);
 	};
 
 	module.exports = exports["default"];

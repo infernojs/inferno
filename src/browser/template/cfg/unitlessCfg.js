@@ -1,6 +1,6 @@
 import forIn     from "../../../util/forIn";
-import prefixes  from "../prefixes";
-import prefixKey from "../prefixKey";
+import prefixes  from "../styles/prefixes";
+import prefixKey from "../styles/prefixKey";
 
 /**
  * CSS properties which accept numbers but are not in units of "px".

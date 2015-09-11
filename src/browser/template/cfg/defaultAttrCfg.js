@@ -1,5 +1,5 @@
-import setAttributes from ".././setAttributes";
-import removeAttr    from ".././removeAttr";
+import setAttributes from "../setters/setAttributes";
+import removeAttr    from "../setters/removeAttr";
 
 export default {
     set: setAttributes,

@@ -18,7 +18,7 @@ export default (node, attrs, component) => {
                 clearEventListeners(node, attrName);
                 addEventListener(node, attrName, attrVal);
             } else {
-                DOMAttrCfg(attrName).add(node, attrName, attrVal);
+                DOMAttrCfg(attrName).set(node, attrName, attrVal);
             }
         }
     });

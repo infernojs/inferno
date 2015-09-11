@@ -2,7 +2,7 @@ import ATTR from "../hooks/attrHook";
 
 export default (node, name, value) => {
 
-    let hook = ATTR.add[name];
+    const hook = ATTR.add[name];
 
     if (hook) {
 
@@ -10,6 +10,6 @@ export default (node, name, value) => {
 
     } else {
 
-        node.setAttribute(name, "" + value);
+        node.setAttribute(name, "" + value); // cast to string
     }
 };

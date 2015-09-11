@@ -1,4 +1,5 @@
-export default ( node, propertyName, propertyValue ) => {
-// TODO! Optimize for v8
-    node[propertyName] = !!propertyValue;
+export default (node, propName, value) => {
+    // Legacy browsers would fuck this up if we don't force
+    // the value to be a boolean
+    node[propName] = !!value;
 };

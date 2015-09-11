@@ -19,7 +19,7 @@ export default (node, props, component) => {
                 clearEventListeners(node, propName);
                 addEventListener(node, propName, propVal);
             } else {
-                DOMPropsCfg(propName).add(node, propName, propVal);
+                DOMPropsCfg(propName).set(node, propName, propVal);
             }
         }
     });
