@@ -7,7 +7,8 @@ import render              from "../../browser/core/render";
 import t7Dependency        from "../../other/setT7Dependency";
 
 let attachFragment = ( context, fragment, parentDom, component, nextFragment, replace ) => {
-    let fragmentComponent = fragment.component;
+    
+	let fragmentComponent = fragment.component;
 
     if ( fragmentComponent ) {
         if ( typeof fragmentComponent === "function" ) {

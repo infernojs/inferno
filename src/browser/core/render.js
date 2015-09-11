@@ -8,41 +8,20 @@ import attachFragment            from "../../universal/core/attachFragment";
 import updateFragment            from "../../universal/core/updateFragment";
 import maintainFocus             from "../../universal/core/maintainFocus";
 
-export default ( fragment, dom, component ) => {
+export default (fragment, dom, component) => {
 
-    var context, generatedFragment;
-    if ( component === undefined ) {
-        if ( initialisedListeners() === false ) {
-            addRootDomEventListerners();
-            initialisedListeners(true);
-        }
+    let context, generatedFragment;
 
-        context = getContext( dom );
+    if (component) {
 
-		if ( context == null ) {
+        if (component.context) {
 
-            context = {
-                fragment: fragment,
-                dom: dom,
-                shouldRecycle: true
-            };
-            attachFragment( context, fragment, dom, component );
-            contexts.push( context );
+            generatedFragment = fragment();
+            context = component.context;
+            updateFragment(context, context.fragment, generatedFragment, dom, component, false);
+            context.fragment = generatedFragment;
 
         } else {
-
-            var activeElement = document.activeElement;
-            updateFragment( context, context.fragment, fragment, dom, component, false );
-            context.fragment = fragment;
-
-			// TODO! Move to moveFragment()
-            maintainFocus( activeElement );
-
-        }
-
-    } else {
-
-        if ( component.context == null ) {
 
             generatedFragment = fragment();
             context = component.context = {
@@ -51,18 +30,37 @@ export default ( fragment, dom, component ) => {
                 shouldRecycle: true
             };
             component.componentWillMount();
-            attachFragment( context, generatedFragment, dom, component );
+            attachFragment(context, generatedFragment, dom, component);
             component.componentDidMount();
+        }
+
+    } else {
+
+        if (initialisedListeners() === false) {
+            addRootDomEventListerners();
+            initialisedListeners(true);
+        }
+
+        context = getContext(dom);
+
+        if (context) {
+
+            let activeElement = document.activeElement;
+            updateFragment(context, context.fragment, fragment, dom, component, false);
+            context.fragment = fragment;
+
+            // TODO! Move to moveFragment()
+            maintainFocus(activeElement);
 
         } else {
 
-            generatedFragment = fragment();
-            context = component.context;
-            updateFragment( context, context.fragment, generatedFragment, dom, component, false );
-            context.fragment = generatedFragment;
-
+            context = {
+                fragment: fragment,
+                dom: dom,
+                shouldRecycle: true
+            };
+            attachFragment(context, fragment, dom, component);
+            contexts.push(context);
         }
-
     }
-
 };
