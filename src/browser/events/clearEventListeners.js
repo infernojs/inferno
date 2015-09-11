@@ -1,8 +1,8 @@
-import rootlisteners from "./shared/rootlisteners";
+import rootListeners from "./shared/rootListeners";
 import events        from "./shared/events";
 
 export default ( parentDom, listenerName ) => {
-    let listeners = rootlisteners[events[listenerName]],
+    let listeners = rootListeners[events[listenerName]],
         index = 0;
 
     while ( index < listeners.length ) {

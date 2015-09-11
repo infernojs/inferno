@@ -5,24 +5,19 @@ import isBrowser     from "../../util/isBrowser";
 export default {
     addAttributes: addAttributes,
     addProperties: addProperties,
-    createElement: (tag) => {
+    createElement(tag) {
         if (isBrowser) {
             return document.createElement(tag);
         }
     },
-    createTextNode: (text) => {
+    createTextNode(text) {
         if (isBrowser) {
             return document.createTextNode(text);
         }
     },
-    createEmptyText: () => {
+    createEmptyText() {
         if (isBrowser) {
             return document.createTextNode("");
-        }
-    },
-    createFragment: () => {
-        if (isBrowser) {
-            return document.createFragment();
         }
     }
 };

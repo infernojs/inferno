@@ -11,10 +11,9 @@ import events              from "../../browser/events/shared/events";
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
 export default (context, oldFragment, fragment, parentDom, component) => {
-    let componentsToUpdate = [],
-        i;
+    let componentsToUpdate = [];
 
-    for (i = 0, length = fragment.templateValues.length; i < length; i++) {
+    for (let i = 0, length = fragment.templateValues.length; i < length; i++) {
         let element = oldFragment.templateElements[i];
         let type = oldFragment.templateTypes[i];
 
@@ -107,7 +106,7 @@ export default (context, oldFragment, fragment, parentDom, component) => {
         }
     }
     if (componentsToUpdate.length > 0) {
-        for (i = 0; i < componentsToUpdate.length; i++) {
+        for (let i = 0; i < componentsToUpdate.length; i++) {
             componentsToUpdate[i].forceUpdate();
         }
     }
