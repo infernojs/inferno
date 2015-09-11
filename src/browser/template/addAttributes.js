@@ -2,17 +2,23 @@ import events from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener from "../events/addEventListener";
 import DOMAttrCfg from "./cfg/DOMAttrCfg";
-
-export default function( node, attrs, component ) {
-    let attrName, attrVal;
-
-    for ( attrName in attrs ) {
-        attrVal = attrs[attrName];
-        if ( events[attrName] != null ) {
-            clearEventListeners( node, attrName );
-            addEventListener( node, attrName, attrVal );
-        } else {
-            DOMAttrCfg( attrName ).set( node, attrName, attrVal );
+import forIn from "../../util/forIn";
+/**
+ * Set HTML attributes on the template
+ * @param{ HTMLElement } node
+ * @param{ Object } attrs 
+ * @param{ String } component
+ */
+export default function(node, attrs, component) {
+    forIn(attrs, (attrName, attrVal) => {
+        // avoid 'null' values
+        if (attrVal != null) {
+            if (events[attrName] != null) {
+                clearEventListeners(node, attrName);
+                addEventListener(node, attrName, attrVal);
+            } else {
+                DOMAttrCfg(attrName).set(node, attrName, attrVal);
+            }
         }
-    }
+    });
 };

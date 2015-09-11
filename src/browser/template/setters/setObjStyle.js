@@ -11,9 +11,11 @@ import isArray     from "../../../util/isArray";
  */
 export default ( node, propertyName, value ) => {
 	
+	// FIX ME!! t7 has to be fixed so it handle object literal. Then 
+	// we can remove this 'typeof' check
     if ( typeof value === "string" ) {
 		
-        node.cssText = value;	
+        node.style.cssText = value;	
 	
     } else {
 	
@@ -28,23 +30,18 @@ export default ( node, propertyName, value ) => {
                     for ( len = styleValue.length; idx < len; idx++ ) {
 
                         style[styleName] = cleanValues( styleName, styleValue[idx] );
-
                     }
 
                 } else {
 
                     style[styleName] = cleanValues( styleName, styleValue );
-		
                 }
 
             } else {
 
                 style[styleName] = "";
-		
             }
 
         } );
-
     }
-
 };
