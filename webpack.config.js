@@ -4,11 +4,14 @@ module.exports = {
     context: __dirname + "/src",
     entry: "./Inferno",
     cache: true,
+    debug: true,
     devtool: 'source-map',
     progress: true,
     output: {
         path: __dirname + "/dist",
-        filename: "inferno.js"
+        filename: "inferno.js",
+        libraryTarget: "var",
+        library: "Inferno"
     },
     module: {
       loaders: [
