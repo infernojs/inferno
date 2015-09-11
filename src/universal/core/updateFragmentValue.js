@@ -4,7 +4,7 @@ import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
-
+import DOMAttrCfg          from "../../browser/template/cfg/DOMAttrCfg";
 
 export default ( context, oldFragment, fragment, parentDom, component ) => {
 
@@ -30,7 +30,7 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
             case fragmentTypes.FRAGMENT_REPLACE:
                 updateFragment( context, oldFragment.templateValue, fragment.templateValue, element, component );
                 return;
-            case fragmentTypes.ATTR_CLASS:
+          /*  case fragmentTypes.ATTR_CLASS:
                 element.className = fragment.templateValue;
                 return;
             case fragmentTypes.ATTR_CHECKED:
@@ -71,19 +71,19 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
                 return;
             case fragmentTypes.ATTR_HEIGHT:
                 element.height = fragment.templateValue;
-                return;
+                return;*/
             default:
-                if ( !element.props ) {
+
+                //component prop, update it
+                if ( element.props ) {
+                  //TODO make component props work for single value fragments
+                } else {
                     if ( events[type] != null ) {
                         clearEventListeners( element, type );
                         addEventListener( element, type, fragment.templateValue );
                     } else {
-                        element.setAttribute( type, fragment.templateValue );
+					 DOMAttrCfg(attrName).set(element, type, fragment.templateValue);
                     }
-                }
-                //component prop, update it
-                else {
-                    //TODO make component props work for single value fragments
                 }
            return;
         }
