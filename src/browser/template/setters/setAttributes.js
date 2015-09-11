@@ -1,13 +1,15 @@
-import HOOK from "../hooks/attrHook";
+import ATTR from "../hooks/attrHook";
 
-export default ( node, name, value ) => {
+export default (node, name, value) => {
 
-    if ( HOOK.set[name] ) {
+    let hook = ATTR.add[name];
 
-        HOOK.set( node, name, value );
+    if (hook) {
+
+        hook(node, name, value);
 
     } else {
 
-       node.setAttribute( name, "" + value );	
-	}
+        node.setAttribute(name, "" + value);
+    }
 };

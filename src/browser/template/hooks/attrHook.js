@@ -1,7 +1,7 @@
 
-let hooks = { set: {}, remove: {}};
+let hooks = { add: {}, remove: {}};
 
-hooks.set.type = (node, name, value) => {
+hooks.add.type = (node, name, value) => {
 
     const val = node.value; // value will be lost in IE if type is changed
 

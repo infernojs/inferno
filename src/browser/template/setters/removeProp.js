@@ -1,14 +1,15 @@
-import removeSelectValue from "./removeSelectValue";
-import HOOKS             from "../hooks/propHook";
+import PROP from "../hooks/propHook";
 
-export default function( node, name ) {
+export default (node, name) => {
 
-    if ( HOOK.remove[name]) {
+    let hook = PROP.remove[name];
 
-	  HOOK.remove[name](node, name);
+    if (hook) {
+
+        hook[name](node, name);
 
     } else {
 
         node[name] = "";
     }
-}
+};

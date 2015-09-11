@@ -1,14 +1,16 @@
-import HOOK from "../hooks/propHook";
+import PROP from "../hooks/propHook";
 
-export default ( node, name, value ) => {
+export default (node, name, value) => {
 
-    if ( HOOK.set[name] ) {
+    let hook = PROP.set[name];
 
-        HOOK.set( node, name, value );
+    if (hook) {
+
+        hook(node, name, value);
 
     } else {
 
-        if ( node[name] !== value ) {
+        if (node[name] !== value) {
 
             node[name] = value;
         }

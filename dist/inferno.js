@@ -46,13 +46,13 @@
 
 	__webpack_require__(1);
 	__webpack_require__(32);
+	__webpack_require__(41);
+	__webpack_require__(48);
+	__webpack_require__(44);
+	__webpack_require__(69);
 	__webpack_require__(30);
 	__webpack_require__(7);
 	__webpack_require__(11);
-	__webpack_require__(41);
-	__webpack_require__(49);
-	__webpack_require__(44);
-	__webpack_require__(69);
 	__webpack_require__(3);
 	__webpack_require__(24);
 	__webpack_require__(4);
@@ -99,17 +99,17 @@
 	__webpack_require__(60);
 	__webpack_require__(61);
 	__webpack_require__(73);
-	__webpack_require__(47);
+	__webpack_require__(46);
 	__webpack_require__(74);
 	__webpack_require__(45);
-	__webpack_require__(46);
+	__webpack_require__(49);
 	__webpack_require__(75);
 	__webpack_require__(76);
 	__webpack_require__(77);
 	__webpack_require__(38);
 	__webpack_require__(78);
 	__webpack_require__(50);
-	__webpack_require__(48);
+	__webpack_require__(47);
 	__webpack_require__(39);
 	__webpack_require__(79);
 	__webpack_require__(80);
@@ -1829,13 +1829,12 @@
 	                (0, _eventsClearEventListeners2["default"])(node, attrName);
 	                (0, _eventsAddEventListener2["default"])(node, attrName, attrVal);
 	            } else {
-	                (0, _cfgDOMAttrCfg2["default"])(attrName).set(node, attrName, attrVal);
+	                (0, _cfgDOMAttrCfg2["default"])(attrName).add(node, attrName, attrVal);
 	            }
 	        }
 	    });
 	};
 
-	;
 	module.exports = exports["default"];
 
 /***/ },
@@ -2200,21 +2199,20 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	        value: true
+	    value: true
 	});
 
 	exports["default"] = function (obj, callback) {
 
-	        if (obj) {
+	    if (obj) {
 
-	                var propName = undefined;
-
-	                for (propName in obj) {
-
-	                        callback(propName, obj[propName]);
-	                }
+	        // v8 optimizing. To have a fast "for In", the "key" must be a pure local variable
+	        for (var key in obj) {
+	            callback(key, obj[key]);
 	        }
-	        return obj;
+	    }
+
+	    return obj;
 	};
 
 	module.exports = exports["default"];
@@ -2285,11 +2283,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _removeSelectValue = __webpack_require__(46);
-
-	var _removeSelectValue2 = _interopRequireDefault(_removeSelectValue);
-
-	var _hooksPropHook = __webpack_require__(47);
+	var _hooksPropHook = __webpack_require__(46);
 
 	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
 
@@ -2308,35 +2302,6 @@
 
 /***/ },
 /* 46 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	        value: true
-	});
-
-	exports["default"] = function (node) {
-
-	        var options = node.options,
-	            len = options.length;
-
-	        // skip iteration if no length
-	        if (len) {
-
-	                var i = 0;
-
-	                while (i < len) {
-
-	                        options[i++].selected = false;
-	                }
-	        }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2347,11 +2312,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _settersSetSelectValue = __webpack_require__(48);
+	var _settersSetSelectValue = __webpack_require__(47);
 
 	var _settersSetSelectValue2 = _interopRequireDefault(_settersSetSelectValue);
 
-	var _settersRemoveSelectValue = __webpack_require__(46);
+	var _settersRemoveSelectValue = __webpack_require__(49);
 
 	var _settersRemoveSelectValue2 = _interopRequireDefault(_settersRemoveSelectValue);
 
@@ -2359,13 +2324,13 @@
 
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 
-	var _utilInArray = __webpack_require__(49);
+	var _utilInArray = __webpack_require__(48);
 
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 
-	var hooks = { set: {}, remove: {} };
+	var hooks = { add: {}, remove: {} };
 
-	hooks.set.value = function (node, name, value) {
+	hooks.add.value = function (node, name, value) {
 
 	    switch (node.tagName) {
 
@@ -2393,7 +2358,7 @@
 	    }
 	};
 
-	hooks.set.title = function (node, value) {
+	hooks.add.title = function (node, value) {
 	    var doc = node.ownerDocument;
 
 	    (node === doc.documentElement ? doc : node).title = value;
@@ -2401,7 +2366,7 @@
 
 	// Radio and checkbox setter
 	["radio", "checkbox"].forEach(function (tag) {
-	    hooks.set[tag] = function (node, name, value) {
+	    hooks.add[tag] = function (node, name, value) {
 	        if ((0, _utilIsArray2["default"])(value)) {
 	            return node.checked = (0, _utilInArray2["default"])(node.value, value) >= 0;
 	        }
@@ -2412,7 +2377,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 48 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2423,7 +2388,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _utilInArray = __webpack_require__(49);
+	var _utilInArray = __webpack_require__(48);
 
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 
@@ -2460,7 +2425,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 49 */
+/* 48 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2489,6 +2454,35 @@
 	module.exports = exports["default"];
 
 /***/ },
+/* 49 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+
+	exports["default"] = function (node) {
+
+	        var options = node.options,
+	            len = options.length;
+
+	        // skip iteration if no length
+	        if (len) {
+
+	                var i = 0;
+
+	                while (i < len) {
+
+	                        options[i++].selected = false;
+	                }
+	        }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
 /* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2500,15 +2494,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _hooksPropHook = __webpack_require__(47);
+	var _hooksPropHook = __webpack_require__(46);
 
 	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
 
 	exports["default"] = function (node, name, value) {
 
-	    if (_hooksPropHook2["default"].set[name]) {
+	    if (_hooksPropHook2["default"].add[name]) {
 
-	        _hooksPropHook2["default"].set(node, name, value);
+	        _hooksPropHook2["default"].add(node, name, value);
 	    } else {
 
 	        if (node[name] !== value) {
@@ -2928,13 +2922,12 @@
 	                (0, _eventsClearEventListeners2["default"])(node, propName);
 	                (0, _eventsAddEventListener2["default"])(node, propName, propVal);
 	            } else {
-	                (0, _cfgDOMPropsCfg2["default"])(propName).set(node, propName, propVal);
+	                (0, _cfgDOMPropsCfg2["default"])(propName).add(node, propName, propVal);
 	            }
 	        }
 	    });
 	};
 
-	;
 	module.exports = exports["default"];
 
 /***/ },
@@ -4145,9 +4138,9 @@
 	    value: true
 	});
 
-	var hooks = { set: {}, remove: {} };
+	var hooks = { add: {}, remove: {} };
 
-	hooks.set.type = function (node, name, value) {
+	hooks.add.type = function (node, name, value) {
 
 	    var val = node.value; // value will be lost in IE if type is changed
 
@@ -4193,9 +4186,9 @@
 
 	exports["default"] = function (node, name, value) {
 
-	    if (_hooksAttrHook2["default"].set[name]) {
+	    if (_hooksAttrHook2["default"].add[name]) {
 
-	        _hooksAttrHook2["default"].set(node, name, value);
+	        _hooksAttrHook2["default"].add(node, name, value);
 	    } else {
 
 	        node.setAttribute(name, "" + value);

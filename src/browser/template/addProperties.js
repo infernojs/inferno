@@ -10,7 +10,7 @@ import forIn               from "../../util/forIn";
  * @param{ Object } props 
  * @param{ String } component
  */
-export default function(node, props, component) {
+export default (node, props, component) => {
 
     forIn(props, (propName, propVal) => {
         // avoid 'null' values
@@ -19,7 +19,7 @@ export default function(node, props, component) {
                 clearEventListeners(node, propName);
                 addEventListener(node, propName, propVal);
             } else {
-                DOMPropsCfg(propName).set(node, propName, propVal);
+                DOMPropsCfg(propName).add(node, propName, propVal);
             }
         }
     });

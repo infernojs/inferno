@@ -7,14 +7,14 @@ export default ( node, value ) => {
         options = node.options,
         len = options.length;
 
-    let i = 0,
+    let idx = 0,
         optionNode;
 
     if ( value != null ) {
 
-        while ( i < len ) {
+        while ( idx < len ) {
 
-            optionNode = options[i++];
+            optionNode = options[idx++];
 
             if ( isMultiple ) {
 

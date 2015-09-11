@@ -3,9 +3,9 @@ import removeSelectValue from "../setters/removeSelectValue";
 import isArray           from "../../../util/isArray";
 import inArray           from "../../../util/inArray";
 
-let hooks = { set: {}, remove: {}};
+let hooks = { add: {}, remove: {}};
 
-hooks.set.value = (node, name, value) => {
+hooks.add.value = (node, name, value) => {
 
     switch (node.tagName) {
 
@@ -33,7 +33,7 @@ hooks.remove.value = (node, name) => {
     }
 }
 	
-hooks.set.title = (node, value) => {
+hooks.add.title = (node, value) => {
     let doc = node.ownerDocument;
 
     (node === doc.documentElement ? doc : node).title = value;
@@ -41,7 +41,7 @@ hooks.set.title = (node, value) => {
 
 // Radio and checkbox setter
 ["radio", "checkbox"].forEach((tag) => {
-hooks.set[tag] = (node, name, value) => {
+hooks.add[tag] = (node, name, value) => {
     if (isArray(value)) {
         return (node.checked = inArray(node.value, value) >= 0);
     }
