@@ -5,9 +5,9 @@ var rename = require('gulp-rename');
 gulp.task('default', function() {
   console.log("Building inferno.min.js to 'dist' directory");
   gulp.src('./dist/inferno.js')
-      .pipe(uglify())
-      .pipe(gulp.dest('./dist'))
       .pipe(rename('inferno.min.js'))
+      .pipe(gulp.dest('./dist'))
+      .pipe(uglify())
       .pipe(gulp.dest('./dist'))
       .on('error', function (error) {
           console.error('' + error);
