@@ -21,6 +21,11 @@ let unitless = {
     flexOrder: true,
     float: true,
     fontWeight: true,
+
+    // CSS3 Grid layout support
+	gridRow:true,
+	gridColumn: true,
+	
     lineClamp: true,
     lineHeight: true,
     opacity: true,
@@ -35,7 +40,7 @@ let unitless = {
     zIndex: true,
     zoom: true,
 
-    // SVG-related properties
+    // SVG related properties
     stopOpacity: true,
     fillOpacity: true,
     strokeDashoffset: true,

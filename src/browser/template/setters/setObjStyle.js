@@ -1,6 +1,6 @@
 import cleanValues from "../styles/cleanValues";
 import forIn       from "../../../util/forIn";
-import isArray     from "../../../util/isArray";
+import HOOK        from "../hooks/styleHook";
 
 /**
  * Set CSS styles
@@ -9,40 +9,31 @@ import isArray     from "../../../util/isArray";
  * @param {String} propertyName
  * @param {String} value
  */
-export default ( node, propertyName, value ) => {
-	
-	// FIX ME!! t7 has to be fixed so it handle object literal. Then 
-	// we can remove this 'typeof' check
-    if ( typeof value === "string" ) {
-		
-        node.style.cssText = value;	
-	
+export default (node, propertyName, value) => {
+
+    // FIX ME!! t7 has to be fixed so it handle object literal. Then 
+    // we can remove this 'typeof' check
+    if (typeof value === "string") {
+
+        node.style.cssText = value;
+
     } else {
-	
-        let idx = 0, len, style = node[propertyName];
 
-        forIn( value, ( styleName, styleValue ) => {
-		
-            if ( styleValue != null ) {
-		 	// TODO! Do we need to support array? It's a 'must wanted' 
-			// feature for React, so maybe we should keep this
-                if ( isArray( styleValue ) ) {
-			
-                    for ( len = styleValue.length; idx < len; idx++ ) {
+        forIn(value, (styleName, styleValue) => {
 
-                        style[styleName] = cleanValues( styleName, styleValue[idx] );
-                    }
+            let style = node[propertyName],
+                setter = HOOK.set[styleName] || HOOK.find(styleName, style);
 
-                } else {
+            if (value == null) {
+				value = "";
+			}
 
-                    style[styleName] = cleanValues( styleName, styleValue );
-                }
-
+            if (typeof setter === "function") {
+                setter(value, style);
             } else {
-
-                style[styleName] = "";
+                style[setter] = typeof value === "number" ? value + "px" : value + ""; // cast to string
             }
 
-        } );
+        });
     }
 };

@@ -47,25 +47,25 @@
 	__webpack_require__(1);
 	__webpack_require__(32);
 	__webpack_require__(30);
-	__webpack_require__(41);
-	__webpack_require__(48);
-	__webpack_require__(44);
-	__webpack_require__(70);
 	__webpack_require__(7);
 	__webpack_require__(11);
+	__webpack_require__(41);
+	__webpack_require__(46);
+	__webpack_require__(47);
+	__webpack_require__(71);
 	__webpack_require__(3);
 	__webpack_require__(24);
 	__webpack_require__(4);
 	__webpack_require__(21);
-	__webpack_require__(2);
 	__webpack_require__(35);
-	__webpack_require__(67);
+	__webpack_require__(68);
 	__webpack_require__(34);
+	__webpack_require__(2);
 	__webpack_require__(9);
 	__webpack_require__(19);
 	__webpack_require__(28);
-	__webpack_require__(72);
 	__webpack_require__(73);
+	__webpack_require__(74);
 	__webpack_require__(14);
 	__webpack_require__(16);
 	__webpack_require__(8);
@@ -85,37 +85,34 @@
 	__webpack_require__(23);
 	__webpack_require__(5);
 	__webpack_require__(22);
-	__webpack_require__(65);
-	__webpack_require__(46);
 	__webpack_require__(37);
+	__webpack_require__(57);
+	__webpack_require__(52);
+	__webpack_require__(64);
+	__webpack_require__(55);
+	__webpack_require__(36);
+	__webpack_require__(69);
+	__webpack_require__(70);
+	__webpack_require__(40);
+	__webpack_require__(62);
+	__webpack_require__(63);
+	__webpack_require__(60);
+	__webpack_require__(61);
+	__webpack_require__(66);
+	__webpack_require__(75);
+	__webpack_require__(50);
+	__webpack_require__(67);
+	__webpack_require__(58);
+	__webpack_require__(54);
+	__webpack_require__(49);
+	__webpack_require__(48);
+	__webpack_require__(65);
+	__webpack_require__(59);
+	__webpack_require__(53);
+	__webpack_require__(38);
 	__webpack_require__(56);
 	__webpack_require__(51);
-	__webpack_require__(63);
-	__webpack_require__(54);
-	__webpack_require__(36);
-	__webpack_require__(68);
-	__webpack_require__(69);
-	__webpack_require__(40);
-	__webpack_require__(61);
-	__webpack_require__(62);
-	__webpack_require__(59);
-	__webpack_require__(60);
-	__webpack_require__(66);
-	__webpack_require__(57);
-	__webpack_require__(53);
-	__webpack_require__(45);
-	__webpack_require__(49);
-	__webpack_require__(64);
-	__webpack_require__(58);
-	__webpack_require__(52);
-	__webpack_require__(38);
-	__webpack_require__(55);
-	__webpack_require__(50);
-	__webpack_require__(47);
-	__webpack_require__(39);
-	__webpack_require__(74);
-	__webpack_require__(42);
-	module.exports = __webpack_require__(43);
+	module.exports = __webpack_require__(45);
 
 
 /***/ },
@@ -154,11 +151,11 @@
 
 	var _browserTemplateTemplate2 = _interopRequireDefault(_browserTemplateTemplate);
 
-	var _utilIsBrowser = __webpack_require__(70);
+	var _utilIsBrowser = __webpack_require__(71);
 
 	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
 
-	var _t7 = __webpack_require__(71);
+	var _t7 = __webpack_require__(72);
 
 	var _t72 = _interopRequireDefault(_t7);
 
@@ -1748,11 +1745,11 @@
 
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 
-	var _addProperties = __webpack_require__(67);
+	var _addProperties = __webpack_require__(68);
 
 	var _addProperties2 = _interopRequireDefault(_addProperties);
 
-	var _utilIsBrowser = __webpack_require__(70);
+	var _utilIsBrowser = __webpack_require__(71);
 
 	var _utilIsBrowser2 = _interopRequireDefault(_utilIsBrowser);
 
@@ -1855,7 +1852,7 @@
 
 	var _attrsCfg2 = _interopRequireDefault(_attrsCfg);
 
-	var _defaultAttrCfg = __webpack_require__(63);
+	var _defaultAttrCfg = __webpack_require__(64);
 
 	var _defaultAttrCfg2 = _interopRequireDefault(_defaultAttrCfg);
 
@@ -1881,31 +1878,31 @@
 
 	var _settersSetObjStyle2 = _interopRequireDefault(_settersSetObjStyle);
 
-	var _settersRemoveProp = __webpack_require__(45);
+	var _settersRemoveProp = __webpack_require__(49);
 
 	var _settersRemoveProp2 = _interopRequireDefault(_settersRemoveProp);
 
-	var _settersSetPropWithCheck = __webpack_require__(50);
+	var _settersSetPropWithCheck = __webpack_require__(51);
 
 	var _settersSetPropWithCheck2 = _interopRequireDefault(_settersSetPropWithCheck);
 
-	var _boolPropCfg = __webpack_require__(51);
+	var _boolPropCfg = __webpack_require__(52);
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultPropCfg = __webpack_require__(54);
+	var _defaultPropCfg = __webpack_require__(55);
 
 	var _defaultPropCfg2 = _interopRequireDefault(_defaultPropCfg);
 
-	var _boolAttrCfg = __webpack_require__(56);
+	var _boolAttrCfg = __webpack_require__(57);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
-	var _xmlAttrCfg = __webpack_require__(59);
+	var _xmlAttrCfg = __webpack_require__(60);
 
 	var _xmlAttrCfg2 = _interopRequireDefault(_xmlAttrCfg);
 
-	var _xlinkAttrCfg = __webpack_require__(61);
+	var _xlinkAttrCfg = __webpack_require__(62);
 
 	var _xlinkAttrCfg2 = _interopRequireDefault(_xlinkAttrCfg);
 
@@ -1977,7 +1974,7 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -1990,9 +1987,9 @@
 
 	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 
-	var _utilIsArray = __webpack_require__(44);
+	var _hooksStyleHook = __webpack_require__(44);
 
-	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
+	var _hooksStyleHook2 = _interopRequireDefault(_hooksStyleHook);
 
 	/**
 	 * Set CSS styles
@@ -2004,40 +2001,29 @@
 
 	exports["default"] = function (node, propertyName, value) {
 
-	  // FIX ME!! t7 has to be fixed so it handle object literal. Then
-	  // we can remove this 'typeof' check
-	  if (typeof value === "string") {
+	    // FIX ME!! t7 has to be fixed so it handle object literal. Then
+	    // we can remove this 'typeof' check
+	    if (typeof value === "string") {
 
-	    node.style.cssText = value;
-	  } else {
-	    (function () {
+	        node.style.cssText = value;
+	    } else {
 
-	      var idx = 0,
-	          len = undefined,
-	          style = node[propertyName];
+	        (0, _utilForIn2["default"])(value, function (styleName, styleValue) {
 
-	      (0, _utilForIn2["default"])(value, function (styleName, styleValue) {
+	            var style = node[propertyName],
+	                setter = _hooksStyleHook2["default"].set[styleName] || _hooksStyleHook2["default"].find(styleName, style);
 
-	        if (styleValue != null) {
-	          // TODO! Do we need to support array? It's a 'must wanted'
-	          // feature for React, so maybe we should keep this
-	          if ((0, _utilIsArray2["default"])(styleValue)) {
-
-	            for (len = styleValue.length; idx < len; idx++) {
-
-	              style[styleName] = (0, _stylesCleanValues2["default"])(styleName, styleValue[idx]);
+	            if (value == null) {
+	                value = "";
 	            }
-	          } else {
 
-	            style[styleName] = (0, _stylesCleanValues2["default"])(styleName, styleValue);
-	          }
-	        } else {
-
-	          style[styleName] = "";
-	        }
-	      });
-	    })();
-	  }
+	            if (typeof setter === "function") {
+	                setter(value, style);
+	            } else {
+	                style[setter] = typeof value === "number" ? value + "px" : value + ""; // cast to string
+	            }
+	        });
+	    }
 	};
 
 	module.exports = exports["default"];
@@ -2123,6 +2109,11 @@
 	    flexOrder: true,
 	    float: true,
 	    fontWeight: true,
+
+	    // CSS3 Grid layout support
+	    gridRow: true,
+	    gridColumn: true,
+
 	    lineClamp: true,
 	    lineHeight: true,
 	    opacity: true,
@@ -2137,7 +2128,7 @@
 	    zIndex: true,
 	    zoom: true,
 
-	    // SVG-related properties
+	    // SVG related properties
 	    stopOpacity: true,
 	    fillOpacity: true,
 	    strokeDashoffset: true,
@@ -2259,6 +2250,146 @@
 
 /***/ },
 /* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _settersSetSelectValue = __webpack_require__(45);
+
+	var _settersSetSelectValue2 = _interopRequireDefault(_settersSetSelectValue);
+
+	var _settersRemoveSelectValue = __webpack_require__(48);
+
+	var _settersRemoveSelectValue2 = _interopRequireDefault(_settersRemoveSelectValue);
+
+	var _utilIsArray = __webpack_require__(47);
+
+	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
+
+	var _utilInArray = __webpack_require__(46);
+
+	var _utilInArray2 = _interopRequireDefault(_utilInArray);
+
+	var VENDOR_PREFIXES = ["Webkit", "O", "Moz", "ms"];
+
+	// Helper for CSS properties access
+	var reDash = /\-./g,
+	    hooks = { set: {}, find: function find(name, style) {
+
+	        var propName = name.replace(reDash, function (str) {
+	            return str[1].toUpperCase();
+	        });
+
+	        if (!(propName in style)) {
+	            propName = VENDOR_PREFIXES.map(function (prefix) {
+	                return prefix + propName[0].toUpperCase() + propName.slice(1);
+	            }).filter(function (prop) {
+	                return prop in style;
+	            })[0];
+	        }
+
+	        return this.set[name] = propName;
+	    } };
+
+	// Exclude the following css properties from adding px
+	"float fill-opacity font-weight line-height opacity orphans widows z-index zoom".split(" ").forEach(function (propName) {
+	    var stylePropName = propName.replace(reDash, function (str) {
+	        return str[1].toUpperCase();
+	    });
+
+	    hooks.set[propName] = function (value, style) {
+	        style[stylePropName] = value.toString();
+	    };
+	});
+
+	exports["default"] = hooks;
+	module.exports = exports["default"];
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _utilInArray = __webpack_require__(46);
+
+	var _utilInArray2 = _interopRequireDefault(_utilInArray);
+
+	var _utilIsArray = __webpack_require__(47);
+
+	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
+
+	exports["default"] = function (node, value) {
+
+	    var isMultiple = (0, _utilIsArray2["default"])(value),
+	        options = node.options,
+	        len = options.length;
+
+	    var idx = 0,
+	        optionNode = undefined;
+
+	    if (value != null) {
+
+	        while (idx < len) {
+
+	            optionNode = options[idx++];
+
+	            if (isMultiple) {
+
+	                optionNode.selected = (0, _utilInArray2["default"])(value, optionNode.value);
+	            } else {
+
+	                optionNode.selected = optionNode.value == value;
+	            }
+	        }
+	    }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 46 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports["default"] = function (arr, item) {
+
+	    var len = arr.length;
+
+	    var i = 0;
+
+	    while (i < len) {
+
+	        if (arr[i++] == item) {
+
+	            return true;
+	        }
+	    }
+
+	    return false;
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 47 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2274,7 +2405,36 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 45 */
+/* 48 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+
+	exports["default"] = function (node) {
+
+	        var options = node.options,
+	            len = options.length;
+
+	        // skip iteration if no length
+	        if (len) {
+
+	                var i = 0;
+
+	                while (i < len) {
+
+	                        options[i++].selected = false;
+	                }
+	        }
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2285,7 +2445,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _hooksPropHook = __webpack_require__(46);
+	var _hooksPropHook = __webpack_require__(50);
 
 	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
 
@@ -2305,7 +2465,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 46 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2316,19 +2476,19 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _settersSetSelectValue = __webpack_require__(47);
+	var _settersSetSelectValue = __webpack_require__(45);
 
 	var _settersSetSelectValue2 = _interopRequireDefault(_settersSetSelectValue);
 
-	var _settersRemoveSelectValue = __webpack_require__(49);
+	var _settersRemoveSelectValue = __webpack_require__(48);
 
 	var _settersRemoveSelectValue2 = _interopRequireDefault(_settersRemoveSelectValue);
 
-	var _utilIsArray = __webpack_require__(44);
+	var _utilIsArray = __webpack_require__(47);
 
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 
-	var _utilInArray = __webpack_require__(48);
+	var _utilInArray = __webpack_require__(46);
 
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 
@@ -2381,7 +2541,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 47 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2392,113 +2552,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _utilInArray = __webpack_require__(48);
-
-	var _utilInArray2 = _interopRequireDefault(_utilInArray);
-
-	var _utilIsArray = __webpack_require__(44);
-
-	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
-
-	exports["default"] = function (node, value) {
-
-	    var isMultiple = (0, _utilIsArray2["default"])(value),
-	        options = node.options,
-	        len = options.length;
-
-	    var idx = 0,
-	        optionNode = undefined;
-
-	    if (value != null) {
-
-	        while (idx < len) {
-
-	            optionNode = options[idx++];
-
-	            if (isMultiple) {
-
-	                optionNode.selected = (0, _utilInArray2["default"])(value, optionNode.value);
-	            } else {
-
-	                optionNode.selected = optionNode.value == value;
-	            }
-	        }
-	    }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 48 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports["default"] = function (arr, item) {
-
-	    var len = arr.length;
-
-	    var i = 0;
-
-	    while (i < len) {
-
-	        if (arr[i++] == item) {
-
-	            return true;
-	        }
-	    }
-
-	    return false;
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 49 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	        value: true
-	});
-
-	exports["default"] = function (node) {
-
-	        var options = node.options,
-	            len = options.length;
-
-	        // skip iteration if no length
-	        if (len) {
-
-	                var i = 0;
-
-	                while (i < len) {
-
-	                        options[i++].selected = false;
-	                }
-	        }
-	};
-
-	module.exports = exports["default"];
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _hooksPropHook = __webpack_require__(46);
+	var _hooksPropHook = __webpack_require__(50);
 
 	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
 
@@ -2521,7 +2575,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2532,11 +2586,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _settersSetBooleanProp = __webpack_require__(52);
+	var _settersSetBooleanProp = __webpack_require__(53);
 
 	var _settersSetBooleanProp2 = _interopRequireDefault(_settersSetBooleanProp);
 
-	var _settersRemoveBooleanProp = __webpack_require__(53);
+	var _settersRemoveBooleanProp = __webpack_require__(54);
 
 	var _settersRemoveBooleanProp2 = _interopRequireDefault(_settersRemoveBooleanProp);
 
@@ -2547,7 +2601,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2565,7 +2619,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2588,7 +2642,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2599,11 +2653,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _settersSetProp = __webpack_require__(55);
+	var _settersSetProp = __webpack_require__(56);
 
 	var _settersSetProp2 = _interopRequireDefault(_settersSetProp);
 
-	var _settersRemoveProp = __webpack_require__(45);
+	var _settersRemoveProp = __webpack_require__(49);
 
 	var _settersRemoveProp2 = _interopRequireDefault(_settersRemoveProp);
 
@@ -2614,7 +2668,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2631,7 +2685,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2642,11 +2696,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _settersRemoveBooleanAttr = __webpack_require__(57);
+	var _settersRemoveBooleanAttr = __webpack_require__(58);
 
 	var _settersRemoveBooleanAttr2 = _interopRequireDefault(_settersRemoveBooleanAttr);
 
-	var _settersSetBooleanAttr = __webpack_require__(58);
+	var _settersSetBooleanAttr = __webpack_require__(59);
 
 	var _settersSetBooleanAttr2 = _interopRequireDefault(_settersSetBooleanAttr);
 
@@ -2657,7 +2711,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2676,7 +2730,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2697,7 +2751,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2708,7 +2762,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xmlCfg = __webpack_require__(60);
+	var _xmlCfg = __webpack_require__(61);
 
 	var _xmlCfg2 = _interopRequireDefault(_xmlCfg);
 
@@ -2725,7 +2779,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2742,7 +2796,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2753,7 +2807,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _xlinkCfg = __webpack_require__(62);
+	var _xlinkCfg = __webpack_require__(63);
 
 	var _xlinkCfg2 = _interopRequireDefault(_xlinkCfg);
 
@@ -2770,7 +2824,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2790,32 +2844,6 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _settersSetAttributes = __webpack_require__(64);
-
-	var _settersSetAttributes2 = _interopRequireDefault(_settersSetAttributes);
-
-	var _settersRemoveAttr = __webpack_require__(66);
-
-	var _settersRemoveAttr2 = _interopRequireDefault(_settersRemoveAttr);
-
-	exports["default"] = {
-	    set: _settersSetAttributes2["default"],
-	    remove: _settersRemoveAttr2["default"]
-	};
-	module.exports = exports["default"];
-
-/***/ },
 /* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2827,7 +2855,33 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _hooksAttrHook = __webpack_require__(65);
+	var _settersSetAttributes = __webpack_require__(65);
+
+	var _settersSetAttributes2 = _interopRequireDefault(_settersSetAttributes);
+
+	var _settersRemoveAttr = __webpack_require__(67);
+
+	var _settersRemoveAttr2 = _interopRequireDefault(_settersRemoveAttr);
+
+	exports["default"] = {
+	    set: _settersSetAttributes2["default"],
+	    remove: _settersRemoveAttr2["default"]
+	};
+	module.exports = exports["default"];
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _hooksAttrHook = __webpack_require__(66);
 
 	var _hooksAttrHook2 = _interopRequireDefault(_hooksAttrHook);
 
@@ -2847,7 +2901,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2870,7 +2924,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2887,7 +2941,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2910,7 +2964,7 @@
 
 	var _eventsAddEventListener2 = _interopRequireDefault(_eventsAddEventListener);
 
-	var _cfgDOMPropsCfg = __webpack_require__(68);
+	var _cfgDOMPropsCfg = __webpack_require__(69);
 
 	var _cfgDOMPropsCfg2 = _interopRequireDefault(_cfgDOMPropsCfg);
 
@@ -2943,7 +2997,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2954,11 +3008,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _propsCfg = __webpack_require__(69);
+	var _propsCfg = __webpack_require__(70);
 
 	var _propsCfg2 = _interopRequireDefault(_propsCfg);
 
-	var _defaultPropCfg = __webpack_require__(54);
+	var _defaultPropCfg = __webpack_require__(55);
 
 	var _defaultPropCfg2 = _interopRequireDefault(_defaultPropCfg);
 
@@ -2969,7 +3023,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2984,23 +3038,23 @@
 
 	var _settersSetObjStyle2 = _interopRequireDefault(_settersSetObjStyle);
 
-	var _settersRemoveProp = __webpack_require__(45);
+	var _settersRemoveProp = __webpack_require__(49);
 
 	var _settersRemoveProp2 = _interopRequireDefault(_settersRemoveProp);
 
-	var _settersSetPropWithCheck = __webpack_require__(50);
+	var _settersSetPropWithCheck = __webpack_require__(51);
 
 	var _settersSetPropWithCheck2 = _interopRequireDefault(_settersSetPropWithCheck);
 
-	var _boolPropCfg = __webpack_require__(51);
+	var _boolPropCfg = __webpack_require__(52);
 
 	var _boolPropCfg2 = _interopRequireDefault(_boolPropCfg);
 
-	var _defaultAttrCfg = __webpack_require__(63);
+	var _defaultAttrCfg = __webpack_require__(64);
 
 	var _defaultAttrCfg2 = _interopRequireDefault(_defaultAttrCfg);
 
-	var _boolAttrCfg = __webpack_require__(56);
+	var _boolAttrCfg = __webpack_require__(57);
 
 	var _boolAttrCfg2 = _interopRequireDefault(_boolAttrCfg);
 
@@ -3066,7 +3120,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3084,7 +3138,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
 	/*
@@ -4016,7 +4070,7 @@
 
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4028,7 +4082,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _createFragment = __webpack_require__(73);
+	var _createFragment = __webpack_require__(74);
 
 	var _createFragment2 = _interopRequireDefault(_createFragment);
 
@@ -4093,7 +4147,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports) {
 
 	//this function is really only intended to be used for DEV purposes
@@ -4141,20 +4195,47 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
-	var _uppercasePattern = /([A-Z])/g;
+	var VENDOR_PREFIXES = ["Webkit", "O", "Moz", "ms"];
 
-	exports["default"] = function (string) {
-	  return string.replace(_uppercasePattern, "-$1").toLowerCase();
-	};
+	// Helper for CSS properties access
+	var reDash = /\-./g,
+	    hooks = { set: {}, find: function find(name, style) {
 
+	        var propName = name.replace(reDash, function (str) {
+	            return str[1].toUpperCase();
+	        });
+
+	        if (!(propName in style)) {
+	            propName = VENDOR_PREFIXES.map(function (prefix) {
+	                return prefix + propName[0].toUpperCase() + propName.slice(1);
+	            }).filter(function (prop) {
+	                return prop in style;
+	            })[0];
+	        }
+
+	        return this.set[name] = propName;
+	    } };
+
+	// Exclude the following css properties from adding px
+	"float fill-opacity font-weight line-height opacity orphans widows z-index zoom".split(" ").forEach(function (propName) {
+	    var stylePropName = propName.replace(reDash, function (str) {
+	        return str[1].toUpperCase();
+	    });
+
+	    hooks.set[propName] = function (value, style) {
+	        style[stylePropName] = value.toString();
+	    };
+	});
+
+	exports["default"] = hooks;
 	module.exports = exports["default"];
 
 /***/ }
