@@ -47,12 +47,12 @@
 	__webpack_require__(1);
 	__webpack_require__(32);
 	__webpack_require__(30);
-	__webpack_require__(41);
-	__webpack_require__(50);
-	__webpack_require__(44);
-	__webpack_require__(69);
 	__webpack_require__(7);
 	__webpack_require__(11);
+	__webpack_require__(41);
+	__webpack_require__(49);
+	__webpack_require__(44);
+	__webpack_require__(69);
 	__webpack_require__(3);
 	__webpack_require__(24);
 	__webpack_require__(4);
@@ -85,8 +85,6 @@
 	__webpack_require__(23);
 	__webpack_require__(5);
 	__webpack_require__(22);
-	__webpack_require__(73);
-	__webpack_require__(48);
 	__webpack_require__(37);
 	__webpack_require__(57);
 	__webpack_require__(51);
@@ -100,7 +98,8 @@
 	__webpack_require__(63);
 	__webpack_require__(60);
 	__webpack_require__(61);
-	__webpack_require__(39);
+	__webpack_require__(73);
+	__webpack_require__(47);
 	__webpack_require__(74);
 	__webpack_require__(45);
 	__webpack_require__(46);
@@ -109,8 +108,9 @@
 	__webpack_require__(77);
 	__webpack_require__(38);
 	__webpack_require__(78);
-	__webpack_require__(47);
-	__webpack_require__(49);
+	__webpack_require__(50);
+	__webpack_require__(48);
+	__webpack_require__(39);
 	__webpack_require__(79);
 	__webpack_require__(80);
 	module.exports = __webpack_require__(81);
@@ -1884,7 +1884,7 @@
 
 	var _settersRemoveProp2 = _interopRequireDefault(_settersRemoveProp);
 
-	var _settersSetPropWithCheck = __webpack_require__(47);
+	var _settersSetPropWithCheck = __webpack_require__(50);
 
 	var _settersSetPropWithCheck2 = _interopRequireDefault(_settersSetPropWithCheck);
 
@@ -1981,9 +1981,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _cleanValues = __webpack_require__(39);
+	var _stylesCleanValues = __webpack_require__(39);
 
-	var _cleanValues2 = _interopRequireDefault(_cleanValues);
+	var _stylesCleanValues2 = _interopRequireDefault(_stylesCleanValues);
 
 	var _utilForIn = __webpack_require__(41);
 
@@ -2024,11 +2024,11 @@
 
 	            for (len = styleValue.length; idx < len; idx++) {
 
-	              style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue[idx]);
+	              style[styleName] = (0, _stylesCleanValues2["default"])(styleName, styleValue[idx]);
 	            }
 	          } else {
 
-	            style[styleName] = (0, _cleanValues2["default"])(styleName, styleValue);
+	            style[styleName] = (0, _stylesCleanValues2["default"])(styleName, styleValue);
 	          }
 	        } else {
 
@@ -2289,22 +2289,18 @@
 
 	var _removeSelectValue2 = _interopRequireDefault(_removeSelectValue);
 
-	var defaultPropVals = {};
+	var _hooksPropHook = __webpack_require__(47);
 
-	function getDefaultPropVal(tag, attrName) {
-
-	    var tagAttrs = defaultPropVals[tag] || (defaultPropVals[tag] = {});
-	    return attrName in tagAttrs ? tagAttrs[attrName] : tagAttrs[attrName] = document.createElement(tag)[attrName];
-	}
+	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
 
 	exports["default"] = function (node, name) {
 
-	    if (name === "value" && node.tagName === "SELECT") {
+	    if (HOOK.remove[name]) {
 
-	        (0, _removeSelectValue2["default"])(node);
+	        HOOK.remove[name](node, name);
 	    } else {
 
-	        node[name] = getDefaultPropVal(node.tagName, name);
+	        node[name] = "";
 	    }
 	};
 
@@ -2317,23 +2313,24 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	        value: true
 	});
 
 	exports["default"] = function (node) {
 
-	    var options = node.options,
-	        len = options.length;
-	    // skip iteration if no length
-	    if (len) {
+	        var options = node.options,
+	            len = options.length;
 
-	        var i = 0;
+	        // skip iteration if no length
+	        if (len) {
 
-	        while (i < len) {
+	                var i = 0;
 
-	            options[i++].selected = false;
+	                while (i < len) {
+
+	                        options[i++].selected = false;
+	                }
 	        }
-	    }
 	};
 
 	module.exports = exports["default"];
@@ -2350,24 +2347,68 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _hooksPropHook = __webpack_require__(48);
+	var _settersSetSelectValue = __webpack_require__(48);
 
-	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
+	var _settersSetSelectValue2 = _interopRequireDefault(_settersSetSelectValue);
 
-	exports["default"] = function (node, name, value) {
+	var _settersRemoveSelectValue = __webpack_require__(46);
 
-	    if (_hooksPropHook2["default"][name]) {
+	var _settersRemoveSelectValue2 = _interopRequireDefault(_settersRemoveSelectValue);
 
-	        (0, _hooksPropHook2["default"])(node, name, value);
-	    } else {
+	var _utilIsArray = __webpack_require__(44);
 
-	        if (node[name] !== value) {
+	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 
-	            node[name] = value;
-	        }
+	var _utilInArray = __webpack_require__(49);
+
+	var _utilInArray2 = _interopRequireDefault(_utilInArray);
+
+	var hooks = { set: {}, remove: {} };
+
+	hooks.set.value = function (node, name, value) {
+
+	    switch (node.tagName) {
+
+	        case SELECT:
+	            // selectbox has special case
+	            (0, _settersSetSelectValue2["default"])(node, value);
+	            break;
+	        default:
+	            if (node[name] !== value) {
+	                node[name] = value;
+	            }
 	    }
 	};
 
+	hooks.remove.value = function (node, name) {
+
+	    switch (node.tagName) {
+
+	        case SELECT:
+	            // selectbox has special case
+	            (0, _settersRemoveSelectValue2["default"])(node);
+	            break;
+	        default:
+	            node[name] = "";
+	    }
+	};
+
+	hooks.set.title = function (node, value) {
+	    var doc = node.ownerDocument;
+
+	    (node === doc.documentElement ? doc : node).title = value;
+	};
+
+	// Radio and checkbox setter
+	["radio", "checkbox"].forEach(function (tag) {
+	    hooks.set[tag] = function (node, name, value) {
+	        if ((0, _utilIsArray2["default"])(value)) {
+	            return node.checked = (0, _utilInArray2["default"])(node.value, value) >= 0;
+	        }
+	    };
+	});
+
+	exports["default"] = hooks;
 	module.exports = exports["default"];
 
 /***/ },
@@ -2382,65 +2423,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _settersSetSelectValue = __webpack_require__(49);
-
-	var _settersSetSelectValue2 = _interopRequireDefault(_settersSetSelectValue);
-
-	var _utilIsArray = __webpack_require__(44);
-
-	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
-
-	var _utilInArray = __webpack_require__(50);
-
-	var _utilInArray2 = _interopRequireDefault(_utilInArray);
-
-	/**
-	 * INTERNAL!!
-	 */
-	var hooks = {
-
-	    value: function value(node, name, _value) {
-
-	        switch (node.tagName) {
-
-	            case SELECT:
-	                (0, _settersSetSelectValue2["default"])(node, _value);
-	                break;
-	            default:
-
-	                if (node[name] !== _value) {
-
-	                    node[name] = _value;
-	                }
-	        }
-	    }
-	};
-
-	// Radios and checkboxes setter
-	["radio", "checkbox"].forEach(function (attr) {
-	    hooks[attr] = function (node, name, value) {
-	        if ((0, _utilIsArray2["default"])(value)) {
-	            return elem.checked = (0, _utilInArray2["default"])(node.value, value) >= 0;
-	        }
-	    };
-	});
-
-	exports["default"] = hooks;
-	module.exports = exports["default"];
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _utilInArray = __webpack_require__(50);
+	var _utilInArray = __webpack_require__(49);
 
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 
@@ -2477,7 +2460,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2501,6 +2484,38 @@
 	    }
 
 	    return false;
+	};
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _hooksPropHook = __webpack_require__(47);
+
+	var _hooksPropHook2 = _interopRequireDefault(_hooksPropHook);
+
+	exports["default"] = function (node, name, value) {
+
+	    if (_hooksPropHook2["default"].set[name]) {
+
+	        _hooksPropHook2["default"].set(node, name, value);
+	    } else {
+
+	        if (node[name] !== value) {
+
+	            node[name] = value;
+	        }
+	    }
 	};
 
 	module.exports = exports["default"];
@@ -2968,7 +2983,7 @@
 
 	var _settersRemoveProp2 = _interopRequireDefault(_settersRemoveProp);
 
-	var _settersSetPropWithCheck = __webpack_require__(47);
+	var _settersSetPropWithCheck = __webpack_require__(50);
 
 	var _settersSetPropWithCheck2 = _interopRequireDefault(_settersSetPropWithCheck);
 
@@ -4124,22 +4139,20 @@
 /* 73 */
 /***/ function(module, exports) {
 
-	/**
-	 * INTERNAL!!
-	 */
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var hooks = {
 
-	    type: function type(node, name, value) {
+	var hooks = { set: {}, remove: {} };
 
-	        var val = node.value; // value will be lost in IE if type is changed
-	        node.setAttribute(name, "" + value);
-	        node.value = val;
-	    }
+	hooks.set.type = function (node, name, value) {
+
+	    var val = node.value; // value will be lost in IE if type is changed
+
+	    node.setAttribute(name, "" + value);
+	    node.value = val;
 	};
 
 	exports["default"] = hooks;
@@ -4180,9 +4193,9 @@
 
 	exports["default"] = function (node, name, value) {
 
-	    if (_hooksAttrHook2["default"][name]) {
+	    if (_hooksAttrHook2["default"].set[name]) {
 
-	        (0, _hooksAttrHook2["default"])(node, name, value);
+	        _hooksAttrHook2["default"].set(node, name, value);
 	    } else {
 
 	        node.setAttribute(name, "" + value);
@@ -4205,7 +4218,6 @@
 
 	    // don't set falsy values!
 	    if (attrValue !== false) {
-
 	        // booleans should always be lower cased
 	        node.setAttribute(name, "" + (attrValue == true ? "" : attrValue).toLowerCase());
 	    }
@@ -4224,7 +4236,7 @@
 	});
 
 	exports["default"] = function (node, propertyName, propertyValue) {
-
+	    // TODO! Optimize for v8
 	    node[propertyName] = !!propertyValue;
 	};
 

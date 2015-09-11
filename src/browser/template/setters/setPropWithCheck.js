@@ -2,9 +2,9 @@ import HOOK from "../hooks/propHook";
 
 export default ( node, name, value ) => {
 
-    if ( HOOK[name] ) {
+    if ( HOOK.set[name] ) {
 
-        HOOK( node, name, value );
+        HOOK.set( node, name, value );
 
     } else {
 

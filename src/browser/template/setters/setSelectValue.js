@@ -25,9 +25,6 @@ export default ( node, value ) => {
                 optionNode.selected = optionNode.value == value;
 
             }
-
         }
-
     }
-
 };

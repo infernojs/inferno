@@ -1,36 +1,51 @@
-import setSelectValue from "../setters/setSelectValue";
-import isArray from "../../../util/isArray";
-import inArray from "../../../util/inArray";
+import setSelectValue    from "../setters/setSelectValue";
+import removeSelectValue from "../setters/removeSelectValue";
+import isArray           from "../../../util/isArray";
+import inArray           from "../../../util/inArray";
 
-/**
- * INTERNAL!!
- */
-let hooks = {
+let hooks = { set: {}, remove: {}};
 
-        value(node, name, value) {
+hooks.set.value = (node, name, value) => {
 
-            switch (node.tagName) {
+    switch (node.tagName) {
 
-                case SELECT:
-                    setSelectValue(node, value);
-                    break;
-                default:
-
-                    if (node[name] !== value) {
-
-                        node[name] = value;
-                    }
+        case SELECT:
+            // selectbox has special case
+            setSelectValue(node, value);
+            break;
+        default:
+            if (node[name] !== value) {
+                node[name] = value;
             }
-        }
+    }
 };
 
-// Radios and checkboxes setter
-["radio", "checkbox"].forEach((attr) => {
-    hooks[attr] = (node, name, value) => {
-        if (isArray(value)) {
-            return (elem.checked = inArray(node.value, value) >= 0);
-        }
+hooks.remove.value = (node, name) => {
+
+    switch (node.tagName) {
+
+        case SELECT:
+            // selectbox has special case
+            removeSelectValue( node );
+            break;
+        default:
+            node[name] = "";
     }
+}
+	
+hooks.set.title = (node, value) => {
+    let doc = node.ownerDocument;
+
+    (node === doc.documentElement ? doc : node).title = value;
+};
+
+// Radio and checkbox setter
+["radio", "checkbox"].forEach((tag) => {
+hooks.set[tag] = (node, name, value) => {
+    if (isArray(value)) {
+        return (node.checked = inArray(node.value, value) >= 0);
+    }
+}
 });
 
 export default hooks;

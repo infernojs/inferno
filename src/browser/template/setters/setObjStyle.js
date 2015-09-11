@@ -1,4 +1,4 @@
-import cleanValues from "./cleanValues";
+import cleanValues from "../styles/cleanValues";
 import forIn       from "../../../util/forIn";
 import isArray     from "../../../util/isArray";
 
