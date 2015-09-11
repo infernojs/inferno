@@ -12,7 +12,6 @@ export default ( parentDom, item, nextItem ) => {
         } else {
 
             parentDom.appendChild( domItem );
-
         }
     }
 };
