@@ -1,7 +1,7 @@
 import events from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener from "../events/addEventListener";
-import DOMPropsCfg from "./DOMPropsCfg";
+import DOMPropsCfg from "./cfg/DOMPropsCfg";
 
 export default function( node, props, component ) {
     let propName, propVal;

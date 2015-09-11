@@ -1,20 +1,30 @@
 import addAttributes from "./addAttributes";
 import addProperties from "./addProperties";
-
-let isBrowser = false;
-
-if ( typeof window != "undefined" ) {
-
-    isBrowser = true;
-
-}
+import isBrowser     from "../../util/isBrowser";
 
 export default {
 
     addAttributes: addAttributes,
     addProperties: addProperties,
-    createElement: ( tag ) => document.createElement( tag ),
-    createText: ( text ) => document.createTextNode( text ),
-    createEmptyText: () => document.createTextNode( "" ),
-    createFragment: () => document.createFragment()
+    createElement: (tag) => {
+
+        if (isBrowser) {
+            return document.createElement(tag);
+        }
+    },
+    createTextNode: (text) => {
+        if (isBrowser) {
+            return document.createTextNode(text);
+        }
+    },
+    createEmptyText: () => {
+        if (isBrowser) {
+            return document.createTextNode("");
+        }
+    },
+    createFragment: () => {
+        if (isBrowser) {
+            return document.createFragment();
+        }
+    }
 };

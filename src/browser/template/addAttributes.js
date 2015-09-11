@@ -1,7 +1,7 @@
 import events from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener from "../events/addEventListener";
-import DOMAttrCfg from "./DOMAttrCfg";
+import DOMAttrCfg from "./cfg/DOMAttrCfg";
 
 export default function( node, attrs, component ) {
     let attrName, attrVal;

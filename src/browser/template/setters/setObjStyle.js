@@ -1,6 +1,6 @@
 import cleanValues from "./cleanValues";
-import forIn       from "../../util/forIn";
-import isArray     from "../../util/isArray";
+import forIn       from "../../../util/forIn";
+import isArray     from "../../../util/isArray";
 
 /**
  * Set CSS styles
