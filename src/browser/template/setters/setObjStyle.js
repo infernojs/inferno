@@ -1,4 +1,3 @@
-import cleanValues from "../styles/cleanValues";
 import forIn       from "../../../util/forIn";
 import HOOK        from "../hooks/styleHook";
 
