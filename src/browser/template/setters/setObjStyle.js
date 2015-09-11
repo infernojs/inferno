@@ -1,5 +1,5 @@
-import forIn       from "../../../util/forIn";
-import HOOK        from "../hooks/styleHook";
+import forIn  from "../../../util/forIn";
+import HOOK   from "../hooks/styleHook";
 
 /**
  * Set CSS styles

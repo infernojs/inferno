@@ -306,36 +306,18 @@
 	
 	exports["default"] = function (fragment, dom, component) {
 	
-	    var context, generatedFragment;
-	    if (component === undefined) {
-	        if ((0, _eventsSharedInitialisedListeners2["default"])() === false) {
-	            (0, _eventsAddRootListener2["default"])();
-	            (0, _eventsSharedInitialisedListeners2["default"])(true);
-	        }
+	    var context = undefined,
+	        generatedFragment = undefined;
 	
-	        context = (0, _universalCoreGetContext2["default"])(dom);
+	    if (component) {
 	
-	        if (context == null) {
+	        if (component.context) {
 	
-	            context = {
-	                fragment: fragment,
-	                dom: dom,
-	                shouldRecycle: true
-	            };
-	            (0, _universalCoreAttachFragment2["default"])(context, fragment, dom, component);
-	            _varsContexts2["default"].push(context);
+	            generatedFragment = fragment();
+	            context = component.context;
+	            (0, _universalCoreUpdateFragment2["default"])(context, context.fragment, generatedFragment, dom, component, false);
+	            context.fragment = generatedFragment;
 	        } else {
-	
-	            var activeElement = document.activeElement;
-	            (0, _universalCoreUpdateFragment2["default"])(context, context.fragment, fragment, dom, component, false);
-	            context.fragment = fragment;
-	
-	            // TODO! Move to moveFragment()
-	            (0, _universalCoreMaintainFocus2["default"])(activeElement);
-	        }
-	    } else {
-	
-	        if (component.context == null) {
 	
 	            generatedFragment = fragment();
 	            context = component.context = {
@@ -346,12 +328,33 @@
 	            component.componentWillMount();
 	            (0, _universalCoreAttachFragment2["default"])(context, generatedFragment, dom, component);
 	            component.componentDidMount();
+	        }
+	    } else {
+	
+	        if ((0, _eventsSharedInitialisedListeners2["default"])() === false) {
+	            (0, _eventsAddRootListener2["default"])();
+	            (0, _eventsSharedInitialisedListeners2["default"])(true);
+	        }
+	
+	        context = (0, _universalCoreGetContext2["default"])(dom);
+	
+	        if (context) {
+	
+	            var activeElement = document.activeElement;
+	            (0, _universalCoreUpdateFragment2["default"])(context, context.fragment, fragment, dom, component, false);
+	            context.fragment = fragment;
+	
+	            // TODO! Move to moveFragment()
+	            (0, _universalCoreMaintainFocus2["default"])(activeElement);
 	        } else {
 	
-	            generatedFragment = fragment();
-	            context = component.context;
-	            (0, _universalCoreUpdateFragment2["default"])(context, context.fragment, generatedFragment, dom, component, false);
-	            context.fragment = generatedFragment;
+	            context = {
+	                fragment: fragment,
+	                dom: dom,
+	                shouldRecycle: true
+	            };
+	            (0, _universalCoreAttachFragment2["default"])(context, fragment, dom, component);
+	            _varsContexts2["default"].push(context);
 	        }
 	    }
 	};
@@ -466,6 +469,7 @@
 	            return _varsContexts2["default"][i];
 	        }
 	    }
+	
 	    return null;
 	};
 	
@@ -512,6 +516,7 @@
 	var _otherSetT7Dependency2 = _interopRequireDefault(_otherSetT7Dependency);
 	
 	var attachFragment = function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
+	
 	    var fragmentComponent = fragment.component;
 	
 	    if (fragmentComponent) {
@@ -773,10 +778,12 @@
 	    if (context.shouldRecycle === true) {
 	
 	        var toRecycleForKey = _varsRecycledFragments2["default"][templateKey];
+	
 	        if (!toRecycleForKey) {
 	
 	            _varsRecycledFragments2["default"][templateKey] = toRecycleForKey = [];
 	        }
+	
 	        toRecycleForKey.push(fragment);
 	    }
 	};
@@ -820,6 +827,7 @@
 	var _browserEventsSharedEvents2 = _interopRequireDefault(_browserEventsSharedEvents);
 	
 	exports["default"] = function (context, oldFragment, fragment, parentDom, component) {
+	
 	    var element = oldFragment.templateElement;
 	    var type = oldFragment.templateType;
 	
@@ -1172,7 +1180,6 @@
 /* 25 */
 /***/ function(module, exports) {
 
-	// TODO! Refactor
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -1686,9 +1693,11 @@
 	exports["default"] = function (dom) {
 	
 	    var context = (0, _getContext2["default"])(dom);
+	
 	    if (context !== null) {
 	
 	        var component = context.fragment.component;
+	
 	        if (component) {
 	
 	            (0, _removeFragment2["default"])(context, dom, component.fragment);

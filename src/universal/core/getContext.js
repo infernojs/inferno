@@ -7,10 +7,8 @@ export default ( dom ) => {
         if ( contexts[i].dom === dom ) {
 
             return contexts[i];
-
         }
-
     }
-    return null;
 
+    return null;
 };

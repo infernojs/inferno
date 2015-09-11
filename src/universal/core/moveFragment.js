@@ -1,4 +1,3 @@
-// TODO! Refactor
 export default ( parentDom, item, nextItem ) => {
 
     let domItem = item.dom,
@@ -15,7 +14,5 @@ export default ( parentDom, item, nextItem ) => {
             parentDom.appendChild( domItem );
 
         }
-
     }
-
 };

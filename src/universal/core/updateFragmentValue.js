@@ -7,6 +7,7 @@ import events              from "../../browser/events/shared/events";
 
 
 export default ( context, oldFragment, fragment, parentDom, component ) => {
+
     let element = oldFragment.templateElement;
     let type = oldFragment.templateType;
 
@@ -84,9 +85,7 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
                 else {
                     //TODO make component props work for single value fragments
                 }
-                return;
+           return;
         }
-
     }
-
 }

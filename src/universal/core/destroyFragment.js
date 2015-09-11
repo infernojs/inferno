@@ -16,19 +16,17 @@ export default ( context, fragment ) => {
     } else {
 
         templateKey = fragment.template.key;
-
     }
 
     if ( context.shouldRecycle === true ) {
 
         let toRecycleForKey = recycledFragments[templateKey];
+
         if ( !toRecycleForKey ) {
 
             recycledFragments[templateKey] = toRecycleForKey = [];
-
         }
+
         toRecycleForKey.push( fragment );
-
     }
-
 }

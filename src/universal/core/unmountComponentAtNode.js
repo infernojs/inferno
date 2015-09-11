@@ -10,9 +10,11 @@ import unmountComponentAtFragment  from "./unmountComponentAtFragment";
 export default ( dom ) => {
 
     let context = getContext( dom );
+
     if ( context !== null ) {
 
         let component = context.fragment.component;
+
         if ( component ) {
 
             removeFragment( context, dom, component.fragment );
@@ -22,9 +24,6 @@ export default ( dom ) => {
 
             removeFragment( context, dom, context.fragment );
             removeContext( dom );
-
         }
-
     }
-
 };
