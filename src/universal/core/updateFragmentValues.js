@@ -80,17 +80,8 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                     element.height = fragment.templateValues[i];
                     break;*/
                 default:
-                    //custom attribute, so simply setAttribute it
-                    if (!element.props) {
-                        if (events[type] != null) {
-                            clearEventListeners(element, type);
-                            addEventListener(element, type, fragment.templateValues[i]);
-                        } else {
-							DOMAttrCfg(attrName).set(element, type, fragment.templateValues[i]);
-                        }
-                    }
                     //component prop, update it
-                    else {
+                    if (element.props) {
                         element.props[type] = fragment.templateValues[i];
                         let alreadyInQueue = false;
                         for (let s = 0; s < componentsToUpdate.length; s++) {
@@ -100,6 +91,13 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                         }
                         if (alreadyInQueue === false) {
                             componentsToUpdate.push(element);
+                        }
+                    } else {
+                        if (events[type] != null) {
+                            clearEventListeners(element, type);
+                            addEventListener(element, type, fragment.templateValues[i]);
+                        } else {
+							DOMAttrCfg(attrName).set(element, type, fragment.templateValues[i]);
                         }
                     }
                     break;
