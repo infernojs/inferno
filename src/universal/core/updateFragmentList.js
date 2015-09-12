@@ -79,14 +79,14 @@ export default ( context, oldList, list, parentDom, component, outerNextFragment
     }
     if ( oldStartIndex > oldEndIndex ) {
         nextItem = ( endIndex + 1 < listLength ) ? list[endIndex + 1] : outerNextFragment;
-        for ( i = startIndex; i <= endIndex; i++ ) {
+        for (let i = startIndex; i <= endIndex; i++ ) {
             item = list[i];
             attachFragment( context, item, parentDom, component, nextItem );
         }
     } else if ( startIndex > endIndex ) {
         removeFragments( context, parentDom, oldList, oldStartIndex, oldEndIndex + 1 );
     } else {
-        let i, oldNextItem = ( oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1] );
+        let oldNextItem = ( oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1] );
         let oldListMap = {};
 
         for ( i = oldEndIndex; i >= oldStartIndex; i-- ) {
@@ -96,7 +96,7 @@ export default ( context, oldList, list, parentDom, component, outerNextFragment
             oldNextItem = oldItem;
         }
         nextItem = ( endIndex + 1 < listLength ) ? list[endIndex + 1] : outerNextFragment;
-        for ( i = endIndex; i >= startIndex; i-- ) {
+        for (let i = endIndex; i >= startIndex; i-- ) {
             item = list[i];
             var key = item.key;
             oldItem = oldListMap[key];
@@ -112,7 +112,7 @@ export default ( context, oldList, list, parentDom, component, outerNextFragment
             }
             nextItem = item;
         }
-        for ( i = oldStartIndex; i <= oldEndIndex; i++ ) {
+        for (let i = oldStartIndex; i <= oldEndIndex; i++ ) {
             oldItem = oldList[i];
             if ( oldListMap[oldItem.key] !== null ) {
                 removeFragment( context, parentDom, oldItem );

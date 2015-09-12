@@ -11,7 +11,7 @@ import DOMAttributes       from "../../browser/template/DOMAttributes";
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
-export default (context, oldFragment, fragment, parentDom, component) => {
+export default function updateFragmentValues(context, oldFragment, fragment, parentDom, component) {
     let componentsToUpdate = [];
 
     for (let i = 0, length = fragment.templateValues.length; i < length; i++) {

@@ -13,7 +13,6 @@ module.exports = {
     devServer: {
         contentBase: "/",
         noInfo: true,
-        hot: true,
         inline: true
     },
     module: {
