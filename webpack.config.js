@@ -11,7 +11,7 @@ if(PROD) {
 
 module.exports = {
     context: path.join(__dirname, "/src"),
-    entry: "./Inferno",
+    entry: path.join(__dirname, "/src/Inferno"),
     cache: true,
     debug: PROD ? false: true,
     devtool: 'source-map',
@@ -23,7 +23,7 @@ module.exports = {
         publicPath: 'http://localhost:8080/'
     },
     devServer: {
-        contentBase: "./examples",
+        contentBase: path.join(__dirname, "/examples"),
         noInfo: true,
         hot: true,
         inline: true
