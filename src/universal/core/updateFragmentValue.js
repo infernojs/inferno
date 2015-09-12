@@ -4,7 +4,7 @@ import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
-import HOOK                from "../../browser/template/hook";
+import DOMAttributes       from "../../browser/template/DOMAttributes";
 
 export default (context, oldFragment, fragment, parentDom, component) => {
 
@@ -40,14 +40,7 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                         clearEventListeners(element, type);
                         addEventListener(element, type, fragment.templateValue);
                     } else {
-                        let ATTR = HOOK[attrName];
-
-                        if (ATTR) {
-                            ATTR(element, type, fragment.templateValue);
-                            // custom attributes
-                        } else {
-                            element.setAttribute(type, fragment.templateValue);
-                        }
+                       DOMAttributes(element, type, fragment.templateValue);
                     }
                 }
         }
