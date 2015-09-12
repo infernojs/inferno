@@ -5,7 +5,8 @@
   "main": "inferno.js",
   "scripts": {
     "preinstall": "npm install -g webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "webpack-dev-server --config webpack.test.config.js --hot --inline",
+    "dev": "webpack-dev-server --config webpack.config.js --hot --inline"
   },
   "dependencies": {
     "babel-runtime": "^5.8.20",
@@ -27,6 +28,7 @@
     "mocha": "^2.3.2",
     "mocha-loader": "^0.7.1",
     "uglify-loader": "^1.2.0",
-    "webpack": "^1.12.1"
+    "webpack": "^1.12.1",
+    "webpack-dev-server": "^1.10.1"
   }
 }
