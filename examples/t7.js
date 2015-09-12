@@ -88,7 +88,7 @@ var t7 = (function() {
       }
 
     } else if (root.children != null && typeof root.children === "string") {
-      root.children = root.children.replace(/(\r\n|\n|\r)/gm, "").trim();
+      root.children = root.children.replace(/(\r\n|\n|\r)/gm, "");
       //this ensures its a prop replacement
       matches = root.children.match(/__\$props__\[\d*\]/g);
       //find any template strings and replace them
@@ -382,7 +382,7 @@ var t7 = (function() {
             t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var t7 = arguments[1];\n' + scriptCode);
           }
           t7._templateCache[templateKey].key = templateKey;
-          t7._templateCache[templateKey].type = Inferno.template.Type.VALUE_PARAMS;
+          t7._templateCache[templateKey].type = Inferno.TemplateTypes.RAW_T7_API;
           template = 't7._templateCache["' + templateKey + '"]';
         }
 
@@ -440,7 +440,7 @@ var t7 = (function() {
     var i = 0;
     var parts = childText.split(/(__\$props__\[\d*\])/g)
     for (i = 0; i < parts.length; i++) {
-      if (parts[i].trim() !== "") {
+      if (parts[i] !== "") {
         //set the children to this object
         parent.children.push(parts[i]);
       }
@@ -500,7 +500,7 @@ var t7 = (function() {
             throw new Error("Expected corresponding t7 closing tag for '" + parent.tag + "'.");
           }
           //when the childText is not empty
-          if (childText.trim() !== "") {
+          if (childText !== "") {
             //escape quotes etc
             childText = replaceQuotes(childText);
             //check if childText contains one of our placeholders
@@ -518,7 +518,7 @@ var t7 = (function() {
           }
         } else {
           //check if we have any content in the childText, if so, it was a text node that needs to be added
-          if (childText.trim().length > 0 && !(parent instanceof Array)) {
+          if (childText.length > 0 && !(parent instanceof Array)) {
             //escape quotes etc
             childText = replaceQuotes(childText);
             //check the childtext for placeholders
