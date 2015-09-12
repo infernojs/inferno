@@ -18,10 +18,11 @@ module.exports = {
         path: __dirname + "/dist",
         filename: PROD ? "inferno.min.js" : "inferno.js",
         libraryTarget: "var",
-        library: "Inferno"
+        library: "Inferno",
+        publicPath: 'http://localhost:8080/'
     },
     devServer: {
-        contentBase: "/",
+        contentBase: "./examples",
         noInfo: true,
         hot: true,
         inline: true
