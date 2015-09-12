@@ -61,7 +61,7 @@ describe("Inferno acceptance tests", function() {
                     container
                 );
 
-                var test = container.innerHTML.toString();
+                var test = container.innerHTML;
                 var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
 
                 expect(test).to.equal(expected);
@@ -96,6 +96,21 @@ describe("Inferno acceptance tests", function() {
 
                 var test = container.innerHTML;
                 var expected = "<div>Hello world - Inferno Owns</div>";
+
+                expect(test).to.equal(expected);
+            });
+
+            it("should render a basic example with dynamic values and props", function() {
+                var val1 = "Inferno";
+                var val2 = "Rocks";
+
+                Inferno.render(
+                    t7`<div class="foo"><span class="bar">${ val1 }</span><span class="yar">${ val2 }</span></div>`,
+                    container
+                );
+
+                var test = container.innerHTML;
+                var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
 
                 expect(test).to.equal(expected);
             });
