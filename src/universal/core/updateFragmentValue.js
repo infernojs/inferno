@@ -4,9 +4,9 @@ import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
-import DOMAttrCfg          from "../../browser/template/cfg/DOMAttrCfg";
+import HOOK                from "../../browser/template/hook";
 
-export default ( context, oldFragment, fragment, parentDom, component ) => {
+export default (context, oldFragment, fragment, parentDom, component) => {
 
     let element = oldFragment.templateElement;
     let type = oldFragment.templateType;
@@ -14,11 +14,11 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
     fragment.templateElement = element;
     fragment.templateType = type;
 
-    if ( fragment.templateValue !== oldFragment.templateValue ) {
-        switch ( type ) {
+    if (fragment.templateValue !== oldFragment.templateValue) {
+        switch (type) {
             case fragmentTypes.LIST:
             case fragmentTypes.LIST_REPLACE:
-                updateFragmentList( context, oldFragment.templateValue, fragment.templateValue, element, component );
+                updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
                 return;
             case fragmentTypes.TEXT:
                 element.firstChild.nodeValue = fragment.templateValue;
@@ -28,64 +28,28 @@ export default ( context, oldFragment, fragment, parentDom, component ) => {
                 return;
             case fragmentTypes.FRAGMENT:
             case fragmentTypes.FRAGMENT_REPLACE:
-                updateFragment( context, oldFragment.templateValue, fragment.templateValue, element, component );
+                updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
                 return;
-          /*  case fragmentTypes.ATTR_CLASS:
-                element.className = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_CHECKED:
-                element.checked = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_SELECTED:
-                element.selected = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_DISABLED:
-                element.disabled = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_HREF:
-                element.href = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_ID:
-                element.id = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_VALUE:
-                element.value = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_NAME:
-                element.name = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_TYPE:
-                element.type = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_LABEL:
-                element.label = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_PLACEHOLDER:
-                element.placeholder = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_STYLE:
-                //TODO
-                return;
-            case fragmentTypes.ATTR_WIDTH:
-                element.width = fragment.templateValue;
-                return;
-            case fragmentTypes.ATTR_HEIGHT:
-                element.height = fragment.templateValue;
-                return;*/
             default:
 
                 //component prop, update it
-                if ( element.props ) {
-                  //TODO make component props work for single value fragments
+                if (element.props) {
+                    //TODO make component props work for single value fragments
                 } else {
-                    if ( events[type] != null ) {
-                        clearEventListeners( element, type );
-                        addEventListener( element, type, fragment.templateValue );
+                    if (events[type] != null) {
+                        clearEventListeners(element, type);
+                        addEventListener(element, type, fragment.templateValue);
                     } else {
-					 DOMAttrCfg(attrName).set(element, type, fragment.templateValue);
+                        let ATTR = HOOK[attrName];
+
+                        if (ATTR) {
+                            ATTR(element, type, fragment.templateValue);
+                            // custom attributes
+                        } else {
+                            element.setAttribute(type, fragment.templateValue);
+                        }
                     }
                 }
-           return;
         }
     }
 }

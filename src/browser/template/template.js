@@ -5,9 +5,15 @@ import isBrowser     from "../../util/isBrowser";
 export default {
     addAttributes: addAttributes,
     addProperties: addProperties,
-    createElement(tag) {
+    createElement(tag, namespace) {
+
         if (isBrowser) {
-            return document.createElement(tag);
+
+            if (namespace == null) {
+                return document.createElement(tag);
+            }
+
+            return document.createElementNS(namespace, tag);
         }
     },
     createTextNode(text) {

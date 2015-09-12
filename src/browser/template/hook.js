@@ -1,4 +1,6 @@
-import setSelectValue "./setSelectValue";
+import setSelectValue from "./setSelectValue";
+import inArray        from "../../util/inArray";
+import isArray        from "../../util/isArray";
 
 const VENDOR_PREFIXES = ["Webkit", "O", "Moz", "ms"];
 
@@ -37,8 +39,7 @@ let reDash = /\-./g,
         "xml:id": "id",
         "xml:lang": "lang",
         "xml:space": "space"
-    },
-;
+    };
 
 hook.class = (node, name, value) => {
     node.setAttribute(name, value);
@@ -81,7 +82,7 @@ hook.value = (node, name, value) => {
 
     switch (node.tagName) {
 
-        case SELECT:
+        case "SELECT":
             // selectbox has special case
             setSelectValue(node, value);
             break;
@@ -151,8 +152,8 @@ hook.value = (node, name, value) => {
 });
 
 // Boolean attributes
-("hidden nowrap inert required noresize translate typemustmatch defaultselected defaultchecked disabled defer" +
-    "noshade draggable defaultSelected defaultChecked itemScope capture autoPlay autoFocus allowFullScreen").split(" ").split(" ").forEach((prop) => {
+("hidden nowrap inert required noresize translate typemustmatch defaultselected defaultchecked disabled defer " +
+ "noshade draggable defaultSelected defaultChecked itemScope capture autoPlay autoFocus allowFullScreen").split(" ").forEach((prop) => {
 
     hook[prop.toLowerCase()] = (node, name, attrValue) => {
 
@@ -169,7 +170,10 @@ hook.value = (node, name, value) => {
  */
 "xlink:actuate xlink:arcrole xlink:href xlink:role xlink:show xlink:title xlink:type".split(" ").forEach((prop) => {
 
-    hook[prop] = xlinkAttrCfg;
+    hook[prop] = (node, key, value) => {
+
+        node.setAttributeNS("http://www.w3.org/1999/xlink", xmlCfg[key], "" + value);
+    };
 
 });
 
@@ -178,8 +182,10 @@ hook.value = (node, name, value) => {
  */
 "xml:base xml:id xml:lang xml:space".split(" ").forEach((prop) => {
 
-    hook[prop] = (node, key, value) {
+    hook[prop] = (node, key, value) => {
 
         node.setAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key], "" + value);
     };
 });
+
+export default hook;

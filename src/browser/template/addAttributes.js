@@ -1,16 +1,15 @@
 import events              from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener    from "../events/addEventListener";
-import DOMAttrCfg          from "./cfg/DOMAttrCfg";
+import HOOK                from "./hook";
 import forIn               from "../../util/forIn";
 
 /**
  * Set HTML attributes on the template
  * @param{ HTMLElement } node
  * @param{ Object } attrs 
- * @param{ String } component
  */
-export default (node, attrs, component) => {
+export default (node, attrs) => {
     forIn(attrs, (attrName, attrVal) => {
         // avoid 'null' values
         if (attrVal != null) {
@@ -18,7 +17,15 @@ export default (node, attrs, component) => {
                 clearEventListeners(node, attrName);
                 addEventListener(node, attrName, attrVal);
             } else {
-                DOMAttrCfg(attrName).set(node, attrName, attrVal);
+
+                let ATTR = HOOK[attrName];
+
+                if (ATTR) {
+                    ATTR(node, attrName, attrVal);
+				// custom attributes
+                } else {
+                    node.setAttribute(attrName, attrVal);
+                }
             }
         }
     });

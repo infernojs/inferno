@@ -1,12 +1,12 @@
 "use strict";
 
-import updateFragment from "./updateFragment";
-import fragmentTypes from "./fragmentTypes";
-import updateFragmentList from "./updateFragmentList";
+import updateFragment      from "./updateFragment";
+import fragmentTypes       from "./fragmentTypes";
+import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
-import addEventListener from "../../browser/events/addEventListener";
+import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
-import DOMAttrCfg          from "../../browser/template/cfg/DOMAttrCfg";
+import HOOK                from "../../browser/template/hook";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
@@ -37,48 +37,6 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                 case fragmentTypes.FRAGMENT_REPLACE:
                     updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
-              /*  case fragmentTypes.ATTR_CLASS:
-                    element.className = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_CHECKED:
-                    element.checked = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_SELECTED:
-                    element.selected = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_DISABLED:
-                    element.disabled = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_HREF:
-                    element.href = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_ID:
-                    element.id = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_VALUE:
-                    element.value = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_NAME:
-                    element.name = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_TYPE:
-                    element.type = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_LABEL:
-                    element.label = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_PLACEHOLDER:
-                    element.placeholder = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_STYLE:
-                    //TODO
-                    break;
-                case fragmentTypes.ATTR_WIDTH:
-                    element.width = fragment.templateValues[i];
-                    break;
-                case fragmentTypes.ATTR_HEIGHT:
-                    element.height = fragment.templateValues[i];
-                    break;*/
                 default:
                     //component prop, update it
                     if (element.props) {
@@ -97,10 +55,17 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                             clearEventListeners(element, type);
                             addEventListener(element, type, fragment.templateValues[i]);
                         } else {
-							DOMAttrCfg(attrName).set(element, type, fragment.templateValues[i]);
+
+                            let ATTR = HOOK[attrName];
+
+                            if (ATTR) {
+                                ATTR(element, type, fragment.templateValues[i]);
+                                // custom attributes
+                            } else {
+                                element.setAttribute(type, fragment.templateValues[i]);
+                            }
                         }
                     }
-                    break;
             }
         }
     }
