@@ -1,7 +1,7 @@
 import events              from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener    from "../events/addEventListener";
-import HOOK                from "./hook";
+import DOMAttributes       from "./DOMAttributes";
 import forIn               from "../../util/forIn";
 
 /**
@@ -18,14 +18,7 @@ export default (node, props) => {
                 clearEventListeners(node, propName);
                 addEventListener(node, propName, propVal);
             } else {
-
-                let PROP = HOOK[propName];
-
-                if (PROP) {
-                    PROP(node, propName, propVal);
-                } else {
-                    node[propName] = propVal;
-                }
+                DOMAttributes(node, propName, propVal)
             }
         }
     });

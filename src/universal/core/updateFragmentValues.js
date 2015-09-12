@@ -6,7 +6,7 @@ import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
-import HOOK                from "../../browser/template/hook";
+import DOMAttributes       from "../../browser/template/DOMAttributes";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
@@ -55,15 +55,7 @@ export default (context, oldFragment, fragment, parentDom, component) => {
                             clearEventListeners(element, type);
                             addEventListener(element, type, fragment.templateValues[i]);
                         } else {
-
-                            let ATTR = HOOK[attrName];
-
-                            if (ATTR) {
-                                ATTR(element, type, fragment.templateValues[i]);
-                                // custom attributes
-                            } else {
-                                element.setAttribute(type, fragment.templateValues[i]);
-                            }
+						   DOMAttributes(element, type, fragment.templateValues[i]);
                         }
                     }
             }

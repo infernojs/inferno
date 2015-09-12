@@ -1,0 +1,1 @@
+export default (value, bitmask) => (value & bitmask) === bitmask;
