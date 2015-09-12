@@ -68,7 +68,7 @@ describe("Inferno acceptance tests", function() {
             });
         });
 
-        describe("using the t7-raw API", function() {
+        describe("using the Inferno t7 raw API", function() {
             beforeEach(function() {
                 t7.setOutput(t7.Outputs.Inferno);
             })
