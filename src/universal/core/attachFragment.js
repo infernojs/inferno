@@ -1,13 +1,13 @@
 import getRecycledFragment from "./getRecycledFragment";
 import updateFragment      from "./updateFragment";
 import attachFragmentList  from "./attachFragmentList";
-import fragmentTypes       from "./fragmentTypes";
+import fragmentValueTypes       from "../enum/fragmentValueTypes";
 import insertFragment      from "./insertFragment";
 import render              from "../../browser/core/render";
-import t7Dependency        from "../../other/setT7Dependency";
+import templateTypes       from "../enum/templateTypes";
+import templateCreateElement       from "../../browser/template/createElement";
 
-let attachFragment = ( context, fragment, parentDom, component, nextFragment, replace ) => {
-    
+let attachFragment = function attachFragment( context, fragment, parentDom, component, nextFragment, replace ) {
 	let fragmentComponent = fragment.component;
 
     if ( fragmentComponent ) {
@@ -19,7 +19,6 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
         }
         return;
     }
-
     let recycledFragment = null,
         template = fragment.template,
         templateKey = template.key;
@@ -31,26 +30,41 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
     if ( recycledFragment !== null ) {
         updateFragment( context, recycledFragment, fragment, parentDom, component );
     } else {
-        //the user can optionally opt out of using the t7 dependency, thus removing the requirement
-        //to pass the t7 reference into the template constructor
-        if ( t7Dependency() ) {
-            template( fragment, fragment.t7ref );
-        } else {
-            template( fragment );
+        //there are different things we need to check for now
+        switch (template.type) {
+            case templateTypes.RAW_API:
+                template(fragment);
+                break;
+            case templateTypes.RAW_T7_API:
+                template(fragment, fragment.t7ref);
+                break;
+            case templateTypes.FUNCTIONAL_API:
+                let createElement = templateCreateElement.bind(fragment);
+                let params = [createElement], length = (fragment.templateValue && 1) || (fragment.templateValues && fragment.templateValues.length) || 0;
+
+                //create our pointers, for example 0,1,2,3,4,5 as params to pass through
+                for(let i = 0; i < length; i++) {
+                    params.push({pointer: i});
+                }
+                fragment.dom = template.apply(null, params);
+                break;
+            default:
+                template(fragment);
+                break;
         }
         //if this fragment has a single value, we attach only that value
         if ( fragment.templateValue ) {
             switch ( fragment.templateType ) {
-                case fragmentTypes.LIST:
+                case fragmentValueTypes.LIST:
                     attachFragmentList( context, fragment.templateValue, fragment.templateElement );
                     break;
-                case fragmentTypes.LIST_REPLACE:
+                case fragmentValueTypes.LIST_REPLACE:
                     attachFragment( context, fragment.templateValue, fragment.templateElement, component );
                     break;
-                case fragmentTypes.FRAGMENT:
+                case fragmentValueTypes.FRAGMENT:
                     //TODO do we need this still?
                     break;
-                case fragmentTypes.FRAGMENT_REPLACE:
+                case fragmentValueTypes.FRAGMENT_REPLACE:
                     attachFragment( context, fragment.templateValue, parentDom, fragment.templateElement, true );
                     fragment.templateElement = fragment.templateValue.dom.parentNode;
                     break;
@@ -65,20 +79,20 @@ let attachFragment = ( context, fragment, parentDom, component, nextFragment, re
                 let element = fragment.templateElements[i],
                     value = fragment.templateValues[i];
                 switch ( fragment.templateTypes[i] ) {
-                    case fragmentTypes.LIST:
+                    case fragmentValueTypes.LIST:
                         attachFragmentList( context, value, element );
                         break;
-                    case fragmentTypes.LIST_REPLACE:
+                    case fragmentValueTypes.LIST_REPLACE:
                         let nodeList = document.createDocumentFragment(),
                             placeholderNode = fragment.templateElements[i];
                         attachFragmentList( context, value, nodeList );
                         placeholderNode.parentNode.replaceChild( nodeList, placeholderNode );
                         fragment.templateElements[i] = nodeList;
                         break;
-                    case fragmentTypes.FRAGMENT:
+                    case fragmentValueTypes.FRAGMENT:
                         //TODO do we need this still?
                         break;
-                    case fragmentTypes.FRAGMENT_REPLACE:
+                    case fragmentValueTypes.FRAGMENT_REPLACE:
                         attachFragment( context, value, parentDom, component, element, true );
                         fragment.templateElements[i] = value.dom.parentNode;
                         break;

@@ -1,14 +1,7 @@
-//this function is really only intended to be used for DEV purposes
-export default ( values, template ) => {
+export default function createFragment( values, template ) {
 
     if ( template.key === undefined ) {
-
-        if ( templateKeyLookup === undefined ) {
-
-            //this was considerably faster than Symbol()
-            template.key = "tpl" + Math.floor( Math.random() * 100000 );
-        }
-
+        throw Error("createFragment failed, template is missing key");
     }
     if ( values instanceof Array ) {
 

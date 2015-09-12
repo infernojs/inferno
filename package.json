@@ -5,7 +5,7 @@
   "main": "inferno.js",
   "scripts": {
     "preinstall": "npm install -g webpack",
-    "test": "webpack-dev-server --config webpack.test.config.js --hot --inline",
+    "test": "webpack-dev-server --config webpack.test.config.js --hot --inline 'mocha!./tests/tests.js'",
     "dev": "webpack-dev-server --config webpack.config.js --hot --inline"
   },
   "dependencies": {
@@ -27,6 +27,7 @@
   "devDependencies": {
     "babel-core": "^5.8.24",
     "babel-loader": "^5.3.2",
+    "chai": "^3.2.0",
     "mocha": "^2.3.2",
     "mocha-loader": "^0.7.1",
     "uglify-loader": "^1.2.0",

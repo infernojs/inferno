@@ -4,17 +4,23 @@ import Component              from './universal/class/Component';
 import render                 from './browser/core/render';
 import version                from './InfernoVersion';
 import unmountComponentAtNode from './universal/core/unmountComponentAtNode';
-import fragmentTypes          from './universal/core/fragmentTypes';
+import fragmentValueTypes          from './universal/enum/fragmentValueTypes';
+import templateTypes          from './universal/enum/templateTypes';
+import createFragment          from './universal/core/createFragment';
+import createTemplate          from './universal/core/createTemplate';
 import template               from './browser/template/template';
-import setT7Dependency        from './other/setT7Dependency';
+import clearDomElement      from './browser/core/clearDomElement';
 
 let Inferno = {
   Component: Component,
   render: render,
+  createFragment: createFragment,
+  createTemplate: createTemplate,
   unmountComponentAtNode: unmountComponentAtNode,
-  Type: fragmentTypes,
+  FragmentValueTypes: fragmentValueTypes,
+  TemplateTypes: templateTypes,
   template: template,
-  setT7Dependency:setT7Dependency,
+  clearDomElement: clearDomElement,
   // current version of the library
   version: version,
 };

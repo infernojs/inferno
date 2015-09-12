@@ -1,7 +1,7 @@
 import rootListeners from "./shared/rootListeners";
 import events        from "./shared/events";
 
-export default ( parentDom, listenerName ) => {
+export default function clearEventListeners( parentDom, listenerName ) {
     let listeners = rootListeners[events[listenerName]],
         index = 0;
 

@@ -1,28 +1,24 @@
 "use strict";
 
 import addRootDomEventListerners from "../events/addRootListener";
-import initialisedListeners      from "../events/shared/initialisedListeners";
 import contexts                  from "../../vars/contexts";
 import getContext                from "../../universal/core/getContext";
 import attachFragment            from "../../universal/core/attachFragment";
 import updateFragment            from "../../universal/core/updateFragment";
 import maintainFocus             from "../../universal/core/maintainFocus";
 
-export default (fragment, dom, component) => {
+let initialisedListeners = false;
 
+export default function render(fragment, dom, component) {
     let context, generatedFragment;
 
     if (component) {
-
         if (component.context) {
-
             generatedFragment = fragment();
             context = component.context;
             updateFragment(context, context.fragment, generatedFragment, dom, component, false);
             context.fragment = generatedFragment;
-
         } else {
-
             generatedFragment = fragment();
             context = component.context = {
                 fragment: generatedFragment,
@@ -33,27 +29,19 @@ export default (fragment, dom, component) => {
             attachFragment(context, generatedFragment, dom, component);
             component.componentDidMount();
         }
-
     } else {
-
-        if (initialisedListeners() === false) {
+        if (initialisedListeners === false) {
             addRootDomEventListerners();
-            initialisedListeners(true);
+            initialisedListeners = true;
         }
-
         context = getContext(dom);
-
         if (context) {
-
             let activeElement = document.activeElement;
             updateFragment(context, context.fragment, fragment, dom, component, false);
             context.fragment = fragment;
-
             // TODO! Move to moveFragment()
             maintainFocus(activeElement);
-
         } else {
-
             context = {
                 fragment: fragment,
                 dom: dom,

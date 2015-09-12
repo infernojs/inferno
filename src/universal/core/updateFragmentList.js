@@ -5,7 +5,7 @@ import attachFragment from "./attachFragment";
 import updateFragment from "./updateFragment";
 import moveFragment from "./moveFragment";
 
-export default ( context, oldList, list, parentDom, component, outerNextFragment ) => {
+export default function updateFragmentList( context, oldList, list, parentDom, component, outerNextFragment ) {
     let oldListLength = oldList.length;
     let listLength = list.length;
 

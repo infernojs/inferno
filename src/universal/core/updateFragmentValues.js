@@ -1,7 +1,7 @@
 "use strict";
 
 import updateFragment      from "./updateFragment";
-import fragmentTypes       from "./fragmentTypes";
+import fragmentValueTypes       from "../enum/fragmentValueTypes";
 import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
@@ -12,7 +12,6 @@ import DOMAttributes       from "../../browser/template/DOMAttributes";
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
 export default function updateFragmentValues(context, oldFragment, fragment, parentDom, component) {
-	
     let componentsToUpdate = [];
 
     for (let i = 0, length = fragment.templateValues.length; i < length; i++) {
@@ -24,18 +23,18 @@ export default function updateFragmentValues(context, oldFragment, fragment, par
 
         if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
             switch (type) {
-                case fragmentTypes.LIST:
-                case fragmentTypes.LIST_REPLACE:
+                case fragmentValueTypes.LIST:
+                case fragmentValueTypes.LIST_REPLACE:
                     updateFragmentList(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
-                case fragmentTypes.TEXT:
+                case fragmentValueTypes.TEXT:
                     element.firstChild.nodeValue = fragment.templateValues[i];
                     break;
-                case fragmentTypes.TEXT_DIRECT:
+                case fragmentValueTypes.TEXT_DIRECT:
                     element.nodeValue = fragment.templateValues[i];
                     break;
-                case fragmentTypes.FRAGMENT:
-                case fragmentTypes.FRAGMENT_REPLACE:
+                case fragmentValueTypes.FRAGMENT:
+                case fragmentValueTypes.FRAGMENT_REPLACE:
                     updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
                 default:

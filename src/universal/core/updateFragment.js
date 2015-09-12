@@ -4,7 +4,7 @@ import updateFragmentValue  from "./updateFragmentValue";
 import updateFragmentValues from "./updateFragmentValues";
 import unmountComponentAtFragment from "./unmountComponentAtFragment";
 
-export default ( context, oldFragment, fragment, parentDom, component ) => {
+export default function updateFragment( context, oldFragment, fragment, parentDom, component ) {
     if ( fragment === null ) {
         removeFragment( context, parentDom, oldFragment );
         return;
