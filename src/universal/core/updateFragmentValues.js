@@ -12,6 +12,7 @@ import DOMAttributes       from "../../browser/template/DOMAttributes";
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
 export default function updateFragmentValues(context, oldFragment, fragment, parentDom, component) {
+	
     let componentsToUpdate = [];
 
     for (let i = 0, length = fragment.templateValues.length; i < length; i++) {
