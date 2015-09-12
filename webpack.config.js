@@ -1,5 +1,6 @@
 var webpack = require("webpack");
 var PROD = JSON.parse(process.env.PROD_DEV || "0");
+var path = require('path');
 var plugins = [
    new webpack.optimize.DedupePlugin()
 ];
@@ -9,13 +10,13 @@ if(PROD) {
 }
 
 module.exports = {
-    context: __dirname + "/src",
+    context: path.join(__dirname, "/src"),
     entry: "./Inferno",
     cache: true,
     debug: PROD ? false: true,
     devtool: 'source-map',
     output: {
-        path: __dirname + "/dist",
+        path: path.join(__dirname, "/dist"),
         filename: PROD ? "inferno.min.js" : "inferno.js",
         libraryTarget: "var",
         library: "Inferno",
