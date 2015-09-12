@@ -20,6 +20,12 @@ module.exports = {
         libraryTarget: "var",
         library: "Inferno"
     },
+    devServer: {
+        contentBase: "/",
+        noInfo: true,
+        hot: true,
+        inline: true
+    },
     module: {
       loaders: [
         {
