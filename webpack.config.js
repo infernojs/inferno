@@ -1,15 +1,22 @@
 var webpack = require("webpack");
+var PROD = JSON.parse(process.env.PROD_DEV || "0");
+var plugins = [
+   new webpack.optimize.DedupePlugin()
+];
+
+if(PROD) {
+    plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
+}
 
 module.exports = {
     context: __dirname + "/src",
     entry: "./Inferno",
     cache: true,
-    debug: true,
+    debug: PROD ? false: true,
     devtool: 'source-map',
-    progress: true,
     output: {
         path: __dirname + "/dist",
-        filename: "inferno.js",
+        filename: PROD ? "inferno.min.js" : "inferno.js",
         libraryTarget: "var",
         library: "Inferno"
     },
@@ -22,7 +29,5 @@ module.exports = {
         }
       ]
     },
-    plugins: [
-  	   new webpack.optimize.DedupePlugin()
-  	]
+    plugins: plugins
 };

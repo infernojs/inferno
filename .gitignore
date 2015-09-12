@@ -2,5 +2,7 @@ npm-debug.log
 .DS_Store
 build/
 build/*
+dist/
+dist/*
 node_modules
 node_modules/*
