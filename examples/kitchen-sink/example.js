@@ -38,8 +38,8 @@ t7.module(function(t7) {
           return t7`
             <div class="main">
               <table width=${ this.state.counter % 3 ? "100%" : "50%" }>
-                <tr><td>Kitchen Sink</td></tr>
-                ${ this.state.counter % 2 ? t7`<tr><td>Sale!</td></tr>` : null }
+                <tr><td>A table is here</td></tr>
+                ${ this.state.counter % 2 ? t7`<tr><td>Now I'm here!</td></tr>` : null }
               </table>
               <button onClick=${ this.hide }>Hide</button>
               <div>Count is at ${ this.state.counter }</div>
