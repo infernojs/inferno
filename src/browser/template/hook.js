@@ -48,16 +48,7 @@ hook.className = (node, name, value) => {
     node[propertyname] = value;
 }
 
-
-//
-acceptCharset: 'accept-charset',
-    className: 'class',
-    htmlFor: 'for',
-    httpEquiv: 'http-equiv',
-
-
-
-    hook.style = (node, name, value) => {
+ hook.style = (node, name, value) => {
 
         // FIX ME!! t7 has to be fixed so it handle object literal. Then 
         // we can remove this 'typeof' check
