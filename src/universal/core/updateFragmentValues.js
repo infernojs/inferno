@@ -6,13 +6,14 @@ import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
+import isSVG               from "../../util/isSVG";
 import { setHtml }         from "../../browser/template/DOMOperations";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
 export default function(context, oldFragment, fragment, parentDom, component) {
-	
+
     let componentsToUpdate = [];
 
     for (let i = 0, length = fragment.templateValues.length; i < length; i++) {
@@ -39,34 +40,42 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                     updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
                 case fragmentValueTypes.ATTR_CLASS:
-                    element.className = fragment.templateValue;
+                    // To set className on SVG elements, it's necessary to use .setAttribute;
+                    // this works on HTML elements too in all browsers.				
+                    if (isSVG) {
+                        element.setAttribute("class", fragment.templateValues[i]);
+                    } else {
+                        element.className = fragment.templateValues[i];
+                    }
+                    return;
+                    element.className = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_HREF:
-                    element.href = fragment.templateValue;
+                    element.href = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_ID:
-                    element.id = fragment.templateValue;
+                    element.id = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_VALUE:
-                    element.value = fragment.templateValue;
+                    element.value = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_NAME:
-                    element.name = fragment.templateValue;
+                    element.name = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_TYPE:
-                    element.type = fragment.templateValue;
+                    element.type = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_LABEL:
-                    element.label = fragment.templateValue;
+                    element.label = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_PLACEHOLDER:
-                    element.placeholder = fragment.templateValue;
+                    element.placeholder = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_WIDTH:
-                    element.width = fragment.templateValue;
+                    element.width = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_HEIGHT:
-                    element.height = fragment.templateValue;
+                    element.height = fragment.templateValues[i];
                     return;
 
                 default:

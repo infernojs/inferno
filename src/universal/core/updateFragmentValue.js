@@ -3,7 +3,8 @@ import fragmentValueTypes  from "../enum/fragmentValueTypes";
 import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
-import { setHtml }   from "../../browser/template/DOMOperations";
+import isSVG               from "../../util/isSVG";
+import { setHtml }         from "../../browser/template/DOMOperations";
 
 export default function(context, oldFragment, fragment, parentDom, component) {
     let element = oldFragment.templateElement,
@@ -30,7 +31,13 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                 updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
                 return;
             case fragmentValueTypes.ATTR_CLASS:
-                element.className = fragment.templateValue;
+                // To set className on SVG elements, it's necessary to use .setAttribute;
+                // this works on HTML elements too in all browsers.				
+                if (isSVG) {
+                    element.setAttribute("class", fragment.templateValue);
+                } else {
+                    element.className = fragment.templateValue;
+                }
                 return;
             case fragmentValueTypes.ATTR_HREF:
                 element.href = fragment.templateValue;
