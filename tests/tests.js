@@ -10,7 +10,7 @@ global.t7 = t7;
 global.Inferno = Inferno;
 
 describe("Inferno acceptance tests", function() {
-    describe("Render (DOM elements) tests", function() {
+    describe("Inferno.render() (DOM elements) tests", function() {
         var container;
 
         beforeEach(function() {
@@ -187,7 +187,56 @@ describe("Inferno acceptance tests", function() {
                 var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
 
                 expect(test).to.equal(expected);
-            });     
+            });
+        });
+    });
+
+    describe("Inferno.renderToString() (DOM elements) tests", function() {
+        describe("using the Inferno functional API", function() {
+            it("should render a basic example", function() {
+                var template = Inferno.createTemplate(function(createElement) {
+                    return createElement("div", null, "Hello world");
+                });
+
+                var test = Inferno.renderToString(
+                    Inferno.createFragment(null, template)
+                );
+
+                var expected = "<div>Hello world</div>";
+
+                expect(test).to.equal(expected);
+            });
+
+            it("should render a basic example with dynamic values", function() {
+                var template = Inferno.createTemplate(function(createElement, val1, val2) {
+                    return createElement("div", null, "Hello world - ", val1, " ", val2);
+                });
+
+                var test = Inferno.renderToString(
+                    Inferno.createFragment(["Inferno", "Owns"], template)
+                );
+
+                var expected = "<div>Hello world - Inferno Owns</div>";
+
+                expect(test).to.equal(expected);
+            });
+
+            it("should render a basic example with dynamic values and props", function() {
+                var template = Inferno.createTemplate(function(createElement, val1, val2) {
+                    return createElement("div", {class: "foo"},
+                        createElement("span", {class: "bar"}, val1),
+                        createElement("span", {class: "yar"}, val2)
+                    );
+                });
+
+                var test = Inferno.renderToString(
+                    Inferno.createFragment(["Inferno", "Rocks"], template)
+                );
+
+                var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
+
+                expect(test).to.equal(expected);
+            });
         });
     });
 });
