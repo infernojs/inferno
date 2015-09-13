@@ -9,7 +9,7 @@ import memoizeString             from "./memoizeString";
 import shouldIgnoreValue         from "./shouldIgnoreValue";
 import masks                     from "./vars/masks";
 import forIn                     from "../../util/forIn";
-import escapeHtml                from "../shared/escapeHtml";
+import escapeHtml                from "./escapeHtml";
 import hasNumericValue           from "./vars/hasNumericValue";
 import hasPositiveNumericValue   from "./vars/hasPositiveNumericValue";
 import hasOverloadedBooleanValue from "./vars/hasOverloadedBooleanValue";

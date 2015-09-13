@@ -1,4 +1,4 @@
-import escapeHtml from "../shared/escapeHtml";
+import escapeHtml from "./escapeHtml";
 
 function memoizeString(callback) {
     let cache = {};
