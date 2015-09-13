@@ -21,7 +21,6 @@ let
         checked: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
         classID: MUST_USE_ATTRIBUTE,
         className: MUST_USE_PROPERTY,
-        class: MUST_USE_PROPERTY,
 		cols: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
         contextMenu: MUST_USE_ATTRIBUTE,
         controls: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,

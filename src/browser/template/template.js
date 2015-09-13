@@ -3,26 +3,27 @@ import addProperties from "./addProperties";
 import isBrowser     from "../../util/isBrowser";
 
 export default {
-    rawApi: {
-        addAttributes: addAttributes,
-        addProperties: addProperties,
-        createElement(tag, namespace) {
-            if (isBrowser) {
-                if (namespace == null) {
-                    return document.createElement(tag);
-                }
-                return document.createElementNS(namespace, tag);
+    addAttributes: addAttributes,
+    addProperties: addProperties,
+    createElement(tag, namespace) {
+
+        if (isBrowser) {
+
+            if (namespace == null) {
+                return document.createElement(tag);
             }
-        },
-        createTextNode(text) {
-            if (isBrowser) {
-                return document.createTextNode(text);
-            }
-        },
-        createEmptyText() {
-            if (isBrowser) {
-                return document.createTextNode("");
-            }
+
+            return document.createElementNS(namespace, tag);
+        }
+    },
+    createTextNode(text) {
+        if (isBrowser) {
+            return document.createTextNode(text);
+        }
+    },
+    createEmptyText() {
+        if (isBrowser) {
+            return document.createTextNode("");
         }
     }
 };

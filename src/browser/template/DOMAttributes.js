@@ -1,25 +1,17 @@
-import attrPropCfg from "./cfg/attrPropCfg";
-import nsCfg from "./cfg/nsCfg";
-import attrNameCfg from "./cfg/attrNameCfg";
-import propNameCfg from "./cfg/propNameCfg";
-import checkMask from "./checkMask";
-import hooks from "./hooks";
-import masks from "./vars/masks";
+import attrPropCfg            from "./cfg/attrPropCfg";
+import nsCfg                  from "./cfg/nsCfg";
+import attrNameCfg            from "./cfg/attrNameCfg";
+import propNameCfg            from "./cfg/propNameCfg";
+import checkMask              from "./checkMask";
+import deleteValueForProperty from "./deleteValueForProperty";
+import hooks                  from "./hooks";
+import masks                  from "./vars/masks";
+import forIn                  from "../../util/forIn";
 
 let
-    MUST_USE_ATTRIBUTE = masks.MUST_USE_ATTRIBUTE,
-    MUST_USE_PROPERTY = masks.MUST_USE_PROPERTY,
-    HAS_SIDE_EFFECTS = masks.HAS_SIDE_EFFECTS,
-    HAS_BOOLEAN_VALUE = masks.HAS_BOOLEAN_VALUE,
-    HAS_NUMERIC_VALUE = masks.HAS_NUMERIC_VALUE,
-    HAS_POSITIVE_NUMERIC_VALUE = masks.HAS_POSITIVE_NUMERIC_VALUE,
-    HAS_OVERLOADED_BOOLEAN_VALUE = masks.HAS_OVERLOADED_BOOLEAN_VALUE;
+    propertyInfo = {},
 
-let properties = {},
-
-    isStandardName = {},
-
-    getAttributeName = {},
+    properties = {},
 
     hasNumericValue = {},
 
@@ -29,84 +21,47 @@ let properties = {},
 
     hasOverloadedBooleanValue = {},
 
-    hasSideEffects = {};
+    shouldIgnoreValue = (name, value) => {
+        return value == null ||
+            (hasBooleanValue[name] && !value) ||
+            (hasNumericValue[name] && isNaN(value)) ||
+            (hasPositiveNumericValue[name] && (value < 1)) ||
+            (hasOverloadedBooleanValue[name] && value === false);
+    };
 
+forIn(attrPropCfg, (propName, propConfig) => {
 
-for (let propName in attrPropCfg) {
-
-    let lowerCased = propName.toLowerCase();
-    let propConfig = attrPropCfg[propName];
-
-    let propertyInfo = {
-        attributeName: lowerCased,
+    propertyInfo = {
+        attributeName: propName.toLowerCase(),
         attributeNamespace: null,
         propertyName: propName,
         hooks: null,
 
-        mustUseAttribute: checkMask(propConfig, MUST_USE_ATTRIBUTE),
-        mustUseProperty: checkMask(propConfig, MUST_USE_PROPERTY),
-        hasSideEffects: checkMask(propConfig, HAS_SIDE_EFFECTS),
-        hasBooleanValue: checkMask(propConfig, HAS_BOOLEAN_VALUE),
-        hasNumericValue: checkMask(propConfig, HAS_NUMERIC_VALUE),
-        hasPositiveNumericValue: checkMask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
-        hasOverloadedBooleanValue: checkMask(propConfig, HAS_OVERLOADED_BOOLEAN_VALUE),
+        mustUseAttribute: checkMask(propConfig, masks.MUST_USE_ATTRIBUTE),
+        mustUseProperty: checkMask(propConfig, masks.MUST_USE_PROPERTY),
+        hasSideEffects: checkMask(propConfig, masks.HAS_SIDE_EFFECTS),
+        hasBooleanValue: checkMask(propConfig, masks.HAS_BOOLEAN_VALUE),
+        hasNumericValue: checkMask(propConfig, masks.HAS_NUMERIC_VALUE),
+        hasPositiveNumericValue: checkMask(propConfig, masks.HAS_POSITIVE_NUMERIC_VALUE),
+        hasOverloadedBooleanValue: checkMask(propConfig, masks.HAS_OVERLOADED_BOOLEAN_VALUE),
     };
 
-
-    if (attrNameCfg.hasOwnProperty(propName)) {
+    if (attrNameCfg[propName]) {
         propertyInfo.attributeName = attrNameCfg[propName];
+    } else if (propNameCfg[propName]) {
+        propertyInfo.propertyName = propNameCfg[propName];
     }
 
     if (nsCfg[propName]) {
         propertyInfo.attributeNamespace = nsCfg[propName];
     }
 
-    if (propNameCfg[propName]) {
-        propertyInfo.propertyName = propNameCfg[propName];
-    }
-
-
     if (hooks[propName]) {
         propertyInfo.hooks = hooks[propName];
     }
+
     properties[propName] = propertyInfo;
-}
-
-
-function shouldIgnoreValue(name, value) {
-    return value == null ||
-        (hasBooleanValue[name] && !value) ||
-        (hasNumericValue[name] && isNaN(value)) ||
-        (hasPositiveNumericValue[name] && (value < 1)) ||
-        (hasOverloadedBooleanValue[name] && value === false);
-}
-
-function deleteValueForProperty(node, name) {
-    let propertyInfo = properties[name] ?
-        properties[name] : null;
-    if (propertyInfo) {
-        let hooks = propertyInfo.hooks;
-        if (hooks) {
-            hooks(node, undefined);
-        } else if (propertyInfo.mustUseAttribute) {
-            node.removeAttribute(propertyInfo.attributeName);
-        } else {
-            let propName = propertyInfo.propertyName;
-            let defaultValue = getDefaultValueForProperty(
-                node.nodeName,
-                propName
-            );
-
-            if (!propertyInfo.hasSideEffects ||
-                ("" + node[propName]) !== defaultValue) {
-                node[propName] = defaultValue;
-            }
-        }
-    } else {
-        node.removeAttribute(name);
-    }
-}
-
+});
 
 export default function(node, name, value) {
 
@@ -119,10 +74,10 @@ export default function(node, name, value) {
         if (hooks) {
             hooks(node, value);
         } else if (shouldIgnoreValue(propertyInfo, value)) {
-            this.deleteValueForProperty(node, name);
+            deleteValueForProperty(node, name);
         } else if (propertyInfo.mustUseAttribute) {
-            let attributeName = propertyInfo.attributeName;
-            let namespace = propertyInfo.attributeNamespace;
+            let attributeName = propertyInfo.attributeName,
+                namespace = propertyInfo.attributeNamespace;
             if (namespace) {
                 node.setAttributeNS(namespace, attributeName, "" + value);
             } else if (propertyInfo.hasBooleanValue ||
@@ -133,7 +88,7 @@ export default function(node, name, value) {
             }
         } else {
             let propName = propertyInfo.propertyName;
-            if (!propertyInfo.hasSideEffects || ("" + node[propName]) !== ("" + value)) {
+            if (!propertyInfo.hasSideEffects || (node[propName] !== value)) {
                 node[propName] = value;
             }
         }
