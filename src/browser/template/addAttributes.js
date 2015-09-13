@@ -1,6 +1,7 @@
 import events              from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener    from "../events/addEventListener";
+import { htmlStyles }      from "./CSSOperations";
 import { DOMAttributes }   from "./DOMAttributes";
 import forIn               from "../../util/forIn";
 
@@ -10,15 +11,19 @@ import forIn               from "../../util/forIn";
  * @param{ Object } attrs 
  */
 export default (node, attrs) => {
+	
     forIn(attrs, (attrName, attrVal) => {
         // avoid 'null' values
         if (attrVal != null) {
             if (events[attrName] != null) {
                 clearEventListeners(node, attrName);
                 addEventListener(node, attrName, attrVal);
+			} else if (attrName === "style") {
+		console.log(attrName)
+               htmlStyles(node, attrName, attrVal);
             } else {
  
-               DOMAttributes(node, attrName, attrVal)
+               DOMAttributes(node, attrName, attrVal);
             }
         }
     });

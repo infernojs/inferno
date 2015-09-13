@@ -63,6 +63,7 @@ let
         }
     };
 
+
 forIn(attrPropCfg, (propName, propConfig) => {
 
     propertyInfo = {
