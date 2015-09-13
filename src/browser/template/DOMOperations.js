@@ -3,7 +3,7 @@ import nsCfg                     from "./cfg/nsCfg";
 import attrNameCfg               from "./cfg/attrNameCfg";
 import propNameCfg               from "./cfg/propNameCfg";
 import checkMask                 from "./checkMask";
-import deleteValueForProperty    from "./deleteValueForProperty";
+import removeFromDOM             from "./removeFromDOM";
 import hooks                     from "./hooks";
 import memoizeString             from "./memoizeString";
 import shouldIgnoreValue         from "./shouldIgnoreValue";
@@ -36,7 +36,8 @@ let
             }
 
             let attributeName = propertyInfo.attributeName;
-            // for BOOLEAN `value` only has to be truthy
+         
+		    // for BOOLEAN `value` only has to be truthy
             // for OVERLOADED_BOOLEAN `value` has to be === true
             if (propertyInfo.hasBooleanValue ||
                 (propertyInfo.hasOverloadedBooleanValue && value === true)) {
@@ -46,7 +47,8 @@ let
             return memoizeString(name) + escapeHtml(value) + "\"";
 
         } else {
-            if (value == null) {
+          
+		    if (value == null) {
                 return "";
             }
 
@@ -89,13 +91,12 @@ forIn(attrPropCfg, (propName, propConfig) => {
     properties[propName] = propertyInfo;
 });
 
-
 /**
- * Set HTML attributes / properties on a DOM node
- * @param { !Element} node
- * @param { string} name
- * @param { string} value
- * @return { string}
+ * Sets the value for a property on a DOM node
+ * @param {DOMElement} node
+ * @param {string} name
+ * @param {string} value
+ * @return {*} value
  */
 function setHtml(node, name, value) {
 
@@ -108,8 +109,9 @@ function setHtml(node, name, value) {
         if (hooks) {
             hooks(node, value);
         } else if (shouldIgnoreValue(propertyInfo, value)) {
-            deleteValueForProperty(node, name);
-        } else if (propertyInfo.mustUseAttribute) {
+            removeFromDOM(node, name);
+        // HTML attributes
+		} else if (propertyInfo.mustUseAttribute) {
             let attributeName = propertyInfo.attributeName,
                 namespace = propertyInfo.attributeNamespace;
             if (namespace) {
@@ -120,12 +122,16 @@ function setHtml(node, name, value) {
             } else {
                 node.setAttribute(attributeName, "" + value);
             }
+        // HTML properties
         } else {
             let propName = propertyInfo.propertyName;
+           // Must explicitly cast values for HAS_SIDE_EFFECTS-properties to the
+           // property type before comparing; only `value` does and is string.
             if (!propertyInfo.hasSideEffects || (node[propName] !== value)) {
                 node[propName] = value;
             }
         }
+// set custom attributes
     } else {
         node.setAttribute(name, "" + value);
     }

@@ -42,6 +42,7 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                 case fragmentValueTypes.ATTR_CLASS:
                     // To set className on SVG elements, it's necessary to use .setAttribute;
                     // this works on HTML elements too in all browsers.				
+					// If this kills the performance, we have to consider not to support SVG
                     if (isSVG) {
                         element.setAttribute("class", fragment.templateValues[i]);
                     } else {

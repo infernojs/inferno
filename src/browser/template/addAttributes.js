@@ -11,17 +11,20 @@ import forIn               from "../../util/forIn";
  * @param{ Object } attrs 
  */
 export default (node, attrs) => {
-	
+
     forIn(attrs, (attrName, attrVal) => {
         // avoid 'null' values
         if (attrVal != null) {
+            // events
             if (events[attrName] != null) {
                 clearEventListeners(node, attrName);
                 addEventListener(node, attrName, attrVal);
-			} else if (attrName === "style") {
-               setStyles(node, attrName, attrVal);
+                // styles
+            } else if (attrName === "style") {
+                setStyles(node, attrName, attrVal);
+                // attributes / properties
             } else {
-               setHtml(node, attrName, attrVal);
+                setHtml(node, attrName, attrVal);
             }
         }
     });
