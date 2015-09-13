@@ -123,6 +123,18 @@ describe("Inferno acceptance tests", function() {
 
                     expect(test).to.equal(expected);
                 });
+
+                it("should properly render input download attribute", function() {
+                    Inferno.render(
+                        t7`<input download=${ false } />`,
+                        container
+                    );
+
+                    var test = container.innerHTML;
+                    var expected = '<input>';
+
+                    expect(test).to.equal(expected);
+                });
             });
         });
 

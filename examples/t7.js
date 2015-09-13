@@ -178,13 +178,13 @@ var t7 = (function() {
               templateParams.push(propRefs.join(""));
             } else {
               templateParams.push("var " + nodeName + i + " = Inferno.template.createElement('" + child.tag + "');");
+              if (child.children) {
+                buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
+              }
               if (child.attrs) {
                 var attrsParams = [];
                 buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
                 templateParams.push("Inferno.template.addAttributes(" + nodeName + i + ", {" + attrsParams.join(",") + "});");
-              }
-              if (child.children) {
-                buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
               }
 
               if (!parentNodeName) {
@@ -369,22 +369,24 @@ var t7 = (function() {
 
         if (root.children.length > 0) {
           buildInfernoTemplate(root, valueCounter, null, templateValues, templateParams, component);
-          templateParams.push("fragment.dom = root;");
-          var scriptCode = templateParams.join("\n");
-          if (templateValues.length === 1) {
-            scriptCode = scriptCode.replace(/fragment.templateValues\[0\]/g, "fragment.templateValue");
-            scriptCode = scriptCode.replace(/fragment.templateElements\[0\]/g, "fragment.templateElement");
-            scriptCode = scriptCode.replace(/fragment.templateTypes\[0\]/g, "fragment.templateType");
-          }
-          if (isBrowser === true) {
-            addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, t7){"use strict";\n' + scriptCode + '}', templateKey);
-          } else {
-            t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var t7 = arguments[1];\n' + scriptCode);
-          }
-          t7._templateCache[templateKey].key = templateKey;
-          t7._templateCache[templateKey].type = Inferno.TemplateTypes.T7_TEMPLATE_API;
-          template = 't7._templateCache["' + templateKey + '"]';
         }
+
+        templateParams.push("fragment.dom = root;");
+        var scriptCode = templateParams.join("\n");
+        if (templateValues.length === 1) {
+          scriptCode = scriptCode.replace(/fragment.templateValues\[0\]/g, "fragment.templateValue");
+          scriptCode = scriptCode.replace(/fragment.templateElements\[0\]/g, "fragment.templateElement");
+          scriptCode = scriptCode.replace(/fragment.templateTypes\[0\]/g, "fragment.templateType");
+        }
+
+        if (isBrowser === true) {
+          addNewScriptFunction('t7._templateCache["' + templateKey + '"]=function(fragment, t7){"use strict";\n' + scriptCode + '}', templateKey);
+        } else {
+          t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var t7 = arguments[1];\n' + scriptCode);
+        }
+        t7._templateCache[templateKey].key = templateKey;
+        t7._templateCache[templateKey].type = Inferno.TemplateTypes.T7_TEMPLATE_API;
+        template = 't7._templateCache["' + templateKey + '"]';
 
         var templateValuesString = "";
 
