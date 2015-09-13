@@ -19,7 +19,6 @@ export default (node, attrs) => {
                 clearEventListeners(node, attrName);
                 addEventListener(node, attrName, attrVal);
 			} else if (attrName === "style") {
-		console.log(attrName)
                htmlStyles(node, attrName, attrVal);
             } else {
  
