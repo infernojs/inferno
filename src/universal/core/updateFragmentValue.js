@@ -1,10 +1,11 @@
 import updateFragment      from "./updateFragment";
-import fragmentValueTypes       from "../enum/fragmentValueTypes";
+import fragmentValueTypes  from "../enum/fragmentValueTypes";
 import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
-import { DOMAttributes }   from "../../browser/template/DOMAttributes";
-export default function udateFragmentValue(context, oldFragment, fragment, parentDom, component) {
+import { DOMOperations }   from "../../browser/template/DOMOperations";
+
+export default function(context, oldFragment, fragment, parentDom, component) {
     let element = oldFragment.templateElement,
         type = oldFragment.templateType;
 
@@ -65,7 +66,7 @@ export default function udateFragmentValue(context, oldFragment, fragment, paren
                         addEventListener(element, type, fragment.templateValue);
 
                     } else {
-                        DOMAttributes(element, type, fragment.templateValue);
+                        DOMOperations(element, type, fragment.templateValue);
                     }
                 }
                 //component prop, update it

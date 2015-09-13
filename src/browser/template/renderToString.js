@@ -1,7 +1,7 @@
 import voidCfg        from "./cfg/voidCfg";
 import forIn          from "../../util/forIn";
 import { SSRStyles }  from "./CSSOperations";
-import { attrToHtml } from "./DOMAttributes";
+import { attrToHtml } from "./DOMOperations";
 
 // WORK IN PROGRESS!!!!!!!
 function renderToString(props, tagName, children) {

@@ -2,7 +2,7 @@ import events              from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener    from "../events/addEventListener";
 import { htmlStyles }      from "./CSSOperations";
-import { DOMAttributes }   from "./DOMAttributes";
+import { DOMOperations }   from "./DOMOperations";
 import forIn               from "../../util/forIn";
 
 /**
@@ -21,8 +21,7 @@ export default (node, attrs) => {
 			} else if (attrName === "style") {
                htmlStyles(node, attrName, attrVal);
             } else {
- 
-               DOMAttributes(node, attrName, attrVal);
+               DOMOperations(node, attrName, attrVal);
             }
         }
     });

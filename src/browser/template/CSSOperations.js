@@ -4,6 +4,11 @@ import hyphenateStyleName from "./hyphenateStyleName";
 
 export default {
 
+    /**
+     * Create SSR markup for CSS styles
+     * @param {Object} styles
+     * @return { string}
+     */
     SSRStyles(styles) {
 
             let idx = 0,
@@ -13,7 +18,7 @@ export default {
 
                 if (styleValue != null) {
 
-                   html += hyphenateStyleName(styleName) + ":" + cleanValues(styleName, styleValue) + ";";
+                    html += hyphenateStyleName(styleName) + ":" + cleanValues(styleName, styleValue) + ";";
                 }
 
             });
@@ -43,9 +48,7 @@ export default {
                 } else {
 
                     style[styleName] = "";
-
                 }
-
             });
         }
 };

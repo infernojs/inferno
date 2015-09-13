@@ -33,7 +33,10 @@ module.exports = {
         {
           test: /.*\/src\/.*\.js$/,
           exclude: /.spec.js/,
-          loader: 'babel?optional[]=runtime&stage=0'
+          loader: 'babel',
+		  query: {
+			  optional: ['runtime']
+		  }
         }
       ]
     },

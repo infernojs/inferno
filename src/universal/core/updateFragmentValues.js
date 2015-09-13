@@ -1,17 +1,18 @@
 "use strict";
 
 import updateFragment      from "./updateFragment";
-import fragmentValueTypes       from "../enum/fragmentValueTypes";
+import fragmentValueTypes  from "../enum/fragmentValueTypes";
 import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
-import { DOMAttributes }   from "../../browser/template/DOMAttributes";
+import { DOMOperations }   from "../../browser/template/DOMOperations";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
-export default function updateFragmentValues(context, oldFragment, fragment, parentDom, component) {
+export default function(context, oldFragment, fragment, parentDom, component) {
+	
     let componentsToUpdate = [];
 
     for (let i = 0, length = fragment.templateValues.length; i < length; i++) {
@@ -86,7 +87,7 @@ export default function updateFragmentValues(context, oldFragment, fragment, par
                             clearEventListeners(element, type);
                             addEventListener(element, type, fragment.templateValues[i]);
                         } else {
-                            DOMAttributes(element, type, fragment.templateValues[i]);
+                            DOMOperations(element, type, fragment.templateValues[i]);
                         }
                     }
             }

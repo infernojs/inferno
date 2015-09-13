@@ -1,40 +1,31 @@
-import attrPropCfg            from "./cfg/attrPropCfg";
-import nsCfg                  from "./cfg/nsCfg";
-import voidCfg                from "./cfg/voidCfg";
-import attrNameCfg            from "./cfg/attrNameCfg";
-import propNameCfg            from "./cfg/propNameCfg";
-import checkMask              from "./checkMask";
-import deleteValueForProperty from "./deleteValueForProperty";
-import hooks                  from "./hooks";
-import memoizeString          from "./memoizeString";
-import masks                  from "./vars/masks";
-import forIn                  from "../../util/forIn";
-import escapeHtml             from "../shared/escapeHtml";
+import attrPropCfg               from "./cfg/attrPropCfg";
+import nsCfg                     from "./cfg/nsCfg";
+import attrNameCfg               from "./cfg/attrNameCfg";
+import propNameCfg               from "./cfg/propNameCfg";
+import checkMask                 from "./checkMask";
+import deleteValueForProperty    from "./deleteValueForProperty";
+import hooks                     from "./hooks";
+import memoizeString             from "./memoizeString";
+import shouldIgnoreValue         from "./shouldIgnoreValue";
+import masks                     from "./vars/masks";
+import forIn                     from "../../util/forIn";
+import escapeHtml                from "../shared/escapeHtml";
+import hasNumericValue           from "./vars/hasNumericValue";
+import hasPositiveNumericValue   from "./vars/hasPositiveNumericValue";
+import hasOverloadedBooleanValue from "./vars/hasOverloadedBooleanValue";
+import hasBooleanValue           from "./vars/hasBooleanValue";
 
 let
     propertyInfo = {},
 
     properties = {},
 
-    hasNumericValue = {},
-
-    hasPositiveNumericValue = {},
-
-    hasBooleanValue = {},
-
-    hasOverloadedBooleanValue = {},
-
-    shouldIgnoreValue = (name, value) => {
-        return value == null ||
-            (hasBooleanValue[name] && !value) ||
-            (hasNumericValue[name] && isNaN(value)) ||
-            (hasPositiveNumericValue[name] && (value < 1)) ||
-            (hasOverloadedBooleanValue[name] && value === false);
-    },
-
-    prefixAttribute = memoizeString((name) => {
-        return escapeHtml(name) + '="';
-    }),
+    /**
+     * Convert HTML attributes / properties to HTML
+     * @param { string} name
+     * @param { string} value
+     * @return { string}
+     */
     attrToHtml = (name, value) => {
 
         let propertyInfo = properties[name] || null;
@@ -50,20 +41,20 @@ let
             if (propertyInfo.hasBooleanValue ||
                 (propertyInfo.hasOverloadedBooleanValue && value === true)) {
 
-                return attributeName + '=""';
+                return attributeName + "=\"\"";
             }
-            return prefixAttribute(name) + escapeHtml(value) + '"';
+            return memoizeString(name) + escapeHtml(value) + "\"";
 
         } else {
             if (value == null) {
-                return '';
+                return "";
             }
 
-            return name + '=' + "\"" + escapeHtml(value) + "\"";
+            return name + "=" + "\"" + escapeHtml(value) + "\"";
         }
     };
 
-
+// Populate the 'properties' object
 forIn(attrPropCfg, (propName, propConfig) => {
 
     propertyInfo = {
@@ -98,9 +89,17 @@ forIn(attrPropCfg, (propName, propConfig) => {
     properties[propName] = propertyInfo;
 });
 
-function DOMAttributes(node, name, value) {
 
-    let propertyInfo = properties[name] ? properties[name] : null;
+/**
+ * Set HTML attributes / properties on a DOM node
+ * @param { !Element} node
+ * @param { string} name
+ * @param { string} value
+ * @return { string}
+ */
+function DOMOperations(node, name, value) {
+
+    let propertyInfo = properties[name] || null;
 
     if (propertyInfo) {
 
@@ -132,4 +131,4 @@ function DOMAttributes(node, name, value) {
     }
 };
 
-export { attrToHtml, DOMAttributes };
+export { attrToHtml, DOMOperations };
