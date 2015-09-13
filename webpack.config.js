@@ -2,11 +2,23 @@ var webpack = require("webpack");
 var PROD = JSON.parse(process.env.PROD_DEV || "0");
 var path = require('path');
 var plugins = [
-   new webpack.optimize.DedupePlugin()
+   new webpack.optimize.DedupePlugin(),
+   new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
 ];
 
 if(PROD) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
+    plugins.push(
+      new webpack.optimize.UglifyJsPlugin({
+        minimize: true,
+        compressor: {
+          screw_ie8: true,
+          warnings: false
+        }
+      })
+    );
 }
 
 module.exports = {
@@ -33,7 +45,7 @@ module.exports = {
         {
           test: /.*\/src\/.*\.js$/,
           exclude: /.spec.js/,
-          loader: 'babel',
+          loaders: ['babel-loader'],
 		  query: {
 			  optional: ['runtime']
 		  }
