@@ -6,7 +6,7 @@ import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
 import events              from "../../browser/events/shared/events";
-import { DOMOperations }   from "../../browser/template/DOMOperations";
+import { setHtml }         from "../../browser/template/DOMOperations";
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
@@ -87,7 +87,7 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                             clearEventListeners(element, type);
                             addEventListener(element, type, fragment.templateValues[i]);
                         } else {
-                            DOMOperations(element, type, fragment.templateValues[i]);
+                            setHtml(element, type, fragment.templateValues[i]);
                         }
                     }
             }

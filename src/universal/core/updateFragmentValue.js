@@ -3,7 +3,7 @@ import fragmentValueTypes  from "../enum/fragmentValueTypes";
 import updateFragmentList  from "./updateFragmentList";
 import clearEventListeners from "../../browser/events/clearEventListeners";
 import addEventListener    from "../../browser/events/addEventListener";
-import { DOMOperations }   from "../../browser/template/DOMOperations";
+import { setHtml }   from "../../browser/template/DOMOperations";
 
 export default function(context, oldFragment, fragment, parentDom, component) {
     let element = oldFragment.templateElement,
@@ -66,7 +66,7 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                         addEventListener(element, type, fragment.templateValue);
 
                     } else {
-                        DOMOperations(element, type, fragment.templateValue);
+                        setHtml(element, type, fragment.templateValue);
                     }
                 }
                 //component prop, update it

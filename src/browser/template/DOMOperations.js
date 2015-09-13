@@ -26,7 +26,7 @@ let
      * @param { string} value
      * @return { string}
      */
-    attrToHtml = (name, value) => {
+    renderHtmlMarkup = (name, value) => {
 
         let propertyInfo = properties[name] || null;
 
@@ -97,7 +97,7 @@ forIn(attrPropCfg, (propName, propConfig) => {
  * @param { string} value
  * @return { string}
  */
-function DOMOperations(node, name, value) {
+function setHtml(node, name, value) {
 
     let propertyInfo = properties[name] || null;
 
@@ -131,4 +131,4 @@ function DOMOperations(node, name, value) {
     }
 };
 
-export { attrToHtml, DOMOperations };
+export { renderHtmlMarkup, setHtml };

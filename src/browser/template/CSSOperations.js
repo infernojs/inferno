@@ -1,15 +1,15 @@
-import forIn              from "../../util/forIn";
-import cleanValues        from "./cleanValues";
+import forIn from "../../util/forIn";
+import cleanValues from "./cleanValues";
 import hyphenateStyleName from "./hyphenateStyleName";
 
 export default {
 
     /**
-     * Create SSR markup for CSS styles
+     * Create SSR HTML markup for CSS styles
      * @param {Object} styles
      * @return { string}
      */
-    SSRStyles(styles) {
+    renderStyleToString(styles) {
 
             let idx = 0,
                 len, html = "";
@@ -20,7 +20,6 @@ export default {
 
                     html += hyphenateStyleName(styleName) + ":" + cleanValues(styleName, styleValue) + ";";
                 }
-
             });
 
             return html;
@@ -34,7 +33,7 @@ export default {
          * @param {String} value
          */
 
-        htmlStyles(node, propertyName, value) {
+        setStyles(node, propertyName, value) {
 
             let idx = 0,
                 len, style = node[propertyName];

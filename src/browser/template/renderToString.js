@@ -1,8 +1,8 @@
 import voidCfg        from "./cfg/voidCfg";
 import forIn          from "../../util/forIn";
 import inArray        from "../../util/inArray";
-import { SSRStyles }  from "./CSSOperations";
-import { attrToHtml } from "./DOMOperations";
+import { renderStyleToString } from "./CSSOperations";
+import { renderHtmlMarkup     } from "./DOMOperations";
 
 let ctx = null;
 
@@ -79,13 +79,13 @@ function renderToString(props, tagName) {
                 if (name === "value" && (tagName === "select" || tagName === "option")) {
                     html += createMarktupForSelect(tagName, value, props, name);
                 } else if (name === "style") {
-                    html += " " + name + "=\"" + "" + SSRStyles(value) + "\"";
+                    html += " " + name + "=\"" + "" + renderStyleToString(value) + "\"";
 
                     // we need to check for number values, else expected - '<a download="0"></a>' - would
                     // become - '<a></a>'. And the '0' - zero - will be skipped.
                 } else if (name !== "innerHTML" && (value || (typeof value === "number"))) {
                     if (value !== "false") {
-                        html += " " + attrToHtml(name, value);
+                        html += " " + renderHtmlMarkup(name, value);
                     }
                 }
             }

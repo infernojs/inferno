@@ -1,8 +1,8 @@
 import events              from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener    from "../events/addEventListener";
-import { htmlStyles }      from "./CSSOperations";
-import { DOMOperations }   from "./DOMOperations";
+import { setStyles }       from "./CSSOperations";
+import { setHtml }         from "./DOMOperations";
 import forIn               from "../../util/forIn";
 
 /**
@@ -19,9 +19,9 @@ export default (node, attrs) => {
                 clearEventListeners(node, attrName);
                 addEventListener(node, attrName, attrVal);
 			} else if (attrName === "style") {
-               htmlStyles(node, attrName, attrVal);
+               setStyles(node, attrName, attrVal);
             } else {
-               DOMOperations(node, attrName, attrVal);
+               setHtml(node, attrName, attrVal);
             }
         }
     });
