@@ -1,4 +1,4 @@
-import unitlessCfg from "./cfg/unitlessCfg";
+import unitlessCfg  from "./cfg/unitlessCfg";
 
 export default ( name, value ) => {
 

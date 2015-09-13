@@ -1,53 +1,53 @@
-import forIn from "../../util/forIn";
-import cleanValues from "./cleanValues";
+import forIn              from "../../util/forIn";
+import cleanValues        from "./cleanValues";
 import hyphenateStyleName from "./hyphenateStyleName";
 
-export default {
+/**
+ * Create SSR HTML markup for CSS styles
+ * @param {Object} styles
+ * @return { string}
+ */
+let renderStyleToString = function(styles) {
+
+        let idx = 0,
+            len, html = "";
+
+        forIn(styles, (styleName, styleValue) => {
+
+            if (styleValue != null) {
+
+                html += hyphenateStyleName(styleName) + ":" + cleanValues(styleName, styleValue) + ";";
+            }
+        });
+
+        return html;
+    },
 
     /**
-     * Create SSR HTML markup for CSS styles
-     * @param {Object} styles
-     * @return { string}
+     * Set CSS styles
+     *
+     * @param {Object} node
+     * @param {String} propertyName
+     * @param {String} value
      */
-    renderStyleToString(styles) {
 
-            let idx = 0,
-                len, html = "";
+    setStyles = function(node, propertyName, value) {
 
-            forIn(styles, (styleName, styleValue) => {
+        let idx = 0,
+            len, style = node[propertyName];
 
-                if (styleValue != null) {
+        forIn(value, (styleName, styleValue) => {
 
-                    html += hyphenateStyleName(styleName) + ":" + cleanValues(styleName, styleValue) + ";";
-                }
-            });
+            if (styleValue != null) {
 
-            return html;
-        },
+                style[styleName] = cleanValues(styleName, styleValue);
 
-        /**
-         * Set CSS styles
-         *
-         * @param {Object} node
-         * @param {String} propertyName
-         * @param {String} value
-         */
+            } else {
 
-        setStyles(node, propertyName, value) {
+                style[styleName] = "";
+            }
+        });
+    };
 
-            let idx = 0,
-                len, style = node[propertyName];
 
-            forIn(value, (styleName, styleValue) => {
-
-                if (styleValue != null) {
-
-                    style[styleName] = cleanValues(styleName, styleValue);
-
-                } else {
-
-                    style[styleName] = "";
-                }
-            });
-        }
-};
+export { renderStyleToString, setStyles };
