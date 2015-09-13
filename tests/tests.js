@@ -77,7 +77,7 @@ describe("Inferno acceptance tests", function() {
                 });
             });
 
-            describe("using the Inferno t7 raw API", function() {
+            describe("using the Inferno t7 template API", function() {
                 beforeEach(function() {
                     t7.setOutput(t7.Outputs.Inferno);
                 })
@@ -190,6 +190,54 @@ describe("Inferno acceptance tests", function() {
                     expect(test).to.equal(expected);
                 });
             });
+
+            describe("using the Inferno t7 template API", function() {
+                beforeEach(function() {
+                    t7.setOutput(t7.Outputs.Inferno);
+                })
+
+                it("should render a basic example", function() {
+                    Inferno.render(
+                        t7`<div>Hello world</div>`,
+                        container
+                    );
+
+                    var test = container.innerHTML;
+                    var expected = "<div>Hello world</div>";
+
+                    expect(test).to.equal(expected);
+                });
+
+                it("should render a basic example with dynamic values", function() {
+                    var val1 = "Inferno";
+                    var val2 = "Owns";
+
+                    Inferno.render(
+                        t7`<div>Hello world - ${ val1 } ${ val2 }</div>`,
+                        container
+                    );
+
+                    var test = container.innerHTML;
+                    var expected = "<div>Hello world - Inferno Owns</div>";
+
+                    expect(test).to.equal(expected);
+                });
+
+                it("should render a basic example with dynamic values and props", function() {
+                    var val1 = "Inferno";
+                    var val2 = "Rocks";
+
+                    Inferno.render(
+                        t7`<div class="foo"><span class="bar">${ val1 }</span><span class="yar">${ val2 }</span></div>`,
+                        container
+                    );
+
+                    var test = container.innerHTML;
+                    var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
+
+                    expect(test).to.equal(expected);
+                });
+            });
         });
     })
 
@@ -246,6 +294,48 @@ describe("Inferno acceptance tests", function() {
 
                     var test = Inferno.renderToString(
                         Inferno.createFragment(["Inferno", "Rocks"], template)
+                    );
+
+                    var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
+
+                    expect(test).to.equal(expected);
+                });
+            });
+
+            describe("using the Inferno t7 template API", function() {
+                beforeEach(function() {
+                    t7.setOutput(t7.Outputs.Inferno);
+                })
+
+                it("should render a basic example", function() {
+                    var test = Inferno.renderToString(
+                        t7`<div>Hello world</div>`
+                    );
+
+                    var expected = "<div>Hello world</div>";
+
+                    expect(test).to.equal(expected);
+                });
+
+                it("should render a basic example with dynamic values", function() {
+                    var val1 = "Inferno";
+                    var val2 = "Owns";
+
+                    var test = Inferno.renderToString(
+                        t7`<div>Hello world - ${ val1 } ${ val2 }</div>`
+                    );
+
+                    var expected = "<div>Hello world - Inferno Owns</div>";
+
+                    expect(test).to.equal(expected);
+                });
+
+                it("should render a basic example with dynamic values and props", function() {
+                    var val1 = "Inferno";
+                    var val2 = "Rocks";
+
+                    var test = Inferno.renderToString(
+                        t7`<div class="foo"><span class="bar">${ val1 }</span><span class="yar">${ val2 }</span></div>`
                     );
 
                     var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
@@ -312,6 +402,48 @@ describe("Inferno acceptance tests", function() {
 
                     expect(test).to.equal(expected);
                 });
+            });
+        });
+
+        describe("using the Inferno t7 template API", function() {
+            beforeEach(function() {
+                t7.setOutput(t7.Outputs.Inferno);
+            })
+
+            it("should render a basic example", function() {
+                var test = Inferno.renderToString(
+                    t7`<div>Hello world</div>`
+                );
+
+                var expected = "<div>Hello world</div>";
+
+                expect(test).to.equal(expected);
+            });
+
+            it("should render a basic example with dynamic values", function() {
+                var val1 = "Inferno";
+                var val2 = "Owns";
+
+                var test = Inferno.renderToString(
+                    t7`<div>Hello world - ${ val1 } ${ val2 }</div>`
+                );
+
+                var expected = "<div>Hello world - Inferno Owns</div>";
+
+                expect(test).to.equal(expected);
+            });
+
+            it("should render a basic example with dynamic values and props", function() {
+                var val1 = "Inferno";
+                var val2 = "Rocks";
+
+                var test = Inferno.renderToString(
+                    t7`<div class="foo"><span class="bar">${ val1 }</span><span class="yar">${ val2 }</span></div>`
+                );
+
+                var expected = '<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>';
+
+                expect(test).to.equal(expected);
             });
         });
     });
