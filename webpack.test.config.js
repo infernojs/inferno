@@ -21,6 +21,7 @@ module.exports = {
     module: {
         loaders: [
             {
+
                 test: /.*\/src\/.*\.js$/,
                 exclude: /.spec.js/,
                 loader: 'babel?optional[]=runtime&stage=0'

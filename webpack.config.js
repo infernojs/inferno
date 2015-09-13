@@ -43,7 +43,7 @@ module.exports = {
     module: {
       loaders: [
         {
-          test: /.*\/src\/.*\.js$/,
+          test: /\.js$/,
           exclude: /.spec.js/,
           loader: 'babel',
 		  query: {
