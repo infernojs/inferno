@@ -37,6 +37,37 @@ export default function updateFragmentValues(context, oldFragment, fragment, par
                 case fragmentValueTypes.FRAGMENT_REPLACE:
                     updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
                     break;
+                case fragmentValueTypes.ATTR_CLASS:
+                    element.className = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_HREF:
+                    element.href = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_ID:
+                    element.id = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_VALUE:
+                    element.value = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_NAME:
+                    element.name = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_TYPE:
+                    element.type = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_LABEL:
+                    element.label = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_PLACEHOLDER:
+                    element.placeholder = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_WIDTH:
+                    element.width = fragment.templateValue;
+                    return;
+                case fragmentValueTypes.ATTR_HEIGHT:
+                    element.height = fragment.templateValue;
+                    return;
+
                 default:
                     //component prop, update it
                     if (element.props) {
@@ -55,7 +86,7 @@ export default function updateFragmentValues(context, oldFragment, fragment, par
                             clearEventListeners(element, type);
                             addEventListener(element, type, fragment.templateValues[i]);
                         } else {
-						   DOMAttributes(element, type, fragment.templateValues[i]);
+                            DOMAttributes(element, type, fragment.templateValues[i]);
                         }
                     }
             }
