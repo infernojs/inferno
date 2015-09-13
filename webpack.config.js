@@ -45,7 +45,7 @@ module.exports = {
         {
           test: /.*\/src\/.*\.js$/,
           exclude: /.spec.js/,
-          loaders: ['babel-loader'],
+          loader: 'babel',
 		  query: {
 			  optional: ['runtime']
 		  }
