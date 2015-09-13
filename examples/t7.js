@@ -145,15 +145,15 @@ var t7 = (function() {
         } else if (typeof child === "string" && root.children.length > 1) {
           matches = child.match(/__\$props__\[\d*\]/g);
           if (matches === null) {
-            templateParams.push("var " + nodeName + i + " = Inferno.template.rawApi.createTextNode('" + child.replace(/(\r\n|\n|\r)/gm, "") + "');");
+            templateParams.push("var " + nodeName + i + " = Inferno.template.createTextNode('" + child.replace(/(\r\n|\n|\r)/gm, "") + "');");
           } else {
             valueName = "fragment.templateValues[" + valueCounter.index + "]";
             templateParams.push("var " + nodeName + i + ";");
             templateParams.push("if(typeof " + valueName + " !== 'object') {");
-            templateParams.push(nodeName + i + " = Inferno.template.rawApi.createTextNode(" + valueName + ");");
+            templateParams.push(nodeName + i + " = Inferno.template.createTextNode(" + valueName + ");");
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.TEXT_DIRECT;");
             templateParams.push("} else {");
-            templateParams.push(nodeName + i + " = Inferno.template.rawApi.createEmptyText();");
+            templateParams.push(nodeName + i + " = Inferno.template.createEmptyText();");
             templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = (" + valueName + ".constructor === Array ? Inferno.FragmentValueTypes.LIST_REPLACE : Inferno.FragmentValueTypes.FRAGMENT_REPLACE);");
             templateParams.push("}");
             templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + nodeName + i + ";");
@@ -174,14 +174,14 @@ var t7 = (function() {
               if (child.attrs) {
                 buildInfernoAttrsParams(child, nodeName + i, props, templateValues, templateParams, valueCounter, propRefs);
               }
-              templateParams.push("var " + nodeName + i + " = Inferno.template.rawApi.createComponent(" + (!parentNodeName ? "root" : parentNodeName) + ", {" + props.join(",") + "}, t7.loadComponent('" + child.tag + "'));");
+              templateParams.push("var " + nodeName + i + " = Inferno.template.createComponent(" + (!parentNodeName ? "root" : parentNodeName) + ", {" + props.join(",") + "}, t7.loadComponent('" + child.tag + "'));");
               templateParams.push(propRefs.join(""));
             } else {
-              templateParams.push("var " + nodeName + i + " = Inferno.template.rawApi.createElement('" + child.tag + "');");
+              templateParams.push("var " + nodeName + i + " = Inferno.template.createElement('" + child.tag + "');");
               if (child.attrs) {
                 var attrsParams = [];
                 buildInfernoAttrsParams(child, nodeName + i, attrsParams, templateValues, templateParams, valueCounter);
-                templateParams.push("Inferno.template.rawApi.addAttributes(" + nodeName + i + ", {" + attrsParams.join(",") + "});");
+                templateParams.push("Inferno.template.addAttributes(" + nodeName + i + ", {" + attrsParams.join(",") + "});");
               }
               if (child.children) {
                 buildInfernoTemplate(child, valueCounter, nodeName + i, templateValues, templateParams, component);
@@ -360,10 +360,10 @@ var t7 = (function() {
           component = "__$components__." + root.tag;
           props = " {" + attrsParams.join(',') + "}";
         } else {
-          templateParams.push("var root = Inferno.template.rawApi.createElement('" + root.tag + "');");
+          templateParams.push("var root = Inferno.template.createElement('" + root.tag + "');");
           if (root.attrs) {
             buildInfernoAttrsParams(root, "root", attrsParams, templateValues, templateParams, valueCounter);
-            templateParams.push("Inferno.template.rawApi.addAttributes(root, {" + attrsParams.join(",") + "});");
+            templateParams.push("Inferno.template.addAttributes(root, {" + attrsParams.join(",") + "});");
           }
         }
 
@@ -382,7 +382,7 @@ var t7 = (function() {
             t7._templateCache[templateKey] = new Function('"use strict";var fragment = arguments[0];var t7 = arguments[1];\n' + scriptCode);
           }
           t7._templateCache[templateKey].key = templateKey;
-          t7._templateCache[templateKey].type = Inferno.TemplateTypes.RAW_T7_API;
+          t7._templateCache[templateKey].type = Inferno.TemplateTypes.T7_TEMPLATE_API;
           template = 't7._templateCache["' + templateKey + '"]';
         }
 

@@ -3,7 +3,7 @@ import fragmentValueTypes from '../../universal/enum/fragmentValueTypes';
 import isArray from "../../util/isArray";
 
 export default function createElement(tag, props, ...children) {
-    let dom = template.rawApi.createElement(tag);
+    let dom = template.createElement(tag);
     let totalVal = (this.templateValues && this.templateValues.length) || 0;
 
     if(totalVal > 1) {
@@ -20,13 +20,13 @@ export default function createElement(tag, props, ...children) {
             if(child.pointer !== undefined) {
                 let value = this.templateValues[child.pointer];
                 if(typeof value !== "object") {
-                    let node = template.rawApi.createTextNode(value);
+                    let node = template.createTextNode(value);
                     this.templateElements[child.pointer] = node;
                     this.templateTypes[child.pointer] = fragmentValueTypes.TEXT;
                     dom.appendChild(node);
                 }
             } else if(typeof child !== "object") {
-                let node = template.rawApi.createTextNode(child);
+                let node = template.createTextNode(child);
                 dom.appendChild(node);
             } else {
                 dom.appendChild(child);
@@ -46,7 +46,7 @@ export default function createElement(tag, props, ...children) {
         }
     }
     if(props) {
-        template.rawApi.addAttributes(dom, props);
+        template.addAttributes(dom, props);
     }
 
     return dom;

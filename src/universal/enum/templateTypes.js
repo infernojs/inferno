@@ -1,5 +1,5 @@
 export default {
-    RAW_API: 1,
-    RAW_T7_API: 2,
+    TEMPLATE_API: 1,
+    T7_TEMPLATE_API: 2,
     FUNCTIONAL_API: 3
 };

@@ -32,10 +32,10 @@ let attachFragment = function attachFragment( context, fragment, parentDom, comp
     } else {
         //there are different things we need to check for now
         switch (template.type) {
-            case templateTypes.RAW_API:
+            case templateTypes.TEMPLATE_API:
                 template(fragment);
                 break;
-            case templateTypes.RAW_T7_API:
+            case templateTypes.T7_TEMPLATE_API:
                 template(fragment, fragment.t7ref);
                 break;
             case templateTypes.FUNCTIONAL_API:
