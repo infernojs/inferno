@@ -1,7 +1,7 @@
 import events              from "../events/shared/events";
 import clearEventListeners from "../events/clearEventListeners";
 import addEventListener    from "../events/addEventListener";
-import DOMAttributes       from "./DOMAttributes";
+import { DOMAttributes }   from "./DOMAttributes";
 import forIn               from "../../util/forIn";
 
 /**

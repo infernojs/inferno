@@ -1,12 +1,15 @@
 import attrPropCfg            from "./cfg/attrPropCfg";
 import nsCfg                  from "./cfg/nsCfg";
+import voidCfg                from "./cfg/voidCfg";
 import attrNameCfg            from "./cfg/attrNameCfg";
 import propNameCfg            from "./cfg/propNameCfg";
 import checkMask              from "./checkMask";
 import deleteValueForProperty from "./deleteValueForProperty";
 import hooks                  from "./hooks";
+import memoizeString          from "./memoizeString";
 import masks                  from "./vars/masks";
 import forIn                  from "../../util/forIn";
+import escapeHtml             from "../shared/escapeHtml";
 
 let
     propertyInfo = {},
@@ -27,6 +30,37 @@ let
             (hasNumericValue[name] && isNaN(value)) ||
             (hasPositiveNumericValue[name] && (value < 1)) ||
             (hasOverloadedBooleanValue[name] && value === false);
+    },
+
+    prefixAttribute = memoizeString((name) => {
+        return escapeHtml(name) + '="';
+    }),
+    attrToHtml = (name, value) => {
+
+        let propertyInfo = properties[name] || null;
+
+        if (propertyInfo) {
+            if (shouldIgnoreValue(propertyInfo, value)) {
+                return "";
+            }
+
+            let attributeName = propertyInfo.attributeName;
+            // for BOOLEAN `value` only has to be truthy
+            // for OVERLOADED_BOOLEAN `value` has to be === true
+            if (propertyInfo.hasBooleanValue ||
+                (propertyInfo.hasOverloadedBooleanValue && value === true)) {
+
+                return attributeName + '=""';
+            }
+            return prefixAttribute(name) + escapeHtml(value) + '"';
+
+        } else {
+            if (value == null) {
+                return '';
+            }
+
+            return name + '=' + "\"" + escapeHtml(value) + "\"";
+        }
     };
 
 forIn(attrPropCfg, (propName, propConfig) => {
@@ -63,7 +97,7 @@ forIn(attrPropCfg, (propName, propConfig) => {
     properties[propName] = propertyInfo;
 });
 
-export default function(node, name, value) {
+function DOMAttributes(node, name, value) {
 
     let propertyInfo = properties[name] ? properties[name] : null;
 
@@ -96,3 +130,5 @@ export default function(node, name, value) {
         node.setAttribute(name, "" + value);
     }
 };
+
+export { attrToHtml, DOMAttributes };

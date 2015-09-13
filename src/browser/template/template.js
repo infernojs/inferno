@@ -1,10 +1,10 @@
-import addAttributes from "./addAttributes";
-import addProperties from "./addProperties";
-import isBrowser     from "../../util/isBrowser";
+import addAttributes  from "./addAttributes";
+import renderToString from "./renderToString";
+import isBrowser      from "../../util/isBrowser";
 
 export default {
     addAttributes: addAttributes,
-    addProperties: addProperties,
+    renderToString: renderToString,
     createElement(tag, namespace) {
 
         if (isBrowser) {
