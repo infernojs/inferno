@@ -1,11 +1,12 @@
 "use strict";
 
-import addRootDomEventListerners from "../events/addRootListener";
+import addRootDomEventListerners from "../../browser/events/addRootListener";
 import contexts                  from "../../vars/contexts";
-import getContext                from "../../universal/core/getContext";
-import attachFragment            from "../../universal/core/attachFragment";
-import updateFragment            from "../../universal/core/updateFragment";
-import maintainFocus             from "../../universal/core/maintainFocus";
+import getContext                from "./getContext";
+import attachFragment            from "./attachFragment";
+import updateFragment            from "./updateFragment";
+import maintainFocus             from "./maintainFocus";
+import isBrowser                 from "../../util/isBrowser";
 
 let initialisedListeners = false;
 
@@ -36,11 +37,14 @@ export default function render(fragment, dom, component) {
         }
         context = getContext(dom);
         if (context) {
-            let activeElement = document.activeElement;
+            if(isBrowser) {
+                let activeElement = document.activeElement;
+            }
             updateFragment(context, context.fragment, fragment, dom, component, false);
             context.fragment = fragment;
-            // TODO! Move to moveFragment()
-            maintainFocus(activeElement);
+            if(isBrowser) {
+                maintainFocus(activeElement);
+            }
         } else {
             context = {
                 fragment: fragment,

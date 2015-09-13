@@ -1,7 +1,8 @@
 "use strict";
 
 import Component              from "./universal/class/Component";
-import render                 from "./browser/core/render";
+import render                 from "./universal/core/render";
+import renderToString         from "./universal/core/renderToString";
 import version                from "./InfernoVersion";
 import unmountComponentAtNode from "./universal/core/unmountComponentAtNode";
 import fragmentValueTypes     from "./universal/enum/fragmentValueTypes";
@@ -14,6 +15,7 @@ import clearDomElement        from "./browser/core/clearDomElement";
 let Inferno = {
   Component: Component,
   render: render,
+  renderToString: renderToString,
   createFragment: createFragment,
   createTemplate: createTemplate,
   unmountComponentAtNode: unmountComponentAtNode,

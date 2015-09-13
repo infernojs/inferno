@@ -1,11 +1,11 @@
-import getRecycledFragment from "./getRecycledFragment";
-import updateFragment      from "./updateFragment";
-import attachFragmentList  from "./attachFragmentList";
-import fragmentValueTypes       from "../enum/fragmentValueTypes";
-import insertFragment      from "./insertFragment";
-import render              from "../../browser/core/render";
-import templateTypes       from "../enum/templateTypes";
-import templateCreateElement       from "../../browser/template/createElement";
+import getRecycledFragment	 from "./getRecycledFragment";
+import updateFragment		 from "./updateFragment";
+import attachFragmentList    from "./attachFragmentList";
+import fragmentValueTypes    from "../enum/fragmentValueTypes";
+import insertFragment        from "./insertFragment";
+import render                from "./render";
+import templateTypes         from "../enum/templateTypes";
+import templateCreateElement from "../../browser/template/createElement";
 
 let attachFragment = function attachFragment( context, fragment, parentDom, component, nextFragment, replace ) {
 	let fragmentComponent = fragment.component;
