@@ -1,7 +1,7 @@
+/* global VERSION */
 import Component              from './universal/class/Component';
 import render                 from './universal/core/render';
 import renderToString         from './universal/core/renderToString';
-import version                from './InfernoVersion';
 import unmountComponentAtNode from './universal/core/unmountComponentAtNode';
 import FragmentValueTypes     from './universal/enum/fragmentValueTypes';
 import TemplateTypes          from './universal/enum/templateTypes';
@@ -21,5 +21,5 @@ export default {
 	TemplateTypes,
 	template,
 	clearDomElement,
-	version
+	version: __VERSION__
 };

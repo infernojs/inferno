@@ -1,11 +1,13 @@
 var webpack = require('webpack');
+var pkg = require('./package.json');
 var PROD = JSON.parse(process.env.PROD_DEV || '0');
 var path = require('path');
 var plugins = [
 	new webpack.optimize.DedupePlugin(),
 	new webpack.optimize.OccurenceOrderPlugin(),
 	new webpack.DefinePlugin({
-		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+		__VERSION__: JSON.stringify(pkg.version)
 	})
 ];
 

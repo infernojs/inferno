@@ -1,4 +1,11 @@
 var path = require('path');
+var pkg = require('./package.json');
+var webpack = require('webpack');
+var plugins = [
+	new webpack.DefinePlugin({
+		__VERSION__: JSON.stringify(pkg.version)
+	})
+];
 
 module.exports = {
 	context: path.join(__dirname),
@@ -26,5 +33,6 @@ module.exports = {
 				loader: 'babel'
 			}
 		]
-	}
+	},
+	plugins: plugins
 };
