@@ -12,9 +12,7 @@
   },
   "dependencies": {
     "babel-runtime": "^5.8.20",
-    "t7": "~0.2.0",
-    "webpack": "^1.12.1",
-    "webpack-windows": "0.0.3"
+    "t7": "~0.2.0"
   },
   "repository": {
     "type": "git",
@@ -34,6 +32,7 @@
     "mocha-loader": "^0.7.1",
     "uglify-loader": "^1.2.0",
     "webpack": "^1.12.1",
-    "webpack-dev-server": "^1.10.1"
+    "webpack-dev-server": "^1.10.1",
+    "webpack-windows": "0.0.3"
   }
 }

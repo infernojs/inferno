@@ -1,3 +1,1 @@
-"use strict";
-
-export default ( value ) => value.constructor === Array;
+export default x => x instanceof Array;
