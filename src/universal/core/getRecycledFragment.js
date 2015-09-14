@@ -1,3 +1,5 @@
+"use strict";
+
 import recycledFragments from "../../vars/recycledFragments";
 
 export default ( templateKey ) => {

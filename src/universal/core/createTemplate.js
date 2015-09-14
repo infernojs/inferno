@@ -1,3 +1,5 @@
+"use strict";
+
 import templateTypes from "../enum/templateTypes";
 
 export default function createTemplate( templateFunction ) {

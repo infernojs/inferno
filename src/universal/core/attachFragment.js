@@ -1,3 +1,5 @@
+"use strict";
+
 import getRecycledFragment	 from "./getRecycledFragment";
 import updateFragment		 from "./updateFragment";
 import attachFragmentList    from "./attachFragmentList";

@@ -1,8 +1,9 @@
+"use strict";
+
 import minErr  from "../../util/minErr";
 import isArray from "../../util/isArray";
 
-export default function(values, template) {
-
+export default function createFragment(values, template) {
     if (template.key === undefined) {
         minErr("createFragment()", "Template is missing a key");
     }
@@ -13,8 +14,7 @@ export default function(values, template) {
         next: null,
         template: template,
         templateTypes: null
-    }
-
+    };
     /**
      * To 'failsafe' this and avoid throwing on non-constructor, we have to check
      * if the 'values' are 'null'.
