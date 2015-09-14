@@ -42,7 +42,7 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                 case fragmentValueTypes.ATTR_CLASS:
                     // To set className on SVG elements, it's necessary to use .setAttribute;
                     // this works on HTML elements too in all browsers.				
-					// If this kills the performance, we have to consider not to support SVG
+                    // If this kills the performance, we have to consider not to support SVG
                     if (isSVG) {
                         element.setAttribute("class", fragment.templateValues[i]);
                     } else {
@@ -50,9 +50,6 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                     }
                     return;
                     element.className = fragment.templateValues[i];
-                    return;
-                case fragmentValueTypes.ATTR_HREF:
-                    element.href = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_ID:
                     element.id = fragment.templateValues[i];
@@ -73,10 +70,18 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                     element.placeholder = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_WIDTH:
-                    element.width = fragment.templateValues[i];
+                    if (isSVG) {
+                        element.setAttribute("width", fragment.templateValues[i]);
+                    } else {
+                        element.width = fragment.templateValues[i];
+                    }
                     return;
                 case fragmentValueTypes.ATTR_HEIGHT:
-                    element.height = fragment.templateValues[i];
+                    if (isSVG) {
+                        element.setAttribute("height", fragment.templateValues[i]);
+                    } else {
+                        element.height = fragment.templateValues[i];
+                    }
                     return;
 
                 default:
