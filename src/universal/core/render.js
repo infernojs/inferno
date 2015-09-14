@@ -36,15 +36,16 @@ export default function render(fragment, dom, component) {
             initialisedListeners = true;
         }
         context = getContext(dom);
+
         if (context) {
-            if(isBrowser) {
-                let activeElement = document.activeElement;
+
+            if (isBrowser) {
+                maintainFocus(context, contextFragment, fragment, dom, component, false);
+            } else {
+                updateFragment(context, context.fragment, fragment, dom, component, false);
+                context.fragment = fragment;
             }
-            updateFragment(context, context.fragment, fragment, dom, component, false);
-            context.fragment = fragment;
-            if(isBrowser) {
-                maintainFocus(activeElement);
-            }
+
         } else {
             context = {
                 fragment: fragment,
