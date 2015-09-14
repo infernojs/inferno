@@ -1,4 +1,4 @@
-/* global VERSION */
+/* global __VERSION__ */
 import Component              from './universal/class/Component';
 import render                 from './universal/core/render';
 import renderToString         from './universal/core/renderToString';
