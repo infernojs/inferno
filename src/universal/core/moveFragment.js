@@ -7,9 +7,9 @@ export default (parentDom, item, nextItem) => {
 
     if (domItem !== domRefItem) {
 
-        if (isBrowser()) {
+//        if (isBrowser()) {
             let activeFragment = document.activeElement;
-        }
+//        }
 
         if (domRefItem) {
 
@@ -26,10 +26,10 @@ export default (parentDom, item, nextItem) => {
          *
          * The activeElement will be null only if the document body is not yet defined.
          */
-        if (isBrowser()) {
+//        if (isBrowser()) {
             if (activeFragment != document.body && (document.activeElement !== activeFragment)) {
                 activeDomNode.focus();
             }
-        }
+  //      }
     }
 };
