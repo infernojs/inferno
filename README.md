@@ -29,12 +29,17 @@ To build your own Inferno build files, you can start the build via:
 
 Development:
 ```sh
-$ webpack
+$ npm run dev
+```
+
+Tests:
+```sh
+$ npm run test
 ```
 
 Production (minfied):
 ```sh
-$ PROD_DEV=1 webpack
+$ npm run build
 ```
 
 ## Overview
