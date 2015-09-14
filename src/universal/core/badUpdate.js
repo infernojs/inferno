@@ -1,5 +1,3 @@
-"use strict";
-
 export default () => {
-    console.warn( "Update called on a component that is no longer mounted!" );
+    console.warn( 'Update called on a component that is no longer mounted!' );
 };

@@ -1,13 +1,11 @@
-"use strict";
-
-import recycledFragments from "../../vars/recycledFragments";
+import recycledFragments from '../../vars/recycledFragments';
 
 export default ( templateKey ) => {
 
-    let fragments = recycledFragments[templateKey];
-    if ( !fragments || fragments.length === 0 ) {
+	let fragments = recycledFragments[templateKey];
+	if ( !fragments || fragments.length === 0 ) {
 
-        return null;
-    }
-    return fragments.pop();
+		return null;
+	}
+	return fragments.pop();
 };

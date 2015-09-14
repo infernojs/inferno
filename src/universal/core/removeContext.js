@@ -1,14 +1,12 @@
-"use strict";
-
-import contexts from "../../vars/contexts";
+import contexts from '../../vars/contexts';
 
 export default ( dom ) => {
-    let idx = contexts.length;
+	let idx = contexts.length;
 
-    while ( idx-- ) {
-        if ( contexts[idx].dom === dom ) {
-            contexts.splice( idx, 1 );
-            return;
-        }
-    }
+	while ( idx-- ) {
+		if ( contexts[idx].dom === dom ) {
+			contexts.splice( idx, 1 );
+			return;
+		}
+	}
 };
