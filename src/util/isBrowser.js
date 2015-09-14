@@ -1,6 +1,6 @@
 let isBrowser = false;
 
-if (typeof window != 'undefined') {
+if (typeof window !== 'undefined') {
 	isBrowser = true;
 }
 

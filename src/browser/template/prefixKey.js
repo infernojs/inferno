@@ -4,4 +4,4 @@
  * @return {string} style name prefixed with `prefix`, properly camelCased, eg:
  * WebkitTransitionDuration
  */
-export default ( prefix, key ) => prefix + key.charAt( 0 ).toUpperCase() + key.substring( 1 );
+export default (prefix, key) => prefix + key.charAt(0).toUpperCase() + key.slice(1);

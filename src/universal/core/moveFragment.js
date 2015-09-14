@@ -16,7 +16,7 @@ export default (parentDom, item, nextItem) => {
 			parentDom.appendChild(domItem);
 		}
 
-		if (activeFragment != document.body && (document.activeElement !== activeFragment)) {
+		if (activeFragment !== document.body && (document.activeElement !== activeFragment)) {
 			activeDomNode.focus();
 		}
 	}

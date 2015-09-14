@@ -1,21 +1,18 @@
-import unitlessCfg  from "./cfg/unitlessCfg";
+import unitlessCfg  from './cfg/unitlessCfg';
 
 export default function( name, value ) {
 
-    if ( value == null || ( value === "" ) ) {
+	if ( value === null || ( value === '' ) ) {
+		return '';
+	}
 
-        return "";
-    }
+	if ( value === 0 || ( unitlessCfg[name] || ( isNaN( value ) ) ) ) {
+		return '' + value; // cast to string
+	}
 
-    if ( value === 0 || ( unitlessCfg[name] || ( isNaN( value ) ) ) ) {
+	if ( typeof value === 'string' ) {
+		value = value.trim();
+	}
 
-        return "" + value; // cast to string
-    }
-
-    if ( typeof value === "string" ) {
-
-        value = value.trim();
-    }
-
-    return value + "px";
-};
+	return value + 'px';
+}

@@ -7,9 +7,9 @@ import moveFragment from './moveFragment';
 
 export default function updateFragmentList( context, oldList, list, parentDom, component, outerNextFragment ) {
 
-    if (oldList === list) {
-        return;
-    }
+	if (oldList === list) {
+		return;
+	}
 
 	let oldListLength = oldList.length;
 	let listLength = list.length;
@@ -21,11 +21,11 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
 		attachFragmentList( context, list, parentDom, component );
 		return;
 	}
-	
+
 	 if (oldListLength === 1 && listLength === 1) {
-        updateFragment(context, oldList[0], list[0], parentDom);
+		updateFragment(context, oldList[0], list[0], parentDom);
 		return;
-    }
+	}
 
 	let oldEndIndex = oldListLength - 1;
 	let endIndex = listLength - 1;
@@ -114,7 +114,7 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
 				oldListMap[key] = null;
 				oldNextItem = oldItem.next;
 				updateFragment( context, oldItem, item, parentDom, component );
-				if ( parentDom.nextSibling != ( nextItem && nextItem.dom ) ) {
+				if ( parentDom.nextSibling !== ( nextItem && nextItem.dom ) ) {
 					moveFragment( parentDom, item, nextItem );
 				}
 			} else {

@@ -1,6 +1,5 @@
 export default {
-
-    className (node, value) {
-        node.className = value || "";
-    }
+	className(node, value) {
+		node.className = value || '';
+	}
 };

@@ -97,7 +97,7 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
 						componentsToUpdate.push(element);
 					}
 				} else {
-					if (events[type] != null) {
+					if (events[type] !== undefined) {
 						clearEventListeners(element, type);
 						addEventListener(element, type, fragment.templateValues[i]);
 					} else {

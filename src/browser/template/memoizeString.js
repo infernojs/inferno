@@ -1,14 +1,14 @@
-import escapeHtml from "./escapeHtml";
+import escapeHtml from './escapeHtml';
 
 function memoizeString(callback) {
-    let cache = {};
-    return function(string) {
-        if (cache[string]) {
-            return cache[string];
-        } else {
-            return cache[string] = callback.call(this, string);
-        }
-    };
+	let cache = {};
+	return function(string) {
+		if (cache[string]) {
+			return cache[string];
+		} else {
+			return cache[string] = callback.call(this, string);
+		}
+	};
 }
 
 /**
@@ -17,5 +17,5 @@ function memoizeString(callback) {
  * @return { string}
  */
 export default memoizeString((name) => {
-    return escapeHtml(name) + "=\"";
+	return escapeHtml(name) + '=\'';
 });

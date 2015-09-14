@@ -17,7 +17,7 @@ export default function createFragment(values, template) {
 	 * To 'failsafe' this and avoid throwing on non-constructor, we have to check
 	 * if the 'values' are 'null'.
 	 */
-	if (values != null && (isArray(values))) {
+	if (values !== null && isArray(values)) {
 		fragmentObject.templateElements = null;
 		fragmentObject.templateValues = values;
 	} else {

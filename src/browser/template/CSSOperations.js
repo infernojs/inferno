@@ -1,53 +1,43 @@
-import forIn              from "../../util/forIn";
-import cleanValues        from "./cleanValues";
-import hyphenateStyleName from "./hyphenateStyleName";
+import forIn from '../../util/forIn';
+import cleanValues from './cleanValues';
+import camelToKebab from './camelToKebab';
 
 /**
- * Create SSR HTML markup for CSS styles
- * @param {Object} styles
- * @return { string}
- */
+* Create SSR HTML markup for CSS styles
+* @param {Object} styles
+* @return { string}
+*/
 let renderStyleToString = function(styles) {
+		let html = '';
 
-        let idx = 0,
-            len, html = "";
+		forIn(styles, (styleName, styleValue) => {
+			if (styleValue !== undefined) {
+				html += camelToKebab(styleName) + ':' + cleanValues(styleName, styleValue) + ';';
+			}
+		});
 
-        forIn(styles, (styleName, styleValue) => {
+		return html;
+	},
 
-            if (styleValue != null) {
+	/**
+	* Set CSS styles
+	*
+	* @param {Object} node
+	* @param {String} propertyName
+	* @param {String} value
+	*/
 
-                html += hyphenateStyleName(styleName) + ":" + cleanValues(styleName, styleValue) + ";";
-            }
-        });
+	setStyles = function(node, propertyName, value) {
+		let style = node[propertyName];
 
-        return html;
-    },
-
-    /**
-     * Set CSS styles
-     *
-     * @param {Object} node
-     * @param {String} propertyName
-     * @param {String} value
-     */
-
-    setStyles = function(node, propertyName, value) {
-
-        let idx = 0,
-            len, style = node[propertyName];
-
-        forIn(value, (styleName, styleValue) => {
-
-            if (styleValue != null) {
-
-                style[styleName] = cleanValues(styleName, styleValue);
-
-            } else {
-
-                style[styleName] = "";
-            }
-        });
-    };
+		forIn(value, (styleName, styleValue) => {
+			if (styleValue !== undefined) {
+				style[styleName] = cleanValues(styleName, styleValue);
+			} else {
+				style[styleName] = '';
+			}
+		});
+	};
 
 
 export { renderStyleToString, setStyles };

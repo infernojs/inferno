@@ -1,6 +1,6 @@
-import voidCfg		from './cfg/voidCfg';
-import forIn		  from '../../util/forIn';
-import inArray		from '../../util/inArray';
+import voidCfg from './cfg/voidCfg';
+import forIn from '../../util/forIn';
+import inArray from '../../util/inArray';
 import { renderStyleToString } from './CSSOperations';
 import { renderHtmlMarkup } from './DOMOperations';
 
@@ -49,12 +49,9 @@ function renderToString(props, tagName) {
 	let children = props.children || null;
 
 	// check if we have any attrs / props
-	if (props != null) {
-
+	if (props !== null) {
 		for (let key in props) {
-
 			if (key === 'value') {
-
 				if (tagName === 'textarea' || props.contenteditable) {
 
 					// Child are a pure text string
@@ -70,7 +67,8 @@ function renderToString(props, tagName) {
 		html = '<' + tagName;
 
 	// try to create markup for HTML attributes and properties
-	if (properties != null) {
+	// TODO get rid of this, because properties is const
+	if (properties !== undefined) {
 
 		forIn(properties, (name, value) => {
 			if (name !== 'innerHTML' && (value || (typeof value === 'number'))) {
@@ -92,28 +90,18 @@ function renderToString(props, tagName) {
 	}
 
 	if (voidCfg[tagName]) {
-
 		html = html + '/>';
-
-		// child nodes
+	// child nodes
 	} else {
-
 		html = html + '>';
-
 		// ... child nodes
 		if (children && children.length) {
-
 			let index = 0;
-
 			const len = children.length;
-
 			for (; index < len; index++) {
-
 				html += renderToString(children[index], tagName);
 			}
-
 		} else if (innerHTML) {
-
 			html += innerHTML;
 		}
 
