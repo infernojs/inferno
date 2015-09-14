@@ -6,7 +6,8 @@
   "scripts": {
     "preinstall": "npm install -g webpack",
     "test": "webpack-dev-server --config webpack.test.config.js --hot --inline 'mocha!./tests/tests.js'",
-    "dev": "webpack-dev-server --config webpack.config.js --hot --inline",
+    "dev-watch": "webpack-dev-server --config webpack.config.js --hot --inline",
+    "dev": "webpack --config webpack.config.js --inline",
     "build": "PROD_DEV=1 webpack --config webpack.config.js --inline"
   },
   "dependencies": {

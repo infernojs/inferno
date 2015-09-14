@@ -91,7 +91,7 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
         let oldNextItem = ( oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1] );
         let oldListMap = {};
 
-        for ( i = oldEndIndex; i >= oldStartIndex; i-- ) {
+        for (let i = oldEndIndex; i >= oldStartIndex; i-- ) {
             oldItem = oldList[i];
             oldItem.next = oldNextItem;
             oldListMap[oldItem.key] = oldItem;

@@ -31,6 +31,10 @@ Development:
 ```sh
 $ npm run dev
 ```
+or you can watch changes:
+```sh
+$ npm run dev-watch
+```
 
 Tests:
 ```sh
