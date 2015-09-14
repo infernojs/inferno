@@ -8,7 +8,7 @@ import addEventListener    from "../../browser/events/addEventListener";
 import isSVG               from "../../util/isSVG";
 import { setHtml }         from "../../browser/template/DOMOperations";
 
-export default function(context, oldFragment, fragment, parentDom, component) {
+export default function updateFragmentValue(context, oldFragment, fragment, component) {
     let element = oldFragment.templateElement,
         type = oldFragment.templateType;
 

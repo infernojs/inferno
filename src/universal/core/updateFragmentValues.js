@@ -12,7 +12,7 @@ import { setHtml }         from "../../browser/template/DOMOperations";
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
-export default function(context, oldFragment, fragment, parentDom, component) {
+export default function updateFragmentValues(context, oldFragment, fragment, component) {
 
     let componentsToUpdate = [];
 
@@ -41,7 +41,7 @@ export default function(context, oldFragment, fragment, parentDom, component) {
                     break;
                 case fragmentValueTypes.ATTR_CLASS:
                     // To set className on SVG elements, it's necessary to use .setAttribute;
-                    // this works on HTML elements too in all browsers.				
+                    // this works on HTML elements too in all browsers.
 					// If this kills the performance, we have to consider not to support SVG
                     if (isSVG) {
                         element.setAttribute("class", fragment.templateValues[i]);

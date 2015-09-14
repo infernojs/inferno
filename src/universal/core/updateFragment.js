@@ -36,10 +36,10 @@ export default function updateFragment( context, oldFragment, fragment, parentDo
         fragment.dom = oldFragment.dom;
         if ( fragment.templateValue !== undefined ) {
             //update a single value in the fragement (templateValue rather than templateValues)
-            updateFragmentValue( context, oldFragment, fragment, parentDom, component );
+            updateFragmentValue( context, oldFragment, fragment, component );
         } else if ( fragment.templateValues ) {
             //updates all values within the fragment (templateValues is an array)
-            updateFragmentValues( context, oldFragment, fragment, parentDom, component );
+            updateFragmentValues( context, oldFragment, fragment, component );
         }
     }
 };
