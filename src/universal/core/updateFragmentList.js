@@ -6,6 +6,11 @@ import updateFragment from './updateFragment';
 import moveFragment from './moveFragment';
 
 export default function updateFragmentList( context, oldList, list, parentDom, component, outerNextFragment ) {
+
+    if (oldList === list) {
+        return;
+    }
+
 	let oldListLength = oldList.length;
 	let listLength = list.length;
 
@@ -16,6 +21,10 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
 		attachFragmentList( context, list, parentDom, component );
 		return;
 	}
+	
+	 if (oldListLength === 1 && listLength === 1) {
+        updateFragment(context, oldList[0], list[0], parentDom);
+    }
 
 	let oldEndIndex = oldListLength - 1;
 	let endIndex = listLength - 1;
