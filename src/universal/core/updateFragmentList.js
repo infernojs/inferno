@@ -1,3 +1,5 @@
+"use strict";
+
 import removeFragments from "./removeFragments";
 import removeFragment from "./removeFragment";
 import attachFragmentList from "./attachFragmentList";

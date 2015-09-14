@@ -1,3 +1,5 @@
+"use strict";
+
 import contexts from "../../vars/contexts";
 
 export default ( dom ) => {

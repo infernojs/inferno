@@ -1,3 +1,5 @@
+"use strict";
+
 import isBrowser from "./isBrowser";
 
 let isSVG;
@@ -12,6 +14,6 @@ if (isBrowser) {
       '1.1'
     )
   );
-}  
+}
 
 export default isSVG;

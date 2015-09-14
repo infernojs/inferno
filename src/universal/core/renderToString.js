@@ -1,3 +1,5 @@
+"use strict";
+
 import render   from "./render";
 import template from "../../browser/template/template";
 

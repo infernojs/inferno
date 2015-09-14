@@ -1,3 +1,5 @@
+"use strict";
+
 import removeFragment       from "./removeFragment";
 import attachFragment       from "./attachFragment";
 import updateFragmentValue  from "./updateFragmentValue";

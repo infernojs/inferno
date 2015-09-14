@@ -1,3 +1,5 @@
+"use strict";
+
 export default {
     TEXT: 0,
     TEXT_DIRECT: 1,

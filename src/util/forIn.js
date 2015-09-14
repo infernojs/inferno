@@ -1,5 +1,7 @@
+"use strict";
+
 /**
- * Simple for - in iteration loop to save some variables 
+ * Simple for - in iteration loop to save some variables
  */
 export default (obj, callback) => {
 

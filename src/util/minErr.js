@@ -1,4 +1,6 @@
-export default function (module, msg) {
+"use strict";
+
+export default function minErr(module, msg) {
     var wrapper = function() {
         this.message = module ? ( msg ? msg : "This operation is not supported" ) +
             ( module.length > 4 ? " -> Module: " + module : " -> Core " ) : "The string did not match the expected pattern";
