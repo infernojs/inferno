@@ -75,7 +75,12 @@ export default function updateFragmentValue(context, oldFragment, fragment, comp
                 }
                 return;
             default:
-                if (!element.props) {
+                //component prop, update it
+
+                if (element.props) {
+                    //TODO make component props work for single value fragments
+
+                } else {
                     if (events[type] != null) {
                         clearEventListeners(element, type);
                         addEventListener(element, type, fragment.templateValue);
@@ -84,11 +89,6 @@ export default function updateFragmentValue(context, oldFragment, fragment, comp
                         setHtml(element, type, fragment.templateValue);
                     }
                 }
-                //component prop, update it
-                else {
-                    //TODO make component props work for single value fragments
-                }
-                return;
         }
     }
 }

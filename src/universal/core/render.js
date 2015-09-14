@@ -5,8 +5,6 @@ import contexts                  from "../../vars/contexts";
 import getContext                from "./getContext";
 import attachFragment            from "./attachFragment";
 import updateFragment            from "./updateFragment";
-import maintainFocus             from "./maintainFocus";
-import isBrowser                 from "../../util/isBrowser";
 
 let initialisedListeners = false;
 
@@ -36,15 +34,10 @@ export default function render(fragment, dom, component) {
             initialisedListeners = true;
         }
         context = getContext(dom);
+
         if (context) {
-            if(isBrowser) {
-                let activeElement = document.activeElement;
-            }
             updateFragment(context, context.fragment, fragment, dom, component, false);
             context.fragment = fragment;
-            if(isBrowser) {
-                maintainFocus(activeElement);
-            }
         } else {
             context = {
                 fragment: fragment,
