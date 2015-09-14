@@ -51,9 +51,6 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
                     return;
                     element.className = fragment.templateValues[i];
                     return;
-                case fragmentValueTypes.ATTR_HREF:
-                    element.href = fragment.templateValues[i];
-                    return;
                 case fragmentValueTypes.ATTR_ID:
                     element.id = fragment.templateValues[i];
                     return;
@@ -73,10 +70,18 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
                     element.placeholder = fragment.templateValues[i];
                     return;
                 case fragmentValueTypes.ATTR_WIDTH:
-                    element.width = fragment.templateValues[i];
+                    if (isSVG) {
+                        element.setAttribute("width", fragment.templateValues[i]);
+                    } else {
+                        element.width = fragment.templateValues[i];
+                    }
                     return;
                 case fragmentValueTypes.ATTR_HEIGHT:
-                    element.height = fragment.templateValues[i];
+                    if (isSVG) {
+                        element.setAttribute("height", fragment.templateValues[i]);
+                    } else {
+                        element.height = fragment.templateValues[i];
+                    }
                     return;
 
                 default:

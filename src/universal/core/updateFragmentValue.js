@@ -35,15 +35,12 @@ export default function updateFragmentValue(context, oldFragment, fragment, comp
             case fragmentValueTypes.ATTR_CLASS:
                 // To set className on SVG elements, it's necessary to use .setAttribute;
                 // this works on HTML elements too in all browsers.
-				// If this kills the performance, we have to consider not to support SVG
+                // If this kills the performance, we have to consider not to support SVG
                 if (isSVG) {
                     element.setAttribute("class", fragment.templateValue);
                 } else {
                     element.className = fragment.templateValue;
                 }
-                return;
-            case fragmentValueTypes.ATTR_HREF:
-                element.href = fragment.templateValue;
                 return;
             case fragmentValueTypes.ATTR_ID:
                 element.id = fragment.templateValue;
@@ -64,10 +61,18 @@ export default function updateFragmentValue(context, oldFragment, fragment, comp
                 element.placeholder = fragment.templateValue;
                 return;
             case fragmentValueTypes.ATTR_WIDTH:
-                element.width = fragment.templateValue;
+                if (isSVG) {
+                    element.setAttribute("width", fragment.templateValue);
+                } else {
+                    element.width = fragment.templateValue;
+                }
                 return;
             case fragmentValueTypes.ATTR_HEIGHT:
-                element.height = fragment.templateValue;
+                if (isSVG) {
+                    element.setAttribute("height", fragment.templateValue);
+                } else {
+                    element.height = fragment.templateValue;
+                }
                 return;
             default:
                 if (!element.props) {
