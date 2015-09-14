@@ -20,26 +20,21 @@ export default class VirtualElement {
 
 		Object.defineProperty(this, 'textContent', {
 			set: textValue => {
-				if(this.children.length > 0) {
+				if (this.children.length > 0) {
 					//if we have children, kill them
 					this.children = [];
 				} else {
 					this.appendChild(new VirtualTextNode(textValue));
 				}
 			},
-			get: () => {
-				return this.children[0].nodeValue;
-			}
+			get: () => this.children[0].nodeValue
 		});
 
 		Object.defineProperty(this, 'innerHTML', {
 			set: textValue => {
 				throw Error('You cannot set the innerHTML of virtual elements, use declarative API instead');
 			},
-			get: () => {
-				let childrenInnerHtml = this.children.map(child => child.outerHTML || child.nodeValue).join('');
-				return childrenInnerHtml;
-			}
+			get: () => this.children.map(child => child.outerHTML || child.nodeValue).join('')
 		});
 
 		Object.defineProperty(this, 'outerHTML', {
@@ -54,7 +49,7 @@ export default class VirtualElement {
 						attributes.push(property + `="${ this[property] }"`);
 					}
 				}
-				if(attributes.length > 0) {
+				if (attributes.length > 0) {
 					return `<${ tagName } ${ attributes }>${ childrenInnerHtml }</${ tagName }>`;
 				} else {
 					return `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;

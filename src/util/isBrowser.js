@@ -12,6 +12,4 @@ export function addBrowser() {
 	isBrowser = true;
 }
 
-export default function() {
-	return isBrowser;
-}
+export default () => isBrowser;

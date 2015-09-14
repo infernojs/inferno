@@ -2,7 +2,7 @@ import isBrowser from './isBrowser';
 
 let isSVG;
 
-if (isBrowser) {
+if (isBrowser()) {
 	var implementation = document.implementation;
 	isSVG = (
 		implementation &&

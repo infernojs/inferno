@@ -14,7 +14,6 @@ export default {
 	ATTR_NAME: 12,
 	ATTR_WIDTH: 13,
 	ATTR_HEIGHT: 14,
-
 	//will contain other "custom" types, like rowspan etc or custom data-attributes
 	ATTR_OTHER: {},
 	COMPONENT_PROPS: {}
