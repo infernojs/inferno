@@ -1,1 +1,1 @@
-export default x => x instanceof Array;
+export default x => x.constructor === Array;
