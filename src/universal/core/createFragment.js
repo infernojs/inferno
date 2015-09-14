@@ -1,11 +1,18 @@
+import minErr  from "../../util/minErr";
 import isArray from "../../util/isArray";
 
-export default function createFragment(values, template) {
+export default function(values, template) {
 
     if (template.key === undefined) {
-        throw Error("createFragment failed, template is missing key");
+        minErr("createFragment()", "Template is missing a key");
     }
-    if (isArray(values)) {
+
+    /**
+     * To 'failsafe' this and avoid throwing on non-constructor, we have to check
+     * if the 'values' are 'null'.
+     */
+
+    if (values != null && (isArray(values))) {
 
         return {
             dom: null,
