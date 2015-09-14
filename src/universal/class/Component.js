@@ -1,32 +1,30 @@
-"use strict";
-
 // TODO! Finish this
 
 export default class Component {
-    constructor(props) {
-        this.props = props;
-        this.state = {};
-    }
+	constructor(props) {
+		this.props = props;
+		this.state = {};
+	}
 
-    render() {}
+	render() {}
 
-    forceUpdate() {}
+	forceUpdate() {}
 
-    setState(newStateItems) {
-        for (let stateItem in newStateItems) {
-            this.state[stateItem] = newStateItems[stateItem];
-        }
-        this.forceUpdate();
-    }
+	setState(newStateItems) {
+		for (let stateItem in newStateItems) {
+			this.state[stateItem] = newStateItems[stateItem];
+		}
+		this.forceUpdate();
+	}
 
-    replaceState(newState) {
-        this.state = newSate;
-        this.forceUpdate();
-    }
+	replaceState(newState) {
+		this.state = newState;
+		this.forceUpdate();
+	}
 
-    componentDidMount() {}
+	componentDidMount() {}
 
-    componentWillMount() {}
+	componentWillMount() {}
 
-    componentWillUnmount() {}
+	componentWillUnmount() {}
 }

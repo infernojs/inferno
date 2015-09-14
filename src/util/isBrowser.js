@@ -1,19 +1,17 @@
-"use strict";
-
 let isBrowser = false;
 
-if (typeof window != "undefined") {
-  isBrowser = true;
+if (typeof window != 'undefined') {
+	isBrowser = true;
 }
 
 export function removeBrowser() {
-    isBrowser = false;
-};
+	isBrowser = false;
+}
 
 export function addBrowser() {
-    isBrowser = true;
-};
+	isBrowser = true;
+}
 
 export default function() {
-    return isBrowser;
-};
+	return isBrowser;
+}

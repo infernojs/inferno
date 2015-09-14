@@ -1,7 +1,5 @@
-"use strict";
-
 export default {
-    TEMPLATE_API: 1,
-    T7_TEMPLATE_API: 2,
-    FUNCTIONAL_API: 3
+	TEMPLATE_API: 1,
+	T7_TEMPLATE_API: 2,
+	FUNCTIONAL_API: 3
 };
