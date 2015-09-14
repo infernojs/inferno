@@ -6,8 +6,6 @@ export default ( templateKey ) => {
     if ( !fragments || fragments.length === 0 ) {
 
         return null;
-
     }
     return fragments.pop();
-
 };

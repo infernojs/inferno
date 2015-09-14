@@ -1,5 +1,5 @@
-import render   from './render';
-import template from '../../browser/template/template';
+import render   from "./render";
+import template from "../../browser/template/template";
 
 export default function renderToString(fragment, component) {
     let dom = template.createElement("div");

@@ -1,9 +1,11 @@
-export default function createFragment( values, template ) {
+import isArray from "../../util/isArray";
 
-    if ( template.key === undefined ) {
+export default function createFragment(values, template) {
+
+    if (template.key === undefined) {
         throw Error("createFragment failed, template is missing key");
     }
-    if ( values instanceof Array ) {
+    if (isArray(values)) {
 
         return {
             dom: null,
@@ -26,7 +28,5 @@ export default function createFragment( values, template ) {
             templateType: null,
             templateValue: values
         };
-
     }
-
-	};
+};

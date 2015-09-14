@@ -24,7 +24,7 @@ let Inferno = {
   template: template,
   clearDomElement: clearDomElement,
   // current version of the library
-  version: version,
+  version: version
 };
 
 export default Inferno;

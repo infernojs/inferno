@@ -1,12 +1,8 @@
-import removeFragment from "./removeFragment";
-import removeContext  from "./removeContext";
-import getContext  from "./getContext";
-import unmountComponentAtFragment  from "./unmountComponentAtFragment";
+import removeFragment             from "./removeFragment";
+import removeContext              from "./removeContext";
+import getContext                 from "./getContext";
+import unmountComponentAtFragment from "./unmountComponentAtFragment";
 
-/**
- * Unmount 
- * @param {Element} dom DOM element
- */
 export default ( dom ) => {
 
     let context = getContext( dom );
