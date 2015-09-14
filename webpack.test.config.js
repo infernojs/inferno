@@ -21,9 +21,10 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /.*\/src\/.*\.js$/,
-                exclude: /.spec.js/,
-                loader: 'babel?optional[]=runtime&stage=0'
+                test: /\.js$/,
+                include: path.join(__dirname, "/src"),
+                exclude: ["node_modules"],
+                loader: 'babel'
             }
         ]
     }

@@ -44,7 +44,8 @@ module.exports = {
       loaders: [
         {
           test: /\.js$/,
-          exclude: /.spec.js/,
+          exclude: ["node_modules"],
+          include: path.join(__dirname, "/src"),
           loader: 'babel',
 		  query: {
 			  optional: ['runtime']

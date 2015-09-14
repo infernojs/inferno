@@ -520,7 +520,7 @@ var t7 = (function() {
           }
         } else {
           //check if we have any content in the childText, if so, it was a text node that needs to be added
-          if (childText.length > 0 && !(parent instanceof Array)) {
+          if (childText.length > 0 && !(parent instanceof Array) && parent != null) {
             //escape quotes etc
             childText = replaceQuotes(childText);
             //check the childtext for placeholders
