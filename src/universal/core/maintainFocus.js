@@ -23,7 +23,7 @@ export default function maintainFocus(context, contextFragment, fragment, dom, c
     updateFragment(context, contextFragment, fragment, dom, component, negative);
     context.fragment = fragment;
 
-    if (document.activeElement !== active) {
-        active.focus();
+    if (document.activeElement !== activeElement) {
+        activeElement.focus();
     }
 };
