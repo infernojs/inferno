@@ -3,13 +3,13 @@ import nsCfg from './cfg/nsCfg';
 import attrNameCfg from './cfg/attrNameCfg';
 import propNameCfg from './cfg/propNameCfg';
 import checkMask from './checkMask';
-import removeFromDOM from './removeFromDOM';
 import hooks from './hooks';
 import memoizeString from './memoizeString';
 import shouldIgnoreValue from './shouldIgnoreValue';
 import masks from './vars/masks';
 import forIn from '../../util/forIn';
 import escapeHtml from './escapeHtml';
+import getDefaultPropVal from './getDefaultPropVal';
 
 let propertyInfo = {},
 	properties = {},
@@ -82,6 +82,31 @@ forIn(attrPropCfg, (propName, propConfig) => {
 
 	properties[propName] = propertyInfo;
 });
+  
+function removeFromDOM(node, name) {
+	let propertyInfo = properties[name] ? properties[name]  : null;
+	if (propertyInfo) {
+		let hooks = propertyInfo.hooks;
+		if (hooks) {
+			hooks(node, undefined);
+		} else if (propertyInfo.mustUseAttribute) {
+			node.removeAttribute(propertyInfo.attributeName);
+		} else {
+			let propName = propertyInfo.propertyName;
+			let defaultValue = getDefaultPropVal(
+				node.nodeName,
+				propName
+			);
+
+			if (!propertyInfo.hasSideEffects ||
+				('' + node[propName]) !== defaultValue) {
+				node[propName] = defaultValue;
+			}
+		}
+	} else {
+		node.removeAttribute(name);
+	}
+}
 
 /**
 * Sets the value for a property on a DOM node
