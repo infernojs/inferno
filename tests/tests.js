@@ -4,9 +4,11 @@ var chai = require('chai');
 var t7 = require('../examples/t7');
 var isBrowser = require('../src/util/isBrowser');
 var DOMOperations = require('../src/browser/template/DOMOperations');
+var CSSOperations = require('../src/browser/template/CSSOperations');
 var addAttributes = require('../src/browser/template/addAttributes');
 var expect = chai.expect;
 var setHtml = DOMOperations.setHtml;
+var setStyles = CSSOperations.setStyles;
 
 //expose t7 and Inferno globally
 global.t7 = t7;
@@ -716,4 +718,29 @@ describe('Inferno acceptance tests', function() {
   });
 
 	});
+   
+   describe('CSS operations', function() {
+  	  
+	  var container;
+
+	beforeEach(function() {
+	    container = document.createElement('div');
+	});
+
+     describe('.setStyles()', function() {
+		 	it( "should create markup for simple styles", function () {
+        addAttributes(container, { display: "none" } );
+        expect( container.style.display ).to.eql( "" );
+    });
+
+	 
+		 });
+
+
+	});
+	
+	
+	
+	
+	
 });

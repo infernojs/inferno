@@ -21,7 +21,7 @@ export default (node, attrs) => {
 				addEventListener(node, attrName, attrVal);
 				// styles
 			} else if (attrName === 'style') {
-				setStyles(node, attrName, attrVal);
+				setStyles(node, attrVal);
 				// attributes / properties
 			} else {
 				setHtml(node, attrName, attrVal);

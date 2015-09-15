@@ -27,14 +27,13 @@ let renderStyleToString = function(styles) {
 	* @param {String} value
 	*/
 
-	setStyles = function(node, propertyName, value) {
-		let style = node[propertyName];
+	setStyles = function(node, value) {
 
 		forIn(value, (styleName, styleValue) => {
-			if (styleValue !== undefined) {
-				style[styleName] = cleanValues(styleName, styleValue);
+			if (styleValue != null) {
+				node.style[styleName] = cleanValues(styleName, styleValue);
 			} else {
-				style[styleName] = '';
+				node.style[styleName] = '';
 			}
 		});
 	};
