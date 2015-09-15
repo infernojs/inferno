@@ -22,9 +22,11 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
 		return;
 	}
 
-	 if (oldListLength === 1 && listLength === 1) {
-		updateFragment(context, oldList[0], list[0], parentDom);
-		return;
+	if (oldListLength === 1 && listLength === 1) {
+		if (oldList[0].key === list[0].key) {
+			updateFragment(context, oldList[0], list[0], parentDom);
+			return;
+		}
 	}
 
 	let oldEndIndex = oldListLength - 1;
