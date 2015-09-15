@@ -613,6 +613,106 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container, { "aria-disabled": false } );
         expect( container.getAttribute( "aria-disabled" ) ).to.eql( "false" );
     });		
+	
+	it( "should set 'required' attribute", function () {
+        addAttributes(container,  { required: "required" } );
+        expect( container.required ).to.eql( "required" );
+
+    } );	
+
+    it( "should set 'required' attribute to false", function () {
+
+        addAttributes(container, { required: false } );
+        expect( container.required ).to.be.false;
+    } );	
+	
+	it( "should set 'autofocus' attribute", function () {
+        addAttributes(container,  { autofocus: "autofocus" } );
+        expect( container.getAttribute("autofocus") ).to.eql( "autofocus" );
+
+    } );	
+
+    it( "should set 'autofocus' attribute to false", function () {
+
+        addAttributes(container, { required: false } );
+        expect( container.getAttribute("autofocus" )).to.be.null;
+    } );	
+	
+	 it( "should unsert 'multiple' attribute", function () {
+         addAttributes(container, { multiple: undefined } );
+         expect( container.getAttribute( "multiple" ) ).to.be.null;
+         expect( container.multiple ).to.be.undefined;
+    });
+	
+	it( "should set the 'name' attribute and treat it as a property", function () {
+         addAttributes(container, { name: "simple" } );
+         expect( container.name ).to.eql("simple");
+
+    });
+
+	it( "should set the 'name' attribute to 'false'", function () {
+         addAttributes(container, { name: "false" } );
+         expect( container.name ).to.eql("false");
+
+    });
+
+	it( "should unset the 'name' attribute to 'null'", function () {
+         addAttributes(container, { name: null } );
+         expect( container.name ).to.be.undefined;
+
+    });
+
+	it( "should work with the id attribute", function () {
+         addAttributes(container, { id: "simple" } );
+         expect( container.id ).to.eql("simple");
+
+    });
+
+	it( "should create markup for boolean properties", function () {
+         addAttributes(container, { checked: "checked" } );
+         expect( container.checked ).to.eql("checked");
+
+         addAttributes(container, { checked: "checked" } );
+         expect( container.checked ).to.eql("checked");
+
+         addAttributes(container, { checked: false } );
+         expect( container.checked ).to.be.false;
+
+         addAttributes(container, { scoped: true } );
+         expect( container.scoped ).to.be.true;
+
+    });
+
+	it( "should create markup for booleanish properties", function () {
+         addAttributes(container, { download: "simple" } );
+         expect( container.download ).to.eql("simple");
+
+         addAttributes(container, { download: true } );
+         expect( container.download ).to.eql(true);
+
+         addAttributes(container, { download: "true" } );
+         expect( container.download ).to.eql("true");
+
+    });
+
+    it( "should handle numeric properties", function () {
+         addAttributes(container, { start: 5 } );
+         expect( container.start ).to.eql(5);
+
+         addAttributes(container, { start: 0 } );
+         expect( container.start ).to.eql(0);
+
+         addAttributes(container, { size: 0 } );
+         expect( container.getAttribute("size") ).to.eql("0");
+
+    });
+	it( "should set className to empty string instead of null", function () {
+        addAttributes(container, { className: null } );
+        expect( container.className ).to.eql("");
+
+    });
+
+	
   });
 
 	});
