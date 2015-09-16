@@ -925,7 +925,6 @@ describe('Inferno acceptance tests', function() {
 it( "should create vendor-prefixed markup correctly", function () {
 
         addAttributes(container,  { style: {
-      msTransition: 'none',
       MozTransition: 'none',
     } } );
         expect( container.style.cssText ).to.eql( 'transition: none 0s ease 0s ;' );
