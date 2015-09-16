@@ -797,7 +797,10 @@ describe('Inferno acceptance tests', function() {
     } );	
 
 	
-
+    it( "should render namespace attributes (props)", function () {
+       addAttributes(container,  { xmlns: "http://www.w3.org/2000/svg", "xlink:href": "test.jpg" } );
+       expect( container.getAttribute("xmlns") ).to.eql( "http://www.w3.org/2000/svg" );
+    });
   });
 });
    
@@ -877,20 +880,20 @@ describe('Inferno acceptance tests', function() {
         expect( container.style["letter-spacing"] ).to.eql( "5px");
     });
 	
-	it( "should set 'display:block'", () => {
+	it( "should set 'display:block'", function () {
 
         addAttributes(container,  { style: { "display": "block" } } );
         expect( container.style.cssText ).to.eql( "display: block;" );
     });
 
-	it( "should ignore null styles", () => {
+	it( "should ignore null styles", function () {
 
         addAttributes(container,  { style: { backgroundColor: null, display: 'none' } } );
         expect( container.style.cssText ).to.eql( 'display: none;' );
     });
 
 
-	it( "should automatically append `px` to relevant styles", () => {
+	it( "should automatically append `px` to relevant styles", function () {
 
         addAttributes(container,  { style: {
       left: 0,
@@ -902,7 +905,7 @@ describe('Inferno acceptance tests', function() {
     });
 
 
-it( "should create vendor-prefixed markup correctly", () => {
+it( "should create vendor-prefixed markup correctly", function () {
 
         addAttributes(container,  { style: {
       msTransition: 'none',
