@@ -876,6 +876,41 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container,  { style: { "letter-spacing": 5 } } );
         expect( container.style["letter-spacing"] ).to.eql( "5px");
     });
+	
+	it( "should set 'display:block'", () => {
+
+        addAttributes(container,  { style: { "display": "block" } } );
+        expect( container.style.cssText ).to.eql( "display: block;" );
+    });
+
+	it( "should ignore null styles", () => {
+
+        addAttributes(container,  { style: { backgroundColor: null, display: 'none' } } );
+        expect( container.style.cssText ).to.eql( 'display: none;' );
+    });
+
+
+	it( "should automatically append `px` to relevant styles", () => {
+
+        addAttributes(container,  { style: {
+      left: 0,
+      margin: 16,
+      opacity: 0.5,
+      padding: '4px',
+    } } );
+        expect( container.style.cssText ).to.eql( "left: 0px; margin: 16px; opacity: 0.5; padding: 4px;" );
+    });
+
+
+it( "should create vendor-prefixed markup correctly", () => {
+
+        addAttributes(container,  { style: {
+      msTransition: 'none',
+      MozTransition: 'none',
+    } } );
+        expect( container.style.cssText ).to.eql( 'transition: none 0s ease 0s ;' );
+    });
+
  });
 	});
 });
