@@ -82,8 +82,9 @@ let attachFragment = function attachFragment( context, fragment, parentDom, comp
 					attachFragmentList( context, value, element );
 					break;
 				case fragmentValueTypes.LIST_REPLACE:
-					let nodeList = document.createDocumentFragment(),
+					let nodeList = document.createElement("div"),
 						placeholderNode = fragment.templateElements[i];
+
 					attachFragmentList( context, value, nodeList );
 					placeholderNode.parentNode.replaceChild( nodeList, placeholderNode );
 					fragment.templateElements[i] = nodeList;

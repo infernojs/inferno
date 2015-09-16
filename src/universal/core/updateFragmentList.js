@@ -35,7 +35,6 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
 	let oldItem, item;
 
 	outer: while ( successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex ) {
-
 		let oldStartItem, oldEndItem, startItem, endItem;
 
 		successful = false;

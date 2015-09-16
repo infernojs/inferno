@@ -16,6 +16,7 @@ export default function updateFragment( context, oldFragment, fragment, parentDo
 	if ( oldFragment.template !== fragment.template ) {
 		if ( oldFragment.component ) {
 			let oldComponentFragment = oldFragment.component.context.fragment;
+			
 			unmountComponentAtFragment( oldFragment );
 			attachFragment( context, fragment, parentDom, component, oldComponentFragment, true );
 		} else {
