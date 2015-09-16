@@ -473,6 +473,11 @@ describe('Inferno acceptance tests', function() {
 	    container = document.createElement('div');
 	});
 
+	afterEach(function() {
+		Inferno.clearDomElement(container);
+	 container = null;
+  });
+
    describe('.setHtml()', function() {
 	it("should render 'checked' as a property", function () {
 	    setHtml(container, "checked", true);
@@ -488,12 +493,6 @@ describe('Inferno acceptance tests', function() {
 	    setHtml(container,  "value", null);
         expect( container.value ).to.be.undefined;
 	});
-
-//	it("should set a 'id' attribute", function () {
-//	    setHtml(container,  "custom-attr", 123)
-//	    expect( container.id).to.equal( "foo" );
-		
-	//});
 
 	it("should set 'title' attribute", function () {
 	    setHtml(container,  "title", "dominic");
@@ -708,13 +707,12 @@ describe('Inferno acceptance tests', function() {
          expect( container.getAttribute("size") ).to.eql("0");
 
     });
+
 	it( "should set className to empty string instead of null", function () {
         addAttributes(container, { className: null } );
         expect( container.className ).to.eql("");
 
     });
-
-	
   });
 
 	});
@@ -727,14 +725,74 @@ describe('Inferno acceptance tests', function() {
 	    container = document.createElement('div');
 	});
 
-     describe('.setStyles()', function() {
-		 	it( "should create markup for simple styles", function () {
-        addAttributes(container, { display: "none" } );
-        expect( container.style.display ).to.eql( "" );
+	afterEach(function() {
+		Inferno.clearDomElement(container);
+	 container = null;
+  });
+
+     describe('.addAttributes()', function() {
+ 	it( "should create markup for simple styles", function () {
+        addAttributes(container, { style: { width: "12px" }} );
+         expect( container.style.width ).to.eql( "12px" );
     });
 
-	 
-		 });
+
+ 	it( "should remove all properties if set to undefined", function () {
+        addAttributes(container, { style: undefined} );
+         expect( container.style.width ).to.eql( "" );
+    });
+
+ 	it( "should set the `style` attribute using an object", function () {
+        addAttributes(container, { style: { display: "none" } } );
+         expect( container.style.display ).to.eql( "none" );
+    });
+
+ 	it( "should ignore null styles", function () {
+        addAttributes(container, { style: { backgroundColor: null, display: "none" }}  );
+        expect( container.style["background-color"] ).to.eql( "" );
+        expect( container.style.display ).to.eql( "none" );
+    });
+
+ 	it( "should return null for no styles", function () {
+        addAttributes(container, { style: { backgroundColor: null, display: null } } );
+        expect( container.style.cssText ).to.eql( "" );
+    });
+
+ 	it( "should trim values so `px` will be appended correctly", function () {
+        addAttributes(container, { style: { margin: "16 " } } );
+       expect( container.style.margin ).to.eql( "16px");
+    });
+
+ 	it( "should handle a empty value", function () {
+        addAttributes(container, { style: "" } );
+        expect( container.style.cssText ).to.eql( "" );
+    });
+
+	it( "should handle a empty object value", function () {
+        addAttributes(container, { style: {} } );
+        expect( container.style.cssText ).to.eql( "" );
+    });
+		 
+	it( "should support number values", function () {
+        addAttributes(container,  { style: { width: 7 } } );
+        expect( container.style.width ).to.eql( "7px" );
+    });
+	
+	it( "should add px suffix to some css properties", function () {
+        addAttributes(container,  { style: { width: 5 } } );
+        expect( container.style.width ).to.eql( "5px" );
+    });
+
+	it( "should handle 'letterSpacing' CSS property (camelCase)", function () {
+        addAttributes(container, { style: { "letterSpacing": 5 } } );
+         expect( container.style.letterSpacing ).to.eql( "5px" );
+    });
+
+	it( "should handle 'letterSpacing' CSS property (snakeCase)", function () {
+        addAttributes(container,  { style: { "letter-spacing": 5 } } );
+        expect( container.style["letter-spacing"] ).to.eql( "5px");
+    });
+ });
 
 
 	});
