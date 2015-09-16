@@ -10,7 +10,6 @@ var unitlessCfg = require('../src/browser/template/cfg/unitlessCfg');
 var extendUnitlessNumber = require('../src/browser/template/extendUnitlessNumber');
 var expect = chai.expect;
 var setAttribute = DOMOperations.setAttribute;
-var setProperty = DOMOperations.setProperty;
 
 var setStyles = CSSOperations.setStyles;
 
@@ -515,18 +514,6 @@ describe('Inferno acceptance tests', function() {
 	    setAttribute(container, "foo-xyz", "simple");
 	    expect( container.getAttribute( "foo-xyz") ).to.equal( "simple" );
 		
-	});
-});
-
- describe('.setProperty()', function() {
-	it("should render 'checked' as a property", function () {
-	    setProperty(container, "checked", true);
-	    expect(container.checked).to.equal(true);
-	});
-
-	it("shouldn\'t render null properties", function () {
-	    setProperty(container,  "value", null);
-        expect( container.value ).to.be.undefined;
 	});
 });
 

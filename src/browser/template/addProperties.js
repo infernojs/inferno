@@ -2,7 +2,7 @@ import events from '../events/shared/events';
 import clearEventListeners from '../events/clearEventListeners';
 import addEventListener from '../events/addEventListener';
 import { setStyles } from './CSSOperations';
-import { setProperty } from './DOMOperations';
+import { setAttribute } from './DOMOperations';
 import forIn from '../../util/forIn';
 
 /**
@@ -24,7 +24,7 @@ export default (node, attrs) => {
 				setStyles(node, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
-				setProperty(node, attrName, attrVal);
+				setProperty(node, attrName, attrVal, true);
 			}
 		}
 	});
