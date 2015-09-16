@@ -68,36 +68,38 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
 				} else {
 					element.width = fragment.templateValues[i];
 				}
-				return;
+				break;
 			case fragmentValueTypes.ATTR_HEIGHT:
 				if (isSVG) {
 					element.setAttribute('height', fragment.templateValues[i]);
 				} else {
 					element.height = fragment.templateValues[i];
 				}
-				return;
-
-			default:
-				//component prop, update it
-				if (element.props) {
-					element.props[type] = fragment.templateValues[i];
-					let alreadyInQueue = false;
-					for (let s = 0; s < componentsToUpdate.length; s++) {
-						if (componentsToUpdate[s] === element) {
-							alreadyInQueue = true;
-						}
-					}
-					if (alreadyInQueue === false) {
-						componentsToUpdate.push(element);
-					}
-				} else {
-					if (events[type] !== undefined) {
-						clearEventListeners(element, type);
-						addEventListener(element, type, fragment.templateValues[i]);
-					} else {
-						setAttribute(element, type, fragment.templateValues[i]);
-					}
-				}
+				break;
+               default:
+                    //custom attribute, so simply setAttribute it
+                    if (!element.props) {
+                        if (events[type] != null) {
+                            clearEventListeners(element, type);
+                            addEventListener(element, type, fragment.templateValues[i]);
+                        } else {
+                           setAttribute(element, type, fragment.templateValues[i]);
+                        }
+                    }
+                    //component prop, update it
+                    else {
+                        element.props[type] = fragment.templateValues[i];
+                        let alreadyInQueue = false;
+                        for (s = 0; s < componentsToUpdate.length; s++) {
+                            if (componentsToUpdate[s] === element) {
+                                alreadyInQueue = true;
+                            }
+                        }
+                        if (alreadyInQueue === false) {
+                            componentsToUpdate.push(element);
+                        }
+                    }
+                    break;
 			}
 		}
 	}
