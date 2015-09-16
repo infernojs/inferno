@@ -4,9 +4,9 @@ import updateFragmentList  from './updateFragmentList';
 import clearEventListeners from '../../browser/events/clearEventListeners';
 import addEventListener    from '../../browser/events/addEventListener';
 import isSVG               from '../../util/isSVG';
-import { setAttribute }         from '../../browser/template/DOMOperations';
+import { setAttribute }    from '../../browser/template/DOMOperations';
 
-export default function updateFragmentValue(context, oldFragment, fragment, component) {
+function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
 		type = oldFragment.templateType;
 
@@ -73,15 +73,14 @@ export default function updateFragmentValue(context, oldFragment, fragment, comp
 			}
 			return;
 		default:
-			// component prop, update it
 
+			// component prop, update it
 			if (element.props) {
 				// TODO make component props work for single value fragments
 			} else {
-				if (events[type] !== undefined) {
+				if (events[type] != null) {
 					clearEventListeners(element, type);
 					addEventListener(element, type, fragment.templateValue);
-
 				} else {
 					setAttribute(element, type, fragment.templateValue);
 				}
@@ -89,3 +88,5 @@ export default function updateFragmentValue(context, oldFragment, fragment, comp
 		}
 	}
 }
+
+export default updateFragmentValue;
