@@ -8,7 +8,9 @@ var CSSOperations = require('../src/browser/template/CSSOperations');
 var addAttributes = require('../src/browser/template/addAttributes');
 var unitlessCfg = require('../src/browser/template/cfg/unitlessCfg');
 var expect = chai.expect;
-var setHtml = DOMOperations.setHtml;
+var setAttribute = DOMOperations.setAttribute;
+var setProperty = DOMOperations.setProperty;
+
 var setStyles = CSSOperations.setStyles;
 
 //expose t7 and Inferno globally
@@ -479,42 +481,64 @@ describe('Inferno acceptance tests', function() {
 	 container = null;
   });
 
-   describe('.setHtml()', function() {
+   describe('.setAttribute()', function() {
 	it("should render 'checked' as a property", function () {
-	    setHtml(container, "checked", true);
+	    setAttribute(container, "checked", true);
 	    expect(container.checked).to.equal(true);
 	});
 
 	it("should support custom attributes", function () {
-	    setHtml(container,  "custom-attr", 123);
+	    setAttribute(container,  "custom-attr", 123);
 	    expect( container.getAttribute( "custom-attr" ) ).to.equal( "123" );
 
-	    setHtml(container,  "foobar", "simple");
+	    setAttribute(container,  "foobar", "simple");
 	    expect( container.getAttribute( "foobar" ) ).to.equal( "simple" );
 
 	});
 
 	it("shouldn\'t render null values", function () {
-	    setHtml(container,  "value", null);
+	    setAttribute(container,  "value", null);
         expect( container.value ).to.be.undefined;
 	});
 
 	it("should set 'title' attribute", function () {
-	    setHtml(container,  "title", "dominic");
+	    setAttribute(container,  "title", "dominic");
 	    expect( container.getAttribute( "title" ) ).to.equal( "dominic" );
 		
 	});
 
 	it("should support HTML5 data-* attribute", function () {
-	    setHtml(container, "data-foo", "bar");
+	    setAttribute(container, "data-foo", "bar");
 	    expect( container.getAttribute( "data-foo") ).to.equal( "bar" );
 
-	    setHtml(container, "foo-xyz", "simple");
+	    setAttribute(container, "foo-xyz", "simple");
 	    expect( container.getAttribute( "foo-xyz") ).to.equal( "simple" );
 		
 	});
 });
 
+ describe('.setProperty()', function() {
+	it("should render 'checked' as a property", function () {
+	    setProperty(container, "checked", true);
+	    expect(container.checked).to.equal(true);
+	});
+
+	it("shouldn\'t render null properties", function () {
+	    setProperty(container,  "value", null);
+        expect( container.value ).to.be.undefined;
+	});
+});
+
+   describe('.addProperties()', function() {
+
+    it( "should handle radio buttons as a property", function () {
+	    
+		addAttributes(container, { type: "radio", checked: true });
+        expect( container.getAttribute( "type" ) ).to.eql( "radio" );
+        expect( container.checked ).to.be.true;
+    });
+   });
+   
    describe('.addAttributes()', function() {
 
     it( "should handle radio buttons", function () {

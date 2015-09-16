@@ -105,13 +105,13 @@ function removeFromDOM(node, name) {
 }
 
 /**
-* Sets the value for a property on a DOM node
+* Sets the value for a attribute on a DOM node
 * @param {DOMElement} node
 * @param {string} name
 * @param {string} value
 * @return {*} value
 */
-function setHtml(node, name, value) {
+function setAttribute(node, name, value) {
 
 	let propertyInfo = properties[name] || null;
 
@@ -153,4 +153,55 @@ function setHtml(node, name, value) {
 	}
 }
 
-export { renderHtmlMarkup, setHtml };
+
+/**
+* Sets the value for a attribute on a DOM node
+* @param {DOMElement} node
+* @param {string} name
+* @param {string} value
+* @return {*} value
+*/
+function setProperty(node, name, value) {
+
+	let propertyInfo = properties[name] || null;
+
+	if (propertyInfo) {
+
+		let hooks = propertyInfo.hooks;
+
+		if (hooks) {
+			hooks(node, value);
+		} else if (shouldIgnoreValue(propertyInfo, value)) {
+			removeFromDOM(node, name);
+			// HTML attributes
+		} else if (propertyInfo.mustUseAttribute) {
+			let attributeName = propertyInfo.attributeName,
+				namespace = propertyInfo.attributeNamespace;
+			if (namespace) {
+				node.setAttributeNS(namespace, attributeName, '' + value);
+			} else if (propertyInfo.hasBooleanValue ||
+				(propertyInfo.hasOverloadedBooleanValue && value === true)) {
+                 // Avoid touching the DOM with 'removeAttribute'. Compare against 'false' instead
+				if ( value !== false) {
+					node.setAttribute(attributeName, '');
+				}
+			} else {
+				node.setAttribute(attributeName, '' + value);
+			}
+			// HTML properties
+		} else {
+			let propName = propertyInfo.propertyName;
+			// Must explicitly cast values for HAS_SIDE_EFFECTS-properties to the
+			// property type before comparing; only `value` does and is string.
+			if (!propertyInfo.hasSideEffects || (node[propName] !== value)) {
+				node[propName] = value;
+			}
+		}
+	// custom properties
+	} else {
+		node[name] = value;
+	}
+}
+
+
+export { renderHtmlMarkup, setProperty, setAttribute };

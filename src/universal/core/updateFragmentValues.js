@@ -5,7 +5,7 @@ import clearEventListeners from '../../browser/events/clearEventListeners';
 import addEventListener    from '../../browser/events/addEventListener';
 import events              from '../../browser/events/shared/events';
 import isSVG               from '../../util/isSVG';
-import { setHtml }         from '../../browser/template/DOMOperations';
+import { setAttribute }         from '../../browser/template/DOMOperations';
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
@@ -101,7 +101,7 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
 						clearEventListeners(element, type);
 						addEventListener(element, type, fragment.templateValues[i]);
 					} else {
-						setHtml(element, type, fragment.templateValues[i]);
+						setAttribute(element, type, fragment.templateValues[i]);
 					}
 				}
 			}

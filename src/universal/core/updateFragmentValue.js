@@ -4,7 +4,7 @@ import updateFragmentList  from './updateFragmentList';
 import clearEventListeners from '../../browser/events/clearEventListeners';
 import addEventListener    from '../../browser/events/addEventListener';
 import isSVG               from '../../util/isSVG';
-import { setHtml }         from '../../browser/template/DOMOperations';
+import { setAttribute }         from '../../browser/template/DOMOperations';
 
 export default function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
@@ -83,7 +83,7 @@ export default function updateFragmentValue(context, oldFragment, fragment, comp
 					addEventListener(element, type, fragment.templateValue);
 
 				} else {
-					setHtml(element, type, fragment.templateValue);
+					setAttribute(element, type, fragment.templateValue);
 				}
 			}
 		}
