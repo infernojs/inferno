@@ -834,8 +834,6 @@ describe('Inferno acceptance tests', function() {
      });
 	});
 	
-	unitlessCfg
-	
 	 describe('.addAttributes()', function() {
  	it( "should create markup for simple styles", function () {
         addAttributes(container, { style: { width: "12px" }} );
