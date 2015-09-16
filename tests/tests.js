@@ -801,6 +801,18 @@ describe('Inferno acceptance tests', function() {
        addAttributes(container,  { xmlns: "http://www.w3.org/2000/svg", "xlink:href": "test.jpg" } );
        expect( container.getAttribute("xmlns") ).to.eql( "http://www.w3.org/2000/svg" );
     });
+
+    it( "should support 'parametric:xmlns' attributes", function () {
+       addAttributes(container,  { "parametric:xmlns": "http://www.w3.org/2000/svg", "xlink:href": "test.jpg" } );
+       expect( container.getAttribute("parametric:xmlns") ).to.eql( "http://www.w3.org/2000/svg" );
+    });
+
+    it( "should support 'parametric' attributes", function () {
+       addAttributes(container,  { "parametric:r": 20, "parametric:y": 10 } );
+       expect( container.getAttribute("parametric:r") ).to.eql( "20" );
+       expect( container.getAttribute("parametric:y") ).to.eql( "10" );
+    });
+	
   });
 });
    

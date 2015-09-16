@@ -76,6 +76,14 @@ export default {
 	wmode: MUST_USE_ATTRIBUTE,
 
 	/**
+	 * SVG 2.0 properties
+	 */
+
+	'parametric:width': MUST_USE_ATTRIBUTE,
+	'parametric:r': MUST_USE_ATTRIBUTE,
+	'parametric:y': MUST_USE_ATTRIBUTE,
+			
+	/**
 	 * Non-standard Properties
 	 */
 
