@@ -6,6 +6,7 @@ var isBrowser = require('../src/util/isBrowser');
 var DOMOperations = require('../src/browser/template/DOMOperations');
 var CSSOperations = require('../src/browser/template/CSSOperations');
 var addAttributes = require('../src/browser/template/addAttributes');
+var unitlessCfg = require('../src/browser/template/cfg/unitlessCfg');
 var expect = chai.expect;
 var setHtml = DOMOperations.setHtml;
 var setStyles = CSSOperations.setStyles;
@@ -817,7 +818,23 @@ describe('Inferno acceptance tests', function() {
   });
 
      describe('.setStyles()', function() {
+		 
+		  it('should be a function', function() {
+         expect(setStyles).to.be.a.function;
+     });
 	});
+
+     describe('unitlessCfg', function() {
+		 
+    it('should generate browser prefixes for unitless numbers`', function() {
+         expect(unitlessCfg.lineClamp).to.be.true;
+         expect(unitlessCfg.WebkitLineClamp).to.be.true;
+         expect(unitlessCfg.msFlexGrow).to.be.true;
+         expect(unitlessCfg.MozFlexGrow).to.be.true;
+     });
+	});
+	
+	unitlessCfg
 	
 	 describe('.addAttributes()', function() {
  	it( "should create markup for simple styles", function () {
