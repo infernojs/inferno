@@ -74,16 +74,16 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			return;
 		default:
 
-			// component prop, update it
-			if (element.props) {
-				// TODO make component props work for single value fragments
-			} else {
+			if (!element.props) {
 				if (events[type] != null) {
 					clearEventListeners(element, type);
 					addEventListener(element, type, fragment.templateValue);
 				} else {
 					setAttribute(element, type, fragment.templateValue);
 				}
+				// TODO make component props work for single value fragments
+			} else {
+			// component prop, update it
 			}
 		}
 	}
