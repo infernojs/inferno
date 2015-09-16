@@ -9,7 +9,8 @@ import templateCreateElement from '../../browser/template/createElement';
 function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
 
 	let template = fragment.template,
-		templateKey = template.key;
+		templateKey = template.key,
+		fragmentComponent = fragment.component;
 
 	// check if we are going to recycle
 	if (context.shouldRecycle === true) {
@@ -23,10 +24,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 		}
 	}
 
-	if (fragment.component && (typeof fragmentComponent === 'function')) {
-
-		let fragmentComponent = fragment.component;
-
+	if (fragmentComponent && (typeof fragmentComponent === 'function')) {
 		fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
 		fragmentComponent.context = null;
 		fragmentComponent.forceUpdate = Inferno.render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
