@@ -7,6 +7,7 @@ var DOMOperations = require('../src/browser/template/DOMOperations');
 var CSSOperations = require('../src/browser/template/CSSOperations');
 var addAttributes = require('../src/browser/template/addAttributes');
 var unitlessCfg = require('../src/browser/template/cfg/unitlessCfg');
+var extendUnitlessNumber = require('../src/browser/template/extendUnitlessNumber');
 var expect = chai.expect;
 var setAttribute = DOMOperations.setAttribute;
 var setProperty = DOMOperations.setProperty;
@@ -868,6 +869,15 @@ describe('Inferno acceptance tests', function() {
          expect(unitlessCfg.WebkitLineClamp).to.be.true;
          expect(unitlessCfg.msFlexGrow).to.be.true;
          expect(unitlessCfg.MozFlexGrow).to.be.true;
+     });
+	});
+
+     describe('.extendUnitlessNumber()', function() {
+		 
+    it('should extend unitless numbers', function() {
+		extendUnitlessNumber( { "foo": true, "bar": true});
+         expect(unitlessCfg.foo).to.be.true;
+         expect(unitlessCfg.bar).to.be.true;
      });
 	});
 	

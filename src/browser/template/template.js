@@ -1,14 +1,16 @@
-import addAttributes    from './addAttributes';
-import addProperties    from './addProperties';
-import renderToString   from './renderToString';
-import isBrowser        from '../../util/isBrowser';
-import VirtualElement   from '../../universal/class/VirtualElement';
-import VirtualTextNode  from '../../universal/class/VirtualTextNode';
+import addAttributes        from './addAttributes';
+import addProperties        from './addProperties';
+import renderToString       from './renderToString';
+import extendUnitlessNumber from './extendUnitlessNumber';
+import isBrowser            from '../../util/isBrowser';
+import VirtualElement       from '../../universal/class/VirtualElement';
+import VirtualTextNode      from '../../universal/class/VirtualTextNode';
 
 export default {
 	addAttributes: addAttributes,
 	addProperties:addProperties,
 	renderToString: renderToString,
+	extendUnitlessNumber:extendUnitlessNumber,
 	createElement(tag, namespace) {
 		if (isBrowser()) {
 			if (namespace === undefined) {
