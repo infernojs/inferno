@@ -514,7 +514,7 @@ describe('Inferno acceptance tests', function() {
 
 });
 
-        describe('.addAttributes()', function() {
+   describe('.addAttributes()', function() {
 
     it( "should handle radio buttons", function () {
 	    
@@ -711,11 +711,9 @@ describe('Inferno acceptance tests', function() {
 	it( "should set className to empty string instead of null", function () {
         addAttributes(container, { className: null } );
         expect( container.className ).to.eql("");
-
     });
   });
-
-	});
+});
    
    describe('CSS operations', function() {
   	  
@@ -793,12 +791,5 @@ describe('Inferno acceptance tests', function() {
         expect( container.style["letter-spacing"] ).to.eql( "5px");
     });
  });
-
-
 	});
-	
-	
-	
-	
-	
 });
