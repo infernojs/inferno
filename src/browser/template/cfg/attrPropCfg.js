@@ -11,6 +11,12 @@ let {
 	HAS_OVERLOADED_BOOLEAN_VALUE
 } = masks;
 
+/*************************** INFO!! **************************************
+ * Inferno supports custom attributes, meanin all SVG / HTML             *
+ * attributes are supported. 'Only' attributes / properties that need a  *
+ * special treatment should be listed here.                              *
+ *************************************************************************/
+
 export default {
 	allowFullScreen: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
 	allowTransparency: MUST_USE_ATTRIBUTE,
@@ -75,14 +81,6 @@ export default {
 	width: MUST_USE_PROPERTY,
 	wmode: MUST_USE_ATTRIBUTE,
 
-	/**
-	 * SVG 2.0 properties
-	 */
-
-	'parametric:width': MUST_USE_ATTRIBUTE,
-	'parametric:r': MUST_USE_ATTRIBUTE,
-	'parametric:y': MUST_USE_ATTRIBUTE,
-			
 	/**
 	 * Non-standard Properties
 	 */
