@@ -24,7 +24,9 @@ export default (node, attrs) => {
 				setStyles(node, attrVal);
 				// attributes / properties
 			} else {
+				if ( attrVal != null) { 
 				setHtml(node, attrName, attrVal);
+			   }	
 			}
 		}
 	});

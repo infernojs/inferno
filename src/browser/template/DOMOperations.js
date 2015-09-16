@@ -135,9 +135,14 @@ function setHtml(node, name, value) {
 				node.setAttributeNS(namespace, attributeName, '' + value);
 			} else if (propertyInfo.hasBooleanValue ||
 				(propertyInfo.hasOverloadedBooleanValue && value === true)) {
-				node.setAttribute(attributeName, '');
+                 // Avoid touching the DOM with 'removeAttribute'
+				if ( value !== false) {
+					node.setAttribute(attributeName, '');
+				} 
 			} else {
+				if ( value != null) {
 				node.setAttribute(attributeName, '' + value);
+				}
 			}
 			// HTML properties
 		} else {
@@ -150,7 +155,9 @@ function setHtml(node, name, value) {
 		}
 			// set custom attributes
 	} else {
+		if ( value != null) {
 		node.setAttribute(name, '' + value);
+		}
 	}
 }
 

@@ -486,7 +486,11 @@ describe('Inferno acceptance tests', function() {
 
 	it("should support custom attributes", function () {
 	    setHtml(container,  "custom-attr", 123);
-	   expect( container.getAttribute( "custom-attr" ) ).to.equal( "123" );
+	    expect( container.getAttribute( "custom-attr" ) ).to.equal( "123" );
+
+	    setHtml(container,  "foobar", "simple");
+	    expect( container.getAttribute( "foobar" ) ).to.equal( "simple" );
+
 	});
 
 	it("shouldn\'t render null values", function () {
@@ -503,15 +507,11 @@ describe('Inferno acceptance tests', function() {
 	it("should support HTML5 data-* attribute", function () {
 	    setHtml(container, "data-foo", "bar");
 	    expect( container.getAttribute( "data-foo") ).to.equal( "bar" );
+
+	    setHtml(container, "foo-xyz", "simple");
+	    expect( container.getAttribute( "foo-xyz") ).to.equal( "simple" );
 		
 	});
-
-	it("should handle checkbox", function () {
-	    setHtml(container, "data-foo", "bar");
-	    expect( container.getAttribute( "data-foo") ).to.equal( "bar" );
-		
-	});
-
 });
 
    describe('.addAttributes()', function() {
@@ -530,7 +530,20 @@ describe('Inferno acceptance tests', function() {
         expect( container.getAttribute( "title" ) ).to.eql( "FooBar" );
 
     } );
-	 
+	
+	it( "should set 'disabled' boolean element property", function () {
+
+		addAttributes(container, { type: "checkbox" , disabled: true});
+        expect( container.getAttribute( "disabled" ) ).to.eql("");
+    });
+
+	it( "should not set 'disabled' boolean element property", function () {
+
+		addAttributes(container, { type: "checkbox" , disabled: false});
+        expect( container.getAttribute( "disabled" ) ).to.be.null;
+
+    });
+
     it( "should handle empty attributes", function () {
         addAttributes(container, {});
         expect( container.attrs ).to.be.undefined;
@@ -611,6 +624,11 @@ describe('Inferno acceptance tests', function() {
     } );	
 
     it( "should set 'aria-disabled' attribute", function () {
+        addAttributes(container, { "aria-disabled": true } );
+        expect( container.getAttribute( "aria-disabled" ) ).to.eql( "true" );
+    });		
+
+    it( "should not set 'aria-disabled' attribute", function () {
         addAttributes(container, { "aria-disabled": false } );
         expect( container.getAttribute( "aria-disabled" ) ).to.eql( "false" );
     });		
@@ -707,11 +725,79 @@ describe('Inferno acceptance tests', function() {
          expect( container.getAttribute("size") ).to.eql("0");
 
     });
-
+    
+	 // className should be '', not 'null' or null (which becomes 'null' in
+     // some browsers)
 	it( "should set className to empty string instead of null", function () {
         addAttributes(container, { className: null } );
         expect( container.className ).to.eql("");
     });
+	
+	it( "should set className property", function () {
+        addAttributes(container, { className: "Inferno Rocks!" } );
+        expect( container.className ).to.eql("Inferno Rocks!");
+    });
+
+
+	it( "should set 'class' attribute", function () {
+        addAttributes(container, { class: "Inferno Rocks!" } );
+        expect( container.className ).to.eql("Inferno Rocks!");
+    });
+
+
+	it( "should set 'class' attribute to empty string instead of null", function () {
+        addAttributes(container, { class: null } );
+        expect( container.className ).to.eql("");
+    });
+	
+
+	it( "should set 'class' attribute to empty string instead of null", function () {
+        addAttributes(container, { class: null } );
+        expect( container.className ).to.eql("");
+    });
+	
+	 it( "should support ARIA", function () {
+        
+		addAttributes(container, { "aria-checked": true } );
+        expect( container.getAttribute("aria-checked") ).to.eql("true");
+
+    });
+    
+    it( "should set 'class' as an attribute", function () {
+		addAttributes(container, { class: "foo" } );
+        expect( container.getAttribute( "class" ) ).to.eql( "foo" );
+
+    });
+	
+    it( "should set multiple as an property", function () {
+        addAttributes(container, { multiple: true } );
+        expect( container.multiple ).to.eql( true );
+
+    });
+
+	// 'selectedIndex' should only be set as a 'property'
+	it( "should set 'selectedIndex' property", function () {
+        addAttributes(container, {type: "option",   selectedIndex: true } );
+        expect( container.getAttribute( "type" ) ).to.eql( "option" );
+        expect( container.hasAttribute("selectedIndex") ).to.be.false;
+        expect( container.selectedIndex ).to.be.true;
+
+    } );
+	
+    it( "should set 'id' property", function () {
+        addAttributes(container, { id: "123" } );
+        expect( container.id ).to.eql( "123" );
+
+    } );
+   // 'autofocus' should only be set as a 'attribute'
+   it( "should unset 'autofocus' property", function () {
+        addAttributes(container, { autofocus: true } );
+        expect( container.getAttribute("autofocus") ).to.eql( "true" );
+        expect( container.autofocus ).to.be.undefined;
+    } );	
+
+	
+
   });
 });
    
