@@ -84,7 +84,7 @@ forIn(attrPropCfg, (propName, propConfig) => {
 });
   
 function removeFromDOM(node, name) {
-	let propertyInfo = properties[name] ? properties[name]  : null;
+	let propertyInfo = properties[name] || null;
 	if (propertyInfo) {
 		let hooks = propertyInfo.hooks;
 		if (hooks) {
@@ -92,14 +92,11 @@ function removeFromDOM(node, name) {
 		} else if (propertyInfo.mustUseAttribute) {
 			node.removeAttribute(propertyInfo.attributeName);
 		} else {
-			let propName = propertyInfo.propertyName;
-			let defaultValue = getDefaultPropVal(
-				node.nodeName,
-				propName
-			);
+			let propName = propertyInfo.propertyName,
+			    
+			defaultValue = getDefaultPropVal(node.nodeName, propName );
 
-			if (!propertyInfo.hasSideEffects ||
-				('' + node[propName]) !== defaultValue) {
+			if (!propertyInfo.hasSideEffects || ('' + node[propName]) !== defaultValue) {
 				node[propName] = defaultValue;
 			}
 		}
@@ -135,14 +132,12 @@ function setHtml(node, name, value) {
 				node.setAttributeNS(namespace, attributeName, '' + value);
 			} else if (propertyInfo.hasBooleanValue ||
 				(propertyInfo.hasOverloadedBooleanValue && value === true)) {
-                 // Avoid touching the DOM with 'removeAttribute'
+                 // Avoid touching the DOM with 'removeAttribute'. Compare against 'false' instead
 				if ( value !== false) {
 					node.setAttribute(attributeName, '');
 				} 
 			} else {
-				if ( value != null) {
 				node.setAttribute(attributeName, '' + value);
-				}
 			}
 			// HTML properties
 		} else {
@@ -153,11 +148,9 @@ function setHtml(node, name, value) {
 				node[propName] = value;
 			}
 		}
-			// set custom attributes
+	// custom attributes
 	} else {
-		if ( value != null) {
 		node.setAttribute(name, '' + value);
-		}
 	}
 }
 

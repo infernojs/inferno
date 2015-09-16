@@ -822,6 +822,7 @@ describe('Inferno acceptance tests', function() {
 		  it('should be a function', function() {
          expect(setStyles).to.be.a.function;
      });
+	 
 	});
 
      describe('unitlessCfg', function() {
