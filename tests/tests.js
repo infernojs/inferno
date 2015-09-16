@@ -794,10 +794,9 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container, { autofocus: true } );
         expect( container.getAttribute("autofocus") ).to.eql( "true" );
         expect( container.autofocus ).to.be.undefined;
-    } );	
-
+    });	
 	
-    it( "should render namespace attributes (props)", function () {
+    it( "should render namespace attributes", function () {
        addAttributes(container,  { xmlns: "http://www.w3.org/2000/svg", "xlink:href": "test.jpg" } );
        expect( container.getAttribute("xmlns") ).to.eql( "http://www.w3.org/2000/svg" );
     });
@@ -817,12 +816,14 @@ describe('Inferno acceptance tests', function() {
 	 container = null;
   });
 
-     describe('.addAttributes()', function() {
+     describe('.setStyles()', function() {
+	});
+	
+	 describe('.addAttributes()', function() {
  	it( "should create markup for simple styles", function () {
         addAttributes(container, { style: { width: "12px" }} );
          expect( container.style.width ).to.eql( "12px" );
     });
-
 
  	it( "should remove all properties if set to undefined", function () {
         addAttributes(container, { style: undefined} );
