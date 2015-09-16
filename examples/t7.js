@@ -21,7 +21,7 @@ var t7 = (function() {
   if (isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
   }
-
+  
   var selfClosingTags = {
     area: true,
     base: true,
@@ -275,23 +275,8 @@ var t7 = (function() {
               case "name":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_NAME;");
                 break;
-              case "href":
-                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_HREF;");
-                break;
-              case "disabled":
-                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_DISABLED;");
-                break;
-              case "checked":
-                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_CHECKED;");
-                break;
-              case "selected":
-                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_SELECTED;");
-                break;
               case "label":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_LABEL;");
-                break;
-              case "style":
-                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_STYLE;");
                 break;
               case "placeholder":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_PLACEHOLDER;");

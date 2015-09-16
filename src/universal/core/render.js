@@ -6,7 +6,7 @@ import updateFragment            from './updateFragment';
 
 let initialisedListeners = false;
 
-export default function render(fragment, dom, component) {
+function render(fragment, dom, component) {
 	let context, generatedFragment;
 
 	if (component) {
@@ -47,3 +47,5 @@ export default function render(fragment, dom, component) {
 		}
 	}
 }
+
+export default render;
