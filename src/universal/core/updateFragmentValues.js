@@ -43,25 +43,25 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
 				} else {
 					element.className = fragment.templateValues[i];
 				}
-				return;
+				break;
 			case fragmentValueTypes.ATTR_ID:
 				element.id = fragment.templateValues[i];
-				return;
+				break;
 			case fragmentValueTypes.ATTR_VALUE:
 				element.value = fragment.templateValues[i];
-				return;
+				break;
 			case fragmentValueTypes.ATTR_NAME:
 				element.name = fragment.templateValues[i];
-				return;
+				break;
 			case fragmentValueTypes.ATTR_TYPE:
 				element.type = fragment.templateValues[i];
-				return;
+				break;
 			case fragmentValueTypes.ATTR_LABEL:
 				element.label = fragment.templateValues[i];
-				return;
+				break;
 			case fragmentValueTypes.ATTR_PLACEHOLDER:
 				element.placeholder = fragment.templateValues[i];
-				return;
+				break;
 			case fragmentValueTypes.ATTR_WIDTH:
 				if (isSVG) {
 					element.setAttribute('width', fragment.templateValues[i]);
