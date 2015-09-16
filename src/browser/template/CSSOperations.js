@@ -8,16 +8,16 @@ import camelToKebab from './camelToKebab';
  * @return { string}
  */
 function renderStyleToString(styles) {
-    let html = '';
+	let html = '';
 
-    forIn(styles, (styleName, styleValue) => {
-        if (styleValue !== undefined) {
-            html += camelToKebab(styleName) + ':' + cleanValues(styleName, styleValue) + ';';
-        }
-    });
+	forIn(styles, (styleName, styleValue) => {
+		if (styleValue !== undefined) {
+			html += camelToKebab(styleName) + ':' + cleanValues(styleName, styleValue) + ';';
+		}
+	});
 
-    return html;
-};
+	return html;
+}
 
 /**
  * Set CSS styles
@@ -27,15 +27,11 @@ function renderStyleToString(styles) {
  * @param {String} value
  */
 function setStyles(node, value) {
-
-    forIn(value, (styleName, styleValue) => {
-        if (styleValue != null) {
-            node.style[styleName] = cleanValues(styleName, styleValue);
-        } else {
-            node.style[styleName] = '';
-        }
-    });
-};
-
+	forIn(value, (styleName, styleValue) => {
+		node.style[styleName] = styleValue != null
+			? cleanValues(styleName, styleValue)
+			: '';
+	});
+}
 
 export { renderStyleToString, setStyles };

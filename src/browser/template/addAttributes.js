@@ -23,10 +23,8 @@ export default (node, attrs) => {
 			} else if (attrName === 'style') {
 				setStyles(node, attrVal);
 				// attributes / properties
-			} else {
-				if ( attrVal != null) { 
+			} else if (attrVal != null) {
 				setHtml(node, attrName, attrVal);
-			   }	
 			}
 		}
 	});

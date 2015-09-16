@@ -1,51 +1,50 @@
-import removeFragment             from './removeFragment';
-import attachFragment             from './attachFragment';
-import updateFragmentValue        from './updateFragmentValue';
-import updateFragmentValues       from './updateFragmentValues';
+import removeFragment			 from './removeFragment';
+import attachFragment			 from './attachFragment';
+import updateFragmentValue		from './updateFragmentValue';
+import updateFragmentValues	   from './updateFragmentValues';
 import unmountComponentAtFragment from './unmountComponentAtFragment';
 
-export default function updateFragment( context, oldFragment, fragment, parentDom, component, skip ) {
+export default function updateFragment(context, oldFragment, fragment, parentDom, component, skip) {
 
-	if ( fragment == null ) {
+	if (fragment == null) {
 		removeFragment( context, parentDom, oldFragment );
 		return;
 	}
 
-	if ( oldFragment == null ) {
-		attachFragment( context, fragment, parentDom, component );
+	if (oldFragment == null) {
+		attachFragment(context, fragment, parentDom, component);
 		return;
 	}
 
-	if ( oldFragment.template !== fragment.template ) {
-		if ( oldFragment.component ) {
+	if (oldFragment.template !== fragment.template) {
+		if (oldFragment.component) {
 			let oldComponentFragment = oldFragment.component.context.fragment;
 			unmountComponentAtFragment( oldFragment );
 			attachFragment( context, fragment, parentDom, component, oldComponentFragment, true );
 		} else {
 			attachFragment( context, fragment, parentDom, component, oldFragment, true );
 		}
-        return;
-	} 
+		return;
+	}
 
 	//if this fragment is a component
-		if ( oldFragment.component ) {
-	
-	   let fragmentComponent = oldFragment.component;
-	
-			fragmentComponent.props = fragment.props;
-			fragmentComponent.forceUpdate();
-			fragment.component = fragmentComponent;
-			return;
-		}
+	if (oldFragment.component) {
+
+		let fragmentComponent = oldFragment.component;
+		fragmentComponent.props = fragment.props;
+		fragmentComponent.forceUpdate();
+		fragment.component = fragmentComponent;
+		return;
+	}
 
 		//ensure we reference the new fragment with the old fragment's DOM node
-		fragment.dom = oldFragment.dom;
+	fragment.dom = oldFragment.dom;
 
-		if ( fragment.templateValue != null ) {
+	if (fragment.templateValue != null) {
 			//update a single value in the fragement (templateValue rather than templateValues)
-			updateFragmentValue( context, oldFragment, fragment, component );
-		} else if ( fragment.templateValues ) {
-			//updates all values within the fragment (templateValues is an array)
-			updateFragmentValues( context, oldFragment, fragment, component );
-		}
+		updateFragmentValue( context, oldFragment, fragment, component );
+	} else if (fragment.templateValues) {
+		//updates all values within the fragment (templateValues is an array)
+		updateFragmentValues( context, oldFragment, fragment, component );
+	}
 }

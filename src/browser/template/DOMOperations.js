@@ -82,7 +82,7 @@ forIn(attrPropCfg, (propName, propConfig) => {
 
 	properties[propName] = propertyInfo;
 });
-  
+
 function removeFromDOM(node, name) {
 	let propertyInfo = properties[name] || null;
 	if (propertyInfo) {
@@ -93,8 +93,7 @@ function removeFromDOM(node, name) {
 			node.removeAttribute(propertyInfo.attributeName);
 		} else {
 			let propName = propertyInfo.propertyName,
-			    
-			defaultValue = getDefaultPropVal(node.nodeName, propName );
+				defaultValue = getDefaultPropVal(node.nodeName, propName);
 
 			if (!propertyInfo.hasSideEffects || ('' + node[propName]) !== defaultValue) {
 				node[propName] = defaultValue;
@@ -135,7 +134,7 @@ function setHtml(node, name, value) {
                  // Avoid touching the DOM with 'removeAttribute'. Compare against 'false' instead
 				if ( value !== false) {
 					node.setAttribute(attributeName, '');
-				} 
+				}
 			} else {
 				node.setAttribute(attributeName, '' + value);
 			}
