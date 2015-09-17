@@ -1,5 +1,4 @@
 /*
-
   t7.js is a small, lightweight library for compiling ES2015 template literals
   into virtual DOM objects.
 
