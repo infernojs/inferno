@@ -4,6 +4,7 @@ import updateFragment from './updateFragment';
 import attachFragmentList from './attachFragmentList';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 import insertFragment from './insertFragment';
+import render from './render';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../template/createElement';
 
@@ -15,7 +16,7 @@ let attachFragment = function attachFragment(context, fragment, parentDom, compo
 			fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
 			fragmentComponent.context = null;
 			// TODO get rid of this line
-			fragmentComponent.forceUpdate = Inferno.render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
+			fragmentComponent.forceUpdate = render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
 			fragmentComponent.forceUpdate();
 		}
 		return;
@@ -29,7 +30,7 @@ let attachFragment = function attachFragment(context, fragment, parentDom, compo
 		recycledFragment = getRecycledFragment( templateKey );
 	}
 
-	if ( recycledFragment !== null ) {
+	if ( recycledFragment != null ) {
 		updateFragment( context, recycledFragment, fragment, parentDom, component );
 	} else {
 		//there are different things we need to check for now
