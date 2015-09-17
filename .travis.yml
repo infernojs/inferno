@@ -4,3 +4,9 @@ node_js:
 - "0.10"
 - "0.12"
 - "4"
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - npm run test
+addons:
+  firefox: "35.0"
