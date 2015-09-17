@@ -856,6 +856,8 @@ describe('Inferno acceptance tests', function() {
          expect(unitlessCfg.WebkitLineClamp).to.be.true;
          expect(unitlessCfg.msFlexGrow).to.be.true;
          expect(unitlessCfg.MozFlexGrow).to.be.true;
+         expect(unitlessCfg.msGridRow).to.be.true;
+         expect(unitlessCfg.msGridColumn).to.be.true;
      });
 	});
 

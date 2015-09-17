@@ -21,6 +21,9 @@ let unitless = {
 	flexOrder: true,
 	float: true,
 	fontWeight: true,
+// Supports CSS3 Grid Layout Module
+    gridRow: true,
+	gridColumn: true,
 	lineClamp: true,
 	lineHeight: true,
 	marker: true,
