@@ -7,7 +7,7 @@ import insertFragment from './insertFragment';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../template/createElement';
 
-let attachFragment = function attachFragment(context, fragment, parentDom, component, nextFragment, replace, /* skip */) {
+function attachFragment(context, fragment, parentDom, component, nextFragment, replace /* skip */) {
 	let fragmentComponent = fragment.component;
 
 	if (fragmentComponent) {
