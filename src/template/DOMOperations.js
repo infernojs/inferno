@@ -7,7 +7,7 @@ import hooks from './hooks';
 import memoizeString from './memoizeString';
 import shouldIgnoreValue from './shouldIgnoreValue';
 import masks from './vars/masks';
-import forIn from '../../util/forIn';
+import forIn from '../util/forIn';
 import escapeHtml from './escapeHtml';
 import hasPropertyAccessor from './hasPropertyAccessor';
 

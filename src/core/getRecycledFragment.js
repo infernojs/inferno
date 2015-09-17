@@ -1,4 +1,4 @@
-import recycledFragments from '../../vars/recycledFragments';
+import recycledFragments from '../vars/recycledFragments';
 
 export default ( templateKey ) => {
 

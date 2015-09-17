@@ -1,5 +1,5 @@
 import template from '.';
-import fragmentValueTypes from '../../universal/enum/fragmentValueTypes';
+import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 export default function createElement(tag, props, ...children) {
 	let dom = template.createElement(tag);

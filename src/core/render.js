@@ -1,5 +1,5 @@
-import addRootDomEventListerners from '../../browser/events/addRootListener';
-import contexts                  from '../../vars/contexts';
+import addRootDomEventListerners from '../events/addRootListener';
+import contexts                  from '../vars/contexts';
 import getContext                from './getContext';
 import attachFragment            from './attachFragment';
 import updateFragment            from './updateFragment';

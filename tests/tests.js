@@ -2,12 +2,11 @@
 var Inferno = require('../src');
 var chai = require('chai');
 var t7 = require('../examples/t7');
-var isBrowser = require('../src/util/isBrowser');
-var DOMOperations = require('../src/browser/template/DOMOperations');
-var CSSOperations = require('../src/browser/template/CSSOperations');
-var addAttributes = require('../src/browser/template/addAttributes');
-var unitlessCfg = require('../src/browser/template/cfg/unitlessCfg');
-var extendUnitlessNumber = require('../src/browser/template/extendUnitlessNumber');
+var DOMOperations = require('../src/template/DOMOperations');
+var CSSOperations = require('../src/template/CSSOperations');
+var addAttributes = require('../src/template/addAttributes');
+var unitlessCfg = require('../src/template/cfg/unitlessCfg');
+var extendUnitlessNumber = require('../src/template/extendUnitlessNumber');
 var expect = chai.expect;
 var setAttribute = DOMOperations.setAttribute;
 
@@ -23,7 +22,6 @@ describe('Inferno acceptance tests', function() {
 			var container;
 
 			beforeEach(function() {
-				isBrowser.addBrowser();
 				container = document.createElement('div');
 			});
 
@@ -150,7 +148,6 @@ describe('Inferno acceptance tests', function() {
 			var container;
 
 			beforeEach(function() {
-				isBrowser.removeBrowser();
 				container = Inferno.template.createElement('div', null, true);
 			});
 
@@ -266,7 +263,6 @@ describe('Inferno acceptance tests', function() {
 			var container;
 
 			beforeEach(function() {
-				isBrowser.addBrowser();
 				container = document.createElement('div');
 			});
 
@@ -369,7 +365,6 @@ describe('Inferno acceptance tests', function() {
 			var container;
 
 			beforeEach(function() {
-				isBrowser.removeBrowser();
 				container = Inferno.template.createElement('div', null, true);
 			});
 

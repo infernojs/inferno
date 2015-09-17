@@ -1,4 +1,4 @@
-import forIn from '../../util/forIn';
+import forIn from '../util/forIn';
 import cleanValues from './cleanValues';
 import camelToKebab from './camelToKebab';
 

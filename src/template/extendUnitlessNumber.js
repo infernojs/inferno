@@ -3,7 +3,7 @@
 import unitlessCfg from './cfg/unitlessCfg';
 import prefixes    from './prefixes';
 import prefixKey   from './prefixKey';
-import forIn       from '../../util/forIn';
+import forIn       from '../util/forIn';
 
 function extendUnitlessNumber(properties) {
 
