@@ -5,6 +5,7 @@ import clearEventListeners from '../../browser/events/clearEventListeners';
 import addEventListener    from '../../browser/events/addEventListener';
 import isSVG               from '../../util/isSVG';
 import { setAttribute }    from '../../browser/template/DOMOperations';
+import events              from '../../browser/events/shared/events';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
