@@ -8,4 +8,3 @@ before_install:
   - npm install -g webpack
 script:
 - npm run build
-- npm run test
