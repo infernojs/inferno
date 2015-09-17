@@ -7,7 +7,7 @@ import insertFragment from './insertFragment';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../../browser/template/createElement';
 
-let attachFragment = function attachFragment(context, fragment, parentDom, component, nextFragment, replace, /* skip */) {
+let attachFragment = function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
 	let fragmentComponent = fragment.component;
 
 	if (fragmentComponent) {
@@ -77,20 +77,21 @@ let attachFragment = function attachFragment(context, fragment, parentDom, compo
 			//pulling this block of code out into its own function caused strange things to happen
 			//with performance. it was faster in Gecko but far slower in v8
 			for ( let i = 0, length = fragment.templateValues.length; i < length; i++ ) {
-
 				let element = fragment.templateElements[i],
 					value = fragment.templateValues[i];
+
 				switch ( fragment.templateTypes[i] ) {
 				case fragmentValueTypes.LIST:
 					attachFragmentList( context, value, element );
 					break;
 				case fragmentValueTypes.LIST_REPLACE:
-					let nodeList = document.createElement('div'),
-						placeholderNode = fragment.templateElements[i];
+					let nodeList = document.createDocumentFragment(),
+						placeholderNode = fragment.templateElements[i],
+						parentElem = placeholderNode.parentNode;
 
 					attachFragmentList( context, value, nodeList );
-					placeholderNode.parentNode.replaceChild( nodeList, placeholderNode );
-					fragment.templateElements[i] = nodeList;
+					parentElem.replaceChild( nodeList, placeholderNode );
+					fragment.templateElements[i] = parentElem;
 					break;
 				case fragmentValueTypes.FRAGMENT:
 					//TODO do we need this still?
