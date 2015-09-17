@@ -172,8 +172,7 @@ release has been stated. Features that still need to be completed:
 - Refs needs adding
 - Lifecycle events need finishing
 - Universal/isomorphic features
-- There are currently no tests in place, this needs to be done
 - There is no API documentation or general documentation available
-- 
+
 
 ![alt Supported by Browserstack](http://infernojs.org/browserstack.svg)
