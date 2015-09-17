@@ -1,4 +1,4 @@
-import contexts from '../../vars/contexts';
+import contexts from '../vars/contexts';
 
 export default ( dom ) => {
 	let idx = contexts.length;

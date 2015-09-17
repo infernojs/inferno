@@ -3,7 +3,7 @@ import clearEventListeners from '../events/clearEventListeners';
 import addEventListener from '../events/addEventListener';
 import { setStyles } from './CSSOperations';
 import { setAttribute } from './DOMOperations';
-import forIn from '../../util/forIn';
+import forIn from '../util/forIn';
 
 /**
  * Set HTML attributes on the template
@@ -16,7 +16,7 @@ export default (node, attrs) => {
 		// avoid 'null' values
 		if (attrVal !== undefined) {
 			// events
-			if (events[attrName] != null) {
+			if (events[attrName] !== undefined) {
 				clearEventListeners(node, attrName);
 				addEventListener(node, attrName, attrVal);
 				// styles
@@ -24,7 +24,7 @@ export default (node, attrs) => {
 				setStyles(node, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
-				setProperty(node, attrName, attrVal, true);
+				setAttribute(node, attrName, attrVal);
 			}
 		}
 	});

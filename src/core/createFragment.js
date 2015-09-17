@@ -1,5 +1,5 @@
-import minErr  from '../../util/minErr';
-import isArray from '../../util/isArray';
+import minErr  from '../util/minErr';
+import isArray from '../util/isArray';
 
 export default function createFragment(values, template) {
 	if (template.key === undefined) {

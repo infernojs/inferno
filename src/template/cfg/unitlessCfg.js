@@ -1,4 +1,4 @@
-import forIn from '../../../util/forIn';
+import forIn from '../../util/forIn';
 import prefixes from '../prefixes';
 import prefixKey from '../prefixKey';
 
