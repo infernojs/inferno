@@ -8,7 +8,7 @@ import render from './render';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../template/createElement';
 
-let attachFragment = function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
+function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
 	let fragmentComponent = fragment.component;
 
 	if (fragmentComponent) {

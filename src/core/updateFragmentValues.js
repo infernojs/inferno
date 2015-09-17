@@ -10,7 +10,7 @@ import { setAttribute }    from '../template/DOMOperations';
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
 //on the v8 compiler. need to explore how to refactor without introducing this performance cost
-export default function updateFragmentValues(context, oldFragment, fragment, component) {
+function updateFragmentValues(context, oldFragment, fragment, component) {
 
 	let componentsToUpdate = [];
 
@@ -109,3 +109,5 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
 		}
 	}
 }
+
+export default updateFragmentValues;
