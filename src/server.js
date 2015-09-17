@@ -7,7 +7,7 @@ import FragmentValueTypes     from './universal/enum/fragmentValueTypes';
 import TemplateTypes          from './universal/enum/templateTypes';
 import createFragment         from './universal/core/createFragment';
 import createTemplate         from './universal/core/createTemplate';
-import template               from './universal/template';
+import template               from './universal/template/server';
 import clearDomElement        from './universal/core/clearDomElement';
 
 export default {

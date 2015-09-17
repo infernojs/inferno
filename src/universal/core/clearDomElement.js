@@ -1,5 +1,5 @@
-import getContext  from '../../universal/core/getContext';
-import removeContext from '../../universal/core/removeContext';
+import getContext  from '../core/getContext';
+import removeContext from '../core/removeContext';
 
 export default function clearDomElement(dom) {
 	let context = getContext(dom);

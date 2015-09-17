@@ -1,9 +1,7 @@
-import isBrowser from './isBrowser';
-
 let isSVG;
 
-if (isBrowser()) {
-	var implementation = document.implementation;
+if (document) {
+	let { implementation } = document;
 	isSVG = (
 		implementation &&
 		implementation.hasFeature &&

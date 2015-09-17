@@ -1,11 +1,11 @@
 import updateFragment      from './updateFragment';
 import fragmentValueTypes  from '../enum/fragmentValueTypes';
 import updateFragmentList  from './updateFragmentList';
-import clearEventListeners from '../../browser/events/clearEventListeners';
-import addEventListener    from '../../browser/events/addEventListener';
-import events              from '../../browser/events/shared/events';
+import clearEventListeners from '../events/clearEventListeners';
+import addEventListener    from '../events/addEventListener';
+import events              from '../events/shared/events';
 import isSVG               from '../../util/isSVG';
-import { setAttribute }         from '../../browser/template/DOMOperations';
+import { setAttribute }    from '../template/DOMOperations';
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 //refactored to by more DRY. although, this causes a significant performance cost
