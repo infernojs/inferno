@@ -69,6 +69,80 @@ describe('Inferno acceptance tests', () => {
 						`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
 					);
 				});
+
+				it('should render a basic component', () => {
+					class TestComponent extends Inferno.Component {
+						render() {
+							return Inferno.createFragment(null, t =>
+								<span>Hello world!</span>
+							);
+						}
+					}
+
+					let template = Inferno.createTemplate((t, Component) =>
+						<div className='foo'>
+							<Component />
+						</div>
+					);
+
+					Inferno.render(Inferno.createFragment(TestComponent, template), container);
+
+					expect(
+						container.innerHTML
+					).to.equal(
+						`<div class="foo"><span>Hello world!</span></div>`
+					);
+				});
+
+				it('should render a basic component #2', () => {
+					class TestComponent extends Inferno.Component {
+						render() {
+							return Inferno.createFragment(null, t =>
+								<span>Hello world!</span>
+							);
+						}
+					}
+
+					let template = Inferno.createTemplate((t, Component) =>
+						<div className='foo'>
+							<span>Foo!</span>
+							<Component />
+						</div>
+					);
+
+					Inferno.render(Inferno.createFragment(TestComponent, template), container);
+
+					expect(
+						container.innerHTML
+					).to.equal(
+						`<div class="foo"><span>Foo!</span><span>Hello world!</span></div>`
+					);
+				});
+
+				it('should render a basic component #3', () => {
+					class TestComponent extends Inferno.Component {
+						render() {
+							return Inferno.createFragment(this.props.test, (t, val1) =>
+								<span>Hello world! { val1 } are belong to us</span>
+							);
+						}
+					}
+
+					let template = Inferno.createTemplate((t, Component, val1) =>
+						<div className='foo'>
+							<span>Foo!</span>
+							<Component test={ val1 } />
+						</div>
+					);
+
+					Inferno.render(Inferno.createFragment([TestComponent, "All your base"], template), container);
+
+					expect(
+						container.innerHTML
+					).to.equal(
+						`<div class="foo"><span>Foo!</span><span>Hello world! All your base are belong to us</span></div>`
+					);
+				});
 			});
 
 			describe('using the Inferno t7 template API', () => {

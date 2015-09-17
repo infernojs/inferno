@@ -61,11 +61,9 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			case fragmentValueTypes.LIST:
 				attachFragmentList( context, fragment.templateValue, fragment.templateElement );
 				break;
+			case fragmentValueTypes.FRAGMENT:
 			case fragmentValueTypes.LIST_REPLACE:
 				attachFragment( context, fragment.templateValue, fragment.templateElement, component );
-				break;
-			case fragmentValueTypes.FRAGMENT:
-				//TODO do we need this still?
 				break;
 			case fragmentValueTypes.FRAGMENT_REPLACE:
 				attachFragment( context, fragment.templateValue, parentDom, fragment.templateElement, true );
@@ -95,7 +93,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					fragment.templateElements[i] = parentElem;
 					break;
 				case fragmentValueTypes.FRAGMENT:
-					//TODO do we need this still?
+					attachFragment( context, fragment.templateValues[i], fragment.templateElements[i], component );
 					break;
 				case fragmentValueTypes.FRAGMENT_REPLACE:
 					attachFragment( context, value, parentDom, component, element, true );

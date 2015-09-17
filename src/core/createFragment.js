@@ -1,9 +1,10 @@
-import minErr  from '../util/minErr';
-import isArray from '../util/isArray';
+import minErr  			from '../util/minErr';
+import isArray 			from '../util/isArray';
+import createTemplate	from './createTemplate';
 
 export default function createFragment(values, template) {
 	if (template.key == null) {
-		minErr('createFragment()', 'Template is missing a key');
+		template = createTemplate(template);
 	}
 
 	let fragmentObject = {
@@ -17,7 +18,7 @@ export default function createFragment(values, template) {
 	if (values != null && (isArray(values))) {
 		fragmentObject.templateElements = null;
 		fragmentObject.templateValues = values;
-	} else {
+	} else  {
 		fragmentObject.templateElement = null;
 		fragmentObject.templateValue = values;
 	}
