@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sick!</title>
+</head>
+<body>
+
+    <div id="test2"></div>
+
+ <div id="app"></div>
+  <div id="control"></div>
+
+<select value="2"><option value="1">Bar</option><option value="2">Foo</option></select>
+
+<script src="./dist/Inferno.js"></script>
+<script src="./examples/t7.js"></script>
+
+<script>
+
+
+var Framework = (state, renderer, node) => {
+    var render = () => {
+        Inferno.render(renderer(state, update), node);
+    }
+
+    var update = fn => {
+        fn(state);
+        render();
+    };
+
+    render();
+    return update;
+};
+
+Framework(
+    { x: true },
+    (s, update) => t7`
+        <div>
+            <div>${ s.x }</div>
+            <button onClick=${ () => update(s => { s.x = !s.x; }) }>Toggle</button>
+        </div>
+    `,
+    document.body
+);
+  
+
+//  Inferno.render(
+//    t7`<div class="tt" className="dd" style="width:200px;height:200px;background-color:green"><button>Clear App</button></div>`,
+  //  document.getElementById("control")
+//  );
+
+
+
+</script>
+</body>
+</html>
+
+
+
+ 
