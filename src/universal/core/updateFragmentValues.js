@@ -76,29 +76,6 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
 					element.height = fragment.templateValues[i];
 				}
 				break;
-<<<<<<< HEAD
-			default:
-				//component prop, update it
-				if (element.props) {
-					element.props[type] = fragment.templateValues[i];
-					let alreadyInQueue = false;
-					for (let s = 0; s < componentsToUpdate.length; s++) {
-						if (componentsToUpdate[s] === element) {
-							alreadyInQueue = true;
-						}
-					}
-					if (alreadyInQueue === false) {
-						componentsToUpdate.push(element);
-					}
-				} else {
-					if (events[type] !== undefined) {
-						clearEventListeners(element, type);
-						addEventListener(element, type, fragment.templateValues[i]);
-					} else {
-						setAttribute(element, type, fragment.templateValues[i]);
-					}
-				}
-=======
                default:
                     //custom attribute, so simply setAttribute it
                     if (!element.props) {
@@ -123,7 +100,6 @@ export default function updateFragmentValues(context, oldFragment, fragment, com
                         }
                     }
                     break;
->>>>>>> 757799a25030453a1486017fbbeceee2bb7d663e
 			}
 		}
 	}
