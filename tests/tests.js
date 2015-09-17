@@ -1,5 +1,5 @@
 /* global describe it beforeEach afterEach */
-var Inferno = require('../src/inferno');
+var Inferno = require('../src');
 var chai = require('chai');
 var t7 = require('../examples/t7');
 var isBrowser = require('../src/util/isBrowser');
@@ -469,7 +469,7 @@ describe('Inferno acceptance tests', function() {
 	});
 
 	describe('DOM operations', function() {
-  	  
+
 	  var container;
 
 	beforeEach(function() {
@@ -504,7 +504,7 @@ describe('Inferno acceptance tests', function() {
 	it("should set 'title' attribute", function () {
 	    setAttribute(container,  "title", "dominic");
 	    expect( container.getAttribute( "title" ) ).to.equal( "dominic" );
-		
+
 	});
 
 	it("should support HTML5 data-* attribute", function () {
@@ -513,37 +513,37 @@ describe('Inferno acceptance tests', function() {
 
 	    setAttribute(container, "foo-xyz", "simple");
 	    expect( container.getAttribute( "foo-xyz") ).to.equal( "simple" );
-		
+
 	});
 });
 
    describe('.addProperties()', function() {
 
     it( "should handle radio buttons as a property", function () {
-	    
+
 		addAttributes(container, { type: "radio", checked: true });
         expect( container.getAttribute( "type" ) ).to.eql( "radio" );
         expect( container.checked ).to.be.true;
     });
    });
-   
+
    describe('.addAttributes()', function() {
 
     it( "should handle radio buttons", function () {
-	    
+
 		addAttributes(container, { type: "radio", checked: true });
         expect( container.getAttribute( "type" ) ).to.eql( "radio" );
         expect( container.checked ).to.be.true;
 
     });
-	
+
 	it( "should set the 'title' attribute", function () {
 
 		addAttributes(container, { title: "FooBar" });
         expect( container.getAttribute( "title" ) ).to.eql( "FooBar" );
 
     } );
-	
+
 	it( "should set 'disabled' boolean element property", function () {
 
 		addAttributes(container, { type: "checkbox" , disabled: true});
@@ -561,7 +561,7 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container, {});
         expect( container.attrs ).to.be.undefined;
     } );
-	
+
 	 it( "should ignore a `undefined` attribute", function () {
 
         addAttributes(container, { "class": undefined })
@@ -575,7 +575,7 @@ describe('Inferno acceptance tests', function() {
         expect( container.hasAttribute( "value" ) ).to.be.false;
 
     } );
-	
+
 	 it( "should set 'selectedIndex' property as an attribute", function () {
         addAttributes(container, { type: "option", selectedIndex: true });
         expect( container.getAttribute( "type" ) ).to.eql( "option");
@@ -595,7 +595,7 @@ describe('Inferno acceptance tests', function() {
         expect( container.selected ).to.eql("selected");
 
     } );
-	 
+
     it( "should set 'checked' boolean attribute", function () {
 
         addAttributes(container, { type: "checkbox", checked: true });
@@ -612,7 +612,7 @@ describe('Inferno acceptance tests', function() {
     } );
 
     it( "should set 'disabled' boolean attribute as disabled", function () {
-        
+
 		addAttributes(container, { type: "radio", disabled: "disabled" } );
         expect( container.getAttribute( "type" ) ).to.eql( "radio" );
         expect( container.getAttribute("disabled") ).to.eql( "" );
@@ -622,60 +622,60 @@ describe('Inferno acceptance tests', function() {
     it( "should set 'open' attribute", function () {
         addAttributes(container, { open: "open" } );
         expect( container.open ).to.eql( "open" );
-    } );	
+    } );
 
     it( "should set 'contenteditable' attribute", function () {
         addAttributes(container, { contenteditable: true  } );
         expect( container.getAttribute( "contenteditable" ) ).to.eql( "true" );
 
-    } );	
+    } );
 
     it( "should set 'maxlength' attribute", function () {
         addAttributes(container, { maxlength: "5" } );
         expect( container.getAttribute( "maxlength" ) ).to.eql( "5" );
 
-    } );	
+    } );
 
     it( "should set 'aria-disabled' attribute", function () {
         addAttributes(container, { "aria-disabled": true } );
         expect( container.getAttribute( "aria-disabled" ) ).to.eql( "true" );
-    });		
+    });
 
     it( "should not set 'aria-disabled' attribute", function () {
         addAttributes(container, { "aria-disabled": false } );
         expect( container.getAttribute( "aria-disabled" ) ).to.eql( "false" );
-    });		
-	
+    });
+
 	it( "should set 'required' attribute", function () {
         addAttributes(container,  { required: "required" } );
         expect( container.required ).to.eql( "required" );
 
-    } );	
+    } );
 
     it( "should set 'required' attribute to false", function () {
 
         addAttributes(container, { required: false } );
         expect( container.required ).to.be.false;
-    } );	
-	
+    } );
+
 	it( "should set 'autofocus' attribute", function () {
         addAttributes(container,  { autofocus: "autofocus" } );
         expect( container.getAttribute("autofocus") ).to.eql( "autofocus" );
 
-    } );	
+    } );
 
     it( "should set 'autofocus' attribute to false", function () {
 
         addAttributes(container, { required: false } );
         expect( container.getAttribute("autofocus" )).to.be.null;
-    } );	
-	
+    } );
+
 	 it( "should unsert 'multiple' attribute", function () {
          addAttributes(container, { multiple: undefined } );
          expect( container.getAttribute( "multiple" ) ).to.be.null;
          expect( container.multiple ).to.be.undefined;
     });
-	
+
 	it( "should set the 'name' attribute and treat it as a property", function () {
          addAttributes(container, { name: "simple" } );
          expect( container.name ).to.eql("simple");
@@ -738,14 +738,14 @@ describe('Inferno acceptance tests', function() {
          expect( container.getAttribute("size") ).to.eql("0");
 
     });
-    
+
 	 // className should be '', not 'null' or null (which becomes 'null' in
      // some browsers)
 	it( "should set className to empty string instead of null", function () {
         addAttributes(container, { className: null } );
         expect( container.className ).to.eql("");
     });
-	
+
 	it( "should set className property", function () {
         addAttributes(container, { className: "Inferno Rocks!" } );
         expect( container.className ).to.eql("Inferno Rocks!");
@@ -762,26 +762,26 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container, { class: null } );
         expect( container.className ).to.eql("");
     });
-	
+
 
 	it( "should set 'class' attribute to empty string instead of null", function () {
         addAttributes(container, { class: null } );
         expect( container.className ).to.eql("");
     });
-	
+
 	 it( "should support ARIA", function () {
-        
+
 		addAttributes(container, { "aria-checked": true } );
         expect( container.getAttribute("aria-checked") ).to.eql("true");
 
     });
-    
+
     it( "should set 'class' as an attribute", function () {
 		addAttributes(container, { class: "foo" } );
         expect( container.getAttribute( "class" ) ).to.eql( "foo" );
 
     });
-	
+
     it( "should set multiple as an property", function () {
         addAttributes(container, { multiple: true } );
         expect( container.multiple ).to.eql( true );
@@ -796,7 +796,7 @@ describe('Inferno acceptance tests', function() {
         expect( container.selectedIndex ).to.be.true;
 
     } );
-	
+
     it( "should set 'id' property", function () {
         addAttributes(container, { id: "123" } );
         expect( container.id ).to.eql( "123" );
@@ -807,8 +807,8 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container, { autofocus: true } );
         expect( container.getAttribute("autofocus") ).to.eql( "true" );
         expect( container.autofocus ).to.be.undefined;
-    });	
-	
+    });
+
     it( "should render namespace attributes", function () {
        addAttributes(container,  { xmlns: "http://www.w3.org/2000/svg", "xlink:href": "test.jpg" } );
        expect( container.getAttribute("xmlns") ).to.eql( "http://www.w3.org/2000/svg" );
@@ -824,12 +824,12 @@ describe('Inferno acceptance tests', function() {
        expect( container.getAttribute("parametric:r") ).to.eql( "20" );
        expect( container.getAttribute("parametric:y") ).to.eql( "10" );
     });
-	
+
   });
 });
-   
+
    describe('CSS operations', function() {
-  	  
+
 	  var container;
 
 	beforeEach(function() {
@@ -842,15 +842,15 @@ describe('Inferno acceptance tests', function() {
   });
 
      describe('.setStyles()', function() {
-		 
+
 		  it('should be a function', function() {
          expect(setStyles).to.be.a.function;
      });
-	 
+
 	});
 
      describe('unitlessCfg', function() {
-		 
+
     it('should generate browser prefixes for unitless numbers`', function() {
          expect(unitlessCfg.lineClamp).to.be.true;
          expect(unitlessCfg.WebkitLineClamp).to.be.true;
@@ -862,14 +862,14 @@ describe('Inferno acceptance tests', function() {
 	});
 
      describe('.extendUnitlessNumber()', function() {
-		 
+
     it('should extend unitless numbers', function() {
 		extendUnitlessNumber( { "foo": true, "bar": true});
          expect(unitlessCfg.foo).to.be.true;
          expect(unitlessCfg.bar).to.be.true;
      });
 	});
-	
+
 	 describe('.addAttributes()', function() {
  	it( "should create markup for simple styles", function () {
         addAttributes(container, { style: { width: "12px" }} );
@@ -911,12 +911,12 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container, { style: {} } );
         expect( container.style.cssText ).to.eql( "" );
     });
-		 
+
 	it( "should support number values", function () {
         addAttributes(container,  { style: { width: 7 } } );
         expect( container.style.width ).to.eql( "7px" );
     });
-	
+
 	it( "should add px suffix to some css properties", function () {
         addAttributes(container,  { style: { width: 5 } } );
         expect( container.style.width ).to.eql( "5px" );
@@ -931,7 +931,7 @@ describe('Inferno acceptance tests', function() {
         addAttributes(container,  { style: { "letter-spacing": 5 } } );
         expect( container.style["letter-spacing"] ).to.eql( "5px");
     });
-	
+
 	it( "should set 'display:block'", function () {
 
         addAttributes(container,  { style: { "display": "block" } } );

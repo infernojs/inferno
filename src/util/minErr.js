@@ -8,6 +8,7 @@ var Wrapper = function(module, msg) {
 	// use the name on the framework
 	this.name = 'Inferno';
 };
+
 Wrapper.prototype = Object.create(Error.prototype);
 
 export default function minErr(module, msg) {

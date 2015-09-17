@@ -25,7 +25,7 @@ if (PROD) {
 
 module.exports = {
 	context: path.join(__dirname, '/src'),
-	entry: path.join(__dirname, '/src/inferno'),
+	entry: path.join(__dirname, '/src'),
 	cache: true,
 	debug: PROD ? false: true,
 	devtool: 'source-map',

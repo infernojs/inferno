@@ -14,16 +14,20 @@ let doNotShowInHtml = {
 //move, remove, delete elements around our 'virtual DOM' without needing real DOM elements
 //we can they find their text string for when we want to renderToString()
 export default class VirtualElement {
-	constructor(tagName, namespace) {
+	constructor(tagName, /* namespace */) {
 		this.tagName = tagName;
 		this.children = [];
 
 		Object.defineProperty(this, 'textContent', {
 			set: textValue => {
+				/* TODO shouldn't this entire function just be
+					this.children = [new VirtualTextNode(textValue)];
+				*/
 				if (this.children.length > 0) {
 					//if we have children, kill them
 					this.children = [];
-				} else {
+				}
+				else {
 					this.appendChild(new VirtualTextNode(textValue));
 				}
 			},
@@ -31,34 +35,33 @@ export default class VirtualElement {
 		});
 
 		Object.defineProperty(this, 'innerHTML', {
-			set: textValue => {
+			set: () => {
 				throw Error('You cannot set the innerHTML of virtual elements, use declarative API instead');
 			},
 			get: () => this.children.map(child => child.outerHTML || child.nodeValue).join('')
 		});
 
 		Object.defineProperty(this, 'outerHTML', {
-			set: textValue => {
+			set: () => {
 				throw Error('You cannot set the outerHTML of virtual elements, use declarative API instead');
 			},
 			get: () => {
 				let childrenInnerHtml = this.children.map(child => child.outerHTML || child.nodeValue).join('');
 				let attributes = [];
-				for(let property in this) {
-					if(!doNotShowInHtml[property]) {
+				for (let property in this) {
+					if (!doNotShowInHtml[property]) {
 						attributes.push(property + `="${ this[property] }"`);
 					}
 				}
 				if (attributes.length > 0) {
 					return `<${ tagName } ${ attributes }>${ childrenInnerHtml }</${ tagName }>`;
-				} else {
-					return `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;
 				}
+				return `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;
 			}
 		});
 	}
-	appendChild(childVirtualElement) {
-		this.children.push(childVirtualElement);
+	appendChild(child) {
+		this.children.push(child);
 	}
 	setAttribute(attribute, value) {
 		this[attribute] = value;

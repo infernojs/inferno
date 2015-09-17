@@ -9,7 +9,7 @@ var plugins = [
 
 module.exports = {
 	context: path.join(__dirname),
-	entry: path.join(__dirname, '/src/inferno'),
+	entry: path.join(__dirname, '/src'),
 	cache: true,
 	debug: true,
 	devtool: 'source-map',

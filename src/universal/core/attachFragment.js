@@ -1,28 +1,31 @@
-import getRecycledFragment   from './getRecycledFragment';
-import updateFragment        from './updateFragment';
-import attachFragmentList    from './attachFragmentList';
-import fragmentValueTypes    from '../enum/fragmentValueTypes';
-import insertFragment        from './insertFragment';
-import templateTypes         from '../enum/templateTypes';
+// import Inferno from '../..';
+import getRecycledFragment from './getRecycledFragment';
+import updateFragment from './updateFragment';
+import attachFragmentList from './attachFragmentList';
+import fragmentValueTypes from '../enum/fragmentValueTypes';
+import insertFragment from './insertFragment';
+import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../../browser/template/createElement';
 
-let attachFragment = function attachFragment( context, fragment, parentDom, component, nextFragment, replace ) {
+let attachFragment = function attachFragment(context, fragment, parentDom, component, nextFragment, replace, /* skip */) {
 	let fragmentComponent = fragment.component;
 
-	if ( fragmentComponent ) {
-		if ( typeof fragmentComponent === 'function' ) {
-			fragmentComponent = fragment.component = new fragmentComponent( fragment.props );
+	if (fragmentComponent) {
+		if (typeof fragmentComponent === 'function') {
+			fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
 			fragmentComponent.context = null;
-			fragmentComponent.forceUpdate = Inferno.render.bind( null, fragmentComponent.render.bind( fragmentComponent ), parentDom, fragmentComponent );
+			// TODO get rid of this line
+			fragmentComponent.forceUpdate = Inferno.render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
 			fragmentComponent.forceUpdate();
 		}
 		return;
 	}
+
 	let recycledFragment = null,
-		template = fragment.template,
+		{ template } = fragment,
 		templateKey = template.key;
 
-	if ( context.shouldRecycle === true ) {
+	if (context.shouldRecycle === true) {
 		recycledFragment = getRecycledFragment( templateKey );
 	}
 
@@ -82,7 +85,7 @@ let attachFragment = function attachFragment( context, fragment, parentDom, comp
 					attachFragmentList( context, value, element );
 					break;
 				case fragmentValueTypes.LIST_REPLACE:
-					let nodeList = document.createElement("div"),
+					let nodeList = document.createElement('div'),
 						placeholderNode = fragment.templateElements[i];
 
 					attachFragmentList( context, value, nodeList );

@@ -7,31 +7,34 @@ import VirtualElement       from '../../universal/class/VirtualElement';
 import VirtualTextNode      from '../../universal/class/VirtualTextNode';
 
 export default {
-	addAttributes: addAttributes,
-	addProperties:addProperties,
-	renderToString: renderToString,
-	extendUnitlessNumber:extendUnitlessNumber,
+	addAttributes,
+	addProperties,
+	renderToString,
+	extendUnitlessNumber,
 	createElement(tag, namespace) {
 		if (isBrowser()) {
 			if (namespace === undefined) {
 				return document.createElement(tag);
 			}
 			return document.createElementNS(namespace, tag);
-		} else {
+		}
+		else {
 			return new VirtualElement(tag, namespace);
 		}
 	},
 	createTextNode(text) {
 		if (isBrowser()) {
 			return document.createTextNode(text);
-		} else {
+		}
+		else {
 			return new VirtualTextNode(text);
 		}
 	},
 	createEmptyText() {
 		if (isBrowser()) {
 			return document.createTextNode('');
-		} else {
+		}
+		else {
 			return new VirtualTextNode('');
 		}
 	}
