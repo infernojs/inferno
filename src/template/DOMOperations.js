@@ -16,7 +16,7 @@ let propInfo = {},
     {
         MUST_USE_ATTRIBUTE,
         MUST_USE_PROPERTY,
-        HAS_SIDE_EFFECTS,
+        SET_WITH_CHECK,
         HAS_BOOLEAN_VALUE,
         HAS_NUMERIC_VALUE,
         HAS_POSITIVE_NUMERIC_VALUE,
@@ -34,7 +34,7 @@ forIn(attrPropCfg, (propName, propConfig) => {
 
 		mustUseAttribute: checkBitmask(propConfig, MUST_USE_ATTRIBUTE),
 		mustUseProperty: checkBitmask(propConfig, MUST_USE_PROPERTY),
-		hasSideEffects: checkBitmask(propConfig, HAS_SIDE_EFFECTS),
+		setWithCheck: checkBitmask(propConfig, SET_WITH_CHECK),
 		hasBooleanValue: checkBitmask(propConfig, HAS_BOOLEAN_VALUE),
 		hasNumericValue: checkBitmask(propConfig, HAS_NUMERIC_VALUE),
 		hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
@@ -107,7 +107,7 @@ function removeFromDOM(node, name) {
 			let propName = propInfo.propertyName,
 				initialValue = hasPropertyAccessor(node.nodeName, propName);
 
-			if (!propInfo.hasSideEffects || (('' + node[propName]) !== initialValue)) {
+			if (!propInfo.setWithCheck || (('' + node[propName]) !== initialValue)) {
 				node[propName] = initialValue;
 			}
 		}
@@ -157,10 +157,10 @@ function setAttribute(node, name, value, property) {
 			// HTML properties
 		} else {
 			let propName = propInfo.propertyName;
-			// Must explicitly cast values for HAS_SIDE_EFFECTS-properties to the
-			// property type before comparing; only `value` does and is string.
-			if (!propInfo.hasSideEffects || (node[propName] !== value)) {
+			if (!propInfo.setWithCheck || (node[propName] !== value)) {
 				node[propName] = value;
+			} else if (propInfo.setWithCheck) {
+			 node[propName] !== value && (node[propName] = value);
 			}
 		}
 
