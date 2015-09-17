@@ -7,5 +7,5 @@ node_js:
 before_install:
   - npm install -g webpack
 script:
-- npm webpack
+- npm run build
 - npm run test
