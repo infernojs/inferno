@@ -2,7 +2,7 @@ import minErr  from '../util/minErr';
 import isArray from '../util/isArray';
 
 export default function createFragment(values, template) {
-	if (template.key === undefined) {
+	if (template.key == null) {
 		minErr('createFragment()', 'Template is missing a key');
 	}
 
@@ -13,11 +13,8 @@ export default function createFragment(values, template) {
 		template: template,
 		templateTypes: null
 	};
-	/**
-	 * To 'failsafe' this and avoid throwing on non-constructor, we have to check
-	 * if the 'values' are 'null'.
-	 */
-	if (values !== null && isArray(values)) {
+
+	if (values != null && (isArray(values))) {
 		fragmentObject.templateElements = null;
 		fragmentObject.templateValues = values;
 	} else {
