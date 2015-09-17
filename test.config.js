@@ -7,19 +7,21 @@ var plugins = [
 	})
 ];
 
+var srcDir = path.join(__dirname, 'src');
+var testDir = path.join(__dirname, 'tests');
+
 module.exports = {
-	context: path.join(__dirname),
-	entry: path.join(__dirname, '/src'),
+	entry: srcDir,
 	cache: true,
 	debug: true,
 	devtool: 'source-map',
 	output: {
-		path: __dirname + '/tests',
+		path: testDir,
 		filename: 'bundle.js',
 		publicPath: 'http://localhost:8080/'
 	},
 	devServer: {
-		contentBase: path.join(__dirname, '/tests'),
+		contentBase: testDir,
 		noInfo: true,
 		hot: true,
 		inline: true
@@ -28,7 +30,7 @@ module.exports = {
 		loaders: [
 			{
 				test: /\.js$/,
-				include: path.join(__dirname, '/src'),
+				include: [srcDir, testDir],
 				exclude: ['node_modules'],
 				loader: 'babel-loader'
 			}

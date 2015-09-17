@@ -24,20 +24,19 @@ if (PROD) {
 }
 
 module.exports = {
-	context: path.join(__dirname, '/src'),
-	entry: path.join(__dirname, '/src'),
+	entry: path.join(__dirname, 'src'),
 	cache: true,
 	debug: PROD ? false: true,
 	devtool: 'source-map',
 	output: {
-		path: path.join(__dirname, '/dist'),
+		path: path.join(__dirname, 'dist'),
 		filename: PROD ? 'inferno.min.js' : 'inferno.js',
 		libraryTarget: 'var',
 		library: 'Inferno',
 		publicPath: 'http://localhost:8080/'
 	},
 	devServer: {
-		contentBase: path.join(__dirname, '/examples'),
+		contentBase: path.join(__dirname, 'examples'),
 		noInfo: true,
 		hot: true,
 		inline: true
@@ -47,7 +46,7 @@ module.exports = {
 			{
 				test: /\.js$/,
 				exclude: ['node_modules'],
-				include: path.join(__dirname, '/src'),
+				include: path.join(__dirname, 'src'),
 				loader: 'babel-loader',
 				query: {
 					optional: ['runtime']
