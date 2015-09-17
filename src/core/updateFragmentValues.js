@@ -4,7 +4,7 @@ import updateFragmentList  from './updateFragmentList';
 import clearEventListeners from '../events/clearEventListeners';
 import addEventListener    from '../events/addEventListener';
 import events              from '../events/shared/events';
-import isSVG               from '../../util/isSVG';
+import isSVG               from '../util/isSVG';
 import { setAttribute }    from '../template/DOMOperations';
 
 //TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be

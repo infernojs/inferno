@@ -1,5 +1,5 @@
 import masks from '../vars/masks';
-import isSVG from '../../../util/isSVG';
+import isSVG from '../../util/isSVG';
 
 let {
     MUST_USE_ATTRIBUTE,

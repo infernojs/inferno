@@ -1,6 +1,6 @@
 import voidCfg from './cfg/voidCfg';
-import forIn from '../../util/forIn';
-import inArray from '../../util/inArray';
+import forIn from '../util/forIn';
+import inArray from '../util/inArray';
 import { renderStyleToString } from './CSSOperations';
 import { renderHtmlMarkup } from './DOMOperations';
 

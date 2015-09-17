@@ -2,11 +2,11 @@
 var Inferno = require('../src');
 var chai = require('chai');
 var t7 = require('../examples/t7');
-var DOMOperations = require('../src/universal/template/DOMOperations');
-var CSSOperations = require('../src/universal/template/CSSOperations');
-var addAttributes = require('../src/universal/template/addAttributes');
-var unitlessCfg = require('../src/universal/template/cfg/unitlessCfg');
-var extendUnitlessNumber = require('../src/universal/template/extendUnitlessNumber');
+var DOMOperations = require('../src/template/DOMOperations');
+var CSSOperations = require('../src/template/CSSOperations');
+var addAttributes = require('../src/template/addAttributes');
+var unitlessCfg = require('../src/template/cfg/unitlessCfg');
+var extendUnitlessNumber = require('../src/template/extendUnitlessNumber');
 var expect = chai.expect;
 var setAttribute = DOMOperations.setAttribute;
 
