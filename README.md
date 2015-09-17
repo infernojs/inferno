@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=new-build)](https://travis-ci.org/trueadm/inferno)
 
-![alt tag](http://infernojs.org/browserstack.svg)
+![alt Supported by Browserstack](http://infernojs.org/browserstack.svg)
 
 
 Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno achieves great performance for demanding applications by taking a completely different approach to the virtual DOM problem. Unlike other frameworks that use virtual DOM, Inferno does not "diff" the virtual DOM on each update, but rather it carries out a "diff" on the actual values themselves. This technique allows Inferno to achieve lightning fast DOM operations with very little overhead.
