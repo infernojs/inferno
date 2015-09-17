@@ -2,7 +2,7 @@ import attrPropCfg from './cfg/attrPropCfg';
 import nsCfg from './cfg/nsCfg';
 import attrNameCfg from './cfg/attrNameCfg';
 import propNameCfg from './cfg/propNameCfg';
-import checkMask from './checkMask';
+import checkBitmask from './checkBitmask';
 import hooks from './hooks';
 import memoizeString from './memoizeString';
 import shouldIgnoreValue from './shouldIgnoreValue';
@@ -12,8 +12,17 @@ import escapeHtml from './escapeHtml';
 import hasPropertyAccessor from './hasPropertyAccessor';
 
 let propInfo = {},
-	properties = {};
-
+    properties = {},
+    {
+        MUST_USE_ATTRIBUTE,
+        MUST_USE_PROPERTY,
+        HAS_SIDE_EFFECTS,
+        HAS_BOOLEAN_VALUE,
+        HAS_NUMERIC_VALUE,
+        HAS_POSITIVE_NUMERIC_VALUE,
+        HAS_OVERLOADED_BOOLEAN_VALUE
+    } = masks;
+	
 // Populate the 'properties' object
 forIn(attrPropCfg, (propName, propConfig) => {
 
@@ -23,13 +32,13 @@ forIn(attrPropCfg, (propName, propConfig) => {
 		propertyName: propName,
 		hooks: null,
 
-		mustUseAttribute: checkMask(propConfig, masks.MUST_USE_ATTRIBUTE),
-		mustUseProperty: checkMask(propConfig, masks.MUST_USE_PROPERTY),
-		hasSideEffects: checkMask(propConfig, masks.HAS_SIDE_EFFECTS),
-		hasBooleanValue: checkMask(propConfig, masks.HAS_BOOLEAN_VALUE),
-		hasNumericValue: checkMask(propConfig, masks.HAS_NUMERIC_VALUE),
-		hasPositiveNumericValue: checkMask(propConfig, masks.HAS_POSITIVE_NUMERIC_VALUE),
-		hasOverloadedBooleanValue: checkMask(propConfig, masks.HAS_OVERLOADED_BOOLEAN_VALUE)
+		mustUseAttribute: checkBitmask(propConfig, MUST_USE_ATTRIBUTE),
+		mustUseProperty: checkBitmask(propConfig, MUST_USE_PROPERTY),
+		hasSideEffects: checkBitmask(propConfig, HAS_SIDE_EFFECTS),
+		hasBooleanValue: checkBitmask(propConfig, HAS_BOOLEAN_VALUE),
+		hasNumericValue: checkBitmask(propConfig, HAS_NUMERIC_VALUE),
+		hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
+		hasOverloadedBooleanValue: checkBitmask(propConfig, HAS_OVERLOADED_BOOLEAN_VALUE)
 	};
 
 	if (attrNameCfg[propName]) {
@@ -98,12 +107,14 @@ function removeFromDOM(node, name) {
 			let propName = propInfo.propertyName,
 				initialValue = hasPropertyAccessor(node.nodeName, propName);
 
-			if (!propInfo.hasSideEffects || ('' + node[propName]) !== initialValue) {
+			if (!propInfo.hasSideEffects || (('' + node[propName]) !== initialValue)) {
 				node[propName] = initialValue;
 			}
 		}
 	} else {
+		if ( name ) {
 		node.removeAttribute(name);
+	  }	
 	}
 }
 

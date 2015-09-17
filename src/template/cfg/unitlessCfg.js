@@ -49,10 +49,7 @@ let unitless = {
 
 // convert to vendor prefixed unitless CSS properties
 forIn(unitless, (prop, value) => {
-	// forIn(prefixes, prefix => {
-	// 	unitless[prefixKey(prefix, prop)] = value;
-	// });
-	prefixes.forEach(prefix => {
+prefixes.forEach(prefix => {
 		unitless[prefixKey(prefix, prop)] = value;
 	});
 });
