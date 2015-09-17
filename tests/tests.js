@@ -3,11 +3,10 @@
 import Inferno from '../src';
 import { expect } from 'chai';
 import t7 from '../examples/t7';
-var { setAttribute } = require('../src/template/DOMOperations');
-var { setStyles } = require('../src/template/CSSOperations');
-var addAttributes = require('../src/template/addAttributes');
-var unitlessCfg = require('../src/template/cfg/unitlessCfg');
-var extendUnitlessNumber = require('../src/template/extendUnitlessNumber');
+import { setAttribute } from '../src/template/DOMOperations';
+import addAttributes from '../src/template/addAttributes';
+import unitlessCfg from '../src/template/cfg/unitlessCfg';
+import extendUnitlessNumber from '../src/template/extendUnitlessNumber';
 
 // expose t7 and Inferno globally
 global.t7 = t7;
@@ -818,12 +817,6 @@ describe('Inferno acceptance tests', () => {
 		afterEach(() => {
 			Inferno.clearDomElement(container);
 			container = null;
-		});
-
-		describe('.setStyles()', () => {
-			it('should be a function', () => {
-				expect(setStyles).to.be.a.function;
-			});
 		});
 
 		describe('unitlessCfg', () => {

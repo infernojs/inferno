@@ -21,8 +21,8 @@ let unitless = {
 	flexOrder: true,
 	float: true,
 	fontWeight: true,
-// Supports CSS3 Grid Layout Module
-    gridRow: true,
+	// Supports CSS3 Grid Layout Module
+	gridRow: true,
 	gridColumn: true,
 	lineClamp: true,
 	lineHeight: true,
@@ -49,6 +49,9 @@ let unitless = {
 
 // convert to vendor prefixed unitless CSS properties
 forIn(unitless, (prop, value) => {
+	// forIn(prefixes, prefix => {
+	// 	unitless[prefixKey(prefix, prop)] = value;
+	// });
 	prefixes.forEach(prefix => {
 		unitless[prefixKey(prefix, prop)] = value;
 	});
