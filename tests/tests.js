@@ -122,43 +122,61 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-				it('should properly input download attribute ( thruthy)', () => {
-					let template = Inferno.createTemplate(t =>
-						<input download={ true }></input>
-					);
+				describe('should properly input download attribute (thruthy)', () => {
+					let template;
 
-					Inferno.render(Inferno.createFragment(null, template), container);
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input download={ true }></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
 
-					var test = container.innerHTML;
-					var expected = '<input download="">';
-
-					expect(test).to.equal(expected);
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input download="">'
+						);
+					});
 				});
 
-				it('should properly render "className" property', () => {
-					let template = Inferno.createTemplate(t =>
-						<input className="Hello, world!"></input>
-					);
+				describe('should properly render "className" property', () => {
+					let template;
 
-					Inferno.render(Inferno.createFragment(null, template), container);
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input className="Hello, world!"></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
 
-					var test = container.innerHTML;
-					var expected = '<input class="Hello, world!">';
-
-					expect(test).to.equal(expected);
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input class="Hello, world!">'
+						);
+					});
 				});
 
-				it('should properly render numeric properties', () => {
-					let template = Inferno.createTemplate(t =>
-						<input start="5"></input>
-					);
+				describe('should properly render numeric properties', () => {
+					let template;
 
-					Inferno.render(Inferno.createFragment(null, template), container);
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input start="5"></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
 
-					var test = container.innerHTML;
-					var expected = '<input start="5">';
-
-					expect(test).to.equal(expected);
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input start="5">'
+						);
+					});
 				});
 
 				it('should properly handle "disabled" boolean property', () => {
