@@ -1,3 +1,5 @@
+import isArray from "../util/isArray";
+
 function populateOptions(node, value, values) {
     if (node.tagName !== "OPTION") {
         for (let i = 0, len = node.children.length; i < len; i++) {
@@ -24,7 +26,8 @@ function setSelectValue(node, props) {
     }
 
     let values = {};
-    if (!Array.isArray(value)) {
+
+    if (!isArray(value)) {
         values[value] = value;
     } else {
         for (let i = 0, len = value.length; i < len; i++) {
