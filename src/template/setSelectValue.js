@@ -1,30 +1,43 @@
-function isInArray(arr, item) {
-    const len = arr.length;
-    let i = 0;
+import isArray from "../util/isArray";
 
-    while(i < len) {
-        if(arr[i++] == item) {
-            return true;
+function populateOptions(node, value, values) {
+    if (node.tagName !== "OPTION") {
+        for (let i = 0, len = node.children.length; i < len; i++) {
+            populateOptions(node.children[i], value, values);
         }
+        return;
     }
+	
+    var value = props.value;
 
-    return false;
+    if (!values[value]) {
+        return;
+    }
+    props = props || {};
+    props.selected = true;
 }
 
-function setSelectValue(node, value) {
-	/*
-  const isMultiple = Array.isArray(value),
-        options = node.options,
-        len = options.length;
+function setSelectValue(node, props) {
 
-    let i = 0,
-        optionNode;
+    let value = props.value;
 
-    while(i < len) {
-        optionNode = options[i++];
-        optionNode.selected = value != null &&
-            (isMultiple? isArray(value, optionNode.value) : optionNode.value == value);
-    }*/
+    if (value == null) {
+        return;
+    }
+
+    let values = {};
+
+    if (!isArray(value)) {
+        values[value] = value;
+    } else {
+        for (let i = 0, len = value.length; i < len; i++) {
+            values[value[i]] = value[i];
+        }
+    }
+    populateOptions(node, value, values);
+    if (props[value]) {
+        delete node.attrs.value;
+    }
 }
 
 export default setSelectValue;
