@@ -1,5 +1,7 @@
 import template from '.';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
+import setSelectValue from './setSelectValue';
+
 
 export default function createElement(tag, props, ...children) {
 	let element,
@@ -95,6 +97,13 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	if (props) {
+		
+		
+	if (element.tagName === "select") {
+
+         setSelectValue(element, props);
+    }
+
 		template.addAttributes(element, props);
 	}
 
