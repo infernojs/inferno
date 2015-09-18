@@ -161,6 +161,72 @@ describe('Inferno acceptance tests', () => {
 					expect(test).to.equal(expected);
 				});
 
+				it('should properly handle custom properties on web components', () => {
+					let template = Inferno.createTemplate(t =>
+						<div dominic="genious"></div>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<div dominic="genious"></div>';
+
+					expect(test).to.equal(expected);
+				});
+
+				it('should properly handle "aria-label" attribute', () => {
+					let template = Inferno.createTemplate(t =>
+						<div aria-label="false"></div>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<div aria-label="false"></div>';
+
+					expect(test).to.equal(expected);
+				});
+
+				
+				it('should properly handle custom properties on web components', () => {
+					let template = Inferno.createTemplate(t =>
+						<div awesomeness="5"></div>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<div awesomeness="5"></div>';
+
+					expect(test).to.equal(expected);
+				});
+
+				it('should properly handle values as properties by default', () => {
+					let template = Inferno.createTemplate(t =>
+						<div title="Inferno"></div>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<div title="Inferno"></div>';
+
+					expect(test).to.equal(expected);
+				});
+				
+				it('should properly set className to empty string instead of null', () => {
+					let template = Inferno.createTemplate(t =>
+						<div className=""></div>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<div class=""></div>';
+
+					expect(test).to.equal(expected);
+				});
+
 				describe('should render a basic component', () => {
 					class TestComponent extends Inferno.Component {
 						render() {
@@ -892,15 +958,15 @@ describe('Inferno acceptance tests', () => {
 				addAttributes(container, { start: 0 });
 				expect(container.getAttribute("start")).to.eql('0');
 
-				addAttributes(container, { size: 0 });
-				expect(container.getAttribute('size')).to.eql('0');
-
 			});
 
 			it('should handle numeric properties', () => {
 
 				addAttributes(container, { size: 0 });
 				expect(container.getAttribute('size')).to.eql('0');
+
+				addAttributes(container, { size: 1 });
+				expect(container.getAttribute('size')).to.eql('1');
 
 			});
 
