@@ -145,8 +145,7 @@ function setAttribute(node, name, value, property) {
 				namespace = propInfo.attributeNamespace;
 			if (namespace) {
 				node.setAttributeNS(namespace, attributeName, '' + value);
-			} else if (propInfo.hasBooleanValue ||
-				(propInfo.hasOverloadedBooleanValue && value === true)) {
+			} else if (propInfo.hasBooleanValue || (propInfo.hasOverloadedBooleanValue && value === true)) { 
 				// Avoid touching the DOM with 'removeAttribute'. Compare against 'false' instead
 				if (value !== false) {
 					node.setAttribute(attributeName, '');

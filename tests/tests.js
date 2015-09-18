@@ -122,19 +122,6 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-				it('should properly input download attribute ( thruthy)', () => {
-					let template = Inferno.createTemplate(t =>
-						<input download={ true }></input>
-					);
-
-					Inferno.render(Inferno.createFragment(null, template), container);
-
-					var test = container.innerHTML;
-					var expected = '<input download="">';
-
-					expect(test).to.equal(expected);
-				});
-
 				it('should properly render "className" property', () => {
 					let template = Inferno.createTemplate(t =>
 						<input className="Hello, world!"></input>
@@ -897,12 +884,20 @@ describe('Inferno acceptance tests', () => {
 
 			});
 
-			it('should handle numeric properties', () => {
+			it('should handle numeric attributes', () => {
+				
 				addAttributes(container, { start: 5 });
-				expect(container.start).to.eql(5);
+				expect(container.getAttribute("start")).to.eql('5');
 
 				addAttributes(container, { start: 0 });
-				expect(container.start).to.eql(0);
+				expect(container.getAttribute("start")).to.eql('0');
+
+				addAttributes(container, { size: 0 });
+				expect(container.getAttribute('size')).to.eql('0');
+
+			});
+
+			it('should handle numeric properties', () => {
 
 				addAttributes(container, { size: 0 });
 				expect(container.getAttribute('size')).to.eql('0');
