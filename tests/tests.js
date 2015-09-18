@@ -129,7 +129,7 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
-
+/*
 					it('Second render (update)', () => {
 						Inferno.render(Inferno.createFragment(true, template), container);
 						expect(
@@ -137,26 +137,7 @@ describe('Inferno acceptance tests', () => {
 						).to.equal(
 							'<input download="">'
 						);
-					});
-				});
-
-				describe('should properly input download attribute (thruthy)', () => {
-					let template;
-
-					beforeEach(() => {
-						template = Inferno.createTemplate(t =>
-							<input download={ true }></input>
-						);
-						Inferno.render(Inferno.createFragment(null, template), container);
-					});
-
-					it('Initial render (creation)', () => {
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<input download="">'
-						);
-					});
+					}); */
 				});
 
 				describe('should properly render "className" property', () => {
