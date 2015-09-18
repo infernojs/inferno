@@ -99,9 +99,9 @@ export default function createElement(tag, props, ...children) {
 	if (props) {
 		
 		
-	if (element.tagName === "select") {
+	if (element.tagName === "select" && (props.value)) {
 
-         setSelectValue(element, props);
+         setSelectValue(element, props.value);
     }
 
 		template.addAttributes(element, props);
