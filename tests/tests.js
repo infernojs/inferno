@@ -110,7 +110,7 @@ describe('Inferno acceptance tests', () => {
 
 					expect(test).to.equal(expected);
 				});
-/*
+
 				it('should properly input download attribute ( thruthy)', () => {
 					let template = Inferno.createTemplate((t, val1, val2) =>
 						<input download={ true }></input>
@@ -123,7 +123,7 @@ describe('Inferno acceptance tests', () => {
 
 					expect(test).to.equal(expected);
 				});
-*/
+
 				it('should properly render "className" property', () => {
 					let template = Inferno.createTemplate((t, val1, val2) =>
 						<input className="Hello, world!"></input>
@@ -136,7 +136,7 @@ describe('Inferno acceptance tests', () => {
 
 					expect(test).to.equal(expected);
 				});
-/*
+
 				it('should properly render numeric properties', () => {
 					let template = Inferno.createTemplate((t, val1, val2) =>
 						<input start="5"></input>
@@ -150,7 +150,6 @@ describe('Inferno acceptance tests', () => {
 					expect(test).to.equal(expected);
 				});
 
-*/
 				it('should properly handle "disabled" boolean property', () => {
 					let template = Inferno.createTemplate((t, val1, val2) =>
 						<div disabled="disabled"></div>
