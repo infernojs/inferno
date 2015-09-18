@@ -67,7 +67,7 @@ export default {
 	multiple: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
 	muted: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
 	name: MUST_USE_PROPERTY,
-    nohref: MUST_USE_ATTRIBUTE
+    nohref: MUST_USE_ATTRIBUTE,
     noshade: MUST_USE_ATTRIBUTE,
 	noValidate: HAS_BOOLEAN_VALUE,
 	open: HAS_BOOLEAN_VALUE,
