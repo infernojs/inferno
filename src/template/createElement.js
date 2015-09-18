@@ -90,8 +90,8 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	if (props) {
-		if (element.tagName === "select" && (props.value)) {
-			setSelectValue(element, props.value);
+	if (element.tagName === 'SELECT' && (props.value)) {
+			setSelectValue(element, props);
 		}
 		template.addAttributes(element, props, this);
 	}

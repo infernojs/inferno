@@ -216,7 +216,7 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-				describe('should properly handle custom properties on web components', () => {
+				describe('should properly handle custom properties', () => {
 					let template;
 
 					beforeEach(() => {
@@ -235,7 +235,7 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-				describe('should properly handle values as properties by default', () => {
+				describe('should properly handle the "title" attribute', () => {
 					let template;
 
 					beforeEach(() => {
@@ -273,6 +273,37 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
+				
+				
+				describe('should properly set className to empty string instead of null', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<select value="bar"><option value="bar">Bar</option><option value="foo">Foo</option></select>
+
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<select><option value="bar">Bar</option><option value="foo">Foo</option></select>'
+						);
+					});
+				});
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 
 				describe('should render a basic component', () => {
 					class TestComponent extends Inferno.Component {

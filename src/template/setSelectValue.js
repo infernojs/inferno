@@ -1,6 +1,14 @@
 import isArray from "../util/isArray";
 
-function populateOptions(node, value, values) {
+
+function populateOptions(node, props, values) {
+
+    var value = props.value;
+
+    if (!values[value]) {
+        return;
+    }
+	
     if (node.tagName !== "OPTION") {
         for (let i = 0, len = node.children.length; i < len; i++) {
             populateOptions(node.children[i], value, values);
@@ -8,13 +16,8 @@ function populateOptions(node, value, values) {
         return;
     }
 	
-    var value = props.value;
-
-    if (!values[value]) {
-        return;
-    }
     props = props || {};
-    props.selected = true;
+    props.selected = "selected";
 }
 
 function setSelectValue(node, props) {
@@ -35,9 +38,8 @@ function setSelectValue(node, props) {
         }
     }
     populateOptions(node, value, values);
-    if (props[value]) {
-        delete node.attrs.value;
-    }
+    
+        delete props.value;
 }
 
 export default setSelectValue;
