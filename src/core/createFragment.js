@@ -16,7 +16,8 @@ export default function createFragment(values, template) {
 	};
 
 	if (values != null && (isArray(values))) {
-		fragmentObject.templateElements = null;
+		fragmentObject.templateElements = new Array(values.length);
+		fragmentObject.templateTypes = new Array(values.length);
 		fragmentObject.templateValues = values;
 	} else  {
 		fragmentObject.templateElement = null;

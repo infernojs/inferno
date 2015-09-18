@@ -27,30 +27,58 @@ describe('Inferno acceptance tests', () => {
 			});
 
 			describe('using the Inferno functional API', () => {
-				it('should render a basic example', () => {
-					let template = Inferno.createTemplate(t => <div>Hello world</div>);
+				describe('should render a basic example', () => {
+					let template;
 
-					Inferno.render(Inferno.createFragment(null, template), container);
+					beforeEach(() => {
+						template = Inferno.createTemplate(t => <div>Hello world</div>);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
 
-					expect(
-						container.innerHTML
-					).to.equal(
-						'<div>Hello world</div>'
-					);
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div>Hello world</div>'
+						);
+					});
+
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div>Hello world</div>'
+						);
+					});
 				});
 
-				it('should render a basic example with dynamic values', () => {
-					let template = Inferno.createTemplate((t, val1, val2) =>
-						<div>Hello world - { val1 } { val2 }</div>
-					);
+				describe('should render a basic example with dynamic values', () => {
+					let template;
 
-					Inferno.render(Inferno.createFragment(['Inferno', 'Owns'], template), container);
+					beforeEach(() => {
+						template = Inferno.createTemplate((t, val1, val2) =>
+							<div>Hello world - { val1 } { val2 }</div>
+						);
+						Inferno.render(Inferno.createFragment(['Inferno', 'Owns'], template), container);
+					});
 
-					expect(
-						container.innerHTML
-					).to.equal(
-						'<div>Hello world - Inferno Owns</div>'
-					);
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div>Hello world - Inferno Owns</div>'
+						);
+					});
+
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(['Test', 'Works!'], template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div>Hello world - Test Works!</div>'
+						);
+					});
 				});
 
 				it('should render a basic example with dynamic values and props', () => {
@@ -68,6 +96,19 @@ describe('Inferno acceptance tests', () => {
 					).to.equal(
 						`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
 					);
+				});
+
+				it('should properly render input download attribute', () => {
+					let template = Inferno.createTemplate((t, val1, val2) =>
+						<input download={ false }></input>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<input>';
+
+					expect(test).to.equal(expected);
 				});
 
 				it('should render a basic component', () => {
