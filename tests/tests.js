@@ -101,16 +101,25 @@ describe('Inferno acceptance tests', () => {
 							`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
 						);
 					});
+
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(['Rocks', 'Inferno'], template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							`<div class="foo"><span class="bar">Rocks</span><span class="yar">Inferno</span></div>`
+						);
+					});
 				});
 
 				describe('should properly render input download attribute', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate((t, val1, val2) =>
-							<input download={ false }></input>
+						template = Inferno.createTemplate((t, val1) =>
+							<input download={ val1 }></input>
 						);
-						Inferno.render(Inferno.createFragment(null, template), container);
+						Inferno.render(Inferno.createFragment(false, template), container);
 					});
 
 					it('Initial render (creation)', () => {
@@ -118,6 +127,15 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input>'
+						);
+					});
+
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(true, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input download="">'
 						);
 					});
 				});
@@ -179,17 +197,100 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-				it('should properly handle "disabled" boolean property', () => {
-					let template = Inferno.createTemplate(t =>
-						<div disabled="disabled"></div>
-					);
+				describe('should properly handle custom properties on web components', () => {
+					let template;
 
-					Inferno.render(Inferno.createFragment(null, template), container);
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div dominic="cool"></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
 
-					var test = container.innerHTML;
-					var expected = '<div disabled=""></div>';
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div dominic="cool"></div>'
+						);
+					});
+				});
 
-					expect(test).to.equal(expected);
+				describe('should properly handle "aria-label" attribute', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div aria-label="false"></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div aria-label="false"></div>'
+						);
+					});
+				});
+
+				describe('should properly handle custom properties on web components', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div awesomeness="5"></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div awesomeness="5"></div>'
+						);
+					});
+				});
+
+				describe('should properly handle values as properties by default', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div title="Inferno"></div>
+						);
+
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div title="Inferno"></div>'
+						);
+					});
+				});
+
+				describe('should properly set className to empty string instead of null', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div className=""></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div class=""></div>'
+						);
+					});
 				});
 
 				describe('should render a basic component', () => {
@@ -915,15 +1016,23 @@ describe('Inferno acceptance tests', () => {
 
 			});
 
-			it('should handle numeric properties', () => {
+			it('should handle numeric attributes', () => {
+
 				addAttributes(container, { start: 5 });
-				expect(container.start).to.eql(5);
+				expect(container.getAttribute("start")).to.eql('5');
 
 				addAttributes(container, { start: 0 });
-				expect(container.start).to.eql(0);
+				expect(container.getAttribute("start")).to.eql('0');
+
+			});
+
+			it('should handle numeric properties', () => {
 
 				addAttributes(container, { size: 0 });
 				expect(container.getAttribute('size')).to.eql('0');
+
+				addAttributes(container, { size: 1 });
+				expect(container.getAttribute('size')).to.eql('1');
 
 			});
 

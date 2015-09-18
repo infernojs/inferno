@@ -43,7 +43,8 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			break;
 		case templateTypes.FUNCTIONAL_API:
 			let createElement = templateCreateElement.bind(fragment);
-			let params = [createElement], length = (fragment.templateValue && 1) || (fragment.templateValues && fragment.templateValues.length) || 0;
+			let params = [createElement], length = (fragment.templateValue !== undefined && 1)
+				|| (fragment.templateValues && fragment.templateValues.length) || 0;
 
 			//create our pointers, for example 0,1,2,3,4,5 as params to pass through
 			for(let i = 0; i < length; i++) {
