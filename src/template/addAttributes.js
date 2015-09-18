@@ -14,7 +14,7 @@ export default function addAttributes(node, attrs, fragment) {
 	for(let attrName in attrs) {
 		let attrVal = attrs[attrName];
 
-		if(attrVal.pointer != null) {
+		if(attrVal && attrVal.pointer != null) {
 			if(fragment.templateValue !== undefined) {
 				fragment.templateElement = node;
 				fragment.templateType = fragmentValueTypes.ATTR_OTHER[attrName] = attrName;
