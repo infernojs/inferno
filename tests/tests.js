@@ -110,6 +110,59 @@ describe('Inferno acceptance tests', () => {
 
 					expect(test).to.equal(expected);
 				});
+/*
+				it('should properly input download attribute ( thruthy)', () => {
+					let template = Inferno.createTemplate((t, val1, val2) =>
+						<input download={ true }></input>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<input download="">';
+
+					expect(test).to.equal(expected);
+				});
+*/
+				it('should properly render "className" property', () => {
+					let template = Inferno.createTemplate((t, val1, val2) =>
+						<input className="Hello, world!"></input>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<input class="Hello, world!">';
+
+					expect(test).to.equal(expected);
+				});
+/*
+				it('should properly render numeric properties', () => {
+					let template = Inferno.createTemplate((t, val1, val2) =>
+						<input start="5"></input>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<input start="5">';
+
+					expect(test).to.equal(expected);
+				});
+
+*/
+				it('should properly handle "disabled" boolean property', () => {
+					let template = Inferno.createTemplate((t, val1, val2) =>
+						<div disabled="disabled"></div>
+					);
+
+					Inferno.render(Inferno.createFragment(null, template), container);
+
+					var test = container.innerHTML;
+					var expected = '<div disabled=""></div>';
+
+					expect(test).to.equal(expected);
+				});
 
 				it('should render a basic component', () => {
 					class TestComponent extends Inferno.Component {
