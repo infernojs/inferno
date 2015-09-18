@@ -3,16 +3,15 @@ import clearEventListeners from '../events/clearEventListeners';
 import addEventListener from '../events/addEventListener';
 import { setStyles } from './CSSOperations';
 import { setAttribute } from './DOMOperations';
-import forIn from '../util/forIn';
 
 /**
  * Set HTML attributes on the template
  * @param{ HTMLElement } node
  * @param{ Object } attrs
  */
-export default (node, attrs) => {
-
-	forIn(attrs, (attrName, attrVal) => {
+export default function addAttributes(node, attrs) {
+	for(let attrName in attrs) {
+		let attrVal = attrs[attrName];
 		// avoid 'null' values
 		if (attrVal !== undefined) {
 			// events
@@ -27,5 +26,5 @@ export default (node, attrs) => {
 				setAttribute(node, attrName, attrVal);
 			}
 		}
-	});
+	}
 };
