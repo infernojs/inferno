@@ -7,6 +7,7 @@ import { setAttribute } from '../src/template/DOMOperations';
 import addAttributes from '../src/template/addAttributes';
 import unitlessCfg from '../src/template/cfg/unitlessCfg';
 import extendUnitlessNumber from '../src/template/extendUnitlessNumber';
+import get from './tools/get';
 
 // expose t7 and Inferno globally
 global.t7 = t7;
@@ -274,36 +275,98 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 				
-				
-				describe('should properly set className to empty string instead of null', () => {
+				describe('should populate the value attribute on select', () => {
 					let template;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<select value="bar"><option value="bar">Bar</option><option value="foo">Foo</option></select>
-
+					<select multiple={true} tabindex="1" value="bar"><option value="foo">foo</option><option value="bar">bar</option></select>
 						);
+						
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
+                        expect( get( container.firstChild ) ).to.eql( ["bar"] );
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<select><option value="bar">Bar</option><option value="foo">Foo</option></select>'
+							'<select tabindex="1" multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
 						);
 					});
 				});
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+
+	  		   describe('should populate the `value` attribute on select multiple', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate((t, val1, val2) =>
+							<select multiple='mutiple' value={["foo", "bar"]}>
+								<option value='bar'>{ val1 }</option>
+								<option value='foo'>{ val2 }</option>
+							</select>
+						);
+						Inferno.render(Inferno.createFragment(['bar', 'foo'], template), container);
+					});
+
+					it('Initial render (creation)', () => {
+
+                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );						
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							`<select multiple=""><span class="bar">bar</span><span class="foo">foo</span></select>`
+						);
+					});
+
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(['Rocks', 'Inferno'], template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							`<select multiple=""><option value="bar">Rocks</option><option value="foo">Inferno</option></select>`
+						);
+					}); 
+				});
+
+	  		    describe('should populate the `value` attribute on select multiple using groups', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate((t, val1, val2) =>
+							<select multiple='mutiple' value={["foo", "bar"]}>
+								<optgroup label='foo-group'>
+								    <option value='bar'>{ val1 }</option>
+								</optgroup>
+								<optgroup label='bar-group'>
+								    <option value='foo'>{ val2 }</option>
+								</optgroup>
+							</select>
+						);
+						Inferno.render(Inferno.createFragment(['bar', 'foo'], template), container);
+					});
+
+					it('Initial render (creation)', () => {
+
+                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );						
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							`<select multiple=""><option value="bar">Rocks</option><option value="foo">Inferno</option></select>`
+						);
+					});
+
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(['Rocks', 'Inferno'], template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							`<select multiple=""><optgroup label="foo-group"></optgroup><optgroup label="bar-group"></optgroup></select>`
+						);
+					});
+				});
 
 				describe('should render a basic component', () => {
 					class TestComponent extends Inferno.Component {
