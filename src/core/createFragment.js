@@ -2,14 +2,14 @@ import minErr  			from '../util/minErr';
 import isArray 			from '../util/isArray';
 import createTemplate	from './createTemplate';
 
-export default function createFragment(values, template) {
+export default function createFragment(values, template, key = null) {
 	if (template.key == null) {
 		template = createTemplate(template);
 	}
 
 	let fragmentObject = {
 		dom: null,
-		key: null,
+		key: key,
 		next: null,
 		template: template,
 		templateTypes: null
