@@ -5,7 +5,7 @@ import propNameCfg from './cfg/propNameCfg';
 import checkBitmask from './checkBitmask';
 import hooks from './hooks';
 import memoizeString from './memoizeString';
-import shouldIgnoreValue from './shouldIgnoreValue';
+import shouldSkip from './shouldSkip';
 import masks from './vars/masks';
 import escapeHtml from './escapeHtml';
 import hasPropertyAccessor from './hasPropertyAccessor';
@@ -69,7 +69,7 @@ function renderHtmlMarkup(name, value) {
 	let propInfo = properties[name] || null;
 
 	if (propInfo) {
-		if (shouldIgnoreValue(propInfo, value)) {
+		if (shouldSkip(propInfo, value)) {
 			return '';
 		}
 
@@ -136,7 +136,7 @@ function setAttribute(node, name, value, property) {
 
 		if (hooks) {
 			hooks(node, value);
-		} else if (shouldIgnoreValue(propInfo, value)) {
+		} else if (shouldSkip(propInfo, value)) {
 			removeFromDOM(node, name);
 			// HTML attributes
 		} else if (propInfo.mustUseAttribute) {

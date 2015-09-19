@@ -4,7 +4,7 @@ import hasOverloadedBooleanValue from './vars/hasOverloadedBooleanValue';
 import hasBooleanValue from './vars/hasBooleanValue';
 
 /**
- * Check if the value is a boolean, numberic, positive number or overloaded boolean
+ * Should skip false boolean attributes.
  * @param {String} name
  * @param {String} value
  * @return {Boolean}
