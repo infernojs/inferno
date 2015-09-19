@@ -1,3 +1,5 @@
+import isArray from '../util/isArray';
+
 export default function(node, props) {
 	let propValue = props.value;
 	let selectedValue, i, l;
@@ -5,9 +7,14 @@ export default function(node, props) {
 
 	// Avoid use of 'isArray'. We know it's an array if 'multiple'
 	if (props.multiple) {
+		node.multiple = true;
 		selectedValue = {};
-		for (i = 0, l = propValue.length; i < l; i++) {
-			selectedValue['' + propValue[i]] = true;
+		if(isArray(propValue)) {
+			for (i = 0, l = propValue.length; i < l; i++) {
+				selectedValue['' + propValue[i]] = true;
+			}
+		} else {
+			selectedValue[propValue] = true;
 		}
 		for (i = 0, l = options.length; i < l; i++) {
 			var selected = selectedValue[options[i].value];

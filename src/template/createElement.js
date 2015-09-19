@@ -3,9 +3,7 @@ import fragmentValueTypes from '../enum/fragmentValueTypes';
 import setSelectValue from './setSelectValue';
 
 export default function createElement(tag, props, ...children) {
-	let element,
-		// TODO totalVal is never used
-		totalVal = (this.templateValues && this.templateValues.length) || 0;
+	let element;
 
 	if (typeof tag === 'string') {
 		element = template.createElement(tag);
@@ -91,7 +89,7 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	if (props) {
-		if (element.tagName === 'SELECT' && (props.value)) {
+		if (tag.toLowerCase() === 'select' && (props.value)) {
 			setSelectValue(element, props);
 		}
 		template.addAttributes(element, props, this);

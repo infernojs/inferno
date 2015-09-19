@@ -60,9 +60,9 @@ describe('Inferno acceptance tests', () => {
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
 							<ul>
-								<li>I'm a li-tag</li>
-								<li>I'm a li-tag</li>
-								<li>I'm a li-tag</li>
+								<li>Im a li-tag</li>
+								<li>Im a li-tag</li>
+								<li>Im a li-tag</li>
 							</ul>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
@@ -72,7 +72,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<ul><li>I'm a li-tag</li><li>I'm a li-tag</li><li>I'm a li-tag</li></ul>`
+							`<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>`
 						);
 					});
 				});
@@ -168,28 +168,28 @@ describe('Inferno acceptance tests', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(t =>
-							<input download='domonic'></input>
+						template = Inferno.createTemplate((t, val1) =>
+							<input download={ val1 }></input>
 						);
-						Inferno.render(Inferno.createFragment(false, template), container);
+						Inferno.render(Inferno.createFragment("dominic", template), container);
 					});
 
 					it('Initial render (creation)', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input download="domonic">'
+							'<input download="dominic">'
 						);
 					});
 
-					/*it('Second render (update)', () => {
+					it('Second render (update)', () => {
 						Inferno.render(Inferno.createFragment(true, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
 							'<input download="">'
 						);
-					}); */
+					});
 				});
 
 				describe('should properly render "className" property', () => {
@@ -558,7 +558,6 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -580,7 +579,6 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -685,7 +683,6 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -707,7 +704,6 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -956,7 +952,6 @@ describe('Inferno acceptance tests', () => {
 								<option value="foo">foo</option><option value="bar">bar</option>
 							</select>
 						);
-
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
@@ -984,8 +979,6 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // FIXME First child should be 'true', but issues with the child ndoes
-						// expect(container.firstChild.options[0].selected ).to.be.true;
 						expect(container.firstChild.options[1].selected).to.be.true;
 						expect(get(container).sort()).to.eql(['bar', 'foo']);
 						expect(
@@ -1023,9 +1016,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
 						expect(get(container).sort()).to.eql(['bar', 'foo']);
-
 						expect(
 							container.innerHTML
 						).to.equal(
