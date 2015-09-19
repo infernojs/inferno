@@ -455,6 +455,264 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
+
+				// "muted" is a property
+				describe('should not render "muted" boolean attributes (falsy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input muted={false}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						expect(container.firstChild.muted).to.be.false;
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+
+				// "muted" is a property
+				describe('should not render "muted" boolean attributes (truthy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input muted={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						expect(container.firstChild.muted).to.be.true;
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+				
+
+				describe('should render "required" boolean attribute (truthy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input required={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input required="">'
+						);
+					});
+				});
+                
+				// 'required' is a property and should not be set if a falsy value
+				describe('should render "required" boolean attribute (falsy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input required={false}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+
+
+				describe('should render "hidden" boolean attribute (truthy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input hidden={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input hidden="">'
+						);
+					});
+				});
+
+				describe('should render "hidden" boolean attribute (falsy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input hidden={false}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input hidden="false">'
+						);
+					});
+				});
+				
+				describe('should render "draggable" boolean attribute (truthy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input draggable={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input draggable="">'
+						);
+					});
+				});
+
+				describe('should not render "hidden" boolean attributes if "null"', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input hidden={null}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+
+				describe('should not render "formNoValidate" boolean attributes if "null"', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input formNoValidate={null}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+				
+					describe('should render "formNoValidate" boolean attribute (thruty)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input formNoValidate={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input formnovalidate="">'
+						);
+					});
+				});
+				
+				
+				describe('should not render "seamless" boolean attributes if "null"', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input seamless={null}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+				
+					describe('should render "seamless" boolean attribute (thruty)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input seamless={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        // this is a property
+						
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input seamless="">'
+						);
+					});
+				});
 				
 				describe('should properly render "className" property', () => {
 					let template;
