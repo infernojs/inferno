@@ -11,8 +11,7 @@ export default (parentDom, item, nextItem) => {
 			parentDom.appendChild(domItem);
 		}
 		if (activeFragment !== document.body && (document.activeElement !== activeFragment)) {
-			// TODO activeDomNode is not defined
-			activeDomNode.focus();
+			activeFragment.focus();
 		}
 	}
 };
