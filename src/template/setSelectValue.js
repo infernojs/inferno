@@ -1,21 +1,32 @@
-import isArray from "../util/isArray";
-import inArray from "../util/inArray";
+export default function(node, props) {
+    let propValue = props.value;
+    let selectedValue, i, l;
+    let options = node.options;
 
-function setSelectValue(node, props) {
-
-var value = props.value;
-     const isMultiple = isArray(value),
-        options = node.options,
-        len = options.length;
-
-    let i = 0,
-        optionNode;
-
-    while(i < len) {
-        optionNode = options[i++];
-        optionNode.selected = value != null &&
-            (isMultiple? inArray(value, optionNode.value) : optionNode.value == value);
+    // Avoid use of 'isArray'. We know it's an array if 'multiple'
+    if (props.multiple) {
+        selectedValue = {};
+        for (i = 0, l = propValue.length; i < l; i++) {
+            selectedValue['' + propValue[i]] = true;
+        }
+        for (i = 0, l = options.length; i < l; i++) {
+            var selected = selectedValue[options[i].value];
+            if (options[i].selected !== selected) {
+                options[i].selected = selected;
+            }
+        }
+    } else {
+        // Do not set `select.value` as exact behavior isn't consistent across all
+        // browsers for all cases.
+        selectedValue = '' + propValue;
+        for (i = 0, l = options.length; i < l; i++) {
+            if (options[i].value === selectedValue) {
+                options[i].selected = true;
+                return;
+            }
+        }
+        if (options.length) {
+            options[0].selected = true;
+        }
     }
 }
-
-export default setSelectValue;
