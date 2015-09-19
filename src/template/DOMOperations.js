@@ -7,7 +7,6 @@ import hooks from './hooks';
 import memoizeString from './memoizeString';
 import shouldIgnoreValue from './shouldIgnoreValue';
 import masks from './vars/masks';
-import forIn from '../util/forIn';
 import escapeHtml from './escapeHtml';
 import hasPropertyAccessor from './hasPropertyAccessor';
 
@@ -24,7 +23,8 @@ let propInfo = {},
     } = masks;
 	
 // Populate the 'properties' object
-forIn(attrPropCfg, (propName, propConfig) => {
+for(let propName in attrPropCfg) {
+		let propConfig = attrPropCfg[propName];
 
 	propInfo = {
 		attributeName: propName.toLowerCase(),
@@ -56,7 +56,7 @@ forIn(attrPropCfg, (propName, propConfig) => {
 	}
 
 	properties[propName] = propInfo;
-});
+}
 
 /**
  * Convert HTML attributes / properties to HTML
@@ -147,13 +147,15 @@ function setAttribute(node, name, value, property) {
 				node.setAttributeNS(namespace, attributeName, '' + value);
             // for BOOLEAN `value` only has to be truthy
             // for OVERLOADED_BOOLEAN `value` has to be === true				
-			} else if (propInfo.hasBooleanValue || (propInfo.hasOverloadedBooleanValue && value === true)) { 
-				// Avoid touching the DOM with 'removeAttribute'. Compare against 'false' instead
-                   if ( value === true) {
+			} else if (propInfo.hasBooleanValue) { 
+                  if ( value === true) {
 				   node.setAttribute(attributeName, '');
 				   } else {
+				   // HTML5 compat
 					node.setAttribute(attributeName, value);
 					}
+			} else if (propInfo.hasOverloadedBooleanValue && value === true) { 
+				   node.setAttribute(attributeName, '');
 			} else {
 				node.setAttribute(attributeName, '' + value);
 			}
