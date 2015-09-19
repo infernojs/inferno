@@ -58,12 +58,12 @@ describe('Inferno acceptance tests', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(createElement =>
-							createElement("ul", null,
-								createElement("li", null, "I'm a li-tag"),
-								createElement("li", null, "I'm a li-tag"),
-								createElement("li", null, "I'm a li-tag")
-							)
+						template = Inferno.createTemplate(t =>
+							<ul>
+								<li>I'm a li-tag</li>
+								<li>I'm a li-tag</li>
+								<li>I'm a li-tag</li>
+							</ul>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -72,7 +72,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<ul><li>I\'m a li-tag</li><li>I\'m a li-tag</li><li>I\'m a li-tag</li></ul>'
+							`<ul><li>I'm a li-tag</li><li>I'm a li-tag</li><li>I'm a li-tag</li></ul>`
 						);
 					});
 				});
@@ -168,8 +168,8 @@ describe('Inferno acceptance tests', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate((t, val1) =>
-							<input download="domonic"></input>
+						template = Inferno.createTemplate(t =>
+							<input download='domonic'></input>
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 					});
@@ -673,12 +673,12 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-					describe('should render "formNoValidate" boolean attribute (thruty)', () => {
+				describe('should render `formNoValidate` boolean attribute (thruty)', () => {
 					let template;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<input formNoValidate={true}></input>
+							<input formNoValidate={ true }></input>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -716,7 +716,7 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-					describe('should render "seamless" boolean attribute (thruty)', () => {
+				describe('should render "seamless" boolean attribute (thruty)', () => {
 					let template;
 
 					beforeEach(() => {
@@ -961,7 +961,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        expect( get( container.firstChild ) ).to.eql( ["bar"] );
+						expect(get(container.firstChild)).to.eql(['bar']);
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -970,12 +970,12 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-	  		   describe('should populate the `value` attribute on select multiple', () => {
+				describe('should populate the `value` attribute on select multiple', () => {
 					let template;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate((t, val1, val2) =>
-							<select multiple='mutiple' value={["foo", "bar"]}>
+							<select multiple='mutiple' value={['foo', 'bar']}>
 								<option value='bar'>{ val1 }</option>
 								<option value='foo'>{ val2 }</option>
 							</select>
@@ -984,13 +984,10 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
-                        // FIX ME!!! First child should be 'true', but issues with the child ndoes
-
-//                        expect( container.firstChild.options[0].selected ).to.be.true;
-
-                        expect( container.firstChild.options[1].selected ).to.be.true;
-                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );
+                        // FIXME First child should be 'true', but issues with the child ndoes
+						// expect(container.firstChild.options[0].selected ).to.be.true;
+						expect(container.firstChild.options[1].selected).to.be.true;
+						expect(get(container).sort()).to.eql(['bar', 'foo']);
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1008,17 +1005,17 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-	  		    describe('should populate the `value` attribute on select multiple using groups', () => {
+				describe('should populate the `value` attribute on select multiple using groups', () => {
 					let template;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate((t, val1, val2) =>
-							<select multiple='mutiple' value={["foo", "bar"]}>
+							<select multiple='mutiple' value={['foo', 'bar']}>
 								<optgroup label='foo-group'>
-								    <option value='bar'>{ val1 }</option>
+									<option value='bar'>{ val1 }</option>
 								</optgroup>
 								<optgroup label='bar-group'>
-								    <option value='foo'>{ val2 }</option>
+									<option value='foo'>{ val2 }</option>
 								</optgroup>
 							</select>
 						);
@@ -1027,7 +1024,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
 
-                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );
+						expect(get(container).sort()).to.eql(['bar', 'foo']);
 
 						expect(
 							container.innerHTML
@@ -1120,7 +1117,7 @@ describe('Inferno acceptance tests', () => {
 								<Component test={ val1 } />
 							</div>
 						);
-						Inferno.render(Inferno.createFragment([TestComponent, "All your base"], template), container);
+						Inferno.render(Inferno.createFragment([TestComponent, 'All your base'], template), container);
 					});
 
 					it('Initial render (creation)', () => {
@@ -1567,7 +1564,7 @@ describe('Inferno acceptance tests', () => {
 			it('should handle radio buttons as a property', () => {
 				addAttributes(container, { type: 'radio', checked: true });
 				expect(container.getAttribute('type')).to.eql('radio');
-				expect(container.getAttribute("checked")).to.eql("");
+				expect(container.getAttribute('checked')).to.eql('');
 			});
 		});
 
@@ -1597,7 +1594,7 @@ describe('Inferno acceptance tests', () => {
 			it('should not set `disabled` boolean element property', () => {
 
 				addAttributes(container, { type: 'checkbox' , disabled: true});
-				expect(container.getAttribute("disabled")).to.eql("");
+				expect(container.getAttribute('disabled')).to.eql('');
 
 			});
 
@@ -1642,14 +1639,14 @@ describe('Inferno acceptance tests', () => {
 
 				addAttributes(container, { type: 'checkbox', checked: true });
 				expect(container.getAttribute('type')).to.eql('checkbox');
-				expect(container.getAttribute("checked")).to.eql('');
+				expect(container.getAttribute('checked')).to.eql('');
 
 			});
 
 			it('should set `checked` boolean attribute as checked', () => {
 				addAttributes(container, { type: 'checkbox', checked: 'checked'});
 				expect(container.getAttribute('type')).to.eql('checkbox');
-				expect(container.getAttribute("checked")).to.eql('checked');
+				expect(container.getAttribute('checked')).to.eql('checked');
 
 			});
 
@@ -1750,7 +1747,7 @@ describe('Inferno acceptance tests', () => {
 				expect(container.getAttribute('checked')).to.eql('checked');
 
 				addAttributes(container, { checked: false });
-				expect(container.getAttribute('checked')).to.eql("false");
+				expect(container.getAttribute('checked')).to.eql('false');
 
 				addAttributes(container, { scoped: true });
 				expect(container.scoped).to.be.true;
@@ -1759,23 +1756,23 @@ describe('Inferno acceptance tests', () => {
 
 			it('should create markup for booleanish properties', () => {
 				addAttributes(container, { download: 'simple' });
-				expect(container.getAttribute("download")).to.eql('simple');
+				expect(container.getAttribute('download')).to.eql('simple');
 
 				addAttributes(container, { download: true });
-				expect(container.getAttribute("download")).to.eql('');
+				expect(container.getAttribute('download')).to.eql('');
 
 				addAttributes(container, { download: 'true' });
-				expect(container.getAttribute("download")).to.eql('true');
+				expect(container.getAttribute('download')).to.eql('true');
 
 			});
 
 			it('should handle numeric attributes', () => {
 
 				addAttributes(container, { start: 5 });
-				expect(container.getAttribute("start")).to.eql('5');
+				expect(container.getAttribute('start')).to.eql('5');
 
 				addAttributes(container, { start: 0 });
-				expect(container.getAttribute("start")).to.eql('0');
+				expect(container.getAttribute('start')).to.eql('0');
 
 			});
 
