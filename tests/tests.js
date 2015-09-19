@@ -54,6 +54,29 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+				describe('should render a basic example #2 (no JSX)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(createElement =>
+							createElement("ul", null,
+								createElement("li", null, "I'm a li-tag"),
+								createElement("li", null, "I'm a li-tag"),
+								createElement("li", null, "I'm a li-tag")
+							)
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<ul><li>I\'m a li-tag</li><li>I\'m a li-tag</li><li>I\'m a li-tag</li></ul>'
+						);
+					});
+				});
+
 				describe('should render a basic example with dynamic values', () => {
 					let template;
 
