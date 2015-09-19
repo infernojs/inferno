@@ -118,7 +118,7 @@ describe('Inferno acceptance tests', () => {
 
 					beforeEach(() => {
 						template = Inferno.createTemplate((t, val1) =>
-							<input download={ val1 }></input>
+							<input download={ false }></input>
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 					});
@@ -130,8 +130,36 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
-/*
-					it('Second render (update)', () => {
+
+					/*it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(true, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input download="">'
+						);
+					}); */
+				});
+				
+				describe('should properly render input download attribute (HTML5)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate((t, val1) =>
+							<input download="domonic"></input>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input download="domonic">'
+						);
+					});
+
+					/*it('Second render (update)', () => {
 						Inferno.render(Inferno.createFragment(true, template), container);
 						expect(
 							container.innerHTML
@@ -178,7 +206,64 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
+				
+				describe('should properly render "disabled" boolean property', () => {
+					let template;
 
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input type='checkbox' disabled={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="" type="checkbox">'
+						);
+					});
+				});
+
+				describe('should not render falsy boolean properties', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input type='checkbox' disabled={false}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input type="checkbox">'
+						);
+					});
+				});
+				
+				describe('should render disabled boolean property as "disabled"', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input type='checkbox' disabled='disabled'></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="disabled" type="checkbox">'
+						);
+					});
+				});
+				
 				describe('should properly handle custom properties on web components', () => {
 					let template;
 
@@ -1002,7 +1087,7 @@ describe('Inferno acceptance tests', () => {
 
 				addAttributes(container, { type: 'radio', disabled: 'disabled' });
 				expect(container.getAttribute('type')).to.eql('radio');
-				expect(container.getAttribute('disabled')).to.eql('');
+				expect(container.getAttribute('disabled')).to.eql('disabled');
 
 			});
 
@@ -1104,13 +1189,13 @@ describe('Inferno acceptance tests', () => {
 
 			it('should create markup for booleanish properties', () => {
 				addAttributes(container, { download: 'simple' });
-				expect(container.download).to.eql('simple');
+				expect(container.getAttribute("download")).to.eql('simple');
 
 				addAttributes(container, { download: true });
-				expect(container.download).to.eql(true);
+				expect(container.getAttribute("download")).to.eql('');
 
 				addAttributes(container, { download: 'true' });
-				expect(container.download).to.eql('true');
+				expect(container.getAttribute("download")).to.eql('true');
 
 			});
 

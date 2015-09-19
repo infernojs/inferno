@@ -145,10 +145,17 @@ function setAttribute(node, name, value, property) {
 				namespace = propInfo.attributeNamespace;
 			if (namespace) {
 				node.setAttributeNS(namespace, attributeName, '' + value);
-			} else if (propInfo.hasBooleanValue || (propInfo.hasOverloadedBooleanValue && value === true)) { 
+            // for BOOLEAN `value` only has to be truthy
+            // for OVERLOADED_BOOLEAN `value` has to be === true				
+			} else if (propInfo.hasBooleanValue || propInfo.hasOverloadedBooleanValue) { 
 				// Avoid touching the DOM with 'removeAttribute'. Compare against 'false' instead
 				if (value !== false) {
-					node.setAttribute(attributeName, '');
+					
+                   if ( value === true) {
+				   node.setAttribute(attributeName, '');
+				   } else {
+					node.setAttribute(attributeName, value);
+					}
 				}
 			} else {
 				node.setAttribute(attributeName, '' + value);
