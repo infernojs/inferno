@@ -84,7 +84,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 				}
 				// TODO make component props work for single value fragments
 			} else {
-			// component prop, update it
+				// component prop, update it
 			}
 		}
 	}

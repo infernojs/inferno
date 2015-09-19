@@ -1,4 +1,3 @@
-import minErr  			from '../util/minErr';
 import isArray 			from '../util/isArray';
 import createTemplate	from './createTemplate';
 

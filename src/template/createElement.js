@@ -4,9 +4,10 @@ import setSelectValue from './setSelectValue';
 
 export default function createElement(tag, props, ...children) {
 	let element,
+		// TODO totalVal is never used
 		totalVal = (this.templateValues && this.templateValues.length) || 0;
 
-	if(typeof tag === "string") {
+	if (typeof tag === 'string') {
 		element = template.createElement(tag);
 	} else {
 		let propsParsed = props;
@@ -90,7 +91,7 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	if (props) {
-	if (element.tagName === 'SELECT' && (props.value)) {
+		if (element.tagName === 'SELECT' && (props.value)) {
 			setSelectValue(element, props);
 		}
 		template.addAttributes(element, props, this);

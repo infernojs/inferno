@@ -11,20 +11,20 @@ import escapeHtml from './escapeHtml';
 import hasPropertyAccessor from './hasPropertyAccessor';
 
 let propInfo = {},
-    properties = {},
-    {
-        MUST_USE_ATTRIBUTE,
-        MUST_USE_PROPERTY,
-        SET_WITH_CHECK,
-        HAS_BOOLEAN_VALUE,
-        HAS_NUMERIC_VALUE,
-        HAS_POSITIVE_NUMERIC_VALUE,
-        HAS_OVERLOADED_BOOLEAN_VALUE
-    } = masks;
-	
+	properties = {},
+	{
+		MUST_USE_ATTRIBUTE,
+		MUST_USE_PROPERTY,
+		SET_WITH_CHECK,
+		HAS_BOOLEAN_VALUE,
+		HAS_NUMERIC_VALUE,
+		HAS_POSITIVE_NUMERIC_VALUE,
+		HAS_OVERLOADED_BOOLEAN_VALUE
+	} = masks;
+
 // Populate the 'properties' object
-for(let propName in attrPropCfg) {
-		let propConfig = attrPropCfg[propName];
+for (let propName in attrPropCfg) {
+	let propConfig = attrPropCfg[propName];
 
 	propInfo = {
 		attributeName: propName.toLowerCase(),
@@ -84,7 +84,7 @@ function renderHtmlMarkup(name, value) {
 		return memoizeString(name) + escapeHtml(value) + '\'';
 
 	}
-    else {
+	else {
 		if (value === null) {
 			return '';
 		}
@@ -111,10 +111,9 @@ function removeFromDOM(node, name) {
 				node[propName] = initialValue;
 			}
 		}
-	} else {
-		if ( name ) {
+	}
+	else if (name) {
 		node.removeAttribute(name);
-	  }	
 	}
 }
 
@@ -145,17 +144,18 @@ function setAttribute(node, name, value, property) {
 				namespace = propInfo.attributeNamespace;
 			if (namespace) {
 				node.setAttributeNS(namespace, attributeName, '' + value);
-            // for BOOLEAN `value` only has to be truthy
-            // for OVERLOADED_BOOLEAN `value` has to be === true				
-			} else if (propInfo.hasBooleanValue) { 
-                  if ( value === true) {
-				   node.setAttribute(attributeName, '');
-				   } else {
-				   // HTML5 compat
+			// for BOOLEAN `value` only has to be truthy
+			// for OVERLOADED_BOOLEAN `value` has to be === true
+			} else if (propInfo.hasBooleanValue) {
+				if (value === true) {
+					node.setAttribute(attributeName, '');
+				}
+				else {
+					// HTML5 compat
 					node.setAttribute(attributeName, value);
-					}
-			} else if (propInfo.hasOverloadedBooleanValue && value === true) { 
-				   node.setAttribute(attributeName, '');
+				}
+			} else if (propInfo.hasOverloadedBooleanValue && value === true) {
+				node.setAttribute(attributeName, '');
 			} else {
 				node.setAttribute(attributeName, '' + value);
 			}
@@ -164,17 +164,17 @@ function setAttribute(node, name, value, property) {
 			let propName = propInfo.propertyName;
 			if (!propInfo.setWithCheck || (node[propName] !== value)) {
 				node[propName] = value;
-			} 
+			}
 		}
 
 	}
-    else {
-        // custom properties
+	else {
+		// custom properties
 		if (property) {
 			node[name] = value;
 			// custom attributes
 		}
-        else {
+		else {
 			node.setAttribute(name, '' + value);
 		}
 	}

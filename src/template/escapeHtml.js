@@ -9,4 +9,4 @@ const ESCAPE_REGEX = /[&><]/g,
 		'<': '&lt;'
 	};
 
-export default ( value ) => ( '' + value ).replace( ESCAPE_REGEX, ( match ) => ESCAPE_LOOKUP[match] );
+export default value => ('' + value).replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match]);

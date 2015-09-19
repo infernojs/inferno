@@ -1,15 +1,15 @@
-import updateFragment      from './updateFragment';
-import fragmentValueTypes  from '../enum/fragmentValueTypes';
-import updateFragmentList  from './updateFragmentList';
+import updateFragment from './updateFragment';
+import fragmentValueTypes from '../enum/fragmentValueTypes';
+import updateFragmentList from './updateFragmentList';
 import clearEventListeners from '../events/clearEventListeners';
-import addEventListener    from '../events/addEventListener';
-import events              from '../events/shared/events';
-import isSVG               from '../util/isSVG';
-import { setAttribute }    from '../template/DOMOperations';
+import addEventListener from '../events/addEventListener';
+import events from '../events/shared/events';
+import isSVG from '../util/isSVG';
+import { setAttribute } from '../template/DOMOperations';
 
-//TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
-//refactored to by more DRY. although, this causes a significant performance cost
-//on the v8 compiler. need to explore how to refactor without introducing this performance cost
+// TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
+// refactored to by more DRY. although, this causes a significant performance cost
+// on the v8 compiler. need to explore how to refactor without introducing this performance cost
 function updateFragmentValues(context, oldFragment, fragment, component) {
 
 	let componentsToUpdate = [];
@@ -76,30 +76,30 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 					element.height = fragment.templateValues[i];
 				}
 				break;
-               default:
-                    //custom attribute, so simply setAttribute it
-                    if (!element.props) {
-                        if (events[type] != null) {
-                            clearEventListeners(element, type);
-                            addEventListener(element, type, fragment.templateValues[i]);
-                        } else {
-                           setAttribute(element, type, fragment.templateValues[i]);
-                        }
-                    }
-                    //component prop, update it
-                    else {
-                        element.props[type] = fragment.templateValues[i];
-                        let alreadyInQueue = false;
-                        for (s = 0; s < componentsToUpdate.length; s++) {
-                            if (componentsToUpdate[s] === element) {
-                                alreadyInQueue = true;
-                            }
-                        }
-                        if (alreadyInQueue === false) {
-                            componentsToUpdate.push(element);
-                        }
-                    }
-                    break;
+			default:
+					//custom attribute, so simply setAttribute it
+				if (!element.props) {
+					if (events[type] != null) {
+						clearEventListeners(element, type);
+						addEventListener(element, type, fragment.templateValues[i]);
+					} else {
+						setAttribute(element, type, fragment.templateValues[i]);
+					}
+				}
+				//component prop, update it
+				else {
+					element.props[type] = fragment.templateValues[i];
+					let alreadyInQueue = false;
+					for (let s = 0; s < componentsToUpdate.length; s++) {
+						if (componentsToUpdate[s] === element) {
+							alreadyInQueue = true;
+						}
+					}
+					if (alreadyInQueue === false) {
+						componentsToUpdate.push(element);
+					}
+				}
+				break;
 			}
 		}
 	}

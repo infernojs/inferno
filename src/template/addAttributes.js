@@ -13,36 +13,36 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 	let fragmentType;
 
 	switch (attrName) {
-		case "class":
-		case "className":
-			fragmentType = fragmentValueTypes.ATTR_CLASS;
-			break;
-		case "id":
-			fragmentType = fragmentValueTypes.ATTR_ID;
-			break;
-		case "value":
-			fragmentType = fragmentValueTypes.ATTR_VALUE;
-			break;
-		case "width":
-			fragmentType = fragmentValueTypes.ATTR_WIDTH;
-			break;
-		case "height":
-			fragmentType = fragmentValueTypes.ATTR_HEIGHT;
-			break;
-		case "type":
-			fragmentType = fragmentValueTypes.ATTR_TYPE;
-			break;
-		case "name":
-			fragmentType = fragmentValueTypes.ATTR_NAME;
-			break;
-		case "label":
-			fragmentType = fragmentValueTypes.ATTR_LABEL;
-			break;
-		case "placeholder":
-			fragmentType = fragmentValueTypes.ATTR_PLACEHOLDER;
-			break;
-		default:
-			fragmentType = fragmentValueTypes.ATTR_OTHER;
+	case 'class':
+	case 'className':
+		fragmentType = fragmentValueTypes.ATTR_CLASS;
+		break;
+	case 'id':
+		fragmentType = fragmentValueTypes.ATTR_ID;
+		break;
+	case 'value':
+		fragmentType = fragmentValueTypes.ATTR_VALUE;
+		break;
+	case 'width':
+		fragmentType = fragmentValueTypes.ATTR_WIDTH;
+		break;
+	case 'height':
+		fragmentType = fragmentValueTypes.ATTR_HEIGHT;
+		break;
+	case 'type':
+		fragmentType = fragmentValueTypes.ATTR_TYPE;
+		break;
+	case 'name':
+		fragmentType = fragmentValueTypes.ATTR_NAME;
+		break;
+	case 'label':
+		fragmentType = fragmentValueTypes.ATTR_LABEL;
+		break;
+	case 'placeholder':
+		fragmentType = fragmentValueTypes.ATTR_PLACEHOLDER;
+		break;
+	default:
+		fragmentType = fragmentValueTypes.ATTR_OTHER;
 	}
 
 	if(fragment.templateValue !== undefined) {
@@ -95,4 +95,4 @@ export default function addAttributes(node, attrs, fragment) {
 			}
 		}
 	}
-};
+}

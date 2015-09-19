@@ -106,6 +106,6 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 	}
 
 	insertFragment( context, parentDom, fragment.dom, nextFragment, replace );
-};
+}
 
 export default attachFragment;

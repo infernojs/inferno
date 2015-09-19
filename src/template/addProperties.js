@@ -24,7 +24,8 @@ export default (node, attrs) => {
 				setStyles(node, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
-				setProperty(node, attrName, attrVal, true);
+				// TODO apparently setProperty, but that's not a thing
+				setAttribute(node, attrName, attrVal, true);
 			}
 		}
 	});

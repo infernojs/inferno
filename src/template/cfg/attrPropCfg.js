@@ -2,7 +2,7 @@ import masks from '../vars/masks';
 import isSVG from '../../util/isSVG';
 
 let {
-    MUST_USE_ATTRIBUTE,
+	MUST_USE_ATTRIBUTE,
 	MUST_USE_PROPERTY,
 	HAS_SIDE_EFFECTS,
 	HAS_BOOLEAN_VALUE,
@@ -12,9 +12,9 @@ let {
 } = masks;
 
 /*************************** INFO!! **************************************
- * Inferno supports custom attributes, meanin all SVG / HTML             *
- * attributes are supported. 'Only' attributes / properties that need a  *
- * special treatment should be listed here.                              *
+ * Inferno supports custom attributes, meanin all SVG / HTML
+ * attributes are supported. 'Only' attributes / properties that need a
+ * special treatment should be listed here
  *************************************************************************/
 
 export default {
@@ -33,14 +33,14 @@ export default {
 	contextMenu: MUST_USE_ATTRIBUTE,
 	controls: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
 	dateTime: MUST_USE_ATTRIBUTE,
-    default: HAS_BOOLEAN_VALUE,
+	default: HAS_BOOLEAN_VALUE,
 	defer: HAS_BOOLEAN_VALUE,
-    declare: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	declare: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
 	defaultchecked: HAS_BOOLEAN_VALUE,
 	defaultmuted: HAS_BOOLEAN_VALUE,
 	defaultselected: HAS_BOOLEAN_VALUE,
 	disabled: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
-    draggable: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	draggable: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
 	download: MUST_USE_ATTRIBUTE | HAS_OVERLOADED_BOOLEAN_VALUE,
 	form: MUST_USE_ATTRIBUTE,
 	formAction: MUST_USE_ATTRIBUTE,
@@ -67,13 +67,13 @@ export default {
 	multiple: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
 	muted: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
 	name: MUST_USE_PROPERTY,
-    nohref: MUST_USE_ATTRIBUTE,
-    noshade: MUST_USE_ATTRIBUTE,
+	nohref: MUST_USE_ATTRIBUTE,
+	noshade: MUST_USE_ATTRIBUTE,
 	noValidate: HAS_BOOLEAN_VALUE,
 	open: HAS_BOOLEAN_VALUE,
 	placeholder: MUST_USE_PROPERTY,
 	readOnly: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-    reversed: HAS_BOOLEAN_VALUE,
+	reversed: HAS_BOOLEAN_VALUE,
 	required: HAS_BOOLEAN_VALUE,
 	role: MUST_USE_ATTRIBUTE,
 	rows: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
@@ -83,18 +83,18 @@ export default {
 	selectedIndex: MUST_USE_PROPERTY,
 	size: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
 	sizes: MUST_USE_ATTRIBUTE,
-    sortable: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	sortable: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
 	span: HAS_POSITIVE_NUMERIC_VALUE,
-    spellCheck: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	spellCheck: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
 	srcDoc: MUST_USE_PROPERTY,
 	srcSet: MUST_USE_ATTRIBUTE,
 	start: MUST_USE_ATTRIBUTE | HAS_NUMERIC_VALUE,
 	style: MUST_USE_PROPERTY,
-    translate: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
-    truespeed: HAS_BOOLEAN_VALUE,
-    typemustmatch: HAS_BOOLEAN_VALUE,
+	translate: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	truespeed: HAS_BOOLEAN_VALUE,
+	typemustmatch: HAS_BOOLEAN_VALUE,
 	value: MUST_USE_PROPERTY | HAS_SIDE_EFFECTS,
-    visible: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	visible: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
 	width: MUST_USE_PROPERTY,
 	wmode: MUST_USE_ATTRIBUTE,
 
