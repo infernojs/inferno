@@ -9,7 +9,7 @@ import fragmentValueTypes from '../enum/fragmentValueTypes';
 //fragments far faster, as there's way less overhead and logic involved when
 //we get to updateFragmentValue/updateFragmentValues (especially on classNames)
 //this somewhat replicates buildInfernoAttrsParams() in t7
-function processFragmentAttrs(attrName, attrVal, fragment) {
+function processFragmentAttrs(node, attrName, attrVal, fragment) {
 	let fragmentType;
 
 	switch (attrName) {
@@ -52,6 +52,7 @@ function processFragmentAttrs(attrName, attrVal, fragment) {
 		} else {
 			fragment.templateType = fragmentType;
 		}
+		return fragment.templateValue;
 	} else {
 		fragment.templateElements[attrVal.pointer] = node;
 		if(fragmentType === fragmentValueTypes.ATTR_OTHER) {
@@ -59,6 +60,7 @@ function processFragmentAttrs(attrName, attrVal, fragment) {
 		} else {
 			fragment.templateTypes[attrVal.pointer] = fragmentType;
 		}
+		return fragment.templateValues[attrVal.pointer];
 	}
 }
 
@@ -76,7 +78,7 @@ export default function addAttributes(node, attrs, fragment) {
 		//the t7 template API shouldn't need this as it post-processes the same code
 		//within t7: look for buildInfernoAttrsParams() in t7
 		if(attrVal && attrVal.pointer != null) {
-			processFragmentAttrs(attrName, attrVal, fragment);
+			attrVal = processFragmentAttrs(node, attrName, attrVal, fragment);
 		}
 		// avoid 'null' values
 		if (attrVal !== undefined) {

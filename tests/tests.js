@@ -141,7 +141,7 @@ describe('Inferno acceptance tests', () => {
 
 					beforeEach(() => {
 						template = Inferno.createTemplate((t, val1) =>
-							<input download={ false }></input>
+							<input download={ val1 }></input>
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 					});
@@ -154,14 +154,14 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 
-					/*it('Second render (update)', () => {
+					it('Second render (update)', () => {
 						Inferno.render(Inferno.createFragment(true, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
 							'<input download="">'
 						);
-					}); */
+					});
 				});
 
 				describe('should properly render input download attribute (HTML5)', () => {
