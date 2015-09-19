@@ -127,7 +127,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>'
+							'<input download="false">'
 						);
 					});
 
@@ -169,6 +169,293 @@ describe('Inferno acceptance tests', () => {
 					}); */
 				});
 
+				describe('should properly render "className" property', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input className="Hello, world!"></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input class="Hello, world!">'
+						);
+					});
+				});
+				
+
+				describe('should properly render boolean attribues (html5)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input checked="checked" disabled="disabled"></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="disabled" checked="checked">'
+						);
+					});
+				});
+
+				describe('should properly render boolean attribues (truthy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input checked={true} disabled={true}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="" checked="">'
+						);
+					});
+				});
+
+				describe('should properly render boolean attribues (falsy)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input checked={false} disabled={false}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="false" checked="false">'
+						);
+					});
+				});
+				
+				describe('shouldn\'t render undefined value', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input checked={undefined}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+				
+				
+				describe('shouldn\'t render undefined value', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div className={undefined}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div></div>'
+						);
+					});
+				});
+				
+				describe('should be rendered as custom attribute', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div custom-attr={123}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div custom-attr="123"></div>'
+						);
+					});
+				});
+				
+				describe('should not render null properties', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<web-component className={null} id={null}></web-component>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<web-component></web-component>'
+						);
+					});
+				});
+
+				describe('should properly render "id" property', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<web-component id={123}></web-component>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<web-component id="123"></web-component>'
+						);
+					});
+				});
+				
+				describe('should render overloaded boolean as a number value', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input download={0}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input download="0">'
+						);
+					});
+				});
+				
+				describe('should render download with boolean false value', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input href="/images/xxx.jpg" download={false}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input download="false" href="/images/xxx.jpg">'
+						);
+					});
+				});
+				
+				describe('should render download with boolean null value', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input href="/images/xxx.jpg" download={null}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input href="/images/xxx.jpg">'
+						);
+					});
+				});
+				
+				describe('should render "overloaded" boolean properties', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input href="/images/xxx.jpg" download="true"></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input download="true" href="/images/xxx.jpg">'
+						);
+					});
+				});
+				
+				describe('should render "allowFullScreen" boolean attributes', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input allowFullScreen={false}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input allowfullscreen="false">'
+						);
+					});
+				});
+				
+				describe('should not render "scoped" boolean attributes as "null"', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input scoped={null}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+				
 				describe('should properly render "className" property', () => {
 					let template;
 
@@ -240,7 +527,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input type="checkbox">'
+							'<input disabled="false" type="checkbox">'
 						);
 					});
 				});
@@ -961,7 +1248,7 @@ describe('Inferno acceptance tests', () => {
 		describe('.setAttribute()', () => {
 			it('should render `checked` as a property', () => {
 				setAttribute(container, 'checked', true);
-				expect(container.checked).to.equal(true);
+				expect(container.getAttribute('checked')).to.equal('');
 			});
 
 			it('should support custom attributes', () => {
@@ -997,7 +1284,7 @@ describe('Inferno acceptance tests', () => {
 			it('should handle radio buttons as a property', () => {
 				addAttributes(container, { type: 'radio', checked: true });
 				expect(container.getAttribute('type')).to.eql('radio');
-				expect(container.checked).to.be.true;
+				expect(container.getAttribute("checked")).to.eql("");
 			});
 		});
 
@@ -1007,7 +1294,7 @@ describe('Inferno acceptance tests', () => {
 
 				addAttributes(container, { type: 'radio', checked: true });
 				expect(container.getAttribute('type')).to.eql('radio');
-				expect(container.checked).to.be.true;
+				expect(container.getAttribute('checked')).to.eql('');
 
 			});
 
@@ -1026,8 +1313,8 @@ describe('Inferno acceptance tests', () => {
 
 			it('should not set `disabled` boolean element property', () => {
 
-				addAttributes(container, { type: 'checkbox' , disabled: false});
-				expect(container.getAttribute('disabled')).to.be.null;
+				addAttributes(container, { type: 'checkbox' , disabled: true});
+				expect(container.getAttribute("disabled")).to.eql("");
 
 			});
 
@@ -1072,14 +1359,14 @@ describe('Inferno acceptance tests', () => {
 
 				addAttributes(container, { type: 'checkbox', checked: true });
 				expect(container.getAttribute('type')).to.eql('checkbox');
-				expect(container.checked).to.be.true;
+				expect(container.getAttribute("checked")).to.eql('');
 
 			});
 
 			it('should set `checked` boolean attribute as checked', () => {
 				addAttributes(container, { type: 'checkbox', checked: 'checked'});
 				expect(container.getAttribute('type')).to.eql('checkbox');
-				expect(container.checked).to.eql('checked');
+				expect(container.getAttribute("checked")).to.eql('checked');
 
 			});
 
@@ -1174,13 +1461,13 @@ describe('Inferno acceptance tests', () => {
 
 			it('should create markup for boolean properties', () => {
 				addAttributes(container, { checked: 'checked' });
-				expect(container.checked).to.eql('checked');
+				expect(container.getAttribute('checked')).to.eql('checked');
 
 				addAttributes(container, { checked: 'checked' });
-				expect(container.checked).to.eql('checked');
+				expect(container.getAttribute('checked')).to.eql('checked');
 
 				addAttributes(container, { checked: false });
-				expect(container.checked).to.be.false;
+				expect(container.getAttribute('checked')).to.eql("false");
 
 				addAttributes(container, { scoped: true });
 				expect(container.scoped).to.be.true;
