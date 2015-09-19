@@ -140,7 +140,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					}); */
 				});
-				
+
 				describe('should properly render input download attribute (HTML5)', () => {
 					let template;
 
@@ -187,7 +187,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 
 				describe('should properly render boolean attribues (html5)', () => {
 					let template;
@@ -203,7 +203,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="disabled" checked="checked">'
+							'<input checked="checked" disabled="disabled">'
 						);
 					});
 				});
@@ -222,7 +222,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="" checked="">'
+							'<input checked="" disabled="">'
 						);
 					});
 				});
@@ -241,11 +241,11 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="false" checked="false">'
+							'<input checked="false" disabled="false">'
 						);
 					});
 				});
-				
+
 				describe('shouldn\'t render undefined value', () => {
 					let template;
 
@@ -264,8 +264,8 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
-				
+
+
 				describe('shouldn\'t render undefined value', () => {
 					let template;
 
@@ -284,7 +284,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should be rendered as custom attribute', () => {
 					let template;
 
@@ -303,7 +303,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should not render null properties', () => {
 					let template;
 
@@ -341,7 +341,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should render overloaded boolean as a number value', () => {
 					let template;
 
@@ -360,7 +360,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should render download with boolean false value', () => {
 					let template;
 
@@ -375,11 +375,11 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input download="false" href="/images/xxx.jpg">'
+							'<input href="/images/xxx.jpg" download="false">'
 						);
 					});
 				});
-				
+
 				describe('should render download with boolean null value', () => {
 					let template;
 
@@ -398,7 +398,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should render "overloaded" boolean properties', () => {
 					let template;
 
@@ -413,11 +413,11 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input download="true" href="/images/xxx.jpg">'
+							'<input href="/images/xxx.jpg" download="true">'
 						);
 					});
 				});
-				
+
 				describe('should render "allowFullScreen" boolean attributes', () => {
 					let template;
 
@@ -436,7 +436,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should not render "scoped" boolean attributes as "null"', () => {
 					let template;
 
@@ -499,7 +499,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 
 				describe('should render "required" boolean attribute (truthy)', () => {
 					let template;
@@ -513,7 +513,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -521,7 +521,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-                
+
 				// 'required' is a property and should not be set if a falsy value
 				describe('should render "required" boolean attribute (falsy)', () => {
 					let template;
@@ -535,7 +535,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -557,7 +557,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -578,7 +578,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -586,7 +586,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should render "draggable" boolean attribute (truthy)', () => {
 					let template;
 
@@ -599,7 +599,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -620,7 +620,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -641,7 +641,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -649,7 +649,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 					describe('should render "formNoValidate" boolean attribute (thruty)', () => {
 					let template;
 
@@ -662,7 +662,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -670,8 +670,8 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
-				
+
+
 				describe('should not render "seamless" boolean attributes if "null"', () => {
 					let template;
 
@@ -684,7 +684,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -692,7 +692,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 					describe('should render "seamless" boolean attribute (thruty)', () => {
 					let template;
 
@@ -705,7 +705,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
                         // this is a property
-						
+
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -713,7 +713,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should properly render "className" property', () => {
 					let template;
 
@@ -751,7 +751,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should properly render "disabled" boolean property', () => {
 					let template;
 
@@ -766,7 +766,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="" type="checkbox">'
+							'<input type="checkbox" disabled="">'
 						);
 					});
 				});
@@ -776,7 +776,7 @@ describe('Inferno acceptance tests', () => {
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<input type='checkbox' disabled={false}></input>
+							<input disabled={false} type='checkbox'></input>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -789,7 +789,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should render disabled boolean property as "disabled"', () => {
 					let template;
 
@@ -804,11 +804,11 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="disabled" type="checkbox">'
+							'<input type="checkbox" disabled="disabled">'
 						);
 					});
 				});
-				
+
 				describe('should properly handle custom properties on web components', () => {
 					let template;
 
@@ -904,7 +904,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should handle selectedIndex', () => {
 					let template;
 
@@ -923,15 +923,17 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should populate the value attribute on select', () => {
 					let template;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-					<select multiple={true} tabindex="1" value="bar"><option value="foo">foo</option><option value="bar">bar</option></select>
+							<select multiple={true} tabindex="1" value="bar">
+								<option value="foo">foo</option><option value="bar">bar</option>
+							</select>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
@@ -940,7 +942,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<select tabindex="1" multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
+							'<select multiple="" tabindex="1"><option value="foo">foo</option><option value="bar">bar</option></select>'
 						);
 					});
 				});
@@ -961,11 +963,11 @@ describe('Inferno acceptance tests', () => {
 					it('Initial render (creation)', () => {
 
                         // FIX ME!!! First child should be 'true', but issues with the child ndoes
-						
-//                        expect( container.firstChild.options[0].selected ).to.be.true;						
 
-                        expect( container.firstChild.options[1].selected ).to.be.true;						
-                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );						
+//                        expect( container.firstChild.options[0].selected ).to.be.true;
+
+                        expect( container.firstChild.options[1].selected ).to.be.true;
+                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -980,7 +982,7 @@ describe('Inferno acceptance tests', () => {
 						).to.equal(
 							`<select multiple=""><option value="bar">Rocks</option><option value="foo">Inferno</option></select>`
 						);
-					}); 
+					});
 				});
 
 	  		    describe('should populate the `value` attribute on select multiple using groups', () => {
@@ -1002,8 +1004,8 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
 
-                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );						
-						
+                        expect( get( container.firstChild ).sort() ).to.eql( [ "bar", "foo" ] );
+
 						expect(
 							container.innerHTML
 						).to.equal(
