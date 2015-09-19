@@ -21,7 +21,7 @@ var t7 = (function() {
   if (isBrowser === true) {
     docHead = document.getElementsByTagName('head')[0];
   }
-  
+
   var selfClosingTags = {
     area: true,
     base: true,
@@ -284,7 +284,6 @@ var t7 = (function() {
               default:
                 templateParams.push("if(Inferno.FragmentValueTypes.ATTR_OTHER." + name + " === undefined) { Inferno.FragmentValueTypes.ATTR_OTHER." + name + " = '" + name + "'; }");
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_OTHER." + name + ";");
-                break;
             }
 
             templateParams.push("fragment.templateElements[" + valueCounter.index + "] = " + rootElement + ";");
