@@ -980,11 +980,11 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
 //						expect(container.firstChild.options[1].selected).to.be.true;
-						expect(get(container).sort()).to.eql(['bar', 'foo']);
+						expect(get(container.firstChild).sort()).to.eql(['bar', 'foo']);
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<select multiple=""><span class="bar">bar</span><span class="foo">foo</span></select>`
+							`<select multiple=""><option value="bar">bar</option><option value="foo">foo</option></select>`
 						);
 					});
 
@@ -1016,8 +1016,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						console.log( get(container) )
-						expect(get(container)).to.eql(['bar', 'foo']);
+						expect(get(container.firstChild)).to.eql(['bar', 'foo']);
 						expect(
 							container.innerHTML
 						).to.equal(
