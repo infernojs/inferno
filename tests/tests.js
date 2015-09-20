@@ -979,7 +979,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-//						expect(container.firstChild.options[1].selected).to.be.true;
+						expect(container.firstChild.options[1].selected).to.be.true;
 						expect(get(container.firstChild).sort()).to.eql(['bar', 'foo']);
 						expect(
 							container.innerHTML
