@@ -1020,7 +1020,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<select multiple=""><option value="bar">Rocks</option><option value="foo">Inferno</option></select>`
+							`<select multiple=""><optgroup label="foo-group"></optgroup><optgroup label="bar-group"></optgroup></select>`
 						);
 					});
 
