@@ -1,6 +1,7 @@
 import isArray from '../util/isArray';
 
-export default function(node, props) {
+export default function(node, props, children) {
+
 	let propValue = props.value;
 	let selectedValue, i, l;
 	let options = node.options;
@@ -16,12 +17,14 @@ export default function(node, props) {
 		} else {
 			selectedValue[propValue] = true;
 		}
+
 		for (i = 0, l = options.length; i < l; i++) {
 			var selected = selectedValue[options[i].value];
 			if (options[i].selected !== selected) {
 				options[i].selected = selected;
 			}
 		}
+		
 	} else {
 		// Do not set `select.value` as exact behavior isn't consistent across all
 		// browsers for all cases.

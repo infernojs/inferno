@@ -93,8 +93,8 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	if (props) {
-		if (tag.toLowerCase() === 'select' && (props.value)) {
-			setSelectValue(element, props);
+		if (tag.toLowerCase() === 'select') {
+			setSelectValue(element, props, children);
 		}
 	}
 
