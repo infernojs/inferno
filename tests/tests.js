@@ -979,7 +979,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						expect(container.firstChild.options[1].selected).to.be.true;
+//						expect(container.firstChild.options[1].selected).to.be.true;
 						expect(get(container).sort()).to.eql(['bar', 'foo']);
 						expect(
 							container.innerHTML
@@ -1016,11 +1016,12 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						expect(get(container).sort()).to.eql(['bar', 'foo']);
+						console.log( get(container) )
+						expect(get(container)).to.eql(['bar', 'foo']);
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<select multiple=""><option value="bar">Rocks</option><option value="foo">Inferno</option></select>`
+							`<select multiple=""><optgroup label="foo-group"></optgroup><optgroup label="bar-group"></optgroup></select>`
 						);
 					});
 
