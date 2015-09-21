@@ -128,19 +128,8 @@ let
      * UNDER DEVELOPMENT!!
      *
      */
-    createStyles = (node, name, value) => {
+    createStyles = (stylesheet, useClassName) => {
 
-        return {
-
-            compile() {}, // TODO! Finish this!
-                create(stylesheet, useClassName) {
-                    if (!useClassName) {
-                        // default
-                        stylesheet = mediaQueries(registeredMediaQueries, stylesheet, true);
-                        return stylesheet;
-                    }
-                }
-        }
     },
     /**
      * Set properties after validation check

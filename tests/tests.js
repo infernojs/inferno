@@ -1806,14 +1806,14 @@ describe('Inferno acceptance tests', () => {
 
 	        it('should set values as boolean properties', () => {
 				DOMOperations('disabled').set(container, 'disabled', 'disabled');
-	//				expect(container.disabled).to.eql('disabled');
+				expect(container.getAttribute("disabled")).to.eql('disabled');
 
 				DOMOperations('disabled').set(container, 'disabled', true);
-	//			expect(container.disabled).to.eql('');
+				expect(container.getAttribute("disabled")).to.eql('');
                 
-				// shouldn't exist - it's an property
+				// shouldn't exist - it's an attribute
 				DOMOperations('disabled').set(container, 'disabled', true);
-//				expect(container.getAttribute("disabled")).to.eql("disabled");
+				expect(container.disabled).to.be.undefined;
 
 			});			
 	    });

@@ -1,3 +1,5 @@
-function mediaQueries() {}
+function mediaQueries() {
+ 
+}
 
 export default mediaQueries;
