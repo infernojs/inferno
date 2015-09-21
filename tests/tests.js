@@ -150,7 +150,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input download="false">'
+							'<input>'
 						);
 					});
 
@@ -417,7 +417,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input href="/images/xxx.jpg" download="false">'
+							'<input href="/images/xxx.jpg">'
 						);
 					});
 				});

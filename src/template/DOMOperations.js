@@ -5,70 +5,69 @@ import inArray from "../util/inArray";
 import isSVG from "../util/isSVG";
 
 /**
- * Set overloaded attributes
+ * Set boolean attributes
  *
- * @param {!Element} node DOM node
- * @param {String} name
- * @param {String} val
+ * @param  {Object element}   A DOM element.
+ * @param  {String} name      The boolean attribute name to set.
+ * @param {String} value
  */
-let overloadedAttr = (node, name, val) => {
-        node.setAttribute(name, (val === true ? '' : val));
-    },
-    /**
-     * Set boolean attributes
-     *
-     * @param {!Element} node DOM node
-     * @param {String} name
-     * @param {String} val
-     */
-    setBooleanAttr = (node, name, val) => {
+let setBooleanAttr = (node, name, value) => {
 
-        if (val !== false) {
+        if (value !== false) {
 
-            node.setAttribute(name, '' + (val === true ? '' : val));
+            node.setAttribute(name, '' + (value === true ? '' : value));
         }
     },
     /**
      * Set attributes on a DOM node
      *
-     * @param {!Element} node DOM node
-     * @param {String} name
-     * @param {String} val
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The attribute name to set.
+     * @param {String} value
      */
 
-    setAttr = (node, name, val) => {
+    setAttr = (node, name, value) => {
         if (name === 'type' && node.tagName === 'INPUT') {
-            const value = node.value; // value will be lost in IE if type is changed
-            node.setAttribute(name, '' + val);
-            node.value = value;
+
+            const val = node.value; // value will be lost in IE if type is changed
+            node.setAttribute(name, '' + value); // When changed the value is restored (IE compatibility).
+            node.value = val;
         } else {
-            if (val !== false) {
-                node.setAttribute(attrNameCfg[name] || name, '' + val);
+            if (value !== false) {
+                node.setAttribute(attrNameCfg[name] || name, '' + value);
             }
         }
     },
     /**
      * Set properties on a DOM node
      *
-     * @param {!Element} node DOM node
-     * @param {String} name
-     * @param {String} val
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The property name to set.
+     * @param {String} value
      */
 
-    setProp = (node, name, val) => {
-        node[name] = val;
+    setProp = (node, name, value) => {
+        if (name === 'type' && node.tagName === 'INPUT') {
+
+            const val = node.value; // value will be lost in IE if type is changed
+            node[name] = value; // When changed the value is restored (IE compatibility).
+            node.value = val;
+        } else {
+
+            node[name] = value;
+        }
     },
+
     /**
      * Set object properties
      *
-     * @param {!Element} node DOM node
-     * @param {String} name
-     * @param {String} val
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The property name to set.
+     * @param {String} value
      */
-
-    setObjProp = (node, name, val) => {
+    setObjProp = (node, name, value) => {
         if (process.env.NODE_ENV !== 'production') {
-            let typeOfVal = typeof val;
+            let typeOfVal = typeof value;
             if (typeOfVal !== 'object') {
                 console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
                 return;
@@ -77,45 +76,42 @@ let overloadedAttr = (node, name, val) => {
 
         let prop = node[name];
 
-        for (let i in val) {
-            prop[i] = val[i] == null ? '' : val[i];
+        for (let idx in value) {
+            prop[idx] = value[idx] == null ? '' : value[idx];
         }
     },
 
     /**
      * Set properties after validation check
      *
-     * @param {!Element} node DOM node
-     * @param {String} name
-     * @param {String} val
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The property name to set.
+     * @param {String} value
      */
-
-    setPropWithCheck = (node, name, val) => {
+    setPropWithCheck = (node, name, value) => {
         if (name === 'value' && node.tagName.toLowerCase() === 'select') {
-            setSelectValue(node, val);
+            setSelectValue(node, value);
         } else {
-            node[name] !== val && (node[name] = val);
+            node[name] !== value && (node[name] = value);
         }
     },
 
     /**
-     * Remove a attribute from a DOM node
+     * Unsets an attribute
      *
-     * @param {!Element} node DOM node
-     * @param {String} name
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The attribute name to remove.
      */
-
     removeAttr = (node, name) => {
         node.removeAttribute(attrNameCfg[name] || name);
     },
 
     /**
-     * Remove a property from a DOM node
+     * Unsetse a property
      *
-     * @param {!Element} node DOM node
+     * @param  {Object element}   A DOM element.
      * @param {String} name
      */
-
     removeProp = (node, name) => {
         if (name === 'value' && node.tagName === 'SELECT') {
             removeSelectValue(node);
@@ -127,7 +123,7 @@ let overloadedAttr = (node, name, val) => {
     /**
      * Set select / select multiple
      *
-     * @param {!Element} node DOM node
+     * @param  {Object element}   A DOM element.
      * @param {String} value
      */
     setSelectValue = (node, value) => {
@@ -147,9 +143,9 @@ let overloadedAttr = (node, name, val) => {
     },
 
     /**
-     * Remove select / select multiple from a DOM node
+     * Unsets a select / select multiple property from a DOM node
      *
-     * @param {!Element} node DOM node
+     * @param  {Object element}   A DOM element.
      * @param {String} value
      */
     removeSelectValue = (node) => {
@@ -166,8 +162,8 @@ let overloadedAttr = (node, name, val) => {
     /**
      * Transform HTML attributes to string for SSR rendring
      *
-     * @param {!Element} node DOM node
-     * @param {String} name
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The attribute name to set.
      */
 
     attrToString = (name, value) => {
@@ -177,7 +173,7 @@ let overloadedAttr = (node, name, val) => {
     /**
      * Transform HTML boolean attributes to string for SSR rendring
      *
-     * @param {!Element} node DOM node
+     * @param  {Object element}   A DOM element.
      * @param {String} name
      */
 
@@ -188,8 +184,8 @@ let overloadedAttr = (node, name, val) => {
     /**
      * Transform CSS style property to string for SSR rendring
      *
-     * @param {!Element} node DOM node
-     * @param {String} name
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The property name to set.
      */
     stylePropToString = (name, value) => {
         let styles = '';
@@ -203,7 +199,7 @@ let overloadedAttr = (node, name, val) => {
 
     xlinkCfg = {
         "xml:base": "base",
-        "xml:id":   "id",
+        "xml:id": "id",
         "xml:lang": "lang",
         "xml:space": "space"
     },
@@ -219,11 +215,6 @@ let overloadedAttr = (node, name, val) => {
 
     IS_ATTRIBUTE = {
         set: setAttr,
-        remove: removeAttr,
-        toHtml: attrToString
-    },
-    IS_OVERLOADED_ATTRIBUTE = {
-        set: overloadedAttr,
         remove: removeAttr,
         toHtml: attrToString
     },
@@ -243,25 +234,25 @@ let overloadedAttr = (node, name, val) => {
         toHtml: booleanAttrToString
     },
     IS_XLINK_NAMESPACE = {
-        set (node, key, value) {
-            node.setAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key], "" + value);
-        },
-        remove (node, key) {
+        set(node, key, value) {
+                node.setAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key], "" + value);
+            },
+            remove(node, key) {
 
-            node.removeAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key]);
-        }
+                node.removeAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key]);
+            }
     },
 
     IS_XML_NAMESPACE = {
-        set (node, key, value) {
+        set(node, key, value) {
 
-            node.setAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key], "" + value);
+                node.setAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key], "" + value);
 
-        },
-        remove(node, key) {
+            },
+            remove(node, key) {
 
-            node.removeAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key]);
-        }
+                node.removeAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key]);
+            }
     },
     attrsCfg = {
 
@@ -288,7 +279,7 @@ let overloadedAttr = (node, name, val) => {
         defaultselected: IS_BOOLEAN_ATTRIBUTE,
         disabled: IS_BOOLEAN_ATTRIBUTE,
         draggable: IS_BOOLEAN_ATTRIBUTE,
-        download: IS_OVERLOADED_ATTRIBUTE,
+        download: IS_BOOLEAN_ATTRIBUTE,
         form: IS_ATTRIBUTE,
         formAction: IS_ATTRIBUTE,
         formEncType: IS_ATTRIBUTE,
@@ -395,6 +386,14 @@ let overloadedAttr = (node, name, val) => {
 
     };
 
+/**
+ * Maintains state of HTML attributes and properties.
+ *
+ * @param  {Object element}   A DOM element.
+ * @param  Object previous  The previous state of properties.
+ * @param  Object props     The properties to match on.
+ * @return Object props     The element properties state.
+ */
 export default function(attrName) {
     return attrsCfg[attrName] || IS_ATTRIBUTE;
 }
