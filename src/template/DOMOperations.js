@@ -38,7 +38,7 @@ let overloadedAttr = (node, name, val) => {
 
     setAttr = (node, name, val) => {
         if (name === 'type' && node.tagName === 'INPUT') {
-            var value = node.value; // value will be lost in IE if type is changed
+            let value = node.value; // value will be lost in IE if type is changed
             node.setAttribute(name, '' + val);
             node.value = value;
         } else {
@@ -68,16 +68,16 @@ let overloadedAttr = (node, name, val) => {
 
     setObjProp = (node, name, val) => {
         if (process.env.NODE_ENV !== 'production') {
-            var typeOfVal = typeof val;
+            let typeOfVal = typeof val;
             if (typeOfVal !== 'object') {
                 console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
                 return;
             }
         }
 
-        var prop = node[name];
+        let prop = node[name];
 
-        for (var i in val) {
+        for (let i in val) {
             prop[i] = val[i] == null ? '' : val[i];
         }
     },
@@ -131,11 +131,11 @@ let overloadedAttr = (node, name, val) => {
      */
     setSelectValue = (node, value) => {
 
-        var isMultiple = Array.isArray(value),
+        let isMultiple = Array.isArray(value),
             options = node.options,
             len = options.length;
 
-        var i = 0,
+        let i = 0,
             optionNode;
 
         while (i < len) {
@@ -152,10 +152,10 @@ let overloadedAttr = (node, name, val) => {
      * @param {String} value
      */
     removeSelectValue = (node) => {
-        var options = node.options,
+        let options = node.options,
             len = options.length;
 
-        var i = 0;
+        let i = 0;
 
         while (i < len) {
             options[i++].selected = false;
@@ -191,16 +191,16 @@ let overloadedAttr = (node, name, val) => {
      * @param {String} name
      */
     stylePropToString = (name, value) => {
-        var styles = '';
+        let styles = '';
 
-        for (var i in value) {
+        for (let i in value) {
             value[i] != null && (styles += dasherize(i) + ':' + value[i] + ';');
         }
 
         return styles ? name + '="' + styles + '"' : styles;
     }
 
-var IS_ATTRIBUTE = {
+let IS_ATTRIBUTE = {
         set: setAttr,
         remove: removeAttr,
         toHtml: attrToString
