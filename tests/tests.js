@@ -1099,18 +1099,21 @@ describe('Inferno acceptance tests', () => {
 				describe('should handle basic styles', () => {
 					let template;
 
+                    let styleRule = { width:200, height:200}
+
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<div styles={['miracle']}></div>
+							<div style={styleRule}></div>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
+
 						expect(
-							container.innerHTML
+							container.outerHTML
 						).to.equal(
-							'<div></div>'
+							'<div><div style="width: 200px; height: 200px;"></div></div>'
 						);
 					});
 				});

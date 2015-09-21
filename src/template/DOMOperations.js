@@ -113,9 +113,28 @@ let setObjectProperty = (node, name, value) => {
 	let prop = node[name];
 
 	for (let idx in value) {
+		
 		prop[idx] = value[idx] == null ? '' : value[idx];
 	}
+},
+
+setStyleProperty = (node, name, value) => {
+	if (process.env.NODE_ENV !== 'production') {
+		let typeOfVal = typeof value;
+		if (typeOfVal !== 'object') {
+			console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
+			return;
+		}
+	}
+
+	let prop = node[name];
+
+	for (let idx in value) {
+		node.style[idx] = value[idx] == null ? '' : normalize(idx, value[idx]);
+	}
+
 };
+
 
 /**
  * Set CSS styles
@@ -218,7 +237,9 @@ let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHt
  * @param {String} name - The attribute name to set.
  * @param {String} value - The attribute value to set.
  */
-let booleanAttrToString = (name, value) => value ? name : '';
+let booleanAttrToString = (name, value) => {
+    return value ? name : '';
+}
 
 /**
  * Transform CSS style property to string for SSR rendring
@@ -401,7 +422,7 @@ let attrsCfg = {
 	 * 'styles' should be used as an replacement.
 	 */
 	style: {
-		set: setObjectProperty,
+		set: setStyleProperty,
 		remove: removeProperty,
 		toHtml: stylePropToString
 	},
