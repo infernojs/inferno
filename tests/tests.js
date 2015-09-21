@@ -1094,6 +1094,29 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+                /**
+				 * Styles
+				 */
+                
+				describe('should handle basic styles', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div styles={["miracle"]}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div></div>'
+						);
+					});
+				});
+
 				describe('should render a basic component', () => {
 					class TestComponent extends Inferno.Component {
 						render() {

@@ -121,6 +121,15 @@ let
     },
 
     /**
+     * Set CSS styles
+     *
+     * UNDER DEVELOPMENT!!
+     *
+	 */
+    createStyle = (node, name, value) => {
+
+    },
+    /**
      * Set properties after validation check
      *
      * @param  {Object element}   A DOM element.
@@ -405,6 +414,11 @@ let
          */
         style: {
             set: setObjectProperty,
+            remove: removeProperty,
+            toHtml: stylePropToString
+        },
+        styles: {
+            set: createStyle,
             remove: removeProperty,
             toHtml: stylePropToString
         },
