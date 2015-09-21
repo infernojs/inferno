@@ -3,8 +3,6 @@
 import Inferno from '../src';
 import { expect } from 'chai';
 import t7 from '../examples/t7';
-import { setAttribute } from '../src/template/DOMOperations';
-import addAttributes from '../src/template/addAttributes';
 import DOMOperations from '../src/template/DOMOperations';
 import unitlessCfg from '../src/template/cfg/unitlessCfg';
 import extendUnitlessNumber from '../src/template/extendUnitlessNumber';
@@ -172,7 +170,7 @@ describe('Inferno acceptance tests', () => {
 						template = Inferno.createTemplate((t, val1) =>
 							<input download={ val1 }></input>
 						);
-						Inferno.render(Inferno.createFragment("dominic", template), container);
+						Inferno.render(Inferno.createFragment('dominic', template), container);
 					});
 
 					it('Initial render (creation)', () => {
@@ -742,7 +740,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1097,13 +1095,13 @@ describe('Inferno acceptance tests', () => {
                 /**
 				 * Styles
 				 */
-                
+
 				describe('should handle basic styles', () => {
 					let template;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<div styles={["miracle"]}></div>
+							<div styles={['miracle']}></div>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -1586,7 +1584,7 @@ describe('Inferno acceptance tests', () => {
 			});
 		});
 	});
-	
+
 	describe('CSS operations', () => {
 		var container;
 
@@ -1631,191 +1629,203 @@ describe('Inferno acceptance tests', () => {
 			container = null;
 		});
 
-		describe('DOMOperations.toHtml()', () => { 
- 
-    	 describe('HTML attributes / properties', () => {  
-	
-			it('should render `checked` as a property (truthy)', () => {
-				expect(DOMOperations("checked").toHtml("checked", true)).to.equal('checked');
+		describe('DOMOperations.toHtml()', () => {
+
+			describe('HTML attributes / properties', () => {
+
+				it('should render `checked` as a property (truthy)', () => {
+					expect(DOMOperations('checked').toHtml('checked', true)).to.equal('checked');
+				});
+
+				it('should render `checked` ( html5)', () => {
+					expect(DOMOperations('checked').toHtml('checked', 'checked')).to.equal('checked');
+				});
+
+				it('should render `checked` (falsy)', () => {
+					expect(DOMOperations('checked').toHtml('checked', false)).to.equal('');
+				});
+
+				it('should render `download` attribute (falsy)', () => {
+					expect(DOMOperations('download').toHtml('download', false)).to.equal('download="false"');
+				});
+
+				it('should render custom attribute', () => {
+					expect(DOMOperations('fooBar').toHtml('fooBar', 'boo')).to.equal('fooBar="boo"');
+				});
+
+				it('should render "multiple" attribute', () => {
+					expect(DOMOperations('multiple').toHtml('multiple', 'true')).to.equal('multiple');
+				});
+
 			});
 
-			it('should render `checked` ( html5)', () => {
-				expect(DOMOperations("checked").toHtml("checked", 'checked')).to.equal('checked');
-			});
+			describe('CSS', () => {
 
-			it('should render `checked` (falsy)', () => {
-				expect(DOMOperations("checked").toHtml("checked", false)).to.equal('');
-			});
+				it('should create markup for simple styles', () => {
+					expect(DOMOperations('style').toHtml('style', {
+						backgroundColor: '#3b5998',
+						display: 'none'
+					})).to.equal(
+						'style="background-color:#3b5998;display:none;"'
+					);
+				});
 
-			it('should render `download` attribute (falsy)', () => {
-				expect(DOMOperations("download").toHtml("download", false)).to.equal('download="false"');
-			});
+				// null, undefined etc. has to be done on a higher level of abstraction - not low-level
+				it('should not ignore undefined styles', () => {
+					expect(DOMOperations('style').toHtml('style', {
+						backgroundColor: undefined,
+						display: 'none'
+					})).to.equal(
+						'style="display:none;"'
+					);
+				});
 
-			it('should render custom attribute', () => {
-				expect(DOMOperations("fooBar").toHtml("fooBar", "boo")).to.equal('fooBar="boo"');
-			});
+				it('should not ignore null styles', () => {
+					expect(DOMOperations('style').toHtml('style', {
+						backgroundColor: null,
+						display: 'none'
+					})).to.equal(
+						'style="display:none;"'
+					);
+				});
 
-			it('should render "multiple" attribute', () => {
-				expect(DOMOperations("multiple").toHtml("multiple", "true")).to.equal('multiple');
-			});
+				it('should automatically append `px` to relevant styles', () => {
+					expect(DOMOperations('style').toHtml('style', {
+						left: 0,
+						margin: 16,
+						opacity: 0.5,
+						padding: '4px'
+					})).to.equal(
+						'style="left:0;margin:16px;opacity:0.5;padding:4px;"'
+					);
+				});
 
+				it('should create vendor-prefixed markup correctly', () => {
+					expect(DOMOperations('style').toHtml('style', {
+						msTransition: 'none',
+						MozTransition: 'none'
+					})).to.equal(
+						'style="ms-transition:none;moz-transition:none;"'
+					);
+				});
+
+				it('should trim values so `px` will be appended correctly', () => {
+					expect(DOMOperations('style').toHtml('style', {
+						margin: '16',
+						opacity: 0.5,
+						padding: '4'
+					})).to.equal('style="margin:16px;opacity:0.5;padding:4px;"');
+				});
+
+			});
 		});
-        describe('CSS', () => {
 
-   it('should create markup for simple styles', () => {
-       expect(DOMOperations('style').toHtml('style', {
-           backgroundColor: '#3b5998',
-           display: 'none',
-       })).to.equal('style="background-color:#3b5998;display:none;"');
-   });
+		describe('DOMOperations.set()', () => {
 
-   // null, undefined etc. has to be done on a higher level of abstraction - not low-level
-   it('should not ignore undefined styles', () => {
-       expect(DOMOperations('style').toHtml("style", {
-           backgroundColor: undefined,
-           display: 'none',
-       })).to.equal('style="display:none;"');
-   });
-
-   it('should not ignore null styles', () => {
-       expect(DOMOperations('style').toHtml("style", {
-           backgroundColor: null,
-           display: 'none',
-       })).to.equal('style="display:none;"');
-   });
-
-   it('should automatically append `px` to relevant styles', () => {
-       expect(DOMOperations('style').toHtml('style', {
-           left: 0,
-           margin: 16,
-           opacity: 0.5,
-           padding: '4px',
-       })).to.equal('style="left:0;margin:16px;opacity:0.5;padding:4px;"');
-   });
-
-   it('should create vendor-prefixed markup correctly', () => {
-       expect(DOMOperations('style').toHtml('style', {
-      msTransition: 'none',
-      MozTransition: 'none',
-    })).to.equal('style="ms-transition:none;moz-transition:none;"');
-   });
-
-   it('should trim values so `px` will be appended correctly', () => {
-       expect(DOMOperations('style').toHtml('style', {
-      margin: '16 ',
-      opacity: 0.5,
-      padding: ' 4 ',
-    })).to.equal('style="margin:16px;opacity:0.5;padding:4px;"');
-   });
-
-   });
-   });
-	 describe('DOMOperations.set()', () => {  
-	 
-	        it('should render `checked` as a property', () => {
+			it('should render `checked` as a property', () => {
 				DOMOperations('checked').set(container, 'checked', true);
 				expect(container.checked).to.be.true;
 			});
 
-	        it('should support custom attributes', () => {
+			it('should support custom attributes', () => {
 				DOMOperations('custom-attr').set(container, 'custom-attr', '123');
 				expect(container.getAttribute('custom-attr')).to.equal('123');
 			});
 
-	        it('shouldn\'t render null values', () => {
+			it('shouldn\'t render null values', () => {
 				DOMOperations('value').set(container, 'value', null);
 				expect(container.value).to.be.null;
 			});
 
-	        it('should set `title` attribute', () => {
+			it('should set `title` attribute', () => {
 				DOMOperations('title').set(container, 'title', 'dominic');
 				expect(container.getAttribute('title')).to.equal('dominic');
 			});
 
-	        it('should support HTML5 data-* attribute', () => {
+			it('should support HTML5 data-* attribute', () => {
 				DOMOperations('data-foo').set(container, 'data-foo', 'bar');
 				expect(container.getAttribute('data-foo')).to.equal('bar');
 			});
 
-	        it('should support HTML5 data-* attribute', () => {
+			it('should support HTML5 data-* attribute', () => {
 				DOMOperations('data-foo').set(container, 'data-foo', 'bar');
 				expect(container.getAttribute('data-foo')).to.equal('bar');
 			});
 
-	        it('should set "muted" boolean property ( truty) ', () => {
+			it('should set "muted" boolean property ( truty) ', () => {
 				DOMOperations('muted').set(container, 'muted', true);
 				expect(container.muted).to.be.true;
 			});
 
-	        it('should set "muted" boolean property (falsy) ', () => {
+			it('should set "muted" boolean property (falsy) ', () => {
 				DOMOperations('muted').set(container, 'muted', false);
 				expect(container.muted).to.be.false;
 			});
-             // 'HTML5' should 'force' the value to be true
-	        it('should set "muted" boolean property (HTML5) ', () => {
-				DOMOperations('muted').set(container, 'muted', "true");
-				expect(container.muted).to.be.true;
-			});
-	       
-		    it('should not set "muted" boolean property as "muted muted"', () => {
-				DOMOperations('muted').set(container, 'muted', "muted");
+			// 'HTML5' should 'force' the value to be true
+			it('should set "muted" boolean property (HTML5) ', () => {
+				DOMOperations('muted').set(container, 'muted', 'true');
 				expect(container.muted).to.be.true;
 			});
 
-	        it('should set "readOnly" boolean property ( truty) ', () => {
+			it('should not set "muted" boolean property as "muted muted"', () => {
+				DOMOperations('muted').set(container, 'muted', 'muted');
+				expect(container.muted).to.be.true;
+			});
+
+			it('should set "readOnly" boolean property ( truty) ', () => {
 				DOMOperations('readOnly').set(container, 'readOnly', true);
 				expect(container.readOnly).to.be.true;
 			});
 
-	        it('should set "readOnly" boolean property (falsy) ', () => {
+			it('should set "readOnly" boolean property (falsy) ', () => {
 				DOMOperations('readOnly').set(container, 'readOnly', false);
 				expect(container.readOnly).to.be.false;
 			});
-	     
-		    it('should set "readOnly" boolean property (HTML5) ', () => {
-				DOMOperations('readOnly').set(container, 'readOnly', "true");
+
+			it('should set "readOnly" boolean property (HTML5) ', () => {
+				DOMOperations('readOnly').set(container, 'readOnly', 'true');
 				expect(container.readOnly).to.be.true;
 			});
-	      
-		    it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
-				DOMOperations('readOnly').set(container, 'readOnly', "readOnly");
+
+			it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
+				DOMOperations('readOnly').set(container, 'readOnly', 'readOnly');
 				expect(container.readOnly).to.be.true;
-			});			
-	      
-		    it('should set numeric properties', () => {
+			});
+
+			it('should set numeric properties', () => {
 				DOMOperations('start').set(container, 'start', 5);
-				expect(container.getAttribute("start")).to.eql('5');
+				expect(container.getAttribute('start')).to.eql('5');
 
 				DOMOperations('start').set(container, 'start', 0);
-				expect(container.getAttribute("start")).to.eql('0');
-			});			
+				expect(container.getAttribute('start')).to.eql('0');
+			});
 
-	        it('should set negative numeric properties', () => {
+			it('should set negative numeric properties', () => {
 				DOMOperations('start').set(container, 'start', -5);
-				expect(container.getAttribute("start")).to.eql('-5');
-			});			
+				expect(container.getAttribute('start')).to.eql('-5');
+			});
 
-	        it('should set numeric attribute "-0" to "0"', () => {
+			it('should set numeric attribute "-0" to "0"', () => {
 				DOMOperations('start').set(container, 'start', -0);
-				expect(container.getAttribute("start")).to.eql('0');
-			});			
-	        it('should set className property', () => {
-				DOMOperations('className').set(container, 'className', -0);
-				expect(container.getAttribute("class")).to.eql('0');
-			});			
+				expect(container.getAttribute('start')).to.eql('0');
+			});
 
-	        it('should set values as boolean properties', () => {
+			it('should set className property', () => {
+				DOMOperations('className').set(container, 'className', -0);
+				expect(container.getAttribute('class')).to.eql('0');
+			});
+
+			it('should set values as boolean properties', () => {
 				DOMOperations('disabled').set(container, 'disabled', 'disabled');
-				expect(container.getAttribute("disabled")).to.eql('disabled');
+				expect(container.getAttribute('disabled')).to.eql('disabled');
 
 				DOMOperations('disabled').set(container, 'disabled', true);
-				expect(container.getAttribute("disabled")).to.eql('');
-                
+				expect(container.getAttribute('disabled')).to.eql('');
+
 				// shouldn't exist - it's an attribute
 				DOMOperations('disabled').set(container, 'disabled', true);
 				expect(container.disabled).to.be.undefined;
-
-			});			
-	    });
+			});
+		});
 	});
 });
