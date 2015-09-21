@@ -383,11 +383,11 @@ let
         srcDoc: IS_PROPERTY,
         srcSet: IS_ATTRIBUTE,
         start: IS_ATTRIBUTE,
+
         /**
          * 'style' is a special case, and will be set as a normal object.
          * 'styles' should be used as an replacement.
          */
-
         style: {
             set: setObjectProperty,
             remove: removeProp,
@@ -396,6 +396,7 @@ let
         translate: IS_BOOLEAN_ATTRIBUTE,
         truespeed: IS_BOOLEAN_PROPERTY,
         typemustmatch: IS_BOOLEAN_ATTRIBUTE,
+
         /**
          * 'value' is a special case
          *
@@ -410,7 +411,7 @@ let
         wmode: IS_ATTRIBUTE,
 
         /**
-         * Non-standard Properties
+         * Non-standard properties
          */
 
         // itemProp, itemScope, itemType are for
@@ -447,12 +448,9 @@ let
     };
 
 /**
- * Maintains state of HTML attributes and properties.
+ * Set / unset / or SSR render HTML attributes and properties.
  *
- * @param  {Object element}   A DOM element.
- * @param  Object previous  The previous state of properties.
- * @param  Object props     The properties to match on.
- * @return Object props     The element properties state.
+ * @return {String} attrName  The HTML property / attribute to 'fix'
  */
 export default function(attrName) {
     if (attrName) {
