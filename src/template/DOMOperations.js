@@ -1,5 +1,5 @@
 import attrNameCfg from "./cfg/attrNameCfg";
-import attrPropCfg from "./cfg/attrPropCfg";
+import propNameCfg from "./cfg/propNameCfg";
 import hasPropertyAccessor from "./hasPropertyAccessor";
 import dasherize from "./dasherize";
 import inArray from "../util/inArray";
@@ -13,35 +13,35 @@ import unitlessCfg from "./cfg/unitlessCfg";
  *
  * @param  {Object element}   A DOM element.
  * @param  {String} name      The boolean attribute name to set.
- * @param {String} value
+ * @param  {String} value     The boolean attribute value to set.
  */
 
-let 
-    normalize = ( name, value ) => {
+let
+    normalize = (name, value) => {
 
-	if ( value === null || ( value === '' ) ) {
-		return '';
-	}
+        if (value === null || (value === '')) {
+            return '';
+        }
 
-	if ( value === 0 || ( unitlessCfg[name] || ( isNaN( value ) ) ) ) {
-		return '' + value; // cast to string
-	}
+        if (value === 0 || (unitlessCfg[name] || (isNaN(value)))) {
+            return '' + value; // cast to string
+        }
 
-	if ( typeof value === 'string' ) {
-		value = value.trim();
-	}
+        if (typeof value === 'string') {
+            value = value.trim();
+        }
 
-	return value + 'px';
-},
+        return value + 'px';
+    },
 
-/**
- * Set boolean attributes
- *
- * @param  {Object element}   A DOM element.
- * @param  {String} name      The boolean attribute name to set.
- * @param {String} value
- */
- setBooleanAttr = (node, name, value) => {
+    /**
+     * Set boolean attributes
+     *
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The boolean attribute name to set.
+     * @param {String} value      The boolean attribute value to set.
+     */
+    setBooleanAttr = (node, name, value) => {
 
         if (value !== false) {
 
@@ -53,10 +53,10 @@ let
      *
      * @param  {Object element}   A DOM element.
      * @param  {String} name      The attribute name to set.
-     * @param {String} value
+     * @param {String} value      The attribute value to set.
      */
 
-    setAttr = (node, name, value) => {
+    setAttribute = (node, name, value) => {
         if (name === 'type' && node.tagName === 'INPUT') {
 
             const val = node.value; // value will be lost in IE if type is changed
@@ -64,17 +64,17 @@ let
             node.value = val;
         } else {
             if (value !== false) {
-                node.setAttribute(attrNameCfg[name] || name, '' + value);
+                node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
             }
         }
     },
-	
+
     /**
      * Set properties on a DOM node
      *
      * @param  {Object element}   A DOM element.
      * @param  {String} name      The property name to set.
-     * @param {String} value
+     * @param {String} value      The property value to set.
      */
     setProperty = (node, name, value) => {
         if (name === 'type' && node.tagName === 'INPUT') {
@@ -83,8 +83,7 @@ let
             node[name] = value; // When changed the value is restored (IE compatibility).
             node.value = val;
         } else {
-
-            node[name] = value;
+            node[propNameCfg[name] || name] = value;
         }
     },
 
@@ -93,7 +92,7 @@ let
      *
      * @param  {Object element}   A DOM element.
      * @param  {String} name      The property name to set.
-     * @param {String} value
+     * @param {String} value      The property value to set.
      */
     setObjectProperty = (node, name, value) => {
         if (process.env.NODE_ENV !== 'production') {
@@ -116,7 +115,7 @@ let
      *
      * @param  {Object element}   A DOM element.
      * @param  {String} name      The property name to set.
-     * @param {String} value
+     * @param {String} value      The property value to set.
      */
     setPropertyWithCheck = (node, name, value) => {
         if (name === 'value' && node.tagName.toLowerCase() === 'select') {
@@ -140,7 +139,7 @@ let
      * Unsetse a property
      *
      * @param  {Object element}   A DOM element.
-     * @param {String} name
+     * @param  {String} name      The property name to set.
      */
     removeProp = (node, name) => {
         if (name === 'value' && node.tagName === 'SELECT') {
@@ -154,7 +153,7 @@ let
      * Set select / select multiple
      *
      * @param  {Object element}   A DOM element.
-     * @param {String} value
+     * @param {String|Array} value      The property value to set.
      */
     setSelectValue = (node, value) => {
 
@@ -176,7 +175,6 @@ let
      * Unsets a select / select multiple property from a DOM node
      *
      * @param  {Object element}   A DOM element.
-     * @param {String} value
      */
     removeSelectValue = (node) => {
         const options = node.options,
@@ -195,16 +193,15 @@ let
      * @param  {Object element}   A DOM element.
      * @param  {String} name      The attribute name to set.
      */
-
     attrToString = (name, value) => {
-       return (attrNameCfg[name] || name) + '="' + escapeHtml(value) + '"';
+        return (attrNameCfg[name] || name) + '="' + escapeHtml(value) + '"';
     },
 
     /**
      * Transform HTML boolean attributes to string for SSR rendring
      *
-     * @param  {Object element}   A DOM element.
-     * @param {String} name
+     * @param  {String} name      The attribute name to set.
+     * @param  {String} value     The attribute value to set.
      */
 
     booleanAttrToString = (name, value) => {
@@ -214,28 +211,28 @@ let
     /**
      * Transform CSS style property to string for SSR rendring
      *
-     * @param  {Object element}   A DOM element.
-     * @param  {String} name      The property name to set.
+     * @param  {String} name      The attribute name to set.
+     * @param  {String} value     The property value to set.
      */
     stylePropToString = (name, value) => {
-      
-	    let styles = '';
+
+        let styles = '';
 
         for (let styleName in value) {
-			
+
             value[styleName] != null && (styles += dasherize(styleName) + ':' + normalize(styleName, value[styleName]) + ';');
         }
 
         return styles ? name + '="' + styles + '"' : styles;
     },
 
-    xlinkCfg = {
+    xlinkMap = {
         "xml:base": "base",
         "xml:id": "id",
         "xml:lang": "lang",
         "xml:space": "space"
     },
-    xmlCfg = {
+    xmlMap = {
         "xlink:actuate": "actuate",
         "xlink:arcrole": "arcrole",
         "xlink:href": "href",
@@ -246,11 +243,11 @@ let
     },
 
     IS_ATTRIBUTE = {
-        set: setAttr,
+        set: setAttribute,
         remove: removeAttr,
         toHtml: attrToString
     },
-    IS_BOOLEAN_ATTRIBUTE = { 
+    IS_BOOLEAN_ATTRIBUTE = {
         set: setBooleanAttr,
         remove: removeAttr,
         toHtml: attrToString
@@ -266,24 +263,51 @@ let
         toHtml: booleanAttrToString
     },
     IS_XLINK_NAMESPACE = {
-        set(node, key, value) {
-                node.setAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key], "" + value);
+        /**
+         * Set xlink namespace attribute
+         *
+         * @param  {Object element}   A DOM element.
+         * @param  {String} name      The attribute name to set.
+         * @param  {String} value     The attribute value to set.
+         */
+        set(node, name, value) {
+                node.setAttributeNS("http://www.w3.org/1999/xlink", xlinkMap[name], "" + value);
             },
-            remove(node, key) {
+            /**
+             * Unsets a xlink namespace attribute
+             *
+             * @param  {Object element}   A DOM element.
+             * @param  {String} name      The attribute name to set.
+             * @param  {String} name      The attribute name to unset.
+             */
+            remove(node, name) {
 
-                node.removeAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key]);
+                node.removeAttributeNS("http://www.w3.org/1999/xlink", xlinkMap[name]);
             }
     },
 
     IS_XML_NAMESPACE = {
-        set(node, key, value) {
+        /**
+         * Set xlink namespace attribute
+         *
+         * @param  {Object element}   A DOM element.
+         * @param  {String} name      The attribute name to set.
+         * @param  {String} value     The attribute value to set.
+         */
+        set(node, name, value) {
 
-                node.setAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key], "" + value);
+                node.setAttributeNS("http://www.w3.org/XML/1998/namespace", xmlMap[name], "" + value);
 
             },
-            remove(node, key) {
+            /**
+             * Unsets a xml namespace attribute
+             *
+             * @param  {Object element}   A DOM element.
+             * @param  {String} name      The attribute name to unset.
+             */
+            remove(node, name) {
 
-                node.removeAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key]);
+                node.removeAttributeNS("http://www.w3.org/XML/1998/namespace", xmlMap[name]);
             }
     },
     attrsCfg = {
@@ -359,14 +383,23 @@ let
         srcDoc: IS_PROPERTY,
         srcSet: IS_ATTRIBUTE,
         start: IS_ATTRIBUTE,
+        /**
+         * 'style' is a special case, and will be set as a normal object.
+         * 'styles' should be used as an replacement.
+         */
+
         style: {
             set: setObjectProperty,
             remove: removeProp,
             toHtml: stylePropToString
         },
         translate: IS_BOOLEAN_ATTRIBUTE,
-        truespeed: IS_BOOLEAN_ATTRIBUTE,
+        truespeed: IS_BOOLEAN_PROPERTY,
         typemustmatch: IS_BOOLEAN_ATTRIBUTE,
+        /**
+         * 'value' is a special case
+         *
+         */
         value: {
             set: setPropertyWithCheck,
             remove: removeProp,
@@ -397,17 +430,13 @@ let
         unselectable: IS_ATTRIBUTE,
 
         /**
-         * XML namespace attributes
+         * Namespace attributes
          */
+		 
         "xml:base": IS_XML_NAMESPACE,
         "xml:id": IS_XML_NAMESPACE,
         "xml:lang ": IS_XML_NAMESPACE,
         "xml:space": IS_XML_NAMESPACE,
-
-        /**
-         * XLink namespace attributes
-         */
-
         "xlink:actuate": IS_XLINK_NAMESPACE,
         "xlink:arcrole": IS_XLINK_NAMESPACE,
         "xlink:href": IS_XLINK_NAMESPACE,
@@ -415,7 +444,6 @@ let
         "xlink:show": IS_XLINK_NAMESPACE,
         "xlink:title": IS_XLINK_NAMESPACE,
         "xlink:type": IS_XLINK_NAMESPACE
-
     };
 
 /**
@@ -427,7 +455,7 @@ let
  * @return Object props     The element properties state.
  */
 export default function(attrName) {
-   if ( attrName) {
-    return attrsCfg[attrName] || IS_ATTRIBUTE;
-	}
+    if (attrName) {
+        return attrsCfg[attrName] || IS_ATTRIBUTE;
+    }
 }
