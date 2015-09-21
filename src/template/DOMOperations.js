@@ -1,4 +1,5 @@
 import attrNameCfg from "./cfg/attrNameCfg";
+import attrPropCfg from "./cfg/attrPropCfg";
 import hasPropertyAccessor from "./hasPropertyAccessor";
 import inArray from "../util/inArray";
 import isSVG from "../util/isSVG";
@@ -10,7 +11,6 @@ import isSVG from "../util/isSVG";
  * @param {String} name
  * @param {String} val
  */
-
 let overloadedAttr = (node, name, val) => {
         node.setAttribute(name, (val === true ? '' : val));
     },
@@ -38,13 +38,13 @@ let overloadedAttr = (node, name, val) => {
 
     setAttr = (node, name, val) => {
         if (name === 'type' && node.tagName === 'INPUT') {
-            let value = node.value; // value will be lost in IE if type is changed
+            const value = node.value; // value will be lost in IE if type is changed
             node.setAttribute(name, '' + val);
             node.value = value;
         } else {
-            //if ( val !== false) {
-            node.setAttribute(attrNameCfg[name] || name, '' + val);
-            //		}
+            if (val !== false) {
+                node.setAttribute(attrNameCfg[name] || name, '' + val);
+            }
         }
     },
     /**
@@ -81,6 +81,7 @@ let overloadedAttr = (node, name, val) => {
             prop[i] = val[i] == null ? '' : val[i];
         }
     },
+
     /**
      * Set properties after validation check
      *
@@ -131,7 +132,7 @@ let overloadedAttr = (node, name, val) => {
      */
     setSelectValue = (node, value) => {
 
-        let isMultiple = Array.isArray(value),
+        const isMultiple = Array.isArray(value),
             options = node.options,
             len = options.length;
 
@@ -152,7 +153,7 @@ let overloadedAttr = (node, name, val) => {
      * @param {String} value
      */
     removeSelectValue = (node) => {
-        let options = node.options,
+        const options = node.options,
             len = options.length;
 
         let i = 0;
@@ -198,9 +199,25 @@ let overloadedAttr = (node, name, val) => {
         }
 
         return styles ? name + '="' + styles + '"' : styles;
-    }
+    },
 
-let IS_ATTRIBUTE = {
+    xlinkCfg = {
+        "xml:base": "base",
+        "xml:id":   "id",
+        "xml:lang": "lang",
+        "xml:space": "space"
+    },
+    xmlCfg = {
+        "xlink:actuate": "actuate",
+        "xlink:arcrole": "arcrole",
+        "xlink:href": "href",
+        "xlink:role": "role",
+        "xlink:show": "show",
+        "xlink:title": "title",
+        "xlink:type": "type"
+    },
+
+    IS_ATTRIBUTE = {
         set: setAttr,
         remove: removeAttr,
         toHtml: attrToString
@@ -224,6 +241,27 @@ let IS_ATTRIBUTE = {
         set: setProp,
         remove: removeProp,
         toHtml: booleanAttrToString
+    },
+    IS_XLINK_NAMESPACE = {
+        set (node, key, value) {
+            node.setAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key], "" + value);
+        },
+        remove (node, key) {
+
+            node.removeAttributeNS("http://www.w3.org/1999/xlink", xlinkCfg[key]);
+        }
+    },
+
+    IS_XML_NAMESPACE = {
+        set (node, key, value) {
+
+            node.setAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key], "" + value);
+
+        },
+        remove(node, key) {
+
+            node.removeAttributeNS("http://www.w3.org/XML/1998/namespace", xmlCfg[key]);
+        }
     },
     attrsCfg = {
 
@@ -333,7 +371,28 @@ let IS_ATTRIBUTE = {
         // as an alternative to the sandbox attribute on IE<10
         security: IS_ATTRIBUTE,
         // IE-only attribute that controls focus behavior
-        unselectable: IS_ATTRIBUTE
+        unselectable: IS_ATTRIBUTE,
+
+        /**
+         * XML namespace attributes
+         */
+        "xml:base": IS_XML_NAMESPACE,
+        "xml:id": IS_XML_NAMESPACE,
+        "xml:lang ": IS_XML_NAMESPACE,
+        "xml:space": IS_XML_NAMESPACE,
+
+        /**
+         * XLink namespace attributes
+         */
+
+        "xlink:actuate": IS_XLINK_NAMESPACE,
+        "xlink:arcrole": IS_XLINK_NAMESPACE,
+        "xlink:href": IS_XLINK_NAMESPACE,
+        "xlink:role": IS_XLINK_NAMESPACE,
+        "xlink:show": IS_XLINK_NAMESPACE,
+        "xlink:title": IS_XLINK_NAMESPACE,
+        "xlink:type": IS_XLINK_NAMESPACE
+
     };
 
 export default function(attrName) {

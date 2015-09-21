@@ -1,7 +1,6 @@
 import events from '../events/shared/events';
 import clearEventListeners from '../events/clearEventListeners';
 import addEventListener from '../events/addEventListener';
-import { setStyles } from './CSSOperations';
 import setAttribute from './DOMOperations';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
@@ -86,9 +85,6 @@ export default function addAttributes(node, attrs, fragment) {
 			if (events[attrName] !== undefined) {
 				clearEventListeners(node, attrName);
 				addEventListener(node, attrName, attrVal);
-				// styles
-			} else if (attrName === 'style') {
-				setStyles(node, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
 				setAttribute(attrName).set(node, attrName, attrVal);

@@ -766,7 +766,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input seamless="true">'
+							'<input seamless="">'
 						);
 					});
 				});
@@ -1075,10 +1075,6 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
-//						expect(get(container.childNodes[0])).to.eql(['bar', 'foo']);
-
-//						expect(get(container.firstChild).sort()).to.eql(['bar', 'foo']);
 
 						expect(
 							container.innerHTML
