@@ -5,7 +5,7 @@ import clearEventListeners from '../events/clearEventListeners';
 import addEventListener from '../events/addEventListener';
 import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
-import { setAttribute } from '../template/DOMOperations';
+import setAttribute from '../template/DOMOperations';
 
 // TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 // refactored to by more DRY. although, this causes a significant performance cost
@@ -83,7 +83,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 						clearEventListeners(element, type);
 						addEventListener(element, type, fragment.templateValues[i]);
 					} else {
-						setAttribute(element, type, fragment.templateValues[i]);
+						setAttribute(fragment.templateValues[i]).set(element, type, fragment.templateValues[i]);
 					}
 				}
 				//component prop, update it

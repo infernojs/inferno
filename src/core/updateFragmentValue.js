@@ -5,7 +5,7 @@ import clearEventListeners from '../events/clearEventListeners';
 import addEventListener    from '../events/addEventListener';
 import events              from '../events/shared/events';
 import isSVG               from '../util/isSVG';
-import { setAttribute }    from '../template/DOMOperations';
+import setAttribute        from '../template/DOMOperations';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
@@ -80,7 +80,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 					clearEventListeners(element, type);
 					addEventListener(element, type, fragment.templateValue);
 				} else {
-					setAttribute(element, type, fragment.templateValue);
+					setAttribute(type).set(element, type, fragment.templateValue);
 				}
 				// TODO make component props work for single value fragments
 			} else {

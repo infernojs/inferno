@@ -27,10 +27,7 @@ export default function createElement(tag, props, ...children) {
 		return element;
 	}
 
-	if (props) {
-		template.addAttributes(element, props, this);
-	}
-
+	
 	let len = children.length;
 	if(len > 0) {
 		if (len > 1) {
@@ -93,10 +90,10 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	if (props) {
-		if (tag.toLowerCase() === 'select') {
-			setSelectValue(element, props, children);
-		}
+
+		template.addAttributes(element, props, this);
 	}
+
 
 	return element;
 }

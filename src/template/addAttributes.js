@@ -2,7 +2,7 @@ import events from '../events/shared/events';
 import clearEventListeners from '../events/clearEventListeners';
 import addEventListener from '../events/addEventListener';
 import { setStyles } from './CSSOperations';
-import { setAttribute } from './DOMOperations';
+import setAttribute from './DOMOperations';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 //ensuring we use these fragmentTypes before using ATTR_OTHER makes updates on
@@ -91,7 +91,7 @@ export default function addAttributes(node, attrs, fragment) {
 				setStyles(node, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
-				setAttribute(node, attrName, attrVal);
+				setAttribute(attrName).set(node, attrName, attrVal);
 			}
 		}
 	}

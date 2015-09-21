@@ -1,183 +1,258 @@
-import attrPropCfg from './cfg/attrPropCfg';
-import nsCfg from './cfg/nsCfg';
-import attrNameCfg from './cfg/attrNameCfg';
-import propNameCfg from './cfg/propNameCfg';
-import checkBitmask from './checkBitmask';
-import hooks from './hooks';
-import memoizeString from './memoizeString';
-import shouldSkip from './shouldSkip';
-import masks from './vars/masks';
-import escapeHtml from './escapeHtml';
-import hasPropertyAccessor from './hasPropertyAccessor';
-
-let propInfo = {},
-	properties = {},
-	{
-		MUST_USE_ATTRIBUTE,
-		MUST_USE_PROPERTY,
-		SET_WITH_CHECK,
-		HAS_BOOLEAN_VALUE,
-		HAS_NUMERIC_VALUE,
-		HAS_POSITIVE_NUMERIC_VALUE,
-		HAS_OVERLOADED_BOOLEAN_VALUE
-	} = masks;
-
-// Populate the 'properties' object
-for (let propName in attrPropCfg) {
-	let propConfig = attrPropCfg[propName];
-
-	propInfo = {
-		attributeName: propName.toLowerCase(),
-		attributeNamespace: null,
-		propertyName: propName,
-		hooks: null,
-
-		mustUseAttribute: checkBitmask(propConfig, MUST_USE_ATTRIBUTE),
-		mustUseProperty: checkBitmask(propConfig, MUST_USE_PROPERTY),
-		setWithCheck: checkBitmask(propConfig, SET_WITH_CHECK),
-		hasBooleanValue: checkBitmask(propConfig, HAS_BOOLEAN_VALUE),
-		hasNumericValue: checkBitmask(propConfig, HAS_NUMERIC_VALUE),
-		hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
-		hasOverloadedBooleanValue: checkBitmask(propConfig, HAS_OVERLOADED_BOOLEAN_VALUE)
-	};
-
-	if (attrNameCfg[propName]) {
-		propInfo.attributeName = attrNameCfg[propName];
-	} else if (propNameCfg[propName]) {
-		propInfo.propertyName = propNameCfg[propName];
-	}
-
-	if (nsCfg[propName]) {
-		propInfo.attributeNamespace = nsCfg[propName];
-	}
-
-	if (hooks[propName]) {
-		propInfo.hooks = hooks[propName];
-	}
-
-	properties[propName] = propInfo;
-}
+import attrNameCfg from "./cfg/attrNameCfg";
+import hasPropertyAccessor from "./hasPropertyAccessor";
+import inArray from "../util/inArray";
 
 /**
- * Convert HTML attributes / properties to HTML
- * @param { string} name
- * @param { string} value
- * @return { string}
+ * Set overloaded attributes
+ *
+ * @param {!Element} node DOM node
+ * @param {String} name
+ * @param {String} val
  */
-function renderHtmlMarkup(name, value) {
 
-	let propInfo = properties[name] || null;
+let overloadedAttr = (node, name, val) => {
+        node.setAttribute(name, (val === true ? '' : val));
+    },
+    /**
+     * Set boolean attributes
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     * @param {String} val
+     */
+    setBooleanAttr = (node, name, val) => {
 
-	if (propInfo) {
-		if (shouldSkip(propInfo, value)) {
-			return '';
-		}
+        if (val !== false) {
 
-		let attributeName = propInfo.attributeName;
+            node.setAttribute(name, '' + (val === true ? '' : val));
+        }
+    },
+    /**
+     * Set attributes on a DOM node
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     * @param {String} val
+     */
 
-		// for BOOLEAN `value` only has to be truthy
-		// for OVERLOADED_BOOLEAN `value` has to be === true
-		if (propInfo.hasBooleanValue ||
-			(propInfo.hasOverloadedBooleanValue && value === true)) {
-			return attributeName + '=\'\'';
-		}
-		return memoizeString(name) + escapeHtml(value) + '\'';
+    setAttr = (node, name, val) => {
+        if (name === 'type' && node.tagName === 'INPUT') {
+            var value = node.value; // value will be lost in IE if type is changed
+            node.setAttribute(name, '' + val);
+            node.value = value;
+        } else {
+            //if ( val !== false) {
+            node.setAttribute(attrNameCfg[name] || name, '' + val);
+            //		}
+        }
+    },
+    /**
+     * Set properties on a DOM node
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     * @param {String} val
+     */
 
-	}
-	else {
-		if (value === null) {
-			return '';
-		}
-		return name + '=' + '\'' + escapeHtml(value) + '\'';
-	}
+    setProp = (node, name, val) => {
+        node[name] = val;
+    },
+    /**
+     * Set object properties
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     * @param {String} val
+     */
+
+    setObjProp = (node, name, val) => {
+        if (process.env.NODE_ENV !== 'production') {
+            var typeOfVal = typeof val;
+            if (typeOfVal !== 'object') {
+                console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
+                return;
+            }
+        }
+
+        var prop = node[name];
+		
+        for (var i in val) {
+            prop[i] = val[i] == null ? '' : val[i];
+        }
+    },
+    /**
+     * Set properties after validation check
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     * @param {String} val
+     */
+
+    setPropWithCheck = (node, name, val) => {
+        if (name === 'value' && node.tagName.toLowerCase() === 'select') {
+            setSelectValue(node, val);
+        } else {
+            node[name] !== val && (node[name] = val);
+        }
+    },
+	
+    /**
+     * Remove a attribute from a DOM node
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     */
+
+    removeAttr = (node, name) => {
+        node.removeAttribute(attrNameCfg[name] || name);
+    },
+	
+    /**
+     * Remove a property from a DOM node
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     */
+
+    removeProp = (node, name) => {
+        if (name === 'value' && node.tagName === 'SELECT') {
+            removeSelectValue(node);
+        } else {
+            node[name] = hasPropertyAccessor(node.tagName, name);
+        }
+    },
+	
+    /**
+     * Set select / select multiple
+     *
+     * @param {!Element} node DOM node
+     * @param {String} value
+     */
+    setSelectValue = (node, value) => {
+
+        var isMultiple = Array.isArray(value),
+            options = node.options,
+            len = options.length;
+
+        var i = 0,
+            optionNode;
+
+        while (i < len) {
+            optionNode = options[i++];
+
+            optionNode.selected = value != null && (isMultiple ? inArray(value, optionNode.value) : optionNode.value == value);
+        }
+    },
+	
+    /**
+     * Remove select / select multiple from a DOM node
+     *
+     * @param {!Element} node DOM node
+     * @param {String} value
+     */
+    removeSelectValue = (node) => {
+        var options = node.options,
+            len = options.length;
+
+        var i = 0;
+
+        while (i < len) {
+            options[i++].selected = false;
+        }
+    },
+	
+    /**
+     * Transform HTML attributes to string for SSR rendring
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     */
+
+    attrToString = (name, value) => {
+        return (attrNameCfg[name] || name) + '="' + escapeAttr(value) + '"';
+    },
+
+    /**
+     * Transform HTML boolean attributes to string for SSR rendring
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     */
+
+    booleanAttrToString = (name, value) => {
+        return value ? name : '';
+    },
+	
+    /**
+     * Transform CSS style property to string for SSR rendring
+     *
+     * @param {!Element} node DOM node
+     * @param {String} name
+     */
+    stylePropToString = (name, value) => {
+        var styles = '';
+
+        for (var i in value) {
+            value[i] != null && (styles += dasherize(i) + ':' + value[i] + ';');
+        }
+
+        return styles ? name + '="' + styles + '"' : styles;
+    }
+
+var DEFAULT_ATTR_CFG = {
+        set: setAttr,
+        remove: removeAttr,
+        toHtml: attrToString
+    },
+    OVERLOADED_ATTR = {
+        set: overloadedAttr,
+        remove: removeAttr,
+        toHtml: attrToString
+    },
+    BOOLEAN_ATTR_CFG = {
+        set: setBooleanAttr,
+        remove: removeAttr,
+        toHtml: booleanAttrToString
+    },
+    DEFAULT_PROP_CFG = {
+        set: setProp,
+        remove: removeProp,
+        toHtml: attrToString
+    },
+    BOOLEAN_PROP_CFG = {
+        set: setProp,
+        remove: removeProp,
+        toHtml: booleanAttrToString
+    },
+    attrsCfg = {
+        allowFullScreen: BOOLEAN_ATTR_CFG,
+        checked: BOOLEAN_ATTR_CFG,
+        hidden: BOOLEAN_ATTR_CFG,
+        controls: DEFAULT_PROP_CFG,
+        disabled: BOOLEAN_ATTR_CFG,
+        download: OVERLOADED_ATTR,
+        id: DEFAULT_PROP_CFG,
+        ismap: BOOLEAN_ATTR_CFG,
+        loop: DEFAULT_PROP_CFG,
+        multiple: BOOLEAN_PROP_CFG,
+        muted: DEFAULT_PROP_CFG,
+        readOnly: BOOLEAN_PROP_CFG,
+        required: BOOLEAN_PROP_CFG,
+        selected: BOOLEAN_PROP_CFG,
+        selectedindex: DEFAULT_PROP_CFG,
+        srcDoc: DEFAULT_PROP_CFG,
+        style: {
+            set: setObjProp,
+            remove: removeProp,
+            toHtml: stylePropToString
+        },
+        value: {
+            set: setPropWithCheck,
+            remove: removeProp,
+            toHtml: attrToString
+        }
+    };
+
+export default function(attrName) {
+    return attrsCfg[attrName] || DEFAULT_ATTR_CFG;
 }
-/**
- * Remove a HTML attribute / property from DOM
- * @param { string} name
- */
-function removeFromDOM(node, name) {
-	let propInfo = properties[name] || null;
-	if (propInfo) {
-		let hooks = propInfo.hooks;
-		if (hooks) {
-			hooks(node, undefined);
-		} else if (propInfo.mustUseAttribute) {
-			node.removeAttribute(propInfo.attributeName);
-		} else {
-			let propName = propInfo.propertyName,
-				initialValue = hasPropertyAccessor(node.nodeName, propName);
-
-			if (!propInfo.setWithCheck || (('' + node[propName]) !== initialValue)) {
-				node[propName] = initialValue;
-			}
-		}
-	}
-	else if (name) {
-		node.removeAttribute(name);
-	}
-}
-
-/**
- * Sets the value for a attribute on a DOM node
- * @param {DOMElement} node
- * @param {string} name
- * @param {string} value
- * @param {Boolean} property true/false for HTML property
- * @return {*} value
- */
-function setAttribute(node, name, value, property) {
-
-	let propInfo = properties[name] || null;
-
-	if (propInfo) {
-
-		let hooks = propInfo.hooks;
-
-		if (hooks) {
-			hooks(node, value);
-		} else if (shouldSkip(propInfo, value)) {
-			removeFromDOM(node, name);
-			// HTML attributes
-		} else if (propInfo.mustUseAttribute) {
-
-			let attributeName = propInfo.attributeName,
-				namespace = propInfo.attributeNamespace;
-			if (namespace) {
-				node.setAttributeNS(namespace, attributeName, '' + value);
-			// for BOOLEAN `value` only has to be truthy
-			// for OVERLOADED_BOOLEAN `value` has to be === true
-			} else if (propInfo.hasBooleanValue) {
-				if (value === true) {
-					node.setAttribute(attributeName, '');
-				}
-				else {
-					// HTML5 compat
-					node.setAttribute(attributeName, value);
-				}
-			} else if (propInfo.hasOverloadedBooleanValue && value === true) {
-				node.setAttribute(attributeName, '');
-			} else {
-				node.setAttribute(attributeName, '' + value);
-			}
-			// HTML properties
-		} else {
-			let propName = propInfo.propertyName;
-			if (!propInfo.setWithCheck || (node[propName] !== value)) {
-				node[propName] = value;
-			}
-		}
-
-	}
-	else {
-		// custom properties
-		if (property) {
-			node[name] = value;
-			// custom attributes
-		}
-		else {
-			node.setAttribute(name, '' + value);
-		}
-	}
-}
-
-export { renderHtmlMarkup, setAttribute };
