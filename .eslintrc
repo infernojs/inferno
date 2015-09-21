@@ -10,7 +10,8 @@
         "no-unused-vars": [2, {
             "args": "after-used",
             "argsIgnorePattern": "^t$"
-        }]
+        }],
+        "no-console": 0
 	},
 	"env": {
 		"es6": true,
