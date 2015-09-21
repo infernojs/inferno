@@ -3,6 +3,7 @@ import attrPropCfg from "./cfg/attrPropCfg";
 import hasPropertyAccessor from "./hasPropertyAccessor";
 import inArray from "../util/inArray";
 import isSVG from "../util/isSVG";
+import escapeHtml from "./escapeHtml";
 
 /**
  * Set boolean attributes
@@ -167,7 +168,7 @@ let setBooleanAttr = (node, name, value) => {
      */
 
     attrToString = (name, value) => {
-        return (attrNameCfg[name] || name) + '="' + escapeAttr(value) + '"';
+        return (attrNameCfg[name] || name) + '="' + escapeHtml(value) + '"';
     },
 
     /**
