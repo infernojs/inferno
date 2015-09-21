@@ -1,16 +1,13 @@
 import unitlessCfg from './cfg/unitlessCfg';
-import prefixes	from './prefixes';
-import prefixKey   from './prefixKey';
-import forIn	   from '../util/forIn';
+import prefixes from './prefixes';
+import prefixKey from './prefixKey';
+import forIn from '../util/forIn';
 
-function extendUnitlessNumber(properties) {
-	forIn(properties, function(prop){
-		unitlessCfg[prop] = properties[prop];
-		prefixes.forEach(function(prefix) {
-			unitlessCfg[prefixKey(prefix, prop)] = properties[prop];
-		});
+export default properties => {
+	forIn(properties, (prop, val) => {
+		unitlessCfg[prop] = val;
+		for (let i = prefixes.length; --i > -1;) {
+			unitlessCfg[prefixKey(prefixes[i], prop)] = val;
+		}
 	});
-	return unitlessCfg;
-}
-
-export default extendUnitlessNumber;
+};

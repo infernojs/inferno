@@ -5,17 +5,8 @@ import DOMOperations        from './DOMOperations';
 export default {
 	addAttributes,
 	extendUnitlessNumber,
-	DOMOperations:DOMOperations,
-	createElement(tag, namespace) {
-		if (namespace === undefined) {
-			return document.createElement(tag);
-		}
-		return document.createElementNS(namespace, tag);
-	},
-	createTextNode(text) {
-		return document.createTextNode(text);
-	},
-	createEmptyText() {
-		return document.createTextNode('');
-	}
+	DOMOperations,
+	createElement: (tag, namespace) => (namespace === undefined) ? document.createElement(tag) : document.createElementNS(namespace, tag),
+	createTextNode: text => document.createTextNode(text),
+	createEmptyText: () => document.createTextNode('')
 };

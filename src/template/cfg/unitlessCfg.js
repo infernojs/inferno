@@ -10,7 +10,7 @@ let unitless = {
 	boxFlex: true,
 	boxFlexGroup: true,
 	boxOrdinalGroup: true,
-	counterRreset: true,
+	counterReset: true,
 	counterIncrement: true,
 	columnCount: true,
 	flex: true,
@@ -38,7 +38,6 @@ let unitless = {
 	widows: true,
 	zIndex: true,
 	zoom: true,
-
 	// SVG-related properties
 	stopOpacity: true,
 	fillOpacity: true,
@@ -47,6 +46,7 @@ let unitless = {
 	strokeWidth: true
 };
 
+// TODO merge with extendUnitlessNumber
 // convert to vendor prefixed unitless CSS properties
 forIn(unitless, (prop, value) => {
 	prefixes.forEach(prefix => {

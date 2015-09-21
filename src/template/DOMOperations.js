@@ -210,7 +210,7 @@ let removeSelectValue = node => {
  * @param {Object element} - A DOM element.
  * @param {String} name - The attribute name to set.
  */
-let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHtml(value) }"`;
+let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
 
 /**
  * Transform HTML boolean attributes to string for SSR rendring
@@ -233,7 +233,7 @@ let stylePropToString = (name, value) => {
 		value[styleName] != null && (styles += dasherize(styleName) + ':' + normalize(styleName, value[styleName]) + ';');
 	}
 
-	return styles ? name + '="' + styles + '"' : styles;
+	return styles ? `${ name }="${ styles }"` : styles;
 };
 
 let xlinkMap = {

@@ -1,7 +1,3 @@
-const DASHERIZE_RE = /([^A-Z]+)([A-Z])/g;
+let DASH_REGEX = /([^A-Z]+)([A-Z])/g;
 
-function dasherize(str) {
-    return str.replace(DASHERIZE_RE, '$1-$2').toLowerCase();
-}
-
-export default dasherize;
+export default str => str.replace(DASH_REGEX, '$1-$2').toLowerCase();

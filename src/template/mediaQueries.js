@@ -1,5 +1,1 @@
-function mediaQueries() {
- 
-}
-
-export default mediaQueries;
+export default () => {};
