@@ -1075,8 +1075,12 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
+<<<<<<< HEAD
 						console.log( container.childNodes )
 						expect(get(container.childNodes[0])).to.eql(['bar', 'foo']);
+=======
+						expect(get(container.firstChild).sort()).to.eql(['bar', 'foo']);
+>>>>>>> origin/new-build
 						expect(
 							container.innerHTML
 						).to.equal(
