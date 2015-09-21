@@ -724,7 +724,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input formnovalidate="true">'
+							'<input formnovalidate="">'
 						);
 					});
 				});
