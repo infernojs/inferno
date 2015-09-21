@@ -1,6 +1,5 @@
 import template from '.';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
-import setSelectValue from './setSelectValue';
 
 export default function createElement(tag, props, ...children) {
 	let element;
