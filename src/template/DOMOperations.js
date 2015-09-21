@@ -2,6 +2,7 @@ import attrNameCfg from "./cfg/attrNameCfg";
 import propNameCfg from "./cfg/propNameCfg";
 import hasPropertyAccessor from "./hasPropertyAccessor";
 import dasherize from "./dasherize";
+import mediaQueries from "./mediaQueries";
 import inArray from "../util/inArray";
 import isArray from "../util/isArray";
 import isSVG from "../util/isSVG";
@@ -17,6 +18,8 @@ import unitlessCfg from "./cfg/unitlessCfg";
  */
 
 let
+    registeredMediaQueries = [],
+
     normalize = (name, value) => {
 
         if (value === null || (value === '')) {
@@ -42,7 +45,7 @@ let
      * @param {String} value      The boolean attribute value to set.
      */
     setBooleanAttribute = (node, name, value) => {
-         // Avoid touching the DOM and set falsy attributes.
+        // Avoid touching the DOM and set falsy attributes.
         if (value !== false) {
 
             node.setAttribute(name, '' + (value === true ? '' : value));
@@ -84,7 +87,7 @@ let
             node[propNameCfg[name] || name] = value;
         }
     },
-	
+
     /**
      * Set boolean property
      *
@@ -124,9 +127,20 @@ let
      *
      * UNDER DEVELOPMENT!!
      *
-	 */
-    createStyle = (node, name, value) => {
+     */
+    createStyles = (node, name, value) => {
 
+        return {
+
+            compile() {}, // TODO! Finish this!
+                create(stylesheet, useClassName) {
+                    if (!useClassName) {
+                        // default
+                        stylesheet = mediaQueries(registeredMediaQueries, stylesheet, true);
+                        return stylesheet;
+                    }
+                }
+        }
     },
     /**
      * Set properties after validation check
@@ -175,10 +189,10 @@ let
      */
     setSelectValue = (node, value, children) => {
 
-       /**
-	    * TODO!! Children will be the 3rd arg, so we can iterate through the child nodes
-		* and get 'optGroup' to work.
-		*/
+        /**
+         * TODO!! Children will be the 3rd arg, so we can iterate through the child nodes
+         * and get 'optGroup' to work.
+         */
 
         const isMultiple = isArray(value),
             options = node.options,
@@ -417,7 +431,7 @@ let
             toHtml: stylePropToString
         },
         styles: {
-            set: createStyle,
+            set: createStyles,
             remove: removeProperty,
             toHtml: stylePropToString
         },
@@ -461,7 +475,7 @@ let
         /**
          * Namespace attributes
          */
-		 
+
         "xml:base": IS_XML_NAMESPACE,
         "xml:id": IS_XML_NAMESPACE,
         "xml:lang ": IS_XML_NAMESPACE,
