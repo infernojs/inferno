@@ -981,7 +981,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-/*
+
 				describe('should handle selectedIndex', () => {
 					let template;
 
@@ -1000,7 +1000,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-*/
+
 				describe('should populate the value attribute on select', () => {
 					let template;
 
