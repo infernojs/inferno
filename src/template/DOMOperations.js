@@ -56,12 +56,11 @@ let
      * @param  {String} name      The attribute name to set.
      * @param {String} value      The attribute value to set.
      */
-
     setAttribute = (node, name, value) => {
         if (name === 'type' && node.tagName === 'INPUT') {
-
+            // Support: IE9-Edge
             const val = node.value; // value will be lost in IE if type is changed
-            node.setAttribute(name, '' + value); // When changed the value is restored (IE compatibility).
+            node.setAttribute(name, '' + value);
             node.value = val;
         } else {
             node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
@@ -77,9 +76,9 @@ let
      */
     setProperty = (node, name, value) => {
         if (name === 'type' && node.tagName === 'INPUT') {
-
+            // Support: IE9-Edge
             const val = node.value; // value will be lost in IE if type is changed
-            node[name] = value; // When changed the value is restored (IE compatibility).
+            node[name] = value;
             node.value = val;
         } else {
             node[propNameCfg[name] || name] = value;
