@@ -41,13 +41,14 @@ let
      * @param  {String} name      The boolean attribute name to set.
      * @param {String} value      The boolean attribute value to set.
      */
-    setBooleanAttr = (node, name, value) => {
+    setBooleanAttribute = (node, name, value) => {
 
         if (value !== false) {
 
             node.setAttribute(name, '' + (value === true ? '' : value));
         }
     },
+
     /**
      * Set attributes on a DOM node
      *
@@ -86,6 +87,17 @@ let
             node[propNameCfg[name] || name] = value;
         }
     },
+	
+    /**
+     * Set boolean property
+     *
+     * @param  {Object element}   A DOM element.
+     * @param  {String} name      The boolean property name to set.
+     * @param {String} value      The boolean property value to set.
+     */
+    setBooleanProperty = (node, name, value) => {
+        node[name] = !!value;
+    },
 
     /**
      * Set object properties
@@ -117,7 +129,7 @@ let
      * @param  {String} name      The property name to set.
      * @param {String} value      The property value to set.
      */
-    setPropertyWithCheck = (node, name, value) => {
+    verifyProperty = (node, name, value) => {
         if (name === 'value' && node.tagName.toLowerCase() === 'select') {
             setSelectValue(node, value);
         } else {
@@ -131,8 +143,8 @@ let
      * @param  {Object element}   A DOM element.
      * @param  {String} name      The attribute name to remove.
      */
-    removeAttr = (node, name) => {
-        node.removeAttribute(attrNameCfg[name] || name);
+    removeAttribute = (node, name) => {
+        node.removeAttributeibute(attrNameCfg[name] || name);
     },
 
     /**
@@ -141,7 +153,7 @@ let
      * @param  {Object element}   A DOM element.
      * @param  {String} name      The property name to set.
      */
-    removeProp = (node, name) => {
+    removeProperty = (node, name) => {
         if (name === 'value' && node.tagName === 'SELECT') {
             removeSelectValue(node);
         } else {
@@ -155,7 +167,12 @@ let
      * @param  {Object element}   A DOM element.
      * @param {String|Array} value      The property value to set.
      */
-    setSelectValue = (node, value) => {
+    setSelectValue = (node, value, children) => {
+
+       /**
+	    * TODO!! Children will be the 3rd arg, so we can iterate through the child nodes
+		* and get 'optGroup' to work.
+		*/
 
         const isMultiple = isArray(value),
             options = node.options,
@@ -244,22 +261,22 @@ let
 
     IS_ATTRIBUTE = {
         set: setAttribute,
-        remove: removeAttr,
+        remove: removeAttribute,
         toHtml: attrToString
     },
     IS_BOOLEAN_ATTRIBUTE = {
-        set: setBooleanAttr,
-        remove: removeAttr,
+        set: setBooleanAttribute,
+        remove: removeAttribute,
         toHtml: attrToString
     },
     IS_PROPERTY = {
         set: setProperty,
-        remove: removeProp,
+        remove: removeProperty,
         toHtml: attrToString
     },
     IS_BOOLEAN_PROPERTY = {
-        set: setProperty,
-        remove: removeProp,
+        set: setBooleanProperty,
+        remove: removeProperty,
         toHtml: booleanAttrToString
     },
     IS_XLINK_NAMESPACE = {
@@ -282,7 +299,7 @@ let
              */
             remove(node, name) {
 
-                node.removeAttributeNS("http://www.w3.org/1999/xlink", xlinkMap[name]);
+                node.removeAttributeibuteNS("http://www.w3.org/1999/xlink", xlinkMap[name]);
             }
     },
 
@@ -307,7 +324,7 @@ let
              */
             remove(node, name) {
 
-                node.removeAttributeNS("http://www.w3.org/XML/1998/namespace", xmlMap[name]);
+                node.removeAttributeibuteNS("http://www.w3.org/XML/1998/namespace", xmlMap[name]);
             }
     },
     attrsCfg = {
@@ -340,7 +357,7 @@ let
         formAction: IS_ATTRIBUTE,
         formEncType: IS_ATTRIBUTE,
         formMethod: IS_ATTRIBUTE,
-        formNoValidate: IS_BOOLEAN_PROPERTY,
+        formNoValidate: IS_BOOLEAN_ATTRIBUTE,
         formTarget: IS_ATTRIBUTE,
         frameBorder: IS_ATTRIBUTE,
         height: IS_PROPERTY,
@@ -390,7 +407,7 @@ let
          */
         style: {
             set: setObjectProperty,
-            remove: removeProp,
+            remove: removeProperty,
             toHtml: stylePropToString
         },
         translate: IS_BOOLEAN_ATTRIBUTE,
@@ -402,8 +419,8 @@ let
          *
          */
         value: {
-            set: setPropertyWithCheck,
-            remove: removeProp,
+            set: verifyProperty,
+            remove: removeProperty,
             toHtml: attrToString
         },
         visible: IS_BOOLEAN_ATTRIBUTE,

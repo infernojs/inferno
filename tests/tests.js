@@ -1698,29 +1698,68 @@ describe('Inferno acceptance tests', () => {
 			});
 
 	        it('should support custom attributes', () => {
-				DOMOperations('checked').set(container, 'custom-attr', '123');
+				DOMOperations('custom-attr').set(container, 'custom-attr', '123');
 				expect(container.getAttribute('custom-attr')).to.equal('123');
 			});
 
 	        it('shouldn\'t render null values', () => {
-				DOMOperations('checked').set(container, 'value', null);
-				expect(container.value).to.be.undefined;
+				DOMOperations('value').set(container, 'value', null);
+				expect(container.value).to.be.null;
 			});
 
 	        it('should set `title` attribute', () => {
-				DOMOperations('checked').set(container, 'title', 'dominic');
+				DOMOperations('title').set(container, 'title', 'dominic');
 				expect(container.getAttribute('title')).to.equal('dominic');
 			});
 
 	        it('should support HTML5 data-* attribute', () => {
-				DOMOperations('checked').set(container, 'data-foo', 'bar');
+				DOMOperations('data-foo').set(container, 'data-foo', 'bar');
 				expect(container.getAttribute('data-foo')).to.equal('bar');
 			});
 
 	        it('should support HTML5 data-* attribute', () => {
-				DOMOperations('checked').set(container, 'data-foo', 'bar');
+				DOMOperations('data-foo').set(container, 'data-foo', 'bar');
 				expect(container.getAttribute('data-foo')).to.equal('bar');
 			});
+
+	        it('should set "muted" boolean property ( truty) ', () => {
+				DOMOperations('muted').set(container, 'muted', true);
+				expect(container.muted).to.be.true;
+			});
+
+	        it('should set "muted" boolean property (falsy) ', () => {
+				DOMOperations('muted').set(container, 'muted', false);
+				expect(container.muted).to.be.false;
+			});
+             // 'HTML5' should 'force' the value to be true
+	        it('should set "muted" boolean property (HTML5) ', () => {
+				DOMOperations('muted').set(container, 'muted', "true");
+				expect(container.muted).to.be.true;
+			});
+	        it('should not set "muted" boolean property as "muted muted"', () => {
+				DOMOperations('muted').set(container, 'muted', "muted");
+				expect(container.muted).to.be.true;
+			});
+
+	        it('should set "readOnly" boolean property ( truty) ', () => {
+				DOMOperations('readOnly').set(container, 'readOnly', true);
+				expect(container.readOnly).to.be.true;
+			});
+
+	        it('should set "readOnly" boolean property (falsy) ', () => {
+				DOMOperations('readOnly').set(container, 'readOnly', false);
+				expect(container.readOnly).to.be.false;
+			});
+             // 'HTML5' should 'force' the value to be true
+	        it('should set "readOnly" boolean property (HTML5) ', () => {
+				DOMOperations('readOnly').set(container, 'readOnly', "true");
+				expect(container.readOnly).to.be.true;
+			});
+             // 'HTML5' should 'force' the value to be true
+	        it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
+				DOMOperations('readOnly').set(container, 'readOnly', "readOnly");
+				expect(container.readOnly).to.be.true;
+			});			
 	    });
 	});
 });
