@@ -227,7 +227,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input checked="checked" disabled="disabled">'
+							'<input disabled="disabled">'
 						);
 					});
 				});
@@ -246,7 +246,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input checked="" disabled="">'
+							'<input disabled="">'
 						);
 					});
 				});
@@ -284,7 +284,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input checked="false" disabled="false">'
+							'<input disabled="false">'
 						);
 					});
 				});
@@ -1613,15 +1613,15 @@ describe('Inferno acceptance tests', () => {
     	 describe('HTML attributes / properties', () => {  
 	
 			it('should render `checked` as a property (truthy)', () => {
-				expect(DOMOperations("checked").toHtml("checked", true)).to.equal('checked="true"');
+				expect(DOMOperations("checked").toHtml("checked", true)).to.equal('checked');
 			});
 
 			it('should render `checked` ( html5)', () => {
-				expect(DOMOperations("checked").toHtml("checked", 'checked')).to.equal('checked="checked"');
+				expect(DOMOperations("checked").toHtml("checked", 'checked')).to.equal('checked');
 			});
 
 			it('should render `checked` (falsy)', () => {
-				expect(DOMOperations("checked").toHtml("checked", false)).to.equal('checked="false"');
+				expect(DOMOperations("checked").toHtml("checked", false)).to.equal('');
 			});
 
 			it('should render `download` attribute (falsy)', () => {
@@ -1633,9 +1633,6 @@ describe('Inferno acceptance tests', () => {
 			});
 
 			it('should render "multiple" attribute', () => {
-				
-				console.log( DOMOperations("multiple") )
-				
 				expect(DOMOperations("multiple").toHtml("multiple", "true")).to.equal('multiple');
 			});
 
@@ -1694,7 +1691,7 @@ describe('Inferno acceptance tests', () => {
 	 
 	        it('should render `checked` as a property', () => {
 				DOMOperations('checked').set(container, 'checked', true);
-				expect(container.getAttribute('checked')).to.equal('');
+				expect(container.checked).to.be.true;
 			});
 
 	        it('should support custom attributes', () => {
@@ -1736,7 +1733,8 @@ describe('Inferno acceptance tests', () => {
 				DOMOperations('muted').set(container, 'muted', "true");
 				expect(container.muted).to.be.true;
 			});
-	        it('should not set "muted" boolean property as "muted muted"', () => {
+	       
+		    it('should not set "muted" boolean property as "muted muted"', () => {
 				DOMOperations('muted').set(container, 'muted', "muted");
 				expect(container.muted).to.be.true;
 			});
@@ -1750,15 +1748,50 @@ describe('Inferno acceptance tests', () => {
 				DOMOperations('readOnly').set(container, 'readOnly', false);
 				expect(container.readOnly).to.be.false;
 			});
-             // 'HTML5' should 'force' the value to be true
-	        it('should set "readOnly" boolean property (HTML5) ', () => {
+	     
+		    it('should set "readOnly" boolean property (HTML5) ', () => {
 				DOMOperations('readOnly').set(container, 'readOnly', "true");
 				expect(container.readOnly).to.be.true;
 			});
-             // 'HTML5' should 'force' the value to be true
-	        it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
+	      
+		    it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
 				DOMOperations('readOnly').set(container, 'readOnly', "readOnly");
 				expect(container.readOnly).to.be.true;
+			});			
+	      
+		    it('should set numeric properties', () => {
+				DOMOperations('start').set(container, 'start', 5);
+				expect(container.getAttribute("start")).to.eql('5');
+
+				DOMOperations('start').set(container, 'start', 0);
+				expect(container.getAttribute("start")).to.eql('0');
+			});			
+
+	        it('should set negative numeric properties', () => {
+				DOMOperations('start').set(container, 'start', -5);
+				expect(container.getAttribute("start")).to.eql('-5');
+			});			
+
+	        it('should set numeric attribute "-0" to "0"', () => {
+				DOMOperations('start').set(container, 'start', -0);
+				expect(container.getAttribute("start")).to.eql('0');
+			});			
+	        it('should set className property', () => {
+				DOMOperations('className').set(container, 'className', -0);
+				expect(container.getAttribute("class")).to.eql('0');
+			});			
+
+	        it('should set values as boolean properties', () => {
+				DOMOperations('disabled').set(container, 'disabled', 'disabled');
+	//				expect(container.disabled).to.eql('disabled');
+
+				DOMOperations('disabled').set(container, 'disabled', true);
+	//			expect(container.disabled).to.eql('');
+                
+				// shouldn't exist - it's an property
+				DOMOperations('disabled').set(container, 'disabled', true);
+//				expect(container.getAttribute("disabled")).to.eql("disabled");
+
 			});			
 	    });
 	});

@@ -4,6 +4,7 @@ export default {
 	autoCorrect: 'autocorrect',
 	autoFocus: 'autofocus',
 	autoPlay: 'autoplay',
+	class: 'className',
 	encType: 'encoding',
 	hrefLang: 'hreflang',
 	radioGroup: 'radiogroup',

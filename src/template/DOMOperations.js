@@ -42,7 +42,7 @@ let
      * @param {String} value      The boolean attribute value to set.
      */
     setBooleanAttribute = (node, name, value) => {
-
+         // Avoid touching the DOM and set falsy attributes.
         if (value !== false) {
 
             node.setAttribute(name, '' + (value === true ? '' : value));
@@ -64,9 +64,7 @@ let
             node.setAttribute(name, '' + value); // When changed the value is restored (IE compatibility).
             node.value = val;
         } else {
-            if (value !== false) {
-                node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
-            }
+            node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
         }
     },
 
@@ -337,7 +335,7 @@ let
         capture: IS_BOOLEAN_ATTRIBUTE,
         charSet: IS_ATTRIBUTE,
         challenge: IS_ATTRIBUTE,
-        checked: IS_BOOLEAN_ATTRIBUTE,
+        checked: IS_BOOLEAN_PROPERTY,
         classID: IS_ATTRIBUTE,
         className: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
         cols: IS_ATTRIBUTE,
