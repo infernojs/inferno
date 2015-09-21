@@ -1,9 +1,38 @@
 import attrNameCfg from "./cfg/attrNameCfg";
 import attrPropCfg from "./cfg/attrPropCfg";
 import hasPropertyAccessor from "./hasPropertyAccessor";
+import dasherize from "./dasherize";
 import inArray from "../util/inArray";
+import isArray from "../util/isArray";
 import isSVG from "../util/isSVG";
 import escapeHtml from "./escapeHtml";
+import unitlessCfg from "./cfg/unitlessCfg";
+
+/**
+ * Normalize CSS properties for SSR
+ *
+ * @param  {Object element}   A DOM element.
+ * @param  {String} name      The boolean attribute name to set.
+ * @param {String} value
+ */
+
+let 
+    normalize = ( name, value ) => {
+
+	if ( value === null || ( value === '' ) ) {
+		return '';
+	}
+
+	if ( value === 0 || ( unitlessCfg[name] || ( isNaN( value ) ) ) ) {
+		return '' + value; // cast to string
+	}
+
+	if ( typeof value === 'string' ) {
+		value = value.trim();
+	}
+
+	return value + 'px';
+},
 
 /**
  * Set boolean attributes
@@ -12,7 +41,7 @@ import escapeHtml from "./escapeHtml";
  * @param  {String} name      The boolean attribute name to set.
  * @param {String} value
  */
-let setBooleanAttr = (node, name, value) => {
+ setBooleanAttr = (node, name, value) => {
 
         if (value !== false) {
 
@@ -39,6 +68,7 @@ let setBooleanAttr = (node, name, value) => {
             }
         }
     },
+	
     /**
      * Set properties on a DOM node
      *
@@ -46,8 +76,7 @@ let setBooleanAttr = (node, name, value) => {
      * @param  {String} name      The property name to set.
      * @param {String} value
      */
-
-    setProp = (node, name, value) => {
+    setProperty = (node, name, value) => {
         if (name === 'type' && node.tagName === 'INPUT') {
 
             const val = node.value; // value will be lost in IE if type is changed
@@ -66,7 +95,7 @@ let setBooleanAttr = (node, name, value) => {
      * @param  {String} name      The property name to set.
      * @param {String} value
      */
-    setObjProp = (node, name, value) => {
+    setObjectProperty = (node, name, value) => {
         if (process.env.NODE_ENV !== 'production') {
             let typeOfVal = typeof value;
             if (typeOfVal !== 'object') {
@@ -89,7 +118,7 @@ let setBooleanAttr = (node, name, value) => {
      * @param  {String} name      The property name to set.
      * @param {String} value
      */
-    setPropWithCheck = (node, name, value) => {
+    setPropertyWithCheck = (node, name, value) => {
         if (name === 'value' && node.tagName.toLowerCase() === 'select') {
             setSelectValue(node, value);
         } else {
@@ -129,7 +158,7 @@ let setBooleanAttr = (node, name, value) => {
      */
     setSelectValue = (node, value) => {
 
-        const isMultiple = Array.isArray(value),
+        const isMultiple = isArray(value),
             options = node.options,
             len = options.length;
 
@@ -168,7 +197,7 @@ let setBooleanAttr = (node, name, value) => {
      */
 
     attrToString = (name, value) => {
-        return (attrNameCfg[name] || name) + '="' + escapeHtml(value) + '"';
+       return (attrNameCfg[name] || name) + '="' + escapeHtml(value) + '"';
     },
 
     /**
@@ -189,10 +218,12 @@ let setBooleanAttr = (node, name, value) => {
      * @param  {String} name      The property name to set.
      */
     stylePropToString = (name, value) => {
-        let styles = '';
+      
+	    let styles = '';
 
-        for (let i in value) {
-            value[i] != null && (styles += dasherize(i) + ':' + value[i] + ';');
+        for (let styleName in value) {
+			
+            value[styleName] != null && (styles += dasherize(styleName) + ':' + normalize(styleName, value[styleName]) + ';');
         }
 
         return styles ? name + '="' + styles + '"' : styles;
@@ -219,18 +250,18 @@ let setBooleanAttr = (node, name, value) => {
         remove: removeAttr,
         toHtml: attrToString
     },
-    IS_BOOLEAN_ATTRIBUTE = {
+    IS_BOOLEAN_ATTRIBUTE = { 
         set: setBooleanAttr,
         remove: removeAttr,
-        toHtml: booleanAttrToString
+        toHtml: attrToString
     },
     IS_PROPERTY = {
-        set: setProp,
+        set: setProperty,
         remove: removeProp,
         toHtml: attrToString
     },
     IS_BOOLEAN_PROPERTY = {
-        set: setProp,
+        set: setProperty,
         remove: removeProp,
         toHtml: booleanAttrToString
     },
@@ -329,7 +360,7 @@ let setBooleanAttr = (node, name, value) => {
         srcSet: IS_ATTRIBUTE,
         start: IS_ATTRIBUTE,
         style: {
-            set: setObjProp,
+            set: setObjectProperty,
             remove: removeProp,
             toHtml: stylePropToString
         },
@@ -337,7 +368,7 @@ let setBooleanAttr = (node, name, value) => {
         truespeed: IS_BOOLEAN_ATTRIBUTE,
         typemustmatch: IS_BOOLEAN_ATTRIBUTE,
         value: {
-            set: setPropWithCheck,
+            set: setPropertyWithCheck,
             remove: removeProp,
             toHtml: attrToString
         },
@@ -396,5 +427,7 @@ let setBooleanAttr = (node, name, value) => {
  * @return Object props     The element properties state.
  */
 export default function(attrName) {
+   if ( attrName) {
     return attrsCfg[attrName] || IS_ATTRIBUTE;
+	}
 }

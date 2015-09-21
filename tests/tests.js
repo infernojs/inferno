@@ -1609,33 +1609,87 @@ describe('Inferno acceptance tests', () => {
 		});
 
 		describe('DOMOperations.toHtml()', () => { 
-		
+ 
+    	 describe('HTML attributes / properties', () => {  
+	
 			it('should render `checked` as a property (truthy)', () => {
-				expect(DOMOperations().toHtml("checked", true)).to.equal('checked="true"');
+				expect(DOMOperations("checked").toHtml("checked", true)).to.equal('checked="true"');
 			});
 
 			it('should render `checked` ( html5)', () => {
-				expect(DOMOperations().toHtml("checked", 'checked')).to.equal('checked="checked"');
+				expect(DOMOperations("checked").toHtml("checked", 'checked')).to.equal('checked="checked"');
 			});
 
 			it('should render `checked` (falsy)', () => {
-				expect(DOMOperations().toHtml("checked", false)).to.equal('checked="false"');
+				expect(DOMOperations("checked").toHtml("checked", false)).to.equal('checked="false"');
 			});
 
 			it('should render `download` attribute (falsy)', () => {
-				expect(DOMOperations().toHtml("download", false)).to.equal('download="false"');
+				expect(DOMOperations("download").toHtml("download", false)).to.equal('download="false"');
 			});
 
 			it('should render custom attribute', () => {
-				expect(DOMOperations().toHtml("fooBar", "boo")).to.equal('fooBar="boo"');
+				expect(DOMOperations("fooBar").toHtml("fooBar", "boo")).to.equal('fooBar="boo"');
 			});
 
 			it('should render "multiple" attribute', () => {
-				expect(DOMOperations().toHtml("multiple", "true")).to.equal('multiple="true"');
+				
+				console.log( DOMOperations("multiple") )
+				
+				expect(DOMOperations("multiple").toHtml("multiple", "true")).to.equal('multiple');
 			});
 
 		});
-  	 
+        describe('CSS', () => {
+
+   it('should create markup for simple styles', () => {
+       expect(DOMOperations('style').toHtml('style', {
+           backgroundColor: '#3b5998',
+           display: 'none',
+       })).to.equal('style="background-color:#3b5998;display:none;"');
+   });
+
+   // null, undefined etc. has to be done on a higher level of abstraction - not low-level
+   it('should not ignore undefined styles', () => {
+       expect(DOMOperations('style').toHtml("style", {
+           backgroundColor: undefined,
+           display: 'none',
+       })).to.equal('style="display:none;"');
+   });
+
+   it('should not ignore null styles', () => {
+       expect(DOMOperations('style').toHtml("style", {
+           backgroundColor: null,
+           display: 'none',
+       })).to.equal('style="display:none;"');
+   });
+
+   it('should automatically append `px` to relevant styles', () => {
+       expect(DOMOperations('style').toHtml('style', {
+           left: 0,
+           margin: 16,
+           opacity: 0.5,
+           padding: '4px',
+       })).to.equal('style="left:0;margin:16px;opacity:0.5;padding:4px;"');
+   });
+
+   it('should create vendor-prefixed markup correctly', () => {
+       expect(DOMOperations('style').toHtml('style', {
+      msTransition: 'none',
+      MozTransition: 'none',
+    })).to.equal('style="ms-transition:none;moz-transition:none;"');
+   });
+
+   it('should trim values so `px` will be appended correctly', () => {
+       expect(DOMOperations('style').toHtml('style', {
+      margin: '16 ',
+      opacity: 0.5,
+      padding: ' 4 ',
+    })).to.equal('style="margin:16px;opacity:0.5;padding:4px;"');
+   });
+
+   });
+   });
 	 describe('DOMOperations.set()', () => {  
 	 
 	        it('should render `checked` as a property', () => {
@@ -1662,7 +1716,11 @@ describe('Inferno acceptance tests', () => {
 				DOMOperations('checked').set(container, 'data-foo', 'bar');
 				expect(container.getAttribute('data-foo')).to.equal('bar');
 			});
-	 });
 
+	        it('should support HTML5 data-* attribute', () => {
+				DOMOperations('checked').set(container, 'data-foo', 'bar');
+				expect(container.getAttribute('data-foo')).to.equal('bar');
+			});
+	    });
 	});
 });
