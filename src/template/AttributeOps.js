@@ -510,13 +510,29 @@ let attrsCfg = {
 	'xlink:type': IS_XLINK_NAMESPACE
 };
 
-/**
- * Set / unset / or SSR render HTML attributes and properties.
- *
- * @return {String} attrName  The HTML property / attribute to 'fix'
- */
 export default {
+
+/**
+ * Sets a HTML attribute / property
+ *
+ * @param {Object element} A DOM element.
+ * @param {String} name The boolean attribute name to set.
+ * @param {String|Object} value The boolean attribute value to set.
+ */
 	set: (node, name, value) => (attrsCfg[name] || IS_ATTRIBUTE).set(node, name, value),
+/**
+ * Unsets a HTML attribute / property
+ *
+ * @param {Object element} A DOM element.
+ * @param {String} name The boolean attribute name to set.
+ * @param {String} value The boolean attribute value to set.
+ */
 	remove: (node, name) => (attrsCfg[name] || IS_ATTRIBUTE).remove(node, name),
+/**
+ * Create HTML attribute / property markup for SSR
+ *
+ * @param {String} name The boolean attribute name to set.
+ * @param {String} value The boolean attribute value to set.
+ */
 	toHtml: (name, value) => (attrsCfg[name] || IS_ATTRIBUTE).toHtml(name, value)
 };
