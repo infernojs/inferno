@@ -77,17 +77,18 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 				
-				describe('should render boolean attributes (no JSX)', () => {
+				describe('should render "autoFocus" boolean attributes (no JSX)', () => {
 					let template;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(createElement =>
-							createElement("div", { checked:"true"})
+							createElement("div", { autoFocus:"true"})
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
+						expect(container.getAttribute("autoFocus")).to.be.true;
 						expect(
 							container.innerHTML
 						).to.equal(
