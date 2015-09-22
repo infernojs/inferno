@@ -1,7 +1,7 @@
 import events from '../events/shared/events';
 import clearEventListeners from '../events/clearEventListeners';
 import addEventListener from '../events/addEventListener';
-import setAttribute from './DOMOperations';
+import attrOps from './AttributeOps';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 //ensuring we use these fragmentTypes before using ATTR_OTHER makes updates on
@@ -87,7 +87,7 @@ export default function addAttributes(node, attrs, fragment) {
 				addEventListener(node, attrName, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
-				setAttribute(attrName).set(node, attrName, attrVal);
+				attrOps.set(node, attrName, attrVal);
 			}
 		}
 	}

@@ -1,11 +1,11 @@
-import updateFragment      from './updateFragment';
-import fragmentValueTypes  from '../enum/fragmentValueTypes';
-import updateFragmentList  from './updateFragmentList';
+import updateFragment from './updateFragment';
+import fragmentValueTypes from '../enum/fragmentValueTypes';
+import updateFragmentList from './updateFragmentList';
 import clearEventListeners from '../events/clearEventListeners';
-import addEventListener    from '../events/addEventListener';
-import events              from '../events/shared/events';
-import isSVG               from '../util/isSVG';
-import setAttribute        from '../template/DOMOperations';
+import addEventListener from '../events/addEventListener';
+import events from '../events/shared/events';
+import isSVG from '../util/isSVG';
+import attrOps from '../template/AttributeOps';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
@@ -80,7 +80,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 					clearEventListeners(element, type);
 					addEventListener(element, type, fragment.templateValue);
 				} else {
-					setAttribute(type).set(element, type, fragment.templateValue);
+					attrOps.set(element, type, fragment.templateValue);
 				}
 				// TODO make component props work for single value fragments
 			} else {

@@ -108,7 +108,7 @@ let setObjectProperty = (node, name, value) => {
 	let prop = node[name];
 
 	for (let idx in value) {
-		
+
 		prop[idx] = value[idx] == null ? '' : value[idx];
 	}
 };
@@ -224,7 +224,7 @@ let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHt
  * @param {Object} value - The value to be set.
  */
 let datasetToString = (name, value) => {
-	
+
 	let objL = '';
 
 	for (let objName in value) {
@@ -240,8 +240,8 @@ let datasetToString = (name, value) => {
  * @param {String} value - The attribute value to set.
  */
 let booleanAttrToString = (name, value) => {
-	
-	// XHTML friendly	
+
+	// XHTML friendly
   switch (name) {
 
     case 'download':
@@ -339,7 +339,7 @@ let IS_XLINK_NAMESPACE = {
 };
 
 let IS_XML_NAMESPACE = {
-	
+
 	/**
 	 * Set xlink namespace attribute
 	 *
@@ -378,7 +378,7 @@ let attrsCfg = {
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
 	dateTime: IS_ATTRIBUTE,
-	
+
 	/**
 	 * 'dataset' is a special case
 	 *
@@ -515,8 +515,8 @@ let attrsCfg = {
  *
  * @return {String} attrName  The HTML property / attribute to 'fix'
  */
-export default function(attrName) {
-	if (attrName) {
-		return attrsCfg[attrName] || IS_ATTRIBUTE;
-	}
-}
+export default {
+	set: (node, name, value) => (attrsCfg[name] || IS_ATTRIBUTE).set(node, name, value),
+	remove: (node, name) => (attrsCfg[name] || IS_ATTRIBUTE).remove(node, name),
+	toHtml: (name, value) => (attrsCfg[name] || IS_ATTRIBUTE).toHtml(name, value)
+};

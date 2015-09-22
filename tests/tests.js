@@ -3,7 +3,7 @@
 import Inferno from '../src';
 import { expect } from 'chai';
 import t7 from '../examples/t7';
-import DOMOperations from '../src/template/DOMOperations';
+import attrOps from '../src/template/AttributeOps';
 import unitlessCfg from '../src/template/cfg/unitlessCfg';
 import extendUnitlessNumber from '../src/template/extendUnitlessNumber';
 import get from './tools/get';
@@ -1669,99 +1669,99 @@ describe('Inferno acceptance tests', () => {
 			container = null;
 		});
 
-		describe('DOMOperations.toHtml()', () => {
+		describe('attrOps.toHtml()', () => {
 
 			describe('HTML attributes / properties', () => {
 
 			describe('Booleans', () => {
 				it('should render `checked` as a property (truthy)', () => {
-					expect(DOMOperations('checked').toHtml('checked', true)).to.equal('checked="true"');
+					expect(attrOps.toHtml('checked', true)).to.equal('checked="true"');
 				});
 
 				it('should render `checked` ( html5)', () => {
-					expect(DOMOperations('checked').toHtml('checked', 'checked')).to.equal('checked="checked"');
+					expect(attrOps.toHtml('checked', 'checked')).to.equal('checked="checked"');
 				});
 
 				it('should render `checked` (falsy)', () => {
-					expect(DOMOperations('checked').toHtml('checked', false)).to.equal('checked="false"');
+					expect(attrOps.toHtml('checked', false)).to.equal('checked="false"');
 				});
 
 				it('should render `download` attribute (falsy)', () => {
-					expect(DOMOperations('download').toHtml('download', false)).to.equal('download="false"');
+					expect(attrOps.toHtml('download', false)).to.equal('download="false"');
 				});
 
 				it('should render custom attribute', () => {
-					expect(DOMOperations('fooBar').toHtml('fooBar', 'boo')).to.equal('fooBar="boo"');
+					expect(attrOps.toHtml('fooBar', 'boo')).to.equal('fooBar="boo"');
 				});
 
 				it('should render "multiple" attribute - #1', () => {
-					expect(DOMOperations('multiple').toHtml('multiple', 'true')).to.equal('multiple');
+					expect(attrOps.toHtml('multiple', 'true')).to.equal('multiple');
 				});
 
 				it('should render "multiple" attribute - #2', () => {
-					expect(DOMOperations('multiple').toHtml('multiple', true)).to.equal('multiple');
+					expect(attrOps.toHtml('multiple', true)).to.equal('multiple');
 				});
 
 				it('should render "multiple" attribute - #3', () => {
-					expect(DOMOperations('multiple').toHtml('multiple', false)).to.equal('');
+					expect(attrOps.toHtml('multiple', false)).to.equal('');
 				});
 
 				it('should render "hidden" attribute', () => {
-					expect(DOMOperations('download').toHtml('hidden', false)).to.equal('hidden="false"');
+					expect(attrOps.toHtml('hidden', false)).to.equal('hidden="false"');
 				});
-				
+
 				it('should render "mute" attribute', () => {
-					expect(DOMOperations('mute').toHtml('mute', false)).to.equal('mute="false"');
+					expect(attrOps.toHtml('mute', false)).to.equal('mute="false"');
 				});
-				
+
 				it('should render "loop" attribute', () => {
-					expect(DOMOperations('loop').toHtml('loop', true)).to.equal('loop="true"');
+					expect(attrOps.toHtml('loop', true)).to.equal('loop="true"');
 				});
 
 			});
-			
+
 			describe('Custom attribute', () => {
 				it('should render custom attributes - #1', () => {
-					expect(DOMOperations('Inferno').toHtml('Inferno', true)).to.equal('Inferno="true"');
+					expect(attrOps.toHtml('Inferno', true)).to.equal('Inferno="true"');
 				});
 				it('should render custom attributes - #2', () => {
-					expect(DOMOperations('Inferno').toHtml('Inferno', 123)).to.equal('Inferno="123"');
+					expect(attrOps.toHtml('Inferno', 123)).to.equal('Inferno="123"');
 				});
 				it('should render custom attributes - #3', () => {
-					expect(DOMOperations('Inferno').toHtml('Inferno', false)).to.equal('Inferno="false"');
+					expect(attrOps.toHtml('Inferno', false)).to.equal('Inferno="false"');
 				});
 			});
-			
+
 			describe('HTML5 data-* attribute', () => {
 				it('should render custom attributes', () => {
-					expect(DOMOperations('data-foo').toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
+					expect(attrOps.toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
 				});
 			});
-			
+
 			describe('xml / xlink namespace attributes', () => {
 				it('should render namespace attributes', () => {
-					expect(DOMOperations('xlink:href').toHtml('xlink:href', 'test.jpg')).to.equal('xlink:href="test.jpg"');
+					expect(attrOps.toHtml('xlink:href', 'test.jpg')).to.equal('xlink:href="test.jpg"');
 				});
 				it('should render namespace attributes', () => {
-					expect(DOMOperations('xml:id').toHtml('xml:id', 'inferno')).to.equal('xml:id="inferno"');
+					expect(attrOps.toHtml('xml:id', 'inferno')).to.equal('xml:id="inferno"');
 				});
 			});
 
 			describe('dataset property', () => {
 				it('should render dataset property - #1', () => {
 				let objL = { foo: 'bar', bar: 'oops' };
-					expect(DOMOperations('dataset').toHtml('dataset', "")).to.equal('');
+					expect(attrOps.toHtml('dataset', "")).to.equal('');
 				});
 				it('should render dataset property - #2', () => {
 				let objL = { foo: 'bar', bar: 'oops' };
-					expect(DOMOperations('dataset').toHtml('dataset', objL)).to.equal('data-foo="bar" data-bar="oops" ');
+					expect(attrOps.toHtml('dataset', objL)).to.equal('data-foo="bar" data-bar="oops" ');
 				});
 			});
 		});
 			describe('CSS', () => {
 
 				it('should create markup for simple styles', () => {
-					expect(DOMOperations('style').toHtml('style', {
+					expect(attrOps.toHtml('style', {
 						backgroundColor: '#3b5998',
 						display: 'none'
 					})).to.equal(
@@ -1771,7 +1771,7 @@ describe('Inferno acceptance tests', () => {
 
 				// null, undefined etc. has to be done on a higher level of abstraction - not low-level
 				it('should not ignore undefined styles', () => {
-					expect(DOMOperations('style').toHtml('style', {
+					expect(attrOps.toHtml('style', {
 						backgroundColor: undefined,
 						display: 'none'
 					})).to.equal(
@@ -1780,7 +1780,7 @@ describe('Inferno acceptance tests', () => {
 				});
 
 				it('should not ignore null styles', () => {
-					expect(DOMOperations('style').toHtml('style', {
+					expect(attrOps.toHtml('style', {
 						backgroundColor: null,
 						display: 'none'
 					})).to.equal(
@@ -1789,7 +1789,7 @@ describe('Inferno acceptance tests', () => {
 				});
 
 				it('should automatically append `px` to relevant styles', () => {
-					expect(DOMOperations('style').toHtml('style', {
+					expect(attrOps.toHtml('style', {
 						left: 0,
 						margin: 16,
 						opacity: 0.5,
@@ -1800,7 +1800,7 @@ describe('Inferno acceptance tests', () => {
 				});
 
 				it('should create vendor-prefixed markup correctly', () => {
-					expect(DOMOperations('style').toHtml('style', {
+					expect(attrOps.toHtml('style', {
 						msTransition: 'none',
 						MozTransition: 'none'
 					})).to.equal(
@@ -1809,7 +1809,7 @@ describe('Inferno acceptance tests', () => {
 				});
 
 				it('should trim values so `px` will be appended correctly', () => {
-					expect(DOMOperations('style').toHtml('style', {
+					expect(attrOps.toHtml('style', {
 						margin: '16',
 						opacity: 0.5,
 						padding: '4'
@@ -1819,148 +1819,148 @@ describe('Inferno acceptance tests', () => {
 			});
 		});
 
-		describe('DOMOperations.remove()', () => {
+		describe('attrOps.remove()', () => {
 
 			it('should remove a custom attribute', () => {
 
-				DOMOperations('Inferno').set(container, 'Inferno', 'Rocks!');
-				DOMOperations('Inferno').remove(container, 'Inferno');
+				attrOps.set(container, 'Inferno', 'Rocks!');
+				attrOps.remove(container, 'Inferno');
 				expect(container.hasAttribute('Inferno')).to.be.false;
 			});
 
 			it('should remove a boolean attribute', () => {
 
-				DOMOperations('checked').set(container, 'checked', true);
-				DOMOperations('checked').remove(container, 'checked');
+				attrOps.set(container, 'checked', true);
+				attrOps.remove(container, 'checked');
 				expect(container.hasAttribute('checked')).to.be.false;
 				expect(container.checked).to.be.undefined;
 			});
 
 			it('should not remove a "null" value attribute', () => {
 
-				DOMOperations('checked').set(container, 'checked', null);
-				DOMOperations('checked').remove(container, 'checked');
+				attrOps.set(container, 'checked', null);
+				attrOps.remove(container, 'checked');
 				expect(container.hasAttribute('checked')).to.be.false;
 				expect(container.checked).to.be.undefined;
 			});
 		});
-		
-		describe('DOMOperations.set()', () => {
+
+		describe('attrOps.set()', () => {
 
 			it('should render `checked` as a property', () => {
-				DOMOperations('checked').set(container, 'checked', true);
+				attrOps.set(container, 'checked', true);
 				expect(container.checked).to.be.true;
 			});
 
 			it('should support custom attributes', () => {
-				DOMOperations('custom-attr').set(container, 'custom-attr', '123');
+				attrOps.set(container, 'custom-attr', '123');
 				expect(container.getAttribute('custom-attr')).to.equal('123');
 			});
 
 			it('shouldn\'t render null values', () => {
-				DOMOperations('value').set(container, 'value', null);
+				attrOps.set(container, 'value', null);
 				expect(container.value).to.be.null;
 			});
 
 			it('should set `title` attribute', () => {
-				DOMOperations('title').set(container, 'title', 'dominic');
+				attrOps.set(container, 'title', 'dominic');
 				expect(container.getAttribute('title')).to.equal('dominic');
 			});
 
 			it('should support HTML5 data-* attribute', () => {
-				DOMOperations('data-foo').set(container, 'data-foo', 'bar');
+				attrOps.set(container, 'data-foo', 'bar');
 				expect(container.getAttribute('data-foo')).to.equal('bar');
 			});
 
 			it('should support HTML5 data-* attribute', () => {
-				DOMOperations('data-foo').set(container, 'data-foo', 'bar');
+				attrOps.set(container, 'data-foo', 'bar');
 				expect(container.getAttribute('data-foo')).to.equal('bar');
 			});
 
 			it('should set "muted" boolean property ( truty) ', () => {
-				DOMOperations('muted').set(container, 'muted', true);
+				attrOps.set(container, 'muted', true);
 				expect(container.muted).to.be.true;
 			});
 
 			it('should set "muted" boolean property (falsy) ', () => {
-				DOMOperations('muted').set(container, 'muted', false);
+				attrOps.set(container, 'muted', false);
 				expect(container.muted).to.be.false;
 			});
 			// 'HTML5' should 'force' the value to be true
 			it('should set "muted" boolean property (HTML5) ', () => {
-				DOMOperations('muted').set(container, 'muted', 'true');
+				attrOps.set(container, 'muted', 'true');
 				expect(container.muted).to.be.true;
 			});
 
 			it('should not set "muted" boolean property as "muted muted"', () => {
-				DOMOperations('muted').set(container, 'muted', 'muted');
+				attrOps.set(container, 'muted', 'muted');
 				expect(container.muted).to.be.true;
 			});
 
 			it('should set "readOnly" boolean property ( truty) ', () => {
-				DOMOperations('readOnly').set(container, 'readOnly', true);
+				attrOps.set(container, 'readOnly', true);
 				expect(container.readOnly).to.be.true;
 			});
 
 			it('should set "readOnly" boolean property (falsy) ', () => {
-				DOMOperations('readOnly').set(container, 'readOnly', false);
+				attrOps.set(container, 'readOnly', false);
 				expect(container.readOnly).to.be.false;
 			});
 
 			it('should set "readOnly" boolean property (HTML5) ', () => {
-				DOMOperations('readOnly').set(container, 'readOnly', 'true');
+				attrOps.set(container, 'readOnly', 'true');
 				expect(container.readOnly).to.be.true;
 			});
 
 			it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
-				DOMOperations('readOnly').set(container, 'readOnly', 'readOnly');
+				attrOps.set(container, 'readOnly', 'readOnly');
 				expect(container.readOnly).to.be.true;
 			});
 
 			it('should set numeric properties', () => {
-				DOMOperations('start').set(container, 'start', 5);
+				attrOps.set(container, 'start', 5);
 				expect(container.getAttribute('start')).to.eql('5');
 
-				DOMOperations('start').set(container, 'start', 0);
+				attrOps.set(container, 'start', 0);
 				expect(container.getAttribute('start')).to.eql('0');
 			});
 
 			it('should set negative numeric properties', () => {
-				DOMOperations('start').set(container, 'start', -5);
+				attrOps.set(container, 'start', -5);
 				expect(container.getAttribute('start')).to.eql('-5');
 			});
 
 			it('should set numeric attribute "-0" to "0"', () => {
-				DOMOperations('start').set(container, 'start', -0);
+				attrOps.set(container, 'start', -0);
 				expect(container.getAttribute('start')).to.eql('0');
 			});
 
 			it('should set className property', () => {
-				DOMOperations('className').set(container, 'className', -0);
+				attrOps.set(container, 'className', -0);
 				expect(container.getAttribute('class')).to.eql('0');
 			});
 
 			it('should set dataset property - #1', () => {
 				let objL = { foo: 'bar', bar: 'oops' };
-				DOMOperations('dataset').set(container, 'dataset', objL);
+				attrOps.set(container, 'dataset', objL);
 				expect(container.dataset).to.eql(objL);
 			});
 
 			it('should set dataset property - #2', () => {
 				let objL = { foo: 'bar', bar: 'oops' };
-				DOMOperations('dataset').set(container, 'dataset', {});
+				attrOps.set(container, 'dataset', {});
 				expect(container.dataset).to.eql({});
 			});
 
 			it('should set values as boolean properties', () => {
-				DOMOperations('disabled').set(container, 'disabled', 'disabled');
+				attrOps.set(container, 'disabled', 'disabled');
 				expect(container.getAttribute('disabled')).to.eql('disabled');
 
-				DOMOperations('disabled').set(container, 'disabled', true);
+				attrOps.set(container, 'disabled', true);
 				expect(container.getAttribute('disabled')).to.eql('');
 
 				// shouldn't exist - it's an attribute
-				DOMOperations('disabled').set(container, 'disabled', true);
+				attrOps.set(container, 'disabled', true);
 				expect(container.disabled).to.be.undefined;
 			});
 		});

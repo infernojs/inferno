@@ -1,11 +1,11 @@
 import addAttributes        from './addAttributes';
 import extendUnitlessNumber from './extendUnitlessNumber';
-import DOMOperations        from './DOMOperations';
+import AttributeOps        from './AttributeOps';
 
 export default {
 	addAttributes,
 	extendUnitlessNumber,
-	DOMOperations,
+	AttributeOps,
 	createElement: (tag, namespace) => (namespace === undefined) ? document.createElement(tag) : document.createElementNS(namespace, tag),
 	createTextNode: text => document.createTextNode(text),
 	createEmptyText: () => document.createTextNode('')
