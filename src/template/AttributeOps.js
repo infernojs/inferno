@@ -14,6 +14,23 @@ let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
     illegalAttributeNameCache = {},
     validatedAttributeNameCache = {};
 
+let xmlMap = {
+	'xml:base': 'base',
+	'xml:id': 'id',
+	'xml:lang': 'lang',
+	'xml:space': 'spac'
+};
+
+let xlinkMap = {
+	'xlink:actuate': 'actuate',
+	'xlink:arcrole': 'arcrole',
+	'xlink:href': 'href',
+	'xlink:role': 'role',
+	'xlink:show': 'show',
+	'xlink:title': 'title',
+	'xlink:type': 'type'
+};
+
 /**
  * Normalize CSS properties for SSR
  *
@@ -48,8 +65,11 @@ let validateAttribute = ( name ) => {
     if ( illegalAttributeNameCache[name] ) {
         return false;
     }
-
-    if ( VALID_ATTRIBUTE_NAME_REGEX.test( name ) ) {
+     // namespace attributes are seen as non-valid, avoid that!
+     if ( VALID_ATTRIBUTE_NAME_REGEX.test( name ) || 
+	    ( xmlMap[name] ) || 
+		( xlinkMap[name] ) ) {
+			
         validatedAttributeNameCache[name] = true;
         return true;
     }
@@ -278,7 +298,13 @@ let removeSelectValue = node => {
  * @param {String} name - The attribute name to set.
  * @param {String} value - The attribute value to set.
  */
-let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
+let attrToString = (name, value) => {
+ if (validateAttribute( name )) {
+
+	return `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
+ }
+ return '';
+}
 
 /**
  * Transform dataset property to multiple strings for SSR rendring
@@ -333,23 +359,6 @@ let stylePropToString = (name, value) => {
 	}
 
 	return styles ? `${ name }="${ styles }"` : styles;
-};
-
-let xmlMap = {
-	'xml:base': 'base',
-	'xml:id': 'id',
-	'xml:lang': 'lang',
-	'xml:space': 'spac'
-};
-
-let xlinkMap = {
-	'xlink:actuate': 'actuate',
-	'xlink:arcrole': 'arcrole',
-	'xlink:href': 'href',
-	'xlink:role': 'role',
-	'xlink:show': 'show',
-	'xlink:title': 'title',
-	'xlink:type': 'type'
 };
 
 let IS_ATTRIBUTE = {
