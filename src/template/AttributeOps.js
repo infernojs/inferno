@@ -92,8 +92,8 @@ let normalize = (name, value) => {
  * Set boolean attributes
  *
  * @param  {Object} node A DOM element.
- * @param  {String} name	  The boolean attribute name to set.
- * @param {String} value	  The boolean attribute value to set.
+ * @param  {String} name  The boolean attribute name to set.
+ * @param {String} value The boolean attribute value to set.
  */
 let setBooleanAttribute = (node, name, value) => {
 	// Avoid touching the DOM and set falsy attributes.
@@ -106,7 +106,7 @@ let setBooleanAttribute = (node, name, value) => {
  * Set custom attributes on a DOM node
  *
  * @param {Object} node A DOM element.
- * @param {String} name	  The attribute name to set.
+ * @param {String} name	 The attribute name to set.
  * @param {String} value  The attribute value to set.
  */
 let setCustomAttribute = (node, name, value) => {
@@ -188,7 +188,7 @@ let setBooleanProperty = (node, name, value) => {
  * @param {String} name  The property name to set.
  * @param {String} value  The property value to set.
  */
-let setDatasetProperty = (node, name, value) => {
+let setPropertyForDataset = (node, name, value) => {
 	if (process.env.NODE_ENV !== 'production') {
 		let typeOfVal = typeof value;
 		if (typeOfVal !== 'object') {
@@ -205,7 +205,7 @@ let setDatasetProperty = (node, name, value) => {
 	}
 };
 
-let setStyleProperty = (node, name, value) => {
+let setPropertyForStyle = (node, name, value) => {
 	// CSS style need to be a object literal, not a string value
 	if (process.env.NODE_ENV !== 'production') {
 		let typeOfVal = typeof value;
@@ -229,7 +229,7 @@ let setStyleProperty = (node, name, value) => {
  * @param {String} name	  The property name to set.
  * @param {String} value  The property value to set.
  */
-let setValueProperty = (node, name, value) => {
+let setValueForProperty = (node, name, value) => {
 	if (name === 'value' && (getNodeName(node) === 'select')) {
 		setSelectValue(node, value);
 	} else {
@@ -304,19 +304,19 @@ let removeSelectValue = node => {
 /**
  * Transform HTML attributes to a string for SSR rendring
  *
- * @param {String} name - The attribute name to set.
- * @param {String} value - The attribute value to set.
+ * @param {string} name
+ * @param {*} value
+ * @return {string} Markup string, or empty string if the property was invalid.
  */
-let attrToString = (name, value) => {
- if (validateAttribute( name )) {
-
-	return `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
+let createAttributeMarkup = (name, value) => {
+ if (!validateAttribute( name ) || value == null) {
+    return '';
  }
- return '';
+   return `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
 }
 
 /**
- * Transform dataset property to multiple strings for SSR rendring
+ * Render HTML markup from a dataset property for SSR rendring
  *
  * @param {String} name The name to be set.
  * @param {Object} value  The value to be set.
@@ -332,7 +332,7 @@ let datasetToString = (name, value) => {
 }
 
 /**
- * Transform HTML boolean attributes to string for SSR rendring
+ * Render HTML markup from boolean attributes to string for SSR rendring
  *
  * @param {String} name  The attribute name to set.
  * @param {String} value  The attribute value to set.
@@ -355,12 +355,12 @@ let booleanAttrToString = (name, value) => {
 }
 
 /**
- * Transform CSS style property to string for SSR rendring
+ * Render CSS style property to string for SSR rendring
  *
  * @param  {String} name  The attribute name to set.
  * @param  {String} value The property value to set.
  */
-let stylePropToString = (name, value) => {
+let createPropertyMarkup = (name, value) => {
 	let styles = '';
 
 	for (let styleName in value) {
@@ -373,31 +373,31 @@ let stylePropToString = (name, value) => {
 let IS_ATTRIBUTE = {
 	set: setAttribute,
 	remove: removeAttribute,
-	toHtml: attrToString
+	toHtml: createAttributeMarkup
 };
 
 let IS_CUSTOM = {
 	set: setCustomAttribute,
 	remove: removeAttribute,
-	toHtml: attrToString
+	toHtml: createAttributeMarkup
 };
 
 let IS_NUMERIC = {
 	set: setNumericAttribute,
 	remove: removeAttribute,
-	toHtml: attrToString
+	toHtml: createAttributeMarkup
 };
 
 let IS_BOOLEAN_ATTRIBUTE = {
 	set: setBooleanAttribute,
 	remove: removeAttribute,
-	toHtml: attrToString
+	toHtml: createAttributeMarkup
 };
 
 let IS_PROPERTY = {
 	set: setProperty,
 	remove: removeProperty,
-	toHtml: attrToString
+	toHtml: createAttributeMarkup
 };
 
 let IS_BOOLEAN_PROPERTY = {
@@ -407,6 +407,7 @@ let IS_BOOLEAN_PROPERTY = {
 };
 
 let IS_XLINK_NAMESPACE = {
+	
 	/**
 	 * Set xlink namespace attribute
 	 *
@@ -428,7 +429,7 @@ let IS_XLINK_NAMESPACE = {
 	remove(node, name) {
 		node.removeAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
 	},
-	toHtml:attrToString
+	toHtml:createAttributeMarkup
 };
 
 let IS_XML_NAMESPACE = {
@@ -443,6 +444,7 @@ let IS_XML_NAMESPACE = {
 	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name], value);
 	},
+	
 	/**
 	 * Unsets a xml namespace attribute
 	 *
@@ -452,7 +454,7 @@ let IS_XML_NAMESPACE = {
 	remove(node, name) {
 		node.removeAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
 	},
-	toHtml:attrToString
+	toHtml:createAttributeMarkup
 };
 
 let DOMConfig = {
@@ -487,7 +489,7 @@ let DOMConfig = {
 	 *
 	 */
 	dataset: {
-		set: setDatasetProperty,
+		set: setPropertyForDataset,
 		// 'dataset' property has to be removed as an attribute
 		// because it's set as an attribute - e.g. data-foo="bar"
 		remove: removeAttribute,
@@ -594,9 +596,9 @@ let DOMConfig = {
 	 * 'styles' should be used as an replacement.
 	 */
 	style: {
-		set: setStyleProperty,
+		set: setPropertyForStyle,
 		remove: removeProperty,
-		toHtml: stylePropToString
+		toHtml: createPropertyMarkup
 	},
 	translate: IS_BOOLEAN_ATTRIBUTE,
 	truespeed: IS_BOOLEAN_PROPERTY,
@@ -605,14 +607,15 @@ let DOMConfig = {
 	y1: IS_ATTRIBUTE,
 	y2: IS_ATTRIBUTE,
 	y: IS_ATTRIBUTE,
+
 	/**
 	 * 'value' is a special case
 	 *
 	 */
 	value: {
-		set: setValueProperty,
+		set: setValueForProperty,
 		remove: removeProperty,
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
 	},
 	version: IS_ATTRIBUTE,
 	viewBox: IS_ATTRIBUTE,

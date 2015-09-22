@@ -342,6 +342,45 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+               // Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
+				describe('should properly render "className" property on a custom element', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<custom-elem  className="Hello, world!"></custom-elem>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<custom-elem class="Hello, world!"></custom-elem>'
+						);
+					});
+				});
+				
+				describe('should properly render "class" property on a custom element', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<custom-elem class="Hello, world!"></custom-elem>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<custom-elem class="Hello, world!"></custom-elem>'
+						);
+					});
+				});
+
                 describe('should properly render "width" and "height" attributes', () => {
 					let template;
 
