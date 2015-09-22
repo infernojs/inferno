@@ -286,6 +286,25 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
+				
+				describe('should render video / audio attributes', () => {
+					let template;
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+
+ 	                     <input type="file" multiple="multiple"  capture="capture" accept="image/*"></input>						
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input type="file" multiple="" capture="capture" accept="image/*">'
+						);
+					});
+				});
 
 				describe('should render dataset property - #1', () => {
 					let template;
