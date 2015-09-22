@@ -141,7 +141,49 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
+
+				describe('shouldn\'t render null value (no JSX)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(createElement =>
+							createElement("input",{ value : null })
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						
+                        expect( container.value ).to.be.undefined;
+						expect(
+							container.outerHTML
+						).to.equal(
+							'<div><input></div>'
+						);
+					});
+				});
+                describe('should set values as properties by default (no JSX)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(createElement =>
+							createElement("input", { title : "Tip!" })
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						
+                        expect( container.firstChild.getAttribute('title' )).to.eql('Tip!');
+						expect(
+							container.outerHTML
+						).to.equal(
+							'<div><input title="Tip!"></div>'
+						);
+					});
+				});
+
 				describe('should render value multiple attribute (no JSX)', () => {
 					let template;
 
