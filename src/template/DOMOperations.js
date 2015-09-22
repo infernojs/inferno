@@ -111,9 +111,10 @@ let setObjectProperty = (node, name, value) => {
 		
 		prop[idx] = value[idx] == null ? '' : value[idx];
 	}
-},
+};
 
-setStyleProperty = (node, name, value) => {
+let setStyleProperty = (node, name, value) => {
+	// CSS style need to be a object literal, not a string value
 	if (process.env.NODE_ENV !== 'production') {
 		let typeOfVal = typeof value;
 		if (typeOfVal !== 'object') {
@@ -261,8 +262,7 @@ let booleanAttrToString = (name, value) => {
         return `${ name }="${ '' }"`;
     default:
         return `${ name }="${ escapeHtml(value + '') }"`; // cast to string
-}
-
+   }
 }
 
 /**
@@ -331,7 +331,7 @@ let IS_XLINK_NAMESPACE = {
 	 * @param  {String} value	 The attribute value to set.
 	 */
 	set(node, name, value) {
-		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name], '' + value);
+		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name], value);
 	},
 
 	/**
@@ -348,6 +348,7 @@ let IS_XLINK_NAMESPACE = {
 };
 
 let IS_XML_NAMESPACE = {
+	
 	/**
 	 * Set xlink namespace attribute
 	 *
@@ -356,7 +357,7 @@ let IS_XML_NAMESPACE = {
 	 * @param  {String} value	 The attribute value to set.
 	 */
 	set(node, name, value) {
-		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name], '' + value);
+		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name], value);
 	},
 	/**
 	 * Unsets a xml namespace attribute
@@ -386,13 +387,16 @@ let attrsCfg = {
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
 	dateTime: IS_ATTRIBUTE,
+	
 	/**
 	 * 'dataset' is a special case
 	 *
 	 */
 	dataset: {
 		set: setObjectProperty,
-		remove: removeProperty,
+		// 'dataset' property has to be removed as an attribute
+		// because it's set as an attribute - e.g. data-foo="bar"
+		remove: removeAttribute,
 		toHtml: datasetToString
 	},
 	default: IS_BOOLEAN_ATTRIBUTE,
