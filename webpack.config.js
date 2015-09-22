@@ -31,7 +31,7 @@ module.exports = {
 	output: {
 		path: path.join(__dirname, 'dist'),
 		filename: PROD ? 'inferno.min.js' : 'inferno.js',
-		libraryTarget: 'var',
+		libraryTarget: 'umd',
 		library: 'Inferno',
 		publicPath: 'http://localhost:8080/'
 	},

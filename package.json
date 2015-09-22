@@ -2,9 +2,8 @@
   "name": "inferno",
   "version": "0.3.0",
   "description": "A framework for building lightning fast user interfaces",
-  "main": "inferno.js",
+  "main": "./dist/inferno.min.js",
   "scripts": {
-    "preinstall": "npm install -g webpack",
     "test-win": "webpack-dev-server --config test.config.js --hot --inline 'mocha!.\\tests\\tests.js'",
     "test": "webpack-dev-server --config test.config.js --hot --inline 'mocha!./tests/tests.js'",
     "dev-watch": "webpack-dev-server --config webpack.config.js --hot --inline",
