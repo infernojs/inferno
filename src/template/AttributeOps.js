@@ -426,7 +426,7 @@ let IS_XLINK_NAMESPACE = {
 	 * @param  {String} name  The attribute name to unset.
 	 */
 	remove(node, name) {
-		node.removeAttributeibuteNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
+		node.removeAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
 	},
 	toHtml:attrToString
 };
@@ -450,7 +450,7 @@ let IS_XML_NAMESPACE = {
 	 * @param  {String} name The attribute name to unset.
 	 */
 	remove(node, name) {
-		node.removeAttributeibuteNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
+		node.removeAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
 	},
 	toHtml:attrToString
 };
