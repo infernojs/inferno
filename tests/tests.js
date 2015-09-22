@@ -1951,6 +1951,12 @@ describe('Inferno acceptance tests', () => {
 				attrOps.set(container, 'dataset', {});
 				expect(container.dataset).to.eql({});
 			});
+			
+			it('should set and camelize dataset property - #3', () => {
+				let objL = { "foo-bar": 'bar', bar: 'oops' };
+				attrOps.set(container, 'dataset', objL);
+				expect(container.dataset).to.eql({ fooBar: 'bar', bar: 'oops' });
+			});
 
 			it('should set values as boolean properties', () => {
 				attrOps.set(container, 'disabled', 'disabled');
