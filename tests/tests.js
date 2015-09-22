@@ -1636,6 +1636,7 @@ describe('Inferno acceptance tests', () => {
 
 			describe('HTML attributes / properties', () => {
 
+			describe('Booleans', () => {
 				it('should render `checked` as a property (truthy)', () => {
 					expect(DOMOperations('checked').toHtml('checked', true)).to.equal('checked="true"');
 				});
@@ -1656,20 +1657,48 @@ describe('Inferno acceptance tests', () => {
 					expect(DOMOperations('fooBar').toHtml('fooBar', 'boo')).to.equal('fooBar="boo"');
 				});
 
-				it('should render "multiple" attribute', () => {
+				it('should render "multiple" attribute - #1', () => {
 					expect(DOMOperations('multiple').toHtml('multiple', 'true')).to.equal('multiple');
 				});
 
-				it('should render "multiple" attribute', () => {
+				it('should render "multiple" attribute - #2', () => {
 					expect(DOMOperations('multiple').toHtml('multiple', true)).to.equal('multiple');
 				});
 
-				it('should render "multiple" attribute', () => {
+				it('should render "multiple" attribute - #3', () => {
 					expect(DOMOperations('multiple').toHtml('multiple', false)).to.equal('');
 				});
 
-			});
+				it('should render "hidden" attribute', () => {
+					expect(DOMOperations('download').toHtml('hidden', false)).to.equal('hidden="false"');
+				});
+				
+				it('should render "mute" attribute', () => {
+					expect(DOMOperations('mute').toHtml('mute', false)).to.equal('mute="false"');
+				});
+				
+				it('should render "loop" attribute', () => {
+					expect(DOMOperations('loop').toHtml('loop', true)).to.equal('loop="true"');
+				});
 
+			});
+			describe('Custom attribute', () => {
+				it('should render custom attributes - #1', () => {
+					expect(DOMOperations('Inferno').toHtml('Inferno', true)).to.equal('Inferno="true"');
+				});
+				it('should render custom attributes - #2', () => {
+					expect(DOMOperations('Inferno').toHtml('Inferno', 123)).to.equal('Inferno="123"');
+				});
+				it('should render custom attributes - #3', () => {
+					expect(DOMOperations('Inferno').toHtml('Inferno', false)).to.equal('Inferno="false"');
+				});
+			});
+			describe('HTML5 data-* attribute', () => {
+				it('should render custom attributes', () => {
+					expect(DOMOperations('data-foo').toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
+				});
+			});
+		});
 			describe('CSS', () => {
 
 				it('should create markup for simple styles', () => {
