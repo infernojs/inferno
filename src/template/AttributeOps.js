@@ -12,16 +12,16 @@ import unitlessCfg from './cfg/unitlessCfg';
 // Simplified subset
 let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
     illegalAttributeNameCache = {},
-    validatedAttributeNameCache = {};
+    validatedAttributeNameCache = {},
 
-let xmlMap = {
+ xmlMap = {
 	'xml:base': 'base',
 	'xml:id': 'id',
 	'xml:lang': 'lang',
 	'xml:space': 'spac'
-};
+},
 
-let xlinkMap = {
+ xlinkMap = {
 	'xlink:actuate': 'actuate',
 	'xlink:arcrole': 'arcrole',
 	'xlink:href': 'href',

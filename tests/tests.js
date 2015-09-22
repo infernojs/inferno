@@ -1955,6 +1955,11 @@ describe('Inferno acceptance tests', () => {
 			describe('HTML attributes / properties', () => {
 
 				describe('Booleans', () => {
+
+					it('should not render unsafe custom attribute names', () => {
+						expect(attrOps.toHtml('&/()', 'unsafeAttr!!')).to.equal('');
+					});
+					
 					it('should render `checked` as a property (truthy)', () => {
 						expect(attrOps.toHtml('checked', true)).to.equal('checked="true"');
 					});
@@ -2002,14 +2007,21 @@ describe('Inferno acceptance tests', () => {
 				});
 
 				describe('Custom attribute', () => {
+					
 					it('should render custom attributes - #1', () => {
 						expect(attrOps.toHtml('Inferno', true)).to.equal('Inferno="true"');
 					});
+					
 					it('should render custom attributes - #2', () => {
 						expect(attrOps.toHtml('Inferno', 123)).to.equal('Inferno="123"');
 					});
+					
 					it('should render custom attributes - #3', () => {
 						expect(attrOps.toHtml('Inferno', false)).to.equal('Inferno="false"');
+					});
+                    
+					it('should not render unsafe custom attribute names', () => {
+						expect(attrOps.toHtml('&/()', 'unsafeAttr!!')).to.equal('');
 					});
 				});
 
