@@ -50,7 +50,7 @@ let setBooleanAttribute = (node, name, value) => {
  * @param {String} value	  The attribute value to set.
  */
 let setAttribute = (node, name, value) => {
-	if (name === 'type' && node.tagName === 'INPUT') {
+	if (name === 'type' && (node.tagName.toLowerCase() === 'input')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node.setAttribute(name, '' + value);
@@ -82,7 +82,7 @@ let setNumericAttribute = (node, name, value) => {
  */
 let setProperty = (node, name, value) => {
 
-	if (name === 'type' && node.tagName === 'INPUT') {
+	if (name === 'type' && (node.tagName.toLowerCase() === 'INPUT')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node[name] = value;
@@ -152,7 +152,7 @@ let setStyleProperty = (node, name, value) => {
  * @param {String} value	  The property value to set.
  */
 let verifyProperty = (node, name, value) => {
-	if (name === 'value' && node.tagName.toLowerCase() === 'select') {
+	if (name === 'value' && (node.tagName.toLowerCase() === 'select')) {
 		setSelectValue(node, value);
 	} else {
 		node[name] !== value && (node[name] = value);
@@ -176,7 +176,7 @@ let removeAttribute = (node, name) => {
  * @param {String} name - The property name to set.
  */
 let removeProperty = (node, name) => {
-	if (name === 'value' && node.tagName === 'SELECT') {
+	if (name === 'value' && (node.tagName.toLowerCase() === 'select')) {
 		removeSelectValue(node);
 	} else {
 		node[name] = hasPropertyAccessor(node.tagName, name);
@@ -483,6 +483,7 @@ let DOMConfig = {
     x1: IS_ATTRIBUTE,
     x2: IS_ATTRIBUTE,
     x: IS_ATTRIBUTE,
+	
 	/**
 	 * CSS styling attribute is a special case, and will be set as a normal object.
 	 * 'styles' should be used as an replacement.
