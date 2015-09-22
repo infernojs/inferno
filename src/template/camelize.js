@@ -1,8 +1,4 @@
-function camelize(str) {
-  return str.toLowerCase()
-    .replace( /['"]/g, '' )
-    .replace( /\W+/g, ' ' )
-    .replace( / (.)/g, function($1) { return $1.toUpperCase(); })
-    .replace( / /g, '' );
-}
-export default camelize;
+let NONWORD_FIRST_REGEX = /\W+(\w)/g;
+let NONWORD_FIRST_CAPITALIZE = ($$, $1) => $1.toUpperCase();
+
+export default str => str.toLowerCase().replace(NONWORD_FIRST_REGEX, NONWORD_FIRST_CAPITALIZE);
