@@ -76,6 +76,29 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
+
+				describe('should render a basic example #3 (no JSX)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(createElement =>
+							createElement("ul", null,
+								createElement("li", null, createElement("span", null, "I'm a li-tag")),
+								createElement("li", null, createElement("span", null, "I'm a li-tag")),
+								createElement("li", null, createElement("span", null, "I'm a li-tag"))
+							)
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<ul><li>I\'m a li-tag</li><li>I\'m a li-tag</li><li>I\'m a li-tag</li></ul>'
+						);
+					});
+				});
 				
 				describe('should render "autoFocus" boolean attributes (no JSX)', () => {
 					let template;
@@ -88,7 +111,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						expect(container.getAttribute("autoFocus")).to.be.true;
+						expect(container.getAttribute("autoFocus")).to.eql("true");
 						expect(
 							container.innerHTML
 						).to.equal(
