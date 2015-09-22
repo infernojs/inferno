@@ -36,6 +36,8 @@ let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
  * @param {Object} node A DOM element.
  */
 let getNodeName = (node) => {
+	
+	// TODO!! Cache this for re-use?
     return node.tagName.toLowerCase();	
 };
 
@@ -123,7 +125,7 @@ let setCustomAttribute = (node, name, value) => {
  *
  * @param {Object} node A DOM element.
  * @param {String} name	  The attribute name to set.
- * @param {String} value	  The attribute value to set.
+ * @param {String} value The attribute value to set.
  */
 let setAttribute = (node, name, value) => {
 	if (name === 'type' && (getNodeName(node) === 'input')) {
@@ -141,7 +143,7 @@ let setAttribute = (node, name, value) => {
  *
  * @param {Object} node A DOM element.
  * @param {String} name	  The numeric attribute name to set.
- * @param {String} value	  The numeric attribute value to set.
+ * @param {String} value  The numeric attribute value to set.
  */
 let setNumericAttribute = (node, name, value) => {
       if (typeof value === "number" && (value > 0)) {
@@ -152,9 +154,9 @@ let setNumericAttribute = (node, name, value) => {
 /**
  * Set properties on a DOM node
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name	  The property name to set.
- * @param {String} value	  The property value to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The property name to set.
+ * @param {String} value	 The property value to set.
  */
 let setProperty = (node, name, value) => {
 
@@ -171,9 +173,9 @@ let setProperty = (node, name, value) => {
 /**
  * Set boolean property
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name	  The boolean property name to set.
- * @param {String} value	  The boolean property value to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The boolean property name to set.
+ * @param {String} value  The boolean property value to set.
  */
 let setBooleanProperty = (node, name, value) => {
 	node[name] = !!value;
@@ -182,9 +184,9 @@ let setBooleanProperty = (node, name, value) => {
 /**
  * Set dataset object properties
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name	  The property name to set.
- * @param {String} value	  The property value to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name  The property name to set.
+ * @param {String} value  The property value to set.
  */
 let setDatasetProperty = (node, name, value) => {
 	if (process.env.NODE_ENV !== 'production') {
@@ -223,9 +225,9 @@ let setStyleProperty = (node, name, value) => {
 /**
  * Set 'value' property after validation check
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name	  The property name to set.
- * @param {String} value	  The property value to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The property name to set.
+ * @param {String} value  The property value to set.
  */
 let setValueProperty = (node, name, value) => {
 	if (name === 'value' && (getNodeName(node) === 'select')) {
@@ -248,7 +250,7 @@ let removeAttribute = (node, name) => {
 /**
  * Unsets a property
  *
- * @param {Object element} - A DOM element.
+ * @param {Object} node A DOM element.
  * @param {String} name - The property name to set.
  */
 let removeProperty = (node, name) => {
@@ -262,8 +264,8 @@ let removeProperty = (node, name) => {
 /**
  * Set select / select multiple
  *
- * @param {Object element} node - A DOM element.
- * @param {String|Array} value - The property value to set.
+ * @param {Object} node  A DOM element.
+ * @param {String|Array} value  The property value to set.
  */
 let setSelectValue = (node, value, children) => {
 	/**
@@ -286,7 +288,7 @@ let setSelectValue = (node, value, children) => {
 /**
  * Unsets a select / select multiple property from a DOM node
  *
- * @param {Object element} node - A DOM element.
+ * @param {Object} node A DOM element.
  */
 let removeSelectValue = node => {
 	const options = node.options,
@@ -316,8 +318,8 @@ let attrToString = (name, value) => {
 /**
  * Transform dataset property to multiple strings for SSR rendring
  *
- * @param {String} name - The name to be set.
- * @param {Object} value - The value to be set.
+ * @param {String} name The name to be set.
+ * @param {Object} value  The value to be set.
  */
 let datasetToString = (name, value) => {
 
@@ -332,8 +334,8 @@ let datasetToString = (name, value) => {
 /**
  * Transform HTML boolean attributes to string for SSR rendring
  *
- * @param {String} name - The attribute name to set.
- * @param {String} value - The attribute value to set.
+ * @param {String} name  The attribute name to set.
+ * @param {String} value  The attribute value to set.
  */
 let booleanAttrToString = (name, value) => {
 
@@ -355,8 +357,8 @@ let booleanAttrToString = (name, value) => {
 /**
  * Transform CSS style property to string for SSR rendring
  *
- * @param  {String} name	  The attribute name to set.
- * @param  {String} value	 The property value to set.
+ * @param  {String} name  The attribute name to set.
+ * @param  {String} value The property value to set.
  */
 let stylePropToString = (name, value) => {
 	let styles = '';
@@ -409,8 +411,8 @@ let IS_XLINK_NAMESPACE = {
 	 * Set xlink namespace attribute
 	 *
 	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The attribute name to set.
-	 * @param  {String} value	 The attribute value to set.
+	 * @param  {String} name  The attribute name to set.
+	 * @param  {String} value	The attribute value to set.
 	 */
 	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name], value);
@@ -420,8 +422,8 @@ let IS_XLINK_NAMESPACE = {
 	 * Unsets a xlink namespace attribute
 	 *
 	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The attribute name to set.
-	 * @param  {String} name	  The attribute name to unset.
+	 * @param  {String} name  The attribute name to set.
+	 * @param  {String} name  The attribute name to unset.
 	 */
 	remove(node, name) {
 		node.removeAttributeibuteNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
@@ -435,8 +437,8 @@ let IS_XML_NAMESPACE = {
 	 * Set xlink namespace attribute
 	 *
 	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The attribute name to set.
-	 * @param  {String} value	 The attribute value to set.
+	 * @param  {String} name The attribute name to set.
+	 * @param  {String} value The attribute value to set.
 	 */
 	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name], value);
@@ -445,7 +447,7 @@ let IS_XML_NAMESPACE = {
 	 * Unsets a xml namespace attribute
 	 *
 	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The attribute name to unset.
+	 * @param  {String} name The attribute name to unset.
 	 */
 	remove(node, name) {
 		node.removeAttributeibuteNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
@@ -470,13 +472,14 @@ let DOMConfig = {
 	clipPath: IS_ATTRIBUTE,
 	cols: IS_NUMERIC,
 	crossOrigin: IS_ATTRIBUTE,
-	contentEditable: IS_ATTRIBUTE,
+  // Returns "true", "false", or "inherit", based on the state of the contenteditable attribute.
+	contentEditable: IS_PROPERTY,
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
-    cx: IS_ATTRIBUTE,
-    cy: IS_ATTRIBUTE,
-    d: IS_ATTRIBUTE,
-    data: IS_ATTRIBUTE,
+	cx: IS_ATTRIBUTE,
+	cy: IS_ATTRIBUTE,
+	d: IS_ATTRIBUTE,
+	data: IS_ATTRIBUTE,
 	dateTime: IS_ATTRIBUTE,
 
 	/**
@@ -490,16 +493,18 @@ let DOMConfig = {
 		remove: removeAttribute,
 		toHtml: datasetToString
 	},
-    default: IS_BOOLEAN_ATTRIBUTE,
+	default: IS_BOOLEAN_ATTRIBUTE,
 	data: IS_ATTRIBUTE,
 	defer: IS_BOOLEAN_ATTRIBUTE,
 	declare: IS_BOOLEAN_ATTRIBUTE,
 	defaultchecked: IS_BOOLEAN_ATTRIBUTE,
 	defaultmuted: IS_BOOLEAN_ATTRIBUTE,
 	defaultselected: IS_BOOLEAN_ATTRIBUTE,
+	designMode: IS_PROPERTY,
 	dir: IS_ATTRIBUTE,
 	disabled: IS_BOOLEAN_ATTRIBUTE,
 	draggable: IS_BOOLEAN_ATTRIBUTE,
+	dropzone: IS_ATTRIBUTE,
 	dx: IS_ATTRIBUTE,
 	dy: IS_ATTRIBUTE,
 	download: IS_BOOLEAN_ATTRIBUTE,
@@ -507,6 +512,7 @@ let DOMConfig = {
 	file: IS_ATTRIBUTE,
 	fill: IS_ATTRIBUTE,
 	fillOpacity: IS_ATTRIBUTE,
+	forceSpellCheck: IS_PROPERTY,
 	form: IS_ATTRIBUTE,
 	formAction: IS_ATTRIBUTE,
 	formEncType: IS_ATTRIBUTE,
@@ -516,7 +522,7 @@ let DOMConfig = {
 	fontFamily: IS_ATTRIBUTE,
 	fontSize: IS_ATTRIBUTE,
 	frameBorder: IS_ATTRIBUTE,
-    for: IS_ATTRIBUTE,
+	for: IS_ATTRIBUTE,
 	fx: IS_ATTRIBUTE,
 	fy: IS_ATTRIBUTE,
 	height: IS_PROPERTY,
@@ -550,7 +556,7 @@ let DOMConfig = {
 	nohref: IS_ATTRIBUTE,
 	noshade: IS_ATTRIBUTE,
 	noValidate: IS_BOOLEAN_ATTRIBUTE,
-    opacity: IS_ATTRIBUTE,
+	opacity: IS_ATTRIBUTE,
 	open: IS_BOOLEAN_ATTRIBUTE,
 	placeholder: IS_PROPERTY,
 	points: IS_ATTRIBUTE,
@@ -567,10 +573,11 @@ let DOMConfig = {
 	selected: IS_BOOLEAN_PROPERTY,
 	selectedIndex: IS_PROPERTY,
 	size: IS_NUMERIC,
+	// Viewport-based selection
 	sizes: IS_ATTRIBUTE,
 	sortable: IS_BOOLEAN_ATTRIBUTE,
 	span: IS_NUMERIC,
-	spellCheck: IS_BOOLEAN_ATTRIBUTE,
+	spellCheck: IS_BOOLEAN_PROPERTY,
 	stroke: IS_ATTRIBUTE,
 	srcDoc: IS_PROPERTY,
 	srcSet: IS_ATTRIBUTE,
@@ -594,6 +601,7 @@ let DOMConfig = {
 	translate: IS_BOOLEAN_ATTRIBUTE,
 	truespeed: IS_BOOLEAN_PROPERTY,
 	typemustmatch: IS_BOOLEAN_ATTRIBUTE,
+	usemap: IS_ATTRIBUTE,
 	y1: IS_ATTRIBUTE,
 	y2: IS_ATTRIBUTE,
 	y: IS_ATTRIBUTE,
