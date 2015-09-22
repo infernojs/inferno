@@ -248,9 +248,9 @@ let booleanAttrToString = (name, value) => {
     case false:
         return '';
     case true:
-        return attrToString = `${ attrNameCfg[name] || name }="${ '' }"`;
+        return `${ attrNameCfg[name] || name }="${ '' }"`;
     default:
-        return attrToString = `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`; // cast to string
+        return `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`; // cast to string
 }
 
 }
