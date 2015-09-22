@@ -239,15 +239,14 @@ let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHt
  */
 let objToString = (name, value) => {
 	
-	let markup = '';
+	let objL = '';
 
 	for (let styleName in value) {
-		value[styleName] != null && (markup += styleName + '=' + value[styleName] + ', ');
+		value[styleName] != null && (objL += styleName + '=' + value[styleName] + ', ');
 	}
 
-	return `${ name }="${ markup }"`;
-	
-}//`${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
+	return `${ name }="${ objL }"`;
+}
 
 /**
  * Transform HTML boolean attributes to string for SSR rendring
