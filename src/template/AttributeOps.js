@@ -45,8 +45,8 @@ let setBooleanAttribute = (node, name, value) => {
 /**
  * Set attributes on a DOM node
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name	  The attribute name to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The attribute name to set.
  * @param {String} value	  The attribute value to set.
  */
 let setAttribute = (node, name, value) => {
@@ -61,11 +61,11 @@ let setAttribute = (node, name, value) => {
 };
 
 /**
- * Set attributes on a DOM node
+ * Set numeric attributes on a DOM node
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name	  The attribute name to set.
- * @param {String} value	  The attribute value to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The numeric attribute name to set.
+ * @param {String} value	  The numeric attribute value to set.
  */
 let setNumericAttribute = (node, name, value) => {
       if (typeof value === "number" && (value > 0)) {
