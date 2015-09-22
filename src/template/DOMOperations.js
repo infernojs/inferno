@@ -244,7 +244,7 @@ let booleanAttrToString = (name, value) => {
 
     case 'download':
     case 'multiple':
-        return name;
+        return value ? name : '';
     case false:
         return '';
     case true:

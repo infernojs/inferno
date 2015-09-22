@@ -1660,6 +1660,14 @@ describe('Inferno acceptance tests', () => {
 					expect(DOMOperations('multiple').toHtml('multiple', 'true')).to.equal('multiple');
 				});
 
+				it('should render "multiple" attribute', () => {
+					expect(DOMOperations('multiple').toHtml('multiple', true)).to.equal('multiple');
+				});
+
+				it('should render "multiple" attribute', () => {
+					expect(DOMOperations('multiple').toHtml('multiple', false)).to.equal('');
+				});
+
 			});
 
 			describe('CSS', () => {
