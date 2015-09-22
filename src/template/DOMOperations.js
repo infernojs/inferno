@@ -226,10 +226,28 @@ let removeSelectValue = node => {
 /**
  * Transform HTML attributes to string for SSR rendring
  *
- * @param {Object element} - A DOM element.
  * @param {String} name - The attribute name to set.
+ * @param {String} value - The attribute value to set.
  */
 let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
+
+/**
+ * Transform object literal to string for SSR rendring
+ *
+ * @param {String} name - The name to be set.
+ * @param {Object} value - The value to be set.
+ */
+let objToString = (name, value) => {
+	
+	let markup = '';
+
+	for (let styleName in value) {
+		value[styleName] != null && (markup += styleName + '=' + value[styleName] + ', ');
+	}
+
+	return `${ name }="${ markup }"`;
+	
+}//`${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
 
 /**
  * Transform HTML boolean attributes to string for SSR rendring
@@ -374,6 +392,15 @@ let attrsCfg = {
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
 	dateTime: IS_ATTRIBUTE,
+	/**
+	 * 'dataset' is a special case
+	 *
+	 */
+	dataset: {
+		set: setObjectProperty,
+		remove: removeProperty,
+		toHtml: objToString
+	},
 	default: IS_BOOLEAN_ATTRIBUTE,
 	defer: IS_BOOLEAN_ATTRIBUTE,
 	declare: IS_BOOLEAN_ATTRIBUTE,

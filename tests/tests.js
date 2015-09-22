@@ -1698,6 +1698,17 @@ describe('Inferno acceptance tests', () => {
 					expect(DOMOperations('data-foo').toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
 				});
 			});
+
+			describe('dataset property', () => {
+				it('should render dataset property - #1', () => {
+				let objL = { foo: 'bar', bar: 'oops' };
+					expect(DOMOperations('dataset').toHtml('dataset', "")).to.equal('dataset=""');
+				});
+				it('should render dataset property - #2', () => {
+				let objL = { foo: 'bar', bar: 'oops' };
+					expect(DOMOperations('dataset').toHtml('dataset', objL)).to.equal('dataset="foo=bar, bar=oops, "');
+				});
+			});
 		});
 			describe('CSS', () => {
 
@@ -1853,6 +1864,18 @@ describe('Inferno acceptance tests', () => {
 			it('should set className property', () => {
 				DOMOperations('className').set(container, 'className', -0);
 				expect(container.getAttribute('class')).to.eql('0');
+			});
+
+			it('should set dataset property - #1', () => {
+				let objL = { foo: 'bar', bar: 'oops' };
+				DOMOperations('dataset').set(container, 'dataset', objL);
+				expect(container.dataset).to.eql(objL);
+			});
+
+			it('should set dataset property - #2', () => {
+				let objL = { foo: 'bar', bar: 'oops' };
+				DOMOperations('dataset').set(container, 'dataset', {});
+				expect(container.dataset).to.eql({});
 			});
 
 			it('should set values as boolean properties', () => {
