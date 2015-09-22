@@ -549,8 +549,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Set attributes on a DOM node
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The attribute name to set.
+	 * @param {Object} node A DOM element.
+	 * @param {String} name	  The attribute name to set.
 	 * @param {String} value	  The attribute value to set.
 	 */
 	var setAttribute = function setAttribute(node, name, value) {
@@ -565,11 +565,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
-	 * Set attributes on a DOM node
+	 * Set numeric attributes on a DOM node
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The attribute name to set.
-	 * @param {String} value	  The attribute value to set.
+	 * @param {Object} node A DOM element.
+	 * @param {String} name	  The numeric attribute name to set.
+	 * @param {String} value	  The numeric attribute value to set.
 	 */
 	var setNumericAttribute = function setNumericAttribute(node, name, value) {
 		if (typeof value === "number" && value > 0) {
@@ -585,6 +585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value	  The property value to set.
 	 */
 	var setProperty = function setProperty(node, name, value) {
+	
 		if (name === 'type' && node.tagName === 'INPUT') {
 			// Support: IE9-Edge
 			var val = node.value; // value will be lost in IE if type is changed
@@ -2603,7 +2604,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	function addAttributes(node, attrs, fragment) {
-				
 		for (var attrName in attrs) {
 			var attrVal = attrs[attrName];
 	
@@ -2615,19 +2615,17 @@ return /******/ (function(modules) { // webpackBootstrap
 				attrVal = processFragmentAttrs(node, attrName, attrVal, fragment);
 			}
 			// avoid 'null' values
-			if (attrVal !== undefined) { 
+			if (attrVal !== undefined) {
 				// events
 				if (_eventsSharedEvents2['default'][attrName] !== undefined) {
 					(0, _eventsClearEventListeners2['default'])(node, attrName);
 					(0, _eventsAddEventListener2['default'])(node, attrName, attrVal);
 					// attributes / properties
 				} else if (attrVal != null) {
-
 						_AttributeOps2['default'].set(node, attrName, attrVal);
 					}
 			}
 		}
-		console.log(node.outerHTML)
 	}
 	
 	module.exports = exports['default'];
@@ -2636,18 +2634,21 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 43 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	function camelize(str) {
-	  return str.toLowerCase().replace(/['"]/g, '').replace(/\W+/g, ' ').replace(/ (.)/g, function ($1) {
-	    return $1.toUpperCase();
-	  }).replace(/ /g, '');
-	}
-	exports['default'] = camelize;
-	module.exports = exports['default'];
+	var NONWORD_FIRST_REGEX = /\W+(\w)/g;
+	var NONWORD_FIRST_CAPITALIZE = function NONWORD_FIRST_CAPITALIZE($$, $1) {
+	  return $1.toUpperCase();
+	};
+	
+	exports["default"] = function (str) {
+	  return str.toLowerCase().replace(NONWORD_FIRST_REGEX, NONWORD_FIRST_CAPITALIZE);
+	};
+	
+	module.exports = exports["default"];
 
 /***/ },
 /* 44 */
@@ -2806,7 +2807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
 			children[_key - 2] = arguments[_key];
 		}
-
+	
 		var element = undefined;
 	
 		if (typeof tag === 'string') {
@@ -2890,7 +2891,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		if (props) {
-
+	
 			_2['default'].addAttributes(element, props, this);
 		}
 	
@@ -2903,18 +2904,21 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 47 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	var DASH_REGEX = /([^A-Z]+)([A-Z])/g;
-	
-	exports['default'] = function (str) {
-	  return str.replace(DASH_REGEX, '$1-$2').toLowerCase();
+	var DASHED_REPLACE = function DASHED_REPLACE($$, $1, $2) {
+	  return $1 + "-" + $2;
 	};
 	
-	module.exports = exports['default'];
+	exports["default"] = function (str) {
+	  return str.replace(DASH_REGEX, DASHED_REPLACE).toLowerCase();
+	};
+	
+	module.exports = exports["default"];
 
 /***/ },
 /* 48 */
