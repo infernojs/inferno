@@ -1738,6 +1738,18 @@ describe('Inferno acceptance tests', () => {
 				});
 			});
 
+			describe('height attribute', () => {
+				it('should render height attributes', () => {
+					expect(attrOps.toHtml('height', '70%')).to.equal('height="70%"');
+				});
+			});
+
+			describe('width attribute', () => {
+				it('should render height attributes', () => {
+					expect(attrOps.toHtml('width', '70%')).to.equal('width="70%"');
+				});
+			});
+
 			describe('xml / xlink namespace attributes', () => {
 				it('should render namespace attributes', () => {
 					expect(attrOps.toHtml('xlink:href', 'test.jpg')).to.equal('xlink:href="test.jpg"');
@@ -1938,6 +1950,21 @@ describe('Inferno acceptance tests', () => {
 			it('should set className property', () => {
 				attrOps.set(container, 'className', -0);
 				expect(container.getAttribute('class')).to.eql('0');
+			});
+
+			it('should set contextmenu property', () => {
+				attrOps.set(container, 'contextmenu', "namemenu");
+				expect(container.getAttribute('contextmenu')).to.eql('namemenu');
+			});
+
+			it('should set height property', () => {
+				attrOps.set(container, 'height', '70%');
+				expect(container.height).to.eql('70%');
+			});
+
+			it('should set width property', () => {
+				attrOps.set(container, 'width', '70%');
+				expect(container.width).to.eql('70%');
 			});
 
 			it('should set dataset property - #1', () => {
