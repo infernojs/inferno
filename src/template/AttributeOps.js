@@ -11,7 +11,6 @@ import unitlessCfg from './cfg/unitlessCfg';
 /**
  * Normalize CSS properties for SSR
  *
- * @param {Object element} A DOM element.
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
@@ -31,7 +30,7 @@ let normalize = (name, value) => {
 /**
  * Set boolean attributes
  *
- * @param  {Object element}   A DOM element.
+ * @param  {Object] node A DOM element.
  * @param  {String} name	  The boolean attribute name to set.
  * @param {String} value	  The boolean attribute value to set.
  */
@@ -45,7 +44,7 @@ let setBooleanAttribute = (node, name, value) => {
 /**
  * Set attributes on a DOM node
  *
- * @param  {Object element}   A DOM element.
+ * @param  {Object] node A DOM element.
  * @param  {String} name	  The attribute name to set.
  * @param {String} value	  The attribute value to set.
  */
@@ -63,7 +62,7 @@ let setAttribute = (node, name, value) => {
 /**
  * Set properties on a DOM node
  *
- * @param  {Object element}   A DOM element.
+ * @param  {Object] node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
@@ -81,7 +80,7 @@ let setProperty = (node, name, value) => {
 /**
  * Set boolean property
  *
- * @param  {Object element}   A DOM element.
+ * @param  {Object] node A DOM element.
  * @param  {String} name	  The boolean property name to set.
  * @param {String} value	  The boolean property value to set.
  */
@@ -92,7 +91,7 @@ let setBooleanProperty = (node, name, value) => {
 /**
  * Set object properties
  *
- * @param  {Object element}   A DOM element.
+ * @param  {Object] node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
@@ -133,7 +132,7 @@ let setStyleProperty = (node, name, value) => {
 /**
  * Set properties after validation check
  *
- * @param  {Object element}   A DOM element.
+ * @param  {Object] node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
@@ -317,7 +316,7 @@ let IS_XLINK_NAMESPACE = {
 	/**
 	 * Set xlink namespace attribute
 	 *
-	 * @param  {Object element}   A DOM element.
+	 * @param  {Object] node A DOM element.
 	 * @param  {String} name	  The attribute name to set.
 	 * @param  {String} value	 The attribute value to set.
 	 */
@@ -328,7 +327,7 @@ let IS_XLINK_NAMESPACE = {
 	/**
 	 * Unsets a xlink namespace attribute
 	 *
-	 * @param  {Object element}   A DOM element.
+	 * @param  {Object] node A DOM element.
 	 * @param  {String} name	  The attribute name to set.
 	 * @param  {String} name	  The attribute name to unset.
 	 */
@@ -343,7 +342,7 @@ let IS_XML_NAMESPACE = {
 	/**
 	 * Set xlink namespace attribute
 	 *
-	 * @param  {Object element}   A DOM element.
+	 * @param  {Object] node A DOM element.
 	 * @param  {String} name	  The attribute name to set.
 	 * @param  {String} value	 The attribute value to set.
 	 */
@@ -353,7 +352,7 @@ let IS_XML_NAMESPACE = {
 	/**
 	 * Unsets a xml namespace attribute
 	 *
-	 * @param  {Object element}   A DOM element.
+	 * @param  {Object] node A DOM element.
 	 * @param  {String} name	  The attribute name to unset.
 	 */
 	remove(node, name) {
@@ -496,7 +495,6 @@ let attrsCfg = {
 	/**
 	 * Namespace attributes
 	 */
-
 	'xml:base': IS_XML_NAMESPACE,
 	'xml:id': IS_XML_NAMESPACE,
 	'xml:lang': IS_XML_NAMESPACE,
@@ -515,7 +513,7 @@ export default {
 /**
  * Sets a HTML attribute / property
  *
- * @param {Object element} A DOM element.
+ * @param {Object] node A DOM element.
  * @param {String} name The boolean attribute name to set.
  * @param {String|Object} value The boolean attribute value to set.
  */
@@ -523,7 +521,7 @@ export default {
 /**
  * Unsets a HTML attribute / property
  *
- * @param {Object element} A DOM element.
+ * @param {Object] node A DOM element.
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
