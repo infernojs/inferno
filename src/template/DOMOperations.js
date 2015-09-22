@@ -465,11 +465,6 @@ let attrsCfg = {
 		remove: removeProperty,
 		toHtml: stylePropToString
 	},
-	styles: {
-		set: createStyles,
-		remove: removeProperty,
-		toHtml: stylePropToString
-	},
 	translate: IS_BOOLEAN_ATTRIBUTE,
 	truespeed: IS_BOOLEAN_PROPERTY,
 	typemustmatch: IS_BOOLEAN_ATTRIBUTE,
