@@ -81,6 +81,8 @@ let setNumericAttribute = (node, name, value) => {
  * @param {String} value	  The property value to set.
  */
 let setProperty = (node, name, value) => {
+if ( name === "width") {
+	console.log(value)}
 	if (name === 'type' && node.tagName === 'INPUT') {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed

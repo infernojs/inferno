@@ -254,7 +254,24 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+                describe('should properly render "width" and "height" attributes', () => {
+					let template;
 
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<img src="" alt="Smiley face" height={42} width={42}></img>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<img src="" alt="Smiley face" height="42" width="42">'
+						);
+					});
+				});
 				describe('should properly render boolean attribues (html5)', () => {
 					let template;
 
