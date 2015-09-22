@@ -160,7 +160,7 @@ let verifyProperty = (node, name, value) => {
  * @param {String} name - The attribute name to remove.
  */
 let removeAttribute = (node, name) => {
-	node.removeAttributeibute(attrNameCfg[name] || name);
+	node.removeAttribute(attrNameCfg[name] || name);
 };
 
 /**
@@ -258,9 +258,9 @@ let booleanAttrToString = (name, value) => {
     case false:
         return '';
     case true:
-        return `${ attrNameCfg[name] || name }="${ '' }"`;
+        return `${ name }="${ '' }"`;
     default:
-        return `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`; // cast to string
+        return `${ name }="${ escapeHtml(value + '') }"`; // cast to string
 }
 
 }
@@ -281,14 +281,14 @@ let stylePropToString = (name, value) => {
 	return styles ? `${ name }="${ styles }"` : styles;
 };
 
-let xlinkMap = {
+let xmlMap = {
 	'xml:base': 'base',
 	'xml:id': 'id',
 	'xml:lang': 'lang',
 	'xml:space': 'spac'
 };
 
-let xmlMap = {
+let xlinkMap = {
 	'xlink:actuate': 'actuate',
 	'xlink:arcrole': 'arcrole',
 	'xlink:href': 'href',
@@ -343,7 +343,8 @@ let IS_XLINK_NAMESPACE = {
 	 */
 	remove(node, name) {
 		node.removeAttributeibuteNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
-	}
+	},
+	toHtml:attrToString
 };
 
 let IS_XML_NAMESPACE = {
@@ -365,7 +366,8 @@ let IS_XML_NAMESPACE = {
 	 */
 	remove(node, name) {
 		node.removeAttributeibuteNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
-	}
+	},
+	toHtml:attrToString
 };
 
 let attrsCfg = {

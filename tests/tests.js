@@ -1737,6 +1737,15 @@ describe('Inferno acceptance tests', () => {
 					expect(DOMOperations('data-foo').toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
 				});
 			});
+			
+			describe('xml / xlink namespace attributes', () => {
+				it('should render namespace attributes', () => {
+					expect(DOMOperations('xlink:href').toHtml('xlink:href', 'test.jpg')).to.equal('xlink:href="test.jpg"');
+				});
+				it('should render namespace attributes', () => {
+					expect(DOMOperations('xml:id').toHtml('xml:id', 'inferno')).to.equal('xml:id="inferno"');
+				});
+			});
 
 			describe('dataset property', () => {
 				it('should render dataset property - #1', () => {
@@ -1810,6 +1819,32 @@ describe('Inferno acceptance tests', () => {
 			});
 		});
 
+		describe('DOMOperations.remove()', () => {
+
+			it('should remove a custom attribute', () => {
+
+				DOMOperations('Inferno').set(container, 'Inferno', 'Rocks!');
+				DOMOperations('Inferno').remove(container, 'Inferno');
+				expect(container.hasAttribute('Inferno')).to.be.false;
+			});
+
+			it('should remove a boolean attribute', () => {
+
+				DOMOperations('checked').set(container, 'checked', true);
+				DOMOperations('checked').remove(container, 'checked');
+				expect(container.hasAttribute('checked')).to.be.false;
+				expect(container.checked).to.be.undefined;
+			});
+
+			it('should not remove a "null" value attribute', () => {
+
+				DOMOperations('checked').set(container, 'checked', null);
+				DOMOperations('checked').remove(container, 'checked');
+				expect(container.hasAttribute('checked')).to.be.false;
+				expect(container.checked).to.be.undefined;
+			});
+		});
+		
 		describe('DOMOperations.set()', () => {
 
 			it('should render `checked` as a property', () => {
