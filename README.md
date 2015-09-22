@@ -2,50 +2,29 @@
 
 [![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=new-build)](https://travis-ci.org/trueadm/inferno)
 
-Inferno is a framework for building user-interface components (specifically for the browser's DOM). Inferno achieves great performance for demanding applications by taking a completely different approach to the virtual DOM problem. Unlike other frameworks that use virtual DOM, Inferno does not "diff" the virtual DOM on each update, but rather it carries out a "diff" on the actual values themselves. This technique allows Inferno to achieve lightning fast DOM operations with very little overhead.
+Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. It takes an unconventional approach to the Virtual DOM; Inferno does not rely on diffing the DOM (an expensive operation), but instead on smart value diffing  static node caching, assuring that it only performs the minimal work involved in updating the DOM. In addition to this, we painstakingly optimize the code to make sure that there is as little overhead as possible. We are currently the fastest VDOM implementation on the [benchmarks](#benchmarks).
 
-We understand that developers enjoy writing UI components in the React + Flux + JSX workflow. Inferno doesn't try to disrupt this workflow, it simply compliments it.
+Inferno is compatible with the React API and JSX syntax, and works great with Flux, Cycle, and RxJS.
 
-Note: Inferno is still in early development. Documentation, test coverage and features are a work-in-progress.
+## Algorithm
 
-## Design
+1. On startup, templates are generated, identifying static and dynamic nodes
+2. Per update, virtual fragments are created based on each template
+3. Values for dynamic nodes are diffed and updated if necessary
+4. Fragments are recycled for next render
 
-Inferno takes a completely different approach to solving the problem of UI performance:
-- on each update, a number of virtual fragments are created
-- the virtual fragments are compared to the last update and changes are detected
-- virtual fragments use pointers and instructions to best update the DOM
-- the fragments are recycled and re-used where possible
+To be more technically correct, Inferno is a "virtual fragment" framework, which provides the same flexibility as a Virtual DOM does, but with a much smaller memory footprint and greater performance.
 
-So in many ways, Inferno is a "virtual fragment" framework. This provides the same flexibility of virtual DOM, but with
-much better memory usage and faster creation/update performance.
-
-## Installation
-
-You can install Inferno via NPM:
+## Install
 
 ```sh
-$ npm install inferno
+npm install --save inferno
 ```
 
-To build your own Inferno build files, you can start the build via:
+## Testing
 
-Development:
 ```sh
-$ npm run dev
-```
-or you can watch changes:
-```sh
-$ npm run dev-watch
-```
-
-Tests:
-```sh
-$ npm run test
-```
-
-Production (minfied):
-```sh
-$ npm run build
+npm run test
 ```
 
 ## Overview
@@ -53,7 +32,7 @@ $ npm run build
 Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.
 In these examples, [t7](https://github.com/trueadm/t7) is used to provide a very easy way to express virtual fragments and templates in JSX-like syntax.
 
-```javascript
+```js
 
 var message = "Hello world";
 
@@ -90,11 +69,11 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ## Key Features
 
-- Inferno is currently one of the fastest front-end framework there is for rendering UI components.
-- Inferno components have a very similar API to React ES6 components – with a few slight adjustments to how contexts are passed around.
-- Inferno works perfectly with [t7](https://github.com/trueadm/t7) to provide a JSX-like synatax for those coming from React.
-- Inferno is light-weight and compact – it doesn't have routers, controllers or Flux built-in. It doesn't have any hard dependencies.
-- Inferno is isomorphic/universal and can easily be compiled and run on the server (via Node).
+- one of the fastest front end frameworks for rendering UI
+- components have a similar API to React ES6 components
+- works perfectly with [t7](https://github.com/trueadm/t7)
+- no dependencies
+- isomorphic for easy SSR
 
 ## Benchmarks
 
@@ -105,11 +84,13 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ## Inferno Top-Level API
 
-[This section is still under development]
+```js
+// TODO
+```
 
 ### Inferno.Component
 
-```javascript
+```js
 class MyComponent extends Component {
   render() {
     ...
@@ -138,9 +119,11 @@ Remove a rendered Inferno component from the DOM and clean up its event handlers
 
 ### Inferno.renderToString
 
-[Development in progress]
+```js
+// TODO
+```
 
-```javascript
+```js
 Inferno.renderToString(t7`<MyComponent></MyComponent>`);
 ```
 
@@ -148,11 +131,15 @@ Render a fragment to its initial HTML. This should only be used on the server. I
 
 ### Inferno.createTemplate
 
-[Development in progress]
+```js
+// TODO
+```
 
 ### Inferno.createFragment
 
-[Development in progress]
+```js
+// TODO
+```
 
 ## Performance
 
@@ -164,15 +151,16 @@ Inferno tries to address two problems with creating UI components:
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
 time a framework offered more fun without compromising performance.
 
-## In development
+## Early Stages
 
-Inferno is still in early development and there are still many missing features and optimisations to be had. Do not use this framework in production environments until a stable
-release has been stated. Features that still need to be completed:
+Inferno is still in early development and there are still many missing features and optimizations to be made. Don't use this framework in production just yet.
 
-- Refs needs adding
-- Lifecycle events need finishing
-- Universal/isomorphic features
-- There is no API documentation or general documentation available
+## Todo
 
+- implement refs
+- implement lifecycle methods
+- implement strict isomorphism
+- add API docs
+- add more examples
 
 ![alt Supported by Browserstack](http://infernojs.org/browserstack.svg)
