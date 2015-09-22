@@ -307,9 +307,9 @@ describe('Inferno acceptance tests', () => {
 				});
 
 
-                 describe('should render dataset property - #2', () => {
+				describe('should render dataset property - #2', () => {
 					let template;
-                    let dataS = { foo: 'bar', bar: 'oops' };
+					let dataS = { foo: 'bar', bar: 'oops' };
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
 							<div dataset={dataS}></div>
@@ -1129,14 +1129,14 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-                /**
+				/**
 				 * Styles
 				 */
 
 				describe('should handle basic styles', () => {
 					let template;
 
-                    let styleRule = { width:200, height:200}
+					let styleRule = { width:200, height:200 };
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
@@ -1673,103 +1673,102 @@ describe('Inferno acceptance tests', () => {
 
 			describe('HTML attributes / properties', () => {
 
-			describe('Booleans', () => {
-				it('should render `checked` as a property (truthy)', () => {
-					expect(attrOps.toHtml('checked', true)).to.equal('checked="true"');
+				describe('Booleans', () => {
+					it('should render `checked` as a property (truthy)', () => {
+						expect(attrOps.toHtml('checked', true)).to.equal('checked="true"');
+					});
+
+					it('should render `checked` ( html5)', () => {
+						expect(attrOps.toHtml('checked', 'checked')).to.equal('checked="checked"');
+					});
+
+					it('should render `checked` (falsy)', () => {
+						expect(attrOps.toHtml('checked', false)).to.equal('checked="false"');
+					});
+
+					it('should render `download` attribute (falsy)', () => {
+						expect(attrOps.toHtml('download', false)).to.equal('download="false"');
+					});
+
+					it('should render custom attribute', () => {
+						expect(attrOps.toHtml('fooBar', 'boo')).to.equal('fooBar="boo"');
+					});
+
+					it('should render "multiple" attribute - #1', () => {
+						expect(attrOps.toHtml('multiple', 'true')).to.equal('multiple');
+					});
+
+					it('should render "multiple" attribute - #2', () => {
+						expect(attrOps.toHtml('multiple', true)).to.equal('multiple');
+					});
+
+					it('should render "multiple" attribute - #3', () => {
+						expect(attrOps.toHtml('multiple', false)).to.equal('');
+					});
+
+					it('should render "hidden" attribute', () => {
+						expect(attrOps.toHtml('hidden', false)).to.equal('hidden="false"');
+					});
+
+					it('should render "mute" attribute', () => {
+						expect(attrOps.toHtml('mute', false)).to.equal('mute="false"');
+					});
+
+					it('should render "loop" attribute', () => {
+						expect(attrOps.toHtml('loop', true)).to.equal('loop="true"');
+					});
+
 				});
 
-				it('should render `checked` ( html5)', () => {
-					expect(attrOps.toHtml('checked', 'checked')).to.equal('checked="checked"');
+				describe('Custom attribute', () => {
+					it('should render custom attributes - #1', () => {
+						expect(attrOps.toHtml('Inferno', true)).to.equal('Inferno="true"');
+					});
+					it('should render custom attributes - #2', () => {
+						expect(attrOps.toHtml('Inferno', 123)).to.equal('Inferno="123"');
+					});
+					it('should render custom attributes - #3', () => {
+						expect(attrOps.toHtml('Inferno', false)).to.equal('Inferno="false"');
+					});
 				});
 
-				it('should render `checked` (falsy)', () => {
-					expect(attrOps.toHtml('checked', false)).to.equal('checked="false"');
+				describe('HTML5 data-* attribute', () => {
+					it('should render custom attributes', () => {
+						expect(attrOps.toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
+					});
 				});
 
-				it('should render `download` attribute (falsy)', () => {
-					expect(attrOps.toHtml('download', false)).to.equal('download="false"');
+				describe('height attribute', () => {
+					it('should render height attributes', () => {
+						expect(attrOps.toHtml('height', '70%')).to.equal('height="70%"');
+					});
 				});
 
-				it('should render custom attribute', () => {
-					expect(attrOps.toHtml('fooBar', 'boo')).to.equal('fooBar="boo"');
+				describe('width attribute', () => {
+					it('should render height attributes', () => {
+						expect(attrOps.toHtml('width', '70%')).to.equal('width="70%"');
+					});
 				});
 
-				it('should render "multiple" attribute - #1', () => {
-					expect(attrOps.toHtml('multiple', 'true')).to.equal('multiple');
+				describe('xml / xlink namespace attributes', () => {
+					it('should render namespace attributes', () => {
+						expect(attrOps.toHtml('xlink:href', 'test.jpg')).to.equal('xlink:href="test.jpg"');
+					});
+					it('should render namespace attributes', () => {
+						expect(attrOps.toHtml('xml:id', 'inferno')).to.equal('xml:id="inferno"');
+					});
 				});
 
-				it('should render "multiple" attribute - #2', () => {
-					expect(attrOps.toHtml('multiple', true)).to.equal('multiple');
+				describe('dataset property', () => {
+					it('should render dataset property - #1', () => {
+						expect(attrOps.toHtml('dataset', '')).to.equal('');
+					});
+					it('should render dataset property - #2', () => {
+						let objL = { foo: 'bar', bar: 'oops' };
+						expect(attrOps.toHtml('dataset', objL)).to.equal('data-foo="bar" data-bar="oops" ');
+					});
 				});
-
-				it('should render "multiple" attribute - #3', () => {
-					expect(attrOps.toHtml('multiple', false)).to.equal('');
-				});
-
-				it('should render "hidden" attribute', () => {
-					expect(attrOps.toHtml('hidden', false)).to.equal('hidden="false"');
-				});
-
-				it('should render "mute" attribute', () => {
-					expect(attrOps.toHtml('mute', false)).to.equal('mute="false"');
-				});
-
-				it('should render "loop" attribute', () => {
-					expect(attrOps.toHtml('loop', true)).to.equal('loop="true"');
-				});
-
 			});
-
-			describe('Custom attribute', () => {
-				it('should render custom attributes - #1', () => {
-					expect(attrOps.toHtml('Inferno', true)).to.equal('Inferno="true"');
-				});
-				it('should render custom attributes - #2', () => {
-					expect(attrOps.toHtml('Inferno', 123)).to.equal('Inferno="123"');
-				});
-				it('should render custom attributes - #3', () => {
-					expect(attrOps.toHtml('Inferno', false)).to.equal('Inferno="false"');
-				});
-			});
-
-			describe('HTML5 data-* attribute', () => {
-				it('should render custom attributes', () => {
-					expect(attrOps.toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
-				});
-			});
-
-			describe('height attribute', () => {
-				it('should render height attributes', () => {
-					expect(attrOps.toHtml('height', '70%')).to.equal('height="70%"');
-				});
-			});
-
-			describe('width attribute', () => {
-				it('should render height attributes', () => {
-					expect(attrOps.toHtml('width', '70%')).to.equal('width="70%"');
-				});
-			});
-
-			describe('xml / xlink namespace attributes', () => {
-				it('should render namespace attributes', () => {
-					expect(attrOps.toHtml('xlink:href', 'test.jpg')).to.equal('xlink:href="test.jpg"');
-				});
-				it('should render namespace attributes', () => {
-					expect(attrOps.toHtml('xml:id', 'inferno')).to.equal('xml:id="inferno"');
-				});
-			});
-
-			describe('dataset property', () => {
-				it('should render dataset property - #1', () => {
-				let objL = { foo: 'bar', bar: 'oops' };
-					expect(attrOps.toHtml('dataset', "")).to.equal('');
-				});
-				it('should render dataset property - #2', () => {
-				let objL = { foo: 'bar', bar: 'oops' };
-					expect(attrOps.toHtml('dataset', objL)).to.equal('data-foo="bar" data-bar="oops" ');
-				});
-			});
-		});
 			describe('CSS', () => {
 
 				it('should create markup for simple styles', () => {
@@ -1953,7 +1952,7 @@ describe('Inferno acceptance tests', () => {
 			});
 
 			it('should set contextmenu property', () => {
-				attrOps.set(container, 'contextmenu', "namemenu");
+				attrOps.set(container, 'contextmenu', 'namemenu');
 				expect(container.getAttribute('contextmenu')).to.eql('namemenu');
 			});
 
@@ -1974,25 +1973,24 @@ describe('Inferno acceptance tests', () => {
 			});
 
 			it('should set dataset property - #2', () => {
-				let objL = { foo: 'bar', bar: 'oops' };
 				attrOps.set(container, 'dataset', {});
 				expect(container.dataset).to.eql({});
 			});
-			
+
 			it('should set and camelize dataset property - #3', () => {
-				let objL = { "foo-bar": 'bar', bar: 'oops' };
+				let objL = { 'foo-bar': 'bar', bar: 'oops' };
 				attrOps.set(container, 'dataset', objL);
 				expect(container.dataset).to.eql({ fooBar: 'bar', bar: 'oops' });
 			});
 
 			it('should not set negative numbers on "size" attribute', () => {
 				attrOps.set(container, 'size', -444);
-				expect(container.getAttribute("size")).to.be.null;
+				expect(container.getAttribute('size')).to.be.null;
 			});
 
 			it('should not set zerio as a number on "size" attribute', () => {
 				attrOps.set(container, 'size', 0);
-				expect(container.getAttribute("size")).to.be.null;
+				expect(container.getAttribute('size')).to.be.null;
 			});
 
 			it('should not set positive numbers on "size" attribute', () => {
@@ -2002,27 +2000,27 @@ describe('Inferno acceptance tests', () => {
 
 			it('should not set negative numbers on "cols" attribute', () => {
 				attrOps.set(container, 'cols', -444);
-				expect(container.getAttribute("cols")).to.be.null;
+				expect(container.getAttribute('cols')).to.be.null;
 			});
 
 			it('should not set zerio as a number on "cols" attribute', () => {
 				attrOps.set(container, 'cols', 0);
-				expect(container.getAttribute("cols")).to.be.null;
+				expect(container.getAttribute('cols')).to.be.null;
 			});
 
 			it('should not set positive numbers on "cols" attribute', () => {
 				attrOps.set(container, 'cols', 444);
 				expect(container.getAttribute('cols')).to.eql('444');
 			});
-	
+
 			it('should not set negative numbers on "rows" attribute', () => {
 				attrOps.set(container, 'rows', -444);
-				expect(container.getAttribute("rows")).to.be.null;
+				expect(container.getAttribute('rows')).to.be.null;
 			});
 
 			it('should not set zerio as a number on "rows" attribute', () => {
 				attrOps.set(container, 'rows', 0);
-				expect(container.getAttribute("rows")).to.be.null;
+				expect(container.getAttribute('rows')).to.be.null;
 			});
 
 			it('should not set positive numbers on "rows" attribute', () => {
@@ -2032,7 +2030,7 @@ describe('Inferno acceptance tests', () => {
 
 			it('should not set zerio as a number on "span" attribute', () => {
 				attrOps.set(container, 'span', 0);
-				expect(container.getAttribute("span")).to.be.null;
+				expect(container.getAttribute('span')).to.be.null;
 			});
 
 			it('should not set positive numbers on "span" attribute', () => {
