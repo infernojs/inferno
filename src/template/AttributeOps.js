@@ -45,8 +45,8 @@ let setBooleanAttribute = (node, name, value) => {
 /**
  * Set attributes on a DOM node
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name	  The attribute name to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The attribute name to set.
  * @param {String} value	  The attribute value to set.
  */
 let setAttribute = (node, name, value) => {
@@ -57,6 +57,19 @@ let setAttribute = (node, name, value) => {
 		node.value = val;
 	} else {
 		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+	}
+};
+
+/**
+ * Set numeric attributes on a DOM node
+ *
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The numeric attribute name to set.
+ * @param {String} value	  The numeric attribute value to set.
+ */
+let setNumericAttribute = (node, name, value) => {
+      if (typeof value === "number" && (value > 0)) {
+		node.setAttribute(name, '' + value); // cast to string
 	}
 };
 
@@ -295,6 +308,12 @@ let IS_ATTRIBUTE = {
 	toHtml: attrToString
 };
 
+let IS_NUMERIC = {
+	set: setNumericAttribute,
+	remove: removeAttribute,
+	toHtml: attrToString
+};
+
 let IS_BOOLEAN_ATTRIBUTE = {
 	set: setBooleanAttribute,
 	remove: removeAttribute,
@@ -374,7 +393,7 @@ let DOMConfig = {
 	checked: IS_BOOLEAN_PROPERTY,
 	classID: IS_ATTRIBUTE,
 	className: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
-	cols: IS_ATTRIBUTE,
+	cols: IS_NUMERIC,
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
 	dateTime: IS_ATTRIBUTE,
@@ -433,15 +452,15 @@ let DOMConfig = {
 	reversed: IS_BOOLEAN_PROPERTY,
 	required: IS_BOOLEAN_PROPERTY,
 	role: IS_ATTRIBUTE,
-	rows: IS_ATTRIBUTE,
+	rows: IS_NUMERIC,
 	scoped: IS_BOOLEAN_ATTRIBUTE,
 	seamless: IS_BOOLEAN_ATTRIBUTE,
 	selected: IS_BOOLEAN_PROPERTY,
 	selectedIndex: IS_PROPERTY,
-	size: IS_ATTRIBUTE,
+	size: IS_NUMERIC,
 	sizes: IS_ATTRIBUTE,
 	sortable: IS_BOOLEAN_ATTRIBUTE,
-	span: IS_ATTRIBUTE,
+	span: IS_NUMERIC,
 	spellCheck: IS_BOOLEAN_ATTRIBUTE,
 	srcDoc: IS_PROPERTY,
 	srcSet: IS_ATTRIBUTE,

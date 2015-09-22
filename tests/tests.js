@@ -1985,6 +1985,61 @@ describe('Inferno acceptance tests', () => {
 				expect(container.dataset).to.eql({ fooBar: 'bar', bar: 'oops' });
 			});
 
+			it('should not set negative numbers on "size" attribute', () => {
+				attrOps.set(container, 'size', -444);
+				expect(container.getAttribute("size")).to.be.null;
+			});
+
+			it('should not set zerio as a number on "size" attribute', () => {
+				attrOps.set(container, 'size', 0);
+				expect(container.getAttribute("size")).to.be.null;
+			});
+
+			it('should not set positive numbers on "size" attribute', () => {
+				attrOps.set(container, 'size', 444);
+				expect(container.getAttribute('size')).to.eql('444');
+			});
+
+			it('should not set negative numbers on "cols" attribute', () => {
+				attrOps.set(container, 'cols', -444);
+				expect(container.getAttribute("cols")).to.be.null;
+			});
+
+			it('should not set zerio as a number on "cols" attribute', () => {
+				attrOps.set(container, 'cols', 0);
+				expect(container.getAttribute("cols")).to.be.null;
+			});
+
+			it('should not set positive numbers on "cols" attribute', () => {
+				attrOps.set(container, 'cols', 444);
+				expect(container.getAttribute('cols')).to.eql('444');
+			});
+	
+			it('should not set negative numbers on "rows" attribute', () => {
+				attrOps.set(container, 'rows', -444);
+				expect(container.getAttribute("rows")).to.be.null;
+			});
+
+			it('should not set zerio as a number on "rows" attribute', () => {
+				attrOps.set(container, 'rows', 0);
+				expect(container.getAttribute("rows")).to.be.null;
+			});
+
+			it('should not set positive numbers on "rows" attribute', () => {
+				attrOps.set(container, 'rows', 444);
+				expect(container.getAttribute('rows')).to.eql('444');
+			});
+
+			it('should not set zerio as a number on "span" attribute', () => {
+				attrOps.set(container, 'span', 0);
+				expect(container.getAttribute("span")).to.be.null;
+			});
+
+			it('should not set positive numbers on "span" attribute', () => {
+				attrOps.set(container, 'span', 444);
+				expect(container.getAttribute('span')).to.eql('444');
+			});
+
 			it('should set values as boolean properties', () => {
 				attrOps.set(container, 'disabled', 'disabled');
 				expect(container.getAttribute('disabled')).to.eql('disabled');
