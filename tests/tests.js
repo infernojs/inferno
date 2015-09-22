@@ -114,9 +114,9 @@ describe('Inferno acceptance tests', () => {
 						
 						expect(container.firstChild.getAttribute("autoFocus")).to.eql("true");
 						expect(
-							container.outerHTML
+							container.innerHTML
 						).to.equal(
-							'<div><div autofocus="true"></div></div>'
+							'<div autofocus="true"></div>'
 						);
 					});
 				});
@@ -135,9 +135,9 @@ describe('Inferno acceptance tests', () => {
 						
 						expect(container.firstChild.getAttribute("class")).to.eql("Dominic rocks!");
 						expect(
-							container.outerHTML
+							container.innerHTML
 						).to.equal(
-							'<div><div class="Dominic rocks!"></div></div>'
+							'<div class="Dominic rocks!"></div>'
 						);
 					});
 				});
@@ -157,9 +157,9 @@ describe('Inferno acceptance tests', () => {
 						
                         expect( container.value ).to.be.undefined;
 						expect(
-							container.outerHTML
+							container.innerHTML
 						).to.equal(
-							'<div><input></div>'
+							'<input>'
 						);
 					});
 				});
@@ -177,9 +177,9 @@ describe('Inferno acceptance tests', () => {
 						
                         expect( container.firstChild.getAttribute('title' )).to.eql('Tip!');
 						expect(
-							container.outerHTML
+							container.innerHTML
 						).to.equal(
-							'<div><input title="Tip!"></div>'
+							'<input title="Tip!">'
 						);
 					});
 				});
@@ -201,9 +201,9 @@ describe('Inferno acceptance tests', () => {
 						
                         expect(get(container.firstChild)).to.eql(['foo']);
 						expect(
-							container.outerHTML
+							container.innerHTML
 						).to.equal(
-						'<div><select multiple=""><option value="foo">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select></div>'
+						'<select multiple=""><option value="foo">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>'
 						);
 					});
 				});
@@ -1316,9 +1316,9 @@ describe('Inferno acceptance tests', () => {
 					it('Initial render (creation)', () => {
 
 						expect(
-							container.outerHTML
+							container.innerHTML
 						).to.equal(
-							'<div><div style="width: 200px; height: 200px;"></div></div>'
+							'<div style="width: 200px; height: 200px;"></div>'
 						);
 					});
 				});
