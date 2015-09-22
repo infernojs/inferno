@@ -30,7 +30,7 @@ let normalize = (name, value) => {
 /**
  * Set boolean attributes
  *
- * @param  {Object] node A DOM element.
+ * @param  {Object} node A DOM element.
  * @param  {String} name	  The boolean attribute name to set.
  * @param {String} value	  The boolean attribute value to set.
  */
@@ -44,7 +44,7 @@ let setBooleanAttribute = (node, name, value) => {
 /**
  * Set attributes on a DOM node
  *
- * @param  {Object] node A DOM element.
+ * @param  {Object} node A DOM element.
  * @param  {String} name	  The attribute name to set.
  * @param {String} value	  The attribute value to set.
  */
@@ -62,7 +62,7 @@ let setAttribute = (node, name, value) => {
 /**
  * Set properties on a DOM node
  *
- * @param  {Object] node A DOM element.
+ * @param  {Object} node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
@@ -80,7 +80,7 @@ let setProperty = (node, name, value) => {
 /**
  * Set boolean property
  *
- * @param  {Object] node A DOM element.
+ * @param  {Object} node A DOM element.
  * @param  {String} name	  The boolean property name to set.
  * @param {String} value	  The boolean property value to set.
  */
@@ -91,7 +91,7 @@ let setBooleanProperty = (node, name, value) => {
 /**
  * Set object properties
  *
- * @param  {Object] node A DOM element.
+ * @param  {Object} node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
@@ -132,7 +132,7 @@ let setStyleProperty = (node, name, value) => {
 /**
  * Set properties after validation check
  *
- * @param  {Object] node A DOM element.
+ * @param  {Object} node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
@@ -316,7 +316,7 @@ let IS_XLINK_NAMESPACE = {
 	/**
 	 * Set xlink namespace attribute
 	 *
-	 * @param  {Object] node A DOM element.
+	 * @param  {Object} node A DOM element.
 	 * @param  {String} name	  The attribute name to set.
 	 * @param  {String} value	 The attribute value to set.
 	 */
@@ -327,7 +327,7 @@ let IS_XLINK_NAMESPACE = {
 	/**
 	 * Unsets a xlink namespace attribute
 	 *
-	 * @param  {Object] node A DOM element.
+	 * @param  {Object} node A DOM element.
 	 * @param  {String} name	  The attribute name to set.
 	 * @param  {String} name	  The attribute name to unset.
 	 */
@@ -342,7 +342,7 @@ let IS_XML_NAMESPACE = {
 	/**
 	 * Set xlink namespace attribute
 	 *
-	 * @param  {Object] node A DOM element.
+	 * @param  {Object} node A DOM element.
 	 * @param  {String} name	  The attribute name to set.
 	 * @param  {String} value	 The attribute value to set.
 	 */
@@ -352,7 +352,7 @@ let IS_XML_NAMESPACE = {
 	/**
 	 * Unsets a xml namespace attribute
 	 *
-	 * @param  {Object] node A DOM element.
+	 * @param  {Object} node A DOM element.
 	 * @param  {String} name	  The attribute name to unset.
 	 */
 	remove(node, name) {
@@ -361,7 +361,7 @@ let IS_XML_NAMESPACE = {
 	toHtml:attrToString
 };
 
-let attrsCfg = {
+let DOMConfig = {
 	allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 	allowTransparency: IS_ATTRIBUTE,
 	async: IS_BOOLEAN_ATTRIBUTE,
@@ -513,24 +513,24 @@ export default {
 /**
  * Sets a HTML attribute / property
  *
- * @param {Object] node A DOM element.
+ * @param {Object} node A DOM element.
  * @param {String} name The boolean attribute name to set.
  * @param {String|Object} value The boolean attribute value to set.
  */
-	set: (node, name, value) => (attrsCfg[name] || IS_ATTRIBUTE).set(node, name, value),
+	set: (node, name, value) => (DOMConfig[name] || IS_ATTRIBUTE).set(node, name, value),
 /**
  * Unsets a HTML attribute / property
  *
- * @param {Object] node A DOM element.
+ * @param {Object} node A DOM element.
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
-	remove: (node, name) => (attrsCfg[name] || IS_ATTRIBUTE).remove(node, name),
+	remove: (node, name) => (DOMConfig[name] || IS_ATTRIBUTE).remove(node, name),
 /**
  * Create HTML attribute / property markup for SSR
  *
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
-	toHtml: (name, value) => (attrsCfg[name] || IS_ATTRIBUTE).toHtml(name, value)
+	toHtml: (name, value) => (DOMConfig[name] || IS_ATTRIBUTE).toHtml(name, value)
 };
