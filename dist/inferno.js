@@ -513,6 +513,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
 	
+	// Simplified subset
+	var VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
+	    illegalAttributeNameCache = {},
+	    validatedAttributeNameCache = {};
+	
 	/**
 	 * Normalize CSS properties for SSR
 	 *
@@ -533,6 +538,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
+	 * Validate custom attributes
+	 *
+	 * @param  {String} name  The boolean attribute name to set.
+	 */
+	
+	var validateAttribute = function validateAttribute(name) {
+	
+		if (validatedAttributeNameCache[name]) {
+			return true;
+		}
+	
+		if (illegalAttributeNameCache[name]) {
+			return false;
+		}
+	
+		if (VALID_ATTRIBUTE_NAME_REGEX.test(name)) {
+			validatedAttributeNameCache[name] = true;
+			return true;
+		}
+	
+		illegalAttributeNameCache[name] = true;
+	
+		return false;
+	};
+	
+	/**
 	 * Set boolean attributes
 	 *
 	 * @param  {Object} node A DOM element.
@@ -547,6 +578,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
+	 * Set custom attributes on a DOM node
+	 *
+	 * @param {Object} node A DOM element.
+	 * @param {String} name	  The attribute name to set.
+	 * @param {String} value  The attribute value to set.
+	 */
+	var setCustomAttribute = function setCustomAttribute(node, name, value) {
+		if (name === 'type' && node.tagName.toLowerCase() === 'input') {
+			// Support: IE9-Edge
+			var val = node.value; // value will be lost in IE if type is changed
+			node.setAttribute(name, '' + value);
+			node.value = val;
+		} else if (validateAttribute(name)) {
+			node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, '' + value); // cast to string
+		}
+	};
+	
+	/**
 	 * Set attributes on a DOM node
 	 *
 	 * @param {Object} node A DOM element.
@@ -554,7 +603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value	  The attribute value to set.
 	 */
 	var setAttribute = function setAttribute(node, name, value) {
-		if (name === 'type' && node.tagName === 'INPUT') {
+		if (name === 'type' && node.tagName.toLowerCase() === 'input') {
 			// Support: IE9-Edge
 			var val = node.value; // value will be lost in IE if type is changed
 			node.setAttribute(name, '' + value);
@@ -586,7 +635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var setProperty = function setProperty(node, name, value) {
 	
-		if (name === 'type' && node.tagName === 'INPUT') {
+		if (name === 'type' && node.tagName.toLowerCase() === 'INPUT') {
 			// Support: IE9-Edge
 			var val = node.value; // value will be lost in IE if type is changed
 			node[name] = value;
@@ -680,7 +729,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} name - The property name to set.
 	 */
 	var removeProperty = function removeProperty(node, name) {
-		if (name === 'value' && node.tagName === 'SELECT') {
+		if (name === 'value' && node.tagName.toLowerCase() === 'select') {
 			removeSelectValue(node);
 		} else {
 			node[name] = (0, _hasPropertyAccessor2['default'])(node.tagName, name);
@@ -815,6 +864,12 @@ return /******/ (function(modules) { // webpackBootstrap
 		toHtml: attrToString
 	};
 	
+	var IS_CUSTOM = {
+		set: setCustomAttribute,
+		remove: removeAttribute,
+		toHtml: attrToString
+	};
+	
 	var IS_NUMERIC = {
 		set: setNumericAttribute,
 		remove: removeAttribute,
@@ -889,6 +944,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	var DOMConfig = {
+		accept: IS_ATTRIBUTE,
 		allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 		allowTransparency: IS_ATTRIBUTE,
 		async: IS_BOOLEAN_ATTRIBUTE,
@@ -901,11 +957,13 @@ return /******/ (function(modules) { // webpackBootstrap
 		classID: IS_ATTRIBUTE,
 		className: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
 		cols: IS_NUMERIC,
+		contentEditable: IS_ATTRIBUTE,
 		contextMenu: IS_ATTRIBUTE,
 		controls: IS_BOOLEAN_PROPERTY,
 		cx: IS_ATTRIBUTE,
 		cy: IS_ATTRIBUTE,
 		d: IS_ATTRIBUTE,
+		data: IS_ATTRIBUTE,
 		dateTime: IS_ATTRIBUTE,
 	
 		/**
@@ -920,16 +978,22 @@ return /******/ (function(modules) { // webpackBootstrap
 			toHtml: datasetToString
 		},
 		'default': IS_BOOLEAN_ATTRIBUTE,
+		acceptCharset: IS_ATTRIBUTE,
+		crossOrigin: IS_ATTRIBUTE,
+		data: IS_ATTRIBUTE,
 		defer: IS_BOOLEAN_ATTRIBUTE,
 		declare: IS_BOOLEAN_ATTRIBUTE,
 		defaultchecked: IS_BOOLEAN_ATTRIBUTE,
 		defaultmuted: IS_BOOLEAN_ATTRIBUTE,
 		defaultselected: IS_BOOLEAN_ATTRIBUTE,
+		dir: IS_ATTRIBUTE,
 		disabled: IS_BOOLEAN_ATTRIBUTE,
 		draggable: IS_BOOLEAN_ATTRIBUTE,
 		dx: IS_ATTRIBUTE,
 		dy: IS_ATTRIBUTE,
 		download: IS_BOOLEAN_ATTRIBUTE,
+		encType: IS_ATTRIBUTE,
+		file: IS_ATTRIBUTE,
 		form: IS_ATTRIBUTE,
 		formAction: IS_ATTRIBUTE,
 		formEncType: IS_ATTRIBUTE,
@@ -937,10 +1001,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		formNoValidate: IS_BOOLEAN_ATTRIBUTE,
 		formTarget: IS_ATTRIBUTE,
 		frameBorder: IS_ATTRIBUTE,
+		'for': IS_ATTRIBUTE,
 		fx: IS_ATTRIBUTE,
 		fy: IS_ATTRIBUTE,
 		height: IS_PROPERTY,
 		hidden: IS_BOOLEAN_ATTRIBUTE,
+		href: IS_ATTRIBUTE,
+		htmlfor: IS_PROPERTY,
+		icon: IS_ATTRIBUTE,
 		id: IS_PROPERTY,
 		inputMode: IS_ATTRIBUTE,
 		is: IS_ATTRIBUTE,
@@ -948,10 +1016,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		keyParams: IS_ATTRIBUTE,
 		keyType: IS_ATTRIBUTE,
 		label: IS_PROPERTY,
+		lang: IS_ATTRIBUTE,
 		list: IS_ATTRIBUTE,
 		loop: IS_BOOLEAN_PROPERTY,
 		manifest: IS_ATTRIBUTE,
+		marginHeight: IS_ATTRIBUTE,
+		marginWidth: IS_ATTRIBUTE,
 		maxLength: IS_ATTRIBUTE,
+		max: IS_ATTRIBUTE,
 		media: IS_ATTRIBUTE,
 		minLength: IS_ATTRIBUTE,
 		muted: IS_BOOLEAN_PROPERTY,
@@ -983,12 +1055,17 @@ return /******/ (function(modules) { // webpackBootstrap
 		srcSet: IS_ATTRIBUTE,
 		start: IS_ATTRIBUTE,
 		step: IS_ATTRIBUTE,
+		tabIndex: IS_ATTRIBUTE,
+		target: IS_ATTRIBUTE,
 		transform: IS_ATTRIBUTE,
+		title: IS_ATTRIBUTE,
+		type: IS_ATTRIBUTE,
 		version: IS_ATTRIBUTE,
 		viewBox: IS_ATTRIBUTE,
 		x1: IS_ATTRIBUTE,
 		x2: IS_ATTRIBUTE,
 		x: IS_ATTRIBUTE,
+	
 		/**
 	  * CSS styling attribute is a special case, and will be set as a normal object.
 	  * 'styles' should be used as an replacement.
@@ -1061,7 +1138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @param {String|Object} value The boolean attribute value to set.
 	  */
 		set: function set(node, name, value) {
-			return (DOMConfig[name] || IS_ATTRIBUTE).set(node, name, value);
+			return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
 		},
 		/**
 	  * Unsets a HTML attribute / property
@@ -1071,7 +1148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @param {String} value The boolean attribute value to set.
 	  */
 		remove: function remove(node, name) {
-			return (DOMConfig[name] || IS_ATTRIBUTE).remove(node, name);
+			return (DOMConfig[name] || IS_CUSTOM).remove(node, name);
 		},
 		/**
 	  * Create HTML attribute / property markup for SSR
@@ -1080,7 +1157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @param {String} value The boolean attribute value to set.
 	  */
 		toHtml: function toHtml(name, value) {
-			return (DOMConfig[name] || IS_ATTRIBUTE).toHtml(name, value);
+			return (DOMConfig[name] || IS_CUSTOM).toHtml(name, value);
 		}
 	};
 	module.exports = exports['default'];
