@@ -32,6 +32,14 @@ let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
 };
 
 /**
+ * Returns a DOM node tagName as lowerCase
+ * @param {Object} node A DOM element.
+ */
+let getNodeName = (node) => {
+    return node.tagName.toLowerCase();	
+};
+
+/**
  * Normalize CSS properties for SSR
  *
  * @param {String} name The boolean attribute name to set.
@@ -55,8 +63,7 @@ let normalize = (name, value) => {
  *
  * @param  {String} name  The boolean attribute name to set.
  */
- 
-let validateAttribute = ( name ) => {
+ let validateAttribute = ( name ) => {
 
     if ( validatedAttributeNameCache[name] ) {
         return true;
@@ -101,7 +108,7 @@ let setBooleanAttribute = (node, name, value) => {
  * @param {String} value  The attribute value to set.
  */
 let setCustomAttribute = (node, name, value) => {
-	if (name === 'type' && (node.tagName.toLowerCase() === 'input')) {
+	if (name === 'type' && (getNodeName(node) === 'input')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node.setAttribute(name, '' + value);
@@ -119,7 +126,7 @@ let setCustomAttribute = (node, name, value) => {
  * @param {String} value	  The attribute value to set.
  */
 let setAttribute = (node, name, value) => {
-	if (name === 'type' && (node.tagName.toLowerCase() === 'input')) {
+	if (name === 'type' && (getNodeName(node) === 'input')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node.setAttribute(name, '' + value);
@@ -151,7 +158,7 @@ let setNumericAttribute = (node, name, value) => {
  */
 let setProperty = (node, name, value) => {
 
-	if (name === 'type' && (node.tagName.toLowerCase() === 'INPUT')) {
+	if (name === 'type' && (getNodeName(node) === 'input')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node[name] = value;
@@ -214,14 +221,14 @@ let setStyleProperty = (node, name, value) => {
 };
 
 /**
- * Set properties after validation check
+ * Set 'value' property after validation check
  *
  * @param  {Object} node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
-let verifyProperty = (node, name, value) => {
-	if (name === 'value' && (node.tagName.toLowerCase() === 'select')) {
+let setValueProperty = (node, name, value) => {
+	if (name === 'value' && (getNodeName(node) === 'select')) {
 		setSelectValue(node, value);
 	} else {
 		node[name] !== value && (node[name] = value);
@@ -245,7 +252,7 @@ let removeAttribute = (node, name) => {
  * @param {String} name - The property name to set.
  */
 let removeProperty = (node, name) => {
-	if (name === 'value' && (node.tagName.toLowerCase() === 'select')) {
+	if (name === 'value' && (getNodeName(node) === 'select')) {
 		removeSelectValue(node);
 	} else {
 		node[name] = hasPropertyAccessor(node.tagName, name);
@@ -460,6 +467,7 @@ let DOMConfig = {
 	checked: IS_BOOLEAN_PROPERTY,
 	classID: IS_ATTRIBUTE,
 	className: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
+	clipPath: IS_ATTRIBUTE,
 	cols: IS_NUMERIC,
 	crossOrigin: IS_ATTRIBUTE,
 	contentEditable: IS_ATTRIBUTE,
@@ -497,12 +505,16 @@ let DOMConfig = {
 	download: IS_BOOLEAN_ATTRIBUTE,
 	encType: IS_ATTRIBUTE,
 	file: IS_ATTRIBUTE,
+	fill: IS_ATTRIBUTE,
+	fillOpacity: IS_ATTRIBUTE,
 	form: IS_ATTRIBUTE,
 	formAction: IS_ATTRIBUTE,
 	formEncType: IS_ATTRIBUTE,
 	formMethod: IS_ATTRIBUTE,
 	formNoValidate: IS_BOOLEAN_ATTRIBUTE,
 	formTarget: IS_ATTRIBUTE,
+	fontFamily: IS_ATTRIBUTE,
+	fontSize: IS_ATTRIBUTE,
 	frameBorder: IS_ATTRIBUTE,
     for: IS_ATTRIBUTE,
 	fx: IS_ATTRIBUTE,
@@ -525,6 +537,9 @@ let DOMConfig = {
 	manifest: IS_ATTRIBUTE,
 	marginHeight: IS_ATTRIBUTE,
 	marginWidth: IS_ATTRIBUTE,
+	markerEnd: IS_ATTRIBUTE,
+	markerMid: IS_ATTRIBUTE,
+	markerStart: IS_ATTRIBUTE,
 	maxLength: IS_ATTRIBUTE,
 	max: IS_ATTRIBUTE,
 	media: IS_ATTRIBUTE,
@@ -535,8 +550,10 @@ let DOMConfig = {
 	nohref: IS_ATTRIBUTE,
 	noshade: IS_ATTRIBUTE,
 	noValidate: IS_BOOLEAN_ATTRIBUTE,
+    opacity: IS_ATTRIBUTE,
 	open: IS_BOOLEAN_ATTRIBUTE,
 	placeholder: IS_PROPERTY,
+	points: IS_ATTRIBUTE,
 	r: IS_ATTRIBUTE,
 	readOnly: IS_BOOLEAN_PROPERTY,
 	reversed: IS_BOOLEAN_PROPERTY,
@@ -554,6 +571,7 @@ let DOMConfig = {
 	sortable: IS_BOOLEAN_ATTRIBUTE,
 	span: IS_NUMERIC,
 	spellCheck: IS_BOOLEAN_ATTRIBUTE,
+	stroke: IS_ATTRIBUTE,
 	srcDoc: IS_PROPERTY,
 	srcSet: IS_ATTRIBUTE,
 	start: IS_ATTRIBUTE,
@@ -563,11 +581,6 @@ let DOMConfig = {
 	transform: IS_ATTRIBUTE,
 	title: IS_ATTRIBUTE,
 	type: IS_ATTRIBUTE,
-	version: IS_ATTRIBUTE,
-	viewBox: IS_ATTRIBUTE,
-	x1: IS_ATTRIBUTE,
-	x2: IS_ATTRIBUTE,
-	x: IS_ATTRIBUTE,
 	
 	/**
 	 * CSS styling attribute is a special case, and will be set as a normal object.
@@ -581,19 +594,26 @@ let DOMConfig = {
 	translate: IS_BOOLEAN_ATTRIBUTE,
 	truespeed: IS_BOOLEAN_PROPERTY,
 	typemustmatch: IS_BOOLEAN_ATTRIBUTE,
-
+	y1: IS_ATTRIBUTE,
+	y2: IS_ATTRIBUTE,
+	y: IS_ATTRIBUTE,
 	/**
 	 * 'value' is a special case
 	 *
 	 */
 	value: {
-		set: verifyProperty,
+		set: setValueProperty,
 		remove: removeProperty,
 		toHtml: attrToString
 	},
+	version: IS_ATTRIBUTE,
+	viewBox: IS_ATTRIBUTE,
 	visible: IS_BOOLEAN_ATTRIBUTE,
 	width: IS_PROPERTY,
 	wmode: IS_ATTRIBUTE,
+	x1: IS_ATTRIBUTE,
+	x2: IS_ATTRIBUTE,
+	x: IS_ATTRIBUTE,
 
 	/**
 	 * Non-standard properties
