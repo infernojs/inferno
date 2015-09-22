@@ -106,8 +106,8 @@ let setBooleanAttribute = (node, name, value) => {
  * Set Inferno attributes
  *
  * @param  {Object} node A DOM element.
- * @param  {String} name  The boolean attribute name to set.
- * @param {String} value The boolean attribute value to set.
+ * @param  {String} name  The attribute name to set.
+ * @param {String} value The attribute value to set.
  */
 let setInfernoAttribute = (node, name, value) => {
 	node.setAttribute(name, value);
