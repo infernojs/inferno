@@ -238,7 +238,21 @@ let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHt
  * @param {String} value - The attribute value to set.
  */
 let booleanAttrToString = (name, value) => {
-    return value ? name : '';
+	
+	// XHTML friendly	
+  switch (name) {
+
+    case 'download':
+    case 'multiple':
+        return name;
+    case false:
+        return '';
+    case true:
+        return attrToString = `${ attrNameCfg[name] || name }="${ '' }"`;
+    default:
+        return attrToString = `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`; // cast to string
+}
+
 }
 
 /**

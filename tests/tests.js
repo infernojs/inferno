@@ -1637,15 +1637,15 @@ describe('Inferno acceptance tests', () => {
 			describe('HTML attributes / properties', () => {
 
 				it('should render `checked` as a property (truthy)', () => {
-					expect(DOMOperations('checked').toHtml('checked', true)).to.equal('checked');
+					expect(DOMOperations('checked').toHtml('checked', true)).to.equal('checked="true"');
 				});
 
 				it('should render `checked` ( html5)', () => {
-					expect(DOMOperations('checked').toHtml('checked', 'checked')).to.equal('checked');
+					expect(DOMOperations('checked').toHtml('checked', 'checked')).to.equal('checked="checked"');
 				});
 
 				it('should render `checked` (falsy)', () => {
-					expect(DOMOperations('checked').toHtml('checked', false)).to.equal('');
+					expect(DOMOperations('checked').toHtml('checked', false)).to.equal('checked="false"');
 				});
 
 				it('should render `download` attribute (falsy)', () => {
