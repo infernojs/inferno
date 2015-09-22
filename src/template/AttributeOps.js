@@ -397,6 +397,9 @@ let DOMConfig = {
 	cols: IS_NUMERIC,
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
+    cx: IS_ATTRIBUTE,
+    cy: IS_ATTRIBUTE,
+    d: IS_ATTRIBUTE,
 	dateTime: IS_ATTRIBUTE,
 
 	/**
@@ -418,6 +421,8 @@ let DOMConfig = {
 	defaultselected: IS_BOOLEAN_ATTRIBUTE,
 	disabled: IS_BOOLEAN_ATTRIBUTE,
 	draggable: IS_BOOLEAN_ATTRIBUTE,
+	dx: IS_ATTRIBUTE,
+    dy: IS_ATTRIBUTE,
 	download: IS_BOOLEAN_ATTRIBUTE,
 	form: IS_ATTRIBUTE,
 	formAction: IS_ATTRIBUTE,
@@ -426,6 +431,8 @@ let DOMConfig = {
 	formNoValidate: IS_BOOLEAN_ATTRIBUTE,
 	formTarget: IS_ATTRIBUTE,
 	frameBorder: IS_ATTRIBUTE,
+	fx: IS_ATTRIBUTE,
+    fy: IS_ATTRIBUTE,
 	height: IS_PROPERTY,
 	hidden: IS_BOOLEAN_ATTRIBUTE,
 	id: IS_PROPERTY,
@@ -449,11 +456,14 @@ let DOMConfig = {
 	noValidate: IS_BOOLEAN_ATTRIBUTE,
 	open: IS_BOOLEAN_ATTRIBUTE,
 	placeholder: IS_PROPERTY,
+    r: IS_ATTRIBUTE,
 	readOnly: IS_BOOLEAN_PROPERTY,
 	reversed: IS_BOOLEAN_PROPERTY,
 	required: IS_BOOLEAN_PROPERTY,
 	role: IS_ATTRIBUTE,
 	rows: IS_NUMERIC,
+    rx: IS_ATTRIBUTE,
+    ry: IS_ATTRIBUTE,
 	scoped: IS_BOOLEAN_ATTRIBUTE,
 	seamless: IS_BOOLEAN_ATTRIBUTE,
 	selected: IS_BOOLEAN_PROPERTY,
@@ -466,7 +476,13 @@ let DOMConfig = {
 	srcDoc: IS_PROPERTY,
 	srcSet: IS_ATTRIBUTE,
 	start: IS_ATTRIBUTE,
-
+    step: IS_ATTRIBUTE,
+    transform: IS_ATTRIBUTE,
+    version: IS_ATTRIBUTE,
+    viewBox: IS_ATTRIBUTE,
+    x1: IS_ATTRIBUTE,
+    x2: IS_ATTRIBUTE,
+    x: IS_ATTRIBUTE,
 	/**
 	 * CSS styling attribute is a special case, and will be set as a normal object.
 	 * 'styles' should be used as an replacement.
