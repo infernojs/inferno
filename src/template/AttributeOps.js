@@ -2,6 +2,7 @@ import attrNameCfg from './cfg/attrNameCfg';
 import propNameCfg from './cfg/propNameCfg';
 import hasPropertyAccessor from './hasPropertyAccessor';
 import dasherize from './dasherize';
+import camelize from './camelize';
 import inArray from '../util/inArray';
 import isArray from '../util/isArray';
 import isSVG from '../util/isSVG';
@@ -89,13 +90,13 @@ let setBooleanProperty = (node, name, value) => {
 };
 
 /**
- * Set object properties
+ * Set dataset object properties
  *
  * @param  {Object} node A DOM element.
  * @param  {String} name	  The property name to set.
  * @param {String} value	  The property value to set.
  */
-let setObjectProperty = (node, name, value) => {
+let setDatasetProperty = (node, name, value) => {
 	if (process.env.NODE_ENV !== 'production') {
 		let typeOfVal = typeof value;
 		if (typeOfVal !== 'object') {
@@ -107,8 +108,8 @@ let setObjectProperty = (node, name, value) => {
 	let prop = node[name];
 
 	for (let idx in value) {
-
-		prop[idx] = value[idx] == null ? '' : value[idx];
+      // regarding the specs we need to camelize the 'name'
+		prop[camelize(idx)] = value[idx] == null ? '' : dasherize(value[idx]);
 	}
 };
 
@@ -227,7 +228,7 @@ let datasetToString = (name, value) => {
 	let objL = '';
 
 	for (let objName in value) {
-		objL += value[objName] != null && ( 'data-' + objName + '="' + value[objName] + '" ');
+		objL += value[objName] != null && ( 'data-' + objName + '="' + dasherize(value[objName]) + '" ');
 	}
 	return objL;
 }
@@ -383,7 +384,7 @@ let DOMConfig = {
 	 *
 	 */
 	dataset: {
-		set: setObjectProperty,
+		set: setDatasetProperty,
 		// 'dataset' property has to be removed as an attribute
 		// because it's set as an attribute - e.g. data-foo="bar"
 		remove: removeAttribute,
@@ -447,7 +448,7 @@ let DOMConfig = {
 	start: IS_ATTRIBUTE,
 
 	/**
-	 * 'style' is a special case, and will be set as a normal object.
+	 * CSS styling attribute is a special case, and will be set as a normal object.
 	 * 'styles' should be used as an replacement.
 	 */
 	style: {
