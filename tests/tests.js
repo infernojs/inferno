@@ -111,11 +111,57 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						expect(container.getAttribute("autoFocus")).to.eql("true");
+						
+						expect(container.firstChild.getAttribute("autoFocus")).to.eql("true");
 						expect(
-							container.innerHTML
+							container.outerHTML
 						).to.equal(
-							'<div></div>'
+							'<div><div autofocus="true"></div></div>'
+						);
+					});
+				});
+
+				describe('should render "className" attribute (no JSX)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(createElement =>
+							createElement("div", { className:"Dominic rocks!"})
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						
+						expect(container.firstChild.getAttribute("class")).to.eql("Dominic rocks!");
+						expect(
+							container.outerHTML
+						).to.equal(
+							'<div><div class="Dominic rocks!"></div></div>'
+						);
+					});
+				});
+				
+				describe('should render value multiple attribute (no JSX)', () => {
+					let template;
+
+					beforeEach(() => {
+						var template = Inferno.createTemplate(createElement =>
+                          createElement("select", { multiple:true, value:"foo"},
+                          createElement("option", {value: "foo"}, "I'm a li-tag"),
+                          createElement("option", {value: "bar"}, "I'm a li-tag")
+                        ));
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						
+                        expect(get(container.firstChild)).to.eql(['foo']);
+						expect(
+							container.outerHTML
+						).to.equal(
+						'<div><select multiple=""><option value="foo">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select></div>'
 						);
 					});
 				});

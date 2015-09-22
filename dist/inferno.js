@@ -2603,6 +2603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	function addAttributes(node, attrs, fragment) {
+				
 		for (var attrName in attrs) {
 			var attrVal = attrs[attrName];
 	
@@ -2614,17 +2615,19 @@ return /******/ (function(modules) { // webpackBootstrap
 				attrVal = processFragmentAttrs(node, attrName, attrVal, fragment);
 			}
 			// avoid 'null' values
-			if (attrVal !== undefined) {
+			if (attrVal !== undefined) { 
 				// events
 				if (_eventsSharedEvents2['default'][attrName] !== undefined) {
 					(0, _eventsClearEventListeners2['default'])(node, attrName);
 					(0, _eventsAddEventListener2['default'])(node, attrName, attrVal);
 					// attributes / properties
 				} else if (attrVal != null) {
+
 						_AttributeOps2['default'].set(node, attrName, attrVal);
 					}
 			}
 		}
+		console.log(node.outerHTML)
 	}
 	
 	module.exports = exports['default'];
@@ -2803,7 +2806,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
 			children[_key - 2] = arguments[_key];
 		}
-	
+
 		var element = undefined;
 	
 		if (typeof tag === 'string') {
@@ -2887,7 +2890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		if (props) {
-	
+
 			_2['default'].addAttributes(element, props, this);
 		}
 	
