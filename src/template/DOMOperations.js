@@ -2,16 +2,11 @@ import attrNameCfg from './cfg/attrNameCfg';
 import propNameCfg from './cfg/propNameCfg';
 import hasPropertyAccessor from './hasPropertyAccessor';
 import dasherize from './dasherize';
-// TODO use or remove
-import mediaQueries from './mediaQueries';
 import inArray from '../util/inArray';
 import isArray from '../util/isArray';
 import isSVG from '../util/isSVG';
 import escapeHtml from './escapeHtml';
 import unitlessCfg from './cfg/unitlessCfg';
-
-// TODO use or remove
-let registeredMediaQueries = [];
 
 /**
  * Normalize CSS properties for SSR
@@ -132,7 +127,6 @@ setStyleProperty = (node, name, value) => {
 	for (let idx in value) {
 		node.style[idx] = value[idx] == null ? '' : normalize(idx, value[idx]);
 	}
-
 };
 
 
@@ -224,7 +218,7 @@ let removeSelectValue = node => {
 };
 
 /**
- * Transform HTML attributes to string for SSR rendring
+ * Transform HTML attributes to a string for SSR rendring
  *
  * @param {String} name - The attribute name to set.
  * @param {String} value - The attribute value to set.
@@ -232,20 +226,19 @@ let removeSelectValue = node => {
 let attrToString = (name, value) => `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
 
 /**
- * Transform object literal to string for SSR rendring
+ * Transform dataset property to multiple strings for SSR rendring
  *
  * @param {String} name - The name to be set.
  * @param {Object} value - The value to be set.
  */
-let objToString = (name, value) => {
+let datasetToString = (name, value) => {
 	
 	let objL = '';
 
-	for (let styleName in value) {
-		value[styleName] != null && (objL += styleName + '=' + value[styleName] + ', ');
+	for (let objName in value) {
+		objL += value[objName] != null && ( 'data-' + objName + '="' + value[objName] + '" ');
 	}
-
-	return `${ name }="${ objL }"`;
+	return objL;
 }
 
 /**
@@ -398,7 +391,7 @@ let attrsCfg = {
 	dataset: {
 		set: setObjectProperty,
 		remove: removeProperty,
-		toHtml: objToString
+		toHtml: datasetToString
 	},
 	default: IS_BOOLEAN_ATTRIBUTE,
 	defer: IS_BOOLEAN_ATTRIBUTE,

@@ -287,6 +287,44 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+				describe('should render dataset property - #1', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<input dataset={null}></input>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+				});
+
+
+                 describe('should render dataset property - #2', () => {
+					let template;
+                    let dataS = { foo: 'bar', bar: 'oops' };
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div dataset={dataS}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div data-foo="bar" data-bar="oops"></div>'
+						);
+					});
+				});
 				describe('shouldn\'t render undefined value', () => {
 					let template;
 
@@ -305,7 +343,6 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-
 
 				describe('shouldn\'t render undefined value', () => {
 					let template;
@@ -1682,6 +1719,7 @@ describe('Inferno acceptance tests', () => {
 				});
 
 			});
+			
 			describe('Custom attribute', () => {
 				it('should render custom attributes - #1', () => {
 					expect(DOMOperations('Inferno').toHtml('Inferno', true)).to.equal('Inferno="true"');
@@ -1693,6 +1731,7 @@ describe('Inferno acceptance tests', () => {
 					expect(DOMOperations('Inferno').toHtml('Inferno', false)).to.equal('Inferno="false"');
 				});
 			});
+			
 			describe('HTML5 data-* attribute', () => {
 				it('should render custom attributes', () => {
 					expect(DOMOperations('data-foo').toHtml('data-foo', 'bar')).to.equal('data-foo="bar"');
@@ -1702,11 +1741,11 @@ describe('Inferno acceptance tests', () => {
 			describe('dataset property', () => {
 				it('should render dataset property - #1', () => {
 				let objL = { foo: 'bar', bar: 'oops' };
-					expect(DOMOperations('dataset').toHtml('dataset', "")).to.equal('dataset=""');
+					expect(DOMOperations('dataset').toHtml('dataset', "")).to.equal('');
 				});
 				it('should render dataset property - #2', () => {
 				let objL = { foo: 'bar', bar: 'oops' };
-					expect(DOMOperations('dataset').toHtml('dataset', objL)).to.equal('dataset="foo=bar, bar=oops, "');
+					expect(DOMOperations('dataset').toHtml('dataset', objL)).to.equal('data-foo="bar" data-bar="oops" ');
 				});
 			});
 		});
