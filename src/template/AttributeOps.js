@@ -109,7 +109,7 @@ let setDatasetProperty = (node, name, value) => {
 
 	for (let idx in value) {
       // regarding the specs we need to camelize the 'name'
-		prop[camelize(idx)] = value[idx] == null ? '' : value[idx];
+		prop[camelize(idx)] = value[idx] == null ? '' : dasherize(value[idx]);
 	}
 };
 
