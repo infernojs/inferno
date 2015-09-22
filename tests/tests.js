@@ -53,16 +53,17 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+				
 				describe('should render a basic example #2 (no JSX)', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(t =>
-							<ul>
-								<li>Im a li-tag</li>
-								<li>Im a li-tag</li>
-								<li>Im a li-tag</li>
-							</ul>
+						template = Inferno.createTemplate(createElement =>
+							createElement("ul", null,
+								createElement("li", null, "I'm a li-tag"),
+								createElement("li", null, "I'm a li-tag"),
+								createElement("li", null, "I'm a li-tag")
+							)
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -71,7 +72,26 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>`
+							'<ul><li>I\'m a li-tag</li><li>I\'m a li-tag</li><li>I\'m a li-tag</li></ul>'
+						);
+					});
+				});
+				
+				describe('should render boolean attributes (no JSX)', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(createElement =>
+							createElement("div", { checked:"true"})
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div></div>'
 						);
 					});
 				});
@@ -292,7 +312,7 @@ describe('Inferno acceptance tests', () => {
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
 
- 	                     <input type="file" multiple="multiple"  capture="capture" accept="image/*"></input>						
+ 	                     <input type="file" multiple="multiple" capture="capture" accept="image/*"></input>						
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
