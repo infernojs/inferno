@@ -103,6 +103,17 @@ let setBooleanAttribute = (node, name, value) => {
 };
 
 /**
+ * Set Inferno attributes
+ *
+ * @param  {Object} node A DOM element.
+ * @param  {String} name  The boolean attribute name to set.
+ * @param {String} value The boolean attribute value to set.
+ */
+let setInfernoAttribute = (node, name, value) => {
+	node.setAttribute(name, value);
+};
+
+/**
  * Set custom attributes on a DOM node
  *
  * @param {Object} node A DOM element.
@@ -382,6 +393,12 @@ let IS_CUSTOM = {
 	toHtml: createAttributeMarkup
 };
 
+let IS_INFERNO_ATTRIBUTE = {
+	set: setInfernoAttribute,
+	remove: removeAttribute,
+	toHtml: createAttributeMarkup
+};
+
 let IS_NUMERIC = {
 	set: setNumericAttribute,
 	remove: removeAttribute,
@@ -536,7 +553,7 @@ let DOMConfig = {
 	inputMode: IS_ATTRIBUTE,
 	is: IS_ATTRIBUTE,
 	ismap: IS_BOOLEAN_PROPERTY,
-	key: IS_ATTRIBUTE,
+	key: IS_INFERNO_ATTRIBUTE,
 	keyParams: IS_ATTRIBUTE,
 	keyType: IS_ATTRIBUTE,
 	label: IS_PROPERTY,
@@ -567,7 +584,7 @@ let DOMConfig = {
 	points: IS_ATTRIBUTE,
 	r: IS_ATTRIBUTE,
 	readOnly: IS_BOOLEAN_PROPERTY,
-	ref: IS_ATTRIBUTE,
+	ref: IS_INFERNO_ATTRIBUTE,
 	reversed: IS_BOOLEAN_PROPERTY,
 	required: IS_BOOLEAN_PROPERTY,
 	role: IS_ATTRIBUTE,
