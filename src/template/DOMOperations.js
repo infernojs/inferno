@@ -130,15 +130,6 @@ let setStyleProperty = (node, name, value) => {
 	}
 };
 
-
-/**
- * Set CSS styles
- *
- * TODO
- *
- */
-let createStyles = (stylesheet, useClassName) => {};
-
 /**
  * Set properties after validation check
  *
