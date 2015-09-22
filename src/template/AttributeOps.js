@@ -9,6 +9,11 @@ import isSVG from '../util/isSVG';
 import escapeHtml from './escapeHtml';
 import unitlessCfg from './cfg/unitlessCfg';
 
+// Simplified subset
+let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
+    illegalAttributeNameCache = {},
+    validatedAttributeNameCache = {};
+
 /**
  * Normalize CSS properties for SSR
  *
@@ -29,6 +34,32 @@ let normalize = (name, value) => {
 };
 
 /**
+ * Validate custom attributes
+ *
+ * @param  {String} name  The boolean attribute name to set.
+ */
+ 
+let validateAttribute = ( name ) => {
+
+    if ( validatedAttributeNameCache[name] ) {
+        return true;
+    }
+
+    if ( illegalAttributeNameCache[name] ) {
+        return false;
+    }
+
+    if ( VALID_ATTRIBUTE_NAME_REGEX.test( name ) ) {
+        validatedAttributeNameCache[name] = true;
+        return true;
+    }
+
+    illegalAttributeNameCache[name] = true;
+
+    return false;
+};
+
+/**
  * Set boolean attributes
  *
  * @param  {Object} node A DOM element.
@@ -39,6 +70,24 @@ let setBooleanAttribute = (node, name, value) => {
 	// Avoid touching the DOM and set falsy attributes.
 	if (value !== false) {
 		node.setAttribute(name, '' + (value === true ? '' : value));
+	}
+};
+
+/**
+ * Set custom attributes on a DOM node
+ *
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The attribute name to set.
+ * @param {String} value  The attribute value to set.
+ */
+let setCustomAttribute = (node, name, value) => {
+	if (name === 'type' && (node.tagName.toLowerCase() === 'input')) {
+		// Support: IE9-Edge
+		const val = node.value; // value will be lost in IE if type is changed
+		node.setAttribute(name, '' + value);
+		node.value = val;
+	} else if (validateAttribute( name )) {
+		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
 	}
 };
 
@@ -309,6 +358,12 @@ let IS_ATTRIBUTE = {
 	toHtml: attrToString
 };
 
+let IS_CUSTOM = {
+	set: setCustomAttribute,
+	remove: removeAttribute,
+	toHtml: attrToString
+};
+
 let IS_NUMERIC = {
 	set: setNumericAttribute,
 	remove: removeAttribute,
@@ -383,6 +438,7 @@ let IS_XML_NAMESPACE = {
 };
 
 let DOMConfig = {
+	accept: IS_ATTRIBUTE,
 	allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 	allowTransparency: IS_ATTRIBUTE,
 	async: IS_BOOLEAN_ATTRIBUTE,
@@ -395,11 +451,13 @@ let DOMConfig = {
 	classID: IS_ATTRIBUTE,
 	className: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
 	cols: IS_NUMERIC,
+	contentEditable: IS_ATTRIBUTE,
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
     cx: IS_ATTRIBUTE,
     cy: IS_ATTRIBUTE,
     d: IS_ATTRIBUTE,
+    data: IS_ATTRIBUTE,
 	dateTime: IS_ATTRIBUTE,
 
 	/**
@@ -414,16 +472,22 @@ let DOMConfig = {
 		toHtml: datasetToString
 	},
 	default: IS_BOOLEAN_ATTRIBUTE,
+    acceptCharset: IS_ATTRIBUTE,
+    crossOrigin: IS_ATTRIBUTE,
+	data: IS_ATTRIBUTE,
 	defer: IS_BOOLEAN_ATTRIBUTE,
 	declare: IS_BOOLEAN_ATTRIBUTE,
 	defaultchecked: IS_BOOLEAN_ATTRIBUTE,
 	defaultmuted: IS_BOOLEAN_ATTRIBUTE,
 	defaultselected: IS_BOOLEAN_ATTRIBUTE,
+    dir: IS_ATTRIBUTE,
 	disabled: IS_BOOLEAN_ATTRIBUTE,
 	draggable: IS_BOOLEAN_ATTRIBUTE,
 	dx: IS_ATTRIBUTE,
     dy: IS_ATTRIBUTE,
 	download: IS_BOOLEAN_ATTRIBUTE,
+    encType: IS_ATTRIBUTE,
+	file: IS_ATTRIBUTE,
 	form: IS_ATTRIBUTE,
 	formAction: IS_ATTRIBUTE,
 	formEncType: IS_ATTRIBUTE,
@@ -431,10 +495,14 @@ let DOMConfig = {
 	formNoValidate: IS_BOOLEAN_ATTRIBUTE,
 	formTarget: IS_ATTRIBUTE,
 	frameBorder: IS_ATTRIBUTE,
+    for: IS_ATTRIBUTE,
 	fx: IS_ATTRIBUTE,
     fy: IS_ATTRIBUTE,
 	height: IS_PROPERTY,
 	hidden: IS_BOOLEAN_ATTRIBUTE,
+    href: IS_ATTRIBUTE,
+    htmlfor: IS_PROPERTY,
+    icon: IS_ATTRIBUTE,
 	id: IS_PROPERTY,
 	inputMode: IS_ATTRIBUTE,
 	is: IS_ATTRIBUTE,
@@ -442,10 +510,14 @@ let DOMConfig = {
 	keyParams: IS_ATTRIBUTE,
 	keyType: IS_ATTRIBUTE,
 	label: IS_PROPERTY,
+    lang: IS_ATTRIBUTE,
 	list: IS_ATTRIBUTE,
 	loop: IS_BOOLEAN_PROPERTY,
 	manifest: IS_ATTRIBUTE,
+    marginHeight: IS_ATTRIBUTE,
+	marginWidth: IS_ATTRIBUTE,
 	maxLength: IS_ATTRIBUTE,
+    max: IS_ATTRIBUTE,
 	media: IS_ATTRIBUTE,
 	minLength: IS_ATTRIBUTE,
 	muted: IS_BOOLEAN_PROPERTY,
@@ -477,7 +549,11 @@ let DOMConfig = {
 	srcSet: IS_ATTRIBUTE,
 	start: IS_ATTRIBUTE,
     step: IS_ATTRIBUTE,
-    transform: IS_ATTRIBUTE,
+    tabIndex: IS_ATTRIBUTE,
+    target: IS_ATTRIBUTE,
+	transform: IS_ATTRIBUTE,
+    title: IS_ATTRIBUTE,
+    type: IS_ATTRIBUTE,
     version: IS_ATTRIBUTE,
     viewBox: IS_ATTRIBUTE,
     x1: IS_ATTRIBUTE,
@@ -555,7 +631,7 @@ export default {
  * @param {String} name The boolean attribute name to set.
  * @param {String|Object} value The boolean attribute value to set.
  */
-	set: (node, name, value) => (DOMConfig[name] || IS_ATTRIBUTE).set(node, name, value),
+	set: (node, name, value) => (DOMConfig[name] || IS_CUSTOM).set(node, name, value),
 /**
  * Unsets a HTML attribute / property
  *
@@ -563,12 +639,12 @@ export default {
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
-	remove: (node, name) => (DOMConfig[name] || IS_ATTRIBUTE).remove(node, name),
+	remove: (node, name) => (DOMConfig[name] || IS_CUSTOM).remove(node, name),
 /**
  * Create HTML attribute / property markup for SSR
  *
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
-	toHtml: (name, value) => (DOMConfig[name] || IS_ATTRIBUTE).toHtml(name, value)
+	toHtml: (name, value) => (DOMConfig[name] || IS_CUSTOM).toHtml(name, value)
 };

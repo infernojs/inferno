@@ -1526,7 +1526,7 @@ describe('Inferno acceptance tests', () => {
 
 					expect(test).to.equal(expected);
 				});
-				
+
 				it('should render boolean attributes', () => {
 					Inferno.render(
 						t7`<div checked="checked"></div>`,
@@ -2317,6 +2317,11 @@ describe('Inferno acceptance tests', () => {
 			it('should not set positive numbers on "span" attribute', () => {
 				attrOps.set(container, 'span', 444);
 				expect(container.getAttribute('span')).to.eql('444');
+			});
+
+			it('should not render unsafe custom attribute names', () => {
+				attrOps.set(container, '&/()', 'unsafeAttr!!');
+				expect(container.getAttribute('&/()')).to.be.null;
 			});
 
 			it('should set values as boolean properties', () => {
