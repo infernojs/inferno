@@ -114,7 +114,7 @@ let setBooleanAttribute = (node, name, value) => {
 	  * We choose to go for performance, and avoid touching the DOM
 	  *
 	  */
-	if (value !== 'false') {
+	if (value !== false) {
        node.setAttribute(name, '' + (value === 'true' ? '' : value));
 	}
 };
@@ -165,7 +165,10 @@ let setAttribute = (node, name, value) => {
 		node.setAttribute(name, '' + value);
 		node.value = val;
 	} else {
+		// Avoid touching the DOM on falsy values
+		if ( value !== false) {
 		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+	   }	
 	}
 };
 
@@ -659,7 +662,7 @@ let DOMConfig = {
 	srcSet: IS_ATTRIBUTE,
 	start: IS_ATTRIBUTE,
 	step: IS_ATTRIBUTE,
-	tabIndex: IS_ATTRIBUTE,
+	tabIndex: IS_PROPERTY,
 	target: IS_ATTRIBUTE,
 	transform: IS_ATTRIBUTE,
 	title: IS_ATTRIBUTE,

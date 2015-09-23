@@ -738,7 +738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value  The boolean property value to set.
 	 */
 	var setBooleanProperty = function setBooleanProperty(node, name, value) {
-		node[name] = !!value;
+		node[name] = value;
 	};
 	
 	/**

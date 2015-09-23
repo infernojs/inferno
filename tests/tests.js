@@ -281,7 +281,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input download="false">'
+							'<input>'
 						);
 					});
 
@@ -451,7 +451,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="false">'
+							'<input>'
 						);
 					});
 				});
@@ -470,7 +470,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>'
+							'<input disabled="false">'
 						);
 					});
 				});
@@ -660,7 +660,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input href="/images/xxx.jpg" download="false">'
+							'<input href="/images/xxx.jpg">'
 						);
 					});
 				});
@@ -717,7 +717,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input allowfullscreen="false">'
+							'<input>'
 						);
 					});
 				});
@@ -736,7 +736,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>'
+							'<input allowfullscreen="false">'
 						);
 					});
 				});
@@ -884,7 +884,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input hidden="false">'
+							'<input>'
 						);
 					});
 				});
@@ -1085,7 +1085,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="false" type="checkbox" value="">'
+							'<input type="checkbox" value="">'
 						);
 					});
 				});
@@ -1104,7 +1104,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input type="checkbox" value="">'
+							'<input disabled="false" type="checkbox" value="">'
 						);
 					});
 				});
@@ -2602,6 +2602,16 @@ describe('Inferno acceptance tests', () => {
 			it('should not set positive numbers on "span" attribute', () => {
 				attrOps.set(container, 'span', 444);
 				expect(container.getAttribute('span')).to.eql('444');
+			});
+
+			it('should not set overloaded falsy value on attributes', () => {
+				attrOps.set(container, 'target', false);
+				expect(container.getAttribute('target')).to.be.null;
+			});
+
+			it('should set overloaded truthy value on attributes', () => {
+				attrOps.set(container, 'target', true);
+				expect(container.getAttribute('target')).to.eql("true");
 			});
 
 			it('should not render unsafe custom attribute names', () => {
