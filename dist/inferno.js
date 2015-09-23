@@ -517,6 +517,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
+	var _utilTagName = __webpack_require__(53);
+	
+	var _utilTagName2 = _interopRequireDefault(_utilTagName);
+	
 	var _escapeHtml = __webpack_require__(49);
 	
 	var _escapeHtml2 = _interopRequireDefault(_escapeHtml);
@@ -551,16 +555,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		'false': true,
 		'plaintext-only': true,
 		'inherit': true
-	};
-	
-	/**
-	 * Returns a DOM node tagName as lowerCase
-	 * @param {Object} node A DOM element.
-	 */
-	var getNodeName = function getNodeName(node) {
-	
-		// TODO!! Cache this for re-use?
-		return node.tagName.toLowerCase();
 	};
 	
 	/**
@@ -662,7 +656,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value The attribute value to set.
 	 */
 	var setAttribute = function setAttribute(node, name, value) {
-		if (name === 'type' && getNodeName(node) === 'input') {
+		if (name === 'type' && (0, _utilTagName2['default'])(node) === 'input') {
 			// Support: IE9-Edge
 			var val = node.value; // value will be lost in IE if type is changed
 			node.setAttribute(name, '' + value);
@@ -798,7 +792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value  The property value to set.
 	 */
 	var setValueForProperty = function setValueForProperty(node, name, value) {
-		if (name === 'value' && getNodeName(node) === 'select') {
+		if (name === 'value' && (0, _utilTagName2['default'])(node) === 'select') {
 			setSelectValue(node, value);
 		} else {
 			// Need to validate this else it will fail when we update fragments etc.
@@ -824,7 +818,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var removeProperty = function removeProperty(node, name) {
 		// 'select' is a special case
-		if (name === 'value' && getNodeName(node) === 'select') {
+		if (name === 'value' && (0, _utilTagName2['default'])(node) === 'select') {
 			removeSelectValue(node);
 		} else {
 			node[name] = (0, _hasPropertyAccessor2['default'])(node, name);
@@ -2049,9 +2043,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(55)["default"];
+	var _createClass = __webpack_require__(56)["default"];
 	
-	var _classCallCheck = __webpack_require__(54)["default"];
+	var _classCallCheck = __webpack_require__(55)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -3259,12 +3253,34 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 53 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	module.exports = { "default": __webpack_require__(56), __esModule: true };
+	/**
+	 * Returns a DOM node tagName as lowerCase
+	 * @param {Object} node A DOM element.
+	 */
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	function getNodeName(node) {
+	
+	  // TODO!! Cache this for re-use?
+	  return node.tagName.toLowerCase();
+	};
+	
+	exports["default"] = getNodeName;
+	module.exports = exports["default"];
 
 /***/ },
 /* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(57), __esModule: true };
+
+/***/ },
+/* 55 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3278,12 +3294,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(53)["default"];
+	var _Object$defineProperty = __webpack_require__(54)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -3307,16 +3323,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(57);
+	var $ = __webpack_require__(58);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	var $Object = Object;

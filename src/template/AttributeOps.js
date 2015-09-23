@@ -6,6 +6,7 @@ import camelize from './camelize';
 import inArray from '../util/inArray';
 import isArray from '../util/isArray';
 import isSVG from '../util/isSVG';
+import tagName from '../util/tagName';
 import escapeHtml from './escapeHtml';
 import unitlessCfg from './cfg/unitlessCfg';
 
@@ -36,16 +37,6 @@ let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
 		false: true, 
 		'plaintext-only': true, 
 		'inherit':true
-};
-
-/**
- * Returns a DOM node tagName as lowerCase
- * @param {Object} node A DOM element.
- */
-let getNodeName = (node) => {
-	
-	// TODO!! Cache this for re-use?
-    return node.tagName.toLowerCase();	
 };
 
 /**
@@ -148,7 +139,7 @@ let setCustomAttribute = (node, name, value) => {
  * @param {String} value The attribute value to set.
  */
 let setAttribute = (node, name, value) => {
-	if (name === 'type' && (getNodeName(node) === 'input')) {
+	if (name === 'type' && (tagName(node) === 'input')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node.setAttribute(name, '' + value);
@@ -282,7 +273,7 @@ let setPropertyForStyle = (node, name, value) => {
  * @param {String} value  The property value to set.
  */
 let setValueForProperty = (node, name, value) => {
-	if (name === 'value' && (getNodeName(node) === 'select')) {
+	if (name === 'value' && (tagName(node) === 'select')) {
 		setSelectValue(node, value);
 	} else {
 		// Need to validate this else it will fail when we update fragments etc.
@@ -308,7 +299,7 @@ let removeAttribute = (node, name) => {
  */
 let removeProperty = (node, name) => {
 	// 'select' is a special case
-	if (name === 'value' && (getNodeName(node) === 'select')) {
+	if (name === 'value' && (tagName(node) === 'select')) {
 		removeSelectValue(node);
 	} else {
 		node[name] = hasPropertyAccessor(node, name);
