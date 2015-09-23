@@ -329,14 +329,12 @@ let removeProperty = (node, name) => {
 let setSelectValue = (node, value) => {
 
 	const arrayish = isArray(value),
-		options = node.options,
-		len = options.length;
+		options = node.options;
 
 	let i = 0,
 		optionNode;
-
-	while (i < len) {
-		optionNode = options[i++];
+   for (let i = 0; i < options.length; i++) { 
+		optionNode = options[i];
 		optionNode.selected = value != null && (arrayish ? inArray(value, optionNode.value) : optionNode.value == value);
 	}
 };
@@ -347,13 +345,8 @@ let setSelectValue = (node, value) => {
  * @param {Object} node A DOM element.
  */
 let removeSelectValue = node => {
-	const options = node.options,
-		len = options.length;
-
-	let i = 0;
-
-	while (i < len) {
-		options[i++].selected = false;
+   for (let i = 0; i < node.options.length; i++) { 
+		node.options[i].selected = false;
 	}
 };
 
