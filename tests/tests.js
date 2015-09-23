@@ -2068,30 +2068,6 @@ describe('Inferno acceptance tests', () => {
 
 			describe('HTML attributes / properties', () => {
 
-            describe('Audio / video attributes', () => {			
-
-			it('should render the AudioTrack.label attribute', () => {
-				expect(attrOps.toHtml('AudioTrack.label', 'foo')).to.equal('AudioTrack.label="foo"');
-			});
-
-			it('should render the VideoTrack.label attribute', () => {
-				expect(attrOps.toHtml('VideoTrack.label', 'foo')).to.equal('VideoTrack.label="foo"');
-			});
-
-			it('should render the AudioTrack.language attribute', () => {
-				expect(attrOps.toHtml('AudioTrack.language', 'foo')).to.equal('AudioTrack.language="foo"');
-			});
-
-			it('should render the VideoTrack.language attribute', () => {
-				expect(attrOps.toHtml('VideoTrack.language', 'foo')).to.equal('VideoTrack.language="foo"');
-			});
-
-            // Boolean property
-			it('should render the AudioTrack.enabled attribute', () => {
-				expect(attrOps.toHtml('AudioTrack.enabled', true)).to.equal('AudioTrack.enabled="true"');
-			});
-
- 	      });
 				describe('Booleans', () => {
 
 					it('should not render unsafe custom attribute names', () => {
@@ -2626,30 +2602,29 @@ describe('Inferno acceptance tests', () => {
 			});
             describe('Audio / video attributes', () => {			
 
-			it('should render the AudioTrack.label attribute', () => {
-				attrOps.set(container, 'AudioTrack.label', 'foo');
-				expect(container.getAttribute('AudioTrack.label')).to.eql('foo');
+			it('should render the volume', () => {
+				attrOps.set(container, 'volume', 0.0);
+				expect(container.getAttribute('volume')).to.eql('0');
 			});
 
-			it('should render the VideoTrack.label attribute', () => {
-				attrOps.set(container, 'VideoTrack.label', 'foo');
-				expect(container.getAttribute('VideoTrack.label')).to.eql('foo');
+			it('should render the volume', () => {
+				attrOps.set(container, 'volume', 0.04);
+				expect(container.getAttribute('volume')).to.eql('0.04');
 			});
 
-			it('should render the AudioTrack.language attribute', () => {
-				attrOps.set(container, 'AudioTrack.language', 'foo');
-				expect(container.getAttribute('AudioTrack.language')).to.eql('foo');
+			it('should render the volume', () => {
+				attrOps.set(container, 'volume', 1);
+				expect(container.getAttribute('volume')).to.eql('1');
 			});
 
-			it('should render the VideoTrack.language attribute', () => {
-				attrOps.set(container, 'VideoTrack.language', 'foo');
-				expect(container.getAttribute('VideoTrack.language')).to.eql('foo');
+			it('should not render the volume attribute if larger then 1', () => {
+				attrOps.set(container, 'volume', -3);
+				expect(container.getAttribute('volume')).to.be.null;
 			});
-            // Boolean property
-			it('should render the AudioTrack.enabled attribute', () => {
-				attrOps.set(container, 'AudioTrack.enabled', true);
-				expect(container.getAttribute('AudioTrack.enabled')).to.be.null;
-				expect(container['AudioTrack.enabled']).to.be.true;
+
+			it('should not render the volume attribute on negative numbers', () => {
+				attrOps.set(container, 'volume', 3);
+				expect(container.getAttribute('volume')).to.be.null;
 			});
 
  	      });

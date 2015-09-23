@@ -120,12 +120,18 @@ let setInfernoAttribute = (node, name, value) => {
 };
 
 /**
- * Set custom attributes on a DOM node
+ * Set volume attributes on a DOM node
  *
  * @param {Object} node A DOM element.
  * @param {String} name	 The attribute name to set.
  * @param {String} value  The attribute value to set.
  */
+let setVolumAttribute = (node, name, value) => {
+    if ( value === '0.0' || (value === 1) || (typeof value === 'number' && (value > -1 && value < 1.1 ))) {
+		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+	}
+};
+
 let setCustomAttribute = (node, name, value) => {
 	if (name === 'type' && (getNodeName(node) === 'input')) {
 		// Support: IE9-Edge
@@ -136,6 +142,7 @@ let setCustomAttribute = (node, name, value) => {
 		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
 	}
 };
+
 
 /**
  * Set attributes on a DOM node
@@ -410,6 +417,12 @@ let IS_CUSTOM = {
 	toHtml: createAttributeMarkup
 };
 
+let IS_VOLUME_ATTRIBUTE = {
+	set: setVolumAttribute,
+	remove: removeAttribute,
+	toHtml: createAttributeMarkup
+};
+
 let IS_INFERNO_ATTRIBUTE = {
 	set: setInfernoAttribute,
 	remove: removeAttribute,
@@ -496,13 +509,6 @@ let DOMConfig = {
 	accept: IS_ATTRIBUTE,
 	allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 	allowTransparency: IS_ATTRIBUTE,
-  
-    /** 
-	 * Audio / video attributes ( DOM Living specs)
-	 */
-	'AudioTrack.enabled':IS_BOOLEAN_PROPERTY,
-	'AudioTrack.label': IS_ATTRIBUTE,
-	'AudioTrack.language': IS_ATTRIBUTE,
 
 	async: IS_BOOLEAN_ATTRIBUTE,
 	autoFocus: IS_BOOLEAN_ATTRIBUTE,
@@ -540,6 +546,7 @@ let DOMConfig = {
 	data: IS_ATTRIBUTE,
 	defer: IS_BOOLEAN_ATTRIBUTE,
 	declare: IS_BOOLEAN_ATTRIBUTE,
+    defaultPlaybackRate: IS_PROPERTY,
 	defaultchecked: IS_BOOLEAN_ATTRIBUTE,
 	defaultmuted: IS_BOOLEAN_ATTRIBUTE,
 	defaultselected: IS_BOOLEAN_ATTRIBUTE,
@@ -606,6 +613,7 @@ let DOMConfig = {
 	opacity: IS_ATTRIBUTE,
 	open: IS_BOOLEAN_ATTRIBUTE,
 	placeholder: IS_PROPERTY,
+	playbackRate: IS_PROPERTY,
 	points: IS_ATTRIBUTE,
 	poster: IS_ATTRIBUTE,
 	preload: IS_PROPERTY,
@@ -653,9 +661,6 @@ let DOMConfig = {
 	truespeed: IS_BOOLEAN_PROPERTY,
 	typemustmatch: IS_BOOLEAN_ATTRIBUTE,
 	usemap: IS_ATTRIBUTE,
-	y1: IS_ATTRIBUTE,
-	y2: IS_ATTRIBUTE,
-	y: IS_ATTRIBUTE,
 
 	/**
 	 * 'value' is a special case
@@ -669,19 +674,16 @@ let DOMConfig = {
 	version: IS_ATTRIBUTE,
 	viewBox: IS_ATTRIBUTE,
 
-    /** 
-	 * Audio / video attributes ( DOM Living specs)
-	 */
-	'VideoTrack.label': IS_ATTRIBUTE,
-	'VideoTrack.language': IS_ATTRIBUTE,
-	'VideoTrack.enabled':IS_BOOLEAN_PROPERTY,
-	
 	visible: IS_BOOLEAN_ATTRIBUTE,
+	volume: IS_VOLUME_ATTRIBUTE,
 	width: IS_PROPERTY,
 	wmode: IS_ATTRIBUTE,
 	x1: IS_ATTRIBUTE,
 	x2: IS_ATTRIBUTE,
 	x: IS_ATTRIBUTE,
+	y1: IS_ATTRIBUTE,
+	y2: IS_ATTRIBUTE,
+	y: IS_ATTRIBUTE,
 
 	/**
 	 * Non-standard properties
