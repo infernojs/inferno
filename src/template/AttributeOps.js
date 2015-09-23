@@ -325,7 +325,8 @@ let removeProperty = (node, name) => {
  * @param {Object} node  A DOM element.
  * @param {String|Array} value  The property value to set.
  */
-let setSelectValue = (node, value, children) => {
+
+let setSelectValue = (node, value) => {
 
 	const arrayish = isArray(value),
 		options = node.options,
