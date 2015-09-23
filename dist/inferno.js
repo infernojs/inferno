@@ -516,7 +516,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	// Simplified subset
 	var VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
 	    illegalAttributeNameCache = {},
-	    validatedAttributeNameCache = {};
+	    validatedAttributeNameCache = {},
+	    xmlMap = {
+		'xml:base': 'base',
+		'xml:id': 'id',
+		'xml:lang': 'lang',
+		'xml:space': 'spac'
+	},
+	    xlinkMap = {
+		'xlink:actuate': 'actuate',
+		'xlink:arcrole': 'arcrole',
+		'xlink:href': 'href',
+		'xlink:role': 'role',
+		'xlink:show': 'show',
+		'xlink:title': 'title',
+		'xlink:type': 'type'
+	},
+	    contentEditable = {
+		'true': true,
+		'false': true,
+		'plaintext-only': true,
+		'inherit': true
+	};
+	
+	/**
+	 * Returns a DOM node tagName as lowerCase
+	 * @param {Object} node A DOM element.
+	 */
+	var getNodeName = function getNodeName(node) {
+	
+		// TODO!! Cache this for re-use?
+		return node.tagName.toLowerCase();
+	};
 	
 	/**
 	 * Normalize CSS properties for SSR
@@ -542,7 +573,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @param  {String} name  The boolean attribute name to set.
 	 */
-	
 	var validateAttribute = function validateAttribute(name) {
 	
 		if (validatedAttributeNameCache[name]) {
@@ -552,8 +582,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		if (illegalAttributeNameCache[name]) {
 			return false;
 		}
+		// namespace attributes are seen as non-valid, avoid that!
+		if (VALID_ATTRIBUTE_NAME_REGEX.test(name) || xmlMap[name] || xlinkMap[name]) {
 	
-		if (VALID_ATTRIBUTE_NAME_REGEX.test(name)) {
 			validatedAttributeNameCache[name] = true;
 			return true;
 		}
@@ -567,8 +598,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Set boolean attributes
 	 *
 	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The boolean attribute name to set.
-	 * @param {String} value	  The boolean attribute value to set.
+	 * @param  {String} name  The boolean attribute name to set.
+	 * @param {String} value The boolean attribute value to set.
 	 */
 	var setBooleanAttribute = function setBooleanAttribute(node, name, value) {
 		// Avoid touching the DOM and set falsy attributes.
@@ -578,20 +609,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
-	 * Set custom attributes on a DOM node
+	 * Set Inferno attributes
+	 *
+	 * @param  {Object} node A DOM element.
+	 * @param  {String} name  The attribute name to set.
+	 * @param {String} value The attribute value to set.
+	 */
+	var setInfernoAttribute = function setInfernoAttribute(node, name, value) {
+		node.setAttribute(name, value);
+	};
+	
+	/**
+	 * Set volume attributes on a DOM node
 	 *
 	 * @param {Object} node A DOM element.
-	 * @param {String} name	  The attribute name to set.
+	 * @param {String} name	 The attribute name to set.
 	 * @param {String} value  The attribute value to set.
 	 */
+	var setVolumAttribute = function setVolumAttribute(node, name, value) {
+		// The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
+		// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
+		if (value === 0.0 || value === 1 || typeof value === 'number' && (value > -1 && value < 1.1)) {
+			node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, value);
+		}
+	};
+	
 	var setCustomAttribute = function setCustomAttribute(node, name, value) {
-		if (name === 'type' && node.tagName.toLowerCase() === 'input') {
-			// Support: IE9-Edge
-			var val = node.value; // value will be lost in IE if type is changed
-			node.setAttribute(name, '' + value);
-			node.value = val;
-		} else if (validateAttribute(name)) {
-			node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, '' + value); // cast to string
+		if (validateAttribute(name)) {
+			node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, value);
 		}
 	};
 	
@@ -600,10 +645,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @param {Object} node A DOM element.
 	 * @param {String} name	  The attribute name to set.
-	 * @param {String} value	  The attribute value to set.
+	 * @param {String} value The attribute value to set.
 	 */
 	var setAttribute = function setAttribute(node, name, value) {
-		if (name === 'type' && node.tagName.toLowerCase() === 'input') {
+		if (name === 'type' && getNodeName(node) === 'input') {
 			// Support: IE9-Edge
 			var val = node.value; // value will be lost in IE if type is changed
 			node.setAttribute(name, '' + value);
@@ -618,7 +663,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @param {Object} node A DOM element.
 	 * @param {String} name	  The numeric attribute name to set.
-	 * @param {String} value	  The numeric attribute value to set.
+	 * @param {String} value  The numeric attribute value to set.
 	 */
 	var setNumericAttribute = function setNumericAttribute(node, name, value) {
 		if (typeof value === "number" && value > 0) {
@@ -629,28 +674,54 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Set properties on a DOM node
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The property name to set.
-	 * @param {String} value	  The property value to set.
+	 * @param {Object} node A DOM element.
+	 * @param {String} name	  The property name to set.
+	 * @param {String} value	 The property value to set.
 	 */
 	var setProperty = function setProperty(node, name, value) {
 	
-		if (name === 'type' && node.tagName.toLowerCase() === 'INPUT') {
-			// Support: IE9-Edge
-			var val = node.value; // value will be lost in IE if type is changed
-			node[name] = value;
-			node.value = val;
-		} else {
+		if (value != null) {
+	
+			// 'contentEditable' is a special case
+			if (name === 'contentEditable') {
+	
+				/**
+	   * We would need this check here, else it will throw:
+	   *
+	   * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
+	   * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
+	   */
+				if (value) {
+					value = contentEditable[value] ? value : 'inherit';
+				}
+			}
 			node[_cfgPropNameCfg2['default'][name] || name] = value;
+		}
+	};
+	
+	/**
+	 * Set selectedIndex property
+	 *
+	 * @param {Object} node A DOM element.
+	 * @param {String} name	  The property name to set.
+	 * @param {String} value  The property value to set.
+	 */
+	var setSelectedIndexProperty = function setSelectedIndexProperty(node, name, value) {
+	
+		// selectbox has special case
+		if (Array.prototype.every.call(node.options, function (o) {
+			return !(o.selected = o.value === value);
+		})) {
+			node[name] = -1;
 		}
 	};
 	
 	/**
 	 * Set boolean property
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The boolean property name to set.
-	 * @param {String} value	  The boolean property value to set.
+	 * @param {Object} node A DOM element.
+	 * @param {String} name	  The boolean property name to set.
+	 * @param {String} value  The boolean property value to set.
 	 */
 	var setBooleanProperty = function setBooleanProperty(node, name, value) {
 		node[name] = !!value;
@@ -659,11 +730,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Set dataset object properties
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The property name to set.
-	 * @param {String} value	  The property value to set.
+	 * @param {Object} node A DOM element.
+	 * @param {String} name  The property name to set.
+	 * @param {String} value  The property value to set.
 	 */
-	var setDatasetProperty = function setDatasetProperty(node, name, value) {
+	var setPropertyForDataset = function setPropertyForDataset(node, name, value) {
 		if ((undefined) !== 'production') {
 			var typeOfVal = typeof value;
 			if (typeOfVal !== 'object') {
@@ -680,7 +751,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	};
 	
-	var setStyleProperty = function setStyleProperty(node, name, value) {
+	var setPropertyForStyle = function setPropertyForStyle(node, name, value) {
 		// CSS style need to be a object literal, not a string value
 		if ((undefined) !== 'production') {
 			var typeOfVal = typeof value;
@@ -698,14 +769,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
-	 * Set properties after validation check
+	 * Set 'value' property after validation check
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name	  The property name to set.
-	 * @param {String} value	  The property value to set.
+	 * @param {Object} node A DOM element.
+	 * @param {String} name	  The property name to set.
+	 * @param {String} value  The property value to set.
 	 */
-	var verifyProperty = function verifyProperty(node, name, value) {
-		if (name === 'value' && node.tagName.toLowerCase() === 'select') {
+	var setValueForProperty = function setValueForProperty(node, name, value) {
+		if (name === 'value' && getNodeName(node) === 'select') {
 			setSelectValue(node, value);
 		} else {
 			node[name] !== value && (node[name] = value);
@@ -725,29 +796,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Unsets a property
 	 *
-	 * @param {Object element} - A DOM element.
+	 * @param {Object} node A DOM element.
 	 * @param {String} name - The property name to set.
 	 */
 	var removeProperty = function removeProperty(node, name) {
-		if (name === 'value' && node.tagName.toLowerCase() === 'select') {
+		if (name === 'value' && getNodeName(node) === 'select') {
 			removeSelectValue(node);
 		} else {
-			node[name] = (0, _hasPropertyAccessor2['default'])(node.tagName, name);
+			node[name] = (0, _hasPropertyAccessor2['default'])(node, name);
 		}
 	};
 	
 	/**
 	 * Set select / select multiple
 	 *
-	 * @param {Object element} node - A DOM element.
-	 * @param {String|Array} value - The property value to set.
+	 * @param {Object} node  A DOM element.
+	 * @param {String|Array} value  The property value to set.
 	 */
 	var setSelectValue = function setSelectValue(node, value, children) {
-		/**
-	  * TODO Children will be the 3rd arg, so we can iterate through the child nodes
-	  * and get 'optGroup' to work.
-	  */
-		var isMultiple = (0, _utilIsArray2['default'])(value),
+	
+		var arrayish = (0, _utilIsArray2['default'])(value),
 		    options = node.options,
 		    len = options.length;
 	
@@ -756,14 +824,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		while (i < len) {
 			optionNode = options[i++];
-			optionNode.selected = value != null && (isMultiple ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
+			optionNode.selected = value != null && (arrayish ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
 		}
 	};
 	
 	/**
 	 * Unsets a select / select multiple property from a DOM node
 	 *
-	 * @param {Object element} node - A DOM element.
+	 * @param {Object} node A DOM element.
 	 */
 	var removeSelectValue = function removeSelectValue(node) {
 		var options = node.options,
@@ -779,18 +847,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Transform HTML attributes to a string for SSR rendring
 	 *
-	 * @param {String} name - The attribute name to set.
-	 * @param {String} value - The attribute value to set.
+	 * @param {string} name
+	 * @param {*} value
+	 * @return {string} Markup string, or empty string if the property was invalid.
 	 */
-	var attrToString = function attrToString(name, value) {
+	var createAttributeMarkup = function createAttributeMarkup(name, value) {
+		if (!validateAttribute(name) || value == null) {
+			return '';
+		}
 		return (_cfgAttrNameCfg2['default'][name] || name) + '="' + (0, _escapeHtml2['default'])(value + '') + '"';
 	};
 	
 	/**
-	 * Transform dataset property to multiple strings for SSR rendring
+	 * Render HTML markup from a dataset property for SSR rendring
 	 *
-	 * @param {String} name - The name to be set.
-	 * @param {Object} value - The value to be set.
+	 * @param {String} name The name to be set.
+	 * @param {Object} value  The value to be set.
 	 */
 	var datasetToString = function datasetToString(name, value) {
 	
@@ -803,10 +875,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
-	 * Transform HTML boolean attributes to string for SSR rendring
+	 * Render HTML markup from boolean attributes to string for SSR rendring
 	 *
-	 * @param {String} name - The attribute name to set.
-	 * @param {String} value - The attribute value to set.
+	 * @param {String} name  The attribute name to set.
+	 * @param {String} value  The attribute value to set.
 	 */
 	var booleanAttrToString = function booleanAttrToString(name, value) {
 	
@@ -826,12 +898,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
-	 * Transform CSS style property to string for SSR rendring
+	 * Render CSS style property to string for SSR rendring
 	 *
-	 * @param  {String} name	  The attribute name to set.
-	 * @param  {String} value	 The property value to set.
+	 * @param  {String} name  The attribute name to set.
+	 * @param  {String} value The property value to set.
 	 */
-	var stylePropToString = function stylePropToString(name, value) {
+	var createPropertyMarkup = function createPropertyMarkup(name, value) {
 		var styles = '';
 	
 		for (var styleName in value) {
@@ -841,51 +913,52 @@ return /******/ (function(modules) { // webpackBootstrap
 		return styles ? name + '="' + styles + '"' : styles;
 	};
 	
-	var xmlMap = {
-		'xml:base': 'base',
-		'xml:id': 'id',
-		'xml:lang': 'lang',
-		'xml:space': 'spac'
-	};
-	
-	var xlinkMap = {
-		'xlink:actuate': 'actuate',
-		'xlink:arcrole': 'arcrole',
-		'xlink:href': 'href',
-		'xlink:role': 'role',
-		'xlink:show': 'show',
-		'xlink:title': 'title',
-		'xlink:type': 'type'
-	};
-	
 	var IS_ATTRIBUTE = {
 		set: setAttribute,
 		remove: removeAttribute,
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
 	};
 	
 	var IS_CUSTOM = {
 		set: setCustomAttribute,
 		remove: removeAttribute,
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
+	};
+	
+	var IS_VOLUME_ATTRIBUTE = {
+		set: setVolumAttribute,
+		remove: removeAttribute,
+		toHtml: createAttributeMarkup
+	};
+	
+	var IS_INFERNO_ATTRIBUTE = {
+		set: setInfernoAttribute,
+		remove: removeAttribute,
+		toHtml: createAttributeMarkup
 	};
 	
 	var IS_NUMERIC = {
 		set: setNumericAttribute,
 		remove: removeAttribute,
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
 	};
 	
 	var IS_BOOLEAN_ATTRIBUTE = {
 		set: setBooleanAttribute,
 		remove: removeAttribute,
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
 	};
 	
 	var IS_PROPERTY = {
 		set: setProperty,
 		remove: removeProperty,
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
+	};
+	
+	var IS_SELECTED_PROPERTY = {
+		set: setSelectedIndexProperty,
+		remove: removeProperty,
+		toHtml: createAttributeMarkup
 	};
 	
 	var IS_BOOLEAN_PROPERTY = {
@@ -895,12 +968,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	var IS_XLINK_NAMESPACE = {
+	
 		/**
 	  * Set xlink namespace attribute
 	  *
 	  * @param  {Object} node A DOM element.
-	  * @param  {String} name	  The attribute name to set.
-	  * @param  {String} value	 The attribute value to set.
+	  * @param  {String} name  The attribute name to set.
+	  * @param  {String} value	The attribute value to set.
 	  */
 		set: function set(node, name, value) {
 			node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name], value);
@@ -910,13 +984,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * Unsets a xlink namespace attribute
 	  *
 	  * @param  {Object} node A DOM element.
-	  * @param  {String} name	  The attribute name to set.
-	  * @param  {String} name	  The attribute name to unset.
+	  * @param  {String} name  The attribute name to set.
+	  * @param  {String} name  The attribute name to unset.
 	  */
 		remove: function remove(node, name) {
-			node.removeAttributeibuteNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
+			node.removeAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
 		},
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
 	};
 	
 	var IS_XML_NAMESPACE = {
@@ -925,39 +999,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * Set xlink namespace attribute
 	  *
 	  * @param  {Object} node A DOM element.
-	  * @param  {String} name	  The attribute name to set.
-	  * @param  {String} value	 The attribute value to set.
+	  * @param  {String} name The attribute name to set.
+	  * @param  {String} value The attribute value to set.
 	  */
 		set: function set(node, name, value) {
 			node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name], value);
 		},
+	
 		/**
 	  * Unsets a xml namespace attribute
 	  *
 	  * @param  {Object} node A DOM element.
-	  * @param  {String} name	  The attribute name to unset.
+	  * @param  {String} name The attribute name to unset.
 	  */
 		remove: function remove(node, name) {
-			node.removeAttributeibuteNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
+			node.removeAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
 		},
-		toHtml: attrToString
+		toHtml: createAttributeMarkup
 	};
 	
 	var DOMConfig = {
+		acceptCharset: IS_ATTRIBUTE,
 		accept: IS_ATTRIBUTE,
 		allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 		allowTransparency: IS_ATTRIBUTE,
+	
 		async: IS_BOOLEAN_ATTRIBUTE,
 		autoFocus: IS_BOOLEAN_ATTRIBUTE,
-		autoPlay: IS_BOOLEAN_ATTRIBUTE,
+		autoPlay: IS_BOOLEAN_PROPERTY,
 		capture: IS_BOOLEAN_ATTRIBUTE,
 		charSet: IS_ATTRIBUTE,
 		challenge: IS_ATTRIBUTE,
 		checked: IS_BOOLEAN_PROPERTY,
 		classID: IS_ATTRIBUTE,
 		className: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
+		clipPath: IS_ATTRIBUTE,
 		cols: IS_NUMERIC,
-		contentEditable: IS_ATTRIBUTE,
+		crossOrigin: IS_ATTRIBUTE,
+		contentEditable: IS_PROPERTY,
 		contextMenu: IS_ATTRIBUTE,
 		controls: IS_BOOLEAN_PROPERTY,
 		cx: IS_ATTRIBUTE,
@@ -971,35 +1050,41 @@ return /******/ (function(modules) { // webpackBootstrap
 	  *
 	  */
 		dataset: {
-			set: setDatasetProperty,
+			set: setPropertyForDataset,
 			// 'dataset' property has to be removed as an attribute
 			// because it's set as an attribute - e.g. data-foo="bar"
 			remove: removeAttribute,
 			toHtml: datasetToString
 		},
 		'default': IS_BOOLEAN_ATTRIBUTE,
-		acceptCharset: IS_ATTRIBUTE,
-		crossOrigin: IS_ATTRIBUTE,
 		data: IS_ATTRIBUTE,
 		defer: IS_BOOLEAN_ATTRIBUTE,
 		declare: IS_BOOLEAN_ATTRIBUTE,
+		defaultPlaybackRate: IS_PROPERTY,
 		defaultchecked: IS_BOOLEAN_ATTRIBUTE,
 		defaultmuted: IS_BOOLEAN_ATTRIBUTE,
 		defaultselected: IS_BOOLEAN_ATTRIBUTE,
+		designMode: IS_PROPERTY,
 		dir: IS_ATTRIBUTE,
 		disabled: IS_BOOLEAN_ATTRIBUTE,
 		draggable: IS_BOOLEAN_ATTRIBUTE,
+		dropzone: IS_ATTRIBUTE,
 		dx: IS_ATTRIBUTE,
 		dy: IS_ATTRIBUTE,
 		download: IS_BOOLEAN_ATTRIBUTE,
 		encType: IS_ATTRIBUTE,
 		file: IS_ATTRIBUTE,
+		fill: IS_ATTRIBUTE,
+		fillOpacity: IS_ATTRIBUTE,
+		forceSpellCheck: IS_PROPERTY,
 		form: IS_ATTRIBUTE,
 		formAction: IS_ATTRIBUTE,
 		formEncType: IS_ATTRIBUTE,
 		formMethod: IS_ATTRIBUTE,
 		formNoValidate: IS_BOOLEAN_ATTRIBUTE,
 		formTarget: IS_ATTRIBUTE,
+		fontFamily: IS_ATTRIBUTE,
+		fontSize: IS_ATTRIBUTE,
 		frameBorder: IS_ATTRIBUTE,
 		'for': IS_ATTRIBUTE,
 		fx: IS_ATTRIBUTE,
@@ -1013,6 +1098,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		inputMode: IS_ATTRIBUTE,
 		is: IS_ATTRIBUTE,
 		ismap: IS_BOOLEAN_PROPERTY,
+		key: IS_INFERNO_ATTRIBUTE,
 		keyParams: IS_ATTRIBUTE,
 		keyType: IS_ATTRIBUTE,
 		label: IS_PROPERTY,
@@ -1022,20 +1108,32 @@ return /******/ (function(modules) { // webpackBootstrap
 		manifest: IS_ATTRIBUTE,
 		marginHeight: IS_ATTRIBUTE,
 		marginWidth: IS_ATTRIBUTE,
+		markerEnd: IS_ATTRIBUTE,
+		markerMid: IS_ATTRIBUTE,
+		markerStart: IS_ATTRIBUTE,
 		maxLength: IS_ATTRIBUTE,
 		max: IS_ATTRIBUTE,
 		media: IS_ATTRIBUTE,
+		mediagroup: IS_ATTRIBUTE,
 		minLength: IS_ATTRIBUTE,
 		muted: IS_BOOLEAN_PROPERTY,
 		multiple: IS_BOOLEAN_PROPERTY,
 		name: IS_PROPERTY,
 		nohref: IS_ATTRIBUTE,
+		// number used once or number once
+		nonce: IS_NUMERIC,
 		noshade: IS_ATTRIBUTE,
 		noValidate: IS_BOOLEAN_ATTRIBUTE,
+		opacity: IS_ATTRIBUTE,
 		open: IS_BOOLEAN_ATTRIBUTE,
 		placeholder: IS_PROPERTY,
+		playbackRate: IS_PROPERTY,
+		points: IS_ATTRIBUTE,
+		poster: IS_ATTRIBUTE,
+		preload: IS_PROPERTY,
 		r: IS_ATTRIBUTE,
 		readOnly: IS_BOOLEAN_PROPERTY,
+		ref: IS_INFERNO_ATTRIBUTE,
 		reversed: IS_BOOLEAN_PROPERTY,
 		required: IS_BOOLEAN_PROPERTY,
 		role: IS_ATTRIBUTE,
@@ -1045,12 +1143,15 @@ return /******/ (function(modules) { // webpackBootstrap
 		scoped: IS_BOOLEAN_ATTRIBUTE,
 		seamless: IS_BOOLEAN_ATTRIBUTE,
 		selected: IS_BOOLEAN_PROPERTY,
-		selectedIndex: IS_PROPERTY,
+		selectedIndex: IS_SELECTED_PROPERTY,
 		size: IS_NUMERIC,
+		// Viewport-based selection
 		sizes: IS_ATTRIBUTE,
 		sortable: IS_BOOLEAN_ATTRIBUTE,
 		span: IS_NUMERIC,
-		spellCheck: IS_BOOLEAN_ATTRIBUTE,
+		spellCheck: IS_BOOLEAN_PROPERTY,
+		stroke: IS_ATTRIBUTE,
+		src: IS_ATTRIBUTE,
 		srcDoc: IS_PROPERTY,
 		srcSet: IS_ATTRIBUTE,
 		start: IS_ATTRIBUTE,
@@ -1060,37 +1161,43 @@ return /******/ (function(modules) { // webpackBootstrap
 		transform: IS_ATTRIBUTE,
 		title: IS_ATTRIBUTE,
 		type: IS_ATTRIBUTE,
-		version: IS_ATTRIBUTE,
-		viewBox: IS_ATTRIBUTE,
-		x1: IS_ATTRIBUTE,
-		x2: IS_ATTRIBUTE,
-		x: IS_ATTRIBUTE,
 	
 		/**
 	  * CSS styling attribute is a special case, and will be set as a normal object.
 	  * 'styles' should be used as an replacement.
 	  */
 		style: {
-			set: setStyleProperty,
+			set: setPropertyForStyle,
 			remove: removeProperty,
-			toHtml: stylePropToString
+			toHtml: createPropertyMarkup
 		},
 		translate: IS_BOOLEAN_ATTRIBUTE,
 		truespeed: IS_BOOLEAN_PROPERTY,
 		typemustmatch: IS_BOOLEAN_ATTRIBUTE,
+		usemap: IS_ATTRIBUTE,
 	
 		/**
 	  * 'value' is a special case
 	  *
 	  */
 		value: {
-			set: verifyProperty,
+			set: setValueForProperty,
 			remove: removeProperty,
-			toHtml: attrToString
+			toHtml: createAttributeMarkup
 		},
+		version: IS_ATTRIBUTE,
+		viewBox: IS_ATTRIBUTE,
+	
 		visible: IS_BOOLEAN_ATTRIBUTE,
+		volume: IS_VOLUME_ATTRIBUTE,
 		width: IS_PROPERTY,
 		wmode: IS_ATTRIBUTE,
+		x1: IS_ATTRIBUTE,
+		x2: IS_ATTRIBUTE,
+		x: IS_ATTRIBUTE,
+		y1: IS_ATTRIBUTE,
+		y2: IS_ATTRIBUTE,
+		y: IS_ATTRIBUTE,
 	
 		/**
 	  * Non-standard properties
@@ -3091,8 +3198,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	var PropertyAccessor = {};
 	
-	exports["default"] = function (tag, attrName) {
-		var tagAttrs = PropertyAccessor[tag] || (PropertyAccessor[tag] = {});
+	exports["default"] = function (node, attrName) {
+		var tag = node.tagName,
+		    tagAttrs = PropertyAccessor[tag] || (PropertyAccessor[tag] = {});
 		return attrName in tagAttrs ? tagAttrs[attrName] : tagAttrs[attrName] = document.createElement(tag)[attrName];
 	};
 	

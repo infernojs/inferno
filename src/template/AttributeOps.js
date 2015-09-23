@@ -104,7 +104,7 @@ let normalize = (name, value) => {
 let setBooleanAttribute = (node, name, value) => {
 	// Avoid touching the DOM and set falsy attributes.
 	if (value !== false) {
-		node.setAttribute(name, '' + (value === true ? '' : value));
+       node.setAttribute(name, '' + (value === true ? '' : value));
 	}
 };
 
@@ -130,17 +130,12 @@ let setVolumAttribute = (node, name, value) => {
     // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the 
 	// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
     if ( value === 0.0 || (value === 1) || (typeof value === 'number' && (value > -1 && (value < 1.1 )))) {
-		node.setAttribute(attrNameCfg[name] || name, value);
+          node.setAttribute(attrNameCfg[name] || name, value);
 	}
 };
 
 let setCustomAttribute = (node, name, value) => {
-	if (name === 'type' && (getNodeName(node) === 'input')) {
-		// Support: IE9-Edge
-		const val = node.value; // value will be lost in IE if type is changed
-		node.setAttribute(name, '' + value);
-		node.value = val;
-	} else if (validateAttribute( name )) {
+    if (validateAttribute( name )) {
 		node.setAttribute(attrNameCfg[name] || name, value);
 	}
 };
@@ -185,16 +180,17 @@ let setNumericAttribute = (node, name, value) => {
  */
 let setProperty = (node, name, value) => {
 
-	if (name === 'type' && (getNodeName(node) === 'input')) {
-		// Support: IE9-Edge
-		const val = node.value; // value will be lost in IE if type is changed
-		node[name] = value;
-		node.value = val;
-	} else if (value != null) {
+ if (value != null) {
 
     // 'contentEditable' is a special case
 	if (name === 'contentEditable') {
-
+   
+     /**
+	  * We would need this check here, else it will throw:
+	  *
+	  * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
+	  * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
+	  */
       if (value) {
         value = contentEditable[value] ? value : 'inherit';
       }
@@ -213,11 +209,9 @@ let setProperty = (node, name, value) => {
 let setSelectedIndexProperty = (node, name, value) => {
 
     // selectbox has special case
-    if (Array.prototype.every.call(node.options, function(o) {
-            return !(o.selected = o.value === value)
-        })) {
-        node[name] = -1;
-    }
+  if (Array.prototype.every.call(node.options, (o) => !(o.selected = o.value === value))) {
+     node[name] = -1;
+  }	
 };
 
 /**
@@ -564,7 +558,7 @@ let DOMConfig = {
 	data: IS_ATTRIBUTE,
 	defer: IS_BOOLEAN_ATTRIBUTE,
 	declare: IS_BOOLEAN_ATTRIBUTE,
-    defaultPlaybackRate: IS_PROPERTY,
+	defaultPlaybackRate: IS_PROPERTY,
 	defaultchecked: IS_BOOLEAN_ATTRIBUTE,
 	defaultmuted: IS_BOOLEAN_ATTRIBUTE,
 	defaultselected: IS_BOOLEAN_ATTRIBUTE,
