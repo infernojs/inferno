@@ -2175,6 +2175,32 @@ describe('Inferno acceptance tests', () => {
 						expect(attrOps.toHtml('dataset', objL)).to.equal('data-foo="bar" data-bar="oops" ');
 					});
 				});
+				describe('preload property', () => {
+					it('should render preload property - #1', () => {
+						expect(attrOps.toHtml('preload', true)).to.equal('preload="true"');
+					});
+					it('should render preload property - #2', () => {
+						expect(attrOps.toHtml('preload', false)).to.equal('preload="false"');
+					});
+					it('should render preload property - #3', () => {
+						expect(attrOps.toHtml('preload', null)).to.equal('');
+					});
+				});
+				describe('contentEditable property', () => {
+					it('should render contentEditable property - #1', () => {
+						expect(attrOps.toHtml('contentEditable', true)).to.equal('contentEditable="true"');
+					});
+					it('should render contentEditable property - #2', () => {
+						expect(attrOps.toHtml('contentEditable', false)).to.equal('contentEditable="false"');
+					});
+					it('should render contentEditable property - #3', () => {
+						expect(attrOps.toHtml('contentEditable', 'plaintext-only')).to.equal('contentEditable="plaintext-only"');
+					});
+					it('should render contentEditable property - #4', () => {
+						expect(attrOps.toHtml('contentEditable', null)).to.equal('');
+					});
+				});
+
 			});
 			describe('CSS', () => {
 
@@ -2264,7 +2290,7 @@ describe('Inferno acceptance tests', () => {
 		});	
          describe('HTML properties', () => {
 
-  describe('HTML properties', () => {
+         describe('HTML properties', () => {
 
 			it('should not remove a "contentEditable" attribute', () => {
 
@@ -2274,6 +2300,7 @@ describe('Inferno acceptance tests', () => {
 				expect(container.hasAttribute('contentEditable')).to.be.false;
 				expect(container.contentEditable).to.eql('inherit');
 			});
+			
 		});	
 			 
 		 });
@@ -2496,6 +2523,60 @@ describe('Inferno acceptance tests', () => {
 				attrOps.set(container, 'contentEditable', undefined);
 				expect(container.getAttribute('contentEditable')).to.be.null;
 				expect(container.contentEditable).to.eql("inherit");
+			});
+			
+			it('should set "preload" property (falsy)', () => {
+				attrOps.set(container, 'preload', false);
+				expect(container.getAttribute('preload')).to.be.null;
+				expect(container.preload).to.be.false;
+			});
+
+			it('should set "preload" property (truthy)', () => {
+				attrOps.set(container, 'preload', true);
+				expect(container.getAttribute('preload')).to.be.null;
+				expect(container.preload).to.be.true;
+			});
+
+			it('should set "preload" property (metadata)', () => {
+				attrOps.set(container, 'preload', 'metadata');
+				expect(container.getAttribute('preload')).to.be.null;
+				expect(container.preload).to.eql('metadata');
+			});
+
+			it('should set "preload" property (auto)', () => {
+				attrOps.set(container, 'preload', 'auto');
+				expect(container.getAttribute('preload')).to.be.null;
+				expect(container.preload).to.eql('auto');
+			});
+
+			it('should not set "preload" as a null value', () => {
+				attrOps.set(container, 'preload', null);
+				expect(container.getAttribute('preload')).to.be.null;
+				expect(container.preload).to.be.undefined;
+			});
+
+			it('should not set "preload" as a undefined value', () => {
+				attrOps.set(container, 'preload', undefined);
+				expect(container.getAttribute('preload')).to.be.null;
+				expect(container.preload).to.be.undefined;
+			});
+			
+            it('should set "autoPlay" property (truthy)', () => {
+				attrOps.set(container, 'autoPlay', true);
+				expect(container.getAttribute('autoPlay')).to.be.null;
+				expect(container.autoPlay).to.be.true;
+			});
+
+            it('should set "autoPlay" property (falsy)', () => {
+				attrOps.set(container, 'autoPlay', false);
+				expect(container.getAttribute('autoPlay')).to.be.null;
+				expect(container.autoPlay).to.be.false;
+			});
+
+            it('should set "media" property (truthy)', () => {
+				attrOps.set(container, 'media', true);
+				expect(container.getAttribute('media')).to.eql("true");
+				expect(container.media).to.be.undefined;
 			});
 
 			it('should not set positive numbers on "span" attribute', () => {

@@ -192,6 +192,8 @@ let setProperty = (node, name, value) => {
     }
 }
 
+
+
 node[propNameCfg[name] || name] = value;
 	}
 };
@@ -496,7 +498,7 @@ let DOMConfig = {
 	allowTransparency: IS_ATTRIBUTE,
 	async: IS_BOOLEAN_ATTRIBUTE,
 	autoFocus: IS_BOOLEAN_ATTRIBUTE,
-	autoPlay: IS_BOOLEAN_ATTRIBUTE,
+	autoPlay: IS_BOOLEAN_PROPERTY,
 	capture: IS_BOOLEAN_ATTRIBUTE,
 	charSet: IS_ATTRIBUTE,
 	challenge: IS_ATTRIBUTE,
@@ -584,6 +586,7 @@ let DOMConfig = {
 	maxLength: IS_ATTRIBUTE,
 	max: IS_ATTRIBUTE,
 	media: IS_ATTRIBUTE,
+	mediagroup: IS_ATTRIBUTE,
 	minLength: IS_ATTRIBUTE,
 	muted: IS_BOOLEAN_PROPERTY,
 	multiple: IS_BOOLEAN_PROPERTY,
@@ -597,6 +600,8 @@ let DOMConfig = {
 	open: IS_BOOLEAN_ATTRIBUTE,
 	placeholder: IS_PROPERTY,
 	points: IS_ATTRIBUTE,
+	poster: IS_ATTRIBUTE,
+	preload: IS_PROPERTY,
 	r: IS_ATTRIBUTE,
 	readOnly: IS_BOOLEAN_PROPERTY,
 	ref: IS_INFERNO_ATTRIBUTE,
@@ -617,6 +622,7 @@ let DOMConfig = {
 	span: IS_NUMERIC,
 	spellCheck: IS_BOOLEAN_PROPERTY,
 	stroke: IS_ATTRIBUTE,
+	src: IS_ATTRIBUTE,
 	srcDoc: IS_PROPERTY,
 	srcSet: IS_ATTRIBUTE,
 	start: IS_ATTRIBUTE,
