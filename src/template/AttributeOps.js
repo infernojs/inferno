@@ -29,6 +29,12 @@ let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
 	'xlink:show': 'show',
 	'xlink:title': 'title',
 	'xlink:type': 'type'
+},
+ contentEditable = {
+		'true': true, 
+		'false': true, 
+		'plaintext-only': true, 
+		'inherit':true
 };
 
 /**
@@ -177,7 +183,15 @@ let setProperty = (node, name, value) => {
 		node[name] = value;
 		node.value = val;
 	} else if (value != null) {
-		node[propNameCfg[name] || name] = value;
+
+		if (name === 'contentEditable') {
+
+    if (value) {
+        value = contentEditable[value] ? value : 'inherit';
+    }
+}
+
+node[propNameCfg[name] || name] = value;
 	}
 };
 

@@ -1257,7 +1257,44 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<div contenteditable="true"></div>'
+							 '<div contenteditable="true"></div>' 
+						);
+					});
+				});
+                  describe('should set "contentEditable" property', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div contentEditable={false}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							 '<div contenteditable="false"></div>' 
+						);
+					});
+				});
+
+				describe('should not set "contentEditable" property as a null value', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div contentEditable="contentEditable"></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div></div>'
 						);
 					});
 				});
@@ -2419,10 +2456,34 @@ describe('Inferno acceptance tests', () => {
 				expect(container.getAttribute('span')).to.be.null;
 			});
 
-			it('should set "contentEditable" property', () => {
+			it('should set "contentEditable" property (falsy)', () => {
 				attrOps.set(container, 'contentEditable', false);
 				expect(container.getAttribute('contentEditable')).to.eql('false');
 				expect(container.contentEditable).to.eql('false');
+			});
+
+			it('should set "contentEditable" property (truthy)', () => {
+				attrOps.set(container, 'contentEditable', true);
+				expect(container.getAttribute('contentEditable')).to.eql('true');
+				expect(container.contentEditable).to.eql('true');
+			});
+
+			it('should set "contentEditable" property (inherit)', () => {
+				attrOps.set(container, 'contentEditable', 'inherit');
+				expect(container.getAttribute('contentEditable')).to.be.null;
+				expect(container.contentEditable).to.eql('inherit');
+			});
+
+			it('should set "contentEditable" property (plaintext-only)', () => {
+				attrOps.set(container, 'contentEditable', 'plaintext-only');
+				expect(container.getAttribute('contentEditable')).to.eql('plaintext-only');
+				expect(container.contentEditable).to.eql('plaintext-only');
+			});
+
+			it('should not set "contentEditable" as a null value', () => {
+				attrOps.set(container, 'contentEditable', null);
+				expect(container.getAttribute('contentEditable')).to.be.null;
+				expect(container.contentEditable).to.eql("inherit");
 			});
 
 			it('should not set "contentEditable" as a null value', () => {
