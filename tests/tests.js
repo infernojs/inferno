@@ -1066,7 +1066,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input type="checkbox" value="" disabled="true">'
+							'<input type="checkbox" disabled="true">'
 						);
 					});
 				});
@@ -1085,7 +1085,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="false" type="checkbox" value="">'
+							'<input disabled="false" type="checkbox">'
 						);
 					});
 				});
@@ -1104,7 +1104,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input type="checkbox" value="">'
+							'<input type="checkbox">'
 						);
 					});
 				});
@@ -1123,7 +1123,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input type="checkbox" value="" disabled="disabled">'
+							'<input type="checkbox" disabled="disabled">'
 						);
 					});
 				});
