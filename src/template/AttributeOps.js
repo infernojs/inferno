@@ -127,8 +127,10 @@ let setInfernoAttribute = (node, name, value) => {
  * @param {String} value  The attribute value to set.
  */
 let setVolumAttribute = (node, name, value) => {
-    if ( value === '0.0' || (value === 1) || (typeof value === 'number' && (value > -1 && value < 1.1 ))) {
-		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+    // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the 
+	// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
+    if ( value === 0.0 || (value === 1) || (typeof value === 'number' && (value > -1 && (value < 1.1 )))) {
+		node.setAttribute(attrNameCfg[name] || name, value);
 	}
 };
 
@@ -139,10 +141,9 @@ let setCustomAttribute = (node, name, value) => {
 		node.setAttribute(name, '' + value);
 		node.value = val;
 	} else if (validateAttribute( name )) {
-		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+		node.setAttribute(attrNameCfg[name] || name, value);
 	}
 };
-
 
 /**
  * Set attributes on a DOM node
@@ -191,18 +192,15 @@ let setProperty = (node, name, value) => {
 		node.value = val;
 	} else if (value != null) {
 
-// 'contentEditable' is a special case
-		if (name === 'contentEditable') {
+    // 'contentEditable' is a special case
+	if (name === 'contentEditable') {
 
-    if (value) {
+      if (value) {
         value = contentEditable[value] ? value : 'inherit';
+      }
     }
-}
-
-
-
-node[propNameCfg[name] || name] = value;
-	}
+    node[propNameCfg[name] || name] = value;
+  }
 };
 
 /**

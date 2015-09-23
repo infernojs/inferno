@@ -2602,17 +2602,17 @@ describe('Inferno acceptance tests', () => {
 			});
             describe('Audio / video attributes', () => {			
 
-			it('should render the volume', () => {
+			it('should render the volume attribute - 0.0', () => {
 				attrOps.set(container, 'volume', 0.0);
 				expect(container.getAttribute('volume')).to.eql('0');
 			});
 
-			it('should render the volume', () => {
+			it('should render the volume attribute - 0.4', () => {
 				attrOps.set(container, 'volume', 0.04);
 				expect(container.getAttribute('volume')).to.eql('0.04');
 			});
 
-			it('should render the volume', () => {
+			it('should render the volume attribute - 1', () => {
 				attrOps.set(container, 'volume', 1);
 				expect(container.getAttribute('volume')).to.eql('1');
 			});
