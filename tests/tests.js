@@ -2619,6 +2619,16 @@ describe('Inferno acceptance tests', () => {
 				expect(container.getAttribute('span')).to.eql('444');
 			});
 
+			it('should set overloaded falsy value on attributes', () => {
+				attrOps.set(container, 'target', false);
+				expect(container.getAttribute('target')).to.eql('false');
+			});
+
+			it('should set overloaded truthy value on attributes', () => {
+				attrOps.set(container, 'target', true);
+				expect(container.getAttribute('target')).to.eql("true");
+			});
+
 			it('should not render unsafe custom attribute names', () => {
 				attrOps.set(container, '&/()', 'unsafeAttr!!');
 				expect(container.getAttribute('&/()')).to.be.null;
