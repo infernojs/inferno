@@ -616,8 +616,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * We choose to go for performance, and avoid touching the DOM
 	 *
 	 */
-		if (value !== false) {
-			node.setAttribute(name, '' + (value === true ? '' : value));
+		if (value !== 'false') {
+			node.setAttribute(name, '' + (value === 'true' ? '' : value));
 		}
 	};
 	
