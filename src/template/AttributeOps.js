@@ -163,7 +163,10 @@ let setAttribute = (node, name, value) => {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node.setAttribute(name, '' + value);
-		node.value = val;
+        // Check if val exist, if not we will get a stupid 'value=""' in the markup
+		if ( val ) {
+		   node.value = val;
+		}
 	} else {
 
 		// Avoid touching the DOM on falsy values
@@ -596,7 +599,7 @@ let DOMConfig = {
 	for: IS_ATTRIBUTE,
 	fx: IS_ATTRIBUTE,
 	fy: IS_ATTRIBUTE,
-	height: IS_PROPERTY,
+	height: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
 	hidden: IS_BOOLEAN_ATTRIBUTE,
 	href: IS_ATTRIBUTE,
 	htmlfor: IS_PROPERTY,
@@ -640,7 +643,6 @@ let DOMConfig = {
 	preload: IS_PROPERTY,
 	r: IS_ATTRIBUTE,
 	readOnly: IS_BOOLEAN_PROPERTY,
-	ref: IS_INFERNO_ATTRIBUTE,
 	reversed: IS_BOOLEAN_PROPERTY,
 	required: IS_BOOLEAN_PROPERTY,
 	role: IS_ATTRIBUTE,
@@ -697,7 +699,7 @@ let DOMConfig = {
 
 	visible: IS_BOOLEAN_ATTRIBUTE,
 	volume: IS_VOLUME_ATTRIBUTE,
-	width: IS_PROPERTY,
+	width: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
 	wmode: IS_ATTRIBUTE,
 	x1: IS_ATTRIBUTE,
 	x2: IS_ATTRIBUTE,
