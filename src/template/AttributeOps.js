@@ -30,9 +30,10 @@ let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
 	'xlink:title': 'title',
 	'xlink:type': 'type'
 },
+// Workaround for the 'contentEditable' property
  contentEditable = {
-		'true': true, 
-		'false': true, 
+		true: true, 
+		false: true, 
 		'plaintext-only': true, 
 		'inherit':true
 };
@@ -80,8 +81,9 @@ let normalize = (name, value) => {
     if ( illegalAttributeNameCache[name] ) {
         return false;
     }
-     // namespace attributes are seen as non-valid, avoid that!
-     if ( VALID_ATTRIBUTE_NAME_REGEX.test( name ) || 
+    if ( VALID_ATTRIBUTE_NAME_REGEX.test( name ) || 
+
+    // namespace attributes are seen as non-valid, avoid that!
 	    ( xmlMap[name] ) || 
 		( xlinkMap[name] ) ) {
 			
@@ -102,7 +104,16 @@ let normalize = (name, value) => {
  * @param {String} value The boolean attribute value to set.
  */
 let setBooleanAttribute = (node, name, value) => {
-	// Avoid touching the DOM and set falsy attributes.
+    /**
+	  * IMPORTANT!
+	  *
+	  * This one is 'tricky. For better performance we should avoid
+	  * touching DOM on 'falsy' values. But in the HTML5 specs, a
+	  * 'falsy' value can be set as - checked="false". 
+	  *
+	  * We choose to go for performance, and avoid touching the DOM
+	  *
+	  */
 	if (value !== false) {
        node.setAttribute(name, '' + (value === true ? '' : value));
 	}
@@ -111,8 +122,8 @@ let setBooleanAttribute = (node, name, value) => {
 /**
  * Set Inferno attributes
  *
- * @param  {Object} node A DOM element.
- * @param  {String} name  The attribute name to set.
+ * @param {Object} node A DOM element.
+ * @param {String} name  The attribute name to set.
  * @param {String} value The attribute value to set.
  */
 let setInfernoAttribute = (node, name, value) => {
@@ -136,7 +147,7 @@ let setVolumAttribute = (node, name, value) => {
 
 let setCustomAttribute = (node, name, value) => {
     if (validateAttribute( name )) {
-		node.setAttribute(attrNameCfg[name] || name, value);
+       node.setAttribute(attrNameCfg[name] || name, value);
 	}
 };
 
@@ -209,7 +220,8 @@ let setProperty = (node, name, value) => {
 let setSelectedIndexProperty = (node, name, value) => {
 
     // selectbox has special case
-  if (Array.prototype.every.call(node.options, (o) => !(o.selected = o.value === value))) {
+  if (Array.prototype.every.call(node.options, (opt) => !(opt.selected = opt.value === value))) {
+	  // TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
      node[name] = -1;
   }	
 };
@@ -277,6 +289,7 @@ let setValueForProperty = (node, name, value) => {
 	if (name === 'value' && (getNodeName(node) === 'select')) {
 		setSelectValue(node, value);
 	} else {
+		// Need to validate this else it will fail when we update fragments etc.
 		node[name] !== value && (node[name] = value);
 	}
 };
@@ -298,6 +311,7 @@ let removeAttribute = (node, name) => {
  * @param {String} name - The property name to set.
  */
 let removeProperty = (node, name) => {
+	// 'select' is a special case
 	if (name === 'value' && (getNodeName(node) === 'select')) {
 		removeSelectValue(node);
 	} else {
@@ -350,10 +364,7 @@ let removeSelectValue = node => {
  * @return {string} Markup string, or empty string if the property was invalid.
  */
 let createAttributeMarkup = (name, value) => {
- if (!validateAttribute( name ) || value == null) {
-    return '';
- }
-   return `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
+  return (!validateAttribute( name ) || value == null) ? '' : `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
 }
 
 /**
