@@ -177,7 +177,7 @@ let setAttribute = (node, name, value) => {
  * @param {String} value  The numeric attribute value to set.
  */
 let setNumericAttribute = (node, name, value) => {
-      if (typeof value === "number" && (value > 0)) {
+      if (typeof value === 'number' && (value > 0)) {
 		node.setAttribute(name, '' + value); // cast to string
 	}
 };

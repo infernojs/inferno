@@ -532,7 +532,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		'xlink:title': 'title',
 		'xlink:type': 'type'
 	},
-	    contentEditable = {
+	
+	// Workaround for the 'contentEditable' property
+	contentEditable = {
 		'true': true,
 		'false': true,
 		'plaintext-only': true,
@@ -582,8 +584,10 @@ return /******/ (function(modules) { // webpackBootstrap
 		if (illegalAttributeNameCache[name]) {
 			return false;
 		}
+		if (VALID_ATTRIBUTE_NAME_REGEX.test(name) ||
+	
 		// namespace attributes are seen as non-valid, avoid that!
-		if (VALID_ATTRIBUTE_NAME_REGEX.test(name) || xmlMap[name] || xlinkMap[name]) {
+		xmlMap[name] || xlinkMap[name]) {
 	
 			validatedAttributeNameCache[name] = true;
 			return true;
@@ -602,7 +606,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value The boolean attribute value to set.
 	 */
 	var setBooleanAttribute = function setBooleanAttribute(node, name, value) {
-		// Avoid touching the DOM and set falsy attributes.
+		/**
+	 * IMPORTANT!
+	 *
+	 * This one is 'tricky. For better performance we should avoid
+	 * touching DOM on 'falsy' values. But in the HTML5 specs, a
+	 * 'falsy' value can be set as - checked="false". 
+	 *
+	 * We choose to go for performance, and avoid touching the DOM
+	 *
+	 */
 		if (value !== false) {
 			node.setAttribute(name, '' + (value === true ? '' : value));
 		}
@@ -611,8 +624,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Set Inferno attributes
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name  The attribute name to set.
+	 * @param {Object} node A DOM element.
+	 * @param {String} name  The attribute name to set.
 	 * @param {String} value The attribute value to set.
 	 */
 	var setInfernoAttribute = function setInfernoAttribute(node, name, value) {
@@ -666,7 +679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value  The numeric attribute value to set.
 	 */
 	var setNumericAttribute = function setNumericAttribute(node, name, value) {
-		if (typeof value === "number" && value > 0) {
+		if (typeof value === 'number' && value > 0) {
 			node.setAttribute(name, '' + value); // cast to string
 		}
 	};
@@ -709,9 +722,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var setSelectedIndexProperty = function setSelectedIndexProperty(node, name, value) {
 	
 		// selectbox has special case
-		if (Array.prototype.every.call(node.options, function (o) {
-			return !(o.selected = o.value === value);
+		if (Array.prototype.every.call(node.options, function (opt) {
+			return !(opt.selected = opt.value === value);
 		})) {
+			// TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
 			node[name] = -1;
 		}
 	};
@@ -779,6 +793,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		if (name === 'value' && getNodeName(node) === 'select') {
 			setSelectValue(node, value);
 		} else {
+			// Need to validate this else it will fail when we update fragments etc.
 			node[name] !== value && (node[name] = value);
 		}
 	};
@@ -800,6 +815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} name - The property name to set.
 	 */
 	var removeProperty = function removeProperty(node, name) {
+		// 'select' is a special case
 		if (name === 'value' && getNodeName(node) === 'select') {
 			removeSelectValue(node);
 		} else {
@@ -813,17 +829,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} node  A DOM element.
 	 * @param {String|Array} value  The property value to set.
 	 */
-	var setSelectValue = function setSelectValue(node, value, children) {
+	
+	var setSelectValue = function setSelectValue(node, value) {
 	
 		var arrayish = (0, _utilIsArray2['default'])(value),
-		    options = node.options,
-		    len = options.length;
+		    options = node.options;
 	
 		var i = 0,
 		    optionNode = undefined;
-	
-		while (i < len) {
-			optionNode = options[i++];
+		for (var _i = 0; _i < options.length; _i++) {
+			optionNode = options[_i];
 			optionNode.selected = value != null && (arrayish ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
 		}
 	};
@@ -834,13 +849,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} node A DOM element.
 	 */
 	var removeSelectValue = function removeSelectValue(node) {
-		var options = node.options,
-		    len = options.length;
-	
-		var i = 0;
-	
-		while (i < len) {
-			options[i++].selected = false;
+		for (var i = 0; i < node.options.length; i++) {
+			node.options[i].selected = false;
 		}
 	};
 	
@@ -852,10 +862,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {string} Markup string, or empty string if the property was invalid.
 	 */
 	var createAttributeMarkup = function createAttributeMarkup(name, value) {
-		if (!validateAttribute(name) || value == null) {
-			return '';
-		}
-		return (_cfgAttrNameCfg2['default'][name] || name) + '="' + (0, _escapeHtml2['default'])(value + '') + '"';
+		return !validateAttribute(name) || value == null ? '' : (_cfgAttrNameCfg2['default'][name] || name) + '="' + (0, _escapeHtml2['default'])(value + '') + '"';
 	};
 	
 	/**
