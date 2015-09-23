@@ -496,10 +496,10 @@ let DOMConfig = {
 	accept: IS_ATTRIBUTE,
 	allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 	allowTransparency: IS_ATTRIBUTE,
+  
     /** 
 	 * Audio / video attributes ( DOM Living specs)
 	 */
-
 	'AudioTrack.enabled':IS_BOOLEAN_PROPERTY,
 	'AudioTrack.label': IS_ATTRIBUTE,
 	'AudioTrack.language': IS_ATTRIBUTE,
@@ -516,7 +516,6 @@ let DOMConfig = {
 	clipPath: IS_ATTRIBUTE,
 	cols: IS_NUMERIC,
 	crossOrigin: IS_ATTRIBUTE,
-  // Returns "true", "false", or "inherit", based on the state of the contenteditable attribute.
 	contentEditable: IS_PROPERTY,
 	contextMenu: IS_ATTRIBUTE,
 	controls: IS_BOOLEAN_PROPERTY,
