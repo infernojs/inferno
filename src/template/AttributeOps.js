@@ -18,14 +18,14 @@ import escapeHtml from './escapeHtml';
  * Set attributes on a DOM node
  *
  * @param {Object} node A DOM element.
- * @param {String} name	  The attribute name to set.
- * @param {String} value The attribute value to set.
+ * @param {String} attrName	  The attribute name to set.
+ * @param {String} attrValue The attribute value to set.
  */
-let setAttribute = (node, name, value) => {
-	if (name === 'type' && (tagName(node) === 'input')) {
+let setAttribute = (node, attrName, attrValue) => {
+	if (attrName === 'type' && (tagName(node) === 'input')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
-		node.setAttribute(name, '' + value);
+		node.setAttribute(attrName, '' + attrValue);
         // Check if val exist, if not we will get a stupid 'value=""' in the markup
 		if ( val ) {
 		   node.value = val;
@@ -33,8 +33,8 @@ let setAttribute = (node, name, value) => {
 	} else {
 
 		// Avoid touching the DOM on falsy values
-		if ( value !== 'false') {
-		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+		if ( attrValue !== 'false') {
+		node.setAttribute(attrNameCfg[attrName] || attrName, '' + attrValue); // cast to string
 	   }	
 	}
 };
@@ -43,10 +43,10 @@ let setAttribute = (node, name, value) => {
  * Set boolean attributes
  *
  * @param  {Object} node A DOM element.
- * @param  {String} name  The boolean attribute name to set.
- * @param {String} value The boolean attribute value to set.
+ * @param  {String} attrName  The boolean attribute name to set.
+ * @param {String} attrValue The boolean attribute value to set.
  */
-let setBooleanAttribute = (node, name, value) => {
+let setBooleanAttribute = (node, attrName, attrValue) => {
     /**
 	  * IMPORTANT!
 	  *
@@ -57,8 +57,8 @@ let setBooleanAttribute = (node, name, value) => {
 	  * We choose to go for performance, and avoid touching the DOM
 	  *
 	  */
-	if (value !== 'false') {
-       node.setAttribute(name, '' + (value === 'true' ? '' : value));
+	if (attrValue !== 'false') {
+       node.setAttribute(attrName, '' + (attrValue === 'true' ? '' : attrValue));
 	}
 };
 
@@ -67,19 +67,26 @@ let setBooleanAttribute = (node, name, value) => {
  *
  * @param {Object} node A DOM element.
  * @param {String} name	 The attribute name to set.
- * @param {String} value  The attribute value to set.
+ * @param {String} attrValue  The attribute value to set.
  */
-let setVolumAttribute = (node, name, value) => {
+let setVolumAttribute = (node, attrName, attrValue) => {
     // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the 
 	// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
-    if ( value === 0.0 || (value === 1) || (typeof value === 'number' && (value > -1 && (value < 1.1 )))) {
-          node.setAttribute(name, value);
+    if ( attrValue === 0.0 || (attrValue === 1) || (typeof attrValue === 'number' && (attrValue > -1 && (attrValue < 1.1 )))) {
+          node.setAttribute(attrName, attrValue);
 	}
 };
 
-let setCustomAttribute = (node, name, value) => {
-    if (validateAttribute( name )) {
-       node.setAttribute(attrNameCfg[name] || name, value);
+/**
+ * Set custom attributes on a DOM node
+ *
+ * @param {Object} node A DOM element.
+ * @param {String} attrName	  The attribute name to set.
+ * @param {String} attrValue The attribute value to set.
+ */
+let setCustomAttribute = (node, attrName, attrValue) => {
+    if (validateAttribute( attrName )) {
+       node.setAttribute(attrNameCfg[attrName] || attrName, attrValue);
 	}
 };
 
@@ -87,12 +94,12 @@ let setCustomAttribute = (node, name, value) => {
  * Set numeric attributes on a DOM node
  *
  * @param {Object} node A DOM element.
- * @param {String} name	  The numeric attribute name to set.
- * @param {String} value  The numeric attribute value to set.
+ * @param {String} attrName	  The numeric attribute name to set.
+ * @param {String} attrValue  The numeric attribute value to set.
  */
-let setNumericAttribute = (node, name, value) => {
-      if (typeof value === 'number' && (value > 0)) {
-		node.setAttribute(name, value);
+let setNumericAttribute = (node, attrName, attrValue) => {
+      if (typeof attrValue === 'number' && (attrValue > 0)) {
+		node.setAttribute(attrName, attrValue);
 	}
 };
 
@@ -100,15 +107,15 @@ let setNumericAttribute = (node, name, value) => {
  * Set properties on a DOM node
  *
  * @param {Object} node A DOM element.
- * @param {String} name	  The property name to set.
- * @param {String} value	 The property value to set.
+ * @param {String} propertyName	  The property name to set.
+ * @param {String} propValue	 The property value to set.
  */
-let setProperty = (node, name, value) => {
+let setProperty = (node, propertyName, propValue) => {
 
- if (value != null) {
+ if (propValue != null) {
 
     // 'contentEditable' is a special case
-	if (name === 'contentEditable') {
+	if (propertyName === 'contentEditable') {
    
      /**
 	  * We would need this check here, else it will throw:
@@ -116,11 +123,12 @@ let setProperty = (node, name, value) => {
 	  * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
 	  * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
 	  */
-      if (value) {
-        value = contentEditableCfg[value] ? value : 'inherit';
+      if (propValue) {
+        propValue = contentEditableCfg[propValue] ? propValue : 'inherit';
       }
     }
-    node[propNameCfg[name] || name] = value;
+	
+    node[propNameCfg[propertyName] || propertyName] = propValue;
   }
 };
 
@@ -128,15 +136,15 @@ let setProperty = (node, name, value) => {
  * Set selectedIndex property
  *
  * @param {Object} node A DOM element.
- * @param {String} name	  The property name to set.
- * @param {String} value  The property value to set.
+ * @param {String} propertyName	  The property propertyName to set.
+ * @param {String} propValue  The property propValue to set.
  */
-let setSelectedIndexProperty = (node, name, value) => {
+let setSelectedIndexProperty = (node, propertyName, propValue) => {
 
     // selectbox has special case
-  if (Array.prototype.every.call(node.options, (opt) => !(opt.selected = opt.value === value))) {
+  if (Array.prototype.every.call(node.options, (opt) => !(opt.selected = opt.value === propValue))) {
 	  // TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
-     node[name] = -1;
+     node[propertyName] = -1;
   }	
 };
 
@@ -144,51 +152,51 @@ let setSelectedIndexProperty = (node, name, value) => {
  * Set boolean property
  *
  * @param {Object} node A DOM element.
- * @param {String} name	  The boolean property name to set.
- * @param {String} value  The boolean property value to set.
+ * @param {String} propertyName	  The boolean property propertyName to set.
+ * @param {String} propValue  The boolean property value to set.
  */
-let setBooleanProperty = (node, name, value) => {
-	node[name] = !!value;
+let setBooleanProperty = (node, propertyName, propValue) => {
+	node[propertyName] = !!propValue;
 };
 
 /**
  * Set dataset object properties
  *
  * @param {Object} node A DOM element.
- * @param {String} name  The property name to set.
- * @param {String} value  The property value to set.
+ * @param {String} propertyName  The property propertyName to set.
+ * @param {String} propValue  The property value to set.
  */
-let setPropertyForDataset = (node, name, value) => {
+let setPropertyForDataset = (node, propertyName, propValue) => {
 	if (process.env.NODE_ENV !== 'production') {
-		let typeOfVal = typeof value;
+		let typeOfVal = typeof propValue;
 		if (typeOfVal !== 'object') {
-			console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
+			console.error(`Error! "${propertyName}" attribute expects an object as a value, not a ${typeOfVal}`);
 			return;
 		}
 	}
 
-	let prop = node[name];
+	let prop = node[propertyName];
 
-	for (let idx in value) {
-      // regarding the specs we need to camelize the 'name'
-		prop[camelize(idx)] = value[idx] == null ? '' : dasherize(value[idx]);
+	for (let idx in propValue) {
+      // regarding the specs we need to camelize the 'propertyName'
+		prop[camelize(idx)] = propValue[idx] == null ? '' : dasherize(propValue[idx]);
 	}
 };
 
-let setPropertyForStyle = (node, name, value) => {
+let setPropertyForStyle = (node, propertyName, propValue) => {
 	// CSS style need to be a object literal, not a string value
 	if (process.env.NODE_ENV !== 'production') {
-		let typeOfVal = typeof value;
+		let typeOfVal = typeof propValue;
 		if (typeOfVal !== 'object') {
-			console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
+			console.error(`Error! "${propertyName}" attribute expects an object as a value, not a ${typeOfVal}`);
 			return;
 		}
 	}
 
-	let prop = node[name];
+	let prop = node[propertyName];
 
-	for (let idx in value) {
-		node.style[idx] = value[idx] == null ? '' : normalizeCSS(idx, value[idx]);
+	for (let idx in propValue) {
+		node.style[idx] = propValue[idx] == null ? '' : normalizeCSS(idx, propValue[idx]);
 	}
 };
 
@@ -196,15 +204,15 @@ let setPropertyForStyle = (node, name, value) => {
  * Set 'value' property after validation check
  *
  * @param {Object} node A DOM element.
- * @param {String} name	  The property name to set.
- * @param {String} value  The property value to set.
+ * @param {String} propertyName	  The property propertyName to set.
+ * @param {String} propValue  The property value to set.
  */
-let setValueForProperty = (node, name, value) => {
-	if (name === 'value' && (tagName(node) === 'select')) {
-		setSelectValue(node, value);
+let setValueForProperty = (node, propertyName, propValue) => {
+	if (propertyName === 'value' && (tagName(node) === 'select')) {
+		setSelectValue(node, propValue);
 	} else {
 		// Need to validate this else it will fail when we update fragments etc.
-		node[name] !== value && (node[name] = value);
+		node[propertyName] !== propValue && (node[propertyName] = propValue);
 	}
 };
 
@@ -214,22 +222,22 @@ let setValueForProperty = (node, name, value) => {
  * @param {Object element} node - A DOM element.
  * @param {String} name - The attribute name to remove.
  */
-let removeAttribute = (node, name) => {
-	node.removeAttribute(attrNameCfg[name] || name);
+let removeAttribute = (node, attrName) => {
+	node.removeAttribute(attrNameCfg[attrName] || attrName);
 };
 
 /**
  * Unsets a property
  *
  * @param {Object} node A DOM element.
- * @param {String} name - The property name to set.
+ * @param {String} propertyName - The property name to set.
  */
-let removeProperty = (node, name) => {
+let removeProperty = (node, propertyName) => {
 	// 'select' is a special case
-	if (name === 'value' && (tagName(node) === 'select')) {
+	if (propertyName === 'value' && (tagName(node) === 'select')) {
 		removeSelectValue(node);
 	} else {
-		node[name] = hasPropertyAccessor(node, name);
+		node[propertyName] = hasPropertyAccessor(node, propertyName);
 	}
 };
 
