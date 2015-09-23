@@ -114,7 +114,7 @@ let setBooleanAttribute = (node, name, value) => {
 	  * We choose to go for performance, and avoid touching the DOM
 	  *
 	  */
-	if (value !== false) {
+	if (value !== 'false') {
        node.setAttribute(name, '' + (value === 'true' ? '' : value));
 	}
 };
@@ -141,7 +141,7 @@ let setVolumAttribute = (node, name, value) => {
     // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the 
 	// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
     if ( value === 0.0 || (value === 1) || (typeof value === 'number' && (value > -1 && (value < 1.1 )))) {
-          node.setAttribute(attrNameCfg[name] || name, value);
+          node.setAttribute(name, value);
 	}
 };
 
@@ -165,8 +165,9 @@ let setAttribute = (node, name, value) => {
 		node.setAttribute(name, '' + value);
 		node.value = val;
 	} else {
+
 		// Avoid touching the DOM on falsy values
-		if ( value !== false) {
+		if ( value !== 'false') {
 		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
 	   }	
 	}
@@ -181,7 +182,7 @@ let setAttribute = (node, name, value) => {
  */
 let setNumericAttribute = (node, name, value) => {
       if (typeof value === 'number' && (value > 0)) {
-		node.setAttribute(name, '' + value); // cast to string
+		node.setAttribute(name, value);
 	}
 };
 

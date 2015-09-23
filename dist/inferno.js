@@ -667,7 +667,10 @@ return /******/ (function(modules) { // webpackBootstrap
 			node.setAttribute(name, '' + value);
 			node.value = val;
 		} else {
-			node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, '' + value); // cast to string
+			// Avoid touching the DOM on falsy values
+			if (value !== 'false') {
+				node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, '' + value); // cast to string
+			}
 		}
 	};
 	
@@ -738,7 +741,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} value  The boolean property value to set.
 	 */
 	var setBooleanProperty = function setBooleanProperty(node, name, value) {
-		node[name] = value;
+		node[name] = !!value;
 	};
 	
 	/**
@@ -1163,7 +1166,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		srcSet: IS_ATTRIBUTE,
 		start: IS_ATTRIBUTE,
 		step: IS_ATTRIBUTE,
-		tabIndex: IS_ATTRIBUTE,
+		tabIndex: IS_PROPERTY,
 		target: IS_ATTRIBUTE,
 		transform: IS_ATTRIBUTE,
 		title: IS_ATTRIBUTE,
