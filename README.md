@@ -27,6 +27,13 @@ npm install --save inferno
 npm run test
 ```
 
+## Building
+
+```sh
+npm run build-dev
+npm run build-pro
+```
+
 ## Overview
 
 Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.

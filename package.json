@@ -6,9 +6,9 @@
   "scripts": {
     "test-win": "webpack-dev-server --config test.config.js --hot --inline 'mocha!.\\tests\\tests.js'",
     "test": "webpack-dev-server --config test.config.js --hot --inline 'mocha!./tests/tests.js'",
-    "dev-watch": "webpack-dev-server --config webpack.config.js --hot --inline",
-    "dev": "webpack --config webpack.config.js --inline",
-    "build": "PROD_DEV=1 webpack --config webpack.config.js --inline"
+    "examples": "webpack-dev-server --config webpack.config.js --hot --inline",
+    "build-dev": "webpack --config webpack.config.js --inline",
+    "build-pro": "PROD_DEV=1 webpack --config webpack.config.js --inline"
   },
   "dependencies": {
     "babel-runtime": "^5.8.24",
