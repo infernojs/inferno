@@ -103,6 +103,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _coreClearDomElement2 = _interopRequireDefault(_coreClearDomElement);
 	
+	var _coreCreateRef = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./core/createRef\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var _coreCreateRef2 = _interopRequireDefault(_coreCreateRef);
+	
 	exports['default'] = {
 		Component: _classComponent2['default'],
 		render: _coreRender2['default'],
@@ -114,6 +118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		TemplateTypes: _enumTemplateTypes2['default'],
 		template: _template2['default'],
 		clearDomElement: _coreClearDomElement2['default'],
+		createRef: _coreCreateRef2['default'],
 		version: ("0.3.0")
 	};
 	module.exports = exports['default'];
@@ -157,6 +162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		ATTR_NAME: 12,
 		ATTR_WIDTH: 13,
 		ATTR_HEIGHT: 14,
+		ATTR_REF: 15,
 		//will contain other "custom" types, like rowspan etc or custom data-attributes
 		ATTR_OTHER: {},
 		COMPONENT_PROPS: {}
@@ -396,6 +402,9 @@ return /******/ (function(modules) { // webpackBootstrap
 						attachFragment(context, fragment.templateValue, parentDom, fragment.templateElement, true);
 						fragment.templateElement = fragment.templateValue.dom.parentNode;
 						break;
+					case _enumFragmentValueTypes2['default'].ATTR_REF:
+						fragment.templateValue.element = fragment.templateElement;
+						break;
 				}
 			} else if (fragment.templateValues) {
 				//if the fragment has multiple values, we must loop through them all and attach them
@@ -424,6 +433,9 @@ return /******/ (function(modules) { // webpackBootstrap
 						case _enumFragmentValueTypes2['default'].FRAGMENT_REPLACE:
 							attachFragment(context, value, parentDom, component, element, true);
 							fragment.templateElements[i] = value.dom.parentNode;
+							break;
+						case _enumFragmentValueTypes2['default'].ATTR_REF:
+							fragment.templateValues[i].element = fragment.templateElements[i];
 							break;
 					}
 				}
@@ -643,7 +655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		// The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
 		// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
 		if (value === 0.0 || value === 1 || typeof value === 'number' && (value > -1 && value < 1.1)) {
-			node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, value);
+			node.setAttribute(name, value);
 		}
 	};
 	
@@ -665,8 +677,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			// Support: IE9-Edge
 			var val = node.value; // value will be lost in IE if type is changed
 			node.setAttribute(name, '' + value);
-			node.value = val;
+			// Check if val exist, if not we will get a stupid 'value=""' in the markup
+			if (val) {
+				node.value = val;
+			}
 		} else {
+	
 			// Avoid touching the DOM on falsy values
 			if (value !== 'false') {
 				node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, '' + value); // cast to string
@@ -683,7 +699,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var setNumericAttribute = function setNumericAttribute(node, name, value) {
 		if (typeof value === 'number' && value > 0) {
-			node.setAttribute(name, '' + value); // cast to string
+			node.setAttribute(name, value);
 		}
 	};
 	
@@ -1099,7 +1115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		'for': IS_ATTRIBUTE,
 		fx: IS_ATTRIBUTE,
 		fy: IS_ATTRIBUTE,
-		height: IS_PROPERTY,
+		height: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
 		hidden: IS_BOOLEAN_ATTRIBUTE,
 		href: IS_ATTRIBUTE,
 		htmlfor: IS_PROPERTY,
@@ -1200,7 +1216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		visible: IS_BOOLEAN_ATTRIBUTE,
 		volume: IS_VOLUME_ATTRIBUTE,
-		width: IS_PROPERTY,
+		width: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
 		wmode: IS_ATTRIBUTE,
 		x1: IS_ATTRIBUTE,
 		x2: IS_ATTRIBUTE,
@@ -2784,6 +2800,9 @@ return /******/ (function(modules) { // webpackBootstrap
 			case 'placeholder':
 				fragmentType = _enumFragmentValueTypes2['default'].ATTR_PLACEHOLDER;
 				break;
+			case 'ref':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_REF;
+				break;
 			default:
 				fragmentType = _enumFragmentValueTypes2['default'].ATTR_OTHER;
 		}
@@ -3030,7 +3049,6 @@ return /******/ (function(modules) { // webpackBootstrap
 					propsParsed[prop] = this.templateValues[propsParsed[prop].pointer];
 				}
 			}
-	
 			element = {
 				dom: null,
 				component: this.templateValue || this.templateValues[tag.pointer],
@@ -3101,7 +3119,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		if (props) {
-	
 			_2['default'].addAttributes(element, props, this);
 		}
 	

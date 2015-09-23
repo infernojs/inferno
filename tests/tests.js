@@ -2443,12 +2443,12 @@ describe('Inferno acceptance tests', () => {
 
 			it('should set height property', () => {
 				attrOps.set(container, 'height', '70%');
-				expect(container.height).to.eql('70%');
+				expect(container.getAttribute("height")).to.eql('70%');
 			});
 
 			it('should set width property', () => {
 				attrOps.set(container, 'width', '70%');
-				expect(container.width).to.eql('70%');
+				expect(container.getAttribute('width')).to.eql('70%');
 			});
 
 			it('should set dataset property - #1', () => {
