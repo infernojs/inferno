@@ -2600,6 +2600,35 @@ describe('Inferno acceptance tests', () => {
 				attrOps.set(container, 'disabled', true);
 				expect(container.disabled).to.be.undefined;
 			});
+            describe('Audio / video attributes', () => {			
+
+			it('should render the AudioTrack.label attribute', () => {
+				attrOps.set(container, 'AudioTrack.label', 'foo');
+				expect(container.getAttribute('AudioTrack.label')).to.eql('foo');
+			});
+
+			it('should render the VideoTrack.label attribute', () => {
+				attrOps.set(container, 'VideoTrack.label', 'foo');
+				expect(container.getAttribute('VideoTrack.label')).to.eql('foo');
+			});
+
+			it('should render the AudioTrack.language attribute', () => {
+				attrOps.set(container, 'AudioTrack.language', 'foo');
+				expect(container.getAttribute('AudioTrack.language')).to.eql('foo');
+			});
+
+			it('should render the VideoTrack.language attribute', () => {
+				attrOps.set(container, 'VideoTrack.language', 'foo');
+				expect(container.getAttribute('VideoTrack.language')).to.eql('foo');
+			});
+            // Boolean property
+			it('should render the AudioTrack.enabled attribute', () => {
+				attrOps.set(container, 'AudioTrack.enabled', true);
+//				expect(container.getAttribute('AudioTrack.enabled')).to.eql('foo');
+				expect(container['AudioTrack.enabled']).to.be.true;
+			});
+
+ 	      });
 		});
 	});
 });

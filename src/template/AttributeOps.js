@@ -496,6 +496,14 @@ let DOMConfig = {
 	accept: IS_ATTRIBUTE,
 	allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 	allowTransparency: IS_ATTRIBUTE,
+    /** 
+	 * Audio / video attributes ( DOM Living specs)
+	 */
+
+	'AudioTrack.enabled':IS_BOOLEAN_PROPERTY,
+	'AudioTrack.label': IS_ATTRIBUTE,
+	'AudioTrack.language': IS_ATTRIBUTE,
+
 	async: IS_BOOLEAN_ATTRIBUTE,
 	autoFocus: IS_BOOLEAN_ATTRIBUTE,
 	autoPlay: IS_BOOLEAN_PROPERTY,
@@ -661,6 +669,14 @@ let DOMConfig = {
 	},
 	version: IS_ATTRIBUTE,
 	viewBox: IS_ATTRIBUTE,
+
+    /** 
+	 * Audio / video attributes ( DOM Living specs)
+	 */
+	'VideoTrack.label': IS_ATTRIBUTE,
+	'VideoTrack.language': IS_ATTRIBUTE,
+	'VideoTrack.enabled':IS_BOOLEAN_PROPERTY,
+	
 	visible: IS_BOOLEAN_ATTRIBUTE,
 	width: IS_PROPERTY,
 	wmode: IS_ATTRIBUTE,
