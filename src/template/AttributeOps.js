@@ -204,6 +204,23 @@ let setProperty = (node, name, value) => {
 };
 
 /**
+ * Set selectedIndex property
+ *
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The property name to set.
+ * @param {String} value  The property value to set.
+ */
+let setSelectedIndexProperty = (node, name, value) => {
+
+    // selectbox has special case
+    if (Array.prototype.every.call(node.options, function(o) {
+            return !(o.selected = o.value === value)
+        })) {
+        node[name] = -1;
+    }
+};
+
+/**
  * Set boolean property
  *
  * @param {Object} node A DOM element.
@@ -301,11 +318,8 @@ let removeProperty = (node, name) => {
  * @param {String|Array} value  The property value to set.
  */
 let setSelectValue = (node, value, children) => {
-	/**
-	 * TODO Children will be the 3rd arg, so we can iterate through the child nodes
-	 * and get 'optGroup' to work.
-	 */
-	const isMultiple = isArray(value),
+
+	const arrayish = isArray(value),
 		options = node.options,
 		len = options.length;
 
@@ -314,7 +328,7 @@ let setSelectValue = (node, value, children) => {
 
 	while (i < len) {
 		optionNode = options[i++];
-		optionNode.selected = value != null && (isMultiple ? inArray(value, optionNode.value) : optionNode.value == value);
+		optionNode.selected = value != null && (arrayish ? inArray(value, optionNode.value) : optionNode.value == value);
 	}
 };
 
@@ -441,6 +455,12 @@ let IS_BOOLEAN_ATTRIBUTE = {
 
 let IS_PROPERTY = {
 	set: setProperty,
+	remove: removeProperty,
+	toHtml: createAttributeMarkup
+};
+
+let IS_SELECTED_PROPERTY = {
+	set: setSelectedIndexProperty,
 	remove: removeProperty,
 	toHtml: createAttributeMarkup
 };
@@ -627,7 +647,7 @@ let DOMConfig = {
 	scoped: IS_BOOLEAN_ATTRIBUTE,
 	seamless: IS_BOOLEAN_ATTRIBUTE,
 	selected: IS_BOOLEAN_PROPERTY,
-	selectedIndex: IS_PROPERTY,
+	selectedIndex: IS_SELECTED_PROPERTY,
 	size: IS_NUMERIC,
 	// Viewport-based selection
 	sizes: IS_ATTRIBUTE,

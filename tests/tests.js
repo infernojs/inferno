@@ -1318,6 +1318,26 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+				describe('should handle selectedIndex', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<select><option>AM</option><option>PM</option></select>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+                        expect(get(container.firstChild)).to.eql('AM');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<select><option>AM</option><option>PM</option></select>'
+						);
+					});
+				});
+
 				describe('should populate the value attribute on select', () => {
 					let template;
 
