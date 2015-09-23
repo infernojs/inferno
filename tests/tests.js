@@ -53,7 +53,7 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-				
+
 				describe('should render a basic example #2 (no JSX)', () => {
 					let template;
 
@@ -99,7 +99,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should render "autoFocus" boolean attributes (no JSX)', () => {
 					let template;
 
@@ -111,7 +111,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						
+
 //						expect(container.firstChild.getAttribute("autoFocus")).to.eql("");
 						expect(
 							container.innerHTML
@@ -132,7 +132,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						
+
 						expect(container.firstChild.getAttribute("class")).to.eql("Dominic rocks!");
 						expect(
 							container.innerHTML
@@ -154,7 +154,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						
+
                         expect( container.value ).to.be.undefined;
 						expect(
 							container.innerHTML
@@ -174,7 +174,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-						
+
                         expect( container.firstChild.getAttribute('title' )).to.eql('Tip!');
 						expect(
 							container.innerHTML
@@ -193,12 +193,12 @@ describe('Inferno acceptance tests', () => {
                           createElement("option", {value: "foo"}, "I'm a li-tag"),
                           createElement("option", {value: "bar"}, "I'm a li-tag")
                         ));
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
-						
+
                         expect(get(container.firstChild)).to.eql(['foo']);
 						expect(
 							container.innerHTML
@@ -361,7 +361,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should properly render "class" property on a custom element', () => {
 					let template;
 
@@ -474,13 +474,13 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should render video / audio attributes', () => {
 					let template;
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
 
- 	                     <input type="file" multiple="multiple" capture="capture" accept="image/*"></input>						
+ 	                     <input type="file" multiple="multiple" capture="capture" accept="image/*"></input>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -1257,7 +1257,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							 '<div contenteditable="true"></div>' 
+							 '<div contenteditable="true"></div>'
 						);
 					});
 				});
@@ -1275,7 +1275,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							 '<div contenteditable="false"></div>' 
+							 '<div contenteditable="false"></div>'
 						);
 					});
 				});
@@ -1298,7 +1298,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should handle selectedIndex', () => {
 					let template;
 
@@ -1375,7 +1375,6 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
 						expect(container.firstChild.options[1].selected).to.be.true;
 						expect(get(container.firstChild).sort()).to.eql(['bar', 'foo']);
 						expect(
@@ -1413,7 +1412,6 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1448,7 +1446,6 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1470,7 +1467,6 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1492,7 +1488,6 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1500,7 +1495,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-				
+
 				describe('should trim values so `px` will be appended correctly', () => {
 					let template;
 
@@ -1518,11 +1513,11 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<div style="margin: 16px;"></div>' 
+							'<div style="margin: 16px;"></div>'
 						);
 					});
 				});
-				
+
 				describe('should support number values', () => {
 					let template;
 
@@ -1541,6 +1536,26 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<div style="width: 7px;"></div>'
+						);
+					});
+				});
+
+				describe('should support refs', () => {
+					let template;
+					let divRef = Inferno.createRef();
+
+					beforeEach(() => {
+						template = Inferno.createTemplate((t, divRef) =>
+							<div ref={ divRef }></div>
+						);
+						Inferno.render(Inferno.createFragment(divRef, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							divRef.element
+						).to.equal(
+							container.firstChild
 						);
 					});
 				});
@@ -1669,7 +1684,7 @@ describe('Inferno acceptance tests', () => {
 
 					let test = container.innerHTML;
 					let expected = '<div></div>';
-                    
+
 					expect(container.firstChild.checked).to.be.true;
 					expect(test).to.equal(expected);
 				});
@@ -2093,7 +2108,7 @@ describe('Inferno acceptance tests', () => {
 					it('should not render unsafe custom attribute names', () => {
 						expect(attrOps.toHtml('&/()', 'unsafeAttr!!')).to.equal('');
 					});
-					
+
 					it('should render `checked` as a property (truthy)', () => {
 						expect(attrOps.toHtml('checked', true)).to.equal('checked="true"');
 					});
@@ -2141,19 +2156,19 @@ describe('Inferno acceptance tests', () => {
 				});
 
 				describe('Custom attribute', () => {
-					
+
 					it('should render custom attributes - #1', () => {
 						expect(attrOps.toHtml('Inferno', true)).to.equal('Inferno="true"');
 					});
-					
+
 					it('should render custom attributes - #2', () => {
 						expect(attrOps.toHtml('Inferno', 123)).to.equal('Inferno="123"');
 					});
-					
+
 					it('should render custom attributes - #3', () => {
 						expect(attrOps.toHtml('Inferno', false)).to.equal('Inferno="false"');
 					});
-                    
+
 					it('should not render unsafe custom attribute names', () => {
 						expect(attrOps.toHtml('&/()', 'unsafeAttr!!')).to.equal('');
 					});
@@ -2307,7 +2322,7 @@ describe('Inferno acceptance tests', () => {
 				expect(container.hasAttribute('checked')).to.be.false;
 				expect(container.checked).to.be.undefined;
 			});
-		});	
+		});
          describe('HTML properties', () => {
 
          describe('HTML properties', () => {
@@ -2320,9 +2335,9 @@ describe('Inferno acceptance tests', () => {
 				expect(container.hasAttribute('contentEditable')).to.be.false;
 				expect(container.contentEditable).to.eql('inherit');
 			});
-			
-		});	
-			 
+
+		});
+
 		 });
 		});
 
@@ -2544,7 +2559,7 @@ describe('Inferno acceptance tests', () => {
 				expect(container.getAttribute('contentEditable')).to.be.null;
 				expect(container.contentEditable).to.eql("inherit");
 			});
-			
+
 			it('should set "preload" property (falsy)', () => {
 				attrOps.set(container, 'preload', false);
 				expect(container.getAttribute('preload')).to.be.null;
@@ -2580,7 +2595,7 @@ describe('Inferno acceptance tests', () => {
 				expect(container.getAttribute('preload')).to.be.null;
 				expect(container.preload).to.be.undefined;
 			});
-			
+
             it('should set "autoPlay" property (truthy)', () => {
 				attrOps.set(container, 'autoPlay', true);
 				expect(container.getAttribute('autoPlay')).to.be.null;
@@ -2620,7 +2635,7 @@ describe('Inferno acceptance tests', () => {
 				attrOps.set(container, 'disabled', true);
 				expect(container.disabled).to.be.undefined;
 			});
-            describe('Audio / video attributes', () => {			
+            describe('Audio / video attributes', () => {
 
 			it('should render the volume attribute - 0.0', () => {
 				attrOps.set(container, 'volume', 0.0);

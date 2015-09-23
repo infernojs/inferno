@@ -70,8 +70,10 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				attachFragment( context, fragment.templateValue, parentDom, fragment.templateElement, true );
 				fragment.templateElement = fragment.templateValue.dom.parentNode;
 				break;
+			case fragmentValueTypes.ATTR_REF:
+				fragment.templateValue.element = fragment.templateElement;
+				break;
 			}
-
 		} else if ( fragment.templateValues ) {
 			//if the fragment has multiple values, we must loop through them all and attach them
 			//pulling this block of code out into its own function caused strange things to happen
@@ -99,6 +101,9 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				case fragmentValueTypes.FRAGMENT_REPLACE:
 					attachFragment( context, value, parentDom, component, element, true );
 					fragment.templateElements[i] = value.dom.parentNode;
+					break;
+				case fragmentValueTypes.ATTR_REF:
+					fragment.templateValues[i].element = fragment.templateElements[i];
 					break;
 				}
 			}

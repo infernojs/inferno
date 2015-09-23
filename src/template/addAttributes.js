@@ -40,6 +40,9 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 	case 'placeholder':
 		fragmentType = fragmentValueTypes.ATTR_PLACEHOLDER;
 		break;
+	case 'ref':
+		fragmentType = fragmentValueTypes.ATTR_REF;
+		break;
 	default:
 		fragmentType = fragmentValueTypes.ATTR_OTHER;
 	}

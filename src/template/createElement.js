@@ -14,7 +14,6 @@ export default function createElement(tag, props, ...children) {
 				propsParsed[prop] = this.templateValues[propsParsed[prop].pointer];
 			}
 		}
-
 		element = {
 			dom: null,
 			component: this.templateValue || this.templateValues[tag.pointer],
@@ -26,7 +25,6 @@ export default function createElement(tag, props, ...children) {
 		return element;
 	}
 
-	
 	let len = children.length;
 	if(len > 0) {
 		if (len > 1) {
@@ -89,7 +87,6 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	if (props) {
-
 		template.addAttributes(element, props, this);
 	}
 
