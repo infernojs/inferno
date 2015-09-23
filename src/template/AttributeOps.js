@@ -184,6 +184,7 @@ let setProperty = (node, name, value) => {
 		node.value = val;
 	} else if (value != null) {
 
+// 'contentEditable' is a special case
 		if (name === 'contentEditable') {
 
     if (value) {
