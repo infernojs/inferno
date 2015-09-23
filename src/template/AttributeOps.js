@@ -120,17 +120,6 @@ let setBooleanAttribute = (node, name, value) => {
 };
 
 /**
- * Set Inferno attributes
- *
- * @param {Object} node A DOM element.
- * @param {String} name  The attribute name to set.
- * @param {String} value The attribute value to set.
- */
-let setInfernoAttribute = (node, name, value) => {
-	node.setAttribute(name, value);
-};
-
-/**
  * Set volume attributes on a DOM node
  *
  * @param {Object} node A DOM element.
@@ -441,12 +430,6 @@ let IS_VOLUME_ATTRIBUTE = {
 	toHtml: createAttributeMarkup
 };
 
-let IS_INFERNO_ATTRIBUTE = {
-	set: setInfernoAttribute,
-	remove: removeAttribute,
-	toHtml: createAttributeMarkup
-};
-
 let IS_NUMERIC = {
 	set: setNumericAttribute,
 	remove: removeAttribute,
@@ -608,7 +591,6 @@ let DOMConfig = {
 	inputMode: IS_ATTRIBUTE,
 	is: IS_ATTRIBUTE,
 	ismap: IS_BOOLEAN_PROPERTY,
-	key: IS_INFERNO_ATTRIBUTE,
 	keyParams: IS_ATTRIBUTE,
 	keyType: IS_ATTRIBUTE,
 	label: IS_PROPERTY,
