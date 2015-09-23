@@ -176,7 +176,7 @@ let setProperty = (node, name, value) => {
 		const val = node.value; // value will be lost in IE if type is changed
 		node[name] = value;
 		node.value = val;
-	} else {
+	} else if (value != null) {
 		node[propNameCfg[name] || name] = value;
 	}
 };
@@ -268,7 +268,7 @@ let removeProperty = (node, name) => {
 	if (name === 'value' && (getNodeName(node) === 'select')) {
 		removeSelectValue(node);
 	} else {
-		node[name] = hasPropertyAccessor(node.tagName, name);
+		node[name] = hasPropertyAccessor(node, name);
 	}
 };
 

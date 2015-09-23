@@ -1224,6 +1224,44 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+				describe('should not set "contentEditable" as a null value', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div contentEditable={null}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div></div>'
+						);
+					});
+				});
+
+				describe('should set "contentEditable" property', () => {
+					let template;
+
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div contentEditable={true}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div contenteditable="true"></div>'
+						);
+					});
+				});
+				
 				describe('should handle selectedIndex', () => {
 					let template;
 
@@ -2163,7 +2201,7 @@ describe('Inferno acceptance tests', () => {
 		});
 
 		describe('attrOps.remove()', () => {
-
+         describe('HTML attributes', () => {
 			it('should remove a custom attribute', () => {
 
 				attrOps.set(container, 'Inferno', 'Rocks!');
@@ -2186,6 +2224,22 @@ describe('Inferno acceptance tests', () => {
 				expect(container.hasAttribute('checked')).to.be.false;
 				expect(container.checked).to.be.undefined;
 			});
+		});	
+         describe('HTML properties', () => {
+
+  describe('HTML properties', () => {
+
+			it('should not remove a "contentEditable" attribute', () => {
+
+				attrOps.set(container, 'contentEditable', true);
+				expect(container.contentEditable).to.eql('true');
+				attrOps.remove(container, 'contentEditable');
+				expect(container.hasAttribute('contentEditable')).to.be.false;
+				expect(container.contentEditable).to.eql('inherit');
+			});
+		});	
+			 
+		 });
 		});
 
 		describe('attrOps.set()', () => {
@@ -2363,6 +2417,24 @@ describe('Inferno acceptance tests', () => {
 			it('should not set zerio as a number on "span" attribute', () => {
 				attrOps.set(container, 'span', 0);
 				expect(container.getAttribute('span')).to.be.null;
+			});
+
+			it('should set "contentEditable" property', () => {
+				attrOps.set(container, 'contentEditable', false);
+				expect(container.getAttribute('contentEditable')).to.eql('false');
+				expect(container.contentEditable).to.eql('false');
+			});
+
+			it('should not set "contentEditable" as a null value', () => {
+				attrOps.set(container, 'contentEditable', null);
+				expect(container.getAttribute('contentEditable')).to.be.null;
+				expect(container.contentEditable).to.eql("inherit");
+			});
+
+			it('should not set "contentEditable" as a undefined value', () => {
+				attrOps.set(container, 'contentEditable', undefined);
+				expect(container.getAttribute('contentEditable')).to.be.null;
+				expect(container.contentEditable).to.eql("inherit");
 			});
 
 			it('should not set positive numbers on "span" attribute', () => {
