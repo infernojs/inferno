@@ -1,91 +1,18 @@
 import attrNameCfg from './cfg/attrNameCfg';
 import propNameCfg from './cfg/propNameCfg';
+import xmlCfg from './cfg/xmlCfg';
+import xlinkCfg from './cfg/xlinkCfg';
+import contentEditableCfg from './cfg/contentEditableCfg';
 import hasPropertyAccessor from './hasPropertyAccessor';
+import validateAttribute from './validateAttribute';
 import dasherize from './dasherize';
 import camelize from './camelize';
+import normalizeCSS from './normalizeCSS';
 import inArray from '../util/inArray';
 import isArray from '../util/isArray';
 import isSVG from '../util/isSVG';
 import tagName from '../util/tagName';
 import escapeHtml from './escapeHtml';
-import unitlessCfg from './cfg/unitlessCfg';
-
-// Simplified subset
-let VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
-    illegalAttributeNameCache = {},
-    validatedAttributeNameCache = {},
-
- xmlMap = {
-	'xml:base': 'base',
-	'xml:id': 'id',
-	'xml:lang': 'lang',
-	'xml:space': 'spac'
-},
-
- xlinkMap = {
-	'xlink:actuate': 'actuate',
-	'xlink:arcrole': 'arcrole',
-	'xlink:href': 'href',
-	'xlink:role': 'role',
-	'xlink:show': 'show',
-	'xlink:title': 'title',
-	'xlink:type': 'type'
-},
-// Workaround for the 'contentEditable' property
- contentEditable = {
-		true: true, 
-		false: true, 
-		'plaintext-only': true, 
-		'inherit':true
-};
-
-/**
- * Normalize CSS properties for SSR
- *
- * @param {String} name The boolean attribute name to set.
- * @param {String} value The boolean attribute value to set.
- */
-let normalize = (name, value) => {
-	if (value === null || (value === '')) {
-		return '';
-	}
-	if (value === 0 || (unitlessCfg[name] || (isNaN(value)))) {
-		return '' + value; // cast to string
-	}
-	if (typeof value === 'string') {
-		value = value.trim();
-	}
-	return value + 'px';
-};
-
-/**
- * Validate custom attributes
- *
- * @param  {String} name  The boolean attribute name to set.
- */
- let validateAttribute = ( name ) => {
-
-    if ( validatedAttributeNameCache[name] ) {
-        return true;
-    }
-
-    if ( illegalAttributeNameCache[name] ) {
-        return false;
-    }
-    if ( VALID_ATTRIBUTE_NAME_REGEX.test( name ) || 
-
-    // namespace attributes are seen as non-valid, avoid that!
-	    ( xmlMap[name] ) || 
-		( xlinkMap[name] ) ) {
-			
-        validatedAttributeNameCache[name] = true;
-        return true;
-    }
-
-    illegalAttributeNameCache[name] = true;
-
-    return false;
-};
 
 /**
  * Set boolean attributes
@@ -190,7 +117,7 @@ let setProperty = (node, name, value) => {
 	  * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
 	  */
       if (value) {
-        value = contentEditable[value] ? value : 'inherit';
+        value = contentEditableCfg[value] ? value : 'inherit';
       }
     }
     node[propNameCfg[name] || name] = value;
@@ -261,7 +188,7 @@ let setPropertyForStyle = (node, name, value) => {
 	let prop = node[name];
 
 	for (let idx in value) {
-		node.style[idx] = value[idx] == null ? '' : normalize(idx, value[idx]);
+		node.style[idx] = value[idx] == null ? '' : normalizeCSS(idx, value[idx]);
 	}
 };
 
@@ -397,7 +324,7 @@ let createPropertyMarkup = (name, value) => {
 	let styles = '';
 
 	for (let styleName in value) {
-		value[styleName] != null && (styles += dasherize(styleName) + ':' + normalize(styleName, value[styleName]) + ';');
+		value[styleName] != null && (styles += dasherize(styleName) + ':' + normalizeCSS(styleName, value[styleName]) + ';');
 	}
 
 	return styles ? `${ name }="${ styles }"` : styles;
@@ -461,7 +388,7 @@ let IS_XLINK_NAMESPACE = {
 	 * @param  {String} value	The attribute value to set.
 	 */
 	set(node, name, value) {
-		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name], value);
+		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkCfg[name], value);
 	},
 
 	/**
@@ -472,7 +399,7 @@ let IS_XLINK_NAMESPACE = {
 	 * @param  {String} name  The attribute name to unset.
 	 */
 	remove(node, name) {
-		node.removeAttributeNS('http://www.w3.org/1999/xlink', xlinkMap[name]);
+		node.removeAttributeNS('http://www.w3.org/1999/xlink', xlinkCfg[name]);
 	},
 	toHtml:createAttributeMarkup
 };
@@ -487,7 +414,7 @@ let IS_XML_NAMESPACE = {
 	 * @param  {String} value The attribute value to set.
 	 */
 	set(node, name, value) {
-		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name], value);
+		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlCfg[name], value);
 	},
 	
 	/**
@@ -497,7 +424,7 @@ let IS_XML_NAMESPACE = {
 	 * @param  {String} name The attribute name to unset.
 	 */
 	remove(node, name) {
-		node.removeAttributeNS('http://www.w3.org/XML/1998/namespace', xmlMap[name]);
+		node.removeAttributeNS('http://www.w3.org/XML/1998/namespace', xmlCfg[name]);
 	},
 	toHtml:createAttributeMarkup
 };
