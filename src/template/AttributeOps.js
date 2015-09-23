@@ -15,6 +15,31 @@ import tagName from '../util/tagName';
 import escapeHtml from './escapeHtml';
 
 /**
+ * Set attributes on a DOM node
+ *
+ * @param {Object} node A DOM element.
+ * @param {String} name	  The attribute name to set.
+ * @param {String} value The attribute value to set.
+ */
+let setAttribute = (node, name, value) => {
+	if (name === 'type' && (tagName(node) === 'input')) {
+		// Support: IE9-Edge
+		const val = node.value; // value will be lost in IE if type is changed
+		node.setAttribute(name, '' + value);
+        // Check if val exist, if not we will get a stupid 'value=""' in the markup
+		if ( val ) {
+		   node.value = val;
+		}
+	} else {
+
+		// Avoid touching the DOM on falsy values
+		if ( value !== 'false') {
+		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+	   }	
+	}
+};
+
+/**
  * Set boolean attributes
  *
  * @param  {Object} node A DOM element.
@@ -55,31 +80,6 @@ let setVolumAttribute = (node, name, value) => {
 let setCustomAttribute = (node, name, value) => {
     if (validateAttribute( name )) {
        node.setAttribute(attrNameCfg[name] || name, value);
-	}
-};
-
-/**
- * Set attributes on a DOM node
- *
- * @param {Object} node A DOM element.
- * @param {String} name	  The attribute name to set.
- * @param {String} value The attribute value to set.
- */
-let setAttribute = (node, name, value) => {
-	if (name === 'type' && (tagName(node) === 'input')) {
-		// Support: IE9-Edge
-		const val = node.value; // value will be lost in IE if type is changed
-		node.setAttribute(name, '' + value);
-        // Check if val exist, if not we will get a stupid 'value=""' in the markup
-		if ( val ) {
-		   node.value = val;
-		}
-	} else {
-
-		// Avoid touching the DOM on falsy values
-		if ( value !== 'false') {
-		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
-	   }	
 	}
 };
 
