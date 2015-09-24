@@ -489,7 +489,7 @@ describe('Inferno acceptance tests', () => {
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<input checked={false} disabled={false}></input>
+							<div checked={false} disabled={false}></div>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -498,7 +498,21 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="false">'
+							 '<div disabled="false"></div>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<span checked={false} disabled={false}></span>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<span disabled="false"></span>'
 						);
 					});
 				});
@@ -514,6 +528,16 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -556,6 +580,22 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
 						);
 					});
 				});
@@ -634,6 +674,22 @@ describe('Inferno acceptance tests', () => {
 							'<div custom-attr="123"></div>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
+						);
+					});
 				});
 
 				describe('should not render null properties', () => {
@@ -651,6 +707,22 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<web-component></web-component>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
 						);
 					});
 				});
@@ -672,6 +744,22 @@ describe('Inferno acceptance tests', () => {
 							'<web-component id="123"></web-component>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
+						);
+					});
 				});
 
 				describe('should render overloaded boolean as a number value', () => {
@@ -691,6 +779,22 @@ describe('Inferno acceptance tests', () => {
 							'<input download="0">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
+						);
+					});
 				});
 
 				describe('should render download with boolean false value', () => {
@@ -708,6 +812,22 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input href="/images/xxx.jpg" download="false">'
+						);
+					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
 						);
 					});
 				});
