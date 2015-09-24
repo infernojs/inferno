@@ -112,7 +112,7 @@ let setProperty = (node, propertyName, propValue) => {
     if (propValue != null) {
 
         // 'contentEditable' is a special case
-        if (propertyName === 'contentEditable') {
+        if (propertyName === 'contentEditable' && (propValue)) {
 
             /**
              * We would need this check here, else it will throw:
@@ -120,7 +120,6 @@ let setProperty = (node, propertyName, propValue) => {
              * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
              * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
              */
-            if (propValue) {
 
                 // Workaround for the 'contentEditable' property
                 let cEValue;
@@ -142,7 +141,6 @@ let setProperty = (node, propertyName, propValue) => {
                 }
 
                 propValue = cEValue;
-            }
         }
 
         node[propNameCfg[propertyName] || propertyName] = propValue;
