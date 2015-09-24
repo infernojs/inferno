@@ -31,7 +31,9 @@ export default {
 	ATTR_TRUESPEED: 29,
 	ATTR_MULTIPLE: 30,
 	ATTR_CONTROLS: 31,
-		
+	ATTR_DEFER: 32,
+	ATTR_NOVALIDATE: 33,
+	ATTR_SCOPED: 34,
 	//will contain other "custom" types, like rowspan etc or custom data-attributes
 	ATTR_OTHER: {},
 	COMPONENT_PROPS: {}

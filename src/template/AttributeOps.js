@@ -477,7 +477,7 @@ let DOMConfig = {
 	},
 	default: IS_BOOLEAN_ATTRIBUTE,
 	data: IS_ATTRIBUTE,
-	defer: IS_BOOLEAN_ATTRIBUTE,
+	defer: IS_BOOLEAN_PROPERTY,
 	declare: IS_BOOLEAN_ATTRIBUTE,
 	defaultPlaybackRate: IS_PROPERTY,
 	defaultchecked: IS_BOOLEAN_ATTRIBUTE,
@@ -541,7 +541,7 @@ let DOMConfig = {
 	// number used once or number once
 	nonce: IS_NUMERIC, 
 	noshade: IS_ATTRIBUTE,
-	noValidate: IS_BOOLEAN_ATTRIBUTE,
+	noValidate: IS_BOOLEAN_PROPERTY,
 	opacity: IS_ATTRIBUTE,
 	open: IS_BOOLEAN_ATTRIBUTE,
 	placeholder: IS_PROPERTY,

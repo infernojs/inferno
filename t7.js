@@ -329,6 +329,15 @@ var t7 = (function() {
               case "controls":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_CONTROLS;");
                 break;
+              case "defer":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_DEFER;");
+                break;
+              case "noValidate":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_NOVALIDATE;");
+                break;
+              case "scoped":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_SCOPED;");
+                break;
               default:
                 templateParams.push("if(Inferno.FragmentValueTypes.ATTR_OTHER." + name + " === undefined) { Inferno.FragmentValueTypes.ATTR_OTHER." + name + " = '" + name + "'; }");
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_OTHER." + name + ";");

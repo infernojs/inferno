@@ -107,6 +107,15 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 		case fragmentValueTypes.ATTR_CONTROLS:
 			element.controls = fragment.templateValue;
 			return;
+		case fragmentValueTypes.ATTR_DEFER:
+			element.defer = fragment.templateValue;
+			return;
+		case fragmentValueTypes.ATTR_NOVALIDATE:
+			element.noValidate = fragment.templateValue;
+			return;
+		case fragmentValueTypes.ATTR_SCOPED:
+			element.scoped = fragment.templateValue;
+			return;
 		case fragmentValueTypes.ATTR_WIDTH:
 			if (isSVG) {
 				element.setAttribute('width', fragment.templateValue);
