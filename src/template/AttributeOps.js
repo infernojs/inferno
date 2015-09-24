@@ -12,6 +12,7 @@ import isArray from '../util/isArray';
 import isSVG from '../util/isSVG';
 import tagName from '../util/tagName';
 import escapeHtml from './escapeHtml';
+import hook from './hooks';
 
 /**
  * Set attributes on a DOM node
@@ -21,18 +22,16 @@ import escapeHtml from './escapeHtml';
  * @param {String} attrValue The attribute value to set.
  */
 let setAttribute = (node, attrName, attrValue) => {
-	if (attrName === 'type' && (tagName(node) === 'input')) {
-		// Support: IE9-Edge
-		const val = node.value; // value will be lost in IE if type is changed
-		node.setAttribute(attrName, '' + attrValue);
-        // Check if val exist, if not we will get a stupid value="" in the markup
-		if ( val ) {
-		   node.value = val;
-		}
     // Avoid touching the DOM on falsy values
-	} else if ( attrValue !== 'false') {
-		node.setAttribute(attrNameCfg[attrName] || attrName, '' + attrValue); // cast to string
-	}
+    if (attrValue !== 'false') {
+
+        if (hook[attrName]) {
+
+            hook[attrName](node, attrName, attrValue);
+        } else {
+            node.setAttribute(attrNameCfg[attrName] || attrName, attrValue);
+        }
+    }
 };
 
 /**
@@ -43,33 +42,8 @@ let setAttribute = (node, attrName, attrValue) => {
  * @param {String} attrValue The boolean attribute value to set.
  */
 let setBooleanAttribute = (node, attrName, attrValue) => {
-    /**
-	  * IMPORTANT!
-	  *
-	  * This one is 'tricky. For better performance we should avoid
-	  * touching DOM on 'falsy' values. But in the HTML5 specs, a
-	  * 'falsy' value can be set as - checked="false". 
-	  *
-	  * We choose to go for performance, and avoid touching the DOM
-	  *
-	  */
 	if (attrValue !== 'false') {
-       node.setAttribute(attrName, '' + (attrValue === 'true' ? '' : attrValue));
-	}
-};
-
-/**
- * Set volume attributes on a DOM node
- *
- * @param {Object} node A DOM element.
- * @param {String} name	 The attribute name to set.
- * @param {String} attrValue  The attribute value to set.
- */
-let setVolumAttribute = (node, attrName, attrValue) => {
-    // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the 
-	// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
-    if ( attrValue === 0.0 || (attrValue === 1) || (typeof attrValue === 'number' && (attrValue > -1 && (attrValue < 1.1 )))) {
-          node.setAttribute(attrName, attrValue);
+       node.setAttribute(attrName, '' + ((attrValue === 'true') ? '' : attrValue));
 	}
 };
 
@@ -83,7 +57,8 @@ let setVolumAttribute = (node, attrName, attrValue) => {
 let setCustomAttribute = (node, attrName, attrValue) => {
 	// Custom attributes are the only arributes we are validating.
     if (validateAttribute( attrName )) {
-       node.setAttribute(attrNameCfg[attrName] || attrName, attrValue);
+	// All attributes are lowercase
+	  node.setAttribute((attrNameCfg[attrName] || attrName).toLowerCase(), '' + attrValue); // cast to string
 	}
 };
 
@@ -251,6 +226,8 @@ let removeProperty = (node, propertyName) => {
 	// 'select' is a special case
 	if (propertyName === 'value' && (tagName(node) === 'select')) {
 		removeSelectValue(node);
+	} else if (propertyName === 'className') {	
+	    node.className = '';
 	} else {
 		node[propertyName] = hasPropertyAccessor(node, propertyName);
 	}
@@ -365,12 +342,6 @@ let IS_CUSTOM = {
 	toHtml: createAttributeMarkup
 };
 
-let IS_VOLUME_ATTRIBUTE = {
-	set: setVolumAttribute,
-	remove: removeAttribute,
-	toHtml: createAttributeMarkup
-};
-
 let IS_NUMERIC = {
 	set: setNumericAttribute,
 	remove: removeAttribute,
@@ -457,7 +428,6 @@ let DOMConfig = {
 	accept: IS_ATTRIBUTE,
 	allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 	allowTransparency: IS_ATTRIBUTE,
-
 	async: IS_BOOLEAN_ATTRIBUTE,
 	autoFocus: IS_BOOLEAN_ATTRIBUTE,
 	autoPlay: IS_BOOLEAN_PROPERTY,
@@ -622,7 +592,7 @@ let DOMConfig = {
 	viewBox: IS_ATTRIBUTE,
 
 	visible: IS_BOOLEAN_ATTRIBUTE,
-	volume: IS_VOLUME_ATTRIBUTE,
+	volume: IS_ATTRIBUTE,
 	width: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
 	wmode: IS_ATTRIBUTE,
 	x1: IS_ATTRIBUTE,
