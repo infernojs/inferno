@@ -326,7 +326,9 @@ var t7 = (function() {
               case "multiple":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_MULTIPLE;");
                 break;
-
+              case "controls":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_CONTROLS;");
+                break;
               default:
                 templateParams.push("if(Inferno.FragmentValueTypes.ATTR_OTHER." + name + " === undefined) { Inferno.FragmentValueTypes.ATTR_OTHER." + name + " = '" + name + "'; }");
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_OTHER." + name + ";");

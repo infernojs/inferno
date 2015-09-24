@@ -75,13 +75,13 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			element.checked = !!fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_ISMAP:
-			element.isMap = !!fragment.templateValue;
+			element.isMap = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_LOOP:
-			element.loop = !!fragment.templateValue;
+			element.loop = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_MUTED:
-			element.muted = !!fragment.templateValue;
+			element.muted = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_READONLY:
 			element.readOnly = !!fragment.templateValue;
@@ -93,16 +93,19 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			element.required = !!fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_SELECTED:
-			element.selected = !!fragment.templateValue;
+			element.selected = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_SPELLCHECK:
-			element.spellCheck = !!fragment.templateValue;
+			element.spellCheck = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_TRUESPEED:
 			element.truespeed = !!fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_MULTIPLE:
-			element.multiple = !!fragment.templateValue;
+			element.multiple = fragment.templateValue;
+			return;
+		case fragmentValueTypes.ATTR_CONTROLS:
+			element.controls = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_WIDTH:
 			if (isSVG) {

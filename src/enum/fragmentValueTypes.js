@@ -30,7 +30,8 @@ export default {
 	ATTR_SPELLCHECK: 28,
 	ATTR_TRUESPEED: 29,
 	ATTR_MULTIPLE: 30,
-	
+	ATTR_CONTROLS: 31,
+		
 	//will contain other "custom" types, like rowspan etc or custom data-attributes
 	ATTR_OTHER: {},
 	COMPONENT_PROPS: {}

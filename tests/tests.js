@@ -112,7 +112,7 @@ describe('Inferno acceptance tests', () => {
 
 					it('Initial render (creation)', () => {
 
-//						expect(container.firstChild.getAttribute("autoFocus")).to.eql("");
+						expect(container.firstChild.getAttribute("autoFocus")).to.eql("");
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -384,7 +384,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-/*
+
                 describe('should properly render "width" and "height" attributes', () => {
 					let template;
 
@@ -416,7 +416,7 @@ describe('Inferno acceptance tests', () => {
 							'<img src="" alt="Smiley face" height="14" width="42">'
 						);
 					});
-				});*/
+				});
 				describe('should properly render boolean attribues (html5)', () => {
 					let template;
 

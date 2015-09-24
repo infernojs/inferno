@@ -78,13 +78,13 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			    element.checked = !!fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_ISMAP:
-			    element.isMap = !!fragment.templateValues[i];
+			    element.isMap = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_LOOP:
-			    element.loop = !!fragment.templateValues[i];
+			    element.loop = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_MUTED:
-			    element.muted = !!fragment.templateValues[i];
+			    element.muted = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_READONLY:
 			    element.readOnly = !!fragment.templateValues[i];
@@ -96,16 +96,19 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			    element.required = !!fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_SELECTED:
-			    element.selected = !!fragment.templateValues[i];
+			    element.selected = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_SPELLCHECK:
-			    element.spellCheck = !!fragment.templateValues[i];
+			    element.spellCheck = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_TRUESPEED:
 			    element.truespeed = !!fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_MULTIPLE:
-			    element.multiple = !!fragment.templateValues[i];
+			    element.multiple = fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_CONTROLS:
+			    element.controls = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_WIDTH:
 				if (isSVG) {
