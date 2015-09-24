@@ -260,17 +260,11 @@ var t7 = (function() {
               case "id":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_ID;");
                 break;
-              case "value":
-                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_VALUE;");
-                break;
               case "width":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_WIDTH;");
                 break;
               case "height":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_HEIGHT;");
-                break;
-              case "type":
-                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_TYPE;");
                 break;
               case "name":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_NAME;");
@@ -281,6 +275,58 @@ var t7 = (function() {
               case "placeholder":
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_PLACEHOLDER;");
                 break;
+              case "designMode":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_DESIGNMODE;");
+                break;
+              case "htmlFor":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_HTMLFOR;");
+                break;
+              case "playbackRate":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_PLAYBACKRATE;");
+                break;
+              case "preload":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_PRELOAD;");
+                break;
+              case "srcDoc":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_SRCDOC;");
+                break;
+              case "autoPlay":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_AUTOPLAY;");
+                break;
+              case "checked":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_CHECKED;");
+                break;
+              case "isMap":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_ISMAP;");
+                break;
+              case "lopp":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_LOOP;");
+                break;
+              case "muted":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_MUTED;");
+                break;
+              case "readOnly":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_READONLY;");
+                break;
+              case "reversed":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_REVERSED;");
+                break;
+              case "required":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_REQUIRED;");
+                break;
+              case "selected":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_SELECTED;");
+                break;
+              case "spellCheck":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_SPELLCHECK;");
+                break;
+              case "trueSpeed":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_TRUESPEED;");
+                break;
+              case "multiple":
+                templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_MULTIPLE;");
+                break;
+
               default:
                 templateParams.push("if(Inferno.FragmentValueTypes.ATTR_OTHER." + name + " === undefined) { Inferno.FragmentValueTypes.ATTR_OTHER." + name + " = '" + name + "'; }");
                 templateParams.push("fragment.templateTypes[" + valueCounter.index + "] = Inferno.FragmentValueTypes.ATTR_OTHER." + name + ";");

@@ -104,6 +104,9 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			case fragmentValueTypes.ATTR_TRUESPEED:
 			    element.truespeed = !!fragment.templateValues[i];
 			    break;
+			case fragmentValueTypes.ATTR_MULTIPLE:
+			    element.multiple = !!fragment.templateValues[i];
+			    break;
 			case fragmentValueTypes.ATTR_WIDTH:
 				if (isSVG) {
 					element.setAttribute('width', fragment.templateValues[i]);
