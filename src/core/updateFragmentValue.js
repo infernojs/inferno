@@ -69,7 +69,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			element.srcDoc = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_AUTOPLAY:
-			element.autoPlay = !!fragment.templateValue;
+			element.autoPlay = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_CHECKED:
 			element.checked = !!fragment.templateValue;
@@ -87,7 +87,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			element.readOnly = !!fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_REVERSED:
-			element.reversed = !!fragment.templateValue;
+			element.reversed = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_REQUIRED:
 			element.required = !!fragment.templateValue;
@@ -99,7 +99,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			element.spellCheck = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_TRUESPEED:
-			element.truespeed = !!fragment.templateValue;
+			element.truespeed = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_MULTIPLE:
 			element.multiple = fragment.templateValue;
