@@ -2,7 +2,6 @@ import attrNameCfg from './cfg/attrNameCfg';
 import propNameCfg from './cfg/propNameCfg';
 import xmlCfg from './cfg/xmlCfg';
 import xlinkCfg from './cfg/xlinkCfg';
-import contentEditableCfg from './cfg/contentEditableCfg';
 import hasPropertyAccessor from './hasPropertyAccessor';
 import validateAttribute from './validateAttribute';
 import dasherize from './dasherize';
@@ -26,16 +25,13 @@ let setAttribute = (node, attrName, attrValue) => {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node.setAttribute(attrName, '' + attrValue);
-        // Check if val exist, if not we will get a stupid 'value=""' in the markup
+        // Check if val exist, if not we will get a stupid value="" in the markup
 		if ( val ) {
 		   node.value = val;
 		}
-	} else {
-
-		// Avoid touching the DOM on falsy values
-		if ( attrValue !== 'false') {
+    // Avoid touching the DOM on falsy values
+	} else if ( attrValue !== 'false') {
 		node.setAttribute(attrNameCfg[attrName] || attrName, '' + attrValue); // cast to string
-	   }	
 	}
 };
 
@@ -85,6 +81,7 @@ let setVolumAttribute = (node, attrName, attrValue) => {
  * @param {String} attrValue The attribute value to set.
  */
 let setCustomAttribute = (node, attrName, attrValue) => {
+	// Custom attributes are the only arributes we are validating.
     if (validateAttribute( attrName )) {
        node.setAttribute(attrNameCfg[attrName] || attrName, attrValue);
 	}
@@ -98,7 +95,7 @@ let setCustomAttribute = (node, attrName, attrValue) => {
  * @param {String} attrValue  The numeric attribute value to set.
  */
 let setNumericAttribute = (node, attrName, attrValue) => {
-      if (typeof attrValue === 'number' && (attrValue > 0)) {
+	  if (attrValue > 0 && (typeof attrValue === 'number')) {
 		node.setAttribute(attrName, attrValue);
 	}
 };
@@ -112,24 +109,44 @@ let setNumericAttribute = (node, attrName, attrValue) => {
  */
 let setProperty = (node, propertyName, propValue) => {
 
- if (propValue != null) {
+    if (propValue != null) {
 
-    // 'contentEditable' is a special case
-	if (propertyName === 'contentEditable') {
-   
-     /**
-	  * We would need this check here, else it will throw:
-	  *
-	  * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
-	  * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
-	  */
-      if (propValue) {
-        propValue = contentEditableCfg[propValue] ? propValue : 'inherit';
-      }
+        // 'contentEditable' is a special case
+        if (propertyName === 'contentEditable') {
+
+            /**
+             * We would need this check here, else it will throw:
+             *
+             * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
+             * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
+             */
+            if (propValue) {
+
+                // Workaround for the 'contentEditable' property
+                let cEValue;
+                switch (propValue) {
+                    case true:
+                        cEValue = propValue;
+                        break;
+                    case false:
+                        cEValue = propValue;
+                        break;
+                    case 'plaintext-only':
+                        cEValue = propValue;
+                        break;
+                    case 'inherit':
+                        cEValue = propValue;
+                        break;
+                    default:
+                        cEValue = 'inherit';
+                }
+
+                propValue = cEValue;
+            }
+        }
+
+        node[propNameCfg[propertyName] || propertyName] = propValue;
     }
-	
-    node[propNameCfg[propertyName] || propertyName] = propValue;
-  }
 };
 
 /**
@@ -196,7 +213,7 @@ let setPropertyForStyle = (node, propertyName, propValue) => {
 	let prop = node[propertyName];
 
 	for (let idx in propValue) {
-		node.style[idx] = propValue[idx] == null ? '' : normalizeCSS(idx, propValue[idx]);
+		node.style[idx] = (propValue[idx] == null) ? '' : normalizeCSS(idx, propValue[idx]);
 	}
 };
 
@@ -291,12 +308,12 @@ let createAttributeMarkup = (name, value) => {
  */
 let datasetToString = (name, value) => {
 
-	let objL = '';
+	let objectLiteral = '';
 
 	for (let objName in value) {
-		objL += value[objName] != null && ( 'data-' + objName + '="' + dasherize(value[objName]) + '" ');
+		objectLiteral += value[objName] != null && ( 'data-' + objName + '="' + dasherize(value[objName]) + '" ');
 	}
-	return objL;
+	return objectLiteral;
 }
 
 /**

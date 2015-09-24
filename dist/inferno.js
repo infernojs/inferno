@@ -356,7 +356,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _templateCreateElement = __webpack_require__(50);
+	var _templateCreateElement = __webpack_require__(49);
 	
 	var _templateCreateElement2 = _interopRequireDefault(_templateCreateElement);
 	
@@ -509,7 +509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _cfgAttrNameCfg2 = _interopRequireDefault(_cfgAttrNameCfg);
 	
-	var _cfgPropNameCfg = __webpack_require__(49);
+	var _cfgPropNameCfg = __webpack_require__(48);
 	
 	var _cfgPropNameCfg2 = _interopRequireDefault(_cfgPropNameCfg);
 	
@@ -521,19 +521,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
 	
-	var _cfgContentEditableCfg = __webpack_require__(48);
-	
-	var _cfgContentEditableCfg2 = _interopRequireDefault(_cfgContentEditableCfg);
-	
-	var _hasPropertyAccessor = __webpack_require__(54);
+	var _hasPropertyAccessor = __webpack_require__(53);
 	
 	var _hasPropertyAccessor2 = _interopRequireDefault(_hasPropertyAccessor);
 	
-	var _validateAttribute = __webpack_require__(56);
+	var _validateAttribute = __webpack_require__(55);
 	
 	var _validateAttribute2 = _interopRequireDefault(_validateAttribute);
 	
-	var _dasherize = __webpack_require__(51);
+	var _dasherize = __webpack_require__(50);
 	
 	var _dasherize2 = _interopRequireDefault(_dasherize);
 	
@@ -541,11 +537,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _camelize2 = _interopRequireDefault(_camelize);
 	
-	var _normalizeCSS = __webpack_require__(55);
+	var _normalizeCSS = __webpack_require__(54);
 	
 	var _normalizeCSS2 = _interopRequireDefault(_normalizeCSS);
 	
-	var _utilInArray = __webpack_require__(57);
+	var _utilInArray = __webpack_require__(56);
 	
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 	
@@ -557,11 +553,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
-	var _utilTagName = __webpack_require__(58);
+	var _utilTagName = __webpack_require__(57);
 	
 	var _utilTagName2 = _interopRequireDefault(_utilTagName);
 	
-	var _escapeHtml = __webpack_require__(52);
+	var _escapeHtml = __webpack_require__(51);
 	
 	var _escapeHtml2 = _interopRequireDefault(_escapeHtml);
 	
@@ -577,7 +573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			// Support: IE9-Edge
 			var val = node.value; // value will be lost in IE if type is changed
 			node.setAttribute(attrName, '' + attrValue);
-			// Check if val exist, if not we will get a stupid 'value=""' in the markup
+			// Check if val exist, if not we will get a stupid value="" in the markup
 			if (val) {
 				node.value = val;
 			}
@@ -636,6 +632,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} attrValue The attribute value to set.
 	 */
 	var setCustomAttribute = function setCustomAttribute(node, attrName, attrValue) {
+		// Custom attributes are the only arributes we are validating.
 		if ((0, _validateAttribute2['default'])(attrName)) {
 			node.setAttribute(_cfgAttrNameCfg2['default'][attrName] || attrName, attrValue);
 		}
@@ -649,7 +646,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} attrValue  The numeric attribute value to set.
 	 */
 	var setNumericAttribute = function setNumericAttribute(node, attrName, attrValue) {
-		if (typeof attrValue === 'number' && attrValue > 0) {
+		if (attrValue > 0 && typeof attrValue === 'number') {
 			node.setAttribute(attrName, attrValue);
 		}
 	};
@@ -669,13 +666,33 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (propertyName === 'contentEditable') {
 	
 				/**
-	   * We would need this check here, else it will throw:
-	   *
-	   * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
-	   * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
-	   */
+	    * We would need this check here, else it will throw:
+	    *
+	    * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
+	    * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
+	    */
 				if (propValue) {
-					propValue = _cfgContentEditableCfg2['default'][propValue] ? propValue : 'inherit';
+	
+					// Workaround for the 'contentEditable' property
+					var cEValue = undefined;
+					switch (propValue) {
+						case true:
+							cEValue = propValue;
+							break;
+						case false:
+							cEValue = propValue;
+							break;
+						case 'plaintext-only':
+							cEValue = propValue;
+							break;
+						case 'inherit':
+							cEValue = propValue;
+							break;
+						default:
+							cEValue = 'inherit';
+					}
+	
+					propValue = cEValue;
 				}
 			}
 	
@@ -1486,7 +1503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _extendUnitlessNumber = __webpack_require__(53);
+	var _extendUnitlessNumber = __webpack_require__(52);
 	
 	var _extendUnitlessNumber2 = _interopRequireDefault(_extendUnitlessNumber);
 	
@@ -2050,9 +2067,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(61)["default"];
+	var _createClass = __webpack_require__(60)["default"];
 	
-	var _classCallCheck = __webpack_require__(60)["default"];
+	var _classCallCheck = __webpack_require__(59)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -3112,24 +3129,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 48 */
 /***/ function(module, exports) {
 
-	// Workaround for the 'contentEditable' property
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	exports['default'] = {
-	    'true': true,
-	    'false': true,
-	    'plaintext-only': true,
-	    'inherit': true
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 49 */
-/***/ function(module, exports) {
-
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -3152,7 +3151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3268,7 +3267,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 50 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3288,7 +3287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 52 */
+/* 51 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3316,7 +3315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3355,7 +3354,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 54 */
+/* 53 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3374,7 +3373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 55 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3412,7 +3411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 56 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3468,7 +3467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 57 */
+/* 56 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3491,7 +3490,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/**
@@ -3513,13 +3512,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 59 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(62), __esModule: true };
+	module.exports = { "default": __webpack_require__(61), __esModule: true };
 
 /***/ },
-/* 60 */
+/* 59 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3533,12 +3532,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 61 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(59)["default"];
+	var _Object$defineProperty = __webpack_require__(58)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -3562,16 +3561,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 62 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(63);
+	var $ = __webpack_require__(62);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
