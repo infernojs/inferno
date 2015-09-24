@@ -371,34 +371,20 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Second render (update)', () => {
-						Inferno.render(Inferno.createFragment(null, template), container);
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<custom-elem class="Hello, world!"></custom-elem>' 
-						);
-					});
-				});
-
-				describe('should properly render "class" property on a custom element', () => {
-					let template;
-
-					beforeEach(() => {
+						
 						template = Inferno.createTemplate(t =>
-							<custom-elem class="Hello, world!"></custom-elem>
+							<custom-elem  className="Hello, Inferno!"></custom-elem>
 						);
+						
 						Inferno.render(Inferno.createFragment(null, template), container);
-					});
-
-					it('Initial render (creation)', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<custom-elem class="Hello, world!"></custom-elem>'
+							'<custom-elem class="Hello, Inferno!"></custom-elem>'
 						);
 					});
 				});
-
+/*
                 describe('should properly render "width" and "height" attributes', () => {
 					let template;
 
@@ -416,7 +402,21 @@ describe('Inferno acceptance tests', () => {
 							'<img src="" alt="Smiley face" height="42" width="42">'
 						);
 					});
-				});
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<img src="" alt="Smiley face" height={14} width={42}></img>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<img src="" alt="Smiley face" height="14" width="42">'
+						);
+					});
+				});*/
 				describe('should properly render boolean attribues (html5)', () => {
 					let template;
 
@@ -434,6 +434,20 @@ describe('Inferno acceptance tests', () => {
 							'<input disabled="disabled">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input checked="checked" disabled="disabled"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="disabled">' 
+						);
+					});
 				});
 
 				describe('should properly render boolean attribues (truthy)', () => {
@@ -447,6 +461,21 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="true">'
+						);
+					});
+					
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input checked={false} disabled={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
