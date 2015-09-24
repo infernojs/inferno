@@ -538,6 +538,7 @@ let DOMConfig = {
 	multiple: IS_BOOLEAN_PROPERTY,
 	name: IS_PROPERTY,
 	nohref: IS_ATTRIBUTE,
+	noResize: IS_BOOLEAN_PROPERTY,
 	// number used once or number once
 	nonce: IS_NUMERIC, 
 	noshade: IS_ATTRIBUTE,

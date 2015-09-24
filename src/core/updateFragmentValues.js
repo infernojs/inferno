@@ -119,6 +119,9 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			case fragmentValueTypes.ATTR_SCOPED:
 			    element.scoped = fragment.templateValues[i];
 			    break;
+			case fragmentValueTypes.ATTR_NO_RESIZE:
+			    element.noResize = fragment.templateValues[i];
+			    break;
 			case fragmentValueTypes.ATTR_WIDTH:
 				if (isSVG) {
 					element.setAttribute('width', fragment.templateValues[i]);
