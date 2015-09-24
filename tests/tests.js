@@ -340,6 +340,15 @@ describe('Inferno acceptance tests', () => {
 							'<input class="Hello, world!">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input class="Hello, world!">' 
+						);
+					});
 				});
 
                // Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
@@ -358,6 +367,15 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<custom-elem class="Hello, world!"></custom-elem>'
+						);
+					});
+
+					it('Second render (update)', () => {
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<custom-elem class="Hello, world!"></custom-elem>' 
 						);
 					});
 				});
