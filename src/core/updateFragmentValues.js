@@ -47,14 +47,8 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			case fragmentValueTypes.ATTR_ID:
 				element.id = fragment.templateValues[i];
 				break;
-			case fragmentValueTypes.ATTR_VALUE:
-				element.value = fragment.templateValues[i];
-				break;
 			case fragmentValueTypes.ATTR_NAME:
 				element.name = fragment.templateValues[i];
-				break;
-			case fragmentValueTypes.ATTR_TYPE:
-				element.type = fragment.templateValues[i];
 				break;
 			case fragmentValueTypes.ATTR_LABEL:
 				element.label = fragment.templateValues[i];
@@ -62,6 +56,54 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			case fragmentValueTypes.ATTR_PLACEHOLDER:
 				element.placeholder = fragment.templateValues[i];
 				break;
+           case fragmentValueTypes.ATTR_DESIGNMODE:
+			    element.designMode = fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_HTMLFOR:
+			    element.htmlFor = fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_PLAYBACKRATE:
+			    element.playbackRate = fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_PRELOAD:
+			    element.preload = fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_SRCDOC:
+			    element.srcDoc = fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_AUTOPLAY:
+			    element.autoPlay = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_CHECKED:
+			    element.checked = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_ISMAP:
+			    element.isMap = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_LOOP:
+			    element.loop = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_MUTED:
+			    element.muted = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_READONLY:
+			    element.readOnly = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_REVERSED:
+			    element.reversed = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_REQUIRED:
+			    element.required = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_SELECTED:
+			    element.selected = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_SPELLCHECK:
+			    element.spellCheck = !!fragment.templateValues[i];
+			    break;
+			case fragmentValueTypes.ATTR_TRUESPEED:
+			    element.truespeed = !!fragment.templateValues[i];
+			    break;
 			case fragmentValueTypes.ATTR_WIDTH:
 				if (isSVG) {
 					element.setAttribute('width', fragment.templateValues[i]);

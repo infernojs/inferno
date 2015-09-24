@@ -903,22 +903,6 @@ describe('Inferno acceptance tests', () => {
 							'<input allowfullscreen="false">'
 						);
 					});
-					
-					it('Second render (update)', () => {
-					
-						let dataS = { foo: 'bar', bar: 'oops' };
-						
-						template = Inferno.createTemplate(t =>
-							<input dataset={dataS}></input>
-						);
-						
-						Inferno.render(Inferno.createFragment(null, template), container);
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<input data-foo="bar" data-bar="oops">'
-						);
-					});
 				});
 
 				describe('should render "allowFullScreen" boolean attributes', () => {
