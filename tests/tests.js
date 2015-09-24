@@ -868,6 +868,22 @@ describe('Inferno acceptance tests', () => {
 							'<input href="/images/xxx.jpg" download="">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
+						);
+					});
 				});
 
 				describe('should not render overloaded "allowFullScreen" boolean attributes', () => {
@@ -885,6 +901,22 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input allowfullscreen="false">'
+						);
+					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
 						);
 					});
 				});
@@ -947,6 +979,22 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+					
+						let dataS = { foo: 'bar', bar: 'oops' };
+						
+						template = Inferno.createTemplate(t =>
+							<input dataset={dataS}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input data-foo="bar" data-bar="oops">'
+						);
+					});
 				});
 
 				// "muted" is a property
@@ -967,6 +1015,20 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input disabled={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="true">'
 						);
 					});
 				});
@@ -991,6 +1053,20 @@ describe('Inferno acceptance tests', () => {
 							'<input required="">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input disabled={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="true">'
+						);
+					});
 				});
 
 				// 'required' is a property and should not be set if a falsy value
@@ -1010,6 +1086,20 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input disabled={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="true">'
 						);
 					});
 				});
@@ -1033,6 +1123,20 @@ describe('Inferno acceptance tests', () => {
 							'<input hidden="true">'
 						);
 					});
+
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input hidden="false"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>' 
+						);
+					});
 				});
 
 				describe('should render "hidden" boolean attribute (falsy)', () => {
@@ -1052,6 +1156,20 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input hidden="false">'
+						);
+					});
+					
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input hidden="false"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>' 
 						);
 					});
 				});
@@ -1075,6 +1193,19 @@ describe('Inferno acceptance tests', () => {
 							'<input draggable="">'
 						);
 					});
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input hidden="false"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>' 
+						);
+					});
 				});
 
 				describe('should not render "hidden" boolean attributes if "null"', () => {
@@ -1096,6 +1227,19 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input hidden="false"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>' 
+						);
+					});
 				});
 
 				describe('should not render "formNoValidate" boolean attributes if "null"', () => {
@@ -1115,6 +1259,19 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input>'
+						);
+					});
+					it('Second render (update)', () => {
+					
+						template = Inferno.createTemplate(t =>
+							<input hidden="false"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>' 
 						);
 					});
 				});
