@@ -849,6 +849,20 @@ describe('Inferno acceptance tests', () => {
 							'<input href="/images/xxx.jpg">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input checked="checked" disabled="disabled"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="disabled">' 
+						);
+					});
 				});
 
 				describe('should render "overloaded" boolean properties', () => {
@@ -884,6 +898,20 @@ describe('Inferno acceptance tests', () => {
 							'<input data-foo="bar" data-bar="oops">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input checked="checked" disabled="disabled"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="disabled">' 
+						);
+					});
 				});
 
 				describe('should not render overloaded "allowFullScreen" boolean attributes', () => {
@@ -901,6 +929,20 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input allowfullscreen="false">'
+						);
+					});
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input checked="checked" disabled="disabled"></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input disabled="disabled">' 
 						);
 					});
 				});
@@ -922,6 +964,20 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input isMap={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input ismap="true">'
+						);
+					});
 				});
 
 				describe('should not render "scoped" boolean attributes as "null"', () => {
@@ -935,6 +991,21 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
+
+					// Update to a property
+ 				    it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input noValidate={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1278,6 +1349,21 @@ describe('Inferno acceptance tests', () => {
 							'<input formnovalidate="true">'
 						);
 					});
+					
+					// Update to a property
+ 				    it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input noValidate={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
 				});
 
 
@@ -1286,7 +1372,7 @@ describe('Inferno acceptance tests', () => {
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<input seamless={null}></input>
+							<span seamless={null}></span>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -1296,7 +1382,22 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>'
+							'<span></span>'
+						);
+					});
+					
+					// Update to a property
+ 				    it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<span noValidate={true}></span>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<span></span>'
 						);
 					});
 				});
@@ -1320,6 +1421,21 @@ describe('Inferno acceptance tests', () => {
 							'<input seamless="true">'
 						);
 					});
+					
+					// Update to a property
+ 				    it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input type="checkbox" required={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input type="checkbox" required="">'
+						);
+					});
 				});
 
 				describe('should properly render "className" property', () => {
@@ -1337,6 +1453,21 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<input class="Hello, world!">'
+						);
+					});
+					
+					// Update to a property
+ 				    it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input type="checkbox" disabled={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input type="checkbox" disabled="true">'
 						);
 					});
 				});
@@ -1358,6 +1489,21 @@ describe('Inferno acceptance tests', () => {
 							'<input start="5">'
 						);
 					});
+
+					// Update to a property
+ 				    it('Second render (update)', () => {
+						
+						template = Inferno.createTemplate(t =>
+							<input spellCheck={true}></input>
+						);
+						
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<input>'
+						);
+					});
 				});
 
 				describe('should properly render "disabled" boolean property', () => {
@@ -1377,6 +1523,7 @@ describe('Inferno acceptance tests', () => {
 							'<input type="checkbox" disabled="true">'
 						);
 					});
+					
 				});
 
 				describe('should not render overloaded falsy boolean properties', () => {
