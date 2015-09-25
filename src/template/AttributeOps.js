@@ -567,6 +567,8 @@ export default {
 		case 'vocab': // RDFA
 		case 'viewBox':
 		case 'visible':
+		case 'xmlns':
+
 			if (value !== 'false') {
 				node.setAttribute(name, '' + ((value === 'true') ? '' : value));
 			}
