@@ -1194,7 +1194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				switch (name) {
 	
-					case 'id':
+					case 'id': // Core attribute
 					case 'label':
 					case 'placeholder':
 					case 'name':
@@ -1237,16 +1237,20 @@ return /******/ (function(modules) { // webpackBootstrap
 				case 'autoFocus': // bool
 				case 'autoPlay': // bool
 				case 'capture': // bool
+				case 'default':
 				case 'defaultchecked': // bool
 				case 'defaultmuted': // bool
 				case 'defaultselected': // bool
 				case 'disabled': // bool
+				case 'dir': // Core attribute
 				case 'draggable': // bool
+				case 'for':
 				case 'formNoValidate': // bool
 				case 'hidden': // bool
 				case 'seamless':
 				case 'sortable':
-				case 'default':
+				case 'title': // Core attribute
+				case 'type':
 	
 					if (value !== 'false') {
 						node.setAttribute(name, '' + (value === 'true' ? '' : value));
