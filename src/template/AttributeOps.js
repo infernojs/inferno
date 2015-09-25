@@ -632,7 +632,7 @@ export default {
  */
 	set: (node, name, value, skip) => {
 		
-    // Prioritize HTML properties in the same way we do when we update fragments
+    // Prioritized HTML properties
 
     if (!skip) {
 
@@ -640,7 +640,7 @@ export default {
 
             case 'id':
             case 'label':
-            case 'placeholder':
+		    case 'placeholder':
             case 'name':
             case 'designMode':
             case 'htmlFor':
@@ -671,7 +671,8 @@ export default {
 		return;
         }
     }
-    // Prioritized attributes
+
+    // Prioritized HTML attributes
     switch (name) {
 
         case 'allowFullScreen':
@@ -695,7 +696,7 @@ export default {
 		return;	
     }		
 		
-      (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
+      return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
  },
 
 /**
