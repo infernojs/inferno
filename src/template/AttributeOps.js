@@ -22,16 +22,16 @@ import hook from './hooks';
  * @param {String} attrValue The attribute value to set.
  */
 let setAttribute = (node, attrName, attrValue) => {
-    // Avoid touching the DOM on falsy values
-    if (attrValue !== 'false') {
+	// Avoid touching the DOM on falsy values
+	if (attrValue !== 'false') {
 
-        if (hook[attrName]) {
+		if (hook[attrName]) {
 
-            hook[attrName](node, attrName, attrValue);
-        } else {
-            node.setAttribute(attrNameCfg[attrName] || attrName, attrValue);
-        }
-    }
+			hook[attrName](node, attrName, attrValue);
+		} else {
+			node.setAttribute(attrNameCfg[attrName] || attrName, attrValue);
+		}
+	}
 };
 
 /**
@@ -43,7 +43,7 @@ let setAttribute = (node, attrName, attrValue) => {
  */
 let setBooleanAttribute = (node, attrName, attrValue) => {
 	if (attrValue !== 'false') {
-       node.setAttribute(attrName, '' + ((attrValue === 'true') ? '' : attrValue));
+		node.setAttribute(attrName, '' + ((attrValue === 'true') ? '' : attrValue));
 	}
 };
 
@@ -56,9 +56,9 @@ let setBooleanAttribute = (node, attrName, attrValue) => {
  */
 let setCustomAttribute = (node, attrName, attrValue) => {
 	// Custom attributes are the only arributes we are validating.
-    if (validateAttribute( attrName )) {
+	if (validateAttribute( attrName )) {
 	// All attributes are lowercase
-	  node.setAttribute((attrNameCfg[attrName] || attrName).toLowerCase(), '' + attrValue); // cast to string
+		node.setAttribute((attrNameCfg[attrName] || attrName).toLowerCase(), '' + attrValue); // cast to string
 	}
 };
 
@@ -70,7 +70,7 @@ let setCustomAttribute = (node, attrName, attrValue) => {
  * @param {String} attrValue  The numeric attribute value to set.
  */
 let setNumericAttribute = (node, attrName, attrValue) => {
-	  if (attrValue > 0 && (typeof attrValue === 'number')) {
+	if (attrValue > 0 && (typeof attrValue === 'number')) {
 		node.setAttribute(attrName, attrValue);
 	}
 };
@@ -84,47 +84,46 @@ let setNumericAttribute = (node, attrName, attrValue) => {
  */
 let setProperty = (node, propertyName, propValue) => {
 
-    if (propValue != null) {
-	
-        if (hook[propertyName]) {
-            hook[propertyName](node, propertyName, propValue);
-        } else {
+	if (propValue != null) {
 
-        // 'contentEditable' is a special case
-        if (propertyName === 'contentEditable' && (propValue)) {
+		if (hook[propertyName]) {
+			hook[propertyName](node, propertyName, propValue);
+		} else {
+			// 'contentEditable' is a special case
+			if (propertyName === 'contentEditable' && (propValue)) {
+				/**
+				 * We would need this check here, else it will throw:
+				 *
+				 * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value
+				 * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
+				 */
 
-            /**
-             * We would need this check here, else it will throw:
-             *
-             * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
-             * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
-             */
+				// Workaround for the 'contentEditable' property
+				let cEValue;
 
-                // Workaround for the 'contentEditable' property
-                let cEValue;
-                switch (propValue) {
-                    case true:
-                        cEValue = propValue;
-                        break;
-                    case false:
-                        cEValue = propValue;
-                        break;
-                    case 'plaintext-only':
-                        cEValue = propValue;
-                        break;
-                    case 'inherit':
-                        cEValue = propValue;
-                        break;
-                    default:
-                        cEValue = 'inherit';
-                }
+				switch (propValue) {
+				case true:
+					cEValue = propValue;
+					break;
+				case false:
+					cEValue = propValue;
+					break;
+				case 'plaintext-only':
+					cEValue = propValue;
+					break;
+				case 'inherit':
+					cEValue = propValue;
+					break;
+				default:
+					cEValue = 'inherit';
+				}
 
-                propValue = cEValue;
-        }
+				propValue = cEValue;
+			}
 
-        node[propNameCfg[propertyName] || propertyName] = propValue;
-    }
-  }	
+			node[propNameCfg[propertyName] || propertyName] = propValue;
+		}
+	}
 };
 
 /**
@@ -157,7 +156,7 @@ let setPropertyForDataset = (node, propertyName, propValue) => {
 	let prop = node[propertyName];
 
 	for (let idx in propValue) {
-      // regarding the specs we need to camelize the 'propertyName'
+		// regarding the specs we need to camelize the 'propertyName'
 		prop[camelize(idx)] = propValue[idx] == null ? '' : dasherize(propValue[idx]);
 	}
 };
@@ -215,8 +214,8 @@ let removeProperty = (node, propertyName) => {
 	// 'select' is a special case
 	if (propertyName === 'value' && (tagName(node) === 'select')) {
 		removeSelectValue(node);
-	} else if (propertyName === 'className') {	
-	    node.className = '';
+	} else if (propertyName === 'className') {
+		node.className = '';
 	} else {
 		node[propertyName] = hasPropertyAccessor(node, propertyName);
 	}
@@ -234,9 +233,8 @@ let setSelectValue = (node, value) => {
 	const arrayish = isArray(value),
 		options = node.options;
 
-	let i = 0,
-		optionNode;
-   for (let i = 0; i < options.length; i++) { 
+	let optionNode;
+	for (let i = 0; i < options.length; i++) {
 		optionNode = options[i];
 		optionNode.selected = value != null && (arrayish ? inArray(value, optionNode.value) : optionNode.value == value);
 	}
@@ -248,7 +246,7 @@ let setSelectValue = (node, value) => {
  * @param {Object} node A DOM element.
  */
 let removeSelectValue = node => {
-   for (let i = 0; i < node.options.length; i++) { 
+	for (let i = 0; i < node.options.length; i++) {
 		node.options[i].selected = false;
 	}
 };
@@ -261,8 +259,8 @@ let removeSelectValue = node => {
  * @return {string} Markup string, or empty string if the property was invalid.
  */
 let createAttributeMarkup = (name, value) => {
-  return (!validateAttribute( name ) || value == null) ? '' : `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
-}
+	return (!validateAttribute( name ) || value == null) ? '' : `${ attrNameCfg[name] || name }="${ escapeHtml(value + '') }"`;
+};
 
 /**
  * Render HTML markup from a dataset property for SSR rendring
@@ -271,14 +269,12 @@ let createAttributeMarkup = (name, value) => {
  * @param {Object} value  The value to be set.
  */
 let datasetToString = (name, value) => {
-
 	let objectLiteral = '';
-
 	for (let objName in value) {
 		objectLiteral += value[objName] != null && ( 'data-' + objName + '="' + dasherize(value[objName]) + '" ');
 	}
 	return objectLiteral;
-}
+};
 
 /**
  * Render HTML markup from boolean attributes to string for SSR rendring
@@ -287,21 +283,19 @@ let datasetToString = (name, value) => {
  * @param {String} value  The attribute value to set.
  */
 let booleanAttrToString = (name, value) => {
-
 	// XHTML friendly
-  switch (name) {
-
-    case 'download':
-    case 'multiple':
-        return value ? name : '';
-    case false:
-        return '';
-    case true:
-        return `${ name }="${ '' }"`;
-    default:
-        return `${ name }="${ escapeHtml(value + '') }"`; // cast to string
-   }
-}
+	switch (name) {
+	case 'download':
+	case 'multiple':
+		return value ? name : '';
+	case false:
+		return '';
+	case true:
+		return `${ name }="${ '' }"`;
+	default:
+		return `${ name }="${ escapeHtml(value + '') }"`; // cast to string
+	}
+};
 
 /**
  * Render CSS style property to string for SSR rendring
@@ -354,14 +348,14 @@ let IS_BOOLEAN_PROPERTY = {
 	remove: removeProperty,
 	toHtml: booleanAttrToString
 };
- 
+
  /****************************** NOTE!! *************************************
-  *                                                                         *
+  *																		 *
   * Both xlink and xml namespace attrs are removed in the upcoming SVG 2.0. *
-  *                                                                         *
+  *																		 *
   **************************************************************************/
 let IS_XLINK_NAMESPACE = {
-	
+
 	/**
 	 * Set xlink namespace attribute
 	 *
@@ -398,7 +392,7 @@ let IS_XML_NAMESPACE = {
 	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlCfg[name], value);
 	},
-	
+
 	/**
 	 * Unsets a xml namespace attribute
 	 *
@@ -449,7 +443,6 @@ let DOMConfig = {
 		toHtml: datasetToString
 	},
 	default: IS_BOOLEAN_ATTRIBUTE,
-	data: IS_ATTRIBUTE,
 	defer: IS_BOOLEAN_PROPERTY,
 	declare: IS_BOOLEAN_ATTRIBUTE,
 	defaultPlaybackRate: IS_PROPERTY,
@@ -513,7 +506,7 @@ let DOMConfig = {
 	nohref: IS_ATTRIBUTE,
 	noResize: IS_BOOLEAN_PROPERTY,
 	// number used once or number once
-	nonce: IS_NUMERIC, 
+	nonce: IS_NUMERIC,
 	noshade: IS_ATTRIBUTE,
 	noValidate: IS_BOOLEAN_PROPERTY,
 	opacity: IS_ATTRIBUTE,
@@ -552,7 +545,7 @@ let DOMConfig = {
 	transform: IS_ATTRIBUTE,
 	title: IS_ATTRIBUTE,
 	type: IS_ATTRIBUTE,
-	
+
 	/**
 	 * CSS styling attribute is a special case, and will be set as a normal object.
 	 * 'styles' should be used as an replacement.
@@ -635,93 +628,85 @@ export default {
  * @param {String} name The attribute / property name to set.
  * @param {String|Object} value The attribute / property value to set.
  */
-	set: (node, name, value, skip) => {
-		
-    // Prioritized HTML properties
-
-    if (!skip) {
-
-        switch (name) {
-
-            case 'id':    // Core attribute
-            case 'label':
-            case 'placeholder':
-            case 'name':
-            case 'designMode':
-            case 'htmlFor':
-            case 'playbackRate':
-            case 'preload':
-            case 'srcDoc':
-            case 'autoPlay': // bool
-            case 'checked': // bool
-            case 'isMap': // bool
-            case 'loop': // bool
-            case 'muted': // bool
-            case 'readOnly': // bool
-            case 'reversed':
-            case 'required': // bool
-            case 'selected': // bool
-            case 'spellCheck': // bool
-            case 'trueSpeed': // bool
-            case 'multiple': // bool
-            case 'controls': // bool
-            case 'defer': // bool
-            case 'noValidate':
-            case 'scoped': // bool
-            case 'noResize':  // bool
-			
-			if ( value != null) {
-               node[name] = value;
+	set(node, name, value, skip) {
+		// Prioritized HTML properties
+		if (!skip) {
+			switch (name) {
+			case 'id':	// Core attribute
+			case 'label':
+			case 'placeholder':
+			case 'name':
+			case 'designMode':
+			case 'htmlFor':
+			case 'playbackRate':
+			case 'preload':
+			case 'srcDoc':
+			case 'autoPlay': // bool
+			case 'checked': // bool
+			case 'isMap': // bool
+			case 'loop': // bool
+			case 'muted': // bool
+			case 'readOnly': // bool
+			case 'reversed':
+			case 'required': // bool
+			case 'selected': // bool
+			case 'spellCheck': // bool
+			case 'trueSpeed': // bool
+			case 'multiple': // bool
+			case 'controls': // bool
+			case 'defer': // bool
+			case 'noValidate':
+			case 'scoped': // bool
+			case 'noResize':  // bool
+				if (value != null) {
+					node[name] = value;
+				}
+				return;
 			}
-	
-		return;
-        }
-    }
+		}
 
-    // Prioritized HTML attributes
-    switch (name) {
+		// Prioritized HTML attributes
+		switch (name) {
+		case 'allowFullScreen': // bool
+		case 'autoFocus': // bool
+		case 'autoPlay': // bool
+		case 'capture': // bool
+		case 'default':
+		case 'defaultchecked': // bool
+		case 'defaultmuted': // bool
+		case 'defaultselected': // bool
+		case 'disabled': // bool
+		case 'dir': // Core attribute
+		case 'draggable': // bool
+		case 'for':
+		case 'formNoValidate': // bool
+		case 'hidden': // bool
+		case 'seamless':
+		case 'sortable':
+		case 'title': // Core attribute
+		case 'type':
+			if (value !== 'false') {
+				node.setAttribute(name, '' + ((value === 'true') ? '' : value));
+			}
+			return;
+		}
+		return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
+	},
 
-        case 'allowFullScreen': // bool
-        case 'autoFocus': // bool
-        case 'autoPlay': // bool
-        case 'capture': // bool
-        case 'default':
-        case 'defaultchecked': // bool
-        case 'defaultmuted': // bool
-        case 'defaultselected': // bool
-        case 'disabled': // bool
-        case 'dir': // Core attribute
-        case 'draggable': // bool
-        case 'for':
-        case 'formNoValidate': // bool
-        case 'hidden': // bool
-        case 'seamless':
-        case 'sortable':
-        case 'title': // Core attribute
-        case 'type':
-        
-		if (value !== 'false') {
-            node.setAttribute(name, '' + ((value === 'true') ? '' : value));
-        }
-		return;	
-    }		
-		
-      return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
- },
-
-/**
- * Unsets a HTML attribute / property
- *
- * @param {Object} node A DOM element.
- * @param {String} name The attribute / property name to set.
- * @param {String} value The attribute / property value to set.
- */
+	/**
+	 * Unsets a HTML attribute / property
+	 *
+	 * @param {Object} node A DOM element.
+	 * @param {String} name The attribute / property name to set.
+	 * @param {String} value The attribute / property value to set.
+	 */
 	remove: (node, name) => (DOMConfig[name] || IS_CUSTOM).remove(node, name),
-/**
- * Create HTML attribute / property markup for SSR
- *
- * @param {String} name The attribute / property name to set.
- * @param {String} value The attribute / property value to set.
- */
+
+	/**
+	 * Create HTML attribute / property markup for SSR
+	 *
+	 * @param {String} name The attribute / property name to set.
+	 * @param {String} value The attribute / property value to set.
+	 */
 	toHtml: (name, value) => (DOMConfig[name] || IS_CUSTOM).toHtml(name, value)
 };
