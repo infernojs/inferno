@@ -128,22 +128,6 @@ let setProperty = (node, propertyName, propValue) => {
 };
 
 /**
- * Set selectedIndex property
- *
- * @param {Object} node A DOM element.
- * @param {String} propertyName	  The property propertyName to set.
- * @param {String} propValue  The property propValue to set.
- */
-let setSelectedIndexProperty = (node, propertyName, propValue) => {
-
-    // selectbox has special case
-  if (Array.prototype.every.call(node.options, (opt) => !(opt.selected = opt.value === propValue))) {
-	  // TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
-     node[propertyName] = -1;
-  }	
-};
-
-/**
  * Set boolean property
  *
  * @param {Object} node A DOM element.
