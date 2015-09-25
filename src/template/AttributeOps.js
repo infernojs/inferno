@@ -179,13 +179,13 @@ let setValueForProperty = (node, propertyName, propValue) => {
 
 let setSelectValue = (node, value) => {
 
-	const arrayish = isArray(value),
+	const multiple = isArray(value),
 		options = node.options;
 
 	let optionNode;
 	for (let i = 0; i < options.length; i++) {
 		optionNode = options[i];
-		optionNode.selected = value != null && (arrayish ? inArray(value, optionNode.value) : optionNode.value == value);
+		optionNode.selected = value != null && (multiple ? inArray(value, optionNode.value) : optionNode.value == value);
 	}
 };
 
@@ -494,7 +494,7 @@ let DOMConfig = {
 	'systemLanguage': IS_ATTRIBUTE
 
 	/**
-	 * Timin attributes (SVG)
+	 * Timing attributes (SVG)
 	 */
 
 	dur: IS_ATTRIBUTE,
@@ -608,10 +608,10 @@ export default {
 	},
 
 	/**
-	 * Create HTML attribute / property markup for SSR
+	 * Render HTML attribute / property markup for SSR
 	 *
-	 * @param {String} name The attribute / property name to set.
-	 * @param {String} value The attribute / property value to set.
+	 * @param {String} name The attribute / property name to render.
+	 * @param {String} value The attribute / property value to render.
 	 */
 	toHtml: (name, value) => (DOMConfig[name] || IS_CUSTOM).toHtml(name, value)
 };
