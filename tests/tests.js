@@ -1902,6 +1902,40 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
+				describe('should update styles when "style" changes from null to object', () => {
+
+                    let template,
+                        styles = {color: 'red'};
+					
+					beforeEach(() => {
+						template = Inferno.createTemplate(t =>
+							<div style={null}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+					});
+
+					it('Initial render (creation)', () => {
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div></div>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+						template = Inferno.createTemplate(t =>
+							<div style={styles}></div>
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<div style="color: red;"></div>'
+						);
+					});
+					
+				});
+
 				describe('should ignore null styles', () => {
 					let template;
 
