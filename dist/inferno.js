@@ -576,9 +576,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		// Avoid touching the DOM on falsy values
 		if (attrValue !== 'false') {
 	
-			var hook = Attr[attrName];
-			if (hook) {
-				hook[attrName](node, attrName, attrValue);
+			if (_hooks2['default'][attrName]) {
+	
+				_hooks2['default'][attrName](node, attrName, attrValue);
 			} else {
 				node.setAttribute(_cfgAttrNameCfg2['default'][attrName] || attrName, attrValue);
 			}
@@ -637,57 +637,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		if (propValue != null) {
 	
-			// 'contentEditable' is a special case
-			if (propertyName === 'contentEditable' && propValue) {
+			if (_hooks2['default'][propertyName]) {
+				_hooks2['default'][propertyName](node, propertyName, propValue);
+			} else {
 	
-				/**
-	    * We would need this check here, else it will throw:
-	    *
-	    * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
-	    * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
-	    */
+				// 'contentEditable' is a special case
+				if (propertyName === 'contentEditable' && propValue) {
 	
-				// Workaround for the 'contentEditable' property
-				var cEValue = undefined;
-				switch (propValue) {
-					case true:
-						cEValue = propValue;
-						break;
-					case false:
-						cEValue = propValue;
-						break;
-					case 'plaintext-only':
-						cEValue = propValue;
-						break;
-					case 'inherit':
-						cEValue = propValue;
-						break;
-					default:
-						cEValue = 'inherit';
+					/**
+	     * We would need this check here, else it will throw:
+	     *
+	     * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value 
+	     * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
+	     */
+	
+					// Workaround for the 'contentEditable' property
+					var cEValue = undefined;
+					switch (propValue) {
+						case true:
+							cEValue = propValue;
+							break;
+						case false:
+							cEValue = propValue;
+							break;
+						case 'plaintext-only':
+							cEValue = propValue;
+							break;
+						case 'inherit':
+							cEValue = propValue;
+							break;
+						default:
+							cEValue = 'inherit';
+					}
+	
+					propValue = cEValue;
 				}
 	
-				propValue = cEValue;
+				node[_cfgPropNameCfg2['default'][propertyName] || propertyName] = propValue;
 			}
-	
-			node[_cfgPropNameCfg2['default'][propertyName] || propertyName] = propValue;
-		}
-	};
-	
-	/**
-	 * Set selectedIndex property
-	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} propertyName	  The property propertyName to set.
-	 * @param {String} propValue  The property propValue to set.
-	 */
-	var setSelectedIndexProperty = function setSelectedIndexProperty(node, propertyName, propValue) {
-	
-		// selectbox has special case
-		if (Array.prototype.every.call(node.options, function (opt) {
-			return !(opt.selected = opt.value === propValue);
-		})) {
-			// TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
-			node[propertyName] = -1;
 		}
 	};
 	
@@ -913,12 +900,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		toHtml: createAttributeMarkup
 	};
 	
-	var IS_SELECTED_PROPERTY = {
-		set: setSelectedIndexProperty,
-		remove: removeProperty,
-		toHtml: createAttributeMarkup
-	};
-	
 	var IS_BOOLEAN_PROPERTY = {
 		set: setBooleanProperty,
 		remove: removeProperty,
@@ -1099,7 +1080,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		scoped: IS_BOOLEAN_ATTRIBUTE,
 		seamless: IS_BOOLEAN_ATTRIBUTE,
 		selected: IS_BOOLEAN_PROPERTY,
-		selectedIndex: IS_SELECTED_PROPERTY,
+		selectedIndex: IS_PROPERTY,
 		size: IS_NUMERIC,
 		// Viewport-based selection
 		sizes: IS_ATTRIBUTE,
@@ -1200,9 +1181,75 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @param {String} name The boolean attribute name to set.
 	  * @param {String|Object} value The boolean attribute value to set.
 	  */
-		set: function set(node, name, value) {
+		set: function set(node, name, value, skip) {
+	
+			// Prioritized HTML properties
+	
+			if (!skip) {
+	
+				switch (name) {
+	
+					case 'id':
+					case 'label':
+					case 'placeholder':
+					case 'name':
+					case 'designMode':
+					case 'htmlFor':
+					case 'playbackRate':
+					case 'preload':
+					case 'srcDoc':
+					case 'autoPlay':
+					case 'checked':
+					case 'isMap':
+					case 'loop':
+					case 'muted':
+					case 'readOnly':
+					case 'reversed':
+					case 'required':
+					case 'selected':
+					case 'spellCheck':
+					case 'trueSpeed':
+					case 'multiple':
+					case 'controls':
+					case 'defer':
+					case 'noValidate':
+					case 'scoped':
+					case 'noResize':
+	
+						if (value != null) {
+							node[name] = value;
+						}
+						return;
+				}
+			}
+	
+			// Prioritized HTML attributes
+			switch (name) {
+	
+				case 'allowFullScreen':
+				case 'autoFocus':
+				case 'autoPlay':
+				case 'capture':
+				case 'declare': // deprecated
+				case 'defaultchecked':
+				case 'defaultmuted':
+				case 'defaultselected':
+				case 'disabled':
+				case 'draggable':
+				case 'formNoValidate':
+				case 'hidden':
+				case 'seamless':
+				case 'sortable':
+				case 'default':
+					if (value !== 'false') {
+						node.setAttribute(name, '' + (value === 'true' ? '' : value));
+					}
+					return;
+			}
+	
 			return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
 		},
+	
 		/**
 	  * Unsets a HTML attribute / property
 	  *
@@ -2646,7 +2693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					element.autoPlay = fragment.templateValue;
 					return;
 				case _enumFragmentValueTypes2['default'].ATTR_CHECKED:
-					element.checked = !!fragment.templateValue;
+					element.checked = fragment.templateValue;
 					return;
 				case _enumFragmentValueTypes2['default'].ATTR_ISMAP:
 					element.isMap = fragment.templateValue;
@@ -2658,13 +2705,13 @@ return /******/ (function(modules) { // webpackBootstrap
 					element.muted = fragment.templateValue;
 					return;
 				case _enumFragmentValueTypes2['default'].ATTR_READONLY:
-					element.readOnly = !!fragment.templateValue;
+					element.readOnly = fragment.templateValue;
 					return;
 				case _enumFragmentValueTypes2['default'].ATTR_REVERSED:
 					element.reversed = fragment.templateValue;
 					return;
 				case _enumFragmentValueTypes2['default'].ATTR_REQUIRED:
-					element.required = !!fragment.templateValue;
+					element.required = fragment.templateValue;
 					return;
 				case _enumFragmentValueTypes2['default'].ATTR_SELECTED:
 					element.selected = fragment.templateValue;
@@ -2714,7 +2761,7 @@ return /******/ (function(modules) { // webpackBootstrap
 							(0, _eventsClearEventListeners2['default'])(element, type);
 							(0, _eventsAddEventListener2['default'])(element, type, fragment.templateValue);
 						} else {
-							_templateAttributeOps2['default'].set(element, type, fragment.templateValue);
+							_templateAttributeOps2['default'].set(element, type, fragment.templateValue, true);
 						}
 						// TODO make component props work for single value fragments
 					} else {
@@ -2839,7 +2886,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						element.autoPlay = fragment.templateValues[i];
 						break;
 					case _enumFragmentValueTypes2['default'].ATTR_CHECKED:
-						element.checked = !!fragment.templateValues[i];
+						element.checked = fragment.templateValues[i];
 						break;
 					case _enumFragmentValueTypes2['default'].ATTR_ISMAP:
 						element.isMap = fragment.templateValues[i];
@@ -2851,13 +2898,13 @@ return /******/ (function(modules) { // webpackBootstrap
 						element.muted = fragment.templateValues[i];
 						break;
 					case _enumFragmentValueTypes2['default'].ATTR_READONLY:
-						element.readOnly = !!fragment.templateValues[i];
+						element.readOnly = fragment.templateValues[i];
 						break;
 					case _enumFragmentValueTypes2['default'].ATTR_REVERSED:
 						element.reversed = fragment.templateValues[i];
 						break;
 					case _enumFragmentValueTypes2['default'].ATTR_REQUIRED:
-						element.required = !!fragment.templateValues[i];
+						element.required = fragment.templateValues[i];
 						break;
 					case _enumFragmentValueTypes2['default'].ATTR_SELECTED:
 						element.selected = fragment.templateValues[i];
@@ -2907,7 +2954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 								(0, _eventsClearEventListeners2['default'])(element, type);
 								(0, _eventsAddEventListener2['default'])(element, type, fragment.templateValues[i]);
 							} else {
-								_templateAttributeOps2['default'].set(element, type, fragment.templateValues[i]);
+								_templateAttributeOps2['default'].set(element, type, fragment.templateValues[i], true);
 							}
 						}
 						//component prop, update it
@@ -3382,34 +3429,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utilTagName2 = _interopRequireDefault(_utilTagName);
 	
-	var hook = {};
+	var hook = {
 	
-	hook.type = function (node, name, value) {
-	    if ((0, _utilTagName2['default'])(node) === 'input') {
-	        // Support: IE9-Edge
-	        var val = node.value; // value will be lost in IE if type is changed
-	        node.setAttribute(name, '' + value);
-	        // Check if val exist, if not we will get a stupid value="" in the markup
-	        if (val) {
-	            node.value = val;
+	    type: function type(node, name, value) {
+	        if ((0, _utilTagName2['default'])(node) === 'input') {
+	            // Support: IE9-Edge
+	            var val = node.value; // value will be lost in IE if type is changed
+	            node.setAttribute(name, '' + value);
+	            // Check if val exist, if not we will get a stupid value="" in the markup
+	            if (val) {
+	                node.value = val;
+	            }
+	        } else {
+	            node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, value); // cast to string
 	        }
-	    } else {
-	        node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, value); // cast to string
-	    }
-	};
+	    },
 	
-	/**
-	 * Set volume attributes on a DOM node
-	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} name	 The attribute name to set.
-	 * @param {String} attrValue  The attribute value to set.
-	 */
-	hook.volume = function (node, name, value) {
-	    // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
-	    // quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
-	    if (value === 0.0 || value === 1 || typeof value === 'number' && (value > -1 && value < 1.1)) {
-	        node.setAttribute(name, value);
+	    /**
+	     * Set volume attributes on a DOM node
+	     *
+	     * @param {Object} node A DOM element.
+	     * @param {String} name	 The attribute name to set.
+	     * @param {String} attrValue  The attribute value to set.
+	     */
+	    volume: function volume(node, name, value) {
+	        // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
+	        // quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
+	        if (value === 0.0 || value === 1 || typeof value === 'number' && (value > -1 && value < 1.1)) {
+	            node.setAttribute(name, value);
+	        }
+	    },
+	
+	    /**
+	     * Set selectedIndex property
+	     *
+	     * @param {Object} node A DOM element.
+	     * @param {String} propertyName	  The property propertyName to set.
+	     * @param {String} propValue  The property propValue to set.
+	     */
+	    selectedIndex: function selectedIndex(node, name, value) {
+	        // selectbox has special case
+	        if (Array.prototype.every.call(node.options, function (opt) {
+	            return !(opt.selected = opt.value === value);
+	        })) {
+	            // TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
+	            node[name] = -1;
+	        }
 	    }
 	};
 	
