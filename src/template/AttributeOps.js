@@ -85,6 +85,10 @@ let setNumericAttribute = (node, attrName, attrValue) => {
 let setProperty = (node, propertyName, propValue) => {
 
     if (propValue != null) {
+	
+        if (hook[propertyName]) {
+            hook[propertyName](node, propertyName, propValue);
+        } else {
 
         // 'contentEditable' is a special case
         if (propertyName === 'contentEditable' && (propValue)) {
@@ -120,6 +124,7 @@ let setProperty = (node, propertyName, propValue) => {
 
         node[propNameCfg[propertyName] || propertyName] = propValue;
     }
+  }	
 };
 
 /**
@@ -360,12 +365,6 @@ let IS_PROPERTY = {
 	toHtml: createAttributeMarkup
 };
 
-let IS_SELECTED_PROPERTY = {
-	set: setSelectedIndexProperty,
-	remove: removeProperty,
-	toHtml: createAttributeMarkup
-};
-
 let IS_BOOLEAN_PROPERTY = {
 	set: setBooleanProperty,
 	remove: removeProperty,
@@ -546,7 +545,7 @@ let DOMConfig = {
 	scoped: IS_BOOLEAN_ATTRIBUTE,
 	seamless: IS_BOOLEAN_ATTRIBUTE,
 	selected: IS_BOOLEAN_PROPERTY,
-	selectedIndex: IS_SELECTED_PROPERTY,
+	selectedIndex: IS_PROPERTY,
 	size: IS_NUMERIC,
 	// Viewport-based selection
 	sizes: IS_ATTRIBUTE,
