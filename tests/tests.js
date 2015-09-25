@@ -59,10 +59,10 @@ describe('Inferno acceptance tests', () => {
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(createElement =>
-							createElement("ul", null,
-								createElement("li", null, "I'm a li-tag"),
-								createElement("li", null, "I'm a li-tag"),
-								createElement("li", null, "I'm a li-tag")
+							createElement('ul', null,
+								createElement('li', null, `I'm a li-tag`),
+								createElement('li', null, `I'm a li-tag`),
+								createElement('li', null, `I'm a li-tag`)
 							)
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
@@ -72,7 +72,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<ul><li>I\'m a li-tag</li><li>I\'m a li-tag</li><li>I\'m a li-tag</li></ul>'
+							`<ul><li>I'm a li-tag</li><li>I'm a li-tag</li><li>I'm a li-tag</li></ul>`
 						);
 					});
 				});
@@ -81,11 +81,11 @@ describe('Inferno acceptance tests', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(createElement =>
-							createElement("ul", null,
-								createElement("li", null, createElement("span", null, "I'm a li-tag")),
-								createElement("li", null, createElement("span", null, "I'm a li-tag")),
-								createElement("li", null, createElement("span", null, "I'm a li-tag"))
+						template = Inferno.createTemplate(t =>
+							t('ul', null,
+								t('li', null, t('span', null, `I'm a li-tag`)),
+								t('li', null, t('span', null, `I'm a li-tag`)),
+								t('li', null, t('span', null, `I'm a li-tag`))
 							)
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
@@ -95,7 +95,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<ul><li>I\'m a li-tag</li><li>I\'m a li-tag</li><li>I\'m a li-tag</li></ul>'
+							`<ul><li>I'm a li-tag</li><li>I'm a li-tag</li><li>I'm a li-tag</li></ul>`
 						);
 					});
 				});
@@ -104,15 +104,15 @@ describe('Inferno acceptance tests', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(createElement =>
-							createElement("div", { autoFocus:"true"})
+						template = Inferno.createTemplate(t =>
+							t('div', { autoFocus: 'true' })
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
 
-						expect(container.firstChild.getAttribute("autoFocus")).to.eql("");
+						expect(container.firstChild.getAttribute('autoFocus')).to.eql('');
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -125,15 +125,14 @@ describe('Inferno acceptance tests', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(createElement =>
-							createElement("div", { className:"Dominic rocks!"})
+						template = Inferno.createTemplate(t =>
+							t('div', { className: 'Dominic rocks!' })
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
-
-						expect(container.firstChild.getAttribute("class")).to.eql("Dominic rocks!");
+						expect(container.firstChild.getAttribute('class')).to.eql('Dominic rocks!');
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -147,15 +146,15 @@ describe('Inferno acceptance tests', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(createElement =>
-							createElement("input",{ value : null })
+						template = Inferno.createTemplate(t =>
+							t('input', { value: null })
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
 
-                        expect( container.value ).to.be.undefined;
+						expect( container.value ).to.be.undefined;
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -163,19 +162,18 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-                describe('should set values as properties by default (no JSX)', () => {
+				describe('should set values as properties by default (no JSX)', () => {
 					let template;
 
 					beforeEach(() => {
-						template = Inferno.createTemplate(createElement =>
-							createElement("input", { title : "Tip!" })
+						template = Inferno.createTemplate(t =>
+							t('input', { title: 'Tip!' })
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
-
-                        expect( container.firstChild.getAttribute('title' )).to.eql('Tip!');
+						expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -185,25 +183,25 @@ describe('Inferno acceptance tests', () => {
 				});
 
 				describe('should render value multiple attribute (no JSX)', () => {
-					let template;
 
 					beforeEach(() => {
-						let template = Inferno.createTemplate(createElement =>
-                          createElement("select", { multiple:true, value:"foo"},
-                          createElement("option", {value: "foo"}, "I'm a li-tag"),
-                          createElement("option", {value: "bar"}, "I'm a li-tag")
-                        ));
+						let template = Inferno.createTemplate(t =>
+							t('select', { multiple: true, value: 'foo' },
+								t('option', { value: 'foo' }, `I'm a li-tag`),
+								t('option', { value: 'bar' }, `I'm a li-tag`)
+							)
+						);
 
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
 
-                        expect(get(container.firstChild)).to.eql(['foo']);
+						expect(get(container.firstChild)).to.eql(['foo']);
 						expect(
 							container.innerHTML
 						).to.equal(
-						'<select multiple=""><option value="foo">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>'
+							`<select multiple=""><option value="foo">I'm a li-tag</option><option value="bar">I'm a li-tag</option></select>`
 						);
 					});
 				});
@@ -340,18 +338,18 @@ describe('Inferno acceptance tests', () => {
 							'<input class="Hello, world!">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input class="Hello, world!">' 
+							'<input class="Hello, world!">'
 						);
 					});
 				});
 
-               // Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
+				// Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
 				describe('should properly render "className" property on a custom element', () => {
 					let template;
 
@@ -371,11 +369,11 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<custom-elem  className="Hello, Inferno!"></custom-elem>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -385,7 +383,7 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 
-                describe('should properly render "width" and "height" attributes', () => {
+				describe('should properly render "width" and "height" attributes', () => {
 					let template;
 
 					beforeEach(() => {
@@ -402,13 +400,13 @@ describe('Inferno acceptance tests', () => {
 							'<img src="" alt="Smiley face" height="42" width="42">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<img src="" alt="Smiley face" height={14} width={42}></img>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -434,18 +432,18 @@ describe('Inferno acceptance tests', () => {
 							'<input disabled="disabled">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<input checked="checked" disabled="disabled"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="disabled">' 
+							'<input disabled="disabled">'
 						);
 					});
 				});
@@ -467,14 +465,14 @@ describe('Inferno acceptance tests', () => {
 							'<input disabled="true">'
 						);
 					});
-					
-					
+
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<input checked={false} disabled={true}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -498,16 +496,16 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							 '<div disabled="false"></div>'
+							'<div disabled="false"></div>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<span checked={false} disabled={false}></span>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -534,9 +532,9 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -550,8 +548,7 @@ describe('Inferno acceptance tests', () => {
 					let template;
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-
- 	                     <input type="file" multiple="multiple" capture="capture" accept="image/*"></input>
+							<input type='file' multiple='multiple' capture='capture' accept='image/*'></input>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
@@ -582,15 +579,15 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -674,15 +671,15 @@ describe('Inferno acceptance tests', () => {
 							'<div custom-attr="123"></div>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -709,15 +706,15 @@ describe('Inferno acceptance tests', () => {
 							'<web-component></web-component>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -744,15 +741,15 @@ describe('Inferno acceptance tests', () => {
 							'<web-component id="123"></web-component>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -779,15 +776,15 @@ describe('Inferno acceptance tests', () => {
 							'<input download="0">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -814,15 +811,15 @@ describe('Inferno acceptance tests', () => {
 							'<input href="/images/xxx.jpg" download="false">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -849,18 +846,18 @@ describe('Inferno acceptance tests', () => {
 							'<input href="/images/xxx.jpg">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<input checked="checked" disabled="disabled"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="disabled">' 
+							'<input disabled="disabled">'
 						);
 					});
 				});
@@ -882,15 +879,15 @@ describe('Inferno acceptance tests', () => {
 							'<input href="/images/xxx.jpg" download="">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -898,18 +895,18 @@ describe('Inferno acceptance tests', () => {
 							'<input data-foo="bar" data-bar="oops">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<input checked="checked" disabled="disabled"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="disabled">' 
+							'<input disabled="disabled">'
 						);
 					});
 				});
@@ -931,18 +928,18 @@ describe('Inferno acceptance tests', () => {
 							'<input allowfullscreen="false">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<input checked="checked" disabled="disabled"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input disabled="disabled">' 
+							'<input disabled="disabled">'
 						);
 					});
 				});
@@ -964,13 +961,13 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-						
+
 						template = Inferno.createTemplate(t =>
 							<input isMap={true}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -999,12 +996,11 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					// Update to a property
- 				    it('Second render (update)', () => {
-						
+					it('Second render (update)', () => {
 						template = Inferno.createTemplate(t =>
-							<input noValidate={true}></input>
+							<input noValidate={ true }></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1026,7 +1022,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 						expect(container.firstChild.muted).to.be.false;
 						expect(
 							container.innerHTML
@@ -1034,15 +1030,15 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						let dataS = { foo: 'bar', bar: 'oops' };
-						
+
 						template = Inferno.createTemplate(t =>
 							<input dataset={dataS}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1064,7 +1060,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 						expect(container.firstChild.muted).to.be.true;
 						expect(
 							container.innerHTML
@@ -1072,13 +1068,13 @@ describe('Inferno acceptance tests', () => {
 							'<input>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input disabled={true}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1100,7 +1096,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 
 						expect(
 							container.innerHTML
@@ -1108,13 +1104,13 @@ describe('Inferno acceptance tests', () => {
 							'<input required="">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input disabled={true}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1136,20 +1132,20 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 						expect(
 							container.innerHTML
 						).to.equal(
 							'<input>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input disabled={true}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1171,7 +1167,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1180,16 +1176,16 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input hidden="false"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>' 
+							'<input>'
 						);
 					});
 				});
@@ -1205,7 +1201,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 
 						expect(
 							container.innerHTML
@@ -1213,18 +1209,18 @@ describe('Inferno acceptance tests', () => {
 							'<input hidden="false">'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input hidden="false"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>' 
+							'<input>'
 						);
 					});
 				});
@@ -1240,7 +1236,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 
 						expect(
 							container.innerHTML
@@ -1249,16 +1245,16 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input hidden="false"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>' 
+							'<input>'
 						);
 					});
 				});
@@ -1274,7 +1270,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 
 						expect(
 							container.innerHTML
@@ -1283,16 +1279,16 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input hidden="false"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>' 
+							'<input>'
 						);
 					});
 				});
@@ -1308,7 +1304,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 
 						expect(
 							container.innerHTML
@@ -1317,16 +1313,16 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 					it('Second render (update)', () => {
-					
+
 						template = Inferno.createTemplate(t =>
 							<input hidden="false"></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input>' 
+							'<input>'
 						);
 					});
 				});
@@ -1342,21 +1338,20 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 						expect(
 							container.innerHTML
 						).to.equal(
 							'<input formnovalidate="true">'
 						);
 					});
-					
+
 					// Update to a property
- 				    it('Second render (update)', () => {
-						
+					it('Second render (update)', () => {
 						template = Inferno.createTemplate(t =>
 							<input noValidate={true}></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1385,14 +1380,13 @@ describe('Inferno acceptance tests', () => {
 							'<span></span>'
 						);
 					});
-					
+
 					// Update to a property
- 				    it('Second render (update)', () => {
-						
+					it('Second render (update)', () => {
 						template = Inferno.createTemplate(t =>
-							<span noValidate={true}></span>
+							<span noValidate={ true }></span>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1407,13 +1401,13 @@ describe('Inferno acceptance tests', () => {
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
-							<input seamless={true}></input>
+							<input seamless={ true }></input>
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
 					});
 
 					it('Initial render (creation)', () => {
-                        // this is a property
+						// this is a property
 
 						expect(
 							container.innerHTML
@@ -1421,14 +1415,13 @@ describe('Inferno acceptance tests', () => {
 							'<input seamless="true">'
 						);
 					});
-					
+
 					// Update to a property
- 				    it('Second render (update)', () => {
-						
+					it('Second render (update)', () => {
 						template = Inferno.createTemplate(t =>
-							<input type="checkbox" required={true}></input>
+							<input type='checkbox' required={ true }></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1455,14 +1448,14 @@ describe('Inferno acceptance tests', () => {
 							'<input class="Hello, world!">'
 						);
 					});
-					
+
 					// Update to a property
- 				    it('Second render (update)', () => {
-						
+					it('Second render (update)', () => {
+
 						template = Inferno.createTemplate(t =>
-							<input type="checkbox" disabled={true}></input>
+							<input type='checkbox' disabled={ true }></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1491,12 +1484,12 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					// Update to a property
- 				    it('Second render (update)', () => {
-						
+					it('Second render (update)', () => {
+
 						template = Inferno.createTemplate(t =>
-							<input spellCheck={true}></input>
+							<input spellCheck={ true }></input>
 						);
-						
+
 						Inferno.render(Inferno.createFragment(null, template), container);
 						expect(
 							container.innerHTML
@@ -1523,7 +1516,7 @@ describe('Inferno acceptance tests', () => {
 							'<input type="checkbox" disabled="true">'
 						);
 					});
-					
+
 				});
 
 				describe('should not render overloaded falsy boolean properties', () => {
@@ -1712,11 +1705,11 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							 '<div contenteditable="true"></div>'
+							'<div contenteditable="true"></div>'
 						);
 					});
 				});
-                  describe('should set "contentEditable" property', () => {
+				describe('should set "contentEditable" property', () => {
 					let template;
 
 					beforeEach(() => {
@@ -1730,7 +1723,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							 '<div contenteditable="false"></div>'
+							'<div contenteditable="false"></div>'
 						);
 					});
 				});
@@ -1784,7 +1777,7 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('Initial render (creation)', () => {
-                        expect(get(container.firstChild)).to.eql('AM');
+						expect(get(container.firstChild)).to.eql('AM');
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -1912,7 +1905,7 @@ describe('Inferno acceptance tests', () => {
 				describe('should ignore null styles', () => {
 					let template;
 
-					let styleRule = { backgroundColor: null, display: "none" };
+					let styleRule = { backgroundColor: null, display: 'none' };
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
@@ -1933,7 +1926,7 @@ describe('Inferno acceptance tests', () => {
 				describe('should not set NaN value on styles', () => {
 					let template;
 
-					let styleRule = { "font-size": parseFloat( "zoo" ) } ;
+					let styleRule = { 'font-size': parseFloat('zoo') } ;
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
@@ -1954,7 +1947,7 @@ describe('Inferno acceptance tests', () => {
 				describe('should trim values so `px` will be appended correctly', () => {
 					let template;
 
-					let styleRule = { margin: "16 " };
+					let styleRule = { margin: '16 ' };
 
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
@@ -2140,7 +2133,7 @@ describe('Inferno acceptance tests', () => {
 					let test = container.innerHTML;
 					let expected = '<div></div>';
 
-					expect(container.firstChild.checked).to.eql("checked");
+					expect(container.firstChild.checked).to.eql('checked');
 					expect(test).to.equal(expected);
 				});
 
@@ -2184,7 +2177,7 @@ describe('Inferno acceptance tests', () => {
 					let test = container.innerHTML;
 					let expected = '<input>';
 
-//					expect(test).to.equal(expected);
+					expect(test).to.equal(expected);
 				});
 			});
 		});
@@ -2754,50 +2747,47 @@ describe('Inferno acceptance tests', () => {
 		});
 
 		describe('attrOps.remove()', () => {
-         describe('HTML attributes', () => {
-			it('should remove a custom attribute', () => {
+			describe('HTML attributes', () => {
+				it('should remove a custom attribute', () => {
 
-				attrOps.set(container, 'Inferno', 'Rocks!');
-				attrOps.remove(container, 'Inferno');
-				expect(container.hasAttribute('Inferno')).to.be.false;
+					attrOps.set(container, 'Inferno', 'Rocks!');
+					attrOps.remove(container, 'Inferno');
+					expect(container.hasAttribute('Inferno')).to.be.false;
+				});
+
+				it('should remove a boolean attribute', () => {
+
+					attrOps.set(container, 'checked', true);
+					attrOps.remove(container, 'checked');
+					expect(container.hasAttribute('checked')).to.be.false;
+					expect(container.checked).to.be.undefined;
+				});
+
+				it('should not remove a "null" value attribute', () => {
+
+					attrOps.set(container, 'checked', null);
+					attrOps.remove(container, 'checked');
+					expect(container.hasAttribute('checked')).to.be.false;
+					expect(container.checked).to.be.undefined;
+				});
 			});
+			describe('HTML properties', () => {
 
-			it('should remove a boolean attribute', () => {
+				describe('HTML properties', () => {
 
-				attrOps.set(container, 'checked', true);
-				attrOps.remove(container, 'checked');
-				expect(container.hasAttribute('checked')).to.be.false;
-				expect(container.checked).to.be.undefined;
+					it('should not remove a "contentEditable" attribute', () => {
+
+						attrOps.set(container, 'contentEditable', true);
+						expect(container.contentEditable).to.eql('true');
+						attrOps.remove(container, 'contentEditable');
+						expect(container.hasAttribute('contentEditable')).to.be.false;
+						expect(container.contentEditable).to.eql('inherit');
+					});
+				});
 			});
-
-			it('should not remove a "null" value attribute', () => {
-
-				attrOps.set(container, 'checked', null);
-				attrOps.remove(container, 'checked');
-				expect(container.hasAttribute('checked')).to.be.false;
-				expect(container.checked).to.be.undefined;
-			});
-		});
-         describe('HTML properties', () => {
-
-         describe('HTML properties', () => {
-
-			it('should not remove a "contentEditable" attribute', () => {
-
-				attrOps.set(container, 'contentEditable', true);
-				expect(container.contentEditable).to.eql('true');
-				attrOps.remove(container, 'contentEditable');
-				expect(container.hasAttribute('contentEditable')).to.be.false;
-				expect(container.contentEditable).to.eql('inherit');
-			});
-
-		});
-
-		 });
 		});
 
 		describe('attrOps.set()', () => {
-
 			it('should render `checked` as a property', () => {
 				attrOps.set(container, 'checked', true);
 				expect(container.checked).to.be.true;
@@ -2893,7 +2883,7 @@ describe('Inferno acceptance tests', () => {
 
 			it('should set height property', () => {
 				attrOps.set(container, 'height', '70%');
-				expect(container.getAttribute("height")).to.eql('70%');
+				expect(container.getAttribute('height')).to.eql('70%');
 			});
 
 			it('should set width property', () => {
@@ -2995,19 +2985,19 @@ describe('Inferno acceptance tests', () => {
 			it('should not set "contentEditable" as a null value', () => {
 				attrOps.set(container, 'contentEditable', null);
 				expect(container.getAttribute('contentEditable')).to.be.null;
-				expect(container.contentEditable).to.eql("inherit");
+				expect(container.contentEditable).to.eql('inherit');
 			});
 
 			it('should not set "contentEditable" as a null value', () => {
 				attrOps.set(container, 'contentEditable', null);
 				expect(container.getAttribute('contentEditable')).to.be.null;
-				expect(container.contentEditable).to.eql("inherit");
+				expect(container.contentEditable).to.eql('inherit');
 			});
 
 			it('should not set "contentEditable" as a undefined value', () => {
 				attrOps.set(container, 'contentEditable', undefined);
 				expect(container.getAttribute('contentEditable')).to.be.null;
-				expect(container.contentEditable).to.eql("inherit");
+				expect(container.contentEditable).to.eql('inherit');
 			});
 
 			it('should set "preload" property (falsy)', () => {
@@ -3046,21 +3036,21 @@ describe('Inferno acceptance tests', () => {
 				expect(container.preload).to.be.undefined;
 			});
 
-            it('should set "autoPlay" property (truthy)', () => {
+			it('should set "autoPlay" property (truthy)', () => {
 				attrOps.set(container, 'autoPlay', true);
 				expect(container.getAttribute('autoPlay')).to.be.null;
 				expect(container.autoPlay).to.be.true;
 			});
 
-            it('should set "autoPlay" property (falsy)', () => {
+			it('should set "autoPlay" property (falsy)', () => {
 				attrOps.set(container, 'autoPlay', false);
 				expect(container.getAttribute('autoPlay')).to.be.null;
 				expect(container.autoPlay).to.be.false;
 			});
 
-            it('should set "media" property (truthy)', () => {
+			it('should set "media" property (truthy)', () => {
 				attrOps.set(container, 'media', true);
-				expect(container.getAttribute('media')).to.eql("true");
+				expect(container.getAttribute('media')).to.eql('true');
 				expect(container.media).to.be.undefined;
 			});
 
@@ -3076,7 +3066,7 @@ describe('Inferno acceptance tests', () => {
 
 			it('should set overloaded truthy value on attributes', () => {
 				attrOps.set(container, 'target', true);
-				expect(container.getAttribute('target')).to.eql("true");
+				expect(container.getAttribute('target')).to.eql('true');
 			});
 
 			it('should not render unsafe custom attribute names', () => {
@@ -3095,34 +3085,34 @@ describe('Inferno acceptance tests', () => {
 				attrOps.set(container, 'disabled', true);
 				expect(container.disabled).to.be.undefined;
 			});
-            describe('Audio / video attributes', () => {
+			describe('Audio / video attributes', () => {
 
-			it('should render the volume attribute - 0.0', () => {
-				attrOps.set(container, 'volume', 0.0);
-				expect(container.getAttribute('volume')).to.eql('0');
+				it('should render the volume attribute - 0.0', () => {
+					attrOps.set(container, 'volume', 0.0);
+					expect(container.getAttribute('volume')).to.eql('0');
+				});
+
+				it('should render the volume attribute - 0.4', () => {
+					attrOps.set(container, 'volume', 0.04);
+					expect(container.getAttribute('volume')).to.eql('0.04');
+				});
+
+				it('should render the volume attribute - 1', () => {
+					attrOps.set(container, 'volume', 1);
+					expect(container.getAttribute('volume')).to.eql('1');
+				});
+
+				it('should not render the volume attribute if larger then 1', () => {
+					attrOps.set(container, 'volume', -3);
+					expect(container.getAttribute('volume')).to.be.null;
+				});
+
+				it('should not render the volume attribute on negative numbers', () => {
+					attrOps.set(container, 'volume', 3);
+					expect(container.getAttribute('volume')).to.be.null;
+				});
+
 			});
-
-			it('should render the volume attribute - 0.4', () => {
-				attrOps.set(container, 'volume', 0.04);
-				expect(container.getAttribute('volume')).to.eql('0.04');
-			});
-
-			it('should render the volume attribute - 1', () => {
-				attrOps.set(container, 'volume', 1);
-				expect(container.getAttribute('volume')).to.eql('1');
-			});
-
-			it('should not render the volume attribute if larger then 1', () => {
-				attrOps.set(container, 'volume', -3);
-				expect(container.getAttribute('volume')).to.be.null;
-			});
-
-			it('should not render the volume attribute on negative numbers', () => {
-				attrOps.set(container, 'volume', 3);
-				expect(container.getAttribute('volume')).to.be.null;
-			});
-
- 	      });
 		});
 	});
 });
