@@ -271,11 +271,6 @@ let IS_PROPERTY = {
 	toHtml: createAttributeMarkup
 };
 
- /****************************** NOTE!! *************************************
-  *																		 *
-  * Both xlink and xml namespace attrs are removed in the upcoming SVG 2.0. *
-  *																		 *
-  **************************************************************************/
 let IS_XLINK_NAMESPACE = {
 
 	/**
@@ -442,7 +437,7 @@ let DOMConfig = {
 	y: IS_ATTRIBUTE,
 
 	/**
-	 * Non-standard properties
+	 * Non-standard attributes
 	 */
 
 	// itemProp, itemScope, itemType are for
@@ -474,6 +469,41 @@ let DOMConfig = {
 	'xlink:show': IS_XLINK_NAMESPACE,
 	'xlink:title': IS_XLINK_NAMESPACE,
 	'xlink:type': IS_XLINK_NAMESPACE
+
+	/**
+	 * Navigation attributes (SVG)
+	 */
+	'nav-up': IS_ATTRIBUTE,
+	'nav-up-right': IS_ATTRIBUTE,
+	'nav-right': IS_ATTRIBUTE,
+	'nav-down-right': IS_ATTRIBUTE,
+	'nav-down': IS_ATTRIBUTE,
+	'nav-down-left': IS_ATTRIBUTE,
+	'nav-left': IS_ATTRIBUTE,
+	'xlink:role': IS_ATTRIBUTE,
+	'nav-up-left ': IS_ATTRIBUTE,
+
+	/**
+	 * Conditional processing attributes (SVG)
+	 */
+
+	'requiredExtensions': IS_ATTRIBUTE,
+	'requiredFeatures': IS_ATTRIBUTE,
+	'requiredFonts': IS_ATTRIBUTE,
+	'requiredFormats': IS_ATTRIBUTE,
+	'systemLanguage': IS_ATTRIBUTE
+
+	/**
+	 * Timin attributes (SVG)
+	 */
+
+	dur: IS_ATTRIBUTE,
+	end: IS_ATTRIBUTE,
+	restart: IS_ATTRIBUTE,
+	repeatCount: IS_ATTRIBUTE,
+	repeatDur: IS_ATTRIBUTE,
+	fill: IS_ATTRIBUTE	
+
 };
 
 export default {
