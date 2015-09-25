@@ -906,6 +906,11 @@ return /******/ (function(modules) { // webpackBootstrap
 		toHtml: booleanAttrToString
 	};
 	
+	/****************************** NOTE!! *************************************
+	 *                                                                         *
+	 * Both xlink and xml namespace attrs are removed in the upcoming SVG 2.0. *
+	 *                                                                         *
+	 **************************************************************************/
 	var IS_XLINK_NAMESPACE = {
 	
 		/**
@@ -1178,8 +1183,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * Sets a HTML attribute / property
 	  *
 	  * @param {Object} node A DOM element.
-	  * @param {String} name The boolean attribute name to set.
-	  * @param {String|Object} value The boolean attribute value to set.
+	  * @param {String} name The attribute / property name to set.
+	  * @param {String|Object} value The attribute / property value to set.
 	  */
 		set: function set(node, name, value, skip) {
 	
@@ -1198,27 +1203,29 @@ return /******/ (function(modules) { // webpackBootstrap
 					case 'playbackRate':
 					case 'preload':
 					case 'srcDoc':
-					case 'autoPlay':
-					case 'checked':
-					case 'isMap':
-					case 'loop':
-					case 'muted':
-					case 'readOnly':
+					case 'autoPlay': // bool
+					case 'checked': // bool
+					case 'isMap': // bool
+					case 'loop': // bool
+					case 'muted': // bool
+					case 'readOnly': // bool
 					case 'reversed':
-					case 'required':
-					case 'selected':
-					case 'spellCheck':
-					case 'trueSpeed':
-					case 'multiple':
-					case 'controls':
-					case 'defer':
+					case 'required': // bool
+					case 'selected': // bool
+					case 'spellCheck': // bool
+					case 'trueSpeed': // bool
+					case 'multiple': // bool
+					case 'controls': // bool
+					case 'defer': // bool
 					case 'noValidate':
-					case 'scoped':
+					case 'scoped': // bool
 					case 'noResize':
+						// bool
 	
 						if (value != null) {
 							node[name] = value;
 						}
+	
 						return;
 				}
 			}
@@ -1226,21 +1233,21 @@ return /******/ (function(modules) { // webpackBootstrap
 			// Prioritized HTML attributes
 			switch (name) {
 	
-				case 'allowFullScreen':
-				case 'autoFocus':
-				case 'autoPlay':
-				case 'capture':
-				case 'declare': // deprecated
-				case 'defaultchecked':
-				case 'defaultmuted':
-				case 'defaultselected':
-				case 'disabled':
-				case 'draggable':
-				case 'formNoValidate':
-				case 'hidden':
+				case 'allowFullScreen': // bool
+				case 'autoFocus': // bool
+				case 'autoPlay': // bool
+				case 'capture': // bool
+				case 'defaultchecked': // bool
+				case 'defaultmuted': // bool
+				case 'defaultselected': // bool
+				case 'disabled': // bool
+				case 'draggable': // bool
+				case 'formNoValidate': // bool
+				case 'hidden': // bool
 				case 'seamless':
 				case 'sortable':
 				case 'default':
+	
 					if (value !== 'false') {
 						node.setAttribute(name, '' + (value === 'true' ? '' : value));
 					}
@@ -1254,8 +1261,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * Unsets a HTML attribute / property
 	  *
 	  * @param {Object} node A DOM element.
-	  * @param {String} name The boolean attribute name to set.
-	  * @param {String} value The boolean attribute value to set.
+	  * @param {String} name The attribute / property name to set.
+	  * @param {String} value The attribute / property value to set.
 	  */
 		remove: function remove(node, name) {
 			return (DOMConfig[name] || IS_CUSTOM).remove(node, name);
@@ -1263,8 +1270,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		/**
 	  * Create HTML attribute / property markup for SSR
 	  *
-	  * @param {String} name The boolean attribute name to set.
-	  * @param {String} value The boolean attribute value to set.
+	  * @param {String} name The attribute / property name to set.
+	  * @param {String} value The attribute / property value to set.
 	  */
 		toHtml: function toHtml(name, value) {
 			return (DOMConfig[name] || IS_CUSTOM).toHtml(name, value);
