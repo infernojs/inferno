@@ -387,7 +387,9 @@ let DOMConfig = {
 	opacity: IS_ATTRIBUTE,
 	points: IS_ATTRIBUTE,
 	poster: IS_ATTRIBUTE,
+	prefix: IS_ATTRIBUTE,
 	r: IS_ATTRIBUTE,
+	resource: IS_ATTRIBUTE,
 	role: IS_ATTRIBUTE,
 	rows: IS_NUMERIC,
 	rx: IS_ATTRIBUTE,
@@ -407,7 +409,8 @@ let DOMConfig = {
 	transform: IS_ATTRIBUTE,
 	title: IS_ATTRIBUTE,
 	type: IS_ATTRIBUTE,
-
+	typeof: IS_ATTRIBUTE,
+	
 	/**
 	 * CSS styling attribute is a special case, and will be set as a normal object.
 	 * 'styles' should be used as an replacement.
@@ -521,11 +524,13 @@ export default {
 
 		// Prioritized HTML attributes
 		switch (name) {
+		case 'about': // RDFA
 		case 'async': // bool
 		case 'allowFullScreen': // bool
 		case 'autoFocus': // bool
 		case 'autoPlay': // bool
 		case 'capture': // bool
+		case 'datatype': // RDFA
 		case 'default':
 		case 'defaultchecked': // bool
 		case 'defaultmuted': // bool
@@ -535,17 +540,32 @@ export default {
 		case 'disabled': // bool
 		case 'dir': // Core attribute
 		case 'draggable': // bool
+		case 'dropzone': // bool
 		case 'for':
+		case 'form':
 		case 'formNoValidate': // bool
+		case 'formEncType':
+		case 'formMethod':
+		case 'formTarget':
+		case 'fontFamily':
+		case 'fontSize':
+		case 'frameBorder':
+		case 'fontWeight':
 		case 'hidden': // bool
 		case 'itemScope': // bool
+		case 'is':
+		case 'name':
 		case 'open':
+        // 'property' is also supported for OpenGraph in meta tags.
+		case 'property': // RDFA
 		case 'seamless':
 		case 'sortable':
 		case 'title': // Core attribute
 		case 'translate': // bool attribute
 		case 'typemustmatch': // bool attribute
 		case 'type':
+		case 'vocab': // RDFA
+		case 'viewBox':
 		case 'visible':
 			if (value !== 'false') {
 				node.setAttribute(name, '' + ((value === 'true') ? '' : value));
