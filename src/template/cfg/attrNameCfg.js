@@ -2,7 +2,7 @@ export default {
     acceptCharset: 'accept-charset',
     className: 'class',
     htmlFor: 'for',
-    httpEquiv: 'http-equiv'
+    httpEquiv: 'http-equiv',
 	
 	// SVG
 
