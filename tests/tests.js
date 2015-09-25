@@ -2578,15 +2578,15 @@ describe('Inferno acceptance tests', () => {
 					});
 
 					it('should render "multiple" attribute - #1', () => {
-						expect(attrOps.toHtml('multiple', 'true')).to.equal('multiple');
+						expect(attrOps.toHtml('multiple', 'true')).to.equal('multiple="true"');
 					});
 
 					it('should render "multiple" attribute - #2', () => {
-						expect(attrOps.toHtml('multiple', true)).to.equal('multiple');
+						expect(attrOps.toHtml('multiple', true)).to.equal('multiple="true"');
 					});
 
 					it('should render "multiple" attribute - #3', () => {
-						expect(attrOps.toHtml('multiple', false)).to.equal('');
+						expect(attrOps.toHtml('multiple', false)).to.equal('multiple="false"');
 					});
 
 					it('should render "hidden" attribute', () => {
@@ -2743,47 +2743,6 @@ describe('Inferno acceptance tests', () => {
 					})).to.equal('style="margin:16px;opacity:0.5;padding:4px;"');
 				});
 
-			});
-		});
-
-		describe('attrOps.remove()', () => {
-			describe('HTML attributes', () => {
-				it('should remove a custom attribute', () => {
-
-					attrOps.set(container, 'Inferno', 'Rocks!');
-					attrOps.remove(container, 'Inferno');
-					expect(container.hasAttribute('Inferno')).to.be.false;
-				});
-
-				it('should remove a boolean attribute', () => {
-
-					attrOps.set(container, 'checked', true);
-					attrOps.remove(container, 'checked');
-					expect(container.hasAttribute('checked')).to.be.false;
-					expect(container.checked).to.be.undefined;
-				});
-
-				it('should not remove a "null" value attribute', () => {
-
-					attrOps.set(container, 'checked', null);
-					attrOps.remove(container, 'checked');
-					expect(container.hasAttribute('checked')).to.be.false;
-					expect(container.checked).to.be.undefined;
-				});
-			});
-			describe('HTML properties', () => {
-
-				describe('HTML properties', () => {
-
-					it('should not remove a "contentEditable" attribute', () => {
-
-						attrOps.set(container, 'contentEditable', true);
-						expect(container.contentEditable).to.eql('true');
-						attrOps.remove(container, 'contentEditable');
-						expect(container.hasAttribute('contentEditable')).to.be.false;
-						expect(container.contentEditable).to.eql('inherit');
-					});
-				});
 			});
 		});
 

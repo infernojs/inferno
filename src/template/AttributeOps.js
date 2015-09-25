@@ -35,19 +35,6 @@ let setAttribute = (node, attrName, attrValue) => {
 };
 
 /**
- * Set boolean attributes
- *
- * @param  {Object} node A DOM element.
- * @param  {String} attrName  The boolean attribute name to set.
- * @param {String} attrValue The boolean attribute value to set.
- */
-let setBooleanAttribute = (node, attrName, attrValue) => {
-	if (attrValue !== 'false') {
-		node.setAttribute(attrName, '' + ((attrValue === 'true') ? '' : attrValue));
-	}
-};
-
-/**
  * Set custom attributes on a DOM node
  *
  * @param {Object} node A DOM element.
@@ -127,17 +114,6 @@ let setProperty = (node, propertyName, propValue) => {
 };
 
 /**
- * Set boolean property
- *
- * @param {Object} node A DOM element.
- * @param {String} propertyName	  The boolean property propertyName to set.
- * @param {String} propValue  The boolean property value to set.
- */
-let setBooleanProperty = (node, propertyName, propValue) => {
-	node[propertyName] = !!propValue;
-};
-
-/**
  * Set dataset object properties
  *
  * @param {Object} node A DOM element.
@@ -195,33 +171,6 @@ let setValueForProperty = (node, propertyName, propValue) => {
 };
 
 /**
- * Unsets an attribute
- *
- * @param {Object element} node - A DOM element.
- * @param {String} name - The attribute name to remove.
- */
-let removeAttribute = (node, attrName) => {
-	node.removeAttribute(attrNameCfg[attrName] || attrName);
-};
-
-/**
- * Unsets a property
- *
- * @param {Object} node A DOM element.
- * @param {String} propertyName - The property name to set.
- */
-let removeProperty = (node, propertyName) => {
-	// 'select' is a special case
-	if (propertyName === 'value' && (tagName(node) === 'select')) {
-		removeSelectValue(node);
-	} else if (propertyName === 'className') {
-		node.className = '';
-	} else {
-		node[propertyName] = hasPropertyAccessor(node, propertyName);
-	}
-};
-
-/**
  * Set select / select multiple
  *
  * @param {Object} node  A DOM element.
@@ -237,17 +186,6 @@ let setSelectValue = (node, value) => {
 	for (let i = 0; i < options.length; i++) {
 		optionNode = options[i];
 		optionNode.selected = value != null && (arrayish ? inArray(value, optionNode.value) : optionNode.value == value);
-	}
-};
-
-/**
- * Unsets a select / select multiple property from a DOM node
- *
- * @param {Object} node A DOM element.
- */
-let removeSelectValue = node => {
-	for (let i = 0; i < node.options.length; i++) {
-		node.options[i].selected = false;
 	}
 };
 
@@ -315,38 +253,22 @@ let createPropertyMarkup = (name, value) => {
 
 let IS_ATTRIBUTE = {
 	set: setAttribute,
-	remove: removeAttribute,
 	toHtml: createAttributeMarkup
 };
 
 let IS_CUSTOM = {
 	set: setCustomAttribute,
-	remove: removeAttribute,
 	toHtml: createAttributeMarkup
 };
 
 let IS_NUMERIC = {
 	set: setNumericAttribute,
-	remove: removeAttribute,
-	toHtml: createAttributeMarkup
-};
-
-let IS_BOOLEAN_ATTRIBUTE = {
-	set: setBooleanAttribute,
-	remove: removeAttribute,
 	toHtml: createAttributeMarkup
 };
 
 let IS_PROPERTY = {
 	set: setProperty,
-	remove: removeProperty,
 	toHtml: createAttributeMarkup
-};
-
-let IS_BOOLEAN_PROPERTY = {
-	set: setBooleanProperty,
-	remove: removeProperty,
-	toHtml: booleanAttrToString
 };
 
  /****************************** NOTE!! *************************************
@@ -367,16 +289,6 @@ let IS_XLINK_NAMESPACE = {
 		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkCfg[name], value);
 	},
 
-	/**
-	 * Unsets a xlink namespace attribute
-	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name  The attribute name to set.
-	 * @param  {String} name  The attribute name to unset.
-	 */
-	remove(node, name) {
-		node.removeAttributeNS('http://www.w3.org/1999/xlink', xlinkCfg[name]);
-	},
 	toHtml:createAttributeMarkup
 };
 
@@ -392,31 +304,15 @@ let IS_XML_NAMESPACE = {
 	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlCfg[name], value);
 	},
-
-	/**
-	 * Unsets a xml namespace attribute
-	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name The attribute name to unset.
-	 */
-	remove(node, name) {
-		node.removeAttributeNS('http://www.w3.org/XML/1998/namespace', xmlCfg[name]);
-	},
 	toHtml:createAttributeMarkup
 };
 
 let DOMConfig = {
 	acceptCharset: IS_ATTRIBUTE,
 	accept: IS_ATTRIBUTE,
-	allowFullScreen: IS_BOOLEAN_ATTRIBUTE,
 	allowTransparency: IS_ATTRIBUTE,
-	async: IS_BOOLEAN_ATTRIBUTE,
-	autoFocus: IS_BOOLEAN_ATTRIBUTE,
-	autoPlay: IS_BOOLEAN_PROPERTY,
-	capture: IS_BOOLEAN_ATTRIBUTE,
 	charSet: IS_ATTRIBUTE,
 	challenge: IS_ATTRIBUTE,
-	checked: IS_BOOLEAN_PROPERTY,
 	classID: IS_ATTRIBUTE,
 	className: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
 	clipPath: IS_ATTRIBUTE,
@@ -424,7 +320,6 @@ let DOMConfig = {
 	crossOrigin: IS_ATTRIBUTE,
 	contentEditable: IS_PROPERTY,
 	contextMenu: IS_ATTRIBUTE,
-	controls: IS_BOOLEAN_PROPERTY,
 	cx: IS_ATTRIBUTE,
 	cy: IS_ATTRIBUTE,
 	d: IS_ATTRIBUTE,
@@ -439,34 +334,22 @@ let DOMConfig = {
 		set: setPropertyForDataset,
 		// 'dataset' property has to be removed as an attribute
 		// because it's set as an attribute - e.g. data-foo="bar"
-		remove: removeAttribute,
 		toHtml: datasetToString
 	},
-	default: IS_BOOLEAN_ATTRIBUTE,
-	defer: IS_BOOLEAN_PROPERTY,
-	declare: IS_BOOLEAN_ATTRIBUTE,
 	defaultPlaybackRate: IS_PROPERTY,
-	defaultchecked: IS_BOOLEAN_ATTRIBUTE,
-	defaultmuted: IS_BOOLEAN_ATTRIBUTE,
-	defaultselected: IS_BOOLEAN_ATTRIBUTE,
 	designMode: IS_PROPERTY,
 	dir: IS_ATTRIBUTE,
-	disabled: IS_BOOLEAN_ATTRIBUTE,
-	draggable: IS_BOOLEAN_ATTRIBUTE,
 	dropzone: IS_ATTRIBUTE,
 	dx: IS_ATTRIBUTE,
 	dy: IS_ATTRIBUTE,
-	download: IS_BOOLEAN_ATTRIBUTE,
 	encType: IS_ATTRIBUTE,
 	file: IS_ATTRIBUTE,
 	fill: IS_ATTRIBUTE,
 	fillOpacity: IS_ATTRIBUTE,
-	forceSpellCheck: IS_PROPERTY,
 	form: IS_ATTRIBUTE,
 	formAction: IS_ATTRIBUTE,
 	formEncType: IS_ATTRIBUTE,
 	formMethod: IS_ATTRIBUTE,
-	formNoValidate: IS_BOOLEAN_ATTRIBUTE,
 	formTarget: IS_ATTRIBUTE,
 	fontFamily: IS_ATTRIBUTE,
 	fontSize: IS_ATTRIBUTE,
@@ -475,20 +358,16 @@ let DOMConfig = {
 	fx: IS_ATTRIBUTE,
 	fy: IS_ATTRIBUTE,
 	height: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
-	hidden: IS_BOOLEAN_ATTRIBUTE,
 	href: IS_ATTRIBUTE,
 	htmlfor: IS_PROPERTY,
 	icon: IS_ATTRIBUTE,
 	id: IS_PROPERTY,
 	inputMode: IS_ATTRIBUTE,
 	is: IS_ATTRIBUTE,
-	ismap: IS_BOOLEAN_PROPERTY,
 	keyParams: IS_ATTRIBUTE,
 	keyType: IS_ATTRIBUTE,
-	label: IS_PROPERTY,
 	lang: IS_ATTRIBUTE,
 	list: IS_ATTRIBUTE,
-	loop: IS_BOOLEAN_PROPERTY,
 	manifest: IS_ATTRIBUTE,
 	marginHeight: IS_ATTRIBUTE,
 	marginWidth: IS_ATTRIBUTE,
@@ -500,40 +379,25 @@ let DOMConfig = {
 	media: IS_ATTRIBUTE,
 	mediagroup: IS_ATTRIBUTE,
 	minLength: IS_ATTRIBUTE,
-	muted: IS_BOOLEAN_PROPERTY,
-	multiple: IS_BOOLEAN_PROPERTY,
-	name: IS_PROPERTY,
+	name: IS_ATTRIBUTE,
 	nohref: IS_ATTRIBUTE,
-	noResize: IS_BOOLEAN_PROPERTY,
 	// number used once or number once
 	nonce: IS_NUMERIC,
 	noshade: IS_ATTRIBUTE,
-	noValidate: IS_BOOLEAN_PROPERTY,
 	opacity: IS_ATTRIBUTE,
-	open: IS_BOOLEAN_ATTRIBUTE,
-	placeholder: IS_PROPERTY,
-	playbackRate: IS_PROPERTY,
 	points: IS_ATTRIBUTE,
 	poster: IS_ATTRIBUTE,
 	preload: IS_PROPERTY,
 	r: IS_ATTRIBUTE,
-	readOnly: IS_BOOLEAN_PROPERTY,
-	reversed: IS_BOOLEAN_PROPERTY,
-	required: IS_BOOLEAN_PROPERTY,
 	role: IS_ATTRIBUTE,
 	rows: IS_NUMERIC,
 	rx: IS_ATTRIBUTE,
 	ry: IS_ATTRIBUTE,
-	scoped: IS_BOOLEAN_ATTRIBUTE,
-	seamless: IS_BOOLEAN_ATTRIBUTE,
-	selected: IS_BOOLEAN_PROPERTY,
 	selectedIndex: IS_PROPERTY,
 	size: IS_NUMERIC,
 	// Viewport-based selection
 	sizes: IS_ATTRIBUTE,
-	sortable: IS_BOOLEAN_ATTRIBUTE,
 	span: IS_NUMERIC,
-	spellCheck: IS_BOOLEAN_PROPERTY,
 	stroke: IS_ATTRIBUTE,
 	src: IS_ATTRIBUTE,
 	srcDoc: IS_PROPERTY,
@@ -552,12 +416,8 @@ let DOMConfig = {
 	 */
 	style: {
 		set: setPropertyForStyle,
-		remove: removeProperty,
 		toHtml: createPropertyMarkup
 	},
-	translate: IS_BOOLEAN_ATTRIBUTE,
-	truespeed: IS_BOOLEAN_PROPERTY,
-	typemustmatch: IS_BOOLEAN_ATTRIBUTE,
 	usemap: IS_ATTRIBUTE,
 
 	/**
@@ -566,13 +426,10 @@ let DOMConfig = {
 	 */
 	value: {
 		set: setValueForProperty,
-		remove: removeProperty,
 		toHtml: createAttributeMarkup
 	},
 	version: IS_ATTRIBUTE,
 	viewBox: IS_ATTRIBUTE,
-
-	visible: IS_BOOLEAN_ATTRIBUTE,
 	volume: IS_ATTRIBUTE,
 	width: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
 	wmode: IS_ATTRIBUTE,
@@ -590,7 +447,6 @@ let DOMConfig = {
 	// itemProp, itemScope, itemType are for
 	// Microdata support. See http://schema.org/docs/gs.html
 	itemProp: IS_ATTRIBUTE,
-	itemScope: IS_BOOLEAN_ATTRIBUTE,
 	itemType: IS_ATTRIBUTE,
 	// itemID and itemRef are for Microdata support as well but
 	// only specified in the the WHATWG spec document. See
@@ -667,6 +523,7 @@ export default {
 
 		// Prioritized HTML attributes
 		switch (name) {
+		case 'async': // bool
 		case 'allowFullScreen': // bool
 		case 'autoFocus': // bool
 		case 'autoPlay': // bool
@@ -675,16 +532,23 @@ export default {
 		case 'defaultchecked': // bool
 		case 'defaultmuted': // bool
 		case 'defaultselected': // bool
+		case 'draggable': // bool
+		case 'download': // bool
 		case 'disabled': // bool
 		case 'dir': // Core attribute
 		case 'draggable': // bool
 		case 'for':
 		case 'formNoValidate': // bool
 		case 'hidden': // bool
+		case 'itemScope': // bool
+		case 'open':
 		case 'seamless':
 		case 'sortable':
 		case 'title': // Core attribute
+		case 'translate': // bool attribute
+		case 'typemustmatch': // bool attribute
 		case 'type':
+		case 'visible':
 			if (value !== 'false') {
 				node.setAttribute(name, '' + ((value === 'true') ? '' : value));
 			}
@@ -692,15 +556,6 @@ export default {
 		}
 		return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
 	},
-
-	/**
-	 * Unsets a HTML attribute / property
-	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} name The attribute / property name to set.
-	 * @param {String} value The attribute / property value to set.
-	 */
-	remove: (node, name) => (DOMConfig[name] || IS_CUSTOM).remove(node, name),
 
 	/**
 	 * Create HTML attribute / property markup for SSR
