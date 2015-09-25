@@ -90,6 +90,5 @@ export default function createElement(tag, props, ...children) {
 		template.addAttributes(element, props, this);
 	}
 
-
 	return element;
 }

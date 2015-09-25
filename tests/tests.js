@@ -2368,6 +2368,23 @@ describe('Inferno acceptance tests', () => {
 					expect(test).to.equal(expected);
 				});
 
+				it('should render a basic example with dynamic values', () => {
+					let template = Inferno.createTemplate(t =>
+							<select multiple={true} value="bar">
+								<option value="foo">foo</option>
+								<option value="bar">bar</option>
+							</select>
+						);
+
+					let test = Inferno.renderToString(
+						Inferno.createFragment(null, template)
+					);
+
+					let expected = '<select multiple=""><option>foo</option><option>bar</option></select>';
+
+					expect(test).to.equal(expected);
+				});
+
 				it('should render a basic example with dynamic values and props', () => {
 					let template = Inferno.createTemplate((t, val1, val2) =>
 						<div className='foo'>
