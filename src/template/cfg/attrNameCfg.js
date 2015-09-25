@@ -1,17 +1,21 @@
 export default {
-	accentHeight: 'accent-height',
+    acceptCharset: 'accept-charset',
+    className: 'class',
+    htmlFor: 'for',
+    httpEquiv: 'http-equiv'
+	
+	// SVG
+
+    accentHeight: 'accent-height',
 	alignmentBaseline: 'alignment-baseline',
 	arabicForm: 'arabic-form',
 	autoStartReverse: 'auto-start-reverse',
 	baselineShift: 'baseline-shift',
 	bufferedRendering: 'buffered-rendering',
-	className: 'class',
 	colorRendering: 'color-rendering',
 	colorInterpolation: 'color-interpolation',
 	colorInterpolationFilters: 'color-interpolation-filters',
 	colorProfile: 'color-profile',
-	htmlFor: 'for',
-	httpEquiv: 'http-equiv',
 	clipPath: 'clip-path',
 	dominantBaseline: 'dominant-baseline',
 	fillOpacity: 'fill-opacity',
@@ -81,16 +85,5 @@ export default {
 	vertAdvY: 'vert-adv-y',
 	vertOriginX: 'vert-origin-x',
 	vertOriginY: 'vert-origin-y',
-	viewBox: 'viewBox',
-	xHeight: 'x-height',
-	xlinkActuate: 'xlink:actuate',
-	xlinkArcrole: 'xlink:arcrole',
-	xlinkHref: 'xlink:href',
-	xlinkRole: 'xlink:role',
-	xlinkShow: 'xlink:show',
-	xlinkTitle: 'xlink:title',
-	xlinkType: 'xlink:type',
-	xmlBase: 'xml:base',
-	xmlLang: 'xml:lang',
-	xmlSpace: 'xml:space'
+	viewBox: 'viewBox'
 };
