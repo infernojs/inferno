@@ -975,7 +975,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input ismap="true">'
+							'<input>'
 						);
 					});
 				});
@@ -2140,7 +2140,7 @@ describe('Inferno acceptance tests', () => {
 					let test = container.innerHTML;
 					let expected = '<div></div>';
 
-					expect(container.firstChild.checked).to.be.true;
+					expect(container.firstChild.checked).to.eql("checked");
 					expect(test).to.equal(expected);
 				});
 
@@ -2837,15 +2837,10 @@ describe('Inferno acceptance tests', () => {
 				attrOps.set(container, 'muted', false);
 				expect(container.muted).to.be.false;
 			});
-			// 'HTML5' should 'force' the value to be true
-			it('should set "muted" boolean property (HTML5) ', () => {
-				attrOps.set(container, 'muted', 'true');
-				expect(container.muted).to.be.true;
-			});
 
 			it('should not set "muted" boolean property as "muted muted"', () => {
 				attrOps.set(container, 'muted', 'muted');
-				expect(container.muted).to.be.true;
+				expect(container.muted).to.eql('muted');
 			});
 
 			it('should set "readOnly" boolean property ( truty) ', () => {
@@ -2860,12 +2855,12 @@ describe('Inferno acceptance tests', () => {
 
 			it('should set "readOnly" boolean property (HTML5) ', () => {
 				attrOps.set(container, 'readOnly', 'true');
-				expect(container.readOnly).to.be.true;
+				expect(container.readOnly).to.eql('true');
 			});
 
 			it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
 				attrOps.set(container, 'readOnly', 'readOnly');
-				expect(container.readOnly).to.be.true;
+				expect(container.readOnly).to.eql('readOnly');
 			});
 
 			it('should set numeric properties', () => {

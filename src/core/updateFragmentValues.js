@@ -75,7 +75,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			    element.autoPlay = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_CHECKED:
-			    element.checked = !!fragment.templateValues[i];
+			    element.checked = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_ISMAP:
 			    element.isMap = fragment.templateValues[i];
@@ -87,13 +87,13 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			    element.muted = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_READONLY:
-			    element.readOnly = !!fragment.templateValues[i];
+			    element.readOnly = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_REVERSED:
 			    element.reversed = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_REQUIRED:
-			    element.required = !!fragment.templateValues[i];
+			    element.required = fragment.templateValues[i];
 			    break;
 			case fragmentValueTypes.ATTR_SELECTED:
 			    element.selected = fragment.templateValues[i];
@@ -143,7 +143,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 						clearEventListeners(element, type);
 						addEventListener(element, type, fragment.templateValues[i]);
 					} else {
-						attrOps.set(element, type, fragment.templateValues[i]);
+						attrOps.set(element, type, fragment.templateValues[i], true);
 					}
 				}
 				//component prop, update it

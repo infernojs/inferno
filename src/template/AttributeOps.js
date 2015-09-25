@@ -630,7 +630,74 @@ export default {
  * @param {String} name The boolean attribute name to set.
  * @param {String|Object} value The boolean attribute value to set.
  */
-	set: (node, name, value) => (DOMConfig[name] || IS_CUSTOM).set(node, name, value),
+	set: (node, name, value, skip) => {
+		
+    // Prioritize HTML properties in the same way we do when we update fragments
+
+    if (!skip) {
+
+        switch (name) {
+
+            case 'id':
+            case 'label':
+            case 'placeholder':
+            case 'name':
+            case 'designMode':
+            case 'htmlFor':
+            case 'playbackRate':
+            case 'preload':
+            case 'srcDoc':
+            case 'autoPlay':
+            case 'checked':
+            case 'isMap':
+            case 'loop':
+            case 'muted':
+            case 'readOnly':
+            case 'reversed':
+            case 'required':
+            case 'selected':
+            case 'spellCheck':
+            case 'trueSpeed':
+            case 'multiple':
+            case 'controls':
+            case 'defer':
+            case 'noValidate':
+            case 'scoped':
+            case 'noResize':
+         
+		 if ( value != null){
+            node[name] = value;
+		}
+		return;
+        }
+    }
+    // Prioritized attributes
+    switch (name) {
+
+        case 'allowFullScreen':
+        case 'autoFocus':
+        case 'autoPlay':
+        case 'capture':
+        case 'declare': // deprecated
+        case 'defaultchecked':
+        case 'defaultmuted':
+        case 'defaultselected':
+        case 'disabled':
+        case 'draggable':
+        case 'formNoValidate':
+        case 'hidden':
+        case 'seamless':
+        case 'sortable':
+        case 'default':
+            if (value !== 'false') {
+                node.setAttribute(name, '' + ((value === 'true') ? '' : value));
+            }
+		return;	
+    }		
+		
+      (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
+ },
+
 /**
  * Unsets a HTML attribute / property
  *

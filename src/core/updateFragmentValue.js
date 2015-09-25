@@ -72,7 +72,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			element.autoPlay = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_CHECKED:
-			element.checked = !!fragment.templateValue;
+			element.checked = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_ISMAP:
 			element.isMap = fragment.templateValue;
@@ -84,13 +84,13 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			element.muted = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_READONLY:
-			element.readOnly = !!fragment.templateValue;
+			element.readOnly = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_REVERSED:
 			element.reversed = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_REQUIRED:
-			element.required = !!fragment.templateValue;
+			element.required = fragment.templateValue;
 			return;
 		case fragmentValueTypes.ATTR_SELECTED:
 			element.selected = fragment.templateValue;
@@ -140,7 +140,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 					clearEventListeners(element, type);
 					addEventListener(element, type, fragment.templateValue);
 				} else {
-					attrOps.set(element, type, fragment.templateValue);
+					attrOps.set(element, type, fragment.templateValue, true);
 				}
 				// TODO make component props work for single value fragments
 			} else {
