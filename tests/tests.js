@@ -143,6 +143,52 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
+				
+				describe('should drive a advanced SVG circle with attributes', () => {
+				
+					it('Initial render (creation)', () => {
+
+                       let style = {stroke:'#000099', fill:'#000099', fontSize:18};
+						
+						template = Inferno.createTemplate((t, val1) =>
+							<svg>
+                            <rect x="50" y="200" rx="5" ry="5" width="100" height="100" fill="#CCCCFF"/>
+                            <text x="55" y="220" style={style}>Weeeee!</text>
+                            <animateTransform attributeName="transform" type="rotate" values="0 150 100; 360 150 100" repeatCount="indefinite" begin="0s" dur="5s" />
+                            </svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.firstChild.getAttribute( "width" ) ).to.eql( '100' );
+                       expect( container.firstChild.firstChild.getAttribute( "height" ) ).to.eql( '100' );
+                       expect( container.firstChild.firstChild.getAttribute( "fill" ) ).to.eql( '#CCCCFF' );
+
+						expect(
+							container.innerHTML
+						).to.equal(
+							 '<svg><rect x="50" y="200" rx="5" ry="5" width="100" height="100" fill="#CCCCFF"></rect><text x="55" y="220" style="stroke: rgb(0, 0, 153); fill: rgb(0, 0, 153); font-size: 18px;">Weeeee!</text><animatetransform attributename="transform" type="rotate" values="0 150 100; 360 150 100" repeatcount="indefinite" begin="0s" dur="5s"></animatetransform></svg>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg height={200}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "height" ) ).to.eql('200');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg height="200"></svg>'
+						);
+					});
+				});
 
 				 describe('should set "className" property as a "class" attribute', () => {
 				
