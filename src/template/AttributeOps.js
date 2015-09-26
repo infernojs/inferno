@@ -468,7 +468,7 @@ let DOMConfig = {
 	'xlink:role': IS_XLINK_NAMESPACE,
 	'xlink:show': IS_XLINK_NAMESPACE,
 	'xlink:title': IS_XLINK_NAMESPACE,
-	'xlink:type': IS_XLINK_NAMESPACE
+	'xlink:type': IS_XLINK_NAMESPACE,
 
 	/**
 	 * Navigation attributes (SVG)
@@ -491,7 +491,7 @@ let DOMConfig = {
 	'requiredFeatures': IS_ATTRIBUTE,
 	'requiredFonts': IS_ATTRIBUTE,
 	'requiredFormats': IS_ATTRIBUTE,
-	'systemLanguage': IS_ATTRIBUTE
+	'systemLanguage': IS_ATTRIBUTE,
 
 	/**
 	 * Timing attributes (SVG)
