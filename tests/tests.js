@@ -139,6 +139,22 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 					
+					it('should set xlink namespace attribute (no-JSX)', () => {
+
+						template = Inferno.createTemplate(t =>
+							t('img',  { "xlink:href": "test.jpg" })
+						);
+						Inferno.render(Inferno.createFragment(null, template), container);
+
+						expect(container.firstChild.getAttributeNS( "http://www.w3.org/1999/xlink", "href" ) ).to.eql( "test.jpg" );
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<img xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="test.jpg">'
+						);
+                       
+					});
+
 					it('should respect default MathML namespace', () => {
 
 						template = Inferno.createTemplate((t, val1) =>

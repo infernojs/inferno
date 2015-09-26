@@ -329,7 +329,7 @@ let IS_XLINK_NAMESPACE = {
 	 * @param {string} name  The attribute name
 	 * @param {*} value	The attribute value
 	 */
-	set(node, name, value) {
+	set(node, name, value) { console.log(node)
 		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkCfg[name], value);
 	},
 
@@ -402,10 +402,8 @@ let DOMConfig = {
 	fx: IS_ATTRIBUTE,
 	fy: IS_ATTRIBUTE,
 	height: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
-	href: IS_ATTRIBUTE,
-	htmlfor: IS_PROPERTY,
+	href: IS_PROPERTY,
 	icon: IS_ATTRIBUTE,
-	id: IS_PROPERTY,
 	inputMode: IS_ATTRIBUTE,
 	is: IS_ATTRIBUTE,
 	keyParams: IS_ATTRIBUTE,
@@ -565,6 +563,7 @@ export default {
  * @param {String|Object} value The attribute / property value
  */
 	set(node, name, value, skip) {
+
 		// Prioritized HTML properties
 		if (!skip) {
 			switch (name) {
@@ -634,6 +633,7 @@ export default {
 		case 'hidden': // bool
 		case 'itemScope': // bool
 		case 'is':
+		case 'integrity':
 		case 'name':
 		case 'open':
         // 'property' is also supported for OpenGraph in meta tags.
@@ -654,6 +654,7 @@ export default {
 			}
 			return;
 		}
+		
 		return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
 	},
 
