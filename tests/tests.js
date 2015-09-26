@@ -14,7 +14,7 @@ global.Inferno = Inferno;
 
 describe('Inferno acceptance tests', () => {
 	describe('Inferno.render()', () => {
-      describe('SVG / MathML namespace', () => {
+      describe('SVG', () => {
 
 			let container, template;
 
@@ -27,7 +27,9 @@ describe('Inferno acceptance tests', () => {
 				container = null;
 			});
 
-					it('should respect SVG namespace', () => {
+                 describe('should respect SVG namespace', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<svg></svg>
@@ -43,8 +45,11 @@ describe('Inferno acceptance tests', () => {
 							'<svg></svg>'
 						);
 					});
-
-					it('should respect SVG namespace', () => {
+				 });
+				 
+				 describe('should respect SVG namespace and render SVG attributes', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>
@@ -64,8 +69,11 @@ describe('Inferno acceptance tests', () => {
 							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>'
 						);
 					});
-					
-					it('should set "class" attribute', () => {
+				});	
+				
+				 describe('should set "class" attribute', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>
@@ -83,8 +91,11 @@ describe('Inferno acceptance tests', () => {
 							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
 						);
 					});
+				});
 
-					it('should set "className" property as a "class" attribute', () => {
+				 describe('should set "className" property as a "class" attribute', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<svg xmlns="http://www.w3.org/2000/svg" className="hello, world!"></svg>
@@ -102,8 +113,11 @@ describe('Inferno acceptance tests', () => {
 							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
 						);
 					});
+				});
 					
-					it('should set "viewBox" attribute', () => {
+				 describe('should set "viewBox" attribute', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>
@@ -121,8 +135,11 @@ describe('Inferno acceptance tests', () => {
 							'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>'
 						);
 					});
-					
-					it('should SVG element with children', () => {
+				});	
+				
+				describe('should SVG element with children', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<svg width="100" height="200" viewBox="0 0 50 50" preserveAspectRatio="xMinYMin meet" style="border: 1px solid #cccccc;"><circle cx="25" cy="25" r="25" style="stroke: #000000; fill:none;"/></svg>
@@ -138,8 +155,11 @@ describe('Inferno acceptance tests', () => {
 							'<svg width="100" height="200" viewBox="0 0 50 50" preserveaspectratio="xMinYMin meet"></svg>'
 						);
 					});
-					
-					it('should set xlink namespace attribute (no-JSX)', () => {
+				});	
+
+				describe('should set xlink namespace attribute (no-JSX)', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate(t =>
 							t('img',  { "xlink:href": "test.jpg" })
@@ -152,10 +172,26 @@ describe('Inferno acceptance tests', () => {
 						).to.equal(
 							'<img xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="test.jpg">'
 						);
-                       
 					});
+				});	
+	  });
+	  
+        describe('MathML', () => {
 
-					it('should respect default MathML namespace', () => {
+			let container, template;
+
+			beforeEach(() => {
+				container = document.createElement('div');
+			});
+
+			afterEach(() => {
+				Inferno.clearDomElement(container);
+				container = null;
+			});
+
+				describe('should respect default MathML namespace', () => {
+				
+					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<math></math>
@@ -172,7 +208,8 @@ describe('Inferno acceptance tests', () => {
 							'<math></math>'
 						);
 					});
-				});
+				});	
+			});
 						
 		describe('DOM elements tests', () => {
 			let container;
