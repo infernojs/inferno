@@ -23,7 +23,7 @@ export default {
                     }
             }
 
-            if (namespace === undefined) ? document.createElement(tag) : document.createElementNS(namespace, tag);
+           return (namespace === undefined) ? document.createElement(tag) : document.createElementNS(namespace, tag);
         },
         createTextNode: text => document.createTextNode(text),
         createEmptyText: () => document.createTextNode('')
