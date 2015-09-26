@@ -1479,40 +1479,73 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _AttributeOps2 = _interopRequireDefault(_AttributeOps);
 	
+	var svgNamespace = 'http://www.w3.org/2000/svg';
+	var mathNamespace = 'http://www.w3.org/1998/Math/MathML';
+	
 	exports['default'] = {
 	    addAttributes: _addAttributes2['default'],
 	    extendUnitlessNumber: _extendUnitlessNumber2['default'],
 	    AttributeOps: _AttributeOps2['default'],
-	    createElement: function createElement(tag, xmlns, is, parent) {
+	    createElement: function createElement(tag, xmlns, is) {
 	
-	        var element = undefined,
-	            namespace = undefined;
-	
-	        if (xmlns) {
-	
-	            if (is) {
-	                element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
-	            } else {
-	                element = document.createElementNS("http://www.w3.org/2000/svg", tag);
-	            }
-	        }if (_cfgSvgCfg2['default'][tag]) {
-	            // xmlns, is...
-	            if (is) {
-	                element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
-	            } else {
-	                element = document.createElementNS("http://www.w3.org/2000/svg", tag);
-	            }
-	        } else if (tag === 'math') {
-	            element = document.createElementNS('http://www.w3.org/1998/Math/MathML', tag);
-	        } else {
-	            if (is) {
-	                element = document.createElement(tag, is);
-	            } else {
-	                element = document.createElement(tag);
-	            }
+	        switch (tag) {
+	            case "a":
+	                return document.createElement('a');
+	            case "b":
+	                return document.createElement('b');
+	            case 'body':
+	                return document.createElement('body');
+	            case 'br':
+	                return document.createElement('br');
+	            case 'button':
+	                return document.createElement('button');
+	            case 'circle':
+	                return document.createElementNS(svgNamespace, 'circle');
+	            case 'div':
+	                return document.createElement('div');
+	            case 'form':
+	                return document.createElement('form');
+	            case 'href':
+	                return document.createElement('href');
+	            case 'img':
+	                return document.createElement('img');
+	            case 'option':
+	                return document.createElement('option');
+	            case 'li':
+	                return document.createElement('li');
+	            case 'ol':
+	                return document.createElement('ol');
+	            case 'rec':
+	                return document.createElementNS(svgNamespace, 'rec');
+	            case 'select':
+	                return document.createElement('select');
+	            case 'span':
+	                return document.createElement('span');
+	            case 'style':
+	                return document.createElement('style');
+	            case 'table':
+	                return document.createElement('table');
+	            case 'ul':
+	                return document.createElement('ul');
+	            case 'elipse':
+	                return document.createElementNS(svgNamespace, 'elipse');
+	            default:
+	                if (xmlns) {
+	                    return document.createElementNS(xmlns, tag, is);
+	                }
 	        }
 	
-	        return element;
+	        // mathML namespace
+	        if (tag === 'math') {
+	            return document.createElementNS(mathNamespace, tag, is);
+	        }
+	
+	        // SVG elements supported by Inferno
+	        if (_cfgSvgCfg2['default'][tag]) {
+	            return document.createElementNS(svgNamespace, tag, is);
+	        }
+	
+	        return document.createElement(tag);
 	    },
 	    createTextNode: function createTextNode(text) {
 	        return document.createTextNode(text);
