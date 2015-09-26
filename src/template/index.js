@@ -1,3 +1,4 @@
+import svgCfg               from './cfg/svgCfg';
 import addAttributes        from './addAttributes';
 import extendUnitlessNumber from './extendUnitlessNumber';
 import AttributeOps         from './AttributeOps';
@@ -10,26 +11,15 @@ export default {
 
             let element, namespace;
 
-                switch (tag) {
-                    case 'svg':
-                        namespace = "http://www.w3.org/2000/svg";
-                        break;
-                    case 'math':
-                        namespace = "http://www.w3.org/1998/Math/MathML";
-                        break;
-                    default:
-                        if (parent) {
-                            namespace = parent.namespace;
-                        }
-                }
-
-            if (namespace) { // xmlns, is...
+            if (svgCfg[tag]) { // xmlns, is...
                 if (is) {
-                    element = document.createElementNS(namespace, tag, is);
+                    element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
                 } else {
-                    element = document.createElementNS(namespace, tag);
+                    element = document.createElementNS("http://www.w3.org/2000/svg", tag);
                 }
-            } else {
+            } else if ( tag === 'math') {
+				element = document.createElementNS('http://www.w3.org/1998/Math/MathML', tag);
+			} else {
                 if (is) {
                     element = document.createElement(tag, is);
                 } else {
