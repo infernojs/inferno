@@ -85,15 +85,15 @@ let setNumericAttribute = (node, name, value) => {
  * Applies a property on a given Element
  *
  * @param {!Element} node  A DOM element.
- * @param {string} propertyName	  The property name
- * @param {string} propValue	 The property value
+ * @param {string} name	  The property name
+ * @param {string} value	 The property value
  */
-let setProperty = (node, propertyName, propValue) => {
+let setProperty = (node, name, value) => {
 
-	if (propValue != null) {
+	if (value != null) {
 
 			// 'contentEditable' is a special case
-			if (propertyName === 'contentEditable' && (propValue)) {
+			if (name === 'contentEditable' && (value)) {
 				/**
 				 * We would need this check here, else it will throw:
 				 *
@@ -104,36 +104,36 @@ let setProperty = (node, propertyName, propValue) => {
 				// Workaround for the 'contentEditable' property
 				let cEValue;
 
-				switch (propValue) {
+				switch (value) {
 				case true:
-					cEValue = propValue;
+					cEValue = value;
 					break;
 				case false:
-					cEValue = propValue;
+					cEValue = value;
 					break;
 				case 'plaintext-only':
-					cEValue = propValue;
+					cEValue = value;
 					break;
 				case 'inherit':
-					cEValue = propValue;
+					cEValue = value;
 					break;
 				default:
 					cEValue = 'inherit';
 				}
 
-				propValue = cEValue;
+				value = cEValue;
 			}
 
-			node[propNameCfg[propertyName] || propertyName] = propValue;
+			node[propNameCfg[name] || name] = value;
 	}
 };
 
 /**
- * Set selectedIndex property
+ * Applies the selectedIndex property on a given Element
  *
- * @param {Object} node A DOM element.
+ * @param {!Element} node  A DOM element.
  * @param {String} name	  The property name to set.
- * @param {String} value  The property value to set.
+ * @param {*} value  The property value to set.
  */
 let setSelectedIndexProperty = (node, name, value) => {
 
@@ -148,23 +148,23 @@ let setSelectedIndexProperty = (node, name, value) => {
  * Applies a dataset object property on a given Element
  *
  * @param {!Element} node  A DOM element.
- * @param {string} propertyName  The property propertyName
- * @param {string} propValue  The property value
+ * @param {string} name  The property name
+ * @param {*} value  The property value
  */
-let setPropertyForDataset = (node, propertyName, propValue) => {
+let setPropertyForDataset = (node, name, value) => {
 	if (process.env.NODE_ENV !== 'production') {
-		let typeOfVal = typeof propValue;
+		let typeOfVal = typeof value;
 		if (typeOfVal !== 'object') {
-			console.error(`Error! "${propertyName}" attribute expects an object as a value, not a ${typeOfVal}`);
+			console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
 			return;
 		}
 	}
 
-	let prop = node[propertyName];
+	let prop = node[name];
 
-	for (let idx in propValue) {
-		// regarding the specs we need to camelize the 'propertyName'
-		prop[camelize(idx)] = propValue[idx] == null ? '' : dasherize(propValue[idx]);
+	for (let idx in value) {
+		// regarding the specs we need to camelize the 'name'
+		prop[camelize(idx)] = value[idx] == null ? '' : dasherize(value[idx]);
 	}
 };
 
@@ -172,24 +172,24 @@ let setPropertyForDataset = (node, propertyName, propValue) => {
  * Applies a style to an Element. Vendor prefix expansion is done for
  * property names/values as well as adding the 'px' suffix.
  * @param {!Element} el
- * @param {string} name The attribute's name.
+ * @param {string} name The property's name.
  * @param {string|Object<string,string>} style The style to set. Either a
  *     string of css or an object containing property-value pairs.
  */
-let applyStyle = (node, propertyName, propValue) => {
+let applyStyle = (node, name, value) => {
 	// CSS style need to be a object literal, not a string value
 	if (process.env.NODE_ENV !== 'production') {
-		let typeOfVal = typeof propValue;
+		let typeOfVal = typeof value;
 		if (typeOfVal !== 'object') {
-			console.error(`Error! "${propertyName}" attribute expects an object as a value, not a ${typeOfVal}`);
+			console.error(`Error! "${name}" attribute expects an object as a value, not a ${typeOfVal}`);
 			return;
 		}
 	}
 
-	let prop = node[propertyName];
+	let prop = node[name];
 
-	for (let idx in propValue) {
-		node.style[idx] = (propValue[idx] == null) ? '' : normalizeCSS(idx, propValue[idx]);
+	for (let idx in value) {
+		node.style[idx] = (value[idx] == null) ? '' : normalizeCSS(idx, value[idx]);
 	}
 };
 
@@ -197,15 +197,15 @@ let applyStyle = (node, propertyName, propValue) => {
  * Applies a 'value' property on a given Element after validation check
  *
  * @param {!Element} node  A DOM element.
- * @param {string} propertyName	  The property propertyName
- * @param {string} propValue  The property value
+ * @param {string} name	  The property name
+ * @param {*} value  The property value
  */
-let setValueForProperty = (node, propertyName, propValue) => {
-	if (propertyName === 'value' && (tagName(node) === 'select')) {
-		setSelectValue(node, propValue);
+let setValueForProperty = (node, name, value) => {
+	if (name === 'value' && (tagName(node) === 'select')) {
+		setSelectValue(node, value);
 	} else {
 		// Need to validate this else it will fail when we update fragments etc.
-		node[propertyName] !== propValue && (node[propertyName] = propValue);
+		node[name] !== value && (node[name] = value);
 	}
 };
 
