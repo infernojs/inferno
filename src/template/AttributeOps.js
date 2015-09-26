@@ -329,7 +329,7 @@ let IS_XLINK_NAMESPACE = {
 	 * @param {string} name  The attribute name
 	 * @param {*} value	The attribute value
 	 */
-	set(node, name, value) { console.log(node)
+	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkCfg[name], value);
 	},
 
@@ -402,7 +402,6 @@ let DOMConfig = {
 	fx: IS_ATTRIBUTE,
 	fy: IS_ATTRIBUTE,
 	height: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
-	href: IS_PROPERTY,
 	icon: IS_ATTRIBUTE,
 	inputMode: IS_ATTRIBUTE,
 	is: IS_ATTRIBUTE,
@@ -631,6 +630,7 @@ export default {
 		case 'frameBorder':
 		case 'fontWeight':
 		case 'hidden': // bool
+		case 'href':
 		case 'itemScope': // bool
 		case 'is':
 		case 'integrity':

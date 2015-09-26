@@ -63,7 +63,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _classComponent = __webpack_require__(33);
+	var _classComponent = __webpack_require__(31);
 	
 	var _classComponent2 = _interopRequireDefault(_classComponent);
 	
@@ -71,11 +71,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _coreRender2 = _interopRequireDefault(_coreRender);
 	
-	var _coreRenderToString = __webpack_require__(42);
+	var _coreRenderToString = __webpack_require__(40);
 	
 	var _coreRenderToString2 = _interopRequireDefault(_coreRenderToString);
 	
-	var _coreUnmountComponentAtNode = __webpack_require__(43);
+	var _coreUnmountComponentAtNode = __webpack_require__(41);
 	
 	var _coreUnmountComponentAtNode2 = _interopRequireDefault(_coreUnmountComponentAtNode);
 	
@@ -87,7 +87,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _coreCreateFragment = __webpack_require__(36);
+	var _coreCreateFragment = __webpack_require__(34);
 	
 	var _coreCreateFragment2 = _interopRequireDefault(_coreCreateFragment);
 	
@@ -99,11 +99,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _template2 = _interopRequireDefault(_template);
 	
-	var _coreClearDomElement = __webpack_require__(35);
+	var _coreClearDomElement = __webpack_require__(33);
 	
 	var _coreClearDomElement2 = _interopRequireDefault(_coreClearDomElement);
 	
-	var _coreCreateRef = __webpack_require__(37);
+	var _coreCreateRef = __webpack_require__(35);
 	
 	var _coreCreateRef2 = _interopRequireDefault(_coreCreateRef);
 	
@@ -210,11 +210,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
-	var _updateFragmentValue = __webpack_require__(44);
+	var _updateFragmentValue = __webpack_require__(42);
 	
 	var _updateFragmentValue2 = _interopRequireDefault(_updateFragmentValue);
 	
-	var _updateFragmentValues = __webpack_require__(45);
+	var _updateFragmentValues = __webpack_require__(43);
 	
 	var _updateFragmentValues2 = _interopRequireDefault(_updateFragmentValues);
 	
@@ -328,7 +328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _getRecycledFragment = __webpack_require__(38);
+	var _getRecycledFragment = __webpack_require__(36);
 	
 	var _getRecycledFragment2 = _interopRequireDefault(_getRecycledFragment);
 	
@@ -344,7 +344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumFragmentValueTypes2 = _interopRequireDefault(_enumFragmentValueTypes);
 	
-	var _insertFragment = __webpack_require__(39);
+	var _insertFragment = __webpack_require__(37);
 	
 	var _insertFragment2 = _interopRequireDefault(_insertFragment);
 	
@@ -356,7 +356,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _templateCreateElement = __webpack_require__(50);
+	var _templateCreateElement = __webpack_require__(49);
 	
 	var _templateCreateElement2 = _interopRequireDefault(_templateCreateElement);
 	
@@ -505,47 +505,47 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _cfgAttrNameCfg = __webpack_require__(23);
+	var _cfgAttrNameCfg = __webpack_require__(47);
 	
 	var _cfgAttrNameCfg2 = _interopRequireDefault(_cfgAttrNameCfg);
 	
-	var _cfgPropNameCfg = __webpack_require__(49);
+	var _cfgPropNameCfg = __webpack_require__(48);
 	
 	var _cfgPropNameCfg2 = _interopRequireDefault(_cfgPropNameCfg);
 	
-	var _cfgXmlCfg = __webpack_require__(26);
+	var _cfgXmlCfg = __webpack_require__(25);
 	
 	var _cfgXmlCfg2 = _interopRequireDefault(_cfgXmlCfg);
 	
-	var _cfgXlinkCfg = __webpack_require__(25);
+	var _cfgXlinkCfg = __webpack_require__(24);
 	
 	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
 	
-	var _hasPropertyAccessor = __webpack_require__(54);
+	var _hasPropertyAccessor = __webpack_require__(53);
 	
 	var _hasPropertyAccessor2 = _interopRequireDefault(_hasPropertyAccessor);
 	
-	var _validateAttribute = __webpack_require__(57);
+	var _validateAttribute = __webpack_require__(55);
 	
 	var _validateAttribute2 = _interopRequireDefault(_validateAttribute);
 	
-	var _dasherize = __webpack_require__(51);
+	var _dasherize = __webpack_require__(50);
 	
 	var _dasherize2 = _interopRequireDefault(_dasherize);
 	
-	var _camelize = __webpack_require__(48);
+	var _camelize = __webpack_require__(46);
 	
 	var _camelize2 = _interopRequireDefault(_camelize);
 	
-	var _normalizeCSS = __webpack_require__(56);
+	var _normalizeCSS = __webpack_require__(54);
 	
 	var _normalizeCSS2 = _interopRequireDefault(_normalizeCSS);
 	
-	var _utilInArray = __webpack_require__(58);
+	var _utilInArray = __webpack_require__(56);
 	
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 	
-	var _utilIsArray = __webpack_require__(30);
+	var _utilIsArray = __webpack_require__(29);
 	
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 	
@@ -553,195 +553,233 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
-	var _utilTagName = __webpack_require__(31);
+	var _utilTagName = __webpack_require__(57);
 	
 	var _utilTagName2 = _interopRequireDefault(_utilTagName);
 	
-	var _escapeHtml = __webpack_require__(52);
+	var _escapeHtml = __webpack_require__(51);
 	
 	var _escapeHtml2 = _interopRequireDefault(_escapeHtml);
 	
-	var _hooks = __webpack_require__(55);
-	
-	var _hooks2 = _interopRequireDefault(_hooks);
-	
 	/**
-	 * Set attributes on a DOM node
-	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} attrName	  The attribute name to set.
-	 * @param {String} attrValue The attribute value to set.
+	 * Applies a single attribute or property to a given Element. If the value is null
+	 * or undefined, it is not set. Otherwise, the value is set
+	 * as an attribute.
+	 * @param {!Element} node
+	 * @param {string} name The attribute's name.
+	 * @param {?(boolean|number|string)=} value The attribute's value.
 	 */
-	var setAttribute = function setAttribute(node, attrName, attrValue) {
-		// Avoid touching the DOM on falsy values
-		if (attrValue !== 'false') {
+	var setAttribute = function setAttribute(node, name, value) {
+		if (name === 'type' && (0, _utilTagName2['default'])(node) === 'input') {
+			// Support: IE9-Edge
+			var val = node.value; // value will be lost in IE if type is changed
+			node.setAttribute(name, '' + value);
+			// Check if val exist, if not we will get a stupid 'value=""' in the markup
+			if (val) {
+				node.value = val;
+			}
+		} else {
 	
-			if (_hooks2['default'][attrName]) {
-	
-				_hooks2['default'][attrName](node, attrName, attrValue);
-			} else {
-				node.setAttribute(_cfgAttrNameCfg2['default'][attrName] || attrName, attrValue);
+			// Avoid touching the DOM on falsy values
+			if (value !== 'false') {
+				node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, '' + value); // cast to string
 			}
 		}
 	};
 	
 	/**
-	 * Set custom attributes on a DOM node
+	 * Applies the 'volume' attribute on a given Element
 	 *
 	 * @param {Object} node A DOM element.
-	 * @param {String} attrName	  The attribute name to set.
-	 * @param {String} attrValue The attribute value to set.
+	 * @param {String} name	 The attribute name to set.
+	 * @param {String} value  The attribute value to set.
 	 */
-	var setCustomAttribute = function setCustomAttribute(node, attrName, attrValue) {
+	var setVolumAttribute = function setVolumAttribute(node, name, value) {
+		// The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
+		// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
+		if (value === 0.0 || value === 1 || typeof value === 'number' && (value > -1 && value < 1.1)) {
+			node.setAttribute(name, value);
+		}
+	};
+	/**
+	 * Applies a custom attribute on a given Element
+	 *
+	 * @param {!Element} node  A DOM element.
+	 * @param {string} name	  The attribute name
+	 * @param {*} value value The attribute value
+	 */
+	var setCustomAttribute = function setCustomAttribute(node, name, value) {
 		// Custom attributes are the only arributes we are validating.
-		if ((0, _validateAttribute2['default'])(attrName)) {
+		if ((0, _validateAttribute2['default'])(name)) {
 			// All attributes are lowercase
-			node.setAttribute((_cfgAttrNameCfg2['default'][attrName] || attrName).toLowerCase(), '' + attrValue); // cast to string
+			node.setAttribute((_cfgAttrNameCfg2['default'][name] || name).toLowerCase(), '' + value); // cast to string
 		}
 	};
 	
 	/**
-	 * Set numeric attributes on a DOM node
+	 * Applies a numeric attribute on a given Element
 	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} attrName	  The numeric attribute name to set.
-	 * @param {String} attrValue  The numeric attribute value to set.
+	 * @param {!Element} node  A DOM element.
+	 * @param {string} name	  The numeric attribute name
+	 * @param {*} value  The numeric attribute value
 	 */
-	var setNumericAttribute = function setNumericAttribute(node, attrName, attrValue) {
-		if (attrValue > 0 && typeof attrValue === 'number') {
-			node.setAttribute(attrName, attrValue);
+	var setNumericAttribute = function setNumericAttribute(node, name, value) {
+		if (value > 0 && typeof value === 'number') {
+			node.setAttribute(name, value);
 		}
 	};
 	
 	/**
-	 * Set properties on a DOM node
+	 * Applies a property on a given Element
 	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} propertyName	  The property name to set.
-	 * @param {String} propValue	 The property value to set.
+	 * @param {!Element} node  A DOM element.
+	 * @param {string} name	  The property name
+	 * @param {string} value	 The property value
 	 */
-	var setProperty = function setProperty(node, propertyName, propValue) {
+	var setProperty = function setProperty(node, name, value) {
 	
-		if (propValue != null) {
+		if (value != null) {
 	
-			if (_hooks2['default'][propertyName]) {
-				_hooks2['default'][propertyName](node, propertyName, propValue);
-			} else {
-				// 'contentEditable' is a special case
-				if (propertyName === 'contentEditable' && propValue) {
-					/**
-	     * We would need this check here, else it will throw:
-	     *
-	     * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value
-	     * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
-	     */
+			// 'contentEditable' is a special case
+			if (name === 'contentEditable' && value) {
+				/**
+	    * We would need this check here, else it will throw:
+	    *
+	    * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value
+	    * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
+	    */
 	
-					// Workaround for the 'contentEditable' property
-					var cEValue = undefined;
+				// Workaround for the 'contentEditable' property
+				var cEValue = undefined;
 	
-					switch (propValue) {
-						case true:
-							cEValue = propValue;
-							break;
-						case false:
-							cEValue = propValue;
-							break;
-						case 'plaintext-only':
-							cEValue = propValue;
-							break;
-						case 'inherit':
-							cEValue = propValue;
-							break;
-						default:
-							cEValue = 'inherit';
-					}
-	
-					propValue = cEValue;
+				switch (value) {
+					case true:
+						cEValue = value;
+						break;
+					case false:
+						cEValue = value;
+						break;
+					case 'plaintext-only':
+						cEValue = value;
+						break;
+					case 'inherit':
+						cEValue = value;
+						break;
+					default:
+						cEValue = 'inherit';
 				}
 	
-				node[_cfgPropNameCfg2['default'][propertyName] || propertyName] = propValue;
+				value = cEValue;
 			}
+	
+			node[_cfgPropNameCfg2['default'][name] || name] = value;
 		}
 	};
 	
 	/**
-	 * Set dataset object properties
+	 * Applies the selectedIndex property on a given Element
 	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} propertyName  The property propertyName to set.
-	 * @param {String} propValue  The property value to set.
+	 * @param {!Element} node  A DOM element.
+	 * @param {String} name	  The property name to set.
+	 * @param {*} value  The property value to set.
 	 */
-	var setPropertyForDataset = function setPropertyForDataset(node, propertyName, propValue) {
+	var setSelectedIndexProperty = function setSelectedIndexProperty(node, name, value) {
+	
+		// selectbox has special case
+		if (Array.prototype.every.call(node.options, function (opt) {
+			return !(opt.selected = opt.value === value);
+		})) {
+			// TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
+			node[name] = -1;
+		}
+	};
+	
+	/**
+	 * Applies a dataset object property on a given Element
+	 *
+	 * @param {!Element} node  A DOM element.
+	 * @param {string} name  The property name
+	 * @param {*} value  The property value
+	 */
+	var setPropertyForDataset = function setPropertyForDataset(node, name, value) {
 		if ((undefined) !== 'production') {
-			var typeOfVal = typeof propValue;
+			var typeOfVal = typeof value;
 			if (typeOfVal !== 'object') {
-				console.error('Error! "' + propertyName + '" attribute expects an object as a value, not a ' + typeOfVal);
+				console.error('Error! "' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
 				return;
 			}
 		}
 	
-		var prop = node[propertyName];
+		var prop = node[name];
 	
-		for (var idx in propValue) {
-			// regarding the specs we need to camelize the 'propertyName'
-			prop[(0, _camelize2['default'])(idx)] = propValue[idx] == null ? '' : (0, _dasherize2['default'])(propValue[idx]);
+		for (var idx in value) {
+			// regarding the specs we need to camelize the 'name'
+			prop[(0, _camelize2['default'])(idx)] = value[idx] == null ? '' : (0, _dasherize2['default'])(value[idx]);
 		}
 	};
 	
-	var setPropertyForStyle = function setPropertyForStyle(node, propertyName, propValue) {
+	/**
+	 * Applies a style to an Element. Vendor prefix expansion is done for
+	 * property names/values as well as adding the 'px' suffix.
+	 * @param {!Element} el
+	 * @param {string} name The property's name.
+	 * @param {string|Object<string,string>} style The style to set. Either a
+	 *     string of css or an object containing property-value pairs.
+	 */
+	var applyStyle = function applyStyle(node, name, value) {
 		// CSS style need to be a object literal, not a string value
 		if ((undefined) !== 'production') {
-			var typeOfVal = typeof propValue;
+			var typeOfVal = typeof value;
 			if (typeOfVal !== 'object') {
-				console.error('Error! "' + propertyName + '" attribute expects an object as a value, not a ' + typeOfVal);
+				console.error('Error! "' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
 				return;
 			}
 		}
 	
-		var prop = node[propertyName];
+		var prop = node[name];
 	
-		for (var idx in propValue) {
-			node.style[idx] = propValue[idx] == null ? '' : (0, _normalizeCSS2['default'])(idx, propValue[idx]);
+		for (var idx in value) {
+			node.style[idx] = value[idx] == null ? '' : (0, _normalizeCSS2['default'])(idx, value[idx]);
 		}
 	};
 	
 	/**
-	 * Set 'value' property after validation check
+	 * Applies a 'value' property on a given Element after validation check
 	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} propertyName	  The property propertyName to set.
-	 * @param {String} propValue  The property value to set.
+	 * @param {!Element} node  A DOM element.
+	 * @param {string} name	  The property name
+	 * @param {*} value  The property value
 	 */
-	var setValueForProperty = function setValueForProperty(node, propertyName, propValue) {
-		if (propertyName === 'value' && (0, _utilTagName2['default'])(node) === 'select') {
-			setSelectValue(node, propValue);
+	var setValueForProperty = function setValueForProperty(node, name, value) {
+		if (name === 'value' && (0, _utilTagName2['default'])(node) === 'select') {
+			setSelectValue(node, value);
 		} else {
 			// Need to validate this else it will fail when we update fragments etc.
-			node[propertyName] !== propValue && (node[propertyName] = propValue);
+			node[name] !== value && (node[name] = value);
 		}
 	};
 	
 	/**
-	 * Set select / select multiple
+	 * Applies a select / select multiple attribute on a given Element
 	 *
-	 * @param {Object} node  A DOM element.
-	 * @param {String|Array} value  The property value to set.
+	 * @param {!Element} node  A DOM element.
+	 * @param {String|Array} value  The property value
 	 */
 	
 	var setSelectValue = function setSelectValue(node, value) {
 	
-		var arrayish = (0, _utilIsArray2['default'])(value),
+		var multiple = (0, _utilIsArray2['default'])(value),
 		    options = node.options;
 	
 		var optionNode = undefined;
 		for (var i = 0; i < options.length; i++) {
 			optionNode = options[i];
-			optionNode.selected = value != null && (arrayish ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
+			optionNode.selected = value != null && (multiple ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
 		}
 	};
 	
 	/**
-	 * Transform HTML attributes to a string for SSR rendring
+	 * Render HTML attributes to a string for SSR
 	 *
 	 * @param {string} name
 	 * @param {*} value
@@ -754,7 +792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Render HTML markup from a dataset property for SSR rendring
 	 *
-	 * @param {String} name The name to be set.
+	 * @param {string} name The name to be set.
 	 * @param {Object} value  The value to be set.
 	 */
 	var datasetToString = function datasetToString(name, value) {
@@ -768,8 +806,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Render HTML markup from boolean attributes to string for SSR rendring
 	 *
-	 * @param {String} name  The attribute name to set.
-	 * @param {String} value  The attribute value to set.
+	 * @param {string} name  The attribute name
+	 * @param {*} value  The attribute value
 	 */
 	var booleanAttrToString = function booleanAttrToString(name, value) {
 		// XHTML friendly
@@ -789,8 +827,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Render CSS style property to string for SSR rendring
 	 *
-	 * @param  {String} name  The attribute name to set.
-	 * @param  {String} value The property value to set.
+	 * @param {string} name  The attribute name
+	 * @param {*} value The property value
 	 */
 	var createPropertyMarkup = function createPropertyMarkup(name, value) {
 		var styles = '';
@@ -812,6 +850,11 @@ return /******/ (function(modules) { // webpackBootstrap
 		toHtml: createAttributeMarkup
 	};
 	
+	var IS_VOLUME_ATTRIBUTE = {
+		set: setVolumAttribute,
+		toHtml: createAttributeMarkup
+	};
+	
 	var IS_NUMERIC = {
 		set: setNumericAttribute,
 		toHtml: createAttributeMarkup
@@ -822,19 +865,19 @@ return /******/ (function(modules) { // webpackBootstrap
 		toHtml: createAttributeMarkup
 	};
 	
-	/****************************** NOTE!! *************************************
-	 *																		 *
-	 * Both xlink and xml namespace attrs are removed in the upcoming SVG 2.0. *
-	 *																		 *
-	 **************************************************************************/
+	var IS_SELECTED_PROPERTY = {
+		set: setSelectedIndexProperty,
+		toHtml: createAttributeMarkup
+	};
+	
 	var IS_XLINK_NAMESPACE = {
 	
 		/**
-	  * Set xlink namespace attribute
+	  * Applies a xlink namespace attribute on a given Element
 	  *
-	  * @param  {Object} node A DOM element.
-	  * @param  {String} name  The attribute name to set.
-	  * @param  {String} value	The attribute value to set.
+	  * @param {!Element} node  A DOM element.
+	  * @param {string} name  The attribute name
+	  * @param {*} value	The attribute value
 	  */
 		set: function set(node, name, value) {
 			node.setAttributeNS('http://www.w3.org/1999/xlink', _cfgXlinkCfg2['default'][name], value);
@@ -846,11 +889,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var IS_XML_NAMESPACE = {
 	
 		/**
-	  * Set xlink namespace attribute
+	  * Applies a xlink namespace attribute on a given Element
 	  *
-	  * @param  {Object} node A DOM element.
-	  * @param  {String} name The attribute name to set.
-	  * @param  {String} value The attribute value to set.
+	  * @param {!Element} node  A DOM element.
+	  * @param {string} name The attribute name
+	  * @param {*} value The attribute value
 	  */
 		set: function set(node, name, value) {
 			node.setAttributeNS('http://www.w3.org/XML/1998/namespace', _cfgXmlCfg2['default'][name], value);
@@ -909,10 +952,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		fx: IS_ATTRIBUTE,
 		fy: IS_ATTRIBUTE,
 		height: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
-		href: IS_ATTRIBUTE,
-		htmlfor: IS_PROPERTY,
 		icon: IS_ATTRIBUTE,
-		id: IS_PROPERTY,
 		inputMode: IS_ATTRIBUTE,
 		is: IS_ATTRIBUTE,
 		keyParams: IS_ATTRIBUTE,
@@ -938,20 +978,20 @@ return /******/ (function(modules) { // webpackBootstrap
 		opacity: IS_ATTRIBUTE,
 		points: IS_ATTRIBUTE,
 		poster: IS_ATTRIBUTE,
-		preload: IS_PROPERTY,
+		prefix: IS_ATTRIBUTE,
 		r: IS_ATTRIBUTE,
+		resource: IS_ATTRIBUTE,
 		role: IS_ATTRIBUTE,
 		rows: IS_NUMERIC,
 		rx: IS_ATTRIBUTE,
 		ry: IS_ATTRIBUTE,
-		selectedIndex: IS_PROPERTY,
+		selectedIndex: IS_SELECTED_PROPERTY,
 		size: IS_NUMERIC,
 		// Viewport-based selection
 		sizes: IS_ATTRIBUTE,
 		span: IS_NUMERIC,
 		stroke: IS_ATTRIBUTE,
 		src: IS_ATTRIBUTE,
-		srcDoc: IS_PROPERTY,
 		srcSet: IS_ATTRIBUTE,
 		start: IS_ATTRIBUTE,
 		step: IS_ATTRIBUTE,
@@ -960,13 +1000,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		transform: IS_ATTRIBUTE,
 		title: IS_ATTRIBUTE,
 		type: IS_ATTRIBUTE,
+		'typeof': IS_ATTRIBUTE,
 	
 		/**
 	  * CSS styling attribute is a special case, and will be set as a normal object.
 	  * 'styles' should be used as an replacement.
 	  */
 		style: {
-			set: setPropertyForStyle,
+			set: applyStyle,
 			toHtml: createPropertyMarkup
 		},
 		usemap: IS_ATTRIBUTE,
@@ -981,7 +1022,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		},
 		version: IS_ATTRIBUTE,
 		viewBox: IS_ATTRIBUTE,
-		volume: IS_ATTRIBUTE,
+		volume: IS_VOLUME_ATTRIBUTE,
 		width: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
 		wmode: IS_ATTRIBUTE,
 		x1: IS_ATTRIBUTE,
@@ -992,7 +1033,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		y: IS_ATTRIBUTE,
 	
 		/**
-	  * Non-standard properties
+	  * Non-standard attributes
 	  */
 	
 		// itemProp, itemScope, itemType are for
@@ -1023,19 +1064,55 @@ return /******/ (function(modules) { // webpackBootstrap
 		'xlink:role': IS_XLINK_NAMESPACE,
 		'xlink:show': IS_XLINK_NAMESPACE,
 		'xlink:title': IS_XLINK_NAMESPACE,
-		'xlink:type': IS_XLINK_NAMESPACE
+		'xlink:type': IS_XLINK_NAMESPACE,
+	
+		/**
+	  * Navigation attributes (SVG)
+	  */
+		'nav-up': IS_ATTRIBUTE,
+		'nav-up-right': IS_ATTRIBUTE,
+		'nav-right': IS_ATTRIBUTE,
+		'nav-down-right': IS_ATTRIBUTE,
+		'nav-down': IS_ATTRIBUTE,
+		'nav-down-left': IS_ATTRIBUTE,
+		'nav-left': IS_ATTRIBUTE,
+		'xlink:role': IS_ATTRIBUTE,
+		'nav-up-left ': IS_ATTRIBUTE,
+	
+		/**
+	  * Conditional processing attributes (SVG)
+	  */
+	
+		'requiredExtensions': IS_ATTRIBUTE,
+		'requiredFeatures': IS_ATTRIBUTE,
+		'requiredFonts': IS_ATTRIBUTE,
+		'requiredFormats': IS_ATTRIBUTE,
+		'systemLanguage': IS_ATTRIBUTE,
+	
+		/**
+	  * Timing attributes (SVG)
+	  */
+	
+		dur: IS_ATTRIBUTE,
+		end: IS_ATTRIBUTE,
+		restart: IS_ATTRIBUTE,
+		repeatCount: IS_ATTRIBUTE,
+		repeatDur: IS_ATTRIBUTE,
+		fill: IS_ATTRIBUTE
+	
 	};
 	
 	exports['default'] = {
 	
 		/**
-	  * Sets a HTML attribute / property
+	  * Apply a HTML attribute / property on a given Element
 	  *
-	  * @param {Object} node A DOM element.
-	  * @param {String} name The attribute / property name to set.
-	  * @param {String|Object} value The attribute / property value to set.
+	  * @param {!Element} node  A DOM element.
+	  * @param {string} name The attribute / property name
+	  * @param {String|Object} value The attribute / property value
 	  */
 		set: function set(node, name, value, skip) {
+	
 			// Prioritized HTML properties
 			if (!skip) {
 				switch (name) {
@@ -1075,11 +1152,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			// Prioritized HTML attributes
 			switch (name) {
+				case 'about': // RDFA
 				case 'async': // bool
 				case 'allowFullScreen': // bool
 				case 'autoFocus': // bool
 				case 'autoPlay': // bool
+				case 'baseProfile': // SVG
 				case 'capture': // bool
+				case 'datatype': // RDFA
 				case 'default':
 				case 'defaultchecked': // bool
 				case 'defaultmuted': // bool
@@ -1089,31 +1169,51 @@ return /******/ (function(modules) { // webpackBootstrap
 				case 'disabled': // bool
 				case 'dir': // Core attribute
 				case 'draggable': // bool
+				case 'dropzone': // bool
 				case 'for':
+				case 'form':
 				case 'formNoValidate': // bool
+				case 'formEncType':
+				case 'formMethod':
+				case 'formTarget':
+				case 'fontFamily':
+				case 'fontSize':
+				case 'frameBorder':
+				case 'fontWeight':
 				case 'hidden': // bool
+				case 'href':
 				case 'itemScope': // bool
+				case 'is':
+				case 'integrity':
+				case 'name':
 				case 'open':
+				// 'property' is also supported for OpenGraph in meta tags.
+				case 'property': // RDFA
 				case 'seamless':
 				case 'sortable':
 				case 'title': // Core attribute
 				case 'translate': // bool attribute
 				case 'typemustmatch': // bool attribute
 				case 'type':
+				case 'vocab': // RDFA
+				case 'viewBox':
 				case 'visible':
+				case 'xmlns':
+	
 					if (value !== 'false') {
 						node.setAttribute(name, '' + (value === 'true' ? '' : value));
 					}
 					return;
 			}
+	
 			return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
 		},
 	
 		/**
-	  * Create HTML attribute / property markup for SSR
+	  * Render HTML attribute / property markup for SSR
 	  *
-	  * @param {String} name The attribute / property name to set.
-	  * @param {String} value The attribute / property value to set.
+	  * @param {string} name The attribute / property name to render.
+	  * @param {*} value The attribute / property value to render.
 	  */
 		toHtml: function toHtml(name, value) {
 			return (DOMConfig[name] || IS_CUSTOM).toHtml(name, value);
@@ -1189,7 +1289,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _eventsAddRootListener = __webpack_require__(46);
+	var _eventsAddRootListener = __webpack_require__(44);
 	
 	var _eventsAddRootListener2 = _interopRequireDefault(_eventsAddRootListener);
 	
@@ -1360,14 +1460,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	
 	Object.defineProperty(exports, '__esModule', {
-		value: true
+	    value: true
 	});
 	
-	var _addAttributes = __webpack_require__(47);
+	var _addAttributes = __webpack_require__(45);
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _extendUnitlessNumber = __webpack_require__(53);
+	var _extendUnitlessNumber = __webpack_require__(52);
 	
 	var _extendUnitlessNumber2 = _interopRequireDefault(_extendUnitlessNumber);
 	
@@ -1376,18 +1476,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _AttributeOps2 = _interopRequireDefault(_AttributeOps);
 	
 	exports['default'] = {
-		addAttributes: _addAttributes2['default'],
-		extendUnitlessNumber: _extendUnitlessNumber2['default'],
-		AttributeOps: _AttributeOps2['default'],
-		createElement: function createElement(tag, namespace) {
-			return namespace === undefined ? document.createElement(tag) : document.createElementNS(namespace, tag);
-		},
-		createTextNode: function createTextNode(text) {
-			return document.createTextNode(text);
-		},
-		createEmptyText: function createEmptyText() {
-			return document.createTextNode('');
-		}
+	    addAttributes: _addAttributes2['default'],
+	    extendUnitlessNumber: _extendUnitlessNumber2['default'],
+	    AttributeOps: _AttributeOps2['default'],
+	    createElement: function createElement(tag, parent) {
+	
+	        var namespace = undefined;
+	
+	        switch (tag) {
+	            case 'svg':
+	                namespace = "http://www.w3.org/2000/svg";
+	                break;
+	            case 'math':
+	                namespace = "http://www.w3.org/1998/Math/MathML";
+	                break;
+	            default:
+	                if (parent) {
+	                    namespace = parent.namespace;
+	                }
+	        }
+	
+	        return namespace === undefined ? document.createElement(tag) : document.createElementNS(namespace, tag);
+	    },
+	    createTextNode: function createTextNode(text) {
+	        return document.createTextNode(text);
+	    },
+	    createEmptyText: function createEmptyText() {
+	        return document.createTextNode('');
+	    }
 	};
 	module.exports = exports['default'];
 
@@ -1487,7 +1603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = destroyFragment;
 	
-	var _varsRecycledFragments = __webpack_require__(32);
+	var _varsRecycledFragments = __webpack_require__(30);
 	
 	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
 	
@@ -1533,7 +1649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
-	var _badUpdate = __webpack_require__(34);
+	var _badUpdate = __webpack_require__(32);
 	
 	var _badUpdate2 = _interopRequireDefault(_badUpdate);
 	
@@ -1562,7 +1678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = updateFragmentList;
 	
-	var _removeFragments = __webpack_require__(41);
+	var _removeFragments = __webpack_require__(39);
 	
 	var _removeFragments2 = _interopRequireDefault(_removeFragments);
 	
@@ -1582,7 +1698,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateFragment2 = _interopRequireDefault(_updateFragment);
 	
-	var _moveFragment = __webpack_require__(40);
+	var _moveFragment = __webpack_require__(38);
 	
 	var _moveFragment2 = _interopRequireDefault(_moveFragment);
 	
@@ -1721,113 +1837,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 23 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports['default'] = {
-		accentHeight: 'accent-height',
-		alignmentBaseline: 'alignment-baseline',
-		arabicForm: 'arabic-form',
-		autoStartReverse: 'auto-start-reverse',
-		baselineShift: 'baseline-shift',
-		bufferedRendering: 'buffered-rendering',
-		className: 'class',
-		colorRendering: 'color-rendering',
-		colorInterpolation: 'color-interpolation',
-		colorInterpolationFilters: 'color-interpolation-filters',
-		colorProfile: 'color-profile',
-		htmlFor: 'for',
-		httpEquiv: 'http-equiv',
-		clipPath: 'clip-path',
-		dominantBaseline: 'dominant-baseline',
-		fillOpacity: 'fill-opacity',
-		fillRule: 'fill-rule',
-		filterRes: 'filterRes',
-		filterUnits: 'filterUnits',
-		floodColor: 'flood-color',
-		floodOpacity: 'flood-opacity',
-		fontFamily: 'font-family',
-		fontSize: 'font-size',
-		fontStyle: 'font-style',
-		fontWeight: 'font-weight',
-		glyphName: 'glyph-name',
-		glyphRef: 'glyphRef',
-		gradientTransform: 'gradientTransform',
-		gradientUnits: 'gradientUnits',
-		horizAdvX: 'horiz-adv-x',
-		horizOriginX: 'horiz-origin-x',
-		horizOriginY: 'horiz-origin-y',
-		markerEnd: 'marker-end',
-		markerMid: 'marker-mid',
-		markerStart: 'marker-start',
-		overlinePosition: 'overline-position',
-		overlineThickness: 'overline-thickness',
-		paintOrder: 'paint-order',
-		patternContentUnits: 'patternContentUnits',
-		patternUnits: 'patternUnits',
-		pathLength: 'pathLength',
-		patternTransform: 'patternTransform',
-		pointsAtX: 'pointsAtX',
-		pointsAtY: 'pointsAtY',
-		pointsAtZ: 'pointsAtZ',
-		preserveAlpha: 'preserveAlpha',
-		preserveAspectRatio: 'preserveAspectRatio',
-		primitiveUnits: 'primitiveUnits',
-		shapeRendering: 'shape-rendering',
-		spreadMethod: 'spreadMethod',
-		stopColor: 'stop-color',
-		stopOpacity: 'stop-opacity',
-		strikethroughPosition: 'strikethrough-position',
-		strikethroughThickness: 'strikethrough-thickness',
-		strokeDashoffset: 'stroke-dashoffset',
-		strokeDasharray: 'stroke-dasharray',
-		strokeLinecap: 'stroke-linecap',
-		strokeOpacity: 'stroke-opacity',
-		strokeWidth: 'stroke-width',
-		tableValues: 'tableValues',
-		targetX: 'targetX',
-		targetY: 'targetY',
-		textLength: 'textLength',
-		underlinePosition: 'underline-position',
-		underlineThickness: 'underline-thickness',
-		unicodeBidi: 'unicode-bidi',
-		unicodeRange: 'unicode-range',
-		unitsPerEm: 'units-per-em',
-		solidColor: 'solid-color',
-		solidOpacity: 'solid-opacity',
-		strokeLinejoin: 'stroke-linejoin',
-		textAnchor: 'text-anchor',
-		textDecoration: 'text-decoration',
-		textRendering: 'text-rendering',
-		vAlphabetic: 'v-alphabetic',
-		vectorEffect: 'vector-effect',
-		vHanging: 'v-hanging',
-		vIdeographic: 'v-ideographic',
-		vMathematical: 'v-mathematical',
-		vertAdvY: 'vert-adv-y',
-		vertOriginX: 'vert-origin-x',
-		vertOriginY: 'vert-origin-y',
-		viewBox: 'viewBox',
-		xHeight: 'x-height',
-		xlinkActuate: 'xlink:actuate',
-		xlinkArcrole: 'xlink:arcrole',
-		xlinkHref: 'xlink:href',
-		xlinkRole: 'xlink:role',
-		xlinkShow: 'xlink:show',
-		xlinkTitle: 'xlink:title',
-		xlinkType: 'xlink:type',
-		xmlBase: 'xml:base',
-		xmlLang: 'xml:lang',
-		xmlSpace: 'xml:space'
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1838,15 +1847,15 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _utilForIn = __webpack_require__(29);
+	var _utilForIn = __webpack_require__(28);
 	
 	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 	
-	var _prefixes = __webpack_require__(28);
+	var _prefixes = __webpack_require__(27);
 	
 	var _prefixes2 = _interopRequireDefault(_prefixes);
 	
-	var _prefixKey = __webpack_require__(27);
+	var _prefixKey = __webpack_require__(26);
 	
 	var _prefixKey2 = _interopRequireDefault(_prefixKey);
 	
@@ -1906,7 +1915,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1926,7 +1935,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1943,7 +1952,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports) {
 
 	/**
@@ -1965,7 +1974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports) {
 
 	/**
@@ -1981,7 +1990,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2003,7 +2012,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2019,29 +2028,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	/**
-	 * Returns a DOM node tagName as lowerCase
-	 * @param {Object} node A DOM element.
-	 */
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	function getNodeName(node) {
-	
-	  // TODO!! Cache this for re-use?
-	  return node.tagName.toLowerCase();
-	};
-	
-	exports["default"] = getNodeName;
-	module.exports = exports["default"];
-
-/***/ },
-/* 32 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2053,16 +2040,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 33 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO! Finish this
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(61)["default"];
+	var _createClass = __webpack_require__(60)["default"];
 	
-	var _classCallCheck = __webpack_require__(60)["default"];
+	var _classCallCheck = __webpack_require__(59)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -2116,7 +2103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2132,7 +2119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2163,7 +2150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 36 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2175,7 +2162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = createFragment;
 	
-	var _utilIsArray = __webpack_require__(30);
+	var _utilIsArray = __webpack_require__(29);
 	
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 	
@@ -2213,7 +2200,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2233,7 +2220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 38 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2244,7 +2231,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _varsRecycledFragments = __webpack_require__(32);
+	var _varsRecycledFragments = __webpack_require__(30);
 	
 	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
 	
@@ -2261,7 +2248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 39 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2304,7 +2291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 40 */
+/* 38 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2334,7 +2321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 41 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2358,7 +2345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 42 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2379,16 +2366,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _template2 = _interopRequireDefault(_template);
 	
 	function renderToString(fragment, component) {
+	
 		var dom = _template2['default'].createElement('div');
 	
 		(0, _render2['default'])(fragment, dom, component);
+	
 		return dom.innerHTML;
 	}
 	
 	module.exports = exports['default'];
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2434,7 +2423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 44 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2624,7 +2613,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 45 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2834,7 +2823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 46 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2864,7 +2853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2992,7 +2981,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 48 */
+/* 46 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3012,7 +3001,107 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 49 */
+/* 47 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+					value: true
+	});
+	exports['default'] = {
+					acceptCharset: 'accept-charset',
+					className: 'class',
+					htmlFor: 'for',
+					httpEquiv: 'http-equiv',
+	
+					// SVG
+	
+					accentHeight: 'accent-height',
+					alignmentBaseline: 'alignment-baseline',
+					arabicForm: 'arabic-form',
+					autoStartReverse: 'auto-start-reverse',
+					baselineShift: 'baseline-shift',
+					bufferedRendering: 'buffered-rendering',
+					colorRendering: 'color-rendering',
+					colorInterpolation: 'color-interpolation',
+					colorInterpolationFilters: 'color-interpolation-filters',
+					colorProfile: 'color-profile',
+					clipPath: 'clip-path',
+					dominantBaseline: 'dominant-baseline',
+					fillOpacity: 'fill-opacity',
+					fillRule: 'fill-rule',
+					filterRes: 'filterRes',
+					filterUnits: 'filterUnits',
+					floodColor: 'flood-color',
+					floodOpacity: 'flood-opacity',
+					fontFamily: 'font-family',
+					fontSize: 'font-size',
+					fontStyle: 'font-style',
+					fontWeight: 'font-weight',
+					glyphName: 'glyph-name',
+					glyphRef: 'glyphRef',
+					gradientTransform: 'gradientTransform',
+					gradientUnits: 'gradientUnits',
+					horizAdvX: 'horiz-adv-x',
+					horizOriginX: 'horiz-origin-x',
+					horizOriginY: 'horiz-origin-y',
+					markerEnd: 'marker-end',
+					markerMid: 'marker-mid',
+					markerStart: 'marker-start',
+					overlinePosition: 'overline-position',
+					overlineThickness: 'overline-thickness',
+					paintOrder: 'paint-order',
+					patternContentUnits: 'patternContentUnits',
+					patternUnits: 'patternUnits',
+					pathLength: 'pathLength',
+					patternTransform: 'patternTransform',
+					pointsAtX: 'pointsAtX',
+					pointsAtY: 'pointsAtY',
+					pointsAtZ: 'pointsAtZ',
+					preserveAlpha: 'preserveAlpha',
+					preserveAspectRatio: 'preserveAspectRatio',
+					primitiveUnits: 'primitiveUnits',
+					shapeRendering: 'shape-rendering',
+					spreadMethod: 'spreadMethod',
+					stopColor: 'stop-color',
+					stopOpacity: 'stop-opacity',
+					strikethroughPosition: 'strikethrough-position',
+					strikethroughThickness: 'strikethrough-thickness',
+					strokeDashoffset: 'stroke-dashoffset',
+					strokeDasharray: 'stroke-dasharray',
+					strokeLinecap: 'stroke-linecap',
+					strokeOpacity: 'stroke-opacity',
+					strokeWidth: 'stroke-width',
+					tableValues: 'tableValues',
+					targetX: 'targetX',
+					targetY: 'targetY',
+					textLength: 'textLength',
+					underlinePosition: 'underline-position',
+					underlineThickness: 'underline-thickness',
+					unicodeBidi: 'unicode-bidi',
+					unicodeRange: 'unicode-range',
+					unitsPerEm: 'units-per-em',
+					solidColor: 'solid-color',
+					solidOpacity: 'solid-opacity',
+					strokeLinejoin: 'stroke-linejoin',
+					textAnchor: 'text-anchor',
+					textDecoration: 'text-decoration',
+					textRendering: 'text-rendering',
+					vAlphabetic: 'v-alphabetic',
+					vectorEffect: 'vector-effect',
+					vHanging: 'v-hanging',
+					vIdeographic: 'v-ideographic',
+					vMathematical: 'v-mathematical',
+					vertAdvY: 'vert-adv-y',
+					vertOriginX: 'vert-origin-x',
+					vertOriginY: 'vert-origin-y',
+					viewBox: 'viewBox'
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 48 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3037,7 +3126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3153,7 +3242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 50 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3173,7 +3262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 52 */
+/* 51 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3201,7 +3290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3212,19 +3301,19 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _cfgUnitlessCfg = __webpack_require__(24);
+	var _cfgUnitlessCfg = __webpack_require__(23);
 	
 	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
 	
-	var _prefixes = __webpack_require__(28);
+	var _prefixes = __webpack_require__(27);
 	
 	var _prefixes2 = _interopRequireDefault(_prefixes);
 	
-	var _prefixKey = __webpack_require__(27);
+	var _prefixKey = __webpack_require__(26);
 	
 	var _prefixKey2 = _interopRequireDefault(_prefixKey);
 	
-	var _utilForIn = __webpack_require__(29);
+	var _utilForIn = __webpack_require__(28);
 	
 	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 	
@@ -3240,7 +3329,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 54 */
+/* 53 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3259,79 +3348,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _interopRequireDefault = __webpack_require__(1)['default'];
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _cfgAttrNameCfg = __webpack_require__(23);
-	
-	var _cfgAttrNameCfg2 = _interopRequireDefault(_cfgAttrNameCfg);
-	
-	var _utilTagName = __webpack_require__(31);
-	
-	var _utilTagName2 = _interopRequireDefault(_utilTagName);
-	
-	var hook = {
-	
-	    type: function type(node, name, value) {
-	        if ((0, _utilTagName2['default'])(node) === 'input') {
-	            // Support: IE9-Edge
-	            var val = node.value; // value will be lost in IE if type is changed
-	            node.setAttribute(name, '' + value);
-	            // Check if val exist, if not we will get a stupid value="" in the markup
-	            if (val) {
-	                node.value = val;
-	            }
-	        } else {
-	            node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, value); // cast to string
-	        }
-	    },
-	
-	    /**
-	     * Set volume attributes on a DOM node
-	     *
-	     * @param {Object} node A DOM element.
-	     * @param {String} name	 The attribute name to set.
-	     * @param {String} attrValue  The attribute value to set.
-	     */
-	    volume: function volume(node, name, value) {
-	        // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
-	        // quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
-	        if (value === 0.0 || value === 1 || typeof value === 'number' && (value > -1 && value < 1.1)) {
-	            node.setAttribute(name, value);
-	        }
-	    },
-	
-	    /**
-	     * Set selectedIndex property
-	     *
-	     * @param {Object} node A DOM element.
-	     * @param {String} propertyName	  The property propertyName to set.
-	     * @param {String} propValue  The property propValue to set.
-	     */
-	    selectedIndex: function selectedIndex(node, name, value) {
-	        // selectbox has special case
-	        if (Array.prototype.every.call(node.options, function (opt) {
-	            return !(opt.selected = opt.value === value);
-	        })) {
-	            // TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
-	            node[name] = -1;
-	        }
-	    }
-	};
-	
-	exports['default'] = hook;
-	module.exports = exports['default'];
-
-/***/ },
-/* 56 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3342,7 +3359,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _cfgUnitlessCfg = __webpack_require__(24);
+	var _cfgUnitlessCfg = __webpack_require__(23);
 	
 	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
 	
@@ -3369,7 +3386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 57 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3380,11 +3397,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _cfgXmlCfg = __webpack_require__(26);
+	var _cfgXmlCfg = __webpack_require__(25);
 	
 	var _cfgXmlCfg2 = _interopRequireDefault(_cfgXmlCfg);
 	
-	var _cfgXlinkCfg = __webpack_require__(25);
+	var _cfgXlinkCfg = __webpack_require__(24);
 	
 	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
 	
@@ -3425,7 +3442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 58 */
+/* 56 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3448,13 +3465,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
+/* 57 */
+/***/ function(module, exports) {
 
-	module.exports = { "default": __webpack_require__(62), __esModule: true };
+	/**
+	 * Returns a DOM node tagName as lowerCase
+	 * @param {Object} node A DOM element.
+	 */
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	function getNodeName(node) {
+	
+	  // TODO!! Cache this for re-use?
+	  return node.tagName.toLowerCase();
+	};
+	
+	exports["default"] = getNodeName;
+	module.exports = exports["default"];
 
 /***/ },
-/* 60 */
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(61), __esModule: true };
+
+/***/ },
+/* 59 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3468,12 +3507,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 61 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(59)["default"];
+	var _Object$defineProperty = __webpack_require__(58)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -3497,16 +3536,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 62 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(63);
+	var $ = __webpack_require__(62);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
