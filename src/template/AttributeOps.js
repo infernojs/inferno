@@ -12,70 +12,86 @@ import isArray from '../util/isArray';
 import isSVG from '../util/isSVG';
 import tagName from '../util/tagName';
 import escapeHtml from './escapeHtml';
-import hook from './hooks';
 
 /**
- * Set attributes on a DOM node
- *
- * @param {Object} node A DOM element.
- * @param {String} attrName	  The attribute name to set.
- * @param {String} attrValue The attribute value to set.
+ * Applies a single attribute or property to a given Element. If the value is null
+ * or undefined, it is not set. Otherwise, the value is set
+ * as an attribute.
+ * @param {!Element} node
+ * @param {string} name The attribute's name.
+ * @param {?(boolean|number|string)=} value The attribute's value.
  */
-let setAttribute = (node, attrName, attrValue) => {
-	// Avoid touching the DOM on falsy values
-	if (attrValue !== 'false') {
-
-		if (hook[attrName]) {
-
-			hook[attrName](node, attrName, attrValue);
-		} else {
-			node.setAttribute(attrNameCfg[attrName] || attrName, attrValue);
+ let setAttribute = (node, name, value) => {
+    if (name === 'type' && (tagName(node) === 'input')) {
+		// Support: IE9-Edge
+		const val = node.value; // value will be lost in IE if type is changed
+		node.setAttribute(name, '' + value);
+        // Check if val exist, if not we will get a stupid 'value=""' in the markup
+		if ( val ) {
+		   node.value = val;
 		}
+	} else {
+
+		// Avoid touching the DOM on falsy values
+		if ( value !== 'false') {
+		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
+	   }	
 	}
 };
 
 /**
- * Set custom attributes on a DOM node
+ * Applies the 'volume' attribute on a given Element
  *
  * @param {Object} node A DOM element.
- * @param {String} attrName	  The attribute name to set.
- * @param {String} attrValue The attribute value to set.
+ * @param {String} name	 The attribute name to set.
+ * @param {String} value  The attribute value to set.
  */
-let setCustomAttribute = (node, attrName, attrValue) => {
+let setVolumAttribute = (node, name, value) => {
+    // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the 
+	// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
+    if ( value === 0.0 || (value === 1) || (typeof value === 'number' && (value > -1 && (value < 1.1 )))) {
+          node.setAttribute(name, value);
+	}
+};
+/**
+ * Applies a custom attribute on a given Element
+ *
+ * @param {!Element} node  A DOM element.
+ * @param {string} name	  The attribute name
+ * @param {*} value value The attribute value
+ */
+let setCustomAttribute = (node, name, value) => {
 	// Custom attributes are the only arributes we are validating.
-	if (validateAttribute( attrName )) {
+	if (validateAttribute( name )) {
 	// All attributes are lowercase
-		node.setAttribute((attrNameCfg[attrName] || attrName).toLowerCase(), '' + attrValue); // cast to string
+		node.setAttribute((attrNameCfg[name] || name).toLowerCase(), '' + value); // cast to string
 	}
 };
 
 /**
- * Set numeric attributes on a DOM node
+ * Applies a numeric attribute on a given Element
  *
- * @param {Object} node A DOM element.
- * @param {String} attrName	  The numeric attribute name to set.
- * @param {String} attrValue  The numeric attribute value to set.
+ * @param {!Element} node  A DOM element.
+ * @param {string} name	  The numeric attribute name
+ * @param {*} value  The numeric attribute value
  */
-let setNumericAttribute = (node, attrName, attrValue) => {
-	if (attrValue > 0 && (typeof attrValue === 'number')) {
-		node.setAttribute(attrName, attrValue);
+let setNumericAttribute = (node, name, value) => {
+	if (value > 0 && (typeof value === 'number')) {
+		node.setAttribute(name, value);
 	}
 };
 
 /**
- * Set properties on a DOM node
+ * Applies a property on a given Element
  *
- * @param {Object} node A DOM element.
- * @param {String} propertyName	  The property name to set.
- * @param {String} propValue	 The property value to set.
+ * @param {!Element} node  A DOM element.
+ * @param {string} propertyName	  The property name
+ * @param {string} propValue	 The property value
  */
 let setProperty = (node, propertyName, propValue) => {
 
 	if (propValue != null) {
 
-		if (hook[propertyName]) {
-			hook[propertyName](node, propertyName, propValue);
-		} else {
 			// 'contentEditable' is a special case
 			if (propertyName === 'contentEditable' && (propValue)) {
 				/**
@@ -109,16 +125,31 @@ let setProperty = (node, propertyName, propValue) => {
 			}
 
 			node[propNameCfg[propertyName] || propertyName] = propValue;
-		}
 	}
 };
 
 /**
- * Set dataset object properties
+ * Set selectedIndex property
  *
  * @param {Object} node A DOM element.
- * @param {String} propertyName  The property propertyName to set.
- * @param {String} propValue  The property value to set.
+ * @param {String} name	  The property name to set.
+ * @param {String} value  The property value to set.
+ */
+let setSelectedIndexProperty = (node, name, value) => {
+
+    // selectbox has special case
+  if (Array.prototype.every.call(node.options, (opt) => !(opt.selected = opt.value === value))) {
+	  // TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
+     node[name] = -1;
+  }	
+};
+
+/**
+ * Applies a dataset object property on a given Element
+ *
+ * @param {!Element} node  A DOM element.
+ * @param {string} propertyName  The property propertyName
+ * @param {string} propValue  The property value
  */
 let setPropertyForDataset = (node, propertyName, propValue) => {
 	if (process.env.NODE_ENV !== 'production') {
@@ -137,7 +168,15 @@ let setPropertyForDataset = (node, propertyName, propValue) => {
 	}
 };
 
-let setPropertyForStyle = (node, propertyName, propValue) => {
+/**
+ * Applies a style to an Element. Vendor prefix expansion is done for
+ * property names/values as well as adding the 'px' suffix.
+ * @param {!Element} el
+ * @param {string} name The attribute's name.
+ * @param {string|Object<string,string>} style The style to set. Either a
+ *     string of css or an object containing property-value pairs.
+ */
+let applyStyle = (node, propertyName, propValue) => {
 	// CSS style need to be a object literal, not a string value
 	if (process.env.NODE_ENV !== 'production') {
 		let typeOfVal = typeof propValue;
@@ -155,11 +194,11 @@ let setPropertyForStyle = (node, propertyName, propValue) => {
 };
 
 /**
- * Set 'value' property after validation check
+ * Applies a 'value' property on a given Element after validation check
  *
- * @param {Object} node A DOM element.
- * @param {String} propertyName	  The property propertyName to set.
- * @param {String} propValue  The property value to set.
+ * @param {!Element} node  A DOM element.
+ * @param {string} propertyName	  The property propertyName
+ * @param {string} propValue  The property value
  */
 let setValueForProperty = (node, propertyName, propValue) => {
 	if (propertyName === 'value' && (tagName(node) === 'select')) {
@@ -171,10 +210,10 @@ let setValueForProperty = (node, propertyName, propValue) => {
 };
 
 /**
- * Set select / select multiple
+ * Applies a select / select multiple attribute on a given Element
  *
- * @param {Object} node  A DOM element.
- * @param {String|Array} value  The property value to set.
+ * @param {!Element} node  A DOM element.
+ * @param {String|Array} value  The property value
  */
 
 let setSelectValue = (node, value) => {
@@ -190,7 +229,7 @@ let setSelectValue = (node, value) => {
 };
 
 /**
- * Transform HTML attributes to a string for SSR rendring
+ * Render HTML attributes to a string for SSR
  *
  * @param {string} name
  * @param {*} value
@@ -203,7 +242,7 @@ let createAttributeMarkup = (name, value) => {
 /**
  * Render HTML markup from a dataset property for SSR rendring
  *
- * @param {String} name The name to be set.
+ * @param {string} name The name to be set.
  * @param {Object} value  The value to be set.
  */
 let datasetToString = (name, value) => {
@@ -217,8 +256,8 @@ let datasetToString = (name, value) => {
 /**
  * Render HTML markup from boolean attributes to string for SSR rendring
  *
- * @param {String} name  The attribute name to set.
- * @param {String} value  The attribute value to set.
+ * @param {string} name  The attribute name
+ * @param {*} value  The attribute value
  */
 let booleanAttrToString = (name, value) => {
 	// XHTML friendly
@@ -238,8 +277,8 @@ let booleanAttrToString = (name, value) => {
 /**
  * Render CSS style property to string for SSR rendring
  *
- * @param  {String} name  The attribute name to set.
- * @param  {String} value The property value to set.
+ * @param {string} name  The attribute name
+ * @param {*} value The property value
  */
 let createPropertyMarkup = (name, value) => {
 	let styles = '';
@@ -261,6 +300,11 @@ let IS_CUSTOM = {
 	toHtml: createAttributeMarkup
 };
 
+let IS_VOLUME_ATTRIBUTE = {
+	set: setVolumAttribute,
+	toHtml: createAttributeMarkup
+};
+
 let IS_NUMERIC = {
 	set: setNumericAttribute,
 	toHtml: createAttributeMarkup
@@ -271,14 +315,19 @@ let IS_PROPERTY = {
 	toHtml: createAttributeMarkup
 };
 
+let IS_SELECTED_PROPERTY = {
+	set: setSelectedIndexProperty,
+	toHtml: createAttributeMarkup
+};
+
 let IS_XLINK_NAMESPACE = {
 
 	/**
-	 * Set xlink namespace attribute
+	 * Applies a xlink namespace attribute on a given Element
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name  The attribute name to set.
-	 * @param  {String} value	The attribute value to set.
+	 * @param {!Element} node  A DOM element.
+	 * @param {string} name  The attribute name
+	 * @param {*} value	The attribute value
 	 */
 	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/1999/xlink', xlinkCfg[name], value);
@@ -290,11 +339,11 @@ let IS_XLINK_NAMESPACE = {
 let IS_XML_NAMESPACE = {
 
 	/**
-	 * Set xlink namespace attribute
+	 * Applies a xlink namespace attribute on a given Element
 	 *
-	 * @param  {Object} node A DOM element.
-	 * @param  {String} name The attribute name to set.
-	 * @param  {String} value The attribute value to set.
+	 * @param {!Element} node  A DOM element.
+	 * @param {string} name The attribute name
+	 * @param {*} value The attribute value
 	 */
 	set(node, name, value) {
 		node.setAttributeNS('http://www.w3.org/XML/1998/namespace', xmlCfg[name], value);
@@ -389,7 +438,7 @@ let DOMConfig = {
 	rows: IS_NUMERIC,
 	rx: IS_ATTRIBUTE,
 	ry: IS_ATTRIBUTE,
-	selectedIndex: IS_PROPERTY,
+	selectedIndex: IS_SELECTED_PROPERTY,
 	size: IS_NUMERIC,
 	// Viewport-based selection
 	sizes: IS_ATTRIBUTE,
@@ -411,7 +460,7 @@ let DOMConfig = {
 	 * 'styles' should be used as an replacement.
 	 */
 	style: {
-		set: setPropertyForStyle,
+		set: applyStyle,
 		toHtml: createPropertyMarkup
 	},
 	usemap: IS_ATTRIBUTE,
@@ -426,7 +475,7 @@ let DOMConfig = {
 	},
 	version: IS_ATTRIBUTE,
 	viewBox: IS_ATTRIBUTE,
-	volume: IS_ATTRIBUTE,
+	volume: IS_VOLUME_ATTRIBUTE,
 	width: isSVG ? IS_ATTRIBUTE : IS_PROPERTY,
 	wmode: IS_ATTRIBUTE,
 	x1: IS_ATTRIBUTE,
@@ -509,11 +558,11 @@ let DOMConfig = {
 export default {
 
 /**
- * Sets a HTML attribute / property
+ * Apply a HTML attribute / property on a given Element
  *
- * @param {Object} node A DOM element.
- * @param {String} name The attribute / property name to set.
- * @param {String|Object} value The attribute / property value to set.
+ * @param {!Element} node  A DOM element.
+ * @param {string} name The attribute / property name
+ * @param {String|Object} value The attribute / property value
  */
 	set(node, name, value, skip) {
 		// Prioritized HTML properties
@@ -610,8 +659,8 @@ export default {
 	/**
 	 * Render HTML attribute / property markup for SSR
 	 *
-	 * @param {String} name The attribute / property name to render.
-	 * @param {String} value The attribute / property value to render.
+	 * @param {string} name The attribute / property name to render.
+	 * @param {*} value The attribute / property value to render.
 	 */
 	toHtml: (name, value) => (DOMConfig[name] || IS_CUSTOM).toHtml(name, value)
 };
