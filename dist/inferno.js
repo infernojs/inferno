@@ -1479,9 +1479,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    addAttributes: _addAttributes2['default'],
 	    extendUnitlessNumber: _extendUnitlessNumber2['default'],
 	    AttributeOps: _AttributeOps2['default'],
-	    createElement: function createElement(tag, parent) {
+	    createElement: function createElement(tag, xmlns, is, parent) {
 	
-	        var namespace = undefined;
+	        var element = undefined,
+	            namespace = undefined;
 	
 	        switch (tag) {
 	            case 'svg':
@@ -1496,7 +1497,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	        }
 	
-	        return namespace === undefined ? document.createElement(tag) : document.createElementNS(namespace, tag);
+	        if (namespace) {
+	            // xmlns, is...
+	            if (is) {
+	                element = document.createElementNS(namespace, tag, is);
+	            } else {
+	                element = document.createElementNS(namespace, tag);
+	            }
+	        } else {
+	            if (is) {
+	                element = document.createElement(tag, is);
+	            } else {
+	                element = document.createElement(tag);
+	            }
+	        }
+	
+	        return element;
 	    },
 	    createTextNode: function createTextNode(text) {
 	        return document.createTextNode(text);
@@ -3007,96 +3023,96 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
-					value: true
+				value: true
 	});
 	exports['default'] = {
-					acceptCharset: 'accept-charset',
-					className: 'class',
-					htmlFor: 'for',
-					httpEquiv: 'http-equiv',
+				acceptCharset: 'accept-charset',
+				className: 'class',
+				htmlFor: 'for',
+				httpEquiv: 'http-equiv',
 	
-					// SVG
+				// SVG
 	
-					accentHeight: 'accent-height',
-					alignmentBaseline: 'alignment-baseline',
-					arabicForm: 'arabic-form',
-					autoStartReverse: 'auto-start-reverse',
-					baselineShift: 'baseline-shift',
-					bufferedRendering: 'buffered-rendering',
-					colorRendering: 'color-rendering',
-					colorInterpolation: 'color-interpolation',
-					colorInterpolationFilters: 'color-interpolation-filters',
-					colorProfile: 'color-profile',
-					clipPath: 'clip-path',
-					dominantBaseline: 'dominant-baseline',
-					fillOpacity: 'fill-opacity',
-					fillRule: 'fill-rule',
-					filterRes: 'filterRes',
-					filterUnits: 'filterUnits',
-					floodColor: 'flood-color',
-					floodOpacity: 'flood-opacity',
-					fontFamily: 'font-family',
-					fontSize: 'font-size',
-					fontStyle: 'font-style',
-					fontWeight: 'font-weight',
-					glyphName: 'glyph-name',
-					glyphRef: 'glyphRef',
-					gradientTransform: 'gradientTransform',
-					gradientUnits: 'gradientUnits',
-					horizAdvX: 'horiz-adv-x',
-					horizOriginX: 'horiz-origin-x',
-					horizOriginY: 'horiz-origin-y',
-					markerEnd: 'marker-end',
-					markerMid: 'marker-mid',
-					markerStart: 'marker-start',
-					overlinePosition: 'overline-position',
-					overlineThickness: 'overline-thickness',
-					paintOrder: 'paint-order',
-					patternContentUnits: 'patternContentUnits',
-					patternUnits: 'patternUnits',
-					pathLength: 'pathLength',
-					patternTransform: 'patternTransform',
-					pointsAtX: 'pointsAtX',
-					pointsAtY: 'pointsAtY',
-					pointsAtZ: 'pointsAtZ',
-					preserveAlpha: 'preserveAlpha',
-					preserveAspectRatio: 'preserveAspectRatio',
-					primitiveUnits: 'primitiveUnits',
-					shapeRendering: 'shape-rendering',
-					spreadMethod: 'spreadMethod',
-					stopColor: 'stop-color',
-					stopOpacity: 'stop-opacity',
-					strikethroughPosition: 'strikethrough-position',
-					strikethroughThickness: 'strikethrough-thickness',
-					strokeDashoffset: 'stroke-dashoffset',
-					strokeDasharray: 'stroke-dasharray',
-					strokeLinecap: 'stroke-linecap',
-					strokeOpacity: 'stroke-opacity',
-					strokeWidth: 'stroke-width',
-					tableValues: 'tableValues',
-					targetX: 'targetX',
-					targetY: 'targetY',
-					textLength: 'textLength',
-					underlinePosition: 'underline-position',
-					underlineThickness: 'underline-thickness',
-					unicodeBidi: 'unicode-bidi',
-					unicodeRange: 'unicode-range',
-					unitsPerEm: 'units-per-em',
-					solidColor: 'solid-color',
-					solidOpacity: 'solid-opacity',
-					strokeLinejoin: 'stroke-linejoin',
-					textAnchor: 'text-anchor',
-					textDecoration: 'text-decoration',
-					textRendering: 'text-rendering',
-					vAlphabetic: 'v-alphabetic',
-					vectorEffect: 'vector-effect',
-					vHanging: 'v-hanging',
-					vIdeographic: 'v-ideographic',
-					vMathematical: 'v-mathematical',
-					vertAdvY: 'vert-adv-y',
-					vertOriginX: 'vert-origin-x',
-					vertOriginY: 'vert-origin-y',
-					viewBox: 'viewBox'
+				accentHeight: 'accent-height',
+				alignmentBaseline: 'alignment-baseline',
+				arabicForm: 'arabic-form',
+				autoStartReverse: 'auto-start-reverse',
+				baselineShift: 'baseline-shift',
+				bufferedRendering: 'buffered-rendering',
+				colorRendering: 'color-rendering',
+				colorInterpolation: 'color-interpolation',
+				colorInterpolationFilters: 'color-interpolation-filters',
+				colorProfile: 'color-profile',
+				clipPath: 'clip-path',
+				dominantBaseline: 'dominant-baseline',
+				fillOpacity: 'fill-opacity',
+				fillRule: 'fill-rule',
+				filterRes: 'filterRes',
+				filterUnits: 'filterUnits',
+				floodColor: 'flood-color',
+				floodOpacity: 'flood-opacity',
+				fontFamily: 'font-family',
+				fontSize: 'font-size',
+				fontStyle: 'font-style',
+				fontWeight: 'font-weight',
+				glyphName: 'glyph-name',
+				glyphRef: 'glyphRef',
+				gradientTransform: 'gradientTransform',
+				gradientUnits: 'gradientUnits',
+				horizAdvX: 'horiz-adv-x',
+				horizOriginX: 'horiz-origin-x',
+				horizOriginY: 'horiz-origin-y',
+				markerEnd: 'marker-end',
+				markerMid: 'marker-mid',
+				markerStart: 'marker-start',
+				overlinePosition: 'overline-position',
+				overlineThickness: 'overline-thickness',
+				paintOrder: 'paint-order',
+				patternContentUnits: 'patternContentUnits',
+				patternUnits: 'patternUnits',
+				pathLength: 'pathLength',
+				patternTransform: 'patternTransform',
+				pointsAtX: 'pointsAtX',
+				pointsAtY: 'pointsAtY',
+				pointsAtZ: 'pointsAtZ',
+				preserveAlpha: 'preserveAlpha',
+				preserveAspectRatio: 'preserveAspectRatio',
+				primitiveUnits: 'primitiveUnits',
+				shapeRendering: 'shape-rendering',
+				spreadMethod: 'spreadMethod',
+				stopColor: 'stop-color',
+				stopOpacity: 'stop-opacity',
+				strikethroughPosition: 'strikethrough-position',
+				strikethroughThickness: 'strikethrough-thickness',
+				strokeDashoffset: 'stroke-dashoffset',
+				strokeDasharray: 'stroke-dasharray',
+				strokeLinecap: 'stroke-linecap',
+				strokeOpacity: 'stroke-opacity',
+				strokeWidth: 'stroke-width',
+				tableValues: 'tableValues',
+				targetX: 'targetX',
+				targetY: 'targetY',
+				textLength: 'textLength',
+				underlinePosition: 'underline-position',
+				underlineThickness: 'underline-thickness',
+				unicodeBidi: 'unicode-bidi',
+				unicodeRange: 'unicode-range',
+				unitsPerEm: 'units-per-em',
+				solidColor: 'solid-color',
+				solidOpacity: 'solid-opacity',
+				strokeLinejoin: 'stroke-linejoin',
+				textAnchor: 'text-anchor',
+				textDecoration: 'text-decoration',
+				textRendering: 'text-rendering',
+				vAlphabetic: 'v-alphabetic',
+				vectorEffect: 'vector-effect',
+				vHanging: 'v-hanging',
+				vIdeographic: 'v-ideographic',
+				vMathematical: 'v-mathematical',
+				vertAdvY: 'vert-adv-y',
+				vertOriginX: 'vert-origin-x',
+				vertOriginY: 'vert-origin-y',
+				viewBox: 'viewBox'
 	};
 	module.exports = exports['default'];
 
@@ -3152,9 +3168,11 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		var element = undefined;
+		var is = props && (props.is || null); // type extension
+		var xmlns = props && (props.xmlns || null); // xmlns
 	
 		if (typeof tag === 'string') {
-			element = _2['default'].createElement(tag);
+			element = _2['default'].createElement(tag, xmlns, is);
 		} else {
 			var propsParsed = props;
 	
@@ -3175,6 +3193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		var len = children.length;
+	
 		if (len > 0) {
 			if (len > 1) {
 				for (var i = 0; i < len; i++) {

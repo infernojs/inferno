@@ -8,9 +8,8 @@ export default {
     AttributeOps,
     createElement: (tag, xmlns, is, parent) => {
 
-            les element, namespace;
+            let element, namespace;
 
-            if (!xmlns) {
                 switch (tag) {
                     case 'svg':
                         namespace = "http://www.w3.org/2000/svg";
@@ -23,7 +22,6 @@ export default {
                             namespace = parent.namespace;
                         }
                 }
-            }
 
             if (namespace) { // xmlns, is...
                 if (is) {
