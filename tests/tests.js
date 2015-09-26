@@ -16,7 +16,7 @@ describe('Inferno acceptance tests', () => {
 	describe('Inferno.render()', () => {
       describe('SVG / MathML namespace', () => {
 
-			let container;
+			let container, template;
 
 			beforeEach(() => {
 				container = document.createElement('div');
@@ -27,16 +27,12 @@ describe('Inferno acceptance tests', () => {
 				container = null;
 			});
 
-			let template;
+					it('should respect SVG namespace', () => {
 
-					beforeEach(() => {
 						template = Inferno.createTemplate((t, val1) =>
 							<svg></svg>
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
-					});
-
-					it('should respect SVG namespace', () => {
 
                        expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
@@ -47,7 +43,102 @@ describe('Inferno acceptance tests', () => {
 							'<svg></svg>'
 						);
 					});
-		
+
+					it('should respect SVG namespace', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
+                       expect( container.firstChild.getAttribute( "version" ) ).to.eql( "1.1" );
+                       expect( container.firstChild.getAttribute( "baseProfile" ) ).to.eql( "full" );
+                       expect( container.firstChild.getAttribute( "width" ) ).to.eql( "200" );
+					   
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>'
+						);
+					});
+					
+					it('should set "class" attribute', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
+                       expect( container.firstChild.getAttribute( "class" ) ).to.eql( "hello, world!" );
+					   
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
+						);
+					});
+
+					it('should set "className" property as a "class" attribute', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg xmlns="http://www.w3.org/2000/svg" className="hello, world!"></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
+                       expect( container.firstChild.getAttribute( "class" ) ).to.eql( "hello, world!" );
+					   
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
+						);
+					});
+					
+					it('should set "viewBox" attribute', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
+                       expect( container.firstChild.getAttribute( "viewBox" ) ).to.eql( '0 0 50 20' );
+					   
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>'
+						);
+					});
+					
+					it('should SVG element with children', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg width="100" height="200" viewBox="0 0 50 50" preserveAspectRatio="xMinYMin meet" style="border: 1px solid #cccccc;"><circle cx="25" cy="25" r="25" style="stroke: #000000; fill:none;"/></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+					   
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg width="100" height="200" viewBox="0 0 50 50" preserveaspectratio="xMinYMin meet"></svg>'
+						);
+					});
+					
 					it('should respect default MathML namespace', () => {
 
 						template = Inferno.createTemplate((t, val1) =>

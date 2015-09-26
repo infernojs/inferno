@@ -608,6 +608,7 @@ export default {
 		case 'allowFullScreen': // bool
 		case 'autoFocus': // bool
 		case 'autoPlay': // bool
+		case 'baseProfile': // SVG
 		case 'capture': // bool
 		case 'datatype': // RDFA
 		case 'default':
