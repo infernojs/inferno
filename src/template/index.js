@@ -11,7 +11,15 @@ export default {
 
             let element, namespace;
 
-            if (svgCfg[tag]) { // xmlns, is...
+            if ( xmlns ) {
+
+                if (is) {
+                    element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
+                } else {
+                    element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+                }
+			
+			} if (svgCfg[tag]) { // xmlns, is...
                 if (is) {
                     element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
                 } else {

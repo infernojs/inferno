@@ -1488,7 +1488,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var element = undefined,
 	            namespace = undefined;
 	
-	        if (_cfgSvgCfg2['default'][tag]) {
+	        if (xmlns) {
+	
+	            if (is) {
+	                element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
+	            } else {
+	                element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+	            }
+	        }if (_cfgSvgCfg2['default'][tag]) {
 	            // xmlns, is...
 	            if (is) {
 	                element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
