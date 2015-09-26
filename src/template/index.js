@@ -12,27 +12,13 @@ export default {
             let element, namespace;
 
             if ( xmlns ) {
-
-                if (is) {
-                    element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
-                } else {
-                    element = document.createElementNS("http://www.w3.org/2000/svg", tag);
-                }
-			
-			} if (svgCfg[tag]) { // xmlns, is...
-                if (is) {
-                    element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
-                } else {
-                    element = document.createElementNS("http://www.w3.org/2000/svg", tag);
-                }
+                element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
+			} if (svgCfg[tag]) {
+               element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
             } else if ( tag === 'math') {
 				element = document.createElementNS('http://www.w3.org/1998/Math/MathML', tag);
 			} else {
-                if (is) {
-                    element = document.createElement(tag, is);
-                } else {
                     element = document.createElement(tag);
-                }
             }
 
             return element;
