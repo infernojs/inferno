@@ -2,10 +2,13 @@ import template from '.';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 export default function createElement(tag, props, ...children) {
+
 	let element;
+	let is = props && (props.is || null); // type extension
+    let xmlns = props && (props.xmlns || null); // xmlns
 
 	if (typeof tag === 'string') {
-		element = template.createElement(tag);
+		element = template.createElement(tag, xmlns, is);
 	} else {
 		let propsParsed = props;
 
@@ -26,6 +29,7 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	let len = children.length;
+	
 	if(len > 0) {
 		if (len > 1) {
 			for (let i = 0; i < len; i++) {
