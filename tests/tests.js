@@ -14,7 +14,7 @@ global.Inferno = Inferno;
 
 describe('Inferno acceptance tests', () => {
 	describe('Inferno.render()', () => {
-      describe('SVG', () => {
+      describe('SVG tests', () => {
 
 			let container, template;
 
@@ -45,6 +45,23 @@ describe('Inferno acceptance tests', () => {
 							'<svg></svg>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg fontSize={200}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "fontSize" ) ).to.eql('200');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg fontSize="200"></svg>'
+						);
+					});
 				 });
 				 
 				 describe('should respect SVG namespace and render SVG attributes', () => {
@@ -69,6 +86,23 @@ describe('Inferno acceptance tests', () => {
 							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg width={200}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "width" ) ).to.eql('200');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg width="200"></svg>'
+						);
+					});
 				});	
 				
 				 describe('should set "class" attribute', () => {
@@ -89,6 +123,23 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
+						);
+					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg height={200}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "height" ) ).to.eql('200');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg height="200"></svg>'
 						);
 					});
 				});
@@ -113,6 +164,24 @@ describe('Inferno acceptance tests', () => {
 							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg xmlns="http://www.w3.org/2000/svg" className={false}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
+                       expect( container.firstChild.getAttribute( "class" ) ).to.eql('false');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg xmlns="http://www.w3.org/2000/svg" class="false"></svg>'
+						);
+					});
 				});
 					
 				 describe('should set "viewBox" attribute', () => {
@@ -135,6 +204,24 @@ describe('Inferno acceptance tests', () => {
 							'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg x1={200} x2={10}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "x1" ) ).to.eql('200');
+                       expect( container.firstChild.getAttribute( "x2" ) ).to.eql('10');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg x1="200" x2="10"></svg>'
+						);
+					});
 				});	
 				
 				describe('should SVG element with children', () => {
@@ -155,6 +242,23 @@ describe('Inferno acceptance tests', () => {
 							'<svg width="100" height="200" viewBox="0 0 50 50" preserveaspectratio="xMinYMin meet"></svg>'
 						);
 					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg width={200}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "width" ) ).to.eql('200');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg width="200"></svg>'
+						);
+					});
 				});	
 
 				describe('should set xlink namespace attribute (no-JSX)', () => {
@@ -173,10 +277,27 @@ describe('Inferno acceptance tests', () => {
 							'<img xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="test.jpg">'
 						);
 					});
+					
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg version={200}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "version" ) ).to.eql('200');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg version="200"></svg>'
+						);
+					});
 				});	
 	  });
 	  
-        describe('MathML', () => {
+        describe('MathML tests', () => {
 
 			let container, template;
 
@@ -206,6 +327,23 @@ describe('Inferno acceptance tests', () => {
 							container.innerHTML
 						).to.equal(
 							'<math></math>'
+						);
+					});
+					// update fragment from 'mathML' namespace to 'SVG'
+					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate((t, val1) =>
+							<svg width={200}></svg>
+						);
+						Inferno.render(Inferno.createFragment(false, template), container);
+
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( "width" ) ).to.eql('200');
+						expect(
+							container.innerHTML
+						).to.equal(
+							'<svg width="200"></svg>'
 						);
 					});
 				});	
@@ -536,13 +674,20 @@ describe('Inferno acceptance tests', () => {
 							'<input class="Hello, world!">'
 						);
 					});
-
+                    
+					// Ensure className={false} turns into string 'false' on update
 					it('Second render (update)', () => {
+
+						template = Inferno.createTemplate(t =>
+							<input className={false}></input>
+						);
+
 						Inferno.render(Inferno.createFragment(null, template), container);
+
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<input class="Hello, world!">'
+							'<input class="false">'
 						);
 					});
 				});
