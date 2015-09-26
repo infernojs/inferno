@@ -36,7 +36,7 @@ describe('Inferno acceptance tests', () => {
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
 
 						expect(
@@ -53,9 +53,9 @@ describe('Inferno acceptance tests', () => {
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "fontSize" ) ).to.eql('200');
+                       expect( container.firstChild.getAttribute( 'fontSize' ) ).to.eql('200');
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -73,12 +73,12 @@ describe('Inferno acceptance tests', () => {
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
-                       expect( container.firstChild.getAttribute( "version" ) ).to.eql( "1.1" );
-                       expect( container.firstChild.getAttribute( "baseProfile" ) ).to.eql( "full" );
-                       expect( container.firstChild.getAttribute( "width" ) ).to.eql( "200" );
+                       expect( container.firstChild.getAttribute( 'xmlns' ) ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( 'version' ) ).to.eql( '1.1' );
+                       expect( container.firstChild.getAttribute( 'baseProfile' ) ).to.eql( 'full' );
+                       expect( container.firstChild.getAttribute( 'width' ) ).to.eql( '200' );
 					   
 						expect(
 							container.innerHTML
@@ -94,9 +94,9 @@ describe('Inferno acceptance tests', () => {
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "width" ) ).to.eql('200');
+                        expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
+                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
+                        expect( container.firstChild.getAttribute( 'width' ) ).to.eql('200');
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -114,10 +114,10 @@ describe('Inferno acceptance tests', () => {
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
-                       expect( container.firstChild.getAttribute( "class" ) ).to.eql( "hello, world!" );
+                       expect( container.firstChild.getAttribute( 'xmlns' ) ).to.eql( 'http://www.w3.org/2000/svg' );
+                       expect( container.firstChild.getAttribute( 'class' ) ).to.eql( 'hello, world!' );
 					   
 						expect(
 							container.innerHTML
@@ -133,9 +133,9 @@ describe('Inferno acceptance tests', () => {
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
+                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "height" ) ).to.eql('200');
+                       expect( container.firstChild.getAttribute( 'height' ) ).to.eql('200');
 						expect(
 							container.innerHTML
 						).to.equal(
@@ -273,9 +273,12 @@ describe('Inferno acceptance tests', () => {
 				describe('should SVG element with children', () => {
 				
 					it('Initial render (creation)', () => {
-
+                        
+						let style_1 = { border: "1px solid #cccccc" }
+                        let style_2 = { stroke: "#000000", fill: "#none" }
+	
 						template = Inferno.createTemplate((t, val1) =>
-							<svg width="100" height="200" viewBox="0 0 50 50" preserveAspectRatio="xMinYMin meet" style="border: 1px solid #cccccc;"><circle cx="25" cy="25" r="25" style="stroke: #000000; fill:none;"/></svg>
+							<svg width="100" height="200" viewBox="0 0 50 50" preserveAspectRatio="xMinYMin meet" style={style_1}><circle cx="25" cy="25" r="25" style={style_2}/></svg>
 						);
 						Inferno.render(Inferno.createFragment(false, template), container);
 
@@ -285,7 +288,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							'<svg width="100" height="200" viewBox="0 0 50 50" preserveaspectratio="xMinYMin meet"></svg>'
+							'<svg width="100" height="200" viewBox="0 0 50 50" preserveaspectratio="xMinYMin meet" style="border: 1px solid rgb(204, 204, 204);"></svg>'
 						);
 					});
 					

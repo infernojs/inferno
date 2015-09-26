@@ -727,19 +727,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     string of css or an object containing property-value pairs.
 	 */
 	var applyStyle = function applyStyle(node, name, value) {
-		// CSS style need to be a object literal, not a string value
-		if ((undefined) !== 'production') {
-			var typeOfVal = typeof value;
-			if (typeOfVal !== 'object') {
-				console.error('Error! "' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
-				return;
-			}
-		}
 	
 		var prop = node[name];
 	
-		for (var idx in value) {
-			node.style[idx] = value[idx] == null ? '' : (0, _normalizeCSS2['default'])(idx, value[idx]);
+		// This is done for inline styles to work with current t7
+		// TODO! Find a better solution.
+		if (typeof value === 'string') {
+			prop.cssText = value;
+		} else {
+	
+			node.style.cssText = '';
+	
+			for (var idx in value) {
+				node.style[idx] = value[idx] == null ? '' : (0, _normalizeCSS2['default'])(idx, value[idx]);
+			}
 		}
 	};
 	
