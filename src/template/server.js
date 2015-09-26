@@ -8,7 +8,7 @@ export default {
 	addAttributes,
 	extendUnitlessNumber,
 	AttributeOps,
-	createElement: (tag, namespace) => new VirtualElement(tag, namespace),
+	createElement: (tag, namespace) => new VirtualElement(tag),
 	createTextNode: text => new VirtualTextNode(text),
 	createEmptyText: () => new VirtualTextNode('')
 };
