@@ -35,6 +35,7 @@
       "uglify-loader": "^1.2.0",
       "webpack": "^1.12.2",
       "webpack-dev-server": "^1.11.0",
-      "webpack-windows": "0.0.3"
+      "webpack-windows": "0.0.3",
+      "document-register-element": "^0.3.0"
   }
 }
