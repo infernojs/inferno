@@ -356,7 +356,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _templateCreateElement = __webpack_require__(49);
+	var _templateCreateElement = __webpack_require__(50);
 	
 	var _templateCreateElement2 = _interopRequireDefault(_templateCreateElement);
 	
@@ -521,15 +521,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
 	
-	var _hasPropertyAccessor = __webpack_require__(53);
+	var _hasPropertyAccessor = __webpack_require__(54);
 	
 	var _hasPropertyAccessor2 = _interopRequireDefault(_hasPropertyAccessor);
 	
-	var _validateAttribute = __webpack_require__(55);
+	var _validateAttribute = __webpack_require__(56);
 	
 	var _validateAttribute2 = _interopRequireDefault(_validateAttribute);
 	
-	var _dasherize = __webpack_require__(50);
+	var _dasherize = __webpack_require__(51);
 	
 	var _dasherize2 = _interopRequireDefault(_dasherize);
 	
@@ -537,11 +537,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _camelize2 = _interopRequireDefault(_camelize);
 	
-	var _normalizeCSS = __webpack_require__(54);
+	var _normalizeCSS = __webpack_require__(55);
 	
 	var _normalizeCSS2 = _interopRequireDefault(_normalizeCSS);
 	
-	var _utilInArray = __webpack_require__(56);
+	var _utilInArray = __webpack_require__(57);
 	
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 	
@@ -553,11 +553,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
-	var _utilTagName = __webpack_require__(57);
+	var _utilTagName = __webpack_require__(58);
 	
 	var _utilTagName2 = _interopRequireDefault(_utilTagName);
 	
-	var _escapeHtml = __webpack_require__(51);
+	var _escapeHtml = __webpack_require__(52);
 	
 	var _escapeHtml2 = _interopRequireDefault(_escapeHtml);
 	
@@ -727,20 +727,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     string of css or an object containing property-value pairs.
 	 */
 	var applyStyle = function applyStyle(node, name, value) {
+		// CSS style need to be a object literal, not a string value
+		if ((undefined) !== 'production') {
+			var typeOfVal = typeof value;
+			if (typeOfVal !== 'object') {
+				console.error('Error! "' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
+				return;
+			}
+		}
 	
 		var prop = node[name];
 	
-		// This is done for inline styles to work with current t7
-		// TODO! Find a better solution.
-		if (typeof value === 'string') {
-			prop.cssText = value;
-		} else {
-	
-			node.style.cssText = '';
-	
-			for (var idx in value) {
-				node.style[idx] = value[idx] == null ? '' : (0, _normalizeCSS2['default'])(idx, value[idx]);
-			}
+		for (var idx in value) {
+			node.style[idx] = value[idx] == null ? '' : (0, _normalizeCSS2['default'])(idx, value[idx]);
 		}
 	};
 	
@@ -1464,11 +1463,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
+	var _cfgSvgCfg = __webpack_require__(49);
+	
+	var _cfgSvgCfg2 = _interopRequireDefault(_cfgSvgCfg);
+	
 	var _addAttributes = __webpack_require__(45);
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _extendUnitlessNumber = __webpack_require__(52);
+	var _extendUnitlessNumber = __webpack_require__(53);
 	
 	var _extendUnitlessNumber2 = _interopRequireDefault(_extendUnitlessNumber);
 	
@@ -1485,26 +1488,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var element = undefined,
 	            namespace = undefined;
 	
-	        switch (tag) {
-	            case 'svg':
-	                namespace = "http://www.w3.org/2000/svg";
-	                break;
-	            case 'math':
-	                namespace = "http://www.w3.org/1998/Math/MathML";
-	                break;
-	            default:
-	                if (parent) {
-	                    namespace = parent.namespace;
-	                }
-	        }
-	
-	        if (namespace) {
+	        if (_cfgSvgCfg2['default'][tag]) {
 	            // xmlns, is...
 	            if (is) {
-	                element = document.createElementNS(namespace, tag, is);
+	                element = document.createElementNS("http://www.w3.org/2000/svg", tag, is);
 	            } else {
-	                element = document.createElementNS(namespace, tag);
+	                element = document.createElementNS("http://www.w3.org/2000/svg", tag);
 	            }
+	        } else if (tag === 'math') {
+	            element = document.createElementNS('http://www.w3.org/1998/Math/MathML', tag);
 	        } else {
 	            if (is) {
 	                element = document.createElement(tag, is);
@@ -2064,9 +2056,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(60)["default"];
+	var _createClass = __webpack_require__(61)["default"];
 	
-	var _classCallCheck = __webpack_require__(59)["default"];
+	var _classCallCheck = __webpack_require__(60)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -3144,6 +3136,59 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 49 */
+/***/ function(module, exports) {
+
+	/**
+	 * Supported SVG elements
+	 *
+	 * @type {Array}
+	 */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = {
+	  'animate': true,
+	  'animateColor': true,
+	  'animateMotion': true,
+	  'circle': true,
+	  'clipPath': true,
+	  'color-profile': true,
+	  'cursor': true,
+	  'defs': true,
+	  'ellipse': true,
+	  'filter': true,
+	  'font': true,
+	  'font-face': true,
+	  'g': true,
+	  'glyph': true,
+	  'glyphRef': true,
+	  'line': true,
+	  'linearGradient': true,
+	  'marker': true,
+	  'mask': true,
+	  'path': true,
+	  'pattern': true,
+	  'polygon': true,
+	  'polyline': true,
+	  'radialGradient': true,
+	  'rect': true,
+	  'stop': true,
+	  'svg': true,
+	  'switch': true,
+	  'symbol': true,
+	  'text': true,
+	  'textPath': true,
+	  'title': true,
+	  'tref': true,
+	  'tspan': true
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3262,7 +3307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3282,7 +3327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3310,7 +3355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3349,7 +3394,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3368,7 +3413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3406,7 +3451,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3462,7 +3507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3485,7 +3530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/**
@@ -3507,13 +3552,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(61), __esModule: true };
+	module.exports = { "default": __webpack_require__(62), __esModule: true };
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3527,12 +3572,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(58)["default"];
+	var _Object$defineProperty = __webpack_require__(59)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -3556,16 +3601,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(62);
+	var $ = __webpack_require__(63);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
