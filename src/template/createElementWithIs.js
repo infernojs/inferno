@@ -37,21 +37,10 @@ function createElementWithIs(tag, xmlns, is) {
             return document.createElementNS(svgNamespace, 'svg', is);
         default:
 
-            if (xmlns) {
-                return document.createElementNS(xmlns, tag, is);
-            }
-
-            // mathML namespace
-            if (tag === 'math') {
-                return document.createElementNS(mathNamespace, tag, is);
-            }
-
-            // SVG elements supported by Inferno
-            if (svgCfg[tag]) {
-                return document.createElementNS(svgNamespace, tag, is);
-            }
-
-            return document.createElement(tag, is);
+            return xmlns ? document.createElementNS(xmlns, tag, is) :
+                tag === "math" ? document.createElementNS(mathNamespace, tag, is) :
+                svgCfg[tag] ? document.createElementNS(svgNamespace, tag, is) :
+                document.createElement(tag, is);
     }
 }
 

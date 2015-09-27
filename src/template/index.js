@@ -8,17 +8,7 @@ export default {
     addAttributes,
     extendUnitlessNumber,
     AttributeOps,
-    createElement: (tag, xmlns, is) => {
-
-            if (is) {
-
-                createElementWithIs(tag, xmlns, is);
-
-            } else {
-
-               return createElementWithoutIs(tag, xmlns);
-            }
-        },
-        createTextNode: text => document.createTextNode(text),
-        createEmptyText: () => document.createTextNode('')
+    createElement: (tag, xmlns, is) => is ? createElementWithIs(tag, xmlns, is) : createElementWithoutIs(tag, xmlns),
+    createTextNode: text => document.createTextNode(text),
+    createEmptyText: () => document.createTextNode('')
 };

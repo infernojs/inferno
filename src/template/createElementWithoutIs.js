@@ -12,15 +12,15 @@ function createElementWithoutIs(tag, xmlns) {
         case 'div':
             return document.createElement('div');
         case 'em':
-            return document.createElement('em', is);
+            return document.createElement('em');
         case 'form':
             return document.createElement('form');
         case 'img':
             return document.createElement('img');
         case 'h1':
-            return document.createElement('h1', is);
+            return document.createElement('h1');
         case 'h2':
-            return document.createElement('h2', is);
+            return document.createElement('h2');
         case 'li':
             return document.createElement('li');
         case 'ol':
@@ -36,21 +36,11 @@ function createElementWithoutIs(tag, xmlns) {
         case 'svg':
             return document.createElementNS(svgNamespace, 'svg');
         default:
-            if (xmlns) {
-                return document.createElementNS(xmlns, tag);
-            }
 
-            // mathML namespace
-            if (tag === 'math') {
-                return document.createElementNS(mathNamespace, tag);
-            }
-
-            // SVG elements supported by Inferno
-            if (svgCfg[tag]) {
-                return document.createElementNS(svgNamespace, tag);
-            }
-
-            return document.createElement(tag);
+            return xmlns ? document.createElementNS(xmlns, tag) :
+                tag === "math" ? document.createElementNS(mathNamespace, tag) :
+                svgCfg[tag] ? document.createElementNS(svgNamespace, tag) :
+                document.createElement(tag);
     }
 }
 
