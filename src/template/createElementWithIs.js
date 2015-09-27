@@ -5,7 +5,7 @@ import mathNamespace from './vars/mathNamespace';
 function createElementWithIs(tag, xmlns, is) {
 
     switch (tag) {
-        case "a":
+        case 'a':
             return document.createElement('a', is);
         case 'button':
             return document.createElement('button', is);
@@ -38,7 +38,7 @@ function createElementWithIs(tag, xmlns, is) {
         default:
 
             return xmlns ? document.createElementNS(xmlns, tag, is) :
-                tag === "math" ? document.createElementNS(mathNamespace, tag, is) :
+                tag === 'math' ? document.createElementNS(mathNamespace, tag, is) :
                 svgCfg[tag] ? document.createElementNS(svgNamespace, tag, is) :
                 document.createElement(tag, is);
     }
