@@ -63,7 +63,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _classComponent = __webpack_require__(31);
+	var _classComponent = __webpack_require__(34);
 	
 	var _classComponent2 = _interopRequireDefault(_classComponent);
 	
@@ -71,11 +71,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _coreRender2 = _interopRequireDefault(_coreRender);
 	
-	var _coreRenderToString = __webpack_require__(40);
+	var _coreRenderToString = __webpack_require__(43);
 	
 	var _coreRenderToString2 = _interopRequireDefault(_coreRenderToString);
 	
-	var _coreUnmountComponentAtNode = __webpack_require__(41);
+	var _coreUnmountComponentAtNode = __webpack_require__(44);
 	
 	var _coreUnmountComponentAtNode2 = _interopRequireDefault(_coreUnmountComponentAtNode);
 	
@@ -87,7 +87,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _coreCreateFragment = __webpack_require__(34);
+	var _coreCreateFragment = __webpack_require__(37);
 	
 	var _coreCreateFragment2 = _interopRequireDefault(_coreCreateFragment);
 	
@@ -99,11 +99,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _template2 = _interopRequireDefault(_template);
 	
-	var _coreClearDomElement = __webpack_require__(33);
+	var _coreClearDomElement = __webpack_require__(36);
 	
 	var _coreClearDomElement2 = _interopRequireDefault(_coreClearDomElement);
 	
-	var _coreCreateRef = __webpack_require__(35);
+	var _coreCreateRef = __webpack_require__(38);
 	
 	var _coreCreateRef2 = _interopRequireDefault(_coreCreateRef);
 	
@@ -210,11 +210,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
-	var _updateFragmentValue = __webpack_require__(42);
+	var _updateFragmentValue = __webpack_require__(45);
 	
 	var _updateFragmentValue2 = _interopRequireDefault(_updateFragmentValue);
 	
-	var _updateFragmentValues = __webpack_require__(43);
+	var _updateFragmentValues = __webpack_require__(46);
 	
 	var _updateFragmentValues2 = _interopRequireDefault(_updateFragmentValues);
 	
@@ -328,7 +328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _getRecycledFragment = __webpack_require__(36);
+	var _getRecycledFragment = __webpack_require__(39);
 	
 	var _getRecycledFragment2 = _interopRequireDefault(_getRecycledFragment);
 	
@@ -344,7 +344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumFragmentValueTypes2 = _interopRequireDefault(_enumFragmentValueTypes);
 	
-	var _insertFragment = __webpack_require__(37);
+	var _insertFragment = __webpack_require__(40);
 	
 	var _insertFragment2 = _interopRequireDefault(_insertFragment);
 	
@@ -356,7 +356,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _templateCreateElement = __webpack_require__(50);
+	var _templateCreateElement = __webpack_require__(52);
 	
 	var _templateCreateElement2 = _interopRequireDefault(_templateCreateElement);
 	
@@ -505,47 +505,47 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _cfgAttrNameCfg = __webpack_require__(47);
+	var _cfgAttrNameCfg = __webpack_require__(50);
 	
 	var _cfgAttrNameCfg2 = _interopRequireDefault(_cfgAttrNameCfg);
 	
-	var _cfgPropNameCfg = __webpack_require__(48);
+	var _cfgPropNameCfg = __webpack_require__(51);
 	
 	var _cfgPropNameCfg2 = _interopRequireDefault(_cfgPropNameCfg);
 	
-	var _cfgXmlCfg = __webpack_require__(25);
+	var _cfgXmlCfg = __webpack_require__(26);
 	
 	var _cfgXmlCfg2 = _interopRequireDefault(_cfgXmlCfg);
 	
-	var _cfgXlinkCfg = __webpack_require__(24);
+	var _cfgXlinkCfg = __webpack_require__(25);
 	
 	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
 	
-	var _hasPropertyAccessor = __webpack_require__(54);
+	var _hasPropertyAccessor = __webpack_require__(58);
 	
 	var _hasPropertyAccessor2 = _interopRequireDefault(_hasPropertyAccessor);
 	
-	var _validateAttribute = __webpack_require__(56);
+	var _validateAttribute = __webpack_require__(60);
 	
 	var _validateAttribute2 = _interopRequireDefault(_validateAttribute);
 	
-	var _dasherize = __webpack_require__(51);
+	var _dasherize = __webpack_require__(55);
 	
 	var _dasherize2 = _interopRequireDefault(_dasherize);
 	
-	var _camelize = __webpack_require__(46);
+	var _camelize = __webpack_require__(49);
 	
 	var _camelize2 = _interopRequireDefault(_camelize);
 	
-	var _normalizeCSS = __webpack_require__(55);
+	var _normalizeCSS = __webpack_require__(59);
 	
 	var _normalizeCSS2 = _interopRequireDefault(_normalizeCSS);
 	
-	var _utilInArray = __webpack_require__(57);
+	var _utilInArray = __webpack_require__(61);
 	
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 	
-	var _utilIsArray = __webpack_require__(29);
+	var _utilIsArray = __webpack_require__(32);
 	
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 	
@@ -553,11 +553,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
-	var _utilTagName = __webpack_require__(58);
+	var _utilTagName = __webpack_require__(62);
 	
 	var _utilTagName2 = _interopRequireDefault(_utilTagName);
 	
-	var _escapeHtml = __webpack_require__(52);
+	var _escapeHtml = __webpack_require__(56);
 	
 	var _escapeHtml2 = _interopRequireDefault(_escapeHtml);
 	
@@ -1289,7 +1289,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _eventsAddRootListener = __webpack_require__(44);
+	var _eventsAddRootListener = __webpack_require__(47);
 	
 	var _eventsAddRootListener2 = _interopRequireDefault(_eventsAddRootListener);
 	
@@ -1460,18 +1460,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	
 	Object.defineProperty(exports, '__esModule', {
-	    value: true
+	            value: true
 	});
 	
-	var _cfgSvgCfg = __webpack_require__(49);
-	
-	var _cfgSvgCfg2 = _interopRequireDefault(_cfgSvgCfg);
-	
-	var _addAttributes = __webpack_require__(45);
+	var _addAttributes = __webpack_require__(48);
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _extendUnitlessNumber = __webpack_require__(53);
+	var _extendUnitlessNumber = __webpack_require__(57);
 	
 	var _extendUnitlessNumber2 = _interopRequireDefault(_extendUnitlessNumber);
 	
@@ -1479,80 +1475,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _AttributeOps2 = _interopRequireDefault(_AttributeOps);
 	
-	var svgNamespace = 'http://www.w3.org/2000/svg';
-	var mathNamespace = 'http://www.w3.org/1998/Math/MathML';
+	var _createElementWithoutIs = __webpack_require__(54);
+	
+	var _createElementWithoutIs2 = _interopRequireDefault(_createElementWithoutIs);
+	
+	var _createElementWithIs = __webpack_require__(53);
+	
+	var _createElementWithIs2 = _interopRequireDefault(_createElementWithIs);
 	
 	exports['default'] = {
-	    addAttributes: _addAttributes2['default'],
-	    extendUnitlessNumber: _extendUnitlessNumber2['default'],
-	    AttributeOps: _AttributeOps2['default'],
-	    createElement: function createElement(tag, xmlns, is) {
+	            addAttributes: _addAttributes2['default'],
+	            extendUnitlessNumber: _extendUnitlessNumber2['default'],
+	            AttributeOps: _AttributeOps2['default'],
+	            createElement: function createElement(tag, xmlns, is) {
 	
-	        switch (tag) {
-	            case "a":
-	                return document.createElement('a');
-	            case "b":
-	                return document.createElement('b');
-	            case 'body':
-	                return document.createElement('body');
-	            case 'br':
-	                return document.createElement('br');
-	            case 'button':
-	                return document.createElement('button');
-	            case 'circle':
-	                return document.createElementNS(svgNamespace, 'circle');
-	            case 'div':
-	                return document.createElement('div');
-	            case 'form':
-	                return document.createElement('form');
-	            case 'href':
-	                return document.createElement('href');
-	            case 'img':
-	                return document.createElement('img');
-	            case 'option':
-	                return document.createElement('option');
-	            case 'li':
-	                return document.createElement('li');
-	            case 'ol':
-	                return document.createElement('ol');
-	            case 'rec':
-	                return document.createElementNS(svgNamespace, 'rec');
-	            case 'select':
-	                return document.createElement('select');
-	            case 'span':
-	                return document.createElement('span');
-	            case 'style':
-	                return document.createElement('style');
-	            case 'table':
-	                return document.createElement('table');
-	            case 'ul':
-	                return document.createElement('ul');
-	            case 'elipse':
-	                return document.createElementNS(svgNamespace, 'elipse');
-	            default:
-	                if (xmlns) {
-	                    return document.createElementNS(xmlns, tag, is);
-	                }
-	        }
+	                        if (is) {
 	
-	        // mathML namespace
-	        if (tag === 'math') {
-	            return document.createElementNS(mathNamespace, tag, is);
-	        }
+	                                    (0, _createElementWithIs2['default'])(tag, xmlns, is);
+	                        } else {
 	
-	        // SVG elements supported by Inferno
-	        if (_cfgSvgCfg2['default'][tag]) {
-	            return document.createElementNS(svgNamespace, tag, is);
-	        }
-	
-	        return document.createElement(tag);
-	    },
-	    createTextNode: function createTextNode(text) {
-	        return document.createTextNode(text);
-	    },
-	    createEmptyText: function createEmptyText() {
-	        return document.createTextNode('');
-	    }
+	                                    return (0, _createElementWithoutIs2['default'])(tag, xmlns);
+	                        }
+	            },
+	            createTextNode: function createTextNode(text) {
+	                        return document.createTextNode(text);
+	            },
+	            createEmptyText: function createEmptyText() {
+	                        return document.createTextNode('');
+	            }
 	};
 	module.exports = exports['default'];
 
@@ -1652,7 +1602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = destroyFragment;
 	
-	var _varsRecycledFragments = __webpack_require__(30);
+	var _varsRecycledFragments = __webpack_require__(33);
 	
 	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
 	
@@ -1698,7 +1648,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
-	var _badUpdate = __webpack_require__(32);
+	var _badUpdate = __webpack_require__(35);
 	
 	var _badUpdate2 = _interopRequireDefault(_badUpdate);
 	
@@ -1727,7 +1677,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = updateFragmentList;
 	
-	var _removeFragments = __webpack_require__(39);
+	var _removeFragments = __webpack_require__(42);
 	
 	var _removeFragments2 = _interopRequireDefault(_removeFragments);
 	
@@ -1747,7 +1697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateFragment2 = _interopRequireDefault(_updateFragment);
 	
-	var _moveFragment = __webpack_require__(38);
+	var _moveFragment = __webpack_require__(41);
 	
 	var _moveFragment2 = _interopRequireDefault(_moveFragment);
 	
@@ -1886,6 +1836,59 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 23 */
+/***/ function(module, exports) {
+
+	/**
+	 * Supported SVG elements
+	 *
+	 * @type {Array}
+	 */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = {
+	  'animate': true,
+	  'animateColor': true,
+	  'animateMotion': true,
+	  'circle': true,
+	  'clipPath': true,
+	  'color-profile': true,
+	  'cursor': true,
+	  'defs': true,
+	  'ellipse': true,
+	  'filter': true,
+	  'font': true,
+	  'font-face': true,
+	  'g': true,
+	  'glyph': true,
+	  'glyphRef': true,
+	  'line': true,
+	  'linearGradient': true,
+	  'marker': true,
+	  'mask': true,
+	  'path': true,
+	  'pattern': true,
+	  'polygon': true,
+	  'polyline': true,
+	  'radialGradient': true,
+	  'rect': true,
+	  'stop': true,
+	  'svg': true,
+	  'switch': true,
+	  'symbol': true,
+	  'text': true,
+	  'textPath': true,
+	  'title': true,
+	  'tref': true,
+	  'tspan': true
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1896,15 +1899,15 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _utilForIn = __webpack_require__(28);
+	var _utilForIn = __webpack_require__(31);
 	
 	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 	
-	var _prefixes = __webpack_require__(27);
+	var _prefixes = __webpack_require__(28);
 	
 	var _prefixes2 = _interopRequireDefault(_prefixes);
 	
-	var _prefixKey = __webpack_require__(26);
+	var _prefixKey = __webpack_require__(27);
 	
 	var _prefixKey2 = _interopRequireDefault(_prefixKey);
 	
@@ -1964,7 +1967,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1984,7 +1987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2001,7 +2004,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	/**
@@ -2023,7 +2026,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/**
@@ -2039,7 +2042,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */
+/* 29 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = 'http://www.w3.org/1998/Math/MathML';
+	module.exports = exports['default'];
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = 'http://www.w3.org/2000/svg';
+	module.exports = exports['default'];
+
+/***/ },
+/* 31 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2061,7 +2088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2077,7 +2104,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2089,16 +2116,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 31 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO! Finish this
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(61)["default"];
+	var _createClass = __webpack_require__(65)["default"];
 	
-	var _classCallCheck = __webpack_require__(60)["default"];
+	var _classCallCheck = __webpack_require__(64)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -2152,7 +2179,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2168,7 +2195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2199,7 +2226,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 34 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2211,7 +2238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = createFragment;
 	
-	var _utilIsArray = __webpack_require__(29);
+	var _utilIsArray = __webpack_require__(32);
 	
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 	
@@ -2249,7 +2276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 38 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2269,7 +2296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 36 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2280,7 +2307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _varsRecycledFragments = __webpack_require__(30);
+	var _varsRecycledFragments = __webpack_require__(33);
 	
 	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
 	
@@ -2297,7 +2324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 37 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2340,7 +2367,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 41 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2370,7 +2397,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 39 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2394,7 +2421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 40 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2426,7 +2453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2472,7 +2499,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 42 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2662,7 +2689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 43 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2872,7 +2899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 44 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2902,7 +2929,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 45 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3030,7 +3057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 46 */
+/* 49 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3050,7 +3077,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 47 */
+/* 50 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3150,7 +3177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 48 */
+/* 51 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3175,60 +3202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 49 */
-/***/ function(module, exports) {
-
-	/**
-	 * Supported SVG elements
-	 *
-	 * @type {Array}
-	 */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	exports['default'] = {
-	  'animate': true,
-	  'animateColor': true,
-	  'animateMotion': true,
-	  'circle': true,
-	  'clipPath': true,
-	  'color-profile': true,
-	  'cursor': true,
-	  'defs': true,
-	  'ellipse': true,
-	  'filter': true,
-	  'font': true,
-	  'font-face': true,
-	  'g': true,
-	  'glyph': true,
-	  'glyphRef': true,
-	  'line': true,
-	  'linearGradient': true,
-	  'marker': true,
-	  'mask': true,
-	  'path': true,
-	  'pattern': true,
-	  'polygon': true,
-	  'polyline': true,
-	  'radialGradient': true,
-	  'rect': true,
-	  'stop': true,
-	  'svg': true,
-	  'switch': true,
-	  'symbol': true,
-	  'text': true,
-	  'textPath': true,
-	  'title': true,
-	  'tref': true,
-	  'tspan': true
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 50 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3347,7 +3321,186 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _cfgSvgCfg = __webpack_require__(23);
+	
+	var _cfgSvgCfg2 = _interopRequireDefault(_cfgSvgCfg);
+	
+	var _varsSvgNamespace = __webpack_require__(30);
+	
+	var _varsSvgNamespace2 = _interopRequireDefault(_varsSvgNamespace);
+	
+	var _varsMathNamespace = __webpack_require__(29);
+	
+	var _varsMathNamespace2 = _interopRequireDefault(_varsMathNamespace);
+	
+	function createElementWithIs(tag, xmlns, is) {
+	
+	    switch (tag) {
+	        case "a":
+	            return document.createElement('a', is);
+	        case 'body':
+	            return document.createElement('body', is);
+	        case 'br':
+	            return document.createElement('br', is);
+	        case 'button':
+	            return document.createElement('button', is);
+	        case 'circle':
+	            return document.createElementNS(_varsSvgNamespace2['default'], 'circle', is);
+	        case 'div':
+	            return document.createElement('div', is);
+	        case 'em':
+	            return document.createElement('em', is);
+	        case 'form':
+	            return document.createElement('form', is);
+	        case 'href':
+	            return document.createElement('href', is);
+	        case 'img':
+	            return document.createElement('img', is);
+	        case 'option':
+	            return document.createElement('option', is);
+	        case 'li':
+	            return document.createElement('li', is);
+	        case 'ol':
+	            return document.createElement('ol', is);
+	        case 'rec':
+	            return document.createElementNS(_varsSvgNamespace2['default'], 'rec', is);
+	        case 'select':
+	            return document.createElement('select', is);
+	        case 'span':
+	            return document.createElement('span', is);
+	        case 'style':
+	            return document.createElement('style', is);
+	        case 'table':
+	            return document.createElement('table', is);
+	        case 'ul':
+	            return document.createElement('ul', is);
+	        case 'elipse':
+	            return document.createElementNS(_varsSvgNamespace2['default'], 'elipse', is);
+	        default:
+	
+	            if (xmlns) {
+	                return document.createElementNS(xmlns, tag, is);
+	            }
+	
+	            // mathML namespace
+	            if (tag === 'math') {
+	                return document.createElementNS(_varsMathNamespace2['default'], tag, is);
+	            }
+	
+	            // SVG elements supported by Inferno
+	            if (_cfgSvgCfg2['default'][tag]) {
+	                return document.createElementNS(_varsSvgNamespace2['default'], tag, is);
+	            }
+	
+	            return document.createElement(tag, is);
+	    }
+	}
+	
+	exports['default'] = createElementWithIs;
+	module.exports = exports['default'];
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _cfgSvgCfg = __webpack_require__(23);
+	
+	var _cfgSvgCfg2 = _interopRequireDefault(_cfgSvgCfg);
+	
+	var _varsSvgNamespace = __webpack_require__(30);
+	
+	var _varsSvgNamespace2 = _interopRequireDefault(_varsSvgNamespace);
+	
+	var _varsMathNamespace = __webpack_require__(29);
+	
+	var _varsMathNamespace2 = _interopRequireDefault(_varsMathNamespace);
+	
+	function createElementWithoutIs(tag, xmlns) {
+	
+	    switch (tag) {
+	        case "a":
+	            return document.createElement('a');
+	        case 'body':
+	            return document.createElement('body');
+	        case 'br':
+	            return document.createElement('br');
+	        case 'button':
+	            return document.createElement('button');
+	        case 'circle':
+	            return document.createElementNS(_varsSvgNamespace2['default'], 'circle');
+	        case 'div':
+	            return document.createElement('div');
+	        case 'em':
+	            return document.createElement('em', is);
+	        case 'form':
+	            return document.createElement('form');
+	        case 'href':
+	            return document.createElement('href');
+	        case 'img':
+	            return document.createElement('img');
+	        case 'option':
+	            return document.createElement('option');
+	        case 'li':
+	            return document.createElement('li');
+	        case 'ol':
+	            return document.createElement('ol');
+	        case 'rec':
+	            return document.createElementNS(_varsSvgNamespace2['default'], 'rec');
+	        case 'select':
+	            return document.createElement('select');
+	        case 'span':
+	            return document.createElement('span');
+	        case 'style':
+	            return document.createElement('style');
+	        case 'table':
+	            return document.createElement('table');
+	        case 'ul':
+	            return document.createElement('ul');
+	        case 'elipse':
+	            return document.createElementNS(_varsSvgNamespace2['default'], 'elipse');
+	        default:
+	            if (xmlns) {
+	                return document.createElementNS(xmlns, tag);
+	            }
+	
+	            // mathML namespace
+	            if (tag === 'math') {
+	                return document.createElementNS(_varsMathNamespace2['default'], tag);
+	            }
+	
+	            // SVG elements supported by Inferno
+	            if (_cfgSvgCfg2['default'][tag]) {
+	                return document.createElementNS(_varsSvgNamespace2['default'], tag);
+	            }
+	
+	            return document.createElement(tag);
+	    }
+	}
+	
+	exports['default'] = createElementWithoutIs;
+	module.exports = exports['default'];
+
+/***/ },
+/* 55 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3367,7 +3520,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 52 */
+/* 56 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3395,7 +3548,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3406,19 +3559,19 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _cfgUnitlessCfg = __webpack_require__(23);
+	var _cfgUnitlessCfg = __webpack_require__(24);
 	
 	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
 	
-	var _prefixes = __webpack_require__(27);
+	var _prefixes = __webpack_require__(28);
 	
 	var _prefixes2 = _interopRequireDefault(_prefixes);
 	
-	var _prefixKey = __webpack_require__(26);
+	var _prefixKey = __webpack_require__(27);
 	
 	var _prefixKey2 = _interopRequireDefault(_prefixKey);
 	
-	var _utilForIn = __webpack_require__(28);
+	var _utilForIn = __webpack_require__(31);
 	
 	var _utilForIn2 = _interopRequireDefault(_utilForIn);
 	
@@ -3434,7 +3587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 54 */
+/* 58 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3453,7 +3606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 55 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3464,7 +3617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _cfgUnitlessCfg = __webpack_require__(23);
+	var _cfgUnitlessCfg = __webpack_require__(24);
 	
 	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
 	
@@ -3491,7 +3644,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 56 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3502,11 +3655,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _cfgXmlCfg = __webpack_require__(25);
+	var _cfgXmlCfg = __webpack_require__(26);
 	
 	var _cfgXmlCfg2 = _interopRequireDefault(_cfgXmlCfg);
 	
-	var _cfgXlinkCfg = __webpack_require__(24);
+	var _cfgXlinkCfg = __webpack_require__(25);
 	
 	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
 	
@@ -3547,7 +3700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 57 */
+/* 61 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3570,7 +3723,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 58 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/**
@@ -3592,13 +3745,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 59 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(62), __esModule: true };
+	module.exports = { "default": __webpack_require__(66), __esModule: true };
 
 /***/ },
-/* 60 */
+/* 64 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3612,12 +3765,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 61 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(59)["default"];
+	var _Object$defineProperty = __webpack_require__(63)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -3641,16 +3794,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 62 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(63);
+	var $ = __webpack_require__(67);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 63 */
+/* 67 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
