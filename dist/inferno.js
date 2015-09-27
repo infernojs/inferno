@@ -1157,7 +1157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		dataset: {
 			set: setPropertyForDataset,
 			// 'dataset' property has to be removed as an attribute
-			// because it's set as an attribute - e.g. data-foo="bar"
+			// because it's set as an attribute - e.g. data-foo='bar'
 			toHtml: datasetToString
 		},
 		defaultPlaybackRate: IS_PROPERTY,
@@ -3335,7 +3335,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function createElementWithIs(tag, xmlns, is) {
 	
 	    switch (tag) {
-	        case "a":
+	        case 'a':
 	            return document.createElement('a', is);
 	        case 'button':
 	            return document.createElement('button', is);
@@ -3367,7 +3367,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return document.createElementNS(_varsSvgNamespace2['default'], 'svg', is);
 	        default:
 	
-	            return xmlns ? document.createElementNS(xmlns, tag, is) : tag === "math" ? document.createElementNS(_varsMathNamespace2['default'], tag, is) : _cfgSvgCfg2['default'][tag] ? document.createElementNS(_varsSvgNamespace2['default'], tag, is) : document.createElement(tag, is);
+	            return xmlns ? document.createElementNS(xmlns, tag, is) : tag === 'math' ? document.createElementNS(_varsMathNamespace2['default'], tag, is) : _cfgSvgCfg2['default'][tag] ? document.createElementNS(_varsSvgNamespace2['default'], tag, is) : document.createElement(tag, is);
 	    }
 	}
 	
@@ -3401,7 +3401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function createElementWithoutIs(tag, xmlns) {
 	
 	    switch (tag) {
-	        case "a":
+	        case 'a':
 	            return document.createElement('a');
 	        case 'button':
 	            return document.createElement('button');
@@ -3433,7 +3433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return document.createElementNS(_varsSvgNamespace2['default'], 'svg');
 	        default:
 	
-	            return xmlns ? document.createElementNS(xmlns, tag) : tag === "math" ? document.createElementNS(_varsMathNamespace2['default'], tag) : _cfgSvgCfg2['default'][tag] ? document.createElementNS(_varsSvgNamespace2['default'], tag) : document.createElement(tag);
+	            return xmlns ? document.createElementNS(xmlns, tag) : tag === 'math' ? document.createElementNS(_varsMathNamespace2['default'], tag) : _cfgSvgCfg2['default'][tag] ? document.createElementNS(_varsSvgNamespace2['default'], tag) : document.createElement(tag);
 	    }
 	}
 	

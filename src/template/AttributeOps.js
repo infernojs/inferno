@@ -377,7 +377,7 @@ let DOMConfig = {
 	dataset: {
 		set: setPropertyForDataset,
 		// 'dataset' property has to be removed as an attribute
-		// because it's set as an attribute - e.g. data-foo="bar"
+		// because it's set as an attribute - e.g. data-foo='bar'
 		toHtml: datasetToString
 	},
 	defaultPlaybackRate: IS_PROPERTY,
