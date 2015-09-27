@@ -29,6 +29,8 @@ function createElementWithoutIs(tag, xmlns) {
             return document.createElement('p');
         case 'span':
             return document.createElement('span');
+        case 'table':
+            return document.createElement('table');
         case 'ul':
             return document.createElement('ul');
         case 'svg':

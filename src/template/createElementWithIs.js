@@ -29,6 +29,8 @@ function createElementWithIs(tag, xmlns, is) {
             return document.createElement('p', is);
         case 'span':
             return document.createElement('span', is);
+        case 'table':
+            return document.createElement('table', is);
         case 'ul':
             return document.createElement('ul', is);
         case 'svg':
