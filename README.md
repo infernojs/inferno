@@ -172,4 +172,4 @@ Inferno is still in early development and there are still many missing features 
 
 ### Inferno is supported by BrowserStack
 
-<img src="http://infernojs.org/browserstack.svg" style="height: 100px" alt="Supported by Browserstack" />
+<img src="http://infernojs.org/browserstack.svg" style="height: 50px" alt="Supported by Browserstack" />
