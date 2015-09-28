@@ -170,4 +170,6 @@ Inferno is still in early development and there are still many missing features 
 - add API docs
 - add more examples
 
-![alt Supported by Browserstack](http://infernojs.org/browserstack.svg)
+### Inferno is supported by BrowserStack
+
+![alt Supported by Browserstack](http://infernojs.org/browserstack.svg = 100px)
