@@ -7,6 +7,7 @@ import insertFragment from './insertFragment';
 import render from './render';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../template/createElement';
+import bind from '../util/bind';
 
 function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
 	let fragmentComponent = fragment.component;
@@ -15,24 +16,24 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 		if (typeof fragmentComponent === 'function') {
 			fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
 			fragmentComponent.context = null;
-			// TODO get rid of this line
-			fragmentComponent.forceUpdate = render.bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
+			fragmentComponent.forceUpdate = render.bind(null,  bind(fragmentComponent, fragmentComponent.render), parentDom, fragmentComponent);
 			fragmentComponent.forceUpdate();
 		}
 		return;
 	}
 
-	let recycledFragment = null,
-		{ template } = fragment,
+	let { template } = fragment,
 		templateKey = template.key;
 
 	if (context.shouldRecycle === true) {
-		recycledFragment = getRecycledFragment( templateKey );
+	    let recycledFragment = getRecycledFragment(templateKey);
+	    if (recycledFragment != null) {
+	        updateFragment(context, recycledFragment, fragment, parentDom, component);
+	        insertFragment(context, parentDom, fragment.dom, nextFragment, replace);
+	        return;
+	    }
 	}
-
-	if ( recycledFragment != null ) {
-		updateFragment( context, recycledFragment, fragment, parentDom, component );
-	} else {
+	
 		//there are different things we need to check for now
 		switch (template.type) {
 		case templateTypes.TEMPLATE_API:
@@ -42,7 +43,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			template(fragment, fragment.t7ref);
 			break;
 		case templateTypes.FUNCTIONAL_API:
-			let createElement = templateCreateElement.bind(fragment);
+			let createElement = bind(fragment, templateCreateElement);
 			let params = [createElement], length = (fragment.templateValue !== undefined && 1)
 				|| (fragment.templateValues && fragment.templateValues.length) || 0;
 
@@ -108,7 +109,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				}
 			}
 		}
-	}
+
 
 	insertFragment( context, parentDom, fragment.dom, nextFragment, replace );
 }

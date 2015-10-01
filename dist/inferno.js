@@ -360,6 +360,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateCreateElement2 = _interopRequireDefault(_templateCreateElement);
 	
+	var _utilBind = __webpack_require__(61);
+	
+	var _utilBind2 = _interopRequireDefault(_utilBind);
+	
 	function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
 		var fragmentComponent = fragment.component;
 	
@@ -368,96 +372,96 @@ return /******/ (function(modules) { // webpackBootstrap
 				fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
 				fragmentComponent.context = null;
 				// TODO get rid of this line
-				fragmentComponent.forceUpdate = _render2['default'].bind(null, fragmentComponent.render.bind(fragmentComponent), parentDom, fragmentComponent);
+				fragmentComponent.forceUpdate = _render2['default'].bind(null, (0, _utilBind2['default'])(fragmentComponent, fragmentComponent.render), parentDom, fragmentComponent);
 				fragmentComponent.forceUpdate();
 			}
 			return;
 		}
 	
-		var recycledFragment = null;
 		var template = fragment.template;
 		var templateKey = template.key;
 	
 		if (context.shouldRecycle === true) {
-			recycledFragment = (0, _getRecycledFragment2['default'])(templateKey);
+			var recycledFragment = (0, _getRecycledFragment2['default'])(templateKey);
+			if (recycledFragment != null) {
+				(0, _updateFragment2['default'])(context, recycledFragment, fragment, parentDom, component);
+				(0, _insertFragment2['default'])(context, parentDom, fragment.dom, nextFragment, replace);
+				return;
+			}
 		}
 	
-		if (recycledFragment != null) {
-			(0, _updateFragment2['default'])(context, recycledFragment, fragment, parentDom, component);
-		} else {
-			//there are different things we need to check for now
-			switch (template.type) {
-				case _enumTemplateTypes2['default'].TEMPLATE_API:
-					template(fragment);
-					break;
-				case _enumTemplateTypes2['default'].T7_TEMPLATE_API:
-					template(fragment, fragment.t7ref);
-					break;
-				case _enumTemplateTypes2['default'].FUNCTIONAL_API:
-					var createElement = _templateCreateElement2['default'].bind(fragment);
-					var params = [createElement],
-					    length = fragment.templateValue !== undefined && 1 || fragment.templateValues && fragment.templateValues.length || 0;
+		//there are different things we need to check for now
+		switch (template.type) {
+			case _enumTemplateTypes2['default'].TEMPLATE_API:
+				template(fragment);
+				break;
+			case _enumTemplateTypes2['default'].T7_TEMPLATE_API:
+				template(fragment, fragment.t7ref);
+				break;
+			case _enumTemplateTypes2['default'].FUNCTIONAL_API:
+				var createElement = _templateCreateElement2['default'].bind(fragment);
+				var params = [createElement],
+				    length = fragment.templateValue !== undefined && 1 || fragment.templateValues && fragment.templateValues.length || 0;
 	
-					//create our pointers, for example 0,1,2,3,4,5 as params to pass through
-					for (var i = 0; i < length; i++) {
-						params.push({ pointer: i });
-					}
-					fragment.dom = template.apply(null, params);
+				//create our pointers, for example 0,1,2,3,4,5 as params to pass through
+				for (var i = 0; i < length; i++) {
+					params.push({ pointer: i });
+				}
+				fragment.dom = template.apply(null, params);
+				break;
+			default:
+				template(fragment);
+				break;
+		}
+		//if this fragment has a single value, we attach only that value
+		if (fragment.templateValue) {
+			switch (fragment.templateType) {
+				case _enumFragmentValueTypes2['default'].LIST:
+					(0, _attachFragmentList2['default'])(context, fragment.templateValue, fragment.templateElement);
 					break;
-				default:
-					template(fragment);
+				case _enumFragmentValueTypes2['default'].FRAGMENT:
+				case _enumFragmentValueTypes2['default'].LIST_REPLACE:
+					attachFragment(context, fragment.templateValue, fragment.templateElement, component);
+					break;
+				case _enumFragmentValueTypes2['default'].FRAGMENT_REPLACE:
+					attachFragment(context, fragment.templateValue, parentDom, fragment.templateElement, true);
+					fragment.templateElement = fragment.templateValue.dom.parentNode;
+					break;
+				case _enumFragmentValueTypes2['default'].ATTR_REF:
+					fragment.templateValue.element = fragment.templateElement;
 					break;
 			}
-			//if this fragment has a single value, we attach only that value
-			if (fragment.templateValue) {
-				switch (fragment.templateType) {
+		} else if (fragment.templateValues) {
+			//if the fragment has multiple values, we must loop through them all and attach them
+			//pulling this block of code out into its own function caused strange things to happen
+			//with performance. it was faster in Gecko but far slower in v8
+			for (var i = 0, _length = fragment.templateValues.length; i < _length; i++) {
+				var element = fragment.templateElements[i],
+				    value = fragment.templateValues[i];
+	
+				switch (fragment.templateTypes[i]) {
 					case _enumFragmentValueTypes2['default'].LIST:
-						(0, _attachFragmentList2['default'])(context, fragment.templateValue, fragment.templateElement);
+						(0, _attachFragmentList2['default'])(context, value, element);
+						break;
+					case _enumFragmentValueTypes2['default'].LIST_REPLACE:
+						var nodeList = document.createDocumentFragment(),
+						    placeholderNode = fragment.templateElements[i],
+						    parentElem = placeholderNode.parentNode;
+	
+						(0, _attachFragmentList2['default'])(context, value, nodeList);
+						parentElem.replaceChild(nodeList, placeholderNode);
+						fragment.templateElements[i] = parentElem;
 						break;
 					case _enumFragmentValueTypes2['default'].FRAGMENT:
-					case _enumFragmentValueTypes2['default'].LIST_REPLACE:
-						attachFragment(context, fragment.templateValue, fragment.templateElement, component);
+						attachFragment(context, fragment.templateValues[i], fragment.templateElements[i], component);
 						break;
 					case _enumFragmentValueTypes2['default'].FRAGMENT_REPLACE:
-						attachFragment(context, fragment.templateValue, parentDom, fragment.templateElement, true);
-						fragment.templateElement = fragment.templateValue.dom.parentNode;
+						attachFragment(context, value, parentDom, component, element, true);
+						fragment.templateElements[i] = value.dom.parentNode;
 						break;
 					case _enumFragmentValueTypes2['default'].ATTR_REF:
-						fragment.templateValue.element = fragment.templateElement;
+						fragment.templateValues[i].element = fragment.templateElements[i];
 						break;
-				}
-			} else if (fragment.templateValues) {
-				//if the fragment has multiple values, we must loop through them all and attach them
-				//pulling this block of code out into its own function caused strange things to happen
-				//with performance. it was faster in Gecko but far slower in v8
-				for (var i = 0, _length = fragment.templateValues.length; i < _length; i++) {
-					var element = fragment.templateElements[i],
-					    value = fragment.templateValues[i];
-	
-					switch (fragment.templateTypes[i]) {
-						case _enumFragmentValueTypes2['default'].LIST:
-							(0, _attachFragmentList2['default'])(context, value, element);
-							break;
-						case _enumFragmentValueTypes2['default'].LIST_REPLACE:
-							var nodeList = document.createDocumentFragment(),
-							    placeholderNode = fragment.templateElements[i],
-							    parentElem = placeholderNode.parentNode;
-	
-							(0, _attachFragmentList2['default'])(context, value, nodeList);
-							parentElem.replaceChild(nodeList, placeholderNode);
-							fragment.templateElements[i] = parentElem;
-							break;
-						case _enumFragmentValueTypes2['default'].FRAGMENT:
-							attachFragment(context, fragment.templateValues[i], fragment.templateElements[i], component);
-							break;
-						case _enumFragmentValueTypes2['default'].FRAGMENT_REPLACE:
-							attachFragment(context, value, parentDom, component, element, true);
-							fragment.templateElements[i] = value.dom.parentNode;
-							break;
-						case _enumFragmentValueTypes2['default'].ATTR_REF:
-							fragment.templateValues[i].element = fragment.templateElements[i];
-							break;
-					}
 				}
 			}
 		}
@@ -771,7 +775,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _normalizeCSS2 = _interopRequireDefault(_normalizeCSS);
 	
-	var _utilInArray = __webpack_require__(61);
+	var _utilInArray = __webpack_require__(62);
 	
 	var _utilInArray2 = _interopRequireDefault(_utilInArray);
 	
@@ -783,7 +787,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
-	var _utilTagName = __webpack_require__(62);
+	var _utilTagName = __webpack_require__(63);
 	
 	var _utilTagName2 = _interopRequireDefault(_utilTagName);
 	
@@ -2111,9 +2115,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(65)["default"];
+	var _createClass = __webpack_require__(66)["default"];
 	
-	var _classCallCheck = __webpack_require__(64)["default"];
+	var _classCallCheck = __webpack_require__(65)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -3644,6 +3648,35 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 61 */
 /***/ function(module, exports) {
 
+	// TODO! don't use 'slice'
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var slice = Array.prototype.slice.call(arguments, 2);
+	
+	function bind(self, fn) {
+	  var curryArgs = arguments.length > 2 ? Array.prototype.slice.call(arguments, 2) : [];
+	  if (typeof fn === 'function') {
+	    return curryArgs.length ? function () {
+	      return arguments.length ? fn.apply(self, concat(curryArgs, arguments, 0)) // Todo! use 'new Array' instead of 'concat'
+	      : fn.apply(self, curryArgs);
+	    } : function () {
+	      return arguments.length ? fn.apply(self, arguments) : fn.call(self);
+	    };
+	  } else {
+	    // in IE, native methods are not functions so they cannot be bound (note: they don't need to be)
+	    return fn;
+	  }
+	}
+	exports['default'] = bind;
+	module.exports = exports['default'];
+
+/***/ },
+/* 62 */
+/***/ function(module, exports) {
+
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -3664,7 +3697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	/**
@@ -3686,13 +3719,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(66), __esModule: true };
+	module.exports = { "default": __webpack_require__(67), __esModule: true };
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3706,12 +3739,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(63)["default"];
+	var _Object$defineProperty = __webpack_require__(64)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -3735,16 +3768,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(67);
+	var $ = __webpack_require__(68);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
