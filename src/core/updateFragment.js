@@ -4,25 +4,31 @@ import updateFragmentValue        from './updateFragmentValue';
 import updateFragmentValues       from './updateFragmentValues';
 import unmountComponentAtFragment from './unmountComponentAtFragment';
 
-export default function updateFragment( context, oldFragment, fragment, parentDom, component ) {
-	if ( fragment === null ) {
-		removeFragment( context, parentDom, oldFragment );
+function updateFragment( context, oldFragment, fragment, parent, component ) {
+
+	if ( fragment == null ) {
+		removeFragment( context, parent, oldFragment );
 		return;
 	}
-	if ( oldFragment === null ) {
-		attachFragment( context, fragment, parentDom, component );
+
+	if ( oldFragment == null ) {
+		attachFragment( context, fragment, parent, component );
 		return;
 	}
+
 	if ( oldFragment.template !== fragment.template ) {
+
 		if ( oldFragment.component ) {
 			let oldComponentFragment = oldFragment.component.context.fragment;
 			
 			unmountComponentAtFragment( oldFragment );
-			attachFragment( context, fragment, parentDom, component, oldComponentFragment, true );
-		} else {
-			attachFragment( context, fragment, parentDom, component, oldFragment, true );
-		}
-	} else {
+			attachFragment( context, fragment, parent, component, oldComponentFragment, true );
+ 	        return;
+		} 
+			attachFragment( context, fragment, parent, component, oldFragment, true );
+	   
+	   return;
+	}
 		let fragmentComponent = oldFragment.component;
 		//if this fragment is a component
 		if ( fragmentComponent ) {
@@ -31,6 +37,7 @@ export default function updateFragment( context, oldFragment, fragment, parentDo
 			fragment.component = fragmentComponent;
 			return;
 		}
+		
 		//ensure we reference the new fragment with the old fragment's DOM node
 		fragment.dom = oldFragment.dom;
 		if ( fragment.templateValue !== undefined ) {
@@ -40,5 +47,6 @@ export default function updateFragment( context, oldFragment, fragment, parentDo
 			//updates all values within the fragment (templateValues is an array)
 			updateFragmentValues( context, oldFragment, fragment, component );
 		}
-	}
 }
+
+export default updateFragment;

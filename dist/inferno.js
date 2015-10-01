@@ -200,7 +200,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports['default'] = updateFragment;
 	
 	var _removeFragment = __webpack_require__(6);
 	
@@ -222,45 +221,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
 	
-	function updateFragment(context, oldFragment, fragment, parentDom, component) {
-		if (fragment === null) {
-			(0, _removeFragment2['default'])(context, parentDom, oldFragment);
+	function updateFragment(context, oldFragment, fragment, parent, component) {
+	
+		if (fragment == null) {
+			(0, _removeFragment2['default'])(context, parent, oldFragment);
 			return;
 		}
-		if (oldFragment === null) {
-			(0, _attachFragment2['default'])(context, fragment, parentDom, component);
+	
+		if (oldFragment == null) {
+			(0, _attachFragment2['default'])(context, fragment, parent, component);
 			return;
 		}
+	
 		if (oldFragment.template !== fragment.template) {
+	
 			if (oldFragment.component) {
 				var oldComponentFragment = oldFragment.component.context.fragment;
 	
 				(0, _unmountComponentAtFragment2['default'])(oldFragment);
-				(0, _attachFragment2['default'])(context, fragment, parentDom, component, oldComponentFragment, true);
-			} else {
-				(0, _attachFragment2['default'])(context, fragment, parentDom, component, oldFragment, true);
-			}
-		} else {
-			var fragmentComponent = oldFragment.component;
-			//if this fragment is a component
-			if (fragmentComponent) {
-				fragmentComponent.props = fragment.props;
-				fragmentComponent.forceUpdate();
-				fragment.component = fragmentComponent;
+				(0, _attachFragment2['default'])(context, fragment, parent, component, oldComponentFragment, true);
 				return;
 			}
-			//ensure we reference the new fragment with the old fragment's DOM node
-			fragment.dom = oldFragment.dom;
-			if (fragment.templateValue !== undefined) {
-				//update a single value in the fragement (templateValue rather than templateValues)
-				(0, _updateFragmentValue2['default'])(context, oldFragment, fragment, component);
-			} else if (fragment.templateValues) {
-				//updates all values within the fragment (templateValues is an array)
-				(0, _updateFragmentValues2['default'])(context, oldFragment, fragment, component);
-			}
+			(0, _attachFragment2['default'])(context, fragment, parent, component, oldFragment, true);
+	
+			return;
+		}
+		var fragmentComponent = oldFragment.component;
+		//if this fragment is a component
+		if (fragmentComponent) {
+			fragmentComponent.props = fragment.props;
+			fragmentComponent.forceUpdate();
+			fragment.component = fragmentComponent;
+			return;
+		}
+	
+		//ensure we reference the new fragment with the old fragment's DOM node
+		fragment.dom = oldFragment.dom;
+		if (fragment.templateValue !== undefined) {
+			//update a single value in the fragement (templateValue rather than templateValues)
+			(0, _updateFragmentValue2['default'])(context, oldFragment, fragment, component);
+		} else if (fragment.templateValues) {
+			//updates all values within the fragment (templateValues is an array)
+			(0, _updateFragmentValues2['default'])(context, oldFragment, fragment, component);
 		}
 	}
 	
+	exports['default'] = updateFragment;
 	module.exports = exports['default'];
 
 /***/ },
