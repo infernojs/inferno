@@ -3,7 +3,8 @@ import recycledFragments from '../vars/recycledFragments';
 /**
  * Destroy fragment
  */
-export default function destroyFragment( context, fragment ) {
+function destroyFragment( context, fragment ) {
+
 	let templateKey;
 
 	//long winded approach, but components have their own context which is how we find their template keys
@@ -22,3 +23,4 @@ export default function destroyFragment( context, fragment ) {
 		toRecycleForKey.push( fragment );
 	}
 }
+export default destroyFragment;

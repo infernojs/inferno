@@ -371,7 +371,6 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (typeof fragmentComponent === 'function') {
 				fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
 				fragmentComponent.context = null;
-				// TODO get rid of this line
 				fragmentComponent.forceUpdate = _render2['default'].bind(null, (0, _utilBind2['default'])(fragmentComponent, fragmentComponent.render), parentDom, fragmentComponent);
 				fragmentComponent.forceUpdate();
 			}
@@ -399,7 +398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				template(fragment, fragment.t7ref);
 				break;
 			case _enumTemplateTypes2['default'].FUNCTIONAL_API:
-				var createElement = _templateCreateElement2['default'].bind(fragment);
+				var createElement = (0, _utilBind2['default'])(fragment, _templateCreateElement2['default']);
 				var params = [createElement],
 				    length = fragment.templateValue !== undefined && 1 || fragment.templateValues && fragment.templateValues.length || 0;
 	
@@ -1592,7 +1591,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports['default'] = destroyFragment;
 	
 	var _varsRecycledFragments = __webpack_require__(33);
 	
@@ -1601,8 +1599,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Destroy fragment
 	 */
-	
 	function destroyFragment(context, fragment) {
+	
 		var templateKey = undefined;
 	
 		//long winded approach, but components have their own context which is how we find their template keys
@@ -1621,7 +1619,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			toRecycleForKey.push(fragment);
 		}
 	}
-	
+	exports['default'] = destroyFragment;
 	module.exports = exports['default'];
 
 /***/ },
@@ -2209,7 +2207,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function clearDomElement(dom) {
 		var context = (0, _coreGetContext2['default'])(dom);
-		if (context !== null) {
+		if (context != null) {
 			(0, _coreRemoveContext2['default'])(dom);
 		}
 		dom.innerHTML = '';
@@ -2324,7 +2322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	
 	Object.defineProperty(exports, '__esModule', {
-		value: true
+	    value: true
 	});
 	exports['default'] = insertFragment;
 	
@@ -2332,28 +2330,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
 	
-	function insertFragment(context, parentDom, domNode, nextFragment, replace) {
-		var noDestroy = false;
+	function insertFragment(fragment, parent, container, nextFragment, replace) {
 	
-		if (nextFragment) {
-			var domNextFragment = nextFragment.dom;
+	    if (nextFragment) {
 	
-			if (!domNextFragment) {
-				domNextFragment = nextFragment;
-				parentDom = domNextFragment.parentNode;
-				noDestroy = true;
-			}
-			if (replace) {
-				if (noDestroy === false) {
-					(0, _destroyFragment2['default'])(context, nextFragment);
-				}
-				parentDom.replaceChild(domNode, domNextFragment);
-			} else {
-				parentDom.insertBefore(domNode, domNextFragment);
-			}
-		} else {
-			parentDom.appendChild(domNode);
-		}
+	        var noDestroy = false;
+	        var domNextFragment = nextFragment.dom;
+	
+	        if (!domNextFragment) {
+	            domNextFragment = nextFragment;
+	            parent = domNextFragment.parentNode;
+	            noDestroy = true;
+	        }
+	
+	        if (replace) {
+	
+	            if (noDestroy === false) {
+	                (0, _destroyFragment2['default'])(fragment, nextFragment);
+	            }
+	
+	            parent.replaceChild(container, domNextFragment);
+	
+	            return;
+	        }
+	
+	        parent.insertBefore(container, domNextFragment);
+	    } else {
+	
+	        parent.appendChild(container);
+	    }
 	}
 	
 	module.exports = exports['default'];
@@ -2661,17 +2666,16 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 					return;
 				default:
-	
-					if (!element.props) {
-						if (_eventsSharedEvents2['default'][type] != null) {
-							(0, _eventsClearEventListeners2['default'])(element, type);
-							(0, _eventsAddEventListener2['default'])(element, type, fragment.templateValue);
-						} else {
-							_templateAttributeOps2['default'].set(element, type, fragment.templateValue, true);
-						}
-						// TODO make component props work for single value fragments
+					// TODO make component props work for single value fragments
+					if (element.props) {
+						// component prop, update it
 					} else {
-							// component prop, update it
+							if (_eventsSharedEvents2['default'][type] != null) {
+								(0, _eventsClearEventListeners2['default'])(element, type);
+								(0, _eventsAddEventListener2['default'])(element, type, fragment.templateValue);
+							} else {
+								_templateAttributeOps2['default'].set(element, type, fragment.templateValue, true);
+							}
 						}
 			}
 		}

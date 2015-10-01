@@ -1,26 +1,33 @@
 import destroyFragment from './destroyFragment';
 
-export default function insertFragment( context, parentDom, domNode, nextFragment, replace ) {
-	let noDestroy = false;
+export default function insertFragment(fragment, parent, container, nextFragment, replace) {
 
-	if ( nextFragment ) {
-		let domNextFragment = nextFragment.dom;
+    if (nextFragment) {
 
-		if ( !domNextFragment ) {
-			domNextFragment = nextFragment;
-			parentDom = domNextFragment.parentNode;
-			noDestroy = true;
-		}
-		if ( replace ) {
-			if ( noDestroy === false ) {
-				destroyFragment( context, nextFragment );
-			}
-			parentDom.replaceChild( domNode, domNextFragment );
+        let noDestroy = false;
+        let domNextFragment = nextFragment.dom;
 
-		} else {
-			parentDom.insertBefore( domNode, domNextFragment );
-		}
-	} else {
-		parentDom.appendChild( domNode );
-	}
+        if (!domNextFragment) {
+            domNextFragment = nextFragment;
+            parent = domNextFragment.parentNode;
+            noDestroy = true;
+        }
+
+        if (replace) {
+
+            if (noDestroy === false) {
+                destroyFragment(fragment, nextFragment);
+            }
+
+            parent.replaceChild(container, domNextFragment);
+
+            return;
+        }
+
+        parent.insertBefore(container, domNextFragment);
+
+    } else {
+
+        parent.appendChild(container);
+    }
 }
