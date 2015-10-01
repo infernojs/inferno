@@ -6,7 +6,7 @@ import VirtualTextNode      from '../class/VirtualTextNode';
 export default {
 	addAttributes,
 	extendUnitlessNumber,
-	createElement: (tag, namespace) => new VirtualElement(tag),
+	createElement: (tag, namespace) => new VirtualElement(tag, xmlns, is),
 	createTextNode: text => new VirtualTextNode(text),
 	createEmptyText: () => new VirtualTextNode('')
 };
