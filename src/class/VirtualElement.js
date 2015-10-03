@@ -13,7 +13,7 @@ let doNotShowInHtml = {
 //VirtualElements are lightweight replacements for real DOM elements, they allow us to easily
 //move, remove, delete elements around our 'virtual DOM' without needing real DOM elements
 //we can they find their text string for when we want to renderToString()
-export default class VirtualElement {
+class VirtualElement {
 	constructor(tagName, xmlns, is) {
 		this.tagName = tagName;
 		this.xmlns = xmlns;
@@ -69,3 +69,4 @@ export default class VirtualElement {
 		this[attribute] = value;
 	}
 }
+export default VirtualElement;

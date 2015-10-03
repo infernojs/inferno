@@ -39,9 +39,6 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 		case templateTypes.TEMPLATE_API:
 			template(fragment);
 			break;
-		case templateTypes.T7_TEMPLATE_API:
-			template(fragment, fragment.t7ref);
-			break;
 		case templateTypes.FUNCTIONAL_API:
 			let createElement = bind(fragment, templateCreateElement);
 			let params = [createElement], length = (fragment.templateValue !== undefined && 1)
