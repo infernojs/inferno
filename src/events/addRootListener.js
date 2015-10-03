@@ -1,12 +1,19 @@
 import rootListeners from './shared/rootListeners';
+import capturable from './shared/capturable';
+import evtList from './shared/evtList';
 
 export default function addRootListener() {
-	// FIX ME! Take this out into it's own module and do some event cleanup along the road?
-	document.addEventListener( 'click', ( e ) => {
-		for ( let i = 0; i < rootListeners.click.length; i++) {
-			if ( rootListeners.click[i].target === e.target ) {
-				rootListeners.click[i].callback( e );
-			}
-		}
-	} );
+
+    for (let i = 0; i < events.length; i++) {
+
+        let event = events[i];
+
+        document.addEventListener(event, (e) => {
+            for (let ii = 0; ii < rootListeners[event].length; ii++) {
+                if (rootListeners[event][ii].target === e.target) {
+                    rootListeners[event][ii].callback(e);
+                }
+            }
+        }, capturable[name] !== undefined);
+    }
 }
