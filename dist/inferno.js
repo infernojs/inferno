@@ -407,7 +407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			case _enumTemplateTypes2['default'].FUNCTIONAL_API:
 				var createElement = (0, _utilBind2['default'])(fragment, _templateCreateElement2['default']);
 				var params = [createElement],
-				    length = fragment.templateValue !== undefined && 1 || fragment.templateValues && fragment.templateValues.length || 0;
+				    length = fragment.templateValue != null && 1 || fragment.templateValues && fragment.templateValues.length || 0;
 	
 				//create our pointers, for example 0,1,2,3,4,5 as params to pass through
 				for (var i = 0; i < length; i++) {
@@ -1622,7 +1622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function createTemplate(templateFunction) {
 		//give the function a random key
-		templateFunction.key = 't' + Math.floor(Math.random() * 1000);
+		templateFunction.key = 't' + Math.floor(Math.random() * 100000);
 		templateFunction.type = _enumTemplateTypes2['default'].FUNCTIONAL_API;
 		return templateFunction;
 	}
@@ -3066,8 +3066,14 @@ return /******/ (function(modules) { // webpackBootstrap
 			case 'id':
 				fragmentType = _enumFragmentValueTypes2['default'].ATTR_ID;
 				break;
-			case 'value':
-				fragmentType = _enumFragmentValueTypes2['default'].ATTR_VALUE;
+			case 'label':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_LABEL;
+				break;
+			case 'placeholder':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_PLACEHOLDER;
+				break;
+			case 'name':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_NAME;
 				break;
 			case 'width':
 				fragmentType = _enumFragmentValueTypes2['default'].ATTR_WIDTH;
@@ -3075,17 +3081,71 @@ return /******/ (function(modules) { // webpackBootstrap
 			case 'height':
 				fragmentType = _enumFragmentValueTypes2['default'].ATTR_HEIGHT;
 				break;
-			case 'type':
-				fragmentType = _enumFragmentValueTypes2['default'].ATTR_TYPE;
+			case 'designMode':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_DESIGNMODE;
 				break;
-			case 'name':
-				fragmentType = _enumFragmentValueTypes2['default'].ATTR_NAME;
+			case 'htmlFor':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_HTMLFOR;
 				break;
-			case 'label':
-				fragmentType = _enumFragmentValueTypes2['default'].ATTR_LABEL;
+			case 'playbackRate':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_PLAYBACKRATE;
 				break;
-			case 'placeholder':
-				fragmentType = _enumFragmentValueTypes2['default'].ATTR_PLACEHOLDER;
+			case 'preload':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_PRELOAD;
+				break;
+			case 'srcDoc':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_SRCDOC;
+				break;
+			case 'autoplay':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_AUTOPLAY;
+				break;
+			case 'checked':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_CHECKED;
+				break;
+			case 'isMap':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_ISMAP;
+				break;
+			case 'loop':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_LOOP;
+				break;
+			case 'muted':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_MUTED;
+				break;
+			case 'readOnly':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_READONLY;
+				break;
+			case 'reversed':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_REVERSED;
+				break;
+			case 'required':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_REQUIRED;
+				break;
+			case 'selected':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_SELECTED;
+				break;
+			case 'spellCheck':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_SPELLCHECK;
+				break;
+			case 'trueSpeed':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_TRUESPEED;
+				break;
+			case 'multiple':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_MULTIPLE;
+				break;
+			case 'controls':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_CONTROLS;
+				break;
+			case 'defer':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_DEFER;
+				break;
+			case 'noValidate':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_NOVALIDATE;
+				break;
+			case 'scoped':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_SCOPED;
+				break;
+			case 'resize':
+				fragmentType = _enumFragmentValueTypes2['default'].ATTR_NO_RESIZE;
 				break;
 			case 'ref':
 				fragmentType = _enumFragmentValueTypes2['default'].ATTR_REF;
@@ -3173,96 +3233,96 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
-				value: true
+					value: true
 	});
 	exports['default'] = {
-				acceptCharset: 'accept-charset',
-				className: 'class',
-				htmlFor: 'for',
-				httpEquiv: 'http-equiv',
+					acceptCharset: 'accept-charset',
+					className: 'class',
+					htmlFor: 'for',
+					httpEquiv: 'http-equiv',
 	
-				// SVG
+					// SVG
 	
-				accentHeight: 'accent-height',
-				alignmentBaseline: 'alignment-baseline',
-				arabicForm: 'arabic-form',
-				autoStartReverse: 'auto-start-reverse',
-				baselineShift: 'baseline-shift',
-				bufferedRendering: 'buffered-rendering',
-				colorRendering: 'color-rendering',
-				colorInterpolation: 'color-interpolation',
-				colorInterpolationFilters: 'color-interpolation-filters',
-				colorProfile: 'color-profile',
-				clipPath: 'clip-path',
-				dominantBaseline: 'dominant-baseline',
-				fillOpacity: 'fill-opacity',
-				fillRule: 'fill-rule',
-				filterRes: 'filterRes',
-				filterUnits: 'filterUnits',
-				floodColor: 'flood-color',
-				floodOpacity: 'flood-opacity',
-				fontFamily: 'font-family',
-				fontSize: 'font-size',
-				fontStyle: 'font-style',
-				fontWeight: 'font-weight',
-				glyphName: 'glyph-name',
-				glyphRef: 'glyphRef',
-				gradientTransform: 'gradientTransform',
-				gradientUnits: 'gradientUnits',
-				horizAdvX: 'horiz-adv-x',
-				horizOriginX: 'horiz-origin-x',
-				horizOriginY: 'horiz-origin-y',
-				markerEnd: 'marker-end',
-				markerMid: 'marker-mid',
-				markerStart: 'marker-start',
-				overlinePosition: 'overline-position',
-				overlineThickness: 'overline-thickness',
-				paintOrder: 'paint-order',
-				patternContentUnits: 'patternContentUnits',
-				patternUnits: 'patternUnits',
-				pathLength: 'pathLength',
-				patternTransform: 'patternTransform',
-				pointsAtX: 'pointsAtX',
-				pointsAtY: 'pointsAtY',
-				pointsAtZ: 'pointsAtZ',
-				preserveAlpha: 'preserveAlpha',
-				preserveAspectRatio: 'preserveAspectRatio',
-				primitiveUnits: 'primitiveUnits',
-				shapeRendering: 'shape-rendering',
-				spreadMethod: 'spreadMethod',
-				stopColor: 'stop-color',
-				stopOpacity: 'stop-opacity',
-				strikethroughPosition: 'strikethrough-position',
-				strikethroughThickness: 'strikethrough-thickness',
-				strokeDashoffset: 'stroke-dashoffset',
-				strokeDasharray: 'stroke-dasharray',
-				strokeLinecap: 'stroke-linecap',
-				strokeOpacity: 'stroke-opacity',
-				strokeWidth: 'stroke-width',
-				tableValues: 'tableValues',
-				targetX: 'targetX',
-				targetY: 'targetY',
-				textLength: 'textLength',
-				underlinePosition: 'underline-position',
-				underlineThickness: 'underline-thickness',
-				unicodeBidi: 'unicode-bidi',
-				unicodeRange: 'unicode-range',
-				unitsPerEm: 'units-per-em',
-				solidColor: 'solid-color',
-				solidOpacity: 'solid-opacity',
-				strokeLinejoin: 'stroke-linejoin',
-				textAnchor: 'text-anchor',
-				textDecoration: 'text-decoration',
-				textRendering: 'text-rendering',
-				vAlphabetic: 'v-alphabetic',
-				vectorEffect: 'vector-effect',
-				vHanging: 'v-hanging',
-				vIdeographic: 'v-ideographic',
-				vMathematical: 'v-mathematical',
-				vertAdvY: 'vert-adv-y',
-				vertOriginX: 'vert-origin-x',
-				vertOriginY: 'vert-origin-y',
-				viewBox: 'viewBox'
+					accentHeight: 'accent-height',
+					alignmentBaseline: 'alignment-baseline',
+					arabicForm: 'arabic-form',
+					autoStartReverse: 'auto-start-reverse',
+					baselineShift: 'baseline-shift',
+					bufferedRendering: 'buffered-rendering',
+					colorRendering: 'color-rendering',
+					colorInterpolation: 'color-interpolation',
+					colorInterpolationFilters: 'color-interpolation-filters',
+					colorProfile: 'color-profile',
+					clipPath: 'clip-path',
+					dominantBaseline: 'dominant-baseline',
+					fillOpacity: 'fill-opacity',
+					fillRule: 'fill-rule',
+					filterRes: 'filterRes',
+					filterUnits: 'filterUnits',
+					floodColor: 'flood-color',
+					floodOpacity: 'flood-opacity',
+					fontFamily: 'font-family',
+					fontSize: 'font-size',
+					fontStyle: 'font-style',
+					fontWeight: 'font-weight',
+					glyphName: 'glyph-name',
+					glyphRef: 'glyphRef',
+					gradientTransform: 'gradientTransform',
+					gradientUnits: 'gradientUnits',
+					horizAdvX: 'horiz-adv-x',
+					horizOriginX: 'horiz-origin-x',
+					horizOriginY: 'horiz-origin-y',
+					markerEnd: 'marker-end',
+					markerMid: 'marker-mid',
+					markerStart: 'marker-start',
+					overlinePosition: 'overline-position',
+					overlineThickness: 'overline-thickness',
+					paintOrder: 'paint-order',
+					patternContentUnits: 'patternContentUnits',
+					patternUnits: 'patternUnits',
+					pathLength: 'pathLength',
+					patternTransform: 'patternTransform',
+					pointsAtX: 'pointsAtX',
+					pointsAtY: 'pointsAtY',
+					pointsAtZ: 'pointsAtZ',
+					preserveAlpha: 'preserveAlpha',
+					preserveAspectRatio: 'preserveAspectRatio',
+					primitiveUnits: 'primitiveUnits',
+					shapeRendering: 'shape-rendering',
+					spreadMethod: 'spreadMethod',
+					stopColor: 'stop-color',
+					stopOpacity: 'stop-opacity',
+					strikethroughPosition: 'strikethrough-position',
+					strikethroughThickness: 'strikethrough-thickness',
+					strokeDashoffset: 'stroke-dashoffset',
+					strokeDasharray: 'stroke-dasharray',
+					strokeLinecap: 'stroke-linecap',
+					strokeOpacity: 'stroke-opacity',
+					strokeWidth: 'stroke-width',
+					tableValues: 'tableValues',
+					targetX: 'targetX',
+					targetY: 'targetY',
+					textLength: 'textLength',
+					underlinePosition: 'underline-position',
+					underlineThickness: 'underline-thickness',
+					unicodeBidi: 'unicode-bidi',
+					unicodeRange: 'unicode-range',
+					unitsPerEm: 'units-per-em',
+					solidColor: 'solid-color',
+					solidOpacity: 'solid-opacity',
+					strokeLinejoin: 'stroke-linejoin',
+					textAnchor: 'text-anchor',
+					textDecoration: 'text-decoration',
+					textRendering: 'text-rendering',
+					vAlphabetic: 'v-alphabetic',
+					vectorEffect: 'vector-effect',
+					vHanging: 'v-hanging',
+					vIdeographic: 'v-ideographic',
+					vMathematical: 'v-mathematical',
+					vertAdvY: 'vert-adv-y',
+					vertOriginX: 'vert-origin-x',
+					vertOriginY: 'vert-origin-y',
+					viewBox: 'viewBox'
 	};
 	module.exports = exports['default'];
 
@@ -3398,6 +3458,8 @@ return /******/ (function(modules) { // webpackBootstrap
 				this.templateElement = element;
 				this.templateType = _enumFragmentValueTypes2['default'].FRAGMENT;
 				this.templateValue = children;
+			} else {
+				element.appendChild(children);
 			}
 		}
 	

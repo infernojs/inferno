@@ -12,7 +12,6 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 	let fragmentType;
 
 	switch (attrName) {
-	switch (attrName) {
 	case 'class':
 	case 'className':
 		fragmentType = fragmentValueTypes.ATTR_CLASS;
@@ -100,6 +99,9 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 		break;
 	case 'resize':
 		fragmentType = fragmentValueTypes.ATTR_NO_RESIZE;
+		break;
+	case 'ref':
+		fragmentType = fragmentValueTypes.ATTR_REF;
 		break;
 	default:
 		fragmentType = fragmentValueTypes.ATTR_OTHER;
