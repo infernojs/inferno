@@ -102,11 +102,11 @@ export default function vdomBenchTests(describe, expect, Inferno) {
                   n = nodes[i];
                   if (n.children !== null) {
                     children.push(
-                        Inferno.createFragment([n.key, renderTree(n.children)], template1, n.key)
+                        Inferno.createFragment([renderTree(n.children)], template1, n.key)
                     );
                   } else {
                     children.push(
-                        Inferno.createFragment([n.key, n.key.toString()], template2, n.key)
+                        Inferno.createFragment([n.key.toString()], template2, n.key)
                     );
                   }
                 }
