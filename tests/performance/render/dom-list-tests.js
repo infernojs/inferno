@@ -65,15 +65,19 @@ export default function domListTests(describe, expect, Inferno) {
                 return children;
             }
 
+            function render(dataModel) {
+                Inferno.render(
+                    Inferno.createFragment([renderTree(dataModel)], template1),
+                    container
+                );
+            }
+
             it('keyed list: render - insertFirst(500)', () => {
                 //we use the first dataModel for this
                 let dataModel = dataModels[0];
 
                 console.time("keyed list: insertFirst(500)");
-                Inferno.render(
-                    Inferno.createFragment([renderTree(dataModel)], template1),
-                    container
-                );
+                render(dataModel);
                 console.timeEnd("keyed list: insertFirst(500)");
 
                 expect(container.innerHTML).to.equal(
@@ -87,10 +91,7 @@ export default function domListTests(describe, expect, Inferno) {
                 dataModel.reverse();
 
                 console.time("keyed list: reverse(500)");
-                Inferno.render(
-                    Inferno.createFragment([renderTree(dataModel)], template1),
-                    container
-                );
+                render(dataModel);
                 console.timeEnd("keyed list: reverse(500)");
 
                 expect(container.innerHTML).to.equal(
