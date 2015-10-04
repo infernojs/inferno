@@ -444,9 +444,9 @@ describe('Inferno acceptance tests', () => {
 					beforeEach(() => {
 						template = Inferno.createTemplate(createElement =>
 							createElement('ul', null,
-								createElement('li', null, `I'm a li-tag`),
-								createElement('li', null, `I'm a li-tag`),
-								createElement('li', null, `I'm a li-tag`)
+								createElement('li', null, 'Im a li-tag'),
+								createElement('li', null, 'Im a li-tag'),
+								createElement('li', null, 'Im a li-tag')
 							)
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
@@ -456,7 +456,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<ul><li>I'm a li-tag</li><li>I'm a li-tag</li><li>I'm a li-tag</li></ul>`
+							`<ul><li>Im a li-tag</li><li>I'm a li-tag</li><li>Im a li-tag</li></ul>`
 						);
 					});
 				});
@@ -467,9 +467,9 @@ describe('Inferno acceptance tests', () => {
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
 							t('ul', null,
-								t('li', null, t('span', null, `I'm a li-tag`)),
-								t('li', null, t('span', null, `I'm a li-tag`)),
-								t('li', null, t('span', null, `I'm a li-tag`))
+								t('li', null, t('span', null, 'Im a li-tag')),
+								t('li', null, t('span', null, 'Im a li-tag')),
+								t('li', null, t('span', null, 'Im a li-tag'))
 							)
 						);
 						Inferno.render(Inferno.createFragment(null, template), container);
@@ -479,7 +479,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<ul><li>I'm a li-tag</li><li>I'm a li-tag</li><li>I'm a li-tag</li></ul>`
+							`<ul><li>Im a li-tag</li><li>I'm a li-tag</li><li>Im a li-tag</li></ul>`
 						);
 					});
 				});
