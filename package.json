@@ -10,10 +10,6 @@
     "build-dev": "webpack --config webpack.config.js --inline",
     "build-pro": "PROD_DEV=1 webpack --config webpack.config.js --inline"
   },
-  "dependencies": {
-    "babel-runtime": "^5.8.24",
-    "t7": "~0.3.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/trueadm/inferno.git"
@@ -34,8 +30,11 @@
       "mocha-loader": "^0.7.1",
       "uglify-loader": "^1.2.0",
       "webpack": "^1.12.2",
-      "webpack-dev-server": "^1.11.0",
+      "webpack-dev-server": "^1.12.0",
       "webpack-windows": "0.0.3",
-      "document-register-element": "^0.3.0"
+      "document-register-element": "^0.3.0",
+      "sinon": "^1.17.1",
+      "sinon-chai": "^2.8.0"
+
   }
 }
