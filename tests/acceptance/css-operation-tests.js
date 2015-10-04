@@ -1,6 +1,7 @@
 /** @jsx t */
 
 import unitlessCfg from '../../src/template/cfg/unitlessCfg';
+import extendUnitlessNumber from '../../src/template/extendUnitlessNumber';
 
 export default function cssOperationTests(describe, expect, Inferno) {
     describe('CSS operations', () => {

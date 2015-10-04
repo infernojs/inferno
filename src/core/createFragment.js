@@ -10,16 +10,22 @@ export default function createFragment(values, template, key = null) {
 		dom: null,
 		key: key,
 		next: null,
-		template: template,
-		templateTypes: null
+		template: template
 	};
 
 	if (values != null && (isArray(values))) {
-		fragmentObject.templateElements = new Array(values.length);
-		fragmentObject.templateTypes = new Array(values.length);
-		fragmentObject.templateValues = values;
+		if(values.length === 1) {
+			fragmentObject.templateElement = null;
+			fragmentObject.templateType = null;
+			fragmentObject.templateValue = values[0];	
+		} else {
+			fragmentObject.templateElements = new Array(values.length);
+			fragmentObject.templateTypes = new Array(values.length);
+			fragmentObject.templateValues = values;
+		}
 	} else  {
 		fragmentObject.templateElement = null;
+		fragmentObject.templateType = null;
 		fragmentObject.templateValue = values;
 	}
 

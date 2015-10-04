@@ -1,8 +1,8 @@
 import template from '.';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
+import isArray from '../util/isArray';
 
 export default function createElement(tag, props, ...children) {
-
 	let element;
 	let is = props && (props.is || null); // type extension
     let xmlns = props && (props.xmlns || null); // xmlns
@@ -72,12 +72,25 @@ export default function createElement(tag, props, ...children) {
 			}
 		}
 		else if ((children = children[0]).pointer !== undefined) {
-			let value = this.templateValues[children.pointer];
+			let value = this.templateValue || this.templateValues[children.pointer];
 
 			if (typeof value !== 'object') {
 				element.textContent = value;
-				this.templateElements[children.pointer] = element;
-				this.templateTypes[children.pointer] = fragmentValueTypes.TEXT;
+				if(this.templateValue) {
+					this.templateElement = element;
+					this.templateType = fragmentValueTypes.TEXT;
+				} else {
+					this.templateElements[children.pointer] = element;
+					this.templateTypes[children.pointer] = fragmentValueTypes.TEXT;
+				}
+			} else if (isArray(value)) {
+				if(this.templateValue) {
+					this.templateElement = element;
+					this.templateType = fragmentValueTypes.LIST;
+				} else {
+					this.templateElements[children.pointer] = element;
+					this.templateTypes[children.pointer] = fragmentValueTypes.LIST;
+				}
 			}
 		}
 		else if (typeof children !== 'object') {
