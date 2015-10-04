@@ -16,7 +16,7 @@ import domOperationTests from './acceptance/dom-operation-tests';
 import cssOperationTests from './acceptance/css-operation-tests';
 
 //performance render test group
-import renderDomListTests from './performance/render/dom-list-tests';
+import renderVdomBenchTests from './performance/render/vdom-bench-tests';
 
 describe('Inferno acceptance tests', () => {
 	describe('Inferno.render()', () => {
@@ -37,6 +37,6 @@ describe('Inferno acceptance tests', () => {
 
 describe('Inferno performance tests', () => {
 	describe('Inferno.render()', () => {
-		renderDomListTests(describe, expect, Inferno);
+		renderVdomBenchTests(describe, expect, Inferno);
 	});
 });
