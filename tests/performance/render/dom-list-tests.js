@@ -22,7 +22,7 @@ function addGroupSingleChild(count) {
 
 //these are replicas of the vdom benchmark test
 export default function domListTests(describe, expect, Inferno) {
-    describe('DOM lists tests', () => {
+    describe('DOM lists tests (perf is in console)', () => {
         let container;
         let dataModels = null;
 
