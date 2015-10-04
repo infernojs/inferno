@@ -276,48 +276,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
-		value: true
+				value: true
 	});
 	exports['default'] = {
-		onBlur: 'blur',
-		onChange: 'change',
-		onClick: 'click',
-		onContextMenu: 'contextmenu',
-		onCopy: 'copy',
-		onCut: 'cut',
-		onDoubleClick: 'dblclick',
-		onDrag: 'drag',
-		onDragEnd: 'dragend',
-		onDragEnter: 'dragenter',
-		onDragExit: 'dragexit',
-		onDragLeave: 'dragleave',
-		onDragOver: 'dragover',
-		onDragStart: 'dragstart',
-		onDrop: 'drop',
-		onError: 'error',
-		onFocus: 'focus',
-		onInput: 'input',
-		onInvalid: 'invalid',
-		onKeyDown: 'keydown',
-		onKeyPress: 'keypress',
-		onKeyUp: 'keyup',
-		onLoad: 'load',
-		onMouseDown: 'mousedown',
-		onMouseEnter: 'mouseenter',
-		onMouseLeave: 'mouseleave',
-		onMouseMove: 'mousemove',
-		onMouseOut: 'mouseout',
-		onMouseOver: 'mouseover',
-		onMouseUp: 'mouseup',
-		onPaste: 'paste',
-		onReset: 'reset',
-		onScroll: 'scroll',
-		onSubmit: 'submit',
-		onTouchCancel: 'touchcancel',
-		onTouchEnd: 'touchend',
-		onTouchMove: 'touchmove',
-		onTouchStart: 'touchstart',
-		onWheel: 'wheel'
+				onBlur: 'blur',
+				onChange: 'change',
+				onClick: 'click',
+				onCompositionEnd: 'compositionend',
+				onCompositionStart: 'compositionstart',
+				onCompositionUpdate: 'compositionupdate',
+				onCopy: 'copy',
+				onCut: 'cut',
+				onDoubleClick: 'dblclick',
+				onDrag: 'drag',
+				onDragEnd: 'dragend',
+				onDragEnter: 'dragenter',
+				onDragExit: 'dragexit',
+				onDragLeave: 'dragleave',
+				onDragOver: 'dragover',
+				onDragStart: 'dragstart',
+				onDrop: 'drop',
+				onError: 'error',
+				onFocus: 'focus',
+				onInput: 'input',
+				onInvalid: 'invalid',
+				onKeyDown: 'keydown',
+				onKeyPress: 'keypress',
+				onKeyUp: 'keyup',
+				onLoad: 'load',
+				onMouseDown: 'mousedown',
+				onMouseEnter: 'mouseenter',
+				onMouseLeave: 'mouseleave',
+				onMouseMove: 'mousemove',
+				onMouseOut: 'mouseout',
+				onMouseOver: 'mouseover',
+				onMouseUp: 'mouseup',
+				onPaste: 'paste',
+				onReset: 'reset',
+				onScroll: 'scroll',
+				onSelectionChange: 'selectionchange',
+				onTextInput: 'textInput',
+				onSubmit: 'submit',
+				onTouchCancel: 'touchcancel',
+				onTouchEnd: 'touchend',
+				onTouchMove: 'touchmove',
+				onTouchStart: 'touchstart',
+				onWheel: 'wheel'
 	};
 	module.exports = exports['default'];
 
@@ -2967,7 +2971,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function addRootListener() {
 	    var _loop = function (i) {
 	
-	        var event = events[i];
+	        var event = _sharedEvtList2['default'][i];
 	
 	        document.addEventListener(event, function (e) {
 	            for (var ii = 0; ii < _sharedRootListeners2['default'][event].length; ii++) {
@@ -2978,7 +2982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, _sharedCapturable2['default'][name] !== undefined);
 	    };
 	
-	    for (var i = 0; i < events.length; i++) {
+	    for (var i = 0; i < _sharedEvtList2['default'].length; i++) {
 	        _loop(i);
 	    }
 	}
@@ -3011,7 +3015,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
-	exports['default'] = ['blur', 'change', 'click', 'contextmenu', 'copy', 'cut', 'dblclick', 'drag', 'dragend', 'dragenter', 'dragexit', 'dragleave', 'dragover', 'dragstart', 'drop', 'error', 'focus', 'input', 'invalid', 'keydown', 'keypress', 'keyup', 'load', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'paste', 'reset', 'scroll', 'submit', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'wheel'];
+	exports['default'] = ['blur', 'change', 'click', 'compositionend', 'compositionstart', 'compositionupdate', 'contextmenu', 'copy', 'cut', 'dblclick', 'drag', 'dragend', 'dragenter', 'dragexit', 'dragleave', 'dragover', 'dragstart', 'drop', 'error', 'focus', 'input', 'invalid', 'keydown', 'keypress', 'keyup', 'load', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'paste', 'reset', 'selectionchange', 'scroll', 'submit', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'wheel'];
 	module.exports = exports['default'];
 
 /***/ },
