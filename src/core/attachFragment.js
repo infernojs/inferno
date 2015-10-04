@@ -33,7 +33,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 	        return;
 	    }
 	}
-	
+
 		//there are different things we need to check for now
 		switch (template.type) {
 		case templateTypes.TEMPLATE_API:
@@ -41,7 +41,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			break;
 		case templateTypes.FUNCTIONAL_API:
 			let createElement = bind(fragment, templateCreateElement);
-			let params = [createElement], length = (fragment.templateValue !== undefined && 1)
+			let params = [createElement], length = (fragment.templateValue != null && 1)
 				|| (fragment.templateValues && fragment.templateValues.length) || 0;
 
 			//create our pointers, for example 0,1,2,3,4,5 as params to pass through

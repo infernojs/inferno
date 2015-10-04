@@ -29,7 +29,7 @@ export default function createElement(tag, props, ...children) {
 	}
 
 	let len = children.length;
-	
+
 	if(len > 0) {
 		if (len > 1) {
 			for (let i = 0; i < len; i++) {
@@ -87,6 +87,8 @@ export default function createElement(tag, props, ...children) {
 			this.templateElement = element;
 			this.templateType = fragmentValueTypes.FRAGMENT;
 			this.templateValue = children;
+		} else {
+			element.appendChild(children);
 		}
 	}
 

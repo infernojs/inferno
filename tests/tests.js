@@ -2,350 +2,20 @@
 /* global describe it beforeEach afterEach */
 import Inferno from '../src';
 import { expect } from 'chai';
-import t7 from '../examples/t7';
 import attrOps from '../src/template/AttributeOps';
 import unitlessCfg from '../src/template/cfg/unitlessCfg';
 import extendUnitlessNumber from '../src/template/extendUnitlessNumber';
 import get from './tools/get';
 
-// expose t7 and Inferno globally
-global.t7 = t7;
+import svgTests from './groups/svg-tests';
+
 global.Inferno = Inferno;
 
 describe('Inferno acceptance tests', () => {
 	describe('Inferno.render()', () => {
-      describe('SVG tests', () => {
 
-			let container, template;
+		svgTests(describe, expect, Inferno);
 
-			beforeEach(() => {
-				container = document.createElement('div');
-			});
-
-			afterEach(() => {
-				Inferno.clearDomElement(container);
-				container = null;
-			});
-
-                 describe('should respect SVG namespace', () => {
-				
-					it('Initial render (creation)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg></svg>'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg fontSize={200}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( 'fontSize' ) ).to.eql('200');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg fontSize="200"></svg>'
-						);
-					});
-				 });
-				 
-				 describe('should respect SVG namespace and render SVG attributes', () => {
-				
-					it('Initial render (creation)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( 'xmlns' ) ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( 'version' ) ).to.eql( '1.1' );
-                       expect( container.firstChild.getAttribute( 'baseProfile' ) ).to.eql( 'full' );
-                       expect( container.firstChild.getAttribute( 'width' ) ).to.eql( '200' );
-					   
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg width={200}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                        expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
-                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                        expect( container.firstChild.getAttribute( 'width' ) ).to.eql('200');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg width="200"></svg>'
-						);
-					});
-				});	
-				
-				 describe('should set "class" attribute', () => {
-				
-					it('Initial render (creation)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( 'xmlns' ) ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( 'class' ) ).to.eql( 'hello, world!' );
-					   
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg height={200}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'svg' );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( 'height' ) ).to.eql('200');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg height="200"></svg>'
-						);
-					});
-				});
-				
-				describe('should drive a advanced SVG circle with attributes', () => {
-				
-					it('Initial render (creation)', () => {
-
-                       let style = {stroke:'#000099', fill:'#000099', fontSize:18};
-						
-						template = Inferno.createTemplate((t, val1) =>
-							<svg>
-                            <rect x="50" y="200" rx="5" ry="5" width="100" height="100" fill="#CCCCFF"/>
-                            <text x="55" y="220" style={style}>Weeeee!</text>
-                            <animateTransform attributeName="transform" type="rotate" values="0 150 100; 360 150 100" repeatCount="indefinite" begin="0s" dur="5s" />
-                            </svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.firstChild.getAttribute( "width" ) ).to.eql( '100' );
-                       expect( container.firstChild.firstChild.getAttribute( "height" ) ).to.eql( '100' );
-                       expect( container.firstChild.firstChild.getAttribute( "fill" ) ).to.eql( '#CCCCFF' );
-
-						expect(
-							container.innerHTML
-						).to.equal(
-							 '<svg><rect x="50" y="200" rx="5" ry="5" width="100" height="100" fill="#CCCCFF"></rect><text x="55" y="220" style="stroke: rgb(0, 0, 153); fill: rgb(0, 0, 153); font-size: 18px;">Weeeee!</text><animatetransform attributename="transform" type="rotate" values="0 150 100; 360 150 100" repeatcount="indefinite" begin="0s" dur="5s"></animatetransform></svg>'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg height={200}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "height" ) ).to.eql('200');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg height="200"></svg>'
-						);
-					});
-				});
-
-				 describe('should set "className" property as a "class" attribute', () => {
-				
-					it('Initial render (creation)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg xmlns="http://www.w3.org/2000/svg" className="hello, world!"></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
-                       expect( container.firstChild.getAttribute( "class" ) ).to.eql( "hello, world!" );
-					   
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg xmlns="http://www.w3.org/2000/svg" class="hello, world!"></svg>'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg xmlns="http://www.w3.org/2000/svg" className={false}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
-                       expect( container.firstChild.getAttribute( "class" ) ).to.eql('false');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg xmlns="http://www.w3.org/2000/svg" class="false"></svg>'
-						);
-					});
-				});
-					
-				 describe('should set "viewBox" attribute', () => {
-				
-					it('Initial render (creation)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "xmlns" ) ).to.eql( "http://www.w3.org/2000/svg" );
-                       expect( container.firstChild.getAttribute( "viewBox" ) ).to.eql( '0 0 50 20' );
-					   
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg x1={200} x2={10}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "x1" ) ).to.eql('200');
-                       expect( container.firstChild.getAttribute( "x2" ) ).to.eql('10');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg x1="200" x2="10"></svg>'
-						);
-					});
-				});	
-				
-				describe('should SVG element with children', () => {
-				
-					it('Initial render (creation)', () => {
-                        
-						let style_1 = { border: "1px solid #cccccc" }
-                        let style_2 = { stroke: "#000000", fill: "#none" }
-	
-						template = Inferno.createTemplate((t, val1) =>
-							<svg width="100" height="200" viewBox="0 0 50 50" preserveAspectRatio="xMinYMin meet" style={style_1}><circle cx="25" cy="25" r="25" style={style_2}/></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-					   
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg width="100" height="200" viewBox="0 0 50 50" preserveaspectratio="xMinYMin meet" style="border: 1px solid rgb(204, 204, 204);"></svg>'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg width={200}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "width" ) ).to.eql('200');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg width="200"></svg>'
-						);
-					});
-				});	
-
-				describe('should set xlink namespace attribute (no-JSX)', () => {
-				
-					it('Initial render (creation)', () => {
-
-						template = Inferno.createTemplate(t =>
-							t('img',  { "xlink:href": "test.jpg" })
-						);
-						Inferno.render(Inferno.createFragment(null, template), container);
-
-						expect(container.firstChild.getAttributeNS( "http://www.w3.org/1999/xlink", "href" ) ).to.eql( "test.jpg" );
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<img xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="test.jpg">'
-						);
-					});
-					
-					it('Second render (update)', () => {
-
-						template = Inferno.createTemplate((t, val1) =>
-							<svg version={200}></svg>
-						);
-						Inferno.render(Inferno.createFragment(false, template), container);
-
-                       expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );
-                       expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/2000/svg' );
-                       expect( container.firstChild.getAttribute( "version" ) ).to.eql('200');
-						expect(
-							container.innerHTML
-						).to.equal(
-							'<svg version="200"></svg>'
-						);
-					});
-				});	
-	  });
-	  
         describe('MathML tests', () => {
 
 			let container, template;
@@ -360,15 +30,15 @@ describe('Inferno acceptance tests', () => {
 			});
 
 				describe('should respect default MathML namespace', () => {
-				
+
 					it('Initial render (creation)', () => {
 
 						template = Inferno.createTemplate((t, val1) =>
 							<math></math>
 						);
-		                
+
 						Inferno.render(Inferno.createFragment(false, template), container);
-						
+
                        expect( container.firstChild.tagName.toLowerCase() ).to.eql( 'math' );
                        expect( container.firstChild.namespaceURI ).to.eql( 'http://www.w3.org/1998/Math/MathML' );
 
@@ -395,9 +65,9 @@ describe('Inferno acceptance tests', () => {
 							'<svg width="200"></svg>'
 						);
 					});
-				});	
+				});
 			});
-						
+
 		describe('DOM elements tests', () => {
 			let container;
 
@@ -479,7 +149,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<ul><li>I'm a li-tag</li><li>I'm a li-tag</li><li>I'm a li-tag</li></ul>`
+							`<ul><li><span>I'm a li-tag</span></li><li><span>I'm a li-tag</span></li><li><span>I'm a li-tag</span></li></ul>`
 						);
 					});
 				});
@@ -546,7 +216,7 @@ describe('Inferno acceptance tests', () => {
 						);
 					});
 				});
-			
+
 				describe('should set values as properties by default (no JSX)', () => {
 					let template;
 
@@ -723,7 +393,7 @@ describe('Inferno acceptance tests', () => {
 							'<input class="Hello, world!">'
 						);
 					});
-                    
+
 					// Ensure className={false} turns into string 'false' on update
 					it('Second render (update)', () => {
 
@@ -2255,7 +1925,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<select multiple=""><optgroup label="foo-group"></optgroup><optgroup label="bar-group"></optgroup></select>`
+							`<select multiple=""><optgroup label="foo-group"><option>bar</option></optgroup><optgroup label="bar-group"><option>foo</option></optgroup></select>`
 						);
 					});
 
@@ -2264,7 +1934,7 @@ describe('Inferno acceptance tests', () => {
 						expect(
 							container.innerHTML
 						).to.equal(
-							`<select multiple=""><optgroup label="foo-group"></optgroup><optgroup label="bar-group"></optgroup></select>`
+							`<select multiple=""><optgroup label="foo-group"><option>Rocks</option></optgroup><optgroup label="bar-group"><option>Inferno</option></optgroup></select>`
 						);
 					});
 				});
@@ -2298,7 +1968,7 @@ describe('Inferno acceptance tests', () => {
 
                     let template,
                         styles = {color: 'red'};
-					
+
 					beforeEach(() => {
 						template = Inferno.createTemplate(t =>
 							<div style={null}></div>
@@ -2313,7 +1983,7 @@ describe('Inferno acceptance tests', () => {
 							'<div></div>'
 						);
 					});
-					
+
 					it('Second render (update)', () => {
 						template = Inferno.createTemplate(t =>
 							<div style={styles}></div>
@@ -2325,7 +1995,7 @@ describe('Inferno acceptance tests', () => {
 							'<div style="color: red;"></div>'
 						);
 					});
-					
+
 				});
 
 				describe('should ignore null styles', () => {
@@ -2520,92 +2190,6 @@ describe('Inferno acceptance tests', () => {
 					});
 				});
 			});
-
-			describe('using the Inferno t7 template API', () => {
-				beforeEach(() => {
-					t7.setOutput(t7.Outputs.Inferno);
-				});
-
-				it('should render a basic example', () => {
-					Inferno.render(
-						t7`<div>Hello world</div>`,
-						container
-					);
-
-					let test = container.innerHTML;
-					let expected = '<div>Hello world</div>';
-
-					expect(test).to.equal(expected);
-				});
-
-				it('should render attributes', () => {
-					Inferno.render(
-						t7`<div id="foo" className="bar"></div>`,
-						container
-					);
-
-					let test = container.innerHTML;
-					let expected = '<div id="foo" class="bar"></div>';
-
-					expect(test).to.equal(expected);
-				});
-
-				it('should render boolean attributes', () => {
-					Inferno.render(
-						t7`<div checked="checked"></div>`,
-						container
-					);
-
-					let test = container.innerHTML;
-					let expected = '<div></div>';
-
-					expect(container.firstChild.checked).to.eql('checked');
-					expect(test).to.equal(expected);
-				});
-
-				it('should render a basic example with dynamic values', () => {
-					let val1 = 'Inferno';
-					let val2 = 'Owns';
-
-					Inferno.render(
-						t7`<div>Hello world - ${ val1 } ${ val2 }</div>`,
-						container
-					);
-
-					let test = container.innerHTML;
-					let expected = '<div>Hello world - Inferno Owns</div>';
-
-					expect(test).to.equal(expected);
-				});
-
-				it('should render a basic example with dynamic values and props', () => {
-					let val1 = 'Inferno';
-					let val2 = 'Rocks';
-
-					Inferno.render(
-						t7`<div class='foo'><span class='bar'>${ val1 }</span><span class='yar'>${ val2 }</span></div>`,
-						container
-					);
-
-					expect(
-						container.innerHTML
-					).to.equal(
-						`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
-					);
-				});
-
-				it('should properly render input download attribute', () => {
-					Inferno.render(
-						t7`<input download=${ false } />`,
-						container
-					);
-
-					let test = container.innerHTML;
-					let expected = '<input>';
-
-					expect(test).to.equal(expected);
-				});
-			});
 		});
 
 		describe('Virtual elements tests', () => {
@@ -2658,55 +2242,6 @@ describe('Inferno acceptance tests', () => {
 
 					Inferno.render(
 						Inferno.createFragment(['Inferno', 'Rocks'], template),
-						container
-					);
-
-					expect(
-						container.innerHTML
-					).to.equal(
-						`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
-					);
-				});
-			});
-
-			describe('using the Inferno t7 template API', () => {
-				beforeEach(() => {
-					t7.setOutput(t7.Outputs.Inferno);
-				});
-
-				it('should render a basic example', () => {
-					Inferno.render(
-						t7`<div>Hello world</div>`,
-						container
-					);
-
-					let test = container.innerHTML;
-					let expected = '<div>Hello world</div>';
-
-					expect(test).to.equal(expected);
-				});
-
-				it('should render a basic example with dynamic values', () => {
-					let val1 = 'Inferno';
-					let val2 = 'Owns';
-
-					Inferno.render(
-						t7`<div>Hello world - ${ val1 } ${ val2 }</div>`,
-						container
-					);
-
-					let test = container.innerHTML;
-					let expected = '<div>Hello world - Inferno Owns</div>';
-
-					expect(test).to.equal(expected);
-				});
-
-				it('should render a basic example with dynamic values and props', () => {
-					let val1 = 'Inferno';
-					let val2 = 'Rocks';
-
-					Inferno.render(
-						t7`<div class='foo'><span class='bar'>${ val1 }</span><span class='yar'>${ val2 }</span></div>`,
 						container
 					);
 
@@ -2796,50 +2331,6 @@ describe('Inferno acceptance tests', () => {
 					);
 				});
 			});
-
-			describe('using the Inferno t7 template API', () => {
-				beforeEach(() => {
-					t7.setOutput(t7.Outputs.Inferno);
-				});
-
-				it('should render a basic example', () => {
-					let test = Inferno.renderToString(
-						t7`<div>Hello world</div>`
-					);
-
-					let expected = '<div>Hello world</div>';
-
-					expect(test).to.equal(expected);
-				});
-
-				it('should render a basic example with dynamic values', () => {
-					let val1 = 'Inferno';
-					let val2 = 'Owns';
-
-					let test = Inferno.renderToString(
-						t7`<div>Hello world - ${ val1 } ${ val2 }</div>`
-					);
-
-					let expected = '<div>Hello world - Inferno Owns</div>';
-
-					expect(test).to.equal(expected);
-				});
-
-				it('should render a basic example with dynamic values and props', () => {
-					let val1 = 'Inferno';
-					let val2 = 'Rocks';
-
-					let test = Inferno.renderToString(
-						t7`<div class='foo'><span class='bar'>${ val1 }</span><span class='yar'>${ val2 }</span></div>`
-					);
-
-					expect(
-						test
-					).to.equal(
-						`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
-					);
-				});
-			});
 		});
 
 		describe('Virtual elements tests', () => {
@@ -2898,50 +2389,6 @@ describe('Inferno acceptance tests', () => {
 						`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
 					);
 				});
-			});
-		});
-
-		describe('using the Inferno t7 template API', () => {
-			beforeEach(() => {
-				t7.setOutput(t7.Outputs.Inferno);
-			});
-
-			it('should render a basic example', () => {
-				let test = Inferno.renderToString(
-					t7`<div>Hello world</div>`
-				);
-
-				let expected = '<div>Hello world</div>';
-
-				expect(test).to.equal(expected);
-			});
-
-			it('should render a basic example with dynamic values', () => {
-				let val1 = 'Inferno';
-				let val2 = 'Owns';
-
-				let test = Inferno.renderToString(
-					t7`<div>Hello world - ${ val1 } ${ val2 }</div>`
-				);
-
-				let expected = '<div>Hello world - Inferno Owns</div>';
-
-				expect(test).to.equal(expected);
-			});
-
-			it('should render a basic example with dynamic values and props', () => {
-				let val1 = 'Inferno';
-				let val2 = 'Rocks';
-
-				let test = Inferno.renderToString(
-					t7`<div class='foo'><span class='bar'>${ val1 }</span><span class='yar'>${ val2 }</span></div>`
-				);
-
-				expect(
-					test
-				).to.equal(
-					`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
-				);
 			});
 		});
 	});
