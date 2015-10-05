@@ -11,6 +11,9 @@ import renderVirtualElementsTests from './acceptance/render/virtual-elements-tes
 import renderToStringDomElementsTests from './acceptance/renderToString/dom-elements-tests';
 import renderToStringVirtualElementsTests from './acceptance/renderToString/virtual-elements-tests';
 
+// DOM event tests
+import domEventTests from './acceptance/dom-events-tests';
+
 //acceptance operation tests
 import domOperationTests from './acceptance/dom-operation-tests';
 import cssOperationTests from './acceptance/css-operation-tests';
@@ -31,6 +34,7 @@ describe('Inferno acceptance tests', () => {
 		renderToStringVirtualElementsTests(describe, expect, Inferno);
 	});
 
+	domEventTests(describe, expect, Inferno);
 	cssOperationTests(describe, expect, Inferno);
 	domOperationTests(describe, expect, Inferno);
 });
