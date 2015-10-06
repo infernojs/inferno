@@ -1,9 +1,14 @@
-import rootListeners from './shared/rootListeners';
-import events from './shared/events';
+import isEventSupported from './isEventSupported';
 
-export default function addEventListener(parentDom, listenerName, callback) {
-	rootListeners[events[listenerName]].push({
-		target: parentDom,
-		callback: callback
-	});
-}
+export default (element, type, callback, useCapture) => {
+
+    if (!element) {
+        return null;
+    }
+
+    // Support: Opera 10, Chrome, Safari, Internet Explorer 9+
+    if (type === "wheel" && (!isEventSupported('wheel'))) {
+        type = 'mousewheel';
+    }
+    element.addEventListener(type, callback, useCapture);
+};

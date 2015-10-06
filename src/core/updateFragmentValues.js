@@ -1,8 +1,7 @@
 import updateFragment from './updateFragment';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 import updateFragmentList from './updateFragmentList';
-import clearEventListeners from '../events/clearEventListeners';
-import addEventListener from '../events/addEventListener';
+import eventManager from '../events/eventManager';
 import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
 import attrOps from '../template/AttributeOps';
@@ -140,8 +139,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 					//custom attribute, so simply setAttribute it
 				if (!element.props) {
 					if (events[type] != null) {
-						clearEventListeners(element, type);
-						addEventListener(element, type, fragment.templateValues[i]);
+						eventManager.addListener(element, type, fragment.templateValues[i]);
 					} else {
 						attrOps.set(element, type, fragment.templateValues[i], true);
 					}

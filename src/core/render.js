@@ -1,10 +1,7 @@
-import addRootDomEventListerners from '../events/addRootListener';
 import contexts                  from '../vars/contexts';
 import getContext                from './getContext';
 import attachFragment            from './attachFragment';
 import updateFragment            from './updateFragment';
-
-let initialisedListeners = false;
 
 function render(fragment, dom, component) {
 	let context, generatedFragment;
@@ -27,10 +24,7 @@ function render(fragment, dom, component) {
 			component.componentDidMount();
 		}
 	} else {
-		if (initialisedListeners === false) {
-			addRootDomEventListerners();
-			initialisedListeners = true;
-		}
+
 		context = getContext(dom);
 
 		if (context) {

@@ -1,6 +1,5 @@
 import events from '../events/shared/events';
-import clearEventListeners from '../events/clearEventListeners';
-import addEventListener from '../events/addEventListener';
+import eventManager from '../events/eventManager';
 import attrOps from './AttributeOps';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
@@ -146,8 +145,7 @@ export default function addAttributes(node, attrs, fragment) {
 		if (attrVal !== undefined) {
 			// events
 			if (events[attrName] !== undefined) {
-				clearEventListeners(node, attrName);
-				addEventListener(node, attrName, attrVal);
+				eventManager.addListener(node, attrName, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
 				attrOps.set(node, attrName, attrVal);
