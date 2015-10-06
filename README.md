@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=new-build)](https://travis-ci.org/trueadm/inferno)
 
-Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. It takes an unconventional approach to the Virtual DOM; Inferno does not rely on diffing the DOM (an expensive operation), but instead on smart value diffing  static node caching, assuring that it only performs the minimal work involved in updating the DOM. In addition to this, we painstakingly optimize the code to make sure that there is as little overhead as possible. We are currently the fastest VDOM implementation on the [benchmarks](#benchmarks).
+Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. It takes an unconventional approach to the Virtual DOM; Inferno does not rely on diffing the DOM (an expensive operation), but instead on smart value diffing  static node caching, assuring that it only performs the minimal work involved in updating the DOM. 
+
+In addition to this, we've painstakingly optimized the code to make sure that there is as little overhead as possible. We are currently the fastest vDOM implementation on the [benchmarks](#benchmarks). To date, there is no faster JavaScript framework out there in any benchmark tested.
 
 Inferno is compatible with the React API and JSX syntax, and works great with Flux, Cycle, and RxJS.
 
