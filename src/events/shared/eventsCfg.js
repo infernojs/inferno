@@ -1,7 +1,6 @@
 import capturedEvents   from '../shared/capturedEvents';
 import noCaptureEvents  from '../shared/noCaptureEvents';
 import focusEvents      from '../shared/focusEvents';
-import addEventListener from '../addEventListener';
 import root             from '../root';
 import isEventSupported from '../isEventSupported';
 
@@ -24,17 +23,13 @@ if (document.body) {
             setup: focusEvents && (focusEvents[type] && (isEventSupported(focusEvents[type]))) ?
                 function() {
                     const type = this.type;
-                    addEventListener(
-                        document.body,
-                        focusEvents[type],
+                    document.addEventListener(focusEvents[type],
                         e => {
                             addEventListener(e, type);
                         });
                 } :
                 function() {
-                    addEventListener(
-                        document.body,
-                        this.type ,
+                    document.addEventListener(this.type,
                         root.addRootListener,
                         true);
                 }

@@ -2,8 +2,6 @@ import events              from './shared/events';
 import capturedEvents      from './shared/capturedEvents';
 import getUniqueId         from './getUniqueId';
 import root                from './root';
-import addEventListener    from './addEventListener';
-import removeEventListener from './removeEventListener';
 import rootListeners       from './vars/rootListeners';
 import eventsCfg           from './shared/eventsCfg';
 
@@ -24,7 +22,7 @@ function addListener (element, type, listener) {
             if (config.setup) {
                 config.setup();
             } else if (config.bubbles) {
-                addEventListener(document.body, type, root.addRootListener, false);
+                document.addEventListener(type, root.addRootListener, false);
             }
             config.set = true;
         }
@@ -37,7 +35,7 @@ function addListener (element, type, listener) {
             if (config.bubbles) {
                 ++config.countListeners;
             } else {
-                addEventListener(element, type, root.eventHandler, false);
+                element.addEventListener(type, root.eventHandler, false);
             }
         }
 
@@ -67,7 +65,7 @@ function removeListener (element, type) {
                 if (cfg.bubbles) {
                     --cfg.countListeners;
                 } else {
-                    removeEventListener(element, type, root.eventHandler);
+                    element.removeEventListener(type, root.eventHandler);
                 }
             }
         }
