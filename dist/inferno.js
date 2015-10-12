@@ -1072,10 +1072,24 @@ return /******/ (function(modules) { // webpackBootstrap
 		var multiple = (0, _utilIsArray2['default'])(value),
 		    options = node.options;
 	
-		var optionNode = undefined;
-		for (var i = 0; i < options.length; i++) {
-			optionNode = options[i];
-			optionNode.selected = value != null && (multiple ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
+		if (multiple && typeof value[0] === 'number') {
+			var selectedValue = {};
+			for (i = 0; i < value.length; i++) {
+				selectedValue['' + value[i]] = true;
+			}
+	
+			for (i = 0; i < options.length; i++) {
+				var selected = selectedValue.hasOwnProperty(options[i].value);
+				if (options[i].selected !== selected) {
+					options[i].selected = true;
+				}
+			}
+		} else {
+			var optionNode = undefined;
+			for (var _i = 0; _i < options.length; _i++) {
+				optionNode = options[_i];
+				optionNode.selected = value != null && (multiple ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
+			}
 		}
 	};
 	
@@ -1655,9 +1669,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
+	var _utilUuid = __webpack_require__(71);
+	
+	var _utilUuid2 = _interopRequireDefault(_utilUuid);
+	
 	function createTemplate(templateFunction) {
 		//give the function a random key
-		templateFunction.key = 't' + Math.floor(Math.random() * 100000);
+		templateFunction.key = (0, _utilUuid2['default'])();
 		templateFunction.type = _enumTemplateTypes2['default'].FUNCTIONAL_API;
 		return templateFunction;
 	}
@@ -2397,9 +2415,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(73)["default"];
+	var _createClass = __webpack_require__(74)["default"];
 	
-	var _classCallCheck = __webpack_require__(72)["default"];
+	var _classCallCheck = __webpack_require__(73)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -4154,12 +4172,32 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 71 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	module.exports = { "default": __webpack_require__(74), __esModule: true };
+	// Generate a unique identifier
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var uuidFunc = function uuidFunc(char) {
+	  return char == 'x' ? Math.random() * 16 | 0 : (Math.random() * 16 | 0 & 0x3 | 0x8).toString(16);
+	};
+	
+	exports['default'] = function () {
+	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, uuidFunc);
+	};
+	
+	module.exports = exports['default'];
 
 /***/ },
 /* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(75), __esModule: true };
+
+/***/ },
+/* 73 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4173,12 +4211,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(71)["default"];
+	var _Object$defineProperty = __webpack_require__(72)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -4202,16 +4240,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(75);
+	var $ = __webpack_require__(76);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
