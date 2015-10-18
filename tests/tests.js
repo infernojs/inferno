@@ -9,7 +9,8 @@ import renderVirtualElementsTests from './acceptance/render/virtual-elements-tes
 
 //acceptance renderToString test group
 import renderToStringDomElementsTests from './acceptance/renderToString/dom-elements-tests';
-import renderToStringVirtualElementsTests from './acceptance/renderToString/virtual-elements-tests';
+//import renderToStringVirtualElementsTests from './acceptance/renderToString/virtual-elements-tests';
+import renderToStringTests from './acceptance/renderToString/renderToString-tests';
 
 //performance render test group
 import renderVdomBenchTests from './performance/render/vdom-bench-tests';
@@ -24,7 +25,8 @@ describe('Inferno acceptance tests', () => {
 
 	describe('Inferno.renderToString()', () => {
 		renderToStringDomElementsTests(describe, expect, Inferno);
-		renderToStringVirtualElementsTests(describe, expect, Inferno);
+//		renderToStringVirtualElementsTests(describe, expect, Inferno);
+		renderToStringTests(describe, expect, Inferno);
 	});
 
 //	domEventTests(describe, expect, Inferno);
