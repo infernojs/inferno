@@ -386,7 +386,7 @@ let tests = [{
 			onClick: 'alert("I\'m a mouse!");'
 			},
             children: ['hello'],
-            expected: '<div onClick="alert("I\'m a mouse!");">hello</div>',
+            expected: '<div onClick="alert(&quot;I\'m a mouse!&quot;);">hello</div>',
         },
 		{
             name: 'should render "onClick" as an alert message',
@@ -395,7 +395,7 @@ let tests = [{
 			onClick: 'alert("Hello world");window.close();'
 			},
             children: ['hello'],
-            expected: '<div onClick="alert("Hello world");window.close();">hello</div>',
+            expected: '<div onClick="alert(&quot;Hello world&quot;);window.close();">hello</div>',
         },
 		{
             name: 'should render "onClick" as an callable function',
