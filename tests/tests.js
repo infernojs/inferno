@@ -6,6 +6,7 @@ import renderSvgTests from './acceptance/render/svg-tests';
 import renderMathMlTests from './acceptance/render/math-ml-tests';
 import renderDomElementsTests from './acceptance/render/dom-elements-tests';
 import renderVirtualElementsTests from './acceptance/render/virtual-elements-tests';
+import escapeTests from './acceptance/render/escape-tests';
 
 //acceptance renderToString test group
 import renderToStringDomElementsTests from './acceptance/renderToString/dom-elements-tests';
@@ -22,6 +23,10 @@ describe('Inferno acceptance tests', () => {
 		renderDomElementsTests(describe, expect, Inferno);
 		renderVirtualElementsTests(describe, expect, Inferno);
 	});
+	describe('Escape HTML content, and attributes', () => {
+         escapeTests(describe, expect, Inferno);
+	});
+
 
 	describe('Inferno.renderToString()', () => {
 		renderToStringDomElementsTests(describe, expect, Inferno);
