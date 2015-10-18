@@ -1,5 +1,3 @@
-import escapeTextContentForBrowser from './escapeTextContentForBrowser';
-
 let ESCAPE_LOOKUP = {
  '&': '&amp;',
   '>': '&gt;',
