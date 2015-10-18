@@ -86,7 +86,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _classComponent = __webpack_require__(37);
+	var _classComponent = __webpack_require__(33);
 	
 	var _classComponent2 = _interopRequireDefault(_classComponent);
 	
@@ -94,11 +94,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _coreRender2 = _interopRequireDefault(_coreRender);
 	
-	var _coreRenderToString = __webpack_require__(46);
+	var _coreRenderToString = __webpack_require__(42);
 	
 	var _coreRenderToString2 = _interopRequireDefault(_coreRenderToString);
 	
-	var _coreUnmountComponentAtNode = __webpack_require__(47);
+	var _coreUnmountComponentAtNode = __webpack_require__(43);
 	
 	var _coreUnmountComponentAtNode2 = _interopRequireDefault(_coreUnmountComponentAtNode);
 	
@@ -110,23 +110,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _coreCreateFragment = __webpack_require__(40);
+	var _coreCreateFragment = __webpack_require__(36);
 	
 	var _coreCreateFragment2 = _interopRequireDefault(_coreCreateFragment);
 	
-	var _coreCreateTemplate = __webpack_require__(18);
+	var _coreCreateTemplate = __webpack_require__(19);
 	
 	var _coreCreateTemplate2 = _interopRequireDefault(_coreCreateTemplate);
 	
-	var _template = __webpack_require__(13);
+	var _template = __webpack_require__(14);
 	
 	var _template2 = _interopRequireDefault(_template);
 	
-	var _coreClearDomElement = __webpack_require__(39);
+	var _coreClearDomElement = __webpack_require__(35);
 	
 	var _coreClearDomElement2 = _interopRequireDefault(_coreClearDomElement);
 	
-	var _coreCreateRef = __webpack_require__(41);
+	var _coreCreateRef = __webpack_require__(37);
 	
 	var _coreCreateRef2 = _interopRequireDefault(_coreCreateRef);
 	
@@ -232,15 +232,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
-	var _updateFragmentValue = __webpack_require__(48);
+	var _updateFragmentValue = __webpack_require__(44);
 	
 	var _updateFragmentValue2 = _interopRequireDefault(_updateFragmentValue);
 	
-	var _updateFragmentValues = __webpack_require__(49);
+	var _updateFragmentValues = __webpack_require__(45);
 	
 	var _updateFragmentValues2 = _interopRequireDefault(_updateFragmentValues);
 	
-	var _unmountComponentAtFragment = __webpack_require__(20);
+	var _unmountComponentAtFragment = __webpack_require__(21);
 	
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
 	
@@ -305,7 +305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _getRecycledFragment = __webpack_require__(42);
+	var _getRecycledFragment = __webpack_require__(38);
 	
 	var _getRecycledFragment2 = _interopRequireDefault(_getRecycledFragment);
 	
@@ -313,7 +313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateFragment2 = _interopRequireDefault(_updateFragment);
 	
-	var _attachFragmentList = __webpack_require__(17);
+	var _attachFragmentList = __webpack_require__(18);
 	
 	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
 	
@@ -321,7 +321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumFragmentValueTypes2 = _interopRequireDefault(_enumFragmentValueTypes);
 	
-	var _insertFragment = __webpack_require__(43);
+	var _insertFragment = __webpack_require__(39);
 	
 	var _insertFragment2 = _interopRequireDefault(_insertFragment);
 	
@@ -333,11 +333,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _templateCreateElement = __webpack_require__(59);
+	var _templateCreateElement = __webpack_require__(55);
 	
 	var _templateCreateElement2 = _interopRequireDefault(_templateCreateElement);
 	
-	var _utilBind = __webpack_require__(68);
+	var _utilBind = __webpack_require__(71);
 	
 	var _utilBind2 = _interopRequireDefault(_utilBind);
 	
@@ -457,7 +457,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _destroyFragment = __webpack_require__(19);
+	var _destroyFragment = __webpack_require__(20);
 	
 	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
 	
@@ -701,23 +701,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _sharedEvents2 = _interopRequireDefault(_sharedEvents);
 	
-	var _sharedCapturedEvents = __webpack_require__(24);
+	var _sharedCapturedEvents = __webpack_require__(25);
 	
 	var _sharedCapturedEvents2 = _interopRequireDefault(_sharedCapturedEvents);
 	
-	var _getUniqueId = __webpack_require__(22);
+	var _getUniqueId = __webpack_require__(23);
 	
 	var _getUniqueId2 = _interopRequireDefault(_getUniqueId);
 	
-	var _root = __webpack_require__(23);
+	var _root = __webpack_require__(24);
 	
 	var _root2 = _interopRequireDefault(_root);
 	
-	var _varsRootListeners = __webpack_require__(26);
+	var _varsRootListeners = __webpack_require__(27);
 	
 	var _varsRootListeners2 = _interopRequireDefault(_varsRootListeners);
 	
-	var _sharedEventsCfg = __webpack_require__(25);
+	var _sharedEventsCfg = __webpack_require__(26);
 	
 	var _sharedEventsCfg2 = _interopRequireDefault(_sharedEventsCfg);
 	
@@ -800,740 +800,226 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
+	var _Object$keys = __webpack_require__(75)['default'];
+	
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	
 	Object.defineProperty(exports, '__esModule', {
-		value: true
+	    value: true
 	});
 	
-	var _cfgAttrNameCfg = __webpack_require__(57);
+	var _varsDOMAttributeNamespaces = __webpack_require__(68);
 	
-	var _cfgAttrNameCfg2 = _interopRequireDefault(_cfgAttrNameCfg);
+	var _varsDOMAttributeNamespaces2 = _interopRequireDefault(_varsDOMAttributeNamespaces);
 	
-	var _cfgPropNameCfg = __webpack_require__(58);
+	var _checkMask = __webpack_require__(54);
 	
-	var _cfgPropNameCfg2 = _interopRequireDefault(_cfgPropNameCfg);
+	var _checkMask2 = _interopRequireDefault(_checkMask);
 	
-	var _cfgXmlCfg = __webpack_require__(30);
+	var MUST_USE_ATTRIBUTE = 0x1,
+	    MUST_USE_PROPERTY = 0x2,
+	    HAS_BOOLEAN_VALUE = 0x8,
+	    HAS_NUMERIC_VALUE = 0x10,
+	    HAS_POSITIVE_NUMERIC_VALUE = 0x20 | 0x10,
+	    HAS_OVERLOADED_BOOLEAN_VALUE = 0x40,
+	    HTMLDOMPropertyConfig = {
+	    Properties: {
+	        /**
+	         * Standard Properties
+	         */
+	        accept: null,
+	        acceptCharset: null,
+	        accessKey: null,
+	        action: null,
+	        allowFullScreen: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	        allowTransparency: MUST_USE_ATTRIBUTE,
+	        alt: null,
+	        async: HAS_BOOLEAN_VALUE,
+	        autoComplete: null,
+	        autoFocus: HAS_BOOLEAN_VALUE,
+	        autoPlay: HAS_BOOLEAN_VALUE,
+	        capture: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	        cellPadding: null,
+	        cellSpacing: null,
+	        charSet: MUST_USE_ATTRIBUTE,
+	        challenge: MUST_USE_ATTRIBUTE,
+	        checked: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
+	        classID: MUST_USE_ATTRIBUTE,
+	        // To set className on SVG elements, it's necessary to use .setAttribute;
+	        // this works on HTML elements too in all browsers except IE8.
+	        className: MUST_USE_ATTRIBUTE,
+	        cols: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
+	        colSpan: null,
+	        content: null,
+	        contentEditable: null,
+	        contextMenu: MUST_USE_ATTRIBUTE,
+	        controls: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
+	        coords: null,
+	        crossOrigin: null,
+	        data: null, // For `<object />` acts as `src`.
+	        dateTime: MUST_USE_ATTRIBUTE,
+	        defer: HAS_BOOLEAN_VALUE,
+	        dir: null,
+	        disabled: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	        download: MUST_USE_ATTRIBUTE,
+	        draggable: null,
+	        encType: null,
+	        form: MUST_USE_ATTRIBUTE,
+	        formAction: MUST_USE_ATTRIBUTE,
+	        formEncType: MUST_USE_ATTRIBUTE,
+	        formMethod: MUST_USE_ATTRIBUTE,
+	        formNoValidate: HAS_BOOLEAN_VALUE,
+	        formTarget: MUST_USE_ATTRIBUTE,
+	        frameBorder: MUST_USE_ATTRIBUTE,
+	        headers: null,
+	        height: MUST_USE_ATTRIBUTE,
+	        hidden: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	        high: null,
+	        href: null,
+	        hrefLang: null,
+	        htmlFor: null,
+	        httpEquiv: null,
+	        icon: null,
+	        id: MUST_USE_PROPERTY,
+	        is: MUST_USE_ATTRIBUTE,
+	        keyParams: MUST_USE_ATTRIBUTE,
+	        keyType: MUST_USE_ATTRIBUTE,
+	        label: null,
+	        lang: null,
+	        list: MUST_USE_ATTRIBUTE,
+	        loop: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
+	        low: null,
+	        manifest: MUST_USE_ATTRIBUTE,
+	        marginHeight: null,
+	        marginWidth: null,
+	        max: null,
+	        maxLength: MUST_USE_ATTRIBUTE,
+	        media: MUST_USE_ATTRIBUTE,
+	        mediaGroup: null,
+	        method: null,
+	        min: null,
+	        minLength: MUST_USE_ATTRIBUTE,
+	        multiple: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	        muted: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
+	        name: MUST_USE_ATTRIBUTE,
+	        noValidate: HAS_BOOLEAN_VALUE,
+	        open: HAS_BOOLEAN_VALUE,
+	        optimum: null,
+	        pattern: null,
+	        placeholder: null,
+	        poster: null,
+	        preload: null,
+	        radioGroup: null,
+	        readOnly: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
+	        rel: null,
+	        required: HAS_BOOLEAN_VALUE,
+	        role: MUST_USE_ATTRIBUTE,
+	        rows: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
+	        rowSpan: null,
+	        sandbox: null,
+	        scope: null,
+	        scoped: HAS_BOOLEAN_VALUE,
+	        scrolling: null,
+	        seamless: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	        selected: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
+	        shape: null,
+	        size: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
+	        sizes: MUST_USE_ATTRIBUTE,
+	        span: HAS_POSITIVE_NUMERIC_VALUE,
+	        spellCheck: null,
+	        src: MUST_USE_ATTRIBUTE,
+	        srcDoc: MUST_USE_PROPERTY,
+	        srcSet: MUST_USE_ATTRIBUTE,
+	        start: MUST_USE_ATTRIBUTE | HAS_NUMERIC_VALUE,
+	        step: null,
+	        style: null,
+	        tabIndex: null,
+	        target: null,
+	        title: null,
+	        type: null,
+	        useMap: null,
+	        value: MUST_USE_PROPERTY,
+	        width: MUST_USE_ATTRIBUTE,
+	        wmode: MUST_USE_ATTRIBUTE,
 	
-	var _cfgXmlCfg2 = _interopRequireDefault(_cfgXmlCfg);
-	
-	var _cfgXlinkCfg = __webpack_require__(29);
-	
-	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
-	
-	var _hasPropertyAccessor = __webpack_require__(65);
-	
-	var _hasPropertyAccessor2 = _interopRequireDefault(_hasPropertyAccessor);
-	
-	var _validateAttribute = __webpack_require__(67);
-	
-	var _validateAttribute2 = _interopRequireDefault(_validateAttribute);
-	
-	var _dasherize = __webpack_require__(62);
-	
-	var _dasherize2 = _interopRequireDefault(_dasherize);
-	
-	var _camelize = __webpack_require__(56);
-	
-	var _camelize2 = _interopRequireDefault(_camelize);
-	
-	var _normalizeCSS = __webpack_require__(66);
-	
-	var _normalizeCSS2 = _interopRequireDefault(_normalizeCSS);
-	
-	var _utilInArray = __webpack_require__(69);
-	
-	var _utilInArray2 = _interopRequireDefault(_utilInArray);
-	
-	var _utilIsArray = __webpack_require__(14);
-	
-	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
-	
-	var _utilIsSVG = __webpack_require__(15);
-	
-	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
-	
-	var _utilTagName = __webpack_require__(70);
-	
-	var _utilTagName2 = _interopRequireDefault(_utilTagName);
-	
-	var _escapeHtml = __webpack_require__(63);
-	
-	var _escapeHtml2 = _interopRequireDefault(_escapeHtml);
-	
-	/**
-	 * Applies a single attribute or property to a given Element. If the value is null
-	 * or undefined, it is not set. Otherwise, the value is set
-	 * as an attribute.
-	 * @param {!Element} node
-	 * @param {string} name The attribute's name.
-	 * @param {?(boolean|number|string)=} value The attribute's value.
-	 */
-	var setAttribute = function setAttribute(node, name, value) {
-		if (name === 'type' && (0, _utilTagName2['default'])(node) === 'input') {
-			// Support: IE9-Edge
-			var val = node.value; // value will be lost in IE if type is changed
-			node.setAttribute(name, '' + value);
-			// Check if val exist, if not we will get a stupid 'value=""' in the markup
-			if (val) {
-				node.value = val;
-			}
-		} else {
-	
-			// Avoid touching the DOM on falsy values
-			if (value !== 'false') {
-				node.setAttribute(_cfgAttrNameCfg2['default'][name] || name, '' + value); // cast to string
-			}
-		}
+	        /**
+	         * Non-standard Properties
+	         */
+	        // autoCapitalize and autoCorrect are supported in Mobile Safari for
+	        // keyboard hints.
+	        autoCapitalize: null,
+	        autoCorrect: null,
+	        // itemProp, itemScope, itemType are for
+	        // Microdata support. See http://schema.org/docs/gs.html
+	        itemProp: MUST_USE_ATTRIBUTE,
+	        itemScope: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	        itemType: MUST_USE_ATTRIBUTE,
+	        // itemID and itemRef are for Microdata support as well but
+	        // only specified in the the WHATWG spec document. See
+	        // https://html.spec.whatwg.org/multipage/microdata.html#microdata-dom-api
+	        itemID: MUST_USE_ATTRIBUTE,
+	        itemRef: MUST_USE_ATTRIBUTE,
+	        // property is supported for OpenGraph in meta tags.
+	        property: null,
+	        // IE-only attribute that controls focus behavior
+	        unselectable: MUST_USE_ATTRIBUTE
+	    },
+	    PropertyToAttributeMapping: {
+	        'className': 'class',
+	        'htmlFor': 'for',
+	        'httpEquiv': 'http-equiv',
+	        'acceptCharset': 'accept-charset'
+	    }
 	};
 	
-	/**
-	 * Applies the 'volume' attribute on a given Element
-	 *
-	 * @param {Object} node A DOM element.
-	 * @param {String} name	 The attribute name to set.
-	 * @param {String} value  The attribute value to set.
-	 */
-	var setVolumAttribute = function setVolumAttribute(node, name, value) {
-		// The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
-		// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
-		if (value === 0.0 || value === 1 || typeof value === 'number' && (value > -1 && value < 1.1)) {
-			node.setAttribute(name, value);
-		}
-	};
-	/**
-	 * Applies a custom attribute on a given Element
-	 *
-	 * @param {!Element} node  A DOM element.
-	 * @param {string} name	  The attribute name
-	 * @param {*} value value The attribute value
-	 */
-	var setCustomAttribute = function setCustomAttribute(node, name, value) {
-		// Custom attributes are the only arributes we are validating.
-		if ((0, _validateAttribute2['default'])(name)) {
-			// All attributes are lowercase
-			node.setAttribute((_cfgAttrNameCfg2['default'][name] || name).toLowerCase(), '' + value); // cast to string
-		}
-	};
+	//export default (node, styles) => {
+	exports['default'] = (function () {
+	    var propInfoByAttributeName = {};
 	
-	/**
-	 * Applies a numeric attribute on a given Element
-	 *
-	 * @param {!Element} node  A DOM element.
-	 * @param {string} name	  The numeric attribute name
-	 * @param {*} value  The numeric attribute value
-	 */
-	var setNumericAttribute = function setNumericAttribute(node, name, value) {
-		if (value > 0 && typeof value === 'number') {
-			node.setAttribute(name, value);
-		}
-	};
+	    _Object$keys(HTMLDOMPropertyConfig.Properties).forEach(function (propName) {
+	        var propConfig = HTMLDOMPropertyConfig.Properties[propName];
+	        var attributeName = HTMLDOMPropertyConfig.PropertyToAttributeMapping[propName] || propName.toLowerCase();
 	
-	/**
-	 * Applies a property on a given Element
-	 *
-	 * @param {!Element} node  A DOM element.
-	 * @param {string} name	  The property name
-	 * @param {string} value	 The property value
-	 */
-	var setProperty = function setProperty(node, name, value) {
+	        var propertyInfo = {
+	            attributeName: attributeName,
+	            propertyName: propName,
+	            attributeNamespace: null,
+	            mustUseAttribute: (0, _checkMask2['default'])(propConfig, MUST_USE_ATTRIBUTE),
+	            mustUseProperty: (0, _checkMask2['default'])(propConfig, MUST_USE_PROPERTY),
+	            hasBooleanValue: (0, _checkMask2['default'])(propConfig, HAS_BOOLEAN_VALUE),
+	            hasNumericValue: (0, _checkMask2['default'])(propConfig, HAS_NUMERIC_VALUE),
+	            hasPositiveNumericValue: (0, _checkMask2['default'])(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
+	            hasOverloadedBooleanValue: (0, _checkMask2['default'])(propConfig, HAS_OVERLOADED_BOOLEAN_VALUE)
+	        };
 	
-		if (value != null) {
+	        propInfoByAttributeName[attributeName] = propertyInfo;
+	    });
 	
-			// 'contentEditable' is a special case
-			if (name === 'contentEditable' && value) {
-				/**
-	    * We would need this check here, else it will throw:
-	    *
-	    * ' Failed to set the 'contentEditable' property on 'HTMLElement': The value
-	    * ' provided ('contentEditable') is not one of 'true', 'false', 'plaintext-only', or 'inherit'.'
-	    */
+	    return function (attributeName) {
+	        var lowerCased = attributeName.toLowerCase();
+	        var propInfo = undefined;
 	
-				// Workaround for the 'contentEditable' property
-				var cEValue = undefined;
+	        if (_varsDOMAttributeNamespaces2['default'][attributeName]) {
+	            propInfo = {
+	                attributeName: attributeName,
+	                mustUseAttribute: true,
+	                isCustomAttribute: true,
+	                namespace: _varsDOMAttributeNamespaces2['default'][attributeName]
+	            };
+	        } else if (propInfoByAttributeName.hasOwnProperty(lowerCased)) {
+	            propInfo = propInfoByAttributeName[lowerCased];
+	        } else {
+	            propInfo = {
+	                attributeName: attributeName,
+	                mustUseAttribute: true,
+	                isCustomAttribute: true
+	            };
+	        }
 	
-				switch (value) {
-					case true:
-						cEValue = value;
-						break;
-					case false:
-						cEValue = value;
-						break;
-					case 'plaintext-only':
-						cEValue = value;
-						break;
-					case 'inherit':
-						cEValue = value;
-						break;
-					default:
-						cEValue = 'inherit';
-				}
+	        return propInfo;
+	    };
+	})();
 	
-				value = cEValue;
-			}
-	
-			node[_cfgPropNameCfg2['default'][name] || name] = value;
-		}
-	};
-	
-	/**
-	 * Applies the selectedIndex property on a given Element
-	 *
-	 * @param {!Element} node  A DOM element.
-	 * @param {String} name	  The property name to set.
-	 * @param {*} value  The property value to set.
-	 */
-	var setSelectedIndexProperty = function setSelectedIndexProperty(node, name, value) {
-	
-		// selectbox has special case
-		if (Array.prototype.every.call(node.options, function (opt) {
-			return !(opt.selected = opt.value === value);
-		})) {
-			// TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
-			node[name] = -1;
-		}
-	};
-	
-	/**
-	 * Applies a dataset object property on a given Element
-	 *
-	 * @param {!Element} node  A DOM element.
-	 * @param {string} name  The property name
-	 * @param {*} value  The property value
-	 */
-	var setPropertyForDataset = function setPropertyForDataset(node, name, value) {
-		if ((undefined) !== 'production') {
-			var typeOfVal = typeof value;
-			if (typeOfVal !== 'object') {
-				console.error('Error! "' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
-				return;
-			}
-		}
-	
-		var prop = node[name];
-	
-		for (var idx in value) {
-			// regarding the specs we need to camelize the 'name'
-			prop[(0, _camelize2['default'])(idx)] = value[idx] == null ? '' : (0, _dasherize2['default'])(value[idx]);
-		}
-	};
-	
-	/**
-	 * Applies a style to an Element. Vendor prefix expansion is done for
-	 * property names/values as well as adding the 'px' suffix.
-	 * @param {!Element} el
-	 * @param {string} name The property's name.
-	 * @param {string|Object<string,string>} style The style to set. Either a
-	 *     string of css or an object containing property-value pairs.
-	 */
-	var applyStyle = function applyStyle(node, name, value) {
-		// CSS style need to be a object literal, not a string value
-		if ((undefined) !== 'production') {
-			var typeOfVal = typeof value;
-			if (typeOfVal !== 'object') {
-				console.error('Error! "' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
-				return;
-			}
-		}
-	
-		var prop = node[name];
-	
-		for (var idx in value) {
-			node.style[idx] = value[idx] == null ? '' : (0, _normalizeCSS2['default'])(idx, value[idx]);
-		}
-	};
-	
-	/**
-	 * Applies a 'value' property on a given Element after validation check
-	 *
-	 * @param {!Element} node  A DOM element.
-	 * @param {string} name	  The property name
-	 * @param {*} value  The property value
-	 */
-	var setValueForProperty = function setValueForProperty(node, name, value) {
-		if (name === 'value' && (0, _utilTagName2['default'])(node) === 'select') {
-			setSelectValue(node, value);
-		} else {
-			// Need to validate this else it will fail when we update fragments etc.
-			node[name] !== value && (node[name] = value);
-		}
-	};
-	
-	/**
-	 * Applies a select / select multiple attribute on a given Element
-	 *
-	 * @param {!Element} node  A DOM element.
-	 * @param {String|Array} value  The property value
-	 */
-	
-	var setSelectValue = function setSelectValue(node, value) {
-	
-		var multiple = (0, _utilIsArray2['default'])(value),
-		    options = node.options;
-	
-		if (multiple && typeof value[0] === 'number') {
-			var selectedValue = {};
-			for (i = 0; i < value.length; i++) {
-				selectedValue['' + value[i]] = true;
-			}
-	
-			for (i = 0; i < options.length; i++) {
-				var selected = selectedValue.hasOwnProperty(options[i].value);
-				if (options[i].selected !== selected) {
-					options[i].selected = true;
-				}
-			}
-		} else {
-			var optionNode = undefined;
-			for (var _i = 0; _i < options.length; _i++) {
-				optionNode = options[_i];
-				optionNode.selected = value != null && (multiple ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
-			}
-		}
-	};
-	
-	/**
-	 * Render HTML attributes to a string for SSR
-	 *
-	 * @param {string} name
-	 * @param {*} value
-	 * @return {string} Markup string, or empty string if the property was invalid.
-	 */
-	var createAttributeMarkup = function createAttributeMarkup(name, value) {
-		return !(0, _validateAttribute2['default'])(name) || value == null ? '' : (_cfgAttrNameCfg2['default'][name] || name) + '="' + (0, _escapeHtml2['default'])(value + '') + '"';
-	};
-	
-	/**
-	 * Render HTML markup from a dataset property for SSR rendring
-	 *
-	 * @param {string} name The name to be set.
-	 * @param {Object} value  The value to be set.
-	 */
-	var datasetToString = function datasetToString(name, value) {
-		var objectLiteral = '';
-		for (var objName in value) {
-			objectLiteral += value[objName] != null && 'data-' + objName + '="' + (0, _dasherize2['default'])(value[objName]) + '" ';
-		}
-		return objectLiteral;
-	};
-	
-	/**
-	 * Render HTML markup from boolean attributes to string for SSR rendring
-	 *
-	 * @param {string} name  The attribute name
-	 * @param {*} value  The attribute value
-	 */
-	var booleanAttrToString = function booleanAttrToString(name, value) {
-		// XHTML friendly
-		switch (name) {
-			case 'download':
-			case 'multiple':
-				return value ? name : '';
-			case false:
-				return '';
-			case true:
-				return name + '="' + '"';
-			default:
-				return name + '="' + (0, _escapeHtml2['default'])(value + '') + '"'; // cast to string
-		}
-	};
-	
-	/**
-	 * Render CSS style property to string for SSR rendring
-	 *
-	 * @param {string} name  The attribute name
-	 * @param {*} value The property value
-	 */
-	var createPropertyMarkup = function createPropertyMarkup(name, value) {
-		var styles = '';
-	
-		for (var styleName in value) {
-			value[styleName] != null && (styles += (0, _dasherize2['default'])(styleName) + ':' + (0, _normalizeCSS2['default'])(styleName, value[styleName]) + ';');
-		}
-	
-		return styles ? name + '="' + styles + '"' : styles;
-	};
-	
-	var IS_ATTRIBUTE = {
-		set: setAttribute,
-		toHtml: createAttributeMarkup
-	};
-	
-	var IS_CUSTOM = {
-		set: setCustomAttribute,
-		toHtml: createAttributeMarkup
-	};
-	
-	var IS_VOLUME_ATTRIBUTE = {
-		set: setVolumAttribute,
-		toHtml: createAttributeMarkup
-	};
-	
-	var IS_NUMERIC = {
-		set: setNumericAttribute,
-		toHtml: createAttributeMarkup
-	};
-	
-	var IS_PROPERTY = {
-		set: setProperty,
-		toHtml: createAttributeMarkup
-	};
-	
-	var IS_SELECTED_PROPERTY = {
-		set: setSelectedIndexProperty,
-		toHtml: createAttributeMarkup
-	};
-	
-	var IS_XLINK_NAMESPACE = {
-	
-		/**
-	  * Applies a xlink namespace attribute on a given Element
-	  *
-	  * @param {!Element} node  A DOM element.
-	  * @param {string} name  The attribute name
-	  * @param {*} value	The attribute value
-	  */
-		set: function set(node, name, value) {
-			node.setAttributeNS('http://www.w3.org/1999/xlink', _cfgXlinkCfg2['default'][name], value);
-		},
-	
-		toHtml: createAttributeMarkup
-	};
-	
-	var IS_XML_NAMESPACE = {
-	
-		/**
-	  * Applies a xlink namespace attribute on a given Element
-	  *
-	  * @param {!Element} node  A DOM element.
-	  * @param {string} name The attribute name
-	  * @param {*} value The attribute value
-	  */
-		set: function set(node, name, value) {
-			node.setAttributeNS('http://www.w3.org/XML/1998/namespace', _cfgXmlCfg2['default'][name], value);
-		},
-		toHtml: createAttributeMarkup
-	};
-	
-	var DOMConfig = {
-		acceptCharset: IS_ATTRIBUTE,
-		accept: IS_ATTRIBUTE,
-		allowTransparency: IS_ATTRIBUTE,
-		charSet: IS_ATTRIBUTE,
-		challenge: IS_ATTRIBUTE,
-		classID: IS_ATTRIBUTE,
-		className: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
-		clipPath: IS_ATTRIBUTE,
-		cols: IS_NUMERIC,
-		crossOrigin: IS_ATTRIBUTE,
-		contentEditable: IS_PROPERTY,
-		contextMenu: IS_ATTRIBUTE,
-		cx: IS_ATTRIBUTE,
-		cy: IS_ATTRIBUTE,
-		d: IS_ATTRIBUTE,
-		data: IS_ATTRIBUTE,
-		dateTime: IS_ATTRIBUTE,
-	
-		/**
-	  * 'dataset' is a special case
-	  *
-	  */
-		dataset: {
-			set: setPropertyForDataset,
-			// 'dataset' property has to be removed as an attribute
-			// because it's set as an attribute - e.g. data-foo='bar'
-			toHtml: datasetToString
-		},
-		defaultPlaybackRate: IS_PROPERTY,
-		designMode: IS_PROPERTY,
-		dir: IS_ATTRIBUTE,
-		dropzone: IS_ATTRIBUTE,
-		dx: IS_ATTRIBUTE,
-		dy: IS_ATTRIBUTE,
-		encType: IS_ATTRIBUTE,
-		file: IS_ATTRIBUTE,
-		fill: IS_ATTRIBUTE,
-		fillOpacity: IS_ATTRIBUTE,
-		form: IS_ATTRIBUTE,
-		formAction: IS_ATTRIBUTE,
-		formEncType: IS_ATTRIBUTE,
-		formMethod: IS_ATTRIBUTE,
-		formTarget: IS_ATTRIBUTE,
-		fontFamily: IS_ATTRIBUTE,
-		fontSize: IS_ATTRIBUTE,
-		frameBorder: IS_ATTRIBUTE,
-		'for': IS_ATTRIBUTE,
-		fx: IS_ATTRIBUTE,
-		fy: IS_ATTRIBUTE,
-		height: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
-		icon: IS_ATTRIBUTE,
-		inputMode: IS_ATTRIBUTE,
-		is: IS_ATTRIBUTE,
-		keyParams: IS_ATTRIBUTE,
-		keyType: IS_ATTRIBUTE,
-		lang: IS_ATTRIBUTE,
-		list: IS_ATTRIBUTE,
-		manifest: IS_ATTRIBUTE,
-		marginHeight: IS_ATTRIBUTE,
-		marginWidth: IS_ATTRIBUTE,
-		markerEnd: IS_ATTRIBUTE,
-		markerMid: IS_ATTRIBUTE,
-		markerStart: IS_ATTRIBUTE,
-		maxLength: IS_ATTRIBUTE,
-		max: IS_ATTRIBUTE,
-		media: IS_ATTRIBUTE,
-		mediagroup: IS_ATTRIBUTE,
-		minLength: IS_ATTRIBUTE,
-		name: IS_ATTRIBUTE,
-		nohref: IS_ATTRIBUTE,
-		// number used once or number once
-		nonce: IS_NUMERIC,
-		noshade: IS_ATTRIBUTE,
-		opacity: IS_ATTRIBUTE,
-		points: IS_ATTRIBUTE,
-		poster: IS_ATTRIBUTE,
-		prefix: IS_ATTRIBUTE,
-		r: IS_ATTRIBUTE,
-		resource: IS_ATTRIBUTE,
-		role: IS_ATTRIBUTE,
-		rows: IS_NUMERIC,
-		rx: IS_ATTRIBUTE,
-		ry: IS_ATTRIBUTE,
-		selectedIndex: IS_SELECTED_PROPERTY,
-		size: IS_NUMERIC,
-		// Viewport-based selection
-		sizes: IS_ATTRIBUTE,
-		span: IS_NUMERIC,
-		stroke: IS_ATTRIBUTE,
-		src: IS_ATTRIBUTE,
-		srcSet: IS_ATTRIBUTE,
-		start: IS_ATTRIBUTE,
-		step: IS_ATTRIBUTE,
-		tabIndex: IS_PROPERTY,
-		target: IS_ATTRIBUTE,
-		transform: IS_ATTRIBUTE,
-		title: IS_ATTRIBUTE,
-		type: IS_ATTRIBUTE,
-		'typeof': IS_ATTRIBUTE,
-	
-		/**
-	  * CSS styling attribute is a special case, and will be set as a normal object.
-	  * 'styles' should be used as an replacement.
-	  */
-		style: {
-			set: applyStyle,
-			toHtml: createPropertyMarkup
-		},
-		usemap: IS_ATTRIBUTE,
-	
-		/**
-	  * 'value' is a special case
-	  *
-	  */
-		value: {
-			set: setValueForProperty,
-			toHtml: createAttributeMarkup
-		},
-		version: IS_ATTRIBUTE,
-		viewBox: IS_ATTRIBUTE,
-		volume: IS_VOLUME_ATTRIBUTE,
-		width: _utilIsSVG2['default'] ? IS_ATTRIBUTE : IS_PROPERTY,
-		wmode: IS_ATTRIBUTE,
-		x1: IS_ATTRIBUTE,
-		x2: IS_ATTRIBUTE,
-		x: IS_ATTRIBUTE,
-		y1: IS_ATTRIBUTE,
-		y2: IS_ATTRIBUTE,
-		y: IS_ATTRIBUTE,
-	
-		/**
-	  * Non-standard attributes
-	  */
-	
-		// itemProp, itemScope, itemType are for
-		// Microdata support. See http://schema.org/docs/gs.html
-		itemProp: IS_ATTRIBUTE,
-		itemType: IS_ATTRIBUTE,
-		// itemID and itemRef are for Microdata support as well but
-		// only specified in the the WHATWG spec document. See
-		// https://html.spec.whatwg.org/multipage/microdata.html#microdata-dom-api
-		itemID: IS_ATTRIBUTE,
-		itemRef: IS_ATTRIBUTE,
-		// IE-only attribute that specifies security restrictions on an iframe
-		// as an alternative to the sandbox attribute on IE<10
-		security: IS_ATTRIBUTE,
-		// IE-only attribute that controls focus behavior
-		unselectable: IS_ATTRIBUTE,
-	
-		/**
-	  * Namespace attributes
-	  */
-		'xml:base': IS_XML_NAMESPACE,
-		'xml:id': IS_XML_NAMESPACE,
-		'xml:lang': IS_XML_NAMESPACE,
-		'xml:space': IS_XML_NAMESPACE,
-		'xlink:actuate': IS_XLINK_NAMESPACE,
-		'xlink:arcrole': IS_XLINK_NAMESPACE,
-		'xlink:href': IS_XLINK_NAMESPACE,
-		'xlink:role': IS_XLINK_NAMESPACE,
-		'xlink:show': IS_XLINK_NAMESPACE,
-		'xlink:title': IS_XLINK_NAMESPACE,
-		'xlink:type': IS_XLINK_NAMESPACE,
-	
-		/**
-	  * Navigation attributes (SVG)
-	  */
-		'nav-up': IS_ATTRIBUTE,
-		'nav-up-right': IS_ATTRIBUTE,
-		'nav-right': IS_ATTRIBUTE,
-		'nav-down-right': IS_ATTRIBUTE,
-		'nav-down': IS_ATTRIBUTE,
-		'nav-down-left': IS_ATTRIBUTE,
-		'nav-left': IS_ATTRIBUTE,
-		'xlink:role': IS_ATTRIBUTE,
-		'nav-up-left ': IS_ATTRIBUTE,
-	
-		/**
-	  * Conditional processing attributes (SVG)
-	  */
-	
-		'requiredExtensions': IS_ATTRIBUTE,
-		'requiredFeatures': IS_ATTRIBUTE,
-		'requiredFonts': IS_ATTRIBUTE,
-		'requiredFormats': IS_ATTRIBUTE,
-		'systemLanguage': IS_ATTRIBUTE,
-	
-		/**
-	  * Timing attributes (SVG)
-	  */
-	
-		dur: IS_ATTRIBUTE,
-		end: IS_ATTRIBUTE,
-		restart: IS_ATTRIBUTE,
-		repeatCount: IS_ATTRIBUTE,
-		repeatDur: IS_ATTRIBUTE,
-		fill: IS_ATTRIBUTE
-	
-	};
-	
-	exports['default'] = {
-	
-		/**
-	  * Apply a HTML attribute / property on a given Element
-	  *
-	  * @param {!Element} node  A DOM element.
-	  * @param {string} name The attribute / property name
-	  * @param {String|Object} value The attribute / property value
-	  */
-		set: function set(node, name, value, skip) {
-	
-			// Prioritized HTML properties
-			if (!skip) {
-				switch (name) {
-					case 'id': // Core attribute
-					case 'label':
-					case 'placeholder':
-					case 'name':
-					case 'designMode':
-					case 'htmlFor':
-					case 'playbackRate':
-					case 'preload':
-					case 'srcDoc':
-					case 'autoPlay': // bool
-					case 'checked': // bool
-					case 'isMap': // bool
-					case 'loop': // bool
-					case 'muted': // bool
-					case 'readOnly': // bool
-					case 'reversed':
-					case 'required': // bool
-					case 'selected': // bool
-					case 'spellCheck': // bool
-					case 'trueSpeed': // bool
-					case 'multiple': // bool
-					case 'controls': // bool
-					case 'defer': // bool
-					case 'noValidate':
-					case 'scoped': // bool
-					case 'noResize':
-						// bool
-						if (value != null) {
-							node[name] = value;
-						}
-						return;
-				}
-			}
-	
-			// Prioritized HTML attributes
-			switch (name) {
-				case 'about': // RDFA
-				case 'async': // bool
-				case 'allowFullScreen': // bool
-				case 'autoFocus': // bool
-				case 'autoPlay': // bool
-				case 'baseProfile': // SVG
-				case 'capture': // bool
-				case 'datatype': // RDFA
-				case 'default':
-				case 'defaultchecked': // bool
-				case 'defaultmuted': // bool
-				case 'defaultselected': // bool
-				case 'draggable': // bool
-				case 'download': // bool
-				case 'disabled': // bool
-				case 'dir': // Core attribute
-				case 'draggable': // bool
-				case 'dropzone': // bool
-				case 'for':
-				case 'form':
-				case 'formNoValidate': // bool
-				case 'formEncType':
-				case 'formMethod':
-				case 'formTarget':
-				case 'fontFamily':
-				case 'fontSize':
-				case 'frameBorder':
-				case 'fontWeight':
-				case 'hidden': // bool
-				case 'href':
-				case 'itemScope': // bool
-				case 'is':
-				case 'integrity':
-				case 'name':
-				case 'open':
-				// 'property' is also supported for OpenGraph in meta tags.
-				case 'property': // RDFA
-				case 'seamless':
-				case 'sortable':
-				case 'title': // Core attribute
-				case 'translate': // bool attribute
-				case 'typemustmatch': // bool attribute
-				case 'type':
-				case 'vocab': // RDFA
-				case 'viewBox':
-				case 'visible':
-				case 'xmlns':
-	
-					if (value !== 'false') {
-						node.setAttribute(name, '' + (value === 'true' ? '' : value));
-					}
-					return;
-			}
-	
-			return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
-		},
-	
-		/**
-	  * Render HTML attribute / property markup for SSR
-	  *
-	  * @param {string} name The attribute / property name to render.
-	  * @param {*} value The attribute / property value to render.
-	  */
-		toHtml: function toHtml(name, value) {
-			return (DOMConfig[name] || IS_CUSTOM).toHtml(name, value);
-		}
-	};
 	module.exports = exports['default'];
 
 /***/ },
@@ -1545,28 +1031,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	
 	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _DOMProperty = __webpack_require__(12);
+	
+	var _DOMProperty2 = _interopRequireDefault(_DOMProperty);
+	
+	var _getPropertySetter = __webpack_require__(59);
+	
+	var _getPropertySetter2 = _interopRequireDefault(_getPropertySetter);
+	
+	exports['default'] = function (node, attributeName, value) {
+	  (0, _getPropertySetter2['default'])((0, _DOMProperty2['default'])(attributeName))(node, attributeName, value);
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
 	
-	var _addAttributes = __webpack_require__(55);
+	var _addAttributes = __webpack_require__(52);
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _extendUnitlessNumber = __webpack_require__(64);
-	
-	var _extendUnitlessNumber2 = _interopRequireDefault(_extendUnitlessNumber);
-	
-	var _createElementWithoutIs = __webpack_require__(61);
+	var _createElementWithoutIs = __webpack_require__(57);
 	
 	var _createElementWithoutIs2 = _interopRequireDefault(_createElementWithoutIs);
 	
-	var _createElementWithIs = __webpack_require__(60);
+	var _createElementWithIs = __webpack_require__(56);
 	
 	var _createElementWithIs2 = _interopRequireDefault(_createElementWithIs);
 	
 	exports['default'] = {
 	    addAttributes: _addAttributes2['default'],
-	    extendUnitlessNumber: _extendUnitlessNumber2['default'],
 	    createElement: function createElement(tag, xmlns, is) {
 	        return is ? (0, _createElementWithIs2['default'])(tag, xmlns, is) : (0, _createElementWithoutIs2['default'])(tag, xmlns);
 	    },
@@ -1580,7 +1087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1596,26 +1103,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	var isSVG = undefined;
-	
-	if (document) {
-		var implementation = document.implementation;
-	
-		isSVG = implementation && implementation.hasFeature && implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#BasicStructure', '1.1');
-	}
-	
-	exports['default'] = isSVG;
-	module.exports = exports['default'];
-
-/***/ },
 /* 16 */
 /***/ function(module, exports) {
 
@@ -1629,6 +1116,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 17 */
+/***/ function(module, exports) {
+
+	var core = module.exports = {version: '1.2.1'};
+	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+
+/***/ },
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1653,7 +1147,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1669,7 +1163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumTemplateTypes2 = _interopRequireDefault(_enumTemplateTypes);
 	
-	var _utilUuid = __webpack_require__(71);
+	var _utilUuid = __webpack_require__(73);
 	
 	var _utilUuid2 = _interopRequireDefault(_utilUuid);
 	
@@ -1683,7 +1177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1694,7 +1188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _varsRecycledFragments = __webpack_require__(36);
+	var _varsRecycledFragments = __webpack_require__(32);
 	
 	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
 	
@@ -1725,7 +1219,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1740,7 +1234,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
-	var _badUpdate = __webpack_require__(38);
+	var _badUpdate = __webpack_require__(34);
 	
 	var _badUpdate2 = _interopRequireDefault(_badUpdate);
 	
@@ -1757,7 +1251,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1769,7 +1263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = updateFragmentList;
 	
-	var _removeFragments = __webpack_require__(45);
+	var _removeFragments = __webpack_require__(41);
 	
 	var _removeFragments2 = _interopRequireDefault(_removeFragments);
 	
@@ -1777,7 +1271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
-	var _attachFragmentList = __webpack_require__(17);
+	var _attachFragmentList = __webpack_require__(18);
 	
 	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
 	
@@ -1789,7 +1283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateFragment2 = _interopRequireDefault(_updateFragment);
 	
-	var _moveFragment = __webpack_require__(44);
+	var _moveFragment = __webpack_require__(40);
 	
 	var _moveFragment2 = _interopRequireDefault(_moveFragment);
 	
@@ -1927,7 +1421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1938,7 +1432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _varsInfernoID = __webpack_require__(54);
+	var _varsInfernoID = __webpack_require__(50);
 	
 	var _varsInfernoID2 = _interopRequireDefault(_varsInfernoID);
 	
@@ -1951,7 +1445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1962,19 +1456,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _sharedEventsCfg = __webpack_require__(25);
+	var _sharedEventsCfg = __webpack_require__(26);
 	
 	var _sharedEventsCfg2 = _interopRequireDefault(_sharedEventsCfg);
 	
-	var _sharedCheckKeyboard = __webpack_require__(51);
+	var _sharedCheckKeyboard = __webpack_require__(47);
 	
 	var _sharedCheckKeyboard2 = _interopRequireDefault(_sharedCheckKeyboard);
 	
-	var _getUniqueId = __webpack_require__(22);
+	var _getUniqueId = __webpack_require__(23);
 	
 	var _getUniqueId2 = _interopRequireDefault(_getUniqueId);
 	
-	var _varsRootListeners = __webpack_require__(26);
+	var _varsRootListeners = __webpack_require__(27);
 	
 	var _varsRootListeners2 = _interopRequireDefault(_varsRootListeners);
 	
@@ -2058,7 +1552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2070,7 +1564,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2081,23 +1575,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _sharedCapturedEvents = __webpack_require__(24);
+	var _sharedCapturedEvents = __webpack_require__(25);
 	
 	var _sharedCapturedEvents2 = _interopRequireDefault(_sharedCapturedEvents);
 	
-	var _sharedNoCaptureEvents = __webpack_require__(53);
+	var _sharedNoCaptureEvents = __webpack_require__(49);
 	
 	var _sharedNoCaptureEvents2 = _interopRequireDefault(_sharedNoCaptureEvents);
 	
-	var _sharedFocusEvents = __webpack_require__(52);
+	var _sharedFocusEvents = __webpack_require__(48);
 	
 	var _sharedFocusEvents2 = _interopRequireDefault(_sharedFocusEvents);
 	
-	var _root = __webpack_require__(23);
+	var _root = __webpack_require__(24);
 	
 	var _root2 = _interopRequireDefault(_root);
 	
-	var _isEventSupported = __webpack_require__(50);
+	var _isEventSupported = __webpack_require__(46);
 	
 	var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
 	
@@ -2141,7 +1635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2153,7 +1647,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/**
@@ -2206,161 +1700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _interopRequireDefault = __webpack_require__(1)['default'];
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	
-	var _utilForIn = __webpack_require__(35);
-	
-	var _utilForIn2 = _interopRequireDefault(_utilForIn);
-	
-	var _prefixes = __webpack_require__(32);
-	
-	var _prefixes2 = _interopRequireDefault(_prefixes);
-	
-	var _prefixKey = __webpack_require__(31);
-	
-	var _prefixKey2 = _interopRequireDefault(_prefixKey);
-	
-	/**
-	 * CSS properties which accept numbers but are not in units of 'px'.
-	 */
-	var unitless = {
-		animationIterationCount: true,
-		boxFlex: true,
-		boxFlexGroup: true,
-		boxOrdinalGroup: true,
-		counterReset: true,
-		counterIncrement: true,
-		columnCount: true,
-		flex: true,
-		flexGrow: true,
-		flexPositive: true,
-		flexShrink: true,
-		flexNegative: true,
-		flexOrder: true,
-		float: true,
-		fontWeight: true,
-		// Supports CSS3 Grid Layout Module
-		gridRow: true,
-		gridColumn: true,
-		lineClamp: true,
-		lineHeight: true,
-		marker: true,
-		opacity: true,
-		order: true,
-		orphans: true,
-		pitchRange: true,
-		richness: true,
-		stress: true,
-		tabSize: true,
-		volume: true,
-		widows: true,
-		zIndex: true,
-		zoom: true,
-		// SVG-related properties
-		stopOpacity: true,
-		fillOpacity: true,
-		strokeDashoffset: true,
-		strokeOpacity: true,
-		strokeWidth: true
-	};
-	
-	// TODO merge with extendUnitlessNumber
-	// convert to vendor prefixed unitless CSS properties
-	(0, _utilForIn2['default'])(unitless, function (prop, value) {
-		_prefixes2['default'].forEach(function (prefix) {
-			unitless[(0, _prefixKey2['default'])(prefix, prop)] = value;
-		});
-	});
-	
-	exports['default'] = unitless;
-	module.exports = exports['default'];
-
-/***/ },
 /* 29 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports['default'] = {
-		'xlink:actuate': 'actuate',
-		'xlink:arcrole': 'arcrole',
-		'xlink:href': 'href',
-		'xlink:role': 'role',
-		'xlink:show': 'show',
-		'xlink:title': 'title',
-		'xlink:type': 'type'
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports['default'] = {
-		'xml:base': 'base',
-		'xml:id': 'id',
-		'xml:lang': 'lang',
-		'xml:space': 'spac'
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	/**
-	 * @param {string} prefix vendor-specific prefix, eg: Webkit
-	 * @param {string} key style name, eg: transitionDuration
-	 * @return {string} style name prefixed with `prefix`, properly camelCased, eg:
-	 * WebkitTransitionDuration
-	 */
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	exports["default"] = function (prefix, key) {
-	  return prefix + key.charAt(0).toUpperCase() + key.slice(1);
-	};
-	
-	module.exports = exports["default"];
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	/**
-	 * Support style names that may come passed in prefixed by adding permutations
-	 * of vendor prefixes.
-	 */
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	exports['default'] = ['Webkit', 'Khtml', 'Moz', 'ms', 'O'];
-	module.exports = exports['default'];
-
-/***/ },
-/* 33 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2372,7 +1712,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 34 */
+/* 30 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2384,40 +1724,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 31 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
+	var isSVG = undefined;
 	
-	exports["default"] = function (obj, callback) {
-		if (obj) {
-			// v8 optimizing. To have a fast "for In", the "key" must be a pure local variable
-			for (var key in obj) {
-				callback(key, obj[key]);
-			}
-		}
-		return obj;
-	};
+	if (document) {
+		var implementation = document.implementation;
 	
-	module.exports = exports["default"];
+		isSVG = implementation && implementation.hasFeature && implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#BasicStructure', '1.1');
+	}
+	
+	exports['default'] = isSVG;
+	module.exports = exports['default'];
 
 /***/ },
-/* 36 */
-26,
-/* 37 */
+/* 32 */
+27,
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO! Finish this
 	
 	"use strict";
 	
-	var _createClass = __webpack_require__(74)["default"];
+	var _createClass = __webpack_require__(77)["default"];
 	
-	var _classCallCheck = __webpack_require__(73)["default"];
+	var _classCallCheck = __webpack_require__(76)["default"];
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -2471,7 +1809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 38 */
+/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2487,7 +1825,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 39 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2518,7 +1856,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 40 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2530,11 +1868,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = createFragment;
 	
-	var _utilIsArray = __webpack_require__(14);
+	var _utilIsArray = __webpack_require__(15);
 	
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 	
-	var _createTemplate = __webpack_require__(18);
+	var _createTemplate = __webpack_require__(19);
 	
 	var _createTemplate2 = _interopRequireDefault(_createTemplate);
 	
@@ -2574,7 +1912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 37 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2594,7 +1932,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 42 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2605,7 +1943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _varsRecycledFragments = __webpack_require__(36);
+	var _varsRecycledFragments = __webpack_require__(32);
 	
 	var _varsRecycledFragments2 = _interopRequireDefault(_varsRecycledFragments);
 	
@@ -2622,7 +1960,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 43 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2634,7 +1972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = insertFragment;
 	
-	var _destroyFragment = __webpack_require__(19);
+	var _destroyFragment = __webpack_require__(20);
 	
 	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
 	
@@ -2672,7 +2010,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 44 */
+/* 40 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2702,7 +2040,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 45 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2726,7 +2064,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 46 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2742,7 +2080,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _render2 = _interopRequireDefault(_render);
 	
-	var _template = __webpack_require__(13);
+	var _template = __webpack_require__(14);
 	
 	var _template2 = _interopRequireDefault(_template);
 	
@@ -2758,7 +2096,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2781,7 +2119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
-	var _unmountComponentAtFragment = __webpack_require__(20);
+	var _unmountComponentAtFragment = __webpack_require__(21);
 	
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
 	
@@ -2804,7 +2142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 48 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2823,7 +2161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumFragmentValueTypes2 = _interopRequireDefault(_enumFragmentValueTypes);
 	
-	var _updateFragmentList = __webpack_require__(21);
+	var _updateFragmentList = __webpack_require__(22);
 	
 	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
 	
@@ -2835,13 +2173,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _eventsSharedEvents2 = _interopRequireDefault(_eventsSharedEvents);
 	
-	var _utilIsSVG = __webpack_require__(15);
+	var _utilIsSVG = __webpack_require__(31);
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
-	var _templateAttributeOps = __webpack_require__(12);
+	var _templateDOMPropertyOperations = __webpack_require__(13);
 	
-	var _templateAttributeOps2 = _interopRequireDefault(_templateAttributeOps);
+	var _templateDOMPropertyOperations2 = _interopRequireDefault(_templateDOMPropertyOperations);
 	
 	function updateFragmentValue(context, oldFragment, fragment, component) {
 		var element = oldFragment.templateElement,
@@ -2977,7 +2315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 							if (_eventsSharedEvents2['default'][type] != null) {
 								_eventsEventManager2['default'].addListener(element, type, fragment.templateValue);
 							} else {
-								_templateAttributeOps2['default'].set(element, type, fragment.templateValue, true);
+								(0, _templateDOMPropertyOperations2['default'])(element, type, fragment.templateValue, true);
 							}
 						}
 			}
@@ -2988,7 +2326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 49 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3007,7 +2345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumFragmentValueTypes2 = _interopRequireDefault(_enumFragmentValueTypes);
 	
-	var _updateFragmentList = __webpack_require__(21);
+	var _updateFragmentList = __webpack_require__(22);
 	
 	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
 	
@@ -3019,13 +2357,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _eventsSharedEvents2 = _interopRequireDefault(_eventsSharedEvents);
 	
-	var _utilIsSVG = __webpack_require__(15);
+	var _utilIsSVG = __webpack_require__(31);
 	
 	var _utilIsSVG2 = _interopRequireDefault(_utilIsSVG);
 	
-	var _templateAttributeOps = __webpack_require__(12);
+	var _templateDOMPropertyOperations = __webpack_require__(13);
 	
-	var _templateAttributeOps2 = _interopRequireDefault(_templateAttributeOps);
+	var _templateDOMPropertyOperations2 = _interopRequireDefault(_templateDOMPropertyOperations);
 	
 	// TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 	// refactored to by more DRY. although, this causes a significant performance cost
@@ -3162,7 +2500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 							if (_eventsSharedEvents2['default'][type] != null) {
 								_eventsEventManager2['default'].addListener(element, type, fragment.templateValues[i]);
 							} else {
-								_templateAttributeOps2['default'].set(element, type, fragment.templateValues[i], true);
+								(0, _templateDOMPropertyOperations2['default'])(element, type, fragment.templateValues[i], true);
 							}
 						}
 						//component prop, update it
@@ -3193,7 +2531,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 50 */
+/* 46 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3224,7 +2562,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 47 */
 /***/ function(module, exports) {
 
 	// Workaround for https://bugs.webkit.org/show_bug.cgi?id=16735
@@ -3253,7 +2591,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 52 */
+/* 48 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3275,7 +2613,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 49 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3287,7 +2625,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 54 */
+/* 50 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3299,7 +2637,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 55 */
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _normalizeCSS = __webpack_require__(61);
+	
+	var _normalizeCSS2 = _interopRequireDefault(_normalizeCSS);
+	
+	/**
+	 * Sets the value for multiple styles on a node. If a value is specified as
+	 * '' (empty string), the corresponding style property will be unset.
+	 *
+	 * @param {DOMElement} node
+	 * @param {object} styles
+	 */
+	
+	exports['default'] = function (node, styles) {
+	
+	    var style = node.style;
+	
+	    for (var styleName in styles) {
+	
+	        if (styles[styleName] !== undefined) {
+	
+	            var styleValue = (0, _normalizeCSS2['default'])(styleName, styles[styleName]);
+	
+	            if (styleValue) {
+	                style[styleName] = styleValue;
+	            } else {
+	                style[styleName] = '';
+	            }
+	        }
+	    }
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3319,9 +2702,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _eventsEventManager2 = _interopRequireDefault(_eventsEventManager);
 	
-	var _AttributeOps = __webpack_require__(12);
+	var _DOMPropertyOperations = __webpack_require__(13);
 	
-	var _AttributeOps2 = _interopRequireDefault(_AttributeOps);
+	var _DOMPropertyOperations2 = _interopRequireDefault(_DOMPropertyOperations);
 	
 	var _enumFragmentValueTypes = __webpack_require__(2);
 	
@@ -3473,7 +2856,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					_eventsEventManager2['default'].addListener(node, attrName, attrVal);
 					// attributes / properties
 				} else if (attrVal != null) {
-						_AttributeOps2['default'].set(node, attrName, attrVal);
+						(0, _DOMPropertyOperations2['default'])(node, attrName, attrVal);
 					}
 			}
 		}
@@ -3482,7 +2865,87 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 56 */
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+	
+	var _prefixes = __webpack_require__(64);
+	
+	var _prefixes2 = _interopRequireDefault(_prefixes);
+	
+	var _prefixKey = __webpack_require__(63);
+	
+	var _prefixKey2 = _interopRequireDefault(_prefixKey);
+	
+	/**
+	 * CSS properties which accept numbers but are not in units of 'px'.
+	 */
+	var unitless = {
+		animationIterationCount: true,
+		boxFlex: true,
+		boxFlexGroup: true,
+		boxOrdinalGroup: true,
+		counterReset: true,
+		counterIncrement: true,
+		columnCount: true,
+		flex: true,
+		flexGrow: true,
+		flexPositive: true,
+		flexShrink: true,
+		flexNegative: true,
+		flexOrder: true,
+		float: true,
+		fontWeight: true,
+		// Supports CSS3 Grid Layout Module
+		gridRow: true,
+		gridColumn: true,
+		lineClamp: true,
+		lineHeight: true,
+		marker: true,
+		opacity: true,
+		order: true,
+		orphans: true,
+		pitchRange: true,
+		richness: true,
+		stress: true,
+		tabSize: true,
+		volume: true,
+		widows: true,
+		zIndex: true,
+		zoom: true,
+		// SVG-related properties
+		stopOpacity: true,
+		fillOpacity: true,
+		strokeDashoffset: true,
+		strokeOpacity: true,
+		strokeWidth: true
+	};
+	
+	// TODO merge with extendUnitlessNumber
+	// convert to vendor prefixed unitless CSS properties
+	
+	var _loop = function (prop) {
+		_prefixes2['default'].forEach(function (prefix) {
+			unitless[(0, _prefixKey2['default'])(prefix, prop)] = unitless[prop];
+		});
+	};
+	
+	for (var prop in unitless) {
+		_loop(prop);
+	}
+	
+	exports['default'] = unitless;
+	module.exports = exports['default'];
+
+/***/ },
+/* 54 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3490,144 +2953,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var NONWORD_FIRST_REGEX = /\W+(\w)/g;
-	var NONWORD_FIRST_CAPITALIZE = function NONWORD_FIRST_CAPITALIZE($$, $1) {
-	  return $1.toUpperCase();
-	};
 	
-	exports["default"] = function (str) {
-	  return str.toLowerCase().replace(NONWORD_FIRST_REGEX, NONWORD_FIRST_CAPITALIZE);
+	exports["default"] = function (value, bitmask) {
+	  return (value & bitmask) === bitmask;
 	};
 	
 	module.exports = exports["default"];
 
 /***/ },
-/* 57 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-					value: true
-	});
-	exports['default'] = {
-					acceptCharset: 'accept-charset',
-					className: 'class',
-					htmlFor: 'for',
-					httpEquiv: 'http-equiv',
-	
-					// SVG
-	
-					accentHeight: 'accent-height',
-					alignmentBaseline: 'alignment-baseline',
-					arabicForm: 'arabic-form',
-					autoStartReverse: 'auto-start-reverse',
-					baselineShift: 'baseline-shift',
-					bufferedRendering: 'buffered-rendering',
-					colorRendering: 'color-rendering',
-					colorInterpolation: 'color-interpolation',
-					colorInterpolationFilters: 'color-interpolation-filters',
-					colorProfile: 'color-profile',
-					clipPath: 'clip-path',
-					dominantBaseline: 'dominant-baseline',
-					fillOpacity: 'fill-opacity',
-					fillRule: 'fill-rule',
-					filterRes: 'filterRes',
-					filterUnits: 'filterUnits',
-					floodColor: 'flood-color',
-					floodOpacity: 'flood-opacity',
-					fontFamily: 'font-family',
-					fontSize: 'font-size',
-					fontStyle: 'font-style',
-					fontWeight: 'font-weight',
-					glyphName: 'glyph-name',
-					glyphRef: 'glyphRef',
-					gradientTransform: 'gradientTransform',
-					gradientUnits: 'gradientUnits',
-					horizAdvX: 'horiz-adv-x',
-					horizOriginX: 'horiz-origin-x',
-					horizOriginY: 'horiz-origin-y',
-					markerEnd: 'marker-end',
-					markerMid: 'marker-mid',
-					markerStart: 'marker-start',
-					overlinePosition: 'overline-position',
-					overlineThickness: 'overline-thickness',
-					paintOrder: 'paint-order',
-					patternContentUnits: 'patternContentUnits',
-					patternUnits: 'patternUnits',
-					pathLength: 'pathLength',
-					patternTransform: 'patternTransform',
-					pointsAtX: 'pointsAtX',
-					pointsAtY: 'pointsAtY',
-					pointsAtZ: 'pointsAtZ',
-					preserveAlpha: 'preserveAlpha',
-					preserveAspectRatio: 'preserveAspectRatio',
-					primitiveUnits: 'primitiveUnits',
-					shapeRendering: 'shape-rendering',
-					spreadMethod: 'spreadMethod',
-					stopColor: 'stop-color',
-					stopOpacity: 'stop-opacity',
-					strikethroughPosition: 'strikethrough-position',
-					strikethroughThickness: 'strikethrough-thickness',
-					strokeDashoffset: 'stroke-dashoffset',
-					strokeDasharray: 'stroke-dasharray',
-					strokeLinecap: 'stroke-linecap',
-					strokeOpacity: 'stroke-opacity',
-					strokeWidth: 'stroke-width',
-					tableValues: 'tableValues',
-					targetX: 'targetX',
-					targetY: 'targetY',
-					textLength: 'textLength',
-					underlinePosition: 'underline-position',
-					underlineThickness: 'underline-thickness',
-					unicodeBidi: 'unicode-bidi',
-					unicodeRange: 'unicode-range',
-					unitsPerEm: 'units-per-em',
-					solidColor: 'solid-color',
-					solidOpacity: 'solid-opacity',
-					strokeLinejoin: 'stroke-linejoin',
-					textAnchor: 'text-anchor',
-					textDecoration: 'text-decoration',
-					textRendering: 'text-rendering',
-					vAlphabetic: 'v-alphabetic',
-					vectorEffect: 'vector-effect',
-					vHanging: 'v-hanging',
-					vIdeographic: 'v-ideographic',
-					vMathematical: 'v-mathematical',
-					vertAdvY: 'vert-adv-y',
-					vertOriginX: 'vert-origin-x',
-					vertOriginY: 'vert-origin-y',
-					viewBox: 'viewBox'
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 58 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports['default'] = {
-		autoCapitalize: 'autocapitalize',
-		autoComplete: 'autocomplete',
-		autoCorrect: 'autocorrect',
-		autoFocus: 'autofocus',
-		autoPlay: 'autoplay',
-		'class': 'className',
-		encType: 'encoding',
-		hrefLang: 'hreflang',
-		radioGroup: 'radiogroup',
-		spellCheck: 'spellcheck',
-		srcDoc: 'srcdoc',
-		srcSet: 'srcset'
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 59 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3639,7 +2973,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports['default'] = createElement;
 	
-	var _ = __webpack_require__(13);
+	var _ = __webpack_require__(14);
 	
 	var _2 = _interopRequireDefault(_);
 	
@@ -3647,7 +2981,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _enumFragmentValueTypes2 = _interopRequireDefault(_enumFragmentValueTypes);
 	
-	var _utilIsArray = __webpack_require__(14);
+	var _utilIsArray = __webpack_require__(15);
 	
 	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
 	
@@ -3765,7 +3099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 60 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3776,15 +3110,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _cfgSvgCfg = __webpack_require__(27);
+	var _cfgSvgCfg = __webpack_require__(28);
 	
 	var _cfgSvgCfg2 = _interopRequireDefault(_cfgSvgCfg);
 	
-	var _varsSvgNamespace = __webpack_require__(34);
+	var _varsSvgNamespace = __webpack_require__(30);
 	
 	var _varsSvgNamespace2 = _interopRequireDefault(_varsSvgNamespace);
 	
-	var _varsMathNamespace = __webpack_require__(33);
+	var _varsMathNamespace = __webpack_require__(29);
 	
 	var _varsMathNamespace2 = _interopRequireDefault(_varsMathNamespace);
 	
@@ -3831,7 +3165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 61 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3842,15 +3176,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _cfgSvgCfg = __webpack_require__(27);
+	var _cfgSvgCfg = __webpack_require__(28);
 	
 	var _cfgSvgCfg2 = _interopRequireDefault(_cfgSvgCfg);
 	
-	var _varsSvgNamespace = __webpack_require__(34);
+	var _varsSvgNamespace = __webpack_require__(30);
 	
 	var _varsSvgNamespace2 = _interopRequireDefault(_varsSvgNamespace);
 	
-	var _varsMathNamespace = __webpack_require__(33);
+	var _varsMathNamespace = __webpack_require__(29);
 	
 	var _varsMathNamespace2 = _interopRequireDefault(_varsMathNamespace);
 	
@@ -3897,55 +3231,88 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 62 */
+/* 58 */
 /***/ function(module, exports) {
 
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	exports["default"] = function (propInfo, value) {
+	
+	    if (propInfo.hasBooleanValue) {
+	        return value;
+	    } else {
+	        return value;
+	    }
+	};
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var DASH_REGEX = /([^A-Z]+)([A-Z])/g;
-	var DASHED_REPLACE = function DASHED_REPLACE($$, $1, $2) {
-	  return $1 + "-" + $2;
-	};
 	
-	exports["default"] = function (str) {
-	  return str.replace(DASH_REGEX, DASHED_REPLACE).toLowerCase();
-	};
+	var _setAttributes = __webpack_require__(66);
 	
-	module.exports = exports["default"];
-
-/***/ },
-/* 63 */
-/***/ function(module, exports) {
-
-	'use strict';
+	var _setAttributes2 = _interopRequireDefault(_setAttributes);
 	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	var ESCAPE_REGEX = /[&><]/g;
+	var _setProperty = __webpack_require__(67);
 	
-	// `'` and `'` are not escaped; they are parsed as regular characters in the
-	// context of text content.
+	var _setProperty2 = _interopRequireDefault(_setProperty);
 	
-	var ESCAPE_TABLE = {
-		'&': '&amp;',
-		'>': '&gt;',
-		'<': '&lt;'
-	};
+	// Anything we don't set as an attribute is treated as a property
 	
-	exports['default'] = function (str) {
-		return str.replace(ESCAPE_REGEX, function (match) {
-			return ESCAPE_TABLE[match];
-		});
+	exports['default'] = function (propInfo) {
+	  return propInfo.mustUseAttribute ? _setAttributes2['default'] : _setProperty2['default'];
 	};
 	
 	module.exports = exports['default'];
 
 /***/ },
-/* 64 */
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _propertyIsTrue = __webpack_require__(65);
+	
+	var _propertyIsTrue2 = _interopRequireDefault(_propertyIsTrue);
+	
+	exports['default'] = function (propInfo, value) {
+	    var isTrue = (0, _propertyIsTrue2['default'])(propInfo, value);
+	
+	    if (propInfo.hasBooleanValue) {
+	        return isTrue ? true : false;
+	    } else if (propInfo.hasOverloadedBooleanValue) {
+	        return isTrue ? true : value;
+	    } else if (propInfo.hasNumericValue || propInfo.hasPositiveNumericValue) {
+	        return Number(value);
+	    } else {
+	        return value;
+	    }
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3956,65 +3323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _cfgUnitlessCfg = __webpack_require__(28);
-	
-	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
-	
-	var _prefixes = __webpack_require__(32);
-	
-	var _prefixes2 = _interopRequireDefault(_prefixes);
-	
-	var _prefixKey = __webpack_require__(31);
-	
-	var _prefixKey2 = _interopRequireDefault(_prefixKey);
-	
-	var _utilForIn = __webpack_require__(35);
-	
-	var _utilForIn2 = _interopRequireDefault(_utilForIn);
-	
-	exports['default'] = function (properties) {
-		(0, _utilForIn2['default'])(properties, function (prop, val) {
-			_cfgUnitlessCfg2['default'][prop] = val;
-			for (var i = _prefixes2['default'].length; --i > -1;) {
-				_cfgUnitlessCfg2['default'][(0, _prefixKey2['default'])(_prefixes2['default'][i], prop)] = val;
-			}
-		});
-	};
-	
-	module.exports = exports['default'];
-
-/***/ },
-/* 65 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var PropertyAccessor = {};
-	
-	exports["default"] = function (node, attrName) {
-		var tag = node.tagName,
-		    tagAttrs = PropertyAccessor[tag] || (PropertyAccessor[tag] = {});
-		return attrName in tagAttrs ? tagAttrs[attrName] : tagAttrs[attrName] = document.createElement(tag)[attrName];
-	};
-	
-	module.exports = exports["default"];
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _interopRequireDefault = __webpack_require__(1)['default'];
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	
-	var _cfgUnitlessCfg = __webpack_require__(28);
+	var _cfgUnitlessCfg = __webpack_require__(53);
 	
 	var _cfgUnitlessCfg2 = _interopRequireDefault(_cfgUnitlessCfg);
 	
@@ -4024,7 +3333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} name The boolean attribute name to set.
 	 * @param {String} value The boolean attribute value to set.
 	 */
-	function normalizeCSS(name, value) {
+	function normalizeCSS(name, value, component) {
 		if (value === null || value === '') {
 			return '';
 		}
@@ -4041,6 +3350,152 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _utilIsArray = __webpack_require__(15);
+	
+	var _utilIsArray2 = _interopRequireDefault(_utilIsArray);
+	
+	var _utilInArray = __webpack_require__(72);
+	
+	var _utilInArray2 = _interopRequireDefault(_utilInArray);
+	
+	exports['default'] = function (node, value) {
+	
+	    var multiple = (0, _utilIsArray2['default'])(value),
+	        options = node.options;
+	
+	    if (multiple && typeof value[0] === 'number') {
+	        var selectedValue = {};
+	        for (i = 0; i < value.length; i++) {
+	            selectedValue['' + value[i]] = true;
+	        }
+	
+	        for (i = 0; i < options.length; i++) {
+	            var selected = selectedValue.hasOwnProperty(options[i].value);
+	            if (options[i].selected !== selected) {
+	                options[i].selected = true;
+	            }
+	        }
+	    } else {
+	        var optionNode = undefined;
+	        for (var _i = 0; _i < options.length; _i++) {
+	            optionNode = options[_i];
+	            optionNode.selected = value != null && (multiple ? (0, _utilInArray2['default'])(value, optionNode.value) : optionNode.value == value);
+	        }
+	    }
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 63 */
+/***/ function(module, exports) {
+
+	/**
+	 * @param {string} prefix vendor-specific prefix, eg: Webkit
+	 * @param {string} key style name, eg: transitionDuration
+	 * @return {string} style name prefixed with `prefix`, properly camelCased, eg:
+	 * WebkitTransitionDuration
+	 */
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports["default"] = function (prefix, key) {
+	  return prefix + key.charAt(0).toUpperCase() + key.slice(1);
+	};
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 64 */
+/***/ function(module, exports) {
+
+	/**
+	 * Support style names that may come passed in prefixed by adding permutations
+	 * of vendor prefixes.
+	 */
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = ['Webkit', 'Khtml', 'Moz', 'ms', 'O'];
+	module.exports = exports['default'];
+
+/***/ },
+/* 65 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	exports['default'] = function (propInfo, value) {
+	    if (propInfo.hasBooleanValue) {
+	        return value === '' || value === propInfo.attributeName;
+	    } else if (propInfo.hasOverloadedBooleanValue) {
+	        return value === '';
+	    }
+	    return false;
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _DOMProperty = __webpack_require__(12);
+	
+	var _DOMProperty2 = _interopRequireDefault(_DOMProperty);
+	
+	var _getAttributeValue = __webpack_require__(58);
+	
+	var _getAttributeValue2 = _interopRequireDefault(_getAttributeValue);
+	
+	exports['default'] = function (node, name, value) {
+	
+	    var propInfo = (0, _DOMProperty2['default'])(name);
+	
+	    value = (0, _getAttributeValue2['default'])(propInfo, value);
+	
+	    if (propInfo.namespace) {
+	        node.setAttributeNS(propInfo.namespace, propInfo.attributeName, '' + value);
+	    } else if (propInfo.attributeName === 'type' && node.tagName.toLowerCase() === 'input') {
+	        var val = node.value; // value will be lost in IE if type is changed
+	        node.setAttribute(propInfo.attributeName, '' + value);
+	        node.value = val;
+	    } else {
+	        node.setAttribute(propInfo.attributeName, (0, _getAttributeValue2['default'])(propInfo, value));
+	    }
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
 /* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -4052,52 +3507,101 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _cfgXmlCfg = __webpack_require__(30);
+	var _DOMProperty = __webpack_require__(12);
 	
-	var _cfgXmlCfg2 = _interopRequireDefault(_cfgXmlCfg);
+	var _DOMProperty2 = _interopRequireDefault(_DOMProperty);
 	
-	var _cfgXlinkCfg = __webpack_require__(29);
+	var _parseValues = __webpack_require__(62);
 	
-	var _cfgXlinkCfg2 = _interopRequireDefault(_cfgXlinkCfg);
+	var _parseValues2 = _interopRequireDefault(_parseValues);
 	
-	// Simplified subset
-	var VALID_ATTRIBUTE_NAME_REGEX = /^[a-zA-Z_][a-zA-Z_\.\-\d]*$/,
-	    illegalAttributeNameCache = {},
-	    validatedAttributeNameCache = {};
+	var _getPropertyValue = __webpack_require__(60);
 	
-	/**
-	 * Validate custom attributes
-	 *
-	 * @param  {String} name  The boolean attribute name to set.
-	 */
-	function validateAttribute(name) {
+	var _getPropertyValue2 = _interopRequireDefault(_getPropertyValue);
 	
-	    if (validatedAttributeNameCache[name]) {
-	        return true;
+	var _CSSPropertyOperations = __webpack_require__(51);
+	
+	var _CSSPropertyOperations2 = _interopRequireDefault(_CSSPropertyOperations);
+	
+	var _varsPropertyValueConversions = __webpack_require__(70);
+	
+	var _varsPropertyValueConversions2 = _interopRequireDefault(_varsPropertyValueConversions);
+	
+	exports['default'] = function (node, name, value) {
+	
+	    var propInfo = (0, _DOMProperty2['default'])(name);
+	
+	    var propName = propInfo.propertyName;
+	    var valueConverter = undefined;
+	
+	    if (propName === 'value' && node.tagName === 'SELECT') {
+	        (0, _parseValues2['default'])(node, value);
+	    } else if (propName === 'style') {
+	        (0, _CSSPropertyOperations2['default'])(node, value);
+	    } else {
+	        if (propName && _varsPropertyValueConversions2['default'][propName]) {
+	            valueConverter = _varsPropertyValueConversions2['default'][propInfo.propertyName];
+	            value = valueConverter(node, value);
+	        }
+	
+	        node[propInfo.propertyName] = (0, _getPropertyValue2['default'])(propInfo, value);
 	    }
+	};
 	
-	    if (illegalAttributeNameCache[name]) {
-	        return false;
-	    }
-	    if (VALID_ATTRIBUTE_NAME_REGEX.test(name) ||
-	
-	    // namespace attributes are seen as non-valid, avoid that!
-	    _cfgXmlCfg2['default'][name] || _cfgXlinkCfg2['default'][name]) {
-	
-	        validatedAttributeNameCache[name] = true;
-	        return true;
-	    }
-	
-	    illegalAttributeNameCache[name] = true;
-	
-	    return false;
-	}
-	
-	exports['default'] = validateAttribute;
 	module.exports = exports['default'];
 
 /***/ },
 /* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _namespaces = __webpack_require__(69);
+	
+	var _namespaces2 = _interopRequireDefault(_namespaces);
+	
+	exports['default'] = {
+	    'xlink:actuate': _namespaces2['default'].xlink,
+	    'xlink:arcrole': _namespaces2['default'].xlink,
+	    'xlink:href': _namespaces2['default'].xlink,
+	    'xlink:role': _namespaces2['default'].xlink,
+	    'xlink:show': _namespaces2['default'].xlink,
+	    'xlink:title': _namespaces2['default'].xlink,
+	    'xlink:type': _namespaces2['default'].xlink,
+	    'xml:base': _namespaces2['default'].xml,
+	    'xml:id': _namespaces2['default'].xml,
+	    'xml:lang': _namespaces2['default'].xml,
+	    'xml:space': _namespaces2['default'].xml
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 69 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	   value: true
+	});
+	exports['default'] = {
+	   math: 'http://www.w3.org/1998/Math/MathML',
+	   svg: 'http://www.w3.org/2000/svg',
+	   xlink: 'http://www.w3.org/1999/xlink',
+	   xml: 'http://www.w3.org/XML/1998/namespace'
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 70 */
+27,
+/* 71 */
 /***/ function(module, exports) {
 
 	// TODO! don't use 'slice'
@@ -4126,7 +3630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 69 */
+/* 72 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4149,29 +3653,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 70 */
-/***/ function(module, exports) {
-
-	/**
-	 * Returns a DOM node tagName as lowerCase
-	 * @param {Object} node A DOM element.
-	 */
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	function getNodeName(node) {
-	
-	  // TODO!! Cache this for re-use?
-	  return node.tagName.toLowerCase();
-	};
-	
-	exports["default"] = getNodeName;
-	module.exports = exports["default"];
-
-/***/ },
-/* 71 */
+/* 73 */
 /***/ function(module, exports) {
 
 	// Generate a unique identifier
@@ -4191,13 +3673,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 72 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(75), __esModule: true };
+	module.exports = { "default": __webpack_require__(78), __esModule: true };
 
 /***/ },
-/* 73 */
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(79), __esModule: true };
+
+/***/ },
+/* 76 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4211,12 +3699,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 74 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _Object$defineProperty = __webpack_require__(72)["default"];
+	var _Object$defineProperty = __webpack_require__(74)["default"];
 	
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -4240,16 +3728,107 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 75 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(76);
+	var $ = __webpack_require__(84);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 76 */
+/* 79 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(87);
+	module.exports = __webpack_require__(17).Object.keys;
+
+/***/ },
+/* 80 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var global    = __webpack_require__(83)
+	  , core      = __webpack_require__(17)
+	  , PROTOTYPE = 'prototype';
+	var ctx = function(fn, that){
+	  return function(){
+	    return fn.apply(that, arguments);
+	  };
+	};
+	var $def = function(type, name, source){
+	  var key, own, out, exp
+	    , isGlobal = type & $def.G
+	    , isProto  = type & $def.P
+	    , target   = isGlobal ? global : type & $def.S
+	        ? global[name] : (global[name] || {})[PROTOTYPE]
+	    , exports  = isGlobal ? core : core[name] || (core[name] = {});
+	  if(isGlobal)source = name;
+	  for(key in source){
+	    // contains in native
+	    own = !(type & $def.F) && target && key in target;
+	    if(own && key in exports)continue;
+	    // export native or passed
+	    out = own ? target[key] : source[key];
+	    // prevent global pollution for namespaces
+	    if(isGlobal && typeof target[key] != 'function')exp = source[key];
+	    // bind timers to global for call from export context
+	    else if(type & $def.B && own)exp = ctx(out, global);
+	    // wrap global constructors for prevent change them in library
+	    else if(type & $def.W && target[key] == out)!function(C){
+	      exp = function(param){
+	        return this instanceof C ? new C(param) : C(param);
+	      };
+	      exp[PROTOTYPE] = C[PROTOTYPE];
+	    }(out);
+	    else exp = isProto && typeof out == 'function' ? ctx(Function.call, out) : out;
+	    // export
+	    exports[key] = exp;
+	    if(isProto)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+	  }
+	};
+	// type bitmap
+	$def.F = 1;  // forced
+	$def.G = 2;  // global
+	$def.S = 4;  // static
+	$def.P = 8;  // proto
+	$def.B = 16; // bind
+	$def.W = 32; // wrap
+	module.exports = $def;
+
+/***/ },
+/* 81 */
+/***/ function(module, exports) {
+
+	// 7.2.1 RequireObjectCoercible(argument)
+	module.exports = function(it){
+	  if(it == undefined)throw TypeError("Can't call method on  " + it);
+	  return it;
+	};
+
+/***/ },
+/* 82 */
+/***/ function(module, exports) {
+
+	module.exports = function(exec){
+	  try {
+	    return !!exec();
+	  } catch(e){
+	    return true;
+	  }
+	};
+
+/***/ },
+/* 83 */
+/***/ function(module, exports) {
+
+	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+	var UNDEFINED = 'undefined';
+	var global = module.exports = typeof window != UNDEFINED && window.Math == Math
+	  ? window : typeof self != UNDEFINED && self.Math == Math ? self : Function('return this')();
+	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+
+/***/ },
+/* 84 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
@@ -4265,6 +3844,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getSymbols: $Object.getOwnPropertySymbols,
 	  each:       [].forEach
 	};
+
+/***/ },
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// most Object methods by ES6 should accept primitives
+	module.exports = function(KEY, exec){
+	  var $def = __webpack_require__(80)
+	    , fn   = (__webpack_require__(17).Object || {})[KEY] || Object[KEY]
+	    , exp  = {};
+	  exp[KEY] = exec(fn);
+	  $def($def.S + $def.F * __webpack_require__(82)(function(){ fn(1); }), 'Object', exp);
+	};
+
+/***/ },
+/* 86 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(81);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.14 Object.keys(O)
+	var toObject = __webpack_require__(86);
+	
+	__webpack_require__(85)('keys', function($keys){
+	  return function keys(it){
+	    return $keys(toObject(it));
+	  };
+	});
 
 /***/ }
 /******/ ])))

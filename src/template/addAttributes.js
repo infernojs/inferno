@@ -1,6 +1,6 @@
 import events from '../events/shared/events';
 import eventManager from '../events/eventManager';
-import attrOps from './AttributeOps';
+import DOMPropertyOperations from './DOMPropertyOperations';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 //ensuring we use these fragmentTypes before using ATTR_OTHER makes updates on
@@ -148,7 +148,7 @@ export default function addAttributes(node, attrs, fragment) {
 				eventManager.addListener(node, attrName, attrVal);
 				// attributes / properties
 			} else if (attrVal != null) {
-				attrOps.set(node, attrName, attrVal);
+				DOMPropertyOperations(node, attrName, attrVal);
 			}
 		}
 	}

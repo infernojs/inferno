@@ -1,4 +1,3 @@
-import forIn from '../../util/forIn';
 import prefixes from '../prefixes';
 import prefixKey from '../prefixKey';
 
@@ -48,10 +47,10 @@ let unitless = {
 
 // TODO merge with extendUnitlessNumber
 // convert to vendor prefixed unitless CSS properties
-forIn(unitless, (prop, value) => {
+for ( let prop in unitless) {
 	prefixes.forEach(prefix => {
-		unitless[prefixKey(prefix, prop)] = value;
+		unitless[prefixKey(prefix, prop)] = unitless[prop];
 	});
-});
+}
 
 export default unitless;

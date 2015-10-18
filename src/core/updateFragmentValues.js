@@ -4,7 +4,7 @@ import updateFragmentList from './updateFragmentList';
 import eventManager from '../events/eventManager';
 import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
-import attrOps from '../template/AttributeOps';
+import DOMPropertyOperations from '../template/DOMPropertyOperations';
 
 // TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 // refactored to by more DRY. although, this causes a significant performance cost
@@ -141,7 +141,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 					if (events[type] != null) {
 						eventManager.addListener(element, type, fragment.templateValues[i]);
 					} else {
-						attrOps.set(element, type, fragment.templateValues[i], true);
+						DOMPropertyOperations(element, type, fragment.templateValues[i], true);
 					}
 				}
 				//component prop, update it
