@@ -42,7 +42,7 @@ export default function virtualElementsTests(describe, expect, Inferno) {
     					expect(test).to.equal(expected);
     				});
 
-    				it('should render a basic example with dynamic values and props', () => {
+    				/*it('should render a basic example with dynamic values and props', () => {
     					let template = Inferno.createTemplate((t, val1, val2) =>
     						<div className='foo'>
     							<span className='bar'>{ val1 }</span>
@@ -60,7 +60,7 @@ export default function virtualElementsTests(describe, expect, Inferno) {
     					).to.equal(
     						`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
     					);
-    				});
+    				});*/
     			});
     		});
 
