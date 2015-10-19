@@ -451,7 +451,7 @@ export default function domElementsTests(describe, expect, Inferno) {
                     expect(
                         container.innerHTML
                     ).to.equal(
-                         '<input>'
+                         '<input href="/images/xxx.jpg">'
                     );
                 });
 

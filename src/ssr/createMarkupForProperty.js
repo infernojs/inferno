@@ -2,7 +2,7 @@ import DOMProperties                  from '../template/DOMProperties';
 import getPropertyValue               from '../template/getPropertyValue';
 import getAttributeValue              from '../template/getAttributeValue';
 import quoteAttributeValueForBrowser  from './quoteAttributeValueForBrowser';
-import propertyToAttributeMapping from '../template/propertyToAttributeMapping';
+import propertyToAttributeMapping     from '../template/propertyToAttributeMapping';
  /**
    * Creates markup for HTML properties.
    *
