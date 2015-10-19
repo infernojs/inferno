@@ -21,10 +21,10 @@ export default (tag, props, optGroups, opt) => {
     }
 
     let idx = 0,
-	     markup = '<select' + renderProperties(props) + '>';
+        markup = '<select' + renderProperties(props) + '>';
 
     // optgroups
-    if (optGroups.length) {
+    if (optGroups && optGroups.length) {
 
         for (idx = 0; idx < optGroups.length; idx++) {
 
@@ -36,20 +36,25 @@ export default (tag, props, optGroups, opt) => {
 
             markup += '><option';
 
-            if (opt[idx].props != null) {
-                markup += renderProperties(opt[idx].props);
+            if (opt != null) {
+
+                if (opt[idx].props != null) {
+                    markup += renderProperties(opt[idx].props);
+                }
+
+                // Look up whether this option is 'selected'
+                if (findTheNeedle(value, opt[idx].props.value)) {
+                    markup += ' selected="selected"';
+                }
             }
 
-            // Look up whether this option is 'selected'
-            if (findTheNeedle(value, opt[idx].props.value)) {
-                markup += ' selected="selected"';
-            }
-
-            markup = markup + '>' + escapeTextContentForBrowser(opt[idx].children) + '</option></optgroup>';
+            markup = markup + '>' + (opt && opt[idx].children ? escapeTextContentForBrowser(opt[idx].children) : '') + '</option></optgroup>';
         }
 
+        return markup + '</select>';
+
         // option
-    } else {
+    } else if (opt && opt.length) {
 
         for (idx = 0; idx < opt.length; idx++) {
 
@@ -65,8 +70,11 @@ export default (tag, props, optGroups, opt) => {
             }
 
             markup = markup + '>' + escapeTextContentForBrowser(opt[idx].children) + '</option>';
+
         }
+        return markup + '</select>';
     }
 
-   return markup + '</select>';
+    // return nothing for invalid markup. E.g. 'optGroup' without 'option' children etc.
+    return '';
 }
