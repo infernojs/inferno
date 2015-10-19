@@ -1,8 +1,1 @@
-export default (propInfo, value) => {
-
-    if (propInfo.hasBooleanValue) {
-        return value;
-    } else {
-        return value;
-    }
-};
+export default (propInfo, value) => propInfo.hasBooleanValue ? value : value;

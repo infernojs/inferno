@@ -45,7 +45,7 @@ let tests = [{
                 accessKey: 'h' // prop to lower case
             },
             children: null,
-            expected: '<form className="login" acceptCharset="ISO-8859-1" accessKey="h"></form>',
+            expected: '<form class="login" accept-charset="ISO-8859-1" accessKey="h"></form>',
         }, {
             name: 'should render "class" correctly as attribute',
             tag: 'input',
@@ -79,7 +79,7 @@ let tests = [{
                 acceptCharset: 'ISO-8859-1'
             },
             children: null,
-            expected: '<form acceptCharset="ISO-8859-1"></form>',
+            expected: '<form accept-charset="ISO-8859-1"></form>',
         }, {
             name: 'should render a custom method for key',
             tag: 'div',
@@ -114,7 +114,7 @@ let tests = [{
                httpEquiv: 'refresh'
             },
             children: null,
-            expected: '<meta httpEquiv="refresh"/>',
+            expected: '<meta http-equiv="refresh"/>',
         }, {
             name: 'should not render end tags for void elements',
             tag: 'input',

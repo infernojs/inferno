@@ -78,8 +78,6 @@ export default (tag, properties, optGroups, opt) => {
                 }
                 markup = markup + '>' + (opt[idx].children ? escapeTextContentForBrowser(opt[idx].children) : '') + '</option>';
             }
-
-
         }
         return markup + '</select>';
     }

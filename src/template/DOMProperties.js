@@ -1,5 +1,6 @@
-import DOMAttributeNamespaces from './vars/DOMAttributeNamespaces';
-import checkMask              from './checkMask';
+import DOMAttributeNamespaces     from './vars/DOMAttributeNamespaces';
+import propertyToAttributeMapping from './propertyToAttributeMapping';
+import checkMask                  from './checkMask';
 
 let
     MustUseAttribute = 0x1,
@@ -150,14 +151,6 @@ let  Properties = {
             // IE-only attribute that controls focus behavior
             unselectable: MustUseAttribute
         };
-		
- let PropertyToAttributeMapping = {
-            'className': 'class',
-            'htmlFor': 'for',
-            'httpEquiv': 'http-equiv',
-            'acceptCharset': 'accept-charset'
-        };
-
 
 export default (() => {
     let propInfoByAttributeName = {};
@@ -165,7 +158,7 @@ export default (() => {
 	for(let propName in Properties) {
 
         let propConfig = Properties[propName];
-        let attributeName = PropertyToAttributeMapping[propName] || propName.toLowerCase();
+        let attributeName = propertyToAttributeMapping[propName] || propName.toLowerCase();
 
         let propertyInfo = {
             attributeName: attributeName,

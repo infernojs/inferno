@@ -1,8 +1,8 @@
-import DOMProperty                    from '../template/DOMProperty';
+import DOMProperties                  from '../template/DOMProperties';
 import getPropertyValue               from '../template/getPropertyValue';
 import getAttributeValue              from '../template/getAttributeValue';
 import quoteAttributeValueForBrowser  from './quoteAttributeValueForBrowser';
-
+import propertyToAttributeMapping from '../template/propertyToAttributeMapping';
  /**
    * Creates markup for HTML properties.
    *
@@ -19,7 +19,7 @@ let renderMarkupForProperty = (propInfo, value) => `${propInfo.propertyName}=${q
    * @param {*} value
    * @return {?string} Markup string, or null if the property was invalid.
    */
-let renderMarkupForAttribute = (propInfo, value) => `${propInfo.attributeName}=${quoteAttributeValueForBrowser(getAttributeValue(propInfo, value))}`;
+let renderMarkupForAttribute = (propInfo, value) => `${(propertyToAttributeMapping[propInfo.attributeName] || propInfo.attributeName)}=${quoteAttributeValueForBrowser(getAttributeValue(propInfo, value))}`;
 
 // Anything we don't set as an attribute is treated as a property
 let getPropertySetter = (propInfo) => propInfo.mustUseAttribute ? renderMarkupForAttribute : renderMarkupForProperty;
@@ -31,4 +31,4 @@ let getPropertySetter = (propInfo) => propInfo.mustUseAttribute ? renderMarkupFo
   * @param {*} value
   * @return {?string} Markup string, or null if the property was invalid.
   */
- export default (name, value) => getPropertySetter(DOMProperty(name))(DOMProperty(name), value);
+ export default (name, value) => getPropertySetter(DOMProperties(name))(DOMProperties(name), value);
