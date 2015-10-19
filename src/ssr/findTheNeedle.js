@@ -1,5 +1,12 @@
 import isArray from '../util/isArray';
 
+/**
+ * Look up whether this option is 'selected'
+ *
+ * @param {String|Array} value
+ * @param {*} needle
+ * @return {Boolean} true/false
+ */
 export default (value, needle) => {
 
     // multiple
@@ -16,7 +23,10 @@ export default (value, needle) => {
                 }
             }
         }
-        // single
+
+        // return falsy for real objects
+        return false;
+
     } else {
         return value === needle;
     }
