@@ -5,12 +5,17 @@ import fragmentValueTypes from '../enum/fragmentValueTypes';
 import template from './template';
 
 function createElement(tag, props, ...children) {
-
+   
     let element;
+	let is = props && (props.is || null); // type extension
+    let xmlns = props && (props.xmlns || null); // xmlns
 
-    if (typeof tag === 'string') {
-        element = template.createElement(tag);
+	if (typeof tag === 'string') {
+		element = template.createElement(tag, xmlns, is);
     } else {
+		
+		// FIX ME! This is bad. What is this is a number, Date, Array? Check for real object!!
+		
         let propsParsed = props;
 
         for (let prop in props) {
