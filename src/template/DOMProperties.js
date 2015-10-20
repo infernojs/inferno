@@ -3,6 +3,7 @@ import propertyToAttributeMapping from './propertyToAttributeMapping';
 import checkMask                  from './checkMask';
 import isSVG                      from '../util/isSVG';
 import masks                      from './masks';
+
 let {
     MustUseAttribute,
     MustUseProperty,
@@ -42,7 +43,7 @@ Properties = {
             controls: MustUseProperty | HasBooleanValue,
             coords: MustUseProperty,
             crossOrigin: MustUseProperty,
-            data: MustUseProperty, // For `<object />` acts as `src`.
+            data: MustUseProperty,
             dateTime: MustUseAttribute,
             defer: HasBooleanValue,
             dir: MustUseProperty,
