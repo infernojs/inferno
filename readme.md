@@ -23,7 +23,7 @@ Inferno.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```javascript
-t7.module(funciton(t7) {
+t7.module(function(t7) {
   class Component extends Inferno.Component {
     constructor(props) {
       super(props);
