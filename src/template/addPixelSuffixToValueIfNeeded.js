@@ -1,4 +1,4 @@
-import unitlessCfg from './cfg/unitlessCfg';
+import unitlessProperties from './unitlessProperties';
 
 /**
  * Normalize CSS properties for SSR
@@ -6,11 +6,11 @@ import unitlessCfg from './cfg/unitlessCfg';
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
-function normalizeCSS(name, value, component) {
+export default (name, value) => {
 	if (value === null || (value === '')) {
 		return '';
 	}
-	if (value === 0 || (unitlessCfg[name] || (isNaN(value)))) {
+	if (value === 0 || (unitlessProperties(name) || (isNaN(value)))) {
 		return '' + value; // cast to string
 	}
 	if (typeof value === 'string') {
@@ -18,5 +18,3 @@ function normalizeCSS(name, value, component) {
 	}
 	return value + 'px';
 };
-
-export default normalizeCSS;

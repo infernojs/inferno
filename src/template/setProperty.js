@@ -1,32 +1,38 @@
 import DOMProperties              from './DOMProperties';
 import parseValues                from './parseValues';
-import getPropertyValue           from './getPropertyValue';
-import CSSPropertyOperations      from './CSSPropertyOperations';
+import setStyles      from './setStyles';
 import attributeToPropertyMapping from './attributeToPropertyMapping';
 
 /**
- * Set HTML properties on a node
+ * Apply a HTML property on a given Element
  *
- * @param {!Element} node
- * @param {String} name
- * @param {*} value
+ * @param {!Element} node  A DOM element.
+ * @param {string} name The attribute / property name
+ * @param {String|Object} value The attribute / property value
  */
-export default (node, name, value) => {
+ export default (node, name, value) => {
 
     let propInfo = DOMProperties(name),
         propName = propInfo.propertyName;
 
-    switch (name) {
+	if (propInfo.hasBooleanValue) {
+        node[(attributeToPropertyMapping[propName] || propName)] = (value === '' || name.toLowerCase() === propInfo.attributeName) ? true : false;
+	} else if (propInfo.mutationMethod) {
+        propInfo.mutationMethod(node, name, value);
+    } else {
 
-        case 'style':
-            CSSPropertyOperations(node, value);
-            return;
-        case 'value':
-            if (node.tagName.toLowerCase() === 'select') {
-                parseValues(node, value);
+        switch (name) {
+
+            case 'style':
+                setStyles(node, value);
                 return;
-            };
-        default:
-            node[(attributeToPropertyMapping[propName] || propName)] = getPropertyValue(propInfo, value);
+            case 'value':
+                if (node.tagName.toLowerCase() === 'select') {
+                    parseValues(node, value);
+                    return;
+                }
+            default:
+                node[(attributeToPropertyMapping[propName] || propName)] = value;
+        }
     }
 };

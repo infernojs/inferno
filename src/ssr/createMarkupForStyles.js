@@ -1,5 +1,5 @@
-import normalizeCSS from '../template/normalizeCSS';
-import dasherize    from '../template/dasherize';
+import addPixelSuffixToValueIfNeeded from '../template/addPixelSuffixToValueIfNeeded';
+import camelCasePropsToDashCase      from '../template/camelCasePropsToDashCase';
 
 /**
  * Serializes a mapping of style properties for use as inline styles:
@@ -18,7 +18,7 @@ export default (styles) => {
     let serialized = '';
     for (let styleName in styles) {
         if (styles[styleName] != null) {
-            serialized += dasherize(styleName) + ':' + normalizeCSS(styleName, styles[styleName]) + ';';
+            serialized += camelCasePropsToDashCase(styleName) + ':' + addPixelSuffixToValueIfNeeded(styleName, styles[styleName]) + ';';
         }
     }
     return serialized || null;

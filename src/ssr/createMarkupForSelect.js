@@ -1,7 +1,7 @@
 import renderProperties            from './renderProperties';
 import isArray                     from '../util/isArray';
 import escapeTextContentForBrowser from './escapeTextContentForBrowser';
-import findTheNeedle               from './findTheNeedle';
+import createSelectContent         from './createSelectContent';
 
 /**
  * Render HTML Markup server-side for select/select multiple
@@ -14,74 +14,53 @@ export default (tag, properties, optGroups, opt) => {
 
     // Pass down initial value so initial generated markup has correct
     // `selected` attributes
-    let value = properties.value;
+    let selectedValue = properties.value,
+        markup = '';
 
-    if (value == null) {
-        return '';
-    }
+    if (selectedValue != null) {
 
-    let props,
-	    idx = 0,
+        let props,
+            idx = 0;
+
         markup = '<select' + renderProperties(properties) + '>';
 
-    // optgroups
-    if (optGroups && (optGroups.length)) {
+        // optgroups
+        if (optGroups && (optGroups.length)) {
 
-        for (idx = 0; idx < optGroups.length; idx++) {
+            for (idx = 0; idx < optGroups.length; idx++) {
 
-            markup += '<optgroup';
+                markup += '<optgroup';
 
-            if (optGroups[idx].props != null) {
-                markup += renderProperties(optGroups[idx].props);
-            }
-
-            markup += '><option';
-
-            if (opt[idx] != null) {
-
-                  props = opt[idx].props;
-
-                if (props != null) {
-                    markup += renderProperties(props);
-
-                    // Look up whether this option is 'selected'
-                    if (findTheNeedle(value, props.value)) {
-                        markup += ' selected="selected"';
-                    }
-
+                if (optGroups[idx].props != null) {
+                    markup += renderProperties(optGroups[idx].props);
                 }
-                markup = markup + '>' + (opt[idx].children ? escapeTextContentForBrowser(opt[idx].children) : '') + '</option></optgroup>';
-            }
-        }
 
-        return markup + '</select>';
+                markup += '><option';
+
+                if (opt[idx] != null) {
+
+                    markup = createSelectContent(markup, opt[idx].props, selectedValue, opt, idx) + '</option></optgroup>';
+                }
+            }
+
+            return markup + '</select>';
 
         // option
-    } else if (opt && (opt.length)) {
+        } else if (opt && (opt.length)) {
 
-        for (idx = 0; idx < opt.length; idx++) {
+            for (idx = 0; idx < opt.length; idx++) {
 
-            markup += '<option';
+                markup += '<option';
 
-            if (opt[idx] != null) {
+                if (opt[idx] != null) {
 
-                 props = opt[idx].props;
-
-                if (props != null) {
-                    markup += renderProperties(props);
-
-
-                    // Look up whether this option is 'selected'
-                    if (findTheNeedle(value, props.value)) {
-                        markup += ' selected="selected"';
-                    }
+                    markup = createSelectContent(markup, opt[idx].props, selectedValue, opt, idx) + '</option>';
                 }
-                markup = markup + '>' + (opt[idx].children ? escapeTextContentForBrowser(opt[idx].children) : '') + '</option>';
             }
+            return markup + '</select>';
         }
-        return markup + '</select>';
     }
-
+	
     // return blank for invalid markup. E.g. 'optGroup' without 'option' children etc.
-    return '';
+    return markup;
 }
