@@ -1,148 +1,113 @@
-import isArray from '../util/isArray';
-import isBrowser from '../util/isBrowser';
-import attributes from './attributes';
+import template from '.';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
-import template from './template';
+import isArray from '../util/isArray';
 
-function createElement(tag, props, ...children) {
-   
-    let element;
+export default function createElement(tag, props, ...children) {
+	let element;
 	let is = props && (props.is || null); // type extension
     let xmlns = props && (props.xmlns || null); // xmlns
 
 	if (typeof tag === 'string') {
 		element = template.createElement(tag, xmlns, is);
-    } else {
-		
-		// FIX ME! This is bad. What is this is a number, Date, Array? Check for real object!!
-		
-        let propsParsed = props;
+	} else {
+		let propsParsed = props;
 
-        for (let prop in props) {
-            if (props[prop].pointer) {
-                propsParsed[prop] = this.templateValues[propsParsed[prop].pointer];
-            }
-        }
+		for(let prop in props) {
+			if(props[prop].pointer) {
+				propsParsed[prop] = this.templateValues[propsParsed[prop].pointer];
+			}
+		}
+		element = {
+			dom: null,
+			component: this.templateValue || this.templateValues[tag.pointer],
+			props: propsParsed,
+			key: null,
+			template: null,
+			templateIndex: tag.pointer
+		};
+		return element;
+	}
 
-        return {
-            dom: null,
-            component: this.templateValue || this.templateValues[tag.pointer],
-            props: propsParsed,
-            key: null,
-            template: null,
-            templateIndex: tag.pointer
-        };
-    }
+	let len = children.length;
 
-    if (children && (children.length)) {
+	if(len > 0) {
+		if (len > 1) {
+			for (let i = 0; i < len; i++) {
+				let child = children[i];
 
-        let len = children.length;
+				if (child.pointer !== undefined) {
+					let value = this.templateValue || this.templateValues[child.pointer];
 
-        if (len > 1) {
-            for (let i = 0; i < len; i++) {
-                let child = children[i];
+					if (typeof value !== 'object') {
+						let node = template.createTextNode(value);
 
-                if (child.pointer != null) {
-                    let value = this.templateValue || this.templateValues[child.pointer];
+						if(this.templateValue) {
+							this.templateElement = node;
+							this.templateType = fragmentValueTypes.TEXT_DIRECT;
+						} else {
+							this.templateElements[child.pointer] = node;
+							this.templateTypes[child.pointer] = fragmentValueTypes.TEXT_DIRECT;
+						}
+						element.appendChild(node);
+					}
+				} else if (typeof child !== 'object') {
+					let node = template.createTextNode(child);
 
-                    if (typeof value !== 'object') {
-                        let node = document.createTextNode(value);
+					element.appendChild(node);
+				} else if (child.component) {
+					if(this.templateValues) {
+						let templateIndex = child.templateIndex;
 
-                        if (this.templateValue) {
-                            this.templateElement = node;
-                            this.templateType = fragmentValueTypes.TEXT_DIRECT;
-                        } else {
-                            this.templateElements[child.pointer] = node;
-                            this.templateTypes[child.pointer] = fragmentValueTypes.TEXT_DIRECT;
-                        }
-                        element.appendChild(node);
-                    }
-                    return;
-                }
+						this.templateElements[templateIndex] = element;
+						this.templateTypes[templateIndex] = fragmentValueTypes.FRAGMENT;
+						this.templateValues[templateIndex] = child;
+					} else {
+						this.templateElement = element;
+						this.templateType = fragmentValueTypes.FRAGMENT;
+						this.templateValue = child;
+					}
+				} else {
+					element.appendChild(child);
+				}
+			}
+		}
+		else if ((children = children[0]).pointer !== undefined) {
+			let value = this.templateValue || this.templateValues[children.pointer];
 
-                if (typeof child !== 'object') {
-                    // TODO! What if the document don't exist? E.g. server side
-                    let node = document.createTextNode(child);
+			if (typeof value !== 'object') {
+				element.textContent = value;
+				if(this.templateValue) {
+					this.templateElement = element;
+					this.templateType = fragmentValueTypes.TEXT;
+				} else {
+					this.templateElements[children.pointer] = element;
+					this.templateTypes[children.pointer] = fragmentValueTypes.TEXT;
+				}
+			} else if (isArray(value)) {
+				if(this.templateValue) {
+					this.templateElement = element;
+					this.templateType = fragmentValueTypes.LIST;
+				} else {
+					this.templateElements[children.pointer] = element;
+					this.templateTypes[children.pointer] = fragmentValueTypes.LIST;
+				}
+			}
+		}
+		else if (typeof children !== 'object') {
+			element.textContent = children;
+		}
+		else if (children.component) {
+			this.templateElement = element;
+			this.templateType = fragmentValueTypes.FRAGMENT;
+			this.templateValue = children;
+		} else {
+			element.appendChild(children);
+		}
+	}
 
-                    element.appendChild(node);
-                    return;
-                }
+	if (props) {
+		template.addAttributes(element, props, this);
+	}
 
-                if (child.component) {
-                    if (this.templateValues) {
-                        let templateIndex = child.templateIndex;
-
-                        this.templateElements[templateIndex] = element;
-                        this.templateTypes[templateIndex] = fragmentValueTypes.FRAGMENT;
-                        this.templateValues[templateIndex] = child;
-                    } else {
-                        this.templateElement = element;
-                        this.templateType = fragmentValueTypes.FRAGMENT;
-                        this.templateValue = child;
-                    }
-                    return;
-                }
-                element.appendChild(child);
-
-            }
-        } else if ((children = children[0]).pointer !== undefined) {
-
-            let pointer = children.pointer,
-                value = this.templateValue || this.templateValues[pointer];
-
-            if (typeof value === 'object') {
-
-                if (isArray(value)) {
-                    if (this.templateValue) {
-                        this.templateElement = element;
-                        this.templateType = fragmentValueTypes.LIST;
-                    } else {
-                        this.templateElements[pointer] = element;
-                        this.templateTypes[pointer] = fragmentValueTypes.LIST;
-                    }
-                }
-
-                // silently ignore real objects
-
-            } else {
-
-                element.textContent = value;
-
-                if (this.templateValue) {
-                    this.templateElement = element;
-                    this.templateType = fragmentValueTypes.TEXT;
-                } else {
-                    this.templateElements[pointer] = element;
-                    this.templateTypes[pointer] = fragmentValueTypes.TEXT;
-                }
-            }
-        } else {
-
-            switch (typeof children) {
-
-                case 'string':
-                    element.textContent = children;
-                    break;
-                case 'number':
-                    element.textContent = children.toString();
-                    break;
-                default:
-                    
-					// NOTE! if we avoid checking for 'instanceof Date' it will throw when trying to append the child
-                    if (children instanceof Date) {
-                        element.textContent = '' + children; // cast to string
-                    } else {
-                        element.appendChild(children);
-                    }
-            }
-        }
-    }
-
-    if (props != null) {
-        attributes(element, props, this);
-    }
-
-    return element;
+	return element;
 }
-
-export default createElement;

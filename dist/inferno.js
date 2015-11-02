@@ -296,6 +296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		//ensure we reference the new fragment with the old fragment's DOM node
 		fragment.dom = oldFragment.dom;
+	
 		if (fragment.templateValue !== undefined) {
 			//update a single value in the fragement (templateValue rather than templateValues)
 			(0, _updateFragmentValue2['default'])(context, oldFragment, fragment, component);
@@ -628,7 +629,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    controls: MustUseProperty | HasBooleanValue,
 	    coords: MustUseProperty,
 	    crossOrigin: MustUseProperty,
-	    data: MustUseProperty, // For `<object />` acts as `src`.
+	    data: MustUseProperty,
 	    dateTime: MustUseAttribute,
 	    defer: HasBooleanValue,
 	    dir: MustUseProperty,
@@ -2235,9 +2236,16 @@ return /******/ (function(modules) { // webpackBootstrap
 			_classCallCheck(this, Component);
 	
 			this.props = props;
+			this.attrs = attrs;
 			this.context = context;
 			// TODO this.state should not be defined by default
 			this.state = {};
+	
+			this.domRefs = null;
+			this.isMounted = false;
+			this.isUpdating = false;
+			this.onInit(this.attrs);
+			this.rootNode = this.render();
 		}
 	
 		_createClass(Component, [{
