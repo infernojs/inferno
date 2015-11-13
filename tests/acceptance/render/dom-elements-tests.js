@@ -436,41 +436,6 @@ export default function domElementsTests(describe, expect, Inferno) {
                 });
             });
 
-
-            describe('should render download with boolean null value', () => {
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate(t =>
-                        <input href="/images/xxx.jpg" download={null}></input>
-                    );
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                         '<input href="/images/xxx.jpg">'
-                    );
-                });
-
-                it('Second render (update)', () => {
-
-                    template = Inferno.createTemplate(t =>
-                        <input checked="checked" disabled="disabled"></input>
-                    );
-
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        '<input disabled="disabled">'
-                    );
-                });
-            });
-
-
             describe('should not render overloaded "allowFullScreen" boolean attributes', () => {
                 let template;
 
@@ -569,77 +534,6 @@ export default function domElementsTests(describe, expect, Inferno) {
                     );
                 });
             });
-
-            describe('should render "required" boolean attribute (truthy)', () => {
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate(t =>
-                        <input required={true}></input>
-                    );
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    // this is a property
-
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        '<input>'
-                    );
-                });
-
-                it('Second render (update)', () => {
-
-                    template = Inferno.createTemplate(t =>
-                        <input disabled={true}></input>
-                    );
-
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        '<input disabled="true">'
-                    );
-                });
-            });
-
-            // 'required' is a property and should not be set if a falsy value
-            describe('should render "required" boolean attribute (falsy)', () => {
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate(t =>
-                        <input required={false}></input>
-                    );
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    // this is a property
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        '<input>'
-                    );
-                });
-
-                it('Second render (update)', () => {
-
-                    template = Inferno.createTemplate(t =>
-                        <input disabled={true}></input>
-                    );
-
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        '<input disabled="true">'
-                    );
-                });
-            });
-
 
             describe('should render "hidden" boolean attribute (truthy)', () => {
                 let template;
@@ -812,40 +706,6 @@ export default function domElementsTests(describe, expect, Inferno) {
                 });
             });
 
-            describe('should render `formNoValidate` boolean attribute (thruty)', () => {
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate(t =>
-                        <input formNoValidate={ true }></input>
-                    );
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    // this is a property
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                       '<input>' 
-                    );
-                });
-
-                // Update to a property
-                it('Second render (update)', () => {
-                    template = Inferno.createTemplate(t =>
-                        <input noValidate={true}></input>
-                    );
-
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                      '<input>' 
-                    );
-                });
-            });
-
 
             describe('should not render "seamless" boolean attributes if "null"', () => {
                 let template;
@@ -877,41 +737,6 @@ export default function domElementsTests(describe, expect, Inferno) {
                         container.innerHTML
                     ).to.equal(
                         '<span></span>'
-                    );
-                });
-            });
-
-            describe('should render "seamless" boolean attribute (thruty)', () => {
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate(t =>
-                        <input seamless={ true }></input>
-                    );
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    // this is a property
-
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        '<input seamless="true">'
-                    );
-                });
-
-                // Update to a property
-                it('Second render (update)', () => {
-                    template = Inferno.createTemplate(t =>
-                        <input type='checkbox' required={ true }></input>
-                    );
-
-                    Inferno.render(Inferno.createFragment(null, template), container);
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                       '<input type="checkbox">' 
                     );
                 });
             });
@@ -1203,91 +1028,6 @@ export default function domElementsTests(describe, expect, Inferno) {
                 });
             });*/
 
-            describe('should render a basic component', () => {
-                class TestComponent extends Inferno.Component {
-                    render() {
-                        return Inferno.createFragment(null, t =>
-                            <span>Hello world!</span>
-                        );
-                    }
-                }
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate((t, Component) =>
-                        <div class='foo'>
-                            <Component />
-                        </div>
-                    );
-                    Inferno.render(Inferno.createFragment(TestComponent, template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        `<div class="foo"><span>Hello world!</span></div>`
-                    );
-                });
-            });
-
-            describe('should render a basic component #2', () => {
-                class TestComponent extends Inferno.Component {
-                    render() {
-                        return Inferno.createFragment(null, t =>
-                            <span>Hello world!</span>
-                        );
-                    }
-                }
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate((t, Component) =>
-                        <div class='foo'>
-                            <span>Foo!</span>
-                            <Component />
-                        </div>
-                    );
-                    Inferno.render(Inferno.createFragment(TestComponent, template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        `<div class="foo"><span>Foo!</span><span>Hello world!</span></div>`
-                    );
-                });
-            });
-
-            describe('should render a basic component #3', () => {
-                class TestComponent extends Inferno.Component {
-                    render() {
-                        return Inferno.createFragment(this.props.test, (t, val1) =>
-                            <span>Hello world! { val1 } are belong to us</span>
-                        );
-                    }
-                }
-                let template;
-
-                beforeEach(() => {
-                    template = Inferno.createTemplate((t, Component, val1) =>
-                        <div class='foo'>
-                            <span>Foo!</span>
-                            <Component test={ val1 } />
-                        </div>
-                    );
-                    Inferno.render(Inferno.createFragment([TestComponent, 'All your base'], template), container);
-                });
-
-                it('Initial render (creation)', () => {
-                    expect(
-                        container.innerHTML
-                    ).to.equal(
-                        `<div class="foo"><span>Foo!</span><span>Hello world! All your base are belong to us</span></div>`
-                    );
-                });
-            });
         });
     });
 
