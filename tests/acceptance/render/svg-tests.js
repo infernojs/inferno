@@ -13,7 +13,7 @@ export default function svgTests(describe, expect, Inferno) {
           Inferno.clearDomElement(container);
           container = null;
         });
-/*
+
        describe('should respect SVG namespace', () => {
 
            it('Initial render (creation)', () => {
@@ -330,7 +330,7 @@ export default function svgTests(describe, expect, Inferno) {
                           '<svg version="200"></svg>'
                       );
                   });
-              });*/
+              });
     });
 
 }

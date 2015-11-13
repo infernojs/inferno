@@ -4,7 +4,7 @@ import updateFragmentList from './updateFragmentList';
 import eventManager from '../events/eventManager';
 import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
-import DOMPropertyOperations from '../template/DOMPropertyOperations';
+import attrOps from '../template/AttributeOps';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
@@ -140,7 +140,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 				if (events[type] != null) {
 					eventManager.addListener(element, type, fragment.templateValue);
 				} else {
-					DOMPropertyOperations(element, type, fragment.templateValue, true);
+					attrOps.set(element, type, fragment.templateValue, true);
 				}
 			}
 		}

@@ -14,7 +14,7 @@ export default function domElementsTests(describe, expect, Inferno) {
             Inferno.clearDomElement(container);
             container = null;
         });
-/*
+
         describe('using the Inferno functional API', () => {
             it('should render a basic example', () => {
                 let template = Inferno.createTemplate(t => <div>Hello world</div>);
@@ -77,7 +77,7 @@ export default function domElementsTests(describe, expect, Inferno) {
                     `<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
                 );
             });
-        });*/
+        });
     });
 
 }

@@ -40,7 +40,6 @@ function updateFragment( context, oldFragment, fragment, parent, component ) {
 		
 		//ensure we reference the new fragment with the old fragment's DOM node
 		fragment.dom = oldFragment.dom;
-		
 		if ( fragment.templateValue !== undefined ) {
 			//update a single value in the fragement (templateValue rather than templateValues)
 			updateFragmentValue( context, oldFragment, fragment, component );

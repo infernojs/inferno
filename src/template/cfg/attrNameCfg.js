@@ -87,5 +87,3 @@ export default {
 	vertOriginY: 'vert-origin-y',
 	viewBox: 'viewBox'
 };
-
- 
