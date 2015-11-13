@@ -1,4 +1,5 @@
 import createServerSideMarkup from './createServerSideMarkup';
+import bind from '../util/bind';
 
 export default (args, fragment, component) => {
 
@@ -7,7 +8,7 @@ export default (args, fragment, component) => {
 	} else {
         
 		// TODO! Find a solution for better performance
-        let params = [(...args) => createServerSideMarkup.apply(fragment, args)],
+        let params = [bind(fragment, createServerSideMarkup)],
             length = args && args.length;
 
         if (length) {
