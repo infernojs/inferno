@@ -100,7 +100,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/vars/rootListeners.js" afterPath="$PROJECT_DIR$/src/events/vars/rootListeners.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/server.js" afterPath="$PROJECT_DIR$/src/server.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/server.js" afterPath="$PROJECT_DIR$/src/template/server.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/cfg/svgCfg.js" afterPath="$PROJECT_DIR$/src/template/cfg/svgCfg.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/vars/svgNamespace.js" afterPath="$PROJECT_DIR$/src/template/vars/svgNamespace.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/t7.js" afterPath="$PROJECT_DIR$/examples/t7.js" />
@@ -145,28 +144,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/template/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.0555556">
-              <caret line="11" column="36" selection-start-line="11" selection-start-column="36" selection-end-line="11" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="addProps.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/template/addProps.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -200,22 +177,38 @@
       <file leaf-file-name="svg-tests.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-23.88889">
-              <caret line="43" column="19" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
-              <folding>
-                <marker date="1447536675000" expanded="true" signature="6727:6789" placeholder="..." />
-                <marker date="1447536675000" expanded="true" signature="12208:12245" placeholder="..." />
-                <marker date="1447536675000" expanded="true" signature="12285:12306" placeholder="..." />
-              </folding>
+            <state vertical-scroll-proportion="-24.851852">
+              <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="virtual-elements-tests.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-21.666666">
+              <caret line="39" column="56" selection-start-line="39" selection-start-column="56" selection-end-line="39" selection-end-column="56" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="virtual-elements-tests.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.67380786">
-              <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.15845071">
+              <caret line="15" column="119" selection-start-line="15" selection-start-column="119" selection-end-line="15" selection-end-column="119" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-11.944445">
+              <caret line="43" column="75" selection-start-line="43" selection-start-column="75" selection-end-line="43" selection-end-column="75" />
               <folding />
             </state>
           </provider>
@@ -224,8 +217,8 @@
       <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-26.11111">
-              <caret line="47" column="67" selection-start-line="47" selection-start-column="54" selection-end-line="47" selection-end-column="67" />
+            <state vertical-scroll-proportion="-25.25926">
+              <caret line="2083" column="22" selection-start-line="2083" selection-start-column="22" selection-end-line="2083" selection-end-column="22" />
               <folding>
                 <marker date="1447536114000" expanded="true" signature="68677:68705" placeholder="..." />
                 <marker date="1447536114000" expanded="true" signature="69876:69887" placeholder="..." />
@@ -279,7 +272,9 @@
         <option value="$PROJECT_DIR$/test.config.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" />
       </list>
     </option>
   </component>
@@ -291,8 +286,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1187" />
-    <option name="y" value="273" />
+    <option name="x" value="1186" />
+    <option name="y" value="315" />
     <option name="width" value="2444" />
     <option name="height" value="1571" />
   </component>
@@ -582,7 +577,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1187" y="273" width="2444" height="1571" extended-state="0" />
+    <frame x="1186" y="315" width="2444" height="1571" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -698,20 +693,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-23.88889">
-          <caret line="43" column="19" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
-          <folding>
-            <marker date="1447536675000" expanded="true" signature="6727:6789" placeholder="..." />
-            <marker date="1447536675000" expanded="true" signature="12208:12245" placeholder="..." />
-            <marker date="1447536675000" expanded="true" signature="12285:12306" placeholder="..." />
-          </folding>
+        <state vertical-scroll-proportion="-24.851852">
+          <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.944445">
+          <caret line="43" column="75" selection-start-line="43" selection-start-column="75" selection-end-line="43" selection-end-column="75" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-26.11111">
-          <caret line="47" column="67" selection-start-line="47" selection-start-column="54" selection-end-line="47" selection-end-column="67" />
+        <state vertical-scroll-proportion="-25.25926">
+          <caret line="2083" column="22" selection-start-line="2083" selection-start-column="22" selection-end-line="2083" selection-end-column="22" />
           <folding>
             <marker date="1447536114000" expanded="true" signature="68677:68705" placeholder="..." />
             <marker date="1447536114000" expanded="true" signature="69876:69887" placeholder="..." />
@@ -724,8 +723,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.67380786">
-          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        <state vertical-scroll-proportion="-21.666666">
+          <caret line="39" column="56" selection-start-line="39" selection-start-column="56" selection-end-line="39" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15845071">
+          <caret line="15" column="119" selection-start-line="15" selection-start-column="119" selection-end-line="15" selection-end-column="119" />
           <folding />
         </state>
       </provider>

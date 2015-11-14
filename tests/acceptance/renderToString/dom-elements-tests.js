@@ -13,10 +13,10 @@ export default function domElementsTests(describe, expect, Inferno) {
             Inferno.clearDomElement(container);
             container = null;
         });
-/*
+
         describe('using the Inferno functional API', () => {
             it('should render a basic example', () => {
-                let template = Inferno.createTemplate(t => <div>Hello world</div>);
+                let template = Inferno.createTemplate(createElement => createElement('div', null, 'Hello world'));
 
                 let test = Inferno.renderToString(
                     Inferno.createFragment(null, template)
@@ -28,8 +28,8 @@ export default function domElementsTests(describe, expect, Inferno) {
             });
 
             it('should render a basic example with dynamic values', () => {
-                let template = Inferno.createTemplate((t, val1, val2) =>
-                    <div>Hello world - { val1 } { val2 }</div>
+                let template = Inferno.createTemplate((createElement, val1, val2) =>
+                        createElement('div', null, 'Hello world - ', val1, ' ', val2)
                 );
 
                 let test = Inferno.renderToString(
@@ -42,12 +42,12 @@ export default function domElementsTests(describe, expect, Inferno) {
             });
 
             it('should render a basic example with dynamic values', () => {
-                let template = Inferno.createTemplate(t =>
-                        <select multiple={true} value="bar">
-                            <option value="foo">foo</option>
-                            <option value="bar">bar</option>
-                        </select>
-                    );
+                let template = Inferno.createTemplate(createElement =>
+                    createElement('select', {multiple: true, value: 'bar'},
+                        createElement('option', {value: 'foo'}, 'foo'),
+                        createElement('option', {value: 'bar'}, 'bar')
+                    )
+                );
 
                 let test = Inferno.renderToString(
                     Inferno.createFragment(null, template)
@@ -59,11 +59,11 @@ export default function domElementsTests(describe, expect, Inferno) {
             });
 
             it('should render a basic example with dynamic values and props', () => {
-                let template = Inferno.createTemplate((t, val1, val2) =>
-                    <div className='foo'>
-                        <span className='bar'>{ val1 }</span>
-                        <span className='yar'>{ val2 }</span>
-                    </div>
+                let template = Inferno.createTemplate((createElement, val1, val2) =>
+                        createElement('div', {className: 'foo'},
+                            createElement('span', {className: 'bar'}, val1),
+                            createElement('span', {className: 'yar'}, val2)
+                        )
                 );
 
                 let test = Inferno.renderToString(
@@ -79,4 +79,4 @@ export default function domElementsTests(describe, expect, Inferno) {
         });
     });
 
-}*/
+}

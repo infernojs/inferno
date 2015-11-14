@@ -13,7 +13,7 @@ export default function virtualElementsTests(describe, expect, Inferno) {
 
         describe('using the Inferno functional API', () => {
             it('should render a basic example', () => {
-                let template = Inferno.createTemplate(t => { return t('div', null, 'Hello, World!') });
+                let template = Inferno.createTemplate(createElement => { return createElement('div', null, 'Hello world') });
 
                 let test = Inferno.renderToString(
                     Inferno.createFragment(null, template)
@@ -23,10 +23,10 @@ export default function virtualElementsTests(describe, expect, Inferno) {
 
                 expect(test).to.equal(expected);
             });
-/*			
+
             it('should render a basic example with dynamic values', () => {
-                let template = Inferno.createTemplate((t, val1, val2) =>
-                    <div>Hello world - { val1 } { val2 }</div>
+                let template = Inferno.createTemplate((createElement, val1, val2) =>
+                        createElement('div', null, 'Hello world - ', val1, ' ', val2)
                 );
 
                 let test = Inferno.renderToString(
@@ -39,11 +39,11 @@ export default function virtualElementsTests(describe, expect, Inferno) {
             });
 
             it('should render a basic example with dynamic values and props', () => {
-                let template = Inferno.createTemplate((t, val1, val2) =>
-                    <div className='foo'>
-                        <span className='bar'>{ val1 }</span>
-                        <span className='yar'>{ val2 }</span>
-                    </div>
+                let template = Inferno.createTemplate((createElement, val1, val2) =>
+                        createElement('div', {className: 'foo'},
+                            createElement('span', {className: 'bar'}, val1),
+                            createElement('span', {className: 'yar'}, val2)
+                        )
                 );
 
                 let test = Inferno.renderToString(
@@ -56,7 +56,7 @@ export default function virtualElementsTests(describe, expect, Inferno) {
                     `<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
                 );
             });
-        });*/
+        })
     });
 
 }
