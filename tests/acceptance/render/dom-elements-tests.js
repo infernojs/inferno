@@ -1,5 +1,3 @@
-/** @jsx t */
-
 import get from '../../tools/get';
 
 export default function domElementsTests(describe, expect, Inferno) {
