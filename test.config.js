@@ -35,7 +35,7 @@ module.exports = {
 				loader: 'babel',
 				query: {
 					presets: ['es2015'],
-					plugins: ['syntax-jsx']
+					plugins: ['syntax-jsx', 'inferno']
 				}
 			}
 		]
