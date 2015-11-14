@@ -2,9 +2,9 @@ import Inferno from '../src';
 import { expect } from 'chai';
 
 //acceptance render test group
-import renderSvgTests from './acceptance/render/svg-tests';
-import renderMathMlTests from './acceptance/render/math-ml-tests';
-import renderDomElementsTests from './acceptance/render/dom-elements-tests';
+//import renderSvgTests from './acceptance/render/svg-tests';
+//import renderMathMlTests from './acceptance/render/math-ml-tests';
+//import renderDomElementsTests from './acceptance/render/dom-elements-tests';
 import renderVirtualElementsTests from './acceptance/render/virtual-elements-tests';
 
 //acceptance renderToString test group
@@ -23,9 +23,9 @@ import renderVdomBenchTests from './performance/render/vdom-bench-tests';
 
 describe('Inferno acceptance tests', () => {
 	describe('Inferno.render()', () => {
-		renderSvgTests(describe, expect, Inferno);
-		renderMathMlTests(describe, expect, Inferno);
-		renderDomElementsTests(describe, expect, Inferno);
+//		renderSvgTests(describe, expect, Inferno);
+	//	renderMathMlTests(describe, expect, Inferno);
+		//renderDomElementsTests(describe, expect, Inferno);
 		renderVirtualElementsTests(describe, expect, Inferno);
 	});
 

@@ -90,7 +90,7 @@ export default function svgTests(describe, expect, Inferno) {
        });
 
        describe('should set "class" attribute', () => {
-
+/*
           it('Initial render (creation)', () => {
 
               template = Inferno.createTemplate((t, val1) =>
@@ -125,12 +125,12 @@ export default function svgTests(describe, expect, Inferno) {
               ).to.equal(
                   '<svg height="200"></svg>'
               );
-          });
+          });*/
       });
 
       describe('should drive a advanced SVG circle with attributes', () => {
 
-          it('Initial render (creation)', () => {
+        /*  it('Initial render (creation)', () => {
 
              let style = {stroke:'#000099', fill:'#000099', fontSize:18};
 
@@ -171,12 +171,12 @@ export default function svgTests(describe, expect, Inferno) {
               ).to.equal(
                   '<svg height="200"></svg>'
               );
-          });
+          });*/
       });
 
        describe('should set "className" property as a "class" attribute', () => {
 
-          it('Initial render (creation)', () => {
+       /*   it('Initial render (creation)', () => {
 
               template = Inferno.createTemplate((t, val1) =>
                   <svg xmlns="http://www.w3.org/2000/svg" className="hello, world!"></svg>
@@ -211,12 +211,12 @@ export default function svgTests(describe, expect, Inferno) {
               ).to.equal(
                   '<svg xmlns="http://www.w3.org/2000/svg" class="false"></svg>'
               );
-          });
+          });*/
       });
 
        describe('should set "viewBox" attribute', () => {
 
-          it('Initial render (creation)', () => {
+         /* it('Initial render (creation)', () => {
 
               template = Inferno.createTemplate((t, val1) =>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20"></svg>
@@ -251,12 +251,12 @@ export default function svgTests(describe, expect, Inferno) {
               ).to.equal(
                   '<svg x1="200" x2="10"></svg>'
               );
-          });
+          });*/
       });
 
       describe('should SVG element with children', () => {
 
-          it('Initial render (creation)', () => {
+         /* it('Initial render (creation)', () => {
 
               let style_1 = { border: "1px solid #cccccc" };
               let style_2 = { stroke: "#000000", fill: "#none" };
@@ -291,12 +291,12 @@ export default function svgTests(describe, expect, Inferno) {
               ).to.equal(
                   '<svg width="200"></svg>'
               );
-          });
+          });*/
       });
 
       describe('should set xlink namespace attribute (no-JSX)', () => {
 
-          it('Initial render (creation)', () => {
+         /* it('Initial render (creation)', () => {
 
               template = Inferno.createTemplate(t =>
                   t('img',  { "xlink:href": "test.jpg" })
@@ -327,7 +327,7 @@ export default function svgTests(describe, expect, Inferno) {
                   '<svg version="200"></svg>'
               );
           });
-      });
+      });*/
     });
 
 }
