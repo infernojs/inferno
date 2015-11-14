@@ -58,9 +58,10 @@ module.exports = {
 				test: /\.js$/,
 				exclude: ['node_modules'],
 				include: path.join(__dirname, 'src'),
-				loader: 'babel-loader',
+				loader: 'babel',
 				query: {
-					optional: ['runtime']
+					presets: ['es2015'],
+					plugins: ['syntax-jsx']
 				}
 			}
 		]
