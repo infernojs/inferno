@@ -17,10 +17,7 @@ export default function mathMlTests(describe, expect, Inferno) {
             describe('should respect default MathML namespace', () => {
 
                 it('Initial render (creation)', () => {
-
-                    template = Inferno.createTemplate((t, val1) =>
-                        <math></math>
-                    );
+                    template = Inferno.createTemplate(function(t) { return t('math') });
 
                     Inferno.render(Inferno.createFragment(false, template), container);
 
@@ -35,10 +32,7 @@ export default function mathMlTests(describe, expect, Inferno) {
                 });
                 // update fragment from 'mathML' namespace to 'SVG'
                 it('Second render (update)', () => {
-
-                    template = Inferno.createTemplate((t, val1) =>
-                        <svg width={200}></svg>
-                    );
+                    template = Inferno.createTemplate(function(t) { return t('svg', { width:200}) });
                     Inferno.render(Inferno.createFragment(false, template), container);
 
                    expect( container.firstChild.tagName.toLowerCase() ).to.eql( "svg" );

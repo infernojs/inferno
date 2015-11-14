@@ -1,4 +1,3 @@
-/** @jsx t */
 
 import get from '../../tools/get';
 
@@ -14,7 +13,7 @@ export default function domElementsTests(describe, expect, Inferno) {
             Inferno.clearDomElement(container);
             container = null;
         });
-
+/*
         describe('using the Inferno functional API', () => {
             it('should render a basic example', () => {
                 let template = Inferno.createTemplate(t => <div>Hello world</div>);
@@ -80,4 +79,4 @@ export default function domElementsTests(describe, expect, Inferno) {
         });
     });
 
-}
+}*/
