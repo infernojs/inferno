@@ -11,7 +11,6 @@ export default function svgTests(describe, expect) {
 
         afterEach(() => {
           Inferno.clearDomElement(container);
-          container = null;
         });
 
        describe('should respect SVG namespace', () => {

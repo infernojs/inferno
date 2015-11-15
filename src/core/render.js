@@ -3,13 +3,13 @@ import getContext                from './getContext';
 import attachFragment            from './attachFragment';
 import updateFragment            from './updateFragment';
 
-function render(fragment, dom, component) {
+function render(fragment, dom, component, noContext) {
 	let context, generatedFragment;
 
 	if (component) {
 		if (component.context) {
-			generatedFragment = fragment();
 			context = component.context;
+			generatedFragment = fragment();
 			updateFragment(context, context.fragment, generatedFragment, dom, component, false);
 			context.fragment = generatedFragment;
 		} else {
@@ -24,20 +24,24 @@ function render(fragment, dom, component) {
 			component.componentDidMount();
 		}
 	} else {
-
-		context = getContext(dom);
+		if(!noContext) {
+			context = getContext(dom);
+		}
 
 		if (context) {
 			updateFragment(context, context.fragment, fragment, dom, component, false);
 			context.fragment = fragment;
 		} else {
+
 			context = {
 				fragment: fragment,
 				dom: dom,
-				shouldRecycle: true
+				shouldRecycle: !noContext
 			};
 			attachFragment(context, fragment, dom, component);
-			contexts.push(context);
+			if(!noContext) {
+				contexts.push(context);
+			}
 		}
 	}
 }

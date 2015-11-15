@@ -29,13 +29,13 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 	    let recycledFragment = getRecycledFragment(templateKey);
 	    if (recycledFragment != null) {
 	        updateFragment(context, recycledFragment, fragment, parentDom, component);
-	        insertFragment(context, parentDom, fragment.dom, nextFragment, replace);
+	        insertFragment(context, fragment, parentDom, fragment.dom, nextFragment, replace);
 	        return;
 	    }
 	}
 
-		//there are different things we need to check for now
-		switch (template.type) {
+	//there are different things we need to check for now
+	switch (template.type) {
 		case templateTypes.TEMPLATE_API:
 			template(fragment);
 			break;
@@ -53,10 +53,10 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 		default:
 			template(fragment);
 			break;
-		}
-		//if this fragment has a single value, we attach only that value
-		if ( fragment.templateValue ) {
-			switch ( fragment.templateType ) {
+	}
+	//if this fragment has a single value, we attach only that value
+	if ( fragment.templateValue ) {
+		switch ( fragment.templateType ) {
 			case fragmentValueTypes.LIST:
 				attachFragmentList( context, fragment.templateValue, fragment.templateElement );
 				break;
@@ -71,16 +71,16 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			case fragmentValueTypes.ATTR_REF:
 				fragment.templateValue.element = fragment.templateElement;
 				break;
-			}
-		} else if ( fragment.templateValues ) {
-			//if the fragment has multiple values, we must loop through them all and attach them
-			//pulling this block of code out into its own function caused strange things to happen
-			//with performance. it was faster in Gecko but far slower in v8
-			for ( let i = 0, length = fragment.templateValues.length; i < length; i++ ) {
-				let element = fragment.templateElements[i],
-					value = fragment.templateValues[i];
+		}
+	} else if ( fragment.templateValues ) {
+		//if the fragment has multiple values, we must loop through them all and attach them
+		//pulling this block of code out into its own function caused strange things to happen
+		//with performance. it was faster in Gecko but far slower in v8
+		for ( let i = 0, length = fragment.templateValues.length; i < length; i++ ) {
+			let element = fragment.templateElements[i],
+				value = fragment.templateValues[i];
 
-				switch ( fragment.templateTypes[i] ) {
+			switch ( fragment.templateTypes[i] ) {
 				case fragmentValueTypes.LIST:
 					attachFragmentList( context, value, element );
 					break;
@@ -103,12 +103,11 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				case fragmentValueTypes.ATTR_REF:
 					fragment.templateValues[i].element = fragment.templateElements[i];
 					break;
-				}
 			}
 		}
+	}
 
-
-	insertFragment( context, parentDom, fragment.dom, nextFragment, replace );
+	insertFragment(context, fragment, parentDom, fragment.dom, nextFragment, replace );
 }
 
 export default attachFragment;

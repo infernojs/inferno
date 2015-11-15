@@ -3,17 +3,6 @@ import get from '../../tools/get';
 
 export default function domElementsTests(describe, expect) {
     describe('DOM elements tests', () => {
-        let container;
-
-        beforeEach(() => {
-            container = document.createElement('div');
-        });
-
-        afterEach(() => {
-            Inferno.clearDomElement(container);
-            container = null;
-        });
-
         describe('using the Inferno functional API', () => {
             it('should render a basic example', () => {
                 let template = Inferno.createTemplate(createElement => createElement('div', null, 'Hello world'));

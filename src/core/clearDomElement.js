@@ -6,5 +6,4 @@ export default function clearDomElement(dom) {
 	if (context != null) {
 		removeContext(dom);
 	}
-	dom.innerHTML = '';
 }

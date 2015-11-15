@@ -5,7 +5,7 @@ export default function renderToString(fragment, component) {
 
 	let dom = template.createElement('div');
 
-	render(fragment, dom, component);
+	render(fragment, dom, component, true);
 
 	return dom.innerHTML;
 }

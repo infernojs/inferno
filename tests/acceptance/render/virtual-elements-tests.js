@@ -10,7 +10,7 @@ export default function virtualElementsTests(describe, expect) {
     			});
 
     			afterEach(() => {
-    				container = null;
+					Inferno.clearDomElement(container);
     			});
 
     			describe('using the Inferno functional API', () => {

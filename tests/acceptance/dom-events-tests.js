@@ -11,7 +11,6 @@ export default function domOperationTests(describe, expect) {
 
         afterEach(() => {
             Inferno.clearDomElement(container);
-            container = null;
         });
 
          it('should support common events', () => {

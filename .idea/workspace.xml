@@ -6,8 +6,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97762936-9cf6-425b-b803-3e2b6d8d2016" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/dbmonster/index.html" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/app.js" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/framework.js" afterPath="" />
@@ -16,17 +14,23 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.html" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.js" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/t7.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragment.js" afterPath="$PROJECT_DIR$/src/core/attachFragment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/clearDomElement.js" afterPath="$PROJECT_DIR$/src/core/clearDomElement.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/insertFragment.js" afterPath="$PROJECT_DIR$/src/core/insertFragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/render.js" afterPath="$PROJECT_DIR$/src/core/render.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/renderToString.js" afterPath="$PROJECT_DIR$/src/core/renderToString.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.config.js" afterPath="$PROJECT_DIR$/test.config.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/tests.js" afterPath="$PROJECT_DIR$/tests/tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js" afterPath="$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" afterPath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragment.js" afterPath="$PROJECT_DIR$/src/core/updateFragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack.config.js" afterPath="$PROJECT_DIR$/webpack.config.js" />
@@ -50,71 +54,51 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="svg-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
+      <file leaf-file-name="render.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/render.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.1111112">
-              <caret line="2" column="49" selection-start-line="2" selection-start-column="49" selection-end-line="2" selection-end-column="49" />
+            <state vertical-scroll-proportion="-10.0">
+              <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="virtual-elements-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js">
+      <file leaf-file-name="attachFragment.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.1111112">
-              <caret line="2" column="61" selection-start-line="2" selection-start-column="61" selection-end-line="2" selection-end-column="61" />
+            <state vertical-scroll-proportion="-9.703704">
+              <caret line="56" column="68" selection-start-line="56" selection-start-column="68" selection-end-line="56" selection-end-column="68" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="virtual-elements-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js">
+      <file leaf-file-name="insertFragment.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/insertFragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.5555556">
-              <caret line="2" column="61" selection-start-line="2" selection-start-column="61" selection-end-line="2" selection-end-column="61" />
+            <state vertical-scroll-proportion="-6.9444447">
+              <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="math-ml-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js">
+      <file leaf-file-name="updateFragment.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/updateFragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="35" selection-start-line="0" selection-start-column="35" selection-end-line="0" selection-end-column="35" />
+            <state vertical-scroll-proportion="-18.333334">
+              <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
+      <file leaf-file-name="removeContext.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/removeContext.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.444445">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dom-elements-tests-jsx.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.072563924">
-              <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="templateTypes.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/enum/templateTypes.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state vertical-scroll-proportion="-6.6666665">
+              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -123,18 +107,48 @@
       <file leaf-file-name="dom-elements-tests-functional.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.6666666">
-              <caret line="3" column="67" selection-start-line="3" selection-start-column="67" selection-end-line="3" selection-end-column="67" />
+            <state vertical-scroll-proportion="-8.888889">
+              <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="addTemplatesToModule.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/babel-plugin-inferno/lib/addTemplatesToModule.js">
+      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="141" column="47" selection-start-line="141" selection-start-column="47" selection-end-line="141" selection-end-column="47" />
+            <state vertical-scroll-proportion="-5.2777777">
+              <caret line="19" column="84" selection-start-line="19" selection-start-column="84" selection-end-line="19" selection-end-column="84" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="renderToString.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/renderToString.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.8888888">
+              <caret line="7" column="41" selection-start-line="7" selection-start-column="41" selection-end-line="7" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dom-elements-tests-jsx.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.09453782">
+              <caret line="6" column="43" selection-start-line="6" selection-start-column="43" selection-end-line="6" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-4.4444447">
+              <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -165,19 +179,27 @@
         <option value="$PROJECT_DIR$/webpack.config.js" />
         <option value="$PROJECT_DIR$/test.config.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" />
-        <option value="$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js" />
-        <option value="$PROJECT_DIR$/tests/tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
         <option value="$PROJECT_DIR$/node_modules/babel-plugin-inferno/lib/addTemplatesToModule.js" />
         <option value="$PROJECT_DIR$/node_modules/babel-plugin-inferno/lib/index.js" />
+        <option value="$PROJECT_DIR$/src/core/clearDomElement.js" />
+        <option value="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" />
+        <option value="$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
+        <option value="$PROJECT_DIR$/tests/tests.js" />
+        <option value="$PROJECT_DIR$/src/core/renderToString.js" />
+        <option value="$PROJECT_DIR$/src/core/removeContext.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
+        <option value="$PROJECT_DIR$/src/core/updateFragment.js" />
+        <option value="$PROJECT_DIR$/src/core/attachFragment.js" />
+        <option value="$PROJECT_DIR$/src/core/insertFragment.js" />
+        <option value="$PROJECT_DIR$/src/core/render.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js" />
       </list>
     </option>
@@ -542,7 +564,7 @@
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32956058" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23977087" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -575,31 +597,11 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/core/updateFragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1447534774000" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/template/addAttributes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-73.333336">
           <caret line="132" column="38" selection-start-line="132" selection-start-column="38" selection-end-line="132" selection-end-column="38" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -659,78 +661,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-47.48148">
-          <caret line="179" column="23" selection-start-line="179" selection-start-column="16" selection-end-line="179" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.888889">
-          <caret line="25" column="39" selection-start-line="25" selection-start-column="39" selection-end-line="25" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6666666">
-          <caret line="3" column="58" selection-start-line="3" selection-start-column="58" selection-end-line="3" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/dom-events-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6666666">
-          <caret line="3" column="58" selection-start-line="3" selection-start-column="58" selection-end-line="3" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/css-operation-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.2222223">
-          <caret line="4" column="58" selection-start-line="4" selection-start-column="58" selection-end-line="4" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6666666">
-          <caret line="3" column="57" selection-start-line="3" selection-start-column="57" selection-end-line="3" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.5555556">
-          <caret line="2" column="61" selection-start-line="2" selection-start-column="61" selection-end-line="2" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.1111112">
-          <caret line="2" column="61" selection-start-line="2" selection-start-column="61" selection-end-line="2" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.1111112">
-          <caret line="2" column="49" selection-start-line="2" selection-start-column="49" selection-end-line="2" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -739,26 +669,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.444445">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/enum/templateTypes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6666666">
-          <caret line="3" column="67" selection-start-line="3" selection-start-column="67" selection-end-line="3" selection-end-column="67" />
           <folding />
         </state>
       </provider>
@@ -779,10 +693,218 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.5555553">
+          <caret line="10" column="46" selection-start-line="10" selection-start-column="46" selection-end-line="10" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/clearDomElement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.5555556">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/destroyFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/unmountComponentAtFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/react/lib/ReactDOM.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="36" column="2" selection-start-line="36" selection-start-column="2" selection-end-line="36" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.3545455">
+          <caret line="99" column="32" selection-start-line="99" selection-start-column="32" selection-end-line="99" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/unmountComponentAtNode.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.888889">
+          <caret line="16" column="12" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/getContext.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.8888888">
+          <caret line="8" column="22" selection-start-line="8" selection-start-column="22" selection-end-line="8" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.6666665">
+          <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.11111">
+          <caret line="29" column="85" selection-start-line="29" selection-start-column="85" selection-end-line="29" selection-end-column="85" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/css-operation-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.2222223">
+          <caret line="13" column="47" selection-start-line="13" selection-start-column="47" selection-end-line="13" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.111111">
+          <caret line="22" column="84" selection-start-line="22" selection-start-column="84" selection-end-line="22" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/dom-events-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.6666665">
+          <caret line="12" column="47" selection-start-line="12" selection-start-column="47" selection-end-line="12" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.7710843">
+          <caret line="43" column="8" selection-start-line="43" selection-start-column="8" selection-end-line="43" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/react/dist/react.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3331072">
+          <caret line="36" column="2" selection-start-line="36" selection-start-column="2" selection-end-line="36" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.4444447">
+          <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/renderToString.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.8888888">
+          <caret line="7" column="41" selection-start-line="7" selection-start-column="41" selection-end-line="7" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/removeContext.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.6666665">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.888889">
+          <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/inferno.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34243697">
+          <caret line="458" column="13" selection-start-line="458" selection-start-column="13" selection-end-line="458" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.703704">
+          <caret line="56" column="68" selection-start-line="56" selection-start-column="68" selection-end-line="56" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.2777777">
+          <caret line="19" column="84" selection-start-line="19" selection-start-column="84" selection-end-line="19" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/insertFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.9444447">
+          <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/render.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.0">
+          <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/updateFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-18.333334">
+          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.072563924">
-          <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+        <state vertical-scroll-proportion="0.09453782">
+          <caret line="6" column="43" selection-start-line="6" selection-start-column="43" selection-end-line="6" selection-end-column="43" />
           <folding />
         </state>
       </provider>

@@ -12,7 +12,6 @@ export default function cssOperationTests(describe, expect) {
 
 		afterEach(() => {
 			Inferno.clearDomElement(container);
-			container = null;
 		});
 
 		describe('unitlessCfg', () => {

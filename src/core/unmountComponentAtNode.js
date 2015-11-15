@@ -4,10 +4,10 @@ import getContext                 from './getContext';
 import unmountComponentAtFragment from './unmountComponentAtFragment';
 
 export default ( dom ) => {
-	let context = getContext( dom );
+	const context = getContext( dom );
 
 	if ( context !== null ) {
-		let component = context.fragment.component;
+		const component = context.fragment.component;
 
 		if ( component ) {
 			removeFragment( context, dom, component.fragment );
