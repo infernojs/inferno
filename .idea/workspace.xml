@@ -6,124 +6,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97762936-9cf6-425b-b803-3e2b6d8d2016" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/t7.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.eslintrc" afterPath="$PROJECT_DIR$/.eslintrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/AttributeOps.js" afterPath="$PROJECT_DIR$/src/template/AttributeOps.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CHANGELOG.md" afterPath="$PROJECT_DIR$/CHANGELOG.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CONTRIBUTING.md" afterPath="$PROJECT_DIR$/CONTRIBUTING.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/class/Component.js" afterPath="$PROJECT_DIR$/src/class/Component.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/class/VirtualElement.js" afterPath="$PROJECT_DIR$/src/class/VirtualElement.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/class/VirtualTextNode.js" afterPath="$PROJECT_DIR$/src/class/VirtualTextNode.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/addAttributes.js" afterPath="$PROJECT_DIR$/src/template/addAttributes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/addProps.js" afterPath="$PROJECT_DIR$/src/template/addProps.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/framework/app.js" afterPath="$PROJECT_DIR$/examples/framework/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragment.js" afterPath="$PROJECT_DIR$/src/core/attachFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragmentList.js" afterPath="$PROJECT_DIR$/src/core/attachFragmentList.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/cfg/attrNameCfg.js" afterPath="$PROJECT_DIR$/src/template/cfg/attrNameCfg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/badUpdate.js" afterPath="$PROJECT_DIR$/src/core/badUpdate.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/bind.js" afterPath="$PROJECT_DIR$/src/util/bind.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/camelize.js" afterPath="$PROJECT_DIR$/src/template/camelize.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/shared/capturedEvents.js" afterPath="$PROJECT_DIR$/src/events/shared/capturedEvents.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/shared/checkKeyboard.js" afterPath="$PROJECT_DIR$/src/events/shared/checkKeyboard.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/clearDomElement.js" afterPath="$PROJECT_DIR$/src/core/clearDomElement.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/vars/contexts.js" afterPath="$PROJECT_DIR$/src/vars/contexts.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createElement.js" afterPath="$PROJECT_DIR$/src/template/createElement.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createElementWithIs.js" afterPath="$PROJECT_DIR$/src/template/createElementWithIs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createElementWithoutIs.js" afterPath="$PROJECT_DIR$/src/template/createElementWithoutIs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/createFragment.js" afterPath="$PROJECT_DIR$/src/core/createFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/createRef.js" afterPath="$PROJECT_DIR$/src/core/createRef.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/createTemplate.js" afterPath="$PROJECT_DIR$/src/core/createTemplate.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/dasherize.js" afterPath="$PROJECT_DIR$/src/template/dasherize.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/deployment.xml" afterPath="$PROJECT_DIR$/.idea/deployment.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/destroyFragment.js" afterPath="$PROJECT_DIR$/src/core/destroyFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/escapeHtml.js" afterPath="$PROJECT_DIR$/src/template/escapeHtml.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/eventManager.js" afterPath="$PROJECT_DIR$/src/events/eventManager.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/shared/events.js" afterPath="$PROJECT_DIR$/src/events/shared/events.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/shared/eventsCfg.js" afterPath="$PROJECT_DIR$/src/events/shared/eventsCfg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/extendUnitlessNumber.js" afterPath="$PROJECT_DIR$/src/template/extendUnitlessNumber.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/shared/focusEvents.js" afterPath="$PROJECT_DIR$/src/events/shared/focusEvents.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/forIn.js" afterPath="$PROJECT_DIR$/src/util/forIn.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/enum/fragmentValueTypes.js" afterPath="$PROJECT_DIR$/src/enum/fragmentValueTypes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/framework/framework.js" afterPath="$PROJECT_DIR$/examples/framework/framework.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/tools/get.js" afterPath="$PROJECT_DIR$/tests/tools/get.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/getContext.js" afterPath="$PROJECT_DIR$/src/core/getContext.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/getRecycledFragment.js" afterPath="$PROJECT_DIR$/src/core/getRecycledFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/getUniqueId.js" afterPath="$PROJECT_DIR$/src/events/getUniqueId.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/hasPropertyAccessor.js" afterPath="$PROJECT_DIR$/src/template/hasPropertyAccessor.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/inArray.js" afterPath="$PROJECT_DIR$/src/util/inArray.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/index.html" afterPath="$PROJECT_DIR$/examples/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/dbmonster/index.html" afterPath="$PROJECT_DIR$/examples/dbmonster/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/framework/index.html" afterPath="$PROJECT_DIR$/examples/framework/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/index.html" afterPath="$PROJECT_DIR$/tests/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/index.js" afterPath="$PROJECT_DIR$/src/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/index.js" afterPath="$PROJECT_DIR$/src/template/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inferno.iml" afterPath="$PROJECT_DIR$/.idea/inferno.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/inferno.js.map" afterPath="$PROJECT_DIR$/dist/inferno.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/inferno.js" afterPath="$PROJECT_DIR$/dist/inferno.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/inferno.min.js.map" afterPath="$PROJECT_DIR$/dist/inferno.min.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/inferno.min.js" afterPath="$PROJECT_DIR$/dist/inferno.min.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/vars/infernoID.js" afterPath="$PROJECT_DIR$/src/events/vars/infernoID.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/inferno_node_modules.xml" afterPath="$PROJECT_DIR$/.idea/libraries/inferno_node_modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/insertFragment.js" afterPath="$PROJECT_DIR$/src/core/insertFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/isArray.js" afterPath="$PROJECT_DIR$/src/util/isArray.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/isEventSupported.js" afterPath="$PROJECT_DIR$/src/events/isEventSupported.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/isSVG.js" afterPath="$PROJECT_DIR$/src/util/isSVG.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/vars/mathNamespace.js" afterPath="$PROJECT_DIR$/src/template/vars/mathNamespace.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/minErr.js" afterPath="$PROJECT_DIR$/src/util/minErr.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/moveFragment.js" afterPath="$PROJECT_DIR$/src/core/moveFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/shared/noCaptureEvents.js" afterPath="$PROJECT_DIR$/src/events/shared/noCaptureEvents.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/normalizeCSS.js" afterPath="$PROJECT_DIR$/src/template/normalizeCSS.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/prefixKey.js" afterPath="$PROJECT_DIR$/src/template/prefixKey.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/prefixes.js" afterPath="$PROJECT_DIR$/src/template/prefixes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/cfg/propNameCfg.js" afterPath="$PROJECT_DIR$/src/template/cfg/propNameCfg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/vars/recycledFragments.js" afterPath="$PROJECT_DIR$/src/vars/recycledFragments.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/removeContext.js" afterPath="$PROJECT_DIR$/src/core/removeContext.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/removeFragment.js" afterPath="$PROJECT_DIR$/src/core/removeFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/removeFragments.js" afterPath="$PROJECT_DIR$/src/core/removeFragments.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/render.js" afterPath="$PROJECT_DIR$/src/core/render.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/renderToString.js" afterPath="$PROJECT_DIR$/src/core/renderToString.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/root.js" afterPath="$PROJECT_DIR$/src/events/root.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/events/vars/rootListeners.js" afterPath="$PROJECT_DIR$/src/events/vars/rootListeners.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/server.js" afterPath="$PROJECT_DIR$/src/server.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/server.js" afterPath="$PROJECT_DIR$/src/template/server.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/cfg/svgCfg.js" afterPath="$PROJECT_DIR$/src/template/cfg/svgCfg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/vars/svgNamespace.js" afterPath="$PROJECT_DIR$/src/template/vars/svgNamespace.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/t7.js" afterPath="$PROJECT_DIR$/examples/t7.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/tagName.js" afterPath="$PROJECT_DIR$/src/util/tagName.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/enum/templateTypes.js" afterPath="$PROJECT_DIR$/src/enum/templateTypes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.config.js" afterPath="$PROJECT_DIR$/test.config.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/tests.js" afterPath="$PROJECT_DIR$/tests/tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/cfg/unitlessCfg.js" afterPath="$PROJECT_DIR$/src/template/cfg/unitlessCfg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/unmountComponentAtFragment.js" afterPath="$PROJECT_DIR$/src/core/unmountComponentAtFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" afterPath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragment.js" afterPath="$PROJECT_DIR$/src/core/updateFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragmentList.js" afterPath="$PROJECT_DIR$/src/core/updateFragmentList.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragmentValue.js" afterPath="$PROJECT_DIR$/src/core/updateFragmentValue.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragmentValues.js" afterPath="$PROJECT_DIR$/src/core/updateFragmentValues.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util/uuid.js" afterPath="$PROJECT_DIR$/src/util/uuid.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/validateAttribute.js" afterPath="$PROJECT_DIR$/src/template/validateAttribute.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js" afterPath="$PROJECT_DIR$/tests/performance/render/vdom-bench-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/virtual-elements-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack.config.js" afterPath="$PROJECT_DIR$/webpack.config.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/cfg/xlinkCfg.js" afterPath="$PROJECT_DIR$/src/template/cfg/xlinkCfg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/cfg/xmlCfg.js" afterPath="$PROJECT_DIR$/src/template/cfg/xmlCfg.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/dbmonster/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/app.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/framework.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/t7.js" afterPath="" />
     </list>
     <ignored path="inferno.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -144,16 +34,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="addProps.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/template/addProps.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.1111112">
-              <caret line="2" column="1" selection-start-line="2" selection-start-column="1" selection-end-line="2" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
@@ -169,16 +49,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-20.555555">
               <caret line="37" column="52" selection-start-line="37" selection-start-column="52" selection-end-line="37" selection-end-column="52" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="svg-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-24.851852">
-              <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -233,18 +103,8 @@
       <file leaf-file-name="webpack.config.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webpack.config.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.555555">
-              <caret line="19" column="7" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/tests.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-25.555555">
-              <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+            <state vertical-scroll-proportion="-20.0">
+              <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -275,6 +135,8 @@
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/test.config.js" />
         <option value="$PROJECT_DIR$/webpack.config.js" />
+        <option value="$PROJECT_DIR$/examples/kitchen-sink/example.js" />
+        <option value="$PROJECT_DIR$/examples/kitchen-sink/example.html" />
       </list>
     </option>
   </component>
@@ -500,20 +362,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="inferno" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="inferno" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="examples" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -578,7 +426,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1186" y="315" width="2444" height="1571" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -638,7 +486,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -713,6 +561,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3">
+          <caret line="29" column="21" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test.config.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-20.555555">
@@ -723,16 +579,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/webpack.config.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.555555">
-          <caret line="19" column="7" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3">
-          <caret line="29" column="21" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
+        <state vertical-scroll-proportion="-20.0">
+          <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="18" />
           <folding />
         </state>
       </provider>
