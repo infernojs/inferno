@@ -1,7 +1,7 @@
-
+import Inferno from '../../../src';
 import get from '../../tools/get';
 
-export default function domElementsTests(describe, expect, Inferno) {
+export default function domElementsTests(describe, expect) {
     describe('DOM elements tests', () => {
         let container;
 

@@ -44,13 +44,6 @@ module.exports = {
 		filename: PROD ? 'inferno.min.js' : 'inferno.js',
 		libraryTarget: 'umd',
 		library: 'Inferno',
-		publicPath: 'http://localhost:8080/'
-	},
-	devServer: {
-		contentBase: path.join(__dirname, 'examples'),
-		noInfo: true,
-		hot: true,
-		inline: true
 	},
 	module: {
 		loaders: [
@@ -61,7 +54,7 @@ module.exports = {
 				loader: 'babel',
 				query: {
 					presets: ['es2015'],
-					plugins: ['syntax-jsx', 'inferno']
+					plugins: ['inferno', 'syntax-jsx']
 				}
 			}
 		]

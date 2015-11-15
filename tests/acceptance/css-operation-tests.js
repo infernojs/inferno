@@ -1,9 +1,8 @@
-/** @jsx t */
-
+import Inferno from '../../src';
 import unitlessCfg from '../../src/template/cfg/unitlessCfg';
 import extendUnitlessNumber from '../../src/template/extendUnitlessNumber';
 
-export default function cssOperationTests(describe, expect, Inferno) {
+export default function cssOperationTests(describe, expect) {
     describe('CSS operations', () => {
 		let container;
 

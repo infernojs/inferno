@@ -1,5 +1,4 @@
-
-
+import Inferno from '../../../src';
 
 function createDataModels() {
     let dataModels = [];
@@ -70,7 +69,7 @@ function createExpected(nodes) {
 
 
 //these are replicas of the vdom benchmark test
-export default function vdomBenchTests(describe, expect, Inferno) {
+export default function vdomBenchTests(describe, expect) {
     describe('vdom benchmark tests (perf is in console)', () => {
         let container = document.createElement('div');
         let dataModels = null;

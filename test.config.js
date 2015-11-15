@@ -13,8 +13,8 @@ var testDir = path.join(__dirname, 'tests');
 module.exports = {
 	entry: srcDir,
 	cache: true,
-	debug: true,
-	devtool: 'source-map',
+	//debug: true,
+	//devtool: 'source-map',
 	output: {
 		path: testDir,
 		filename: 'bundle.js',

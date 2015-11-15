@@ -1,4 +1,6 @@
-export default function svgTests(describe, expect, Inferno) {
+import Inferno from '../../../src';
+
+export default function svgTests(describe, expect) {
     describe('SVG tests', () => {
 
         let container, template;

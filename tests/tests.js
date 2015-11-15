@@ -4,7 +4,7 @@ import { expect } from 'chai';
 //acceptance render test group
 //import renderSvgTests from './acceptance/render/svg-tests';
 //import renderMathMlTests from './acceptance/render/math-ml-tests';
-//import renderDomElementsTests from './acceptance/render/dom-elements-tests';
+import renderDomElementsTests from './acceptance/render/dom-elements-tests';
 import renderVirtualElementsTests from './acceptance/render/virtual-elements-tests';
 
 //acceptance renderToString test group
@@ -23,24 +23,24 @@ import renderVdomBenchTests from './performance/render/vdom-bench-tests';
 
 describe('Inferno acceptance tests', () => {
 	describe('Inferno.render()', () => {
-//		renderSvgTests(describe, expect, Inferno);
-	//	renderMathMlTests(describe, expect, Inferno);
-		//renderDomElementsTests(describe, expect, Inferno);
-		renderVirtualElementsTests(describe, expect, Inferno);
+//		renderSvgTests(describe, expect);
+	//	renderMathMlTests(describe, expect);
+		renderDomElementsTests(describe, expect);
+		renderVirtualElementsTests(describe, expect);
 	});
 
 	describe('Inferno.renderToString()', () => {
-		renderToStringDomElementsTests(describe, expect, Inferno);
-		renderToStringVirtualElementsTests(describe, expect, Inferno);
+		renderToStringDomElementsTests(describe, expect);
+		renderToStringVirtualElementsTests(describe, expect);
 	});
 
-	domEventTests(describe, expect, Inferno);
-	cssOperationTests(describe, expect, Inferno);
-	domOperationTests(describe, expect, Inferno);
+	domEventTests(describe, expect);
+	cssOperationTests(describe, expect);
+	domOperationTests(describe, expect);
 });
 
 describe('Inferno performance tests', () => {
 	describe('Inferno.render()', () => {
-		renderVdomBenchTests(describe, expect, Inferno);
+		renderVdomBenchTests(describe, expect);
 	});
 });

@@ -1,4 +1,6 @@
-export default function virtualElementsTests(describe, expect, Inferno) {
+import Inferno from '../../../src';
+
+export default function virtualElementsTests(describe, expect) {
 
     		describe('Virtual elements tests', () => {
     			let container;

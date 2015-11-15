@@ -1,6 +1,6 @@
-/** @jsx t */
+import Inferno from '../../../src';
 
-export default function mathMlTests(describe, expect, Inferno) {
+export default function mathMlTests(describe, expect) {
     describe('MathML tests', () => {
 
         let container, template;

@@ -1,8 +1,7 @@
-/** @jsx t */
-
+import Inferno from '../../src';
 import events from '../../src/events/shared/events';
 
-export default function domOperationTests(describe, expect, Inferno) {
+export default function domOperationTests(describe, expect) {
     describe('DOM event tests', () => {
         let container;
 

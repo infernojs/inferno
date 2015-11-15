@@ -1,8 +1,7 @@
-/** @jsx t */
-
+import Inferno from '../../src';
 import attrOps from '../../src/template/AttributeOps';
 
-export default function domOperationTests(describe, expect, Inferno) {
+export default function domOperationTests(describe, expect) {
     describe('DOM operations', () => {
         let container;
 
