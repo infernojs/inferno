@@ -115,7 +115,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		});
 	});
 
-
 	describe('shouldn\'t render null value', () => {
 		let template;
 
@@ -158,7 +157,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 	});
 
 	describe('should render value multiple attribute', () => {
-
 		beforeEach(() => {
 			let template = Inferno.createTemplate(createElement =>
 				createElement('select', { multiple: true, value: 'foo' },
