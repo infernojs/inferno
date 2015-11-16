@@ -28,7 +28,7 @@ export default function createElementFactory(template) {
 			return element;
 		}
 
-		let len = children.length;
+		const len = children.length;
 
 		if(len > 0) {
 			if (len > 1) {
@@ -71,7 +71,7 @@ export default function createElementFactory(template) {
 					}
 				}
 			}
-			else if ((children = children[0]).pointer !== undefined) {
+			else if ((children = children[0]) && children.pointer !== undefined) {
 				let value = this.templateValue || this.templateValues[children.pointer];
 
 				if (typeof value !== 'object') {
@@ -96,11 +96,11 @@ export default function createElementFactory(template) {
 			else if (typeof children !== 'object') {
 				element.textContent = children;
 			}
-			else if (children.component) {
+			else if (children && children.component) {
 				this.templateElement = element;
 				this.templateType = fragmentValueTypes.FRAGMENT;
 				this.templateValue = children;
-			} else {
+			} else if (children) {
 				element.appendChild(children);
 			}
 		}
