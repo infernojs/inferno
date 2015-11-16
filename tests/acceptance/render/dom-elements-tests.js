@@ -1,4 +1,5 @@
 import domElementsTestsFunctional from './functional-api/dom-elements-tests-functional.js';
+import domComponentsTestsFunctional from './functional-api/dom-components-tests-functional.js';
 import domElementsTestsJsx from './inferno-jsx/dom-elements-tests-jsx.js';
 import Inferno from '../../../src';
 
@@ -15,6 +16,7 @@ export default function domElementsTests(describe, expect) {
 
         describe('using the Inferno functional API', () => {
             domElementsTestsFunctional(describe, expect, container);
+            domComponentsTestsFunctional(describe, expect, container);
         });
         describe('using the Inferno JSX plugin', () => {
             domElementsTestsJsx(describe, expect, container);
