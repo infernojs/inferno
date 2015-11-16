@@ -9,7 +9,6 @@ export default function domElementsTests(describe, expect) {
         beforeEach(() => {
             container.innerHTML = '';
         });
-
         afterEach(() => {
             Inferno.clearDomElement(container);
         });
@@ -17,7 +16,6 @@ export default function domElementsTests(describe, expect) {
         describe('using the Inferno functional API', () => {
             domElementsTestsFunctional(describe, expect, container);
         });
-
         describe('using the Inferno JSX plugin', () => {
             domElementsTestsJsx(describe, expect, container);
         });

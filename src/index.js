@@ -1,4 +1,3 @@
-/* global __VERSION__ */
 import Component              from './class/Component';
 import render                 from './core/render';
 import renderToString         from './core/renderToString';
@@ -7,7 +6,6 @@ import FragmentValueTypes     from './enum/fragmentValueTypes';
 import TemplateTypes          from './enum/templateTypes';
 import createFragment         from './core/createFragment';
 import createTemplate         from './core/createTemplate';
-import template               from './template';
 import clearDomElement        from './core/clearDomElement';
 import createRef	          from './core/createRef';
 
@@ -20,7 +18,6 @@ export default {
 	unmountComponentAtNode,
 	FragmentValueTypes,
 	TemplateTypes,
-	template,
 	clearDomElement,
 	createRef,
 	version: __VERSION__

@@ -3,7 +3,7 @@ import getContext                from './getContext';
 import attachFragment            from './attachFragment';
 import updateFragment            from './updateFragment';
 
-function render(fragment, dom, component, noContext) {
+function render(fragment, dom, component, useVirtual) {
 	let context, generatedFragment;
 
 	if (component) {
@@ -17,29 +17,29 @@ function render(fragment, dom, component, noContext) {
 			context = component.context = {
 				fragment: generatedFragment,
 				dom: dom,
-				shouldRecycle: true
+				shouldRecycle: !useVirtual,
+				useVirtual
 			};
 			component.componentWillMount();
 			attachFragment(context, generatedFragment, dom, component);
 			component.componentDidMount();
 		}
 	} else {
-		if(!noContext) {
+		if(!useVirtual) {
 			context = getContext(dom);
 		}
-
 		if (context) {
 			updateFragment(context, context.fragment, fragment, dom, component, false);
 			context.fragment = fragment;
 		} else {
-
 			context = {
 				fragment: fragment,
 				dom: dom,
-				shouldRecycle: !noContext
+				shouldRecycle: !useVirtual,
+				useVirtual
 			};
 			attachFragment(context, fragment, dom, component);
-			if(!noContext) {
+			if(!useVirtual) {
 				contexts.push(context);
 			}
 		}

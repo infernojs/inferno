@@ -22,11 +22,11 @@ import escapeHtml from './escapeHtml';
  * @param {?(boolean|number|string)=} value The attribute's value.
  */
  let setAttribute = (node, name, value) => {
-    if (name === 'type' && (tagName(node) === 'input')) {
+	if (name === 'type' && (tagName(node) === 'input')) {
 		// Support: IE9-Edge
 		const val = node.value; // value will be lost in IE if type is changed
 		node.setAttribute(name, '' + value);
-        // Check if val exist, if not we will get a stupid 'value=""' in the markup
+		// Check if val exist, if not we will get a stupid 'value=""' in the markup
 		if ( val ) {
 		   node.value = val;
 		}
@@ -35,7 +35,7 @@ import escapeHtml from './escapeHtml';
 		// Avoid touching the DOM on falsy values
 		if ( value !== 'false') {
 		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
-	   }	
+	   }
 	}
 };
 
@@ -47,10 +47,10 @@ import escapeHtml from './escapeHtml';
  * @param {String} value  The attribute value to set.
  */
 let setVolumAttribute = (node, name, value) => {
-    // The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the 
+	// The 'volume' attribute can only contain a number in the range 0.0 to 1.0, where 0.0 is the
 	// quietest and 1.0 the loudest. So we optimize by checking for the most obvious first...
-    if ( value === 0.0 || (value === 1) || (typeof value === 'number' && (value > -1 && (value < 1.1 )))) {
-          node.setAttribute(name, value);
+	if ( value === 0.0 || (value === 1) || (typeof value === 'number' && (value > -1 && (value < 1.1 )))) {
+		  node.setAttribute(name, value);
 	}
 };
 /**
@@ -89,9 +89,7 @@ let setNumericAttribute = (node, name, value) => {
  * @param {string} value	 The property value
  */
 let setProperty = (node, name, value) => {
-
 	if (value != null) {
-
 			// 'contentEditable' is a special case
 			if (name === 'contentEditable' && (value)) {
 				/**
@@ -137,11 +135,11 @@ let setProperty = (node, name, value) => {
  */
 let setSelectedIndexProperty = (node, name, value) => {
 
-    // selectbox has special case
+	// selectbox has special case
   if (Array.prototype.every.call(node.options, (opt) => !(opt.selected = opt.value === value))) {
 	  // TODO! Fix this so we use a normal iteration loop, and avoid using 'Array.prototype.every'.
-     node[name] = -1;
-  }	
+	 node[name] = -1;
+  }
 };
 
 /**
@@ -174,7 +172,7 @@ let setPropertyForDataset = (node, name, value) => {
  * @param {!Element} el
  * @param {string} name The property's name.
  * @param {string|Object<string,string>} style The style to set. Either a
- *     string of css or an object containing property-value pairs.
+ *	 string of css or an object containing property-value pairs.
  */
 let applyStyle = (node, name, value) => {
 	// CSS style need to be a object literal, not a string value
@@ -217,30 +215,28 @@ let setValueForProperty = (node, name, value) => {
  */
 
 let setSelectValue = (node, value) => {
-	
 	const multiple = isArray(value),
 		options = node.options;
 
-if ( multiple && (typeof value[0] === 'number')) {
- let selectedValue = {};
-    for (i = 0; i < value.length; i++) {
-      selectedValue['' + value[i]] = true;
-    }
+	if ( multiple && (typeof value[0] === 'number')) {
+		const selectedValue = {};
+		for (i = 0; i < value.length; i++) {
+			selectedValue['' + value[i]] = true;
+		}
 
-    for (i = 0; i < options.length; i++) {
-      var selected = selectedValue.hasOwnProperty(options[i].value);
-      if (options[i].selected !== selected) {
-        options[i].selected = true;
-      }
-    }
-
-}	 else {
-	let optionNode;
-	for (let i = 0; i < options.length; i++) {
-		optionNode = options[i];
-		optionNode.selected = value != null && (multiple ? inArray(value, optionNode.value) : optionNode.value == value);
+		for (i = 0; i < options.length; i++) {
+			const selected = selectedValue.hasOwnProperty(options[i].value);
+			if (options[i].selected !== selected) {
+				options[i].selected = true;
+			}
+		}
+	} else {
+		let optionNode;
+		for (let i = 0; i < options.length; i++) {
+			optionNode = options[i];
+			optionNode.selected = value != null && (multiple ? inArray(value, optionNode.value) : optionNode.value == value);
+		}
 	}
-}
 };
 
 /**
@@ -466,7 +462,7 @@ let DOMConfig = {
 	title: IS_ATTRIBUTE,
 	type: IS_ATTRIBUTE,
 	typeof: IS_ATTRIBUTE,
-	
+
 	/**
 	 * CSS styling attribute is a special case, and will be set as a normal object.
 	 * 'styles' should be used as an replacement.
@@ -563,7 +559,7 @@ let DOMConfig = {
 	restart: IS_ATTRIBUTE,
 	repeatCount: IS_ATTRIBUTE,
 	repeatDur: IS_ATTRIBUTE,
-	fill: IS_ATTRIBUTE	
+	fill: IS_ATTRIBUTE
 
 };
 
@@ -651,7 +647,7 @@ export default {
 		case 'integrity':
 		case 'name':
 		case 'open':
-        // 'property' is also supported for OpenGraph in meta tags.
+		// 'property' is also supported for OpenGraph in meta tags.
 		case 'property': // RDFA
 		case 'seamless':
 		case 'sortable':
@@ -669,7 +665,7 @@ export default {
 			}
 			return;
 		}
-		
+
 		return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
 	},
 

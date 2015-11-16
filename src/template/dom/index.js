@@ -1,8 +1,8 @@
-import addAttributes from './addAttributes';
-import extendUnitlessNumber from './extendUnitlessNumber';
-import addProps               from './addProps';
-import createElementWithoutIs from './createElementWithoutIs';
-import createElementWithIs from './createElementWithIs';
+import addAttributes from '../addAttributes';
+import extendUnitlessNumber from '../extendUnitlessNumber';
+import addProps               from '../addProps';
+import createElementWithoutIs from '../createElementWithoutIs';
+import createElementWithIs from '../createElementWithIs';
 
 export default {
     addAttributes,

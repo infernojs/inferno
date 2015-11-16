@@ -5,11 +5,9 @@ import { expect } from 'chai';
 //import renderSvgTests from './acceptance/render/svg-tests';
 //import renderMathMlTests from './acceptance/render/math-ml-tests';
 import renderDomElementsTests from './acceptance/render/dom-elements-tests';
-import renderVirtualElementsTests from './acceptance/render/virtual-elements-tests';
 
 //acceptance renderToString test group
-import renderToStringDomElementsTests from './acceptance/renderToString/dom-elements-tests';
-import renderToStringVirtualElementsTests from './acceptance/renderToString/virtual-elements-tests';
+import renderToStringElementsTests from './acceptance/renderToString/elements-tests';
 
 // DOM event tests
 import domEventTests from './acceptance/dom-events-tests';
@@ -26,12 +24,10 @@ describe('Inferno acceptance tests', () => {
 //		renderSvgTests(describe, expect);
 	//	renderMathMlTests(describe, expect);
 		renderDomElementsTests(describe, expect);
-		renderVirtualElementsTests(describe, expect);
 	});
 
 	describe('Inferno.renderToString()', () => {
-		renderToStringDomElementsTests(describe, expect);
-		renderToStringVirtualElementsTests(describe, expect);
+		renderToStringElementsTests(describe, expect);
 	});
 
 	domEventTests(describe, expect);

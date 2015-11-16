@@ -17,7 +17,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				'<div>Hello world</div>'
 			);
 		});
-
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment(null, template), container);
 			expect(
@@ -41,7 +40,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			);
 			Inferno.render(Inferno.createFragment(null, template), container);
 		});
-
 		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
@@ -196,7 +194,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				'<div>Hello world - Inferno Owns</div>'
 			);
 		});
-
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment(['Test', 'Works!'], template), container);
 			expect(
@@ -227,7 +224,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
 			);
 		});
-
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment(['Rocks', 'Inferno'], template), container);
 			expect(

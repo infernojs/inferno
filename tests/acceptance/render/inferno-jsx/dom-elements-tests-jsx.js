@@ -14,7 +14,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 				'<div>Hello world</div>'
 			);
 		});
-
 		it('Second render (update)', () => {
 			Inferno.render(<div>Hello world 2</div>, container);
 			expect(
@@ -29,7 +28,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 		beforeEach(() => {
 			Inferno.render(<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>, container);
 		});
-
 		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
@@ -46,7 +44,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 				container
 			);
 		});
-
 		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
@@ -60,7 +57,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 		beforeEach(() => {
 			Inferno.render(<div autoFocus='true' />, container);
 		});
-
 		it('Initial render (creation)', () => {
 			expect(container.firstChild.getAttribute('autoFocus')).to.eql('');
 			expect(
@@ -75,7 +71,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 		beforeEach(() => {
 			Inferno.render(<div className='Dominic rocks!' />, container);
 		});
-
 		it('Initial render (creation)', () => {
 			expect(container.firstChild.getAttribute('class')).to.eql('Dominic rocks!');
 			expect(
@@ -90,7 +85,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 		beforeEach(() => {
 			Inferno.render(<input values={ null } />, container);
 		});
-
 		it('Initial render (creation)', () => {
 			expect( container.value ).to.be.undefined;
 			expect(
@@ -105,7 +99,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 		beforeEach(() => {
 			Inferno.render(<input title='Tip!' />, container);
 		});
-
 		it('Initial render (creation)', () => {
 			expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 			expect(
@@ -126,7 +119,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 				container
 			);
 		});
-
 		it('Initial render (creation)', () => {
 			expect(get(container.firstChild)).to.eql(['foo']);
 			expect(
@@ -150,7 +142,6 @@ export default function domElementsTestsJsx(describe, expect, container) {
 				'<div>Hello world - Inferno Owns</div>'
 			);
 		});
-
 		it('Second render (update)', () => {
 			const values = ['Test', 'Works!'];
 			Inferno.render(<div>Hello world - { values[0] } { values[1] }</div>, container);
@@ -165,11 +156,11 @@ export default function domElementsTestsJsx(describe, expect, container) {
 	describe('should render a basic example with dynamic values and props', () => {
 		beforeEach(() => {
 			const values = ['Inferno', 'Rocks'];
-			Inferno.render((
+			Inferno.render(
 				<div className="foo">
 					<span className="bar">{ values[0] }</span>
 					<span className="yar">{ values[1] }</span>
-				</div>),
+				</div>,
 				container
 			);
 		});
@@ -181,14 +172,13 @@ export default function domElementsTestsJsx(describe, expect, container) {
 				`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
 			);
 		});
-
 		it('Second render (update)', () => {
 			const values = ['Rocks', 'Inferno'];
-			Inferno.render((
+			Inferno.render(
 					<div className="foo">
 						<span className="bar">{ values[0] }</span>
 						<span className="yar">{ values[1] }</span>
-					</div>),
+					</div>,
 				container
 			);
 			expect(

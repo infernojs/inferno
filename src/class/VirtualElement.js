@@ -1,13 +1,15 @@
 import VirtualTextNode from './VirtualTextNode';
 
 let doNotShowInHtml = {
-	'textContent': true,
-	'appendChild': true,
-	'setAttribute': true,
-	'outerHTML': true,
-	'innerHTML': true,
-	'children': true,
-	'tagName': true
+	textContent: true,
+	appendChild: true,
+	setAttribute: true,
+	outerHTML: true,
+	innerHTML: true,
+	children: true,
+	tagName: true,
+	options: true,
+	selected: true
 };
 
 //VirtualElements are lightweight replacements for real DOM elements, they allow us to easily
@@ -19,6 +21,10 @@ class VirtualElement {
 		this.xmlns = xmlns;
 		this.is = is;
 		this.children = [];
+
+		if(tagName === 'select') {
+			this.options = [];
+		}
 
 		Object.defineProperty(this, 'textContent', {
 			set: textValue => {
@@ -48,11 +54,15 @@ class VirtualElement {
 				throw Error('You cannot set the outerHTML of virtual elements, use declarative API instead');
 			},
 			get: () => {
-				let childrenInnerHtml = this.children.map(child => child.outerHTML || child.nodeValue).join('');
-				let attributes = [];
+				const childrenInnerHtml = this.children.map(child => child.outerHTML || child.nodeValue).join('');
+				const attributes = [];
 				for (let property in this) {
-					if (!doNotShowInHtml[property]) {
-						attributes.push(property + `="${ this[property] }"`);
+					if (!doNotShowInHtml[property] && this[property] != null) {
+						let propVal = this[property];
+						if(propVal === true) {
+							propVal = '';
+						}
+						attributes.push(property + `="${ propVal }"`);
 					}
 				}
 				if (attributes.length > 0) {
@@ -63,6 +73,9 @@ class VirtualElement {
 		});
 	}
 	appendChild(child) {
+		if(this.tagName === 'select') {
+			this.options.push(child);
+		}
 		this.children.push(child);
 	}
 	setAttribute(attribute, value) {

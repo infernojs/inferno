@@ -8,6 +8,8 @@ import render from './render';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../template/createElement';
 import bind from '../util/bind';
+import domTemplate from '../template/dom';
+import virtualTemplate from '../template/virtual';
 
 function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
 	let fragmentComponent = fragment.component;
@@ -35,12 +37,13 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 	}
 
 	//there are different things we need to check for now
+	const templateToUse = context.useVirtual ? virtualTemplate : domTemplate;
 	switch (template.type) {
 		case templateTypes.TEMPLATE_API:
-			template(fragment);
+			template(fragment, templateToUse);
 			break;
 		case templateTypes.FUNCTIONAL_API:
-			let createElement = bind(fragment, templateCreateElement);
+			const createElement = bind(fragment, templateCreateElement(templateToUse));
 			let params = [createElement], length = (fragment.templateValue != null && 1)
 				|| (fragment.templateValues && fragment.templateValues.length) || 0;
 
