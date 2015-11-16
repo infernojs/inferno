@@ -14,14 +14,16 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.html" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.js" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/examples/t7.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/class/VirtualElement.js" afterPath="$PROJECT_DIR$/src/class/VirtualElement.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragment.js" afterPath="$PROJECT_DIR$/src/core/attachFragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/clearDomElement.js" afterPath="$PROJECT_DIR$/src/core/clearDomElement.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createElement.js" afterPath="$PROJECT_DIR$/src/template/createElement.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/insertFragment.js" afterPath="$PROJECT_DIR$/src/core/insertFragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
@@ -32,7 +34,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/tests.js" afterPath="$PROJECT_DIR$/tests/tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" afterPath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragment.js" afterPath="$PROJECT_DIR$/src/core/updateFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack.config.js" afterPath="$PROJECT_DIR$/webpack.config.js" />
     </list>
     <ignored path="inferno.iws" />
@@ -54,28 +55,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="render.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/core/render.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.0">
-              <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
-              <folding>
-                <marker date="1447625727000" expanded="true" signature="282:1261" placeholder="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="insertFragment.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/core/insertFragment.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.9444447">
-              <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="updateFragment.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/core/updateFragment.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -89,8 +68,8 @@
       <file leaf-file-name="dom-elements-tests-functional.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-31.11111">
-              <caret line="209" column="0" selection-start-line="209" selection-start-column="0" selection-end-line="238" selection-end-column="7" />
+            <state vertical-scroll-proportion="-26.666666">
+              <caret line="201" column="19" selection-start-line="201" selection-start-column="19" selection-end-line="201" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -106,36 +85,56 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="virtual-elements-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-30.0">
-              <caret line="54" column="24" selection-start-line="54" selection-start-column="24" selection-end-line="54" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="dom-elements-tests-jsx.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="6.111111">
-              <caret line="76" column="35" selection-start-line="76" selection-start-column="35" selection-end-line="76" selection-end-column="35" />
+            <state vertical-scroll-proportion="-26.11111">
+              <caret line="122" column="62" selection-start-line="122" selection-start-column="62" selection-end-line="122" selection-end-column="62" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="svg-tests.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="elements-tests-functional.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-15.555555">
+              <caret line="28" column="62" selection-start-line="28" selection-start-column="62" selection-end-line="28" selection-end-column="62" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="elements-tests-jsx.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.26952314">
+              <caret line="26" column="73" selection-start-line="26" selection-start-column="73" selection-end-line="26" selection-end-column="73" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="svg-tests.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.21769178">
+            <state vertical-scroll-proportion="-11.666667">
               <caret line="91" column="85" selection-start-line="91" selection-start-column="85" selection-end-line="91" selection-end-column="85" />
               <folding>
                 <marker date="1447713361000" expanded="true" signature="5954:6016" placeholder="..." />
                 <marker date="1447713361000" expanded="true" signature="11033:11070" placeholder="..." />
                 <marker date="1447713361000" expanded="true" signature="11110:11131" placeholder="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VirtualElement.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/class/VirtualElement.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.8888888">
+              <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -208,6 +207,9 @@
         <option value="$PROJECT_DIR$/tests/tests.js" />
         <option value="$PROJECT_DIR$/src/template/createElement.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
+        <option value="$PROJECT_DIR$/src/class/VirtualElement.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js" />
       </list>
     </option>
   </component>
@@ -379,6 +381,58 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="renderToString" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno-jsx" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="acceptance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="renderToString" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="functional-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="acceptance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="render" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -500,6 +554,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="class" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -820,14 +892,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/dom-elements-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.2777777">
-          <caret line="19" column="84" selection-start-line="19" selection-start-column="84" selection-end-line="19" selection-end-column="84" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/core/insertFragment.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-6.9444447">
@@ -841,7 +905,7 @@
         <state vertical-scroll-proportion="-10.0">
           <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
           <folding>
-            <marker date="1447625727000" expanded="true" signature="282:1261" placeholder="{...}" />
+            <marker date="1447625727000" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -850,38 +914,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-18.333334">
           <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/virtual-elements-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-30.0">
-          <caret line="54" column="24" selection-start-line="54" selection-start-column="24" selection-end-line="54" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-31.11111">
-          <caret line="209" column="0" selection-start-line="209" selection-start-column="0" selection-end-line="238" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.333333">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="6.111111">
-          <caret line="76" column="35" selection-start-line="76" selection-start-column="35" selection-end-line="76" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -904,13 +936,61 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.21769178">
+        <state vertical-scroll-proportion="-11.666667">
           <caret line="91" column="85" selection-start-line="91" selection-start-column="85" selection-end-line="91" selection-end-column="85" />
           <folding>
             <marker date="1447713361000" expanded="true" signature="5954:6016" placeholder="..." />
             <marker date="1447713361000" expanded="true" signature="11033:11070" placeholder="..." />
             <marker date="1447713361000" expanded="true" signature="11110:11131" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/class/VirtualElement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.8888888">
+          <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.333333">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-26.666666">
+          <caret line="201" column="19" selection-start-line="201" selection-start-column="19" selection-end-line="201" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-26.11111">
+          <caret line="122" column="62" selection-start-line="122" selection-start-column="62" selection-end-line="122" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-15.555555">
+          <caret line="28" column="62" selection-start-line="28" selection-start-column="62" selection-end-line="28" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26952314">
+          <caret line="26" column="73" selection-start-line="26" selection-start-column="73" selection-end-line="26" selection-end-column="73" />
+          <folding />
         </state>
       </provider>
     </entry>

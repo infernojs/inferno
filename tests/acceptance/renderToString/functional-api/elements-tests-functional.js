@@ -32,7 +32,7 @@ export default function elementsTestsFunctional(describe, expect) {
         const test = Inferno.renderToString(
             Inferno.createFragment(null, template)
         );
-        const expected = '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>';
+        const expected = '<select multiple=""><option>foo</option><option>bar</option></select>';
         expect(test).to.equal(expected);
     });
     it('should render a basic example with dynamic values and props', () => {

@@ -9,7 +9,8 @@ let doNotShowInHtml = {
 	children: true,
 	tagName: true,
 	options: true,
-	selected: true
+	selected: true,
+	value: true
 };
 
 //VirtualElements are lightweight replacements for real DOM elements, they allow us to easily
