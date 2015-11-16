@@ -18,7 +18,7 @@ export default function domElementsTests(describe, expect) {
             domElementsTestsFunctional(describe, expect, container);
         });
 
-        describe('using the Inferno Inferno JSX', () => {
+        describe('using the Inferno JSX plugin', () => {
             domElementsTestsJsx(describe, expect, container);
         });
     });

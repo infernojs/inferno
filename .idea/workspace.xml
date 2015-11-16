@@ -117,11 +117,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
+            <state vertical-scroll-proportion="0.2073255">
+              <caret line="20" column="46" selection-start-line="20" selection-start-column="46" selection-end-line="20" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -147,10 +147,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-elements-tests-jsx.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dom-elements-tests-jsx.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.585349">
+            <state vertical-scroll-proportion="-90.0">
               <caret line="164" column="83" selection-start-line="164" selection-start-column="83" selection-end-line="164" selection-end-column="83" />
               <folding />
             </state>
@@ -182,7 +182,6 @@
         <option value="$PROJECT_DIR$/webpack.config.js" />
         <option value="$PROJECT_DIR$/test.config.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
         <option value="$PROJECT_DIR$/node_modules/babel-plugin-inferno/lib/addTemplatesToModule.js" />
         <option value="$PROJECT_DIR$/node_modules/babel-plugin-inferno/lib/index.js" />
         <option value="$PROJECT_DIR$/src/core/clearDomElement.js" />
@@ -204,6 +203,7 @@
         <option value="$PROJECT_DIR$/src/core/render.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
       </list>
     </option>
   </component>
@@ -898,18 +898,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
+        <state vertical-scroll-proportion="-90.0">
+          <caret line="164" column="83" selection-start-line="164" selection-start-column="83" selection-end-line="164" selection-end-column="83" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.585349">
-          <caret line="164" column="83" selection-start-line="164" selection-start-column="83" selection-end-line="164" selection-end-column="83" />
+        <state vertical-scroll-proportion="0.2073255">
+          <caret line="20" column="46" selection-start-line="20" selection-start-column="46" selection-end-line="20" selection-end-column="46" />
           <folding />
         </state>
       </provider>
