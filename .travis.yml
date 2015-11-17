@@ -15,5 +15,6 @@ before_install:
   - npm install -g npm@3.4.0
   
 script:
-- npm run build-dev
+- npm run build:dev
+- npm run test
 
