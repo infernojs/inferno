@@ -6,7 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97762936-9cf6-425b-b803-3e2b6d8d2016" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="inferno.iws" />
@@ -48,26 +48,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="elements-tests-functional.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.555555">
-              <caret line="28" column="62" selection-start-line="28" selection-start-column="62" selection-end-line="28" selection-end-column="62" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="elements-tests-jsx.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.444445">
-              <caret line="26" column="73" selection-start-line="26" selection-start-column="73" selection-end-line="26" selection-end-column="73" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="dom-components-tests-functional.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -98,11 +78,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.24827586">
-              <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
+            <state vertical-scroll-proportion="-24.375">
+              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+              <folding>
+                <marker date="1447769582000" expanded="true" signature="0:1289" placeholder="{&quot;name&quot;: &quot;inferno&quot;...}" />
+                <marker date="1447769582000" expanded="true" signature="825:1287" placeholder="{&quot;babel-cli&quot;: &quot;^6.1.18&quot;...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.travis.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.20352781">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -172,7 +165,6 @@
         <option value="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js" />
         <option value="$PROJECT_DIR$/tests/tests.js" />
         <option value="$PROJECT_DIR$/src/template/createElement.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
         <option value="$PROJECT_DIR$/src/class/VirtualElement.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js" />
@@ -182,6 +174,8 @@
         <option value="$PROJECT_DIR$/src/index.js" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
       </list>
     </option>
   </component>
@@ -193,8 +187,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1328" />
-    <option name="y" value="373" />
+    <option name="x" value="1287" />
+    <option name="y" value="419" />
     <option name="width" value="2404" />
     <option name="height" value="1571" />
   </component>
@@ -489,6 +483,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="util" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inferno" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="template" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -610,7 +622,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1328" y="373" width="2404" height="1571" extended-state="0" />
+    <frame x="1287" y="419" width="2404" height="1571" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -866,18 +878,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.666667">
-          <caret line="91" column="85" selection-start-line="91" selection-start-column="85" selection-end-line="91" selection-end-column="85" />
-          <folding>
-            <marker date="1447713361000" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1447713361000" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1447713361000" expanded="true" signature="-1:-1" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/class/VirtualElement.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.8888888">
@@ -968,8 +968,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24827586">
-          <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
+        <state vertical-scroll-proportion="-24.375">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding>
+            <marker date="1447769582000" expanded="true" signature="0:1289" placeholder="{&quot;name&quot;: &quot;inferno&quot;...}" />
+            <marker date="1447769582000" expanded="true" signature="825:1287" placeholder="{&quot;babel-cli&quot;: &quot;^6.1.18&quot;...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.203179">
+          <caret line="31" column="52" selection-start-line="31" selection-start-column="52" selection-end-line="31" selection-end-column="52" />
+          <folding>
+            <marker date="1447792128000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1447792128000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1447792128000" expanded="true" signature="-1:-1" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.20352781">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
