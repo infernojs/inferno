@@ -6,8 +6,8 @@
   "scripts": {
     "test-win": "webpack-dev-server --config test.config.js --hot --inline 'mocha!.\\tests\\tests.js'",
     "test": "webpack-dev-server --config test.config.js --hot --inline 'mocha!./tests/tests.js'",
-    "build-dev": "webpack --config webpack.config.js --inline",
-    "build-pro": "PROD_DEV=1 webpack --config webpack.config.js --inline"
+    "build:dev": "webpack --config webpack.config.js --inline",
+    "build:prod": "PROD_DEV=1 webpack --config webpack.config.js --inline"
   },
   "repository": {
     "type": "git",

@@ -32,8 +32,8 @@ npm run test
 ## Building
 
 ```sh
-npm run build-dev
-npm run build-pro
+npm run build:dev
+npm run build:prod
 ```
 
 ## Overview
