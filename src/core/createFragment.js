@@ -17,10 +17,12 @@ export default function createFragment(values, template, key = null) {
 		if(values.length === 1) {
 			fragmentObject.templateElement = null;
 			fragmentObject.templateType = null;
-			fragmentObject.templateValue = values[0];	
+			fragmentObject.templateValue = values[0];
+			fragmentObject.templateComponent = null;
 		} else {
 			fragmentObject.templateElements = new Array(values.length);
 			fragmentObject.templateTypes = new Array(values.length);
+			fragmentObject.templateComponents = new Array(values.length);
 			fragmentObject.templateValues = values;
 		}
 	} else  {
@@ -28,6 +30,5 @@ export default function createFragment(values, template, key = null) {
 		fragmentObject.templateType = null;
 		fragmentObject.templateValue = values;
 	}
-
 	return fragmentObject;
 }

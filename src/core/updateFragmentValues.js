@@ -5,20 +5,20 @@ import eventManager from '../events/eventManager';
 import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
 import attrOps from '../template/AttributeOps';
+import updateComponent from './updateComponent';
 
 // TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 // refactored to by more DRY. although, this causes a significant performance cost
 // on the v8 compiler. need to explore how to refactor without introducing this performance cost
 function updateFragmentValues(context, oldFragment, fragment, component) {
-
-	let componentsToUpdate = [];
-
 	for (let i = 0, length = fragment.templateValues.length; i < length; i++) {
 		let element = oldFragment.templateElements[i];
 		let type = oldFragment.templateTypes[i];
+		let templateComponent = oldFragment.templateComponents[i];
 
 		fragment.templateElements[i] = element;
 		fragment.templateTypes[i] = type;
+		fragment.templateComponents[i] = templateComponent;
 
 		if (fragment.templateValues[i] !== oldFragment.templateValues[i]) {
 			switch (type) {
@@ -35,6 +35,11 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 			case fragmentValueTypes.FRAGMENT:
 			case fragmentValueTypes.FRAGMENT_REPLACE:
 				updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
+				break;
+			case fragmentValueTypes.COMPONENT:
+				if(fragment.templateValues[i].component === oldFragment.templateValues[i].component) {
+					updateComponent(templateComponent, fragment.templateValues[i].props);
+				}
 				break;
 			case fragmentValueTypes.ATTR_CLASS:
 				if (isSVG) {
@@ -136,34 +141,14 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 				}
 				break;
 			default:
-					//custom attribute, so simply setAttribute it
-				if (!element.props) {
-					if (events[type] != null) {
-						eventManager.addListener(element, type, fragment.templateValues[i]);
-					} else {
-						attrOps.set(element, type, fragment.templateValues[i], true);
-					}
-				}
-				//component prop, update it
-				else {
-					element.props[type] = fragment.templateValues[i];
-					let alreadyInQueue = false;
-					for (let s = 0; s < componentsToUpdate.length; s++) {
-						if (componentsToUpdate[s] === element) {
-							alreadyInQueue = true;
-						}
-					}
-					if (alreadyInQueue === false) {
-						componentsToUpdate.push(element);
-					}
+				//custom attribute, so simply setAttribute it
+				if (events[type] != null) {
+					eventManager.addListener(element, type, fragment.templateValues[i]);
+				} else {
+					attrOps.set(element, type, fragment.templateValues[i], true);
 				}
 				break;
 			}
-		}
-	}
-	if (componentsToUpdate.length > 0) {
-		for (let i = 0; i < componentsToUpdate.length; i++) {
-			componentsToUpdate[i].forceUpdate();
 		}
 	}
 }

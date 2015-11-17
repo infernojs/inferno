@@ -14,23 +14,8 @@ function updateFragment( context, oldFragment, fragment, parent, component ) {
 		return;
 	}
 	if ( oldFragment.template !== fragment.template ) {
-		if ( oldFragment.component ) {
-			let oldComponentFragment = oldFragment.component.context.fragment;
-			
-			unmountComponentAtFragment( oldFragment );
-			attachFragment( context, fragment, parent, component, oldComponentFragment, true );
- 	        return;
-		} 
 		attachFragment( context, fragment, parent, component, oldFragment, true );
 	   return;
-	}
-	let fragmentComponent = oldFragment.component;
-	//if this fragment is a component
-	if ( fragmentComponent ) {
-		fragmentComponent.props = fragment.props;
-		fragmentComponent.forceUpdate();
-		fragment.component = fragmentComponent;
-		return;
 	}
 	//ensure we reference the new fragment with the old fragment's DOM node
 	fragment.dom = oldFragment.dom;

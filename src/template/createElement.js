@@ -10,21 +10,16 @@ export default function createElementFactory(template) {
 		if (typeof tag === 'string') {
 			element = template.createElement(tag, xmlns, is);
 		} else {
-			let propsParsed = props;
+			element = template.createEmptyText();
 
-			for(let prop in props) {
-				if(props[prop].pointer) {
-					propsParsed[prop] = this.templateValues[propsParsed[prop].pointer];
-				}
+			if(this.templateValue) {
+				this.templateElement = element;
+				this.templateType = fragmentValueTypes.COMPONENT;
+			} else {
+				this.templateElements[child.pointer] = element;
+				this.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT;
 			}
-			element = {
-				dom: null,
-				component: this.templateValue || this.templateValues[tag.pointer],
-				props: propsParsed,
-				key: null,
-				template: null,
-				templateIndex: tag.pointer
-			};
+
 			return element;
 		}
 
@@ -95,11 +90,6 @@ export default function createElementFactory(template) {
 			}
 			else if (typeof children !== 'object') {
 				element.textContent = children;
-			}
-			else if (children && children.component) {
-				this.templateElement = element;
-				this.templateType = fragmentValueTypes.FRAGMENT;
-				this.templateValue = children;
 			} else if (children) {
 				element.appendChild(children);
 			}
@@ -108,7 +98,6 @@ export default function createElementFactory(template) {
 		if (props) {
 			template.addAttributes(element, props, this);
 		}
-
 		return element;
 	}
 }

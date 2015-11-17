@@ -22,4 +22,8 @@ export default class Component {
 	componentDidMount() {}
 	componentWillMount() {}
 	componentWillUnmount() {}
+	componentDidUpdate() {}
+	shouldComponentUpdate() { return true; }
+	componentWillReceiveProps() {}
+	componentWillUpdate() {}
 }

@@ -5,13 +5,16 @@ import eventManager from '../events/eventManager';
 import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
 import attrOps from '../template/AttributeOps';
+import updateComponent from './updateComponent';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
-		type = oldFragment.templateType;
+		type = oldFragment.templateType,
+		templateComponent = oldFragment.templateComponent;
 
 	fragment.templateElement = element;
 	fragment.templateType = type;
+	fragment.templateComponent = templateComponent;
 
 	if (fragment.templateValue !== oldFragment.templateValue) {
 
@@ -38,6 +41,11 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 				element.setAttribute('class', fragment.templateValue);
 			} else {
 				element.className = fragment.templateValue;
+			}
+			return;
+		case fragmentValueTypes.COMPONENT:
+			if(fragment.templateValue.component === oldFragment.templateValue.component) {
+				updateComponent(templateComponent, fragment.templateValue.props);
 			}
 			return;
 		case fragmentValueTypes.ATTR_ID:
@@ -133,15 +141,10 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			}
 			return;
 		default:
-				// TODO make component props work for single value fragments
-			if (element.props) {
-				// component prop, update it
+			if (events[type] != null) {
+				eventManager.addListener(element, type, fragment.templateValue);
 			} else {
-				if (events[type] != null) {
-					eventManager.addListener(element, type, fragment.templateValue);
-				} else {
-					attrOps.set(element, type, fragment.templateValue, true);
-				}
+				attrOps.set(element, type, fragment.templateValue, true);
 			}
 		}
 	}

@@ -4,26 +4,14 @@ import updateFragment from './updateFragment';
 import attachFragmentList from './attachFragmentList';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 import insertFragment from './insertFragment';
-import render from './render';
+import bind from '../util/bind';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../template/createElement';
-import bind from '../util/bind';
 import domTemplate from '../template/dom';
 import virtualTemplate from '../template/virtual';
+import attachComponent from './attachComponent';
 
 function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
-	let fragmentComponent = fragment.component;
-
-	if (fragmentComponent) {
-		if (typeof fragmentComponent === 'function') {
-			fragmentComponent = fragment.component = new fragmentComponent(fragment.props);
-			fragmentComponent.context = null;
-			fragmentComponent.forceUpdate = render.bind(null,  bind(fragmentComponent, fragmentComponent.render), parentDom, fragmentComponent);
-			fragmentComponent.forceUpdate();
-		}
-		return;
-	}
-
 	let { template } = fragment,
 		templateKey = template.key;
 
@@ -74,6 +62,11 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			case fragmentValueTypes.ATTR_REF:
 				fragment.templateValue.element = fragment.templateElement;
 				break;
+			case fragmentValueTypes.COMPONENT:
+				const {newElement, component} = attachComponent(fragment.templateElement, fragment.templateValue);
+				fragment.templateElement = newElement;
+				fragment.templateComponent = component;
+				break;
 		}
 	} else if ( fragment.templateValues ) {
 		//if the fragment has multiple values, we must loop through them all and attach them
@@ -88,7 +81,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					attachFragmentList( context, value, element );
 					break;
 				case fragmentValueTypes.LIST_REPLACE:
-					let nodeList = document.createDocumentFragment(),
+					const nodeList = document.createDocumentFragment(),
 						placeholderNode = fragment.templateElements[i],
 						parentElem = placeholderNode.parentNode;
 
@@ -105,6 +98,11 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					break;
 				case fragmentValueTypes.ATTR_REF:
 					fragment.templateValues[i].element = fragment.templateElements[i];
+					break;
+				case fragmentValueTypes.COMPONENT:
+					const {newElement, component} = attachComponent(element, value);
+					fragment.templateElements[i] = newElement;
+					fragment.templateComponents[i] = component;
 					break;
 			}
 		}
