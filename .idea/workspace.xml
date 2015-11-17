@@ -6,36 +6,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97762936-9cf6-425b-b803-3e2b6d8d2016" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/dbmonster/index.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/app.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/framework.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/framework/index.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/index.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/kitchen-sink/example.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/t7.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/class/VirtualElement.js" afterPath="$PROJECT_DIR$/src/class/VirtualElement.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragment.js" afterPath="$PROJECT_DIR$/src/core/attachFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/clearDomElement.js" afterPath="$PROJECT_DIR$/src/core/clearDomElement.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createElement.js" afterPath="$PROJECT_DIR$/src/template/createElement.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/css-operation-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-events-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js" afterPath="$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/insertFragment.js" afterPath="$PROJECT_DIR$/src/core/insertFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/render.js" afterPath="$PROJECT_DIR$/src/core/render.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/renderToString.js" afterPath="$PROJECT_DIR$/src/core/renderToString.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/svg-tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.config.js" afterPath="$PROJECT_DIR$/test.config.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/tests.js" afterPath="$PROJECT_DIR$/tests/tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" afterPath="$PROJECT_DIR$/src/core/unmountComponentAtNode.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragment.js" afterPath="$PROJECT_DIR$/src/core/updateFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack.config.js" afterPath="$PROJECT_DIR$/webpack.config.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/index.js" afterPath="$PROJECT_DIR$/src/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="inferno.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -66,10 +38,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dom-elements-tests.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.010366275">
+            <state vertical-scroll-proportion="-0.5555556">
               <caret line="1" column="90" selection-start-line="1" selection-start-column="59" selection-end-line="1" selection-end-column="90" />
               <folding />
             </state>
@@ -116,16 +88,32 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="svg-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/svg-tests.js">
+      <file leaf-file-name="webpack.config.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webpack.config.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.666667">
-              <caret line="91" column="85" selection-start-line="91" selection-start-column="85" selection-end-line="91" selection-end-column="85" />
-              <folding>
-                <marker date="1447713361000" expanded="true" signature="5954:6016" placeholder="..." />
-                <marker date="1447713361000" expanded="true" signature="11033:11070" placeholder="..." />
-                <marker date="1447713361000" expanded="true" signature="11110:11131" placeholder="..." />
-              </folding>
+            <state vertical-scroll-proportion="-35.0">
+              <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.21769178">
+              <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.875">
+              <caret line="3" column="75" selection-start-line="3" selection-start-column="75" selection-end-line="3" selection-end-column="75" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -135,26 +123,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-3.8888888">
               <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="createElement.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.361445">
-              <caret line="102" column="31" selection-start-line="102" selection-start-column="31" selection-end-line="102" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/tests.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.7777777">
-              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -212,6 +180,7 @@
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-test-functional.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
+        <option value="$PROJECT_DIR$/src/index.js" />
       </list>
     </option>
   </component>
@@ -648,7 +617,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956058" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24376039" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24292845" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
@@ -702,22 +671,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webpack.config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.333333">
-          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.375">
-          <caret line="23" column="28" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test.config.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.333333">
@@ -762,14 +715,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.41994572">
           <caret line="129" column="21" selection-start-line="129" selection-start-column="21" selection-end-line="129" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.5555553">
-          <caret line="10" column="46" selection-start-line="10" selection-start-column="46" selection-end-line="10" selection-end-column="46" />
           <folding />
         </state>
       </provider>
@@ -907,7 +852,7 @@
         <state vertical-scroll-proportion="-10.0">
           <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
           <folding>
-            <marker date="1447625727000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1447708469000" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -941,9 +886,9 @@
         <state vertical-scroll-proportion="-11.666667">
           <caret line="91" column="85" selection-start-line="91" selection-start-column="85" selection-end-line="91" selection-end-column="85" />
           <folding>
-            <marker date="1447713361000" expanded="true" signature="5954:6016" placeholder="..." />
-            <marker date="1447713361000" expanded="true" signature="11033:11070" placeholder="..." />
-            <marker date="1447713361000" expanded="true" signature="11110:11131" placeholder="..." />
+            <marker date="1447713361000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1447713361000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1447713361000" expanded="true" signature="-1:-1" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -980,14 +925,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.2222223">
-          <caret line="4" column="1" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0">
@@ -998,8 +935,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.010366275">
+        <state vertical-scroll-proportion="-0.5555556">
           <caret line="1" column="90" selection-start-line="1" selection-start-column="59" selection-end-line="1" selection-end-column="90" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.2222223">
+          <caret line="4" column="1" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.875">
+          <caret line="3" column="75" selection-start-line="3" selection-start-column="75" selection-end-line="3" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webpack.config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-35.0">
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.21769178">
+          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
           <folding />
         </state>
       </provider>

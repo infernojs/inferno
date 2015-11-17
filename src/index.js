@@ -19,6 +19,5 @@ export default {
 	FragmentValueTypes,
 	TemplateTypes,
 	clearDomElement,
-	createRef,
-	version: __VERSION__
+	createRef
 };
