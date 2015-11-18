@@ -2,15 +2,15 @@ export default function updateComponent(component, nextProps) {
 	const prevProps = component.props;
 	const prevState = component.state;
 
-	if(component._staticOpts) {
-		nextProps = {
-			...nextProps,
-			children: component._staticOpts.staticChildren,
-			props: component._staticOpts.staticProps
-		}
-	}
-
 	if(prevProps !== nextProps) {
+		if(component._staticOpts) {
+			nextProps = {
+				...nextProps,
+				children: component._staticOpts.staticChildren,
+				props: component._staticOpts.staticProps
+			}
+		}
+
 		// TODO disable setState causing forceUpdates
 		component.componentWillReceiveProps(nextProps);
 		// TODO enable setState causing forceUpdates
