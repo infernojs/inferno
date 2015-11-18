@@ -7,7 +7,7 @@ export default function updateComponent(component, nextProps) {
 			nextProps = {
 				...nextProps,
 				children: component._staticOpts.staticChildren,
-				props: component._staticOpts.staticProps
+				...component._staticOpts.staticProps
 			}
 		}
 

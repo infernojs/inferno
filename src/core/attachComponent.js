@@ -10,7 +10,7 @@ export default function attachComponent(tempElem, Component, staticOpts) {
 		props = {
 			...props,
 			children: staticOpts.staticChildren,
-			props: staticOpts.staticProps
+			...staticOpts.staticProps
 		};
 	}
 

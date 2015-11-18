@@ -17,7 +17,7 @@ export default function createElementFactory(template) {
 				this.templateElement = element;
 				this.templateType = fragmentValueTypes.COMPONENT;
 				this.templateComponent = {};
-				if(children > 0) {
+				if(children) {
 					this.templateComponent.staticChildren = children;
 				}
 				if(props) {
@@ -27,7 +27,7 @@ export default function createElementFactory(template) {
 				this.templateElements[child.pointer] = element;
 				this.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT;
 				this.templateComponents[child.pointer] = {};
-				if(children > 0) {
+				if(children) {
 					this.templateComponents[child.pointer].staticChildren = children;
 				}
 				if(props) {
