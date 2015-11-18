@@ -33,16 +33,16 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 		case fragmentValueTypes.FRAGMENT_REPLACE:
 			updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
 			return;
-//		case fragmentValueTypes.ATTR_CLASS:
+		case fragmentValueTypes.ATTR_CLASS:
 			// To set className on SVG elements, it's necessary to use .setAttribute;
 			// this works on HTML elements too in all browsers.
 			// If this kills the performance, we have to consider not to support SVG
-//			if (isSVG) {
-	//			element.setAttribute('class', fragment.templateValue);
-		//	} else {
-			//	element.className = fragment.templateValue;
-//			}
-	//		return;
+			if (isSVG) {
+				element.setAttribute('class', fragment.templateValue);
+			} else {
+				element.className = fragment.templateValue;
+			}
+			return;
 		case fragmentValueTypes.COMPONENT:
 			if(fragment.templateValue.component === oldFragment.templateValue.component) {
 				updateComponent(templateComponent, fragment.templateValue.props);

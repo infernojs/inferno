@@ -41,13 +41,13 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 					updateComponent(templateComponent, fragment.templateValues[i].props);
 				}
 				break;
-		//	case fragmentValueTypes.ATTR_CLASS:
-			//	if (isSVG) {
-		//			element.setAttribute('class', fragment.templateValues[i]);
-		//		} else {
+			case fragmentValueTypes.ATTR_CLASS:
+				if (isSVG) {
+					element.setAttribute('class', fragment.templateValues[i]);
+				} else {
 					element.className = fragment.templateValues[i];
-			//	}
-			//	break;
+				}
+				break;
 			case fragmentValueTypes.ATTR_ID:
 				element.id = fragment.templateValues[i];
 				break;
