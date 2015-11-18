@@ -5,11 +5,10 @@ export default function createElementFactory(template) {
 	return function createElement(tag, props, ...children) {
 		let element;
 		const is = props && (props.is || null); // type extension
-	    const xmlns = props && (props.xmlns || null); // xmlns
 		const len = children.length;
 
 		if (typeof tag === 'string') {
-			element = template.createElement(tag, xmlns, is);
+			element = template.createElement(tag, is);
 		} else {
 			element = template.createEmptyText();
 
