@@ -53,7 +53,7 @@ module.exports = {
 				include: path.join(__dirname, 'src'),
 				loader: 'babel',
 				query: {
-					presets: ['es2015'],
+					presets: ['es2015', 'stage-0'],
 					plugins: ['inferno', 'syntax-jsx']
 				}
 			}

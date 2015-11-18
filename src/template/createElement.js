@@ -4,8 +4,9 @@ import isArray from '../util/isArray';
 export default function createElementFactory(template) {
 	return function createElement(tag, props, ...children) {
 		let element;
-		let is = props && (props.is || null); // type extension
-	    let xmlns = props && (props.xmlns || null); // xmlns
+		const is = props && (props.is || null); // type extension
+	    const xmlns = props && (props.xmlns || null); // xmlns
+		const len = children.length;
 
 		if (typeof tag === 'string') {
 			element = template.createElement(tag, xmlns, is);
@@ -15,15 +16,27 @@ export default function createElementFactory(template) {
 			if(this.templateValue) {
 				this.templateElement = element;
 				this.templateType = fragmentValueTypes.COMPONENT;
+				this.templateComponent = {};
+				if(children > 0) {
+					this.templateComponent.staticChildren = children;
+				}
+				if(props) {
+					this.templateComponent.staticProps = props;
+				}
 			} else {
 				this.templateElements[child.pointer] = element;
 				this.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT;
+				this.templateComponents[child.pointer] = {};
+				if(children > 0) {
+					this.templateComponents[child.pointer].staticChildren = children;
+				}
+				if(props) {
+					this.templateComponents[child.pointer].staticProps = props;
+				}
 			}
 
 			return element;
 		}
-
-		const len = children.length;
 
 		if(len > 0) {
 			if (len > 1) {

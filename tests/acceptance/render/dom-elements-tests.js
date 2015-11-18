@@ -15,11 +15,17 @@ export default function domElementsTests(describe, expect) {
         });
 
         describe('using the Inferno functional API', () => {
-            domElementsTestsFunctional(describe, expect, container);
-            domComponentsTestsFunctional(describe, expect, container);
+			describe('HTML', () => {
+				domElementsTestsFunctional(describe, expect, container);
+			});
+			describe('Components', () => {
+				domComponentsTestsFunctional(describe, expect, container);
+			})
         });
         describe('using the Inferno JSX plugin', () => {
-            domElementsTestsJsx(describe, expect, container);
+			describe('HTML', () => {
+				domElementsTestsJsx(describe, expect, container);
+			});
         });
     });
 

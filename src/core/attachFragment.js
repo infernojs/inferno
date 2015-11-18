@@ -13,7 +13,8 @@ import attachComponent from './attachComponent';
 
 function attachFragment(context, fragment, parentDom, component, nextFragment, replace) {
 	let { template } = fragment,
-		templateKey = template.key;
+		templateKey = template.key,
+		mountCallbacks = [];
 
 	if (context.shouldRecycle === true) {
 	    let recycledFragment = getRecycledFragment(templateKey);
@@ -63,9 +64,10 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				fragment.templateValue.element = fragment.templateElement;
 				break;
 			case fragmentValueTypes.COMPONENT:
-				const {newElement, component} = attachComponent(fragment.templateElement, fragment.templateValue);
+				const {newElement, component, mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.templateComponent);
 				fragment.templateElement = newElement;
 				fragment.templateComponent = component;
+				mountCallbacks.push(mountCallback);
 				break;
 		}
 	} else if ( fragment.templateValues ) {
@@ -100,15 +102,20 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					fragment.templateValues[i].element = fragment.templateElements[i];
 					break;
 				case fragmentValueTypes.COMPONENT:
-					const {newElement, component} = attachComponent(element, value);
+					const {newElement, component, mountCallback} = attachComponent(element, value, fragment.templateComponents[i]);
 					fragment.templateElements[i] = newElement;
 					fragment.templateComponents[i] = component;
+					mountCallbacks.push(mountCallback);
 					break;
 			}
 		}
 	}
 
 	insertFragment(context, fragment, parentDom, fragment.dom, nextFragment, replace );
+	//now fire all the component mountCallback functions so they know this fragment has been added
+	for(let i = 0; i < mountCallbacks.length; i++) {
+		mountCallbacks[i]();
+	}
 }
 
 export default attachFragment;
