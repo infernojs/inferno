@@ -1,11 +1,9 @@
 import addAttributes from '../addAttributes';
 import extendUnitlessNumber from '../extendUnitlessNumber';
-import addProps from '../addProps';
 import createDOMElements from '../createDOMElements';
 
 export default {
     addAttributes,
-    addProps,
     extendUnitlessNumber,
     createElement(tag, is) {
 

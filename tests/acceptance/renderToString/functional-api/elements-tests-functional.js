@@ -13,7 +13,7 @@ export default function elementsTestsFunctional(describe, expect) {
         expect(test).to.equal(expected);
     });
     it('should render a basic example with dynamic values', () => {
-        const template = Inferno.createTemplate((createElement, val1, val2) =>
+        const template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
                 createElement('div', null, 'Hello world - ', val1, ' ', val2)
         );
         const test = Inferno.renderToString(
@@ -36,7 +36,7 @@ export default function elementsTestsFunctional(describe, expect) {
         expect(test).to.equal(expected);
     });
     it('should render a basic example with dynamic values and props', () => {
-        const template = Inferno.createTemplate((createElement, val1, val2) =>
+        const template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
             createElement('div', {className: 'foo'},
                 createElement('span', {className: 'bar'}, val1),
                 createElement('span', {className: 'yar'}, val2)

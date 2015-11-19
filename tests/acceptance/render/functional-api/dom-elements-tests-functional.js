@@ -181,7 +181,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		let template;
 
 		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, val1, val2) =>
+			template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
 					createElement('div', null, 'Hello world - ', val1, ' ', val2)
 			);
 			Inferno.render(Inferno.createFragment(['Inferno', 'Owns'], template), container);
@@ -208,7 +208,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		let template;
 
 		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, val1, val2) =>
+			template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
 				createElement('div', {className: 'foo'},
 					createElement('span', {className: 'bar'}, val1),
 					createElement('span', {className: 'yar'}, val2)

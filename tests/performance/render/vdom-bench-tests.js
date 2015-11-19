@@ -83,12 +83,12 @@ export default function vdomBenchTests(describe, expect) {
         });
 
         describe('using the Inferno functional API (vdom tests)', () => {
-            let template1 = Inferno.createTemplate((t, children) => {
-                return t("div", null, children);
+            let template1 = Inferno.createTemplate((createElement, createComponent, children) => {
+                return createElement("div", null, children);
             });
 
-            let template2 = Inferno.createTemplate((t, text) => {
-                return t("span", null, text);
+            let template2 = Inferno.createTemplate((createElement, createComponent, text) => {
+                return createElement("span", null, text);
             });
 
             function renderTree(nodes) {

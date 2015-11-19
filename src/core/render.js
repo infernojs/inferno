@@ -9,11 +9,11 @@ function render(fragment, dom, component, useVirtual) {
 	if (component) {
 		if (component.context) {
 			context = component.context;
-			generatedFragment = fragment();
+			generatedFragment = typeof fragment === 'function' ? fragment() : fragment;
 			updateFragment(context, context.fragment, generatedFragment, dom, component, false);
 			context.fragment = generatedFragment;
 		} else {
-			generatedFragment = fragment();
+			generatedFragment = typeof fragment === 'function' ? fragment() : fragment;
 			context = component.context = {
 				fragment: generatedFragment,
 				dom: dom,

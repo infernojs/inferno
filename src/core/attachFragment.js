@@ -7,6 +7,7 @@ import insertFragment from './insertFragment';
 import bind from '../util/bind';
 import templateTypes from '../enum/templateTypes';
 import templateCreateElement from '../template/createElement';
+import templateCreateComponent from '../template/createComponent';
 import domTemplate from '../template/dom';
 import virtualTemplate from '../template/virtual';
 import attachComponent from './attachComponent';
@@ -33,7 +34,8 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			break;
 		case templateTypes.FUNCTIONAL_API:
 			const createElement = bind(fragment, templateCreateElement(templateToUse));
-			let params = [createElement], length = (fragment.templateValue != null && 1)
+			const createComponent = bind(fragment, templateCreateComponent(templateToUse));
+			let params = [createElement, createComponent], length = (fragment.templateValue != null && 1)
 				|| (fragment.templateValues && fragment.templateValues.length) || 0;
 
 			//create our pointers, for example 0,1,2,3,4,5 as params to pass through
@@ -70,7 +72,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					fragment.dom = document.createDocumentFragment();
 					replace = false;
 				}
-				const {newElement, component, mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.templateComponent, fragment.dom, replace);
+				const {newElement, component, mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, replace);
 				fragment.templateElement = newElement;
 				fragment.templateComponent = component;
 				mountCallbacks.push(mountCallback);
@@ -111,7 +113,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					fragment.templateValues[i].element = fragment.templateElements[i];
 					break;
 				case fragmentValueTypes.COMPONENT_REPLACE:
-					const {newElement, component, mountCallback} = attachComponent(element, value, fragment.templateComponents[i], fragment.dom);
+					const {newElement, component, mountCallback} = attachComponent(element, value, fragment.dom);
 					fragment.templateElements[i] = newElement;
 					fragment.templateComponents[i] = component;
 					mountCallbacks.push(mountCallback);

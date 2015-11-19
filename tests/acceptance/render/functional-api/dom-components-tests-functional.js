@@ -4,7 +4,7 @@ import Inferno from '../../../../src';
 export default function domComponentsTestsFunctional(describe, expect, container) {
 
 	class BasicComponent1 extends Inferno.Component {
-		template(createElement, name, title) {
+		template(createElement, createComponent, name, title) {
 			return createElement("div", {className: "basic"},
 				createElement("span", {className: name}, "The title is ", title)
 			);
@@ -18,9 +18,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		let template;
 
 		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, Component) =>
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
 				createElement('div', null,
-					createElement(Component)
+					createComponent(Component)
 				)
 			);
 			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}], template), container);
@@ -47,8 +47,8 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		let template;
 
 		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, Component) =>
-				createElement(Component)
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createComponent(Component)
 			);
 			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}], template), container);
 		});
@@ -71,7 +71,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 	});
 
 	class BasicComponent2 extends Inferno.Component {
-		template(createElement, name, title, children) {
+		template(createElement, createComponent, name, title, children) {
 			return createElement("div", {className: "basic"},
 				createElement("span", {className: name}, "The title is ", title),
 				children
@@ -83,17 +83,25 @@ export default function domComponentsTestsFunctional(describe, expect, container
 	}
 
 	describe('should render a basic component with children', () => {
-		let template;
+		let template, template2;
 
 		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, Component) =>
-					createElement('div', null,
-						createElement(Component, null,
-							createElement('span', null, 'I\'m a child')
-						)
-					)
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createElement('div', null,
+					createComponent(Component)
+				)
 			);
-			Inferno.render(Inferno.createFragment([{component: BasicComponent2, props: {title: "abc", name: "basic-render"}}], template), container);
+			template2 = Inferno.createTemplate(createElement =>
+				createElement('span', null, 'I\'m a child')
+			);
+
+			Inferno.render(Inferno.createFragment(
+				[
+					{
+						component: BasicComponent2,
+						props: {title: "abc", name: "basic-render", children: Inferno.createFragment(null, template2)}
+					}
+				], template), container);
 		});
 
 		it('Initial render (creation)', () => {
@@ -104,7 +112,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 		it('Second render (update)', () => {
-			Inferno.render(Inferno.createFragment([{component: BasicComponent2, props: {title: "123", name: "basic-update"}}], template), container);
+			Inferno.render(Inferno.createFragment([{component: BasicComponent2, props: {title: "123", name: "basic-update", children: Inferno.createFragment(null, template2)}}], template), container);
 			expect(
 				container.innerHTML
 			).to.equal(
