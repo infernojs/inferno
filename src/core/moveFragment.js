@@ -1,6 +1,6 @@
 export default (parentDom, item, nextItem) => {
-	let domItem = item.dom,
-		domRefItem = nextItem && nextItem.dom;
+	let domItem = item.dom;
+	let	domRefItem = nextItem && nextItem.dom;
 
 	if (domItem !== domRefItem) {
 		let activeFragment = document.activeElement;

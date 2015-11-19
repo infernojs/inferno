@@ -4,7 +4,8 @@ import attachFragment            from './attachFragment';
 import updateFragment            from './updateFragment';
 
 function render(fragment, dom, component, useVirtual) {
-	let context, generatedFragment;
+	let context;
+	let generatedFragment;
 
 	if (component) {
 		if (component.context) {
@@ -25,7 +26,7 @@ function render(fragment, dom, component, useVirtual) {
 			component.componentDidMount();
 		}
 	} else {
-		if(!useVirtual) {
+		if (!useVirtual) {
 			context = getContext(dom);
 		}
 		if (context) {
@@ -39,7 +40,7 @@ function render(fragment, dom, component, useVirtual) {
 				useVirtual
 			};
 			attachFragment(context, fragment, dom, component);
-			if(!useVirtual) {
+			if (!useVirtual) {
 				contexts.push(context);
 			}
 		}

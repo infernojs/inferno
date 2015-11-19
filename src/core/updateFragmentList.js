@@ -29,13 +29,18 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
 
 	let oldEndIndex = oldListLength - 1;
 	let endIndex = listLength - 1;
-	let oldStartIndex = 0, startIndex = 0;
+	let oldStartIndex = 0;
+	let startIndex = 0;
 	let successful = true;
 	let nextItem;
-	let oldItem, item;
+	let oldItem; 
+	let item;
+    let oldStartItem;
+	let oldEndItem;
+	let startItem;
+	let endItem;
 
 	outer: while ( successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex ) {
-		let oldStartItem, oldEndItem, startItem, endItem;
 
 		successful = false;
 		oldStartItem = oldList[oldStartIndex];
@@ -108,7 +113,7 @@ export default function updateFragmentList( context, oldList, list, parentDom, c
 		nextItem = ( endIndex + 1 < listLength ) ? list[endIndex + 1] : outerNextFragment;
 		for (let i = endIndex; i >= startIndex; i-- ) {
 			item = list[i];
-			var key = item.key;
+			let key = item.key;
 			oldItem = oldListMap[key];
 			if ( oldItem ) {
 				oldListMap[key] = null;

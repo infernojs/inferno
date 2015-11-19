@@ -1,8 +1,5 @@
-// TODO! don't use 'slice'
-let slice =  Array.prototype.slice.call(arguments, 2);
-
 function bind(self, fn) {
-  var curryArgs = arguments.length > 2 ? Array.prototype.slice.call(arguments, 2) : [];
+  const curryArgs = arguments.length > 2 ? Array.prototype.slice.call(arguments, 2) : [];
   if (typeof fn === 'function') {
     return curryArgs.length
       ? function() {
