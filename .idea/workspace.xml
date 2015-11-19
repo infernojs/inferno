@@ -109,20 +109,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="createElement.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="createElement.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.15549412">
+            <state vertical-scroll-proportion="-8.333333">
               <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="attachFragment.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="attachFragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-52.48148">
+            <state vertical-scroll-proportion="0.9792675">
               <caret line="115" column="99" selection-start-line="115" selection-start-column="99" selection-end-line="115" selection-end-column="99" />
               <folding />
             </state>
@@ -203,8 +203,8 @@
         <option value="$PROJECT_DIR$/src/core/render.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
         <option value="$PROJECT_DIR$/src/core/attachComponent.js" />
-        <option value="$PROJECT_DIR$/src/core/attachFragment.js" />
         <option value="$PROJECT_DIR$/src/template/createElement.js" />
+        <option value="$PROJECT_DIR$/src/core/attachFragment.js" />
       </list>
     </option>
   </component>
@@ -216,8 +216,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1287" />
-    <option name="y" value="419" />
+    <option name="x" value="1348" />
+    <option name="y" value="337" />
     <option name="width" value="2404" />
     <option name="height" value="1571" />
   </component>
@@ -695,7 +695,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1287" y="419" width="2404" height="1571" extended-state="0" />
+    <frame x="1348" y="337" width="2404" height="1571" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1124,14 +1124,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-52.48148">
-          <caret line="115" column="99" selection-start-line="115" selection-start-column="99" selection-end-line="115" selection-end-column="99" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/template/createComponent.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.888889">
@@ -1142,8 +1134,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15549412">
+        <state vertical-scroll-proportion="-8.333333">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9792675">
+          <caret line="115" column="99" selection-start-line="115" selection-start-column="99" selection-end-line="115" selection-end-column="99" />
           <folding />
         </state>
       </provider>
