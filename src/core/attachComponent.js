@@ -1,15 +1,16 @@
 import bind from '../util/bind';
 import render from './render';
 
-export default function attachComponent(tempElem, Component, staticOpts) {
+export default function attachComponent(tempElem, Component, staticOpts, parentElem, replace) {
 	const newElement = document.createDocumentFragment();
-	const parentElem = tempElem.parentNode;
 	let props = Component.props;
 
 	if(staticOpts) {
+		let staticChildren = staticOpts.staticChildren;
+		staticChildren = staticChildren.length === 1 ? staticChildren[0] : staticChildren;
 		props = {
 			...props,
-			children: staticOpts.staticChildren,
+			children: staticChildren,
 			...staticOpts.staticProps
 		};
 	}
@@ -24,7 +25,13 @@ export default function attachComponent(tempElem, Component, staticOpts) {
 	component.forceUpdate = render.bind(null, bind(component, component.render), newElement, component);
 	component.componentWillMount();
 	component.forceUpdate();
-	parentElem.replaceChild(newElement, tempElem);
+
+	if(replace) {
+		parentElem.replaceChild(newElement, tempElem);
+	} else {
+		parentElem.appendChild(newElement);
+	}
+
 
 	const mountCallback = component.componentDidMount;
 	return {component, newElement, mountCallback};

@@ -14,7 +14,7 @@ export default function createElementFactory(template) {
 
 			if(this.templateValue) {
 				this.templateElement = element;
-				this.templateType = fragmentValueTypes.COMPONENT;
+				this.templateType = fragmentValueTypes.COMPONENT_REPLACE;
 				this.templateComponent = {};
 				if(children) {
 					this.templateComponent.staticChildren = children;
@@ -24,7 +24,7 @@ export default function createElementFactory(template) {
 				}
 			} else {
 				this.templateElements[child.pointer] = element;
-				this.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT;
+				this.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT_REPLACE;
 				this.templateComponents[child.pointer] = {};
 				if(children) {
 					this.templateComponents[child.pointer].staticChildren = children;
@@ -33,7 +33,6 @@ export default function createElementFactory(template) {
 					this.templateComponents[child.pointer].staticProps = props;
 				}
 			}
-
 			return element;
 		}
 
@@ -56,6 +55,15 @@ export default function createElementFactory(template) {
 								this.templateTypes[child.pointer] = fragmentValueTypes.TEXT_DIRECT;
 							}
 							element.appendChild(node);
+						} else if (isArray(value)) {
+							//debugger;
+						} else {
+							if(this.templateValues) {
+								this.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
+							} else {
+								this.templateType = fragmentValueTypes.COMPONENT_CHILDREN;
+							}
+							element.appendChild(value);
 						}
 					} else if (typeof child !== 'object') {
 						let node = template.createTextNode(child);

@@ -63,11 +63,20 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			case fragmentValueTypes.ATTR_REF:
 				fragment.templateValue.element = fragment.templateElement;
 				break;
-			case fragmentValueTypes.COMPONENT:
-				const {newElement, component, mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.templateComponent);
+			case fragmentValueTypes.COMPONENT_REPLACE:
+				var replace = true;
+
+				if(fragment.dom.nodeName === '#text') {
+					fragment.dom = document.createDocumentFragment();
+					replace = false;
+				}
+				const {newElement, component, mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.templateComponent, fragment.dom, replace);
 				fragment.templateElement = newElement;
 				fragment.templateComponent = component;
 				mountCallbacks.push(mountCallback);
+				break;
+			case fragmentValueTypes.COMPONENT:
+				debugger;
 				break;
 		}
 	} else if ( fragment.templateValues ) {
@@ -101,11 +110,14 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				case fragmentValueTypes.ATTR_REF:
 					fragment.templateValues[i].element = fragment.templateElements[i];
 					break;
-				case fragmentValueTypes.COMPONENT:
-					const {newElement, component, mountCallback} = attachComponent(element, value, fragment.templateComponents[i]);
+				case fragmentValueTypes.COMPONENT_REPLACE:
+					const {newElement, component, mountCallback} = attachComponent(element, value, fragment.templateComponents[i], fragment.dom);
 					fragment.templateElements[i] = newElement;
 					fragment.templateComponents[i] = component;
 					mountCallbacks.push(mountCallback);
+					break;
+				case fragmentValueTypes.COMPONENT:
+					debugger;
 					break;
 			}
 		}

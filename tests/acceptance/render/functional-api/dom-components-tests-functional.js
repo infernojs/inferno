@@ -43,6 +43,33 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		});
 	});
 
+	describe('should render a basic root component', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, Component) =>
+				createElement(Component)
+			);
+			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}], template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="basic"><span class="basic-render">The title is abc</span></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "123", name: "basic-update"}}], template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			);
+		});
+	});
+
 	class BasicComponent2 extends Inferno.Component {
 		template(createElement, name, title, children) {
 			return createElement("div", {className: "basic"},
@@ -62,7 +89,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			template = Inferno.createTemplate((createElement, Component) =>
 					createElement('div', null,
 						createElement(Component, null,
-							createElement('span', null, 'I\m a child')
+							createElement('span', null, 'I\'m a child')
 						)
 					)
 			);
@@ -73,7 +100,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+				'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
 			);
 		});
 		it('Second render (update)', () => {
@@ -81,7 +108,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
+				'<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
 			);
 		});
 	});

@@ -44,10 +44,13 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			}
 			return;
 		case fragmentValueTypes.COMPONENT:
+		case fragmentValueTypes.COMPONENT_REPLACE:
 			if(fragment.templateValue.component === oldFragment.templateValue.component) {
 				updateComponent(templateComponent, fragment.templateValue.props);
 			}
 			return;
+		case fragmentValueTypes.COMPONENT_CHILDREN:
+			break;
 		case fragmentValueTypes.ATTR_ID:
 			element.id = fragment.templateValue;
 			return;

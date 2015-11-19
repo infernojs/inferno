@@ -36,6 +36,8 @@ export default {
 	ATTR_SCOPED: 34,
 	ATTR_NO_RESIZE: 35,
 	COMPONENT: 36,
+	COMPONENT_REPLACE: 37,
+	COMPONENT_CHILDREN: 38,
 	//will contain other "custom" types, like rowspan etc or custom data-attributes
 	ATTR_OTHER: {},
 	COMPONENT_PROPS: {}

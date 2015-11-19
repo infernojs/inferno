@@ -37,9 +37,12 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 				updateFragment(context, oldFragment.templateValues[i], fragment.templateValues[i], element, component);
 				break;
 			case fragmentValueTypes.COMPONENT:
+			case fragmentValueTypes.COMPONENT_REPLACE:
 				if(fragment.templateValues[i].component === oldFragment.templateValues[i].component) {
 					updateComponent(templateComponent, fragment.templateValues[i].props);
 				}
+				break;
+			case fragmentValueTypes.COMPONENT_CHILDREN:
 				break;
 			case fragmentValueTypes.ATTR_CLASS:
 				if (isSVG) {
