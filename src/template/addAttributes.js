@@ -9,6 +9,7 @@ import fragmentValueTypes from '../enum/fragmentValueTypes';
 //this somewhat replicates buildInfernoAttrsParams() in t7
 function processFragmentAttrs(node, attrName, attrVal, fragment) {
 	let fragmentType;
+	let skip = false;
 
 	switch (attrName) {
 	case 'class':
@@ -101,6 +102,7 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 		break;
 	case 'ref':
 		fragmentType = fragmentValueTypes.ATTR_REF;
+		skip = true;
 		break;
 	default:
 		fragmentType = fragmentValueTypes.ATTR_OTHER;
@@ -113,7 +115,7 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 		} else {
 			fragment.templateType = fragmentType;
 		}
-		return fragment.templateValue;
+		return {attrVal: fragment.templateValue, skip};
 	} else {
 		fragment.templateElements[attrVal.pointer] = node;
 		if(fragmentType === fragmentValueTypes.ATTR_OTHER) {
@@ -121,8 +123,9 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 		} else {
 			fragment.templateTypes[attrVal.pointer] = fragmentType;
 		}
-		return fragment.templateValues[attrVal.pointer];
+		return {attrVal: fragment.templateValues[attrVal.pointer], skip};
 	}
+	return {attrVal: null, skip};
 }
 
 /**
@@ -133,16 +136,19 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
 export default function addAttributes(node, attrs, fragment) {
 	for(let attrName in attrs) {
 		let attrVal = attrs[attrName];
+		let skip = false;
 
 		//check if we have a pointer, if so, this is from the funcitonal API
 		//and thus it needs its fragment processing
 		//the t7 template API shouldn't need this as it post-processes the same code
 		//within t7: look for buildInfernoAttrsParams() in t7
 		if(attrVal && attrVal.pointer != null) {
-			attrVal = processFragmentAttrs(node, attrName, attrVal, fragment);
+			const proccessedAttrs = processFragmentAttrs(node, attrName, attrVal, fragment);
+			attrVal = proccessedAttrs.attrVal;
+			skip = proccessedAttrs.skip;
 		}
 		// avoid 'null' values
-		if (attrVal !== undefined) {
+		if (attrVal !== null) {
 			// events
 			if (events[attrName] !== undefined) {
 				eventManager.addListener(node, attrName, attrVal);

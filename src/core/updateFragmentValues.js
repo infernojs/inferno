@@ -6,6 +6,7 @@ import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
 import attrOps from '../template/AttributeOps';
 import updateComponent from './updateComponent';
+import removeComponent from './removeComponent';
 
 // TODO updateFragmentValue and updateFragmentValues uses *similar* code, that could be
 // refactored to by more DRY. although, this causes a significant performance cost
@@ -38,8 +39,14 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 				break;
 			case fragmentValueTypes.COMPONENT:
 			case fragmentValueTypes.COMPONENT_REPLACE:
-				if(fragment.templateValues[i].component === oldFragment.templateValues[i].component) {
-					updateComponent(templateComponent, fragment.templateValues[i].props);
+				const comp = fragment.templateValues[i];
+				const oldComp = oldFragment.templateValues[i];
+
+				if(comp === null) {
+					removeComponent(templateComponent, element);
+					templateComponent = fragment.templateValues[i] = null;
+				} else if(comp && comp.component === oldComp.component) {
+					updateComponent(templateComponent, comp.props);
 				}
 				break;
 			case fragmentValueTypes.COMPONENT_CHILDREN:

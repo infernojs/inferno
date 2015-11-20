@@ -2,19 +2,21 @@ import bind from '../util/bind';
 import render from './render';
 
 export default function attachComponent(tempElem, Component, parentElem, replace) {
-	const newElement = document.createDocumentFragment();
+	const frag = document.createDocumentFragment();
 	let props = Component.props;
 	const component = new Component.component(props);
 
 	component.context = null;
-	component.forceUpdate = render.bind(null, bind(component, component.render), newElement, component);
+	component.forceUpdate = render.bind(null, bind(component, component.render), frag, component);
 	component.componentWillMount();
 	component.forceUpdate();
 
+	const newElement = frag.firstChild;
+
 	if(replace) {
-		parentElem.replaceChild(newElement, tempElem);
+		parentElem.replaceChild(frag, tempElem);
 	} else {
-		parentElem.appendChild(newElement);
+		parentElem.appendChild(frag);
 	}
 
 	const mountCallback = component.componentDidMount;
