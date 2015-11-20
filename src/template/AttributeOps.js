@@ -31,7 +31,6 @@ import escapeHtml from './escapeHtml';
 		   node.value = val;
 		}
 	} else {
-
 		// Avoid touching the DOM on falsy values
 		if ( value !== 'false') {
 		node.setAttribute(attrNameCfg[name] || name, '' + value); // cast to string
@@ -174,7 +173,7 @@ let setPropertyForDataset = (node, name, value) => {
  * @param {string|Object<string,string>} style The style to set. Either a
  *	 string of css or an object containing property-value pairs.
  */
-let applyStyle = (node, name, value) => {
+let applyStyle = (node, name, value, oldValue) => {
 	// CSS style need to be a object literal, not a string value
 	if (process.env.NODE_ENV !== 'production') {
 		let typeOfVal = typeof value;
@@ -183,11 +182,14 @@ let applyStyle = (node, name, value) => {
 			return;
 		}
 	}
-
-	let prop = node[name];
-
+	const prop = node[name];
 	for (let idx in value) {
 		node.style[idx] = (value[idx] == null) ? '' : normalizeCSS(idx, value[idx]);
+	}
+	for (let idx in oldValue) {
+		if(!value[idx]) {
+			node.style.removeProperty(idx);
+		}
 	}
 };
 
