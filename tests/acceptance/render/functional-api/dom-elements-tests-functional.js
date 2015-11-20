@@ -1926,9 +1926,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 	       );
 	   });
 	   it('Second render (update)', () => {
-		   template = Inferno.createTemplate((createElement, createComponent, styles) =>
-	           createElement('div', { style: styles })
-	       );
 	       Inferno.render(Inferno.createFragment({color: "blue"}, template), container);
 	       expect(
 	           container.innerHTML

@@ -23,7 +23,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 					createComponent(Component)
 				)
 			);
-			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}], template), container);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}
+			], template), container);
 		});
 
 		it('Initial render (creation)', () => {
@@ -34,7 +36,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 		it('Second render (update)', () => {
-			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "123", name: "basic-update"}}], template), container);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1, props: {title: "123", name: "basic-update"}}
+			], template), container);
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -50,7 +54,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			template = Inferno.createTemplate((createElement, createComponent, Component) =>
 				createComponent(Component)
 			);
-			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}], template), container);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}
+			], template), container);
 		});
 
 		it('Initial render (creation)', () => {
@@ -61,7 +67,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 		it('Second render (update)', () => {
-			Inferno.render(Inferno.createFragment([{component: BasicComponent1, props: {title: "123", name: "basic-update"}}], template), container);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1, props: {title: "123", name: "basic-update"}}
+			], template), container);
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -158,91 +166,46 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 	});
+
+	class BasicComponent3 extends Inferno.Component {
+		template(createElement, createComponent, styles, title) {
+			return createElement("div", {style: styles},
+				createElement("span", {style: styles}, "The title is ", title)
+			);
+		}
+		render() {
+			return Inferno.createFragment([this.props.styles, this.props.title], this.template);
+		}
+	}
+
+	describe('should render a basic component with styling', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createComponent(Component)
+			);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent3, props: {title: "styled!", styles: { color: "red", padding: 10}}}
+			], template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent3, props: {title: "styled (again)!", styles: { color: "blue", margin: 20}}}
+			], template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: blue; margin: 20px;"><span style="color: red;">The title is styled (again)!</span></div>'
+			);
+		});
+	});
 }
-
-
-//describe('should render a basic component', () => {
-//    class TestComponent extends Inferno.Component {
-//        render() {
-//            return Inferno.createFragment(null, t =>
-//                <span>Hello world!</span>
-//            );
-//        }
-//    }
-//    let template;
-//
-//    beforeEach(() => {
-//        template = Inferno.createTemplate((t, Component) =>
-//            <div className='foo'>
-//                <Component />
-//            </div>
-//        );
-//        Inferno.render(Inferno.createFragment(TestComponent, template), container);
-//    });
-//
-//    it('Initial render (creation)', () => {
-//        expect(
-//            container.innerHTML
-//        ).to.equal(
-//            `<div class="foo"><span>Hello world!</span></div>`
-//        );
-//    });
-//});
-//
-//describe('should render a basic component #2', () => {
-//    class TestComponent extends Inferno.Component {
-//        render() {
-//            return Inferno.createFragment(null, t =>
-//                <span>Hello world!</span>
-//            );
-//        }
-//    }
-//    let template;
-//
-//    beforeEach(() => {
-//        template = Inferno.createTemplate((t, Component) =>
-//            <div className='foo'>
-//                <span>Foo!</span>
-//                <Component />
-//            </div>
-//        );
-//        Inferno.render(Inferno.createFragment(TestComponent, template), container);
-//    });
-//
-//    it('Initial render (creation)', () => {
-//        expect(
-//            container.innerHTML
-//        ).to.equal(
-//            `<div class="foo"><span>Foo!</span><span>Hello world!</span></div>`
-//        );
-//    });
-//});
-//
-//describe('should render a basic component #3', () => {
-//    class TestComponent extends Inferno.Component {
-//        render() {
-//            return Inferno.createFragment(this.props.test, (t, val1) =>
-//                <span>Hello world! { val1 } are belong to us</span>
-//            );
-//        }
-//    }
-//    let template;
-//
-//    beforeEach(() => {
-//        template = Inferno.createTemplate((t, Component, val1) =>
-//            <div className='foo'>
-//                <span>Foo!</span>
-//                <Component test={ val1 } />
-//            </div>
-//        );
-//        Inferno.render(Inferno.createFragment([TestComponent, 'All your base'], template), container);
-//    });
-//
-//    it('Initial render (creation)', () => {
-//        expect(
-//            container.innerHTML
-//        ).to.equal(
-//            `<div class="foo"><span>Foo!</span><span>Hello world! All your base are belong to us</span></div>`
-//        );
-//    });
-//});
