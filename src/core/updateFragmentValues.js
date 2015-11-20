@@ -151,6 +151,9 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 				}
 				break;
 			default:
+				if(type == null) {
+					throw Error(`Inferno Error: value "${ fragment.templateValues[i] }" for fragment is never used`);
+				}
 				//custom attribute, so simply setAttribute it
 				if (events[type] != null) {
 					eventManager.addListener(element, type, fragment.templateValues[i]);

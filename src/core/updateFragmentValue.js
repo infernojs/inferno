@@ -144,6 +144,9 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			}
 			return;
 		default:
+			if(type == null) {
+				throw Error(`Inferno Error: value "${ fragment.templateValue }" for fragment is never used`);
+			}
 			if (events[type] != null) {
 				eventManager.addListener(element, type, fragment.templateValue);
 			} else {
