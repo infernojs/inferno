@@ -155,7 +155,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
 				if (events[type] != null) {
 					eventManager.addListener(element, type, fragment.templateValues[i]);
 				} else {
-					attrOps.set(element, type, fragment.templateValues[i], true);
+					attrOps.set(element, type, fragment.templateValues[i], true, oldFragment.templateValues[i]);
 				}
 				break;
 			}

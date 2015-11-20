@@ -147,7 +147,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			if (events[type] != null) {
 				eventManager.addListener(element, type, fragment.templateValue);
 			} else {
-				attrOps.set(element, type, fragment.templateValue, true);
+				attrOps.set(element, type, fragment.templateValue, true, oldFragment.templateValue);
 			}
 		}
 	}

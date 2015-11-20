@@ -572,8 +572,7 @@ export default {
  * @param {string} name The attribute / property name
  * @param {String|Object} value The attribute / property value
  */
-	set(node, name, value, skip) {
-
+	set(node, name, value, skip, oldValue) {
 		// Prioritized HTML properties
 		if (!skip) {
 			switch (name) {
@@ -659,14 +658,12 @@ export default {
 		case 'viewBox':
 		case 'visible':
 		case 'xmlns':
-
 			if (value !== 'false') {
 				node.setAttribute(name, '' + ((value === 'true') ? '' : value));
 			}
 			return;
 		}
-
-		return (DOMConfig[name] || IS_CUSTOM).set(node, name, value);
+		return (DOMConfig[name] || IS_CUSTOM).set(node, name, value, oldValue);
 	},
 
 	/**
