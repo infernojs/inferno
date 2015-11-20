@@ -78,7 +78,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				mountCallbacks.push(mountCallback);
 				break;
 			case fragmentValueTypes.COMPONENT:
-				debugger;
+				//TODO
 				break;
 		}
 	} else if ( fragment.templateValues ) {
@@ -119,7 +119,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					mountCallbacks.push(mountCallback);
 					break;
 				case fragmentValueTypes.COMPONENT:
-					debugger;
+					//TODO
 					break;
 			}
 		}
