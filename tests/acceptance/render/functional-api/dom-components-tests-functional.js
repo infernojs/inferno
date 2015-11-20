@@ -208,81 +208,84 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 	});
-	
-	
-	
 
-class testComponent extends Inferno.Component {
-		template(t, c,  title, value, stylee) {
+
+
+
+class TestComponent extends Inferno.Component {
+		template(t, c, value, styles) {
 			return t('select', {
-                        multiple: true,
-                        value: value,
-						style: stylee
-                    },
-                    t('optgroup', {
-                        label: 'foo-group'
-                    }, t('option', {
-                        value: 'foo'
-                    }, 'Im a li-tag')),
-                    t('optgroup', {
-                        label: 'bar-group'
-                    }, t('option', {
-                        value: 'bar'
-                    }, 'Im a li-tag')),
-                    t('optgroup', {
-                        label: 'dominic-group'
-                    }, t('option', {
-                        value: 'dominic'
-                    }, 'Im a li-tag'))
+						multiple: true,
+						value: value,
+						style: styles
+					},
+					t('optgroup', {
+						label: 'foo-group'
+					}, t('option', {
+						value: 'foo'
+					}, 'Im a li-tag')),
+					t('optgroup', {
+						label: 'bar-group'
+					}, t('option', {
+						value: 'bar'
+					}, 'Im a li-tag')),
+					t('optgroup', {
+						label: 'dominic-group'
+					}, t('option', {
+						value: 'dominic'
+					}, 'Im a li-tag'))
 			);
 		}
 		render() {
-			return Inferno.createFragment([this.props.title, this.props.value, this.props.style], this.template);
+			return Inferno.createFragment([this.props.value, this.props.style], this.template);
 		}
 	}
 
 
 describe('should render a basic test component', () => {
-    let template;
+	let template;
 
-    beforeEach(() => {
-        template = Inferno.createTemplate((createElement, createComponent, Component) =>
-            createElement('div', null,
-                createComponent(Component)
-            )
-        );
-        Inferno.render(Inferno.createFragment([{
-            component: testComponent,
-            props: {
-                title: "abc",
-                value: ['bar', 'dominic'],
-				style: { background:'red' }
-            }
-        }], template), container);
-    });
+	beforeEach(() => {
+		template = Inferno.createTemplate((createElement, createComponent, Component) =>
+			createElement('div', null,
+				createComponent(Component)
+			)
+		);
+		Inferno.render(Inferno.createFragment([{
+			component: TestComponent,
+			props: {
+				value: ['bar', 'dominic'],
+				style: { background: 'red' }
+			}
+		}], template), container);
+	});
 
-    it('Initial render (creation)', () => {
-        expect(
-            container.innerHTML
-        ).to.equal(
-            '<div><select multiple="" style="background: red;"><optgroup label="foo-group"><option value="foo">Im a li-tag</option></optgroup><optgroup label="bar-group"><option value="bar">Im a li-tag</option></optgroup><optgroup label="dominic-group"><option value="dominic">Im a li-tag</option></optgroup></select></div>'
-        );
-    });
-    it('Second render (update)', () => {
-        Inferno.render(Inferno.createFragment([{
-            component: testComponent,
-            props: {
-                title: "123",
-                 value: ['bar', 'dominic'],
-				style: { background:'red' }
-            }
-        }], template), container);
-        expect(
-            container.innerHTML
-        ).to.equal(
-            '<div><select multiple="" style="[object Object]"><optgroup label="foo-group"><option value="foo">Im a li-tag</option></optgroup><optgroup label="bar-group"><option value="bar">Im a li-tag</option></optgroup><optgroup label="dominic-group"><option value="dominic">Im a li-tag</option></optgroup></select></div>'
-        );
-    });
+	it('Initial render (creation)', () => {
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><select multiple="" style="background: red;"><optgroup label="foo-group">'
+			+ '<option value="foo">Im a li-tag</option></optgroup><optgroup label="bar-group">'
+			+ '<option value="bar">Im a li-tag</option></optgroup><optgroup label="dominic-group">'
+			+ '<option value="dominic">Im a li-tag</option></optgroup></select></div>'
+		);
+	});
+	it('Second render (update)', () => {
+		Inferno.render(Inferno.createFragment([{
+			component: TestComponent,
+			props: {
+				value: ['bar', 'dominic'],
+				style: { background: 'red' }
+			}
+		}], template), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><select multiple="" style="background: red;"><optgroup label="foo-group">'
+			+ '<option value="foo">Im a li-tag</option></optgroup><optgroup label="bar-group">'
+			+ '<option value="bar">Im a li-tag</option></optgroup><optgroup label="dominic-group">'
+			+ '<option value="dominic">Im a li-tag</option></optgroup></select></div>'
+		);
+	});
 });
 }
-
