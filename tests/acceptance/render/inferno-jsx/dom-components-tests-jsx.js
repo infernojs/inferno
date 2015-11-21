@@ -4,7 +4,6 @@ import Inferno from '../../../../src';
 export default function domComponentsTestsJsx(describe, expect, container) {
 	class BasicComponent1 extends Inferno.Component {
 		render() {
-			debugger;
 			return (
 				<div className="basic">
 					<span className={ this.props.name }>The title is { this.props.title }</span>
