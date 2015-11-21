@@ -183,7 +183,7 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 		});
 		it('Second render (update)', () => {
 			Inferno.render((
-				<BasicComponent1 title='123' name='basic-render' />
+				<BasicComponent1 title='123' name='basic-update' />
 			), container);
 			expect(
 				container.innerHTML
