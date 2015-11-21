@@ -51,15 +51,24 @@ function updateDOMProperties(element, propKey, lastProps, nextProps) {
 
     } else {
 
+        // Check if there was a listener 
         if (events[propKey] != null) {
-			// TODO!! Is this working as it should? Add tests!!
-            if (nextProps != null) {
+
+            // TODO!! Is this working as it should? Add tests!!
+            if (lastProps != null) {
+
+                if (nextProps == null) {
+                    eventManager.removeListener(element, propKey);
+                } else {
+                    if (nextProps && lastProps !== nextProps) {
+                        eventManager.addListener(element, propKey, nextProps);
+                    }
+                }
+            } else if (nextProps != null) {
                 eventManager.addListener(element, propKey, nextProps);
-            } else {
-                eventManager.removeListener(element, propKey);
             }
         } else {
-			// TODO!! Should we no something here if lastProps or nextProps are null ???
+            // TODO!! Should we no something here if lastProps or nextProps are null ???
             setValueForProperty(element, propKey, nextProps);
         }
     }
