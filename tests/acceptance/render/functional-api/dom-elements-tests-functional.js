@@ -556,7 +556,8 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 
 	describe('should render dataset property - #2', () => {
 		let template;
-		let dataS = { foo: 'bar', bar: 'oops' };
+		const dataS = { foo: 'bar', bar: 'oops' };
+
 		beforeEach(() => {
 			template = Inferno.createTemplate(createElement =>
 				createElement('div', {dataset: dataS})
@@ -591,12 +592,12 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		});
 	});
 
-	describe('shouldn\'t render undefined value', () => {
+	describe('should be rendered as custom attribute', () => {
 		let template;
 
 		beforeEach(() => {
 			template = Inferno.createTemplate(createElement =>
-				createElement('div', {classNam: undefined})
+				createElement('div', { 'custom-attr': 123})
 			);
 			Inferno.render(Inferno.createFragment(null, template), container);
 		});
@@ -605,151 +606,120 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div></div>'
+				'<div custom-attr="123"></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			const dataS = { foo: 'bar', bar: 'oops' };
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: dataS})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input data-foo="bar" data-bar="oops">'
 			);
 		});
 	});
 
-	//describe('should be rendered as custom attribute', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<div custom-attr={123}></div>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div custom-attr="123"></div>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		let dataS = { foo: 'bar', bar: 'oops' };
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={dataS}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input data-foo="bar" data-bar="oops">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should not render null properties', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<web-component className={null} id={null}></web-component>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<web-component></web-component>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		let dataS = { foo: 'bar', bar: 'oops' };
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={dataS}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input data-foo="bar" data-bar="oops">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should properly render "id" property', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<web-component id={123}></web-component>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<web-component id="123"></web-component>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		let dataS = { foo: 'bar', bar: 'oops' };
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={dataS}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input data-foo="bar" data-bar="oops">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should render overloaded boolean as a number value', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input download={0}></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input download="0">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		let dataS = { foo: 'bar', bar: 'oops' };
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={dataS}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input data-foo="bar" data-bar="oops">'
-	//		);
-	//	});
-	//});
-	//
+	describe('should not render null properties', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('web-component', { className: null, id: null})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<web-component></web-component>'
+			);
+		});
+		it('Second render (update)', () => {
+			const dataS = { foo: 'bar', bar: 'oops' };
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: dataS})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input data-foo="bar" data-bar="oops">'
+			);
+		});
+	});
+
+	describe('should properly render "id" property', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('web-component', { id: 123 })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<web-component id="123"></web-component>'
+			);
+		});
+		it('Second render (update)', () => {
+			const dataS = { foo: 'bar', bar: 'oops' };
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: dataS })
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input data-foo="bar" data-bar="oops">'
+			);
+		});
+	});
+
+	describe('should render overloaded boolean as a number value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { download: 0 })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input download="0">'
+			);
+		});
+		it('Second render (update)', () => {
+			const dataS = { foo: 'bar', bar: 'oops' };
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: dataS})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input data-foo="bar" data-bar="oops">'
+			);
+		});
+	});
+
 	//describe('should render download with boolean false value', () => {
 	//	let template;
 	//
