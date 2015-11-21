@@ -52,12 +52,14 @@ function updateDOMProperties(element, propKey, lastProps, nextProps) {
     } else {
 
         if (events[propKey] != null) {
+			// TODO!! Is this working as it should? Add tests!!
             if (nextProps != null) {
                 eventManager.addListener(element, propKey, nextProps);
             } else {
                 eventManager.removeListener(element, propKey);
             }
         } else {
+			// TODO!! Should we no something here if lastProps or nextProps are null ???
             setValueForProperty(element, propKey, nextProps);
         }
     }
