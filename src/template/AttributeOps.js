@@ -183,6 +183,7 @@ let applyStyle = (node, name, value, oldValue) => {
 		}
 	}
 	if(value == null) {
+		//remove props
 		node.removeAttribute('style');
 		return;
 	}

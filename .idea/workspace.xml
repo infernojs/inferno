@@ -9,6 +9,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/AttributeOps.js" afterPath="$PROJECT_DIR$/src/template/AttributeOps.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachComponent.js" afterPath="$PROJECT_DIR$/src/core/attachComponent.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragment.js" afterPath="$PROJECT_DIR$/src/core/attachFragment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragmentList.js" afterPath="$PROJECT_DIR$/src/core/attachFragmentList.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-components-tests-jsx.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-components-tests-jsx.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
@@ -39,32 +40,32 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="dom-components-tests-functional.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dom-components-tests-functional.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.333333">
-              <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="244" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.86040086">
+              <caret line="394" column="30" selection-start-line="394" selection-start-column="30" selection-end-line="394" selection-end-column="30" />
               <folding>
-                <marker date="1448113069000" expanded="true" signature="9842:9868" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="9883:9909" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="10242:10268" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="10283:10309" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="10895:10921" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="10936:10962" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="11290:11316" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="12217:12243" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="13531:13547" placeholder="..." />
-                <marker date="1448113069000" expanded="true" signature="14165:14181" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="10251:10277" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="10292:10318" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="10651:10677" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="10692:10718" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="11302:11328" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="11343:11369" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="12598:12624" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="12639:12665" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="13946:13962" placeholder="..." />
+                <marker date="1448135126000" expanded="true" signature="14580:14596" placeholder="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="elements-tests-functional.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js">
+      <file leaf-file-name="AttributeOps.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.0">
-              <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+            <state vertical-scroll-proportion="-21.666666">
+              <caret line="189" column="28" selection-start-line="189" selection-start-column="28" selection-end-line="189" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -75,17 +76,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-25.0">
               <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="elements-tests-jsx.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-24.444445">
-              <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-              <folding />
+              <folding>
+                <marker date="1448124491000" expanded="true" signature="0:1326" placeholder="{&quot;name&quot;: &quot;inferno&quot;...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -100,29 +93,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-elements-tests-functional.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
+      <file leaf-file-name="dom-components-tests-jsx.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-components-tests-jsx.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-28.518518">
-              <caret line="174" column="16" selection-start-line="174" selection-start-column="16" selection-end-line="174" selection-end-column="129" />
+            <state vertical-scroll-proportion="-34.148148">
+              <caret line="306" column="140" selection-start-line="306" selection-start-column="140" selection-end-line="306" selection-end-column="140" />
               <folding>
-                <marker date="1448112735000" expanded="true" signature="46006:46034" placeholder="..." />
-                <marker date="1448112735000" expanded="true" signature="46851:46862" placeholder="..." />
-                <marker date="1448112735000" expanded="true" signature="47376:47400" placeholder="..." />
-                <marker date="1448112735000" expanded="true" signature="47625:47637" placeholder="..." />
-                <marker date="1448112735000" expanded="true" signature="48137:48151" placeholder="..." />
-                <marker date="1448112735000" expanded="true" signature="49147:49160" placeholder="..." />
-                <marker date="1448112735000" expanded="true" signature="49634:49645" placeholder="..." />
+                <marker date="1448134499000" expanded="true" signature="7206:7232" placeholder="..." />
+                <marker date="1448134499000" expanded="true" signature="7247:7273" placeholder="..." />
+                <marker date="1448134499000" expanded="true" signature="7554:7580" placeholder="..." />
+                <marker date="1448134499000" expanded="true" signature="7595:7621" placeholder="..." />
+                <marker date="1448134499000" expanded="true" signature="8013:8039" placeholder="..." />
+                <marker date="1448134499000" expanded="true" signature="8054:8080" placeholder="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-components-tests-jsx.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-components-tests-jsx.js">
+      <file leaf-file-name="attachFragmentList.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/attachFragmentList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7201106">
-              <caret line="185" column="63" selection-start-line="185" selection-start-column="63" selection-end-line="185" selection-end-column="63" />
+            <state vertical-scroll-proportion="-8.333333">
+              <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -131,11 +123,29 @@
       <file leaf-file-name="attachFragment.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-26.11111">
-              <caret line="95" column="51" selection-start-line="95" selection-start-column="51" selection-end-line="95" selection-end-column="51" />
-              <folding>
-                <marker date="1448114276000" expanded="true" signature="3471:3644" placeholder="{...}" />
-              </folding>
+            <state vertical-scroll-proportion="-37.22222">
+              <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="createElement.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-22.777779">
+              <caret line="45" column="29" selection-start-line="45" selection-start-column="29" selection-end-line="45" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="attachComponent.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/attachComponent.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-16.666666">
+              <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -145,16 +155,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-10.0">
               <caret line="18" column="12" selection-start-line="18" selection-start-column="12" selection-end-line="18" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dom-elements-tests-jsx.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-30.296297">
-              <caret line="94" column="11" selection-start-line="94" selection-start-column="11" selection-end-line="94" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -175,7 +175,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tests/acceptance/render/math-ml-tests.js" />
         <option value="$PROJECT_DIR$/node_modules/babel-plugin-inferno/lib/addTemplatesToModule.js" />
         <option value="$PROJECT_DIR$/node_modules/babel-plugin-inferno/lib/index.js" />
         <option value="$PROJECT_DIR$/src/core/clearDomElement.js" />
@@ -208,15 +207,12 @@
         <option value="$PROJECT_DIR$/src/template/virtual/index.js" />
         <option value="$PROJECT_DIR$/src/template/dom/index.js" />
         <option value="$PROJECT_DIR$/src/template/createComponent.js" />
-        <option value="$PROJECT_DIR$/src/template/createElement.js" />
         <option value="$PROJECT_DIR$/src/core/updateComponent.js" />
         <option value="$PROJECT_DIR$/src/template/updateDOMProperties.js" />
-        <option value="$PROJECT_DIR$/src/template/AttributeOps.js" />
         <option value="$PROJECT_DIR$/src/core/updateFragmentValue.js" />
         <option value="$PROJECT_DIR$/src/core/updateFragmentValues.js" />
         <option value="$PROJECT_DIR$/src/template/sanitizeValue.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
         <option value="$PROJECT_DIR$/src/core/attachComponent.js" />
         <option value="$PROJECT_DIR$/src/core/attachFragment.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
@@ -225,7 +221,11 @@
         <option value="$PROJECT_DIR$/tests/acceptance/renderToString/functional-api/elements-tests-functional.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/renderToString/elements-tests.js" />
         <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/src/core/attachFragmentList.js" />
+        <option value="$PROJECT_DIR$/src/template/createElement.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-components-tests-jsx.js" />
+        <option value="$PROJECT_DIR$/src/template/AttributeOps.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
       </list>
     </option>
   </component>
@@ -776,14 +776,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/css-operation-tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.2222223">
-          <caret line="13" column="47" selection-start-line="13" selection-start-column="47" selection-end-line="13" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-11.111111">
@@ -1012,14 +1004,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-24.444445">
-          <caret line="44" column="90" selection-start-line="44" selection-start-column="90" selection-end-line="44" selection-end-column="90" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/core/updateComponent.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-13.888889">
@@ -1048,14 +1032,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-26.11111">
           <caret line="47" column="29" selection-start-line="47" selection-start-column="12" selection-end-line="47" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.481482">
-          <caret line="151" column="48" selection-start-line="151" selection-start-column="48" selection-end-line="151" selection-end-column="48" />
           <folding />
         </state>
       </provider>
@@ -1100,36 +1076,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/core/attachComponent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.666666">
-          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-26.11111">
-          <caret line="95" column="51" selection-start-line="95" selection-start-column="51" selection-end-line="95" selection-end-column="51" />
-          <folding>
-            <marker date="1448114276000" expanded="true" signature="3471:3644" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-28.518518">
           <caret line="174" column="16" selection-start-line="174" selection-start-column="16" selection-end-line="174" selection-end-column="129" />
           <folding>
-            <marker date="1448112735000" expanded="true" signature="46006:46034" placeholder="..." />
-            <marker date="1448112735000" expanded="true" signature="46851:46862" placeholder="..." />
-            <marker date="1448112735000" expanded="true" signature="47376:47400" placeholder="..." />
-            <marker date="1448112735000" expanded="true" signature="47625:47637" placeholder="..." />
-            <marker date="1448112735000" expanded="true" signature="48137:48151" placeholder="..." />
-            <marker date="1448112735000" expanded="true" signature="49147:49160" placeholder="..." />
-            <marker date="1448112735000" expanded="true" signature="49634:49645" placeholder="..." />
+            <marker date="1448112735000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448112735000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448112735000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448112735000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448112735000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448112735000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448112735000" expanded="true" signature="-1:-1" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1174,38 +1132,87 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.333333">
-          <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="244" selection-end-column="5" />
-          <folding>
-            <marker date="1448113069000" expanded="true" signature="9842:9868" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="9883:9909" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="10242:10268" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="10283:10309" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="10895:10921" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="10936:10962" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="11290:11316" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="12217:12243" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="13531:13547" placeholder="..." />
-            <marker date="1448113069000" expanded="true" signature="14165:14181" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-25.0">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding>
+            <marker date="1448124491000" expanded="true" signature="0:1326" placeholder="{&quot;name&quot;: &quot;inferno&quot;...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/attachComponent.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.666666">
+          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/attachFragmentList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.333333">
+          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-37.22222">
+          <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-22.777779">
+          <caret line="45" column="29" selection-start-line="45" selection-start-column="29" selection-end-line="45" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-components-tests-jsx.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7201106">
-          <caret line="185" column="63" selection-start-line="185" selection-start-column="63" selection-end-line="185" selection-end-column="63" />
+        <state vertical-scroll-proportion="-34.148148">
+          <caret line="306" column="140" selection-start-line="306" selection-start-column="140" selection-end-line="306" selection-end-column="140" />
+          <folding>
+            <marker date="1448134499000" expanded="true" signature="7206:7232" placeholder="..." />
+            <marker date="1448134499000" expanded="true" signature="7247:7273" placeholder="..." />
+            <marker date="1448134499000" expanded="true" signature="7554:7580" placeholder="..." />
+            <marker date="1448134499000" expanded="true" signature="7595:7621" placeholder="..." />
+            <marker date="1448134499000" expanded="true" signature="8013:8039" placeholder="..." />
+            <marker date="1448134499000" expanded="true" signature="8054:8080" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.666666">
+          <caret line="189" column="28" selection-start-line="189" selection-start-column="28" selection-end-line="189" selection-end-column="28" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.86040086">
+          <caret line="394" column="30" selection-start-line="394" selection-start-column="30" selection-end-line="394" selection-end-column="30" />
+          <folding>
+            <marker date="1448135126000" expanded="true" signature="10251:10277" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="10292:10318" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="10651:10677" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="10692:10718" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="11302:11328" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="11343:11369" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="12598:12624" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="12639:12665" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="13946:13962" placeholder="..." />
+            <marker date="1448135126000" expanded="true" signature="14580:14596" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>

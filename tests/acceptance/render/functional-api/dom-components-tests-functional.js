@@ -319,16 +319,22 @@ export default function domComponentsTestsFunctional(describe, expect, container
 	});
 
 	class BasicComponent3 extends Inferno.Component {
-		template(createElement, createComponent, styles, title) {
+		template(createElement, createComponent, styles, styles2, title) {
 			return createElement("div", {style: styles},
-				createElement("span", {style: styles}, "The title is ", title)
+				createElement("span", {style: styles2}, "The title is ", title)
 			);
 		}
 		render() {
-			return Inferno.createFragment([this.props.styles, this.props.title], this.template);
+			return Inferno.createFragment([this.props.styles, this.props.styles, this.props.title], this.template);
 		}
 	}
 
+	/*
+		IMPORTANT: These tests and the above component highlight the fact that fragment values passed into a template can ONLY apply to
+		 a single element. Thus why we need styles and styles2, which actually have the exact same value in all these below tests
+
+		 TODO This is a concern with the FUNCTIONAL_API, maybe we can implement some kind of warning system for DEV mode?
+	 */
 	describe('should render a basic component with styling', () => {
 		let template;
 
@@ -355,11 +361,10 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: blue; margin: 20px;"><span style="color: red; padding: 10px;">The title is styled (again)!</span></div>'
+				'<div style="color: blue; margin: 20px;"><span style="color: blue; margin: 20px;">The title is styled (again)!</span></div>'
 			);
 		});
 	});
-	
 	
 	describe('should render a basic component and remove styling #1', () => {
 		let template;
@@ -387,13 +392,12 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style=""><span style="color: red; padding: 10px;">The title is styles are removed!</span></div>'
+				'<div style=""><span style="">The title is styles are removed!</span></div>'
 			);
 		});
 	});
 
-
-describe('should render a basic component and remove styling #2', () => {
+	describe('should render a basic component and remove styling #2', () => {
 		let template;
 
 		beforeEach(() => {
@@ -419,7 +423,7 @@ describe('should render a basic component and remove styling #2', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: blue; margin: 20px;"><span>The title is styled (again)!</span></div>' 
+				'<div style="color: blue; margin: 20px;"><span style="color: blue; margin: 20px;">The title is styled (again)!</span></div>'
 			);
 		});
 	});

@@ -23,7 +23,7 @@
     "babel-cli": "^6.2.0",
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
-    "babel-plugin-inferno": "^0.1.9",
+    "babel-plugin-inferno": "^0.1.12",
     "babel-plugin-syntax-jsx": "^6.1.18",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-stage-0": "^6.1.18",
