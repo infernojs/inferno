@@ -322,310 +322,294 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 	});
 
 	//// Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
-	//describe('should properly render "className" property on a custom element', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<custom-elem  className="Hello, world!"></custom-elem>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<custom-elem class="Hello, world!"></custom-elem>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<custom-elem  className="Hello, Inferno!"></custom-elem>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<custom-elem class="Hello, Inferno!"></custom-elem>'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should properly render "width" and "height" attributes', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<img src="" alt="Smiley face" height={42} width={42}></img>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<img src="" alt="Smiley face" height="42" width="42">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<img src="" alt="Smiley face" height={14} width={42}></img>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<img src="" alt="Smiley face" height="14" width="42">'
-	//		);
-	//	});
-	//});
-	//describe('should properly render boolean attribues (html5)', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked="checked" disabled="disabled"></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input disabled="disabled">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked="checked" disabled="disabled"></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input disabled="disabled">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should properly render boolean attribues (truthy)', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked={true} disabled={true}></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input disabled="true">'
-	//		);
-	//	});
-	//
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked={false} disabled={true}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input disabled="true">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should not render overloaded boolean attribues (falsy)', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<div checked={false} disabled={false}></div>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div disabled="false"></div>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<span checked={false} disabled={false}></span>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<span disabled="false"></span>'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should properly render boolean attribues (falsy)', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked="false" disabled="false"></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input>'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should render video / audio attributes', () => {
-	//	let template;
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input type='file' multiple='multiple' capture='capture' accept='image/*'></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input type="file" multiple="" capture="capture" accept="image/*">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should render dataset property - #1', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={null}></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		let dataS = { foo: 'bar', bar: 'oops' };
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={dataS}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input data-foo="bar" data-bar="oops">'
-	//		);
-	//	});
-	//});
-	//
-	//
-	//describe('should render dataset property - #2', () => {
-	//	let template;
-	//	let dataS = { foo: 'bar', bar: 'oops' };
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<div dataset={dataS}></div>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div data-foo="bar" data-bar="oops"></div>'
-	//		);
-	//	});
-	//});
-	//describe('shouldn\'t render undefined value', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked={undefined}></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input>'
-	//		);
-	//	});
-	//});
-	//
-	//describe('shouldn\'t render undefined value', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<div className={undefined}></div>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div></div>'
-	//		);
-	//	});
-	//});
-	//
+	describe('should properly render "className" property on a custom element', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('custom-elem', { className: "Hello, world!" })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<custom-elem class="Hello, world!"></custom-elem>'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('custom-elem', { className: "Hello, Inferno!" })
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<custom-elem class="Hello, Inferno!"></custom-elem>'
+			);
+		});
+	});
+
+	describe('should properly render "width" and "height" attributes', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('img', { src: "", alt: "Smiley face", height: 42, width: 42} )
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<img src="" alt="Smiley face" height="42" width="42">'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('img', { src:"", alt:"Smiley face", height: 14, width:42})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<img src="" alt="Smiley face" height="14" width="42">'
+			);
+		});
+	});
+
+	describe('should properly render boolean attributes (HTML5)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { checked: "checked", disabled: "disabled"})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input disabled="disabled">'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { checked: "checked", disabled: "disabled"})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input disabled="disabled">'
+			);
+		});
+	});
+
+	describe('should properly render boolean attributes (truthy)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { checked: true, disabled: true})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input disabled="true">'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { checked: false, disabled: true})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input disabled="true">'
+			);
+		});
+	});
+
+	describe('should not render overloaded boolean attributes (falsy)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('div', { checked: false, disabled: false})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div disabled="false"></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('span', { checked: false, disabled: false})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<span disabled="false"></span>'
+			);
+		});
+	});
+
+	describe('should properly render boolean attributes (falsy)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { checked:"false", disabled:"false"})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
+
+	describe('should render video / audio attributes', () => {
+		let template;
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', {type:'file', multiple:'multiple', capture:'capture', accept:'image/*'})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="file" multiple="" capture="capture" accept="image/*">'
+			);
+		});
+	});
+
+	describe('should render dataset property - #1', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: null })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+		it('Second render (update)', () => {
+			const dataS = { foo: 'bar', bar: 'oops' };
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: dataS})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input data-foo="bar" data-bar="oops">'
+			);
+		});
+	});
+
+	describe('should render dataset property - #2', () => {
+		let template;
+		let dataS = { foo: 'bar', bar: 'oops' };
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('div', {dataset: dataS})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div data-foo="bar" data-bar="oops"></div>'
+			);
+		});
+	});
+	describe('shouldn\'t render undefined value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { checked: undefined})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
+
+	describe('shouldn\'t render undefined value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('div', {classNam: undefined})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+	});
+
 	//describe('should be rendered as custom attribute', () => {
 	//	let template;
 	//

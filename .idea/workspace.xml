@@ -54,19 +54,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-elements-tests-functional.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dom-elements-tests-functional.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-20.555555">
-              <caret line="271" column="11" selection-start-line="271" selection-start-column="11" selection-end-line="271" selection-end-column="11" />
+            <state vertical-scroll-proportion="0.34692466">
+              <caret line="557" column="21" selection-start-line="557" selection-start-column="21" selection-end-line="557" selection-end-column="21" />
               <folding>
-                <marker date="1448110060000" expanded="true" signature="46830:46858" placeholder="..." />
-                <marker date="1448110060000" expanded="true" signature="47675:47686" placeholder="..." />
-                <marker date="1448110060000" expanded="true" signature="48200:48224" placeholder="..." />
-                <marker date="1448110060000" expanded="true" signature="48449:48461" placeholder="..." />
-                <marker date="1448110060000" expanded="true" signature="48961:48975" placeholder="..." />
-                <marker date="1448110060000" expanded="true" signature="49971:49984" placeholder="..." />
-                <marker date="1448110060000" expanded="true" signature="50458:50469" placeholder="..." />
+                <marker date="1448111278000" expanded="true" signature="46554:46582" placeholder="..." />
+                <marker date="1448111278000" expanded="true" signature="47399:47410" placeholder="..." />
+                <marker date="1448111278000" expanded="true" signature="47924:47948" placeholder="..." />
+                <marker date="1448111278000" expanded="true" signature="48173:48185" placeholder="..." />
+                <marker date="1448111278000" expanded="true" signature="48685:48699" placeholder="..." />
+                <marker date="1448111278000" expanded="true" signature="49695:49708" placeholder="..." />
+                <marker date="1448111278000" expanded="true" signature="50182:50193" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -112,10 +112,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sanitizeValue.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="sanitizeValue.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/template/sanitizeValue.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.10366275">
+            <state vertical-scroll-proportion="-5.5555553">
               <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
               <folding />
             </state>
@@ -216,8 +216,8 @@
         <option value="$PROJECT_DIR$/src/core/updateFragmentValue.js" />
         <option value="$PROJECT_DIR$/src/core/updateFragmentValues.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
         <option value="$PROJECT_DIR$/src/template/sanitizeValue.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
       </list>
     </option>
   </component>
@@ -231,7 +231,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="1348" />
     <option name="y" value="337" />
-    <option name="width" value="2404" />
+    <option name="width" value="2398" />
     <option name="height" value="1571" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
@@ -730,7 +730,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1348" y="337" width="2404" height="1571" extended-state="0" />
+    <frame x="1348" y="337" width="2398" height="1571" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -738,7 +738,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956058" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24292845" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24353628" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -1178,27 +1178,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
+    <entry file="file://$PROJECT_DIR$/src/template/sanitizeValue.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-20.555555">
-          <caret line="271" column="11" selection-start-line="271" selection-start-column="11" selection-end-line="271" selection-end-column="11" />
-          <folding>
-            <marker date="1448110060000" expanded="true" signature="46830:46858" placeholder="..." />
-            <marker date="1448110060000" expanded="true" signature="47675:47686" placeholder="..." />
-            <marker date="1448110060000" expanded="true" signature="48200:48224" placeholder="..." />
-            <marker date="1448110060000" expanded="true" signature="48449:48461" placeholder="..." />
-            <marker date="1448110060000" expanded="true" signature="48961:48975" placeholder="..." />
-            <marker date="1448110060000" expanded="true" signature="49971:49984" placeholder="..." />
-            <marker date="1448110060000" expanded="true" signature="50458:50469" placeholder="..." />
-          </folding>
+        <state vertical-scroll-proportion="-5.5555553">
+          <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/sanitizeValue.js">
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10366275">
-          <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
-          <folding />
+        <state vertical-scroll-proportion="0.34692466">
+          <caret line="557" column="21" selection-start-line="557" selection-start-column="21" selection-end-line="557" selection-end-column="21" />
+          <folding>
+            <marker date="1448111278000" expanded="true" signature="46554:46582" placeholder="..." />
+            <marker date="1448111278000" expanded="true" signature="47399:47410" placeholder="..." />
+            <marker date="1448111278000" expanded="true" signature="47924:47948" placeholder="..." />
+            <marker date="1448111278000" expanded="true" signature="48173:48185" placeholder="..." />
+            <marker date="1448111278000" expanded="true" signature="48685:48699" placeholder="..." />
+            <marker date="1448111278000" expanded="true" signature="49695:49708" placeholder="..." />
+            <marker date="1448111278000" expanded="true" signature="50182:50193" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
