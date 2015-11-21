@@ -14,7 +14,6 @@ import events from '../events/shared/events';
  * @param {object} nextProps
  */
 function updateDOMProperties(element, propKey, lastProps, nextProps) {
-
     if (propKey === 'style') {
 
         let styleUpdates;

@@ -6,6 +6,7 @@ import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
 import attrOps from '../template/AttributeOps';
 import updateComponent from './updateComponent';
+import sanitizeValue from '../template/sanitizeValue';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
 	let element = oldFragment.templateElement,
@@ -38,9 +39,9 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 			// this works on HTML elements too in all browsers.
 			// If this kills the performance, we have to consider not to support SVG
 			if (isSVG) {
-				element.setAttribute('class', fragment.templateValue);
+				sanitizeValue(element, fragment.templateValue, null, 'class');
 			} else {
-				element.className = fragment.templateValue;
+				sanitizeValue(element, fragment.templateValue, 'className', 'class');
 			}
 			return;
 		case fragmentValueTypes.COMPONENT:
@@ -52,7 +53,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 		case fragmentValueTypes.COMPONENT_CHILDREN:
 			break;
 		case fragmentValueTypes.ATTR_ID:
-			element.id = fragment.templateValue;
+			sanitizeValue(element, fragment.templateValue, 'id', 'id');
 			return;
 		case fragmentValueTypes.ATTR_NAME:
 			element.name = fragment.templateValue;

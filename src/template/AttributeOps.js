@@ -182,6 +182,10 @@ let applyStyle = (node, name, value, oldValue) => {
 			return;
 		}
 	}
+	if(value == null) {
+		node.removeAttribute('style');
+		return;
+	}
 	const prop = node[name];
 	for (let idx in value) {
 		node.style[idx] = (value[idx] == null) ? '' : normalizeCSS(idx, value[idx]);
