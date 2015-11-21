@@ -234,97 +234,93 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		});
 	});
 
-	//describe('should properly render input download attribute', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((t, val1) =>
-	//			<input download={ val1 }></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(false, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input download="false">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//		Inferno.render(Inferno.createFragment(true, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input download="true">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should properly render input download attribute (HTML5)', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((t, val1) =>
-	//			<input download={ val1 }></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment('dominic', template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input download="dominic">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//		Inferno.render(Inferno.createFragment(true, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input download="true">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should properly render "className" property', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input className="Hello, world!"></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input class="Hello, world!">'
-	//		);
-	//	});
-	//
-	//	// Ensure className={false} turns into string 'false' on update
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input className={false}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input class="false">'
-	//		);
-	//	});
-	//});
-	//
+	describe('should properly render input download attribute', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, val1) =>
+				createElement('input', { download: val1 })
+			);
+			Inferno.render(Inferno.createFragment(false, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input download="false">'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input download="true">'
+			);
+		});
+	});
+
+	describe('should properly render input download attribute (HTML5)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, val1) =>
+				createElement('input', { download: val1 })
+			);
+			Inferno.render(Inferno.createFragment('dominic', template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input download="dominic">'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input download="true">'
+			);
+		});
+	});
+
+	describe('should properly render "className" property', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { className: "Hello, world!" })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input class="Hello, world!">'
+			);
+		});
+		// Ensure className={false} turns into string 'false' on update
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { className: false })
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input class="false">'
+			);
+		});
+	});
+
 	//// Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
 	//describe('should properly render "className" property on a custom element', () => {
 	//	let template;
