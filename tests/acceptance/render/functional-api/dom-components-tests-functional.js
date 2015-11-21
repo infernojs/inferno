@@ -205,6 +205,70 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 	});
+	
+	
+	describe('should render a basic component and remove styling #1', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createComponent(Component)
+			);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent3, props: {title: "styled!", styles: { color: "red", padding: 10}}}
+			], template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent3, props: {title: "styles are removed!", styles: null}}
+			], template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style=""><span style="color: red; padding: 10px;">The title is styles are removed!</span></div>'
+			);
+		});
+	});
+
+
+describe('should render a basic component and remove styling #2', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createComponent(Component)
+			);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent3, props: {title: "NOT styled!", styles: null}}
+			], template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is NOT styled!</span></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent3, props: {title: "styled (again)!", styles: { color: "blue", margin: 20}}}
+			], template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: blue; margin: 20px;"><span>The title is styled (again)!</span></div>' 
+			);
+		});
+	});
 
 	class TestComponent extends Inferno.Component {
 		template(t, c, value, styles) {
