@@ -177,13 +177,13 @@ describe('should render a basic component and remove property if null #2', () =>
 		let template;
 
 		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, createComponent, Component) => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
 				createElement('div', null,
 					createComponent(Component,
 						createElement('span', null, 'I\'m a child')
 					)
 				)
-			});
+			);
 
 			Inferno.render(
 				Inferno.createFragment([{ component: BasicComponent2, props: {title: "abc", name: "basic-render"} }], template), container

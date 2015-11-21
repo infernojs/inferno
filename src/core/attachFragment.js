@@ -43,6 +43,9 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				params.push({pointer: i});
 			}
 			fragment.dom = template.apply(null, params);
+			if(fragment.dom == null) {
+				throw Error("Inferno Error: Fragment template (FUNCTIONAL_API) returned a null or undefined object rather than a DOM element.");
+			}
 			break;
 		default:
 			template(fragment);
@@ -66,12 +69,6 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				fragment.templateValue.element = fragment.templateElement;
 				break;
 			case fragmentValueTypes.COMPONENT_REPLACE:
-				var replace = true;
-
-				if(fragment.dom.nodeName === '#text') {
-					fragment.dom = document.createDocumentFragment();
-					replace = false;
-				}
 				const {mountElem, component, mountCallback, newElement} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom);
 				fragment.templateElement = newElement;
 				fragment.templateComponent = component;
