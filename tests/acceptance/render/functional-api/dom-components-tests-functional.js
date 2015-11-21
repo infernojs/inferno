@@ -95,12 +95,11 @@ export default function domComponentsTestsFunctional(describe, expect, container
 
 		beforeEach(() => {
 			template = Inferno.createTemplate((createElement, createComponent, Component) => {
-				var a = createElement('div', null,
+				createElement('div', null,
 					createComponent(Component,
 						createElement('span', null, 'I\'m a child')
 					)
 				)
-				return a;
 			});
 
 			Inferno.render(
