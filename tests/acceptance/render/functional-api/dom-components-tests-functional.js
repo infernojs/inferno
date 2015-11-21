@@ -46,6 +46,89 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 	});
+	
+	describe('should render a basic component and remove property if null #1', () => {
+    let template;
+
+    beforeEach(() => {
+        template = Inferno.createTemplate((createElement, createComponent, Component) =>
+            createElement('div', null,
+                createComponent(Component)
+            )
+        );
+        Inferno.render(Inferno.createFragment([{
+            component: BasicComponent1,
+            props: {
+                title: "abc",
+                name: "basic-render"
+            }
+        }], template), container);
+    });
+
+    it('Initial render (creation)', () => {
+        expect(
+            container.innerHTML
+        ).to.equal(
+            '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+        );
+    });
+    it('Second render (update)', () => {
+        Inferno.render(Inferno.createFragment([{
+            component: BasicComponent1,
+            props: {
+                title: "123",
+                name: null
+            }
+        }], template), container);
+        expect(
+            container.innerHTML
+        ).to.equal(
+           '<div><div class="basic"><span>The title is 123</span></div></div>'
+        );
+    });
+});
+
+describe('should render a basic component and remove property if null #2', () => {
+    let template;
+
+    beforeEach(() => {
+        template = Inferno.createTemplate((createElement, createComponent, Component) =>
+            createElement('div', null,
+                createComponent(Component)
+            )
+        );
+        Inferno.render(Inferno.createFragment([{
+            component: BasicComponent1,
+            props: {
+                title: "abc",
+                name: null
+            }
+        }], template), container);
+    });
+
+    it('Initial render (creation)', () => {
+        expect(
+            container.innerHTML
+        ).to.equal(
+            '<div><div class="basic"><span>The title is abc</span></div></div>' 
+        );
+    });
+    it('Second render (update)', () => {
+        Inferno.render(Inferno.createFragment([{
+            component: BasicComponent1,
+            props: {
+                title: "123",
+                name: "basic-update"
+            }
+        }], template), container);
+        expect(
+            container.innerHTML
+        ).to.equal(
+            '<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
+        );
+    });
+});
+
 
 	describe('should render a basic root component', () => {
 		let template;
