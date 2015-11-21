@@ -68,8 +68,20 @@ function updateDOMProperties(element, propKey, lastProps, nextProps) {
                 eventManager.addListener(element, propKey, nextProps);
             }
         } else {
-            // TODO!! Should we no something here if lastProps or nextProps are null ???
-            setValueForProperty(element, propKey, nextProps);
+
+            if (lastProps != null) {
+
+                if (nextProps == null) {
+                    deleteValueForProperty(element, propKey);
+                } else {
+
+                    if (nextProps && lastProps !== nextProps) {
+                        setValueForProperty(element, propKey, nextProps);
+                    }
+                }
+            } else if (nextProps != null) {
+                setValueForProperty(element, propKey, nextProps);
+            }
         }
     }
 }
