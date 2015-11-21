@@ -72,9 +72,13 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					fragment.dom = document.createDocumentFragment();
 					replace = false;
 				}
-				const {newElement, component, mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, replace);
+				const {mountElem, component, mountCallback, newElement} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom);
 				fragment.templateElement = newElement;
 				fragment.templateComponent = component;
+				//root component node
+				if(mountElem === fragment.dom) {
+					fragment.dom = newElement;
+				}
 				mountCallbacks.push(mountCallback);
 				break;
 			case fragmentValueTypes.COMPONENT:
@@ -113,9 +117,14 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					fragment.templateValues[i].element = fragment.templateElements[i];
 					break;
 				case fragmentValueTypes.COMPONENT_REPLACE:
-					const {newElement, component, mountCallback} = attachComponent(element, value, fragment.dom);
+					const {mountElem, component, mountCallback, newElement} = attachComponent(element, value, fragment.dom);
+
 					fragment.templateElements[i] = newElement;
 					fragment.templateComponents[i] = component;
+					//root component node
+					if(mountElem === fragment.dom) {
+						fragment.dom = newElement;
+					}
 					mountCallbacks.push(mountCallback);
 					break;
 				case fragmentValueTypes.COMPONENT:

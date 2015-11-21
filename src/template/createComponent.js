@@ -1,12 +1,8 @@
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 export default function createComponentFactory(template) {
-	return function createComponent(component) {
-		var element = template.createEmptyText();
-
-		if(arguments.length > 1) {
-			throw Error('Inferno Error: createComponent() can only take one argument. The argument must be an object literal containing "component" and "props".');
-		}
+	return function createComponent(component, ...children) {
+		var element = template.createEmptyDiv();
 
 		if (this.templateValue) {
 			this.templateElement = element;
@@ -14,6 +10,10 @@ export default function createComponentFactory(template) {
 		} else {
 			this.templateElements[component.pointer] = element;
 			this.templateTypes[component.pointer] = fragmentValueTypes.COMPONENT_REPLACE;
+		}
+
+		for (let i = 0; i < children.length; i++) {
+			element.appendChild(children[i]);
 		}
 		return element;
 	}

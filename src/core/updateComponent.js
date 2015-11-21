@@ -1,5 +1,8 @@
 export default function updateComponent(component, nextProps) {
-	const prevProps = component.props;
+	let prevProps = component.props;
+	if(!nextProps.children) {
+		nextProps.children = prevProps.children;
+	}
 	const prevState = component.state;
 
 	if(prevProps !== nextProps) {

@@ -34,7 +34,9 @@ export default function createElementFactory(template) {
 							}
 							element.appendChild(node);
 						} else if (isArray(value)) {
-							//debugger;
+							for(let s = 0; s < value.length; s++) {
+								element.appendChild(value[s]);
+							}
 						} else if (value.template) {
 							render(value, element)
 							if(this.templateValues) {
