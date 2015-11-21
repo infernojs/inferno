@@ -2,7 +2,6 @@ import get from '../../../tools/get';
 import Inferno from '../../../../src';
 
 export default function domComponentsTestsFunctional(describe, expect, container) {
-
 	class BasicComponent1 extends Inferno.Component {
 		template(createElement, createComponent, name, title) {
 			return createElement("div", {className: "basic"},

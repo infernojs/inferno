@@ -1,7 +1,7 @@
 import bind from '../util/bind';
 import render from './render';
 
-export default function attachComponent(mountElem, Component, fragmentDom) {
+export default function attachComponent(mountElem, Component, fragmentDom, replaceComponent) {
 	let newElement;
 	let props = Component.props;
 	const parentElem = mountElem.parentNode;
@@ -17,10 +17,12 @@ export default function attachComponent(mountElem, Component, fragmentDom) {
 	component.componentWillMount();
 	component.forceUpdate();
 
-	newElement = mountElem.firstChild;
+	if(replaceComponent) {
+		newElement = mountElem.firstChild;
 
-	if(parentElem != null) {
-		parentElem.replaceChild(newElement, mountElem);
+		if (parentElem != null) {
+			parentElem.replaceChild(newElement, mountElem);
+		}
 	}
 
 	const mountCallback = component.componentDidMount;

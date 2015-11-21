@@ -69,18 +69,23 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				fragment.templateValue.element = fragment.templateElement;
 				break;
 			case fragmentValueTypes.COMPONENT_REPLACE:
-				const {mountElem, component, mountCallback, newElement} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom);
+			{
+				const {mountElem, component, mountCallback, newElement} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, true);
 				fragment.templateElement = newElement;
 				fragment.templateComponent = component;
 				//root component node
-				if(mountElem === fragment.dom) {
+				if (mountElem === fragment.dom) {
 					fragment.dom = newElement;
 				}
 				mountCallbacks.push(mountCallback);
 				break;
+			}
 			case fragmentValueTypes.COMPONENT:
-				//TODO
+			{
+				const {mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, false);
+				mountCallbacks.push(mountCallback);
 				break;
+			}
 		}
 	} else if ( fragment.templateValues ) {
 		//if the fragment has multiple values, we must loop through them all and attach them
@@ -114,19 +119,24 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					fragment.templateValues[i].element = fragment.templateElements[i];
 					break;
 				case fragmentValueTypes.COMPONENT_REPLACE:
-					const {mountElem, component, mountCallback, newElement} = attachComponent(element, value, fragment.dom);
+				{
+					const {mountElem, component, mountCallback, newElement} = attachComponent(element, value, fragment.dom, true);
 
 					fragment.templateElements[i] = newElement;
 					fragment.templateComponents[i] = component;
 					//root component node
-					if(mountElem === fragment.dom) {
+					if (mountElem === fragment.dom) {
 						fragment.dom = newElement;
 					}
 					mountCallbacks.push(mountCallback);
 					break;
+				}
 				case fragmentValueTypes.COMPONENT:
-					//TODO
+				{
+					const {mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, false);
+					mountCallbacks.push(mountCallback);
 					break;
+				}
 			}
 		}
 	}
