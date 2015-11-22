@@ -34,10 +34,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="dom-components-tests-functional.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dom-components-tests-functional.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4803041">
+            <state vertical-scroll-proportion="-25.74074">
               <caret line="149" column="0" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
               <folding>
                 <marker date="1448236042000" expanded="true" signature="13442:13468" placeholder="..." />
@@ -95,11 +95,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AttributeOps.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AttributeOps.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.0">
-              <caret line="598" column="15" selection-start-line="598" selection-start-column="15" selection-end-line="598" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.33380282">
+              <caret line="590" column="135" selection-start-line="590" selection-start-column="135" selection-end-line="590" selection-end-column="135" />
               <folding />
             </state>
           </provider>
@@ -216,9 +216,9 @@
         <option value="$PROJECT_DIR$/src/core/updateFragmentValue.js" />
         <option value="$PROJECT_DIR$/src/core/updateFragmentValues.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
-        <option value="$PROJECT_DIR$/src/template/AttributeOps.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
+        <option value="$PROJECT_DIR$/src/template/AttributeOps.js" />
       </list>
     </option>
   </component>
@@ -1166,14 +1166,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.0">
-          <caret line="598" column="15" selection-start-line="598" selection-start-column="15" selection-end-line="598" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-20.74074">
@@ -1192,7 +1184,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4803041">
+        <state vertical-scroll-proportion="-25.74074">
           <caret line="149" column="0" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
           <folding>
             <marker date="1448236042000" expanded="true" signature="13442:13468" placeholder="..." />
@@ -1206,6 +1198,14 @@
             <marker date="1448236042000" expanded="true" signature="17137:17153" placeholder="..." />
             <marker date="1448236042000" expanded="true" signature="17771:17787" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33380282">
+          <caret line="590" column="135" selection-start-line="590" selection-start-column="135" selection-end-line="590" selection-end-column="135" />
+          <folding />
         </state>
       </provider>
     </entry>

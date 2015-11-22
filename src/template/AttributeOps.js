@@ -588,7 +588,7 @@ function applyBooleanValue(node, attribute, property, value, oldValue) {
 		}
 	} else {
 		throw Error(`Inferno Error: Invalid value "${ value }" set on DOM ${ property != null ? 'property' : 'attribute '}`
-		+ ` "${ attribute || property }", expected a boolean value.\nValue for "${ value }" must be: true, "true", false or "false".`)
+		+ ` "${ attribute || property }", expected a boolean value.\nValue for "${ value }" must be: true, "true", 1, false, "false", 0.`)
 	}
 }
 
