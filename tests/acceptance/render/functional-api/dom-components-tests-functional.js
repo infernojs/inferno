@@ -118,6 +118,151 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 	});
+
+
+
+
+
+
+
+
+
+
+
+	class BasicComponent1b extends Inferno.Component {
+		template(createElement, createComponent, isEnabled, title) {
+			return createElement("div", {className: "basic"},
+				createElement('label', {},
+					createElement("input", {type: 'password', enabled: isEnabled}),
+					"The title is ",
+					title
+				)
+			);
+		}
+		render() {
+			return Inferno.createFragment([this.props.isEnabled, this.props.title], this.template);
+		}
+	}
+
+	describe('should render a basic component with inputs', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+					createElement('div', null,
+						createComponent(Component)
+					)
+			);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1bbb, props: {title: "abc", isEnabled: true}}
+			], template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is abc</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").enabled
+			).to.equal(
+				true
+			);
+		});
+		
+		/// NOTE!! This test fails!  You can't set it to false. You have to set it to null / remove the property. BUG!
+		
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1b, props: {title: "123", isEnabled: false}}
+			], template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").enabled
+			).to.equal(
+				false
+			);
+		});
+	});
+
+
+class BasicComponent1bb extends Inferno.Component {
+		template(createElement, createComponent, isEnabled, title) {
+			return createElement("div", {className: "basic"},
+				createElement('label', {},
+					createElement("input", {type: 'password', disabled: isDisabled}),
+					"The title is ",
+					title
+				)
+			);
+		}
+		render() {
+			return Inferno.createFragment([this.props.isDisabled, this.props.title], this.template);
+		}
+	}
+
+
+describe('should render a basic component with inputs', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+					createElement('div', null,
+						createComponent(Component)
+					)
+			);
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1bb, props: {title: "abc", isDisabled: true}}
+			], template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is abc</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").disabled
+			).to.equal(
+				true
+			);
+		});
+		
+		/// NOTE!! This test fails!  You can't set it to false. You have to set it to null / remove the property. BUG!
+		
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment([
+				{component: BasicComponent1b, props: {title: "123", isDisabled: false}}
+			], template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").disabled
+			).to.equal(
+				false
+			);
+		});
+	});
+
+
+
+
+
+
+
+
+
+
+
 	
 	describe('should render a basic component and remove property if null #1', () => {
 		let template;
