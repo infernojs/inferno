@@ -79,7 +79,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input>The title is abc</label></div></div>'
+				'<div><div class="basic"><label><input type="checkbox">The title is abc</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").checked
@@ -94,7 +94,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+				'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").checked
@@ -109,7 +109,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+				'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").checked
@@ -119,17 +119,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		});
 	});
 
-
-
-
-
-
-
-
-
-
-
-	class BasicComponent1b extends Inferno.Component {
+	class BasicComponent1c extends Inferno.Component {
 		template(createElement, createComponent, isEnabled, title) {
 			return createElement("div", {className: "basic"},
 				createElement('label', {},
@@ -144,7 +134,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		}
 	}
 
-	describe('should render a basic component with inputs', () => {
+	describe('should render a basic component with inputs #2', () => {
 		let template;
 
 		beforeEach(() => {
@@ -154,7 +144,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 					)
 			);
 			Inferno.render(Inferno.createFragment([
-				{component: BasicComponent1bbb, props: {title: "abc", isEnabled: true}}
+				{component: BasicComponent1c, props: {title: "abc", isEnabled: true}}
 			], template), container);
 		});
 
@@ -162,37 +152,24 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input>The title is abc</label></div></div>'
-			);
-			expect(
-				container.querySelector("input").enabled
-			).to.equal(
-				true
+				'<div><div class="basic"><label><input type="password" enabled="">The title is abc</label></div></div>'
 			);
 		});
-		
-		/// NOTE!! This test fails!  You can't set it to false. You have to set it to null / remove the property. BUG!
-		
+
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment([
-				{component: BasicComponent1b, props: {title: "123", isEnabled: false}}
+				{component: BasicComponent1c, props: {title: "123", isEnabled: false}}
 			], template), container);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
-			);
-			expect(
-				container.querySelector("input").enabled
-			).to.equal(
-				false
+				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
 			);
 		});
 	});
 
-
-class BasicComponent1bb extends Inferno.Component {
-		template(createElement, createComponent, isEnabled, title) {
+	class BasicComponent1d extends Inferno.Component {
+		template(createElement, createComponent, isDisabled, title) {
 			return createElement("div", {className: "basic"},
 				createElement('label', {},
 					createElement("input", {type: 'password', disabled: isDisabled}),
@@ -206,8 +183,7 @@ class BasicComponent1bb extends Inferno.Component {
 		}
 	}
 
-
-describe('should render a basic component with inputs', () => {
+	describe('should render a basic component with inputs #3', () => {
 		let template;
 
 		beforeEach(() => {
@@ -217,7 +193,7 @@ describe('should render a basic component with inputs', () => {
 					)
 			);
 			Inferno.render(Inferno.createFragment([
-				{component: BasicComponent1bb, props: {title: "abc", isDisabled: true}}
+				{component: BasicComponent1d, props: {title: "abc", isDisabled: true}}
 			], template), container);
 		});
 
@@ -225,7 +201,7 @@ describe('should render a basic component with inputs', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input>The title is abc</label></div></div>'
+				'<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").disabled
@@ -235,15 +211,14 @@ describe('should render a basic component with inputs', () => {
 		});
 		
 		/// NOTE!! This test fails!  You can't set it to false. You have to set it to null / remove the property. BUG!
-		
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment([
-				{component: BasicComponent1b, props: {title: "123", isDisabled: false}}
+				{component: BasicComponent1d, props: {title: "123", isDisabled: false}}
 			], template), container);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").disabled
@@ -252,17 +227,6 @@ describe('should render a basic component with inputs', () => {
 			);
 		});
 	});
-
-
-
-
-
-
-
-
-
-
-
 	
 	describe('should render a basic component and remove property if null #1', () => {
 		let template;

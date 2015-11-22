@@ -570,6 +570,67 @@ let DOMConfig = {
 
 };
 
+function applyBooleanValue(node, attribute, property, value, oldValue) {
+	if(oldValue === value) {
+		return;
+	}
+	if (value === true || value === 'true' || value === 1) {
+		if(property != null) {
+			node[property] = true;
+		} else {
+			node.setAttribute(attribute, '');
+		}
+	} else if (value === false || value === 'false' || value === 0) {
+		if(property != null) {
+			node[property] = false;
+		} else {
+			node.removeAttribute(attribute);
+		}
+	} else {
+		throw Error(`Inferno Error: Invalid value "${ value }" set on DOM ${ property != null ? 'property' : 'attribute '}`
+		+ ` "${ attribute || property }", expected a boolean value.\nValue for "${ value }" must be: true, "true", false or "false".`)
+	}
+}
+
+const isBooleanProperty = {
+	autoPlay: true,
+	checked: true,
+	isMap: true,
+	loop: true,
+	muted: true,
+	readOnly: true,
+	reversed: true,
+	required: true,
+	selected: true,
+	spellCheck: true,
+	trueSpeed: true,
+	multiple: true,
+	controls: true,
+	defer: true,
+	noValidate: true,
+	scoped: true,
+	noResize: true,
+	disabled: true
+};
+
+const isBooleanAttribute = {
+	async: true,
+	allowFullScreen: true,
+	autoFocus: true,
+	capture: true,
+	defaultchecked: true,
+	defaultmuted: true,
+	defaultselected: true,
+	download: true,
+	draggable: true,
+	dropzone: true,
+	formNoValidate: true,
+	hidden: true,
+	itemScope: true,
+	typemustmatch: true,
+	enabled: true
+};
+
 export default {
 
 /**
@@ -579,10 +640,9 @@ export default {
  * @param {string} name The attribute / property name
  * @param {String|Object} value The attribute / property value
  */
-	set(node, name, value, skip, oldValue) {
+	set(node, name, value, oldValue) {
 		// Prioritized HTML properties
-		if (!skip) {
-			switch (name) {
+		switch (name) {
 			case 'id':	// Core attribute
 			case 'label':
 			case 'placeholder':
@@ -609,68 +669,78 @@ export default {
 			case 'noValidate':
 			case 'scoped': // bool
 			case 'noResize':  // bool
+			case 'disabled': // bool
 				if (value != null) {
-					node[name] = value;
+					if(isBooleanProperty[name]) {
+						applyBooleanValue(node, null, name, value, oldValue);
+					} else {
+						node[name] = value;
+					}
 				}
 				return;
-			}
 		}
 
 		// Prioritized HTML attributes
 		switch (name) {
-		case 'about': // RDFA
-		case 'async': // bool
-		case 'allowFullScreen': // bool
-		case 'autoFocus': // bool
-		case 'autoPlay': // bool
-		case 'baseProfile': // SVG
-		case 'capture': // bool
-		case 'datatype': // RDFA
-		case 'default':
-		case 'defaultchecked': // bool
-		case 'defaultmuted': // bool
-		case 'defaultselected': // bool
-		case 'draggable': // bool
-		case 'download': // bool
-		case 'disabled': // bool
-		case 'dir': // Core attribute
-		case 'draggable': // bool
-		case 'dropzone': // bool
-		case 'for':
-		case 'form':
-		case 'formNoValidate': // bool
-		case 'formEncType':
-		case 'formMethod':
-		case 'formTarget':
-		case 'fontFamily':
-		case 'fontSize':
-		case 'frameBorder':
-		case 'fontWeight':
-		case 'hidden': // bool
-		case 'href':
-		case 'itemScope': // bool
-		case 'is':
-		case 'integrity':
-		case 'name':
-		case 'open':
-		// 'property' is also supported for OpenGraph in meta tags.
-		case 'property': // RDFA
-		case 'seamless':
-		case 'sortable':
-		case 'title': // Core attribute
-		case 'translate': // bool attribute
-		case 'typemustmatch': // bool attribute
-		case 'type':
-		case 'vocab': // RDFA
-		case 'viewBox':
-		case 'visible':
-		case 'xmlns':
-			if (value !== 'false') {
-				node.setAttribute(name, '' + ((value === 'true') ? '' : value));
-			}
-			return;
+			case 'about': // RDFA
+			case 'async': // bool
+			case 'allowFullScreen': // bool
+			case 'autoFocus': // bool
+			case 'baseProfile': // SVG
+			case 'capture': // bool
+			case 'datatype': // RDFA
+			case 'default':
+			case 'defaultchecked': // bool
+			case 'defaultmuted': // bool
+			case 'defaultselected': // bool
+			case 'draggable': // bool
+			case 'download': // bool
+			case 'dir': // Core attribute
+			case 'draggable': // bool
+			case 'dropzone': // bool
+			case 'enabled': // bool
+			case 'for':
+			case 'form':
+			case 'formNoValidate': // bool
+			case 'formEncType':
+			case 'formMethod':
+			case 'formTarget':
+			case 'fontFamily':
+			case 'fontSize':
+			case 'frameBorder':
+			case 'fontWeight':
+			case 'hidden': // bool
+			case 'href':
+			case 'itemScope': // bool
+			case 'is':
+			case 'integrity':
+			case 'name':
+			case 'open':
+			// 'property' is also supported for OpenGraph in meta tags.
+			case 'property': // RDFA
+			case 'seamless':
+			case 'sortable':
+			case 'title': // Core attribute
+			case 'translate': // bool attribute
+			case 'typemustmatch': // bool attribute
+			case 'type':
+			case 'vocab': // RDFA
+			case 'viewBox':
+			case 'visible':
+			case 'xmlns':
+				if (value == null) {
+					node.removeAttribute(name);
+				} else {
+					if(isBooleanAttribute[name]) {
+						applyBooleanValue(node, name, null, value, oldValue);
+					} else {
+						node.setAttribute(name, '' + ((value === 'true') ? '' : value));
+					}
+				}
+				return;
 		}
 		return (DOMConfig[name] || IS_CUSTOM).set(node, name, value, oldValue);
+
 	},
 
 	/**

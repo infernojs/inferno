@@ -243,7 +243,7 @@ export default function domOperationTests(describe, expect) {
                 expect(container.getAttribute('data-foo')).to.equal('bar');
             });
 
-            it('should set "muted" boolean property ( truty) ', () => {
+            it('should set "muted" boolean property ( truthy) ', () => {
                 attrOps.set(container, 'muted', true);
                 expect(container.muted).to.be.true;
             });
@@ -254,8 +254,8 @@ export default function domOperationTests(describe, expect) {
             });
 
             it('should not set "muted" boolean property as "muted muted"', () => {
-                attrOps.set(container, 'muted', 'muted');
-                expect(container.muted).to.eql('muted');
+                attrOps.set(container, 'muted', true);
+                expect(container.muted).to.eql(true);
             });
 
             it('should set "readOnly" boolean property ( truty) ', () => {
@@ -270,12 +270,12 @@ export default function domOperationTests(describe, expect) {
 
             it('should set "readOnly" boolean property (HTML5) ', () => {
                 attrOps.set(container, 'readOnly', 'true');
-                expect(container.readOnly).to.eql('true');
+                expect(container.readOnly).to.eql(true);
             });
 
             it('should not set "readOnly" boolean property as "readOnly readOnly"', () => {
-                attrOps.set(container, 'readOnly', 'readOnly');
-                expect(container.readOnly).to.eql('readOnly');
+                attrOps.set(container, 'readOnly', true);
+                expect(container.readOnly).to.eql(true);
             });
 
             it('should set numeric properties', () => {
@@ -500,15 +500,16 @@ export default function domOperationTests(describe, expect) {
             });
 
             it('should set values as boolean properties', () => {
-                attrOps.set(container, 'disabled', 'disabled');
-                expect(container.getAttribute('disabled')).to.eql('disabled');
+                // shouldn't exist - it's a prop
+                attrOps.set(container, 'disabled', 'true');
+                expect(container.getAttribute('disabled')).to.eql(null);
+
+                // shouldn't exist - it's a prop
+                attrOps.set(container, 'disabled', true);
+                expect(container.getAttribute('disabled')).to.eql(null);
 
                 attrOps.set(container, 'disabled', true);
-                expect(container.getAttribute('disabled')).to.eql('true');
-
-                // shouldn't exist - it's an attribute
-                attrOps.set(container, 'disabled', true);
-                expect(container.disabled).to.be.undefined;
+                expect(container.disabled).to.be.true;
             });
             describe('Audio / video attributes', () => {
 

@@ -156,7 +156,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 
 	describe('should render value multiple attribute', () => {
 		beforeEach(() => {
-			let template = Inferno.createTemplate(createElement =>
+			const template = Inferno.createTemplate(createElement =>
 				createElement('select', { multiple: true, value: 'foo' },
 					createElement('option', { value: 'foo' }, `I'm a li-tag`),
 					createElement('option', { value: 'bar' }, `I'm a li-tag`)
@@ -167,13 +167,13 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		});
 
 		it('Initial render (creation)', () => {
-
 			expect(get(container.firstChild)).to.eql(['foo']);
 			expect(
 				container.innerHTML
 			).to.equal(
 				`<select multiple=""><option value="foo">I'm a li-tag</option><option value="bar">I'm a li-tag</option></select>`
 			);
+			expect(container.querySelector("select").multiple).to.equal(true);
 		});
 	});
 
@@ -248,7 +248,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input download="false">'
+				'<input>'
 			);
 		});
 		it('Second render (update)', () => {
@@ -256,7 +256,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input download="true">'
+				'<input download="">'
 			);
 		});
 	});
@@ -268,14 +268,14 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			template = Inferno.createTemplate((createElement, createComponent, val1) =>
 				createElement('input', { download: val1 })
 			);
-			Inferno.render(Inferno.createFragment('dominic', template), container);
+			Inferno.render(Inferno.createFragment(true, template), container);
 		});
 
 		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input download="dominic">'
+				'<input download="">'
 			);
 		});
 		it('Second render (update)', () => {
@@ -283,7 +283,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input download="true">'
+				'<input download="">'
 			);
 		});
 	});
@@ -389,29 +389,23 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 
 		beforeEach(() => {
 			template = Inferno.createTemplate(createElement =>
-				createElement('input', { checked: "checked", disabled: "disabled"})
+				createElement('input', { checked: true, disabled: true})
 			);
 			Inferno.render(Inferno.createFragment(null, template), container);
 		});
 
 		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input disabled="disabled">'
-			);
+			expect(container.querySelector("input").checked).to.equal(true);
+			expect(container.querySelector("input").disabled).to.equal(true);
 		});
 		it('Second render (update)', () => {
 			template = Inferno.createTemplate(createElement =>
-				createElement('input', { checked: "checked", disabled: "disabled"})
+				createElement('input', { checked: false, disabled: false})
 			);
 
 			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input disabled="disabled">'
-			);
+			expect(container.querySelector("input").checked).to.equal(false);
+			expect(container.querySelector("input").disabled).to.equal(false);
 		});
 	});
 
@@ -429,7 +423,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input disabled="true">'
+				'<input disabled="">'
 			);
 		});
 		it('Second render (update)', () => {
@@ -441,7 +435,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input disabled="true">'
+				'<input disabled="">'
 			);
 		});
 	});
@@ -460,7 +454,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div disabled="false"></div>'
+				'<div></div>'
 			);
 		});
 		it('Second render (update)', () => {
@@ -472,7 +466,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<span disabled="false"></span>'
+				'<span></span>'
 			);
 		});
 	});
@@ -508,7 +502,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		let template;
 		beforeEach(() => {
 			template = Inferno.createTemplate(createElement =>
-				createElement('input', {type:'file', multiple:'multiple', capture:'capture', accept:'image/*'})
+				createElement('input', {type:'file', multiple:'true', capture:'true', accept:'image/*'})
 			);
 			Inferno.render(Inferno.createFragment(null, template), container);
 		});
@@ -517,7 +511,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input type="file" multiple="" capture="capture" accept="image/*">'
+				'<input type="file" multiple="" capture="" accept="image/*">'
 			);
 		});
 	});
@@ -702,7 +696,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input download="0">'
+				'<input>'
 			);
 		});
 		it('Second render (update)', () => {
@@ -1773,7 +1767,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 
 	   beforeEach(() => {
 		   template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
-			   	createElement('select', {multiple: 'multiple', value: ['foo', 'bar']},
+			   	createElement('select', {multiple: true, value: ['foo', 'bar']},
 					createElement('optgroup', {label: 'foo-group'},
 						createElement('option', {value: 'bar'}, val1)
 					),

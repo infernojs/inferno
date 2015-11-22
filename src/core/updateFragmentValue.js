@@ -55,106 +55,6 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
             case fragmentValueTypes.ATTR_ID:
                 sanitizeValue(element, fragment.templateValue, 'id', 'id');
                 return;
-            case fragmentValueTypes.ATTR_NAME:
-                element.name = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_LABEL:
-                element.label = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_PLACEHOLDER:
-                element.placeholder = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_DESIGNMODE:
-                element.designMode = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_HTMLFOR:
-                element.htmlFor = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_PLAYBACKRATE:
-                element.playbackRate = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_PRELOAD:
-                element.preload = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_SRCDOC:
-                element.srcDoc = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_AUTOPLAY:
-                element.autoPlay = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_CHECKED:
-
-                if (element.tagName === 'INPUT') {
-
-                    if ('' + element.checked !== '' + fragment.templateValue) {
-                        element.checked = fragment.templateValue;
-                    }
-
-                } else {
-                    element.checked = fragment.templateValue;
-                }
-
-
-                return;
-            case fragmentValueTypes.ATTR_ISMAP:
-                element.isMap = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_LOOP:
-                element.loop = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_MUTED:
-                element.muted = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_READONLY:
-                element.readOnly = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_REVERSED:
-                element.reversed = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_REQUIRED:
-                element.required = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_SELECTED:
-                element.selected = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_SPELLCHECK:
-                element.spellCheck = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_TRUESPEED:
-                element.truespeed = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_MULTIPLE:
-                element.multiple = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_CONTROLS:
-                element.controls = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_DEFER:
-                element.defer = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_NOVALIDATE:
-                element.noValidate = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_SCOPED:
-                element.scoped = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_NO_RESIZE:
-                element.noResize = fragment.templateValue;
-                return;
-            case fragmentValueTypes.ATTR_WIDTH:
-                if (isSVG) {
-                    element.setAttribute('width', fragment.templateValue);
-                } else {
-                    element.width = fragment.templateValue;
-                }
-                return;
-            case fragmentValueTypes.ATTR_HEIGHT:
-                if (isSVG) {
-                    element.setAttribute('height', fragment.templateValue);
-                } else {
-                    element.height = fragment.templateValue;
-                }
-                return;
             default:
                 if (type == null) {
                     throw Error(`Inferno Error: value "${ fragment.templateValue }" for fragment is never used`);
@@ -162,7 +62,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
                 if (events[type] != null) {
                     eventManager.addListener(element, type, fragment.templateValue);
                 } else {
-                    attrOps.set(element, type, fragment.templateValue, true, oldFragment.templateValue);
+                    attrOps.set(element, type, fragment.templateValue, oldFragment.templateValue);
                 }
         }
     }
