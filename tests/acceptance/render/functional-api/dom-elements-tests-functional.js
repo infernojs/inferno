@@ -714,123 +714,115 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		});
 	});
 
-	//describe('should render download with boolean false value', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input href="/images/xxx.jpg" download={false}></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input href="/images/xxx.jpg" download="false">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		let dataS = { foo: 'bar', bar: 'oops' };
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={dataS}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input data-foo="bar" data-bar="oops">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should render download with boolean null value', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input href="/images/xxx.jpg" download={null}></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input href="/images/xxx.jpg">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked="checked" disabled="disabled"></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input disabled="disabled">'
-	//		);
-	//	});
-	//});
-	//
-	//describe('should render "overloaded" boolean properties', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate(t =>
-	//			<input href="/images/xxx.jpg" download="true"></input>
-	//		);
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input href="/images/xxx.jpg" download="">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		let dataS = { foo: 'bar', bar: 'oops' };
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input dataset={dataS}></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input data-foo="bar" data-bar="oops">'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//
-	//		template = Inferno.createTemplate(t =>
-	//			<input checked="checked" disabled="disabled"></input>
-	//		);
-	//
-	//		Inferno.render(Inferno.createFragment(null, template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<input disabled="disabled">'
-	//		);
-	//	});
-	//});
-	//
+	describe('should render download with boolean false value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { href:"/images/xxx.jpg", download: false} )
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input href="/images/xxx.jpg">'
+			);
+		});
+		it('Second render (update)', () => {
+			const dataS = { foo: 'bar', bar: 'oops' };
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: dataS})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input data-foo="bar" data-bar="oops">'
+			);
+		});
+	});
+
+	describe('should render download with boolean null value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { href: "/images/xxx.jpg", download: null})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input href="/images/xxx.jpg">'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', {checked:true, disabled: true})
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input disabled="">'
+			);
+		});
+	});
+
+	describe('should render "overloaded" boolean properties', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { href:"/images/xxx.jpg", download:"true" })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input href="/images/xxx.jpg" download="">'
+			);
+		});
+
+		it('Second render (update)', () => {
+			const dataS = { foo: 'bar', bar: 'oops' };
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { dataset: dataS })
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input data-foo="bar" data-bar="oops">'
+			);
+		});
+
+		it('Third render (update)', () => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('input', { checked:true, disabled:true })
+			);
+
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input disabled="">'
+			);
+		});
+	});
+
 	//describe('should not render overloaded "allowFullScreen" boolean attributes', () => {
 	//	let template;
 	//

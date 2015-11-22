@@ -6,6 +6,7 @@ import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
 import attrOps from '../template/AttributeOps';
 import updateComponent from './updateComponent';
+import removeComponent from './removeComponent';
 import sanitizeValue from '../template/sanitizeValue';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
@@ -46,9 +47,15 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
                 return;
             case fragmentValueTypes.COMPONENT:
             case fragmentValueTypes.COMPONENT_REPLACE:
-                if (fragment.templateValue.component === oldFragment.templateValue.component) {
-                    updateComponent(templateComponent, fragment.templateValue.props);
-                }
+				const comp = fragment.templateValue;
+				const oldComp = oldFragment.templateValue;
+
+				if (comp === null) {
+					removeComponent(templateComponent, element);
+					templateComponent = fragment.templateValues[i] = null;
+				} else if (comp && comp.component === oldComp.component) {
+					updateComponent(templateComponent, comp.props);
+				}
                 return;
             case fragmentValueTypes.COMPONENT_CHILDREN:
                 break;
