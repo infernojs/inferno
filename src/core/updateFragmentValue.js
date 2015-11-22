@@ -9,152 +9,163 @@ import updateComponent from './updateComponent';
 import sanitizeValue from '../template/sanitizeValue';
 
 function updateFragmentValue(context, oldFragment, fragment, component) {
-	let element = oldFragment.templateElement,
-		type = oldFragment.templateType,
-		templateComponent = oldFragment.templateComponent;
+    let element = oldFragment.templateElement,
+        type = oldFragment.templateType,
+        templateComponent = oldFragment.templateComponent;
 
-	fragment.templateElement = element;
-	fragment.templateType = type;
-	fragment.templateComponent = templateComponent;
+    fragment.templateElement = element;
+    fragment.templateType = type;
+    fragment.templateComponent = templateComponent;
 
-	if (fragment.templateValue !== oldFragment.templateValue) {
+    if (fragment.templateValue !== oldFragment.templateValue) {
 
-		switch (type) {
-		case fragmentValueTypes.LIST:
-		case fragmentValueTypes.LIST_REPLACE:
-			updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
-			return;
-		case fragmentValueTypes.TEXT:
-			element.firstChild.nodeValue = fragment.templateValue;
-			return;
-		case fragmentValueTypes.TEXT_DIRECT:
-			element.nodeValue = fragment.templateValue;
-			return;
-		case fragmentValueTypes.FRAGMENT:
-		case fragmentValueTypes.FRAGMENT_REPLACE:
-			updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
-			return;
-		case fragmentValueTypes.ATTR_CLASS:
-			// To set className on SVG elements, it's necessary to use .setAttribute;
-			// this works on HTML elements too in all browsers.
-			// If this kills the performance, we have to consider not to support SVG
-			if (isSVG) {
-				sanitizeValue(element, fragment.templateValue, null, 'class');
-			} else {
-				sanitizeValue(element, fragment.templateValue, 'className', 'class');
-			}
-			return;
-		case fragmentValueTypes.COMPONENT:
-		case fragmentValueTypes.COMPONENT_REPLACE:
-			if(fragment.templateValue.component === oldFragment.templateValue.component) {
-				updateComponent(templateComponent, fragment.templateValue.props);
-			}
-			return;
-		case fragmentValueTypes.COMPONENT_CHILDREN:
-			break;
-		case fragmentValueTypes.ATTR_ID:
-			sanitizeValue(element, fragment.templateValue, 'id', 'id');
-			return;
-		case fragmentValueTypes.ATTR_NAME:
-			element.name = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_LABEL:
-			element.label = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_PLACEHOLDER:
-			element.placeholder = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_DESIGNMODE:
-			element.designMode = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_HTMLFOR:
-			element.htmlFor = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_PLAYBACKRATE:
-			element.playbackRate = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_PRELOAD:
-			element.preload = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_SRCDOC:
-			element.srcDoc = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_AUTOPLAY:
-			element.autoPlay = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_CHECKED:
-			element.checked = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_ISMAP:
-			element.isMap = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_LOOP:
-			element.loop = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_MUTED:
-			element.muted = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_READONLY:
-			element.readOnly = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_REVERSED:
-			element.reversed = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_REQUIRED:
-			element.required = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_SELECTED:
-			element.selected = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_SPELLCHECK:
-			element.spellCheck = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_TRUESPEED:
-			element.truespeed = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_MULTIPLE:
-			element.multiple = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_CONTROLS:
-			element.controls = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_DEFER:
-			element.defer = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_NOVALIDATE:
-			element.noValidate = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_SCOPED:
-			element.scoped = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_NO_RESIZE:
-			element.noResize = fragment.templateValue;
-			return;
-		case fragmentValueTypes.ATTR_WIDTH:
-			if (isSVG) {
-				element.setAttribute('width', fragment.templateValue);
-			} else {
-				element.width = fragment.templateValue;
-			}
-			return;
-		case fragmentValueTypes.ATTR_HEIGHT:
-			if (isSVG) {
-				element.setAttribute('height', fragment.templateValue);
-			} else {
-				element.height = fragment.templateValue;
-			}
-			return;
-		default:
-			if(type == null) {
-				throw Error(`Inferno Error: value "${ fragment.templateValue }" for fragment is never used`);
-			}
-			if (events[type] != null) {
-				eventManager.addListener(element, type, fragment.templateValue);
-			} else {
-				attrOps.set(element, type, fragment.templateValue, true, oldFragment.templateValue);
-			}
-		}
-	}
+        switch (type) {
+            case fragmentValueTypes.LIST:
+            case fragmentValueTypes.LIST_REPLACE:
+                updateFragmentList(context, oldFragment.templateValue, fragment.templateValue, element, component);
+                return;
+            case fragmentValueTypes.TEXT:
+                element.firstChild.nodeValue = fragment.templateValue;
+                return;
+            case fragmentValueTypes.TEXT_DIRECT:
+                element.nodeValue = fragment.templateValue;
+                return;
+            case fragmentValueTypes.FRAGMENT:
+            case fragmentValueTypes.FRAGMENT_REPLACE:
+                updateFragment(context, oldFragment.templateValue, fragment.templateValue, element, component);
+                return;
+            case fragmentValueTypes.ATTR_CLASS:
+                // To set className on SVG elements, it's necessary to use .setAttribute;
+                // this works on HTML elements too in all browsers.
+                // If this kills the performance, we have to consider not to support SVG
+                if (isSVG) {
+                    sanitizeValue(element, fragment.templateValue, null, 'class');
+                } else {
+                    sanitizeValue(element, fragment.templateValue, 'className', 'class');
+                }
+                return;
+            case fragmentValueTypes.COMPONENT:
+            case fragmentValueTypes.COMPONENT_REPLACE:
+                if (fragment.templateValue.component === oldFragment.templateValue.component) {
+                    updateComponent(templateComponent, fragment.templateValue.props);
+                }
+                return;
+            case fragmentValueTypes.COMPONENT_CHILDREN:
+                break;
+            case fragmentValueTypes.ATTR_ID:
+                sanitizeValue(element, fragment.templateValue, 'id', 'id');
+                return;
+            case fragmentValueTypes.ATTR_NAME:
+                element.name = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_LABEL:
+                element.label = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_PLACEHOLDER:
+                element.placeholder = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_DESIGNMODE:
+                element.designMode = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_HTMLFOR:
+                element.htmlFor = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_PLAYBACKRATE:
+                element.playbackRate = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_PRELOAD:
+                element.preload = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_SRCDOC:
+                element.srcDoc = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_AUTOPLAY:
+                element.autoPlay = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_CHECKED:
+
+                if (element.tagName === 'INPUT') {
+
+                    if ('' + element.checked !== '' + fragment.templateValue) {
+                        element.checked = fragment.templateValue;
+                    }
+
+                } else {
+                    element.checked = fragment.templateValue;
+                }
+
+
+                return;
+            case fragmentValueTypes.ATTR_ISMAP:
+                element.isMap = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_LOOP:
+                element.loop = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_MUTED:
+                element.muted = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_READONLY:
+                element.readOnly = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_REVERSED:
+                element.reversed = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_REQUIRED:
+                element.required = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_SELECTED:
+                element.selected = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_SPELLCHECK:
+                element.spellCheck = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_TRUESPEED:
+                element.truespeed = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_MULTIPLE:
+                element.multiple = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_CONTROLS:
+                element.controls = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_DEFER:
+                element.defer = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_NOVALIDATE:
+                element.noValidate = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_SCOPED:
+                element.scoped = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_NO_RESIZE:
+                element.noResize = fragment.templateValue;
+                return;
+            case fragmentValueTypes.ATTR_WIDTH:
+                if (isSVG) {
+                    element.setAttribute('width', fragment.templateValue);
+                } else {
+                    element.width = fragment.templateValue;
+                }
+                return;
+            case fragmentValueTypes.ATTR_HEIGHT:
+                if (isSVG) {
+                    element.setAttribute('height', fragment.templateValue);
+                } else {
+                    element.height = fragment.templateValue;
+                }
+                return;
+            default:
+                if (type == null) {
+                    throw Error(`Inferno Error: value "${ fragment.templateValue }" for fragment is never used`);
+                }
+                if (events[type] != null) {
+                    eventManager.addListener(element, type, fragment.templateValue);
+                } else {
+                    attrOps.set(element, type, fragment.templateValue, true, oldFragment.templateValue);
+                }
+        }
+    }
 }
 
 export default updateFragmentValue;
