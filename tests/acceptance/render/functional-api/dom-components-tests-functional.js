@@ -50,7 +50,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		template(createElement, createComponent, isChecked, title) {
 			return createElement("div", {className: "basic"},
 				createElement('label', {},
-					createElement("input", {checked: isChecked}),
+					createElement("input", {type: 'checkbox', checked: isChecked}),
 					"The title is ",
 					title
 				)
@@ -71,7 +71,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 					)
 			);
 			Inferno.render(Inferno.createFragment([
-				{component: BasicComponent1b, props: {title: "abc", isChecked: true}}
+				{component: BasicComponent1b, props: {type: 'checkbox', title: "abc", isChecked: true}}
 			], template), container);
 		});
 
@@ -89,7 +89,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		});
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment([
-				{component: BasicComponent1b, props: {title: "123", isChecked: false}}
+				{component: BasicComponent1b, props: {title: "123", type: 'checkbox', isChecked: false}}
 			], template), container);
 			expect(
 				container.innerHTML
@@ -104,7 +104,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		});
 		it('Third render (update)', () => {
 			Inferno.render(Inferno.createFragment([
-				{component: BasicComponent1b, props: {title: "123", isChecked: true}}
+				{component: BasicComponent1b, props: {title: "123", type: 'checkbox', isChecked: true}}
 			], template), container);
 			expect(
 				container.innerHTML
