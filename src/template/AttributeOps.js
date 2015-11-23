@@ -574,13 +574,13 @@ function applyBooleanValue(node, attribute, property, value, oldValue) {
 	if(oldValue === value) {
 		return;
 	}
-	if (value === true || value === 'true' || value === 1) {
+	if (value === true || value === 'true' || value === 1 || value === attribute || value === property) {
 		if(property != null) {
 			node[property] = true;
 		} else {
 			node.setAttribute(attribute, '');
 		}
-	} else if (value === false || value === 'false' || value === 0) {
+	} else if (value === false || value === 'false' || value === 0 || value === '') {
 		if(property != null) {
 			node[property] = false;
 		} else {
@@ -588,7 +588,7 @@ function applyBooleanValue(node, attribute, property, value, oldValue) {
 		}
 	} else {
 		throw Error(`Inferno Error: Invalid value "${ value }" set on DOM ${ property != null ? 'property' : 'attribute '}`
-		+ ` "${ attribute || property }", expected a boolean value.\nValue for "${ value }" must be: true, "true", 1, false, "false", 0.`)
+		+ ` "${ attribute || property }", expected a boolean value.\nValue for "${ value }" must be: true, "true", 1, "${ property || attribute }", false, "false", 0 or ""`)
 	}
 }
 

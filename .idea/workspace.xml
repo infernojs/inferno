@@ -95,21 +95,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AttributeOps.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AttributeOps.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.6666665">
-              <caret line="586" column="44" selection-start-line="586" selection-start-column="44" selection-end-line="586" selection-end-column="44" />
+            <state vertical-scroll-proportion="0.04859155">
+              <caret line="563" column="22" selection-start-line="563" selection-start-column="22" selection-end-line="563" selection-end-column="22" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom-elements-tests-functional.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dom-elements-tests-functional.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.85625434">
-              <caret line="820" column="34" selection-start-line="820" selection-start-column="34" selection-end-line="820" selection-end-column="34" />
+            <state vertical-scroll-proportion="-2.0">
+              <caret line="741" column="35" selection-start-line="741" selection-start-column="35" selection-end-line="741" selection-end-column="35" />
               <folding>
                 <marker date="1448236738000" expanded="true" signature="45891:45919" placeholder="..." />
                 <marker date="1448236738000" expanded="true" signature="46736:46747" placeholder="..." />
@@ -216,9 +216,9 @@
         <option value="$PROJECT_DIR$/src/core/updateFragmentValues.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
-        <option value="$PROJECT_DIR$/src/template/AttributeOps.js" />
         <option value="$PROJECT_DIR$/src/core/updateFragmentValue.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
+        <option value="$PROJECT_DIR$/src/template/AttributeOps.js" />
       </list>
     </option>
   </component>
@@ -1169,14 +1169,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.6666665">
-          <caret line="586" column="44" selection-start-line="586" selection-start-column="44" selection-end-line="586" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/core/updateFragmentValues.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-4.4444447">
@@ -1195,8 +1187,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.85625434">
-          <caret line="820" column="34" selection-start-line="820" selection-start-column="34" selection-end-line="820" selection-end-column="34" />
+        <state vertical-scroll-proportion="-2.0">
+          <caret line="741" column="35" selection-start-line="741" selection-start-column="35" selection-end-line="741" selection-end-column="35" />
           <folding>
             <marker date="1448236738000" expanded="true" signature="45891:45919" placeholder="..." />
             <marker date="1448236738000" expanded="true" signature="46736:46747" placeholder="..." />
@@ -1206,6 +1198,14 @@
             <marker date="1448236738000" expanded="true" signature="49032:49045" placeholder="..." />
             <marker date="1448236738000" expanded="true" signature="49519:49530" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template/AttributeOps.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.04859155">
+          <caret line="563" column="22" selection-start-line="563" selection-start-column="22" selection-end-line="563" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
