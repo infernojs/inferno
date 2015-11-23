@@ -797,9 +797,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _DOMasks2 = _interopRequireDefault(_DOMasks);
 	
-	var _checkMask = __webpack_require__(27);
+	var _checkBitmask = __webpack_require__(27);
 	
-	var _checkMask2 = _interopRequireDefault(_checkMask);
+	var _checkBitmask2 = _interopRequireDefault(_checkBitmask);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -1243,11 +1243,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        propertyName: propName,
 	        mutationMethod: null,
 	
-	        mustUseProperty: (0, _checkMask2.default)(propConfig, MUST_USE_PROPERTY),
-	        hasSideEffects: (0, _checkMask2.default)(propConfig, IS_EDGE_CASE),
-	        hasBooleanValue: (0, _checkMask2.default)(propConfig, HAS_BOOLEAN_VALUE),
-	        hasNumericValue: (0, _checkMask2.default)(propConfig, HAS_NUMERIC_VALUE),
-	        hasPositiveNumericValue: (0, _checkMask2.default)(propConfig, HAS_POSITIVE_NUMERIC_VALUE)
+	        mustUseProperty: (0, _checkBitmask2.default)(propConfig, MUST_USE_PROPERTY),
+	        hasSideEffects: (0, _checkBitmask2.default)(propConfig, IS_EDGE_CASE),
+	        hasBooleanValue: (0, _checkBitmask2.default)(propConfig, HAS_BOOLEAN_VALUE),
+	        hasNumericValue: (0, _checkBitmask2.default)(propConfig, HAS_NUMERIC_VALUE),
+	        hasPositiveNumericValue: (0, _checkBitmask2.default)(propConfig, HAS_POSITIVE_NUMERIC_VALUE)
 	    };
 	
 	    if (_DOMAttributeNames2.default[propName]) {
@@ -3773,9 +3773,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _checkMask = __webpack_require__(27);
+	var _checkBitmask = __webpack_require__(27);
 	
-	var _checkMask2 = _interopRequireDefault(_checkMask);
+	var _checkBitmask2 = _interopRequireDefault(_checkBitmask);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -3908,8 +3908,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var elementInfo = {
 	
-	        isSVG: (0, _checkMask2.default)(elementConfig, IS_SVG),
-	        isMathML: (0, _checkMask2.default)(elementConfig, IS_MATHML)
+	        isSVG: (0, _checkBitmask2.default)(elementConfig, IS_SVG),
+	        isMathML: (0, _checkBitmask2.default)(elementConfig, IS_MATHML)
 	    };
 	
 	    DOMElementContainer[element] = elementInfo;
@@ -4138,6 +4138,12 @@ return /******/ (function(modules) { // webpackBootstrap
 		var skip = false;
 	
 		switch (attrName) {
+			case 'className':
+				fragmentType = _fragmentValueTypes2.default.ATTR_CLASS;
+				break;
+			case 'id':
+				fragmentType = _fragmentValueTypes2.default.ATTR_ID;
+				break;
 			case 'ref':
 				fragmentType = _fragmentValueTypes2.default.ATTR_REF;
 				skip = true;

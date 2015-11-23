@@ -1,7 +1,7 @@
 import DOMAttributeNamespaces from './DOMAttributeNamespaces';
 import DOMAttributeNames from './DOMAttributeNames';
 import DOMasks from './DOMasks';
-import checkMask from './checkMask';
+import checkBitmask from './checkBitmask';
 
 let DOMPropertyNames = {};
 
@@ -446,11 +446,11 @@ for (let propName in DOMProperties) {
         propertyName: propName,
         mutationMethod: null,
 
-        mustUseProperty: checkMask(propConfig, MUST_USE_PROPERTY),
-        hasSideEffects: checkMask(propConfig, IS_EDGE_CASE),
-        hasBooleanValue: checkMask(propConfig, HAS_BOOLEAN_VALUE),
-        hasNumericValue: checkMask(propConfig, HAS_NUMERIC_VALUE),
-        hasPositiveNumericValue: checkMask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
+        mustUseProperty: checkBitmask(propConfig, MUST_USE_PROPERTY),
+        hasSideEffects: checkBitmask(propConfig, IS_EDGE_CASE),
+        hasBooleanValue: checkBitmask(propConfig, HAS_BOOLEAN_VALUE),
+        hasNumericValue: checkBitmask(propConfig, HAS_NUMERIC_VALUE),
+        hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
     };
 
     if (DOMAttributeNames[propName]) {

@@ -1,4 +1,4 @@
-import checkMask from './checkMask';
+import checkBitmask from './checkBitmask';
 
 const IS_SVG = 0x15;
 const IS_MATHML = 0x20;
@@ -129,8 +129,8 @@ for (let element in DOMElements) {
 
     let elementInfo = {
 
-        isSVG: checkMask(elementConfig, IS_SVG),
-        isMathML: checkMask(elementConfig, IS_MATHML),
+        isSVG: checkBitmask(elementConfig, IS_SVG),
+        isMathML: checkBitmask(elementConfig, IS_MATHML),
     }
 
     DOMElementContainer[element] = elementInfo;

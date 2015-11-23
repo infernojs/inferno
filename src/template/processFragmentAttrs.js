@@ -6,6 +6,12 @@ function processFragmentAttrs(node, attrName, attrVal, fragment) {
     let skip = false;
 
 	switch (attrName) {
+    case 'className':
+		fragmentType = fragmentValueTypes.ATTR_CLASS;
+		break;
+	case 'id':
+		fragmentType = fragmentValueTypes.ATTR_ID;
+		break;
 	case 'ref':
 		fragmentType = fragmentValueTypes.ATTR_REF;
 		skip = true;
