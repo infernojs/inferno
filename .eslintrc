@@ -18,5 +18,8 @@
 		"browser": true,
 		"node": true,
 	},
+	"ecmaFeatures": {
+  		"jsx": true
+	},
 	"extends": "eslint:recommended"
 }
