@@ -7,6 +7,7 @@ function applyState(component) {
 			}
 			component._pendingState = {};
 			component._pendingSetState = false;
+			component.forceUpdate();
 		} else {
 			applyState(component);
 		}
@@ -40,7 +41,6 @@ export default class Component {
 		} else {
 			throw Error("Inferno Error: Cannot update state via setState() in componentWillReceiveProps()");
 		}
-		this.forceUpdate();
 	}
 	replaceState(newState) {
 		this.state = newState;
