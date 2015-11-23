@@ -9,6 +9,9 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/AttributeOps.js" afterPath="$PROJECT_DIR$/src/template/AttributeOps.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/class/Component.js" afterPath="$PROJECT_DIR$/src/class/Component.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/addAttributes.js" afterPath="$PROJECT_DIR$/src/template/addAttributes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragment.js" afterPath="$PROJECT_DIR$/src/core/attachFragment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createComponent.js" afterPath="$PROJECT_DIR$/src/template/createComponent.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createElement.js" afterPath="$PROJECT_DIR$/src/template/createElement.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-elements-tests-functional.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" afterPath="$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js" />
@@ -36,42 +39,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="dom-components-tests-functional.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-25.74074">
-              <caret line="149" column="0" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
-              <folding>
-                <marker date="1448236042000" expanded="true" signature="13442:13468" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="13483:13509" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="13842:13868" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="13883:13909" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="14493:14519" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="14534:14560" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="15789:15815" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="15830:15856" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="17137:17153" placeholder="..." />
-                <marker date="1448236042000" expanded="true" signature="17771:17787" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="updateFragmentValue.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="updateFragmentValue.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/core/updateFragmentValue.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.55977887">
-              <caret line="54" column="62" selection-start-line="54" selection-start-column="62" selection-end-line="54" selection-end-column="62" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="updateFragmentValues.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/core/updateFragmentValues.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.4444447">
-              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="48" />
+            <state vertical-scroll-proportion="-10.0">
+              <caret line="18" column="51" selection-start-line="18" selection-start-column="51" selection-end-line="18" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -110,8 +82,48 @@
       <file leaf-file-name="attachFragment.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-36.11111">
-              <caret line="65" column="81" selection-start-line="65" selection-start-column="81" selection-end-line="65" selection-end-column="81" />
+            <state vertical-scroll-proportion="-17.222221">
+              <caret line="31" column="40" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="createComponent.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/template/createComponent.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.14512785">
+              <caret line="14" column="43" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="createElement.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-22.222221">
+              <caret line="41" column="39" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="attachComponent.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/attachComponent.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-16.666666">
+              <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="attachFragmentList.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/core/attachFragmentList.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -131,26 +143,6 @@
                 <marker date="1448236738000" expanded="true" signature="49032:49045" placeholder="..." />
                 <marker date="1448236738000" expanded="true" signature="49519:49530" placeholder="..." />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="css-operation-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/css-operation-tests.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dom-operation-tests.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/acceptance/dom-operation-tests.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.703704">
-              <caret line="265" column="73" selection-start-line="265" selection-start-column="73" selection-end-line="265" selection-end-column="73" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -196,10 +188,8 @@
         <option value="$PROJECT_DIR$/src/core/render.js" />
         <option value="$PROJECT_DIR$/src/template/virtual/index.js" />
         <option value="$PROJECT_DIR$/src/template/dom/index.js" />
-        <option value="$PROJECT_DIR$/src/template/createComponent.js" />
         <option value="$PROJECT_DIR$/src/template/updateDOMProperties.js" />
         <option value="$PROJECT_DIR$/src/core/attachComponent.js" />
-        <option value="$PROJECT_DIR$/src/core/attachFragment.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/dom-elements-tests.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-elements-tests-jsx.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/renderToString/inferno-jsx/elements-tests-jsx.js" />
@@ -207,7 +197,6 @@
         <option value="$PROJECT_DIR$/tests/acceptance/renderToString/elements-tests.js" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/core/attachFragmentList.js" />
-        <option value="$PROJECT_DIR$/src/template/createElement.js" />
         <option value="$PROJECT_DIR$/tests/acceptance/render/inferno-jsx/dom-components-tests-jsx.js" />
         <option value="$PROJECT_DIR$/src/template/sanitizeValue.js" />
         <option value="$PROJECT_DIR$/tests/tools/get.js" />
@@ -221,6 +210,9 @@
         <option value="$PROJECT_DIR$/src/core/updateComponent.js" />
         <option value="$PROJECT_DIR$/src/class/Component.js" />
         <option value="$PROJECT_DIR$/src/core/updateFragmentValue.js" />
+        <option value="$PROJECT_DIR$/src/core/attachFragment.js" />
+        <option value="$PROJECT_DIR$/src/template/createElement.js" />
+        <option value="$PROJECT_DIR$/src/template/createComponent.js" />
       </list>
     </option>
   </component>
@@ -935,14 +927,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/createComponent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.888889">
-          <caret line="16" column="9" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/template/updateDOMProperties.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-26.11111">
@@ -1014,30 +998,6 @@
           <folding>
             <marker date="1448130885000" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;inferno&quot;...}" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/core/attachComponent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.666666">
-          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/core/attachFragmentList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.333333">
-          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-22.777779">
-          <caret line="45" column="29" selection-start-line="45" selection-start-column="29" selection-end-line="45" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1133,16 +1093,16 @@
         <state vertical-scroll-proportion="-25.74074">
           <caret line="149" column="0" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
           <folding>
-            <marker date="1448236042000" expanded="true" signature="13442:13468" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="13483:13509" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="13842:13868" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="13883:13909" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="14493:14519" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="14534:14560" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="15789:15815" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="15830:15856" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="17137:17153" placeholder="..." />
-            <marker date="1448236042000" expanded="true" signature="17771:17787" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1448236042000" expanded="true" signature="-1:-1" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1195,18 +1155,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
+    <entry file="file://$PROJECT_DIR$/src/core/updateFragmentValue.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-36.11111">
-          <caret line="65" column="81" selection-start-line="65" selection-start-column="81" selection-end-line="65" selection-end-column="81" />
+        <state vertical-scroll-proportion="-10.0">
+          <caret line="18" column="51" selection-start-line="18" selection-start-column="51" selection-end-line="18" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/core/updateFragmentValue.js">
+    <entry file="file://$PROJECT_DIR$/src/core/attachComponent.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55977887">
-          <caret line="54" column="62" selection-start-line="54" selection-start-column="62" selection-end-line="54" selection-end-column="62" />
+        <state vertical-scroll-proportion="-16.666666">
+          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/attachFragmentList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-22.222221">
+          <caret line="41" column="39" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-17.222221">
+          <caret line="31" column="40" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template/createComponent.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.14512785">
+          <caret line="14" column="43" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="43" />
           <folding />
         </state>
       </provider>

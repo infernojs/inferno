@@ -2,7 +2,7 @@ import fragmentValueTypes from '../enum/fragmentValueTypes';
 import isArray from '../util/isArray';
 import render from '../core/render';
 
-export default function createElementFactory(template) {
+export default function createElementFactory(fragment, template) {
 	return function createElement(tag, props, ...children) {
 		let element;
 		const is = props && (props.is || null); // type extension
@@ -20,17 +20,17 @@ export default function createElementFactory(template) {
 					const child = children[i];
 
 					if (child.pointer !== undefined) {
-						let value = this.templateValue || this.templateValues[child.pointer];
+						let value = fragment.templateValue || fragment.templateValues[child.pointer];
 
 						if (typeof value !== 'object') {
 							const node = template.createTextNode(value);
 
-							if(this.templateValue) {
-								this.templateElement = node;
-								this.templateType = fragmentValueTypes.TEXT_DIRECT;
+							if(fragment.templateValue) {
+								fragment.templateElement = node;
+								fragment.templateType = fragmentValueTypes.TEXT_DIRECT;
 							} else {
-								this.templateElements[child.pointer] = node;
-								this.templateTypes[child.pointer] = fragmentValueTypes.TEXT_DIRECT;
+								fragment.templateElements[child.pointer] = node;
+								fragment.templateTypes[child.pointer] = fragmentValueTypes.TEXT_DIRECT;
 							}
 							element.appendChild(node);
 						} else if (isArray(value)) {
@@ -39,10 +39,10 @@ export default function createElementFactory(template) {
 							}
 						} else if (value.template) {
 							render(value, element)
-							if(this.templateValues) {
-								this.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
+							if(fragment.templateValues) {
+								fragment.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
 							} else {
-								this.templateType = fragmentValueTypes.COMPONENT_CHILDREN;
+								fragment.templateType = fragmentValueTypes.COMPONENT_CHILDREN;
 							}
 						}
 					} else if (typeof child !== 'object') {
@@ -50,16 +50,16 @@ export default function createElementFactory(template) {
 
 						element.appendChild(node);
 					} else if (child.component) {
-						if (this.templateValues) {
+						if (fragment.templateValues) {
 							let templateIndex = child.templateIndex;
 
-							this.templateElements[templateIndex] = element;
-							this.templateTypes[templateIndex] = fragmentValueTypes.FRAGMENT;
-							this.templateValues[templateIndex] = child;
+							fragment.templateElements[templateIndex] = element;
+							fragment.templateTypes[templateIndex] = fragmentValueTypes.FRAGMENT;
+							fragment.templateValues[templateIndex] = child;
 						} else {
-							this.templateElement = element;
-							this.templateType = fragmentValueTypes.FRAGMENT;
-							this.templateValue = child;
+							fragment.templateElement = element;
+							fragment.templateType = fragmentValueTypes.FRAGMENT;
+							fragment.templateValue = child;
 						}
 					} else {
 						element.appendChild(child);
@@ -67,24 +67,24 @@ export default function createElementFactory(template) {
 				}
 			}
 			else if ((children = children[0]) && children.pointer !== undefined) {
-				const value = this.templateValue || this.templateValues[children.pointer];
+				const value = fragment.templateValue || fragment.templateValues[children.pointer];
 
 				if (typeof value !== 'object') {
 					element.textContent = value;
-					if(this.templateValue) {
-						this.templateElement = element;
-						this.templateType = fragmentValueTypes.TEXT;
+					if(fragment.templateValue) {
+						fragment.templateElement = element;
+						fragment.templateType = fragmentValueTypes.TEXT;
 					} else {
-						this.templateElements[children.pointer] = element;
-						this.templateTypes[children.pointer] = fragmentValueTypes.TEXT;
+						fragment.templateElements[children.pointer] = element;
+						fragment.templateTypes[children.pointer] = fragmentValueTypes.TEXT;
 					}
 				} else if (isArray(value)) {
-					if(this.templateValue) {
-						this.templateElement = element;
-						this.templateType = fragmentValueTypes.LIST;
+					if(fragment.templateValue) {
+						fragment.templateElement = element;
+						fragment.templateType = fragmentValueTypes.LIST;
 					} else {
-						this.templateElements[children.pointer] = element;
-						this.templateTypes[children.pointer] = fragmentValueTypes.LIST;
+						fragment.templateElements[children.pointer] = element;
+						fragment.templateTypes[children.pointer] = fragmentValueTypes.LIST;
 					}
 				}
 			}
@@ -96,7 +96,7 @@ export default function createElementFactory(template) {
 		}
 
 		if (props) {
-			template.addAttributes(element, props, this);
+			template.addAttributes(element, props, fragment);
 		}
 		return element;
 	}

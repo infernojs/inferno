@@ -33,8 +33,8 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			template(fragment, templateToUse);
 			break;
 		case templateTypes.FUNCTIONAL_API:
-			const createElement = bind(fragment, templateCreateElement(templateToUse));
-			const createComponent = bind(fragment, templateCreateComponent(templateToUse));
+			const createElement = templateCreateElement(fragment, templateToUse);
+			const createComponent = templateCreateComponent(fragment, templateToUse);
 			let params = [createElement, createComponent], length = (fragment.templateValue != null && 1)
 				|| (fragment.templateValues && fragment.templateValues.length) || 0;
 

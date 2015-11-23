@@ -1,15 +1,15 @@
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
-export default function createComponentFactory(template) {
+export default function createComponentFactory(fragment, template) {
 	return function createComponent(component, ...children) {
 		var element = template.createEmptyDiv();
 
-		if (this.templateValue) {
-			this.templateElement = element;
-			this.templateType = fragmentValueTypes.COMPONENT_REPLACE;
+		if (fragment.templateValue) {
+			fragment.templateElement = element;
+			fragment.templateType = fragmentValueTypes.COMPONENT_REPLACE;
 		} else {
-			this.templateElements[component.pointer] = element;
-			this.templateTypes[component.pointer] = fragmentValueTypes.COMPONENT_REPLACE;
+			fragment.templateElements[component.pointer] = element;
+			fragment.templateTypes[component.pointer] = fragmentValueTypes.COMPONENT_REPLACE;
 		}
 
 		for (let i = 0; i < children.length; i++) {
