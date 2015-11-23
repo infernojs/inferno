@@ -1,10 +1,10 @@
 import VirtualTextNode from './VirtualTextNode';
 
 // The HTML elements in this list are speced by
-  // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements,
-  // and will be forced to close regardless of if they have a
-  // self-closing /> at the end.
-  const voidTagNames = {
+// http://www.w3.org/TR/html-markup/syntax.html#syntax-elements,
+// and will be forced to close regardless of if they have a
+// self-closing /> at the end.
+const voidTagNames = {
     area: true,
     base: true,
     basefont: true,
@@ -35,18 +35,17 @@ import VirtualTextNode from './VirtualTextNode';
     stop: true,
     polyline: true,
     polygon: true
-  };
-
+};
 
 let doNotShowInHtml = {
-    textContent: true,
-    appendChild: true,
-    setAttribute: true,
-    outerHTML: true,
+    //  textContent: true,
+    //    appendChild: true,
+    //    setAttribute: true,
+    //    outerHTML: true,
     innerHTML: true,
-    children: true,
+    //    children: true,
     tagName: true,
-    options: true,
+    //    options: true,
     selected: true,
     value: true
 };
@@ -55,8 +54,8 @@ function VirtualElement(tagName, xmlns, is) {
 
     // Built-in properties that belong on the element
 
-   const virtual = {
-
+    const virtual = {
+        props: {},
         tagName: tagName,
         options: [],
         children: [],
@@ -67,7 +66,7 @@ function VirtualElement(tagName, xmlns, is) {
             virtual.children.push(child);
         },
         setAttribute: function(attribute, value) {
-            virtual[attribute] = value;
+            virtual.props[attribute] = value;
         }
     };
 
@@ -80,6 +79,7 @@ function VirtualElement(tagName, xmlns, is) {
                 //if we have children, kill them
                 virtual.children = [];
             } else {
+
                 virtual.appendChild(VirtualTextNode(textValue));
             }
         },
@@ -98,35 +98,33 @@ function VirtualElement(tagName, xmlns, is) {
             throw Error('You cannot set the outerHTML of virtual elements, use declarative API instead');
         },
         get: () => {
-			const isVoidElement = voidTagNames[tagName.toLowerCase()];
+
+            const isVoidElement = voidTagNames[tagName.toLowerCase()];
             const attributes = [];
 
             let childrenInnerHtml;
-			
-            for (let property in virtual) {
-                if (!doNotShowInHtml[property] && virtual[property] != null) {
-                    let propVal = virtual[property];
+            // Props taken out and moved into it's own object. Need to finish this later on.            
+            for (let property in virtual.props) {
+                if (!doNotShowInHtml[property] && virtual.props[property] != null) {
+                    let propVal = virtual.props[property];
                     if (propVal === true) {
                         propVal = '';
                     }
                     attributes.push(property + `="${ propVal }"`);
                 }
             }
-            
-			// *only* deal with children if not a self closing element - void
-			if ( !isVoidElement ) {		
-             childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
-			}
-			
+
+            if (!isVoidElement) {
+                childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
+            }
+
             if (attributes.length > 0) {
 
                 return isVoidElement ? `<${ tagName } ${ attributes }/>` :
-				 `<${ tagName } ${ attributes }>${ childrenInnerHtml }</${ tagName }>`;
-
-
+                    `<${ tagName } ${ attributes }>${ childrenInnerHtml }</${ tagName }>`;
             }
-                return isVoidElement ? `<${ tagName }/>` :
-				 `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;
+            return isVoidElement ? `<${ tagName }/>` :
+                `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;
         }
     });
 
