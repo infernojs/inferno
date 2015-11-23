@@ -63,7 +63,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
                 sanitizeValue(element, fragment.templateValue, 'id', 'id');
                 return;
             default:
-               updateDOMProperties(element, type, oldFragment.templateValue, fragment.templateValue);
+                updateDOMProperties(element, type, oldFragment.templateValue, fragment.templateValue);
         }
     }
 }

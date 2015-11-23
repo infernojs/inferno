@@ -9,7 +9,7 @@ import createTemplate         from './core/createTemplate';
 import clearDomElement        from './core/clearDomElement';
 import createRef	          from './core/createRef';
 
-module.exports = {
+export default {
 	Component,
 	render,
 	renderToString,

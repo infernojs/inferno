@@ -1,18 +1,14 @@
 export default function updateComponent(component, nextProps) {
-
 	let prevProps = component.props;
-
 	if(!nextProps.children) {
 		nextProps.children = prevProps.children;
 	}
-
 	const prevState = component.state;
 
 	if(prevProps !== nextProps) {
 		component._blockSetState = true;
 		component.componentWillReceiveProps(nextProps);
 		component._blockSetState = false;
-
 		const nextState = component.state;
 		const shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
 

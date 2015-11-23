@@ -35,8 +35,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 		case templateTypes.FUNCTIONAL_API:
 			const createElement = templateCreateElement(fragment, templateToUse);
 			const createComponent = templateCreateComponent(fragment, templateToUse);
-			let params = [createElement, createComponent];
-			let length = (fragment.templateValue != null && 1)
+			let params = [createElement, createComponent], length = (fragment.templateValue != null && 1)
 				|| (fragment.templateValues && fragment.templateValues.length) || 0;
 
 			//create our pointers, for example 0,1,2,3,4,5 as params to pass through
@@ -143,7 +142,6 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 	}
 
 	insertFragment(context, fragment, parentDom, fragment.dom, nextFragment, replace );
-	
 	//now fire all the component mountCallback functions so they know this fragment has been added
 	for(let i = 0; i < mountCallbacks.length; i++) {
 		mountCallbacks[i]();

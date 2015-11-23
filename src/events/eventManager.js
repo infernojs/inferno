@@ -1,4 +1,5 @@
 import events              from './shared/events';
+import capturedEvents      from './shared/capturedEvents';
 import getUniqueId         from './getUniqueId';
 import root                from './root';
 import rootListeners       from './vars/rootListeners';
@@ -26,8 +27,8 @@ function addListener (element, type, listener) {
             config.set = true;
         }
 
-        const uniqueId = getUniqueId(element);
-        const listeners = rootListeners[uniqueId] || (rootListeners[uniqueId] = {});
+        const uniqueId = getUniqueId(element),
+            listeners = rootListeners[uniqueId] || (rootListeners[uniqueId] = {});
 
         if (!listeners[type]) {
 

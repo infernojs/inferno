@@ -3,15 +3,14 @@ import noCaptureEvents  from '../shared/noCaptureEvents';
 import focusEvents      from '../shared/focusEvents';
 import root             from '../root';
 import isEventSupported from '../isEventSupported';
-import ExecutionEnvironment from '../../util/ExecutionEnvironment';
 
 let eventsCfg = {};
 
 // This will not work on server side
-if (ExecutionEnvironment.canUseDOM) {
+if (document.body) {
 
-    let i = 0;
-    let type;
+    let i = 0,
+        type;
 
     while (i < capturedEvents.length) {
         type = capturedEvents[i++];
