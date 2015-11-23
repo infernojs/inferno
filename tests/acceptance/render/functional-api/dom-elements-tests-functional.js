@@ -2,6 +2,12 @@ import get from '../../../tools/get';
 import Inferno from '../../../../src';
 
 export default function domElementsTestsFunctional(describe, expect, container) {
+
+
+
+
+
+
 	describe('should render a basic example', () => {
 		let template;
 
@@ -71,7 +77,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			);
 		});
 	});
-/*
+
 	describe('should render "autoFocus" boolean attributes', () => {
 		let template;
 
@@ -84,14 +90,14 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 
 		it('Initial render (creation)', () => {
 
-			expect(container.firstChild.getAttribute('autoFocus')).to.eql('');
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div autofocus=""></div>'
+				'<div autofocus="true"></div>'
 			);
 		});
-	});*/
+	});
 
 	describe('should render "className" attribute', () => {
 		let template;
@@ -176,6 +182,46 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(container.querySelector("select").multiple).to.equal(true);
 		});
 	});
+	
+	describe('should render value multiple attribute', () => {
+    let template;
+
+    beforeEach(() => {
+        template = Inferno.createTemplate(t =>
+            t('select', {
+                    multiple: true,
+                    value: ['bar', 'dominic']
+                },
+                t('optgroup', {
+                    label: 'foo-group'
+                }, t('option', {
+                    value: 'foo'
+                }, 'Im a li-tag')),
+                t('optgroup', {
+                    label: 'bar-group'
+                }, t('option', {
+                    value: 'bar'
+                }, 'Im a li-tag')),
+                t('optgroup', {
+                    label: 'dominic-group'
+                }, t('option', {
+                    value: 'dominic'
+                }, 'Im a li-tag'))
+            )
+        );
+        Inferno.render(Inferno.createFragment(null, template), container);
+    });
+
+    it('Initial render (creation)', () => {
+        expect(
+            container.innerHTML
+        ).to.equal(
+            '<select multiple=""><optgroup label="foo-group"><option value="foo">Im a li-tag</option></optgroup><optgroup label="bar-group"><option value="bar">Im a li-tag</option></optgroup><optgroup label="dominic-group"><option value="dominic">Im a li-tag</option></optgroup></select>'
+        );
+    });
+});
+	
+	
 
 	describe('should render a basic example with dynamic values', () => {
 		let template;
@@ -1742,4 +1788,64 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		   );
 	   });
 	});
+	
+	
+	
+	describe('should properly render input download attribute', () => {
+
+    let template = Inferno.createTemplate((createElement, createComponent, val1) =>
+        createElement('div', {
+            download: val1
+        })
+    );
+
+    it('Initial render (creation)', () => {
+
+        Inferno.render(Inferno.createFragment(false, template), container);
+
+        expect(container.firstChild.getAttribute('download')).to.be.null;
+        expect(
+            container.innerHTML
+        ).to.equal(
+            '<div></div>'
+        );
+    });
+
+    it('Second render (update)', () => {
+        Inferno.render(Inferno.createFragment(true, template), container);
+        expect(
+            container.innerHTML
+        ).to.equal(
+            '<div download="true"></div>'
+        );
+    });
+});
+
+
+describe('should support number values', () => {
+    let template;
+    const styleRule = {
+        width: 7
+    };
+
+    beforeEach(() => {
+        template = Inferno.createTemplate(createElement =>
+            createElement('div', {
+                style: styleRule
+            })
+        );
+        Inferno.render(Inferno.createFragment(null, template), container);
+    });
+
+    it('Initial render (creation)', () => {
+
+        expect(
+            container.innerHTML
+        ).to.equal(
+            '<div style="width: 7px;"></div>'
+        );
+    });
+});
+	
 }
+

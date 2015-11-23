@@ -2,6 +2,53 @@ import get from '../../../tools/get';
 import Inferno from '../../../../src';
 
 export default function domElementsTestsJsx(describe, expect, container) {
+	
+	
+	[{
+    creationName: 'should render a "div" tag - creation',
+    creationRender: <div></div>,
+    creationExpect: '<div></div>',
+    updateName: 'should render a "span" tag - update',
+    updateRender: <span></span>,
+    updateExpect: '<span></span>'
+},
+{
+    creationName: 'should render a "div" tag with a text node - creation',
+    creationRender: <div>Hello world</div>,
+    creationExpect: '<div>Hello world</div>',
+    updateName: 'should render a "span" tag with a text node - update',
+    updateRender: <div>Hello world 2</div>,
+    updateExpect: '<div>Hello world 2</div>'
+},
+{
+    creationName: 'should render "autoFocus" boolean attribute - creation',
+    creationRender: <div autoFocus='true' />,
+    creationExpect: '<div autofocus="true"></div>',
+    updateName: 'should render "className" attribute - update',
+    updateRender: <div className='fooBar' />,
+    updateExpect: '<div class="fooBar"></div>'
+},
+{
+    creationName: 'should set values as properties by default - creation',
+    creationRender: <input title='Tip!' />,
+    creationExpect: '<input title="Tip!">',
+    updateName: 'should render value multiple attribute - update',
+    updateRender: <div>Hello world 2</div>,
+    updateExpect: '<div>Hello world 2</div>'
+}].forEach((obj) => {
+    it(obj.creationName, () => {
+        Inferno.render(obj.creationRender, container)
+        expect(container.innerHTML).to.eql(obj.creationExpect);
+    });
+    it(obj.updateName, () => {
+        Inferno.render(obj.updateRender, container)
+        expect(container.innerHTML).to.eql(obj.updateExpect);
+    });
+});
+	
+	
+	
+	
 	describe('should render a basic example', () => {
 		beforeEach(() => {
 			Inferno.render(<div>Hello world</div>, container);
