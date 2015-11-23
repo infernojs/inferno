@@ -79,11 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _Component = __webpack_require__(38);
+	var _Component = __webpack_require__(39);
 	
 	var _Component2 = _interopRequireDefault(_Component);
 	
@@ -91,11 +87,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _render2 = _interopRequireDefault(_render);
 	
-	var _renderToString = __webpack_require__(49);
+	var _renderToString = __webpack_require__(52);
 	
 	var _renderToString2 = _interopRequireDefault(_renderToString);
 	
-	var _unmountComponentAtNode = __webpack_require__(50);
+	var _unmountComponentAtNode = __webpack_require__(53);
 	
 	var _unmountComponentAtNode2 = _interopRequireDefault(_unmountComponentAtNode);
 	
@@ -107,25 +103,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _createFragment = __webpack_require__(43);
+	var _createFragment = __webpack_require__(46);
 	
 	var _createFragment2 = _interopRequireDefault(_createFragment);
 	
-	var _createTemplate = __webpack_require__(15);
+	var _createTemplate = __webpack_require__(16);
 	
 	var _createTemplate2 = _interopRequireDefault(_createTemplate);
 	
-	var _clearDomElement = __webpack_require__(42);
+	var _clearDomElement = __webpack_require__(45);
 	
 	var _clearDomElement2 = _interopRequireDefault(_clearDomElement);
 	
-	var _createRef = __webpack_require__(44);
+	var _createRef = __webpack_require__(47);
 	
 	var _createRef2 = _interopRequireDefault(_createRef);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = {
+	module.exports = {
 		Component: _Component2.default,
 		render: _render2.default,
 		renderToString: _renderToString2.default,
@@ -182,15 +178,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
-	var _updateFragmentValue = __webpack_require__(51);
+	var _updateFragmentValue = __webpack_require__(54);
 	
 	var _updateFragmentValue2 = _interopRequireDefault(_updateFragmentValue);
 	
-	var _updateFragmentValues = __webpack_require__(52);
+	var _updateFragmentValues = __webpack_require__(55);
 	
 	var _updateFragmentValues2 = _interopRequireDefault(_updateFragmentValues);
 	
-	var _unmountComponentAtFragment = __webpack_require__(18);
+	var _unmountComponentAtFragment = __webpack_require__(19);
 	
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
 	
@@ -304,7 +300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _getRecycledFragment = __webpack_require__(45);
+	var _getRecycledFragment = __webpack_require__(48);
 	
 	var _getRecycledFragment2 = _interopRequireDefault(_getRecycledFragment);
 	
@@ -312,7 +308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateFragment2 = _interopRequireDefault(_updateFragment);
 	
-	var _attachFragmentList = __webpack_require__(14);
+	var _attachFragmentList = __webpack_require__(15);
 	
 	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
 	
@@ -320,11 +316,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
 	
-	var _insertFragment = __webpack_require__(46);
+	var _insertFragment = __webpack_require__(49);
 	
 	var _insertFragment2 = _interopRequireDefault(_insertFragment);
 	
-	var _bind = __webpack_require__(35);
+	var _bind = __webpack_require__(36);
 	
 	var _bind2 = _interopRequireDefault(_bind);
 	
@@ -332,15 +328,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _createElement = __webpack_require__(64);
+	var _createElement = __webpack_require__(68);
 	
 	var _createElement2 = _interopRequireDefault(_createElement);
 	
-	var _createComponent = __webpack_require__(62);
+	var _createComponent = __webpack_require__(66);
 	
 	var _createComponent2 = _interopRequireDefault(_createComponent);
 	
-	var _dom = __webpack_require__(65);
+	var _dom = __webpack_require__(69);
 	
 	var _dom2 = _interopRequireDefault(_dom);
 	
@@ -348,7 +344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _virtual2 = _interopRequireDefault(_virtual);
 	
-	var _attachComponent5 = __webpack_require__(40);
+	var _attachComponent5 = __webpack_require__(43);
 	
 	var _attachComponent6 = _interopRequireDefault(_attachComponent5);
 	
@@ -379,8 +375,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			case _templateTypes2.default.FUNCTIONAL_API:
 				var createElement = (0, _createElement2.default)(fragment, templateToUse);
 				var createComponent = (0, _createComponent2.default)(fragment, templateToUse);
-				var params = [createElement, createComponent],
-				    length = fragment.templateValue != null && 1 || fragment.templateValues && fragment.templateValues.length || 0;
+				var params = [createElement, createComponent];
+				var length = fragment.templateValue != null && 1 || fragment.templateValues && fragment.templateValues.length || 0;
 	
 				//create our pointers, for example 0,1,2,3,4,5 as params to pass through
 				for (var i = 0; i < length; i++) {
@@ -503,6 +499,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		(0, _insertFragment2.default)(context, fragment, parentDom, fragment.dom, nextFragment, replace);
+	
 		//now fire all the component mountCallback functions so they know this fragment has been added
 		for (var i = 0; i < mountCallbacks.length; i++) {
 			mountCallbacks[i]();
@@ -521,7 +518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _destroyFragment = __webpack_require__(16);
+	var _destroyFragment = __webpack_require__(17);
 	
 	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
 	
@@ -545,7 +542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = renderFactory;
 	
-	var _contexts = __webpack_require__(12);
+	var _contexts = __webpack_require__(13);
 	
 	var _contexts2 = _interopRequireDefault(_contexts);
 	
@@ -622,15 +619,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _events2 = _interopRequireDefault(_events);
 	
-	var _capturedEvents = __webpack_require__(23);
-	
-	var _capturedEvents2 = _interopRequireDefault(_capturedEvents);
-	
-	var _getUniqueId = __webpack_require__(21);
+	var _getUniqueId = __webpack_require__(22);
 	
 	var _getUniqueId2 = _interopRequireDefault(_getUniqueId);
 	
-	var _root = __webpack_require__(22);
+	var _root = __webpack_require__(23);
 	
 	var _root2 = _interopRequireDefault(_root);
 	
@@ -666,8 +659,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            config.set = true;
 	        }
 	
-	        var uniqueId = (0, _getUniqueId2.default)(element),
-	            listeners = _rootListeners2.default[uniqueId] || (_rootListeners2.default[uniqueId] = {});
+	        var uniqueId = (0, _getUniqueId2.default)(element);
+	        var listeners = _rootListeners2.default[uniqueId] || (_rootListeners2.default[uniqueId] = {});
 	
 	        if (!listeners[type]) {
 	
@@ -726,7 +719,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _contexts = __webpack_require__(12);
+	var _contexts = __webpack_require__(13);
 	
 	var _contexts2 = _interopRequireDefault(_contexts);
 	
@@ -751,7 +744,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _contexts = __webpack_require__(12);
+	var _contexts = __webpack_require__(13);
 	
 	var _contexts2 = _interopRequireDefault(_contexts);
 	
@@ -784,426 +777,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 11 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	exports.default = function (x) {
-	  return x.constructor === Array;
-	};
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = [];
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	//VirtualTextNode are lightweight replacements for real DOM elements, they allow us to easily
-	//move, remove, delete elements around our "virtual DOM" without needing real DOM elements
-	//we can they find their text string for when we want to renderToString()
-	function VirtualTextNode(nodeValue) {
-	
-	    return {
-	        nodeValue: nodeValue
-	    };
-	}
-	
-	exports.default = VirtualTextNode;
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _attachFragment = __webpack_require__(4);
-	
-	var _attachFragment2 = _interopRequireDefault(_attachFragment);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function attachFragmentList(context, list, parentDom, component) {
-		for (var i = 0; i < list.length; i++) {
-			var item = list[i];
-			//check this is a fragment we're dealing with
-			if (item.template) {
-				(0, _attachFragment2.default)(context, item, parentDom, component);
-			} else {
-				//otherwise it's an element, so we can simply append it
-				parentDom.appendChild(item);
-			}
-		}
-	}
-	
-	exports.default = attachFragmentList;
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = createTemplate;
-	
-	var _templateTypes = __webpack_require__(10);
-	
-	var _templateTypes2 = _interopRequireDefault(_templateTypes);
-	
-	var _uuid = __webpack_require__(69);
-	
-	var _uuid2 = _interopRequireDefault(_uuid);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function createTemplate(templateFunction) {
-		//give the function a random key
-		templateFunction.key = (0, _uuid2.default)();
-		templateFunction.type = _templateTypes2.default.FUNCTIONAL_API;
-		return templateFunction;
-	}
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _recycledFragments = __webpack_require__(37);
-	
-	var _recycledFragments2 = _interopRequireDefault(_recycledFragments);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/**
-	 * Destroy fragment
-	 */
-	function destroyFragment(context, fragment) {
-	
-		var templateKey = undefined;
-	
-		//long winded approach, but components have their own context which is how we find their template keys
-		if (fragment.component) {
-			templateKey = fragment.component.context.fragment.template.key;
-		} else {
-			templateKey = fragment.template.key;
-		}
-	
-		if (context.shouldRecycle === true) {
-			var toRecycleForKey = _recycledFragments2.default[templateKey];
-	
-			if (!toRecycleForKey) {
-				_recycledFragments2.default[templateKey] = toRecycleForKey = [];
-			}
-			toRecycleForKey.push(fragment);
-		}
-	}
-	exports.default = destroyFragment;
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = removeComponent;
-	function removeComponent(component, element) {
-		// TODO
-		//unmount component
-		//remove component context
-		//remove node from DOM
-		element.parentNode.removeChild(element);
-	}
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _removeContext = __webpack_require__(9);
-	
-	var _removeContext2 = _interopRequireDefault(_removeContext);
-	
-	var _badUpdate = __webpack_require__(41);
-	
-	var _badUpdate2 = _interopRequireDefault(_badUpdate);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = function (fragment) {
-		var component = fragment.component;
-	
-		component.componentWillUnmount();
-		(0, _removeContext2.default)(component.context.dom);
-		component.forceUpdate = _badUpdate2.default;
-		component.context = null;
-		component = null;
-	};
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = updateComponent;
-	function updateComponent(component, nextProps) {
-		var prevProps = component.props;
-		if (!nextProps.children) {
-			nextProps.children = prevProps.children;
-		}
-		var prevState = component.state;
-	
-		if (prevProps !== nextProps) {
-			component._blockSetState = true;
-			component.componentWillReceiveProps(nextProps);
-			component._blockSetState = false;
-			var nextState = component.state;
-			var shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
-	
-			if (shouldUpdate) {
-				component._deferSetState = true;
-				component.componentWillUpdate(nextProps, nextState);
-				component._deferSetState = false;
-				component.props = nextProps;
-				component.state = nextState;
-				component.forceUpdate();
-				component.componentDidUpdate(prevProps, prevState);
-			}
-		}
-	}
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = updateFragmentList;
-	
-	var _removeFragments = __webpack_require__(48);
-	
-	var _removeFragments2 = _interopRequireDefault(_removeFragments);
-	
-	var _removeFragment = __webpack_require__(5);
-	
-	var _removeFragment2 = _interopRequireDefault(_removeFragment);
-	
-	var _attachFragmentList = __webpack_require__(14);
-	
-	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
-	
-	var _attachFragment = __webpack_require__(4);
-	
-	var _attachFragment2 = _interopRequireDefault(_attachFragment);
-	
-	var _updateFragment = __webpack_require__(2);
-	
-	var _updateFragment2 = _interopRequireDefault(_updateFragment);
-	
-	var _moveFragment = __webpack_require__(47);
-	
-	var _moveFragment2 = _interopRequireDefault(_moveFragment);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function updateFragmentList(context, oldList, list, parentDom, component, outerNextFragment) {
-	
-		if (oldList === list) {
-			return;
-		}
-	
-		var oldListLength = oldList.length;
-		var listLength = list.length;
-	
-		if (listLength === 0) {
-			(0, _removeFragments2.default)(context, parentDom, oldList, 0, oldListLength);
-			return;
-		} else if (oldListLength === 0) {
-			(0, _attachFragmentList2.default)(context, list, parentDom, component);
-			return;
-		}
-	
-		if (oldListLength === 1 && listLength === 1) {
-			(0, _updateFragment2.default)(context, oldList[0], list[0], parentDom);
-			return;
-		}
-	
-		var oldEndIndex = oldListLength - 1;
-		var endIndex = listLength - 1;
-		var oldStartIndex = 0;
-		var startIndex = 0;
-		var successful = true;
-		var nextItem = undefined;
-		var oldItem = undefined;
-		var item = undefined;
-		var oldStartItem = undefined;
-		var oldEndItem = undefined;
-		var startItem = undefined;
-		var endItem = undefined;
-	
-		outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
-	
-			successful = false;
-			oldStartItem = oldList[oldStartIndex];
-			startItem = list[startIndex];
-			while (oldStartItem.key === startItem.key) {
-				(0, _updateFragment2.default)(context, oldStartItem, startItem, parentDom, component);
-				oldStartIndex++;startIndex++;
-				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-					break outer;
-				}
-				oldStartItem = oldList[oldStartIndex];
-				startItem = list[startIndex];
-				successful = true;
-			}
-			oldEndItem = oldList[oldEndIndex];
-			endItem = list[endIndex];
-			while (oldEndItem.key === endItem.key) {
-				(0, _updateFragment2.default)(context, oldEndItem, endItem, parentDom, component);
-				oldEndIndex--;endIndex--;
-				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-					break outer;
-				}
-				oldEndItem = oldList[oldEndIndex];
-				endItem = list[endIndex];
-				successful = true;
-			}
-			while (oldStartItem.key === endItem.key) {
-				nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-				(0, _updateFragment2.default)(context, oldStartItem, endItem, parentDom, component);
-				(0, _moveFragment2.default)(parentDom, endItem, nextItem);
-				oldStartIndex++;endIndex--;
-				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-					break outer;
-				}
-				oldStartItem = oldList[oldStartIndex];
-				endItem = list[endIndex];
-				successful = true;
-			}
-			while (oldEndItem.key === startItem.key) {
-				nextItem = oldStartIndex < oldListLength ? oldList[oldStartIndex] : outerNextFragment;
-				(0, _updateFragment2.default)(context, oldEndItem, startItem, parentDom, component);
-				(0, _moveFragment2.default)(parentDom, startItem, nextItem);
-				oldEndIndex--;startIndex++;
-				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
-					break outer;
-				}
-				oldEndItem = oldList[oldEndIndex];
-				startItem = list[startIndex];
-				successful = true;
-			}
-		}
-		if (oldStartIndex > oldEndIndex) {
-			nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-			for (var i = startIndex; i <= endIndex; i++) {
-				item = list[i];
-				(0, _attachFragment2.default)(context, item, parentDom, component, nextItem);
-			}
-		} else if (startIndex > endIndex) {
-			(0, _removeFragments2.default)(context, parentDom, oldList, oldStartIndex, oldEndIndex + 1);
-		} else {
-			var oldNextItem = oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1];
-			var oldListMap = {};
-	
-			for (var i = oldEndIndex; i >= oldStartIndex; i--) {
-				oldItem = oldList[i];
-				oldItem.next = oldNextItem;
-				oldListMap[oldItem.key] = oldItem;
-				oldNextItem = oldItem;
-			}
-			nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
-			for (var i = endIndex; i >= startIndex; i--) {
-				item = list[i];
-				var key = item.key;
-				oldItem = oldListMap[key];
-				if (oldItem) {
-					oldListMap[key] = null;
-					oldNextItem = oldItem.next;
-					(0, _updateFragment2.default)(context, oldItem, item, parentDom, component);
-					if (parentDom.nextSibling !== (nextItem && nextItem.dom)) {
-						(0, _moveFragment2.default)(parentDom, item, nextItem);
-					}
-				} else {
-					(0, _attachFragment2.default)(context, item, parentDom, component, nextItem);
-				}
-				nextItem = item;
-			}
-			for (var i = oldStartIndex; i <= oldEndIndex; i++) {
-				oldItem = oldList[i];
-				if (oldListMap[oldItem.key] !== null) {
-					(0, _removeFragment2.default)(context, parentDom, oldItem);
-				}
-			}
-		}
-	}
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _infernoID = __webpack_require__(57);
-	
-	var _infernoID2 = _interopRequireDefault(_infernoID);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var counter = 1;
-	
-	exports.default = function (node, onlyGet) {
-	  return node[_infernoID2.default] || (onlyGet ? null : node[_infernoID2.default] = counter++);
-	};
-
-/***/ },
-/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1212,217 +785,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _eventsCfg = __webpack_require__(24);
-	
-	var _eventsCfg2 = _interopRequireDefault(_eventsCfg);
-	
-	var _checkKeyboard = __webpack_require__(54);
-	
-	var _checkKeyboard2 = _interopRequireDefault(_checkKeyboard);
-	
-	var _getUniqueId = __webpack_require__(21);
-	
-	var _getUniqueId2 = _interopRequireDefault(_getUniqueId);
-	
-	var _rootListeners = __webpack_require__(25);
-	
-	var _rootListeners2 = _interopRequireDefault(_rootListeners);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var stopImmediate = false;
-	
-	function normalizeEvents(ev, type) {
-	
-	    if (!ev) {
-	        ev = window.event;
-	        if (!ev.preventDefault) {
-	            ev.preventDefault = function () {
-	                this.defaultPrevented = true;
-	                this.returnValue = false;
-	            };
-	            ev.stopPropagation = function () {
-	                this.cancelBubble = true;
-	            };
-	            ev.defaultPrevented = ev.returnValue === false;
-	        }
-	    }
-	
-	    ev.stopImmediatePropagation = function () {
-	        stopImmediate = true;
-	        this.stopPropagation();
-	    };
-	
-	    switch (type) {
-	
-	        case 'keydown':
-	        case 'keyup':
-	        case 'keypress':
-	            // webkit key event issue workaround
-	            ev = (0, _checkKeyboard2.default)(ev, type);
-	            break;
-	        case 'wheel':
-	            // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
-	            'deltaX' in ev ? ev.deltaX : -ev.wheelDeltaX;
-	            // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
-	            'deltaY' in ev ? ev.deltaY : -ev.wheelDeltaY;
-	            break;
-	    }
-	
-	    return ev;
-	}
-	
-	function eventHandler(e) {
-	    _rootListeners2.default[(0, _getUniqueId2.default)(e.target)][e.type](normalizeEvents(e, e.type));
-	}
-	
-	function addRootListener(e, type) {
-	
-	    type || (type = e.type);
-	
-	    var config = _eventsCfg2.default[type];
-	
-	    var target = e.target,
-	        listenersState = config.countListeners,
-	        listeners = undefined,
-	        listener = undefined,
-	        uniqueId = undefined,
-	        ev = undefined;
-	
-	    while (listenersState > 0 && target !== document.body) {
-	        if (uniqueId = (0, _getUniqueId2.default)(target, true)) {
-	            listeners = _rootListeners2.default[uniqueId];
-	            if (listeners && (listener = listeners[type])) {
-	                listener(ev || (ev = normalizeEvents(e)));
-	                if (stopImmediate) {
-	                    stopImmediate = false;
-	                    break;
-	                }
-	                --listenersState;
-	            }
-	        }
-	
-	        target = target.parentNode;
-	    }
-	};
-	
-	exports.default = { eventHandler: eventHandler, addRootListener: addRootListener };
-
-/***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = ['abort', 'mouseover', 'mousemove', 'mouseout', 'mousedown', 'mouseup', 'error', 'encrypted', 'emptied', 'ended', 'error', 'loadastart', 'compositionend', 'compositionstart', 'compositionupdate', 'durationchange', 'loadeddata', 'loadstart', 'pause', 'play', 'seeked', 'seeking', 'selectionchange', 'stalled', 'suspend', 'textInput', 'timeupdate', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'volumechange', 'waiting', 'loadedmetadata', 'click', 'dblclick', 'keydown', 'keypress', 'keyup', 'change', 'input', 'submit', 'focus', 'blur', 'dragstart', 'drag', 'dragenter', 'dragover', 'dragleave', 'dragend', 'drop', 'contextmenu', 'wheel', 'copy', 'cut', 'paste'];
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _capturedEvents = __webpack_require__(23);
-	
-	var _capturedEvents2 = _interopRequireDefault(_capturedEvents);
-	
-	var _noCaptureEvents = __webpack_require__(56);
-	
-	var _noCaptureEvents2 = _interopRequireDefault(_noCaptureEvents);
-	
-	var _focusEvents = __webpack_require__(55);
-	
-	var _focusEvents2 = _interopRequireDefault(_focusEvents);
-	
-	var _root = __webpack_require__(22);
-	
-	var _root2 = _interopRequireDefault(_root);
-	
-	var _isEventSupported = __webpack_require__(53);
-	
-	var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var eventsCfg = {};
-	
-	// This will not work on server side
-	if (document.body) {
-	
-	    var i = 0,
-	        type = undefined;
-	
-	    while (i < _capturedEvents2.default.length) {
-	        type = _capturedEvents2.default[i++];
-	        eventsCfg[type] = {
-	            type: type,
-	            bubbles: true,
-	            countListeners: 0,
-	            set: false,
-	            // firefox doesn't support focusin/focusout events
-	            setup: _focusEvents2.default && _focusEvents2.default[type] && (0, _isEventSupported2.default)(_focusEvents2.default[type]) ? function () {
-	                var type = this.type;
-	                document.addEventListener(_focusEvents2.default[type], function (e) {
-	                    addEventListener(e, type);
-	                });
-	            } : function () {
-	                document.addEventListener(this.type, _root2.default.addRootListener, true);
-	            }
-	        };
-	    }
-	    i = 0;
-	    while (i < _noCaptureEvents2.default.length) {
-	        eventsCfg[_noCaptureEvents2.default[i++]] = {
-	            type: type,
-	            bubbles: false,
-	            set: false
-	        };
-	    }
-	}
-	
-	exports.default = eventsCfg;
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {};
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _DOMAttributeNamespaces = __webpack_require__(59);
+	var _DOMAttributeNamespaces = __webpack_require__(63);
 	
 	var _DOMAttributeNamespaces2 = _interopRequireDefault(_DOMAttributeNamespaces);
 	
-	var _DOMAttributeNames = __webpack_require__(58);
+	var _DOMAttributeNames = __webpack_require__(62);
 	
 	var _DOMAttributeNames2 = _interopRequireDefault(_DOMAttributeNames);
 	
-	var _DOMasks = __webpack_require__(60);
+	var _DOMasks = __webpack_require__(64);
 	
 	var _DOMasks2 = _interopRequireDefault(_DOMasks);
 	
-	var _checkMask = __webpack_require__(28);
+	var _checkMask = __webpack_require__(27);
 	
 	var _checkMask2 = _interopRequireDefault(_checkMask);
 	
@@ -1894,13 +1269,628 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DOMPropertyContainer;
 
 /***/ },
-/* 27 */
+/* 12 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (x) {
+	  return x.constructor === Array;
+	};
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = [];
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//VirtualTextNode are lightweight replacements for real DOM elements, they allow us to easily
+	//move, remove, delete elements around our "virtual DOM" without needing real DOM elements
+	//we can they find their text string for when we want to renderToString()
+	function VirtualTextNode(nodeValue) {
+	
+	    return {
+	        nodeValue: nodeValue
+	    };
+	}
+	
+	exports.default = VirtualTextNode;
+
+/***/ },
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
+	});
+	
+	var _attachFragment = __webpack_require__(4);
+	
+	var _attachFragment2 = _interopRequireDefault(_attachFragment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function attachFragmentList(context, list, parentDom, component) {
+		for (var i = 0; i < list.length; i++) {
+			var item = list[i];
+			//check this is a fragment we're dealing with
+			if (item.template) {
+				(0, _attachFragment2.default)(context, item, parentDom, component);
+			} else {
+				//otherwise it's an element, so we can simply append it
+				parentDom.appendChild(item);
+			}
+		}
+	}
+	
+	exports.default = attachFragmentList;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = createTemplate;
+	
+	var _templateTypes = __webpack_require__(10);
+	
+	var _templateTypes2 = _interopRequireDefault(_templateTypes);
+	
+	var _uuid = __webpack_require__(73);
+	
+	var _uuid2 = _interopRequireDefault(_uuid);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function createTemplate(templateFunction) {
+		//give the function a random key
+		templateFunction.key = (0, _uuid2.default)();
+		templateFunction.type = _templateTypes2.default.FUNCTIONAL_API;
+		return templateFunction;
+	}
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _recycledFragments = __webpack_require__(38);
+	
+	var _recycledFragments2 = _interopRequireDefault(_recycledFragments);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/**
+	 * Destroy fragment
+	 */
+	function destroyFragment(context, fragment) {
+	
+		var templateKey = undefined;
+	
+		//long winded approach, but components have their own context which is how we find their template keys
+		if (fragment.component) {
+			templateKey = fragment.component.context.fragment.template.key;
+		} else {
+			templateKey = fragment.template.key;
+		}
+	
+		if (context.shouldRecycle === true) {
+			var toRecycleForKey = _recycledFragments2.default[templateKey];
+	
+			if (!toRecycleForKey) {
+				_recycledFragments2.default[templateKey] = toRecycleForKey = [];
+			}
+			toRecycleForKey.push(fragment);
+		}
+	}
+	exports.default = destroyFragment;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = removeComponent;
+	function removeComponent(component, element) {
+		// TODO
+		//unmount component
+		//remove component context
+		//remove node from DOM
+		element.parentNode.removeChild(element);
+	}
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _removeContext = __webpack_require__(9);
+	
+	var _removeContext2 = _interopRequireDefault(_removeContext);
+	
+	var _badUpdate = __webpack_require__(44);
+	
+	var _badUpdate2 = _interopRequireDefault(_badUpdate);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = function (fragment) {
+		var component = fragment.component;
+	
+		component.componentWillUnmount();
+		(0, _removeContext2.default)(component.context.dom);
+		component.forceUpdate = _badUpdate2.default;
+		component.context = null;
+		component = null;
+	};
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = updateComponent;
+	function updateComponent(component, nextProps) {
+	
+		var prevProps = component.props;
+	
+		if (!nextProps.children) {
+			nextProps.children = prevProps.children;
+		}
+	
+		var prevState = component.state;
+	
+		if (prevProps !== nextProps) {
+			component._blockSetState = true;
+			component.componentWillReceiveProps(nextProps);
+			component._blockSetState = false;
+	
+			var nextState = component.state;
+			var shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
+	
+			if (shouldUpdate) {
+				component._deferSetState = true;
+				component.componentWillUpdate(nextProps, nextState);
+				component._deferSetState = false;
+				component.props = nextProps;
+				component.state = nextState;
+				component.forceUpdate();
+				component.componentDidUpdate(prevProps, prevState);
+			}
+		}
+	}
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = updateFragmentList;
+	
+	var _removeFragments = __webpack_require__(51);
+	
+	var _removeFragments2 = _interopRequireDefault(_removeFragments);
+	
+	var _removeFragment = __webpack_require__(5);
+	
+	var _removeFragment2 = _interopRequireDefault(_removeFragment);
+	
+	var _attachFragmentList = __webpack_require__(15);
+	
+	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
+	
+	var _attachFragment = __webpack_require__(4);
+	
+	var _attachFragment2 = _interopRequireDefault(_attachFragment);
+	
+	var _updateFragment = __webpack_require__(2);
+	
+	var _updateFragment2 = _interopRequireDefault(_updateFragment);
+	
+	var _moveFragment = __webpack_require__(50);
+	
+	var _moveFragment2 = _interopRequireDefault(_moveFragment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function updateFragmentList(context, oldList, list, parentDom, component, outerNextFragment) {
+	
+		if (oldList === list) {
+			return;
+		}
+	
+		var oldListLength = oldList.length;
+		var listLength = list.length;
+	
+		if (listLength === 0) {
+			(0, _removeFragments2.default)(context, parentDom, oldList, 0, oldListLength);
+			return;
+		} else if (oldListLength === 0) {
+			(0, _attachFragmentList2.default)(context, list, parentDom, component);
+			return;
+		}
+	
+		if (oldListLength === 1 && listLength === 1) {
+			(0, _updateFragment2.default)(context, oldList[0], list[0], parentDom);
+			return;
+		}
+	
+		var oldEndIndex = oldListLength - 1;
+		var endIndex = listLength - 1;
+		var oldStartIndex = 0;
+		var startIndex = 0;
+		var successful = true;
+		var nextItem = undefined;
+		var oldItem = undefined;
+		var item = undefined;
+		var oldStartItem = undefined;
+		var oldEndItem = undefined;
+		var startItem = undefined;
+		var endItem = undefined;
+	
+		outer: while (successful && oldStartIndex <= oldEndIndex && startIndex <= endIndex) {
+	
+			successful = false;
+			oldStartItem = oldList[oldStartIndex];
+			startItem = list[startIndex];
+			while (oldStartItem.key === startItem.key) {
+				(0, _updateFragment2.default)(context, oldStartItem, startItem, parentDom, component);
+				oldStartIndex++;startIndex++;
+				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+					break outer;
+				}
+				oldStartItem = oldList[oldStartIndex];
+				startItem = list[startIndex];
+				successful = true;
+			}
+			oldEndItem = oldList[oldEndIndex];
+			endItem = list[endIndex];
+			while (oldEndItem.key === endItem.key) {
+				(0, _updateFragment2.default)(context, oldEndItem, endItem, parentDom, component);
+				oldEndIndex--;endIndex--;
+				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+					break outer;
+				}
+				oldEndItem = oldList[oldEndIndex];
+				endItem = list[endIndex];
+				successful = true;
+			}
+			while (oldStartItem.key === endItem.key) {
+				nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
+				(0, _updateFragment2.default)(context, oldStartItem, endItem, parentDom, component);
+				(0, _moveFragment2.default)(parentDom, endItem, nextItem);
+				oldStartIndex++;endIndex--;
+				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+					break outer;
+				}
+				oldStartItem = oldList[oldStartIndex];
+				endItem = list[endIndex];
+				successful = true;
+			}
+			while (oldEndItem.key === startItem.key) {
+				nextItem = oldStartIndex < oldListLength ? oldList[oldStartIndex] : outerNextFragment;
+				(0, _updateFragment2.default)(context, oldEndItem, startItem, parentDom, component);
+				(0, _moveFragment2.default)(parentDom, startItem, nextItem);
+				oldEndIndex--;startIndex++;
+				if (oldStartIndex > oldEndIndex || startIndex > endIndex) {
+					break outer;
+				}
+				oldEndItem = oldList[oldEndIndex];
+				startItem = list[startIndex];
+				successful = true;
+			}
+		}
+		if (oldStartIndex > oldEndIndex) {
+			nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
+			for (var i = startIndex; i <= endIndex; i++) {
+				item = list[i];
+				(0, _attachFragment2.default)(context, item, parentDom, component, nextItem);
+			}
+		} else if (startIndex > endIndex) {
+			(0, _removeFragments2.default)(context, parentDom, oldList, oldStartIndex, oldEndIndex + 1);
+		} else {
+			var oldNextItem = oldEndIndex + 1 >= oldListLength ? null : oldList[oldEndIndex + 1];
+			var oldListMap = {};
+	
+			for (var i = oldEndIndex; i >= oldStartIndex; i--) {
+				oldItem = oldList[i];
+				oldItem.next = oldNextItem;
+				oldListMap[oldItem.key] = oldItem;
+				oldNextItem = oldItem;
+			}
+			nextItem = endIndex + 1 < listLength ? list[endIndex + 1] : outerNextFragment;
+			for (var i = endIndex; i >= startIndex; i--) {
+				item = list[i];
+				var key = item.key;
+				oldItem = oldListMap[key];
+				if (oldItem) {
+					oldListMap[key] = null;
+					oldNextItem = oldItem.next;
+					(0, _updateFragment2.default)(context, oldItem, item, parentDom, component);
+					if (parentDom.nextSibling !== (nextItem && nextItem.dom)) {
+						(0, _moveFragment2.default)(parentDom, item, nextItem);
+					}
+				} else {
+					(0, _attachFragment2.default)(context, item, parentDom, component, nextItem);
+				}
+				nextItem = item;
+			}
+			for (var i = oldStartIndex; i <= oldEndIndex; i++) {
+				oldItem = oldList[i];
+				if (oldListMap[oldItem.key] !== null) {
+					(0, _removeFragment2.default)(context, parentDom, oldItem);
+				}
+			}
+		}
+	}
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _infernoID = __webpack_require__(61);
+	
+	var _infernoID2 = _interopRequireDefault(_infernoID);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var counter = 1;
+	
+	exports.default = function (node, onlyGet) {
+	  return node[_infernoID2.default] || (onlyGet ? null : node[_infernoID2.default] = counter++);
+	};
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _eventsCfg = __webpack_require__(24);
+	
+	var _eventsCfg2 = _interopRequireDefault(_eventsCfg);
+	
+	var _checkKeyboard = __webpack_require__(58);
+	
+	var _checkKeyboard2 = _interopRequireDefault(_checkKeyboard);
+	
+	var _getUniqueId = __webpack_require__(22);
+	
+	var _getUniqueId2 = _interopRequireDefault(_getUniqueId);
+	
+	var _rootListeners = __webpack_require__(25);
+	
+	var _rootListeners2 = _interopRequireDefault(_rootListeners);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var stopImmediate = false;
+	
+	function normalizeEvents(ev, type) {
+	
+	    if (!ev) {
+	        ev = window.event;
+	        if (!ev.preventDefault) {
+	            ev.preventDefault = function () {
+	                this.defaultPrevented = true;
+	                this.returnValue = false;
+	            };
+	            ev.stopPropagation = function () {
+	                this.cancelBubble = true;
+	            };
+	            ev.defaultPrevented = ev.returnValue === false;
+	        }
+	    }
+	
+	    ev.stopImmediatePropagation = function () {
+	        stopImmediate = true;
+	        this.stopPropagation();
+	    };
+	
+	    switch (type) {
+	
+	        case 'keydown':
+	        case 'keyup':
+	        case 'keypress':
+	            // webkit key event issue workaround
+	            ev = (0, _checkKeyboard2.default)(ev, type);
+	            break;
+	        case 'wheel':
+	            // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
+	            'deltaX' in ev ? ev.deltaX : -ev.wheelDeltaX;
+	            // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
+	            'deltaY' in ev ? ev.deltaY : -ev.wheelDeltaY;
+	            break;
+	    }
+	
+	    return ev;
+	}
+	
+	function eventHandler(e) {
+	    _rootListeners2.default[(0, _getUniqueId2.default)(e.target)][e.type](normalizeEvents(e, e.type));
+	}
+	
+	function addRootListener(e, type) {
+	
+	    type || (type = e.type);
+	
+	    var config = _eventsCfg2.default[type];
+	
+	    var target = e.target;
+	    var listenersState = config.countListeners;
+	    var listeners = undefined;
+	    var listener = undefined;
+	    var uniqueId = undefined;
+	    var ev = undefined;
+	
+	    while (listenersState > 0 && target !== document.body) {
+	        if (uniqueId = (0, _getUniqueId2.default)(target, true)) {
+	            listeners = _rootListeners2.default[uniqueId];
+	            if (listeners && (listener = listeners[type])) {
+	                listener(ev || (ev = normalizeEvents(e)));
+	                if (stopImmediate) {
+	                    stopImmediate = false;
+	                    break;
+	                }
+	                --listenersState;
+	            }
+	        }
+	
+	        target = target.parentNode;
+	    }
+	}
+	
+	exports.default = { eventHandler: eventHandler, addRootListener: addRootListener };
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _capturedEvents = __webpack_require__(57);
+	
+	var _capturedEvents2 = _interopRequireDefault(_capturedEvents);
+	
+	var _noCaptureEvents = __webpack_require__(60);
+	
+	var _noCaptureEvents2 = _interopRequireDefault(_noCaptureEvents);
+	
+	var _focusEvents = __webpack_require__(59);
+	
+	var _focusEvents2 = _interopRequireDefault(_focusEvents);
+	
+	var _root = __webpack_require__(23);
+	
+	var _root2 = _interopRequireDefault(_root);
+	
+	var _isEventSupported = __webpack_require__(56);
+	
+	var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
+	
+	var _ExecutionEnvironment = __webpack_require__(35);
+	
+	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var eventsCfg = {};
+	
+	// This will not work on server side
+	if (_ExecutionEnvironment2.default.canUseDOM) {
+	
+	    var i = 0;
+	    var type = undefined;
+	
+	    while (i < _capturedEvents2.default.length) {
+	        type = _capturedEvents2.default[i++];
+	        eventsCfg[type] = {
+	            type: type,
+	            bubbles: true,
+	            countListeners: 0,
+	            set: false,
+	            // firefox doesn't support focusin/focusout events
+	            setup: _focusEvents2.default && _focusEvents2.default[type] && (0, _isEventSupported2.default)(_focusEvents2.default[type]) ? function () {
+	                var type = this.type;
+	                document.addEventListener(_focusEvents2.default[type], function (e) {
+	                    addEventListener(e, type);
+	                });
+	            } : function () {
+	                document.addEventListener(this.type, _root2.default.addRootListener, true);
+	            }
+	        };
+	    }
+	    i = 0;
+	    while (i < _noCaptureEvents2.default.length) {
+	        eventsCfg[_noCaptureEvents2.default[i++]] = {
+	            type: type,
+	            bubbles: false,
+	            set: false
+	        };
+	    }
+	}
+	
+	exports.default = eventsCfg;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
 	});
 	exports.default = addAttributes;
 	
@@ -1912,59 +1902,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _eventManager2 = _interopRequireDefault(_eventManager);
 	
-	var _setValueForProperty = __webpack_require__(31);
+	var _setValueForProperty = __webpack_require__(30);
 	
 	var _setValueForProperty2 = _interopRequireDefault(_setValueForProperty);
 	
-	var _setValueForStyles = __webpack_require__(32);
+	var _setValueForStyles = __webpack_require__(31);
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
+	var _processFragmentAttrs = __webpack_require__(70);
+	
+	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	//ensuring we use these fragmentTypes before using ATTR_OTHER makes updates on
-	//fragments far faster, as there's way less overhead and logic involved when
-	//we get to updateFragmentValue/updateFragmentValues (especially on classNames)
-	//this somewhat replicates buildInfernoAttrsParams() in t7
-	function processFragmentAttrs(node, attrName, attrVal, fragment) {
-		var fragmentType = undefined;
-		var skip = false;
-	
-		switch (attrName) {
-			case 'class':
-			case 'className':
-				fragmentType = fragmentValueTypes.ATTR_CLASS;
-				break;
-			case 'id':
-				fragmentType = fragmentValueTypes.ATTR_ID;
-				break;
-			case 'ref':
-				fragmentType = fragmentValueTypes.ATTR_REF;
-				skip = true;
-				break;
-			default:
-				fragmentType = fragmentValueTypes.ATTR_OTHER;
-		}
-	
-		if (fragment.templateValue !== undefined) {
-			fragment.templateElement = node;
-			if (fragmentType === fragmentValueTypes.ATTR_OTHER) {
-				fragment.templateType = fragmentValueTypes.ATTR_OTHER[attrName] = attrName;
-			} else {
-				fragment.templateType = fragmentType;
-			}
-			return { attrVal: fragment.templateValue, skip: skip };
-		} else {
-			fragment.templateElements[attrVal.pointer] = node;
-			if (fragmentType === fragmentValueTypes.ATTR_OTHER) {
-				fragment.templateTypes[attrVal.pointer] = fragmentValueTypes.ATTR_OTHER[attrName] = attrName;
-			} else {
-				fragment.templateTypes[attrVal.pointer] = fragmentType;
-			}
-			return { attrVal: fragment.templateValues[attrVal.pointer], skip: skip };
-		}
-		return { attrVal: null, skip: skip };
-	}
 	
 	/**
 	 * Set HTML attributes on the template
@@ -1972,42 +1922,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param{ Object } attrs
 	 */
 	function addAttributes(node, attrs, fragment) {
-		for (var attrName in attrs) {
-			var attrVal = attrs[attrName];
-			var skip = false;
 	
-			//check if we have a pointer, if so, this is from the funcitonal API
-			//and thus it needs its fragment processing
-			//the t7 template API shouldn't need this as it post-processes the same code
-			//within t7: look for buildInfernoAttrsParams() in t7
-			if (attrVal && attrVal.pointer != null) {
-				var proccessedAttrs = processFragmentAttrs(node, attrName, attrVal, fragment);
-				attrVal = proccessedAttrs.attrVal;
-				skip = proccessedAttrs.skip;
-			}
+	    for (var attrName in attrs) {
 	
-			if (attrName === 'style') {
+	        var attrVal = attrs[attrName];
+	        var skip = false;
 	
-				(0, _setValueForStyles2.default)(node, attrVal);
-			} else {
+	        if (attrVal && attrVal.pointer != null) {
+	            var proccessedAttrs = (0, _processFragmentAttrs2.default)(node, attrName, attrVal, fragment);
+	            attrVal = proccessedAttrs.attrVal;
+	            skip = proccessedAttrs.skip;
+	        }
 	
-				// avoid 'null' values
-				if (attrVal !== null) {
-					// events
-					// events
-					if (_events2.default[attrName] !== undefined) {
-						_eventManager2.default.addListener(node, attrName, attrVal);
-						// attributes / properties
-					} else {
-							(0, _setValueForProperty2.default)(node, attrName, attrVal);
-						}
-				}
-			}
-		}
+	        if (attrName === 'style') {
+	
+	            (0, _setValueForStyles2.default)(node, attrVal);
+	        } else {
+	
+	            // avoid 'null' values
+	            if (attrVal !== undefined) {
+	                // events
+	                if (_events2.default[attrName] !== undefined) {
+	                    _eventManager2.default.addListener(node, attrName, attrVal);
+	                    // attributes / properties
+	                } else {
+	                        (0, _setValueForProperty2.default)(node, attrName, attrVal);
+	                    }
+	            }
+	        }
+	    }
 	}
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2023,7 +1970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = checkMask;
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2032,7 +1979,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(26);
+	var _DOMProperties = __webpack_require__(11);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2084,7 +2031,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = deleteValueForProperty;
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2106,7 +2053,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2115,19 +2062,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(26);
+	var _DOMProperties = __webpack_require__(11);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
-	var _shouldIgnoreValue = __webpack_require__(66);
+	var _shouldIgnoreValue = __webpack_require__(32);
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _deleteValueForProperty = __webpack_require__(29);
+	var _deleteValueForProperty = __webpack_require__(28);
 	
 	var _deleteValueForProperty2 = _interopRequireDefault(_deleteValueForProperty);
 	
-	var _isArray = __webpack_require__(11);
+	var _isArray = __webpack_require__(12);
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
@@ -2212,7 +2159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = setValueForProperty;
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2221,7 +2168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _addPixelSuffixToValueIfNeeded = __webpack_require__(61);
+	var _addPixelSuffixToValueIfNeeded = __webpack_require__(65);
 	
 	var _addPixelSuffixToValueIfNeeded2 = _interopRequireDefault(_addPixelSuffixToValueIfNeeded);
 	
@@ -2246,6 +2193,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	function shouldIgnoreValue(propertyInfo, value) {
+	
+	    return value == null || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && isNaN(value) || propertyInfo.hasPositiveNumericValue && value < 1 || propertyInfo.hasOverloadedBooleanValue && value === false;
+	}
+	
+	exports.default = shouldIgnoreValue;
+
+/***/ },
 /* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2255,15 +2218,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _deleteValueForProperty = __webpack_require__(29);
+	var _deleteValueForProperty = __webpack_require__(28);
 	
 	var _deleteValueForProperty2 = _interopRequireDefault(_deleteValueForProperty);
 	
-	var _setValueForProperty = __webpack_require__(31);
+	var _setValueForProperty = __webpack_require__(30);
 	
 	var _setValueForProperty2 = _interopRequireDefault(_setValueForProperty);
 	
-	var _setValueForStyles = __webpack_require__(32);
+	var _setValueForStyles = __webpack_require__(31);
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
@@ -2361,15 +2324,15 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _addAttributes = __webpack_require__(27);
+	var _addAttributes = __webpack_require__(26);
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _VirtualElement = __webpack_require__(39);
+	var _VirtualElement = __webpack_require__(40);
 	
 	var _VirtualElement2 = _interopRequireDefault(_VirtualElement);
 	
-	var _VirtualTextNode = __webpack_require__(13);
+	var _VirtualTextNode = __webpack_require__(14);
 	
 	var _VirtualTextNode2 = _interopRequireDefault(_VirtualTextNode);
 	
@@ -2400,6 +2363,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+	
+	/**
+	 * Simple, lightweight module assisting with the detection and context of
+	 * Worker. Helps avoid circular dependencies and allows code to reason about
+	 * whether or not they are in a Worker, even if they never include the main
+	 * `ReactWorker` dependency.
+	 */
+	exports.default = {
+	
+	  canUseDOM: canUseDOM,
+	
+	  canUseWorkers: typeof Worker !== 'undefined',
+	
+	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
+	
+	  canUseViewport: canUseDOM && !!window.screen,
+	
+	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
+	
+	};
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	function bind(self, fn) {
 	  var curryArgs = arguments.length > 2 ? Array.prototype.slice.call(arguments, 2) : [];
 	  if (typeof fn === 'function') {
@@ -2417,17 +2411,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = bind;
 
 /***/ },
-/* 36 */
-/***/ function(module, exports) {
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	
+	var _ExecutionEnvironment = __webpack_require__(35);
+	
+	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	var isSVG = undefined;
 	
-	if (document) {
+	if (_ExecutionEnvironment2.default.canUseDOM) {
 		var _document = document;
 		var implementation = _document.implementation;
 	
@@ -2437,12 +2438,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isSVG;
 
 /***/ },
-/* 37 */
-25,
 /* 38 */
-/***/ function(module, exports) {
+25,
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
@@ -2450,33 +2451,17 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
+	var _applyState = __webpack_require__(41);
+	
+	var _applyState2 = _interopRequireDefault(_applyState);
+	
+	var _queueStateChanges = __webpack_require__(42);
+	
+	var _queueStateChanges2 = _interopRequireDefault(_queueStateChanges);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function applyState(component) {
-		requestAnimationFrame(function () {
-			if (component._deferSetState === false) {
-				component._pendingSetState = false;
-				for (var stateKey in component._pendingState) {
-					component.state[stateKey] = component._pendingState[stateKey];
-				}
-				component._pendingState = {};
-				component._pendingSetState = false;
-				component.forceUpdate();
-			} else {
-				applyState(component);
-			}
-		});
-	}
-	
-	function queueStateChanges(component, newState) {
-		for (var stateKey in newState) {
-			component._pendingState = newState[stateKey];
-		}
-		if (component._pendingSetState == false) {
-			component._pendingSetState = true;
-			applyState(component);
-		}
-	}
 	
 	var Component = (function () {
 		function Component(props, context) {
@@ -2491,48 +2476,48 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		_createClass(Component, [{
-			key: "render",
+			key: 'render',
 			value: function render() {}
 		}, {
-			key: "forceUpdate",
+			key: 'forceUpdate',
 			value: function forceUpdate() {}
 		}, {
-			key: "setState",
+			key: 'setState',
 			value: function setState(newState) {
 				if (this._blockSetState === false) {
-					queueStateChanges(this, newState);
+					(0, _queueStateChanges2.default)(this, newState);
 				} else {
 					throw Error("Inferno Error: Cannot update state via setState() in componentWillReceiveProps()");
 				}
 			}
 		}, {
-			key: "replaceState",
+			key: 'replaceState',
 			value: function replaceState(newState) {
 				this.state = newState;
 				this.forceUpdate();
 			}
 		}, {
-			key: "componentDidMount",
+			key: 'componentDidMount',
 			value: function componentDidMount() {}
 		}, {
-			key: "componentWillMount",
+			key: 'componentWillMount',
 			value: function componentWillMount() {}
 		}, {
-			key: "componentWillUnmount",
+			key: 'componentWillUnmount',
 			value: function componentWillUnmount() {}
 		}, {
-			key: "componentDidUpdate",
+			key: 'componentDidUpdate',
 			value: function componentDidUpdate() {}
 		}, {
-			key: "shouldComponentUpdate",
+			key: 'shouldComponentUpdate',
 			value: function shouldComponentUpdate() {
 				return true;
 			}
 		}, {
-			key: "componentWillReceiveProps",
+			key: 'componentWillReceiveProps',
 			value: function componentWillReceiveProps() {}
 		}, {
-			key: "componentWillUpdate",
+			key: 'componentWillUpdate',
 			value: function componentWillUpdate() {}
 		}]);
 	
@@ -2542,7 +2527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Component;
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2551,15 +2536,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _VirtualTextNode = __webpack_require__(13);
+	var _VirtualTextNode = __webpack_require__(14);
 	
 	var _VirtualTextNode2 = _interopRequireDefault(_VirtualTextNode);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(68);
+	var _DOMProperties = __webpack_require__(11);
+	
+	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
+	
+	var _shouldIgnoreValue = __webpack_require__(32);
+	
+	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
+	
+	var _quoteAttributeValueForBrowser = __webpack_require__(71);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function createMarkupForProperty(name, value) {
+	
+	    console.log(value);
+	
+	    var propertyInfo = _DOMProperties2.default[name];
+	
+	    if (propertyInfo) {
+	
+	        console.log(name);
+	        if ((0, _shouldIgnoreValue2.default)(propertyInfo, value)) {
+	            return '';
+	        }
+	        var attributeName = propertyInfo.attributeName;
+	        if (propertyInfo.hasBooleanValue || propertyInfo.hasOverloadedBooleanValue && value === true) {
+	            return attributeName + '=""';
+	        }
+	        return attributeName + '=' + (0, _quoteAttributeValueForBrowser2.default)(value);
+	    } else {
+	        if (value == null) {
+	            return '';
+	        }
+	        return name + '=' + (0, _quoteAttributeValueForBrowser2.default)(value);
+	    }
+	    return null;
+	}
 	
 	// The HTML elements in this list are speced by
 	// http://www.w3.org/TR/html-markup/syntax.html#syntax-elements,
@@ -2671,7 +2690,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var innerHTML = virtual.props.innerHTML;
 	            var attributes = '';
 	            var childrenInnerHtml = undefined;
-	
 	            delete virtual.props.innerHTML;
 	
 	            var ret = '<' + tagName;
@@ -2683,12 +2701,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	                var propVal = virtual.props[property];
 	
-	                if (propVal === true) {
-	                    propVal = '';
-	                }
+	                var markup = createMarkupForProperty(property, propVal);
 	
-	                // prevent scripting attack
-	                ret += ' ' + property + ('=' + (0, _quoteAttributeValueForBrowser2.default)(propVal));
+	                if (markup) {
+	                    ret += ' ' + markup;
+	                }
 	            }
 	
 	            if (isVoidElement) {
@@ -2697,11 +2714,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else {
 	
 	                ret = ret + '>';
-	
-	                childrenInnerHtml = virtual.children.map(function (child) {
-	                    return child.outerHTML || child.nodeValue;
-	                }).join('');
-	
+	                if (innerHTML) {
+	                    childrenInnerHtml = innerHTML;
+	                } else {
+	                    childrenInnerHtml = virtual.children.map(function (child) {
+	                        return child.outerHTML || child.nodeValue;
+	                    }).join('');
+	                }
 	                if (childrenInnerHtml) {
 	                    ret = ret + childrenInnerHtml;
 	                }
@@ -2717,7 +2736,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = VirtualElement;
 
 /***/ },
-/* 40 */
+/* 41 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	function applyState(component) {
+		requestAnimationFrame(function () {
+			if (component._deferSetState === false) {
+				component._pendingSetState = false;
+				for (var stateKey in component._pendingState) {
+					component.state[stateKey] = component._pendingState[stateKey];
+				}
+				component._pendingState = {};
+				component._pendingSetState = false;
+				component.forceUpdate();
+			} else {
+				applyState(component);
+			}
+		});
+	}
+	
+	exports.default = applyState;
+
+/***/ },
+/* 42 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	function queueStateChanges(component, newState) {
+		for (var stateKey in newState) {
+			component._pendingState = newState[stateKey];
+		}
+		if (component._pendingSetState == false) {
+			component._pendingSetState = true;
+			applyState(component);
+		}
+	}
+	
+	exports.default = queueStateChanges;
+
+/***/ },
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2727,7 +2794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = attachComponent;
 	
-	var _bind = __webpack_require__(35);
+	var _bind = __webpack_require__(36);
 	
 	var _bind2 = _interopRequireDefault(_bind);
 	
@@ -2766,7 +2833,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 41 */
+/* 44 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2780,7 +2847,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 42 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2808,7 +2875,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 43 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2818,11 +2885,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createFragment;
 	
-	var _isArray = __webpack_require__(11);
+	var _isArray = __webpack_require__(12);
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _createTemplate = __webpack_require__(15);
+	var _createTemplate = __webpack_require__(16);
 	
 	var _createTemplate2 = _interopRequireDefault(_createTemplate);
 	
@@ -2863,7 +2930,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 44 */
+/* 47 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2879,7 +2946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 45 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2888,7 +2955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _recycledFragments = __webpack_require__(37);
+	var _recycledFragments = __webpack_require__(38);
 	
 	var _recycledFragments2 = _interopRequireDefault(_recycledFragments);
 	
@@ -2905,7 +2972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 46 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2915,7 +2982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = insertFragment;
 	
-	var _destroyFragment = __webpack_require__(16);
+	var _destroyFragment = __webpack_require__(17);
 	
 	var _destroyFragment2 = _interopRequireDefault(_destroyFragment);
 	
@@ -2946,7 +3013,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 47 */
+/* 50 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2974,7 +3041,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 48 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2996,7 +3063,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 49 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3023,7 +3090,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 50 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3044,7 +3111,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
-	var _unmountComponentAtFragment = __webpack_require__(18);
+	var _unmountComponentAtFragment = __webpack_require__(19);
 	
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
 	
@@ -3067,7 +3134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 51 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3084,7 +3151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
 	
-	var _updateFragmentList = __webpack_require__(20);
+	var _updateFragmentList = __webpack_require__(21);
 	
 	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
 	
@@ -3096,7 +3163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _events2 = _interopRequireDefault(_events);
 	
-	var _isSVG = __webpack_require__(36);
+	var _isSVG = __webpack_require__(37);
 	
 	var _isSVG2 = _interopRequireDefault(_isSVG);
 	
@@ -3104,15 +3171,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(19);
+	var _updateComponent = __webpack_require__(20);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
-	var _removeComponent = __webpack_require__(17);
+	var _removeComponent = __webpack_require__(18);
 	
 	var _removeComponent2 = _interopRequireDefault(_removeComponent);
 	
-	var _sanitizeValue = __webpack_require__(30);
+	var _sanitizeValue = __webpack_require__(29);
 	
 	var _sanitizeValue2 = _interopRequireDefault(_sanitizeValue);
 	
@@ -3180,7 +3247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = updateFragmentValue;
 
 /***/ },
-/* 52 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3197,7 +3264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
 	
-	var _updateFragmentList = __webpack_require__(20);
+	var _updateFragmentList = __webpack_require__(21);
 	
 	var _updateFragmentList2 = _interopRequireDefault(_updateFragmentList);
 	
@@ -3209,7 +3276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _events2 = _interopRequireDefault(_events);
 	
-	var _isSVG = __webpack_require__(36);
+	var _isSVG = __webpack_require__(37);
 	
 	var _isSVG2 = _interopRequireDefault(_isSVG);
 	
@@ -3217,15 +3284,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(19);
+	var _updateComponent = __webpack_require__(20);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
-	var _removeComponent = __webpack_require__(17);
+	var _removeComponent = __webpack_require__(18);
 	
 	var _removeComponent2 = _interopRequireDefault(_removeComponent);
 	
-	var _sanitizeValue = __webpack_require__(30);
+	var _sanitizeValue = __webpack_require__(29);
 	
 	var _sanitizeValue2 = _interopRequireDefault(_sanitizeValue);
 	
@@ -3285,7 +3352,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    (0, _sanitizeValue2.default)(element, fragment.templateValues[i], 'id', 'id');
 	                    break;
 	                default:
-	                    (0, _updateDOMProperties2.default)(element, type, oldFragment.templateValues[i], fragment.templateValues[i]);
+	                    if (type == null) {
+	                        throw Error('Inferno Error: value "' + fragment.templateValues[i] + '" for fragment is never used');
+	                    }
+	                    //custom attribute, so simply setAttribute it
+	                    if (_events2.default[type] != null) {
+	                        _eventManager2.default.addListener(element, type, fragment.templateValues[i]);
+	                    } else {
+	                        (0, _updateDOMProperties2.default)(element, type, oldFragment.templateValues[i], fragment.templateValues[i]);
+	                    }
 	                    break;
 	            }
 	        }
@@ -3295,7 +3370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = updateFragmentValues;
 
 /***/ },
-/* 53 */
+/* 56 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3324,7 +3399,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 54 */
+/* 57 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = ['abort', 'mouseover', 'mousemove', 'mouseout', 'mousedown', 'mouseup', 'error', 'encrypted', 'emptied', 'ended', 'error', 'loadastart', 'compositionend', 'compositionstart', 'compositionupdate', 'durationchange', 'loadeddata', 'loadstart', 'pause', 'play', 'seeked', 'seeking', 'selectionchange', 'stalled', 'suspend', 'textInput', 'timeupdate', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'volumechange', 'waiting', 'loadedmetadata', 'click', 'dblclick', 'keydown', 'keypress', 'keyup', 'change', 'input', 'submit', 'focus', 'blur', 'dragstart', 'drag', 'dragenter', 'dragover', 'dragleave', 'dragend', 'drop', 'contextmenu', 'wheel', 'copy', 'cut', 'paste'];
+
+/***/ },
+/* 58 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3351,7 +3437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 55 */
+/* 59 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3372,7 +3458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = focusEvents;
 
 /***/ },
-/* 56 */
+/* 60 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3383,7 +3469,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ['scroll', 'load', 'error'];
 
 /***/ },
-/* 57 */
+/* 61 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3394,7 +3480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = '__Inferno__';
 
 /***/ },
-/* 58 */
+/* 62 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3561,7 +3647,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 59 */
+/* 63 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3586,7 +3672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 60 */
+/* 64 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3602,7 +3688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 61 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3611,7 +3697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _unitlessProperties = __webpack_require__(67);
+	var _unitlessProperties = __webpack_require__(72);
 	
 	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
 	
@@ -3638,7 +3724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 62 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3678,7 +3764,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 63 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3687,7 +3773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _checkMask = __webpack_require__(28);
+	var _checkMask = __webpack_require__(27);
 	
 	var _checkMask2 = _interopRequireDefault(_checkMask);
 	
@@ -3832,7 +3918,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DOMElementContainer;
 
 /***/ },
-/* 64 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3846,7 +3932,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
 	
-	var _isArray = __webpack_require__(11);
+	var _isArray = __webpack_require__(12);
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
@@ -3961,7 +4047,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 65 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3970,11 +4056,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _addAttributes = __webpack_require__(27);
+	var _addAttributes = __webpack_require__(26);
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _createDOMElements = __webpack_require__(63);
+	var _createDOMElements = __webpack_require__(67);
 	
 	var _createDOMElements2 = _interopRequireDefault(_createDOMElements);
 	
@@ -3983,6 +4069,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = {
 	    addAttributes: _addAttributes2.default,
 	    createElement: function createElement(tag, is) {
+	
 	        switch (tag) {
 	            case 'div':
 	            case 'span':
@@ -4030,23 +4117,144 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 66 */
-/***/ function(module, exports) {
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+		value: true
 	});
-	function shouldIgnoreValue(propertyInfo, value) {
 	
-	    return value == null || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && isNaN(value) || propertyInfo.hasPositiveNumericValue && value < 1 || propertyInfo.hasOverloadedBooleanValue && value === false;
+	var _fragmentValueTypes = __webpack_require__(1);
+	
+	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function processFragmentAttrs(node, attrName, attrVal, fragment) {
+	
+		var fragmentType = undefined;
+		var skip = false;
+	
+		switch (attrName) {
+			case 'designMode':
+				fragmentType = _fragmentValueTypes2.default.ATTR_DESIGNMODE;
+				break;
+			case 'htmlFor':
+				fragmentType = _fragmentValueTypes2.default.ATTR_HTMLFOR;
+				break;
+			case 'playbackRate':
+				fragmentType = _fragmentValueTypes2.default.ATTR_PLAYBACKRATE;
+				break;
+			case 'srcDoc':
+				fragmentType = _fragmentValueTypes2.default.ATTR_SRCDOC;
+				break;
+			case 'checked':
+				fragmentType = _fragmentValueTypes2.default.ATTR_CHECKED;
+				break;
+			case 'isMap':
+				fragmentType = _fragmentValueTypes2.default.ATTR_ISMAP;
+				break;
+			case 'loop':
+				fragmentType = _fragmentValueTypes2.default.ATTR_LOOP;
+				break;
+			case 'muted':
+				fragmentType = _fragmentValueTypes2.default.ATTR_MUTED;
+				break;
+			case 'required':
+				fragmentType = _fragmentValueTypes2.default.ATTR_REQUIRED;
+				break;
+			case 'selected':
+				fragmentType = _fragmentValueTypes2.default.ATTR_SELECTED;
+				break;
+			case 'trueSpeed':
+				fragmentType = _fragmentValueTypes2.default.ATTR_TRUESPEED;
+				break;
+			case 'multiple':
+				fragmentType = _fragmentValueTypes2.default.ATTR_MULTIPLE;
+				break;
+			case 'controls':
+				fragmentType = _fragmentValueTypes2.default.ATTR_CONTROLS;
+				break;
+			case 'defer':
+				fragmentType = _fragmentValueTypes2.default.ATTR_DEFER;
+				break;
+			case 'noValidate':
+				fragmentType = _fragmentValueTypes2.default.ATTR_NOVALIDATE;
+				break;
+			case 'scoped':
+				fragmentType = _fragmentValueTypes2.default.ATTR_SCOPED;
+				break;
+			case 'resize':
+				fragmentType = _fragmentValueTypes2.default.ATTR_NO_RESIZE;
+				break;
+			case 'ref':
+				fragmentType = _fragmentValueTypes2.default.ATTR_REF;
+				skip = true;
+				break;
+			default:
+				fragmentType = _fragmentValueTypes2.default.ATTR_OTHER;
+		}
+	
+		if (fragment.templateValue !== undefined) {
+			fragment.templateElement = node;
+			if (fragmentType === _fragmentValueTypes2.default.ATTR_OTHER) {
+				fragment.templateType = _fragmentValueTypes2.default.ATTR_OTHER[attrName] = attrName;
+			} else {
+				fragment.templateType = fragmentType;
+			}
+			return { attrVal: fragment.templateValue, skip: skip };
+		} else {
+			fragment.templateElements[attrVal.pointer] = node;
+			if (fragmentType === _fragmentValueTypes2.default.ATTR_OTHER) {
+				fragment.templateTypes[attrVal.pointer] = _fragmentValueTypes2.default.ATTR_OTHER[attrName] = attrName;
+			} else {
+				fragment.templateTypes[attrVal.pointer] = fragmentType;
+			}
+			return { attrVal: fragment.templateValues[attrVal.pointer], skip: skip };
+		}
+	
+		return { attrVal: null, skip: skip };
 	}
 	
-	exports.default = shouldIgnoreValue;
+	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 67 */
+/* 71 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var ESCAPE_LOOKUP = {
+	  '&': '&amp;',
+	  '>': '&gt;',
+	  '<': '&lt;',
+	  '"': '&quot;'
+	};
+	
+	var ESCAPE_REGEX = /[&><"]/g;
+	
+	var escaper = function escaper(match) {
+	  return ESCAPE_LOOKUP[match];
+	};
+	
+	/**
+	 * Escapes attribute value to prevent scripting attacks.
+	 *
+	 * @param {*} value Attribute value to escape.
+	 * @return {string} An escaped string.
+	 */
+	
+	exports.default = function (value) {
+	  return '"' + ('' + value).replace(ESCAPE_REGEX, escaper) + '"';
+	};
+
+/***/ },
+/* 72 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4098,40 +4306,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 68 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var ESCAPE_LOOKUP = {
-	  '&': '&amp;',
-	  '>': '&gt;',
-	  '<': '&lt;',
-	  '"': '&quot;'
-	};
-	
-	var ESCAPE_REGEX = /[&><"]/g;
-	
-	var escaper = function escaper(match) {
-	  return ESCAPE_LOOKUP[match];
-	};
-	
-	/**
-	 * Escapes attribute value to prevent scripting attacks.
-	 *
-	 * @param {*} value Attribute value to escape.
-	 * @return {string} An escaped string.
-	 */
-	
-	exports.default = function (value) {
-	  return '"' + ('' + value).replace(ESCAPE_REGEX, escaper) + '"';
-	};
-
-/***/ },
-/* 69 */
+/* 73 */
 /***/ function(module, exports) {
 
 	'use strict';

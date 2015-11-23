@@ -1,5 +1,5 @@
 import Inferno from '../../src';
-import attrOps from '../../src/template/AttributeOps';
+import setValueForProperty from '../../src/template/setValueForProperty';
 
 export default function domOperationTests(describe, expect) {
     describe('DOM operations', () => {

@@ -20,7 +20,7 @@ function normalizeEvents(ev, type) {
             ev.defaultPrevented = (ev.returnValue === false);
         }
     }
-    
+
     ev.stopImmediatePropagation = function() {
         stopImmediate = true;
         this.stopPropagation();
@@ -55,12 +55,12 @@ function addRootListener(e, type) {
 
     const config = eventsCfg[type];
 
-    let target = e.target,
-        listenersState = config.countListeners,
-        listeners,
-        listener,
-        uniqueId,
-        ev;
+    let target = e.target;
+    let listenersState = config.countListeners;
+    let listeners;
+    let listener;
+    let uniqueId;
+    let ev;
 
     while (listenersState > 0 && target !== document.body) {
         if ((uniqueId = getUniqueId(target, true))) {
@@ -77,6 +77,6 @@ function addRootListener(e, type) {
 
         target = target.parentNode;
     }
-};
+}
 
 export default { eventHandler, addRootListener }

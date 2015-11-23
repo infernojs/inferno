@@ -99,7 +99,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.querySelector("input").checked
 			).to.equal(
-				false
+				true
 			);
 		});
 		it('Third render (update)', () => {
@@ -152,7 +152,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password" enabled="">The title is abc</label></div></div>'
+				'<div><div class="basic"><label><input type="password" enabled="true">The title is abc</label></div></div>'
 			);
 		});
 
@@ -201,7 +201,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>'
+				'<div><div class="basic"><label><input type="password" disabled="true">The title is abc</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").disabled

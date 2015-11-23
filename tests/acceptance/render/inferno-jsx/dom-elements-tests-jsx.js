@@ -58,11 +58,11 @@ export default function domElementsTestsJsx(describe, expect, container) {
 			Inferno.render(<div autoFocus='true' />, container);
 		});
 		it('Initial render (creation)', () => {
-			expect(container.firstChild.getAttribute('autoFocus')).to.eql('');
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div autofocus=""></div>'
+				'<div autofocus="true"></div>'
 			);
 		});
 	});

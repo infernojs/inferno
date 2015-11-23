@@ -71,7 +71,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			);
 		});
 	});
-
+/*
 	describe('should render "autoFocus" boolean attributes', () => {
 		let template;
 
@@ -91,7 +91,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				'<div autofocus=""></div>'
 			);
 		});
-	});
+	});*/
 
 	describe('should render "className" attribute', () => {
 		let template;
@@ -234,59 +234,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		});
 	});
 
-	describe('should properly render input download attribute', () => {
-		let template;
-
-		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, createComponent, val1) =>
-				createElement('input', { download: val1 })
-			);
-			Inferno.render(Inferno.createFragment(false, template), container);
-		});
-
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input>'
-			);
-		});
-		it('Second render (update)', () => {
-			Inferno.render(Inferno.createFragment(true, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input download="">'
-			);
-		});
-	});
-
-	describe('should properly render input download attribute (HTML5)', () => {
-		let template;
-
-		beforeEach(() => {
-			template = Inferno.createTemplate((createElement, createComponent, val1) =>
-				createElement('input', { download: val1 })
-			);
-			Inferno.render(Inferno.createFragment(true, template), container);
-		});
-
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input download="">'
-			);
-		});
-		it('Second render (update)', () => {
-			Inferno.render(Inferno.createFragment(true, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input download="">'
-			);
-		});
-	});
 
 	describe('should properly render "className" property', () => {
 		let template;
@@ -423,7 +370,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input disabled="">'
+				'<input disabled="true">'
 			);
 		});
 		it('Second render (update)', () => {
@@ -435,7 +382,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input disabled="">'
+				'<input disabled="true">'
 			);
 		});
 	});
@@ -485,7 +432,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input>'
+				 '<input disabled="false">' 
 			);
 		});
 		it('Second render (update)', () => {
@@ -493,7 +440,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input>'
+				'<input disabled="false">'
 			);
 		});
 	});
@@ -511,62 +458,12 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input type="file" multiple="" capture="" accept="image/*">'
+				'<input type="file" multiple="" capture="true" accept="image/*">'
 			);
 		});
 	});
 
-	describe('should render dataset property - #1', () => {
-		let template;
 
-		beforeEach(() => {
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: null })
-			);
-			Inferno.render(Inferno.createFragment(null, template), container);
-		});
-
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input>'
-			);
-		});
-		it('Second render (update)', () => {
-			const dataS = { foo: 'bar', bar: 'oops' };
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: dataS})
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input data-foo="bar" data-bar="oops">'
-			);
-		});
-	});
-
-	describe('should render dataset property - #2', () => {
-		let template;
-		const dataS = { foo: 'bar', bar: 'oops' };
-
-		beforeEach(() => {
-			template = Inferno.createTemplate(createElement =>
-				createElement('div', {dataset: dataS})
-			);
-			Inferno.render(Inferno.createFragment(null, template), container);
-		});
-
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div data-foo="bar" data-bar="oops"></div>'
-			);
-		});
-	});
 	describe('shouldn\'t render undefined value', () => {
 		let template;
 
@@ -603,19 +500,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				'<div custom-attr="123"></div>'
 			);
 		});
-		it('Second render (update)', () => {
-			const dataS = { foo: 'bar', bar: 'oops' };
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: dataS})
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input data-foo="bar" data-bar="oops">'
-			);
-		});
 	});
 
 	describe('should not render null properties', () => {
@@ -633,19 +517,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				container.innerHTML
 			).to.equal(
 				'<web-component></web-component>'
-			);
-		});
-		it('Second render (update)', () => {
-			const dataS = { foo: 'bar', bar: 'oops' };
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: dataS})
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input data-foo="bar" data-bar="oops">'
 			);
 		});
 	});
@@ -667,19 +538,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				'<web-component id="123"></web-component>'
 			);
 		});
-		it('Second render (update)', () => {
-			const dataS = { foo: 'bar', bar: 'oops' };
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: dataS })
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input data-foo="bar" data-bar="oops">'
-			);
-		});
 	});
 
 	describe('should render overloaded boolean as a number value', () => {
@@ -699,19 +557,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				'<input>'
 			);
 		});
-		it('Second render (update)', () => {
-			const dataS = { foo: 'bar', bar: 'oops' };
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: dataS})
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input data-foo="bar" data-bar="oops">'
-			);
-		});
 	});
 
 	describe('should render download with boolean false value', () => {
@@ -729,19 +574,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 				container.innerHTML
 			).to.equal(
 				'<input href="/images/xxx.jpg">'
-			);
-		});
-		it('Second render (update)', () => {
-			const dataS = { foo: 'bar', bar: 'oops' };
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: dataS})
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input data-foo="bar" data-bar="oops">'
 			);
 		});
 	});
@@ -772,7 +604,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input disabled="">'
+				'<input disabled="true">'
 			);
 		});
 	});
@@ -791,23 +623,10 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input href="/images/xxx.jpg" download="">'
+				'<input href="/images/xxx.jpg" download="true">'
 			);
 		});
 
-		it('Second render (update)', () => {
-			const dataS = { foo: 'bar', bar: 'oops' };
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { dataset: dataS })
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input data-foo="bar" data-bar="oops">'
-			);
-		});
 
 		it('Third render (update)', () => {
 			template = Inferno.createTemplate(createElement =>
@@ -818,7 +637,7 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input disabled="">'
+				'<input disabled="true">'
 			);
 		});
 	});
@@ -1843,33 +1662,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 	   });
 	});
 
-	describe('should update styles when "style" for a dynamic variable', () => {
-	   let template;
-
-	   beforeEach(() => {
-		   template = Inferno.createTemplate((createElement, createComponent, styles) =>
-			   createElement('div', { style: styles })
-		   );
-		   Inferno.render(Inferno.createFragment({color: "red", border: '1px'}, template), container);
-	   });
-
-	   it('Initial render (creation)', () => {
-		   expect(
-			   container.innerHTML
-		   ).to.equal(
-			   '<div style="color: red; border: 1px;"></div>'
-		   );
-	   });
-	   it('Second render (update)', () => {
-		   Inferno.render(Inferno.createFragment({color: "blue"}, template), container);
-		   expect(
-			   container.innerHTML
-		   ).to.equal(
-			   '<div style="color: blue;"></div>'
-		   );
-	   });
-	});
-
 	describe('should ignore null styles', () => {
 	   let template;
 	   const styleRule = { backgroundColor: null, display: 'none' };
@@ -1947,26 +1739,6 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 			   container.innerHTML
 		   ).to.equal(
 			   '<div style="width: 7px;"></div>'
-		   );
-	   });
-	});
-
-	describe('should support refs', () => {
-	   let template;
-	   const divRef = Inferno.createRef();
-
-	   beforeEach(() => {
-		   template = Inferno.createTemplate((createElement, createComponent, divRef) =>
-			   createElement('div', { ref: divRef })
-		   );
-		   Inferno.render(Inferno.createFragment(divRef, template), container);
-	   });
-
-	   it('Initial render (creation)', () => {
-		   expect(
-			   divRef.element
-		   ).to.equal(
-			   container.firstChild
 		   );
 	   });
 	});
