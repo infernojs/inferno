@@ -6,16 +6,16 @@ export default function updateComponent(component, nextProps) {
 	const prevState = component.state;
 
 	if(prevProps !== nextProps) {
-		// TODO disable setState causing forceUpdates
+		component._blockSetState = true;
 		component.componentWillReceiveProps(nextProps);
-		// TODO enable setState causing forceUpdates
+		component._blockSetState = false;
 		const nextState = component.state;
 		const shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
 
 		if(shouldUpdate) {
-			// TODO disable setState
+			component._deferSetState = true;
 			component.componentWillUpdate(nextProps, nextState);
-			// TODO enable setState
+			component._deferSetState = false;
 			component.props = nextProps;
 			component.state = nextState;
 			component.forceUpdate();
