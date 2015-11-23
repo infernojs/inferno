@@ -1,4 +1,3 @@
-
 import VirtualTextNode from './VirtualTextNode';
 import quoteAttributeValueForBrowser from '../util/quoteAttributeValueForBrowser';
 
@@ -113,7 +112,7 @@ function VirtualElement(tagName, xmlns, is) {
                     if (propVal === true) {
                         propVal = '';
                     }
-					// prevent scripting attack
+                    // prevent scripting attack
                     attributes.push(property + `=${ quoteAttributeValueForBrowser(propVal) }`);
                 }
             }
