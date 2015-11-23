@@ -32,7 +32,7 @@ describe('Inferno acceptance tests', () => {
 
 	domEventTests(describe, expect);
 	cssOperationTests(describe, expect);
-	//domOperationTests(describe, expect);
+	domOperationTests(describe, expect);
 });
 
 describe('Inferno performance tests', () => {
