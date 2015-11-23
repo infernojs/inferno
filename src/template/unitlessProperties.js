@@ -1,5 +1,4 @@
 export default (str) => {
-
     switch (str.length) {
         case 4:
             return str === 'flex' || str === 'base' || str === 'zoom';

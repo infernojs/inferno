@@ -1,5 +1,4 @@
 function shouldIgnoreValue(propertyInfo, value) {
-
     return value == null ||
         propertyInfo.hasBooleanValue && !value ||
         propertyInfo.hasNumericValue && isNaN(value) ||

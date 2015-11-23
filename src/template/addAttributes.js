@@ -10,9 +10,7 @@ import processFragmentAttrs from './processFragmentAttrs';
  * @param{ Object } attrs
  */
 export default function addAttributes(node, attrs, fragment) {
-
     for (let attrName in attrs) {
-
         let attrVal = attrs[attrName];
         let skip = false;
 
@@ -20,14 +18,10 @@ export default function addAttributes(node, attrs, fragment) {
             const proccessedAttrs = processFragmentAttrs(node, attrName, attrVal, fragment);
 			attrVal = proccessedAttrs.attrVal;
 			skip = proccessedAttrs.skip;
-
         }
-
         if (attrName === 'style') {
-
 		    setValueForStyles(node, attrVal);
         } else {
-
             // avoid 'null' values
             if (attrVal !== undefined) {
                 // events

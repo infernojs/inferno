@@ -1789,63 +1789,59 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 	   });
 	});
 	
-	
-	
 	describe('should properly render input download attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
+			createElement('div', {
+				download: val1
+			})
+		);
 
-    let template = Inferno.createTemplate((createElement, createComponent, val1) =>
-        createElement('div', {
-            download: val1
-        })
-    );
+		it('Initial render (creation)', () => {
 
-    it('Initial render (creation)', () => {
+			Inferno.render(Inferno.createFragment(false, template), container);
 
-        Inferno.render(Inferno.createFragment(false, template), container);
+			expect(container.firstChild.getAttribute('download')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
 
-        expect(container.firstChild.getAttribute('download')).to.be.null;
-        expect(
-            container.innerHTML
-        ).to.equal(
-            '<div></div>'
-        );
-    });
-
-    it('Second render (update)', () => {
-        Inferno.render(Inferno.createFragment(true, template), container);
-        expect(
-            container.innerHTML
-        ).to.equal(
-            '<div download="true"></div>'
-        );
-    });
-});
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div download="true"></div>'
+			);
+		});
+	});
 
 
-describe('should support number values', () => {
-    let template;
-    const styleRule = {
-        width: 7
-    };
+	describe('should support number values', () => {
+		let template;
+		const styleRule = {
+			width: 7
+		};
 
-    beforeEach(() => {
-        template = Inferno.createTemplate(createElement =>
-            createElement('div', {
-                style: styleRule
-            })
-        );
-        Inferno.render(Inferno.createFragment(null, template), container);
-    });
+		beforeEach(() => {
+			template = Inferno.createTemplate(createElement =>
+				createElement('div', {
+					style: styleRule
+				})
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+		});
 
-    it('Initial render (creation)', () => {
+		it('Initial render (creation)', () => {
 
-        expect(
-            container.innerHTML
-        ).to.equal(
-            '<div style="width: 7px;"></div>'
-        );
-    });
-});
-	
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="width: 7px;"></div>'
+			);
+		});
+	});
 }
 

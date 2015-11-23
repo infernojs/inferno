@@ -14,18 +14,14 @@ import events from '../events/shared/events';
  * @param {object} newProp
  */
 function updateDOMProperties(element, propName, oldProp, newProp) {
-
     if (propName === 'style') {
-
         let styleUpdates;
         let styleName;
 
         if (oldProp != null) {
-
             if (newProp == null) {
                 deleteDOMProperties(element, propName);
             } else {
-
                 // Unset styles on `oldProp` but not on `newProp`.
                 for (styleName in oldProp) {
                     if (oldProp[styleName] && (!newProp || !newProp[styleName])) {
@@ -44,16 +40,12 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
         } else if (newProp != null) {
             styleUpdates = newProp;
         }
-
         if (styleUpdates) {
             setValueForStyles(element, styleUpdates);
         }
-
         // Event listeners
     } else if (events[propName] != null) {
-
         if (oldProp != null) {
-
             if (newProp != null) {
                 eventManager.addListener(element, propName, newProp);
             } else {
@@ -63,7 +55,6 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
             eventManager.addListener(element, propName, newProp);
         }
     } else if (oldProp != null) {
-
         // If 'newProp' is null or undefined, we, we should remove the property
         // from the DOM node instead of inadvertantly setting to a string.
         if (newProp != null) {

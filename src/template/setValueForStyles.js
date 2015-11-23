@@ -8,9 +8,7 @@ import addPixelSuffixToValueIfNeeded from './addPixelSuffixToValueIfNeeded';
  * @param {object} styles
  */
 export default (node, styles) => {
-
     for (let styleName in styles) {
-
         let styleValue = styles[styleName];
 
         node.style[styleName] = styleValue == null ? '' : addPixelSuffixToValueIfNeeded(styleName, styleValue);

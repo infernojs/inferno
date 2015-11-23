@@ -8,7 +8,6 @@ export default function domOperationTests(describe, expect) {
         beforeEach(() => {
             container = document.createElement('div');
         });
-
         afterEach(() => {
             Inferno.clearDomElement(container);
         });
@@ -17,6 +16,6 @@ export default function domOperationTests(describe, expect) {
              expect(events.onBlur).to.eql('blur');
              expect(events.onClick).to.eql('click');
              expect(events.onMouseOver).to.eql('mouseover');			 
+        });
     });
-	    });
 }

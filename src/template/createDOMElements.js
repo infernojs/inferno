@@ -5,7 +5,6 @@ const IS_MATHML = 0x20;
 
 // DOM Element list here
 const DOMElements = {
-
     a: IS_SVG,
     altGlyph: IS_SVG,
     altGlyphDef: IS_SVG,

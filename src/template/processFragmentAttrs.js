@@ -1,7 +1,6 @@
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 function processFragmentAttrs(node, attrName, attrVal, fragment) {
-
 	let fragmentType;
     let skip = false;
 

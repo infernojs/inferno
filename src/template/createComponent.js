@@ -2,7 +2,7 @@ import fragmentValueTypes from '../enum/fragmentValueTypes';
 
 export default function createComponentFactory(fragment, template) {
 	return function createComponent(component, ...children) {
-		var element = template.createEmptyDiv();
+		let element = template.createEmptyDiv();
 
 		if (fragment.templateValue) {
 			fragment.templateElement = element;
