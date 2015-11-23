@@ -102,36 +102,49 @@ function VirtualElement(tagName, xmlns, is) {
         get: () => {
 
             const isVoidElement = voidTagNames[tagName.toLowerCase()];
-            const attributes = [];
 
+            let innerHTML = virtual.props.innerHTML;
+            let attributes = '';
             let childrenInnerHtml;
-			let innerHTML = virtual.props.innerHTML;
-			
-			 delete virtual.props.innerHTML;
-			  
+      
+	        delete virtual.props.innerHTML;
+
+            let ret = '<' + tagName;
+
+            //let childrenInnerHtml;
             // Props taken out and moved into it's own object. Need to finish this later on.            
+
+
             for (let property in virtual.props) {
-                if (!doNotShowInHtml[property] && virtual.props[property] != null) {
-                    let propVal = virtual.props[property];
-                    if (propVal === true) {
-                        propVal = '';
-                    }
-                    // prevent scripting attack
-                    attributes.push(property + `=${ quoteAttributeValueForBrowser(propVal) }`);
+
+                let propVal = virtual.props[property];
+
+                if (propVal === true) {
+                    propVal = '';
                 }
+
+                // prevent scripting attack
+                ret += ' ' + `=${ quoteAttributeValueForBrowser(propVal) }`;
             }
 
-            if (!isVoidElement) {
-                childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
-            }
+            if (isVoidElement) {
 
-            if (attributes.length > 0) {
+                ret = ret + '/>';
 
-                return isVoidElement ? `<${ tagName } ${ attributes }/>` :
-                    `<${ tagName } ${ attributes }>${ innerHTML ? innerHTML : childrenInnerHtml }</${ tagName }>`;
+            } else {
+
+                ret = ret + '>';
+                if (innerHTML) {
+                    childrenInnerHtml = innerHTML;
+                } else {
+                    childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
+                }
+                if (childrenInnerHtml) {
+                    ret = ret + childrenInnerHtml;
+                }
+                ret = ret + '</' + tagName + '>';
             }
-            return isVoidElement ? `<${ tagName }/>` :
-                `<${ tagName }>${ innerHTML ? innerHTML : childrenInnerHtml }</${ tagName }>`;
+            return ret;
         }
     });
 
