@@ -106,7 +106,7 @@ function VirtualElement(tagName, xmlns, is) {
             let innerHTML = virtual.props.innerHTML;
             let attributes = '';
             let childrenInnerHtml;
-      
+
 	        delete virtual.props.innerHTML;
 
             let ret = '<' + tagName;
@@ -124,7 +124,7 @@ function VirtualElement(tagName, xmlns, is) {
                 }
 
                 // prevent scripting attack
-                ret += ' ' + propVal + `=${ quoteAttributeValueForBrowser(propVal) }`;
+                ret += ' ' + property + `=${ quoteAttributeValueForBrowser(propVal) }`;
             }
 
             if (isVoidElement) {
@@ -134,11 +134,9 @@ function VirtualElement(tagName, xmlns, is) {
             } else {
 
                 ret = ret + '>';
-                if (innerHTML) {
-                    childrenInnerHtml = innerHTML;
-                } else {
+                
                     childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
-                }
+                       
                 if (childrenInnerHtml) {
                     ret = ret + childrenInnerHtml;
                 }

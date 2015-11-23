@@ -2,6 +2,7 @@ import Inferno from '../../../../src';
 import get from '../../../tools/get';
 
 export default function elementsTestsFunctional(describe, expect) {
+	
     it('should render a basic example', () => {
         const template = Inferno.createTemplate(
             createElement => createElement('div', null, 'Hello world')
@@ -24,20 +25,6 @@ export default function elementsTestsFunctional(describe, expect) {
         expect(test).to.equal(expected);
     });
 
-		    it('should render innerHTML', () => {
-		        const template = Inferno.createTemplate((createElement, createComponent) =>
-		            createElement('div', {
-		                id: 'fooBar',
-		                innerHTML: 'Hello, World!'
-		            })
-		        );
-		        const test = Inferno.renderToString(
-		            Inferno.createFragment(null, template)
-		        );
-		        const expected = '<div id="fooBar">Hello, World!</div>';
-		        expect(test).to.equal(expected);
-		    });
-	
     it('should render a basic example with dynamic values', () => {
         const template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
                 createElement('div', null, 'Hello world - ', val1, ' ', val2)
