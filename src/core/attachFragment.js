@@ -70,7 +70,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				break;
 			case fragmentValueTypes.COMPONENT_REPLACE:
 			{
-				const {mountElem, component, mountCallback, newElement} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, true);
+				const {mountElem, component, mountCallback, newElement} = attachComponent(context, fragment.templateElement, fragment.templateValue, fragment.dom, true);
 				fragment.templateElement = newElement;
 				fragment.templateComponent = component;
 				//root component node
@@ -82,7 +82,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 			}
 			case fragmentValueTypes.COMPONENT:
 			{
-				const {mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, false);
+				const {mountCallback} = attachComponent(context, fragment.templateElement, fragment.templateValue, fragment.dom, false);
 				mountCallbacks.push(mountCallback);
 				break;
 			}
@@ -120,7 +120,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					break;
 				case fragmentValueTypes.COMPONENT_REPLACE:
 				{
-					const {mountElem, component, mountCallback, newElement} = attachComponent(element, value, fragment.dom, true);
+					const {mountElem, component, mountCallback, newElement} = attachComponent(context, element, value, fragment.dom, true);
 
 					fragment.templateElements[i] = newElement;
 					fragment.templateComponents[i] = component;
@@ -133,7 +133,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				}
 				case fragmentValueTypes.COMPONENT:
 				{
-					const {mountCallback} = attachComponent(fragment.templateElement, fragment.templateValue, fragment.dom, false);
+					const {mountCallback} = attachComponent(context, fragment.templateElement, fragment.templateValue, fragment.dom, false);
 					mountCallbacks.push(mountCallback);
 					break;
 				}

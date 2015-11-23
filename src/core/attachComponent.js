@@ -1,7 +1,7 @@
 import bind from '../util/bind';
 import render from './render';
 
-export default function attachComponent(mountElem, Component, fragmentDom, replaceComponent) {
+export default function attachComponent(context, mountElem, Component, fragmentDom, replaceComponent) {
 	let newElement;
 	let props = Component.props;
 	const parentElem = mountElem.parentNode;
@@ -13,7 +13,7 @@ export default function attachComponent(mountElem, Component, fragmentDom, repla
 	const component = new Component.component(props);
 
 	component.context = null;
-	component.forceUpdate = render.bind(null, bind(component, component.render), mountElem, component);
+	component.forceUpdate = render(bind(component, component.render), mountElem, component, context.useVirtual, true);
 	component.componentWillMount();
 	component.forceUpdate();
 
