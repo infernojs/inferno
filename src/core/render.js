@@ -21,9 +21,7 @@ function render(fragment, dom, component, useVirtual) {
 				shouldRecycle: !useVirtual,
 				useVirtual
 			};
-			component.componentWillMount();
 			attachFragment(context, generatedFragment, dom, component);
-			component.componentDidMount();
 		}
 	} else {
 		if (!useVirtual) {
