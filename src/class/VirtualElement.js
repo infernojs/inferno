@@ -1,5 +1,43 @@
 import VirtualTextNode from './VirtualTextNode';
 
+// The HTML elements in this list are speced by
+  // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements,
+  // and will be forced to close regardless of if they have a
+  // self-closing /> at the end.
+  const voidTagNames = {
+    area: true,
+    base: true,
+    basefont: true,
+    br: true,
+    col: true,
+    command: true,
+    embed: true,
+    frame: true,
+    hr: true,
+    img: true,
+    input: true,
+    isindex: true,
+    keygen: true,
+    link: true,
+    meta: true,
+    param: true,
+    source: true,
+    track: true,
+    wbr: true,
+
+    //common self closing svg elements
+    path: true,
+    circle: true,
+    ellipse: true,
+    line: true,
+    rect: true,
+    use: true,
+    stop: true,
+    polyline: true,
+    polygon: true
+  };
+
+
 let doNotShowInHtml = {
     textContent: true,
     appendChild: true,
@@ -17,7 +55,7 @@ function VirtualElement(tagName, xmlns, is) {
 
     // Built-in properties that belong on the element
 
-    const virtual = {
+   const virtual = {
 
         tagName: tagName,
         options: [],
@@ -60,8 +98,11 @@ function VirtualElement(tagName, xmlns, is) {
             throw Error('You cannot set the outerHTML of virtual elements, use declarative API instead');
         },
         get: () => {
-            const childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
+			const isVoidElement = voidTagNames[tagName.toLowerCase()];
             const attributes = [];
+
+console.log(isVoidElement)
+let childrenInnerHtml;
             for (let property in virtual) {
                 if (!doNotShowInHtml[property] && virtual[property] != null) {
                     let propVal = virtual[property];
@@ -71,15 +112,23 @@ function VirtualElement(tagName, xmlns, is) {
                     attributes.push(property + `="${ propVal }"`);
                 }
             }
+if ( !isVoidElement ) {		
+             childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
+			}
+			
             if (attributes.length > 0) {
-                return `<${ tagName } ${ attributes }>${ childrenInnerHtml }</${ tagName }>`;
+
+                return isVoidElement ? `<${ tagName } ${ attributes }/>` :
+				 `<${ tagName } ${ attributes }>${ childrenInnerHtml }</${ tagName }>`;
+
+
             }
-            return `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;
+                return isVoidElement ? `<${ tagName }/>` :
+				 `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;
         }
     });
 
     return virtual;
 }
-
 
 export default VirtualElement;

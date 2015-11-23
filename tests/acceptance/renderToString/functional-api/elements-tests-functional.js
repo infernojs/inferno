@@ -12,6 +12,19 @@ export default function elementsTestsFunctional(describe, expect) {
         const expected = '<div>Hello world</div>';
         expect(test).to.equal(expected);
     });
+	
+	    it('should render a void element', () => {
+        const template = Inferno.createTemplate((createElement, createComponent) =>
+                createElement('input')
+        );
+        const test = Inferno.renderToString(
+            Inferno.createFragment(null, template)
+        );
+        const expected = '<input/>';
+        expect(test).to.equal(expected);
+    });
+
+	
     it('should render a basic example with dynamic values', () => {
         const template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
                 createElement('div', null, 'Hello world - ', val1, ' ', val2)
