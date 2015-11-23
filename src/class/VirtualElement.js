@@ -31,7 +31,6 @@ function VirtualElement(tagName, xmlns, is) {
         setAttribute: function(attribute, value) {
             virtual[attribute] = value;
         }
-
     };
 
     Object.defineProperty(virtual, 'textContent', {
@@ -43,7 +42,7 @@ function VirtualElement(tagName, xmlns, is) {
                 //if we have children, kill them
                 virtual.children = [];
             } else {
-                virtual.appendChild(new VirtualTextNode(textValue));
+                virtual.appendChild(VirtualTextNode(textValue));
             }
         },
         get: () => virtual.children[0].nodeValue
