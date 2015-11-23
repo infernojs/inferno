@@ -101,8 +101,8 @@ function VirtualElement(tagName, xmlns, is) {
 			const isVoidElement = voidTagNames[tagName.toLowerCase()];
             const attributes = [];
 
-console.log(isVoidElement)
-let childrenInnerHtml;
+            let childrenInnerHtml;
+			
             for (let property in virtual) {
                 if (!doNotShowInHtml[property] && virtual[property] != null) {
                     let propVal = virtual[property];
@@ -112,7 +112,9 @@ let childrenInnerHtml;
                     attributes.push(property + `="${ propVal }"`);
                 }
             }
-if ( !isVoidElement ) {		
+            
+			// *only* deal with children if not a self closing element - void
+			if ( !isVoidElement ) {		
              childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
 			}
 			
