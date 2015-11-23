@@ -1,4 +1,7 @@
+
 import VirtualTextNode from './VirtualTextNode';
+import quoteAttributeValueForBrowser from '../util/quoteAttributeValueForBrowser';
+
 
 // The HTML elements in this list are speced by
 // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements,
@@ -110,7 +113,8 @@ function VirtualElement(tagName, xmlns, is) {
                     if (propVal === true) {
                         propVal = '';
                     }
-                    attributes.push(property + `="${ propVal }"`);
+					// prevent scripting attack
+                    attributes.push(property + `=${ quoteAttributeValueForBrowser(propVal) }`);
                 }
             }
 
