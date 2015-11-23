@@ -14,7 +14,7 @@ import domEventTests from './acceptance/dom-events-tests';
 
 //acceptance operation tests
 import domOperationTests from './acceptance/dom-operation-tests';
-//import cssOperationTests from './acceptance/css-operation-tests';
+import cssOperationTests from './acceptance/css-operation-tests';
 
 //performance render test group
 import renderVdomBenchTests from './performance/render/vdom-bench-tests';
@@ -31,7 +31,7 @@ describe('Inferno acceptance tests', () => {
 	});
 
 	domEventTests(describe, expect);
-	//cssOperationTests(describe, expect);
+	cssOperationTests(describe, expect);
 	domOperationTests(describe, expect);
 });
 
