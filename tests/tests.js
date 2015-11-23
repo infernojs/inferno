@@ -30,13 +30,13 @@ describe('Inferno acceptance tests', () => {
 //		renderToStringElementsTests(describe, expect);
 	});
 
-//	domEventTests(describe, expect);
+	domEventTests(describe, expect);
 	//cssOperationTests(describe, expect);
-//	domOperationTests(describe, expect);
+	domOperationTests(describe, expect);
 });
 
 describe('Inferno performance tests', () => {
 	describe('Inferno.render()', () => {
-//		renderVdomBenchTests(describe, expect);
+		renderVdomBenchTests(describe, expect);
 	});
 });
