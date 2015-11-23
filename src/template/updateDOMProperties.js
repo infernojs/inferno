@@ -1,4 +1,4 @@
-import deleteValueForProperty from './deleteValueForProperty';
+import deleteDOMProperties from './deleteDOMProperties';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import eventManager from '../events/eventManager';
@@ -23,7 +23,7 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
         if (oldProp != null) {
 
             if (newProp == null) {
-                deleteValueForProperty(element, propName);
+                deleteDOMProperties(element, propName);
             } else {
 
                 // Unset styles on `oldProp` but not on `newProp`.
@@ -69,7 +69,7 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
         if (newProp != null) {
             setValueForProperty(element, propName, newProp);
         } else {
-            deleteValueForProperty(element, propName);
+            deleteDOMProperties(element, propName);
         }
     } else if (newProp != null) {
         setValueForProperty(element, propName, newProp);

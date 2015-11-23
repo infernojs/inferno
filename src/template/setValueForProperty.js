@@ -1,6 +1,6 @@
 import DOMProperties            from './DOMProperties';
 import shouldIgnoreValue        from './shouldIgnoreValue';
-import deleteValueForProperty   from './deleteValueForProperty';
+import deleteDOMProperties   from './deleteDOMProperties';
 import isArray                  from '../util/isArray';
 
 
@@ -11,7 +11,7 @@ function setValueForProperty(node, name, value) {
     if (propertyInfo !== undefined) {
 
         if (shouldIgnoreValue(propertyInfo, value)) {
-            deleteValueForProperty(node, name);
+            deleteDOMProperties(node, name);
             return;
         }
 

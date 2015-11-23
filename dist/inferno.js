@@ -2070,9 +2070,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _deleteValueForProperty = __webpack_require__(28);
+	var _deleteDOMProperties = __webpack_require__(28);
 	
-	var _deleteValueForProperty2 = _interopRequireDefault(_deleteValueForProperty);
+	var _deleteDOMProperties2 = _interopRequireDefault(_deleteDOMProperties);
 	
 	var _isArray = __webpack_require__(12);
 	
@@ -2087,7 +2087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (propertyInfo !== undefined) {
 	
 	        if ((0, _shouldIgnoreValue2.default)(propertyInfo, value)) {
-	            (0, _deleteValueForProperty2.default)(node, name);
+	            (0, _deleteDOMProperties2.default)(node, name);
 	            return;
 	        }
 	
@@ -2218,9 +2218,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _deleteValueForProperty = __webpack_require__(28);
+	var _deleteDOMProperties = __webpack_require__(28);
 	
-	var _deleteValueForProperty2 = _interopRequireDefault(_deleteValueForProperty);
+	var _deleteDOMProperties2 = _interopRequireDefault(_deleteDOMProperties);
 	
 	var _setValueForProperty = __webpack_require__(30);
 	
@@ -2259,7 +2259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (oldProp != null) {
 	
 	            if (newProp == null) {
-	                (0, _deleteValueForProperty2.default)(element, propName);
+	                (0, _deleteDOMProperties2.default)(element, propName);
 	            } else {
 	
 	                // Unset styles on `oldProp` but not on `newProp`.
@@ -2305,7 +2305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (newProp != null) {
 	                (0, _setValueForProperty2.default)(element, propName, newProp);
 	            } else {
-	                (0, _deleteValueForProperty2.default)(element, propName);
+	                (0, _deleteDOMProperties2.default)(element, propName);
 	            }
 	        } else if (newProp != null) {
 	            (0, _setValueForProperty2.default)(element, propName, newProp);
@@ -4138,57 +4138,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		var skip = false;
 	
 		switch (attrName) {
-			case 'designMode':
-				fragmentType = _fragmentValueTypes2.default.ATTR_DESIGNMODE;
-				break;
-			case 'htmlFor':
-				fragmentType = _fragmentValueTypes2.default.ATTR_HTMLFOR;
-				break;
-			case 'playbackRate':
-				fragmentType = _fragmentValueTypes2.default.ATTR_PLAYBACKRATE;
-				break;
-			case 'srcDoc':
-				fragmentType = _fragmentValueTypes2.default.ATTR_SRCDOC;
-				break;
-			case 'checked':
-				fragmentType = _fragmentValueTypes2.default.ATTR_CHECKED;
-				break;
-			case 'isMap':
-				fragmentType = _fragmentValueTypes2.default.ATTR_ISMAP;
-				break;
-			case 'loop':
-				fragmentType = _fragmentValueTypes2.default.ATTR_LOOP;
-				break;
-			case 'muted':
-				fragmentType = _fragmentValueTypes2.default.ATTR_MUTED;
-				break;
-			case 'required':
-				fragmentType = _fragmentValueTypes2.default.ATTR_REQUIRED;
-				break;
-			case 'selected':
-				fragmentType = _fragmentValueTypes2.default.ATTR_SELECTED;
-				break;
-			case 'trueSpeed':
-				fragmentType = _fragmentValueTypes2.default.ATTR_TRUESPEED;
-				break;
-			case 'multiple':
-				fragmentType = _fragmentValueTypes2.default.ATTR_MULTIPLE;
-				break;
-			case 'controls':
-				fragmentType = _fragmentValueTypes2.default.ATTR_CONTROLS;
-				break;
-			case 'defer':
-				fragmentType = _fragmentValueTypes2.default.ATTR_DEFER;
-				break;
-			case 'noValidate':
-				fragmentType = _fragmentValueTypes2.default.ATTR_NOVALIDATE;
-				break;
-			case 'scoped':
-				fragmentType = _fragmentValueTypes2.default.ATTR_SCOPED;
-				break;
-			case 'resize':
-				fragmentType = _fragmentValueTypes2.default.ATTR_NO_RESIZE;
-				break;
 			case 'ref':
 				fragmentType = _fragmentValueTypes2.default.ATTR_REF;
 				skip = true;

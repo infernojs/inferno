@@ -99,7 +99,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.querySelector("input").checked
 			).to.equal(
-				true
+				false
 			);
 		});
 		it('Third render (update)', () => {
