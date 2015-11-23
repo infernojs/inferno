@@ -124,7 +124,7 @@ function VirtualElement(tagName, xmlns, is) {
                 }
 
                 // prevent scripting attack
-                ret += ' ' + `=${ quoteAttributeValueForBrowser(propVal) }`;
+                ret += ' ' + propVal + `=${ quoteAttributeValueForBrowser(propVal) }`;
             }
 
             if (isVoidElement) {
