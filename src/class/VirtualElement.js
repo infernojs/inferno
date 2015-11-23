@@ -1,6 +1,34 @@
 import VirtualTextNode from './VirtualTextNode';
-import quoteAttributeValueForBrowser from '../util/quoteAttributeValueForBrowser';
+import DOMProperties from '../template/DOMProperties';
+import shouldIgnoreValue from '../template/shouldIgnoreValue';
+import quoteAttributeValueForBrowser from '../template/quoteAttributeValueForBrowser';
 
+
+function createMarkupForProperty(name, value) {
+
+    console.log(value)
+
+    const propertyInfo = DOMProperties[name];
+
+    if (propertyInfo) {
+
+        console.log(name)
+        if (shouldIgnoreValue(propertyInfo, value)) {
+            return '';
+        }
+        var attributeName = propertyInfo.attributeName;
+        if (propertyInfo.hasBooleanValue || propertyInfo.hasOverloadedBooleanValue && value === true) {
+            return attributeName + '=""';
+        }
+        return attributeName + '=' + quoteAttributeValueForBrowser(value);
+    } else {
+        if (value == null) {
+            return '';
+        }
+        return name + '=' + quoteAttributeValueForBrowser(value);
+    }
+    return null;
+}
 
 // The HTML elements in this list are speced by
 // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements,
@@ -106,8 +134,7 @@ function VirtualElement(tagName, xmlns, is) {
             let innerHTML = virtual.props.innerHTML;
             let attributes = '';
             let childrenInnerHtml;
-
-	        delete virtual.props.innerHTML;
+            delete virtual.props.innerHTML;
 
             let ret = '<' + tagName;
 
@@ -119,12 +146,11 @@ function VirtualElement(tagName, xmlns, is) {
 
                 let propVal = virtual.props[property];
 
-                if (propVal === true) {
-                    propVal = '';
-                }
+                let markup = createMarkupForProperty(property, propVal);
 
-                // prevent scripting attack
-                ret += ' ' + property + `=${ quoteAttributeValueForBrowser(propVal) }`;
+                if (markup) {
+                    ret += ' ' + markup;
+                }
             }
 
             if (isVoidElement) {
@@ -134,9 +160,11 @@ function VirtualElement(tagName, xmlns, is) {
             } else {
 
                 ret = ret + '>';
-                
+                if (innerHTML) {
+                    childrenInnerHtml = innerHTML;
+                } else {
                     childrenInnerHtml = virtual.children.map(child => child.outerHTML || child.nodeValue).join('');
-                       
+                }
                 if (childrenInnerHtml) {
                     ret = ret + childrenInnerHtml;
                 }
