@@ -105,6 +105,10 @@ function VirtualElement(tagName, xmlns, is) {
             const attributes = [];
 
             let childrenInnerHtml;
+			let innerHTML = virtual.props.innerHTML;
+			
+			 delete virtual.props.innerHTML;
+			  
             // Props taken out and moved into it's own object. Need to finish this later on.            
             for (let property in virtual.props) {
                 if (!doNotShowInHtml[property] && virtual.props[property] != null) {
@@ -124,10 +128,10 @@ function VirtualElement(tagName, xmlns, is) {
             if (attributes.length > 0) {
 
                 return isVoidElement ? `<${ tagName } ${ attributes }/>` :
-                    `<${ tagName } ${ attributes }>${ childrenInnerHtml }</${ tagName }>`;
+                    `<${ tagName } ${ attributes }>${ innerHTML ? innerHTML : childrenInnerHtml }</${ tagName }>`;
             }
             return isVoidElement ? `<${ tagName }/>` :
-                `<${ tagName }>${ childrenInnerHtml }</${ tagName }>`;
+                `<${ tagName }>${ innerHTML ? innerHTML : childrenInnerHtml }</${ tagName }>`;
         }
     });
 
