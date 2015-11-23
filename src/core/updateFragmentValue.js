@@ -4,7 +4,7 @@ import updateFragmentList from './updateFragmentList';
 import eventManager from '../events/eventManager';
 import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
-import attrOps from '../template/AttributeOps';
+import updateDOMProperties from '../template/updateDOMProperties';
 import updateComponent from './updateComponent';
 import removeComponent from './removeComponent';
 import sanitizeValue from '../template/sanitizeValue';
@@ -63,14 +63,7 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
                 sanitizeValue(element, fragment.templateValue, 'id', 'id');
                 return;
             default:
-                if (type == null) {
-                    throw Error(`Inferno Error: value "${ fragment.templateValue }" for fragment is never used`);
-                }
-                if (events[type] != null) {
-                    eventManager.addListener(element, type, fragment.templateValue);
-                } else {
-                    attrOps.set(element, type, fragment.templateValue, oldFragment.templateValue);
-                }
+                updateDOMProperties(element, type, oldFragment.templateValue, fragment.templateValue);
         }
     }
 }

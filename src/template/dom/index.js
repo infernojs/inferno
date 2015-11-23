@@ -1,10 +1,8 @@
 import addAttributes from '../addAttributes';
-import extendUnitlessNumber from '../extendUnitlessNumber';
 import createDOMElements from '../createDOMElements';
 
 export default {
     addAttributes,
-    extendUnitlessNumber,
     createElement(tag, is) {
         switch (tag) {
             case 'div':
