@@ -1,13 +1,13 @@
-import applyState from './applyState';
 import queueStateChanges from './queueStateChanges';
 
 class Component {
 	constructor(props, context) {
-		this.props = props;
+		this.props = props || {};
 		this.context = context;
 		this._blockSetState = false;
-		this._pendingState = {};
 		this._deferSetState = false;
+		this._pendingSetState = false;
+		this._pendingState = {};
 		this.state = {};
 	}
 	render() {}

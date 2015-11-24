@@ -20,12 +20,13 @@ export default function createElementFactory(fragment, template) {
 					const child = children[i];
 
 					if (child.pointer !== undefined) {
-						let value = fragment.templateValue || fragment.templateValues[child.pointer];
+						let value = fragment.templateValue != null
+							? fragment.templateValue : fragment.templateValues[child.pointer];
 
 						if (typeof value !== 'object') {
 							const node = template.createTextNode(value);
 
-							if(fragment.templateValue) {
+							if(fragment.templateValue != null) {
 								fragment.templateElement = node;
 								fragment.templateType = fragmentValueTypes.TEXT_DIRECT;
 							} else {
@@ -39,10 +40,10 @@ export default function createElementFactory(fragment, template) {
 							}
 						} else if (value.template) {
 							render(value, element)
-							if(fragment.templateValues) {
-								fragment.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
-							} else {
+							if(fragment.templateValue != null) {
 								fragment.templateType = fragmentValueTypes.COMPONENT_CHILDREN;
+							} else {
+								fragment.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
 							}
 						}
 					} else if (typeof child !== 'object') {
@@ -50,16 +51,16 @@ export default function createElementFactory(fragment, template) {
 
 						element.appendChild(node);
 					} else if (child.component) {
-						if (fragment.templateValues) {
+						if (fragment.templateValue != null) {
+							fragment.templateElement = element;
+							fragment.templateType = fragmentValueTypes.FRAGMENT;
+							fragment.templateValue = child;
+						} else {
 							let templateIndex = child.templateIndex;
 
 							fragment.templateElements[templateIndex] = element;
 							fragment.templateTypes[templateIndex] = fragmentValueTypes.FRAGMENT;
 							fragment.templateValues[templateIndex] = child;
-						} else {
-							fragment.templateElement = element;
-							fragment.templateType = fragmentValueTypes.FRAGMENT;
-							fragment.templateValue = child;
 						}
 					} else {
 						element.appendChild(child);
@@ -67,11 +68,12 @@ export default function createElementFactory(fragment, template) {
 				}
 			}
 			else if ((children = children[0]) && children.pointer !== undefined) {
-				const value = fragment.templateValue || fragment.templateValues[children.pointer];
+				const value = fragment.templateValue != null
+					? fragment.templateValue : fragment.templateValues[children.pointer];
 
 				if (typeof value !== 'object') {
 					element.textContent = value;
-					if(fragment.templateValue) {
+					if(fragment.templateValue != null) {
 						fragment.templateElement = element;
 						fragment.templateType = fragmentValueTypes.TEXT;
 					} else {
@@ -79,7 +81,7 @@ export default function createElementFactory(fragment, template) {
 						fragment.templateTypes[children.pointer] = fragmentValueTypes.TEXT;
 					}
 				} else if (isArray(value)) {
-					if(fragment.templateValue) {
+					if(fragment.templateValue != null) {
 						fragment.templateElement = element;
 						fragment.templateType = fragmentValueTypes.LIST;
 					} else {

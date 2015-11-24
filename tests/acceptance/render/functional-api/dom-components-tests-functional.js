@@ -1,5 +1,6 @@
 import get from '../../../tools/get';
 import Inferno from '../../../../src';
+import waits from '../../../tools/waits';
 
 export default function domComponentsTestsFunctional(describe, expect, container) {
 	class BasicComponent1 extends Inferno.Component {
@@ -209,7 +210,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 				true
 			);
 		});
-		
+
 		/// NOTE!! This test fails!  You can't set it to false. You have to set it to null / remove the property. BUG!
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment([
@@ -227,7 +228,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 	});
-	
+
 	describe('should render a basic component and remove property if null #1', () => {
 		let template;
 
@@ -474,7 +475,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			);
 		});
 	});
-	
+
 	describe('should render a basic component and remove styling #1', () => {
 		let template;
 
@@ -614,8 +615,8 @@ export default function domComponentsTestsFunctional(describe, expect, container
 	});
 
 	describe('should mount and unmount a basic component', () => {
-		let mountCount = 0;
-		let unmountCount = 0;
+		let mountCount;
+		let unmountCount;
 		let template;
 
 		class ComponentLifecycleCheck extends Inferno.Component {
@@ -636,6 +637,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		}
 
 		beforeEach(() => {
+			mountCount = 0;
+			unmountCount = 0;
+
 			template = Inferno.createTemplate((createElement, createComponent, Component) =>
 				createComponent(Component)
 			);
@@ -657,8 +661,8 @@ export default function domComponentsTestsFunctional(describe, expect, container
 	});
 
 	describe('should mount and unmount a basic component #2', () => {
-		let mountCount = 0;
-		let unmountCount = 0;
+		let mountCount;
+		let unmountCount;
 		let template;
 
 		class ComponentLifecycleCheck extends Inferno.Component {
@@ -679,6 +683,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		}
 
 		beforeEach(() => {
+			mountCount = 0;
+			unmountCount = 0;
+
 			template = Inferno.createTemplate((createElement, createComponent, Component) =>
 				createComponent(Component)
 			);
@@ -697,6 +704,89 @@ export default function domComponentsTestsFunctional(describe, expect, container
 				props: {}
 			}], template), container);
 			expect(unmountCount).to.equal(1);
+		});
+	});
+
+	describe('state changes should trigger all lifecycle evemts for an update', () => {
+		let componentWillMountCount;
+		let shouldComponentUpdateCount;
+		let componentDidUpdateCount;
+		let componentWillUpdateCount;
+		let componentWillReceivePropsCount;
+		let template;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			constructor() {
+				super();
+				this.state = {
+					counter: 0
+				};
+			}
+			template(createElement, createComponent, counter) {
+				return createElement('div', null,
+					createElement('span', null, counter)
+				)
+			}
+			render() {
+				return Inferno.createFragment(this.state.counter, this.template);
+			}
+			componentWillMount() {
+				componentWillMountCount++;
+				this.setState({
+					counter: this.state.counter + 1
+				});
+			}
+			shouldComponentUpdate() {
+				shouldComponentUpdateCount++;
+				return true;
+			}
+			componentDidUpdate() {
+				componentDidUpdateCount++;
+			}
+			componentWillUpdate() {
+				componentWillUpdateCount++;
+			}
+			componentWillReceiveProps() {
+				componentWillReceivePropsCount++;
+			}
+		}
+
+		beforeEach((done) => {
+			componentWillMountCount = 0;
+			shouldComponentUpdateCount = 0;
+			componentDidUpdateCount = 0;
+			componentWillUpdateCount = 0;
+			componentWillReceivePropsCount = 0;
+
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createComponent(Component)
+			);
+			Inferno.render(Inferno.createFragment([{
+				component: ComponentLifecycleCheck,
+				props: {}
+			}], template), container);
+			waits(100, done)
+		});
+
+		it("componentWillMountCount to have fired once", () => {
+			expect(componentWillMountCount).to.equal(1);
+		});
+		it("shouldComponentUpdateCount to have fired once", () => {
+			expect(shouldComponentUpdateCount).to.equal(1);
+		});
+		it("componentWillUpdateCount to have fired once", () => {
+			expect(componentWillUpdateCount).to.equal(1);
+		});
+		it("componentDidUpdateCount to have fired once", () => {
+			expect(componentDidUpdateCount).to.equal(1);
+		});
+		it("componentWillReceivePropsCount not to have fired", () => {
+			expect(componentWillReceivePropsCount).to.equal(0);
+		});
+		it("the element in the component should show the new state", () => {
+			expect(container.innerHTML).to.equal(
+				'<div><span>1</span></div>'
+			);
 		});
 	});
 }

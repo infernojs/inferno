@@ -139,7 +139,7 @@ function VirtualElement(tagName, xmlns, is) {
             let ret = '<' + tagName;
 
             //let childrenInnerHtml;
-            // Props taken out and moved into it's own object. Need to finish this later on.            
+            // Props taken out and moved into it's own object. Need to finish this later on.
 
 
             for (let property in virtual.props) {

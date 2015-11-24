@@ -1,13 +1,18 @@
+import updateComponent from '../core/updateComponent';
+
 function applyState(component) {
 	requestAnimationFrame(() => {
 		if(component._deferSetState === false) {
 			component._pendingSetState = false;
-			for (let stateKey in component._pendingState) {
-				component.state[stateKey] = component._pendingState[stateKey];
+			const pendingState = component._pendingState;
+			const oldState = component.state;
+			const nextState = {
+				...oldState,
+				...pendingState
 			}
 			component._pendingState = {};
 			component._pendingSetState = false;
-			component.forceUpdate();
+			updateComponent(component, component.props, nextState);
 		} else {
 			applyState(component);
 		}
