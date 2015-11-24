@@ -4,9 +4,9 @@
   "description": "A framework for building lightning fast user interfaces",
   "main": "./dist/inferno.min.js",
   "scripts": {
-    "test-win": "webpack-dev-server --config test.config.js --hot --inline 'mocha!.\\tests\\tests.js'",
-    "test": "webpack-dev-server --config test.config.js --hot --inline 'mocha!./tests/tests.js'",
-    "build:dev": "webpack --config webpack.config.js --inline",
+    "test-win": "webpack-dev-server --config test.config.js --hot --inline 'mocha!.\\tests\\tests.js' --compilers js:babel-core/register",
+    "test": "webpack-dev-server --config test.config.js --hot --inline 'mocha!./tests/tests.js' --compilers js:babel-core/register",
+	"build:dev": "webpack --config webpack.config.js --inline",
     "build:prod": "PROD_DEV=1 webpack --config webpack.config.js --inline",
     "lint": "eslint src/**/*.js"
   },
