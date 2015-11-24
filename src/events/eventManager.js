@@ -1,40 +1,52 @@
-import events              from './shared/events';
-import getUniqueId         from './getUniqueId';
-import root                from './root';
-import rootListeners       from './vars/rootListeners';
-import eventsCfg           from './shared/eventsCfg';
+import SyntheticEvent from './SyntheticEvent';
+import getDomNodeId from './getDomNodeId';
+import EventRegistry from './EventRegistry';
+import listenersStorage from './listenersStorage';
+import globalEventListener from './globalEventListener';
 
-/**
- * Add event listeners
- * @param {Object} element
- * @param {String} type
- * @param {String} listener
- */
-function addListener (element, type, listener) {
+import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
-    type = events[type];
+const doc = global.document,
+    body = doc && doc.body;
 
-    const config = eventsCfg[type];
+function eventListener(e) {
+    listenersStorage[getDomNodeId(e.target)][e.type](SyntheticEvent(e.type, e));
+}
 
-    if (config) {
-        if (!config.set) {
-            if (config.setup) {
-                config.setup();
-            } else if (config.bubbles) {
-                document.addEventListener(type, root.addRootListener, false);
+function addListener(domNode, type, listener) {
+
+    const isRegistered = EventRegistry[type];
+
+    if (isRegistered) {
+
+        if (!isRegistered.set) {
+
+            if (isRegistered.setup) {
+
+                isRegistered.setup();
+
+            } else {
+
+                if (isRegistered.bubbles) {
+                    body.addEventListener(type, globalEventListener, false);
+                }
             }
-            config.set = true;
+
+            isRegistered.set = true;
         }
 
-        const uniqueId = getUniqueId(element);
-        const listeners = rootListeners[uniqueId] || (rootListeners[uniqueId] = {});
+        const domNodeId = getDomNodeId(domNode),
+            listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
 
         if (!listeners[type]) {
 
-            if (config.bubbles) {
-                ++config.countListeners;
+            if (isRegistered.bubbles) {
+
+                ++isRegistered.listenersCounter
+
             } else {
-                element.addEventListener(type, root.eventHandler, false);
+
+                domNode.addEventListener(type, eventListener, false);
             }
         }
 
@@ -42,35 +54,25 @@ function addListener (element, type, listener) {
     }
 }
 
-/**
- * Remove single listener
- * @param {Object} element
- * @param {String} type
- */
-function removeListener (element, type) {
-    const uniqueID = getUniqueId(element, true);
+function removeListener(domNode, type) {
+    const domNodeId = getDomNodeId(domNode, true);
 
-    if (uniqueID) {
-        const listeners = rootListeners[uniqueID];
-
-        type = events[type];
+    if (domNodeId) {
+        const listeners = listenersStorage[domNodeId];
 
         if (listeners && listeners[type]) {
             listeners[type] = null;
 
-            const cfg = eventsCfg[type];
+            const isRegistered = EventRegistry[type];
 
-            if (cfg) {
-                if (cfg.bubbles) {
-                    --cfg.countListeners;
-                } else {
-                    element.removeEventListener(type, root.eventHandler);
-                }
+            if (isRegistered) {
+                isRegistered.bubbles ?
+                    --isRegistered.listenersCounter :
+                    domNode.removeEventListener(type, eventListener);
             }
         }
     }
 }
-
 
 export default {
     addListener,

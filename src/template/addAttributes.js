@@ -26,7 +26,7 @@ export default function addAttributes(node, attrs, fragment) {
             if (attrVal !== undefined) {
                 // events
                 if (events[attrName] !== undefined) {
-                    eventManager.addListener(node, attrName, attrVal);
+                    eventManager.addListener(node, events[attrName], attrVal);
                     // attributes / properties
                 } else {
                     setValueForProperty(node, attrName, attrVal);

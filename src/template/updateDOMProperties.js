@@ -47,12 +47,12 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
     } else if (events[propName] != null) {
         if (oldProp != null) {
             if (newProp != null) {
-                eventManager.addListener(element, propName, newProp);
+                eventManager.addListener(element, events[propName], newProp);
             } else {
-                eventManager.removeListener(element, propName);
+                eventManager.removeListener(element, events[propName]);
             }
         } else if (newProp != null) {
-            eventManager.addListener(element, propName, newProp);
+            eventManager.addListener(element, events[propName], newProp);
         }
     } else if (oldProp != null) {
         // If 'newProp' is null or undefined, we, we should remove the property
