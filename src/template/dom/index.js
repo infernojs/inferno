@@ -1,5 +1,6 @@
 import addAttributes from '../addAttributes';
 import createDOMElements from '../createDOMElements';
+import createDOMNode from '../createDOMNode';
 
 export default {
     addAttributes,
@@ -20,31 +21,24 @@ export default {
                 case 'ol':
                 case 'p':
 
-                    return is ?
-                        document.createElement(tag, is) :
-                        document.createElement(tag);
+				return createDOMNode(tag, false, is);
+				
                 default:
 
                     let DOMElementsInfo = createDOMElements[tag.toLowerCase()];
 
                     if (DOMElementsInfo !== undefined) {
+                        // add SVG namespace
                         if (DOMElementsInfo.isSVG) {
-                            // add SVG namespace
-                            return is ?
-                                document.createElementNS('http://www.w3.org/2000/svg', tag, is) :
-                                document.createElementNS('http://www.w3.org/2000/svg', tag);
+                            return createDOMNode(tag, 'http://www.w3.org/2000/svg', is);
                         }
+                        // add mathML namespace
                         if (DOMElementsInfo.isMathML) {
-                            // add mathML namespace
-                            return is ?
-                                document.createElementNS('http://www.w3.org/1998/Math/MathML', tag, is) :
-                                document.createElementNS('http://www.w3.org/1998/Math/MathML', tag);
+							return createDOMNode(tag, 'http://www.w3.org/1998/Math/MathML', is);
                         }
                     }
                     // all others
-                    return is ?
-                        document.createElement(tag, is) :
-                        document.createElement(tag);
+						return createDOMNode(tag, false, is);
             }
         },
         createTextNode: text => document.createTextNode(text),

@@ -328,7 +328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _createElement = __webpack_require__(68);
+	var _createElement = __webpack_require__(69);
 	
 	var _createElement2 = _interopRequireDefault(_createElement);
 	
@@ -336,7 +336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createComponent2 = _interopRequireDefault(_createComponent);
 	
-	var _dom = __webpack_require__(69);
+	var _dom = __webpack_require__(70);
 	
 	var _dom2 = _interopRequireDefault(_dom);
 	
@@ -1360,7 +1360,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _uuid = __webpack_require__(73);
+	var _uuid = __webpack_require__(74);
 	
 	var _uuid2 = _interopRequireDefault(_uuid);
 	
@@ -1910,7 +1910,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(70);
+	var _processFragmentAttrs = __webpack_require__(71);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -1922,9 +1922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param{ Object } attrs
 	 */
 	function addAttributes(node, attrs, fragment) {
-	
 	    for (var attrName in attrs) {
-	
 	        var attrVal = attrs[attrName];
 	        var skip = false;
 	
@@ -1933,12 +1931,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            attrVal = proccessedAttrs.attrVal;
 	            skip = proccessedAttrs.skip;
 	        }
-	
 	        if (attrName === 'style') {
-	
 	            (0, _setValueForStyles2.default)(node, attrVal);
 	        } else {
-	
 	            // avoid 'null' values
 	            if (attrVal !== undefined) {
 	                // events
@@ -1963,7 +1958,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	function checkMask(value, bitmask) {
-	
 	  return bitmask != null && (value & bitmask) === bitmask;
 	}
 	
@@ -1992,29 +1986,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} name
 	 */
 	function deleteValueForProperty(node, name) {
-	
 	    var propertyInfo = _DOMProperties2.default[name];
 	
 	    if (propertyInfo !== undefined) {
-	
 	        if (propertyInfo.mustUseProperty) {
-	
 	            var propName = propertyInfo.propertyName;
 	
 	            if (propName === 'value' && node.tagName.toLowerCase() === 'select') {
-	
 	                var options = node.options;
 	                var len = options.length;
-	
 	                var i = 0;
-	
 	                while (i < len) {
 	                    options[i++].selected = false;
 	                }
 	            } else if (propertyInfo.hasBooleanValue) {
 	                node[propName] = false;
 	            } else {
-	
 	                if ('' + node[propName] !== '') {
 	                    node[propName] = '';
 	                }
@@ -2081,22 +2068,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function setValueForProperty(node, name, value) {
-	
 	    var propertyInfo = _DOMProperties2.default[name];
 	
 	    if (propertyInfo !== undefined) {
-	
 	        if ((0, _shouldIgnoreValue2.default)(propertyInfo, value)) {
 	            (0, _deleteDOMProperties2.default)(node, name);
 	            return;
 	        }
-	
 	        if (propertyInfo.mustUseProperty) {
-	
 	            var propName = propertyInfo.propertyName;
-	
 	            if (propName === 'value' && node.tagName.toLowerCase() === 'select') {
-	
 	                var multiple = (0, _isArray2.default)(value);
 	                var options = node.options;
 	
@@ -2105,13 +2086,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var l = undefined;
 	
 	                if (multiple) {
-	
 	                    selectedValue = {};
-	
 	                    for (idx = 0, l = value.length; idx < l; ++idx) {
 	                        selectedValue['' + value[idx]] = true;
 	                    }
-	
 	                    for (idx = 0, l = options.length; idx < l; idx++) {
 	                        var selected = selectedValue[options[idx].value];
 	
@@ -2123,7 +2101,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    // Do not set `select.value` as exact behavior isn't consistent across all
 	                    // browsers for all cases.
 	                    selectedValue = '' + value;
-	
 	                    for (idx = 0, l = options.length; idx < l; idx++) {
 	
 	                        if (options[idx].value === selectedValue) {
@@ -2134,10 +2111,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else if ('' + node[propName] !== '' + value) {
 	                node[propName] = value;
 	            }
-	
 	            return;
 	        }
-	
 	        var attributeName = propertyInfo.attributeName;
 	        var namespace = propertyInfo.attributeNamespace;
 	
@@ -2148,7 +2123,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    } else {
 	        // custom attributes
-	
 	        // Take any attribute (with correct syntax) as custom attribute.
 	        if (name) {
 	            node.setAttribute(name, value);
@@ -2183,9 +2157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	exports.default = function (node, styles) {
-	
 	    for (var styleName in styles) {
-	
 	        var styleValue = styles[styleName];
 	
 	        node.style[styleName] = styleValue == null ? '' : (0, _addPixelSuffixToValueIfNeeded2.default)(styleName, styleValue);
@@ -2202,7 +2174,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	function shouldIgnoreValue(propertyInfo, value) {
-	
 	    return value == null || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && isNaN(value) || propertyInfo.hasPositiveNumericValue && value < 1 || propertyInfo.hasOverloadedBooleanValue && value === false;
 	}
 	
@@ -2250,18 +2221,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object} newProp
 	 */
 	function updateDOMProperties(element, propName, oldProp, newProp) {
-	
 	    if (propName === 'style') {
-	
 	        var styleUpdates = undefined;
 	        var styleName = undefined;
 	
 	        if (oldProp != null) {
-	
 	            if (newProp == null) {
 	                (0, _deleteDOMProperties2.default)(element, propName);
 	            } else {
-	
 	                // Unset styles on `oldProp` but not on `newProp`.
 	                for (styleName in oldProp) {
 	                    if (oldProp[styleName] && (!newProp || !newProp[styleName])) {
@@ -2280,16 +2247,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (newProp != null) {
 	            styleUpdates = newProp;
 	        }
-	
 	        if (styleUpdates) {
 	            (0, _setValueForStyles2.default)(element, styleUpdates);
 	        }
-	
 	        // Event listeners
 	    } else if (_events2.default[propName] != null) {
-	
 	            if (oldProp != null) {
-	
 	                if (newProp != null) {
 	                    _eventManager2.default.addListener(element, propName, newProp);
 	                } else {
@@ -2299,7 +2262,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _eventManager2.default.addListener(element, propName, newProp);
 	            }
 	        } else if (oldProp != null) {
-	
 	            // If 'newProp' is null or undefined, we, we should remove the property
 	            // from the DOM node instead of inadvertantly setting to a string.
 	            if (newProp != null) {
@@ -2548,7 +2510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(71);
+	var _quoteAttributeValueForBrowser = __webpack_require__(72);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3697,7 +3659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _unitlessProperties = __webpack_require__(72);
+	var _unitlessProperties = __webpack_require__(73);
 	
 	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
 	
@@ -3784,7 +3746,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// DOM Element list here
 	var DOMElements = {
-	
 	    a: IS_SVG,
 	    altGlyph: IS_SVG,
 	    altGlyphDef: IS_SVG,
@@ -3919,6 +3880,48 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 68 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var doc = global.document,
+	    elementProtos = {};
+	
+	function createDOMNode(tagName, namespace, typextension) {
+	
+	    var element = undefined,
+	        key = undefined;
+	
+	    if (namespace) {
+	        if (typextension) {
+	
+	            key = ns + is + ':' + tagName;
+	            baseElement = elementProtos[key] || (elementProtos[key] = doc.createElementNS(namespace, tagName, typextension));
+	        } else {
+	
+	            key = ns + ':' + tagName;
+	            baseElement = elementProtos[key] || (elementProtos[key] = doc.createElementNS(namespace, tagName));
+	        }
+	    } else {
+	        if (typextension) {
+	
+	            key = is + ':' + tagName;
+	            element = elementProtos[key] || (elementProtos[key] = doc.createElement(tagName, typextension));
+	        } else {
+	            element = elementProtos[tagName] || (elementProtos[tagName] = doc.createElement(tagName));
+	        }
+	    }
+	    return element.cloneNode();;
+	}
+	
+	exports.default = createDOMNode;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4047,7 +4050,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4063,6 +4066,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _createDOMElements = __webpack_require__(67);
 	
 	var _createDOMElements2 = _interopRequireDefault(_createDOMElements);
+	
+	var _createDOMNode = __webpack_require__(68);
+	
+	var _createDOMNode2 = _interopRequireDefault(_createDOMNode);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -4085,23 +4092,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            case 'ol':
 	            case 'p':
 	
-	                return is ? document.createElement(tag, is) : document.createElement(tag);
+	                return (0, _createDOMNode2.default)(tag, false, is);
+	
 	            default:
 	
 	                var DOMElementsInfo = _createDOMElements2.default[tag.toLowerCase()];
 	
 	                if (DOMElementsInfo !== undefined) {
+	                    // add SVG namespace
 	                    if (DOMElementsInfo.isSVG) {
-	                        // add SVG namespace
-	                        return is ? document.createElementNS('http://www.w3.org/2000/svg', tag, is) : document.createElementNS('http://www.w3.org/2000/svg', tag);
+	                        return (0, _createDOMNode2.default)(tag, 'http://www.w3.org/2000/svg', is);
 	                    }
+	                    // add mathML namespace
 	                    if (DOMElementsInfo.isMathML) {
-	                        // add mathML namespace
-	                        return is ? document.createElementNS('http://www.w3.org/1998/Math/MathML', tag, is) : document.createElementNS('http://www.w3.org/1998/Math/MathML', tag);
+	                        return (0, _createDOMNode2.default)(tag, 'http://www.w3.org/1998/Math/MathML', is);
 	                    }
 	                }
 	                // all others
-	                return is ? document.createElement(tag, is) : document.createElement(tag);
+	                return (0, _createDOMNode2.default)(tag, false, is);
 	        }
 	    },
 	
@@ -4117,7 +4125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4133,7 +4141,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function processFragmentAttrs(node, attrName, attrVal, fragment) {
-	
 		var fragmentType = undefined;
 		var skip = false;
 	
@@ -4176,7 +4183,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4193,10 +4200,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var ESCAPE_REGEX = /[&><"]/g;
 	
-	var escaper = function escaper(match) {
-	  return ESCAPE_LOOKUP[match];
-	};
-	
 	/**
 	 * Escapes attribute value to prevent scripting attacks.
 	 *
@@ -4205,11 +4208,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	exports.default = function (value) {
-	  return '"' + ('' + value).replace(ESCAPE_REGEX, escaper) + '"';
+	  return '"' + ('' + value).replace(ESCAPE_REGEX, function (match) {
+	    return ESCAPE_LOOKUP[match];
+	  }) + '"';
 	};
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4219,7 +4224,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	
 	exports.default = function (str) {
-	
 	    switch (str.length) {
 	        case 4:
 	            return str === 'flex' || str === 'base' || str === 'zoom';
@@ -4261,7 +4265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports) {
 
 	'use strict';
