@@ -81,7 +81,9 @@ for (let eventName in events) {
 
     let propertyInfo = {
         eventName: eventName,
-        shouldNotBubble: checkBitmask(propConfig, SHOULD_NOT_BUBBLE)
+        shouldNotBubble: checkBitmask(propConfig, SHOULD_NOT_BUBBLE),
+        isNative: checkBitmask(propConfig, NATIVE_EVENT),
+		focusEvent: false
     };
 
     if (focusEvents[eventName]) {
