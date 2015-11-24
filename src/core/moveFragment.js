@@ -1,4 +1,4 @@
-export default (parentDom, item, nextItem) => {
+export default function moveFragment(parentDom, item, nextItem) {
 	let domItem = item.dom;
 	let	domRefItem = nextItem && nextItem.dom;
 

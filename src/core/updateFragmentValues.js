@@ -43,7 +43,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
                     const comp = fragment.templateValues[i];
                     const oldComp = oldFragment.templateValues[i];
 
-                    if (comp === null) {
+                    if (comp === null || comp.component === null) {
                         removeComponent(templateComponent, element);
                         templateComponent = fragment.templateValues[i] = null;
                     } else if (comp && comp.component === oldComp.component) {

@@ -14,6 +14,8 @@ function updateFragment( context, oldFragment, fragment, parent, component ) {
 		return;
 	}
 	if ( oldFragment.template !== fragment.template ) {
+		//unmount fragment
+		unmountComponentAtFragment(oldFragment);
 		attachFragment( context, fragment, parent, component, oldFragment, true );
 	   return;
 	}

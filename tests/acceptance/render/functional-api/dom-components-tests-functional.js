@@ -538,27 +538,27 @@ export default function domComponentsTestsFunctional(describe, expect, container
 	});
 
 	class TestComponent extends Inferno.Component {
-		template(t, c, value, styles) {
-			return t('select', {
-						multiple: true,
-						value: value,
-						style: styles
-					},
-					t('optgroup', {
+		template(createElement, c, value, styles) {
+			return createElement('select', {
+					multiple: true,
+					value: value,
+					style: styles
+				}, createElement('optgroup', {
 						label: 'foo-group'
-					}, t('option', {
+					},
+					createElement('option', {
 						value: 'foo'
 					}, 'Im a li-tag')),
-					t('optgroup', {
-						label: 'bar-group'
-					}, t('option', {
-						value: 'bar'
-					}, 'Im a li-tag')),
-					t('optgroup', {
-						label: 'dominic-group'
-					}, t('option', {
-						value: 'dominic'
-					}, 'Im a li-tag'))
+				createElement('optgroup', {
+					label: 'bar-group'
+				}, createElement('option', {
+					value: 'bar'
+				}, 'Im a li-tag')),
+				createElement('optgroup', {
+					label: 'dominic-group'
+				}, createElement('option', {
+					value: 'dominic'
+				}, 'Im a li-tag'))
 			);
 		}
 		render() {
@@ -610,6 +610,93 @@ export default function domComponentsTestsFunctional(describe, expect, container
 				+ '<option value="bar">Im a li-tag</option></optgroup><optgroup label="dominic-group">'
 				+ '<option value="dominic">Im a li-tag</option></optgroup></select></div>'
 			);
+		});
+	});
+
+	describe('should mount and unmount a basic component', () => {
+		let mountCount = 0;
+		let unmountCount = 0;
+		let template;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			template(createElement) {
+				return createElement('div', null,
+					createElement('span', null)
+				)
+			}
+			render() {
+				return Inferno.createFragment(null, this.template);
+			}
+			componentDidMount() {
+				mountCount++;
+			}
+			componentWillUnmount() {
+				unmountCount++;
+			}
+		}
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createComponent(Component)
+			);
+			Inferno.render(Inferno.createFragment([{
+				component: ComponentLifecycleCheck,
+				props: {}
+			}], template), container);
+		});
+
+		it("should have mounted the component", () => {
+			expect(mountCount).to.equal(1);
+		});
+
+		it("should have unmounted the component", () => {
+			Inferno.render(<div></div>, container);
+			expect(container.innerHTML).to.equal('<div></div>');
+			expect(unmountCount).to.equal(1);
+		});
+	});
+
+	describe('should mount and unmount a basic component #2', () => {
+		let mountCount = 0;
+		let unmountCount = 0;
+		let template;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			template(createElement) {
+				return createElement('div', null,
+					createElement('span', null)
+				)
+			}
+			render() {
+				return Inferno.createFragment(null, this.template);
+			}
+			componentDidMount() {
+				mountCount++;
+			}
+			componentWillUnmount() {
+				unmountCount++;
+			}
+		}
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((createElement, createComponent, Component) =>
+				createComponent(Component)
+			);
+			Inferno.render(Inferno.createFragment([{
+				component: ComponentLifecycleCheck,
+				props: {}
+			}], template), container);
+		});
+
+		it("should have mounted the component", () => {
+			expect(mountCount).to.equal(1);
+		});
+		it("should have unmounted the component", () => {
+			Inferno.render(Inferno.createFragment([{
+				component: null,
+				props: {}
+			}], template), container);
+			expect(unmountCount).to.equal(1);
 		});
 	});
 }

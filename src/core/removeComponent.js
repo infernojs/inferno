@@ -1,7 +1,15 @@
+import removeContext from './removeContext';
+import badUpdate from './badUpdate';
+
 export default function removeComponent(component, element) {
-	// TODO
-	//unmount component
-	//remove component context
-	//remove node from DOM
-	element.parentNode.removeChild(element);
+	if(component == null) {
+		return;
+	}
+	component.componentWillUnmount();
+	removeContext(component.context.dom);
+	component.forceUpdate = badUpdate;
+	component.context = null;
+	if(element) {
+		element.parentNode.removeChild(element);
+	}
 }
