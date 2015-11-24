@@ -1,65 +1,59 @@
 import isEventSupported from './isEventSupported';
-import getDomNodeId from './getDomNodeId';
 import EventConstants from './EventConstants';
 import focusEvents from './focusEvents';
-import globalEventListener from './globalEventListener';
+import rootListener from './rootListener';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
-const doc = global.document,
-    body = doc && doc.body;
-
+const {
+    nativeEvents,
+    nonBubbleableEvents
+} = EventConstants;
 
 const EventRegistry = {};
 
+if (ExecutionEnvironment.canUseDOM) {
 
-if(ExecutionEnvironment.canUseDOM) {
-	
-  let i = 0,
-        type;
+    let i = 0,
+        EventType;
 
-    while(i < EventConstants.nativeEvents.length) {
-        type = EventConstants.nativeEvents[i++];
-  
-   EventRegistry[type] = {}
-  
-   EventRegistry[type].type = type;
-   EventRegistry[type].bubbles = true; 
-   EventRegistry[type].listenersCounter = 0;
-   EventRegistry[type].set = false; 
-   EventRegistry[type].setup = null;
- 
-   if (focusEvents[type]) {
+    for (; i < nativeEvents.length; i++) {
 
-         if (isEventSupported(focusEvents[type])) {
+        EventType = nativeEvents[i];
 
-             EventRegistry[type].setup = function() {
-                 const type = this.type;
-                 body.addEventListener(
-                     focusEvents[type],
-                     e => {
-                         globalEventListener(e, type);
-                     });
-             }
-         } else {
+        EventRegistry[EventType] = {
 
-             EventRegistry[type].setup = function() {
-                 body.addEventListener(
-                     this.type,
-                     globalEventListener,
-                     true);
-             }
-         }
+            type: EventType,
+            shouldBubble: true,
+            counter: 0,
+            isActive: false, // not activated YET!
+            setup: null
+        }
 
-     } 
-  }
-    i = 0;
-    while(i < EventConstants.nonBubbleableEvents.length) {
-        EventRegistry[EventConstants.nonBubbleableEvents[i++]] = {
-            type : type,
-            bubbles : false,
-            set : false
+        // 'focus' and 'blur' is a special case
+        if (focusEvents[EventType]) {
+
+            EventRegistry[EventType].setup = isEventSupported(focusEvents[EventType]) ?
+                function() {
+                    const type = this.type;
+                    document.body.addEventListener(
+                        focusEvents[type],
+                        e => {
+                            rootListener(e, type);
+                        });
+                } :
+                function() {
+                    document.body.addEventListener(this.type, rootListener, true);
+                }
+        }
+    }
+
+    for (i = 0; i < nonBubbleableEvents.length; i++) {
+        EventRegistry[nonBubbleableEvents[i]] = {
+            type: EventType,
+            shouldBubble: false,
+            isActive: false
         };
-    }	
+    }
 }
 
 export default EventRegistry;

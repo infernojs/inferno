@@ -1,16 +1,13 @@
 import SyntheticEvent from './SyntheticEvent';
-import getDomNodeId from './getDomNodeId';
+import getEventID from './getEventID';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
-import globalEventListener from './globalEventListener';
+import rootListener from './rootListener';
 
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
-const doc = global.document,
-    body = doc && doc.body;
-
 function eventListener(e) {
-    listenersStorage[getDomNodeId(e.target)][e.type](SyntheticEvent(e.type, e));
+    listenersStorage[getEventID(e.target)][e.type](SyntheticEvent(e));
 }
 
 function addListener(domNode, type, listener) {
@@ -19,7 +16,7 @@ function addListener(domNode, type, listener) {
 
     if (isRegistered) {
 
-        if (!isRegistered.set) {
+        if (!isRegistered.isActive) {
 
             if (isRegistered.setup) {
 
@@ -27,22 +24,22 @@ function addListener(domNode, type, listener) {
 
             } else {
 
-                if (isRegistered.bubbles) {
-                    body.addEventListener(type, globalEventListener, false);
+                if (isRegistered.shouldBubble) {
+                    document.body.addEventListener(type, rootListener, false);
                 }
             }
 
-            isRegistered.set = true;
+            isRegistered.isActive = true;
         }
 
-        const domNodeId = getDomNodeId(domNode),
+        const domNodeId = getEventID(domNode),
             listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
 
         if (!listeners[type]) {
 
-            if (isRegistered.bubbles) {
+            if (isRegistered.shouldBubble) {
 
-                ++isRegistered.listenersCounter
+                ++isRegistered.counter
 
             } else {
 
@@ -55,7 +52,7 @@ function addListener(domNode, type, listener) {
 }
 
 function removeListener(domNode, type) {
-    const domNodeId = getDomNodeId(domNode, true);
+    const domNodeId = getEventID(domNode, true);
 
     if (domNodeId) {
         const listeners = listenersStorage[domNodeId];
@@ -66,8 +63,8 @@ function removeListener(domNode, type) {
             const isRegistered = EventRegistry[type];
 
             if (isRegistered) {
-                isRegistered.bubbles ?
-                    --isRegistered.listenersCounter :
+                isRegistered.shouldBubble ?
+                    --isRegistered.counter :
                     domNode.removeEventListener(type, eventListener);
             }
         }

@@ -1,5 +1,7 @@
 function SyntheticEvent(nativeEvent) {
 
+    // SyntheticEvent is based on DOM3 Events as specified by the ECMAScript Language Binding
+    // http://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/ecma-script-binding.html
     let evt = {
         nativeEvent: nativeEvent,
         isPropagationStopped: false,
@@ -15,7 +17,6 @@ function SyntheticEvent(nativeEvent) {
                 event.cancelBubble = true;
             }
         },
-
 
         isPropagationStopped: function() {
             return evt.isPropagationStopped;
