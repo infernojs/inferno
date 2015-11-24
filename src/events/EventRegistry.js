@@ -5,6 +5,12 @@ import focusEvents from './focusEvents';
 import globalEventListener from './globalEventListener';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
+// TODO! Finish this!
+
+/**
+ * Event registry
+ */
+
 const doc = global.document,
     body = doc && doc.body;
 

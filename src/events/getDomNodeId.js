@@ -1,8 +1,9 @@
-const ID_PROP = '__redric__id__';
+const internalID = '_inferno_';
+
 let counter = 1;
 
 function getDomNodeId(node, onlyGet) {
-    return node[ID_PROP] || (onlyGet? null : node[ID_PROP] = counter++);
+    return node[internalID] || (onlyGet? null : node[internalID] = counter++);
 }
 
 export default getDomNodeId;
