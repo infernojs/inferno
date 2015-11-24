@@ -13,16 +13,13 @@ class Component {
 	}
 	render() {}
 	forceUpdate() {}
-	setState(newState) {
+	setState(newState, callback) {
+		// TODO the callback
 		if(this._blockSetState === false) {
 			queueStateChanges(this, newState);
 		} else {
 			throw Error("Inferno Error: Cannot update state via setState() in componentWillUpdate()");
 		}
-	}
-	replaceState(newState) {
-		this.state = newState;
-		this.forceUpdate();
 	}
 	componentDidMount() {}
 	componentWillMount() {}

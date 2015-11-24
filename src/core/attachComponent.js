@@ -25,9 +25,6 @@ export default function attachComponent(context, mountElem, Component, fragmentD
 		}
 	}
 
-	const mountCallback = () => {
-		component.isMounted = true;
-		component.componentDidMount();
-	}
+	const mountCallback = component.componentDidMount;
 	return {component, mountElem, newElement, mountCallback};
 }

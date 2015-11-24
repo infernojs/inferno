@@ -12,5 +12,4 @@ export default function removeComponent(component, element) {
 	if(element) {
 		element.parentNode.removeChild(element);
 	}
-	component.isMounted = false;
 }
