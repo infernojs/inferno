@@ -16,7 +16,7 @@ function isEventSupported(eventNameSuffix, capture) {
   }
 
   const eventName = 'on' + eventNameSuffix;
-  const isSupported = (eventName in document);
+  let isSupported = (eventName in document);
 
   if (!isSupported) {
     let element = document.createElement('div');
