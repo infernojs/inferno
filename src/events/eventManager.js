@@ -22,19 +22,30 @@ export default {
         return eventProperties[evt]
     },
 
-    addListener: function(domNode, type, listener) {
+    addListener: function(element, type, listener) {
 
         const EventInfo = eventProperties[type] || null;
-
+        
+		let registry;
+		
         if (EventInfo) {
 
             const originalEvent = eventProperties[type].eventName;
 
             const isRegistered = EventRegistry[originalEvent];
 
-            if (isRegistered) {
+            if (!isRegistered) {
+                
+				// TODO! Move out into it's function 
+                
+				if (EventInfo.shouldNotBubble) {
 
-                if (EventInfo.isNative) {
+                    let registry = EventRegistry[originalEvent] = {
+                        type: originalEvent,
+                        isActive: false
+                    }
+
+                } else {
 
                     let registry = EventRegistry[originalEvent] = {
 
@@ -42,53 +53,46 @@ export default {
                         counter: 0,
                         isActive: false, // not activated YET!
                     }
-
-                    if (!isRegistered.isActive) {
-
-                        // 'focus' and 'blur' is a special case
-                        if (EventInfo.focusEvent) {
-
-                            if (isEventSupported(EventInfo.focusEvent)) {
-
-                                document.body.addEventListener(EventInfo.focusEvent,
-                                    e => {
-                                        eventHandler(e, originalEvent);
-                                    });
-
-                            } else {
-                                document.body.addEventListener(originalEvent, eventHandler, true);
-                            }
-
-                        } else {
-
-                            document.body.addEventListener(originalEvent, eventHandler, false);
-                        }
-
-                        registry.isActive = true;
-                    }
-
-                } else if (EventInfo.shouldNotBubble) {
-
-                    let registry = EventRegistry[originalEvent] = {
-
-                        type: originalEvent,
-                        isActive: false
-                    }
                 }
-
-                const domNodeId = getEventID(domNode),
-                    listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
-
-                if (!listeners[originalEvent]) {
-
-                    domNode.addEventListener(originalEvent, eventListener, false);
-                }
-
-                listeners[originalEvent] = listener;
             }
+
+            // only once in a life time
+            if (EventInfo.isNative && !isRegistered.isActive) {
+
+                // 'focus' and 'blur' is a special case
+                if (EventInfo.focusEvent) {
+
+                    if (isEventSupported(EventInfo.focusEvent)) {
+
+                        document.addEventListener(EventInfo.focusEvent,
+                            e => {
+                                eventHandler(e, originalEvent);
+                            });
+
+                    } else {
+                        document.addEventListener(originalEvent, eventHandler, true);
+                    }
+
+                } else {
+
+                    document.addEventListener(originalEvent, eventHandler, false);
+                }
+
+                registry.isActive = true;
+            }
+
+            const domNodeId = getEventID(element),
+                listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
+
+            if (!listeners[originalEvent]) {
+
+                element.addEventListener(originalEvent, eventListener, false);
+            }
+
+            listeners[originalEvent] = listener;
         }
     },
-    removeListener: function(domNode, type) {
+    removeListener: function(element, type) {
 
         const EventInfo = eventProperties[type] || null;
 
@@ -96,7 +100,7 @@ export default {
 
             const originalEvent = eventProperties[type].eventName;
 
-            const domNodeId = getEventID(domNode, true);
+            const domNodeId = getEventID(element, true);
 
             if (domNodeId) {
                 const listeners = listenersStorage[domNodeId];
@@ -109,7 +113,7 @@ export default {
                     if (isRegistered) {
 
                         if (EventInfo.shouldNotBubble) {
-                            domNode.removeEventListener(originalEvent, eventListener);
+                            element.removeEventListener(originalEvent, eventListener);
                         } else {
                             --isRegistered.counter;
                         }
