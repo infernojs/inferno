@@ -35,14 +35,14 @@ if (ExecutionEnvironment.canUseDOM) {
             EventRegistry[EventType].setup = isEventSupported(focusEvents[EventType]) ?
                 function() {
                     const type = this.type;
-                    document.body.addEventListener(
+                    document.addEventListener(
                         focusEvents[type],
                         e => {
                             eventHandler(e, type);
                         });
                 } :
                 function() {
-                    document.body.addEventListener(this.type, eventHandler, true);
+                    document.addEventListener(this.type, eventHandler, true);
                 }
         }
     }

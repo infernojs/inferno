@@ -25,7 +25,7 @@ function addListener(domNode, type, listener) {
             } else {
 
                 if (isRegistered.shouldBubble) {
-                    document.body.addEventListener(type, eventHandler, false);
+                    document.addEventListener(type, eventHandler, false);
                 }
             }
 
