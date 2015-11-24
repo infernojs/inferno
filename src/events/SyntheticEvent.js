@@ -1,42 +1,51 @@
-function SyntheticEvent(type, nativeEvent) {
+function SyntheticEvent(nativeEvent) {
 
-    let Syntetic = {
-        type: type,
-        target: nativeEvent.target,
+    // SyntheticEvent is based on DOM3 Events as specified by the ECMAScript Language Binding
+    // http://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/ecma-script-binding.html
+    let evt = {
         nativeEvent: nativeEvent,
-        _isPropagationStopped: false,
-        _isDefaultPrevented: false,
-
+        isPropagationStopped: false,
+        isDefaultPrevented: false,
 
         stopPropagation: function() {
-            Syntetic._isPropagationStopped = true;
+            evt.isPropagationStopped = true;
 
-            const nativeEvent = Syntetic.nativeEvent;
-            nativeEvent.stopPropagation ?
-                nativeEvent.stopPropagation() :
-                nativeEvent.cancelBubble = true;
+            const event = evt.nativeEvent;
+            if (event.stopPropagation) {
+                event.stopPropagation();
+            } else {
+                event.cancelBubble = true;
+            }
         },
 
         isPropagationStopped: function() {
-            return Syntetic._isPropagationStopped;
+            return evt.isPropagationStopped;
         },
 
         preventDefault: function() {
-            Syntetic._isDefaultPrevented = true;
+            evt.isDefaultPrevented = true;
 
-            const nativeEvent = Syntetic.nativeEvent;
-            nativeEvent.preventDefault ?
-                nativeEvent.preventDefault() :
-                nativeEvent.returnValue = false;
+            const event = evt.nativeEvent;
+
+            if (!event) {
+                return;
+            }
+
+            if (event.preventDefault) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+
+            evt.isDefaultPrevented = emptyFunction.thatReturnsTrue;
         },
 
         isDefaultPrevented: function() {
-            return Syntetic._isDefaultPrevented;
+            return evt.isDefaultPrevented;
         }
     }
 
-    return Syntetic;
+    return evt;
 }
-
 
 export default SyntheticEvent;

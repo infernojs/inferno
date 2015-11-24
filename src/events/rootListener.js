@@ -1,16 +1,10 @@
-import isEventSupported from './isEventSupported';
 import SyntheticEvent from './SyntheticEvent';
-import getDomNodeId from './getDomNodeId';
-import EventConstants from './EventConstants';
-import focusEvents from './focusEvents';
+import getEventID from './getEventID';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
 
-const doc = global.document,
-    body = doc && doc.body;
+function rootListener(e, type) {
 
-
-function globalEventListener(e, type) {
     type || (type = e.type);
 
     const config = EventRegistry[type],
@@ -22,8 +16,8 @@ function globalEventListener(e, type) {
         listener,
         domNodeId;
     
-    for (; 0 < listenersCount && target !== body;) {
-        if(domNodeId = getDomNodeId(target, true)) {
+    for (; 0 < listenersCount && target !== document.body;) {
+        if(domNodeId = getEventID(target, true)) {
             listeners = listenersStorage[domNodeId];
             if(listeners && (listener = listeners[type])) {
                 listenersToInvoke.push(listener);
@@ -50,4 +44,4 @@ function globalEventListener(e, type) {
 
 }
 
-export default globalEventListener;
+export default rootListener;
