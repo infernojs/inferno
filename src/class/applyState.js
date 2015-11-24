@@ -1,6 +1,7 @@
 import updateComponent from '../core/updateComponent';
 
 function applyState(component) {
+	var blockRender = component._blockRender;
 	requestAnimationFrame(() => {
 		if(component._deferSetState === false) {
 			component._pendingSetState = false;
@@ -9,10 +10,10 @@ function applyState(component) {
 			const nextState = {
 				...oldState,
 				...pendingState
-			}
+			};
 			component._pendingState = {};
 			component._pendingSetState = false;
-			updateComponent(component, component.props, nextState);
+			updateComponent(component, component.props, nextState, blockRender);
 		} else {
 			applyState(component);
 		}

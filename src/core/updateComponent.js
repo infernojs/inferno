@@ -1,4 +1,4 @@
-export default function updateComponent(component, nextProps, nextState = component.state) {
+export default function updateComponent(component, nextProps, nextState = component.state, blockRender) {
 	const prevProps = component.props;
 	const prevState = component.state;
 
@@ -8,19 +8,21 @@ export default function updateComponent(component, nextProps, nextState = compon
 
 	if(prevProps !== nextProps || prevState !== nextState) {
 		if(prevProps !== nextProps) {
-			component._blockSetState = true;
+			component._blockRender = true;
 			component.componentWillReceiveProps(nextProps);
-			component._blockSetState = false;
+			component._blockRender = false;
 		}
 		const shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
 
 		if(shouldUpdate) {
-			component._deferSetState = true;
+			component._blockSetState = true;
 			component.componentWillUpdate(nextProps, nextState);
-			component._deferSetState = false;
+			component._blockSetState = false;
 			component.props = nextProps;
 			component.state = nextState;
-			component.forceUpdate();
+			if(!blockRender) {
+				component.forceUpdate();
+			}
 			component.componentDidUpdate(prevProps, prevState);
 		}
 	}
