@@ -35,7 +35,7 @@ function globalEventListener(e, type) {
     }
 
     if(listenersToInvoke.length) {
-        const event = SyntheticEvent(type, e),
+        const event = SyntheticEvent(e),
             len = listenersToInvoke.length;
 
         let i = 0;

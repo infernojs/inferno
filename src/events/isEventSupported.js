@@ -1,9 +1,7 @@
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
-// TODO!! Performance!
 
-let useHasFeature;
-
+var useHasFeature;
 if (ExecutionEnvironment.canUseDOM) {
   useHasFeature = document.implementation && document.implementation.hasFeature &&
   // always returns true in newer browsers as per the standard.
@@ -17,11 +15,11 @@ function isEventSupported(eventNameSuffix, capture) {
     return false;
   }
 
-  let eventName = 'on' + eventNameSuffix;
-  let isSupported = (eventName in document);
+  var eventName = 'on' + eventNameSuffix;
+  var isSupported = (eventName in document);
 
   if (!isSupported) {
-    let element = document.createElement('div');
+    var element = document.createElement('div');
     element.setAttribute(eventName, 'return;');
     isSupported = typeof element[eventName] === 'function';
   }
