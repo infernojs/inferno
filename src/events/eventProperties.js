@@ -1,7 +1,7 @@
 import checkBitmask from '../template/checkBitmask';
 
-let USE_PREFIX = 0x2,
-    SHOULD_NOT_BUBBLE = 0x3;
+const USE_PREFIX = 2,
+    SHOULD_NOT_BUBBLE = 3;
 	
 const events = {
   abort: USE_PREFIX,
@@ -72,7 +72,7 @@ const focusEvents = {
     blur: 'focusout'
 };
 
-let EventContainer = {};
+const EventContainer = {};
 
 for (let eventName in events) {
 
@@ -89,7 +89,7 @@ for (let eventName in events) {
         propertyInfo.focusEvent = focusEvents[eventName];
     }
 	if ( shouldUsePrefix) {
-	  propertyInfo.prefixedEvents = 'on' + eventName.charAt(0).toUpperCase() + eventName.substring(1);
+	  propertyInfo.prefixedEvents = 'on' + eventName[0].toUpperCase() + eventName.substring(1);
 	}
 
     EventContainer[eventName] = propertyInfo;
