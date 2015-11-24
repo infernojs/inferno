@@ -2,11 +2,12 @@ const ESCAPE_LOOKUP = {
  '&': '&amp;',
   '>': '&gt;',
   '<': '&lt;',
-  '"': '&quot;'
+  '"': '&quot;',
+  '`': '&#x60;',
+  "'": '&#x27;'
 };
 
-const ESCAPE_REGEX = /[&><"]/g;
-
+const ESCAPE_REGEX = /[&><"'`]/g;
 /**
  * Escapes attribute value to prevent scripting attacks.
  *
@@ -15,3 +16,4 @@ const ESCAPE_REGEX = /[&><"]/g;
  */
 export default (value) => '"' + ('' + value).replace(ESCAPE_REGEX, (match) => ESCAPE_LOOKUP[match]) + '"';
 
+var endOfText = '\u0003';
