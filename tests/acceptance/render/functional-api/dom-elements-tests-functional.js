@@ -4,10 +4,6 @@ import Inferno from '../../../../src';
 export default function domElementsTestsFunctional(describe, expect, container) {
 
 
-
-
-
-
 	describe('should render a basic example', () => {
 		let template;
 
@@ -78,7 +74,217 @@ export default function domElementsTestsFunctional(describe, expect, container) 
 		});
 	});
 
-	describe('should render "autoFocus" boolean attributes', () => {
+	describe('should render "disabled" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { disabled: true })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+
+			expect(container.firstChild.getAttribute('disabled')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div disabled="true"></div>'
+			);
+		});
+	
+ 	it('Second render (update)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { disabled: false })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});  
+	});
+	
+	describe('should render "hidden" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { hidden: true })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+
+			expect(container.firstChild.getAttribute('hidden')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div hidden="true"></div>'
+			);
+		});
+	
+ 	it('Second render (update)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { hidden: false })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});  
+
+	});
+	
+describe('should render "required" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { required: 'required' })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+
+			expect(container.firstChild.getAttribute('required')).to.eql('required');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div required="required"></div>'
+			);
+		});
+	
+ 	it('Second render (update)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { hidden: 'NaN' })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div hidden="NaN"></div>'
+			);
+		});  
+
+	});	
+	
+	describe('should render "itemScope" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { itemScope: 'itemScope' })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+
+			expect(container.firstChild.getAttribute('itemScope')).to.eql('itemScope');
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div itemscope="itemScope"></div>'
+			);
+		});
+	
+ 	it('Second render (update)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { allowFullScreen: false })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});  
+
+	});	
+
+describe('should render "autoPlay" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { autoPlay: [] })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+
+			expect(container.firstChild.getAttribute('autoPlay')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autoplay=""></div>' 
+			);
+		});
+	
+ 	it('Second render (update)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { controls: false })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});  
+
+	});	
+	
+	
+	describe('should render "height" attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { height: '44%' })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+
+			expect(container.firstChild.getAttribute('height')).to.eql('44%');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div height="44%"></div>' 
+			);
+		});
+	
+ 	it('Second render (update)', () => {
+
+			template = Inferno.createTemplate(createElement =>
+					createElement('div', { contenteditable: false })
+			);
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div contenteditable="false"></div>'
+			);
+		});  
+
+	});	
+	
+	describe('should render boolean attributes', () => {
 		let template;
 
 		beforeEach(() => {
