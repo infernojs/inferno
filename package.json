@@ -42,6 +42,7 @@
     "uglify-loader": "^1.3.0",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.12.1",
-    "webpack-windows": "0.0.3"
+    "webpack-windows": "0.0.3",
+    "rimraf": "^2.4.3"
   }
 }
