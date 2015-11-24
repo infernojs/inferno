@@ -2,7 +2,7 @@ import SyntheticEvent from './SyntheticEvent';
 import getEventID from './getEventID';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
-import rootListener from './rootListener';
+import eventHandler from './eventHandler';
 
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
@@ -25,7 +25,7 @@ function addListener(domNode, type, listener) {
             } else {
 
                 if (isRegistered.shouldBubble) {
-                    document.body.addEventListener(type, rootListener, false);
+                    document.body.addEventListener(type, eventHandler, false);
                 }
             }
 

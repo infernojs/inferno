@@ -3,7 +3,7 @@ import getEventID from './getEventID';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
 
-function rootListener(e, type) {
+function eventHandler(e, type) {
 
     // TODO! If some 'e' need a fix, do it here
 
@@ -47,4 +47,4 @@ function rootListener(e, type) {
     }
 }
 
-export default rootListener;
+export default eventHandler;

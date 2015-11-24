@@ -1,7 +1,7 @@
 import isEventSupported from './isEventSupported';
 import EventConstants from './EventConstants';
 import focusEvents from './focusEvents';
-import rootListener from './rootListener';
+import eventHandler from './eventHandler';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
 const {
@@ -38,11 +38,11 @@ if (ExecutionEnvironment.canUseDOM) {
                     document.body.addEventListener(
                         focusEvents[type],
                         e => {
-                            rootListener(e, type);
+                            eventHandler(e, type);
                         });
                 } :
                 function() {
-                    document.body.addEventListener(this.type, rootListener, true);
+                    document.body.addEventListener(this.type, eventHandler, true);
                 }
         }
     }
