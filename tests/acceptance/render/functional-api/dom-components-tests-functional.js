@@ -707,7 +707,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		});
 	});
 
-	describe('state changes should trigger all lifecycle evemts for an update', () => {
+	describe('state changes should trigger all lifecycle events for an update', () => {
 		let componentWillMountCount;
 		let shouldComponentUpdateCount;
 		let componentDidUpdateCount;
