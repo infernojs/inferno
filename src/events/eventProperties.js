@@ -88,11 +88,8 @@ for (let eventName in events) {
     if (focusEvents[eventName]) {
         propertyInfo.focusEvent = focusEvents[eventName];
     }
-	if ( shouldUsePrefix) {
-	  propertyInfo.prefixedEvents = 'on' + eventName[0].toUpperCase() + eventName.substring(1);
-	}
-
-    EventContainer[eventName] = propertyInfo;
+		
+    EventContainer['on' + eventName[0].toUpperCase() + eventName.substring(1)] = propertyInfo;
 }
 
 export default EventContainer;
