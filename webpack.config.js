@@ -11,17 +11,6 @@ var plugins = [
 	})
 ];
 
-if (process.env.NODE_ENV === 'production') {
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        screw_ie8: true,
-        warnings: false
-      }
-    })
-  );
-}
-
 if (PROD) {
 	plugins.push(
         new webpack.optimize.DedupePlugin(),
@@ -43,9 +32,9 @@ if (PROD) {
 
 module.exports = {
 	entry: path.join(__dirname, 'src'),
-	cache: true,
+	cache: PROD ?  false : true,
 	debug: PROD ? false: true,
-	devtool: 'source-map',
+	devtool: PROD ? false : 'source-map',
 	output: {
 		path: path.join(__dirname, 'dist'),
 		filename: PROD ? 'inferno.min.js' : 'inferno.js',
