@@ -8,7 +8,9 @@
     "test": "webpack-dev-server --config test.config.js --hot --inline 'mocha!./tests/tests.js' --compilers js:babel-core/register",
 	"build:dev": "webpack --config webpack.config.js --inline",
     "build:prod": "PROD_DEV=1 webpack --config webpack.config.js --inline",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint src/**/*.js",
+    "coverage": "node_modules/.bin/babel-node node_modules/isparta/bin/isparta cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec",
+    "coveralls": "npm run coverage && coveralls < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
