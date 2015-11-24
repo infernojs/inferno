@@ -24,13 +24,20 @@ if (process.env.NODE_ENV === 'production') {
 
 if (PROD) {
 	plugins.push(
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.NoErrorsPlugin(),
 		new webpack.optimize.UglifyJsPlugin({
-			minimize: true,
-			compressor: {
-				screw_ie8: true,
-				warnings: false
-			}
-		})
+            output: {
+                comments: false
+            },
+            compress: {
+                'unused': true,
+                'dead_code': true,
+                warnings: false,
+                screw_ie8: true
+            }
+        })
 	);
 }
 
