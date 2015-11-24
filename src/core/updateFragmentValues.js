@@ -1,8 +1,6 @@
 import updateFragment from './updateFragment';
 import fragmentValueTypes from '../enum/fragmentValueTypes';
 import updateFragmentList from './updateFragmentList';
-import eventManager from '../events/eventManager';
-import events from '../events/shared/events';
 import isSVG from '../util/isSVG';
 import updateDOMProperties from '../template/updateDOMProperties';
 import updateComponent from './updateComponent';
@@ -63,16 +61,7 @@ function updateFragmentValues(context, oldFragment, fragment, component) {
                     sanitizeValue(element, fragment.templateValues[i], 'id', 'id');
                     break;
                 default:
-                    if (type == null) {
-                        throw Error(`Inferno Error: value "${ fragment.templateValues[i] }" for fragment is never used`);
-                    }
-                    //custom attribute, so simply setAttribute it
-                    if (events[type] != null) {
-                        eventManager.addListener(element, type, fragment.templateValues[i]);
-                    } else {
-                        updateDOMProperties(element, type, oldFragment.templateValues[i], fragment.templateValues[i]);
-                    }
-                    break;
+                    updateDOMProperties(element, type, oldFragment.templateValues[i], fragment.templateValues[i]);
             }
         }
     }
