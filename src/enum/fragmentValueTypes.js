@@ -10,6 +10,7 @@ export default {
 	ATTR_REF: 8,
 	COMPONENT: 9,
 	COMPONENT_REPLACE: 10,
+	COMPONENT_CHILDREN: 11,
 	//will contain other "custom" types, like rowspan etc or custom data-attributes
 	ATTR_OTHER: {},
 	COMPONENT_PROPS: {}

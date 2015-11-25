@@ -81,6 +81,11 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				mountCallbacks.push(mountCallback);
 				break;
 			}
+			case fragmentValueTypes.COMPONENT_CHILDREN: {
+				//const {mountElem, component, mountCallback, newElement} = attachComponent(context, fragment.dom, fragment.templateValue, null, false);
+				debugger;
+				break;
+			}
 			case fragmentValueTypes.COMPONENT:
 			{
 				const {mountCallback} = attachComponent(context, fragment.templateElement, fragment.templateValue, fragment.dom, false);
@@ -130,6 +135,11 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 						fragment.dom = newElement;
 					}
 					mountCallbacks.push(mountCallback);
+					break;
+				}
+				case fragmentValueTypes.COMPONENT_CHILDREN: {
+					//const {mountElem, component, mountCallback, newElement} = attachComponent(context, fragment.dom, fragment.templateValue, null, false);
+					debugger;
 					break;
 				}
 				case fragmentValueTypes.COMPONENT:

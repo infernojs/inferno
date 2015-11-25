@@ -38,13 +38,6 @@ export default function createElementFactory(fragment, template) {
 							for(let s = 0; s < value.length; s++) {
 								element.appendChild(value[s]);
 							}
-						} else if (value.template) {
-							render(value, element)
-							if(fragment.templateValue != null) {
-								fragment.templateType = fragmentValueTypes.COMPONENT_CHILDREN;
-							} else {
-								fragment.templateTypes[child.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
-							}
 						}
 					} else if (typeof child !== 'object') {
 						const node = template.createTextNode(child);
@@ -87,6 +80,12 @@ export default function createElementFactory(fragment, template) {
 					} else {
 						fragment.templateElements[children.pointer] = element;
 						fragment.templateTypes[children.pointer] = fragmentValueTypes.LIST;
+					}
+				} else {
+					if(fragment.templateValue != null) {
+						fragment.templateType = fragmentValueTypes.COMPONENT_CHILDREN;
+					} else {
+						fragment.templateTypes[children.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
 					}
 				}
 			}

@@ -3,7 +3,7 @@ import render from './render';
 
 export default function attachComponent(context, mountElem, Component, fragmentDom, replaceComponent) {
 	let newElement;
-	let props = Component.props;
+	let props = Component.props || {};
 	const parentElem = mountElem.parentNode;
 	const children = mountElem.childNodes;
 

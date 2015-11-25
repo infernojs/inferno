@@ -118,19 +118,16 @@ const DOMElements = {
     use: IS_SVG,
     view: IS_SVG,
     vkern: IS_SVG
-}
+};
 
-let DOMElementContainer = {};
+const DOMElementContainer = {};
 
 for (let element in DOMElements) {
-
-    let elementConfig = DOMElements[element];
-
-    let elementInfo = {
-
+    const elementConfig = DOMElements[element];
+    const elementInfo = {
         isSVG: checkBitmask(elementConfig, IS_SVG),
         isMathML: checkBitmask(elementConfig, IS_MATHML),
-    }
+    };
 
     DOMElementContainer[element] = elementInfo;
 }

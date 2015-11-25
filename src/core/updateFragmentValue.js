@@ -51,8 +51,10 @@ function updateFragmentValue(context, oldFragment, fragment, component) {
 				if (comp === null || comp.component === null) {
 					removeComponent(templateComponent, element);
 					templateComponent = fragment.templateValue = null;
-				} else if (comp && comp.component === oldComp.component) {
-					updateComponent(templateComponent, comp.props);
+				} else {
+                    if (comp && comp.component === oldComp.component) {
+                        updateComponent(templateComponent, comp.props || {});
+                    }
 				}
                 return;
             case fragmentValueTypes.COMPONENT_CHILDREN:
