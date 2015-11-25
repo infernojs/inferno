@@ -11,7 +11,7 @@ import renderDomElementsTests from './acceptance/render/dom-elements-tests';
 import renderToStringElementsTests from './acceptance/renderToString/elements-tests';
 
 // DOM event tests
-import domEventTests from './acceptance/dom-events-tests';
+//import domEventTests from './acceptance/dom-events-tests';
 
 //acceptance operation tests
 import domOperationTests from './acceptance/dom-operation-tests';
@@ -31,7 +31,7 @@ describe('Inferno acceptance tests', () => {
 //		renderToStringElementsTests(describe, expect);
 	});
 
-	domEventTests(describe, expect);
+//	domEventTests(describe, expect);
 	cssOperationTests(describe, expect);
 	domOperationTests(describe, expect);
 });
