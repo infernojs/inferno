@@ -1827,6 +1827,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	function eventListener(e) {
 	    _listenersStorage2.default[(0, _getEventID2.default)(e.target)][e.type]((0, _SyntheticEvent2.default)(e));
 	}
+	/**
+	  * Stores `listener` at `listenerBank[registrationName][id]`. Is idempotent.
+	  *
+	  * @param {string} id ID of the DOM element.
+	  * @param {string} registrationName Name of listener (e.g. `onClick`).
+	  * @param {?function} listener The callback to store.
+	  */
+	function putListener(element, event) {
+	
+	    /*    const domNodeId = getEventID(element),
+	            listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
+	          if (!listeners[event]) {
+	              element.addEventListener(event, eventListener, false);
+	        }
+	          listeners[event] = listener;*/
+	}
 	
 	exports.default = {
 	
@@ -1841,22 +1857,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    addListener: function addListener(element, type, listener) {
 	
-	        var EventRegistry = EventRegistry[type] || null;
+	        var registry = _EventRegistry2.default[type] || null;
 	
-	        if (EventRegistry) {
+	        console.log(registry);
+	
+	        if (registry) {
 	            (function () {
 	
-	                var originalEvent = EventRegistry[type].eventName;
+	                var originalEvent = registry.eventName;
 	
 	                // only once in a life time
-	                if (EventRegistry.isNative && !EventRegistry.isActive) {
+	                if (registry.isNative && !registry.isActive) {
 	
 	                    // 'focus' and 'blur' is a special case
-	                    if (EventRegistry.focusEvent) {
+	                    if (registry.focusEvent) {
 	
-	                        if ((0, _isEventSupported2.default)(EventRegistry.focusEvent)) {
+	                        if ((0, _isEventSupported2.default)(registry.focusEvent)) {
 	
-	                            document.addEventListener(EventRegistry.focusEvent, function (e) {
+	                            document.addEventListener(registry.focusEvent, function (e) {
 	                                (0, _eventHandler2.default)(e, originalEvent);
 	                            });
 	                        } else {
@@ -1867,7 +1885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        document.addEventListener(originalEvent, _eventHandler2.default, false);
 	                    }
 	
-	                    EventRegistry.isActive = true;
+	                    registry.isActive = true;
 	                }
 	
 	                var domNodeId = (0, _getEventID2.default)(element),
@@ -1884,32 +1902,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    removeListener: function removeListener(element, type) {
 	
-	        var EventInfo = _EventRegistry2.default[type] || null;
-	
-	        if (EventInfo) {
-	
-	            var originalEvent = _EventRegistry2.default[type].eventName;
-	
-	            var domNodeId = (0, _getEventID2.default)(element, true);
-	
-	            if (domNodeId) {
-	                var listeners = _listenersStorage2.default[domNodeId];
-	
-	                if (listeners && listeners[originalEvent]) {
-	                    listeners[type] = null;
-	
-	                    if (EventInfo.shouldNotBubble) {
-	                        element.removeEventListener(originalEvent, eventListener);
-	                    } else {
-	                        --isRegistered.counter;
-	                    }
-	                }
-	            }
-	        }
+	        /*  const EventInfo = EventRegistry[type] || null;
+	            if (EventInfo) {
+	                const originalEvent = EventRegistry[type].eventName;
+	                const domNodeId = getEventID(element, true);
+	                if (domNodeId) {
+	                  const listeners = listenersStorage[domNodeId];
+	                    if (listeners && listeners[originalEvent]) {
+	                      listeners[type] = null;
+	                            if (EventInfo.shouldNotBubble) {
+	                              element.removeEventListener(originalEvent, eventListener);
+	                          } else {
+	                              --isRegistered.counter;
+	                          }
+	                  }
+	              }
+	          }*/
 	    }
 	};
 	
-	console.log(_EventRegistry2.default);
+	//console.log(EventRegistry)
 
 /***/ },
 /* 26 */
@@ -3329,8 +3341,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	function eventHandler(e, type) {
 	
 	    // TODO! If some 'e' need a fix, do it here
+	    // TEMPORARY FIX!!
+	    if (!type) {
 	
-	    type = type || e.type;
+	        type = 'on' + e.type[0].toUpperCase() + e.type.substring(1);
+	    }
 	
 	    var listenersToInvoke = [];
 	

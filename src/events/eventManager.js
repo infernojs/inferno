@@ -9,6 +9,25 @@ import isEventSupported from './isEventSupported';
 function eventListener(e) {
     listenersStorage[getEventID(e.target)][e.type](SyntheticEvent(e));
 }
+ /**
+   * Stores `listener` at `listenerBank[registrationName][id]`. Is idempotent.
+   *
+   * @param {string} id ID of the DOM element.
+   * @param {string} registrationName Name of listener (e.g. `onClick`).
+   * @param {?function} listener The callback to store.
+   */
+function putListener(element, event) {
+
+        /*    const domNodeId = getEventID(element),
+                listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
+
+            if (!listeners[event]) {
+
+                element.addEventListener(event, eventListener, false);
+            }
+
+            listeners[event] = listener;*/
+}
 
 export default {
 
@@ -23,21 +42,23 @@ export default {
 
     addListener: function(element, type, listener) {
 
-        const EventRegistry = EventRegistry[type] || null;
+        const registry = EventRegistry[type] || null;
 		
-        if (EventRegistry) {
+		console.log(registry);
+		
+        if (registry) {
 
-            const originalEvent = EventRegistry[type].eventName;
+            const originalEvent = registry.eventName;
 
             // only once in a life time
-            if (EventRegistry.isNative && !EventRegistry.isActive) {
+            if (registry.isNative && !registry.isActive) {
 
                 // 'focus' and 'blur' is a special case
-                if (EventRegistry.focusEvent) {
+                if (registry.focusEvent) {
 
-                    if (isEventSupported(EventRegistry.focusEvent)) {
+                    if (isEventSupported(registry.focusEvent)) {
 
-                        document.addEventListener(EventRegistry.focusEvent,
+                        document.addEventListener(registry.focusEvent,
                             e => {
                                 eventHandler(e, originalEvent);
                             });
@@ -51,7 +72,7 @@ export default {
                     document.addEventListener(originalEvent, eventHandler, false);
                 }
 
-                EventRegistry.isActive = true;
+                registry.isActive = true;
             }
 
             const domNodeId = getEventID(element),
@@ -67,7 +88,7 @@ export default {
     },
     removeListener: function(element, type) {
 
-        const EventInfo = EventRegistry[type] || null;
+      /*  const EventInfo = EventRegistry[type] || null;
 
         if (EventInfo) {
 
@@ -88,6 +109,8 @@ export default {
                         }
                 }
             }
-        }
+        }*/
     }
-};
+}
+
+//console.log(EventRegistry)

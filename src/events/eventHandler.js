@@ -6,8 +6,11 @@ import listenersStorage from './listenersStorage';
 function eventHandler(e, type) {
 
     // TODO! If some 'e' need a fix, do it here
+    // TEMPORARY FIX!!
+    if (!type) {
 
-    type = type || e.type;
+        type = 'on' + e.type[0].toUpperCase() + e.type.substring(1)
+    }
 
     const listenersToInvoke = [];
 
