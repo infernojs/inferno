@@ -1,4 +1,4 @@
-import eventTypes from '../events/shared/eventTypes';
+import eventTypes from '../events/eventTypes';
 import eventManager from '../events/eventManager';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';

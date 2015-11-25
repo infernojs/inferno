@@ -50,30 +50,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ((function(modules) {
-	// Check all modules for deduplicated modules
-	for(var i in modules) {
-		if(Object.prototype.hasOwnProperty.call(modules, i)) {
-			switch(typeof modules[i]) {
-			case "function": break;
-			case "object":
-				// Module can be created from a template
-				modules[i] = (function(_m) {
-					var args = _m.slice(1), fn = modules[_m[0]];
-					return function (a,b,c) {
-						fn.apply(this, [a,b,c].concat(args));
-					};
-				}(modules[i]));
-				break;
-			default:
-				// Module is a copy of another module
-				modules[i] = modules[modules[i]];
-				break;
-			}
-		}
-	}
-	return modules;
-}([
+/******/ ([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1634,11 +1611,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _getEventID = __webpack_require__(24);
+	var _getEventID = __webpack_require__(25);
 	
 	var _getEventID2 = _interopRequireDefault(_getEventID);
 	
-	var _listenersStorage = __webpack_require__(26);
+	var _listenersStorage = __webpack_require__(27);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -1695,11 +1672,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _getEventID = __webpack_require__(24);
+	var _getEventID = __webpack_require__(25);
 	
 	var _getEventID2 = _interopRequireDefault(_getEventID);
 	
-	var _isEventSupported = __webpack_require__(25);
+	var _isEventSupported = __webpack_require__(26);
 	
 	var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
 	
@@ -1711,7 +1688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _listenersStorage = __webpack_require__(26);
+	var _listenersStorage = __webpack_require__(27);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -1787,86 +1764,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	var ID_PROP = '__redric__id__';
-	var counter = 1;
-	
-	function getDomNodeId(node, onlyGet) {
-	    return node[ID_PROP] || (onlyGet ? null : node[ID_PROP] = counter++);
-	}
-	
-	exports.default = getDomNodeId;
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _ExecutionEnvironment = __webpack_require__(13);
-	
-	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var useHasFeature = undefined;
-	if (_ExecutionEnvironment2.default.canUseDOM) {
-	  useHasFeature = document.implementation && document.implementation.hasFeature &&
-	  // always returns true in newer browsers as per the standard.
-	  // @see http://dom.spec.whatwg.org/#dom-domimplementation-hasfeature
-	  document.implementation.hasFeature('', '') !== true;
-	}
-	
-	function isEventSupported(eventNameSuffix, capture) {
-	  if (!_ExecutionEnvironment2.default.canUseDOM) {
-	    return false;
-	  }
-	
-	  var eventName = 'on' + eventNameSuffix;
-	  var isSupported = eventName in document;
-	
-	  if (!isSupported) {
-	    var element = document.createElement('div');
-	    element.setAttribute(eventName, 'return;');
-	    isSupported = typeof element[eventName] === 'function';
-	  }
-	
-	  if (!isSupported && useHasFeature && eventNameSuffix === 'wheel') {
-	    // This is the only way to test support for the `wheel` event in IE9+.
-	    isSupported = document.implementation.hasFeature('Events.wheel', '3.0');
-	  }
-	
-	  return isSupported;
-	}
-	
-	exports.default = isEventSupported;
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	/**
-	 * Internal store for event listeners
-	 */
-	exports.default = {};
-
-/***/ },
-/* 27 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = {
@@ -1935,6 +1832,86 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var ID_PROP = '__redric__id__';
+	var counter = 1;
+	
+	function getDomNodeId(node, onlyGet) {
+	    return node[ID_PROP] || (onlyGet ? null : node[ID_PROP] = counter++);
+	}
+	
+	exports.default = getDomNodeId;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _ExecutionEnvironment = __webpack_require__(13);
+	
+	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var useHasFeature = undefined;
+	if (_ExecutionEnvironment2.default.canUseDOM) {
+	  useHasFeature = document.implementation && document.implementation.hasFeature &&
+	  // always returns true in newer browsers as per the standard.
+	  // @see http://dom.spec.whatwg.org/#dom-domimplementation-hasfeature
+	  document.implementation.hasFeature('', '') !== true;
+	}
+	
+	function isEventSupported(eventNameSuffix, capture) {
+	  if (!_ExecutionEnvironment2.default.canUseDOM) {
+	    return false;
+	  }
+	
+	  var eventName = 'on' + eventNameSuffix;
+	  var isSupported = eventName in document;
+	
+	  if (!isSupported) {
+	    var element = document.createElement('div');
+	    element.setAttribute(eventName, 'return;');
+	    isSupported = typeof element[eventName] === 'function';
+	  }
+	
+	  if (!isSupported && useHasFeature && eventNameSuffix === 'wheel') {
+	    // This is the only way to test support for the `wheel` event in IE9+.
+	    isSupported = document.implementation.hasFeature('Events.wheel', '3.0');
+	  }
+	
+	  return isSupported;
+	}
+	
+	exports.default = isEventSupported;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/**
+	 * Internal store for event listeners
+	 */
+	exports.default = {};
+
+/***/ },
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1945,9 +1922,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = addAttributes;
 	
-	var _events = __webpack_require__(27);
+	var _eventTypes = __webpack_require__(24);
 	
-	var _events2 = _interopRequireDefault(_events);
+	var _eventTypes2 = _interopRequireDefault(_eventTypes);
 	
 	var _eventManager = __webpack_require__(23);
 	
@@ -1991,8 +1968,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // avoid 'null' values
 	            if (attrVal !== undefined) {
 	                // events
-	                if (_events2.default[attrName] !== undefined) {
-	                    _eventManager2.default.addListener(node, _events2.default[attrName], attrVal);
+	                if (_eventTypes2.default[attrName] !== undefined) {
+	                    _eventManager2.default.addListener(node, _eventTypes2.default[attrName], attrVal);
 	                    // attributes / properties
 	                } else {
 	                        (0, _setValueForProperty2.default)(node, attrName, attrVal);
@@ -2258,9 +2235,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _eventManager2 = _interopRequireDefault(_eventManager);
 	
-	var _events = __webpack_require__(27);
+	var _eventTypes = __webpack_require__(24);
 	
-	var _events2 = _interopRequireDefault(_events);
+	var _eventTypes2 = _interopRequireDefault(_eventTypes);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -2304,15 +2281,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	            (0, _setValueForStyles2.default)(element, styleUpdates);
 	        }
 	        // Event listeners
-	    } else if (_events2.default[propName] != null) {
+	    } else if (_eventTypes2.default[propName] != null) {
 	            if (oldProp != null) {
 	                if (newProp != null) {
-	                    _eventManager2.default.addListener(element, _events2.default[propName], newProp);
+	                    _eventManager2.default.addListener(element, _eventTypes2.default[propName], newProp);
 	                } else {
-	                    _eventManager2.default.removeListener(element, _events2.default[propName]);
+	                    _eventManager2.default.removeListener(element, _eventTypes2.default[propName]);
 	                }
 	            } else if (newProp != null) {
-	                _eventManager2.default.addListener(element, _events2.default[propName], newProp);
+	                _eventManager2.default.addListener(element, _eventTypes2.default[propName], newProp);
 	            }
 	        } else if (oldProp != null) {
 	            // If 'newProp' is null or undefined, we, we should remove the property
@@ -3321,7 +3298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _isEventSupported = __webpack_require__(25);
+	var _isEventSupported = __webpack_require__(26);
 	
 	var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
 	
@@ -3412,7 +3389,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 59 */
-57,
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = ['scroll', 'load', 'error', 'mouseenter', 'mouseover'];
+
+/***/ },
 /* 60 */
 /***/ function(module, exports) {
 
@@ -4243,7 +4229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }
-/******/ ])))
+/******/ ])
 });
 ;
 //# sourceMappingURL=inferno.js.map
