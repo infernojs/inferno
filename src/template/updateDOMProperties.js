@@ -2,7 +2,7 @@ import deleteDOMProperties from './deleteDOMProperties';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import eventManager from '../events/eventManager';
-import events from '../events/shared/events';
+import eventTypes from '../events/events';
 
 /**
  * Detecting differences in property values and updating the DOM as necessary.
@@ -44,15 +44,15 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
             setValueForStyles(element, styleUpdates);
         }
         // Event listeners
-    } else if (events[propName] != null) {
+    } else if (eventTypes[propName] != null) {
         if (oldProp != null) {
             if (newProp != null) {
-                eventManager.addListener(element, events[propName], newProp);
+                eventManager.addListener(element, eventTypes[propName], newProp);
             } else {
-                eventManager.removeListener(element, events[propName]);
+                eventManager.removeListener(element, eventTypes[propName]);
             }
         } else if (newProp != null) {
-            eventManager.addListener(element, events[propName], newProp);
+            eventManager.addListener(element, eventTypes[propName], newProp);
         }
     } else if (oldProp != null) {
         // If 'newProp' is null or undefined, we, we should remove the property

@@ -1,4 +1,4 @@
-import events from '../events/shared/events';
+import eventTypes from '../events/shared/eventTypes';
 import eventManager from '../events/eventManager';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
@@ -27,8 +27,8 @@ export default function addAttributes(node, attrs, fragment) {
             // avoid 'null' values
             if (attrVal !== undefined) {
                 // events
-                if (events[attrName] !== undefined) {
-                    eventManager.addListener(node, events[attrName], attrVal);
+                if (eventTypes[attrName] !== undefined) {
+                    eventManager.addListener(node, eventTypes[attrName], attrVal);
                     // attributes / properties
                 } else {
                     setValueForProperty(node, attrName, attrVal);
