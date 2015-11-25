@@ -1,11 +1,13 @@
 import getDomNodeId  from './getEventID';
 import listenersStorage from './listenersStorage';
+import EventRegistry from './EventRegistry';
+import eventHooks from './eventHooks';
 
 function addRootDomEventListerners(e, type) {
     
 	type || (type = e.type);
 
-    const cfg = eventsCfg[type],
+    const cfg = EventRegistry[type],
         listenersToInvoke = [];
 
     let target = e.target,
@@ -14,7 +16,7 @@ function addRootDomEventListerners(e, type) {
         listener,
         domNodeId;
 
-    while(listenersCount > 0 && target !== body) {
+    while(target !== null && listenersCount > 0 && target !== document.parentNode) {
         if(domNodeId = getDomNodeId(target, true)) {
             listeners = listenersStorage[domNodeId];
             if(listeners && (listener = listeners[type])) {
@@ -27,13 +29,14 @@ function addRootDomEventListerners(e, type) {
     }
 
     if(listenersToInvoke.length) {
+		const event = eventHooks(e);
         const len = listenersToInvoke.length;
 
         let i = 0;
 
         while(i < len) {
-            listenersToInvoke[i++](e);
-            if(e.isPropagationStopped()) {
+            listenersToInvoke[i++](event);
+            if(event.isPropagationStopped()) {
                 break;
             }
         }

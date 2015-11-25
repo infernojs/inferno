@@ -36,7 +36,7 @@ export default {
                 }
 
                 const id = getEventID(domNode),
-                    listeners = listenersStorage[domNodeId] || (listenersStorage[id] = {});
+                    listeners = listenersStorage[id] || (listenersStorage[id] = {});
 
                 if (!listeners[type]) {
 
