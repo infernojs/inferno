@@ -39,38 +39,36 @@ npm run build:prod
 ## Overview
 
 Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.
-In these examples, [t7](https://github.com/trueadm/t7) is used to provide a very easy way to express virtual fragments and templates in JSX-like syntax.
+In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a very easy way to express virtual fragments.
 
 ```js
-
-var message = "Hello world";
+const message = "Hello world";
 
 Inferno.render(
-  t7`<MyComponent message=${ message } />`,
+  <MyComponent message={ message } />,
   document.getElementById("app")
 )
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
-```javascript
-t7.module(funciton(t7) {
-  class Component extends Inferno.Component {
-    constructor(props) {
-      super(props);
-      this.state.counter = 0;
+```javascript{
+class Component extends Inferno.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      counter: 0
     }
-    render() {
-      return t7`
+  }
+  render() {
+    return (
         <div>
           <h1>Header!</h1>
-          <span>Counter is at: ${ this.state.counter }</span>
+          <span>Counter is at: { this.state.counter }</span>
         </div>
-      `;
-    }  
+    )
   }
 
-  t7.assign("Component", Component);
-  Inferno.render(t7`<Component />`, document.body);
+  Inferno.render(<Component />, document.body);
 });
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
@@ -80,9 +78,7 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 - one of the fastest front end frameworks for rendering UI
 - components have a similar API to React ES6 components
-- works perfectly with [t7](https://github.com/trueadm/t7)
-- no dependencies
-- isomorphic for easy SSR
+- isomorphic for easy server-side rendering
 
 ## Benchmarks
 
@@ -166,8 +162,6 @@ Inferno is still in early development and there are still many missing features 
 
 ## Todo
 
-- implement refs
-- implement lifecycle methods
 - implement strict isomorphism
 - add API docs
 - add more examples
