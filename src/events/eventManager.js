@@ -1,71 +1,78 @@
-import getDomNodeId from './getEventID';
+import getEventID from './getEventID';
 import isEventSupported from './isEventSupported';
 import addRootDomEventListerners from './addRootDomEventListerners';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
 
 function eventListener(e) {
-    listenersStorage[getDomNodeId(e.target)][e.type](e);
+    listenersStorage[getEventID(e.target)][e.type](e);
 }
 
 export default {
 
-    addListener (domNode, type, listener) {
+    /**
+     * Set a event listeners on a node
+     */
 
-        const registry = EventRegistry[type];
+    addListener(domNode, type, listener) {
 
-        if (registry) {
+            const registry = EventRegistry[type];
 
-            if (!registry.set) {
+            if (registry) {
 
-                if (registry.setup) {
+                // is this activated, YET?
+                if (!registry.activated) {
 
-                    registry.setup();
+                    if (registry.setup) {
 
-                } else {
+                        registry.setup();
 
-                    registry.bubbles && document.addEventListener(type, addRootDomEventListerners, false);
-                }
-
-                registry.set = true;
-            }
-
-            const domNodeId = getDomNodeId(domNode),
-                listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
-
-            if (!listeners[type]) {
-
-                if (registry.bubbles) {
-                    ++registry.listenersCounter;
-                } else {
-                    domNode.addEventListener(type, eventListener, false);
-                }
-            }
-
-            listeners[type] = listener;
-        }
-    },
-
-    removeListener (domNode, type) {
-       
-	    const domNodeId = getDomNodeId(domNode, true);
-
-        if (domNodeId) {
-            const listeners = listenersStorage[domNodeId];
-
-            if (listeners && listeners[type]) {
-                listeners[type] = null;
-
-                const registry = EventRegistry[type];
-
-                if (registry) {
-                    if (registry.bubbles) {
-                        --registry.listenersCounter;
                     } else {
-                        domNode.removeEventListener(type, eventListener);
+
+                        registry.bubbles && document.addEventListener(type, addRootDomEventListerners, false);
+                    }
+
+                    registry.activated = true;
+                }
+
+                const id = getEventID(domNode),
+                    listeners = listenersStorage[domNodeId] || (listenersStorage[id] = {});
+
+                if (!listeners[type]) {
+
+                    if (registry.bubbles) {
+                        ++registry.listenersCounter;
+                    } else {
+                        domNode.addEventListener(type, eventListener, false);
+                    }
+                }
+
+                listeners[type] = listener;
+            }
+        },
+        /**
+         * Remove event listeners from a node
+         */
+        removeListener(node, type) {
+
+            const id = getEventID(node, true);
+
+            if (id) {
+                const listeners = listenersStorage[id];
+
+                if (listeners && listeners[type]) {
+                    listeners[type] = null;
+
+                    const registry = EventRegistry[type];
+
+                    if (registry) {
+                        if (registry.bubbles) {
+                            --registry.listenersCounter;
+                        } else {
+                            node.removeEventListener(type, eventListener);
+                        }
                     }
                 }
             }
         }
-    }
 };

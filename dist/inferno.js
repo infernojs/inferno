@@ -1699,13 +1699,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	exports.default = {
+	
+	    /**
+	     * Set a event listeners on a node
+	     */
+	
 	    addListener: function addListener(domNode, type, listener) {
 	
 	        var registry = _EventRegistry2.default[type];
 	
 	        if (registry) {
 	
-	            if (!registry.set) {
+	            // is this activated, YET?
+	            if (!registry.activated) {
 	
 	                if (registry.setup) {
 	
@@ -1715,11 +1721,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    registry.bubbles && document.addEventListener(type, _addRootDomEventListerners2.default, false);
 	                }
 	
-	                registry.set = true;
+	                registry.activated = true;
 	            }
 	
-	            var domNodeId = (0, _getEventID2.default)(domNode),
-	                listeners = _listenersStorage2.default[domNodeId] || (_listenersStorage2.default[domNodeId] = {});
+	            var id = (0, _getEventID2.default)(domNode),
+	                listeners = _listenersStorage2.default[domNodeId] || (_listenersStorage2.default[id] = {});
 	
 	            if (!listeners[type]) {
 	
@@ -1733,12 +1739,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	            listeners[type] = listener;
 	        }
 	    },
-	    removeListener: function removeListener(domNode, type) {
 	
-	        var domNodeId = (0, _getEventID2.default)(domNode, true);
+	    /**
+	     * Remove event listeners from a node
+	     */
+	    removeListener: function removeListener(node, type) {
 	
-	        if (domNodeId) {
-	            var listeners = _listenersStorage2.default[domNodeId];
+	        var id = (0, _getEventID2.default)(node, true);
+	
+	        if (id) {
+	            var listeners = _listenersStorage2.default[id];
 	
 	            if (listeners && listeners[type]) {
 	                listeners[type] = null;
@@ -1749,7 +1759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (registry.bubbles) {
 	                        --registry.listenersCounter;
 	                    } else {
-	                        domNode.removeEventListener(type, eventListener);
+	                        node.removeEventListener(type, eventListener);
 	                    }
 	                }
 	            }
@@ -1840,7 +1850,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var ID_PROP = '__redric__id__';
+	var ID_PROP = '__Inferno__id__';
 	var counter = 1;
 	
 	function getDomNodeId(node, onlyGet) {
@@ -3324,6 +3334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	// TODO! Give it a different name
 	var EventRegistry = {};
 	
 	if (_ExecutionEnvironment2.default.canUseDOM) {
@@ -3339,18 +3350,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	            type: type,
 	            bubbles: true,
 	            listenersCounter: 0,
-	            set: false,
-	            setup: _focusEvents2.default[type] ? (0, _isEventSupported2.default)(_focusEvents2.default[type]) ? function () {
-	                var type = this.type;
-	                document.addEventListener(_focusEvents2.default[type], function (e) {
-	                    (0, _addRootDomEventListerners2.default)(e, type);
-	                });
-	            } : function () {
-	                document.addEventListener(this.type, _addRootDomEventListerners2.default, true);
-	            } : null
+	            set: false
 	        };
+	
+	        if (type === 'wheel' && !(0, _isEventSupported2.default)('wheel')) {
+	
+	            if ((0, _isEventSupported2.default)('mousewheel')) {
+	                EventRegistry[type].type = 'mousewheel';
+	                EventRegistry[type].originalEvent = type;
+	            } else {
+	                // Firefox needs to capture a different mouse scroll event.
+	                // @see http://www.quirksmode.org/dom/events/tests/scroll.html
+	                EventRegistry[type].type = 'DOMMouseScroll';
+	                EventRegistry[type].originalEvent = type;
+	            }
+	
+	            // IE has `focusin` and `focusout` events which bubble.
+	            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
+	        } else if (_focusEvents2.default[type]) {
+	
+	                if ((0, _isEventSupported2.default)(_focusEvents2.default[type])) {
+	
+	                    EventRegistry[type].setup = function () {
+	                        var _this = this;
+	
+	                        document.addEventListener(_focusEvents2.default[this.type], function (e) {
+	                            (0, _addRootDomEventListerners2.default)(e, _this.type);
+	                        });
+	                    };
+	                } else {
+	
+	                    EventRegistry[type].setup = function () {
+	                        document.addEventListener(this.type, _addRootDomEventListerners2.default, true);
+	                    };
+	                }
+	            }
 	    }
 	
+	    // For non-bubbleable events - e.g. scroll - we are setting the events direcly on the node
 	    for (i = 0; i < _nonBubbleableEvents2.default.length; i++) {
 	        EventRegistry[_nonBubbleableEvents2.default[i]] = {
 	            type: type,
