@@ -6,7 +6,7 @@ function eventHooks(nativeEvent) {
     nativeEvent.stopPropagation = function stopPropagation() {
         isPropagationStopped = true;
 
-        let event = evt.nativeEvent;
+        let event = nativeEvent;
         if (event.stopPropagation) {
             event.stopPropagation();
         } else {
@@ -19,7 +19,7 @@ function eventHooks(nativeEvent) {
     nativeEvent.preventDefault = function preventDefault() {
         isDefaultPrevented = true;
 
-        let event = evt.nativeEvent;
+        let event = nativeEvent;
 
         if (!event) {
             return;
