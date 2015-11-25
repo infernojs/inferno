@@ -1,116 +1,71 @@
-import SyntheticEvent from './SyntheticEvent';
-import getEventID from './getEventID';
-import listenersStorage from './listenersStorage';
-import eventHandler from './eventHandler';
-import EventRegistry from './EventRegistry';
-import ExecutionEnvironment from '../util/ExecutionEnvironment';
+import getDomNodeId from './getEventID';
 import isEventSupported from './isEventSupported';
+import addRootDomEventListerners from './addRootDomEventListerners';
+import EventRegistry from './EventRegistry';
+import listenersStorage from './listenersStorage';
 
 function eventListener(e) {
-    listenersStorage[getEventID(e.target)][e.type](SyntheticEvent(e));
-}
- /**
-   * Stores `listener` at `listenerBank[registrationName][id]`. Is idempotent.
-   *
-   * @param {string} id ID of the DOM element.
-   * @param {string} registrationName Name of listener (e.g. `onClick`).
-   * @param {?function} listener The callback to store.
-   */
-function putListener(element, event) {
-
-        /*    const domNodeId = getEventID(element),
-                listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
-
-            if (!listeners[event]) {
-
-                element.addEventListener(event, eventListener, false);
-            }
-
-            listeners[event] = listener;*/
+    listenersStorage[getDomNodeId(e.target)][e.type](e);
 }
 
 export default {
 
-    isPrefixedEvent: function(evt) {
-        return EventRegistry[evt] || null;
-    },
+    addListener (domNode, type, listener) {
 
-    unprefixedEvent: function(evt) {
+        const registry = EventRegistry[type];
 
-        return EventRegistry[evt]
-    },
-
-    addListener: function(element, type, listener) {
-
-        const registry = EventRegistry[type] || null;
-		
-		console.log(registry);
-		
         if (registry) {
 
-            const originalEvent = registry.eventName;
+            if (!registry.set) {
 
-            // only once in a life time
-            if (registry.isNative && !registry.isActive) {
+                if (registry.setup) {
 
-                // 'focus' and 'blur' is a special case
-                if (registry.focusEvent) {
-
-                    if (isEventSupported(registry.focusEvent)) {
-
-                        document.addEventListener(registry.focusEvent,
-                            e => {
-                                eventHandler(e, originalEvent);
-                            });
-
-                    } else {
-                        document.addEventListener(originalEvent, eventHandler, true);
-                    }
+                    registry.setup();
 
                 } else {
 
-                    document.addEventListener(originalEvent, eventHandler, false);
+                    registry.bubbles && document.addEventListener(type, addRootDomEventListerners, false);
                 }
 
-                registry.isActive = true;
+                registry.set = true;
             }
 
-            const domNodeId = getEventID(element),
+            const domNodeId = getDomNodeId(domNode),
                 listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
 
-            if (!listeners[originalEvent]) {
+            if (!listeners[type]) {
 
-                element.addEventListener(originalEvent, eventListener, false);
-            }
-
-            listeners[originalEvent] = listener;
-        }
-    },
-    removeListener: function(element, type) {
-
-      /*  const EventInfo = EventRegistry[type] || null;
-
-        if (EventInfo) {
-
-            const originalEvent = EventRegistry[type].eventName;
-
-            const domNodeId = getEventID(element, true);
-
-            if (domNodeId) {
-                const listeners = listenersStorage[domNodeId];
-
-                if (listeners && listeners[originalEvent]) {
-                    listeners[type] = null;
-
-                        if (EventInfo.shouldNotBubble) {
-                            element.removeEventListener(originalEvent, eventListener);
-                        } else {
-                            --isRegistered.counter;
-                        }
+                if (registry.bubbles) {
+                    ++registry.listenersCounter;
+                } else {
+                    domNode.addEventListener(type, eventListener, false);
                 }
             }
-        }*/
-    }
-}
 
-//console.log(EventRegistry)
+            listeners[type] = listener;
+        }
+    },
+
+    removeListener (domNode, type) {
+       
+	    const domNodeId = getDomNodeId(domNode, true);
+
+        if (domNodeId) {
+            const listeners = listenersStorage[domNodeId];
+
+            if (listeners && listeners[type]) {
+                listeners[type] = null;
+
+                const registry = EventRegistry[type];
+
+                if (registry) {
+                    if (registry.bubbles) {
+                        --registry.listenersCounter;
+                    } else {
+                        domNode.removeEventListener(type, eventListener);
+                    }
+                }
+            }
+        }
+    }
+};

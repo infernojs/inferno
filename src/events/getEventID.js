@@ -1,4 +1,4 @@
-const ID_PROP = '__Inferno__id__';
+const ID_PROP = '__redric__id__';
 let counter = 1;
 
 function getDomNodeId(node, onlyGet) {

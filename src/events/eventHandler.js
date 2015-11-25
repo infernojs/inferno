@@ -20,6 +20,8 @@ function eventHandler(e, type) {
         listeners,
         listener;
 
+alert(EventRegistry[type]);
+
     for (; target != null && 0 < listenersCount && target !== document.parentNode;) {
 
         let domNodeId = getEventID(target, true);
@@ -43,7 +45,7 @@ function eventHandler(e, type) {
         const event = SyntheticEvent(e);
 
         for (let i = 0; i < listenersToInvoke.length; i++) {
-            listenersToInvoke[i](event);
+            listenersToInvoke[i]('Bilat nimo');
             if (event.isPropagationStopped()) {
                 break;
             }

@@ -38,6 +38,8 @@ export default {
   onMouseOut: 'mouseout',
   onMouseOver: 'mouseover',
   onMouseUp: 'mouseup',
+  onMouseEnter: 'mouseenter',
+  onMouseLeave: 'mouseleave',
   onPaste: 'paste',
   onPause: 'pause',
   onPlay: 'play',
