@@ -1,59 +1,105 @@
-import isEventSupported from './isEventSupported';
-import EventConstants from './EventConstants';
-import focusEvents from './focusEvents';
-import eventHandler from './eventHandler';
-import ExecutionEnvironment from '../util/ExecutionEnvironment';
+import checkBitmask from '../template/checkBitmask';
 
-const {
-    nativeEvents,
-    nonBubbleableEvents
-} = EventConstants;
+const SHOULD_NOT_BUBBLE = 1,
+	NATIVE_EVENT = 2;
+	
+const events = {
+  abort: null,
+  blur: SHOULD_NOT_BUBBLE,
+  canPlay: null,
+  canPlayThrough: null,
+  change: null,
+  click: NATIVE_EVENT,
+  compositiEnd: null,
+  compositionStart: null,
+  compositionUpdate: null,
+  contextMenu: NATIVE_EVENT,
+  copy: NATIVE_EVENT,
+  cut: NATIVE_EVENT,
+  doubleClick: NATIVE_EVENT,
+  drag: NATIVE_EVENT,
+  dragEnd: NATIVE_EVENT,
+  dragEnter: NATIVE_EVENT,
+  dragExit: NATIVE_EVENT,
+  dragLeave: NATIVE_EVENT,
+  dragOver: NATIVE_EVENT,
+  dragStart: NATIVE_EVENT,
+  drop: NATIVE_EVENT,
+  durationChange: null,
+  emptied: null,
+  encrypted: null,
+  ended: null,
+  error: NATIVE_EVENT,
+  focus: NATIVE_EVENT,
+  input: NATIVE_EVENT,
+  keyDown: NATIVE_EVENT,
+  keyPress: NATIVE_EVENT,
+  keyUp: NATIVE_EVENT,
+  load: SHOULD_NOT_BUBBLE,
+  loadedData: null,
+  loadedMetadata: null,
+  loadStart: null,
+  mouseDown: NATIVE_EVENT,
+  mouseMove: NATIVE_EVENT,
+  mouseOut: NATIVE_EVENT,
+  mouseOver: NATIVE_EVENT,
+  mouseUp: NATIVE_EVENT,
+  paste: NATIVE_EVENT,
+  pause: null,
+  play: null,
+  playing: null,
+  progress: null,
+  rateChange: NATIVE_EVENT,
+  scroll: SHOULD_NOT_BUBBLE,
+  seeked: null,
+  seeking: null,
+  selectionChange: null,
+  stalled: null,
+  submit: NATIVE_EVENT,
+  suspend: null,
+  textInput: null,
+  timeUpdate: null,
+  touchCancel: null,
+  touchEnd: null,
+  touchMove: null,
+  touchStart: null,
+  volumeChange: null,
+  waiting: null,
+  wheel: NATIVE_EVENT
+};
 
-const EventRegistry = {};
+const focusEvents = {
+    focus: 'focusin',
+    blur: 'focusout'
+};
 
-if (ExecutionEnvironment.canUseDOM) {
 
-    let i = 0,
-        EventType;
 
-    for (; i < nativeEvents.length; i++) {
+const EventContainer = {};
 
-        EventType = nativeEvents[i];
+for (let eventName in events) {
 
-        EventRegistry[EventType] = {
+    let propConfig = events[eventName];
+    let shouldNotBubble = checkBitmask(propConfig, SHOULD_NOT_BUBBLE);
 
-            type: EventType,
-            shouldBubble: true,
-            counter: 0,
-            isActive: false, // not activated YET!
-            setup: null
-        }
+    let propertyInfo = {
+        eventName: eventName,
+		isActive: false,
+        shouldNotBubble: checkBitmask(propConfig, SHOULD_NOT_BUBBLE),
+        isNative: checkBitmask(propConfig, NATIVE_EVENT),
+		focusEvent: false
+    };
 
-        // 'focus' and 'blur' is a special case
-        if (focusEvents[EventType]) {
-
-            EventRegistry[EventType].setup = isEventSupported(focusEvents[EventType]) ?
-                function() {
-                    const type = this.type;
-                    document.addEventListener(
-                        focusEvents[type],
-                        e => {
-                            eventHandler(e, type);
-                        });
-                } :
-                function() {
-                    document.addEventListener(this.type, eventHandler, true);
-                }
-        }
+    if (!shouldNotBubble) { 
+	   
+	   propertyInfo.counter = 0;
+	}
+		
+    if (focusEvents[eventName]) {
+        propertyInfo.focusEvent = focusEvents[eventName];
     }
-
-    for (i = 0; i < nonBubbleableEvents.length; i++) {
-        EventRegistry[nonBubbleableEvents[i]] = {
-            type: EventType,
-            shouldBubble: false,
-            isActive: false
-        };
-    }
+		
+    EventContainer['on' + eventName[0].toUpperCase() + eventName.substring(1)] = propertyInfo;
 }
 
-export default EventRegistry;
+export default EventContainer;

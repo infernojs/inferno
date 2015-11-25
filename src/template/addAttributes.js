@@ -1,8 +1,9 @@
-import events from '../events/shared/events';
 import eventManager from '../events/eventManager';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import processFragmentAttrs from './processFragmentAttrs';
+
+const { isPrefixedEvent } = eventManager;
 
 /**
  * Set HTML attributes on the template
@@ -25,8 +26,8 @@ export default function addAttributes(node, attrs, fragment) {
             // avoid 'null' values
             if (attrVal !== undefined) {
                 // events
-                if (events[attrName] !== undefined) {
-                    eventManager.addListener(node, events[attrName], attrVal);
+                if (isPrefixedEvent(attrName)) {
+                    eventManager.addListener(node, attrName, attrVal);
                     // attributes / properties
                 } else {
                     setValueForProperty(node, attrName, attrVal);

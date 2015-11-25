@@ -1,6 +1,5 @@
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
-
 let useHasFeature;
 if (ExecutionEnvironment.canUseDOM) {
   useHasFeature = document.implementation && document.implementation.hasFeature &&
