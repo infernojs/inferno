@@ -7,11 +7,12 @@ function eventHandler(e, type) {
 
     // TODO! If some 'e' need a fix, do it here
     // TEMPORARY FIX!!
-    if (!type) {
+    if (e.type === 'mousemove') {
+        type = 'onMouseMove';
+    } else if (!type) {
 
-        type = 'on' + e.type[0].toUpperCase() + e.type.substring(1)
+        type = 'on' + e.type[0].toUpperCase() + e.type.substring(1);
     }
-
     const listenersToInvoke = [];
 
     let target = e.target,
