@@ -3,9 +3,17 @@ import attachFragment             from './attachFragment';
 import updateFragmentValue        from './updateFragmentValue';
 import updateFragmentValues       from './updateFragmentValues';
 import unmountComponentAtFragment from './unmountComponentAtFragment';
+import removeComponent			  from './removeComponent';
 
 function updateFragment( context, oldFragment, fragment, parent, component ) {
 	if ( fragment == null ) {
+		if (oldFragment.templateComponent) {
+			debugger;
+		} else if (oldFragment.templateComponents) {
+			for (let i = 0; i < oldFragment.templateComponents.length; i++) {
+				removeComponent(oldFragment.templateComponents[i], oldFragment.templateElements[i]);
+			}
+		}
 		removeFragment( context, parent, oldFragment );
 		return;
 	}
@@ -17,7 +25,6 @@ function updateFragment( context, oldFragment, fragment, parent, component ) {
 		//unmount fragment
 		unmountComponentAtFragment(oldFragment);
 		attachFragment( context, fragment, parent, component, oldFragment, true );
-	   return;
 	}
 	//ensure we reference the new fragment with the old fragment's DOM node
 	fragment.dom = oldFragment.dom;

@@ -446,6 +446,61 @@ export default function domComponentsTestsFunctional(describe, expect, container
 		});
 	});
 
+	describe('should render a basic component with component children #2', () => {
+		let template;
+		let componentWillMountCount;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			template(createElement, createComponent, children) {
+				return createElement('div', null,
+					createElement('span', null, 'component!'),
+					createElement('div', null, children)
+				)
+			}
+			render() {
+				return Inferno.createFragment(this.props.children, this.template);
+			}
+			componentWillUnmount() {
+				componentWillMountCount++;
+			}
+		}
+
+		beforeEach(() => {
+			componentWillMountCount = 0;
+			template = Inferno.createTemplate((createElement, createComponent, Component1, Component2, Component3) =>
+					createComponent(Component1,
+						createComponent(Component2,
+							createComponent(Component3)
+						)
+					)
+			);
+
+			Inferno.render(
+				Inferno.createFragment([
+					{ component: ComponentLifecycleCheck },
+					{ component: ComponentLifecycleCheck },
+					{ component: ComponentLifecycleCheck }
+				], template), container
+			);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				componentWillMountCount
+			).to.equal(
+				0
+			);
+		});
+		it('Second render (update) - remove all components', () => {
+			Inferno.render(null, container);
+			expect(
+				componentWillMountCount
+			).to.equal(
+				3
+			);
+		});
+	});
+
 	describe('should render multiple components', () => {
 		let template;
 
