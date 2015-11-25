@@ -125,7 +125,7 @@ for (var i = eventss.length; i--;){
 }
 
 
-export default function domOperationTests(describe, expect) {
+export default function domOperationTests(describe, expect, spy) {
 /*
 
 describe('DOM events', () => {

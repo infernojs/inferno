@@ -1,6 +1,7 @@
 import Inferno from '../src';
 import { expect } from 'chai';
 
+
 //acceptance render test group
 //import renderSvgTests from './acceptance/render/svg-tests';
 //import renderMathMlTests from './acceptance/render/math-ml-tests';
