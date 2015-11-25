@@ -138,7 +138,6 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				}
 				case fragmentValueTypes.COMPONENT_CHILDREN: {
 					fragment.templateElements[i].appendChild(fragment.templateValues[i]);
-					debugger;
 					break;
 				}
 				case fragmentValueTypes.COMPONENT:
