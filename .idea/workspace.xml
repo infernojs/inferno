@@ -6,17 +6,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97762936-9cf6-425b-b803-3e2b6d8d2016" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachComponent.js" afterPath="$PROJECT_DIR$/src/core/attachComponent.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/attachFragment.js" afterPath="$PROJECT_DIR$/src/core/attachFragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/checkBitmask.js" afterPath="$PROJECT_DIR$/src/template/checkBitmask.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createDOMElements.js" afterPath="$PROJECT_DIR$/src/template/createDOMElements.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createDOMNode.js" afterPath="$PROJECT_DIR$/src/template/createDOMNode.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/template/createElement.js" afterPath="$PROJECT_DIR$/src/template/createElement.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" afterPath="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/enum/fragmentValueTypes.js" afterPath="$PROJECT_DIR$/src/enum/fragmentValueTypes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/inferno.min.js" afterPath="$PROJECT_DIR$/dist/inferno.min.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragmentValue.js" afterPath="$PROJECT_DIR$/src/core/updateFragmentValue.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/updateFragmentValues.js" afterPath="$PROJECT_DIR$/src/core/updateFragmentValues.js" />
     </list>
     <ignored path="inferno.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -40,19 +32,19 @@
       <file leaf-file-name="dom-components-tests-functional.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-33.555557">
-              <caret line="416" column="0" selection-start-line="416" selection-start-column="0" selection-end-line="416" selection-end-column="0" />
+            <state vertical-scroll-proportion="-33.51852">
+              <caret line="421" column="39" selection-start-line="421" selection-start-column="39" selection-end-line="421" selection-end-column="39" />
               <folding>
-                <marker date="1448409588000" expanded="true" signature="15061:15087" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="15102:15128" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="15461:15487" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="15502:15528" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="16111:16137" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="16152:16178" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="17407:17433" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="17448:17474" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="18837:18853" placeholder="..." />
-                <marker date="1448409588000" expanded="true" signature="19471:19487" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="15077:15103" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="15118:15144" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="15477:15503" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="15518:15544" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="16127:16153" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="16168:16194" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="17423:17449" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="17464:17490" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="18853:18869" placeholder="..." />
+                <marker date="1448484828000" expanded="true" signature="19487:19503" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -61,8 +53,8 @@
       <file leaf-file-name="createElement.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.148149">
-              <caret line="39" column="29" selection-start-line="39" selection-start-column="29" selection-end-line="39" selection-end-column="29" />
+            <state vertical-scroll-proportion="-14.703704">
+              <caret line="40" column="25" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -111,8 +103,8 @@
       <file leaf-file-name="attachFragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.19143054">
-              <caret line="84" column="18" selection-start-line="84" selection-start-column="18" selection-end-line="84" selection-end-column="18" />
+            <state vertical-scroll-proportion="0.7615757">
+              <caret line="139" column="87" selection-start-line="139" selection-start-column="87" selection-end-line="139" selection-end-column="87" />
               <folding />
             </state>
           </provider>
@@ -211,8 +203,8 @@
         <option value="$PROJECT_DIR$/src/template/createDOMElements.js" />
         <option value="$PROJECT_DIR$/src/template/checkBitmask.js" />
         <option value="$PROJECT_DIR$/src/enum/fragmentValueTypes.js" />
-        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
         <option value="$PROJECT_DIR$/src/template/createElement.js" />
+        <option value="$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js" />
         <option value="$PROJECT_DIR$/src/core/attachFragment.js" />
       </list>
     </option>
@@ -1117,33 +1109,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-33.555557">
-          <caret line="416" column="0" selection-start-line="416" selection-start-column="0" selection-end-line="416" selection-end-column="0" />
-          <folding>
-            <marker date="1448409588000" expanded="true" signature="15061:15087" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="15102:15128" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="15461:15487" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="15502:15528" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="16111:16137" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="16152:16178" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="17407:17433" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="17448:17474" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="18837:18853" placeholder="..." />
-            <marker date="1448409588000" expanded="true" signature="19471:19487" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.148149">
-          <caret line="39" column="29" selection-start-line="39" selection-start-column="29" selection-end-line="39" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/core/attachFragmentList.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1168,10 +1133,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/template/createElement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-14.703704">
+          <caret line="40" column="25" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/acceptance/render/functional-api/dom-components-tests-functional.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-33.51852">
+          <caret line="421" column="39" selection-start-line="421" selection-start-column="39" selection-end-line="421" selection-end-column="39" />
+          <folding>
+            <marker date="1448484828000" expanded="true" signature="15077:15103" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="15118:15144" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="15477:15503" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="15518:15544" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="16127:16153" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="16168:16194" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="17423:17449" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="17464:17490" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="18853:18869" placeholder="..." />
+            <marker date="1448484828000" expanded="true" signature="19487:19503" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/core/attachFragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19143054">
-          <caret line="84" column="18" selection-start-line="84" selection-start-column="18" selection-end-line="84" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.7615757">
+          <caret line="139" column="87" selection-start-line="139" selection-start-column="87" selection-end-line="139" selection-end-column="87" />
           <folding />
         </state>
       </provider>

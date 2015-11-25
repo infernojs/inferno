@@ -82,8 +82,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 				break;
 			}
 			case fragmentValueTypes.COMPONENT_CHILDREN: {
-				//const {mountElem, component, mountCallback, newElement} = attachComponent(context, fragment.dom, fragment.templateValue, null, false);
-				debugger;
+				fragment.templateElement.appendChild(fragment.templateValue);
 				break;
 			}
 			case fragmentValueTypes.COMPONENT:
@@ -138,7 +137,7 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 					break;
 				}
 				case fragmentValueTypes.COMPONENT_CHILDREN: {
-					//const {mountElem, component, mountCallback, newElement} = attachComponent(context, fragment.dom, fragment.templateValue, null, false);
+					fragment.templateElements[i].appendChild(fragment.templateValues[i]);
 					debugger;
 					break;
 				}

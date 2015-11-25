@@ -392,7 +392,6 @@ export default function domComponentsTestsFunctional(describe, expect, container
 
 	class BasicComponent2b extends Inferno.Component {
 		template(createElement, createComponent, children) {
-			debugger;
 			return createElement('div', null,
 				createElement('span', null, 'component!'),
 				createElement('div', null, children)
@@ -428,7 +427,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><span>component!</span><div><span>component!</span><div><span>component!</span><div><span>component!</span></div></div></div>'
+				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 			);
 		});
 		it('Second render (update) - should be the same', () => {
@@ -442,7 +441,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
+				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 			);
 		});
 	});
@@ -822,7 +821,7 @@ export default function domComponentsTestsFunctional(describe, expect, container
 				component: ComponentLifecycleCheck,
 				props: {}
 			}], template), container);
-			waits(20, done)
+			waits(30, done)
 		});
 
 		it("componentWillMountCount to have fired once", () => {

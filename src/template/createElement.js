@@ -83,8 +83,10 @@ export default function createElementFactory(fragment, template) {
 					}
 				} else {
 					if(fragment.templateValue != null) {
+						fragment.templateElement = element;
 						fragment.templateType = fragmentValueTypes.COMPONENT_CHILDREN;
 					} else {
+						fragment.templateElements[children.pointer] = element;
 						fragment.templateTypes[children.pointer] = fragmentValueTypes.COMPONENT_CHILDREN;
 					}
 				}
