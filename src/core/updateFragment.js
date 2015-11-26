@@ -13,7 +13,10 @@ function updateFragment( context, oldFragment, fragment, parent, component ) {
 			for (let i = 0; i < oldFragment.templateComponents.length; i++) {
 				removeComponent(oldFragment.templateComponents[i], oldFragment.templateElements[i]);
 			}
+<<<<<<< HEAD
 			return;
+=======
+>>>>>>> new-build
 		}
 		removeFragment( context, parent, oldFragment );
 		return;
@@ -26,7 +29,10 @@ function updateFragment( context, oldFragment, fragment, parent, component ) {
 		//unmount fragment
 		unmountComponentAtFragment(oldFragment);
 		attachFragment( context, fragment, parent, component, oldFragment, true );
+<<<<<<< HEAD
 		return;
+=======
+>>>>>>> new-build
 	}
 	//ensure we reference the new fragment with the old fragment's DOM node
 	fragment.dom = oldFragment.dom;
