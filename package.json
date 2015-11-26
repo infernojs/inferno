@@ -6,9 +6,8 @@
   "scripts": {
     "test-win": "webpack-dev-server --config test.config.js --hot --inline 'mocha!.\\tests\\tests.js' --compilers js:babel-core/register",
     "test": "webpack-dev-server --config test.config.js --hot --inline 'mocha!./tests/tests.js' --compilers js:babel-core/register",
-    "build": "webpack --config webpack.config.js --inline",
-    "build:dev": "npm run build",
-    "build:prod": "npm run env PROD_DEV=1 && npm run build",
+    "build:dev": "webpack --config webpack.config.js --inline",
+    "build:prod": "PROD_DEV=1 webpack --config webpack.config.js --inline",
     "lint": "eslint src/**/*.js",
     "coverage": "node_modules/.bin/babel-node node_modules/isparta/bin/isparta cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec",
     "coveralls": "npm run coverage && coveralls < coverage/lcov.info"
