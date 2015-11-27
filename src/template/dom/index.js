@@ -1,4 +1,4 @@
-import addAttributes from '../addAttributes';
+import addAttributes from '../setDOMProperties';
 import DOMElements from '../DOMElements';
 
 //OPTIMIZATION: This functions should not be moved out of this module. V8 will not inline

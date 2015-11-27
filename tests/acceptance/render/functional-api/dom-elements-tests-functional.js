@@ -249,40 +249,6 @@ describe('should render "autoPlay" boolean attributes', () => {
 	});	
 	
 	
-	describe('should render "height" attributes', () => {
-		let template;
-
-		it('Initial render (creation)', () => {
-
-			template = Inferno.createTemplate(createElement =>
-					createElement('div', { height: '44%' })
-			);
-			Inferno.render(Inferno.createFragment(null, template), container);
-
-
-			expect(container.firstChild.getAttribute('height')).to.eql('44%');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div height="44%"></div>' 
-			);
-		});
-	
- 	it('Second render (update)', () => {
-
-			template = Inferno.createTemplate(createElement =>
-					createElement('div', { contenteditable: false })
-			);
-			Inferno.render(Inferno.createFragment(null, template), container);
-
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div contenteditable="false"></div>'
-			);
-		});  
-
-	});	
 	
 	describe('should render boolean attributes', () => {
 		let template;
@@ -487,38 +453,6 @@ describe('should render "autoPlay" boolean attributes', () => {
 	});
 
 
-	describe('should properly render "className" property', () => {
-		let template;
-
-		beforeEach(() => {
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { className: "Hello, world!" })
-			);
-			Inferno.render(Inferno.createFragment(null, template), container);
-		});
-
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input class="Hello, world!">'
-			);
-		});
-		// Ensure className={false} turns into string 'false' on update
-		it('Second render (update)', () => {
-			template = Inferno.createTemplate(createElement =>
-				createElement('input', { className: false })
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<input class="false">'
-			);
-		});
-	});
 
 	//// Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
 	describe('should properly render "className" property on a custom element', () => {
@@ -552,36 +486,6 @@ describe('should render "autoPlay" boolean attributes', () => {
 		});
 	});
 
-	describe('should properly render "width" and "height" attributes', () => {
-		let template;
-
-		beforeEach(() => {
-			template = Inferno.createTemplate(createElement =>
-				createElement('img', { src: "", alt: "Smiley face", height: 42, width: 42} )
-			);
-			Inferno.render(Inferno.createFragment(null, template), container);
-		});
-
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<img src="" alt="Smiley face" height="42" width="42">'
-			);
-		});
-		it('Second render (update)', () => {
-			template = Inferno.createTemplate(createElement =>
-				createElement('img', { src:"", alt:"Smiley face", height: 14, width:42})
-			);
-
-			Inferno.render(Inferno.createFragment(null, template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<img src="" alt="Smiley face" height="14" width="42">'
-			);
-		});
-	});
 
 	describe('should properly render boolean attributes (HTML5)', () => {
 		let template;
