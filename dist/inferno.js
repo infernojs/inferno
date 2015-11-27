@@ -176,12 +176,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function updateFragment(context, oldFragment, fragment, parent, component) {
 	
-		if (oldFragment == null) {
+		if (oldFragment == undefined) {
 			(0, _attachFragment2.default)(context, fragment, parent, component);
 			return;
 		}
 	
-		if (fragment == null) {
+		if (fragment == undefined) {
 			if (oldFragment.templateComponents) {
 				for (var i = 0; i < oldFragment.templateComponents.length; i++) {
 					(0, _removeComponent2.default)(oldFragment.templateComponents[i], oldFragment.templateElements[i]);
@@ -266,15 +266,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _createElement = __webpack_require__(68);
+	var _createElement = __webpack_require__(67);
 	
 	var _createElement2 = _interopRequireDefault(_createElement);
 	
-	var _createComponent = __webpack_require__(65);
+	var _createComponent = __webpack_require__(66);
 	
 	var _createComponent2 = _interopRequireDefault(_createComponent);
 	
-	var _dom = __webpack_require__(69);
+	var _dom = __webpack_require__(68);
 	
 	var _dom2 = _interopRequireDefault(_dom);
 	
@@ -717,7 +717,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _DOMAttributeNames2 = _interopRequireDefault(_DOMAttributeNames);
 	
-	var _DOMasks = __webpack_require__(63);
+	var _DOMasks = __webpack_require__(64);
 	
 	var _DOMasks2 = _interopRequireDefault(_DOMasks);
 	
@@ -1301,7 +1301,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _uuid = __webpack_require__(73);
+	var _uuid = __webpack_require__(72);
 	
 	var _uuid2 = _interopRequireDefault(_uuid);
 	
@@ -2074,7 +2074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(70);
+	var _processFragmentAttrs = __webpack_require__(69);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -2308,7 +2308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _addPixelSuffixToValueIfNeeded = __webpack_require__(64);
+	var _addPixelSuffixToValueIfNeeded = __webpack_require__(65);
 	
 	var _addPixelSuffixToValueIfNeeded2 = _interopRequireDefault(_addPixelSuffixToValueIfNeeded);
 	
@@ -2647,7 +2647,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(71);
+	var _quoteAttributeValueForBrowser = __webpack_require__(70);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3029,7 +3029,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        template: template
 	    };
 	
-	    if (values) {
+	    if (values != null) {
 	        if ((0, _isArray2.default)(values)) {
 	
 	            if (values.length === 1) {
@@ -3049,6 +3049,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            fragment.templateValue = values;
 	        }
 	    }
+	
 	    return fragment;
 	}
 
@@ -3707,98 +3708,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 63 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  MUST_USE_PROPERTY: 0x1,
-	  HAS_BOOLEAN_VALUE: 0x4,
-	  HAS_NUMERIC_VALUE: 0x8,
-	  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8
-	};
-
-/***/ },
-/* 64 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _unitlessProperties = __webpack_require__(72);
-	
-	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/**
-	 * Normalize CSS properties for SSR
-	 *
-	 * @param {String} name The boolean attribute name to set.
-	 * @param {String} value The boolean attribute value to set.
-	 */
-	
-	exports.default = function (name, value) {
-		if (value === null || value === '') {
-			return '';
-		}
-		if (value === 0 || (0, _unitlessProperties2.default)(name) || isNaN(value)) {
-			return '' + value; // cast to string
-		}
-		if (typeof value === 'string') {
-			value = value.trim();
-		}
-		return value + 'px';
-	};
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = createComponentFactory;
-	
-	var _fragmentValueTypes = __webpack_require__(1);
-	
-	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function createComponentFactory(fragment, template) {
-		return function createComponent(component) {
-			var element = template.createEmptyDiv();
-	
-			if (fragment.templateValue) {
-				fragment.templateElement = element;
-				fragment.templateType = _fragmentValueTypes2.default.COMPONENT_REPLACE;
-			} else {
-				fragment.templateElements[component.pointer] = element;
-				fragment.templateTypes[component.pointer] = _fragmentValueTypes2.default.COMPONENT_REPLACE;
-			}
-	
-			for (var _len = arguments.length, children = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-				children[_key - 1] = arguments[_key];
-			}
-	
-			for (var i = 0; i < children.length; i++) {
-				element.appendChild(children[i]);
-			}
-			return element;
-		};
-	}
-
-/***/ },
-/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3948,39 +3857,99 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DOMElementContainer;
 
 /***/ },
-/* 67 */
+/* 64 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
-	exports.default = createDOMNode;
-	var doc = global.document;
-	
-	function createDOMNode(tagName, namespace, typextension) {
-	    var element = undefined;
-	
-	    if (namespace) {
-	        if (typextension) {
-	            element = doc.createElementNS(namespace, tagName, typextension);
-	        } else {
-	            element = doc.createElementNS(namespace, tagName);
-	        }
-	    } else {
-	        if (typextension) {
-	            element = doc.createElement(tagName, typextension);
-	        } else {
-	            element = doc.createElement(tagName);
-	        }
-	    }
-	    return element;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	exports.default = {
+	  MUST_USE_PROPERTY: 0x1,
+	  HAS_BOOLEAN_VALUE: 0x4,
+	  HAS_NUMERIC_VALUE: 0x8,
+	  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8
+	};
 
 /***/ },
-/* 68 */
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _unitlessProperties = __webpack_require__(71);
+	
+	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/**
+	 * Normalize CSS properties for SSR
+	 *
+	 * @param {String} name The boolean attribute name to set.
+	 * @param {String} value The boolean attribute value to set.
+	 */
+	
+	exports.default = function (name, value) {
+		if (value === null || value === '') {
+			return '';
+		}
+		if (value === 0 || (0, _unitlessProperties2.default)(name) || isNaN(value)) {
+			return '' + value; // cast to string
+		}
+		if (typeof value === 'string') {
+			value = value.trim();
+		}
+		return value + 'px';
+	};
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = createComponentFactory;
+	
+	var _fragmentValueTypes = __webpack_require__(1);
+	
+	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function createComponentFactory(fragment, template) {
+		return function createComponent(component) {
+			var element = template.createEmptyDiv();
+	
+			if (fragment.templateValue) {
+				fragment.templateElement = element;
+				fragment.templateType = _fragmentValueTypes2.default.COMPONENT_REPLACE;
+			} else {
+				fragment.templateElements[component.pointer] = element;
+				fragment.templateTypes[component.pointer] = _fragmentValueTypes2.default.COMPONENT_REPLACE;
+			}
+	
+			for (var _len = arguments.length, children = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+				children[_key - 1] = arguments[_key];
+			}
+	
+			for (var i = 0; i < children.length; i++) {
+				element.appendChild(children[i]);
+			}
+			return element;
+		};
+	}
+
+/***/ },
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4110,7 +4079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4123,54 +4092,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _addAttributes2 = _interopRequireDefault(_addAttributes);
 	
-	var _createDOMElements = __webpack_require__(66);
+	var _DOMElements = __webpack_require__(63);
 	
-	var _createDOMElements2 = _interopRequireDefault(_createDOMElements);
-	
-	var _createDOMNode = __webpack_require__(67);
-	
-	var _createDOMNode2 = _interopRequireDefault(_createDOMNode);
+	var _DOMElements2 = _interopRequireDefault(_DOMElements);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	//OPTIMIZATION: This functions should not be moved out of this module. V8 will not inline
+	//this function if it's situated in another module due to context switch.
+	
+	function fastTag(tag) {
+	    return tag === 'a' || tag === 'p' || tag === 'em' || tag === 'ol' || tag === 'ul' || tag === 'div' || tag === 'img' || tag === 'span' || tag === 'form' || tag === 'table' || tag === 'button';
+	}
+	
 	exports.default = {
 	    addAttributes: _addAttributes2.default,
-	    createElement: function createElement(tag, is) {
 	
-	        switch (tag) {
-	            case 'div':
-	            case 'span':
-	            case 'button':
-	            case 'em':
-	            case 'form':
-	            case 'img':
-	            case 'a':
-	            case 'ol':
-	            case 'p':
-	            case 'table':
-	            case 'ul':
-	            case 'ol':
-	            case 'p':
+	    createElement: function createElement(tag) {
 	
-	                return (0, _createDOMNode2.default)(tag, false, is);
+	        if (fastTag(tag)) {
 	
-	            default:
+	            tag = document.createElement(tag);
+	        } else if (tag === 'svg') {
 	
-	                var DOMElementsInfo = _createDOMElements2.default[tag.toLowerCase()];
+	            tag = document.createElementNS('svg', 'http://www.w3.org/2000/svg');
+	        } else {
 	
-	                if (DOMElementsInfo !== undefined) {
-	                    // add SVG namespace
-	                    if (DOMElementsInfo.isSVG) {
-	                        return (0, _createDOMNode2.default)(tag, 'http://www.w3.org/2000/svg', is);
-	                    }
-	                    // add mathML namespace
-	                    if (DOMElementsInfo.isMathML) {
-	                        return (0, _createDOMNode2.default)(tag, 'http://www.w3.org/1998/Math/MathML', is);
-	                    }
+	            var DOMElementsInfo = _DOMElements2.default[tag.toLowerCase()];
+	
+	            if (DOMElementsInfo !== undefined) {
+	                // add SVG namespace
+	                if (DOMElementsInfo.isSVG) {
+	                    tag = document.createElementNS(tag, 'http://www.w3.org/2000/svg');
 	                }
-	                // all others
-	                return (0, _createDOMNode2.default)(tag, false, is);
+	                // add mathML namespace
+	                if (DOMElementsInfo.isMathML) {
+	                    tag = document.createElementNS(tag, 'http://www.w3.org/1998/Math/MathML');
+	                }
+	            } else {
+	                tag = document.createElement(tag);
+	            }
 	        }
+	
+	        return tag;
 	    },
 	
 	    createTextNode: function createTextNode(text) {
@@ -4185,7 +4149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4243,7 +4207,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4277,7 +4241,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var endOfText = '\u0003';
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4328,7 +4292,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports) {
 
 	'use strict';
