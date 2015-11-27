@@ -1,20 +1,21 @@
-import isArray from '../util/isArray';
-import createTemplate from './createTemplate';
+import isArray 			from '../util/isArray';
+import createTemplate	from './createTemplate';
 
 export default function createFragment(values, template, key = null) {
+	if (template.key == null) {
+		template = createTemplate(template);
+	}
 
-    if (template.key == null) {
-        template = createTemplate(template);
-    }
 
-    let fragment = {
-        dom: null,
-        key: key,
-        next: null,
-        template: template
-    };
 
-    if (values) {
+	let fragment = {
+		dom: null,
+		key: key,
+		next: null,
+		template: template
+	};
+
+	 if (values != null) {
         if (isArray(values)) {
 			
             if (values.length === 1) {
@@ -34,5 +35,6 @@ export default function createFragment(values, template, key = null) {
             fragment.templateValue = values;
         }
     }
+
     return fragment;
 }
