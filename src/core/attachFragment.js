@@ -152,10 +152,12 @@ function attachFragment(context, fragment, parentDom, component, nextFragment, r
 
 	insertFragment(context, fragment, parentDom, fragment.dom, nextFragment, replace );
 	
+  if (mountCallbacks){
 	//now fire all the component mountCallback functions so they know this fragment has been added
 	for(let i = 0; i < mountCallbacks.length; i++) {
 		mountCallbacks[i]();
 	}
+  }	
 }
 
 export default attachFragment;

@@ -442,9 +442,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		(0, _insertFragment2.default)(context, fragment, parentDom, fragment.dom, nextFragment, replace);
 	
-		//now fire all the component mountCallback functions so they know this fragment has been added
-		for (var i = 0; i < mountCallbacks.length; i++) {
-			mountCallbacks[i]();
+		if (mountCallbacks) {
+			//now fire all the component mountCallback functions so they know this fragment has been added
+			for (var i = 0; i < mountCallbacks.length; i++) {
+				mountCallbacks[i]();
+			}
 		}
 	}
 	
@@ -2993,7 +2995,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	    value: true
 	});
 	exports.default = createFragment;
 	
@@ -3008,37 +3010,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function createFragment(values, template) {
-		var key = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+	    var key = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
 	
-		if (template.key == null) {
-			template = (0, _createTemplate2.default)(template);
-		}
+	    if (template.key == null) {
+	        template = (0, _createTemplate2.default)(template);
+	    }
 	
-		var fragmentObject = {
-			dom: null,
-			key: key,
-			next: null,
-			template: template
-		};
+	    var fragmentObject = {
+	        dom: null,
+	        key: key,
+	        next: null,
+	        template: template
+	    };
 	
-		if (values != null && (0, _isArray2.default)(values)) {
-			if (values.length === 1) {
-				fragmentObject.templateElement = null;
-				fragmentObject.templateType = null;
-				fragmentObject.templateValue = values[0];
-				fragmentObject.templateComponent = null;
-			} else {
-				fragmentObject.templateElements = new Array(values.length);
-				fragmentObject.templateTypes = new Array(values.length);
-				fragmentObject.templateComponents = new Array(values.length);
-				fragmentObject.templateValues = values;
-			}
-		} else {
-			fragmentObject.templateElement = null;
-			fragmentObject.templateType = null;
-			fragmentObject.templateValue = values;
-		}
-		return fragmentObject;
+	    if (values) {
+	        if ((0, _isArray2.default)(values)) {
+	            if (values.length === 1) {
+	                fragmentObject.templateElement = null;
+	                fragmentObject.templateType = null;
+	                fragmentObject.templateValue = values[0];
+	                fragmentObject.templateComponent = null;
+	            } else {
+	                fragmentObject.templateElements = new Array(values.length);
+	                fragmentObject.templateTypes = new Array(values.length);
+	                fragmentObject.templateComponents = new Array(values.length);
+	                fragmentObject.templateValues = values;
+	            }
+	        } else {
+	            fragmentObject.templateElement = null;
+	            fragmentObject.templateType = null;
+	            fragmentObject.templateValue = values;
+	        }
+	    }
+	    return fragmentObject;
 	}
 
 /***/ },
