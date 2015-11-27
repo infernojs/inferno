@@ -7,7 +7,7 @@ export default function createFragment(values, template, key = null) {
         template = createTemplate(template);
     }
 
-    let fragmentObject = {
+    let fragment = {
         dom: null,
         key: key,
         next: null,
@@ -18,21 +18,21 @@ export default function createFragment(values, template, key = null) {
         if (isArray(values)) {
 			
             if (values.length === 1) {
-                fragmentObject.templateElement = null;
-                fragmentObject.templateType = null;
-                fragmentObject.templateValue = values[0];
-                fragmentObject.templateComponent = null;
+                fragment.templateElement = null;
+                fragment.templateType = null;
+                fragment.templateValue = values[0];
+                fragment.templateComponent = null;
             } else if ( values.length > 1 ) {
-                fragmentObject.templateElements = new Array(values.length);
-                fragmentObject.templateTypes = new Array(values.length);
-                fragmentObject.templateComponents = new Array(values.length);
-                fragmentObject.templateValues = values;
+                fragment.templateElements = new Array(values.length);
+                fragment.templateTypes = new Array(values.length);
+                fragment.templateComponents = new Array(values.length);
+                fragment.templateValues = values;
             }
         } else {
-            fragmentObject.templateElement = null;
-            fragmentObject.templateType = null;
-            fragmentObject.templateValue = values;
+            fragment.templateElement = null;
+            fragment.templateType = null;
+            fragment.templateValue = values;
         }
     }
-    return fragmentObject;
+    return fragment;
 }

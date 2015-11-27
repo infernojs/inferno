@@ -175,6 +175,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function updateFragment(context, oldFragment, fragment, parent, component) {
+	
+		if (oldFragment == null) {
+			(0, _attachFragment2.default)(context, fragment, parent, component);
+			return;
+		}
+	
 		if (fragment == null) {
 			if (oldFragment.templateComponents) {
 				for (var i = 0; i < oldFragment.templateComponents.length; i++) {
@@ -185,13 +191,13 @@ return /******/ (function(modules) { // webpackBootstrap
 			(0, _removeFragment2.default)(context, parent, oldFragment);
 			return;
 		}
-		if (oldFragment == null) {
-			(0, _attachFragment2.default)(context, fragment, parent, component);
-			return;
-		}
+	
 		if (oldFragment.template !== fragment.template) {
-			//unmount fragment
-			(0, _unmountComponentAtFragment2.default)(oldFragment);
+	
+			// unmount component
+			if (oldFragment.templateComponent || oldFragment.templateComponents) {
+				(0, _unmountComponentAtFragment2.default)(oldFragment);
+			}
 			(0, _attachFragment2.default)(context, fragment, parent, component, oldFragment, true);
 			return;
 		}
@@ -3016,7 +3022,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        template = (0, _createTemplate2.default)(template);
 	    }
 	
-	    var fragmentObject = {
+	    var fragment = {
 	        dom: null,
 	        key: key,
 	        next: null,
@@ -3025,24 +3031,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    if (values) {
 	        if ((0, _isArray2.default)(values)) {
+	
 	            if (values.length === 1) {
-	                fragmentObject.templateElement = null;
-	                fragmentObject.templateType = null;
-	                fragmentObject.templateValue = values[0];
-	                fragmentObject.templateComponent = null;
-	            } else {
-	                fragmentObject.templateElements = new Array(values.length);
-	                fragmentObject.templateTypes = new Array(values.length);
-	                fragmentObject.templateComponents = new Array(values.length);
-	                fragmentObject.templateValues = values;
+	                fragment.templateElement = null;
+	                fragment.templateType = null;
+	                fragment.templateValue = values[0];
+	                fragment.templateComponent = null;
+	            } else if (values.length > 1) {
+	                fragment.templateElements = new Array(values.length);
+	                fragment.templateTypes = new Array(values.length);
+	                fragment.templateComponents = new Array(values.length);
+	                fragment.templateValues = values;
 	            }
 	        } else {
-	            fragmentObject.templateElement = null;
-	            fragmentObject.templateType = null;
-	            fragmentObject.templateValue = values;
+	            fragment.templateElement = null;
+	            fragment.templateType = null;
+	            fragment.templateValue = values;
 	        }
 	    }
-	    return fragmentObject;
+	    return fragment;
 	}
 
 /***/ },

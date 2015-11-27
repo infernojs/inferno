@@ -6,6 +6,12 @@ import unmountComponentAtFragment from './unmountComponentAtFragment';
 import removeComponent			  from './removeComponent';
 
 function updateFragment( context, oldFragment, fragment, parent, component ) {
+  
+	if ( oldFragment == null ) { 
+		attachFragment( context, fragment, parent, component );
+		return;
+	}
+
 	if ( fragment == null ) {
 		if (oldFragment.templateComponents) {
 			for (let i = 0; i < oldFragment.templateComponents.length; i++) {
@@ -16,13 +22,13 @@ function updateFragment( context, oldFragment, fragment, parent, component ) {
 		removeFragment( context, parent, oldFragment );
 		return;
 	}
-	if ( oldFragment == null ) {
-		attachFragment( context, fragment, parent, component );
-		return;
-	}
+
 	if ( oldFragment.template !== fragment.template ) {
-		//unmount fragment
+
+	// unmount component
+	if ( oldFragment.templateComponent || oldFragment.templateComponents ) {
 		unmountComponentAtFragment(oldFragment);
+	}
 		attachFragment( context, fragment, parent, component, oldFragment, true );
 		return;
 	}
