@@ -6,8 +6,6 @@ export default function createFragment(values, template, key = null) {
 		template = createTemplate(template);
 	}
 
-
-
 	let fragment = {
 		dom: null,
 		key: key,
