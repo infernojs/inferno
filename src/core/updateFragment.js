@@ -7,12 +7,12 @@ import removeComponent			  from './removeComponent';
 
 function updateFragment( context, oldFragment, fragment, parent, component ) {
   
-	if ( oldFragment == null ) { 
+	if ( oldFragment == undefined ) { 
 		attachFragment( context, fragment, parent, component );
 		return;
 	}
 
-	if ( fragment == null ) {
+	if ( fragment == undefined ) {
 		if (oldFragment.templateComponents) {
 			for (let i = 0; i < oldFragment.templateComponents.length; i++) {
 				removeComponent(oldFragment.templateComponents[i], oldFragment.templateElements[i]);
