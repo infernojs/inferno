@@ -2,6 +2,7 @@ import isArray from '../util/isArray';
 import createTemplate from './createTemplate';
 
 export default function createFragment(values, template, key = null) {
+
     if (template.key == null) {
         template = createTemplate(template);
     }
@@ -15,12 +16,13 @@ export default function createFragment(values, template, key = null) {
 
     if (values) {
         if (isArray(values)) {
+			
             if (values.length === 1) {
                 fragmentObject.templateElement = null;
                 fragmentObject.templateType = null;
                 fragmentObject.templateValue = values[0];
                 fragmentObject.templateComponent = null;
-            } else {
+            } else if ( values.length > 1 ) {
                 fragmentObject.templateElements = new Array(values.length);
                 fragmentObject.templateTypes = new Array(values.length);
                 fragmentObject.templateComponents = new Array(values.length);
