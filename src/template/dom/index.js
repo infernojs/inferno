@@ -9,17 +9,17 @@ function fastTag(tag) {
 
     switch (tag.length) {
         case 1:
-            return str === 'a' || str === 'p';
+            return tag === 'a' || tag === 'p';
         case 2:
-            return str === 'em' || str === 'ol' || str === 'ul';
+            return tag === 'em' || tag === 'ol' || tag === 'ul';
         case 3:
-            return str === 'div' || str === 'img';
+            return tag === 'div' || tag === 'img';
         case 4:
-            return str === 'span' || str === 'form';
+            return tag === 'span' || tag === 'form';
         case 5:
-            return str === 'table';
+            return tag === 'table';
         case 6:
-            return str === 'button';
+            return tag === 'button';
     }
 }
 
