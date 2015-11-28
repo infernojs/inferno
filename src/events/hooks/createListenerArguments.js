@@ -1,46 +1,8 @@
 import isFormElement from '../../util/isFormElement';
+import getFormElementState from '../../util/getFormElementState';
 
 // type -> tag -> function(target, event)
 const plugins = {};
-
-function getFormElementState(node) {
-
-  var type = node.getAttribute( "type" ) == null ? getNodeName( node ) : node.getAttribute( "type" );
-
-        if (type === 'checkbox' || type === 'radio') {
-
-            if (!node.checked) {
-                return false;
-            }
-
-            const val = node.getAttribute('value');
-
-            return val ? val : true;
-
-        } else if (type === 'select') {
-
-            if (node.multiple) {
-
-                let result = [];
-                const options = node.options;
-
-                for (var i = replace ? 1 : 0; i < options; i++) {
-
-                    let option = options[i];
-
-                    if (option.selected && option.getAttribute('disabled') === null && (!option.parentNode.disabled || getNodeName(option.parentNode) !== 'optgroup')) {
-
-                        result.push(option.value || option.text);
-                    }
-                }
-
-                return result;
-            }
-
-            return ~node.selectedIndex ? node.options[node.selectedIndex].value : '';
-
-        }
-}
 
 /**
  * type is a type of event
@@ -67,8 +29,14 @@ export default function createListenerArguments(target, event) {
 	// Form elements with a value attribute will have the arguments:
 	// [event, value]
 	if (isFormElement(tagName)) {
-		return [event, getFormElementState(target)];
-	}
+     
+	   const type = target.getAttribute("type") == null ? target.nodeName : target.getAttribute("type");
+	   
+	   if (type === 'radio' || type === 'select' || type === 'checkbox') {
+	       return [event, getFormElementState(target, type)];
+	   } else {
+	       return [event, target.value];
+	   }	}
 
 	// Fallback to just event
 	return [event];

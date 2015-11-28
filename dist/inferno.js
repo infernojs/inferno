@@ -1301,7 +1301,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _uuid = __webpack_require__(78);
+	var _uuid = __webpack_require__(79);
 	
 	var _uuid2 = _interopRequireDefault(_uuid);
 	
@@ -2028,7 +2028,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _raf = __webpack_require__(77);
+	var _raf = __webpack_require__(78);
 	
 	var _raf2 = _interopRequireDefault(_raf);
 	
@@ -3429,59 +3429,26 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	exports.registerSetupHooks = registerSetupHooks;
 	exports.default = createListenerArguments;
 	
-	var _isFormElement = __webpack_require__(76);
+	var _isFormElement = __webpack_require__(77);
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
+	
+	var _getFormElementState = __webpack_require__(76);
+	
+	var _getFormElementState2 = _interopRequireDefault(_getFormElementState);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// type -> tag -> function(target, event)
 	var plugins = {};
-	
-	function getFormElementState(node) {
-	
-	  var type = node.getAttribute("type") == null ? getNodeName(node) : node.getAttribute("type");
-	
-	  if (type === 'checkbox' || type === 'radio') {
-	
-	    if (!node.checked) {
-	      return false;
-	    }
-	
-	    var val = node.getAttribute('value');
-	
-	    return val ? val : true;
-	  } else if (type === 'select') {
-	
-	    if (node.multiple) {
-	
-	      var result = [];
-	      var options = node.options;
-	
-	      for (var i = replace ? 1 : 0; i < options; i++) {
-	
-	        var option = options[i];
-	
-	        if (option.selected && option.getAttribute('disabled') === null && (!option.parentNode.disabled || getNodeName(option.parentNode) !== 'optgroup')) {
-	
-	          result.push(option.value || option.text);
-	        }
-	      }
-	
-	      return result;
-	    }
-	
-	    return ~node.selectedIndex ? node.options[node.selectedIndex].value : '';
-	  }
-	}
 	
 	/**
 	 * type is a type of event
@@ -3489,30 +3456,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * hook is a function(element, event) -> [args...]
 	 */
 	function registerSetupHooks(type, tagName, hook) {
-	  var tagHooks = plugins[type] = plugins[type] || {};
-	  tagHooks[tagName] = hook;
+		var tagHooks = plugins[type] = plugins[type] || {};
+		tagHooks[tagName] = hook;
 	}
 	
 	function createListenerArguments(target, event) {
-	  var type = event.type;
-	  var tagName = target.tagName.toLowerCase();
-	  var tagHooks = undefined;
-	  if (tagHooks = plugins[type]) {
-	    var hook = tagHooks[tagName];
-	    if (hook) {
-	      return hook(target, event);
-	    }
-	  }
+		var type = event.type;
+		var tagName = target.tagName.toLowerCase();
+		var tagHooks = undefined;
+		if (tagHooks = plugins[type]) {
+			var hook = tagHooks[tagName];
+			if (hook) {
+				return hook(target, event);
+			}
+		}
 	
-	  // Default behavior:
-	  // Form elements with a value attribute will have the arguments:
-	  // [event, value]
-	  if ((0, _isFormElement2.default)(tagName)) {
-	    return [event, getFormElementState(target)];
-	  }
+		// Default behavior:
+		// Form elements with a value attribute will have the arguments:
+		// [event, value]
+		if ((0, _isFormElement2.default)(tagName)) {
 	
-	  // Fallback to just event
-	  return [event];
+			var _type = target.getAttribute("type") == null ? target.nodeName : target.getAttribute("type");
+	
+			if (_type === 'radio' || _type === 'select' || _type === 'checkbox') {
+				return [event, (0, _getFormElementState2.default)(target, _type)];
+			} else {
+				return [event, target.value];
+			}
+		}
+	
+		// Fallback to just event
+		return [event];
 	}
 
 /***/ },
@@ -4632,6 +4606,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
+	            value: true
+	});
+	function getFormElementState(node, type) {
+	
+	            if (type === 'checkbox' || type === 'radio') {
+	
+	                        if (!node.checked) {
+	                                    return false;
+	                        }
+	
+	                        var val = node.getAttribute('value');
+	
+	                        return val ? val : true;
+	            } else if (type === 'select') {
+	
+	                        if (node.multiple) {
+	
+	                                    var result = [];
+	                                    var options = node.options;
+	
+	                                    for (var i = replace ? 1 : 0; i < options; i++) {
+	
+	                                                var option = options[i];
+	
+	                                                if (option.selected && option.getAttribute('disabled') === null && (!option.parentNode.disabled || getNodeName(option.parentNode) !== 'optgroup')) {
+	
+	                                                            result.push(option.value || option.text);
+	                                                }
+	                                    }
+	
+	                                    return result;
+	                        }
+	
+	                        return ~node.selectedIndex ? node.options[node.selectedIndex].value : '';
+	            }
+	}
+	
+	exports.default = getFormElementState;
+
+/***/ },
+/* 77 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 	function isFormElement(tagName) {
@@ -4641,7 +4661,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isFormElement;
 
 /***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4682,7 +4702,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = requestAnimationFrame;
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports) {
 
 	'use strict';
