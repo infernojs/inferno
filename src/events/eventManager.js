@@ -1,8 +1,8 @@
 import getEventID from './getEventID';
-import isEventSupported from './isEventSupported';
-import addRootDomEventListerners from './addRootDomEventListerners';
+import addRootDomEventListeners from './addRootDomEventListeners';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
+import listenerSetup from './hooks/listenerSetup';
 
 function eventListener(e) {
     listenersStorage[getEventID(e.target)][e.type](e);
@@ -24,11 +24,10 @@ export default {
                 if (!registry.activated) {
 
                     if (registry.setup) {
-
                         registry.setup();
-
-                    } else {
-                        registry.bubbles && document.addEventListener(type, addRootDomEventListerners, false);
+                    } else if (registry.bubbles) {
+                        let handler = listenerSetup(type, addRootDomEventListeners);
+                        document.addEventListener(type, handler, false);
                     }
 
                     registry.activated = true;
@@ -42,7 +41,10 @@ export default {
                     if (registry.bubbles) {
                         ++registry.listenersCounter;
                     } else {
-                        domNode.addEventListener(type, eventListener, false);
+                        let handler = listenerSetup(type, eventListener); 
+                        domNode.addEventListener(type, handler, false);
+                        domNode._infernoListeners = domNode._infernoListeners || {};
+                        domNode._internoListeners[type] = handler;
                     }
                 }
 
@@ -68,7 +70,8 @@ export default {
                         if (registry.bubbles) {
                             --registry.listenersCounter;
                         } else {
-                            node.removeEventListener(type, eventListener);
+                            node.removeEventListener(type, node._infernoListeners[type]);
+                            node._infernoListeners[type] = null; 
                         }
                     }
                 }

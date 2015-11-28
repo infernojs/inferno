@@ -39,13 +39,13 @@ function isDefaultPrevented() {
 	return this._isDefaultPrevented;
 }
 
-const hookPlugins = {};
-export function registerHook(type, hook) {
-	let hooks = hookPlugins[type] = hookPlugins[type] || [];
+const plugins = {};
+export function registerEventSetupPlugin(type, hook) {
+	let hooks = plugins[type] = plugins[type] || [];
 	hooks.push(hook);
 }
 
-function eventHooks(nativeEvent) {
+function eventSetup(nativeEvent) {
 	// Extend nativeEvent
 	nativeEvent._stopPropagation = nativeEvent.stopPropagation;
 	nativeEvent.stopPropagation = stopPropagation;
@@ -64,7 +64,7 @@ function eventHooks(nativeEvent) {
 	// registerHook('scroll', nativeEvent => {
 	//	 // logic here
 	// });
-	let hooks = hookPlugins[nativeEvent.type];
+	let hooks = plugins[nativeEvent.type];
 	if (hooks) {
 		let len = hooks.length;
 		for(let i = 0; i < len; i++) {
@@ -75,4 +75,4 @@ function eventHooks(nativeEvent) {
 	return nativeEvent;
 }
 
-export default eventHooks;
+export default eventSetup;

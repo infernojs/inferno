@@ -3,7 +3,8 @@ import capturableEvents from './capturableEvents';
 import nonBubbleableEvents from './nonBubbleableEvents';
 import focusEvents from './focusEvents';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
-import addRootDomEventListerners from './addRootDomEventListerners';
+import addRootDomEventListeners from './addRootDomEventListeners';
+import listenerSetup from './hooks/listenerSetup';
 
 // TODO! Give it a different name
 let EventRegistry = {};
@@ -21,7 +22,7 @@ if (ExecutionEnvironment.canUseDOM) {
             type: type,
             bubbles: true,
             listenersCounter: 0,
-            set: false,
+            set: false
         };
 
         if (type === 'wheel' && (!isEventSupported('wheel'))) {
@@ -36,22 +37,18 @@ if (ExecutionEnvironment.canUseDOM) {
                 EventRegistry[type].originalEvent = type;
             }
 
+        } else if (focusEvents[type]) {
             // IE has `focusin` and `focusout` events which bubble.
             // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-        } else if (focusEvents[type]) {
 
             if (isEventSupported(focusEvents[type])) {
 
                 EventRegistry[type].setup = function() {
-                    document.addEventListener(focusEvents[this.type], e => {
-                        addRootDomEventListerners(e, this.type);
+                    let handler = listenerSetup(this.type, e => {
+                        addRootDomEventListeners(e, this.type);
                     });
-                }
-            } else {
-
-                EventRegistry[type].setup = function() {
-                    document.addEventListener(this.type, addRootDomEventListerners, true);
-                }
+                    document.addEventListener(focusEvents[this.type], handler);
+                };
             }
         }
     }
