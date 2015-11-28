@@ -11,18 +11,17 @@ function addRootDomEventListeners(e, type) {
 	const cfg = EventRegistry[type];
 
 	let target = e.target,
-		delegateTarget = target,
 		listenersCount = cfg.listenersCounter,
 		listeners,
 		listener,
 		domNodeId,
 		event,
 		args,
-		setupArgs = true;
+		defaultArgs;
 
 	if (listenersCount > 0) {
 		event = eventSetup(e);
-		args = [event];
+		defaultArgs = args = [event];
 	}
 
 	// NOTE: Only the event blubbling phase is modeled. This is done because
@@ -36,11 +35,14 @@ function addRootDomEventListeners(e, type) {
 			if(listeners && (listener = listeners[type])) {
 				// lazily instantiate additional arguments in the case
 				// where an event handler takes more than one argument
+				// listener is a function, and length is the number of
+				// arguments that function takes
 				let numArgs = listener.length;
-				if (setupArgs && numArgs > 1) {
-					setupArgs = false;
-					args = createListenerArguments(delegateTarget, event);
+				args = defaultArgs;
+				if (numArgs > 1) {
+					args = createListenerArguments(target, event);
 				}
+
 				// 'this' on an eventListener is the element handling the event
 				// event.currentTarget is unwriteable, and since these are
 				// native events, will always refer to the document. Therefore
