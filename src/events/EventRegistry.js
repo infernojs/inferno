@@ -36,6 +36,13 @@ if (ExecutionEnvironment.canUseDOM) {
                     });
                     document.addEventListener(focusEvents[this.type], handler);
                 };
+            } else {
+                EventRegistry[type].setup = function() {
+                    document.addEventListener(
+                        this.type,
+                        listenerSetup(this.type, addRootDomEventListeners),
+                        true);
+                };
             }
         }
     }
