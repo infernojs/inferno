@@ -66,9 +66,9 @@ function eventHooks(nativeEvent) {
 	// });
 	let hooks = hookPlugins[nativeEvent.type];
 	if (hooks) {
-		let len = hookPlugins.length;
+		let len = hooks.length;
 		for(let i = 0; i < len; i++) {
-			hookPlugins[i](nativeEvent);
+			hooks[i](nativeEvent);
 		}
 	}
 
