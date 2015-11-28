@@ -4279,7 +4279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 71 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -4287,15 +4287,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = getFormElementType;
 	function getFormElementType(node) {
 	    var name = node.nodeName.toLowerCase();
-	    if (name !== "input") {
-	        if (name === "select" && node.multiple) {
-	            return "select-multiple";
+	    if (name !== 'input') {
+	        if (name === 'select' && node.multiple) {
+	            return 'select-multiple';
 	        }
 	        return name;
 	    }
 	    var type = node.getAttribute('type');
 	    if (!type) {
-	        return "text";
+	        return 'text';
 	    }
 	    return type.toLowerCase();
 	}
@@ -4317,21 +4317,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function getFormElementValues(element) {
+	function getFormElementValues(node) {
 	
-	    var name = (0, _getFormElementType2.default)(element);
+	    var name = (0, _getFormElementType2.default)(node);
 	
 	    switch (name) {
 	        case 'checkbox':
 	        case 'radio':
-	            if (!element.checked) {
+	            if (!node.checked) {
 	                return false;
 	            }
-	            var val = element.getAttribute('value');
+	            var val = node.getAttribute('value');
 	            return val == null ? true : val;
 	        case 'select':
 	        case 'select-multiple':
-	            var options = element.options;
+	            var options = node.options;
 	            var values = [];
 	            for (var i = 0, len = options.length; i < len; i++) {
 	                if (options[i].selected) {
@@ -4340,7 +4340,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            return name === 'select-multiple' ? values : values[0];
 	        default:
-	            return element.value;
+	            return node.value;
 	    }
 	}
 
