@@ -28,7 +28,6 @@ export default {
                         registry.setup();
 
                     } else {
-
                         registry.bubbles && document.addEventListener(type, addRootDomEventListerners, false);
                     }
 
