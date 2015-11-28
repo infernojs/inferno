@@ -46,20 +46,18 @@ export function registerHook(type, hook) {
 }
 
 function eventHooks(nativeEvent) {
-
 	// Extend nativeEvent
-  if (!nativeEvent.preventDefault) {
+	nativeEvent._stopPropagation = nativeEvent.stopPropagation;
+	nativeEvent.stopPropagation = stopPropagation;
+	nativeEvent.isPropagationStopped = isPropagationStopped;
 
-    nativeEvent._stopPropagation = nativeEvent.stopPropagation;
-    nativeEvent.stopPropagation = stopPropagation;
-    nativeEvent._stopImmediatePropagation = nativeEvent.stopImmediatePropagation;
-    nativeEvent.stopImmediatePropagation = stopImmediatePropagation;
-    nativeEvent._preventDefault = nativeEvent.preventDefault;
-    nativeEvent.preventDefault = preventDefault;
-  }
-   nativeEvent.isImmediatePropagationStopped = isImmediatePropagationStopped;
-   nativeEvent.isPropagationStopped = isPropagationStopped;
-   nativeEvent.isDefaultPrevented = isDefaultPrevented;
+	nativeEvent._stopImmediatePropagation = nativeEvent.stopImmediatePropagation;
+	nativeEvent.stopImmediatePropagation = stopImmediatePropagation;
+	nativeEvent.isImmediatePropagationStopped = isImmediatePropagationStopped;
+
+	nativeEvent._preventDefault = nativeEvent.preventDefault;
+	nativeEvent.preventDefault = preventDefault;
+	nativeEvent.isDefaultPrevented = isDefaultPrevented;
 
 	// Plugins
 	// register other eventHooks elsewhere, which will be called and injected here
