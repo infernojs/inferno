@@ -26,6 +26,11 @@ export default {
   onEnded: 'ended',
   onError: 'error',
   onFocus: 'focus',
+  /**
+   * IE
+   */
+  onFocusIn: 'focusin',
+  onFocusOut: 'focusout', 
   onInput: 'input',
   onKeyDown: 'keydown',
   onKeyPress: 'keypress',

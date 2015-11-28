@@ -1725,7 +1725,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+		value: true
 	});
 	
 	var _getEventID = __webpack_require__(26);
@@ -1748,42 +1748,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function addRootDomEventListerners(e, type) {
 	
-	    type || (type = e.type);
+		type || (type = e.type);
 	
-	    var cfg = _EventRegistry2.default[type],
-	        listenersToInvoke = [];
+		var cfg = _EventRegistry2.default[type];
 	
-	    var target = e.target,
-	        listenersCount = cfg.listenersCounter,
-	        listeners = undefined,
-	        listener = undefined,
-	        domNodeId = undefined;
+		var target = e.target,
+		    listenersCount = cfg.listenersCounter,
+		    listeners = undefined,
+		    listener = undefined,
+		    domNodeId = undefined,
+		    event = listenersCount > 0 && (0, _eventHooks2.default)(e);
 	
-	    while (target !== null && listenersCount > 0 && target !== document.parentNode) {
-	        if (domNodeId = (0, _getEventID2.default)(target, true)) {
-	            listeners = _listenersStorage2.default[domNodeId];
-	            if (listeners && (listener = listeners[type])) {
-	                listenersToInvoke.push(listener);
-	                --listenersCount;
-	            }
-	        }
+		// NOTE: Only the event blubbling phase is modeled. This is done because
+		// handlers specified on props can not specify they are handled on the
+		// capture phase.
+		while (target !== null && listenersCount > 0 && target !== document.parentNode) {
+			if (domNodeId = (0, _getEventID2.default)(target, true)) {
+				listeners = _listenersStorage2.default[domNodeId];
+				if (listeners && (listener = listeners[type])) {
+					// 'this' on an eventListener is the element handling the event
+					// event.currentTarget is unwriteable, and since these are
+					// native events, will always refer to the document. Therefore
+					// 'this' is the only supported way of referring to the element
+					// whose listener is handling the current event
+					listener.call(target, event);
 	
-	        target = target.parentNode;
-	    }
+					// Check if progagation stopped. There is only one listener per
+					// type, so we do not need to check immediate propagation.
+					if (event.isPropagationStopped()) {
+						break;
+					}
 	
-	    if (listenersToInvoke.length) {
-	        var event = (0, _eventHooks2.default)(e);
-	        var len = listenersToInvoke.length;
+					--listenersCount;
+				}
+			}
 	
-	        var i = 0;
-	
-	        while (i < len) {
-	            listenersToInvoke[i++](event);
-	            if (event.isPropagationStopped()) {
-	                break;
-	            }
-	        }
-	    }
+			target = target.parentNode;
+		}
 	}
 	
 	exports.default = addRootDomEventListerners;
@@ -1843,7 +1844,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	                    registry.setup();
 	                } else {
-	
 	                    registry.bubbles && document.addEventListener(type, _addRootDomEventListerners2.default, false);
 	                }
 	
@@ -2044,6 +2044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	/**
 	 * Internal store for event listeners
+	 * DOMNodeId -> type -> listener
 	 */
 	exports.default = {};
 
@@ -3373,45 +3374,84 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+		value: true
 	});
-	var isPropagationStopped = false;
-	var isDefaultPrevented = false;
+	exports.registerHook = registerHook;
+	function stopPropagation() {
+		this._isPropagationStopped = true;
+		if (this._stopPropagation) {
+			this._stopPropagation();
+		} else {
+			this.cancelBubble = true;
+		}
+	}
+	
+	function isPropagationStopped() {
+		return this._isPropagationStopped;
+	}
+	
+	function stopImmediatePropagation() {
+		this._isImmediatePropagationStopped = true;
+		this._isPropagationStopped = true;
+		if (this._stopImmediatePropagation) {
+			this._stopImmediatePropagation();
+		} else {
+			this.cancelBubble = true;
+		}
+	}
+	
+	function isImmediatePropagationStopped() {
+		return this._isImmediatePropagationStopped;
+	}
+	
+	function preventDefault() {
+		this._isDefaultPrevented = true;
+	
+		if (this._preventDefault) {
+			this.preventDefault();
+		} else {
+			this.returnValue = false;
+		}
+	}
+	
+	function isDefaultPrevented() {
+		return this._isDefaultPrevented;
+	}
+	
+	var hookPlugins = {};
+	function registerHook(type, hook) {
+		var hooks = hookPlugins[type] = hookPlugins[type] || [];
+		hooks.push(hook);
+	}
 	
 	function eventHooks(nativeEvent) {
+		// Extend nativeEvent
+		nativeEvent._stopPropagation = nativeEvent.stopPropagation;
+		nativeEvent.stopPropagation = stopPropagation;
+		nativeEvent.isPropagationStopped = isPropagationStopped;
 	
-	    nativeEvent.stopPropagation = function stopPropagation() {
-	        isPropagationStopped = true;
+		nativeEvent._stopImmediatePropagation = nativeEvent.stopImmediatePropagation;
+		nativeEvent.stopImmediatePropagation = stopImmediatePropagation;
+		nativeEvent.isImmediatePropagationStopped = isImmediatePropagationStopped;
 	
-	        var event = nativeEvent;
-	        if (event.stopPropagation) {
-	            event.stopPropagation();
-	        } else {
-	            event.cancelBubble = true;
-	        }
-	    };
-	    nativeEvent.isPropagationStopped = function isPropagationStopped() {
-	        return isPropagationStopped;
-	    };
-	    nativeEvent.preventDefault = function preventDefault() {
-	        isDefaultPrevented = true;
+		nativeEvent._preventDefault = nativeEvent.preventDefault;
+		nativeEvent.preventDefault = preventDefault;
+		nativeEvent.isDefaultPrevented = isDefaultPrevented;
 	
-	        var event = nativeEvent;
+		// Plugins
+		// register other eventHooks elsewhere, which will be called and injected here
+		// registerHook('scroll', nativeEvent => {
+		//	 // logic here
+		// });
+		var hooks = hookPlugins[nativeEvent.type];
+		if (hooks) {
+			var len = hookPlugins.length;
+			for (var i = 0; i < len; i++) {
+				hookPlugins[i](nativeEvent);
+			}
+		}
 	
-	        if (!event) {
-	            return;
-	        }
-	
-	        if (event.preventDefault) {
-	            event.preventDefault();
-	        } else {
-	            event.returnValue = false;
-	        }
-	    };
-	    nativeEvent.isDefaultPrevented = function isDefaultPrevented() {
-	        return isDefaultPrevented;
-	    };
-	    return nativeEvent;
+		return nativeEvent;
 	}
 	
 	exports.default = eventHooks;
