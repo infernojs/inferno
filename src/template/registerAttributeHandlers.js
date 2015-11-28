@@ -4,11 +4,10 @@ import isArray from '../util/isArray';
 function registerAttributeHandlers(type, hook) {
     if (isArray(type)) {
         for (let i = 0; i < type.length; i++) {
-            hookPlugins[type[i] = hook;
-            }
-        } else {
-            hookPlugins[type] = hook;
+            hookPlugins[type[i]] = hook;
         }
+    } else {
+        hookPlugins[type] = hook;
     }
 }
 
