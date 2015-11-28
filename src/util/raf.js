@@ -1,33 +1,27 @@
 import ExecutionEnvironment from './ExecutionEnvironment';
 
-let raf = function() {};
+// Server side workaround
+let requestAnimationFrame = function() { return function() {}};
 
 if (ExecutionEnvironment.canUseDOM) {
-    var lastTime = 0,
-        propName = ["r", "webkitR", "mozR", "oR"].reduce((memo, name) => {
-            var prop = name + "equestAnimationFrame";
 
-            return memo || window[prop] && prop;
-        }, 0);
+    let lastTime = 0;
 
+    const nativeRequestAnimationFrame =
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame;
 
-    raf = function(callback) {
-        if (propName) {
-            window[propName](callback);
-        } else {
-            var currTime = Date.now(),
-                timeToCall = Math.max(0, 16 - (currTime - lastTime));
-
-            lastTime = currTime + timeToCall;
-
-            if (timeToCall) {
-                setTimeout(callback, timeToCall);
-            } else {
-                callback(currTime + timeToCall);
-            }
-        }
-    };
-
+    let requestAnimationFrame =
+        nativeRequestAnimationFrame ||
+        function(callback) {
+            const currTime = Date.now();
+            let timeDelay = Math.max(0, 16 - (currTime - lastTime));
+            lastTime = currTime + timeDelay;
+            return window.setTimeout(function() {
+                callback(Date.now());
+            }, timeDelay);
+        };
 }
 
-export default raf;
+export default requestAnimationFrame;
