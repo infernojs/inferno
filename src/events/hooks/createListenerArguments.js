@@ -1,5 +1,5 @@
 import isFormElement from '../../util/isFormElement';
-import getFormElementValues from '../../util/getFormElementValues';
+import getFormElementValues from '../../template/getFormElementValues';
 
 // type -> tag -> function(target, event)
 const plugins = {};
@@ -10,34 +10,29 @@ const plugins = {};
  * hook is a function(element, event) -> [args...]
  */
 export function registerSetupHooks(type, tagName, hook) {
-	let tagHooks = plugins[type] = plugins[type] || {};
-	tagHooks[tagName] = hook;
+    let tagHooks = plugins[type] = plugins[type] || {};
+    tagHooks[tagName] = hook;
 }
 
 export default function createListenerArguments(target, event) {
-	let type = event.type;
-	let tagName = target.tagName.toLowerCase();
-	let tagHooks;
-	if ( (tagHooks = plugins[type]) ) {
-		let hook = tagHooks[tagName];
-		if (hook) {
-			return hook(target, event);
-		}
-	}
+    let type = event.type;
+    let tagName = target.tagName.toLowerCase();
+    let tagHooks;
+    if ((tagHooks = plugins[type])) {
+        let hook = tagHooks[tagName];
+        if (hook) {
+            return hook(target, event);
+        }
+    }
 
-	// Default behavior:
-	// Form elements with a value attribute will have the arguments:
-	// [event, value]
-	if (isFormElement(tagName)) {
-     
-	   const type = target.getAttribute("type") == null ? target.nodeName : target.getAttribute("type");
-	   
-	   if (type === 'RADIO' || type === 'SELECT' || type === 'CHECKBOX') {
-	       return [event, getFormElementValues(target, type)];
-	   } else {
-	       return [event, target.value];
-	   }	}
+    // Default behavior:
+    // Form elements with a value attribute will have the arguments:
+    // [event, value]
+    if (isFormElement(tagName)) {
 
-	// Fallback to just event
-	return [event];
-} 
+        return [event, getFormElementValues(target)];
+    }
+
+    // Fallback to just event
+    return [event];
+}

@@ -1301,7 +1301,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _uuid = __webpack_require__(79);
+	var _uuid = __webpack_require__(80);
 	
 	var _uuid2 = _interopRequireDefault(_uuid);
 	
@@ -2016,7 +2016,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _raf = __webpack_require__(78);
+	var _raf = __webpack_require__(79);
 	
 	var _raf2 = _interopRequireDefault(_raf);
 	
@@ -2607,7 +2607,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(72);
+	var _quoteAttributeValueForBrowser = __webpack_require__(74);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3420,16 +3420,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	    value: true
 	});
 	exports.registerSetupHooks = registerSetupHooks;
 	exports.default = createListenerArguments;
 	
-	var _isFormElement = __webpack_require__(77);
+	var _isFormElement = __webpack_require__(78);
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
 	
-	var _getFormElementValues = __webpack_require__(76);
+	var _getFormElementValues = __webpack_require__(72);
 	
 	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
 	
@@ -3444,37 +3444,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * hook is a function(element, event) -> [args...]
 	 */
 	function registerSetupHooks(type, tagName, hook) {
-		var tagHooks = plugins[type] = plugins[type] || {};
-		tagHooks[tagName] = hook;
+	    var tagHooks = plugins[type] = plugins[type] || {};
+	    tagHooks[tagName] = hook;
 	}
 	
 	function createListenerArguments(target, event) {
-		var type = event.type;
-		var tagName = target.tagName.toLowerCase();
-		var tagHooks = undefined;
-		if (tagHooks = plugins[type]) {
-			var hook = tagHooks[tagName];
-			if (hook) {
-				return hook(target, event);
-			}
-		}
+	    var type = event.type;
+	    var tagName = target.tagName.toLowerCase();
+	    var tagHooks = undefined;
+	    if (tagHooks = plugins[type]) {
+	        var hook = tagHooks[tagName];
+	        if (hook) {
+	            return hook(target, event);
+	        }
+	    }
 	
-		// Default behavior:
-		// Form elements with a value attribute will have the arguments:
-		// [event, value]
-		if ((0, _isFormElement2.default)(tagName)) {
+	    // Default behavior:
+	    // Form elements with a value attribute will have the arguments:
+	    // [event, value]
+	    if ((0, _isFormElement2.default)(tagName)) {
 	
-			var _type = target.getAttribute("type") == null ? target.nodeName : target.getAttribute("type");
+	        return [event, (0, _getFormElementValues2.default)(target)];
+	    }
 	
-			if (_type === 'RADIO' || _type === 'SELECT' || _type === 'CHECKBOX') {
-				return [event, (0, _getFormElementValues2.default)(target, _type)];
-			} else {
-				return [event, target.value];
-			}
-		}
-	
-		// Fallback to just event
-		return [event];
+	    // Fallback to just event
+	    return [event];
 	}
 
 /***/ },
@@ -3993,7 +3987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _unitlessProperties = __webpack_require__(75);
+	var _unitlessProperties = __webpack_require__(77);
 	
 	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
 	
@@ -4217,11 +4211,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _setDOMProperties = __webpack_require__(74);
+	var _setDOMProperties = __webpack_require__(76);
 	
 	var _setDOMProperties2 = _interopRequireDefault(_setDOMProperties);
 	
-	var _registerAttributeHandlers = __webpack_require__(73);
+	var _registerAttributeHandlers = __webpack_require__(75);
 	
 	var _registerAttributeHandlers2 = _interopRequireDefault(_registerAttributeHandlers);
 	
@@ -4283,6 +4277,75 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 71 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = getFormElementType;
+	function getFormElementType(node) {
+	    var name = node.nodeName.toLowerCase();
+	    if (name !== "input") {
+	        if (name === "select" && node.multiple) {
+	            return "select-multiple";
+	        }
+	        return name;
+	    }
+	    var type = node.getAttribute('type');
+	    if (!type) {
+	        return "text";
+	    }
+	    return type.toLowerCase();
+	}
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = getFormElementValues;
+	
+	var _getFormElementType = __webpack_require__(71);
+	
+	var _getFormElementType2 = _interopRequireDefault(_getFormElementType);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function getFormElementValues(element) {
+	
+	    var name = (0, _getFormElementType2.default)(element);
+	
+	    switch (name) {
+	        case 'checkbox':
+	        case 'radio':
+	            if (!element.checked) {
+	                return false;
+	            }
+	            var val = element.getAttribute('value');
+	            return val == null ? true : val;
+	        case 'select':
+	        case 'select-multiple':
+	            var options = element.options;
+	            var values = [];
+	            for (var i = 0, len = options.length; i < len; i++) {
+	                if (options[i].selected) {
+	                    values.push(options[i].value);
+	                }
+	            }
+	            return name === 'select-multiple' ? values : values[0];
+	        default:
+	            return element.value;
+	    }
+	}
+
+/***/ },
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4340,7 +4403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 72 */
+/* 74 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4374,7 +4437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var endOfText = '\u0003';
 
 /***/ },
-/* 73 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4457,7 +4520,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 74 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4483,7 +4546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(71);
+	var _processFragmentAttrs = __webpack_require__(73);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -4537,7 +4600,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 75 */
+/* 77 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4588,54 +4651,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	            value: true
-	});
-	function getFormElementState(node, type) {
-	
-	            if (type === 'CHECKBOX' || type === 'RADIO') {
-	
-	                        if (!node.checked) {
-	                                    return false;
-	                        }
-	
-	                        var val = node.getAttribute('value');
-	
-	                        return val ? val : true;
-	            }
-	
-	            // select multiple
-	
-	            if (node.multiple) {
-	
-	                        var result = [];
-	                        var options = node.options;
-	
-	                        for (var i = 0; i < options; i++) {
-	
-	                                    var option = options[i];
-	
-	                                    if (option.selected && option.getAttribute('disabled') == null && (!option.parentNode.disabled || getNodeName(option.parentNode) !== 'optgroup')) {
-	
-	                                                result.push(option.value || option.text);
-	                                    }
-	                        }
-	
-	                        return result;
-	            }
-	
-	            return ~node.selectedIndex ? node.options[node.selectedIndex].value : '';
-	}
-	
-	exports.default = getFormElementState;
-
-/***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4650,7 +4666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isFormElement;
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4691,7 +4707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = requestAnimationFrame;
 
 /***/ },
-/* 79 */
+/* 80 */
 /***/ function(module, exports) {
 
 	'use strict';
