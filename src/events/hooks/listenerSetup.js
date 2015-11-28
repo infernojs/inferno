@@ -30,7 +30,7 @@ function rafDebounce(handler) {
 	};
 }
 
-registerEventHooks(['scroll', 'mousemove', 'drag', 'touch'], rafDebounce);
+registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], rafDebounce);
 
 export default function listenerSetup(type, handler) {
 	return event => {
