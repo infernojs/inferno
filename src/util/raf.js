@@ -11,7 +11,7 @@ if (ExecutionEnvironment.canUseDOM) {
         }, 0);
 
 
-    export default function raf(callback) {
+    raf = function(callback) {
         if (propName) {
             window[propName](callback);
         } else {
