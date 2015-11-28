@@ -22,7 +22,7 @@ function addRootDomEventListerners(e, type) {
 	while(target !== null
 		&& listenersCount > 0
 		&& target !== document.parentNode) {
-		if(domNodeId = getDomNodeId(target, true)) {
+		if( (domNodeId = getDomNodeId(target, true)) ) {
 			listeners = listenersStorage[domNodeId];
 			if(listeners && (listener = listeners[type])) {
 				// 'this' on an eventListener is the element handling the event
