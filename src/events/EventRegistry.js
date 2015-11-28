@@ -6,7 +6,6 @@ import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import addRootDomEventListeners from './addRootDomEventListeners';
 import listenerSetup from './hooks/listenerSetup';
 
-// TODO! Give it a different name
 let EventRegistry = {};
 
 if (ExecutionEnvironment.canUseDOM) {
@@ -25,22 +24,10 @@ if (ExecutionEnvironment.canUseDOM) {
             set: false
         };
 
-        if (type === 'wheel' && (!isEventSupported('wheel'))) {
+        if (focusEvents[type]) {
 
-            if (isEventSupported('mousewheel')) {
-                EventRegistry[type].type = 'mousewheel';
-                EventRegistry[type].originalEvent = type;
-            } else {
-                // Firefox needs to capture a different mouse scroll event.
-                // @see http://www.quirksmode.org/dom/events/tests/scroll.html
-                EventRegistry[type].type = 'DOMMouseScroll';
-                EventRegistry[type].originalEvent = type;
-            }
-
-        } else if (focusEvents[type]) {
             // IE has `focusin` and `focusout` events which bubble.
             // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-
             if (isEventSupported(focusEvents[type])) {
 
                 EventRegistry[type].setup = function() {

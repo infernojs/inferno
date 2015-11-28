@@ -1676,18 +1676,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            set: false
 	        };
 	
-	        if (type === 'wheel' && !(0, _isEventSupported2.default)('wheel')) {
-	
-	            if ((0, _isEventSupported2.default)('mousewheel')) {
-	                EventRegistry[type].type = 'mousewheel';
-	                EventRegistry[type].originalEvent = type;
-	            } else {
-	                // Firefox needs to capture a different mouse scroll event.
-	                // @see http://www.quirksmode.org/dom/events/tests/scroll.html
-	                EventRegistry[type].type = 'DOMMouseScroll';
-	                EventRegistry[type].originalEvent = type;
-	            }
-	        } else if (_focusEvents2.default[type]) {
+	        if (_focusEvents2.default[type]) {
 	            // IE has `focusin` and `focusout` events which bubble.
 	            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
 	
@@ -2063,7 +2052,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 	}
 	
-	registerEventHooks(['scroll', 'mousemove', 'drag', 'touch'], rafDebounce);
+	registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], rafDebounce);
 	
 	function listenerSetup(type, handler) {
 		return function (event) {
