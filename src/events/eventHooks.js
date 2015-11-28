@@ -29,7 +29,7 @@ function preventDefault() {
 	this._isDefaultPrevented = true;
 
 	if (this._preventDefault) {
-		this.preventDefault();
+		this._preventDefault();
 	} else {
 		this.returnValue = false;
 	}
