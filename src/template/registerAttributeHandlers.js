@@ -17,10 +17,10 @@ function registerAttributeHandlers(type, hook, loc) {
     if (loc) {
         if (isArray(type)) {
             for (let i = 0; i < type.length; i++) {
-                hookPlugins[loc][type[i]] = hook;
+                attributeHooks[loc][type[i]] = hook;
             }
         } else {
-            hookPlugins[loc][type] = hook;
+            attributeHooks[loc][type] = hook;
         }
     }
 }
@@ -28,20 +28,20 @@ function registerAttributeHandlers(type, hook, loc) {
 /**
  * HTML Properties
  */
-setAttributeHandlers(HTMLProperties, function(node, name, value) {
+registerAttributeHandlers(HTMLProperties, function(node, name, value) {
     if ('' + node[name] !== '' + value) {
         node[name] = value;
     }
 }, 'set');
 
-setAttributeHandlers(HTMLProperties, function(node, name) {
+registerAttributeHandlers(HTMLProperties, function(node, name) {
     node[name] = '';
 }, 'unset');
 
 /**
  * HTML boolean Properties
  */
-setAttributeHandlers(HTMLBooleanProperties, function(node, name, value) {
+registerAttributeHandlers(HTMLBooleanProperties, function(node, name, value) {
     if ('' + node[name] !== '' + value) {
         node[name] = value;
     }
@@ -50,7 +50,7 @@ setAttributeHandlers(HTMLBooleanProperties, function(node, name, value) {
 /**
  * HTML boolean Properties
  */
-setAttributeHandlers(HTMLBooleanProperties, function(node, name, value) {
+registerAttributeHandlers(HTMLBooleanProperties, function(node, name, value) {
     node[name] = false;
 }, 'unset');
 
@@ -58,7 +58,7 @@ setAttributeHandlers(HTMLBooleanProperties, function(node, name, value) {
  * Edge cases
  */
 for (let edge in edgeCases) {
-    setAttributeHandlers(edge, function(node, name, value) {
+    registerAttributeHandlers(edge, function(node, name, value) {
         node.setAttribute(dgeCases[edge], value);
     }, 'set');
 }
