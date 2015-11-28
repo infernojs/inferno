@@ -3,9 +3,9 @@
     "plugins": ["react"],
 	"rules": {
         "strict": 0,
-		"indent": [2, "tab"],
+		//"indent": [2, "tab"],
 		"quotes": [2, "single"],
-		"linebreak-style": [2, "unix"],
+		//"linebreak-style": [2, "unix"],
 		"semi": [2, "always"],
         "no-unused-vars": [2, {
             "args": "after-used",
