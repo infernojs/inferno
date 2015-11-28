@@ -1,5 +1,5 @@
 import isFormElement from '../../util/isFormElement';
-import getFormElementState from '../../util/getFormElementState';
+import getFormElementValues from '../../util/getFormElementValues';
 
 // type -> tag -> function(target, event)
 const plugins = {};
@@ -32,8 +32,8 @@ export default function createListenerArguments(target, event) {
      
 	   const type = target.getAttribute("type") == null ? target.nodeName : target.getAttribute("type");
 	   
-	   if (type === 'radio' || type === 'select' || type === 'checkbox') {
-	       return [event, getFormElementState(target, type)];
+	   if (type === 'RADIO' || type === 'SELECT' || type === 'CHECKBOX') {
+	       return [event, getFormElementValues(target, type)];
 	   } else {
 	       return [event, target.value];
 	   }	}

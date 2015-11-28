@@ -1657,7 +1657,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// TODO! Give it a different name
 	var EventRegistry = {};
 	
 	if (_ExecutionEnvironment2.default.canUseDOM) {
@@ -1677,9 +1676,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	
 	        if (_focusEvents2.default[type]) {
+	
 	            // IE has `focusin` and `focusout` events which bubble.
 	            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-	
 	            if ((0, _isEventSupported2.default)(_focusEvents2.default[type])) {
 	
 	                EventRegistry[type].setup = function () {
@@ -1694,7 +1693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	
-	    // For non-bubbleable events - e.g. scroll - we are setting the events direcly on the node
+	    // For non-bubbleable events - e.g. scroll - we are setting the events directly on the node
 	    for (i = 0; i < _nonBubbleableEvents2.default.length; i++) {
 	        EventRegistry[_nonBubbleableEvents2.default[i]] = {
 	            type: type,
@@ -3430,9 +3429,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
 	
-	var _getFormElementState = __webpack_require__(76);
+	var _getFormElementValues = __webpack_require__(76);
 	
-	var _getFormElementState2 = _interopRequireDefault(_getFormElementState);
+	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -3467,8 +3466,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			var _type = target.getAttribute("type") == null ? target.nodeName : target.getAttribute("type");
 	
-			if (_type === 'radio' || _type === 'select' || _type === 'checkbox') {
-				return [event, (0, _getFormElementState2.default)(target, _type)];
+			if (_type === 'RADIO' || _type === 'SELECT' || _type === 'CHECKBOX') {
+				return [event, (0, _getFormElementValues2.default)(target, _type)];
 			} else {
 				return [event, target.value];
 			}
@@ -4599,7 +4598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	function getFormElementState(node, type) {
 	
-	            if (type === 'checkbox' || type === 'radio') {
+	            if (type === 'CHECKBOX' || type === 'RADIO') {
 	
 	                        if (!node.checked) {
 	                                    return false;
@@ -4608,28 +4607,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        var val = node.getAttribute('value');
 	
 	                        return val ? val : true;
-	            } else if (type === 'select') {
+	            }
 	
-	                        if (node.multiple) {
+	            // select multiple
 	
-	                                    var result = [];
-	                                    var options = node.options;
+	            if (node.multiple) {
 	
-	                                    for (var i = replace ? 1 : 0; i < options; i++) {
+	                        var result = [];
+	                        var options = node.options;
 	
-	                                                var option = options[i];
+	                        for (var i = 0; i < options; i++) {
 	
-	                                                if (option.selected && option.getAttribute('disabled') === null && (!option.parentNode.disabled || getNodeName(option.parentNode) !== 'optgroup')) {
+	                                    var option = options[i];
 	
-	                                                            result.push(option.value || option.text);
-	                                                }
+	                                    if (option.selected && option.getAttribute('disabled') == null && (!option.parentNode.disabled || getNodeName(option.parentNode) !== 'optgroup')) {
+	
+	                                                result.push(option.value || option.text);
 	                                    }
-	
-	                                    return result;
 	                        }
 	
-	                        return ~node.selectedIndex ? node.options[node.selectedIndex].value : '';
+	                        return result;
 	            }
+	
+	            return ~node.selectedIndex ? node.options[node.selectedIndex].value : '';
 	}
 	
 	exports.default = getFormElementState;

@@ -1,6 +1,6 @@
 function getFormElementState(node, type) {
 
-        if (type === 'checkbox' || type === 'radio') {
+        if (type === 'CHECKBOX' || type === 'RADIO') {
 
             if (!node.checked) {
                 return false;
@@ -10,18 +10,22 @@ function getFormElementState(node, type) {
 
             return val ? val : true;
 
-        } else if (type === 'select') {
+        } 
 
+            // select multiple
+			
             if (node.multiple) {
 
                 let result = [];
                 const options = node.options;
 
-                for (var i = replace ? 1 : 0; i < options; i++) {
+                for (var i = 0; i < options; i++) {
 
                     let option = options[i];
 
-                    if (option.selected && option.getAttribute('disabled') === null && (!option.parentNode.disabled || getNodeName(option.parentNode) !== 'optgroup')) {
+                    if (option.selected && option.getAttribute('disabled') == null && 
+					   (!option.parentNode.disabled || 
+					   getNodeName(option.parentNode) !== 'optgroup')) {
 
                         result.push(option.value || option.text);
                     }
@@ -31,8 +35,6 @@ function getFormElementState(node, type) {
             }
 
             return ~node.selectedIndex ? node.options[node.selectedIndex].value : '';
-
-        }
 }
 
 export default getFormElementState;
