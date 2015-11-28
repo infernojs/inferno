@@ -1,7 +1,7 @@
 import ExecutionEnvironment from './ExecutionEnvironment';
 
 // Server side workaround
-let requestAnimationFrame = function() { return function() {}};
+let requestAnimationFrame = function() { return function() {}; };
 
 if (ExecutionEnvironment.canUseDOM) {
 
