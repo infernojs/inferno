@@ -12,7 +12,7 @@ if (ExecutionEnvironment.canUseDOM) {
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame;
 
-    let requestAnimationFrame =
+    requestAnimationFrame =
         nativeRequestAnimationFrame ||
         function(callback) {
             const currTime = Date.now();
