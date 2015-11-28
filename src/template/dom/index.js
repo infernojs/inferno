@@ -1,4 +1,5 @@
 import addAttributes from '../setDOMProperties';
+import registerAttributeHandlers from '../registerAttributeHandlers';
 import DOMElements from '../DOMElements';
 
 //OPTIMIZATION: This functions should not be moved out of this module. V8 will not inline
@@ -12,7 +13,7 @@ function fastTag(tag) {
 
 export default {
     addAttributes,
-
+    registerAttributeHandlers,
     createElement(tag) {
 
         if (fastTag(tag)) {
