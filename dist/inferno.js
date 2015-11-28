@@ -1771,7 +1771,9 @@ return /******/ (function(modules) { // webpackBootstrap
 					// native events, will always refer to the document. Therefore
 					// 'this' is the only supported way of referring to the element
 					// whose listener is handling the current event
-					listener.call(target, event);
+					if (listener.call(target, event) === false) {
+						event.preventDefault();
+					}
 	
 					// Check if progagation stopped. There is only one listener per
 					// type, so we do not need to check immediate propagation.
@@ -1930,6 +1932,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onEnded: 'ended',
 	  onError: 'error',
 	  onFocus: 'focus',
+	  /**
+	   * IE
+	   */
+	  onFocusIn: 'focusin',
+	  onFocusOut: 'focusout',
 	  onInput: 'input',
 	  onKeyDown: 'keydown',
 	  onKeyPress: 'keypress',
@@ -3408,7 +3415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		this._isDefaultPrevented = true;
 	
 		if (this._preventDefault) {
-			this.preventDefault();
+			this._preventDefault();
 		} else {
 			this.returnValue = false;
 		}
