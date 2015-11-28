@@ -13,7 +13,7 @@ function fastTag(tag) {
 
 export default {
     addAttributes,
-    registerAttributeHandlers,
+    registerAttributes,
     createElement(tag) {
 
         if (fastTag(tag)) {
