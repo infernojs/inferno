@@ -3892,6 +3892,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	exports.default = {
+	    set: {},
+	    unset: {},
+	    renderToString: {},
 	    _custom: function _custom(node, name, value) {
 	        node.setAttribute(name, value);
 	    }
@@ -4100,7 +4103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = {
 	    addAttributes: _setDOMProperties2.default,
-	    registerAttributeHandlers: _registerAttributeHandlers2.default,
+	    registerAttributes: registerAttributes,
 	    createElement: function createElement(tag) {
 	
 	        if (fastTag(tag)) {
@@ -4239,10 +4242,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
 	var _attributeHooks = __webpack_require__(65);
 	
 	var _attributeHooks2 = _interopRequireDefault(_attributeHooks);
@@ -4253,26 +4252,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function registerAttributeHandlers(type, hook) {
-	    if ((0, _isArray2.default)(type)) {
-	        for (var i = 0; i < type.length; i++) {
-	            hookPlugins[type[i]] = hook;
+	var HTMLProperties = ['resize', 'paused', 'playbackRate', 'scrLang', 'srcObject', 'value', 'volume'];
+	var HTMLBooleanProperties = ['multiple', 'selected', 'checked', 'checked', 'disabled', 'readOnly', 'required', 'open', 'loop', 'muted', 'controls'];
+	
+	function registerAttributeHandlers(type, hook, loc) {
+	    if (loc) {
+	        if ((0, _isArray2.default)(type)) {
+	            for (var i = 0; i < type.length; i++) {
+	                hookPlugins[loc][type[i]] = hook;
+	            }
+	        } else {
+	            hookPlugins[loc][type] = hook;
 	        }
-	    } else {
-	        hookPlugins[type] = hook;
 	    }
 	}
 	
 	/**
 	 * HTML Properties
 	 */
-	setAttributeHandlers(['resize', 'paused', 'playbackRate', 'scrLang', 'srcObject', 'value', 'volume'], function (node, name, value) {
+	setAttributeHandlers(HTMLProperties, function (node, name, value) {
 	    if ('' + node[name] !== '' + value) {
 	        node[name] = value;
 	    }
-	});
+	}, 'set');
 	
-	exports.default = registerAttributeHandlers;
+	setAttributeHandlers(HTMLProperties, function (node, name) {
+	    node[name] = '';
+	}, 'unset');
+	
+	/**
+	 * HTML boolean Properties
+	 */
+	setAttributeHandlers(HTMLBooleanProperties, function (node, name, value) {
+	    if ('' + node[name] !== '' + value) {
+	        node[name] = value;
+	    }
+	}, 'set');
+	
+	/**
+	 * HTML boolean Properties
+	 */
+	setAttributeHandlers(HTMLBooleanProperties, function (node, name, value) {
+	    node[name] = false;
+	}, 'unset');
 
 /***/ },
 /* 72 */
