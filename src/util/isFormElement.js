@@ -1,17 +1,17 @@
-function isFormElement(tagName) {
-	return tagName === 'form'
-		|| tagName === 'input'
-		|| tagName === 'textarea'
-		|| tagName === 'label'
-		|| tagName === 'fieldset'
-		|| tagName === 'legend'
-		|| tagName === 'select'
-		|| tagName === 'optgroup'
-		|| tagName === 'option'
-		|| tagName === 'button'
-		|| tagName === 'datalist'
-		|| tagName === 'keygen'
-		|| tagName === 'output';
+function isFormElement(nodeName) {
+	return nodeName === 'form'
+		|| nodeName === 'input'
+		|| nodeName === 'textarea'
+		|| nodeName === 'label'
+		|| nodeName === 'fieldset'
+		|| nodeName === 'legend'
+		|| nodeName === 'select'
+		|| nodeName === 'optgroup'
+		|| nodeName === 'option'
+		|| nodeName === 'button'
+		|| nodeName === 'datalist'
+		|| nodeName === 'keygen'
+		|| nodeName === 'output';
 }
 
 export default isFormElement;

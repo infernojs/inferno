@@ -1,25 +1,25 @@
 import isFormElement from '../../util/isFormElement';
 import getFormElementValues from '../../template/getFormElementValues';
 
-// type -> tag -> function(target, event)
+// type -> node -> function(target, event)
 const plugins = {};
 
 /**
  * type is a type of event
- * tagName is a DOM element tagName
+ * nodeName is a DOM node type
  * hook is a function(element, event) -> [args...]
  */
-export function registerSetupHooks(type, tagName, hook) {
-    let tagHooks = plugins[type] = plugins[type] || {};
-    tagHooks[tagName] = hook;
+export function registerSetupHooks(type, nodeName, hook) {
+    let nodeHooks = plugins[type] = plugins[type] || {};
+    nodeHooks[nodeName] = hook;
 }
 
 export default function createListenerArguments(target, event) {
     let type = event.type;
-    let tagName = target.tagName.toLowerCase();
+    let nodeName = target.nodeName.toLowerCase();
     let tagHooks;
     if ((tagHooks = plugins[type])) {
-        let hook = tagHooks[tagName];
+        let hook = tagHooks[nodeName];
         if (hook) {
             return hook(target, event);
         }
@@ -28,7 +28,7 @@ export default function createListenerArguments(target, event) {
     // Default behavior:
     // Form elements with a value attribute will have the arguments:
     // [event, value]
-    if (isFormElement(tagName)) {
+    if (isFormElement(nodeName)) {
 
         return [event, getFormElementValues(target)];
     }
