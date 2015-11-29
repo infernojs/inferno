@@ -4325,29 +4325,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function selectValues(node) {
 	
-	    if (node.multiple) {
+	    var result = [];
+	    var index = node.selectedIndex;
+	    var option = undefined;
+	    var options = node.options;
+	    var length = options.length;
+	    var i = index < 0 ? length : 0;
 	
-	        var result = [];
-	        var index = node.selectedIndex;
-	        var option = undefined;
-	        var options = node.options;
-	        var i = index < 0 ? options.length : 0;
+	    for (; i < length; i++) {
 	
-	        for (; i < options.length; i++) {
-	
-	            option = options[i];
-	            // IMPORTANT! IE9 doesn't update selected after form reset
-	            if ((option.selected || i === index) &&
-	
-	            // Don't return options that are disabled or in a disabled optgroup
-	            !option.disabled && (!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
-	                result.push(option.value || option.text);
-	            }
+	        option = options[i];
+	        // IMPORTANT! IE9 doesn't update selected after form reset
+	        if ((option.selected || i === index) &&
+	        // Don't return options that are disabled or in a disabled optgroup
+	        !option.disabled && (!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
+	            result.push(option.value);
 	        }
-	        return result.length === 0 ? null : result;
 	    }
-	
-	    return node.value;
+	    return result.length === 0 ? null : result;
 	}
 	
 	function getFormElementValues(node) {
@@ -4361,7 +4356,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return true;
 	            }
 	            return false;
-	        case 'select':
 	        case 'select-multiple':
 	            return selectValues(node);
 	        default:

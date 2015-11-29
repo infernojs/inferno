@@ -2,29 +2,24 @@ import getFormElementType from './getFormElementType';
 
 function selectValues(node) {
 
-    if (node.multiple) {
+    let result = [];
+    let index = node.selectedIndex;
+    let option;
+    let options = node.options;
+	let length = options.length;
+    let i = index < 0 ? length : 0;
 
-        let result = [];
-        let index = node.selectedIndex;
-        let option;
-        let options = node.options;
-        let i = index < 0 ? options.length : 0;
+    for (; i < length; i++) {
 
-        for (; i < options.length; i++) {
-
-            option = options[i];
-            // IMPORTANT! IE9 doesn't update selected after form reset
-            if ((option.selected || i === index) &&
-
-                // Don't return options that are disabled or in a disabled optgroup
-                !option.disabled && (!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
-                result.push(option.value || option.text);
-            }
+        option = options[i];
+        // IMPORTANT! IE9 doesn't update selected after form reset
+        if ((option.selected || i === index) &&
+            // Don't return options that are disabled or in a disabled optgroup
+            !option.disabled && (!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
+            result.push(option.value);
         }
-        return result.length === 0 ? null : result;
     }
-
-    return node.value;
+    return result.length === 0 ? null : result;
 }
 
 export default function getFormElementValues(node) {
@@ -38,7 +33,6 @@ export default function getFormElementValues(node) {
                 return true;
             }
             return false;
-        case 'select':
         case 'select-multiple':
             return selectValues(node);
         default:
