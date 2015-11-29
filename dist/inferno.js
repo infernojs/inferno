@@ -50,7 +50,30 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
+/******/ ((function(modules) {
+	// Check all modules for deduplicated modules
+	for(var i in modules) {
+		if(Object.prototype.hasOwnProperty.call(modules, i)) {
+			switch(typeof modules[i]) {
+			case "function": break;
+			case "object":
+				// Module can be created from a template
+				modules[i] = (function(_m) {
+					var args = _m.slice(1), fn = modules[_m[0]];
+					return function (a,b,c) {
+						fn.apply(this, [a,b,c].concat(args));
+					};
+				}(modules[i]));
+				break;
+			default:
+				// Module is a copy of another module
+				modules[i] = modules[modules[i]];
+				break;
+			}
+		}
+	}
+	return modules;
+}([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -150,30 +173,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _registerAttributeHandlers = __webpack_require__(71);
+	var _events = __webpack_require__(12);
 	
-	Object.defineProperty(exports, 'registerAttributes', {
+	Object.defineProperty(exports, 'Events', {
 	  enumerable: true,
 	  get: function get() {
-	    return _registerAttributeHandlers.default;
-	  }
-	});
-	
-	var _createListenerArguments = __webpack_require__(29);
-	
-	Object.defineProperty(exports, 'registerSetupHooks', {
-	  enumerable: true,
-	  get: function get() {
-	    return _createListenerArguments.registerSetupHooks;
-	  }
-	});
-	
-	var _listenerSetup = __webpack_require__(13);
-	
-	Object.defineProperty(exports, 'registerEventHooks', {
-	  enumerable: true,
-	  get: function get() {
-	    return _listenerSetup.registerEventHooks;
+	    return _events.default;
 	  }
 	});
 
@@ -332,15 +337,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _createElement = __webpack_require__(64);
+	var _createElement = __webpack_require__(66);
 	
 	var _createElement2 = _interopRequireDefault(_createElement);
 	
-	var _createComponent = __webpack_require__(63);
+	var _createComponent = __webpack_require__(65);
 	
 	var _createComponent2 = _interopRequireDefault(_createComponent);
 	
-	var _dom = __webpack_require__(65);
+	var _dom = __webpack_require__(67);
 	
 	var _dom2 = _interopRequireDefault(_dom);
 	
@@ -775,19 +780,209 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMAttributeNamespaces = __webpack_require__(58);
+	var _InfernoNodeID = __webpack_require__(24);
+	
+	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
+	
+	var _addInfernoRootListener = __webpack_require__(25);
+	
+	var _addInfernoRootListener2 = _interopRequireDefault(_addInfernoRootListener);
+	
+	var _EventRegistry = __webpack_require__(23);
+	
+	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
+	
+	var _listenersStorage = __webpack_require__(26);
+	
+	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
+	
+	var _setupEventListener = __webpack_require__(27);
+	
+	var _setupEventListener2 = _interopRequireDefault(_setupEventListener);
+	
+	var _isArray = __webpack_require__(1);
+	
+	var _isArray2 = _interopRequireDefault(_isArray);
+	
+	var _eventHooks = __webpack_require__(28);
+	
+	var _eventHooks2 = _interopRequireDefault(_eventHooks);
+	
+	var _requestAnimationFrame = __webpack_require__(76);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var eventListener = {};
+	
+	function createEventListener(type) {
+	    return (0, _setupEventListener2.default)(type, function (e) {
+	        return _listenersStorage2.default[(0, _InfernoNodeID2.default)(e.target)][type](e);
+	    });
+	}
+	
+	var Events = {
+	    registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
+	        var nodeHooks = setupHooks[type] || (setupHooks[type] = {});
+	        if ((0, _isArray2.default)(nodeName)) {
+	            for (var i = 0; i < nodeName.length; i++) {
+	                nodeHooks[nodeName[i]] = hook;
+	            }
+	        } else {
+	            nodeHooks[nodeName] = hook;
+	        }
+	    },
+	
+	    /**
+	     * type is a type of event
+	     * nodeName is a DOM node type
+	     * hook is a function(element, event) -> [args...]
+	     */
+	    registerSetupHooks: function registerSetupHooks(type, nodeName, hook) {
+	        if ((0, _isArray2.default)(type)) {
+	            for (var i = 0; i < type.length; i++) {
+	                registerSetupHooksForType(type[i], nodeName, hook);
+	            }
+	        } else {
+	            registerSetupHooksForType(type, nodeName, hook);
+	        }
+	    },
+	
+	    /**
+	     * Register a wrapper around all events of a certain type
+	     * example: rafDebounce
+	     */
+	    registerEventHooks: function registerEventHooks(type, hook) {
+	        if ((0, _isArray2.default)(type)) {
+	            for (var i = 0; i < type.length; i++) {
+	                _eventHooks2.default[type[i]] = hook;
+	            }
+	        } else {
+	            _eventHooks2.default[type] = hook;
+	        }
+	    },
+	
+	    /**
+	     * Set a event listeners on a node
+	     */
+	
+	    addListener: function addListener(node, type, listener) {
+	
+	        var registry = _EventRegistry2.default[type];
+	        // only add listeners for registered events
+	        if (registry) {
+	
+	            // setup special listeners only on creation
+	            if (!registry.isActive) {
+	
+	                if (registry.setup) {
+	                    registry.setup();
+	                } else if (registry.isBubbling) {
+	                    var handler = (0, _setupEventListener2.default)(type, _addInfernoRootListener2.default);
+	                    document.addEventListener(type, handler, false);
+	                }
+	
+	                registry.isActive = true;
+	            }
+	
+	            var nodeID = (0, _InfernoNodeID2.default)(node),
+	                listeners = _listenersStorage2.default[nodeID] || (_listenersStorage2.default[nodeID] = {});
+	
+	            if (!listeners[type]) {
+	
+	                if (registry.isBubbling) {
+	                    ++registry.counter;
+	                } else {
+	                    eventListener[type] = eventListener[type] || createEventListener(type);
+	                    node.addEventListener(type, eventListener[type], false);
+	                }
+	            }
+	
+	            listeners[type] = listener;
+	        } else {
+	
+	            throw Error('Inferno Error: ' + type + ' has not been registered, and therefor not supported.');
+	        }
+	    },
+	
+	    /**
+	     * Remove event listeners from a node
+	     */
+	    removeListener: function removeListener(node, type) {
+	
+	        var nodeID = (0, _InfernoNodeID2.default)(node, true);
+	
+	        if (nodeID) {
+	            var listeners = _listenersStorage2.default[nodeID];
+	
+	            if (listeners && listeners[type]) {
+	                listeners[type] = null;
+	
+	                var registry = _EventRegistry2.default[type];
+	
+	                if (registry) {
+	                    if (registry.isBubbling) {
+	                        --registry.counter;
+	                    } else {
+	                        node.removeEventListener(type, eventListener[type]);
+	                    }
+	                }
+	            }
+	        }
+	    }
+	};
+	
+	Events.registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], {
+	    setup: function setup(handler) {
+	        var free = true;
+	        return function (e) {
+	            if (free) {
+	                free = false;
+	                (0, _requestAnimationFrame.requestAnimationFrame)(function () {
+	                    handler(e);
+	                    free = true;
+	                });
+	            }
+	        };
+	    }
+	});
+	
+	// 'wheel' is a special case, so let us fix it here
+	var wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
+	
+	Events.registerEventHooks(wheel, {
+	    setup: function setup(handler) {
+	        var free = true;
+	        return function (e) {
+	            handler(e);
+	        };
+	    }
+	});
+	
+	exports.default = Events;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _DOMAttributeNamespaces = __webpack_require__(61);
 	
 	var _DOMAttributeNamespaces2 = _interopRequireDefault(_DOMAttributeNamespaces);
 	
-	var _DOMAttributeNames = __webpack_require__(57);
+	var _DOMAttributeNames = __webpack_require__(60);
 	
 	var _DOMAttributeNames2 = _interopRequireDefault(_DOMAttributeNames);
 	
-	var _DOMasks = __webpack_require__(60);
+	var _DOMasks = __webpack_require__(63);
 	
 	var _DOMasks2 = _interopRequireDefault(_DOMasks);
 	
-	var _checkBitmask = __webpack_require__(23);
+	var _checkBitmask = __webpack_require__(30);
 	
 	var _checkBitmask2 = _interopRequireDefault(_checkBitmask);
 	
@@ -1259,78 +1454,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DOMPropertyContainer;
 
 /***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.registerEventHooks = registerEventHooks;
-	exports.default = listenerSetup;
-	
-	var _isArray = __webpack_require__(1);
-	
-	var _isArray2 = _interopRequireDefault(_isArray);
-	
-	var _requestAnimationFrame = __webpack_require__(76);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var eventHooks = {};
-	
-	/**
-	 * Register a wrapper around all events of a certain type
-	 * example: rafDebounce
-	 */
-	function registerEventHooks(type, hook) {
-		if ((0, _isArray2.default)(type)) {
-			for (var i = 0; i < type.length; i++) {
-				eventHooks[type[i]] = hook;
-			}
-		} else {
-			eventHooks[type] = hook;
-		}
-	}
-	
-	function rafDebounce(handler) {
-		var free = true;
-		return function (e) {
-			if (free) {
-				free = false;
-				(0, _requestAnimationFrame.requestAnimationFrame)(function () {
-					handler(e);
-					free = true;
-				});
-			}
-		};
-	}
-	
-	registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], { setup: rafDebounce });
-	
-	// 'wheel' is a special case, so let us fix it here
-	var wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
-	
-	function wheelSetup(handler) {
-		var free = true;
-		return function (e) {
-			handler(e);
-		};
-	}
-	
-	registerEventHooks(wheel, { setup: wheelSetup });
-	
-	function listenerSetup(type, handler) {
-		var wrapper = eventHooks[type];
-		if (wrapper && wrapper.setup) {
-			return wrapper.setup(handler);
-		}
-	
-		return handler;
-	}
-
-/***/ },
 /* 14 */
 /***/ function(module, exports) {
 
@@ -1757,74 +1880,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 23 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = checkMask;
-	function checkMask(value, bitmask) {
-	  return bitmask != null && (value & bitmask) === bitmask;
-	}
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _DOMProperties = __webpack_require__(12);
-	
-	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/**
-	 * Deletes the value for a property on a node.
-	 *
-	 * @param {DOMElement} node
-	 * @param {string} name
-	 */
-	function deleteValueForProperty(node, name) {
-	    var propertyInfo = _DOMProperties2.default[name];
-	
-	    if (propertyInfo !== undefined) {
-	        if (propertyInfo.mustUseProperty) {
-	            var propName = propertyInfo.propertyName;
-	
-	            if (propName === 'value' && node.tagName.toLowerCase() === 'select') {
-	                var options = node.options;
-	                var len = options.length;
-	                var i = 0;
-	                while (i < len) {
-	                    options[i++].selected = false;
-	                }
-	            } else if (propertyInfo.hasBooleanValue) {
-	                node[propName] = false;
-	            } else {
-	                if ('' + node[propName] !== '') {
-	                    node[propName] = '';
-	                }
-	            }
-	        } else {
-	            node.removeAttribute(propertyInfo.attributeName);
-	        }
-	        // Custom attributes
-	    } else {
-	            node.removeAttribute(name);
-	        }
-	}
-	
-	exports.default = deleteValueForProperty;
-
-/***/ },
-/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1837,13 +1892,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
-	var _addInfernoRootListener = __webpack_require__(27);
+	var _addInfernoRootListener = __webpack_require__(25);
 	
 	var _addInfernoRootListener2 = _interopRequireDefault(_addInfernoRootListener);
 	
-	var _listenerSetup = __webpack_require__(13);
+	var _setupEventListener = __webpack_require__(27);
 	
-	var _listenerSetup2 = _interopRequireDefault(_listenerSetup);
+	var _setupEventListener2 = _interopRequireDefault(_setupEventListener);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -1905,7 +1960,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                EventRegistry[type].setup = function () {
 	                    var _this = this;
 	
-	                    var handler = (0, _listenerSetup2.default)(this.type, function (e) {
+	                    var handler = (0, _setupEventListener2.default)(this.type, function (e) {
 	                        (0, _addInfernoRootListener2.default)(e, _this.type);
 	                    });
 	                    document.addEventListener(focusEvents[this.type], handler);
@@ -1913,7 +1968,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // Feature detect Firefox
 	            } else {
 	                    EventRegistry[type].setup = function () {
-	                        document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addInfernoRootListener2.default), true);
+	                        document.addEventListener(this.type, (0, _setupEventListener2.default)(this.type, _addInfernoRootListener2.default), true);
 	                    };
 	                }
 	        }
@@ -1932,7 +1987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = EventRegistry;
 
 /***/ },
-/* 26 */
+/* 24 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1949,7 +2004,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 27 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1959,23 +2014,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = addInfernoRootListener;
 	
-	var _InfernoNodeID = __webpack_require__(26);
+	var _InfernoNodeID = __webpack_require__(24);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
-	var _listenersStorage = __webpack_require__(30);
+	var _listenersStorage = __webpack_require__(26);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
-	var _EventRegistry = __webpack_require__(25);
+	var _EventRegistry = __webpack_require__(23);
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _eventSetup = __webpack_require__(66);
+	var _setupEvents = __webpack_require__(58);
 	
-	var _eventSetup2 = _interopRequireDefault(_eventSetup);
+	var _setupEvents2 = _interopRequireDefault(_setupEvents);
 	
-	var _createListenerArguments = __webpack_require__(29);
+	var _createListenerArguments = __webpack_require__(57);
 	
 	var _createListenerArguments2 = _interopRequireDefault(_createListenerArguments);
 	
@@ -1997,7 +2052,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		    defaultArgs = undefined;
 	
 		if (listenersCount > 0) {
-			event = (0, _eventSetup2.default)(e);
+			event = (0, _setupEvents2.default)(e);
 			defaultArgs = args = [event];
 		}
 	
@@ -2040,196 +2095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _InfernoNodeID = __webpack_require__(26);
-	
-	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
-	
-	var _addInfernoRootListener = __webpack_require__(27);
-	
-	var _addInfernoRootListener2 = _interopRequireDefault(_addInfernoRootListener);
-	
-	var _EventRegistry = __webpack_require__(25);
-	
-	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
-	
-	var _listenersStorage = __webpack_require__(30);
-	
-	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
-	
-	var _listenerSetup = __webpack_require__(13);
-	
-	var _listenerSetup2 = _interopRequireDefault(_listenerSetup);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var eventListener = {};
-	function createEventListener(type) {
-	    return (0, _listenerSetup2.default)(type, function (e) {
-	        return _listenersStorage2.default[(0, _InfernoNodeID2.default)(e.target)][type](e);
-	    });
-	}
-	
-	exports.default = {
-	
-	    /**
-	     * Set a event listeners on a node
-	     */
-	
-	    addListener: function addListener(node, type, listener) {
-	
-	        var registry = _EventRegistry2.default[type];
-	        // only add listeners for registered events
-	        if (registry) {
-	
-	            // setup special listeners only on creation
-	            if (!registry.isActive) {
-	
-	                if (registry.setup) {
-	                    registry.setup();
-	                } else if (registry.isBubbling) {
-	                    var handler = (0, _listenerSetup2.default)(type, _addInfernoRootListener2.default);
-	                    document.addEventListener(type, handler, false);
-	                }
-	
-	                registry.isActive = true;
-	            }
-	
-	            var nodeID = (0, _InfernoNodeID2.default)(node),
-	                listeners = _listenersStorage2.default[nodeID] || (_listenersStorage2.default[nodeID] = {});
-	
-	            if (!listeners[type]) {
-	
-	                if (registry.isBubbling) {
-	                    ++registry.counter;
-	                } else {
-	                    eventListener[type] = eventListener[type] || createEventListener(type);
-	                    node.addEventListener(type, eventListener[type], false);
-	                }
-	            }
-	
-	            listeners[type] = listener;
-	        } else {
-	
-	            throw Error('Inferno Error: ' + type + ' has not been registered, and therefor not supported.');
-	        }
-	    },
-	
-	    /**
-	     * Remove event listeners from a node
-	     */
-	    removeListener: function removeListener(node, type) {
-	
-	        var nodeID = (0, _InfernoNodeID2.default)(node, true);
-	
-	        if (nodeID) {
-	            var listeners = _listenersStorage2.default[nodeID];
-	
-	            if (listeners && listeners[type]) {
-	                listeners[type] = null;
-	
-	                var registry = _EventRegistry2.default[type];
-	
-	                if (registry) {
-	                    if (registry.isBubbling) {
-	                        --registry.counter;
-	                    } else {
-	                        node.removeEventListener(type, eventListener[type]);
-	                    }
-	                }
-	            }
-	        }
-	    }
-	};
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.registerSetupHooks = registerSetupHooks;
-	exports.default = createListenerArguments;
-	
-	var _isArray = __webpack_require__(1);
-	
-	var _isArray2 = _interopRequireDefault(_isArray);
-	
-	var _isFormElement = __webpack_require__(74);
-	
-	var _isFormElement2 = _interopRequireDefault(_isFormElement);
-	
-	var _getFormElementValues = __webpack_require__(68);
-	
-	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	// type -> node -> function(target, event)
-	var setupHooks = {};
-	
-	function registerSetupHooksForType(type, nodeName, hook) {
-	    var nodeHooks = setupHooks[type] || (setupHooks[type] = {});
-	    if ((0, _isArray2.default)(nodeName)) {
-	        for (var i = 0; i < nodeName.length; i++) {
-	            nodeHooks[nodeName[i]] = hook;
-	        }
-	    } else {
-	        nodeHooks[nodeName] = hook;
-	    }
-	}
-	
-	/**
-	 * type is a type of event
-	 * nodeName is a DOM node type
-	 * hook is a function(element, event) -> [args...]
-	 */
-	function registerSetupHooks(type, nodeName, hook) {
-	    if ((0, _isArray2.default)(type)) {
-	        for (var i = 0; i < type.length; i++) {
-	            registerSetupHooksForType(type[i], nodeName, hook);
-	        }
-	    } else {
-	        registerSetupHooksForType(type, nodeName, hook);
-	    }
-	}
-	
-	function createListenerArguments(target, event) {
-	    var type = event.type;
-	    var nodeName = target.nodeName.toLowerCase();
-	    var tagHooks = undefined;
-	    if (tagHooks = setupHooks[type]) {
-	        var hook = tagHooks[nodeName];
-	        if (hook) {
-	            return hook(target, event);
-	        }
-	    }
-	
-	    // Default behavior:
-	    // Form elements with a value attribute will have the arguments:
-	    // [event, value]
-	    if ((0, _isFormElement2.default)(nodeName)) {
-	
-	        return [event, (0, _getFormElementValues2.default)(target)];
-	    }
-	
-	    // Fallback to just event
-	    return [event];
-	}
-
-/***/ },
-/* 30 */
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2244,7 +2110,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = {};
 
 /***/ },
-/* 31 */
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = setupEventListener;
+	
+	var _isArray = __webpack_require__(1);
+	
+	var _isArray2 = _interopRequireDefault(_isArray);
+	
+	var _eventHooks = __webpack_require__(28);
+	
+	var _eventHooks2 = _interopRequireDefault(_eventHooks);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function setupEventListener(type, handler) {
+		var wrapper = _eventHooks2.default[type];
+		if (wrapper && wrapper.setup) {
+			return wrapper.setup(handler);
+		}
+	
+		return handler;
+	}
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {};
+
+/***/ },
+/* 29 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2322,6 +2229,74 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = checkMask;
+	function checkMask(value, bitmask) {
+	  return bitmask != null && (value & bitmask) === bitmask;
+	}
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _DOMProperties = __webpack_require__(13);
+	
+	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/**
+	 * Deletes the value for a property on a node.
+	 *
+	 * @param {DOMElement} node
+	 * @param {string} name
+	 */
+	function deleteValueForProperty(node, name) {
+	    var propertyInfo = _DOMProperties2.default[name];
+	
+	    if (propertyInfo !== undefined) {
+	        if (propertyInfo.mustUseProperty) {
+	            var propName = propertyInfo.propertyName;
+	
+	            if (propName === 'value' && node.tagName.toLowerCase() === 'select') {
+	                var options = node.options;
+	                var len = options.length;
+	                var i = 0;
+	                while (i < len) {
+	                    options[i++].selected = false;
+	                }
+	            } else if (propertyInfo.hasBooleanValue) {
+	                node[propName] = false;
+	            } else {
+	                if ('' + node[propName] !== '') {
+	                    node[propName] = '';
+	                }
+	            }
+	        } else {
+	            node.removeAttribute(propertyInfo.attributeName);
+	        }
+	        // Custom attributes
+	    } else {
+	            node.removeAttribute(name);
+	        }
+	}
+	
+	exports.default = deleteValueForProperty;
+
+/***/ },
 /* 32 */
 /***/ function(module, exports) {
 
@@ -2353,7 +2328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(12);
+	var _DOMProperties = __webpack_require__(13);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2361,7 +2336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _deleteDOMProperties = __webpack_require__(24);
+	var _deleteDOMProperties = __webpack_require__(31);
 	
 	var _deleteDOMProperties2 = _interopRequireDefault(_deleteDOMProperties);
 	
@@ -2446,7 +2421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _addPixelSuffixToValueIfNeeded = __webpack_require__(61);
+	var _addPixelSuffixToValueIfNeeded = __webpack_require__(64);
 	
 	var _addPixelSuffixToValueIfNeeded2 = _interopRequireDefault(_addPixelSuffixToValueIfNeeded);
 	
@@ -2493,7 +2468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _deleteDOMProperties = __webpack_require__(24);
+	var _deleteDOMProperties = __webpack_require__(31);
 	
 	var _deleteDOMProperties2 = _interopRequireDefault(_deleteDOMProperties);
 	
@@ -2505,11 +2480,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _eventManager = __webpack_require__(28);
+	var _events = __webpack_require__(12);
 	
-	var _eventManager2 = _interopRequireDefault(_eventManager);
+	var _events2 = _interopRequireDefault(_events);
 	
-	var _eventMapping = __webpack_require__(31);
+	var _eventMapping = __webpack_require__(29);
 	
 	var _eventMapping2 = _interopRequireDefault(_eventMapping);
 	
@@ -2558,12 +2533,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else if (_eventMapping2.default[propName] != null) {
 	            if (oldProp != null) {
 	                if (newProp != null) {
-	                    _eventManager2.default.addListener(element, _eventMapping2.default[propName], newProp);
+	                    _events2.default.addListener(element, _eventMapping2.default[propName], newProp);
 	                } else {
-	                    _eventManager2.default.removeListener(element, _eventMapping2.default[propName]);
+	                    _events2.default.removeListener(element, _eventMapping2.default[propName]);
 	                }
 	            } else if (newProp != null) {
-	                _eventManager2.default.addListener(element, _eventMapping2.default[propName], newProp);
+	                _events2.default.addListener(element, _eventMapping2.default[propName], newProp);
 	            }
 	        } else if (oldProp != null) {
 	            // If 'newProp' is null or undefined, we, we should remove the property
@@ -2669,16 +2644,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 40 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {};
-
-/***/ },
+28,
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2772,7 +2738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _VirtualTextNode2 = _interopRequireDefault(_VirtualTextNode);
 	
-	var _DOMProperties = __webpack_require__(12);
+	var _DOMProperties = __webpack_require__(13);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2780,7 +2746,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(70);
+	var _quoteAttributeValueForBrowser = __webpack_require__(71);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3563,6 +3529,159 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = createListenerArguments;
+	
+	var _isArray = __webpack_require__(1);
+	
+	var _isArray2 = _interopRequireDefault(_isArray);
+	
+	var _isFormElement = __webpack_require__(74);
+	
+	var _isFormElement2 = _interopRequireDefault(_isFormElement);
+	
+	var _getFormElementValues = __webpack_require__(69);
+	
+	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
+	
+	var _setupHooks = __webpack_require__(59);
+	
+	var _setupHooks2 = _interopRequireDefault(_setupHooks);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function createListenerArguments(target, event) {
+	    var type = event.type;
+	    var nodeName = target.nodeName.toLowerCase();
+	    var tagHooks = undefined;
+	    if (tagHooks = _setupHooks2.default[type]) {
+	        var hook = tagHooks[nodeName];
+	        if (hook) {
+	            return hook(target, event);
+	        }
+	    }
+	
+	    // Default behavior:
+	    // Form elements with a value attribute will have the arguments:
+	    // [event, value]
+	    if ((0, _isFormElement2.default)(nodeName)) {
+	
+	        return [event, (0, _getFormElementValues2.default)(target)];
+	    }
+	
+	    // Fallback to just event
+	    return [event];
+	}
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.registerEventSetupPlugin = registerEventSetupPlugin;
+	function stopPropagation() {
+		this._isPropagationStopped = true;
+		if (this._stopPropagation) {
+			this._stopPropagation();
+		} else {
+			this.cancelBubble = true;
+		}
+	}
+	
+	function isPropagationStopped() {
+		return this._isPropagationStopped;
+	}
+	
+	function stopImmediatePropagation() {
+		this._isImmediatePropagationStopped = true;
+		this._isPropagationStopped = true;
+		if (this._stopImmediatePropagation) {
+			this._stopImmediatePropagation();
+		} else {
+			this.cancelBubble = true;
+		}
+	}
+	
+	function isImmediatePropagationStopped() {
+		return this._isImmediatePropagationStopped;
+	}
+	
+	function preventDefault() {
+		this._isDefaultPrevented = true;
+	
+		if (this._preventDefault) {
+			this._preventDefault();
+		} else {
+			this.returnValue = false;
+		}
+	}
+	
+	function isDefaultPrevented() {
+		return this._isDefaultPrevented;
+	}
+	
+	var plugins = {};
+	function registerEventSetupPlugin(type, hook) {
+		var hooks = plugins[type] = plugins[type] || [];
+		hooks.push(hook);
+	}
+	
+	function eventSetup(nativeEvent) {
+		// Extend nativeEvent
+		nativeEvent._stopPropagation = nativeEvent.stopPropagation;
+		nativeEvent.stopPropagation = stopPropagation;
+		nativeEvent.isPropagationStopped = isPropagationStopped;
+	
+		nativeEvent._stopImmediatePropagation = nativeEvent.stopImmediatePropagation;
+		nativeEvent.stopImmediatePropagation = stopImmediatePropagation;
+		nativeEvent.isImmediatePropagationStopped = isImmediatePropagationStopped;
+	
+		nativeEvent._preventDefault = nativeEvent.preventDefault;
+		nativeEvent.preventDefault = preventDefault;
+		nativeEvent.isDefaultPrevented = isDefaultPrevented;
+	
+		// Plugins
+		// register other eventHooks elsewhere, which will be called and injected here
+		// registerHook('scroll', nativeEvent => {
+		//	 // logic here
+		// });
+		var hooks = plugins[nativeEvent.type];
+		if (hooks) {
+			var len = hooks.length;
+			for (var i = 0; i < len; i++) {
+				hooks[i](nativeEvent);
+			}
+		}
+	
+		return nativeEvent;
+	}
+	
+	exports.default = eventSetup;
+
+/***/ },
+/* 59 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// type -> node -> function(target, event)
+	exports.default = {};
+
+/***/ },
+/* 60 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3729,7 +3848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 58 */
+/* 61 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3754,7 +3873,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 59 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3763,7 +3882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _checkBitmask = __webpack_require__(23);
+	var _checkBitmask = __webpack_require__(30);
 	
 	var _checkBitmask2 = _interopRequireDefault(_checkBitmask);
 	
@@ -3904,7 +4023,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DOMElementContainer;
 
 /***/ },
-/* 60 */
+/* 63 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3920,7 +4039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 61 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3956,25 +4075,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 62 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = {
-	    set: {}, // setter
-	    unset: {},
-	    renderToString: {},
-	    _custom: function _custom(node, name, value) {
-	        node.setAttribute(name, value);
-	    }
-	};
-
-/***/ },
-/* 63 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4014,7 +4115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 64 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4144,7 +4245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 65 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4157,7 +4258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setDOMProperties2 = _interopRequireDefault(_setDOMProperties);
 	
-	var _DOMElements = __webpack_require__(59);
+	var _DOMElements = __webpack_require__(62);
 	
 	var _DOMElements2 = _interopRequireDefault(_DOMElements);
 	
@@ -4213,96 +4314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 66 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.registerEventSetupPlugin = registerEventSetupPlugin;
-	function stopPropagation() {
-		this._isPropagationStopped = true;
-		if (this._stopPropagation) {
-			this._stopPropagation();
-		} else {
-			this.cancelBubble = true;
-		}
-	}
-	
-	function isPropagationStopped() {
-		return this._isPropagationStopped;
-	}
-	
-	function stopImmediatePropagation() {
-		this._isImmediatePropagationStopped = true;
-		this._isPropagationStopped = true;
-		if (this._stopImmediatePropagation) {
-			this._stopImmediatePropagation();
-		} else {
-			this.cancelBubble = true;
-		}
-	}
-	
-	function isImmediatePropagationStopped() {
-		return this._isImmediatePropagationStopped;
-	}
-	
-	function preventDefault() {
-		this._isDefaultPrevented = true;
-	
-		if (this._preventDefault) {
-			this._preventDefault();
-		} else {
-			this.returnValue = false;
-		}
-	}
-	
-	function isDefaultPrevented() {
-		return this._isDefaultPrevented;
-	}
-	
-	var plugins = {};
-	function registerEventSetupPlugin(type, hook) {
-		var hooks = plugins[type] = plugins[type] || [];
-		hooks.push(hook);
-	}
-	
-	function eventSetup(nativeEvent) {
-		// Extend nativeEvent
-		nativeEvent._stopPropagation = nativeEvent.stopPropagation;
-		nativeEvent.stopPropagation = stopPropagation;
-		nativeEvent.isPropagationStopped = isPropagationStopped;
-	
-		nativeEvent._stopImmediatePropagation = nativeEvent.stopImmediatePropagation;
-		nativeEvent.stopImmediatePropagation = stopImmediatePropagation;
-		nativeEvent.isImmediatePropagationStopped = isImmediatePropagationStopped;
-	
-		nativeEvent._preventDefault = nativeEvent.preventDefault;
-		nativeEvent.preventDefault = preventDefault;
-		nativeEvent.isDefaultPrevented = isDefaultPrevented;
-	
-		// Plugins
-		// register other eventHooks elsewhere, which will be called and injected here
-		// registerHook('scroll', nativeEvent => {
-		//	 // logic here
-		// });
-		var hooks = plugins[nativeEvent.type];
-		if (hooks) {
-			var len = hooks.length;
-			for (var i = 0; i < len; i++) {
-				hooks[i](nativeEvent);
-			}
-		}
-	
-		return nativeEvent;
-	}
-	
-	exports.default = eventSetup;
-
-/***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4327,7 +4339,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4337,7 +4349,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = getFormElementValues;
 	
-	var _getFormElementType = __webpack_require__(67);
+	var _getFormElementType = __webpack_require__(68);
 	
 	var _getFormElementType2 = _interopRequireDefault(_getFormElementType);
 	
@@ -4384,7 +4396,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4442,7 +4454,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4476,95 +4488,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var endOfText = '\u0003';
 
 /***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _attributeHooks = __webpack_require__(62);
-	
-	var _attributeHooks2 = _interopRequireDefault(_attributeHooks);
-	
-	var _isArray = __webpack_require__(1);
-	
-	var _isArray2 = _interopRequireDefault(_isArray);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var HTMLProperties = ['resize', 'paused', 'playbackRate', 'scrLang', 'srcObject', 'value', 'volume'];
-	var HTMLBooleanProperties = ['multiple', 'selected', 'checked', 'checked', 'disabled', 'readOnly', 'required', 'open', 'loop', 'muted', 'controls'];
-	var edgeCases = {
-	    acceptCharset: 'accept-charset',
-	    className: 'class',
-	    htmlFor: 'for',
-	    httpEquiv: 'http-equiv',
-	    fontFamily: 'font-family',
-	    fontSize: 'font-size',
-	    viewBox: 'viewBox'
-	};
-	
-	function registerAttributeHandlers(type, hook, loc) {
-	    if (loc) {
-	        if ((0, _isArray2.default)(type)) {
-	            for (var i = 0; i < type.length; i++) {
-	                _attributeHooks2.default[loc][type[i]] = hook;
-	            }
-	        } else {
-	            _attributeHooks2.default[loc][type] = hook;
-	        }
-	    }
-	}
-	
-	/**
-	 * HTML Properties
-	 */
-	registerAttributeHandlers(HTMLProperties, function (node, name, value) {
-	    if ('' + node[name] !== '' + value) {
-	        node[name] = value;
-	    }
-	}, 'set');
-	
-	registerAttributeHandlers(HTMLProperties, function (node, name) {
-	    node[name] = '';
-	}, 'unset');
-	
-	/**
-	 * HTML boolean Properties
-	 */
-	registerAttributeHandlers(HTMLBooleanProperties, function (node, name, value) {
-	    if ('' + node[name] !== '' + value) {
-	        node[name] = value;
-	    }
-	}, 'set');
-	
-	/**
-	 * HTML boolean Properties
-	 */
-	registerAttributeHandlers(HTMLBooleanProperties, function (node, name, value) {
-	    node[name] = false;
-	}, 'unset');
-	
-	/**
-	 * Edge cases
-	 */
-	
-	var _loop = function _loop(edge) {
-	    registerAttributeHandlers(edge, function (node, name, value) {
-	        node.setAttribute(dgeCases[edge], value);
-	    }, 'set');
-	};
-	
-	for (var edge in edgeCases) {
-	    _loop(edge);
-	}
-	
-	exports.default = registerAttributeHandlers;
-
-/***/ },
 /* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -4575,13 +4498,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = addAttributes;
 	
-	var _eventMapping = __webpack_require__(31);
+	var _eventMapping = __webpack_require__(29);
 	
 	var _eventMapping2 = _interopRequireDefault(_eventMapping);
 	
-	var _eventManager = __webpack_require__(28);
+	var _events = __webpack_require__(12);
 	
-	var _eventManager2 = _interopRequireDefault(_eventManager);
+	var _events2 = _interopRequireDefault(_events);
 	
 	var _setValueForProperty = __webpack_require__(33);
 	
@@ -4591,7 +4514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(69);
+	var _processFragmentAttrs = __webpack_require__(70);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -4621,13 +4544,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            // skip dictionary lookup if we can for this events
 	            if (attrVal === 'onClick' || attrVal === 'onKeyDown' || attrVal === 'onMouseMove') {
-	                _eventManager2.default.addListener(node, _eventMapping2.default[attrName], attrVal);
+	                _events2.default.addListener(node, _eventMapping2.default[attrName], attrVal);
 	            } else if (attrName === 'style') {
 	                (0, _setValueForStyles2.default)(node, attrVal);
 	            } else {
 	                // events
 	                if (_eventMapping2.default[attrName]) {
-	                    _eventManager2.default.addListener(node, _eventMapping2.default[attrName], attrVal);
+	                    _events2.default.addListener(node, _eventMapping2.default[attrName], attrVal);
 	                } else {
 	                    /*
 	                    let isHooked = HOOK[attrName]
@@ -4793,7 +4716,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }
-/******/ ])
+/******/ ])))
 });
 ;
 //# sourceMappingURL=inferno.js.map

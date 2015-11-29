@@ -8,6 +8,4 @@ export { default as createFragment } from './core/createFragment';
 export { default as createTemplate } from './core/createTemplate';
 export { default as clearDomElement } from './core/clearDomElement';
 export { default as createRef } from './core/createRef';
-export { default as registerAttributes } from './template/registerAttributeHandlers';
-export { registerSetupHooks } from './template/events/hooks/createListenerArguments';
-export { registerEventHooks } from './template/events/hooks/listenerSetup';
+export { default as Events } from './events';

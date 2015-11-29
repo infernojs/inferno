@@ -1,4 +1,4 @@
-import ExecutionEnvironment from '../../util/ExecutionEnvironment';
+import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import addInfernoRootListener from './addInfernoRootListener';
 import listenerSetup from './hooks/listenerSetup';
 

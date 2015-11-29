@@ -1,5 +1,5 @@
-import isArray from '../../../util/isArray';
-import { requestAnimationFrame } from '../../../util/requestAnimationFrame';
+import isArray from '../../util/isArray';
+import { requestAnimationFrame } from '../../util/requestAnimationFrame';
 
 const eventHooks = {};
 
