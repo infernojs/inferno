@@ -10,7 +10,7 @@ import clearDomElement from './core/clearDomElement';
 import createRef from './core/createRef';
 import registerAttributes from './template/registerAttributeHandlers';
 import registerEventTypes from './events/hooks/createListenerArguments';
-import registerEventHooks from './events/hooks/listenerSetup';
+import { registerEventHooks } from './events/hooks/listenerSetup';
 
 module.exports = {
     Component,
