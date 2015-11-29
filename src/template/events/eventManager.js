@@ -15,35 +15,35 @@ export default {
      * Set a event listeners on a node
      */
 
-    addListener(domNode, type, listener) {
+    addListener(node, type, listener) {
 
             const registry = EventRegistry[type];
 
             if (registry) {
 
                 // is this activated, YET?
-                if (!registry.activated) {
+                if (!registry.isActive) {
 
                     if (registry.setup) {
                         registry.setup();
-                    } else if (registry.bubbles) {
+                    } else if (registry.isBubbling) {
                         let handler = listenerSetup(type, addInfernoRootListener);
                         document.addEventListener(type, handler, false);
                     }
 
-                    registry.activated = true;
+                    registry.isActive = true;
                 }
 
-                const nodeID = InfernoNodeID(domNode),
+                const nodeID = InfernoNodeID(node),
                     listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
 
                 if (!listeners[type]) {
 
-                    if (registry.bubbles) {
-                        ++registry.listenersCounter;
+                    if (registry.isBubbling) {
+                        ++registry.counter;
                     } else {
                         eventListener[type] = eventListener[type] || createEventListener(type);
-                        domNode.addEventListener(type, eventListener[type], false);
+                        node.addEventListener(type, eventListener[type], false);
                     }
                 }
 
@@ -66,8 +66,8 @@ export default {
                     const registry = EventRegistry[type];
 
                     if (registry) {
-                        if (registry.bubbles) {
-                            --registry.listenersCounter;
+                        if (registry.isBubbling) {
+                            --registry.counter;
                         } else {
                             node.removeEventListener(type, eventListener[type]);
                         }

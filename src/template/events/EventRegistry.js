@@ -9,8 +9,8 @@ let EventRegistry = {};
 
 if (ExecutionEnvironment.canUseDOM) {
 
-    let i = 0,
-        type;
+    let i = 0;
+    let type;
 
     for (; i < capturableEvents.length; i++) {
 
@@ -18,9 +18,9 @@ if (ExecutionEnvironment.canUseDOM) {
 
         EventRegistry[type] = {
             type: type,
-            bubbles: true,
-            listenersCounter: 0,
-            set: false
+            isBubbling: true,
+            counter: 0,
+            isActive: false
         };
 
         if (focusEvents[type]) {
@@ -41,7 +41,7 @@ if (ExecutionEnvironment.canUseDOM) {
                     document.addEventListener(
                         this.type,
                         listenerSetup(this.type, addInfernoRootListener),
-                        true);
+                        true); // bubble
                 };
             }
         }
@@ -51,8 +51,8 @@ if (ExecutionEnvironment.canUseDOM) {
     for (i = 0; i < nonBubbleableEvents.length; i++) {
         EventRegistry[nonBubbleableEvents[i]] = {
             type: type,
-            bubbles: false,
-            set: false
+            isBubbling: false,
+            isActive: false
         };
     }
 }

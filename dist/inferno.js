@@ -1863,8 +1863,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	if (_ExecutionEnvironment2.default.canUseDOM) {
 	
-	    var i = 0,
-	        type = undefined;
+	    var i = 0;
+	    var type = undefined;
 	
 	    for (; i < _capturableEvents2.default.length; i++) {
 	
@@ -1872,9 +1872,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        EventRegistry[type] = {
 	            type: type,
-	            bubbles: true,
-	            listenersCounter: 0,
-	            set: false
+	            isBubbling: true,
+	            counter: 0,
+	            isActive: false
 	        };
 	
 	        if (_focusEvents2.default[type]) {
@@ -1894,7 +1894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // Feature detect Firefox
 	            } else {
 	                    EventRegistry[type].setup = function () {
-	                        document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addInfernoRootListener2.default), true);
+	                        document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addInfernoRootListener2.default), true); // bubble
 	                    };
 	                }
 	        }
@@ -1904,8 +1904,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (i = 0; i < _nonBubbleableEvents2.default.length; i++) {
 	        EventRegistry[_nonBubbleableEvents2.default[i]] = {
 	            type: type,
-	            bubbles: false,
-	            set: false
+	            isBubbling: false,
+	            isActive: false
 	        };
 	    }
 	}
@@ -1966,13 +1966,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		type || (type = e.type);
 	
-		var cfg = _EventRegistry2.default[type];
+		var registry = _EventRegistry2.default[type];
 	
 		var target = e.target,
-		    listenersCount = cfg.listenersCounter,
+		    listenersCount = registry.counter,
 		    listeners = undefined,
 		    listener = undefined,
-		    domNodeId = undefined,
+		    nodeID = undefined,
 		    event = undefined,
 		    args = undefined,
 		    defaultArgs = undefined;
@@ -1986,8 +1986,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		// handlers specified on props can not specify they are handled on the
 		// capture phase.
 		while (target !== null && listenersCount > 0 && target !== document.parentNode) {
-			if (domNodeId = (0, _InfernoNodeID2.default)(target, true)) {
-				listeners = _listenersStorage2.default[domNodeId];
+			if (nodeID = (0, _InfernoNodeID2.default)(target, true)) {
+				listeners = _listenersStorage2.default[nodeID];
 				if (listeners && (listener = listeners[type])) {
 					// lazily instantiate additional arguments in the case
 					// where an event handler takes more than one argument
@@ -2065,35 +2065,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Set a event listeners on a node
 	     */
 	
-	    addListener: function addListener(domNode, type, listener) {
+	    addListener: function addListener(node, type, listener) {
 	
 	        var registry = _EventRegistry2.default[type];
 	
 	        if (registry) {
 	
 	            // is this activated, YET?
-	            if (!registry.activated) {
+	            if (!registry.isActive) {
 	
 	                if (registry.setup) {
 	                    registry.setup();
-	                } else if (registry.bubbles) {
+	                } else if (registry.isBubbling) {
 	                    var handler = (0, _listenerSetup2.default)(type, _addInfernoRootListener2.default);
 	                    document.addEventListener(type, handler, false);
 	                }
 	
-	                registry.activated = true;
+	                registry.isActive = true;
 	            }
 	
-	            var nodeID = (0, _InfernoNodeID2.default)(domNode),
+	            var nodeID = (0, _InfernoNodeID2.default)(node),
 	                listeners = _listenersStorage2.default[nodeID] || (_listenersStorage2.default[nodeID] = {});
 	
 	            if (!listeners[type]) {
 	
-	                if (registry.bubbles) {
-	                    ++registry.listenersCounter;
+	                if (registry.isBubbling) {
+	                    ++registry.counter;
 	                } else {
 	                    eventListener[type] = eventListener[type] || createEventListener(type);
-	                    domNode.addEventListener(type, eventListener[type], false);
+	                    node.addEventListener(type, eventListener[type], false);
 	                }
 	            }
 	
@@ -2117,8 +2117,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var registry = _EventRegistry2.default[type];
 	
 	                if (registry) {
-	                    if (registry.bubbles) {
-	                        --registry.listenersCounter;
+	                    if (registry.isBubbling) {
+	                        --registry.counter;
 	                    } else {
 	                        node.removeEventListener(type, eventListener[type]);
 	                    }

@@ -8,13 +8,13 @@ export default function addInfernoRootListener(e, type) {
 
 	type || (type = e.type);
 
-	const cfg = EventRegistry[type];
+	const registry = EventRegistry[type];
 
 	let target = e.target,
-		listenersCount = cfg.listenersCounter,
+		listenersCount = registry.counter,
 		listeners,
 		listener,
-		domNodeId,
+		nodeID,
 		event,
 		args,
 		defaultArgs;
@@ -30,8 +30,8 @@ export default function addInfernoRootListener(e, type) {
 	while(target !== null
 		&& listenersCount > 0
 		&& target !== document.parentNode) {
-		if( (domNodeId = InfernoNodeID(target, true)) ) {
-			listeners = listenersStorage[domNodeId];
+		if( (nodeID = InfernoNodeID(target, true)) ) {
+			listeners = listenersStorage[nodeID];
 			if(listeners && (listener = listeners[type])) {
 				// lazily instantiate additional arguments in the case
 				// where an event handler takes more than one argument
