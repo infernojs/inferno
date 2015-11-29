@@ -2,7 +2,7 @@ import deleteDOMProperties from './deleteDOMProperties';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import eventManager from './events/eventManager';
-import eventMapping from './events/eventMapping';
+import eventMapping from './events/shared/eventMapping';
 
 /**
  * Detecting differences in property values and updating the DOM as necessary.

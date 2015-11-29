@@ -1,4 +1,4 @@
-import eventMapping from './events/eventMapping';
+import eventMapping from './events/shared/eventMapping';
 import eventManager from './events/eventManager';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';

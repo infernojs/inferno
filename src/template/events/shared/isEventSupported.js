@@ -1,4 +1,4 @@
-import ExecutionEnvironment from '../../util/ExecutionEnvironment';
+import ExecutionEnvironment from '../../../util/ExecutionEnvironment';
 
 let useHasFeature;
 if (ExecutionEnvironment.canUseDOM) {
