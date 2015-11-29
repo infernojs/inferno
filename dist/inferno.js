@@ -2087,7 +2087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    addListener: function addListener(node, type, listener) {
 	
 	        var registry = _EventRegistry2.default[type];
-	
+	        // only add listeners for registered events
 	        if (registry) {
 	
 	            // setup special listeners only on creation
@@ -2117,6 +2117,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	
 	            listeners[type] = listener;
+	        } else {
+	
+	            throw Error('Inferno Error: ' + type + ' has not been registered, and therefor not supported.');
 	        }
 	    },
 	

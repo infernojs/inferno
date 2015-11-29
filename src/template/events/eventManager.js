@@ -18,7 +18,7 @@ export default {
     addListener(node, type, listener) {
 
             const registry = EventRegistry[type];
-
+            // only add listeners for registered events
             if (registry) {
              
 			 // setup special listeners only on creation
@@ -48,7 +48,10 @@ export default {
                 }
 
                 listeners[type] = listener;
-            }
+            } else {
+				
+			  throw Error('Inferno Error: ' + type + ' has not been registered, and therefor not supported.');
+			}
         },
         /**
          * Remove event listeners from a node
