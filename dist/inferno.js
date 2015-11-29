@@ -1309,7 +1309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 	}
 	
-	registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], rafDebounce);
+	registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], { setup: rafDebounce });
 	
 	// 'wheel' is a special case, so let us fix it here
 	var wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
@@ -1322,14 +1322,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 	}
 	
-	registerEventHooks(wheel, wheelSetup);
+	registerEventHooks(wheel, { setup: wheelSetup });
 	
 	function listenerSetup(type, handler) {
 		return function (event) {
 			var wrapper = eventHooks[type];
 	
-			if (wrapper) {
-				return wrapper(handler)(event);
+			if (wrapper.setup) {
+				return wrapper.setup(handler)(event);
 			}
 	
 			return handler(event);

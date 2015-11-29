@@ -30,7 +30,7 @@ function rafDebounce(handler) {
 	};
 }
 
-registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], rafDebounce);
+registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], { setup: rafDebounce });
 
 // 'wheel' is a special case, so let us fix it here
 const wheel = ('onwheel' in document || document.documentMode >= 9) ? 'wheel' : 'mousewheel';
@@ -43,14 +43,14 @@ function wheelSetup(handler) {
     };
 }
 
-registerEventHooks(wheel, wheelSetup);
+registerEventHooks(wheel, { setup: wheelSetup });
 
 export default function listenerSetup(type, handler) {
 	return event => {
 		let wrapper = eventHooks[type];
 
-		if (wrapper) {
-			return wrapper(handler)(event);
+		if (wrapper.setup) {
+			return wrapper.setup(handler)(event);
 		}
 
 		return handler(event);
