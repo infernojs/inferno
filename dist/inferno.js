@@ -1689,6 +1689,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    });
 	                    document.addEventListener(_focusEvents2.default[this.type], handler);
 	                };
+	            } else {
+	                EventRegistry[type].setup = function () {
+	                    document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addRootDomEventListeners2.default), true);
+	                };
 	            }
 	        }
 	    }
@@ -1744,18 +1748,17 @@ return /******/ (function(modules) { // webpackBootstrap
 		var cfg = _EventRegistry2.default[type];
 	
 		var target = e.target,
-		    delegateTarget = target,
 		    listenersCount = cfg.listenersCounter,
 		    listeners = undefined,
 		    listener = undefined,
 		    domNodeId = undefined,
 		    event = undefined,
 		    args = undefined,
-		    setupArgs = true;
+		    defaultArgs = undefined;
 	
 		if (listenersCount > 0) {
 			event = (0, _eventSetup2.default)(e);
-			args = [event];
+			defaultArgs = args = [event];
 		}
 	
 		// NOTE: Only the event blubbling phase is modeled. This is done because
@@ -1767,11 +1770,14 @@ return /******/ (function(modules) { // webpackBootstrap
 				if (listeners && (listener = listeners[type])) {
 					// lazily instantiate additional arguments in the case
 					// where an event handler takes more than one argument
+					// listener is a function, and length is the number of
+					// arguments that function takes
 					var numArgs = listener.length;
-					if (setupArgs && numArgs > 1) {
-						setupArgs = false;
-						args = (0, _createListenerArguments2.default)(delegateTarget, event);
+					args = defaultArgs;
+					if (numArgs > 1) {
+						args = (0, _createListenerArguments2.default)(target, event);
 					}
+	
 					// 'this' on an eventListener is the element handling the event
 					// event.currentTarget is unwriteable, and since these are
 					// native events, will always refer to the document. Therefore
@@ -3435,25 +3441,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// type -> tag -> function(target, event)
+	// type -> node -> function(target, event)
 	var plugins = {};
 	
 	/**
 	 * type is a type of event
-	 * tagName is a DOM element tagName
+	 * nodeName is a DOM node type
 	 * hook is a function(element, event) -> [args...]
 	 */
-	function registerSetupHooks(type, tagName, hook) {
-	    var tagHooks = plugins[type] = plugins[type] || {};
-	    tagHooks[tagName] = hook;
+	function registerSetupHooks(type, nodeName, hook) {
+	    var nodeHooks = plugins[type] = plugins[type] || {};
+	    nodeHooks[nodeName] = hook;
 	}
 	
 	function createListenerArguments(target, event) {
 	    var type = event.type;
-	    var tagName = target.tagName.toLowerCase();
+	    var nodeName = target.nodeName.toLowerCase();
 	    var tagHooks = undefined;
 	    if (tagHooks = plugins[type]) {
-	        var hook = tagHooks[tagName];
+	        var hook = tagHooks[nodeName];
 	        if (hook) {
 	            return hook(target, event);
 	        }
@@ -3462,7 +3468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Default behavior:
 	    // Form elements with a value attribute will have the arguments:
 	    // [event, value]
-	    if ((0, _isFormElement2.default)(tagName)) {
+	    if ((0, _isFormElement2.default)(nodeName)) {
 	
 	        return [event, (0, _getFormElementValues2.default)(target)];
 	    }
@@ -4317,6 +4323,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function selectValues(elem) {
+	    var value = undefined,
+	        option = undefined,
+	        options = elem.options,
+	        index = elem.selectedIndex,
+	        one = elem.type === 'select-one',
+	        values = one ? null : [],
+	        max = one ? index + 1 : options.length,
+	        i = index < 0 ? max : one ? index : 0;
+	
+	    // Loop through all the selected options
+	    for (; i < max; i++) {
+	        option = options[i];
+	
+	        // IMPORTANT! IE9 doesn't update selected after form reset
+	        if ((option.selected || i === index) &&
+	
+	        // Don't return options that are disabled or in a disabled optgroup
+	        !option.disabled && (!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
+	
+	            // Get the specific value for the option
+	            value = option.value;
+	
+	            // We don't need an array for one selects
+	            if (one) {
+	                return value;
+	            }
+	
+	            // Multi-Selects return an array
+	            values.push(value);
+	        }
+	    }
+	
+	    return values;
+	}
+	
 	function getFormElementValues(node) {
 	
 	    var name = (0, _getFormElementType2.default)(node);
@@ -4324,21 +4366,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    switch (name) {
 	        case 'checkbox':
 	        case 'radio':
-	            if (!node.checked) {
-	                return false;
+	            if (node.checked) {
+	                return true;
 	            }
-	            var val = node.getAttribute('value');
-	            return val == null ? true : val;
+	            return false;
 	        case 'select':
 	        case 'select-multiple':
-	            var options = node.options;
-	            var values = [];
-	            for (var i = 0, len = options.length; i < len; i++) {
-	                if (options[i].selected) {
-	                    values.push(options[i].value);
-	                }
-	            }
-	            return name === 'select-multiple' ? values : values[0];
+	            return selectValues(node);
 	        default:
 	            return node.value;
 	    }
@@ -4659,8 +4693,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	function isFormElement(tagName) {
-		return tagName === 'form' || tagName === 'input' || tagName === 'textarea' || tagName === 'label' || tagName === 'fieldset' || tagName === 'legend' || tagName === 'select' || tagName === 'optgroup' || tagName === 'option' || tagName === 'button' || tagName === 'datalist' || tagName === 'keygen' || tagName === 'output';
+	function isFormElement(nodeName) {
+		return nodeName === 'form' || nodeName === 'input' || nodeName === 'textarea' || nodeName === 'label' || nodeName === 'fieldset' || nodeName === 'legend' || nodeName === 'select' || nodeName === 'optgroup' || nodeName === 'option' || nodeName === 'button' || nodeName === 'datalist' || nodeName === 'keygen' || nodeName === 'output';
 	}
 	
 	exports.default = isFormElement;

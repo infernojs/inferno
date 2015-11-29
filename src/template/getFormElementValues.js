@@ -47,11 +47,10 @@ export default function getFormElementValues(node) {
     switch (name) {
         case 'checkbox':
         case 'radio':
-            if (!node.checked) {
-                return false;
+            if (node.checked) {
+                return true;
             }
-            const val = node.getAttribute('value');
-            return val == null ? true : val;
+			return false;
         case 'select':
         case 'select-multiple':
             return selectValues(node);
