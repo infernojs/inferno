@@ -1,10 +1,10 @@
-import getDomNodeId  from './getEventID';
+import InfernoNodeID  from './InfernoNodeID';
 import listenersStorage from './listenersStorage';
 import EventRegistry from './EventRegistry';
 import eventSetup from './hooks/eventSetup';
 import createListenerArguments from './hooks/createListenerArguments';
 
-function addRootDomEventListeners(e, type) {
+export default function addInfernoRootListener(e, type) {
 
 	type || (type = e.type);
 
@@ -30,7 +30,7 @@ function addRootDomEventListeners(e, type) {
 	while(target !== null
 		&& listenersCount > 0
 		&& target !== document.parentNode) {
-		if( (domNodeId = getDomNodeId(target, true)) ) {
+		if( (domNodeId = InfernoNodeID(target, true)) ) {
 			listeners = listenersStorage[domNodeId];
 			if(listeners && (listener = listeners[type])) {
 				// lazily instantiate additional arguments in the case
@@ -62,7 +62,4 @@ function addRootDomEventListeners(e, type) {
 
 		target = target.parentNode;
 	}
-
 }
-
-export default addRootDomEventListeners;

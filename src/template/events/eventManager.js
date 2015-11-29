@@ -1,12 +1,12 @@
-import getEventID from './getEventID';
-import addRootDomEventListeners from './addRootDomEventListeners';
+import InfernoNodeID from './InfernoNodeID';
+import addInfernoRootListener from './addInfernoRootListener';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
 import listenerSetup from './hooks/listenerSetup';
 
 const eventListener = {};
 function createEventListener(type) {
-    return listenerSetup(type, e => listenersStorage[getEventID(e.target)][type](e));
+    return listenerSetup(type, e => listenersStorage[InfernoNodeID(e.target)][type](e));
 }
 
 export default {
@@ -27,15 +27,15 @@ export default {
                     if (registry.setup) {
                         registry.setup();
                     } else if (registry.bubbles) {
-                        let handler = listenerSetup(type, addRootDomEventListeners);
+                        let handler = listenerSetup(type, addInfernoRootListener);
                         document.addEventListener(type, handler, false);
                     }
 
                     registry.activated = true;
                 }
 
-                const id = getEventID(domNode),
-                    listeners = listenersStorage[id] || (listenersStorage[id] = {});
+                const nodeID = InfernoNodeID(domNode),
+                    listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
 
                 if (!listeners[type]) {
 
@@ -55,10 +55,10 @@ export default {
          */
         removeListener(node, type) {
 
-            const id = getEventID(node, true);
+            const nodeID = InfernoNodeID(node, true);
 
-            if (id) {
-                const listeners = listenersStorage[id];
+            if (nodeID) {
+                const listeners = listenersStorage[nodeID];
 
                 if (listeners && listeners[type]) {
                     listeners[type] = null;

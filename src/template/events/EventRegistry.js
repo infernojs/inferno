@@ -2,7 +2,7 @@ import capturableEvents from './shared/capturableEvents';
 import nonBubbleableEvents from './shared/nonBubbleableEvents';
 import focusEvents from './shared/focusEvents';
 import ExecutionEnvironment from '../../util/ExecutionEnvironment';
-import addRootDomEventListeners from './addRootDomEventListeners';
+import addInfernoRootListener from './addInfernoRootListener';
 import listenerSetup from './hooks/listenerSetup';
 
 let EventRegistry = {};
@@ -31,7 +31,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
                 EventRegistry[type].setup = function() {
                     let handler = listenerSetup(this.type, e => {
-                        addRootDomEventListeners(e, this.type);
+                        addInfernoRootListener(e, this.type);
                     });
                     document.addEventListener(focusEvents[this.type], handler);
                 };
@@ -40,7 +40,7 @@ if (ExecutionEnvironment.canUseDOM) {
                 EventRegistry[type].setup = function() {
                     document.addEventListener(
                         this.type,
-                        listenerSetup(this.type, addRootDomEventListeners),
+                        listenerSetup(this.type, addInfernoRootListener),
                         true);
                 };
             }

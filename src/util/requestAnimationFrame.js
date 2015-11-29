@@ -1,12 +1,9 @@
 import ExecutionEnvironment from './ExecutionEnvironment';
+import noop from './noop';
 
 // Server side workaround
-let requestAnimationFrame = function() {
-    return function() {};
-};
-let cancelAnimationFrame = function() {
-    return function() {};
-};
+let requestAnimationFrame = noop;
+let cancelAnimationFrame = noop;
 
 if (ExecutionEnvironment.canUseDOM) {
 
