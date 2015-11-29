@@ -1,7 +1,7 @@
 import isArray from '../../util/isArray';
 import raf from '../../util/raf';
 
-const plugins = {};
+const eventHooks = {};
 
 /**
  * Register a wrapper around all events of a certain type
@@ -10,10 +10,10 @@ const plugins = {};
 export function registerEventHooks(type, hook) {
 	if (isArray(type)) {
 		for (let i = 0; i < type.length; i++) {
-			plugins[type[i]] = hook;
+			eventHooks[type[i]] = hook;
 		}
 	} else {
-		plugins[type] = hook;
+		eventHooks[type] = hook;
 	}
 }
 
@@ -34,7 +34,7 @@ registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], rafDebounce);
 
 export default function listenerSetup(type, handler) {
 	return event => {
-		let wrapper = plugins[type];
+		let wrapper = eventHooks[type];
 
 		if (wrapper) {
 			return wrapper(handler)(event);
