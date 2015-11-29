@@ -1276,8 +1276,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _raf = __webpack_require__(78);
 	
-	var _raf2 = _interopRequireDefault(_raf);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var eventHooks = {};
@@ -1301,7 +1299,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		return function (e) {
 			if (free) {
 				free = false;
-				(0, _raf2.default)(function () {
+				(0, _raf.requestAnimationFrame)(function () {
 					handler(e);
 					free = true;
 				});
@@ -1317,7 +1315,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function wheelSetup(handler) {
 		var free = true;
 		return function (e) {
-	
 			handler(e);
 		};
 	}
@@ -1325,15 +1322,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	registerEventHooks(wheel, { setup: wheelSetup });
 	
 	function listenerSetup(type, handler) {
-		return function (event) {
-			var wrapper = eventHooks[type];
+		var wrapper = eventHooks[type];
+		if (wrapper && wrapper.setup) {
+			return wrapper.setup(handler);
+		}
 	
-			if (wrapper.setup) {
-				return wrapper.setup(handler)(event);
-			}
-	
-			return handler(event);
-		};
+		return handler;
 	}
 
 /***/ },
@@ -4740,6 +4734,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.cancelAnimationFrame = exports.requestAnimationFrame = undefined;
 	
 	var _ExecutionEnvironment = __webpack_require__(14);
 	
@@ -4751,6 +4746,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var requestAnimationFrame = function requestAnimationFrame() {
 	    return function () {};
 	};
+	var cancelAnimationFrame = function cancelAnimationFrame() {
+	    return function () {};
+	};
 	
 	if (_ExecutionEnvironment2.default.canUseDOM) {
 	    (function () {
@@ -4759,18 +4757,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        var nativeRequestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
 	
-	        requestAnimationFrame = nativeRequestAnimationFrame || function (callback) {
+	        var nativecancelAnimationFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame;
+	
+	        exports.requestAnimationFrame = requestAnimationFrame = nativeRequestAnimationFrame || function (callback) {
 	            var currTime = Date.now();
-	            var timeDelay = Math.max(0, 16 - (currTime - lastTime));
+	            var timeDelay = Math.max(0, 16 - (currTime - lastTime)); // 1000 / 60 = 16.666
 	            lastTime = currTime + timeDelay;
 	            return window.setTimeout(function () {
 	                callback(Date.now());
 	            }, timeDelay);
 	        };
+	
+	        exports.cancelAnimationFrame = cancelAnimationFrame = cancelAnimationFrame || function (frameId) {
+	            window.clearTimeout(frameId);
+	        };
 	    })();
 	}
 	
-	exports.default = requestAnimationFrame;
+	exports.requestAnimationFrame = requestAnimationFrame;
+	exports.cancelAnimationFrame = cancelAnimationFrame;
 
 /***/ },
 /* 79 */

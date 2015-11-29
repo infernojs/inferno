@@ -1,5 +1,5 @@
 import isArray from '../../../util/isArray';
-import raf from '../../../util/raf';
+import { requestAnimationFrame } from '../../../util/raf';
 
 const eventHooks = {};
 
@@ -22,7 +22,7 @@ function rafDebounce(handler) {
 	return e => {
 		if (free) {
 			free = false;
-			raf(() => {
+			requestAnimationFrame(() => {
 				handler(e);
 				free = true;
 			});
