@@ -1894,7 +1894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // Feature detect Firefox
 	            } else {
 	                    EventRegistry[type].setup = function () {
-	                        document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addInfernoRootListener2.default), true); // bubble
+	                        document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addInfernoRootListener2.default), true);
 	                    };
 	                }
 	        }
@@ -2071,7 +2071,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        if (registry) {
 	
-	            // is this activated, YET?
+	            // setup special listeners only on creation
 	            if (!registry.isActive) {
 	
 	                if (registry.setup) {

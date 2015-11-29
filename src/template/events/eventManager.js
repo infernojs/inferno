@@ -20,8 +20,8 @@ export default {
             const registry = EventRegistry[type];
 
             if (registry) {
-
-                // is this activated, YET?
+             
+			 // setup special listeners only on creation
                 if (!registry.isActive) {
 
                     if (registry.setup) {

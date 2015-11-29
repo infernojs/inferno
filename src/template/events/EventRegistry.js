@@ -41,7 +41,7 @@ if (ExecutionEnvironment.canUseDOM) {
                     document.addEventListener(
                         this.type,
                         listenerSetup(this.type, addInfernoRootListener),
-                        true); // bubble
+                        true);
                 };
             }
         }
