@@ -44,7 +44,7 @@ export default {
                         let handler = listenerSetup(type, eventListener); 
                         domNode.addEventListener(type, handler, false);
                         domNode._infernoListeners = domNode._infernoListeners || {};
-                        domNode._internoListeners[type] = handler;
+                        domNode._infernoListeners[type] = handler;
                     }
                 }
 
