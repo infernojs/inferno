@@ -102,8 +102,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createListenerArguments = __webpack_require__(28);
 	
-	var _createListenerArguments2 = _interopRequireDefault(_createListenerArguments);
-	
 	var _listenerSetup = __webpack_require__(13);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -124,7 +122,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        * 3rd party
 	        */
 	    registerAttributes: _registerAttributeHandlers2.default,
-	    registerEventTypes: _createListenerArguments2.default,
+	    registerSetupHooks: _createListenerArguments.registerSetupHooks,
 	    registerEventHooks: _listenerSetup.registerEventHooks
 	};
 

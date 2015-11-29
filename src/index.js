@@ -9,7 +9,7 @@ import createTemplate from './core/createTemplate';
 import clearDomElement from './core/clearDomElement';
 import createRef from './core/createRef';
 import registerAttributes from './template/registerAttributeHandlers';
-import registerEventTypes from './events/hooks/createListenerArguments';
+import { registerSetupHooks } from './events/hooks/createListenerArguments';
 import { registerEventHooks } from './events/hooks/listenerSetup';
 
 module.exports = {
@@ -28,6 +28,6 @@ module.exports = {
      * 3rd party
      */
     registerAttributes,
-    registerEventTypes,
+    registerSetupHooks,
     registerEventHooks
 };
