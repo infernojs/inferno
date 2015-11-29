@@ -3,15 +3,11 @@ import addInfernoRootListener from './addInfernoRootListener';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
 import setupEventListener from './setupEventListener';
+import createEventListener from './createEventListener';
 import isArray from '../util/isArray';
 import eventHooks from './shared/eventHooks';
+import eventListener from './shared/eventListener';
 import { requestAnimationFrame } from '../util/requestAnimationFrame';
-
-const eventListener = {};
-
-function createEventListener(type) {
-    return setupEventListener(type, e => listenersStorage[InfernoNodeID(e.target)][type](e));
-}
 
 const Events = {
 
@@ -86,7 +82,7 @@ const Events = {
                     if (registry.isBubbling) {
                         ++registry.counter;
                     } else {
-                        eventListener[type] = eventListener[type] || createEventListener(type);
+						eventListener[type] = eventListener[type] || createEventListener(type);
                         node.addEventListener(type, eventListener[type], false);
                     }
                 }
@@ -124,6 +120,8 @@ const Events = {
         }
 };
 
+/**** HOOKS ******/
+
 Events.registerEventHooks(['scroll',
     'mousemove',
     'drag',
@@ -154,6 +152,5 @@ Events.registerEventHooks(wheel, {
         };
     }
 });
-
 
 export default Events;
