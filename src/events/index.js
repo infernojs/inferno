@@ -1,9 +1,9 @@
 import InfernoNodeID from './InfernoNodeID';
-import addInfernoRootListener from './addInfernoRootListener';
+import addRootListener from './addRootListener';
 import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
 import setupEventListener from './setupEventListener';
-import createEventListener from './createEventListener';
+import addHandler from './addHandler';
 import isArray from '../util/isArray';
 import eventHooks from './shared/eventHooks';
 import eventListener from './shared/eventListener';
@@ -67,7 +67,7 @@ const Events = {
                     if (registry.setup) {
                         registry.setup();
                     } else if (registry.isBubbling) {
-                        let handler = setupEventListener(type, addInfernoRootListener);
+                        let handler = setupEventListener(type, addRootListener);
                         document.addEventListener(type, handler, false);
                     }
 
@@ -82,7 +82,7 @@ const Events = {
                     if (registry.isBubbling) {
                         ++registry.counter;
                     } else {
-						eventListener[type] = eventListener[type] || createEventListener(type);
+						eventListener[type] = eventListener[type] || addHandler(type);
                         node.addEventListener(type, eventListener[type], false);
                     }
                 }

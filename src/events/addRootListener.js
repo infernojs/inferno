@@ -4,7 +4,7 @@ import EventRegistry from './EventRegistry';
 import setupEvents from './setupEvents';
 import createListenerArguments from './createListenerArguments';
 
-export default function addInfernoRootListener(e, type) {
+export default function addRootListener(e, type) {
 
 	type || (type = e.type);
 

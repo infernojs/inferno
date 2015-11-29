@@ -801,9 +801,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
-	var _addInfernoRootListener = __webpack_require__(27);
+	var _addRootListener = __webpack_require__(27);
 	
-	var _addInfernoRootListener2 = _interopRequireDefault(_addInfernoRootListener);
+	var _addRootListener2 = _interopRequireDefault(_addRootListener);
 	
 	var _EventRegistry = __webpack_require__(26);
 	
@@ -817,9 +817,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setupEventListener2 = _interopRequireDefault(_setupEventListener);
 	
-	var _createEventListener = __webpack_require__(57);
+	var _addHandler = __webpack_require__(57);
 	
-	var _createEventListener2 = _interopRequireDefault(_createEventListener);
+	var _addHandler2 = _interopRequireDefault(_addHandler);
 	
 	var _isArray = __webpack_require__(1);
 	
@@ -894,7 +894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (registry.setup) {
 	                    registry.setup();
 	                } else if (registry.isBubbling) {
-	                    var handler = (0, _setupEventListener2.default)(type, _addInfernoRootListener2.default);
+	                    var handler = (0, _setupEventListener2.default)(type, _addRootListener2.default);
 	                    document.addEventListener(type, handler, false);
 	                }
 	
@@ -909,7 +909,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (registry.isBubbling) {
 	                    ++registry.counter;
 	                } else {
-	                    _eventListener2.default[type] = _eventListener2.default[type] || (0, _createEventListener2.default)(type);
+	                    _eventListener2.default[type] = _eventListener2.default[type] || (0, _addHandler2.default)(type);
 	                    node.addEventListener(type, _eventListener2.default[type], false);
 	                }
 	            }
@@ -947,6 +947,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	};
+	
+	/**** HOOKS ******/
 	
 	Events.registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], {
 	    setup: function setup(handler) {
@@ -1954,9 +1956,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
-	var _addInfernoRootListener = __webpack_require__(27);
+	var _addRootListener = __webpack_require__(27);
 	
-	var _addInfernoRootListener2 = _interopRequireDefault(_addInfernoRootListener);
+	var _addRootListener2 = _interopRequireDefault(_addRootListener);
 	
 	var _setupEventListener = __webpack_require__(15);
 	
@@ -2023,14 +2025,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var _this = this;
 	
 	                    var handler = (0, _setupEventListener2.default)(this.type, function (e) {
-	                        (0, _addInfernoRootListener2.default)(e, _this.type);
+	                        (0, _addRootListener2.default)(e, _this.type);
 	                    });
 	                    document.addEventListener(focusEvents[this.type], handler);
 	                };
 	                // Feature detect Firefox
 	            } else {
 	                    EventRegistry[type].setup = function () {
-	                        document.addEventListener(this.type, (0, _setupEventListener2.default)(this.type, _addInfernoRootListener2.default), true);
+	                        document.addEventListener(this.type, (0, _setupEventListener2.default)(this.type, _addRootListener2.default), true);
 	                    };
 	                }
 	        }
@@ -2057,7 +2059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.default = addInfernoRootListener;
+	exports.default = addRootListener;
 	
 	var _InfernoNodeID = __webpack_require__(12);
 	
@@ -2081,7 +2083,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function addInfernoRootListener(e, type) {
+	function addRootListener(e, type) {
 	
 		type || (type = e.type);
 	

@@ -1,5 +1,5 @@
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
-import addInfernoRootListener from './addInfernoRootListener';
+import addRootListener from './addRootListener';
 import setupEventListener from './setupEventListener';
 
 const standardNativeEvents =
@@ -61,7 +61,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
                 EventRegistry[type].setup = function() {
                     let handler = setupEventListener(this.type, e => {
-                        addInfernoRootListener(e, this.type);
+                        addRootListener(e, this.type);
                     });
                     document.addEventListener(focusEvents[this.type], handler);
                 };
@@ -70,7 +70,7 @@ if (ExecutionEnvironment.canUseDOM) {
                 EventRegistry[type].setup = function() {
                     document.addEventListener(
                         this.type,
-                        setupEventListener(this.type, addInfernoRootListener),
+                        setupEventListener(this.type, addRootListener),
                         true);
                 };
             }
