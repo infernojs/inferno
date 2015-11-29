@@ -38,7 +38,6 @@ const wheel = ('onwheel' in document || document.documentMode >= 9) ? 'wheel' : 
 function wheelSetup(handler) {
     let free = true;
     return e => {
-
         handler(e);
     };
 }
@@ -46,13 +45,10 @@ function wheelSetup(handler) {
 registerEventHooks(wheel, { setup: wheelSetup });
 
 export default function listenerSetup(type, handler) {
-	return event => {
-		let wrapper = eventHooks[type];
+	let wrapper = eventHooks[type];
+	if (wrapper && wrapper.setup) {
+		return wrapper.setup(handler);
+	}
 
-		if (wrapper.setup) {
-			return wrapper.setup(handler)(event);
-		}
-
-		return handler(event);
-	};
+	return handler;
 }
