@@ -62,3 +62,5 @@ for (let edge in edgeCases) {
         node.setAttribute(dgeCases[edge], value);
     }, 'set');
 }
+
+export default registerAttributeHandlers;
