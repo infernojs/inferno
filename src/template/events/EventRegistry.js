@@ -1,4 +1,3 @@
-import isEventSupported from './shared/isEventSupported';
 import capturableEvents from './shared/capturableEvents';
 import nonBubbleableEvents from './shared/nonBubbleableEvents';
 import focusEvents from './shared/focusEvents';
@@ -26,9 +25,9 @@ if (ExecutionEnvironment.canUseDOM) {
 
         if (focusEvents[type]) {
 
-            // IE has `focusin` and `focusout` events which bubble.
-            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-            if (isEventSupported(focusEvents[type])) {
+            // 'focusOut' and 'focusIn' are not supported by Firefix
+            //https://developer.mozilla.org/en-US/docs/Web/Events/focusout
+            if ((typeof InstallTrigger == 'undefined')) {
 
                 EventRegistry[type].setup = function() {
                     let handler = listenerSetup(this.type, e => {
@@ -36,6 +35,7 @@ if (ExecutionEnvironment.canUseDOM) {
                     });
                     document.addEventListener(focusEvents[this.type], handler);
                 };
+                // Feature detect Firefox
             } else {
                 EventRegistry[type].setup = function() {
                     document.addEventListener(

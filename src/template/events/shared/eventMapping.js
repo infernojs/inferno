@@ -1,3 +1,6 @@
+// For events like 'submit' which don't consistently bubble (which we trap at a
+// lower node than `document`), binding at `document` would cause duplicate
+// events so we don't include them here
 export default {
   onAbort: 'abort',
   onBlur: 'blur',
@@ -26,11 +29,6 @@ export default {
   onEnded: 'ended',
   onError: 'error',
   onFocus: 'focus',
-  /**
-   * IE
-   */
-  onFocusIn: 'focusin',
-  onFocusOut: 'focusout', 
   onInput: 'input',
   onKeyDown: 'keydown',
   onKeyPress: 'keypress',

@@ -105,7 +105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _templateTypes = __webpack_require__(12);
+	var _templateTypes = __webpack_require__(11);
 	
 	Object.defineProperty(exports, 'TemplateTypes', {
 	  enumerable: true,
@@ -150,7 +150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _registerAttributeHandlers = __webpack_require__(75);
+	var _registerAttributeHandlers = __webpack_require__(74);
 	
 	Object.defineProperty(exports, 'registerAttributes', {
 	  enumerable: true,
@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _listenerSetup = __webpack_require__(14);
+	var _listenerSetup = __webpack_require__(13);
 	
 	Object.defineProperty(exports, 'registerEventHooks', {
 	  enumerable: true,
@@ -328,7 +328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _bind2 = _interopRequireDefault(_bind);
 	
-	var _templateTypes = __webpack_require__(12);
+	var _templateTypes = __webpack_require__(11);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
@@ -535,7 +535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = removeComponent;
 	
-	var _removeContext = __webpack_require__(10);
+	var _removeContext = __webpack_require__(9);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
@@ -597,7 +597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _contexts2 = _interopRequireDefault(_contexts);
 	
-	var _getContext = __webpack_require__(9);
+	var _getContext = __webpack_require__(8);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
@@ -658,37 +658,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-	
-	/**
-	 * Simple, lightweight module assisting with the detection and context of
-	 * Worker. Helps avoid circular dependencies and allows code to reason about
-	 * whether or not they are in a Worker, even if they never include the main
-	 * `ReactWorker` dependency.
-	 */
-	exports.default = {
-	
-	  canUseDOM: canUseDOM,
-	
-	  canUseWorkers: typeof Worker !== 'undefined',
-	
-	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
-	
-	  canUseViewport: canUseDOM && !!window.screen,
-	
-	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
-	
-	};
-
-/***/ },
-/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -713,7 +682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -740,7 +709,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -783,7 +752,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -797,7 +766,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1290,7 +1259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DOMPropertyContainer;
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1305,7 +1274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _raf = __webpack_require__(79);
+	var _raf = __webpack_require__(78);
 	
 	var _raf2 = _interopRequireDefault(_raf);
 	
@@ -1353,6 +1322,37 @@ return /******/ (function(modules) { // webpackBootstrap
 			return handler(event);
 		};
 	}
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+	
+	/**
+	 * Simple, lightweight module assisting with the detection and context of
+	 * Worker. Helps avoid circular dependencies and allows code to reason about
+	 * whether or not they are in a Worker, even if they never include the main
+	 * `ReactWorker` dependency.
+	 */
+	exports.default = {
+	
+	  canUseDOM: canUseDOM,
+	
+	  canUseWorkers: typeof Worker !== 'undefined',
+	
+	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
+	
+	  canUseViewport: canUseDOM && !!window.screen,
+	
+	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
+	
+	};
 
 /***/ },
 /* 15 */
@@ -1428,11 +1428,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createTemplate;
 	
-	var _templateTypes = __webpack_require__(12);
+	var _templateTypes = __webpack_require__(11);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _uuid = __webpack_require__(80);
+	var _uuid = __webpack_require__(79);
 	
 	var _uuid2 = _interopRequireDefault(_uuid);
 	
@@ -1535,11 +1535,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
-	var _removeContext = __webpack_require__(10);
+	var _removeContext = __webpack_require__(9);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
-	var _getContext = __webpack_require__(9);
+	var _getContext = __webpack_require__(8);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
@@ -1772,7 +1772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(13);
+	var _DOMProperties = __webpack_require__(12);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -1826,15 +1826,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _isEventSupported = __webpack_require__(69);
-	
-	var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
-	
 	var _capturableEvents = __webpack_require__(67);
 	
 	var _capturableEvents2 = _interopRequireDefault(_capturableEvents);
 	
-	var _nonBubbleableEvents = __webpack_require__(70);
+	var _nonBubbleableEvents = __webpack_require__(69);
 	
 	var _nonBubbleableEvents2 = _interopRequireDefault(_nonBubbleableEvents);
 	
@@ -1842,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _focusEvents2 = _interopRequireDefault(_focusEvents);
 	
-	var _ExecutionEnvironment = __webpack_require__(8);
+	var _ExecutionEnvironment = __webpack_require__(14);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -1850,7 +1846,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _addRootDomEventListeners2 = _interopRequireDefault(_addRootDomEventListeners);
 	
-	var _listenerSetup = __webpack_require__(14);
+	var _listenerSetup = __webpack_require__(13);
 	
 	var _listenerSetup2 = _interopRequireDefault(_listenerSetup);
 	
@@ -1876,9 +1872,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        if (_focusEvents2.default[type]) {
 	
-	            // IE has `focusin` and `focusout` events which bubble.
-	            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-	            if ((0, _isEventSupported2.default)(_focusEvents2.default[type])) {
+	            // 'focusOut' and 'focusIn' are not supported by Firefix
+	            //https://developer.mozilla.org/en-US/docs/Web/Events/focusout
+	            if (typeof InstallTrigger == 'undefined') {
 	
 	                EventRegistry[type].setup = function () {
 	                    var _this = this;
@@ -2026,7 +2022,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
-	var _listenerSetup = __webpack_require__(14);
+	var _listenerSetup = __webpack_require__(13);
 	
 	var _listenerSetup2 = _interopRequireDefault(_listenerSetup);
 	
@@ -2142,11 +2138,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _isFormElement = __webpack_require__(78);
+	var _isFormElement = __webpack_require__(77);
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
 	
-	var _getFormElementValues = __webpack_require__(72);
+	var _getFormElementValues = __webpack_require__(71);
 	
 	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
 	
@@ -2228,6 +2224,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	// For events like 'submit' which don't consistently bubble (which we trap at a
+	// lower node than `document`), binding at `document` would cause duplicate
+	// events so we don't include them here
 	exports.default = {
 	  onAbort: 'abort',
 	  onBlur: 'blur',
@@ -2256,11 +2255,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onEnded: 'ended',
 	  onError: 'error',
 	  onFocus: 'focus',
-	  /**
-	   * IE
-	   */
-	  onFocusIn: 'focusin',
-	  onFocusOut: 'focusout',
 	  onInput: 'input',
 	  onKeyDown: 'keydown',
 	  onKeyPress: 'keypress',
@@ -2330,7 +2324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(13);
+	var _DOMProperties = __webpack_require__(12);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2627,7 +2621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _ExecutionEnvironment = __webpack_require__(8);
+	var _ExecutionEnvironment = __webpack_require__(14);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -2749,7 +2743,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _VirtualTextNode2 = _interopRequireDefault(_VirtualTextNode);
 	
-	var _DOMProperties = __webpack_require__(13);
+	var _DOMProperties = __webpack_require__(12);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2757,7 +2751,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(74);
+	var _quoteAttributeValueForBrowser = __webpack_require__(73);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -2956,7 +2950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _updateComponent = __webpack_require__(11);
+	var _updateComponent = __webpack_require__(10);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3082,11 +3076,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = clearDomElement;
 	
-	var _getContext = __webpack_require__(9);
+	var _getContext = __webpack_require__(8);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
-	var _removeContext = __webpack_require__(10);
+	var _removeContext = __webpack_require__(9);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
@@ -3353,7 +3347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(11);
+	var _updateComponent = __webpack_require__(10);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3460,7 +3454,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(11);
+	var _updateComponent = __webpack_require__(10);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3906,7 +3900,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _unitlessProperties = __webpack_require__(77);
+	var _unitlessProperties = __webpack_require__(76);
 	
 	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
 	
@@ -4130,7 +4124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _setDOMProperties = __webpack_require__(76);
+	var _setDOMProperties = __webpack_require__(75);
 	
 	var _setDOMProperties2 = _interopRequireDefault(_setDOMProperties);
 	
@@ -4305,54 +4299,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _ExecutionEnvironment = __webpack_require__(8);
-	
-	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var useHasFeature = undefined;
-	if (_ExecutionEnvironment2.default.canUseDOM) {
-	  useHasFeature = document.implementation && document.implementation.hasFeature &&
-	  // always returns true in newer browsers as per the standard.
-	  // @see http://dom.spec.whatwg.org/#dom-domimplementation-hasfeature
-	  document.implementation.hasFeature('', '') !== true;
-	}
-	
-	function isEventSupported(eventNameSuffix, capture) {
-	  if (!_ExecutionEnvironment2.default.canUseDOM) {
-	    return false;
-	  }
-	
-	  var eventName = 'on' + eventNameSuffix;
-	  var isSupported = eventName in document;
-	
-	  if (!isSupported) {
-	    var element = document.createElement('div');
-	    element.setAttribute(eventName, 'return;');
-	    isSupported = typeof element[eventName] === 'function';
-	  }
-	
-	  if (!isSupported && useHasFeature && eventNameSuffix === 'wheel') {
-	    // This is the only way to test support for the `wheel` event in IE9+.
-	    isSupported = document.implementation.hasFeature('Events.wheel', '3.0');
-	  }
-	
-	  return isSupported;
-	}
-	
-	exports.default = isEventSupported;
-
-/***/ },
-/* 70 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4363,7 +4309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ['scroll', 'load', 'error', 'mouseenter', 'mouseover'];
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4388,7 +4334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4398,7 +4344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = getFormElementValues;
 	
-	var _getFormElementType = __webpack_require__(71);
+	var _getFormElementType = __webpack_require__(70);
 	
 	var _getFormElementType2 = _interopRequireDefault(_getFormElementType);
 	
@@ -4445,7 +4391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4503,7 +4449,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4537,7 +4483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var endOfText = '\u0003';
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4626,7 +4572,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = registerAttributeHandlers;
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4652,7 +4598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(73);
+	var _processFragmentAttrs = __webpack_require__(72);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -4706,7 +4652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4757,7 +4703,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4772,7 +4718,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isFormElement;
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4781,7 +4727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _ExecutionEnvironment = __webpack_require__(8);
+	var _ExecutionEnvironment = __webpack_require__(14);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -4813,7 +4759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = requestAnimationFrame;
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports) {
 
 	'use strict';
