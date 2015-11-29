@@ -1873,7 +1873,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var handler = (0, _listenerSetup2.default)(type, eventListener);
 	                    domNode.addEventListener(type, handler, false);
 	                    domNode._infernoListeners = domNode._infernoListeners || {};
-	                    domNode._internoListeners[type] = handler;
+	                    domNode._infernoListeners[type] = handler;
 	                }
 	            }
 	
@@ -4323,40 +4323,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function selectValues(elem) {
-	    var value = undefined,
-	        option = undefined,
-	        options = elem.options,
-	        index = elem.selectedIndex,
-	        one = elem.type === 'select-one',
-	        values = one ? null : [],
-	        max = one ? index + 1 : options.length,
-	        i = index < 0 ? max : one ? index : 0;
+	function selectValues(node) {
 	
-	    // Loop through all the selected options
-	    for (; i < max; i++) {
-	        option = options[i];
+	    if (node.multiple) {
 	
-	        // IMPORTANT! IE9 doesn't update selected after form reset
-	        if ((option.selected || i === index) &&
+	        var result = [];
+	        var index = node.selectedIndex;
+	        var option = undefined;
+	        var options = node.options;
+	        var i = index < 0 ? options.length : 0;
 	
-	        // Don't return options that are disabled or in a disabled optgroup
-	        !option.disabled && (!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
+	        for (; i < options.length; i++) {
 	
-	            // Get the specific value for the option
-	            value = option.value;
+	            option = options[i];
+	            // IMPORTANT! IE9 doesn't update selected after form reset
+	            if ((option.selected || i === index) &&
 	
-	            // We don't need an array for one selects
-	            if (one) {
-	                return value;
+	            // Don't return options that are disabled or in a disabled optgroup
+	            !option.disabled && (!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
+	                result.push(option.value || option.text);
 	            }
-	
-	            // Multi-Selects return an array
-	            values.push(value);
 	        }
+	        return result.length === 0 ? null : result;
 	    }
 	
-	    return values;
+	    return node.value;
 	}
 	
 	function getFormElementValues(node) {
