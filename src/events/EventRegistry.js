@@ -1,6 +1,6 @@
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import addRootListener from './addRootListener';
-import setupEventListener from './setupEventListener';
+import setHandler from './setHandler';
 
 const standardNativeEvents =
     ('click dblclick mouseup mousedown contextmenu '             + // mouse buttons
@@ -60,7 +60,7 @@ if (ExecutionEnvironment.canUseDOM) {
             if ((typeof InstallTrigger == 'undefined')) {
 
                 EventRegistry[type].setup = function() {
-                    let handler = setupEventListener(this.type, e => {
+                    let handler = setHandler(this.type, e => {
                         addRootListener(e, this.type);
                     });
                     document.addEventListener(focusEvents[this.type], handler);
@@ -70,7 +70,7 @@ if (ExecutionEnvironment.canUseDOM) {
                 EventRegistry[type].setup = function() {
                     document.addEventListener(
                         this.type,
-                        setupEventListener(this.type, addRootListener),
+                        setHandler(this.type, addRootListener),
                         true);
                 };
             }

@@ -813,13 +813,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
-	var _setupEventListener = __webpack_require__(15);
+	var _setHandler = __webpack_require__(15);
 	
-	var _setupEventListener2 = _interopRequireDefault(_setupEventListener);
+	var _setHandler2 = _interopRequireDefault(_setHandler);
 	
-	var _addHandler = __webpack_require__(57);
+	var _createEventListener = __webpack_require__(57);
 	
-	var _addHandler2 = _interopRequireDefault(_addHandler);
+	var _createEventListener2 = _interopRequireDefault(_createEventListener);
 	
 	var _isArray = __webpack_require__(1);
 	
@@ -894,7 +894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (registry.setup) {
 	                    registry.setup();
 	                } else if (registry.isBubbling) {
-	                    var handler = (0, _setupEventListener2.default)(type, _addRootListener2.default);
+	                    var handler = (0, _setHandler2.default)(type, _addRootListener2.default);
 	                    document.addEventListener(type, handler, false);
 	                }
 	
@@ -909,7 +909,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (registry.isBubbling) {
 	                    ++registry.counter;
 	                } else {
-	                    _eventListener2.default[type] = _eventListener2.default[type] || (0, _addHandler2.default)(type);
+	                    _eventListener2.default[type] = _eventListener2.default[type] || (0, _createEventListener2.default)(type);
 	                    node.addEventListener(type, _eventListener2.default[type], false);
 	                }
 	            }
@@ -1003,7 +1003,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.default = setupEventListener;
+	exports.default = setHandler;
 	
 	var _isArray = __webpack_require__(1);
 	
@@ -1015,7 +1015,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function setupEventListener(type, handler) {
+	function setHandler(type, handler) {
 		var wrapper = _eventHooks2.default[type];
 		if (wrapper && wrapper.setup) {
 			return wrapper.setup(handler);
@@ -1960,9 +1960,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _addRootListener2 = _interopRequireDefault(_addRootListener);
 	
-	var _setupEventListener = __webpack_require__(15);
+	var _setHandler = __webpack_require__(15);
 	
-	var _setupEventListener2 = _interopRequireDefault(_setupEventListener);
+	var _setHandler2 = _interopRequireDefault(_setHandler);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -2024,7 +2024,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                EventRegistry[type].setup = function () {
 	                    var _this = this;
 	
-	                    var handler = (0, _setupEventListener2.default)(this.type, function (e) {
+	                    var handler = (0, _setHandler2.default)(this.type, function (e) {
 	                        (0, _addRootListener2.default)(e, _this.type);
 	                    });
 	                    document.addEventListener(focusEvents[this.type], handler);
@@ -2032,7 +2032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // Feature detect Firefox
 	            } else {
 	                    EventRegistry[type].setup = function () {
-	                        document.addEventListener(this.type, (0, _setupEventListener2.default)(this.type, _addRootListener2.default), true);
+	                        document.addEventListener(this.type, (0, _setHandler2.default)(this.type, _addRootListener2.default), true);
 	                    };
 	                }
 	        }
@@ -3540,9 +3540,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createEventListener;
 	
-	var _setupEventListener = __webpack_require__(15);
+	var _setHandler = __webpack_require__(15);
 	
-	var _setupEventListener2 = _interopRequireDefault(_setupEventListener);
+	var _setHandler2 = _interopRequireDefault(_setHandler);
 	
 	var _listenersStorage = __webpack_require__(14);
 	
@@ -3555,7 +3555,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function createEventListener(type) {
-	    return (0, _setupEventListener2.default)(type, function (e) {
+	    return (0, _setHandler2.default)(type, function (e) {
 	        return _listenersStorage2.default[(0, _InfernoNodeID2.default)(e.target)][type](e);
 	    });
 	}
