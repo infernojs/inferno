@@ -2,7 +2,7 @@ import isEventSupported from './isEventSupported';
 import capturableEvents from './capturableEvents';
 import nonBubbleableEvents from './nonBubbleableEvents';
 import focusEvents from './focusEvents';
-import ExecutionEnvironment from '../util/ExecutionEnvironment';
+import ExecutionEnvironment from '../../util/ExecutionEnvironment';
 import addRootDomEventListeners from './addRootDomEventListeners';
 import listenerSetup from './hooks/listenerSetup';
 

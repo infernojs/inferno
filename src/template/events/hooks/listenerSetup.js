@@ -1,5 +1,5 @@
-import isArray from '../../util/isArray';
-import raf from '../../util/raf';
+import isArray from '../../../util/isArray';
+import raf from '../../../util/raf';
 
 const eventHooks = {};
 

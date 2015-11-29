@@ -1,5 +1,5 @@
-import eventMapping from '../events/eventMapping';
-import eventManager from '../events/eventManager';
+import eventMapping from './events/eventMapping';
+import eventManager from './events/eventManager';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import processFragmentAttrs from './processFragmentAttrs';

@@ -1,6 +1,6 @@
-import isArray from '../../util/isArray';
-import isFormElement from '../../util/isFormElement';
-import getFormElementValues from '../../template/getFormElementValues';
+import isArray from '../../../util/isArray';
+import isFormElement from '../../../util/isFormElement';
+import getFormElementValues from '../../getFormElementValues';
 
 // type -> node -> function(target, event)
 const setupHooks = {};
