@@ -4,8 +4,9 @@ import EventRegistry from './EventRegistry';
 import listenersStorage from './listenersStorage';
 import listenerSetup from './hooks/listenerSetup';
 
-function eventListener(e) {
-    listenersStorage[getEventID(e.target)][e.type](e);
+const eventListener = {};
+function createEventListener(type) {
+    return listenerSetup(type, e => listenersStorage[getEventID(e.target)][type](e));
 }
 
 export default {
@@ -41,10 +42,8 @@ export default {
                     if (registry.bubbles) {
                         ++registry.listenersCounter;
                     } else {
-                        let handler = listenerSetup(type, eventListener); 
-                        domNode.addEventListener(type, handler, false);
-                        domNode._infernoListeners = domNode._infernoListeners || {};
-                        domNode._infernoListeners[type] = handler;
+                        eventListener[type] = eventListener[type] || createEventListener(type);
+                        domNode.addEventListener(type, eventListener[type], false);
                     }
                 }
 
@@ -70,8 +69,7 @@ export default {
                         if (registry.bubbles) {
                             --registry.listenersCounter;
                         } else {
-                            node.removeEventListener(type, node._infernoListeners[type]);
-                            node._infernoListeners[type] = null; 
+                            node.removeEventListener(type, eventListener[type]);
                         }
                     }
                 }
