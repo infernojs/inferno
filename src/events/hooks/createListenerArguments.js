@@ -1,8 +1,20 @@
+import isArray from '../../util/isArray';
 import isFormElement from '../../util/isFormElement';
 import getFormElementValues from '../../template/getFormElementValues';
 
 // type -> node -> function(target, event)
-const plugins = {};
+const setupHooks = {};
+
+function registerSetupHooksForType(type, nodeName, hook) {
+    let nodeHooks = setupHooks[type] || (setupHooks[type] = {});
+    if (isArray(nodeName)) {
+        for (let i = 0; i < nodeName.length; i++) {
+            nodeHooks[nodeName[i]] = hook;
+        }
+    } else {
+        nodeHooks[nodeName] = hook;
+    }
+}
 
 /**
  * type is a type of event
@@ -10,15 +22,20 @@ const plugins = {};
  * hook is a function(element, event) -> [args...]
  */
 export function registerSetupHooks(type, nodeName, hook) {
-    let nodeHooks = plugins[type] = plugins[type] || {};
-    nodeHooks[nodeName] = hook;
+    if (isArray(type)) {
+		for (let i = 0; i < type.length; i++) {
+            registerSetupHooksForType(type[i], nodeName, hook);
+		}
+    } else {
+        registerSetupHooksForType(type, nodeName, hook);
+    }
 }
 
 export default function createListenerArguments(target, event) {
     let type = event.type;
     let nodeName = target.nodeName.toLowerCase();
     let tagHooks;
-    if ((tagHooks = plugins[type])) {
+    if ((tagHooks = setupHooks[type])) {
         let hook = tagHooks[nodeName];
         if (hook) {
             return hook(target, event);
