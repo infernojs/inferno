@@ -34,10 +34,10 @@ const Events = {
         registerSetupHooks(type, nodeName, hook) {
             if (isArray(type)) {
                 for (let i = 0; i < type.length; i++) {
-                    registerSetupHooksForType(type[i], nodeName, hook);
+                    Events.registerSetupHooksForType(type[i], nodeName, hook);
                 }
             } else {
-                registerSetupHooksForType(type, nodeName, hook);
+                Events.registerSetupHooksForType(type, nodeName, hook);
             }
         },
 
