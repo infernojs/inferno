@@ -111,20 +111,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	module.exports = {
-		Component: _Component2.default,
-		render: _render2.default,
-		renderToString: _renderToString2.default,
-		createFragment: _createFragment2.default,
-		createTemplate: _createTemplate2.default,
-		unmountComponentAtNode: _unmountComponentAtNode2.default,
-		FragmentValueTypes: _fragmentValueTypes2.default,
-		TemplateTypes: _templateTypes2.default,
-		clearDomElement: _clearDomElement2.default,
-		createRef: _createRef2.default,
-		registerAttributes: _registerAttributeHandlers2.default,
-		registerEventTypes: _createListenerArguments2.default,
-		registerEvents: _listenerSetup2.default
+	    Component: _Component2.default,
+	    render: _render2.default,
+	    renderToString: _renderToString2.default,
+	    createFragment: _createFragment2.default,
+	    createTemplate: _createTemplate2.default,
+	    unmountComponentAtNode: _unmountComponentAtNode2.default,
+	    FragmentValueTypes: _fragmentValueTypes2.default,
+	    TemplateTypes: _templateTypes2.default,
+	    clearDomElement: _clearDomElement2.default,
+	    createRef: _createRef2.default,
 	
+	    /**
+	        * 3rd party
+	        */
+	    registerAttributes: _registerAttributeHandlers2.default,
+	    registerEventTypes: _createListenerArguments2.default,
+	    registerEventHooks: _listenerSetup2.default
 	};
 
 /***/ },
