@@ -32,6 +32,19 @@ function rafDebounce(handler) {
 
 registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], rafDebounce);
 
+// 'wheel' is a special case, so let us fix it here
+const wheel = ('onwheel' in document || document.documentMode >= 9) ? 'wheel' : 'mousewheel';
+
+function wheelSetup(handler) {
+    let free = true;
+    return e => {
+
+        handler(e);
+    };
+}
+
+registerEventHooks(wheel, wheelSetup);
+
 export default function listenerSetup(type, handler) {
 	return event => {
 		let wrapper = eventHooks[type];

@@ -1311,6 +1311,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	registerEventHooks(['scroll', 'mousemove', 'drag', 'touchmove'], rafDebounce);
 	
+	// 'wheel' is a special case, so let us fix it here
+	var wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
+	
+	function wheelSetup(handler) {
+		var free = true;
+		return function (e) {
+	
+			handler(e);
+		};
+	}
+	
+	registerEventHooks(wheel, wheelSetup);
+	
 	function listenerSetup(type, handler) {
 		return function (event) {
 			var wrapper = eventHooks[type];
@@ -1884,11 +1897,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    });
 	                    document.addEventListener(_focusEvents2.default[this.type], handler);
 	                };
+	                // Feature detect Firefox
 	            } else {
-	                EventRegistry[type].setup = function () {
-	                    document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addRootDomEventListeners2.default), true);
-	                };
-	            }
+	                    EventRegistry[type].setup = function () {
+	                        document.addEventListener(this.type, (0, _listenerSetup2.default)(this.type, _addRootDomEventListeners2.default), true);
+	                    };
+	                }
 	        }
 	    }
 	
