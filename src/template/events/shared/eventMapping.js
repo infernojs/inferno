@@ -25,10 +25,11 @@ export default {
   onDrop: 'drop',
   onDurationChange: 'durationchange',
   onEmptied: 'emptied',
-  onEncrypted: 'encrypted',
   onEnded: 'ended',
   onError: 'error',
   onFocus: 'focus',
+  onFocusIn: 'focusin', // not supported by Firefox
+  onFocusOut: 'focusout', // not supported by Firefox
   onInput: 'input',
   onKeyDown: 'keydown',
   onKeyPress: 'keypress',

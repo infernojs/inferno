@@ -150,7 +150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _registerAttributeHandlers = __webpack_require__(74);
+	var _registerAttributeHandlers = __webpack_require__(71);
 	
 	Object.defineProperty(exports, 'registerAttributes', {
 	  enumerable: true,
@@ -1274,7 +1274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _requestAnimationFrame = __webpack_require__(79);
+	var _requestAnimationFrame = __webpack_require__(76);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -1439,7 +1439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _uuid = __webpack_require__(80);
+	var _uuid = __webpack_require__(77);
 	
 	var _uuid2 = _interopRequireDefault(_uuid);
 	
@@ -1833,18 +1833,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _capturableEvents = __webpack_require__(67);
-	
-	var _capturableEvents2 = _interopRequireDefault(_capturableEvents);
-	
-	var _nonBubbleableEvents = __webpack_require__(69);
-	
-	var _nonBubbleableEvents2 = _interopRequireDefault(_nonBubbleableEvents);
-	
-	var _focusEvents = __webpack_require__(68);
-	
-	var _focusEvents2 = _interopRequireDefault(_focusEvents);
-	
 	var _ExecutionEnvironment = __webpack_require__(14);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
@@ -1859,6 +1847,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var standardNativeEvents = ('click dblclick mouseup mousedown contextmenu ' + // mouse buttons
+	'wheel mousewheel ' + // mouse wheel
+	'mouseover mouseout mousemove selectstart ' + // mouse movement
+	'keydown keypress keyup ' + // keyboard
+	'copy cut paste ' + // text 
+	'change reset select submit focusout focusin' + // form elements
+	
+	// W3C native events
+	
+	'show ' + // mouse buttons
+	'input ' + // form elements
+	'touchstart touchmove touchend touchcancel ' + // touch
+	'textinput ' + // TextEvent
+	'focus blur ' + // Non-standard
+	'dragexit dragstart dragenter dragover dragleave drag drop dragend').split(' '); // dnd
+	
+	var focusEvents = {
+	    focus: 'focusin', // DOM L3
+	    blur: 'focusout' // DOM L3
+	};
+	
+	var nonBubbleableEvents = ('input invalid ' + // form elements
+	'load ' + // window
+	'select ' + // form elements
+	'orientationchange ' + // mobile
+	'unload beforeunload resize ' + // window
+	'seeked ended durationchange timeupdate play pause ratechange ' + // media
+	'loadstart progress suspend emptied stalled  ' + // media
+	'loadeddata canplay canplaythrough playing waiting seeking ' + // media
+	'volumechange ' + // media
+	'loadedmetadata scroll error abort mouseenter mouseover').split(' '); // misc
+	
 	var EventRegistry = {};
 	
 	if (_ExecutionEnvironment2.default.canUseDOM) {
@@ -1866,9 +1886,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var i = 0;
 	    var type = undefined;
 	
-	    for (; i < _capturableEvents2.default.length; i++) {
+	    for (; i < standardNativeEvents.length; i++) {
 	
-	        type = _capturableEvents2.default[i];
+	        type = standardNativeEvents[i];
 	
 	        EventRegistry[type] = {
 	            type: type,
@@ -1877,10 +1897,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            isActive: false
 	        };
 	
-	        if (_focusEvents2.default[type]) {
+	        // 'focus' and 'blur'
+	        if (focusEvents[type]) {
 	
-	            // 'focusOut' and 'focusIn' are not supported by Firefix
-	            //https://developer.mozilla.org/en-US/docs/Web/Events/focusout
 	            if (typeof InstallTrigger == 'undefined') {
 	
 	                EventRegistry[type].setup = function () {
@@ -1889,7 +1908,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var handler = (0, _listenerSetup2.default)(this.type, function (e) {
 	                        (0, _addInfernoRootListener2.default)(e, _this.type);
 	                    });
-	                    document.addEventListener(_focusEvents2.default[this.type], handler);
+	                    document.addEventListener(focusEvents[this.type], handler);
 	                };
 	                // Feature detect Firefox
 	            } else {
@@ -1901,8 +1920,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    // For non-bubbleable events - e.g. scroll - we are setting the events directly on the node
-	    for (i = 0; i < _nonBubbleableEvents2.default.length; i++) {
-	        EventRegistry[_nonBubbleableEvents2.default[i]] = {
+	    for (i = 0; i < nonBubbleableEvents.length; i++) {
+	        EventRegistry[nonBubbleableEvents[i]] = {
 	            type: type,
 	            isBubbling: false,
 	            isActive: false
@@ -2144,11 +2163,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _isFormElement = __webpack_require__(77);
+	var _isFormElement = __webpack_require__(74);
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
 	
-	var _getFormElementValues = __webpack_require__(71);
+	var _getFormElementValues = __webpack_require__(68);
 	
 	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
 	
@@ -2257,10 +2276,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onDrop: 'drop',
 	  onDurationChange: 'durationchange',
 	  onEmptied: 'emptied',
-	  onEncrypted: 'encrypted',
 	  onEnded: 'ended',
 	  onError: 'error',
 	  onFocus: 'focus',
+	  onFocusIn: 'focusin', // not supported by Firefox
+	  onFocusOut: 'focusout', // not supported by Firefox
 	  onInput: 'input',
 	  onKeyDown: 'keydown',
 	  onKeyPress: 'keypress',
@@ -2757,7 +2777,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(73);
+	var _quoteAttributeValueForBrowser = __webpack_require__(70);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3906,7 +3926,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _unitlessProperties = __webpack_require__(76);
+	var _unitlessProperties = __webpack_require__(73);
 	
 	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
 	
@@ -4130,7 +4150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _setDOMProperties = __webpack_require__(75);
+	var _setDOMProperties = __webpack_require__(72);
 	
 	var _setDOMProperties2 = _interopRequireDefault(_setDOMProperties);
 	
@@ -4287,42 +4307,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.default = ['mouseover', 'mousemove', 'mouseout', 'mousedown', 'mouseup', 'click', 'dblclick', 'keydown', 'keypress', 'keyup', 'change', 'input', 'submit', 'focus', 'blur', 'dragstart', 'drag', 'dragenter', 'dragover', 'dragleave', 'dragend', 'drop', 'contextmenu', 'wheel', 'copy', 'cut', 'paste'];
-
-/***/ },
-/* 68 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = {
-	    focus: 'focusin',
-	    blur: 'focusout'
-	};
-
-/***/ },
-/* 69 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = ['scroll', 'load', 'error', 'mouseenter', 'mouseover'];
-
-/***/ },
-/* 70 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
 	exports.default = getFormElementType;
 	function getFormElementType(node) {
 	    var name = node.nodeName.toLowerCase();
@@ -4340,7 +4324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 71 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4350,7 +4334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = getFormElementValues;
 	
-	var _getFormElementType = __webpack_require__(70);
+	var _getFormElementType = __webpack_require__(67);
 	
 	var _getFormElementType2 = _interopRequireDefault(_getFormElementType);
 	
@@ -4397,7 +4381,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 72 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4455,7 +4439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 73 */
+/* 70 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4489,7 +4473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var endOfText = '\u0003';
 
 /***/ },
-/* 74 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4578,7 +4562,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = registerAttributeHandlers;
 
 /***/ },
-/* 75 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4604,7 +4588,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(72);
+	var _processFragmentAttrs = __webpack_require__(69);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -4658,7 +4642,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 76 */
+/* 73 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4709,7 +4693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 77 */
+/* 74 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4724,7 +4708,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isFormElement;
 
 /***/ },
-/* 78 */
+/* 75 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4736,7 +4720,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = function () {};
 
 /***/ },
-/* 79 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4750,7 +4734,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
-	var _noop = __webpack_require__(78);
+	var _noop = __webpack_require__(75);
 	
 	var _noop2 = _interopRequireDefault(_noop);
 	
@@ -4788,7 +4772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.cancelAnimationFrame = cancelAnimationFrame;
 
 /***/ },
-/* 80 */
+/* 77 */
 /***/ function(module, exports) {
 
 	'use strict';

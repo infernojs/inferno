@@ -1,9 +1,40 @@
-import capturableEvents from './shared/capturableEvents';
-import nonBubbleableEvents from './shared/nonBubbleableEvents';
-import focusEvents from './shared/focusEvents';
 import ExecutionEnvironment from '../../util/ExecutionEnvironment';
 import addInfernoRootListener from './addInfernoRootListener';
 import listenerSetup from './hooks/listenerSetup';
+
+const standardNativeEvents =
+    ('click dblclick mouseup mousedown contextmenu '             + // mouse buttons
+    'wheel mousewheel '                                          + // mouse wheel
+    'mouseover mouseout mousemove selectstart '                  + // mouse movement
+    'keydown keypress keyup '                                    + // keyboard
+    'copy cut paste '                                            + // text  
+    'change reset select submit focusout focusin'                + // form elements
+
+    // W3C native events
+
+    'show '                                                      + // mouse buttons
+    'input '                                                     + // form elements
+    'touchstart touchmove touchend touchcancel '                 + // touch
+    'textinput '                                                 + // TextEvent
+    'focus blur '                                                + // Non-standard
+    'dragexit dragstart dragenter dragover dragleave drag drop dragend').split(' ') // dnd
+
+const focusEvents = {
+    focus: 'focusin', // DOM L3
+    blur: 'focusout'  // DOM L3
+};
+
+const nonBubbleableEvents = 
+('input invalid '                                                + // form elements
+ 'load '                                                         + // window
+ 'select '                                                       + // form elements
+ 'orientationchange '                                            + // mobile
+ 'unload beforeunload resize '                                   + // window
+ 'seeked ended durationchange timeupdate play pause ratechange ' + // media
+ 'loadstart progress suspend emptied stalled  '                  + // media
+ 'loadeddata canplay canplaythrough playing waiting seeking '    + // media
+ 'volumechange '                                                 + // media
+ 'loadedmetadata scroll error abort mouseenter mouseover').split(' '); // misc
 
 let EventRegistry = {};
 
@@ -12,9 +43,9 @@ if (ExecutionEnvironment.canUseDOM) {
     let i = 0;
     let type;
 
-    for (; i < capturableEvents.length; i++) {
+    for (; i < standardNativeEvents.length; i++) {
 
-        type = capturableEvents[i];
+        type = standardNativeEvents[i];
 
         EventRegistry[type] = {
             type: type,
@@ -23,10 +54,9 @@ if (ExecutionEnvironment.canUseDOM) {
             isActive: false
         };
 
+        // 'focus' and 'blur'
         if (focusEvents[type]) {
 
-            // 'focusOut' and 'focusIn' are not supported by Firefix
-            //https://developer.mozilla.org/en-US/docs/Web/Events/focusout
             if ((typeof InstallTrigger == 'undefined')) {
 
                 EventRegistry[type].setup = function() {
