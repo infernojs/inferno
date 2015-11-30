@@ -84,7 +84,7 @@ if (ExecutionEnvironment.canUseDOM) {
               // firefox doesn't support focusin/focusout events
             } else {
                 EventRegistry[type]._focusBlur = function() {
-					const _type = this._type;
+                    const _type = this._type;
                     document.addEventListener(
                         _type,
                         setHandler(_type, addRootListener).handler,
