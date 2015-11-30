@@ -2,39 +2,52 @@ import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import addRootListener from './addRootListener';
 import setHandler from './setHandler';
 
-const standardNativeEvents =
-    ('click dblclick mouseup mousedown contextmenu '             + // mouse buttons
-    'wheel mousewheel '                                          + // mouse wheel
-    'mouseover mouseout mousemove selectstart '                  + // mouse movement
-    'keydown keypress keyup '                                    + // keyboard
-    'copy cut paste '                                            + // text  
-    'change reset select submit focusout focusin'                + // form elements
+const standardNativeEvents = [
+ 'click', 'dblclick', 'mouseup', 'mousedown', 'contextmenu', // mouse buttons
+ 'wheel', 'mousewheel',                                      // mouse wheel
+ 'mouseover', 'mouseout', 'mousemove', 'selectstart',        // mouse movement
+ 'keydown', 'keypress', 'keyup',                             // keyboard
+ 'copy cut paste ',                                          // text
+ 'change reset select submit focusout focusin',              // form elements
 
-    // W3C native events
+ // W3C native events
+ 'show',                                                     // mouse buttons
+ 'input',                                                    // form elements
+ 'touchstart', 'touchmove', 'touchend', 'touchcancel',       // touch
+ 'textinput',                                                // TextEvent
+ 'focus', 'blur',                                            // Non-standard
 
-    'show '                                                      + // mouse buttons
-    'input '                                                     + // form elements
-    'touchstart touchmove touchend touchcancel '                 + // touch
-    'textinput '                                                 + // TextEvent
-    'focus blur '                                                + // Non-standard
-    'dragexit dragstart dragenter dragover dragleave drag drop dragend').split(' ') // dnd
+ // dnd
+ 'drag', 'drop',
+ 'dragstart', 'dragend',
+ 'dragenter', 'dragleave',
+ 'dragover',
+ 'dragexit'                                                  // Not supported
+];
 
 const focusEvents = {
     focus: 'focusin', // DOM L3
     blur: 'focusout'  // DOM L3
 };
 
-const nonBubbleableEvents = 
-('input invalid '                                                + // form elements
- 'load '                                                         + // window
- 'select '                                                       + // form elements
- 'orientationchange '                                            + // mobile
- 'unload beforeunload resize '                                   + // window
- 'seeked ended durationchange timeupdate play pause ratechange ' + // media
- 'loadstart progress suspend emptied stalled  '                  + // media
- 'loadeddata canplay canplaythrough playing waiting seeking '    + // media
- 'volumechange '                                                 + // media
- 'loadedmetadata scroll error abort mouseenter mouseover').split(' '); // misc
+const nonBubbleableEvents = [
+ 'input', 'invalid',                                             // form elements
+ 'select',                                                       // form elements
+ 'load',                                                         // window
+ 'unload', 'beforeunload', 'resize',                             // window
+ 'orientationchange',                                            // mobile
+
+ // Media
+ 'seeked', 'ended', 'durationchange', 'timeupdate', 'play',      // media
+ 'pause', 'ratechange', 'loadstart', 'progress', 'suspend',      // media
+ 'emptied', 'stalled', 'loadeddata', 'canplay',                  // media
+ 'canplaythrough','playing', 'waiting', 'seeking',               // media
+ 'volumechange',                                                 // media
+
+  // Misc Events
+ 'loadedmetadata', 'scroll', 'error', 'abort',                   // misc
+ 'mouseenter', 'mouseover'                                       // misc
+];
 
 let EventRegistry = {};
 
@@ -62,7 +75,7 @@ if (ExecutionEnvironment.canUseDOM) {
                 EventRegistry[type].setup = function() {
                     let handler = setHandler(this.type, e => {
                         addRootListener(e, this.type);
-                    });
+                    }).handler;
                     document.addEventListener(focusEvents[this.type], handler);
                 };
                 // Feature detect Firefox
@@ -70,7 +83,7 @@ if (ExecutionEnvironment.canUseDOM) {
                 EventRegistry[type].setup = function() {
                     document.addEventListener(
                         this.type,
-                        setHandler(this.type, addRootListener),
+                        setHandler(this.type, addRootListener).handler,
                         true);
                 };
             }
