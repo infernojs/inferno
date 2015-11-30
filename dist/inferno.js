@@ -1988,6 +1988,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var i = 0;
 	    var type = undefined;
 	
+	    var nativeFocus = 'onfocusin' in document.documentElement;
+	
 	    for (; i < standardNativeEvents.length; i++) {
 	
 	        type = standardNativeEvents[i];
@@ -2002,7 +2004,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // 'focus' and 'blur'
 	        if (focusEvents[type]) {
 	
-	            if (typeof InstallTrigger == 'undefined') {
+	            if (nativeFocus) {
 	
 	                EventRegistry[type].setup = function () {
 	                    var _this = this;
@@ -4491,7 +4493,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            result.push(option.value);
 	        }
 	    }
-	    return result.length === 0 ? null : result;
+	    return result;
 	}
 	
 	function getFormElementValues(node) {

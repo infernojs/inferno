@@ -80,7 +80,7 @@ if (ExecutionEnvironment.canUseDOM) {
                     }).handler;
                     document.addEventListener(focusEvents[this.type], handler);
                 };
-                // Feature detect Firefox
+              // firefox doesn't support focusin/focusout events
             } else {
                 EventRegistry[type].setup = function() {
                     document.addEventListener(
