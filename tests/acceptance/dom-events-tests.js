@@ -1,5 +1,7 @@
 import Inferno from '../../src';
 import Event from '../../src/events';
+import addListener from '../../src/events/addListener';
+import removeListener from '../../src/events/removeListener';
 import triggerEvent from '../tools/triggerEvent';
 
 export default function domOperationTests(describe, expect) {
@@ -16,6 +18,7 @@ export default function domOperationTests(describe, expect) {
         afterEach(() => {
             Inferno.clearDomElement(container);
         });
+
 
         it('should properly add handler and work with the "click" event', () => {
             let called = 0;
