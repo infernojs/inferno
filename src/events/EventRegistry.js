@@ -17,11 +17,11 @@ const standardNativeEvents = [
  'textinput',                                                // TextEvent
  'focus', 'blur',                                            // Non-standard
 
- // dnd
- 'drag', 'drop',
- 'dragstart', 'dragend',
- 'dragenter', 'dragleave',
- 'dragover',
+ // Drag and Drop events
+ 'drag', 'drop',                                             // dnd
+ 'dragstart', 'dragend',                                     // dnd
+ 'dragenter', 'dragleave',                                   // dnd
+ 'dragover',                                                 // dnd
  'dragexit'                                                  // Not supported
 ];
 
