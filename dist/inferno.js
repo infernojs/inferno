@@ -3712,7 +3712,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var wheel = 'wheel'; // default: 'wheel'
 	
 	if (_ExecutionEnvironment2.default.canUseDOM) {
-	
 		// 'wheel' is a special case
 		wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
 	}
