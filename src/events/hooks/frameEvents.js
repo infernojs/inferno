@@ -1,12 +1,15 @@
 import { requestAnimationFrame } from '../../util/requestAnimationFrame';
 import registerEventHooks from './registerEventHooks';
 
-registerEventHooks([
+const frameEvents = [
     'scroll',
     'mousemove',
     'drag',
+    'dragover',
     'touchmove'
-], function(listener) {
+];
+
+registerEventHooks(frameEvents, function(listener) {
     let rafId = 0;
     const handler = e => {
         if (!rafId) {
