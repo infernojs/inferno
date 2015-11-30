@@ -12,53 +12,64 @@ let Events = {};
 
 if (ExecutionEnvironment.canUseDOM) {
 
-Events = {
+    Events = {
 
-	/**
-     * @param {string} type is a type of event
-     */
-    isRegistered(type) {
+        /**
+         * @param {string} type is a type of event
+         * @return {boolean} True if event are registered.
+         */
+        isRegistered(type) {
+                return !!(
+                    EventRegistry[type] &&
+                    EventRegistry[type]._enabled
+                );
+            },
+            /**
+             * @param {string} type is a type of event
+             * @param {string} nodeName is a DOM node type
+             * @param {function} hook is a function(element, event) -> [args...]
+             */
+            registerSetupHooksForType(type, nodeName, hook) {
 
-       const registry = EventRegistry[type];
-       
-	   return registry && registry._enabled 
-            ? true
-            : false;
-    },
-	
-	/**
-     * @param {string} type is a type of event
-     * @param {string} nodeName is a DOM node type
-     * @param {function} hook is a function(element, event) -> [args...]
-     */
-    registerSetupHooksForType(type, nodeName, hook) {
-        let nodeHooks = setupHooks[type] || (setupHooks[type] = {});
-        if (isArray(nodeName)) {
-            for (let i = 0; i < nodeName.length; i++) {
-                nodeHooks[nodeName[i]] = hook;
-            }
-        } else {
-            nodeHooks[nodeName] = hook;
-        }
-    },
+                if (!type) {
+                    return;
+                }
 
-    /**
-     * @param {string} type is a type of event
-     * @param {string} nodeName is a DOM node type
-     * @param {function} hook is a function(element, event) -> [args...]
-     */
-    registerSetupHooks(type, nodeName, hook) {
-        if (isArray(type)) {
-            for (let i = 0; i < type.length; i++) {
-                Events.registerSetupHooksForType(type[i], nodeName, hook);
-            }
-        } else {
-            Events.registerSetupHooksForType(type, nodeName, hook);
-        }
-    },
+                let nodeHooks = setupHooks[type] || (setupHooks[type] = {});
 
-    registerEventHooks
-};
+                if (typeof nodeName === 'object') {
+                    if (isArray(nodeName)) {
+                        for (let i = 0; i < nodeName.length; i++) {
+                            nodeHooks[nodeName[i]] = hook;
+                        }
+                    }
+                } else { // TODO! What if this is not a string?
+                    nodeHooks[nodeName] = hook;
+                }
+            },
+
+            /**
+             * @param {string} type is a type of event
+             * @param {string} nodeName is a DOM node type
+             * @param {function} hook is a function(element, event) -> [args...]
+             */
+            registerSetupHooks(type, nodeName, hook) {
+                if (!type) {
+                    return;
+                }
+                if (typeof nodeName === 'object') {
+                    if (isArray(type)) {
+                        for (let i = 0; i < type.length; i++) {
+                            Events.registerSetupHooksForType(type[i], nodeName, hook);
+                        }
+                    }
+                } else { // TODO! What if this is not a string?
+                    Events.registerSetupHooksForType(type, nodeName, hook);
+                }
+            },
+
+            registerEventHooks
+    };
 
 }
 

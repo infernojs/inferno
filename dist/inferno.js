@@ -744,6 +744,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // 'focus' and 'blur'
 	        if (_focusEvents2.default[type]) {
 	
+	            // IE has `focusin` and `focusout` events which bubble.
+	            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
 	            EventRegistry[type]._focusBlur = nativeFocus ? function () {
 	                var _type = this._type;
 	                var handler = (0, _setHandler2.default)(_type, function (e) {
@@ -758,7 +760,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            };
 	        }
 	    }
-	
 	    // For non-bubbleable events - e.g. scroll - we are setting the events directly on the node
 	    for (i = 0; i < nonBubbleableEvents.length; i++) {
 	        type = nonBubbleableEvents[i];
@@ -3761,6 +3762,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
 	var Events = {};
 	
 	// Don't expose Events interface for server side
@@ -3772,28 +3775,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Events = {
 	
 	        /**
-	            * @param {string} type is a type of event
-	            */
+	         * @param {string} type is a type of event
+	         * @return {boolean} True if event are registered.
+	         */
 	
 	        isRegistered: function isRegistered(type) {
-	
-	            var registry = _EventRegistry2.default[type];
-	
-	            return registry && registry._enabled ? true : false;
+	            return !!(_EventRegistry2.default[type] && _EventRegistry2.default[type]._enabled);
 	        },
 	
 	        /**
-	            * @param {string} type is a type of event
-	            * @param {string} nodeName is a DOM node type
-	            * @param {function} hook is a function(element, event) -> [args...]
-	            */
+	         * @param {string} type is a type of event
+	         * @param {string} nodeName is a DOM node type
+	         * @param {function} hook is a function(element, event) -> [args...]
+	         */
 	        registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
+	
+	            if (!type) {
+	                return;
+	            }
+	
 	            var nodeHooks = _setupHooks2.default[type] || (_setupHooks2.default[type] = {});
-	            if ((0, _isArray2.default)(nodeName)) {
-	                for (var i = 0; i < nodeName.length; i++) {
-	                    nodeHooks[nodeName[i]] = hook;
+	
+	            if ((typeof nodeName === 'undefined' ? 'undefined' : _typeof(nodeName)) === 'object') {
+	                if ((0, _isArray2.default)(nodeName)) {
+	                    for (var i = 0; i < nodeName.length; i++) {
+	                        nodeHooks[nodeName[i]] = hook;
+	                    }
 	                }
 	            } else {
+	                // TODO! What if this is not a string?
 	                nodeHooks[nodeName] = hook;
 	            }
 	        },
@@ -3804,11 +3814,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @param {function} hook is a function(element, event) -> [args...]
 	         */
 	        registerSetupHooks: function registerSetupHooks(type, nodeName, hook) {
-	            if ((0, _isArray2.default)(type)) {
-	                for (var i = 0; i < type.length; i++) {
-	                    Events.registerSetupHooksForType(type[i], nodeName, hook);
+	            if (!type) {
+	                return;
+	            }
+	            if ((typeof nodeName === 'undefined' ? 'undefined' : _typeof(nodeName)) === 'object') {
+	                if ((0, _isArray2.default)(type)) {
+	                    for (var i = 0; i < type.length; i++) {
+	                        Events.registerSetupHooksForType(type[i], nodeName, hook);
+	                    }
 	                }
 	            } else {
+	                // TODO! What if this is not a string?
 	                Events.registerSetupHooksForType(type, nodeName, hook);
 	            }
 	        },

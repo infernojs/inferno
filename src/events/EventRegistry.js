@@ -72,6 +72,8 @@ if (ExecutionEnvironment.canUseDOM) {
         // 'focus' and 'blur'
         if (focusEvents[type]) {
 
+            // IE has `focusin` and `focusout` events which bubble.
+            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
             EventRegistry[type]._focusBlur = nativeFocus ? function() {
                     const _type = this._type;
                     let handler = setHandler(_type, e => {
@@ -87,9 +89,8 @@ if (ExecutionEnvironment.canUseDOM) {
                         setHandler(_type, addRootListener).handler,
                         true);
                 };
-        }    
-	}
-
+        }
+    }
     // For non-bubbleable events - e.g. scroll - we are setting the events directly on the node
     for (i = 0; i < nonBubbleableEvents.length; i++) {
         type = nonBubbleableEvents[i];
