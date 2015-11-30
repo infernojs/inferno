@@ -5,9 +5,9 @@ import listenersStorage from './listenersStorage';
 import setHandler from './setHandler';
 import createEventListener from './createEventListener';
 import isArray from '../util/isArray';
+import setupHooks from './shared/setupHooks';
 import eventHooks from './shared/eventHooks';
 import eventListener from './shared/eventListener';
-import { requestAnimationFrame } from '../util/requestAnimationFrame';
 
 const Events = {
 
@@ -23,9 +23,9 @@ const Events = {
         },
 
         /**
-         * type is a type of event
-         * nodeName is a DOM node type
-         * hook is a function(element, event) -> [args...]
+         * @param {string} type is a type of event
+         * @param {string} nodeName is a DOM node type
+         * @param {function} hook is a function(element, event) -> [args...]
          */
         registerSetupHooks(type, nodeName, hook) {
             if (isArray(type)) {
@@ -39,7 +39,6 @@ const Events = {
 
         /**
          * Register a wrapper around all events of a certain type
-         * example: rafDebounce
          */
         registerEventHooks(type, hook) {
             if (isArray(type)) {
@@ -56,7 +55,6 @@ const Events = {
          */
 
         addListener(node, type, listener) {
-
             const registry = EventRegistry[type];
             // only add listeners for registered events
             if (registry) {
@@ -67,7 +65,7 @@ const Events = {
                     if (registry.setup) {
                         registry.setup();
                     } else if (registry.isBubbling) {
-                        let handler = setHandler(type, addRootListener);
+                        let handler = setHandler(type, addRootListener).handler;
                         document.addEventListener(type, handler, false);
                     }
 
@@ -77,17 +75,19 @@ const Events = {
                 const nodeID = InfernoNodeID(node),
                     listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
 
-                if (!listeners[type]) {
-
-                    if (registry.isBubbling) {
-                        ++registry.counter;
-                    } else {
-						eventListener[type] = eventListener[type] || createEventListener(type);
-                        node.addEventListener(type, eventListener[type], false);
-                    }
+                if (listeners[type]) {
+                    throw Error('Inferno Error: ' + type + ' has already been attached to nodeID ' + nodeID);
                 }
 
-                listeners[type] = listener;
+                if (registry.isBubbling) {
+                    ++registry.counter;
+                    listeners[type] = { handler: listener };
+                } else {
+                    eventListener[type] = eventListener[type] || createEventListener(type);
+                    node.addEventListener(type, eventListener[type], false);
+                    listeners[type] = setHandler(type, listener);
+                }
+
             } else {
 
                 throw Error('Inferno Error: ' + type + ' has not been registered, and therefor not supported.');
@@ -104,6 +104,9 @@ const Events = {
                 const listeners = listenersStorage[nodeID];
 
                 if (listeners && listeners[type]) {
+                    if (listeners[type] && listeners[type].destroy) {
+                        listeners[type].destroy();
+                    }
                     listeners[type] = null;
 
                     const registry = EventRegistry[type];
@@ -122,35 +125,7 @@ const Events = {
 
 /**** HOOKS ******/
 
-Events.registerEventHooks(['scroll',
-    'mousemove',
-    'drag',
-    'touchmove'
-], {
-    setup: function(handler) {
-        let free = true;
-        return e => {
-            if (free) {
-                free = false;
-                requestAnimationFrame(() => {
-                    handler(e);
-                    free = true;
-                });
-            }
-        };
-    }
-});
-
-// 'wheel' is a special case, so let us fix it here
-const wheel = ('onwheel' in document || document.documentMode >= 9) ? 'wheel' : 'mousewheel';
-
-Events.registerEventHooks(wheel, {
-    setup: function(handler) {
-        let free = true;
-        return e => {
-            handler(e);
-        };
-    }
-});
+import register from './hooks';
+register(Events.registerEventHooks);
 
 export default Events;

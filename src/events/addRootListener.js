@@ -32,7 +32,7 @@ export default function addRootListener(e, type) {
 		&& target !== document.parentNode) {
 		if( (nodeID = InfernoNodeID(target, true)) ) {
 			listeners = listenersStorage[nodeID];
-			if(listeners && (listener = listeners[type])) {
+			if(listeners && listeners[type] && (listener = listeners[type].handler)) {
 				// lazily instantiate additional arguments in the case
 				// where an event handler takes more than one argument
 				// listener is a function, and length is the number of
