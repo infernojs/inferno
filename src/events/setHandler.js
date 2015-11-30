@@ -6,8 +6,8 @@ import eventHooks from './shared/eventHooks';
  * attached.
  *
  * @param {string} type
- * @param {function} handler
- * @return {function} wrapped handler
+ * @param {Function} handler
+ * @return {Function} wrapped handler
 */
 export default function setHandler(type, handler) {
 	let wrapper = eventHooks[type];
