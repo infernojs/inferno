@@ -1,16 +1,14 @@
-import InfernoNodeID from './InfernoNodeID';
-import addRootListener from './addRootListener';
-import EventRegistry from './EventRegistry';
 import registerEventHooks from './hooks/registerEventHooks';
-import listenersStorage from './listenersStorage';
-import setHandler from './setHandler';
-import createEventListener from './createEventListener';
 import isArray from '../util/isArray';
 import setupHooks from './shared/setupHooks';
-import eventListener from './shared/eventListener';
 
 const Events = {
 
+    /**
+     * @param {string} type is a type of event
+     * @param {string} nodeName is a DOM node type
+     * @param {function} hook is a function(element, event) -> [args...]
+     */
     registerSetupHooksForType(type, nodeName, hook) {
         let nodeHooks = setupHooks[type] || (setupHooks[type] = {});
         if (isArray(nodeName)) {

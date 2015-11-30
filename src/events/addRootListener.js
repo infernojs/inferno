@@ -1,5 +1,5 @@
 import InfernoNodeID  from './InfernoNodeID';
-import listenersStorage from './listenersStorage';
+import listenersStorage from './shared/listenersStorage';
 import EventRegistry from './EventRegistry';
 import setupEvents from './setupEvents';
 import createListenerArguments from './createListenerArguments';

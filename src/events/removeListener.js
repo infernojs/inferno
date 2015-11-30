@@ -1,6 +1,6 @@
 import InfernoNodeID from './InfernoNodeID';
 import EventRegistry from './EventRegistry';
-import listenersStorage from './listenersStorage';
+import listenersStorage from './shared/listenersStorage';
 import eventListener from './shared/eventListener';
 
 /**

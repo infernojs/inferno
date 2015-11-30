@@ -1,4 +1,4 @@
-import listenersStorage from './listenersStorage';
+import listenersStorage from './shared/listenersStorage';
 import createListenerArguments from './createListenerArguments';
 import InfernoNodeID from './InfernoNodeID';
 
