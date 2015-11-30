@@ -72,27 +72,23 @@ if (ExecutionEnvironment.canUseDOM) {
         // 'focus' and 'blur'
         if (focusEvents[type]) {
 
-            if (nativeFocus) {
-
-                EventRegistry[type]._focusBlur = function() {
+            EventRegistry[type]._focusBlur = nativeFocus ? function() {
                     const _type = this._type;
                     let handler = setHandler(_type, e => {
                         addRootListener(e, _type);
                     }).handler;
                     document.addEventListener(focusEvents[_type], handler);
-                };
-              // firefox doesn't support focusin/focusout events
-            } else {
-                EventRegistry[type]._focusBlur = function() {
+                }
+                // firefox doesn't support focusin/focusout events
+                : function() {
                     const _type = this._type;
                     document.addEventListener(
                         _type,
                         setHandler(_type, addRootListener).handler,
                         true);
                 };
-            }
-        }
-    }
+        }    
+	}
 
     // For non-bubbleable events - e.g. scroll - we are setting the events directly on the node
     for (i = 0; i < nonBubbleableEvents.length; i++) {

@@ -83,7 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _Component2 = _interopRequireDefault(_Component);
 	
-	var _render = __webpack_require__(7);
+	var _render = __webpack_require__(8);
 	
 	var _render2 = _interopRequireDefault(_render);
 	
@@ -190,11 +190,11 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _removeFragment = __webpack_require__(6);
+	var _removeFragment = __webpack_require__(7);
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
-	var _attachFragment = __webpack_require__(4);
+	var _attachFragment = __webpack_require__(5);
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
@@ -210,7 +210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _unmountComponentAtFragment2 = _interopRequireDefault(_unmountComponentAtFragment);
 	
-	var _removeComponent = __webpack_require__(5);
+	var _removeComponent = __webpack_require__(6);
 	
 	var _removeComponent2 = _interopRequireDefault(_removeComponent);
 	
@@ -258,6 +258,37 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+	
+	/**
+	 * Simple, lightweight module assisting with the detection and context of
+	 * Worker. Helps avoid circular dependencies and allows code to reason about
+	 * whether or not they are in a Worker, even if they never include the main
+	 * `ReactWorker` dependency.
+	 */
+	exports.default = {
+	
+	  canUseDOM: canUseDOM,
+	
+	  canUseWorkers: typeof Worker !== 'undefined',
+	
+	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
+	
+	  canUseViewport: canUseDOM && !!window.screen,
+	
+	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
+	
+	};
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -487,7 +518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = attachFragment;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -521,7 +552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -545,7 +576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -563,7 +594,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
-	var _attachFragment = __webpack_require__(4);
+	var _attachFragment = __webpack_require__(5);
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
@@ -619,7 +650,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -636,7 +667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -649,37 +680,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * DOMNodeId -> type -> listener
 	 */
 	exports.default = {};
-
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-	
-	/**
-	 * Simple, lightweight module assisting with the detection and context of
-	 * Worker. Helps avoid circular dependencies and allows code to reason about
-	 * whether or not they are in a Worker, even if they never include the main
-	 * `ReactWorker` dependency.
-	 */
-	exports.default = {
-	
-	  canUseDOM: canUseDOM,
-	
-	  canUseWorkers: typeof Worker !== 'undefined',
-	
-	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
-	
-	  canUseViewport: canUseDOM && !!window.screen,
-	
-	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
-	
-	};
 
 /***/ },
 /* 11 */
@@ -800,7 +800,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _ExecutionEnvironment = __webpack_require__(10);
+	var _ExecutionEnvironment = __webpack_require__(4);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -885,22 +885,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // 'focus' and 'blur'
 	        if (_focusEvents2.default[type]) {
 	
-	            if (nativeFocus) {
-	
-	                EventRegistry[type]._focusBlur = function () {
-	                    var _type = this._type;
-	                    var handler = (0, _setHandler2.default)(_type, function (e) {
-	                        (0, _addRootListener2.default)(e, _type);
-	                    }).handler;
-	                    document.addEventListener(_focusEvents2.default[_type], handler);
-	                };
-	                // firefox doesn't support focusin/focusout events
-	            } else {
-	                    EventRegistry[type]._focusBlur = function () {
-	                        var _type = this._type;
-	                        document.addEventListener(_type, (0, _setHandler2.default)(_type, _addRootListener2.default).handler, true);
-	                    };
-	                }
+	            EventRegistry[type]._focusBlur = nativeFocus ? function () {
+	                var _type = this._type;
+	                var handler = (0, _setHandler2.default)(_type, function (e) {
+	                    (0, _addRootListener2.default)(e, _type);
+	                }).handler;
+	                document.addEventListener(_focusEvents2.default[_type], handler);
+	            }
+	            // firefox doesn't support focusin/focusout events
+	            : function () {
+	                var _type = this._type;
+	                document.addEventListener(_type, (0, _setHandler2.default)(_type, _addRootListener2.default).handler, true);
+	            };
 	        }
 	    }
 	
@@ -1486,7 +1482,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _attachFragment = __webpack_require__(4);
+	var _attachFragment = __webpack_require__(5);
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
@@ -1587,7 +1583,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = unmountComponentAtFragment;
 	
-	var _removeComponent = __webpack_require__(5);
+	var _removeComponent = __webpack_require__(6);
 	
 	var _removeComponent2 = _interopRequireDefault(_removeComponent);
 	
@@ -1621,7 +1617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = unmountComponentAtNode;
 	
-	var _removeFragment = __webpack_require__(6);
+	var _removeFragment = __webpack_require__(7);
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
@@ -1685,7 +1681,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeFragments2 = _interopRequireDefault(_removeFragments);
 	
-	var _removeFragment = __webpack_require__(6);
+	var _removeFragment = __webpack_require__(7);
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
@@ -1693,7 +1689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _attachFragmentList2 = _interopRequireDefault(_attachFragmentList);
 	
-	var _attachFragment = __webpack_require__(4);
+	var _attachFragment = __webpack_require__(5);
 	
 	var _attachFragment2 = _interopRequireDefault(_attachFragment);
 	
@@ -1849,7 +1845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = addListener;
 	
-	var _InfernoNodeID = __webpack_require__(8);
+	var _InfernoNodeID = __webpack_require__(9);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
@@ -1861,7 +1857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _listenersStorage = __webpack_require__(9);
+	var _listenersStorage = __webpack_require__(10);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -1945,11 +1941,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = addRootListener;
 	
-	var _InfernoNodeID = __webpack_require__(8);
+	var _InfernoNodeID = __webpack_require__(9);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
-	var _listenersStorage = __webpack_require__(9);
+	var _listenersStorage = __webpack_require__(10);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -2640,7 +2636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _ExecutionEnvironment = __webpack_require__(10);
+	var _ExecutionEnvironment = __webpack_require__(4);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -3027,7 +3023,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _bind2 = _interopRequireDefault(_bind);
 	
-	var _render = __webpack_require__(7);
+	var _render = __webpack_require__(8);
 	
 	var _render2 = _interopRequireDefault(_render);
 	
@@ -3288,7 +3284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _removeFragment = __webpack_require__(6);
+	var _removeFragment = __webpack_require__(7);
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
@@ -3311,7 +3307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = renderToString;
 	
-	var _render = __webpack_require__(7);
+	var _render = __webpack_require__(8);
 	
 	var _render2 = _interopRequireDefault(_render);
 	
@@ -3361,7 +3357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
-	var _removeComponent = __webpack_require__(5);
+	var _removeComponent = __webpack_require__(6);
 	
 	var _removeComponent2 = _interopRequireDefault(_removeComponent);
 	
@@ -3468,7 +3464,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
-	var _removeComponent = __webpack_require__(5);
+	var _removeComponent = __webpack_require__(6);
 	
 	var _removeComponent2 = _interopRequireDefault(_removeComponent);
 	
@@ -3553,7 +3549,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createEventListener;
 	
-	var _listenersStorage = __webpack_require__(9);
+	var _listenersStorage = __webpack_require__(10);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -3561,7 +3557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createListenerArguments2 = _interopRequireDefault(_createListenerArguments);
 	
-	var _InfernoNodeID = __webpack_require__(8);
+	var _InfernoNodeID = __webpack_require__(9);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
@@ -3707,10 +3703,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
 	
+	var _ExecutionEnvironment = __webpack_require__(4);
+	
+	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// 'wheel' is a special case
-	var wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
+	var wheel = 'wheel'; // default: 'wheel'
+	
+	if (_ExecutionEnvironment2.default.canUseDOM) {
+	
+		// 'wheel' is a special case
+		wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
+	}
 	
 	(0, _registerEventHooks2.default)(wheel, function (handler) {
 		return { handler: handler };
@@ -3734,7 +3739,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _ExecutionEnvironment = __webpack_require__(10);
+	var _ExecutionEnvironment = __webpack_require__(4);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -3806,7 +3811,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = removeListener;
 	
-	var _InfernoNodeID = __webpack_require__(8);
+	var _InfernoNodeID = __webpack_require__(9);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
@@ -3814,7 +3819,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _listenersStorage = __webpack_require__(9);
+	var _listenersStorage = __webpack_require__(10);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -4317,7 +4322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _render = __webpack_require__(7);
+	var _render = __webpack_require__(8);
 	
 	var _render2 = _interopRequireDefault(_render);
 	
@@ -4840,7 +4845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.cancelAnimationFrame = exports.requestAnimationFrame = undefined;
 	
-	var _ExecutionEnvironment = __webpack_require__(10);
+	var _ExecutionEnvironment = __webpack_require__(4);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
