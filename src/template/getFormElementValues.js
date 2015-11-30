@@ -19,7 +19,7 @@ function selectValues(node) {
             result.push(option.value);
         }
     }
-    return result.length === 0 ? null : result;
+    return result;
 }
 
 export default function getFormElementValues(node) {
