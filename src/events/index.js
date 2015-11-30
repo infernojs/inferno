@@ -1,8 +1,11 @@
 import registerEventHooks from './hooks/registerEventHooks';
 import isArray from '../util/isArray';
+import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import setupHooks from './shared/setupHooks';
 
 const Events = {
+     
+	 WINDOW_HANDLE: ExecutionEnvironment.canUseDOM ? window : null,
 
     /**
      * @param {string} type is a type of event

@@ -99,7 +99,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
 	
-	var _templateTypes = __webpack_require__(13);
+	var _templateTypes = __webpack_require__(14);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
@@ -290,7 +290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _bind2 = _interopRequireDefault(_bind);
 	
-	var _templateTypes = __webpack_require__(13);
+	var _templateTypes = __webpack_require__(14);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
@@ -497,7 +497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = removeComponent;
 	
-	var _removeContext = __webpack_require__(11);
+	var _removeContext = __webpack_require__(12);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
@@ -559,7 +559,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _contexts2 = _interopRequireDefault(_contexts);
 	
-	var _getContext = __webpack_require__(10);
+	var _getContext = __webpack_require__(11);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
@@ -652,6 +652,37 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+	
+	/**
+	 * Simple, lightweight module assisting with the detection and context of
+	 * Worker. Helps avoid circular dependencies and allows code to reason about
+	 * whether or not they are in a Worker, even if they never include the main
+	 * `ReactWorker` dependency.
+	 */
+	exports.default = {
+	
+	  canUseDOM: canUseDOM,
+	
+	  canUseWorkers: typeof Worker !== 'undefined',
+	
+	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
+	
+	  canUseViewport: canUseDOM && !!window.screen,
+	
+	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
+	
+	};
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -676,7 +707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -703,7 +734,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -746,7 +777,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -760,7 +791,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -769,7 +800,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _ExecutionEnvironment = __webpack_require__(17);
+	var _ExecutionEnvironment = __webpack_require__(10);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -846,10 +877,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        type = standardNativeEvents[i];
 	
 	        EventRegistry[type] = {
-	            type: type,
-	            isBubbling: true,
-	            counter: 0,
-	            isActive: false
+	            _type: type,
+	            _bubbles: true,
+	            _counter: 0,
+	            _enabled: false
 	        };
 	
 	        // 'focus' and 'blur'
@@ -858,17 +889,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (nativeFocus) {
 	
 	                EventRegistry[type].setup = function () {
-	                    var _this = this;
-	
-	                    var handler = (0, _setHandler2.default)(this.type, function (e) {
-	                        (0, _addRootListener2.default)(e, _this.type);
+	                    var _type = this._type;
+	                    var handler = (0, _setHandler2.default)(_type, function (e) {
+	                        (0, _addRootListener2.default)(e, _type);
 	                    }).handler;
-	                    document.addEventListener(focusEvents[this.type], handler);
+	                    document.addEventListener(focusEvents[_type], handler);
 	                };
 	                // firefox doesn't support focusin/focusout events
 	            } else {
 	                    EventRegistry[type].setup = function () {
-	                        document.addEventListener(this.type, (0, _setHandler2.default)(this.type, _addRootListener2.default).handler, true);
+	                        var _type = this._type;
+	                        document.addEventListener(_type, (0, _setHandler2.default)(_type, _addRootListener2.default).handler, true);
 	                    };
 	                }
 	        }
@@ -878,9 +909,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (i = 0; i < nonBubbleableEvents.length; i++) {
 	        type = nonBubbleableEvents[i];
 	        EventRegistry[type] = {
-	            type: type,
-	            isBubbling: false,
-	            isActive: false
+	            _type: type,
+	            _bubbles: false,
+	            _enabled: false
 	        };
 	    }
 	}
@@ -888,7 +919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = EventRegistry;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -922,7 +953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1415,37 +1446,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DOMPropertyContainer;
 
 /***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-	
-	/**
-	 * Simple, lightweight module assisting with the detection and context of
-	 * Worker. Helps avoid circular dependencies and allows code to reason about
-	 * whether or not they are in a Worker, even if they never include the main
-	 * `ReactWorker` dependency.
-	 */
-	exports.default = {
-	
-	  canUseDOM: canUseDOM,
-	
-	  canUseWorkers: typeof Worker !== 'undefined',
-	
-	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
-	
-	  canUseViewport: canUseDOM && !!window.screen,
-	
-	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
-	
-	};
-
-/***/ },
 /* 18 */
 /***/ function(module, exports) {
 
@@ -1519,7 +1519,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createTemplate;
 	
-	var _templateTypes = __webpack_require__(13);
+	var _templateTypes = __webpack_require__(14);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
@@ -1626,11 +1626,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
-	var _removeContext = __webpack_require__(11);
+	var _removeContext = __webpack_require__(12);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
-	var _getContext = __webpack_require__(10);
+	var _getContext = __webpack_require__(11);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
@@ -1858,7 +1858,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _addRootListener2 = _interopRequireDefault(_addRootListener);
 	
-	var _EventRegistry = __webpack_require__(14);
+	var _EventRegistry = __webpack_require__(15);
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
@@ -1889,16 +1889,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (registry) {
 	
 	        // setup special listeners only on creation
-	        if (!registry.isActive) {
+	        if (!registry._enabled) {
 	
 	            if (registry.setup) {
 	                registry.setup();
-	            } else if (registry.isBubbling) {
+	            } else if (registry._bubbles) {
 	                var handler = (0, _setHandler2.default)(type, _addRootListener2.default).handler;
 	                document.addEventListener(type, handler, false);
 	            }
 	
-	            registry.isActive = true;
+	            registry._enabled = true;
 	        }
 	
 	        var nodeID = (0, _InfernoNodeID2.default)(node),
@@ -1910,9 +1910,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	
-	        if (registry.isBubbling) {
+	        if (registry._bubbles) {
 	            if (!listeners[type]) {
-	                ++registry.counter;
+	                ++registry._counter;
 	            }
 	            listeners[type] = {
 	                handler: listener,
@@ -1948,13 +1948,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
-	var _EventRegistry = __webpack_require__(14);
+	var _EventRegistry = __webpack_require__(15);
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _eventInferface = __webpack_require__(62);
+	var _eventInterface = __webpack_require__(62);
 	
-	var _eventInferface2 = _interopRequireDefault(_eventInferface);
+	var _eventInterface2 = _interopRequireDefault(_eventInterface);
 	
 	var _createListenerArguments = __webpack_require__(28);
 	
@@ -1969,7 +1969,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var registry = _EventRegistry2.default[type];
 	
 		var target = e.target,
-		    listenersCount = registry.counter,
+		    listenersCount = registry._counter,
 		    listeners = undefined,
 		    listener = undefined,
 		    nodeID = undefined,
@@ -1978,7 +1978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		    defaultArgs = undefined;
 	
 		if (listenersCount > 0) {
-			event = (0, _eventInferface2.default)(e, type);
+			event = (0, _eventInterface2.default)(e, type);
 			defaultArgs = args = [event];
 		}
 	
@@ -2244,7 +2244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(16);
+	var _DOMProperties = __webpack_require__(17);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2320,7 +2320,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(16);
+	var _DOMProperties = __webpack_require__(17);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2621,7 +2621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _ExecutionEnvironment = __webpack_require__(17);
+	var _ExecutionEnvironment = __webpack_require__(10);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
@@ -2734,7 +2734,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _VirtualTextNode2 = _interopRequireDefault(_VirtualTextNode);
 	
-	var _DOMProperties = __webpack_require__(16);
+	var _DOMProperties = __webpack_require__(17);
 	
 	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
 	
@@ -2941,7 +2941,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _updateComponent = __webpack_require__(12);
+	var _updateComponent = __webpack_require__(13);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3067,11 +3067,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = clearDomElement;
 	
-	var _getContext = __webpack_require__(10);
+	var _getContext = __webpack_require__(11);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
-	var _removeContext = __webpack_require__(11);
+	var _removeContext = __webpack_require__(12);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
@@ -3338,7 +3338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(12);
+	var _updateComponent = __webpack_require__(13);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3445,7 +3445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(12);
+	var _updateComponent = __webpack_require__(13);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3635,7 +3635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _requestAnimationFrame = __webpack_require__(84);
 	
-	var _registerEventHooks = __webpack_require__(15);
+	var _registerEventHooks = __webpack_require__(16);
 	
 	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
 	
@@ -3684,7 +3684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	var _registerEventHooks = __webpack_require__(15);
+	var _registerEventHooks = __webpack_require__(16);
 	
 	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
 	
@@ -3707,13 +3707,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _registerEventHooks = __webpack_require__(15);
+	var _registerEventHooks = __webpack_require__(16);
 	
 	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
 	
 	var _isArray = __webpack_require__(2);
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
+	
+	var _ExecutionEnvironment = __webpack_require__(10);
+	
+	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
 	var _setupHooks = __webpack_require__(33);
 	
@@ -3725,12 +3729,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var Events = {
 	
+	    WINDOW_HANDLE: _ExecutionEnvironment2.default.canUseDOM ? window : null,
+	
 	    /**
 	     * @param {string} type is a type of event
 	     * @param {string} nodeName is a DOM node type
 	     * @param {function} hook is a function(element, event) -> [args...]
 	     */
-	
 	    registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
 	        var nodeHooks = _setupHooks2.default[type] || (_setupHooks2.default[type] = {});
 	        if ((0, _isArray2.default)(nodeName)) {
@@ -3778,7 +3783,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
-	var _EventRegistry = __webpack_require__(14);
+	var _EventRegistry = __webpack_require__(15);
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
@@ -3811,8 +3816,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var registry = _EventRegistry2.default[type];
 	
 	            if (registry) {
-	                if (registry.isBubbling) {
-	                    --registry.counter;
+	                if (registry._bubbles) {
+	                    --registry._counter;
 	                } else {
 	                    node.removeEventListener(type, _eventListener2.default[type]);
 	                }
@@ -4797,7 +4802,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.cancelAnimationFrame = exports.requestAnimationFrame = undefined;
 	
-	var _ExecutionEnvironment = __webpack_require__(17);
+	var _ExecutionEnvironment = __webpack_require__(10);
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	

@@ -22,8 +22,8 @@ export default function removeListener(node, type) {
             const registry = EventRegistry[type];
 
             if (registry) {
-                if (registry.isBubbling) {
-                    --registry.counter;
+                if (registry._bubbles) {
+                    --registry._counter;
                 } else {
                     node.removeEventListener(type, eventListener[type]);
                 }

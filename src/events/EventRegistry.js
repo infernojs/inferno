@@ -67,10 +67,10 @@ if (ExecutionEnvironment.canUseDOM) {
         type = standardNativeEvents[i];
 
         EventRegistry[type] = {
-            type: type,
-            isBubbling: true,
-            counter: 0,
-            isActive: false
+            _type: type,
+            _bubbles: true,
+            _counter: 0,
+            _enabled: false
         };
 
         // 'focus' and 'blur'
@@ -79,17 +79,19 @@ if (ExecutionEnvironment.canUseDOM) {
             if (nativeFocus) {
 
                 EventRegistry[type].setup = function() {
-                    let handler = setHandler(this.type, e => {
-                        addRootListener(e, this.type);
+                    const _type = this._type;
+					let handler = setHandler(_type, e => {
+                        addRootListener(e, _type);
                     }).handler;
-                    document.addEventListener(focusEvents[this.type], handler);
+                    document.addEventListener(focusEvents[_type], handler);
                 };
               // firefox doesn't support focusin/focusout events
             } else {
                 EventRegistry[type].setup = function() {
+					const _type = this._type;
                     document.addEventListener(
-                        this.type,
-                        setHandler(this.type, addRootListener).handler,
+                        _type,
+                        setHandler(_type, addRootListener).handler,
                         true);
                 };
             }
@@ -100,9 +102,9 @@ if (ExecutionEnvironment.canUseDOM) {
     for (i = 0; i < nonBubbleableEvents.length; i++) {
         type = nonBubbleableEvents[i];
         EventRegistry[type] = {
-            type: type,
-            isBubbling: false,
-            isActive: false
+            _type: type,
+            _bubbles: false,
+            _enabled: false
         };
     }
 }

@@ -1,7 +1,7 @@
 import InfernoNodeID  from './InfernoNodeID';
 import listenersStorage from './shared/listenersStorage';
 import EventRegistry from './EventRegistry';
-import eventInferface from './eventInferface';
+import eventInterface from './eventInterface';
 import createListenerArguments from './createListenerArguments';
 
 export default function addRootListener(e, type) {
@@ -11,7 +11,7 @@ export default function addRootListener(e, type) {
 	const registry = EventRegistry[type];
 
 	let target = e.target,
-		listenersCount = registry.counter,
+		listenersCount = registry._counter,
 		listeners,
 		listener,
 		nodeID,
@@ -20,7 +20,7 @@ export default function addRootListener(e, type) {
 		defaultArgs;
 
 	if (listenersCount > 0) {
-		event = eventInferface(e, type);
+		event = eventInterface(e, type);
 		defaultArgs = args = [event];
 	}
 

@@ -15,16 +15,16 @@ export default function addListener(node, type, listener) {
     if (registry) {
 
         // setup special listeners only on creation
-        if (!registry.isActive) {
+        if (!registry._enabled) {
 
             if (registry.setup) {
                 registry.setup();
-            } else if (registry.isBubbling) {
+            } else if (registry._bubbles) {
                 let handler = setHandler(type, addRootListener).handler;
                 document.addEventListener(type, handler, false);
             }
 
-            registry.isActive = true;
+            registry._enabled = true;
         }
 
         const nodeID = InfernoNodeID(node),
@@ -36,9 +36,9 @@ export default function addListener(node, type, listener) {
             }
         }
 
-        if (registry.isBubbling) {
+        if (registry._bubbles) {
             if (!listeners[type]) {
-                ++registry.counter;
+                ++registry._counter;
             }
             listeners[type] = {
                 handler: listener,
