@@ -76,7 +76,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
                 EventRegistry[type]._focusBlur = function() {
                     const _type = this._type;
-					let handler = setHandler(_type, e => {
+                    let handler = setHandler(_type, e => {
                         addRootListener(e, _type);
                     }).handler;
                     document.addEventListener(focusEvents[_type], handler);
