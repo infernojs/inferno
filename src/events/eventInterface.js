@@ -39,7 +39,7 @@ function isDefaultPrevented() {
 	return this._isDefaultPrevented;
 }
 
-function eventSetup(nativeEvent) {
+function eventInterface(nativeEvent) {
 	
 	// Extend nativeEvent
 	nativeEvent._stopPropagation = nativeEvent.stopPropagation;
