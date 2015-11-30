@@ -1,11 +1,25 @@
-export { default as Component } from './class/Component';
-export { default as render } from './core/render';
-export { default as renderToString } from './core/renderToString';
-export { default as unmountComponentAtNode } from './core/unmountComponentAtNode';
-export { default as FragmentValueTypes } from './enum/fragmentValueTypes';
-export { default as TemplateTypes } from './enum/templateTypes';
-export { default as createFragment } from './core/createFragment';
-export { default as createTemplate } from './core/createTemplate';
-export { default as clearDomElement } from './core/clearDomElement';
-export { default as createRef } from './core/createRef';
-export { default as Events } from './events';
+import Component              from './class/Component';
+import render                 from './core/render';
+import renderToString         from './core/renderToString';
+import unmountComponentAtNode from './core/unmountComponentAtNode';
+import FragmentValueTypes     from './enum/fragmentValueTypes';
+import TemplateTypes          from './enum/templateTypes';
+import createFragment         from './core/createFragment';
+import createTemplate         from './core/createTemplate';
+import clearDomElement        from './core/clearDomElement';
+import createRef	          from './core/createRef';
+import Events  	              from './events';
+
+module.exports = {
+	Component,
+	render,
+	renderToString,
+	createFragment,
+	createTemplate,
+	unmountComponentAtNode,
+	FragmentValueTypes,
+	TemplateTypes,
+	clearDomElement,
+	createRef,
+	Events
+};

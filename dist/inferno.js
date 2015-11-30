@@ -79,108 +79,65 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
 	var _Component = __webpack_require__(44);
 	
-	Object.defineProperty(exports, 'Component', {
-	  enumerable: true,
-	  get: function get() {
-	    return _Component.default;
-	  }
-	});
+	var _Component2 = _interopRequireDefault(_Component);
 	
 	var _render = __webpack_require__(7);
 	
-	Object.defineProperty(exports, 'render', {
-	  enumerable: true,
-	  get: function get() {
-	    return _render.default;
-	  }
-	});
+	var _render2 = _interopRequireDefault(_render);
 	
 	var _renderToString = __webpack_require__(57);
 	
-	Object.defineProperty(exports, 'renderToString', {
-	  enumerable: true,
-	  get: function get() {
-	    return _renderToString.default;
-	  }
-	});
+	var _renderToString2 = _interopRequireDefault(_renderToString);
 	
 	var _unmountComponentAtNode = __webpack_require__(24);
 	
-	Object.defineProperty(exports, 'unmountComponentAtNode', {
-	  enumerable: true,
-	  get: function get() {
-	    return _unmountComponentAtNode.default;
-	  }
-	});
+	var _unmountComponentAtNode2 = _interopRequireDefault(_unmountComponentAtNode);
 	
 	var _fragmentValueTypes = __webpack_require__(1);
 	
-	Object.defineProperty(exports, 'FragmentValueTypes', {
-	  enumerable: true,
-	  get: function get() {
-	    return _fragmentValueTypes.default;
-	  }
-	});
+	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
 	
 	var _templateTypes = __webpack_require__(11);
 	
-	Object.defineProperty(exports, 'TemplateTypes', {
-	  enumerable: true,
-	  get: function get() {
-	    return _templateTypes.default;
-	  }
-	});
+	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
 	var _createFragment = __webpack_require__(51);
 	
-	Object.defineProperty(exports, 'createFragment', {
-	  enumerable: true,
-	  get: function get() {
-	    return _createFragment.default;
-	  }
-	});
+	var _createFragment2 = _interopRequireDefault(_createFragment);
 	
 	var _createTemplate = __webpack_require__(21);
 	
-	Object.defineProperty(exports, 'createTemplate', {
-	  enumerable: true,
-	  get: function get() {
-	    return _createTemplate.default;
-	  }
-	});
+	var _createTemplate2 = _interopRequireDefault(_createTemplate);
 	
 	var _clearDomElement = __webpack_require__(50);
 	
-	Object.defineProperty(exports, 'clearDomElement', {
-	  enumerable: true,
-	  get: function get() {
-	    return _clearDomElement.default;
-	  }
-	});
+	var _clearDomElement2 = _interopRequireDefault(_clearDomElement);
 	
 	var _createRef = __webpack_require__(52);
 	
-	Object.defineProperty(exports, 'createRef', {
-	  enumerable: true,
-	  get: function get() {
-	    return _createRef.default;
-	  }
-	});
+	var _createRef2 = _interopRequireDefault(_createRef);
 	
 	var _events = __webpack_require__(14);
 	
-	Object.defineProperty(exports, 'Events', {
-	  enumerable: true,
-	  get: function get() {
-	    return _events.default;
-	  }
-	});
+	var _events2 = _interopRequireDefault(_events);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	module.exports = {
+		Component: _Component2.default,
+		render: _render2.default,
+		renderToString: _renderToString2.default,
+		createFragment: _createFragment2.default,
+		createTemplate: _createTemplate2.default,
+		unmountComponentAtNode: _unmountComponentAtNode2.default,
+		FragmentValueTypes: _fragmentValueTypes2.default,
+		TemplateTypes: _templateTypes2.default,
+		clearDomElement: _clearDomElement2.default,
+		createRef: _createRef2.default,
+		Events: _events2.default
+	};
 
 /***/ },
 /* 1 */
@@ -1986,7 +1943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// Misc Events
 	'loadedmetadata', 'scroll', 'error', 'abort', // misc
-	'mouseenter', 'mouseleave', 'mouseover' // misc
+	'mouseenter', 'mouseleave' // misc
 	];
 	
 	var EventRegistry = {};
