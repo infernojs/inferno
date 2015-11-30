@@ -1,6 +1,7 @@
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import addRootListener from './addRootListener';
 import setHandler from './setHandler';
+import focusEvents from './shared/focusEvents';
 
 const standardNativeEvents = [
  'click', 'dblclick', 'mouseup', 'mousedown', 'contextmenu',   // mouse buttons
@@ -28,11 +29,6 @@ const standardNativeEvents = [
   'compositionstart', 'compositionend', 'compositionupdate',   // composition
   'selectionchange'                                            // IE-only
 ];
-
-const focusEvents = {
-    focus: 'focusin', // DOM L3
-    blur: 'focusout'  // DOM L3
-};
 
 const nonBubbleableEvents = [
  'input', 'invalid',                                             // form elements
@@ -78,7 +74,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
             if (nativeFocus) {
 
-                EventRegistry[type].setup = function() {
+                EventRegistry[type]._focusBlur = function() {
                     const _type = this._type;
 					let handler = setHandler(_type, e => {
                         addRootListener(e, _type);
@@ -87,7 +83,7 @@ if (ExecutionEnvironment.canUseDOM) {
                 };
               // firefox doesn't support focusin/focusout events
             } else {
-                EventRegistry[type].setup = function() {
+                EventRegistry[type]._focusBlur = function() {
 					const _type = this._type;
                     document.addEventListener(
                         _type,

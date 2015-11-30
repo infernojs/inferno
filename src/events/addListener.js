@@ -10,15 +10,21 @@ import eventListener from './shared/eventListener';
  * Set a event listeners on a node
  */
 export default function addListener(node, type, listener) {
+	
+	 if (!node) {
+	     return null; // TODO! Should we throw?
+	 }
+	
     const registry = EventRegistry[type];
+
     // only add listeners for registered events
     if (registry) {
 
-        // setup special listeners only on creation
         if (!registry._enabled) {
-
-            if (registry.setup) {
-                registry.setup();
+            
+			// handle focus / blur events
+            if (registry._focusBlur) {
+                registry._focusBlur();
             } else if (registry._bubbles) {
                 let handler = setHandler(type, addRootListener).handler;
                 document.addEventListener(type, handler, false);

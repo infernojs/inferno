@@ -7,6 +7,8 @@ let Events = {};
 
 // Don't expose Events interface for server side
 
+// TODO! Is there a better way of doing this?
+
 if (ExecutionEnvironment.canUseDOM) {
 
 Events = {
