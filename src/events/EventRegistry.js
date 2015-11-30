@@ -3,26 +3,30 @@ import addRootListener from './addRootListener';
 import setHandler from './setHandler';
 
 const standardNativeEvents = [
- 'click', 'dblclick', 'mouseup', 'mousedown', 'contextmenu', // mouse buttons
- 'wheel', 'mousewheel',                                      // mouse wheel
- 'mouseover', 'mouseout', 'mousemove', 'selectstart',        // mouse movement
- 'keydown', 'keypress', 'keyup',                             // keyboard
- 'copy cut paste ',                                          // text
- 'change reset select submit focusout focusin',              // form elements
+ 'click', 'dblclick', 'mouseup', 'mousedown', 'contextmenu',   // mouse buttons
+ 'wheel', 'mousewheel',                                        // mouse wheel
+ 'mouseover', 'mouseout', 'mousemove', 'selectstart',          // mouse movement
+ 'keydown', 'keypress', 'keyup',                               // keyboard
+ 'copy', 'cut', 'paste',                                       // text
+ 'change', 'reset', 'select', 'submit', 'focusout', 'focusin', // form elements
 
  // W3C native events
- 'show',                                                     // mouse buttons
- 'input',                                                    // form elements
- 'touchstart', 'touchmove', 'touchend', 'touchcancel',       // touch
- 'textinput',                                                // TextEvent
- 'focus', 'blur',                                            // Non-standard
+ 'show',                                                       // mouse buttons
+ 'input',                                                      // form elements
+ 'touchstart', 'touchmove', 'touchend', 'touchcancel',         // touch
+ 'textInput',                                                  // TextEvent
+ 'focus', 'blur',                                              // Non-standard
 
  // Drag and Drop events
- 'drag', 'drop',                                             // dnd
- 'dragstart', 'dragend',                                     // dnd
- 'dragenter', 'dragleave',                                   // dnd
- 'dragover',                                                 // dnd
- 'dragexit'                                                  // Not supported
+ 'drag', 'drop',                                               // dnd
+ 'dragstart', 'dragend',                                       // dnd
+ 'dragenter', 'dragleave',                                     // dnd
+ 'dragover',                                                   // dnd
+ 'dragexit',                                                   // Not supported
+ 
+ // composition events
+  'compositionstart', 'compositionend', 'compositionupdate',   // composition
+  'selectionchange'                                            // IE-only
 ];
 
 const focusEvents = {
@@ -46,7 +50,7 @@ const nonBubbleableEvents = [
 
   // Misc Events
  'loadedmetadata', 'scroll', 'error', 'abort',                   // misc
- 'mouseenter', 'mouseleave'                                      // misc
+ 'mouseenter', 'mouseleave', 'mouseover'                         // misc
 ];
 
 let EventRegistry = {};
