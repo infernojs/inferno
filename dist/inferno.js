@@ -1943,16 +1943,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var standardNativeEvents = ['click', 'dblclick', 'mouseup', 'mousedown', 'contextmenu', // mouse buttons
 	'wheel', 'mousewheel', // mouse wheel
 	'mouseover', 'mouseout', 'mousemove', 'selectstart', // mouse movement
-	'mouseleave', // mouse movement
 	'keydown', 'keypress', 'keyup', // keyboard
-	'copy cut paste ', // text
-	'change reset select submit focusout focusin', // form elements
+	'copy', 'cut', 'paste', // text
+	'change', 'reset', 'select', 'submit', 'focusout', 'focusin', // form elements
 	
 	// W3C native events
 	'show', // mouse buttons
 	'input', // form elements
 	'touchstart', 'touchmove', 'touchend', 'touchcancel', // touch
-	'textinput', // TextEvent
+	'textInput', // TextEvent
 	'focus', 'blur', // Non-standard
 	
 	// Drag and Drop events
@@ -1960,7 +1959,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	'dragstart', 'dragend', // dnd
 	'dragenter', 'dragleave', // dnd
 	'dragover', // dnd
-	'dragexit' // Not supported
+	'dragexit', // Not supported
+	
+	// composition events
+	'compositionstart', 'compositionend', 'compositionupdate', // composition
+	'selectionchange' // IE-only
 	];
 	
 	var focusEvents = {
@@ -1983,7 +1986,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// Misc Events
 	'loadedmetadata', 'scroll', 'error', 'abort', // misc
-	'mouseenter', 'mouseover' // misc
+	'mouseenter', 'mouseleave', 'mouseover' // misc
 	];
 	
 	var EventRegistry = {};
@@ -2242,6 +2245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// events so we don't include them here
 	exports.default = {
 	  onAbort: 'abort',
+	  onBeforeUnload: 'beforeunload',
 	  onBlur: 'blur',
 	  onCanPlay: 'canplay',
 	  onCanPlayThrough: 'canplaythrough',
@@ -2270,9 +2274,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onFocusIn: 'focusin', // not supported by Firefox
 	  onFocusOut: 'focusout', // not supported by Firefox
 	  onInput: 'input',
+	  onInvalid: 'invalid',
 	  onKeyDown: 'keydown',
 	  onKeyPress: 'keypress',
 	  onKeyUp: 'keyup',
+	  onLoad: 'load',
 	  onLoadedData: 'loadeddata',
 	  onLoadedMetadata: 'loadedmetadata',
 	  onLoadStart: 'loadstart',
@@ -2283,17 +2289,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onMouseUp: 'mouseup',
 	  onMouseEnter: 'mouseenter',
 	  onMouseLeave: 'mouseleave',
+	  onMouseWheel: 'mousewheel',
+	  onOrientationChange: 'orientationchange',
 	  onPaste: 'paste',
 	  onPause: 'pause',
 	  onPlay: 'play',
 	  onPlaying: 'playing',
 	  onProgress: 'progress',
 	  onRateChange: 'ratechange',
+	  onReset: 'reset',
+	  onResize: 'resize',
 	  onScroll: 'scroll',
 	  onSeeked: 'seeked',
 	  onSeeking: 'seeking',
+	  onSelect: 'select',
 	  onSelectionChange: 'selectionchange',
+	  onSelectStart: 'selectstart',
+	  onShow: 'show',
 	  onStalled: 'stalled',
+	  onSubmit: 'submit',
 	  onSuspend: 'suspend',
 	  onTextInput: 'textInput',
 	  onTimeUpdate: 'timeupdate',
@@ -2301,6 +2315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onTouchEnd: 'touchend',
 	  onTouchMove: 'touchmove',
 	  onTouchStart: 'touchstart',
+	  onUnload: 'unload',
 	  onVolumeChange: 'volumechange',
 	  onWaiting: 'waiting',
 	  onWheel: 'wheel'

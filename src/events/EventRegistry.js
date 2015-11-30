@@ -50,7 +50,7 @@ const nonBubbleableEvents = [
 
   // Misc Events
  'loadedmetadata', 'scroll', 'error', 'abort',                   // misc
- 'mouseenter', 'mouseleave', 'mouseover'                         // misc
+ 'mouseenter', 'mouseleave'                                      // misc
 ];
 
 let EventRegistry = {};
