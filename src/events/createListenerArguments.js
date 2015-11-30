@@ -1,4 +1,3 @@
-import isArray from '../util/isArray';
 import isFormElement from '../util/isFormElement';
 import getFormElementValues from '../template/getFormElementValues';
 import setupHooks from './shared/setupHooks';
