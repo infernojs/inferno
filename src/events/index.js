@@ -64,11 +64,15 @@ const Events = {
                 listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
 
             if (listeners[type]) {
-                throw Error('Inferno Error: ' + type + ' has already been attached to nodeID ' + nodeID);
+                if (listeners[type].destroy) {
+                    listeners[type].destroy();
+                }
             }
 
             if (registry.isBubbling) {
-                ++registry.counter;
+                if (!listeners[type]) {
+                    ++registry.counter;
+                }
                 listeners[type] = { handler: listener, originalHandler: listener };
             } else {
                 eventListener[type] = eventListener[type] || createEventListener(type);
