@@ -1,7 +1,7 @@
 import InfernoNodeID  from './InfernoNodeID';
 import listenersStorage from './shared/listenersStorage';
 import EventRegistry from './EventRegistry';
-import setupEvents from './setupEvents';
+import eventInferface from './eventInferface';
 import createListenerArguments from './createListenerArguments';
 
 export default function addRootListener(e, type) {
@@ -20,7 +20,7 @@ export default function addRootListener(e, type) {
 		defaultArgs;
 
 	if (listenersCount > 0) {
-		event = setupEvents(e);
+		event = eventInferface(e, type);
 		defaultArgs = args = [event];
 	}
 

@@ -119,7 +119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createRef2 = _interopRequireDefault(_createRef);
 	
-	var _events = __webpack_require__(65);
+	var _events = __webpack_require__(66);
 	
 	var _events2 = _interopRequireDefault(_events);
 	
@@ -1952,9 +1952,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _setupEvents = __webpack_require__(67);
+	var _eventInferface = __webpack_require__(62);
 	
-	var _setupEvents2 = _interopRequireDefault(_setupEvents);
+	var _eventInferface2 = _interopRequireDefault(_eventInferface);
 	
 	var _createListenerArguments = __webpack_require__(28);
 	
@@ -1978,7 +1978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		    defaultArgs = undefined;
 	
 		if (listenersCount > 0) {
-			event = (0, _setupEvents2.default)(e);
+			event = (0, _eventInferface2.default)(e, type);
 			defaultArgs = args = [event];
 		}
 	
@@ -2476,7 +2476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _addListener2 = _interopRequireDefault(_addListener);
 	
-	var _removeListener = __webpack_require__(66);
+	var _removeListener = __webpack_require__(67);
 	
 	var _removeListener2 = _interopRequireDefault(_removeListener);
 	
@@ -3560,193 +3560,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _requestAnimationFrame = __webpack_require__(84);
-	
-	var _registerEventHooks = __webpack_require__(15);
-	
-	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var frameEvents = ['scroll', 'mousemove', 'drag', 'dragover', 'touchmove'];
-	
-	(0, _registerEventHooks2.default)(frameEvents, function (listener) {
-	    var rafId = 0;
-	    var handler = function handler() {
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	            args[_key] = arguments[_key];
-	        }
-	
-	        if (!rafId) {
-	            rafId = (0, _requestAnimationFrame.requestAnimationFrame)(function () {
-	                listener.apply(args[0].currentTarget, args);
-	                rafId = 0;
-	            });
-	        }
-	    };
-	
-	    var destroy = function destroy() {
-	        cancelAnimationFrame(rafId);
-	    };
-	
-	    return {
-	        destroy: destroy,
-	        handler: handler
-	    };
-	});
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(62);
-
-	__webpack_require__(64);
-
-/***/ },
-/* 64 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _registerEventHooks = __webpack_require__(15);
-	
-	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	// 'wheel' is a special case
-	var wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
-	
-	(0, _registerEventHooks2.default)(wheel, function (handler) {
-		return { handler: handler };
-	});
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _registerEventHooks = __webpack_require__(15);
-	
-	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
-	
-	var _isArray = __webpack_require__(2);
-	
-	var _isArray2 = _interopRequireDefault(_isArray);
-	
-	var _setupHooks = __webpack_require__(33);
-	
-	var _setupHooks2 = _interopRequireDefault(_setupHooks);
-	
-	__webpack_require__(63);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var Events = {
-	    registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
-	        var nodeHooks = _setupHooks2.default[type] || (_setupHooks2.default[type] = {});
-	        if ((0, _isArray2.default)(nodeName)) {
-	            for (var i = 0; i < nodeName.length; i++) {
-	                nodeHooks[nodeName[i]] = hook;
-	            }
-	        } else {
-	            nodeHooks[nodeName] = hook;
-	        }
-	    },
-	
-	    /**
-	     * @param {string} type is a type of event
-	     * @param {string} nodeName is a DOM node type
-	     * @param {function} hook is a function(element, event) -> [args...]
-	     */
-	    registerSetupHooks: function registerSetupHooks(type, nodeName, hook) {
-	        if ((0, _isArray2.default)(type)) {
-	            for (var i = 0; i < type.length; i++) {
-	                Events.registerSetupHooksForType(type[i], nodeName, hook);
-	            }
-	        } else {
-	            Events.registerSetupHooksForType(type, nodeName, hook);
-	        }
-	    },
-	
-	    registerEventHooks: _registerEventHooks2.default
-	};
-	
-	/**** HOOKS ******/
-	exports.default = Events;
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = removeListener;
-	
-	var _InfernoNodeID = __webpack_require__(8);
-	
-	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
-	
-	var _EventRegistry = __webpack_require__(14);
-	
-	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
-	
-	var _listenersStorage = __webpack_require__(9);
-	
-	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
-	
-	var _eventListener = __webpack_require__(31);
-	
-	var _eventListener2 = _interopRequireDefault(_eventListener);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/**
-	 * Remove event listeners from a node
-	 */
-	function removeListener(node, type) {
-	
-	    var nodeID = (0, _InfernoNodeID2.default)(node, true);
-	
-	    if (nodeID) {
-	        var listeners = _listenersStorage2.default[nodeID];
-	
-	        if (listeners && listeners[type]) {
-	            if (listeners[type] && listeners[type].destroy) {
-	                listeners[type].destroy();
-	            }
-	            listeners[type] = null;
-	
-	            var registry = _EventRegistry2.default[type];
-	
-	            if (registry) {
-	                if (registry.isBubbling) {
-	                    --registry.counter;
-	                } else {
-	                    node.removeEventListener(type, _eventListener2.default[type]);
-	                }
-	            }
-	        }
-	    }
-	}
-
-/***/ },
-/* 67 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3813,6 +3626,200 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	exports.default = eventSetup;
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _requestAnimationFrame = __webpack_require__(84);
+	
+	var _registerEventHooks = __webpack_require__(15);
+	
+	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var frameEvents = ['scroll', 'mousemove', 'drag', 'dragover', 'touchmove'];
+	
+	(0, _registerEventHooks2.default)(frameEvents, function (listener) {
+	    var rafId = 0;
+	    var handler = function handler() {
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	        }
+	
+	        if (!rafId) {
+	            rafId = (0, _requestAnimationFrame.requestAnimationFrame)(function () {
+	                listener.apply(args[0].currentTarget, args);
+	                rafId = 0;
+	            });
+	        }
+	    };
+	
+	    var destroy = function destroy() {
+	        cancelAnimationFrame(rafId);
+	    };
+	
+	    return {
+	        destroy: destroy,
+	        handler: handler
+	    };
+	});
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	__webpack_require__(63);
+
+	__webpack_require__(65);
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _registerEventHooks = __webpack_require__(15);
+	
+	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	// 'wheel' is a special case
+	var wheel = 'onwheel' in document || document.documentMode >= 9 ? 'wheel' : 'mousewheel';
+	
+	(0, _registerEventHooks2.default)(wheel, function (handler) {
+		return { handler: handler };
+	});
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _registerEventHooks = __webpack_require__(15);
+	
+	var _registerEventHooks2 = _interopRequireDefault(_registerEventHooks);
+	
+	var _isArray = __webpack_require__(2);
+	
+	var _isArray2 = _interopRequireDefault(_isArray);
+	
+	var _setupHooks = __webpack_require__(33);
+	
+	var _setupHooks2 = _interopRequireDefault(_setupHooks);
+	
+	__webpack_require__(64);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Events = {
+	
+	    /**
+	     * @param {string} type is a type of event
+	     * @param {string} nodeName is a DOM node type
+	     * @param {function} hook is a function(element, event) -> [args...]
+	     */
+	
+	    registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
+	        var nodeHooks = _setupHooks2.default[type] || (_setupHooks2.default[type] = {});
+	        if ((0, _isArray2.default)(nodeName)) {
+	            for (var i = 0; i < nodeName.length; i++) {
+	                nodeHooks[nodeName[i]] = hook;
+	            }
+	        } else {
+	            nodeHooks[nodeName] = hook;
+	        }
+	    },
+	
+	    /**
+	     * @param {string} type is a type of event
+	     * @param {string} nodeName is a DOM node type
+	     * @param {function} hook is a function(element, event) -> [args...]
+	     */
+	    registerSetupHooks: function registerSetupHooks(type, nodeName, hook) {
+	        if ((0, _isArray2.default)(type)) {
+	            for (var i = 0; i < type.length; i++) {
+	                Events.registerSetupHooksForType(type[i], nodeName, hook);
+	            }
+	        } else {
+	            Events.registerSetupHooksForType(type, nodeName, hook);
+	        }
+	    },
+	
+	    registerEventHooks: _registerEventHooks2.default
+	};
+	
+	/**** HOOKS ******/
+	exports.default = Events;
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = removeListener;
+	
+	var _InfernoNodeID = __webpack_require__(8);
+	
+	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
+	
+	var _EventRegistry = __webpack_require__(14);
+	
+	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
+	
+	var _listenersStorage = __webpack_require__(9);
+	
+	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
+	
+	var _eventListener = __webpack_require__(31);
+	
+	var _eventListener2 = _interopRequireDefault(_eventListener);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/**
+	 * Remove event listeners from a node
+	 */
+	function removeListener(node, type) {
+	
+	    var nodeID = (0, _InfernoNodeID2.default)(node, true);
+	
+	    if (nodeID) {
+	        var listeners = _listenersStorage2.default[nodeID];
+	
+	        if (listeners && listeners[type]) {
+	            if (listeners[type] && listeners[type].destroy) {
+	                listeners[type].destroy();
+	            }
+	            listeners[type] = null;
+	
+	            var registry = _EventRegistry2.default[type];
+	
+	            if (registry) {
+	                if (registry.isBubbling) {
+	                    --registry.counter;
+	                } else {
+	                    node.removeEventListener(type, _eventListener2.default[type]);
+	                }
+	            }
+	        }
+	    }
+	}
 
 /***/ },
 /* 68 */
