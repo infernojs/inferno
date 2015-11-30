@@ -3727,43 +3727,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var Events = {
+	var Events = {};
 	
-	    WINDOW_HANDLE: _ExecutionEnvironment2.default.canUseDOM ? window : null,
+	// Don't expose Events interface for server side
 	
-	    /**
-	     * @param {string} type is a type of event
-	     * @param {string} nodeName is a DOM node type
-	     * @param {function} hook is a function(element, event) -> [args...]
-	     */
-	    registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
-	        var nodeHooks = _setupHooks2.default[type] || (_setupHooks2.default[type] = {});
-	        if ((0, _isArray2.default)(nodeName)) {
-	            for (var i = 0; i < nodeName.length; i++) {
-	                nodeHooks[nodeName[i]] = hook;
+	if (_ExecutionEnvironment2.default.canUseDOM) {
+	
+	    Events = {
+	
+	        /**
+	         * @param {string} type is a type of event
+	         * @param {string} nodeName is a DOM node type
+	         * @param {function} hook is a function(element, event) -> [args...]
+	         */
+	
+	        registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
+	            var nodeHooks = _setupHooks2.default[type] || (_setupHooks2.default[type] = {});
+	            if ((0, _isArray2.default)(nodeName)) {
+	                for (var i = 0; i < nodeName.length; i++) {
+	                    nodeHooks[nodeName[i]] = hook;
+	                }
+	            } else {
+	                nodeHooks[nodeName] = hook;
 	            }
-	        } else {
-	            nodeHooks[nodeName] = hook;
-	        }
-	    },
+	        },
 	
-	    /**
-	     * @param {string} type is a type of event
-	     * @param {string} nodeName is a DOM node type
-	     * @param {function} hook is a function(element, event) -> [args...]
-	     */
-	    registerSetupHooks: function registerSetupHooks(type, nodeName, hook) {
-	        if ((0, _isArray2.default)(type)) {
-	            for (var i = 0; i < type.length; i++) {
-	                Events.registerSetupHooksForType(type[i], nodeName, hook);
+	        /**
+	         * @param {string} type is a type of event
+	         * @param {string} nodeName is a DOM node type
+	         * @param {function} hook is a function(element, event) -> [args...]
+	         */
+	        registerSetupHooks: function registerSetupHooks(type, nodeName, hook) {
+	            if ((0, _isArray2.default)(type)) {
+	                for (var i = 0; i < type.length; i++) {
+	                    Events.registerSetupHooksForType(type[i], nodeName, hook);
+	                }
+	            } else {
+	                Events.registerSetupHooksForType(type, nodeName, hook);
 	            }
-	        } else {
-	            Events.registerSetupHooksForType(type, nodeName, hook);
-	        }
-	    },
+	        },
 	
-	    registerEventHooks: _registerEventHooks2.default
-	};
+	        registerEventHooks: _registerEventHooks2.default
+	    };
+	}
 	
 	/**** HOOKS ******/
 	exports.default = Events;

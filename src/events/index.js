@@ -3,10 +3,14 @@ import isArray from '../util/isArray';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import setupHooks from './shared/setupHooks';
 
-const Events = {
-     
-	 WINDOW_HANDLE: ExecutionEnvironment.canUseDOM ? window : null,
+let Events = {};
 
+// Don't expose Events interface for server side
+
+if (ExecutionEnvironment.canUseDOM) {
+
+Events = {
+     
     /**
      * @param {string} type is a type of event
      * @param {string} nodeName is a DOM node type
@@ -40,6 +44,8 @@ const Events = {
 
     registerEventHooks
 };
+
+}
 
 /**** HOOKS ******/
 import './hooks';
