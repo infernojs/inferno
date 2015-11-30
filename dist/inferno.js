@@ -99,7 +99,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _fragmentValueTypes2 = _interopRequireDefault(_fragmentValueTypes);
 	
-	var _templateTypes = __webpack_require__(14);
+	var _templateTypes = __webpack_require__(15);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
@@ -321,7 +321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _bind2 = _interopRequireDefault(_bind);
 	
-	var _templateTypes = __webpack_require__(14);
+	var _templateTypes = __webpack_require__(15);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
@@ -528,7 +528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = removeComponent;
 	
-	var _removeContext = __webpack_require__(12);
+	var _removeContext = __webpack_require__(13);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
@@ -590,7 +590,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _contexts2 = _interopRequireDefault(_contexts);
 	
-	var _getContext = __webpack_require__(11);
+	var _getContext = __webpack_require__(12);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
@@ -651,147 +651,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 9 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = InfernoNodeID;
-	var ID_PROP = '__Inferno__id__';
-	var counter = 1;
-	
-	function InfernoNodeID(node, onlyGet) {
-	    return node[ID_PROP] || (onlyGet ? null : node[ID_PROP] = counter++);
-	}
-
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	/**
-	 * Internal store for event listeners
-	 * DOMNodeId -> type -> listener
-	 */
-	exports.default = {};
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _contexts = __webpack_require__(18);
-	
-	var _contexts2 = _interopRequireDefault(_contexts);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = function (dom) {
-		for (var i = 0; i < _contexts2.default.length; i++) {
-			if (_contexts2.default[i].dom === dom) {
-				return _contexts2.default[i];
-			}
-		}
-		return null;
-	};
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _contexts = __webpack_require__(18);
-	
-	var _contexts2 = _interopRequireDefault(_contexts);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = function (dom) {
-		var idx = _contexts2.default.length;
-	
-		while (idx--) {
-			if (_contexts2.default[idx].dom === dom) {
-				_contexts2.default.splice(idx, 1);
-				return;
-			}
-		}
-	};
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = updateComponent;
-	function updateComponent(component, nextProps) {
-		var nextState = arguments.length <= 2 || arguments[2] === undefined ? component.state : arguments[2];
-		var blockRender = arguments[3];
-	
-		var prevProps = component.props;
-		var prevState = component.state;
-	
-		if (!nextProps.children) {
-			nextProps.children = prevProps.children;
-		}
-	
-		if (prevProps !== nextProps || prevState !== nextState) {
-			if (prevProps !== nextProps) {
-				component._blockRender = true;
-				component.componentWillReceiveProps(nextProps);
-				component._blockRender = false;
-			}
-			var shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
-	
-			if (shouldUpdate) {
-				component._blockSetState = true;
-				component.componentWillUpdate(nextProps, nextState);
-				component._blockSetState = false;
-				component.props = nextProps;
-				component.state = nextState;
-				if (!blockRender) {
-					component.forceUpdate();
-				}
-				component.componentDidUpdate(prevProps, prevState);
-			}
-		}
-	}
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = {
-		TEMPLATE_API: 1,
-		FUNCTIONAL_API: 2
-	};
-
-/***/ },
-/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -912,6 +771,147 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	exports.default = EventRegistry;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = InfernoNodeID;
+	var ID_PROP = '__Inferno__id__';
+	var counter = 1;
+	
+	function InfernoNodeID(node, onlyGet) {
+	    return node[ID_PROP] || (onlyGet ? null : node[ID_PROP] = counter++);
+	}
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/**
+	 * Internal store for event listeners
+	 * DOMNodeId -> type -> listener
+	 */
+	exports.default = {};
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _contexts = __webpack_require__(18);
+	
+	var _contexts2 = _interopRequireDefault(_contexts);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = function (dom) {
+		for (var i = 0; i < _contexts2.default.length; i++) {
+			if (_contexts2.default[i].dom === dom) {
+				return _contexts2.default[i];
+			}
+		}
+		return null;
+	};
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _contexts = __webpack_require__(18);
+	
+	var _contexts2 = _interopRequireDefault(_contexts);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = function (dom) {
+		var idx = _contexts2.default.length;
+	
+		while (idx--) {
+			if (_contexts2.default[idx].dom === dom) {
+				_contexts2.default.splice(idx, 1);
+				return;
+			}
+		}
+	};
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = updateComponent;
+	function updateComponent(component, nextProps) {
+		var nextState = arguments.length <= 2 || arguments[2] === undefined ? component.state : arguments[2];
+		var blockRender = arguments[3];
+	
+		var prevProps = component.props;
+		var prevState = component.state;
+	
+		if (!nextProps.children) {
+			nextProps.children = prevProps.children;
+		}
+	
+		if (prevProps !== nextProps || prevState !== nextState) {
+			if (prevProps !== nextProps) {
+				component._blockRender = true;
+				component.componentWillReceiveProps(nextProps);
+				component._blockRender = false;
+			}
+			var shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
+	
+			if (shouldUpdate) {
+				component._blockSetState = true;
+				component.componentWillUpdate(nextProps, nextState);
+				component._blockSetState = false;
+				component.props = nextProps;
+				component.state = nextState;
+				if (!blockRender) {
+					component.forceUpdate();
+				}
+				component.componentDidUpdate(prevProps, prevState);
+			}
+		}
+	}
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = {
+		TEMPLATE_API: 1,
+		FUNCTIONAL_API: 2
+	};
 
 /***/ },
 /* 16 */
@@ -1514,7 +1514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createTemplate;
 	
-	var _templateTypes = __webpack_require__(14);
+	var _templateTypes = __webpack_require__(15);
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
@@ -1621,11 +1621,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _removeFragment2 = _interopRequireDefault(_removeFragment);
 	
-	var _removeContext = __webpack_require__(12);
+	var _removeContext = __webpack_require__(13);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
-	var _getContext = __webpack_require__(11);
+	var _getContext = __webpack_require__(12);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
@@ -1845,7 +1845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = addListener;
 	
-	var _InfernoNodeID = __webpack_require__(9);
+	var _InfernoNodeID = __webpack_require__(10);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
@@ -1853,11 +1853,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _addRootListener2 = _interopRequireDefault(_addRootListener);
 	
-	var _EventRegistry = __webpack_require__(15);
+	var _EventRegistry = __webpack_require__(9);
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _listenersStorage = __webpack_require__(10);
+	var _listenersStorage = __webpack_require__(11);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -1941,15 +1941,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = addRootListener;
 	
-	var _InfernoNodeID = __webpack_require__(9);
+	var _InfernoNodeID = __webpack_require__(10);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
-	var _listenersStorage = __webpack_require__(10);
+	var _listenersStorage = __webpack_require__(11);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
-	var _EventRegistry = __webpack_require__(15);
+	var _EventRegistry = __webpack_require__(9);
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
@@ -2962,7 +2962,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _updateComponent = __webpack_require__(13);
+	var _updateComponent = __webpack_require__(14);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3088,11 +3088,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = clearDomElement;
 	
-	var _getContext = __webpack_require__(11);
+	var _getContext = __webpack_require__(12);
 	
 	var _getContext2 = _interopRequireDefault(_getContext);
 	
-	var _removeContext = __webpack_require__(12);
+	var _removeContext = __webpack_require__(13);
 	
 	var _removeContext2 = _interopRequireDefault(_removeContext);
 	
@@ -3359,7 +3359,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(13);
+	var _updateComponent = __webpack_require__(14);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3466,7 +3466,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _updateDOMProperties2 = _interopRequireDefault(_updateDOMProperties);
 	
-	var _updateComponent = __webpack_require__(13);
+	var _updateComponent = __webpack_require__(14);
 	
 	var _updateComponent2 = _interopRequireDefault(_updateComponent);
 	
@@ -3555,7 +3555,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createEventListener;
 	
-	var _listenersStorage = __webpack_require__(10);
+	var _listenersStorage = __webpack_require__(11);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	
@@ -3563,7 +3563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createListenerArguments2 = _interopRequireDefault(_createListenerArguments);
 	
-	var _InfernoNodeID = __webpack_require__(9);
+	var _InfernoNodeID = __webpack_require__(10);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
@@ -3630,6 +3630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function eventSetup(nativeEvent) {
+	
 		// Extend nativeEvent
 		nativeEvent._stopPropagation = nativeEvent.stopPropagation;
 		nativeEvent.stopPropagation = stopPropagation;
@@ -3752,6 +3753,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setupHooks2 = _interopRequireDefault(_setupHooks);
 	
+	var _EventRegistry = __webpack_require__(9);
+	
+	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
+	
 	__webpack_require__(65);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -3767,11 +3772,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Events = {
 	
 	        /**
-	         * @param {string} type is a type of event
-	         * @param {string} nodeName is a DOM node type
-	         * @param {function} hook is a function(element, event) -> [args...]
-	         */
+	            * @param {string} type is a type of event
+	            */
 	
+	        isRegistered: function isRegistered(type) {
+	
+	            var registry = _EventRegistry2.default[type];
+	
+	            return registry && registry._enabled ? true : false;
+	        },
+	
+	        /**
+	            * @param {string} type is a type of event
+	            * @param {string} nodeName is a DOM node type
+	            * @param {function} hook is a function(element, event) -> [args...]
+	            */
 	        registerSetupHooksForType: function registerSetupHooksForType(type, nodeName, hook) {
 	            var nodeHooks = _setupHooks2.default[type] || (_setupHooks2.default[type] = {});
 	            if ((0, _isArray2.default)(nodeName)) {
@@ -3816,15 +3831,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = removeListener;
 	
-	var _InfernoNodeID = __webpack_require__(9);
+	var _InfernoNodeID = __webpack_require__(10);
 	
 	var _InfernoNodeID2 = _interopRequireDefault(_InfernoNodeID);
 	
-	var _EventRegistry = __webpack_require__(15);
+	var _EventRegistry = __webpack_require__(9);
 	
 	var _EventRegistry2 = _interopRequireDefault(_EventRegistry);
 	
-	var _listenersStorage = __webpack_require__(10);
+	var _listenersStorage = __webpack_require__(11);
 	
 	var _listenersStorage2 = _interopRequireDefault(_listenersStorage);
 	

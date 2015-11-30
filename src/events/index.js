@@ -2,6 +2,7 @@ import registerEventHooks from './hooks/registerEventHooks';
 import isArray from '../util/isArray';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import setupHooks from './shared/setupHooks';
+import EventRegistry from './EventRegistry';
 
 let Events = {};
 
@@ -12,8 +13,20 @@ let Events = {};
 if (ExecutionEnvironment.canUseDOM) {
 
 Events = {
-     
-    /**
+
+	/**
+     * @param {string} type is a type of event
+     */
+    isRegistered(type) {
+
+       const registry = EventRegistry[type];
+       
+	   return registry && registry._enabled 
+            ? true
+            : false;
+    },
+	
+	/**
      * @param {string} type is a type of event
      * @param {string} nodeName is a DOM node type
      * @param {function} hook is a function(element, event) -> [args...]
