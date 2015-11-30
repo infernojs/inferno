@@ -94,7 +94,8 @@ if (ExecutionEnvironment.canUseDOM) {
 
     // For non-bubbleable events - e.g. scroll - we are setting the events directly on the node
     for (i = 0; i < nonBubbleableEvents.length; i++) {
-        EventRegistry[nonBubbleableEvents[i]] = {
+        type = nonBubbleableEvents[i];
+        EventRegistry[type] = {
             type: type,
             isBubbling: false,
             isActive: false
