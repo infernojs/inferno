@@ -69,7 +69,7 @@ const Events = {
 
             if (registry.isBubbling) {
                 ++registry.counter;
-                listeners[type] = { handler: listener };
+                listeners[type] = { handler: listener, originalHandler: listener };
             } else {
                 eventListener[type] = eventListener[type] || createEventListener(type);
                 node.addEventListener(type, eventListener[type], false);

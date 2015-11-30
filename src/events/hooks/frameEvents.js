@@ -11,10 +11,10 @@ const frameEvents = [
 
 registerEventHooks(frameEvents, function(listener) {
     let rafId = 0;
-    const handler = e => {
+    const handler = (...args) => {
         if (!rafId) {
             rafId = requestAnimationFrame(() => {
-                listener(e);
+                listener.apply(args[0].currentTarget, args);
                 rafId = 0;
             });
         }
