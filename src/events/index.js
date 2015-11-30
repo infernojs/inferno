@@ -1,6 +1,7 @@
 import InfernoNodeID from './InfernoNodeID';
 import addRootListener from './addRootListener';
 import EventRegistry from './EventRegistry';
+import registerEventHooks from './hooks/registerEventHooks';
 import listenersStorage from './listenersStorage';
 import setHandler from './setHandler';
 import createEventListener from './createEventListener';
@@ -35,6 +36,8 @@ const Events = {
             Events.registerSetupHooksForType(type, nodeName, hook);
         }
     },
+
+    registerEventHooks,
 
     /**
      * Set a event listeners on a node
