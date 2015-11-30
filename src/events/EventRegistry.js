@@ -56,6 +56,8 @@ if (ExecutionEnvironment.canUseDOM) {
     let i = 0;
     let type;
 
+    const nativeFocus = 'onfocusin' in document.documentElement;
+
     for (; i < standardNativeEvents.length; i++) {
 
         type = standardNativeEvents[i];
@@ -70,7 +72,7 @@ if (ExecutionEnvironment.canUseDOM) {
         // 'focus' and 'blur'
         if (focusEvents[type]) {
 
-            if ((typeof InstallTrigger == 'undefined')) {
+            if (nativeFocus) {
 
                 EventRegistry[type].setup = function() {
                     let handler = setHandler(this.type, e => {
