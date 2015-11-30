@@ -1,5 +1,5 @@
 import eventMapping from '../events/shared/eventMapping';
-import eventManager from '../events';
+import addListener from '../events/addListener';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import processFragmentAttrs from './processFragmentAttrs';
@@ -33,7 +33,7 @@ export default function addAttributes(node, attrs, fragment) {
             } else {
                 // events
                 if (eventMapping[attrName]) {
-                    eventManager.addListener(node, eventMapping[attrName], attrVal);
+                    addListener(node, eventMapping[attrName], attrVal);
                 } else {
 					/*
 					let isHooked = HOOK[attrName]

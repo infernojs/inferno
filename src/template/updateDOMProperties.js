@@ -1,7 +1,8 @@
 import deleteDOMProperties from './deleteDOMProperties';
 import setValueForProperty from './setValueForProperty';
 import setValueForStyles from './setValueForStyles';
-import eventManager from '../events';
+import addListener from '../events/addListener';
+import removeListener from '../events/removeListener';
 import eventMapping from '../events/shared/eventMapping';
 
 /**
@@ -47,12 +48,12 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
     } else if (eventMapping[propName] != null) {
         if (oldProp != null) {
             if (newProp != null) {
-                eventManager.addListener(element, eventMapping[propName], newProp);
+                addListener(element, eventMapping[propName], newProp);
             } else {
-                eventManager.removeListener(element, eventMapping[propName]);
+                removeListener(element, eventMapping[propName]);
             }
         } else if (newProp != null) {
-            eventManager.addListener(element, eventMapping[propName], newProp);
+            addListener(element, eventMapping[propName], newProp);
         }
     } else if (oldProp != null) {
         // If 'newProp' is null or undefined, we, we should remove the property
