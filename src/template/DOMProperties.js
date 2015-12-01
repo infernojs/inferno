@@ -1,20 +1,48 @@
-import DOMAttributeNamespaces from './DOMAttributeNamespaces';
-import DOMAttributeNames from './DOMAttributeNames';
-import DOMasks from './DOMasks';
 import checkBitmask from './checkBitmask';
 
-const {
-    MUST_USE_PROPERTY,
-    IS_EDGE_CASE,
-    HAS_BOOLEAN_VALUE,
-    HAS_NUMERIC_VALUE,
-    HAS_POSITIVE_NUMERIC_VALUE
+const MUST_USE_PROPERTY = 0x1;
+const HAS_BOOLEAN_VALUE = 0x4;
+const HAS_NUMERIC_VALUE = 0x8;
+const HAS_POSITIVE_NUMERIC_VALUE = 0x10 | 0x8;
 
-} = DOMasks;
+const xlink = 'http://www.w3.org/1999/xlink';
+const xml = 'http://www.w3.org/XML/1998/namespace';
 
-let DOMPropertyContainer = {};
+const namespaceAttrs = {
+    'xlink:actuate': xlink,
+    'xlink:arcrole': xlink,
+    'xlink:href': xlink,
+    'xlink:role': xlink,
+    'xlink:show': xlink,
+    'xlink:title': xlink,
+    'xlink:type': xlink,
+    'xml:base': xml,
+    'xml:lang': xml,
+    'xml:space': xml
+};
 
-const DOMProperties = {
+const attributeMapping = {
+    acceptCharset: 'accept-charset',
+    className: 'class',
+    htmlFor: 'for',
+    httpEquiv: 'http-equiv',
+    xlinkActuate: 'xlink:actuate',
+    xlinkArcrole: 'xlink:arcrole',
+    xlinkHref: 'xlink:href',
+    xlinkRole: 'xlink:role',
+    xlinkShow: 'xlink:show',
+    xlinkTitle: 'xlink:title',
+    xlinkType: 'xlink:type',
+    xmlBase: 'xml:base',
+    xmlLang: 'xml:lang',
+    xmlSpace: 'xml:space'
+};
+
+// This 'whitelist' contains edge cases such as
+// Mainly it contains the attributes that should be seen as a property or boolean property.
+// ONLY EDIT THIS IF YOU KNOW WHAT YOU ARE DOING!!
+
+const Whitelist = {
     allowFullScreen: HAS_BOOLEAN_VALUE,
     async: HAS_BOOLEAN_VALUE,
     autoFocus: HAS_BOOLEAN_VALUE,
@@ -52,13 +80,13 @@ const DOMProperties = {
     srcLang: MUST_USE_PROPERTY,
     srcObject: MUST_USE_PROPERTY,
     start: HAS_NUMERIC_VALUE,
-    value: MUST_USE_PROPERTY | IS_EDGE_CASE,
+    value: MUST_USE_PROPERTY,
     volume: MUST_USE_PROPERTY | HAS_POSITIVE_NUMERIC_VALUE,
     itemScope: HAS_BOOLEAN_VALUE,
 
-   /**
-    * Namespace attributes
-	*/
+    /**
+     * Namespace attributes
+     */
 
     xmlns: null,
     'xlink:actuate': null,
@@ -73,46 +101,48 @@ const DOMProperties = {
     'xml:space': null
 }
 
-export default (function () {
-	
-var propInfoByAttributeName = {};
-
-for (let propName in DOMProperties) {
-
-    let propConfig = DOMProperties[propName];
-	
-    let attributeName = DOMAttributeNames[propName] || propName.toLowerCase();
-
-    let propertyInfo = {
-        attributeName: attributeName,
-        attributeNamespace: DOMAttributeNamespaces[propName],
-        propertyName: propName,
-        mutationMethod: null,
-
-        mustUseProperty: checkBitmask(propConfig, MUST_USE_PROPERTY),
-        hasSideEffects: checkBitmask(propConfig, IS_EDGE_CASE),
-        hasBooleanValue: checkBitmask(propConfig, HAS_BOOLEAN_VALUE),
-        hasNumericValue: checkBitmask(propConfig, HAS_NUMERIC_VALUE),
-        hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
-    };
-
-    propInfoByAttributeName[attributeName] = propertyInfo;
+function checkMask(value, bitmask) {
+    return bitmask != null && ((value & bitmask) === bitmask);
 }
- return function getPropertyInfo (attributeName) {
 
-	 let lowerCased = attributeName.toLowerCase();
-     let propInfo;
+export default (function() {
 
-    if (propInfoByAttributeName[lowerCased]) {
-          propInfo = propInfoByAttributeName[lowerCased];
-	} else {
+    let propInfoByAttributeName = {};
+
+    for (let propName in Whitelist) {
+
+        let propConfig = Whitelist[propName];
+
+        let attributeName = attributeMapping[propName] || propName.toLowerCase();
+
+        let propertyInfo = {
+            attributeName: attributeName,
+            attributeNamespace: namespaceAttrs[propName],
+            propertyName: propName,
+            mutationMethod: null,
+
+            mustUseProperty: checkBitmask(propConfig, MUST_USE_PROPERTY),
+            hasBooleanValue: checkBitmask(propConfig, HAS_BOOLEAN_VALUE),
+            hasNumericValue: checkBitmask(propConfig, HAS_NUMERIC_VALUE),
+            hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
+        };
+
+        propInfoByAttributeName[attributeName] = propertyInfo;
+    }
+    return function getPropertyInfo(attributeName) {
+
+        let lowerCased = attributeName.toLowerCase();
+        let propInfo;
+
+        if (propInfoByAttributeName[lowerCased]) {
+            propInfo = propInfoByAttributeName[lowerCased];
+        } else {
             propInfo = {
-                attributeName: DOMAttributeNames[attributeName] || attributeName.toLowerCase(),
+                attributeName: attributeMapping[attributeName] || lowerCased,
                 mustUseAttribute: true,
                 isCustomAttribute: true
             };
         }
-return propInfo;
-
-	}
+        return propInfo;
+    }
 })();
