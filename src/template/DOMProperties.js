@@ -1,5 +1,3 @@
-import checkBitmask from './checkBitmask';
-
 const MUST_USE_PROPERTY = 0x1;
 const HAS_BOOLEAN_VALUE = 0x4;
 const HAS_NUMERIC_VALUE = 0x8;
@@ -101,7 +99,7 @@ const Whitelist = {
     'xml:space': null
 }
 
-function checkMask(value, bitmask) {
+function checkBitmask(value, bitmask) {
     return bitmask != null && ((value & bitmask) === bitmask);
 }
 
