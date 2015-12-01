@@ -36,8 +36,8 @@ const attributeMapping = {
     xmlSpace: 'xml:space'
 };
 
-// This 'whitelist' contains edge cases such as
-// Mainly it contains the attributes that should be seen as a property or boolean property.
+// This 'whitelist' contains edge cases such as attributes
+// that should be seen as a property or boolean property.
 // ONLY EDIT THIS IF YOU KNOW WHAT YOU ARE DOING!!
 
 const Whitelist = {
