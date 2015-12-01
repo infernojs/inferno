@@ -57,4 +57,4 @@ function eventInterface(nativeEvent) {
 	return nativeEvent;
 }
 
-export default eventSetup;
+export default eventInterface;
