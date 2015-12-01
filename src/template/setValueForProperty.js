@@ -1,11 +1,11 @@
-import DOMProperties            from './DOMProperties';
-import shouldIgnoreValue        from './shouldIgnoreValue';
-import deleteDOMProperties   from './deleteDOMProperties';
-import isArray                  from '../util/isArray';
-
+import DOMProperties from './DOMProperties';
+import shouldIgnoreValue from './shouldIgnoreValue';
+import deleteDOMProperties from './deleteDOMProperties';
+import isArray from '../util/isArray';
 
 function setValueForProperty(node, name, value) {
-    let propertyInfo = DOMProperties[name];
+
+    let propertyInfo = DOMProperties(name);
 
     if (propertyInfo !== undefined) {
         if (shouldIgnoreValue(propertyInfo, value)) {
@@ -16,11 +16,11 @@ function setValueForProperty(node, name, value) {
             let propName = propertyInfo.propertyName;
             if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
                 const multiple = isArray(value);
-				const options = node.options;
+                const options = node.options;
 
                 let selectedValue;
-				let idx;
-				let l;
+                let idx;
+                let l;
 
                 if (multiple) {
                     selectedValue = {};
@@ -64,7 +64,7 @@ function setValueForProperty(node, name, value) {
         if (name) {
             node.setAttribute(name, value);
         }
-	}
+    }
 }
 
 export default setValueForProperty;

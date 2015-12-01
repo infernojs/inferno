@@ -123,6 +123,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _events2 = _interopRequireDefault(_events);
 	
+	var _template = __webpack_require__(83);
+	
+	var _template2 = _interopRequireDefault(_template);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	module.exports = {
@@ -136,7 +140,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		TemplateTypes: _templateTypes2.default,
 		clearDomElement: _clearDomElement2.default,
 		createRef: _createRef2.default,
-		Events: _events2.default
+		events: _events2.default,
+		template: _template2.default
 	};
 
 /***/ },
@@ -988,8 +993,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var DOMPropertyNames = {};
-	
 	var MUST_USE_PROPERTY = _DOMasks2.default.MUST_USE_PROPERTY;
 	var IS_EDGE_CASE = _DOMasks2.default.IS_EDGE_CASE;
 	var HAS_BOOLEAN_VALUE = _DOMasks2.default.HAS_BOOLEAN_VALUE;
@@ -1173,232 +1176,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // as an alternative to the sandbox attribute on IE<10
 	    security: null,
 	    // IE-only attribute that controls focus behavior
-	    unselectable: null,
-	
-	    /*
-	     * SVG
-	     */
-	
-	    accentHeight: null,
-	    accumulate: null,
-	    alignmentBaseline: null,
-	    alphabetic: null,
-	    amplitude: null,
-	    animate: null,
-	    arabicForm: null,
-	    ascent: null,
-	    attributeType: null,
-	    azimuth: null,
-	    baseFrequency: null,
-	    baseProfile: null,
-	    baselineShift: null,
-	    bbox: null,
-	    bias: null,
-	    by: null,
-	    calcMode: null,
-	    capHeight: null,
-	    'class': null,
-	    clip: null,
-	    clipPath: null,
-	    clipPathUnits: null,
-	    clipRule: null,
-	    colorInterpolation: null,
-	    colorInterpolationFilters: null,
-	    colorProfile: null,
-	    colorRendering: null,
-	    contentScriptType: null,
-	    contentStyleType: null,
-	    cursor: null,
-	    cx: null,
-	    cy: null,
-	    d: null,
-	    descent: null,
-	    diffuseConstant: null,
-	    direction: null,
-	    display: null,
-	    divisor: null,
-	    dominantBaseline: null,
-	    dur: null,
-	    dx: null,
-	    dy: null,
-	    edgeMode: null,
-	    elevation: null,
-	    enableBackground: null,
-	    end: null,
-	    exponent: null,
-	    externalResourcesRequired: null,
-	    feColorMatrix: null,
-	    feComposite: null,
-	    feGaussianBlur: null,
-	    feMorphology: null,
-	    feTile: null,
-	    fill: null,
-	    fillOpacity: null,
-	    fillRule: null,
-	    filter: null,
-	    filterRes: null,
-	    filterUnits: null,
-	    floodColor: null,
-	    floodOpacity: null,
-	    fontFamily: null,
-	    fontSize: null,
-	    fontSizeAdjust: null,
-	    fontStretch: null,
-	    fontStyle: null,
-	    fontVariant: null,
-	    fontWeight: null,
-	    format: null,
-	    from: null,
-	    fx: null,
-	    fy: null,
-	    g1: null,
-	    g2: null,
-	    glyphName: null,
-	    glyphOrientationHorizontal: null,
-	    glyphOrientationVertical: null,
-	    glyphRef: null,
-	    gradientTransform: null,
-	    gradientUnits: null,
-	    hanging: null,
-	    horizAdvX: null,
-	    horizOriginX: null,
-	    horizOriginY: null,
-	    ideographic: null,
-	    imageRendering: null,
-	    in2: null,
-	    'in': null,
-	    intercept: null,
-	    k1: null,
-	    k2: null,
-	    k3: null,
-	    k4: null,
-	    k: null,
-	    kernelMatrix: null,
-	    kernelUnitLength: null,
-	    kerning: null,
-	    keyPoints: null,
-	    keySplines: null,
-	    keyTimes: null,
-	    lengthAdjust: null,
-	    letterSpacing: null,
-	    lightingColor: null,
-	    limitingConeAngle: null,
-	    local: null,
-	    markerEnd: null,
-	    markerHeight: null,
-	    markerMid: null,
-	    markerStart: null,
-	    markerUnits: null,
-	    markerWidth: null,
-	    mask: null,
-	    maskContentUnits: null,
-	    maskUnits: null,
-	    mathematical: null,
-	    mode: null,
-	    numOctaves: null,
-	    offset: null,
-	    opacity: null,
-	    operator: null,
-	    order: null,
-	    orient: null,
-	    orientation: null,
-	    origin: null,
-	    overflow: null,
-	    overlinePosition: null,
-	    overlineThickness: null,
-	    panose1: null,
-	    path: null,
-	    pathLength: null,
-	    patternContentUnits: null,
-	    patternTransform: null,
-	    patternUnits: null,
-	    pointerEvents: null,
-	    points: null,
-	    pointsAtX: null,
-	    pointsAtY: null,
-	    pointsAtZ: null,
-	    preserveAlpha: null,
-	    preserveAspectRatio: null,
-	    primitiveUnits: null,
-	    r: null,
-	    radius: null,
-	    refX: null,
-	    refY: null,
-	    renderingIntent: null,
-	    repeatCount: null,
-	    repeatDur: null,
-	    requiredExtensions: null,
-	    restart: null,
-	    result: null,
-	    resize: MUST_USE_PROPERTY,
-	    rotate: null,
-	    rx: null,
-	    ry: null,
-	    scale: null,
-	    seed: null,
-	    shapeRendering: null,
-	    slope: null,
-	    spacing: null,
-	    specularConstant: null,
-	    specularExponent: null,
-	    spreadMethod: null,
-	    startOffset: null,
-	    stdDeviation: null,
-	    stemh: null,
-	    stemv: null,
-	    stitchTiles: null,
-	    stopColor: null,
-	    stopOpacity: null,
-	    strikethroughPosition: null,
-	    strikethroughThickness: null,
-	    stroke: null,
-	    strokeDasharray: null,
-	    strokeDashoffset: null,
-	    strokeLinecap: null,
-	    strokeLinejoin: null,
-	    strokeMiterlimit: null,
-	    strokeOpacity: null,
-	    strokeWidth: null,
-	    surfaceScale: null,
-	    systemLanguage: null,
-	    tableValues: null,
-	    targetX: null,
-	    targetY: null,
-	    textAnchor: null,
-	    textDecoration: null,
-	    textLength: null,
-	    textRendering: null,
-	    to: null,
-	    transform: null,
-	    u1: null,
-	    u2: null,
-	    underlinePosition: null,
-	    underlineThickness: null,
-	    unicode: null,
-	    unicodeBidi: null,
-	    unicodeRange: null,
-	    unitsPerEm: null,
-	    use: null,
-	    vAlphabetic: null,
-	    vHanging: null,
-	    vIdeographic: null,
-	    vMathematical: null,
-	    values: null,
-	    version: null,
-	    vertAdvY: null,
-	    vertOriginX: null,
-	    vertOriginY: null,
-	    viewBox: null,
-	    viewTarget: null,
-	    visibility: null,
-	    widths: null,
-	    wordSpacing: null,
-	    writingMode: null,
-	    x1: null,
-	    x2: null,
-	    x: null,
-	    xChannelSelector: null,
-	    xHeight: null,
 	    xmlns: null,
 	    'xlink:actuate': null,
 	    'xlink:arcrole': null,
@@ -1409,49 +1186,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'xlink:type': null,
 	    'xml:base': null,
 	    'xml:lang': null,
-	    'xml:space': null,
-	    y1: null,
-	    y2: null,
-	    y: null,
-	    yChannelSelector: null,
-	    z: null,
-	    zoomAndPan: null
+	    'xml:space': null
 	};
 	
-	for (var propName in DOMProperties) {
+	exports.default = (function () {
 	
-	    var propConfig = DOMProperties[propName];
+	    var propInfoByAttributeName = {};
 	
-	    var propertyInfo = {
-	        attributeName: propName.toLowerCase(),
-	        attributeNamespace: null,
-	        propertyName: propName,
-	        mutationMethod: null,
+	    for (var propName in DOMProperties) {
 	
-	        mustUseProperty: (0, _checkBitmask2.default)(propConfig, MUST_USE_PROPERTY),
-	        hasSideEffects: (0, _checkBitmask2.default)(propConfig, IS_EDGE_CASE),
-	        hasBooleanValue: (0, _checkBitmask2.default)(propConfig, HAS_BOOLEAN_VALUE),
-	        hasNumericValue: (0, _checkBitmask2.default)(propConfig, HAS_NUMERIC_VALUE),
-	        hasPositiveNumericValue: (0, _checkBitmask2.default)(propConfig, HAS_POSITIVE_NUMERIC_VALUE)
+	        var propConfig = DOMProperties[propName];
+	
+	        var attributeName = _DOMAttributeNames2.default[propName] || propName.toLowerCase();
+	
+	        var propertyInfo = {
+	            attributeName: attributeName,
+	            attributeNamespace: _DOMAttributeNamespaces2.default[propName],
+	            propertyName: propName,
+	            mutationMethod: null,
+	
+	            mustUseProperty: (0, _checkBitmask2.default)(propConfig, MUST_USE_PROPERTY),
+	            hasSideEffects: (0, _checkBitmask2.default)(propConfig, IS_EDGE_CASE),
+	            hasBooleanValue: (0, _checkBitmask2.default)(propConfig, HAS_BOOLEAN_VALUE),
+	            hasNumericValue: (0, _checkBitmask2.default)(propConfig, HAS_NUMERIC_VALUE),
+	            hasPositiveNumericValue: (0, _checkBitmask2.default)(propConfig, HAS_POSITIVE_NUMERIC_VALUE)
+	        };
+	
+	        propInfoByAttributeName[attributeName] = propertyInfo;
+	    }
+	    return function getPropertyInfo(attributeName) {
+	
+	        var lowerCased = attributeName.toLowerCase();
+	        var propInfo = undefined;
+	
+	        if (propInfoByAttributeName[lowerCased]) {
+	            propInfo = propInfoByAttributeName[lowerCased];
+	        } else {
+	            propInfo = {
+	                attributeName: _DOMAttributeNames2.default[attributeName] || attributeName.toLowerCase(),
+	                mustUseAttribute: true,
+	                isCustomAttribute: true
+	            };
+	        }
+	        return propInfo;
 	    };
-	
-	    if (_DOMAttributeNames2.default[propName]) {
-	        var attributeName = _DOMAttributeNames2.default[propName];
-	        propertyInfo.attributeName = attributeName;
-	    }
-	
-	    if (_DOMAttributeNamespaces2.default[propName]) {
-	        propertyInfo.attributeNamespace = _DOMAttributeNamespaces2.default[propName];
-	    }
-	
-	    if (DOMPropertyNames[propName]) {
-	        propertyInfo.propertyName = DOMPropertyNames[propName];
-	    }
-	
-	    DOMPropertyContainer[propName] = propertyInfo;
-	}
-	
-	exports.default = DOMPropertyContainer;
+	})();
 
 /***/ },
 /* 18 */
@@ -2051,7 +1830,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createListenerArguments;
 	
-	var _isFormElement = __webpack_require__(84);
+	var _isFormElement = __webpack_require__(88);
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
 	
@@ -2294,7 +2073,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} name
 	 */
 	function deleteValueForProperty(node, name) {
-	    var propertyInfo = _DOMProperties2.default[name];
+	    var propertyInfo = (0, _DOMProperties2.default)(name);
 	
 	    if (propertyInfo !== undefined) {
 	        if (propertyInfo.mustUseProperty) {
@@ -2376,7 +2155,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function setValueForProperty(node, name, value) {
-	    var propertyInfo = _DOMProperties2.default[name];
+	
+	    var propertyInfo = (0, _DOMProperties2.default)(name);
+	
+	    console.log(propertyInfo);
 	
 	    if (propertyInfo !== undefined) {
 	        if ((0, _shouldIgnoreValue2.default)(propertyInfo, value)) {
@@ -2804,7 +2586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(81);
+	var _quoteAttributeValueForBrowser = __webpack_require__(85);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3696,7 +3478,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	var _requestAnimationFrame = __webpack_require__(86);
+	var _requestAnimationFrame = __webpack_require__(90);
 	
 	var _registerEventHooks = __webpack_require__(16);
 	
@@ -3959,147 +3741,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'class',
 	    htmlFor: 'for',
 	    httpEquiv: 'http-equiv',
-	
-	    /**
-	     * SVG
-	     */
-	
-	    accentHeight: 'accent-height',
-	    alignmentBaseline: 'alignment-baseline',
-	    arabicForm: 'arabic-form',
-	    attributeType: 'attributeType',
-	    baseFrequency: 'baseFrequency',
-	    baseProfile: 'baseProfile',
-	    baselineShift: 'baseline-shift',
-	    calcMode: 'calcMode',
-	    capHeight: 'cap-height',
-	    clipPath: 'clip-path',
-	    clipPathUnits: 'clipPathUnits',
-	    clipRule: 'clip-rule',
-	    colorInterpolation: 'color-interpolation',
-	    colorInterpolationFilters: 'color-interpolation-filters',
-	    colorProfile: 'color-profile',
-	    colorRendering: 'color-rendering',
-	    contentScriptType: 'contentScriptType',
-	    contentStyleType: 'contentStyleType',
-	    diffuseConstant: 'diffuseConstant',
-	    dominantBaseline: 'dominant-baseline',
-	    edgeMode: 'edgeMode',
-	    enableBackground: 'enable-background',
-	    externalResourcesRequired: 'externalResourcesRequired',
-	    feColorMatrix: 'feColorMatrix',
-	    feComposite: 'feComposite',
-	    feGaussianBlur: 'feGaussianBlur',
-	    feMorphology: 'feMorphology',
-	    feTile: 'feTile',
-	    fillOpacity: 'fill-opacity',
-	    fillRule: 'fill-rule',
-	    filterRes: 'filterRes',
-	    filterUnits: 'filterUnits',
-	    floodColor: 'flood-color',
-	    floodOpacity: 'flood-opacity',
-	    fontFamily: 'font-family',
-	    fontSize: 'font-size',
-	    fontSizeAdjust: 'font-size-adjust',
-	    fontStretch: 'font-stretch',
-	    fontStyle: 'font-style',
-	    fontVariant: 'font-variant',
-	    fontWeight: 'font-weight',
-	    glyphName: 'glyph-name',
-	    glyphOrientationHorizontal: 'glyph-orientation-horizontal',
-	    glyphOrientationVertical: 'glyph-orientation-vertical',
-	    glyphRef: 'glyphRef',
-	    gradientTransform: 'gradientTransform',
-	    gradientUnits: 'gradientUnits',
-	    horizAdvX: 'horiz-adv-x',
-	    horizOriginX: 'horiz-origin-x',
-	    horizOriginY: 'horiz-origin-y',
-	    imageRendering: 'image-rendering',
-	    kernelMatrix: 'kernelMatrix',
-	    kernelUnitLength: 'kernelUnitLength',
-	    keyPoints: 'keyPoints',
-	    keySplines: 'keySplines',
-	    keyTimes: 'keyTimes',
-	    lengthAdjust: 'lengthAdjust',
-	    letterSpacing: 'letter-spacing',
-	    lightingColor: 'lighting-color',
-	    limitingConeAngle: 'limitingConeAngle',
-	    markerEnd: 'marker-end',
-	    markerHeight: 'markerHeight',
-	    markerMid: 'marker-mid',
-	    markerStart: 'marker-start',
-	    markerUnits: 'markerUnits',
-	    markerWidth: 'markerWidth',
-	    maskContentUnits: 'maskContentUnits',
-	    maskUnits: 'maskUnits',
-	    numOctaves: 'numOctaves',
-	    overlinePosition: 'overline-position',
-	    overlineThickness: 'overline-thickness',
-	    panose1: 'panose-1',
-	    pathLength: 'pathLength',
-	    patternContentUnits: 'patternContentUnits',
-	    patternTransform: 'patternTransform',
-	    patternUnits: 'patternUnits',
-	    pointerEvents: 'pointer-events',
-	    pointsAtX: 'pointsAtX',
-	    pointsAtY: 'pointsAtY',
-	    pointsAtZ: 'pointsAtZ',
-	    preserveAlpha: 'preserveAlpha',
-	    preserveAspectRatio: 'preserveAspectRatio',
-	    primitiveUnits: 'primitiveUnits',
-	    refX: 'refX',
-	    refY: 'refY',
-	    renderingIntent: 'rendering-intent',
-	    repeatCount: 'repeatCount',
-	    repeatDur: 'repeatDur',
-	    requiredExtensions: 'requiredExtensions',
-	    shapeRendering: 'shape-rendering',
-	    specularConstant: 'specularConstant',
-	    specularExponent: 'specularExponent',
-	    spreadMethod: 'spreadMethod',
-	    startOffset: 'startOffset',
-	    stdDeviation: 'stdDeviation',
-	    stitchTiles: 'stitchTiles',
-	    stopColor: 'stop-color',
-	    stopOpacity: 'stop-opacity',
-	    strikethroughPosition: 'strikethrough-position',
-	    strikethroughThickness: 'strikethrough-thickness',
-	    strokeDasharray: 'stroke-dasharray',
-	    strokeDashoffset: 'stroke-dashoffset',
-	    strokeLinecap: 'stroke-linecap',
-	    strokeLinejoin: 'stroke-linejoin',
-	    strokeMiterlimit: 'stroke-miterlimit',
-	    strokeOpacity: 'stroke-opacity',
-	    strokeWidth: 'stroke-width',
-	    surfaceScale: 'surfaceScale',
-	    systemLanguage: 'systemLanguage',
-	    tableValues: 'tableValues',
-	    targetX: 'targetX',
-	    targetY: 'targetY',
-	    textAnchor: 'text-anchor',
-	    textDecoration: 'text-decoration',
-	    textLength: 'textLength',
-	    textRendering: 'text-rendering',
-	    underlinePosition: 'underline-position',
-	    underlineThickness: 'underline-thickness',
-	    unicodeBidi: 'unicode-bidi',
-	    unicodeRange: 'unicode-range',
-	    unitsPerEm: 'units-per-em',
-	    vAlphabetic: 'v-alphabetic',
-	    vHanging: 'v-hanging',
-	    vIdeographic: 'v-ideographic',
-	    vMathematical: 'v-mathematical',
-	    vertAdvY: 'vert-adv-y',
-	    vertOriginX: 'vert-origin-x',
-	    vertOriginY: 'vert-origin-y',
-	    viewBox: 'viewBox',
-	    viewTarget: 'viewTarget',
-	    wordSpacing: 'word-spacing',
-	    writingMode: 'writing-mode',
-	    xChannelSelector: 'xChannelSelector',
-	    xHeight: 'x-height',
-	    yChannelSelector: 'yChannelSelector',
-	    zoomAndPan: 'zoomAndPan',
 	    xlinkActuate: 'xlink:actuate',
 	    xlinkArcrole: 'xlink:arcrole',
 	    xlinkHref: 'xlink:href',
@@ -4313,7 +3954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _unitlessProperties = __webpack_require__(83);
+	var _unitlessProperties = __webpack_require__(87);
 	
 	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
 	
@@ -4519,7 +4160,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _setDOMProperties = __webpack_require__(82);
+	var _setDOMProperties = __webpack_require__(86);
 	
 	var _setDOMProperties2 = _interopRequireDefault(_setDOMProperties);
 	
@@ -4662,6 +4303,88 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 80 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = {
+	    set: {},
+	    unset: {},
+	    renderToString: {}
+	};
+
+/***/ },
+/* 81 */
+80,
+/* 82 */
+80,
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _attributeHooks = __webpack_require__(80);
+	
+	var _attributeHooks2 = _interopRequireDefault(_attributeHooks);
+	
+	var _styleHooks = __webpack_require__(81);
+	
+	var _styleHooks2 = _interopRequireDefault(_styleHooks);
+	
+	var _svgHooks = __webpack_require__(82);
+	
+	var _svgHooks2 = _interopRequireDefault(_svgHooks);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/*
+	 * Template interface
+	 */
+	exports.default = {
+	    registerAttributeHooks: function registerAttributeHooks(propName, hook) {
+	        var attrHook = propName[type] || (propName[type] = {});
+	
+	        if (isArray(propName)) {
+	            for (var i = 0; i < propName.length; i++) {
+	                attrHook[propName[i]] = hook;
+	            }
+	        } else {
+	            attrHook[propName] = hook;
+	        }
+	    },
+	    registerStyleHooks: function registerStyleHooks(propName, hook) {
+	        var styleHook = _styleHooks2.default[type] || (_styleHooks2.default[type] = {});
+	
+	        if (isArray(propName)) {
+	            for (var i = 0; i < propName.length; i++) {
+	                styleHook[propName[i]] = hook;
+	            }
+	        } else {
+	            styleHook[propName] = hook;
+	        }
+	    },
+	    registerSvgHooks: function registerSvgHooks(propName, hook) {
+	        var SvgHook = _svgHooks2.default[type] || (_svgHooks2.default[type] = {});
+	
+	        if (isArray(propName)) {
+	            for (var i = 0; i < propName.length; i++) {
+	                SvgHook[propName[i]] = hook;
+	            }
+	        } else {
+	            SvgHook[propName] = hook;
+	        }
+	    }
+	};
+
+/***/ },
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4719,7 +4442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 81 */
+/* 85 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4753,7 +4476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var endOfText = '\u0003';
 
 /***/ },
-/* 82 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4779,7 +4502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(80);
+	var _processFragmentAttrs = __webpack_require__(84);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -4833,7 +4556,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 83 */
+/* 87 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4884,7 +4607,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 84 */
+/* 88 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4899,7 +4622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isFormElement;
 
 /***/ },
-/* 85 */
+/* 89 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4911,7 +4634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = function () {};
 
 /***/ },
-/* 86 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4925,7 +4648,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
-	var _noop = __webpack_require__(85);
+	var _noop = __webpack_require__(89);
 	
 	var _noop2 = _interopRequireDefault(_noop);
 	

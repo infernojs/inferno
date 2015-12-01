@@ -7,7 +7,7 @@ import DOMProperties from './DOMProperties';
  * @param {string} name
  */
 function deleteValueForProperty(node, name) {
-    let propertyInfo = DOMProperties[name];
+    let propertyInfo = DOMProperties(name);
 
     if (propertyInfo !== undefined) {
         if (propertyInfo.mustUseProperty) {

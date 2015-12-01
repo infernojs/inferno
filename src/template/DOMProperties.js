@@ -3,8 +3,6 @@ import DOMAttributeNames from './DOMAttributeNames';
 import DOMasks from './DOMasks';
 import checkBitmask from './checkBitmask';
 
-let DOMPropertyNames = {};
-
 const {
     MUST_USE_PROPERTY,
     IS_EDGE_CASE,
@@ -191,232 +189,6 @@ const DOMProperties = {
     // as an alternative to the sandbox attribute on IE<10
     security: null,
     // IE-only attribute that controls focus behavior
-    unselectable: null,
-
-    /*
-     * SVG
-     */
-
-    accentHeight: null,
-    accumulate: null,
-    alignmentBaseline: null,
-    alphabetic: null,
-    amplitude: null,
-    animate: null,
-    arabicForm: null,
-    ascent: null,
-    attributeType: null,
-    azimuth: null,
-    baseFrequency: null,
-    baseProfile: null,
-    baselineShift: null,
-    bbox: null,
-    bias: null,
-    by: null,
-    calcMode: null,
-    capHeight: null,
-    'class': null,
-    clip: null,
-    clipPath: null,
-    clipPathUnits: null,
-    clipRule: null,
-    colorInterpolation: null,
-    colorInterpolationFilters: null,
-    colorProfile: null,
-    colorRendering: null,
-    contentScriptType: null,
-    contentStyleType: null,
-    cursor: null,
-    cx: null,
-    cy: null,
-    d: null,
-    descent: null,
-    diffuseConstant: null,
-    direction: null,
-    display: null,
-    divisor: null,
-    dominantBaseline: null,
-    dur: null,
-    dx: null,
-    dy: null,
-    edgeMode: null,
-    elevation: null,
-    enableBackground: null,
-    end: null,
-    exponent: null,
-    externalResourcesRequired: null,
-    feColorMatrix: null,
-    feComposite: null,
-    feGaussianBlur: null,
-    feMorphology: null,
-    feTile: null,
-    fill: null,
-    fillOpacity: null,
-    fillRule: null,
-    filter: null,
-    filterRes: null,
-    filterUnits: null,
-    floodColor: null,
-    floodOpacity: null,
-    fontFamily: null,
-    fontSize: null,
-    fontSizeAdjust: null,
-    fontStretch: null,
-    fontStyle: null,
-    fontVariant: null,
-    fontWeight: null,
-    format: null,
-    from: null,
-    fx: null,
-    fy: null,
-    g1: null,
-    g2: null,
-    glyphName: null,
-    glyphOrientationHorizontal: null,
-    glyphOrientationVertical: null,
-    glyphRef: null,
-    gradientTransform: null,
-    gradientUnits: null,
-    hanging: null,
-    horizAdvX: null,
-    horizOriginX: null,
-    horizOriginY: null,
-    ideographic: null,
-    imageRendering: null,
-    in2: null,
-    'in': null,
-    intercept: null,
-    k1: null,
-    k2: null,
-    k3: null,
-    k4: null,
-    k: null,
-    kernelMatrix: null,
-    kernelUnitLength: null,
-    kerning: null,
-    keyPoints: null,
-    keySplines: null,
-    keyTimes: null,
-    lengthAdjust: null,
-    letterSpacing: null,
-    lightingColor: null,
-    limitingConeAngle: null,
-    local: null,
-    markerEnd: null,
-    markerHeight: null,
-    markerMid: null,
-    markerStart: null,
-    markerUnits: null,
-    markerWidth: null,
-    mask: null,
-    maskContentUnits: null,
-    maskUnits: null,
-    mathematical: null,
-    mode: null,
-    numOctaves: null,
-    offset: null,
-    opacity: null,
-    operator: null,
-    order: null,
-    orient: null,
-    orientation: null,
-    origin: null,
-    overflow: null,
-    overlinePosition: null,
-    overlineThickness: null,
-    panose1: null,
-    path: null,
-    pathLength: null,
-    patternContentUnits: null,
-    patternTransform: null,
-    patternUnits: null,
-    pointerEvents: null,
-    points: null,
-    pointsAtX: null,
-    pointsAtY: null,
-    pointsAtZ: null,
-    preserveAlpha: null,
-    preserveAspectRatio: null,
-    primitiveUnits: null,
-    r: null,
-    radius: null,
-    refX: null,
-    refY: null,
-    renderingIntent: null,
-    repeatCount: null,
-    repeatDur: null,
-    requiredExtensions: null,
-    restart: null,
-    result: null,
-    resize: MUST_USE_PROPERTY,
-    rotate: null,
-    rx: null,
-    ry: null,
-    scale: null,
-    seed: null,
-    shapeRendering: null,
-    slope: null,
-    spacing: null,
-    specularConstant: null,
-    specularExponent: null,
-    spreadMethod: null,
-    startOffset: null,
-    stdDeviation: null,
-    stemh: null,
-    stemv: null,
-    stitchTiles: null,
-    stopColor: null,
-    stopOpacity: null,
-    strikethroughPosition: null,
-    strikethroughThickness: null,
-    stroke: null,
-    strokeDasharray: null,
-    strokeDashoffset: null,
-    strokeLinecap: null,
-    strokeLinejoin: null,
-    strokeMiterlimit: null,
-    strokeOpacity: null,
-    strokeWidth: null,
-    surfaceScale: null,
-    systemLanguage: null,
-    tableValues: null,
-    targetX: null,
-    targetY: null,
-    textAnchor: null,
-    textDecoration: null,
-    textLength: null,
-    textRendering: null,
-    to: null,
-    transform: null,
-    u1: null,
-    u2: null,
-    underlinePosition: null,
-    underlineThickness: null,
-    unicode: null,
-    unicodeBidi: null,
-    unicodeRange: null,
-    unitsPerEm: null,
-    use: null,
-    vAlphabetic: null,
-    vHanging: null,
-    vIdeographic: null,
-    vMathematical: null,
-    values: null,
-    version: null,
-    vertAdvY: null,
-    vertOriginX: null,
-    vertOriginY: null,
-    viewBox: null,
-    viewTarget: null,
-    visibility: null,
-    widths: null,
-    wordSpacing: null,
-    writingMode: null,
-    x1: null,
-    x2: null,
-    x: null,
-    xChannelSelector: null,
-    xHeight: null,
     xmlns: null,
     'xlink:actuate': null,
     'xlink:arcrole': null,
@@ -427,22 +199,22 @@ const DOMProperties = {
     'xlink:type': null,
     'xml:base': null,
     'xml:lang': null,
-    'xml:space': null,
-    y1: null,
-    y2: null,
-    y: null,
-    yChannelSelector: null,
-    z: null,
-    zoomAndPan: null
+    'xml:space': null
 }
+
+export default (function () {
+	
+var propInfoByAttributeName = {};
 
 for (let propName in DOMProperties) {
 
     let propConfig = DOMProperties[propName];
+	
+    let attributeName = DOMAttributeNames[propName] || propName.toLowerCase();
 
     let propertyInfo = {
-        attributeName: propName.toLowerCase(),
-        attributeNamespace: null,
+        attributeName: attributeName,
+        attributeNamespace: DOMAttributeNamespaces[propName],
         propertyName: propName,
         mutationMethod: null,
 
@@ -453,20 +225,23 @@ for (let propName in DOMProperties) {
         hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
     };
 
-    if (DOMAttributeNames[propName]) {
-        let attributeName = DOMAttributeNames[propName];
-        propertyInfo.attributeName = attributeName;
-    }
-
-    if (DOMAttributeNamespaces[propName]) {
-        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
-    }
-
-    if (DOMPropertyNames[propName]) {
-        propertyInfo.propertyName = DOMPropertyNames[propName];
-    }
-
-    DOMPropertyContainer[propName] = propertyInfo;
+    propInfoByAttributeName[attributeName] = propertyInfo;
 }
+ return function getPropertyInfo (attributeName) {
 
-export default DOMPropertyContainer;
+	 let lowerCased = attributeName.toLowerCase();
+     let propInfo;
+
+    if (propInfoByAttributeName[lowerCased]) {
+          propInfo = propInfoByAttributeName[lowerCased];
+	} else {
+            propInfo = {
+                attributeName: DOMAttributeNames[attributeName] || attributeName.toLowerCase(),
+                mustUseAttribute: true,
+                isCustomAttribute: true
+            };
+        }
+return propInfo;
+
+	}
+})();
