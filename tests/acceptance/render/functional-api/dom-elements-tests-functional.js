@@ -2087,5 +2087,62 @@ describe('should set boolean element property', () => {
 			);
 		});
 	});
+	
+	describe('should render custom attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('div', { 'custom-attr' : arg })
+		);
+
+		it('Initial render (creation)', () => {
+            
+			Inferno.render(Inferno.createFragment([123], template), container);
+            
+			expect(container.firstChild.getAttribute('custom-attr')).to.equal('123');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div custom-attr="123"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['test.jpg', true], template), container);
+			expect(container.firstChild.getAttribute('custom-attr')).to.equal('test.jpg');
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div custom-attr="test.jpg"></div>'
+			);
+		});
+	});
+
+	describe('should support alternative names', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('label', { 'for' : arg })
+		);
+
+		it('Initial render (creation)', () => {
+            
+			Inferno.render(Inferno.createFragment('c1', template), container);
+            
+			expect(container.firstChild.getAttribute('for')).to.equal('c1');
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<label for="c1"></label>' 
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['test.jpg', true], template), container);
+			expect(container.firstChild.getAttribute('for')).to.equal('test.jpg');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label for="test.jpg"></label>' 
+			);
+		});
+	});
+
 }
 
