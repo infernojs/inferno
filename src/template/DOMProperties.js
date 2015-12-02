@@ -1,7 +1,9 @@
-const MUST_USE_PROPERTY = 0x1;
-const HAS_BOOLEAN_VALUE = 0x4;
-const HAS_NUMERIC_VALUE = 0x8;
-const HAS_POSITIVE_NUMERIC_VALUE = 0x10 | 0x8;
+const PROPERTY = 0x1;
+const BOOLEAN = 0x4;
+const NUMERIC_VALUE = 0x8;
+const POSITIVE_NUMERIC_VALUE = 0x10 | 0x8;
+const STYLE_OBJECT = 0x40;
+const FORM_ELEMENT = 0x80;
 
 const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
@@ -41,46 +43,46 @@ const attributeMapping = {
 // ONLY EDIT THIS IF YOU KNOW WHAT YOU ARE DOING!!
 
 const Whitelist = {
-    allowFullScreen: HAS_BOOLEAN_VALUE,
-    async: HAS_BOOLEAN_VALUE,
-    autoFocus: HAS_BOOLEAN_VALUE,
-    autoPlay: HAS_BOOLEAN_VALUE,
-    capture: HAS_BOOLEAN_VALUE,
-    checked: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-    cols: HAS_POSITIVE_NUMERIC_VALUE,
-    controls: HAS_BOOLEAN_VALUE,
-    currentTime: MUST_USE_PROPERTY | HAS_POSITIVE_NUMERIC_VALUE,
-    default: HAS_BOOLEAN_VALUE,
-    defer: HAS_BOOLEAN_VALUE,
-    disabled: HAS_BOOLEAN_VALUE,
-    download: HAS_BOOLEAN_VALUE,
-    enabled: HAS_BOOLEAN_VALUE,
-    formNoValidate: HAS_BOOLEAN_VALUE,
-    hidden: HAS_BOOLEAN_VALUE,
-    loop: HAS_BOOLEAN_VALUE,
+    allowFullScreen: BOOLEAN,
+    async: BOOLEAN,
+    autoFocus: BOOLEAN,
+    autoPlay: BOOLEAN,
+    capture: BOOLEAN,
+    checked: PROPERTY | BOOLEAN,
+    cols: POSITIVE_NUMERIC_VALUE,
+    controls: BOOLEAN,
+    currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
+    default: BOOLEAN,
+    defer: BOOLEAN,
+    disabled: BOOLEAN,
+    download: BOOLEAN,
+    enabled: BOOLEAN,
+    formNoValidate: BOOLEAN,
+    hidden: BOOLEAN,
+    loop: BOOLEAN,
     // Caution; `option.selected` is not updated if `select.multiple` is
     // disabled with `removeAttribute`.
-    multiple: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-    muted: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-    noValidate: HAS_BOOLEAN_VALUE,
-    open: HAS_BOOLEAN_VALUE,
-    paused: MUST_USE_PROPERTY,
-    playbackRate: MUST_USE_PROPERTY | HAS_NUMERIC_VALUE,
-    readOnly: HAS_BOOLEAN_VALUE,
-    required: HAS_BOOLEAN_VALUE,
-    reversed: HAS_BOOLEAN_VALUE,
-    rowSpan: HAS_NUMERIC_VALUE,
-    scoped: HAS_BOOLEAN_VALUE,
-    seamless: HAS_BOOLEAN_VALUE,
-    selected: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-    size: HAS_POSITIVE_NUMERIC_VALUE,
-    span: HAS_POSITIVE_NUMERIC_VALUE,
-    srcLang: MUST_USE_PROPERTY,
-    srcObject: MUST_USE_PROPERTY,
-    start: HAS_NUMERIC_VALUE,
-    value: MUST_USE_PROPERTY,
-    volume: MUST_USE_PROPERTY | HAS_POSITIVE_NUMERIC_VALUE,
-    itemScope: HAS_BOOLEAN_VALUE,
+    multiple: PROPERTY | BOOLEAN,
+    muted: PROPERTY | BOOLEAN,
+    noValidate: BOOLEAN,
+    open: BOOLEAN,
+    paused: PROPERTY,
+    playbackRate: PROPERTY | NUMERIC_VALUE,
+    readOnly: BOOLEAN,
+    required: BOOLEAN,
+    reversed: BOOLEAN,
+    rowSpan: NUMERIC_VALUE,
+    scoped: BOOLEAN,
+    seamless: BOOLEAN,
+    selected: PROPERTY | BOOLEAN,
+    size: POSITIVE_NUMERIC_VALUE,
+    span: POSITIVE_NUMERIC_VALUE,
+    srcLang: PROPERTY,
+    srcObject: PROPERTY,
+    start: NUMERIC_VALUE,
+    value: PROPERTY,
+    volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
+    itemScope: BOOLEAN,
 
     /**
      * Namespace attributes
@@ -119,10 +121,10 @@ export default (function() {
             propertyName: propName,
             mutationMethod: null,
 
-            mustUseProperty: checkBitmask(propConfig, MUST_USE_PROPERTY),
-            hasBooleanValue: checkBitmask(propConfig, HAS_BOOLEAN_VALUE),
-            hasNumericValue: checkBitmask(propConfig, HAS_NUMERIC_VALUE),
-            hasPositiveNumericValue: checkBitmask(propConfig, HAS_POSITIVE_NUMERIC_VALUE),
+            mustUseProperty: checkBitmask(propConfig, PROPERTY),
+            hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
+            hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
+            hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
         };
 
         propInfoByAttributeName[attributeName] = propertyInfo;
