@@ -136,8 +136,8 @@ const Whitelist = {
      * Buggy attr / props
      */
 
-    // Force 'autocorrect' to be a attribute due
-    // to issues with Safari on iOS
+    // Force 'autocorrect' to be set as an attribute
+    // to fix issues with Safari on iOS
     autocorrect: null
 };
 
