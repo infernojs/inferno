@@ -1,9 +1,9 @@
 const PROPERTY = 0x1;
-const BOOLEAN = 0x4;
-const NUMERIC_VALUE = 0x8;
-const POSITIVE_NUMERIC_VALUE = 0x10 | 0x8;
-const STYLE_OBJECT = 0x40;
-const FORM_ELEMENT = 0x80;
+const BOOLEAN = 0x2;
+const NUMERIC_VALUE = 0x4;
+const POSITIVE_NUMERIC_VALUE = 0x6 | 0x4;
+const STYLE_OBJECT = 0x1 | 0x20;
+const FORM_ELEMENT = 0x30;
 
 const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
@@ -41,7 +41,6 @@ const attributeMapping = {
 // This 'whitelist' contains edge cases such as attributes
 // that should be seen as a property or boolean property.
 // ONLY EDIT THIS IF YOU KNOW WHAT YOU ARE DOING!!
-
 const Whitelist = {
     allowFullScreen: BOOLEAN,
     async: BOOLEAN,
@@ -75,7 +74,7 @@ const Whitelist = {
     scoped: BOOLEAN,
     seamless: BOOLEAN,
     selected: PROPERTY | BOOLEAN,
-//    style: PROPERTY | STYLE_OBJECT, // TODO! Fix inline styles
+//    style: STYLE_OBJECT, // TODO! Fix inline styles
 	size: POSITIVE_NUMERIC_VALUE,
     span: POSITIVE_NUMERIC_VALUE,
     srcLang: PROPERTY,
