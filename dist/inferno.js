@@ -1919,9 +1919,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _DOMProperties = __webpack_require__(34);
+	var _HTMLProperties = __webpack_require__(34);
 	
-	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
+	var _HTMLProperties2 = _interopRequireDefault(_HTMLProperties);
 	
 	var _shouldIgnoreValue = __webpack_require__(38);
 	
@@ -1937,6 +1937,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	exports.default = _shouldIgnoreValue2.default;
 	/*
 	 * Template interface
 	 */
@@ -1948,7 +1949,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    template = {
 	        setProperty: function setProperty(node, name, value) {
 	
-	            var propertyInfo = (0, _DOMProperties2.default)(name);
+	            var propertyInfo = (0, _HTMLProperties2.default)(name);
 	
 	            if (propertyInfo !== undefined) {
 	                if ((0, _shouldIgnoreValue2.default)(propertyInfo, value)) {
@@ -2017,7 +2018,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @param {string} name
 	         */
 	        removeProperty: function removeProperty(node, name) {
-	            var propertyInfo = (0, _DOMProperties2.default)(name);
+	            var propertyInfo = (0, _HTMLProperties2.default)(name);
 	
 	            if (propertyInfo !== undefined) {
 	                if (propertyInfo.mustUseProperty) {
@@ -2399,9 +2400,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _VirtualTextNode2 = _interopRequireDefault(_VirtualTextNode);
 	
-	var _DOMProperties = __webpack_require__(34);
+	var _HTMLProperties = __webpack_require__(34);
 	
-	var _DOMProperties2 = _interopRequireDefault(_DOMProperties);
+	var _HTMLProperties2 = _interopRequireDefault(_HTMLProperties);
 	
 	var _shouldIgnoreValue = __webpack_require__(38);
 	
@@ -2417,7 +2418,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    console.log(value);
 	
-	    var propertyInfo = _DOMProperties2.default[name];
+	    var propertyInfo = _HTMLProperties2.default[name];
 	
 	    if (propertyInfo) {
 	
@@ -3892,9 +3893,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _setDOMProperties = __webpack_require__(75);
+	var _setValueForProperty = __webpack_require__(75);
 	
-	var _setDOMProperties2 = _interopRequireDefault(_setDOMProperties);
+	var _setValueForProperty2 = _interopRequireDefault(_setValueForProperty);
 	
 	var _DOMElements = __webpack_require__(67);
 	
@@ -3910,7 +3911,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	exports.default = {
-	    addAttributes: _setDOMProperties2.default,
+	    addAttributes: _setValueForProperty2.default,
 	    createElement: function createElement(tag) {
 	
 	        if (fastTag(tag)) {

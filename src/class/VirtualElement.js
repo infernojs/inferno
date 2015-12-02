@@ -1,6 +1,6 @@
 import VirtualTextNode from './VirtualTextNode';
-import DOMProperties from '../template/DOMProperties';
-import shouldIgnoreValue from '../template/shouldIgnoreValue';
+import HTMLProperties from '../template/HTMLProperties';
+import shouldIgnoreValue from '../template/shared/shouldIgnoreValue';
 import quoteAttributeValueForBrowser from '../template/shared/quoteAttributeValueForBrowser';
 
 
@@ -8,7 +8,7 @@ function createMarkupForProperty(name, value) {
 
     console.log(value)
 
-    const propertyInfo = DOMProperties[name];
+    const propertyInfo = HTMLProperties[name];
 
     if (propertyInfo) {
 

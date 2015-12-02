@@ -1,8 +1,9 @@
-import DOMProperties from './DOMProperties';
-import shouldIgnoreValue from './shouldIgnoreValue';
+import HTMLProperties from './HTMLProperties';
+import shouldIgnoreValue from './shared/shouldIgnoreValue';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import isArray from '../util/isArray';
 
+export default shouldIgnoreValue;
 /*
  * Template interface
  */
@@ -15,7 +16,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
         setProperty(node, name, value) {
 
-            let propertyInfo = DOMProperties(name);
+            let propertyInfo = HTMLProperties(name);
 
             if (propertyInfo !== undefined) {
                 if (shouldIgnoreValue(propertyInfo, value)) {
@@ -84,7 +85,7 @@ if (ExecutionEnvironment.canUseDOM) {
          * @param {string} name
          */
         removeProperty(node, name) {
-            let propertyInfo = DOMProperties(name);
+            let propertyInfo = HTMLProperties(name);
 
             if (propertyInfo !== undefined) {
                 if (propertyInfo.mustUseProperty) {
