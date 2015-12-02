@@ -2260,6 +2260,33 @@ describe('should support "autocorrect" attribute', () => {
 		});
 	});
 
+describe('should bail out if attribute name shorter then 2', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('label', { 'a' : arg })
+		);
+
+		it('Initial render (creation)', () => {
+            
+			Inferno.render(Inferno.createFragment(123, template), container);
+            
+			expect(container.firstChild.getAttribute('a')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<label></label>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['world'], template), container);
+			expect(container.firstChild.getAttribute('a')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label></label>'
+			);
+		});
+	});
 
 	describe('should support alternative names', () => {
 		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
