@@ -97,7 +97,7 @@ const Whitelist = {
     volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
     itemScope: BOOLEAN,
     className: null,
-   
+
     /**
      * Numeric attributes
      */
@@ -107,7 +107,7 @@ const Whitelist = {
     size: NUMERIC_VALUE,
     sizes: NUMERIC_VALUE,
     start: NUMERIC_VALUE,
-  
+
     /**
      * Namespace attributes
      */
@@ -130,7 +130,15 @@ const Whitelist = {
     class: null,
     dir: null,
     lang: null,
-    title: null
+    title: null,
+
+    /**
+     * Buggy attr / props
+     */
+
+    // Force 'autocorrect' to be a attribute due
+    // to issues with Safari on iOS
+    autocorrect: null
 };
 
 let DOMPropertyContainer = {};
