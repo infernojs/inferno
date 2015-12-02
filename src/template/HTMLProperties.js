@@ -133,17 +133,61 @@ const Whitelist = {
     title: null,
 
     /**
-     * Buggy attr / props
+     * Properties that MUST be set as attributes, due to:
+     *
+     * - browser bug
+     * - strange spec outlier
+     *
+     * Nothing bad with this. This properties get a performance boost
+     * compared to custom attributes because they are skipping the 
+     * validation check.
      */
 
     // Force 'autocorrect' to be set as an attribute
     // to fix issues with Safari on iOS
-    autocorrect: BOOLEAN
-	
-	 // Some version of IE (like IE9) actually throw an exception
-     // if you set input.type = 'something-unknown'
-     type: null,
-	 form: null
+    autocorrect: BOOLEAN,
+
+    // Some version of IE (like IE9) actually throw an exception
+    // if you set input.type = 'something-unknown'
+    type: null,
+
+    /**
+     * Form
+     */
+    form: null,
+    formAction: null,
+    formEncType: null,
+    formMethod: null,
+    formTarget: null,
+    frameBorder: null,
+
+    /**
+     * Others
+     */
+
+    srcSet: null,
+    scrolling: null,
+    nonce: null,
+    method: null,
+    minLength: null,
+    marginWidth: null,
+    marginHeight: null,
+    list: null,
+    keyType: null,
+    is: null,
+    inputMode: null,
+    height: null,
+    width: null,
+    dateTime: null,
+    dir: null,
+    contentEditable: null,
+    contextMenu: null,
+    classID: null,
+    cellPadding: null,
+    cellSpacing: null,
+    charSet: null,
+    autoPlay: null,
+    allowTransparency: null
 };
 
 let DOMPropertyContainer = {};

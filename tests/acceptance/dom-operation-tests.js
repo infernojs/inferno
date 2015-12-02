@@ -142,7 +142,7 @@ export default function domOperationTests(describe, expect) {
 
             it('should set "autoPlay" property (falsy)', () => {
                 setProperty(container, 'autoPlay', false);
-                expect(container.getAttribute('autoPlay')).to.be.null;
+                expect(container.getAttribute('autoPlay')).to.equal('false');
              });
 
             it('should set "media" property (truthy)', () => {
@@ -172,6 +172,36 @@ export default function domOperationTests(describe, expect) {
 
                 setProperty(container, 'disabled', true);
             });
+			
+			/**
+			 * Properties we force to be set as attribute
+			 */
+			 
+            it('should set allowTransparency as an attribute', () => {
+                setProperty(container, 'allowTransparency', true);
+                expect(container.getAttribute('allowtransparency')).to.eql('true');
+            });
+
+            it('should set allowTransparency as an capture', () => {
+                setProperty(container, 'capture', 'capture');
+                expect(container.getAttribute('capture')).to.eql('capture');
+            });
+
+            it('should set allowTransparency as an classID', () => {
+                setProperty(container, 'classID', 'classID');
+                expect(container.getAttribute('classid')).to.eql('classID');
+            });
+
+            it('should set allowTransparency as an capture', () => {
+                setProperty(container, 'dateTime', 'dateTime');
+                expect(container.getAttribute('datetime')).to.eql('dateTime');
+            });
+
+            it('should set allowTransparency as an formEncType', () => {
+                setProperty(container, 'formEncType', 'formEncType');
+                expect(container.getAttribute('formenctype')).to.eql('formEncType');
+            });
+
         });
     });
 }
