@@ -38,7 +38,8 @@ if (ExecutionEnvironment.canUseDOM) {
                         }
                         // TODO! Clean up this mess
                     } else if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
-                        const multiple = isArray(value);
+                        
+						const multiple = isArray(value);
                         const options = node.options;
 
                         let selectedValue;
@@ -104,9 +105,8 @@ if (ExecutionEnvironment.canUseDOM) {
                 if (propertyInfo.mustUseProperty) {
 
                     let propName = propertyInfo.propertyName;
-
+                    // Special case: 'style' and 'dataset' property has to be removed as an attribute
                     if (propertyInfo.setAsObject) {
-
                         node.removeAttribute(propName);
                     } else if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
                         const options = node.options;

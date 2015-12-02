@@ -325,15 +325,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _createElement = __webpack_require__(69);
+	var _createElement = __webpack_require__(67);
 	
 	var _createElement2 = _interopRequireDefault(_createElement);
 	
-	var _createComponent = __webpack_require__(68);
+	var _createComponent = __webpack_require__(66);
 	
 	var _createComponent2 = _interopRequireDefault(_createComponent);
 	
-	var _dom = __webpack_require__(70);
+	var _dom = __webpack_require__(68);
 	
 	var _dom2 = _interopRequireDefault(_dom);
 	
@@ -1026,7 +1026,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _uuid = __webpack_require__(81);
+	var _uuid = __webpack_require__(79);
 	
 	var _uuid2 = _interopRequireDefault(_uuid);
 	
@@ -1546,11 +1546,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = createListenerArguments;
 	
-	var _isFormElement = __webpack_require__(78);
+	var _isFormElement = __webpack_require__(76);
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
 	
-	var _getFormElementValues = __webpack_require__(72);
+	var _getFormElementValues = __webpack_require__(70);
 	
 	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
 	
@@ -1937,7 +1937,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isArray2 = _interopRequireDefault(_isArray);
 	
-	var _addPixelSuffixToValueIfNeeded = __webpack_require__(75);
+	var _addPixelSuffixToValueIfNeeded = __webpack_require__(73);
 	
 	var _addPixelSuffixToValueIfNeeded2 = _interopRequireDefault(_addPixelSuffixToValueIfNeeded);
 	
@@ -1976,6 +1976,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        }
 	                        // TODO! Clean up this mess
 	                    } else if (propName === 'value' && node.tagName.toLowerCase() === 'select') {
+	
 	                            var multiple = (0, _isArray2.default)(value);
 	                            var options = node.options;
 	
@@ -2015,6 +2016,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var namespace = propertyInfo.attributeNamespace;
 	
 	                if (namespace) {
+	
 	                    node.setAttributeNS(namespace, attributeName, '' + value);
 	                } else {
 	                    node.setAttribute(attributeName, '' + value);
@@ -2039,9 +2041,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            if (propertyInfo !== undefined) {
 	                if (propertyInfo.mustUseProperty) {
-	                    var propName = propertyInfo.propertyName;
 	
-	                    if (propName === 'value' && node.tagName.toLowerCase() === 'select') {
+	                    var propName = propertyInfo.propertyName;
+	                    // Special case: 'style' and 'dataset' property has to be removed as an attribute
+	                    if (propertyInfo.setAsObject) {
+	                        node.removeAttribute(propName);
+	                    } else if (propName === 'value' && node.tagName.toLowerCase() === 'select') {
 	                        var options = node.options;
 	                        var len = options.length;
 	                        var i = 0;
@@ -2169,9 +2174,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (newProp != null) {
 	            styleUpdates = newProp;
 	        }
-	        if (styleUpdates) {}
-	        //  template.setProperty(element, propName, styleUpdates);
-	
+	        if (styleUpdates) {
+	            _2.default.setProperty(element, propName, styleUpdates);
+	        }
 	        // Event listeners
 	    } else if (_eventMapping2.default[propName] != null) {
 	            if (oldProp != null) {
@@ -2389,7 +2394,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(76);
+	var _quoteAttributeValueForBrowser = __webpack_require__(74);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3281,7 +3286,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	var _requestAnimationFrame = __webpack_require__(80);
+	var _requestAnimationFrame = __webpack_require__(78);
 	
 	var _registerEventHooks = __webpack_require__(16);
 	
@@ -3537,170 +3542,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _checkBitmask = __webpack_require__(67);
-	
-	var _checkBitmask2 = _interopRequireDefault(_checkBitmask);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var IS_SVG = 0x15;
-	var IS_MATHML = 0x20;
-	
-	// DOM Element list here
-	var DOMElements = {
-	    a: IS_SVG,
-	    altGlyph: IS_SVG,
-	    altGlyphDef: IS_SVG,
-	    altGlyphItem: IS_SVG,
-	    animate: IS_SVG,
-	    animateColor: IS_SVG,
-	    animateMotion: IS_SVG,
-	    animateTransform: IS_SVG,
-	    circle: IS_SVG,
-	    clipPath: IS_SVG,
-	    'color-profile': IS_SVG,
-	    cursor: IS_SVG,
-	    defs: IS_SVG,
-	    desc: IS_SVG,
-	    ellipse: IS_SVG,
-	    feBlend: IS_SVG,
-	    feColorMatrix: IS_SVG,
-	    feComponentTransfer: IS_SVG,
-	    feComposite: IS_SVG,
-	    feConvolveMatrix: IS_SVG,
-	    feDiffuseLighting: IS_SVG,
-	    feDisplacementMap: IS_SVG,
-	    feDistantLight: IS_SVG,
-	    feFlood: IS_SVG,
-	    feFuncA: IS_SVG,
-	    feFuncB: IS_SVG,
-	    feFuncG: IS_SVG,
-	    feFuncR: IS_SVG,
-	    feGaussianBlur: IS_SVG,
-	    feImage: IS_SVG,
-	    feMerge: IS_SVG,
-	    feMergeNode: IS_SVG,
-	    feMorphology: IS_SVG,
-	    feOffset: IS_SVG,
-	    fePointLight: IS_SVG,
-	    feSpecularLighting: IS_SVG,
-	    feSpotLight: IS_SVG,
-	    feTile: IS_SVG,
-	    feTurbulence: IS_SVG,
-	    filter: IS_SVG,
-	    font: IS_SVG,
-	    'font-face': IS_SVG,
-	    'font-face-format': IS_SVG,
-	    'font-face-name': IS_SVG,
-	    'font-face-src': IS_SVG,
-	    'font-face-uri': IS_SVG,
-	    foreignObject: IS_SVG,
-	    g: IS_SVG,
-	    glyph: IS_SVG,
-	    glyphRef: IS_SVG,
-	    hkern: IS_SVG,
-	    image: IS_SVG,
-	    line: IS_SVG,
-	    linearGradient: IS_SVG,
-	    marker: IS_SVG,
-	    mask: IS_SVG,
-	    metadata: IS_SVG,
-	    math: IS_MATHML,
-	    maction: IS_MATHML,
-	    maligngroup: IS_MATHML,
-	    malignmark: IS_MATHML,
-	    menclose: IS_MATHML,
-	    merror: IS_MATHML,
-	    mfenced: IS_MATHML,
-	    mfrac: IS_MATHML,
-	    mglyph: IS_MATHML,
-	    mi: IS_MATHML,
-	    mlabeledtr: IS_MATHML,
-	    mlongdiv: IS_MATHML,
-	    mmultiscripts: IS_MATHML,
-	    mn: IS_MATHML,
-	    mo: IS_MATHML,
-	    mover: IS_MATHML,
-	    mpadded: IS_MATHML,
-	    mphantom: IS_MATHML,
-	    mroot: IS_MATHML,
-	    mrow: IS_MATHML,
-	    ms: IS_MATHML,
-	    mscarries: IS_MATHML,
-	    mscarry: IS_MATHML,
-	    msgroup: IS_MATHML,
-	    msline: IS_MATHML,
-	    mspace: IS_MATHML,
-	    msqrt: IS_MATHML,
-	    msrow: IS_MATHML,
-	    mstack: IS_MATHML,
-	    mstyle: IS_MATHML,
-	    msub: IS_MATHML,
-	    msup: IS_MATHML,
-	    msubsup: IS_MATHML,
-	    'missing-glyph': IS_SVG,
-	    mpath: IS_SVG,
-	    path: IS_SVG,
-	    pattern: IS_SVG,
-	    polygon: IS_SVG,
-	    polyline: IS_SVG,
-	    radialGradient: IS_SVG,
-	    rect: IS_SVG,
-	    script: IS_SVG,
-	    set: IS_SVG,
-	    stop: IS_SVG,
-	    style: IS_SVG,
-	    svg: IS_SVG,
-	    switch: IS_SVG,
-	    symbol: IS_SVG,
-	    text: IS_SVG,
-	    textPath: IS_SVG,
-	    title: IS_SVG,
-	    tref: IS_SVG,
-	    tspan: IS_SVG,
-	    use: IS_SVG,
-	    view: IS_SVG,
-	    vkern: IS_SVG
-	};
-	
-	var DOMElementContainer = {};
-	
-	for (var element in DOMElements) {
-	    var elementConfig = DOMElements[element];
-	    var elementInfo = {
-	        isSVG: (0, _checkBitmask2.default)(elementConfig, IS_SVG),
-	        isMathML: (0, _checkBitmask2.default)(elementConfig, IS_MATHML)
-	    };
-	
-	    DOMElementContainer[element] = elementInfo;
-	}
-	
-	exports.default = DOMElementContainer;
-
-/***/ },
-/* 67 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = checkMask;
-	function checkMask(value, bitmask) {
-	  return bitmask != null && (value & bitmask) === bitmask;
-	}
-
-/***/ },
-/* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 	exports.default = createComponentFactory;
@@ -3735,7 +3576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 69 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3865,22 +3706,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 70 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	        value: true
 	});
 	
-	var _setValueForProperty = __webpack_require__(74);
+	var _setValueForProperty = __webpack_require__(72);
 	
 	var _setValueForProperty2 = _interopRequireDefault(_setValueForProperty);
-	
-	var _DOMElements = __webpack_require__(66);
-	
-	var _DOMElements2 = _interopRequireDefault(_DOMElements);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -3888,53 +3725,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	//this function if it's situated in another module due to context switch.
 	
 	function fastTag(tag) {
-	    return tag === 'a' || tag === 'p' || tag === 'em' || tag === 'ol' || tag === 'ul' || tag === 'div' || tag === 'img' || tag === 'span' || tag === 'form' || tag === 'table' || tag === 'button';
+	        return tag === 'a' || tag === 'p' || tag === 'em' || tag === 'ol' || tag === 'ul' || tag === 'div' || tag === 'img' || tag === 'span' || tag === 'form' || tag === 'table' || tag === 'button';
 	}
 	
 	exports.default = {
-	    addAttributes: _setValueForProperty2.default,
-	    createElement: function createElement(tag) {
+	        addAttributes: _setValueForProperty2.default,
+	        createElement: function createElement(tag) {
 	
-	        if (fastTag(tag)) {
+	                if (fastTag(tag)) {
 	
-	            tag = document.createElement(tag);
-	        } else if (tag === 'svg') {
+	                        tag = document.createElement(tag);
+	                } else if (tag === 'svg') {
 	
-	            tag = document.createElementNS('svg', 'http://www.w3.org/2000/svg');
-	        } else {
-	
-	            var DOMElementsInfo = _DOMElements2.default[tag.toLowerCase()];
-	
-	            if (DOMElementsInfo !== undefined) {
-	                // add SVG namespace
-	                if (DOMElementsInfo.isSVG) {
-	                    tag = document.createElementNS(tag, 'http://www.w3.org/2000/svg');
+	                        tag = document.createElementNS('svg', 'http://www.w3.org/2000/svg');
+	                } else {
+	                        tag = document.createElement(tag);
 	                }
-	                // add mathML namespace
-	                if (DOMElementsInfo.isMathML) {
-	                    tag = document.createElementNS(tag, 'http://www.w3.org/1998/Math/MathML');
-	                }
-	            } else {
-	                tag = document.createElement(tag);
-	            }
+	
+	                return tag;
+	        },
+	
+	        createTextNode: function createTextNode(text) {
+	                return document.createTextNode(text);
+	        },
+	        createEmptyText: function createEmptyText() {
+	                return document.createTextNode('');
+	        },
+	        createEmptyDiv: function createEmptyDiv() {
+	                return document.createElement('div');
 	        }
-	
-	        return tag;
-	    },
-	
-	    createTextNode: function createTextNode(text) {
-	        return document.createTextNode(text);
-	    },
-	    createEmptyText: function createEmptyText() {
-	        return document.createTextNode('');
-	    },
-	    createEmptyDiv: function createEmptyDiv() {
-	        return document.createElement('div');
-	    }
 	};
 
 /***/ },
-/* 71 */
+/* 69 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3959,7 +3782,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 72 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3969,7 +3792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = getFormElementValues;
 	
-	var _getFormElementType = __webpack_require__(71);
+	var _getFormElementType = __webpack_require__(69);
 	
 	var _getFormElementType2 = _interopRequireDefault(_getFormElementType);
 	
@@ -4016,7 +3839,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 73 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4074,7 +3897,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 74 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4096,7 +3919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _2 = _interopRequireDefault(_);
 	
-	var _processFragmentAttrs = __webpack_require__(73);
+	var _processFragmentAttrs = __webpack_require__(71);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -4132,7 +3955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 75 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4141,7 +3964,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	
-	var _unitlessProperties = __webpack_require__(77);
+	var _unitlessProperties = __webpack_require__(75);
 	
 	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
 	
@@ -4168,7 +3991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 76 */
+/* 74 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4202,7 +4025,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var endOfText = '\u0003';
 
 /***/ },
-/* 77 */
+/* 75 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4253,7 +4076,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 78 */
+/* 76 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4268,7 +4091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isFormElement;
 
 /***/ },
-/* 79 */
+/* 77 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4280,7 +4103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = function () {};
 
 /***/ },
-/* 80 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4294,7 +4117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
 	
-	var _noop = __webpack_require__(79);
+	var _noop = __webpack_require__(77);
 	
 	var _noop2 = _interopRequireDefault(_noop);
 	
@@ -4332,7 +4155,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.cancelAnimationFrame = cancelAnimationFrame;
 
 /***/ },
-/* 81 */
+/* 79 */
 /***/ function(module, exports) {
 
 	"use strict";
