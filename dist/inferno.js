@@ -1943,7 +1943,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = _shouldIgnoreValue2.default;
 	/*
 	 * Template interface
 	 */
@@ -2170,9 +2169,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (newProp != null) {
 	            styleUpdates = newProp;
 	        }
-	        if (styleUpdates) {
-	            _2.default.setProperty(element, styleUpdates);
-	        }
+	        if (styleUpdates) {}
+	        //  template.setProperty(element, propName, styleUpdates);
+	
 	        // Event listeners
 	    } else if (_eventMapping2.default[propName] != null) {
 	            if (oldProp != null) {

@@ -4,7 +4,6 @@ import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import isArray from '../util/isArray';
 import addPixelSuffixToValueIfNeeded from './shared/addPixelSuffixToValueIfNeeded';
 
-export default shouldIgnoreValue;
 /*
  * Template interface
  */
