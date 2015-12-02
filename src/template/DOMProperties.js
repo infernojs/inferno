@@ -75,7 +75,8 @@ const Whitelist = {
     scoped: BOOLEAN,
     seamless: BOOLEAN,
     selected: PROPERTY | BOOLEAN,
-    size: POSITIVE_NUMERIC_VALUE,
+//    style: PROPERTY | STYLE_OBJECT, // TODO! Fix inline styles
+	size: POSITIVE_NUMERIC_VALUE,
     span: POSITIVE_NUMERIC_VALUE,
     srcLang: PROPERTY,
     srcObject: PROPERTY,
