@@ -1953,44 +1953,7 @@ describe('should render "autoPlay" boolean attributes', () => {
 			);
 		});
 	});
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	describe('should properly render name attribute', () => {
 		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
 			createElement('div', {
@@ -2020,6 +1983,158 @@ describe('should render "autoPlay" boolean attributes', () => {
 		});
 	});
 
+
+	describe('should properly render and update a radio button attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('input', { type:'radio', checked:arg })
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment(true, template), container);
+
+			expect(container.firstChild.checked).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<input type="radio">' 
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(false, template), container);
+			expect(container.firstChild.checked).to.equal(false);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="radio">'
+			);
+		});
+	});
+
+    describe('should properly render and update a checkbox attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('div', { type:'checkbox', checked:arg })
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment(true, template), container);
+
+			expect(container.firstChild.checked).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="checkbox"></div>' 
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(false, template), container);
+			expect(container.firstChild.checked).to.equal(false);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="checkbox"></div>' 
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(container.firstChild.checked).to.equal(undefined);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="checkbox"></div>' 
+			);
+		});
+
+		it('Fourth render (update)', () => {
+			Inferno.render(Inferno.createFragment(undefined, template), container);
+			expect(container.firstChild.checked).to.equal(undefined);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="checkbox"></div>' 
+			);
+		});
+
+		it('Fifth render (update)', () => {
+			Inferno.render(Inferno.createFragment([], template), container);
+			expect(container.firstChild.checked).to.equal(undefined);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="checkbox"></div>' 
+			);
+		});
+
+		it('Sixth render (update)', () => {
+			Inferno.render(Inferno.createFragment({}, template), container);
+			expect(container.firstChild.checked).to.eql({});
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="checkbox"></div>' 
+			);
+		});
+	});
+
+	describe('should properly update from checkbox to radio button', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg, arg1) =>
+			createElement('div', { type:arg, checked:arg1 })
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment(['checkbox', true], template), container);
+
+			expect(container.firstChild.checked).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="checkbox"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['radio', true], template), container);
+			expect(container.firstChild.checked).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div type="radio"></div>' 
+			);
+		});
+	});
 	
+	describe('should properly update from checkbox to radio button', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg, arg1) =>
+			createElement('type', { type:arg, checked:arg1 })
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment(['checkbox', true], template), container);
+
+			expect(container.firstChild.checked).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<type type="checkbox"></type>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['radio', true], template), container);
+			expect(container.firstChild.checked).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<type type="radio"></type>'
+			);
+		});
+	});
+
 }
 
