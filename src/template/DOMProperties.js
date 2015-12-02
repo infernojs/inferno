@@ -89,7 +89,6 @@ const Whitelist = {
      * Namespace attributes
      */
 
-    xmlns: null,
     'xlink:actuate': null,
     'xlink:arcrole': null,
     'xlink:href': null,
@@ -108,15 +107,15 @@ function checkBitmask(value, bitmask) {
 
 export default (function() {
 
-    let propInfoByAttributeName = {};
+    let attributeContainer = {};
 
     for (let propName in Whitelist) {
 
-        let propConfig = Whitelist[propName];
+        const propConfig = Whitelist[propName];
 
-        let attributeName = attributeMapping[propName] || propName.toLowerCase();
+        const attributeName = attributeMapping[propName] || propName.toLowerCase();
 
-        let propertyInfo = {
+        const propertyInfo = {
             attributeName: attributeName,
             attributeNamespace: namespaceAttrs[propName],
             propertyName: propName,
@@ -128,20 +127,20 @@ export default (function() {
             hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
         };
 
-        propInfoByAttributeName[attributeName] = propertyInfo;
+        attributeContainer[attributeName] = propertyInfo;
     }
     return function getPropertyInfo(attributeName) {
 
-        let lowerCased = attributeName.toLowerCase();
+        const lowerCased = attributeName.toLowerCase();
         let propInfo;
 
-        if (propInfoByAttributeName[lowerCased]) {
-            propInfo = propInfoByAttributeName[lowerCased];
+        if (attributeContainer[lowerCased]) {
+            propInfo = attributeContainer[lowerCased];
         } else {
             propInfo = {
                 attributeName: attributeMapping[attributeName] || lowerCased,
                 mustUseAttribute: true,
-                isCustomAttribute: true
+                isCustomAttribute: true // TODO! Check for HTML 'data-*' attribute and validate
             };
         }
         return propInfo;
