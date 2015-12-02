@@ -72,7 +72,7 @@ const Whitelist = {
     rowSpan: NUMERIC_VALUE,
     scoped: BOOLEAN,
     seamless: BOOLEAN,
-    selected: PROPERTY | BOOLEAN,
+    //selected: PROPERTY | BOOLEAN,
     style: OBJECT, // TODO! Fix inline styles
 	size: POSITIVE_NUMERIC_VALUE,
     span: POSITIVE_NUMERIC_VALUE,
@@ -82,7 +82,8 @@ const Whitelist = {
     value: PROPERTY,
     volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
     itemScope: BOOLEAN,
-
+    className: null,
+	
     /**
      * Namespace attributes
      */
@@ -98,50 +99,45 @@ const Whitelist = {
     'xml:lang': null,
     'xml:space': null
 }
-
+let DOMPropertyContainer = {};
 function checkBitmask(value, bitmask) {
     return bitmask != null && ((value & bitmask) === bitmask);
 }
+let DOMPropertyNames = {};
 
-export default (function() {
 
-    let attributeContainer = {};
+for (let propName in Whitelist) {
 
-    for (let propName in Whitelist) {
+    let propConfig = Whitelist[propName];
 
-        const propConfig = Whitelist[propName];
+    let propertyInfo = {
+        attributeName: propName.toLowerCase(),
+        attributeNamespace: null,
+        propertyName: propName,
+        mutationMethod: null,
 
-        const attributeName = attributeMapping[propName] || propName.toLowerCase();
+        mustUseProperty: checkBitmask(propConfig, PROPERTY),
+        hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
+        hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
+        hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
+		museUseObject:checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
+    };
 
-        const propertyInfo = {
-            attributeName: attributeName,
-            attributeNamespace: namespaceAttrs[propName],
-            propertyName: propName,
-            mutationMethod: null,
-
-            mustUseProperty: checkBitmask(propConfig, PROPERTY),
-            hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
-            hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
-            hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
-            museUseObject:checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
-        };
-
-        attributeContainer[attributeName] = propertyInfo;
+    if (attributeMapping[propName]) {
+        let attributeName = attributeMapping[propName];
+        propertyInfo.attributeName = attributeName;
     }
-    return function getPropertyInfo(attributeName) {
 
-        const lowerCased = attributeName.toLowerCase();
-        let propInfo;
-
-        if (attributeContainer[lowerCased]) {
-            propInfo = attributeContainer[lowerCased];
-        } else {
-            propInfo = {
-                attributeName: attributeMapping[attributeName] || lowerCased,
-                mustUseAttribute: true,
-                isCustomAttribute: true // TODO! Check for HTML 'data-*' attribute and validate
-            };
-        }
-        return propInfo;
+    if (namespaceAttrs[propName]) {
+        propertyInfo.attributeNamespace = namespaceAttrs[propName];
     }
-})();
+
+   if (DOMPropertyNames[propName]) {
+        propertyInfo.propertyName = DOMPropertyNames[propName];
+    }
+
+
+    DOMPropertyContainer[propName] = propertyInfo;
+}
+
+export default DOMPropertyContainer;

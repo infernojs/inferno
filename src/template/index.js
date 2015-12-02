@@ -18,8 +18,11 @@ if (ExecutionEnvironment.canUseDOM) {
     template = {
 
         setProperty(node, name, value) {
+         
+		
 
-            let propertyInfo = HTMLProperties(name);
+
+            let propertyInfo = HTMLProperties[name];
 
             if (propertyInfo) {
                 if (shouldIgnoreValue(propertyInfo, value)) {
@@ -35,7 +38,9 @@ if (ExecutionEnvironment.canUseDOM) {
                                 setValueForStyles(node, value)
                             }
                         } else if (propName === 'value' && (node.tagName === 'SELECT')) {
-                            setSelectValueForProperty(node, propName, value);
+                            if ( value != null) {
+							setSelectValueForProperty(node, value);
+							}
                         } else if ('' + node[propName] !== '' + value) {
                             node[propName] = value;
                         }
@@ -57,6 +62,7 @@ if (ExecutionEnvironment.canUseDOM) {
             } else if (name) { // TODO! Validate
                 node.setAttribute(name, value);
             }
+			
         },
 
         /**
@@ -66,7 +72,7 @@ if (ExecutionEnvironment.canUseDOM) {
          * @param {string} name
          */
         removeProperty(node, name) {
-            let propertyInfo = HTMLProperties(name);
+            let propertyInfo = HTMLProperties[name];
 
             if (propertyInfo !== undefined) {
                 if (propertyInfo.mustUseProperty) {
@@ -76,7 +82,7 @@ if (ExecutionEnvironment.canUseDOM) {
                     if (propertyInfo.museUseObject) {
                         node.removeAttribute(propName);
                     } else if (propName === 'value' && (node.tagName === 'SELECT')) {
-                        removeSelectValueForProperty(node, propname);
+                        removeSelectValueForProperty(node, propName);
                     } else if (propertyInfo.hasBooleanValue) {
                         node[propName] = false;
                     } else {

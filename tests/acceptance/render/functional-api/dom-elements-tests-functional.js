@@ -336,8 +336,8 @@ describe('should render "autoPlay" boolean attributes', () => {
 		beforeEach(() => {
 			const template = Inferno.createTemplate(createElement =>
 				createElement('select', { multiple: true, value: 'foo' },
-					createElement('option', { value: 'foo' }, `I'm a li-tag`),
-					createElement('option', { value: 'bar' }, `I'm a li-tag`)
+					createElement('option', { value: 'foo' }, 'Im a li-tag'),
+					createElement('option', { value: 'bar' }, 'Im a li-tag')
 				)
 			);
 
@@ -349,7 +349,7 @@ describe('should render "autoPlay" boolean attributes', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				`<select multiple=""><option value="foo">I'm a li-tag</option><option value="bar">I'm a li-tag</option></select>`
+				'<select multiple=""><option value="foo">Im a li-tag</option><option value="bar">Im a li-tag</option></select>'
 			);
 			expect(container.querySelector("select").multiple).to.equal(true);
 		});
@@ -1953,5 +1953,73 @@ describe('should render "autoPlay" boolean attributes', () => {
 			);
 		});
 	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	describe('should properly render name attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('div', {
+				name: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment('simple', template), container);
+
+			expect(container.firstChild.getAttribute('name')).to.eql('simple');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div name="simple"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div name="true"></div>'
+			);
+		});
+	});
+
+	
 }
 

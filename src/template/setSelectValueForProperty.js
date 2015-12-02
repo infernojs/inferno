@@ -1,36 +1,22 @@
 import isArray from '../util/isArray';
+import inArray from '../util/inArray';
 
 // TODO!! Optimize!!
 export default function setSelectValueForProperty(node, value) {
 
-    const multiple = isArray(value);
-    const options = node.options;
 
-    let selectedValue;
-    let idx;
-    let l;
+ const isMultiple = isArray(value);
+ const options = node.options;
+ const        len = options.length;
 
-    if (multiple) {
-        selectedValue = {};
-        for (idx = 0, l = value.length; idx < l; ++idx) {
-            selectedValue['' + value[idx]] = true;
-        }
-        for (idx = 0, l = options.length; idx < l; idx++) {
-            let selected = selectedValue[options[idx].value];
 
-            if (options[idx].selected !== selected) {
-                options[idx].selected = selected;
-            }
-        }
-    } else {
-        // Do not set `select.value` as exact behavior isn't consistent across all
-        // browsers for all cases.
-        selectedValue = '' + value;
-        for (idx = 0, l = options.length; idx < l; idx++) {
+    let i = 0,
+        optionNode;
 
-            if (options[idx].value === selectedValue) {
-                options[idx].selected = true;
-            }
-        }
+    while(i < len) {
+        optionNode = options[i++];
+        optionNode.selected = value != null &&
+            (isMultiple? inArray(value, optionNode.value) : optionNode.value == value);
     }
+	
 }

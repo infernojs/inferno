@@ -1,13 +1,5 @@
 import template from './';
 
-function getKeys(object, callback) {
-    const keys = Object.keys(object);
-
-    for (var i = 0; i < keys.length; i++) {
-        callback(keys[i], i, keys);
-    }
-}
-
 /**
  * Detecting differences in property values and updating the DOM as necessary.
  * This function is probably the single most critical path for performance optimization.
@@ -24,6 +16,35 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
     }
 
     switch (propName) {
+
+        case 'multiple':
+
+            // TODO! Write a unit test for this before modify!!
+        case 'value':
+
+            // unset
+            if (newProp == null) {
+                template.removeProperty(element, propName);
+            } else {
+
+                const lenA = oldProp.length;
+                let hasDiff = false;
+
+                if (lenA !== newProp.length) {
+                    hasDiff = true;
+                } else {
+                    var i = 0;
+                    while (!hasDiff && i < lenA) {
+                        if (oldProp[i] != newProp[i]) {
+                            hasDiff = true;
+                        }
+                        ++i;
+                    }
+                }
+
+                template.setProperty(element, propName, newProp);
+            }
+
         case 'style':
         case 'dataset':
 
@@ -49,10 +70,8 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
             } else if (newProp != null) {
                 styleUpdates = newProp;
             }
-          
-		    if (styleUpdates) {
-                template.setProperty(element, propName, styleUpdates);
-            }
+
+            template.setProperty(element, propName, styleUpdates);
 
             return;
         default: // string values
