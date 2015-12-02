@@ -1928,7 +1928,222 @@ describe('should render "autoPlay" boolean attributes', () => {
 		});
 	});
 
+    describe('should properly render scope attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
+			createElement('div', {
+				scope: val1
+			})
+		);
 
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment('scope', template), container);
+
+			expect(container.firstChild.getAttribute('scope')).to.eql('scope');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div scope="scope"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div scope="true"></div>'
+			);
+		});
+	});
+
+
+
+    describe('should properly render HTMLL5 data-* attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
+			createElement('div', {
+				data: val1
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment('val', template), container);
+
+			//expect(container.firstChild.getAttribute('scope')).to.eql('scope');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div data="val"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div data="true"></div>' 
+			);
+		});
+	});
+
+    describe('should properly render value property', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
+			createElement('div', {
+				value: val1
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment('val', template), container);
+
+			expect(container.firstChild.value).to.eql('val');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(container.firstChild.value).to.eql(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+	});
+
+    describe('should normalize the case of boolean attributes', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('div', {
+				'READONLY': arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment(['READONLY'], template), container);
+
+			expect(container.firstChild.getAttribute('readonly')).to.eql('READONLY');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div readonly="READONLY"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['readOnly'], template), container);
+			expect(container.firstChild.getAttribute('readonly')).to.eql('readOnly');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div readonly="readOnly"></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment([false], template), container);
+			expect(container.firstChild.getAttribute('readonly')).to.eql('false');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div readonly="false"></div>'
+			);
+		});
+	});
+		
+		
+		
+		
+		
+		
+		
+describe('should set boolean element property', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('div', {
+				'type': 'checkbox',
+				'checked': arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment(['checked'], template), container);
+
+			expect(container.firstChild.checked).to.eql('checked');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div type="checkbox"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+
+			expect(container.firstChild.checked).to.eql(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div type="checkbox"></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment([''], template), container);
+
+			expect(container.firstChild.checked).to.eql(false);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div type="checkbox"></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment(['lala'], template), container);
+
+			expect(container.firstChild.checked).to.eql('lala');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div type="checkbox"></div>'
+			);
+		});
+
+		it('Fourth render (update)', () => {
+			Inferno.render(Inferno.createFragment(null, template), container);
+
+			expect(container.firstChild.checked).to.be.undefined;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div type="checkbox"></div>'
+			);
+		});
+
+		it('Fifth render (update)', () => {
+			Inferno.render(Inferno.createFragment([null], template), container);
+
+			expect(container.firstChild.checked).to.be.undefined;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div type="checkbox"></div>'
+			);
+		});
+	});
+				
+		
+		
+		
+		
 	describe('should support number values', () => {
 		let template;
 		const styleRule = {
@@ -2013,6 +2228,84 @@ describe('should render "autoPlay" boolean attributes', () => {
 		});
 	});
 
+
+   describe('should ignore falsy values', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('div', {
+				class: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment(undefined, template), container);
+
+			expect(container.firstChild.getAttribute('class')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(null, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment(false, template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="false"></div>'
+			);
+		});
+	});
+	
+	describe('should set truthy boolean values', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('div', {
+				disabled: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(Inferno.createFragment('', template), container);
+
+			expect(container.firstChild.getAttribute('disabled')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(true, template), container);
+			expect(container.firstChild.getAttribute('disabled')).to.equal('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div disabled="true"></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment('true', template), container);
+            expect(container.firstChild.getAttribute('disabled')).to.equal('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div disabled="true"></div>' 
+			);
+		});
+	});
 
    describe('should properly render class attribute', () => {
 		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
