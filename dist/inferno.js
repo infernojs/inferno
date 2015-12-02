@@ -325,15 +325,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _templateTypes2 = _interopRequireDefault(_templateTypes);
 	
-	var _createElement = __webpack_require__(71);
+	var _createElement = __webpack_require__(70);
 	
 	var _createElement2 = _interopRequireDefault(_createElement);
 	
-	var _createComponent = __webpack_require__(70);
+	var _createComponent = __webpack_require__(69);
 	
 	var _createComponent2 = _interopRequireDefault(_createComponent);
 	
-	var _dom = __webpack_require__(72);
+	var _dom = __webpack_require__(71);
 	
 	var _dom2 = _interopRequireDefault(_dom);
 	
@@ -1550,7 +1550,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isFormElement2 = _interopRequireDefault(_isFormElement);
 	
-	var _getFormElementValues = __webpack_require__(74);
+	var _getFormElementValues = __webpack_require__(73);
 	
 	var _getFormElementValues2 = _interopRequireDefault(_getFormElementValues);
 	
@@ -1952,7 +1952,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            if (propertyInfo !== undefined) {
 	                if ((0, _shouldIgnoreValue2.default)(propertyInfo, value)) {
-	                    this.removeProperty(node, name);
+	                    template.removeProperty(node, name);
 	                    return;
 	                }
 	                if (propertyInfo.mustUseProperty) {
@@ -2082,7 +2082,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _addPixelSuffixToValueIfNeeded = __webpack_require__(68);
+	var _addPixelSuffixToValueIfNeeded = __webpack_require__(76);
 	
 	var _addPixelSuffixToValueIfNeeded2 = _interopRequireDefault(_addPixelSuffixToValueIfNeeded);
 	
@@ -2205,7 +2205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // If 'newProp' is null or undefined, we, we should remove the property
 	            // from the DOM node instead of inadvertantly setting to a string.
 	            if (newProp != null) {
-	                setProperty(element, propName, newProp);
+	                _2.default.setProperty(element, propName, newProp);
 	            } else {
 	                _2.default.removeProperty(element, propName);
 	            }
@@ -2407,7 +2407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shouldIgnoreValue2 = _interopRequireDefault(_shouldIgnoreValue);
 	
-	var _quoteAttributeValueForBrowser = __webpack_require__(76);
+	var _quoteAttributeValueForBrowser = __webpack_require__(77);
 	
 	var _quoteAttributeValueForBrowser2 = _interopRequireDefault(_quoteAttributeValueForBrowser);
 	
@@ -3558,7 +3558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _checkBitmask = __webpack_require__(69);
+	var _checkBitmask = __webpack_require__(68);
 	
 	var _checkBitmask2 = _interopRequireDefault(_checkBitmask);
 	
@@ -3700,42 +3700,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _unitlessProperties = __webpack_require__(78);
-	
-	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/**
-	 * Normalize CSS properties for SSR
-	 *
-	 * @param {String} name The boolean attribute name to set.
-	 * @param {String} value The boolean attribute value to set.
-	 */
-	
-	exports.default = function (name, value) {
-		if (value === null || value === '') {
-			return '';
-		}
-		if (value === 0 || (0, _unitlessProperties2.default)(name) || isNaN(value)) {
-			return '' + value; // cast to string
-		}
-		if (typeof value === 'string') {
-			value = value.trim();
-		}
-		return value + 'px';
-	};
-
-/***/ },
-/* 69 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3749,7 +3713,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3789,7 +3753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3919,7 +3883,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3928,7 +3892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _setDOMProperties = __webpack_require__(77);
+	var _setDOMProperties = __webpack_require__(75);
 	
 	var _setDOMProperties2 = _interopRequireDefault(_setDOMProperties);
 	
@@ -3988,7 +3952,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4013,7 +3977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4023,7 +3987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = getFormElementValues;
 	
-	var _getFormElementType = __webpack_require__(73);
+	var _getFormElementType = __webpack_require__(72);
 	
 	var _getFormElementType2 = _interopRequireDefault(_getFormElementType);
 	
@@ -4070,7 +4034,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4128,41 +4092,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = processFragmentAttrs;
 
 /***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var ESCAPE_LOOKUP = {
-	  '&': '&amp;',
-	  '>': '&gt;',
-	  '<': '&lt;',
-	  '"': '&quot;',
-	  '`': '&#x60;',
-	  "'": '&#x27;'
-	};
-	
-	var ESCAPE_REGEX = /[&><"'`]/g;
-	/**
-	 * Escapes attribute value to prevent scripting attacks.
-	 *
-	 * @param {*} value Attribute value to escape.
-	 * @return {string} An escaped string.
-	 */
-	
-	exports.default = function (value) {
-	  return '"' + ('' + value).replace(ESCAPE_REGEX, function (match) {
-	    return ESCAPE_LOOKUP[match];
-	  }) + '"';
-	};
-	
-	var endOfText = '\u0003';
-
-/***/ },
-/* 77 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4188,7 +4118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _setValueForStyles2 = _interopRequireDefault(_setValueForStyles);
 	
-	var _processFragmentAttrs = __webpack_require__(75);
+	var _processFragmentAttrs = __webpack_require__(74);
 	
 	var _processFragmentAttrs2 = _interopRequireDefault(_processFragmentAttrs);
 	
@@ -4230,6 +4160,76 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	}
+
+/***/ },
+/* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _unitlessProperties = __webpack_require__(78);
+	
+	var _unitlessProperties2 = _interopRequireDefault(_unitlessProperties);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/**
+	 * Normalize CSS properties for SSR
+	 *
+	 * @param {String} name The boolean attribute name to set.
+	 * @param {String} value The boolean attribute value to set.
+	 */
+	
+	exports.default = function (name, value) {
+		if (value === null || value === '') {
+			return '';
+		}
+		if (value === 0 || (0, _unitlessProperties2.default)(name) || isNaN(value)) {
+			return '' + value; // cast to string
+		}
+		if (typeof value === 'string') {
+			value = value.trim();
+		}
+		return value + 'px';
+	};
+
+/***/ },
+/* 77 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var ESCAPE_LOOKUP = {
+	  '&': '&amp;',
+	  '>': '&gt;',
+	  '<': '&lt;',
+	  '"': '&quot;',
+	  '`': '&#x60;',
+	  "'": '&#x27;'
+	};
+	
+	var ESCAPE_REGEX = /[&><"'`]/g;
+	/**
+	 * Escapes attribute value to prevent scripting attacks.
+	 *
+	 * @param {*} value Attribute value to escape.
+	 * @return {string} An escaped string.
+	 */
+	
+	exports.default = function (value) {
+	  return '"' + ('' + value).replace(ESCAPE_REGEX, function (match) {
+	    return ESCAPE_LOOKUP[match];
+	  }) + '"';
+	};
+	
+	var endOfText = '\u0003';
 
 /***/ },
 /* 78 */

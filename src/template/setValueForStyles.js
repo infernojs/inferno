@@ -1,4 +1,4 @@
-import addPixelSuffixToValueIfNeeded from './addPixelSuffixToValueIfNeeded';
+import addPixelSuffixToValueIfNeeded from './shared/addPixelSuffixToValueIfNeeded';
 
 /**
  * Sets the value for multiple styles on a node. If a value is specified as
