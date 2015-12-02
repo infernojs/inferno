@@ -13,7 +13,7 @@ let template = {};
 if (ExecutionEnvironment.canUseDOM) {
 
     template = {
-		
+
         /**
          * Sets the value for a property on a node.
          *
@@ -41,14 +41,12 @@ if (ExecutionEnvironment.canUseDOM) {
                                 setValueForStyles(node, value)
                             }
                         } else if (propName === 'value' && (node.tagName === 'SELECT')) {
-                            if (value != null) {
                                 setSelectValueForProperty(node, value);
-                            }
                         } else if ('' + node[propName] !== '' + value) {
                             node[propName] = value;
                         }
                     } else {
-						
+
                         const attributeName = propertyInfo.attributeName;
                         const namespace = propertyInfo.attributeNamespace;
 
@@ -59,11 +57,11 @@ if (ExecutionEnvironment.canUseDOM) {
                         }
                     }
                 }
-               // custom attributes
-            } else if (name && (name.length > 1 && (isNaN(name[0])))) {
-                node.setAttribute(name, value);
-            }
-        },
+                // custom attributes
+            } else if (name && (name.length > 1)) {
+                    node.setAttribute(name, value);
+            }        
+       },
 
         /**
          * Removes the value for a property on a node.
@@ -78,11 +76,11 @@ if (ExecutionEnvironment.canUseDOM) {
                 if (propertyInfo.mustUseProperty) {
 
                     let propName = propertyInfo.propertyName;
-					
-					if (propertyInfo.hasBooleanValue) {
+
+                    if (propertyInfo.hasBooleanValue) {
                         node[propName] = false;
-                    // 'style' and 'dataset' property has to be removed as an attribute
-					} else if (propertyInfo.museUseObject) {
+                        // 'style' and 'dataset' property has to be removed as an attribute
+                    } else if (propertyInfo.museUseObject) {
                         node.removeAttribute(propName);
                     } else if (propName === 'value' && (node.tagName === 'SELECT')) {
                         removeSelectValueForProperty(node, propName);
