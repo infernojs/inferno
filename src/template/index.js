@@ -3,6 +3,9 @@ import shouldIgnoreValue from './shared/shouldIgnoreValue';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import isArray from '../util/isArray';
 import addPixelSuffixToValueIfNeeded from './shared/addPixelSuffixToValueIfNeeded';
+import setSelectValueForProperty from './setSelectValueForProperty';
+import setValueForStyles from './setValueForStyles';
+import removeSelectValueForProperty from './removeSelectValueForProperty';
 
 /*
  * Template interface
@@ -18,77 +21,41 @@ if (ExecutionEnvironment.canUseDOM) {
 
             let propertyInfo = HTMLProperties(name);
 
-            if (propertyInfo !== undefined) {
+            if (propertyInfo) {
                 if (shouldIgnoreValue(propertyInfo, value)) {
                     template.removeProperty(node, name);
-                    return;
-                }
-                if (propertyInfo.mustUseProperty) {
 
-                    let propName = propertyInfo.propertyName;
-
-                    if (propertyInfo.setAsObject) {
-
-                        if (propName === 'style') {
-                            for (let styleName in value) {
-                                let styleValue = value[styleName];
-
-                                node.style[styleName] = styleValue == null ? '' : addPixelSuffixToValueIfNeeded(styleName, styleValue);
-                            }
-                        }
-                        // TODO! Clean up this mess
-                    } else if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
-                        
-						const multiple = isArray(value);
-                        const options = node.options;
-
-                        let selectedValue;
-                        let idx;
-                        let l;
-
-                        if (multiple) {
-                            selectedValue = {};
-                            for (idx = 0, l = value.length; idx < l; ++idx) {
-                                selectedValue['' + value[idx]] = true;
-                            }
-                            for (idx = 0, l = options.length; idx < l; idx++) {
-                                let selected = selectedValue[options[idx].value];
-
-                                if (options[idx].selected !== selected) {
-                                    options[idx].selected = selected;
-                                }
-                            }
-                        } else {
-                            // Do not set `select.value` as exact behavior isn't consistent across all
-                            // browsers for all cases.
-                            selectedValue = '' + value;
-                            for (idx = 0, l = options.length; idx < l; idx++) {
-
-                                if (options[idx].value === selectedValue) {
-                                    options[idx].selected = true;
-                                }
-                            }
-                        }
-                    } else if ('' + node[propName] !== '' + value) {
-                        node[propName] = value;
-                    }
-                    return;
-                }
-                let attributeName = propertyInfo.attributeName;
-                let namespace = propertyInfo.attributeNamespace;
-
-                if (namespace) {
-
-                    node.setAttributeNS(namespace, attributeName, '' + value);
                 } else {
-                    node.setAttribute(attributeName, '' + value);
-                }
+                    if (propertyInfo.mustUseProperty) {
 
-            } else { // custom attributes
-                // Take any attribute (with correct syntax) as custom attribute.
-                if (name) {
-                    node.setAttribute(name, value);
+                        let propName = propertyInfo.propertyName;
+
+                        if (propertyInfo.hasObject) {
+                            if (propName === 'style') {
+                                setValueForStyles(node, value)
+                            }
+                        } else if (propName === 'value' && (node.tagName === 'SELECT')) {
+                            setSelectValueForProperty(node, propName, value);
+                        } else if ('' + node[propName] !== '' + value) {
+                            node[propName] = value;
+                        }
+                    } else {
+                        const attributeName = propertyInfo.attributeName;
+                        const namespace = propertyInfo.attributeNamespace;
+
+                        if (namespace) {
+
+                            node.setAttributeNS(namespace, attributeName, '' + value);
+                        } else {
+                            node.setAttribute(attributeName, '' + value);
+                        }
+                    }
                 }
+            // custom attributes
+            // Take any attribute (with correct syntax) as custom attribute.
+				
+            } else if (name) { // TODO! Validate
+                node.setAttribute(name, value);
             }
         },
 
@@ -106,15 +73,10 @@ if (ExecutionEnvironment.canUseDOM) {
 
                     let propName = propertyInfo.propertyName;
                     // Special case: 'style' and 'dataset' property has to be removed as an attribute
-                    if (propertyInfo.setAsObject) {
+                    if (propertyInfo.hasObject) {
                         node.removeAttribute(propName);
-                    } else if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
-                        const options = node.options;
-                        const len = options.length;
-                        let i = 0;
-                        while (i < len) {
-                            options[i++].selected = false;
-                        }
+                    } else if (propName === 'value' && (node.tagName === 'SELECT')) {
+                        removeSelectValueForProperty(node, propname);
                     } else if (propertyInfo.hasBooleanValue) {
                         node[propName] = false;
                     } else {

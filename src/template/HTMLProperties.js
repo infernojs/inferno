@@ -3,7 +3,6 @@ const BOOLEAN = 0x2;
 const NUMERIC_VALUE = 0x4;
 const POSITIVE_NUMERIC_VALUE = 0x6 | 0x4;
 const OBJECT = 0x1 | 0x20;
-const FORM_ELEMENT = 0x30;
 
 const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
@@ -124,8 +123,7 @@ export default (function() {
             hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
             hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
             hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
-            setAsObject: checkBitmask(propConfig, OBJECT), // Todo! Should this also contain dataset?
-            setAsFormElement: checkBitmask(propConfig, FORM_ELEMENT),
+            hasObject:checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
         };
 
         attributeContainer[attributeName] = propertyInfo;
