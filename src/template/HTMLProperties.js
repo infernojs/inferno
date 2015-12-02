@@ -7,7 +7,7 @@ const OBJECT = 0x1 | 0x20;
 const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
 
-const namespaceAttrs = {
+const DOMAttributeNamespaces = {
     'xlink:actuate': xlink,
     'xlink:arcrole': xlink,
     'xlink:href': xlink,
@@ -20,7 +20,7 @@ const namespaceAttrs = {
     'xml:space': xml
 };
 
-const attributeMapping = {
+const DOMAttributeNames = {
     acceptCharset: 'accept-charset',
     className: 'class',
     htmlFor: 'for',
@@ -34,7 +34,22 @@ const attributeMapping = {
     xlinkType: 'xlink:type',
     xmlBase: 'xml:base',
     xmlLang: 'xml:lang',
-    xmlSpace: 'xml:space'
+    xmlSpace: 'xml:space',
+    viewBox: 'viewBox'
+};
+
+const DOMPropertyNames = {
+    autoCapitalize: 'autocapitalize',
+    autoComplete: 'autocomplete',
+    autoCorrect: 'autocorrect',
+    autoFocus: 'autofocus',
+    autoPlay: 'autoplay',
+    autoSave: 'autosave',
+    hrefLang: 'hreflang',
+    radioGroup: 'radiogroup',
+    spellCheck: 'spellcheck',
+    srcDoc: 'srcdoc',
+    srcSet: 'srcset'
 };
 
 // This 'whitelist' contains edge cases such as attributes
@@ -72,9 +87,9 @@ const Whitelist = {
     rowSpan: NUMERIC_VALUE,
     scoped: BOOLEAN,
     seamless: BOOLEAN,
-    //selected: PROPERTY | BOOLEAN,
+    selected: PROPERTY | BOOLEAN,
     style: OBJECT, // TODO! Fix inline styles
-	size: POSITIVE_NUMERIC_VALUE,
+    size: POSITIVE_NUMERIC_VALUE,
     span: POSITIVE_NUMERIC_VALUE,
     srcLang: PROPERTY,
     srcObject: PROPERTY,
@@ -83,7 +98,7 @@ const Whitelist = {
     volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
     itemScope: BOOLEAN,
     className: null,
-	
+
     /**
      * Namespace attributes
      */
@@ -99,12 +114,12 @@ const Whitelist = {
     'xml:lang': null,
     'xml:space': null
 }
+
 let DOMPropertyContainer = {};
+
 function checkBitmask(value, bitmask) {
     return bitmask != null && ((value & bitmask) === bitmask);
 }
-let DOMPropertyNames = {};
-
 
 for (let propName in Whitelist) {
 
@@ -120,19 +135,19 @@ for (let propName in Whitelist) {
         hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
         hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
         hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
-		museUseObject:checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
+        museUseObject: checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
     };
 
-    if (attributeMapping[propName]) {
-        let attributeName = attributeMapping[propName];
+    if (DOMAttributeNames[propName]) {
+        let attributeName = DOMAttributeNames[propName];
         propertyInfo.attributeName = attributeName;
     }
 
-    if (namespaceAttrs[propName]) {
-        propertyInfo.attributeNamespace = namespaceAttrs[propName];
+    if (DOMAttributeNamespaces[propName]) {
+        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
     }
 
-   if (DOMPropertyNames[propName]) {
+    if (DOMPropertyNames[propName]) {
         propertyInfo.propertyName = DOMPropertyNames[propName];
     }
 
