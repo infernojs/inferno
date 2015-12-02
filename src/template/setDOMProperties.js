@@ -1,9 +1,8 @@
 import eventMapping from '../events/shared/eventMapping';
 import addListener from '../events/addListener';
-import setValueForProperty from './setValueForProperty';
+import template from './';
 import setValueForStyles from './setValueForStyles';
 import processFragmentAttrs from './processFragmentAttrs';
-//import HOOK from './attributeHooks';
 
 /**
  * Set HTML attributes on the template
@@ -35,15 +34,7 @@ export default function addAttributes(node, attrs, fragment) {
                 if (eventMapping[attrName]) {
                     addListener(node, eventMapping[attrName], attrVal);
                 } else {
-					/*
-					let isHooked = HOOK[attrName]
-                    if (isHooked) {
-                        isHooked(node, attrName, attrVal)
-                    } else {
-                        HOOK._custom(node, attrName, attrVal);
-                    }*/
-					
-                    setValueForProperty(node, attrName, attrVal);
+                    template.setProperty(node, attrName, attrVal);
                 }
             }
         }

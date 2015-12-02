@@ -8,8 +8,7 @@ import createFragment         from './core/createFragment';
 import createTemplate         from './core/createTemplate';
 import clearDomElement        from './core/clearDomElement';
 import createRef	          from './core/createRef';
-import events  	              from './events';
-import template               from './template';
+import Events  	              from './events';
 
 module.exports = {
 	Component,
@@ -22,6 +21,5 @@ module.exports = {
 	TemplateTypes,
 	clearDomElement,
 	createRef,
-	events,
-	template
+	Events
 };

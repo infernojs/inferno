@@ -1,5 +1,4 @@
-import deleteDOMProperties from './deleteDOMProperties';
-import setValueForProperty from './setValueForProperty';
+import template from './';
 import setValueForStyles from './setValueForStyles';
 import addListener from '../events/addListener';
 import removeListener from '../events/removeListener';
@@ -21,7 +20,7 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
 
         if (oldProp != null) {
             if (newProp == null) {
-                deleteDOMProperties(element, propName);
+                template.removeProperty(element, propName);
             } else {
                 // Unset styles on `oldProp` but not on `newProp`.
                 for (styleName in oldProp) {
@@ -59,12 +58,12 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
         // If 'newProp' is null or undefined, we, we should remove the property
         // from the DOM node instead of inadvertantly setting to a string.
         if (newProp != null) {
-            setValueForProperty(element, propName, newProp);
+            template.setProperty(element, propName, newProp);
         } else {
-            deleteDOMProperties(element, propName);
+            template.removeProperty(element, propName);
         }
     } else if (newProp != null) {
-        setValueForProperty(element, propName, newProp);
+        template.setProperty(element, propName, newProp);
     }
 }
 

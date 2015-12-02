@@ -1,44 +1,118 @@
-import attributeHooks from './hooks/attributeHooks';
-import styleHooks from './hooks/styleHooks';
-import svgHooks from './hooks/svgHooks';
+import DOMProperties from './DOMProperties';
+import shouldIgnoreValue from './shouldIgnoreValue';
+import ExecutionEnvironment from '../util/ExecutionEnvironment';
+import isArray from '../util/isArray';
 
 /*
  * Template interface
  */
-export default {
 
-    registerAttributeHooks(propName, hook) {
-            let attrHook = propName[type] || (propName[type] = {});
+let template = {};
 
-            if (isArray(propName)) {
-                for (let i = 0; i < propName.length; i++) {
-                    attrHook[propName[i]] = hook;
+if (ExecutionEnvironment.canUseDOM) {
+
+    template = {
+
+        setProperty(node, name, value) {
+
+            let propertyInfo = DOMProperties(name);
+
+            if (propertyInfo !== undefined) {
+                if (shouldIgnoreValue(propertyInfo, value)) {
+                    template.removeProperty(node, name);
+                    return;
                 }
-            } else {
-                attrHook[propName] = hook;
+                if (propertyInfo.mustUseProperty) {
+                    let propName = propertyInfo.propertyName;
+                    if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
+                        const multiple = isArray(value);
+                        const options = node.options;
+
+                        let selectedValue;
+                        let idx;
+                        let l;
+
+                        if (multiple) {
+                            selectedValue = {};
+                            for (idx = 0, l = value.length; idx < l; ++idx) {
+                                selectedValue['' + value[idx]] = true;
+                            }
+                            for (idx = 0, l = options.length; idx < l; idx++) {
+                                let selected = selectedValue[options[idx].value];
+
+                                if (options[idx].selected !== selected) {
+                                    options[idx].selected = selected;
+                                }
+                            }
+                        } else {
+                            // Do not set `select.value` as exact behavior isn't consistent across all
+                            // browsers for all cases.
+                            selectedValue = '' + value;
+                            for (idx = 0, l = options.length; idx < l; idx++) {
+
+                                if (options[idx].value === selectedValue) {
+                                    options[idx].selected = true;
+                                }
+                            }
+                        }
+                    } else if ('' + node[propName] !== '' + value) {
+                        node[propName] = value;
+                    }
+                    return;
+                }
+                let attributeName = propertyInfo.attributeName;
+                let namespace = propertyInfo.attributeNamespace;
+
+                if (namespace) {
+                    node.setAttributeNS(namespace, attributeName, '' + value);
+                } else {
+                    node.setAttribute(attributeName, '' + value);
+                }
+
+            } else { // custom attributes
+                // Take any attribute (with correct syntax) as custom attribute.
+                if (name) {
+                    node.setAttribute(name, value);
+                }
             }
         },
-        registerStyleHooks(propName, hook) {
-            let styleHook = styleHooks[type] || (styleHooks[type] = {});
 
-            if (isArray(propName)) {
-                for (let i = 0; i < propName.length; i++) {
-                    styleHook[propName[i]] = hook;
+        /**
+         * Deletes the value for a property on a node.
+         *
+         * @param {DOMElement} node
+         * @param {string} name
+         */
+        removeProperty(node, name) {
+            let propertyInfo = DOMProperties(name);
+
+            if (propertyInfo !== undefined) {
+                if (propertyInfo.mustUseProperty) {
+                    let propName = propertyInfo.propertyName;
+
+                    if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
+                        const options = node.options;
+                        const len = options.length;
+                        let i = 0;
+                        while (i < len) {
+                            options[i++].selected = false;
+                        }
+                    } else if (propertyInfo.hasBooleanValue) {
+                        node[propName] = false;
+                    } else {
+                        if ('' + node[propName] !== '') {
+                            node[propName] = '';
+                        }
+                    }
+                } else {
+                    node.removeAttribute(propertyInfo.attributeName);
                 }
+                // Custom attributes
             } else {
-                styleHook[propName] = hook;
-            }
-        },
-
-        registerSvgHooks(propName, hook) {
-            let SvgHook = svgHooks[type] || (svgHooks[type] = {});
-
-            if (isArray(propName)) {
-                for (let i = 0; i < propName.length; i++) {
-                    SvgHook[propName[i]] = hook;
-                }
-            } else {
-                SvgHook[propName] = hook;
+                node.removeAttribute(name);
             }
         }
-};
+    }
+}
+
+export default template;
