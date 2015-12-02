@@ -40,7 +40,7 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
             styleUpdates = newProp;
         }
         if (styleUpdates) {
-          //  template.setProperty(element, propName, styleUpdates);
+            template.setProperty(element, propName, styleUpdates);
         }
         // Event listeners
     } else if (eventMapping[propName] != null) {

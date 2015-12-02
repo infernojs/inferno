@@ -77,6 +77,7 @@ if (ExecutionEnvironment.canUseDOM) {
                 let namespace = propertyInfo.attributeNamespace;
 
                 if (namespace) {
+
                     node.setAttributeNS(namespace, attributeName, '' + value);
                 } else {
                     node.setAttribute(attributeName, '' + value);
@@ -101,9 +102,13 @@ if (ExecutionEnvironment.canUseDOM) {
 
             if (propertyInfo !== undefined) {
                 if (propertyInfo.mustUseProperty) {
+
                     let propName = propertyInfo.propertyName;
 
-                    if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
+                    if (propertyInfo.setAsObject) {
+
+                        node.removeAttribute(propName);
+                    } else if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
                         const options = node.options;
                         const len = options.length;
                         let i = 0;
