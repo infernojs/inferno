@@ -1,8 +1,5 @@
 import HTMLProperties from './HTMLProperties';
-import shouldIgnoreValue from './shared/shouldIgnoreValue';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
-import isArray from '../util/isArray';
-import addPixelSuffixToValueIfNeeded from './shared/addPixelSuffixToValueIfNeeded';
 import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import removeSelectValueForProperty from './removeSelectValueForProperty';
@@ -16,7 +13,14 @@ let template = {};
 if (ExecutionEnvironment.canUseDOM) {
 
     template = {
-
+		
+        /**
+         * Sets the value for a property on a node.
+         *
+         * @param {DOMElement} node
+         * @param {string} name
+         * @param {*} value
+         */
         setProperty(node, name, value) {
 
             let propertyInfo = HTMLProperties[name];
@@ -44,6 +48,7 @@ if (ExecutionEnvironment.canUseDOM) {
                             node[propName] = value;
                         }
                     } else {
+						
                         const attributeName = propertyInfo.attributeName;
                         const namespace = propertyInfo.attributeNamespace;
 
@@ -64,7 +69,7 @@ if (ExecutionEnvironment.canUseDOM) {
         },
 
         /**
-         * Deletes the value for a property on a node.
+         * Removes the value for a property on a node.
          *
          * @param {DOMElement} node
          * @param {string} name
@@ -72,11 +77,12 @@ if (ExecutionEnvironment.canUseDOM) {
         removeProperty(node, name) {
             let propertyInfo = HTMLProperties[name];
 
-            if (propertyInfo !== undefined) {
+            if (propertyInfo) {
                 if (propertyInfo.mustUseProperty) {
 
                     let propName = propertyInfo.propertyName;
-                    // Special case: 'style' and 'dataset' property has to be removed as an attribute
+					
+                    // 'style' and 'dataset' property has to be removed as an attribute
                     if (propertyInfo.museUseObject) {
                         node.removeAttribute(propName);
                     } else if (propName === 'value' && (node.tagName === 'SELECT')) {
