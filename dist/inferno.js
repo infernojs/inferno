@@ -1568,7 +1568,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var xlink = 'http://www.w3.org/1999/xlink';
 	var xml = 'http://www.w3.org/XML/1998/namespace';
 	
-	var namespaceAttrs = {
+	var DOMAttributeNamespaces = {
 	    'xlink:actuate': xlink,
 	    'xlink:arcrole': xlink,
 	    'xlink:href': xlink,
@@ -1581,7 +1581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'xml:space': xml
 	};
 	
-	var attributeMapping = {
+	var DOMAttributeNames = {
 	    acceptCharset: 'accept-charset',
 	    className: 'class',
 	    htmlFor: 'for',
@@ -1595,7 +1595,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    xlinkType: 'xlink:type',
 	    xmlBase: 'xml:base',
 	    xmlLang: 'xml:lang',
-	    xmlSpace: 'xml:space'
+	    xmlSpace: 'xml:space',
+	    viewBox: 'viewBox'
+	};
+	
+	var DOMPropertyNames = {
+	    autoCapitalize: 'autocapitalize',
+	    autoComplete: 'autocomplete',
+	    autoCorrect: 'autocorrect',
+	    autoFocus: 'autofocus',
+	    autoPlay: 'autoplay',
+	    autoSave: 'autosave',
+	    hrefLang: 'hreflang',
+	    radioGroup: 'radiogroup',
+	    spellCheck: 'spellcheck',
+	    srcDoc: 'srcdoc',
+	    srcSet: 'srcset'
 	};
 	
 	// This 'whitelist' contains edge cases such as attributes
@@ -1633,8 +1648,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowSpan: NUMERIC_VALUE,
 	    scoped: BOOLEAN,
 	    seamless: BOOLEAN,
-	    //selected: PROPERTY | BOOLEAN,
-	    style: OBJECT, // TODO! Fix inline styles
+	    selected: PROPERTY | BOOLEAN,
+	    style: OBJECT,
 	    size: POSITIVE_NUMERIC_VALUE,
 	    span: POSITIVE_NUMERIC_VALUE,
 	    srcLang: PROPERTY,
@@ -1660,43 +1675,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'xml:lang': null,
 	    'xml:space': null
 	};
+	
 	var DOMPropertyContainer = {};
+	
 	function checkBitmask(value, bitmask) {
 	    return bitmask != null && (value & bitmask) === bitmask;
 	}
-	var DOMPropertyNames = {};
 	
 	for (var propName in Whitelist) {
 	
 	    var propConfig = Whitelist[propName];
 	
-	    var propertyInfo = {
-	        attributeName: propName.toLowerCase(),
-	        attributeNamespace: null,
-	        propertyName: propName,
-	        mutationMethod: null,
+	    DOMPropertyContainer[propName] = {
+	        attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
+	        attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
+	        propertyName: DOMPropertyNames[propName] || propName,
 	
 	        mustUseProperty: checkBitmask(propConfig, PROPERTY),
 	        hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
 	        hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
 	        hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
-	        museUseObject: checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
+	        museUseObject: checkBitmask(propConfig, OBJECT)
 	    };
-	
-	    if (attributeMapping[propName]) {
-	        var attributeName = attributeMapping[propName];
-	        propertyInfo.attributeName = attributeName;
-	    }
-	
-	    if (namespaceAttrs[propName]) {
-	        propertyInfo.attributeNamespace = namespaceAttrs[propName];
-	    }
-	
-	    if (DOMPropertyNames[propName]) {
-	        propertyInfo.propertyName = DOMPropertyNames[propName];
-	    }
-	
-	    DOMPropertyContainer[propName] = propertyInfo;
 	}
 	
 	exports.default = DOMPropertyContainer;
@@ -1903,7 +1903,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	function shouldIgnoreValue(propertyInfo, value) {
-	    return value == null || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && isNaN(value) || propertyInfo.hasPositiveNumericValue && value < 1 || propertyInfo.hasOverloadedBooleanValue && value === false;
+	    return value == null || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && isNaN(value) || propertyInfo.hasPositiveNumericValue && value < 1;
 	}
 	
 	exports.default = shouldIgnoreValue;
@@ -1940,34 +1940,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    switch (propName) {
-	
-	        case 'multiple':
-	
-	        // TODO! Write a unit test for this before modify!!
-	        case 'value':
-	
-	            // unset
-	            if (newProp == null) {
-	                _2.default.removeProperty(element, propName);
-	            } else {
-	
-	                var lenA = oldProp.length;
-	                var hasDiff = false;
-	
-	                if (lenA !== newProp.length) {
-	                    hasDiff = true;
-	                } else {
-	                    var i = 0;
-	                    while (!hasDiff && i < lenA) {
-	                        if (oldProp[i] != newProp[i]) {
-	                            hasDiff = true;
-	                        }
-	                        ++i;
-	                    }
-	                }
-	
-	                _2.default.setProperty(element, propName, newProp);
-	            }
 	
 	        case 'style':
 	        case 'dataset':

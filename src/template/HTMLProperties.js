@@ -88,7 +88,7 @@ const Whitelist = {
     scoped: BOOLEAN,
     seamless: BOOLEAN,
     selected: PROPERTY | BOOLEAN,
-    style: OBJECT, // TODO! Fix inline styles
+    style: OBJECT,
     size: POSITIVE_NUMERIC_VALUE,
     span: POSITIVE_NUMERIC_VALUE,
     srcLang: PROPERTY,
@@ -123,36 +123,19 @@ function checkBitmask(value, bitmask) {
 
 for (let propName in Whitelist) {
 
-    let propConfig = Whitelist[propName];
+    const propConfig = Whitelist[propName];
 
-    let propertyInfo = {
-        attributeName: propName.toLowerCase(),
-        attributeNamespace: null,
-        propertyName: propName,
-        mutationMethod: null,
+    DOMPropertyContainer[propName] = {
+        attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
+        attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
+        propertyName: DOMPropertyNames[propName] || propName,
 
         mustUseProperty: checkBitmask(propConfig, PROPERTY),
         hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
         hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
         hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
-        museUseObject: checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
+        museUseObject: checkBitmask(propConfig, OBJECT)
     };
-
-    if (DOMAttributeNames[propName]) {
-        let attributeName = DOMAttributeNames[propName];
-        propertyInfo.attributeName = attributeName;
-    }
-
-    if (DOMAttributeNamespaces[propName]) {
-        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
-    }
-
-    if (DOMPropertyNames[propName]) {
-        propertyInfo.propertyName = DOMPropertyNames[propName];
-    }
-
-
-    DOMPropertyContainer[propName] = propertyInfo;
 }
 
 export default DOMPropertyContainer;
