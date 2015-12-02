@@ -1,5 +1,4 @@
 import template from './';
-import setValueForStyles from './setValueForStyles';
 import addListener from '../events/addListener';
 import removeListener from '../events/removeListener';
 import eventMapping from '../events/shared/eventMapping';
@@ -41,7 +40,7 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
             styleUpdates = newProp;
         }
         if (styleUpdates) {
-            setValueForStyles(element, styleUpdates);
+          //  template.setProperty(element, propName, styleUpdates);
         }
         // Event listeners
     } else if (eventMapping[propName] != null) {

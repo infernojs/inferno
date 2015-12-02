@@ -2,6 +2,7 @@ import HTMLProperties from './HTMLProperties';
 import shouldIgnoreValue from './shared/shouldIgnoreValue';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import isArray from '../util/isArray';
+import addPixelSuffixToValueIfNeeded from './shared/addPixelSuffixToValueIfNeeded';
 
 export default shouldIgnoreValue;
 /*
@@ -24,8 +25,20 @@ if (ExecutionEnvironment.canUseDOM) {
                     return;
                 }
                 if (propertyInfo.mustUseProperty) {
+
                     let propName = propertyInfo.propertyName;
-                    if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
+
+                    if (propertyInfo.setAsObject) {
+
+                        if (propName === 'style') {
+                            for (let styleName in value) {
+                                let styleValue = value[styleName];
+
+                                node.style[styleName] = styleValue == null ? '' : addPixelSuffixToValueIfNeeded(styleName, styleValue);
+                            }
+                        }
+                        // TODO! Clean up this mess
+                    } else if (propName === 'value' && (node.tagName.toLowerCase() === 'select')) {
                         const multiple = isArray(value);
                         const options = node.options;
 

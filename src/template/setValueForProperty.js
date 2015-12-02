@@ -1,7 +1,6 @@
 import eventMapping from '../events/shared/eventMapping';
 import addListener from '../events/addListener';
 import template from './';
-import setValueForStyles from './setValueForStyles';
 import processFragmentAttrs from './processFragmentAttrs';
 
 /**
@@ -24,18 +23,10 @@ export default function addAttributes(node, attrs, fragment) {
                 skip = proccessedAttrs.skip;
             }
 
-            // skip dictionary lookup if we can for this events
-            if (attrVal === 'onClick' || attrVal === 'onKeyDown' || attrVal === 'onMouseMove') {
-                eventManager.addListener(node, eventMapping[attrName], attrVal);
-            } else if (attrName === 'style') {
-                setValueForStyles(node, attrVal);
+            if (eventMapping[attrName]) {
+                addListener(node, eventMapping[attrName], attrVal);
             } else {
-                // events
-                if (eventMapping[attrName]) {
-                    addListener(node, eventMapping[attrName], attrVal);
-                } else {
-                    template.setProperty(node, attrName, attrVal);
-                }
+                template.setProperty(node, attrName, attrVal);
             }
         }
     }
