@@ -123,7 +123,7 @@ export default (function() {
             hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
             hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
             hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
-            hasObject:checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
+            museUseObject:checkBitmask(propConfig, OBJECT) // Todo! Should this also contain dataset?
         };
 
         attributeContainer[attributeName] = propertyInfo;

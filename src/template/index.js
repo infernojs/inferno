@@ -30,7 +30,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
                         let propName = propertyInfo.propertyName;
 
-                        if (propertyInfo.hasObject) {
+                        if (propertyInfo.museUseObject) {
                             if (propName === 'style') {
                                 setValueForStyles(node, value)
                             }
@@ -73,7 +73,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
                     let propName = propertyInfo.propertyName;
                     // Special case: 'style' and 'dataset' property has to be removed as an attribute
-                    if (propertyInfo.hasObject) {
+                    if (propertyInfo.museUseObject) {
                         node.removeAttribute(propName);
                     } else if (propName === 'value' && (node.tagName === 'SELECT')) {
                         removeSelectValueForProperty(node, propname);
