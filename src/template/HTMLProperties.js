@@ -138,7 +138,7 @@ const Whitelist = {
 
     // Force 'autocorrect' to be set as an attribute
     // to fix issues with Safari on iOS
-    autocorrect: null
+    autocorrect: BOOLEAN
 };
 
 let DOMPropertyContainer = {};

@@ -2212,6 +2212,55 @@ describe('should set boolean element property', () => {
 		});
 	});
 
+describe('should support "autocorrect" attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('label', { 'autocorrect' : arg })
+		);
+
+		it('Initial render (creation)', () => {
+            
+			Inferno.render(Inferno.createFragment(123, template), container);
+            
+			expect(container.firstChild.getAttribute('autocorrect')).to.equal('123');
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<label autocorrect="123"></label>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['autocorrect'], template), container);
+			expect(container.firstChild.getAttribute('autocorrect')).to.equal('autocorrect');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label autocorrect="autocorrect"></label>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(-444, template), container);
+			expect(container.firstChild.getAttribute('autocorrect')).to.eql('-444');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label autocorrect="-444"></label>'
+			);
+		});
+		
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment(0, template), container);
+			expect(container.firstChild.getAttribute('autocorrect')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label></label>'
+			);
+		});
+	});
+
+
 	describe('should support alternative names', () => {
 		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
 			createElement('label', { 'for' : arg })
