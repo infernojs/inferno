@@ -90,7 +90,6 @@ const Whitelist = {
     selected: PROPERTY | BOOLEAN,
     style: OBJECT,
     size: POSITIVE_NUMERIC_VALUE,
-    span: POSITIVE_NUMERIC_VALUE,
     srcLang: PROPERTY,
     srcObject: PROPERTY,
     start: NUMERIC_VALUE,
@@ -98,11 +97,20 @@ const Whitelist = {
     volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
     itemScope: BOOLEAN,
     className: null,
-
+   
+    /**
+     * Numeric attributes
+     */
+    cols: NUMERIC_VALUE,
+    rows: NUMERIC_VALUE,
+    rowspan: NUMERIC_VALUE,
+    size: NUMERIC_VALUE,
+    sizes: NUMERIC_VALUE,
+    start: NUMERIC_VALUE,
+  
     /**
      * Namespace attributes
      */
-
     'xlink:actuate': null,
     'xlink:arcrole': null,
     'xlink:href': null,
@@ -112,8 +120,18 @@ const Whitelist = {
     'xlink:type': null,
     'xml:base': null,
     'xml:lang': null,
-    'xml:space': null
-}
+    'xml:space': null,
+
+    /**
+     * Common attributes
+     */
+
+    id: null,
+    class: null,
+    dir: null,
+    lang: null,
+    title: null
+};
 
 let DOMPropertyContainer = {};
 

@@ -2116,6 +2116,102 @@ describe('should set boolean element property', () => {
 		});
 	});
 
+	describe('should support "size" attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('label', { 'size' : arg })
+		);
+
+		it('Initial render (creation)', () => {
+            
+			Inferno.render(Inferno.createFragment(123, template), container);
+            
+			expect(container.firstChild.getAttribute('size')).to.equal('123');
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<label size="123"></label>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['test.jpg'], template), container);
+			expect(container.firstChild.getAttribute('size')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label></label>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(-444, template), container);
+			expect(container.firstChild.getAttribute('size')).to.eql('-444');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label size="-444"></label>'
+			);
+		});
+		
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment(0, template), container);
+			expect(container.firstChild.getAttribute('size')).to.eql('0');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label size="0"></label>'
+			);
+		});
+	});
+	
+	describe('should support "rowspan" attribute', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
+			createElement('label', { 'rowspan' : arg })
+		);
+
+		it('Initial render (creation)', () => {
+            
+			Inferno.render(Inferno.createFragment(123, template), container);
+            
+			expect(container.firstChild.getAttribute('rowspan')).to.equal('123');
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<label rowspan="123"></label>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(['test.jpg'], template), container);
+			expect(container.firstChild.getAttribute('rowspan')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label></label>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(Inferno.createFragment(-444, template), container);
+			expect(container.firstChild.getAttribute('rowspan')).to.eql('-444');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label rowspan="-444"></label>'
+			);
+		});
+		
+		it('Third render (update)', () => {
+			Inferno.render(Inferno.createFragment(0, template), container);
+			expect(container.firstChild.getAttribute('rowspan')).to.eql('0');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<label rowspan="0"></label>'
+			);
+		});
+	});
+
 	describe('should support alternative names', () => {
 		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
 			createElement('label', { 'for' : arg })

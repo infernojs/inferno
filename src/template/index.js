@@ -18,16 +18,15 @@ if (ExecutionEnvironment.canUseDOM) {
     template = {
 
         setProperty(node, name, value) {
-         
-		
-
 
             let propertyInfo = HTMLProperties[name];
 
             if (propertyInfo) {
-                if (shouldIgnoreValue(propertyInfo, value)) {
+                if (value == null ||
+                    propertyInfo.hasBooleanValue && !value ||
+                    propertyInfo.hasNumericValue && isNaN(value) ||
+                    propertyInfo.hasPositiveNumericValue && value < 1) {
                     template.removeProperty(node, name);
-
                 } else {
                     if (propertyInfo.mustUseProperty) {
 
@@ -38,9 +37,9 @@ if (ExecutionEnvironment.canUseDOM) {
                                 setValueForStyles(node, value)
                             }
                         } else if (propName === 'value' && (node.tagName === 'SELECT')) {
-                            if ( value != null) {
-							setSelectValueForProperty(node, value);
-							}
+                            if (value != null) {
+                                setSelectValueForProperty(node, value);
+                            }
                         } else if ('' + node[propName] !== '' + value) {
                             node[propName] = value;
                         }
@@ -56,13 +55,12 @@ if (ExecutionEnvironment.canUseDOM) {
                         }
                     }
                 }
-            // custom attributes
-            // Take any attribute (with correct syntax) as custom attribute.
-				
+                // custom attributes
+                // Take any attribute (with correct syntax) as custom attribute.
+
             } else if (name) { // TODO! Validate
                 node.setAttribute(name, value);
             }
-			
         },
 
         /**

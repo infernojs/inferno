@@ -100,16 +100,6 @@ export default function domOperationTests(describe, expect) {
                 expect(container.getAttribute('width')).to.eql('70%');
             });
 
-            it('should not set negative numbers on "size" attribute', () => {
-                setProperty(container, 'size', -444);
-                expect(container.getAttribute('size')).to.be.null;
-            });
-
-            it('should not set zerio as a number on "size" attribute', () => {
-                setProperty(container, 'size', 0);
-                expect(container.getAttribute('size')).to.be.null;
-            });
-
             it('should not set positive numbers on "size" attribute', () => {
                 setProperty(container, 'size', 444);
                 expect(container.getAttribute('size')).to.eql('444');
@@ -117,12 +107,12 @@ export default function domOperationTests(describe, expect) {
 
             it('should not set negative numbers on "cols" attribute', () => {
                 setProperty(container, 'cols', -444);
-                expect(container.getAttribute('cols')).to.be.null;
+                expect(container.getAttribute('cols')).to.eql('-444');
             });
 
             it('should not set zerio as a number on "cols" attribute', () => {
                 setProperty(container, 'cols', 0);
-                expect(container.getAttribute('cols')).to.be.null;
+                expect(container.getAttribute('cols')).to.eql('0');
             });
 
             it('should not set positive numbers on "cols" attribute', () => {
