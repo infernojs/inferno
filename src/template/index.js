@@ -53,17 +53,14 @@ if (ExecutionEnvironment.canUseDOM) {
                         const namespace = propertyInfo.attributeNamespace;
 
                         if (namespace) {
-
                             node.setAttributeNS(namespace, attributeName, '' + value);
                         } else {
                             node.setAttribute(attributeName, '' + value);
                         }
                     }
                 }
-                // custom attributes
-                // Take any attribute (with correct syntax) as custom attribute.
-
-            } else if (name) { // TODO! Validate
+               // custom attributes
+            } else if (name && (name.length > 1 && (isNaN(name[0])))) {
                 node.setAttribute(name, value);
             }
         },
@@ -82,13 +79,13 @@ if (ExecutionEnvironment.canUseDOM) {
 
                     let propName = propertyInfo.propertyName;
 					
+					if (propertyInfo.hasBooleanValue) {
+                        node[propName] = false;
                     // 'style' and 'dataset' property has to be removed as an attribute
-                    if (propertyInfo.museUseObject) {
+					} else if (propertyInfo.museUseObject) {
                         node.removeAttribute(propName);
                     } else if (propName === 'value' && (node.tagName === 'SELECT')) {
                         removeSelectValueForProperty(node, propName);
-                    } else if (propertyInfo.hasBooleanValue) {
-                        node[propName] = false;
                     } else {
                         if ('' + node[propName] !== '') {
                             node[propName] = '';
