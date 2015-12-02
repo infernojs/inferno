@@ -139,6 +139,11 @@ const Whitelist = {
     // Force 'autocorrect' to be set as an attribute
     // to fix issues with Safari on iOS
     autocorrect: BOOLEAN
+	
+	 // Some version of IE (like IE9) actually throw an exception
+     // if you set input.type = 'something-unknown'
+     type: null,
+	 form: null
 };
 
 let DOMPropertyContainer = {};
