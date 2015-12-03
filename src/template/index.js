@@ -3,8 +3,6 @@ import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import removeSelectValueForProperty from './removeSelectValueForProperty';
-import HTMLPropertyLimitation from './HTMLPropertyLimitation';
-import isFormElement from '../util/isFormElement';
 
 /*
  * Template interface
@@ -37,11 +35,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
                     let propName = propertyInfo.propertyName;
 
-                    // E.g. 'form' is actually a legitimate readOnly property, that is to be
-                    // mutated, but must be mutated by setAttribute...
-                    if (propertyInfo.hasFormElement && (isFormElement(node.tagName.toLowerCase()))) {
-                        node.setAttribute(propName, '' + value);
-                    } else if (propertyInfo.mustUseProperty) {
+                    if (propertyInfo.mustUseProperty) {
 
                         if (propertyInfo.museUseObject) {
                             if (propName === 'style') {
@@ -65,26 +59,8 @@ if (ExecutionEnvironment.canUseDOM) {
                     }
                 }
                 // custom attributes
-            } else {
-
-                if (process.env.NODE_ENV !== 'production') {
-
-                    // NOTE!! This 'trick' helps us avoiding touching the DOM if it's not a valid attribute
-                    const limitation = HTMLPropertyLimitation[node.tagName]
-                    if (limitation && limitation[name]) {
-                        if (limitation[name][value]) {
-                            node.setAttribute(name, value);
-                        } else {
-                            console.warn('Are you sure you\'re doing something right now? Head back to school');
-                        }
-                    } else if (name && (name.length > 1)) {
-                        node.setAttribute(name, value);
-                    }
-                } else {
-                    if (name && (name.length > 1)) {
-                        node.setAttribute(name, value);
-                    }
-                }
+            } else if (name && (name.length > 1)) {
+                node.setAttribute(name, value);
             }
         },
 

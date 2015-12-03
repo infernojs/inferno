@@ -2267,42 +2267,5 @@ describe('should bail out if attribute name shorter then 2', () => {
 			);
 		});
 	});
-
-     describe('should support alternative names', () => {
-		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-			createElement('a', { target : arg })
-		);
-
-		it('Initial render (creation)', () => {
-            
-			Inferno.render(Inferno.createFragment('blank', template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<a target="blank"></a>'
-			);
-		});
-
-		it('Second render (update)', () => {
-            
-			Inferno.render(Inferno.createFragment('parentd', template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<a></a>'
-			);
-		});
-
-		it('Second render (update)', () => {
-            
-			Inferno.render(Inferno.createFragment('parent', template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<a target="parent"></a>'
-			);
-		});
-	});
-
 }
 
