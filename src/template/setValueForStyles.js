@@ -7,10 +7,19 @@ import addPixelSuffixToValueIfNeeded from './shared/addPixelSuffixToValueIfNeede
  * @param {DOMElement} node
  * @param {object} styles
  */
+ 
 export default (node, styles) => {
-    for (let styleName in styles) {
-        let styleValue = styles[styleName];
+	
+	const style = node.style;
 
-        node.style[styleName] = styleValue == null ? '' : addPixelSuffixToValueIfNeeded(styleName, styleValue);
+    for (let styleName in styles) {
+
+     let styleValue = addPixelSuffixToValueIfNeeded(styleName, styles[styleName]);
+
+      if (styleValue) {
+        style[styleName] = styleValue;
+      } else {
+          style[styleName] = '';
+      }
     }
 };

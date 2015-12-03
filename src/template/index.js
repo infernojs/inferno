@@ -15,7 +15,8 @@ if (ExecutionEnvironment.canUseDOM) {
     template = {
 
         /**
-         * Sets the value for a property on a node.
+         * Sets the value for a property on a node. If a value is specified as
+         * '' (empty string), the corresponding style property will be unset.
          *
          * @param {DOMElement} node
          * @param {string} name
@@ -75,9 +76,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
             if (propertyInfo) {
                 if (propertyInfo.mustUseProperty) {
-
                     let propName = propertyInfo.propertyName;
-
                     if (propertyInfo.hasBooleanValue) {
                         node[propName] = false;
                         // 'style' and 'dataset' property has to be removed as an attribute

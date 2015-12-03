@@ -7,12 +7,19 @@ import unitlessProperties from './unitlessProperties';
  * @param {String} value The boolean attribute value to set.
  */
 export default (name, value) => {
+	
 	if (value === null || (value === '')) {
 		return '';
 	}
-	if (value === 0 || (unitlessProperties(name) || (isNaN(value)))) {
+	
+	if (value === 0 || (unitlessProperties(name))) {
 		return '' + value; // cast to string
 	}
+	
+	if (isNaN(value)) {
+		return '' + value; // cast to string
+	}
+
 	if (typeof value === 'string') {
 		value = value.trim();
 	}

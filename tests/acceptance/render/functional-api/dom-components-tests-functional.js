@@ -582,7 +582,9 @@ export default function domComponentsTestsFunctional(describe, expect, container
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: blue; margin: 20px;"><span style="color: blue; margin: 20px;">The title is styled (again)!</span></div>'
+				//'<div style="color: blue; margin: 20px;"><span style="color: blue; margin: 20px;">The title is styled (again)!</span></div>'
+			    '<div style="color: blue; padding: 10px; margin: 20px;"><span style="color: blue; padding: 10px; margin: 20px;">The title is styled (again)!</span></div>' 
+	
 			);
 		});
 	});

@@ -17,35 +17,6 @@ function updateDOMProperties(element, propName, oldProp, newProp) {
 
     switch (propName) {
        
-        case 'style':
-        case 'dataset':
-
-            let styleUpdates = {};
-            let styleName;
-
-            if (oldProp != null) {
-                if (newProp == null) {
-                    template.removeProperty(element, propName);
-                } else {
-                    for (styleName in oldProp) {
-                        if (oldProp[styleName] && (!newProp || !newProp[styleName])) {
-                            styleUpdates[styleName] = '';
-                        }
-                    }
-                    // Update styles that changed since `oldProp`.
-                    for (styleName in newProp) {
-                        if (newProp[styleName] && oldProp[styleName] !== newProp[styleName]) {
-                            styleUpdates[styleName] = newProp[styleName];
-                        }
-                    }
-                }
-            } else if (newProp != null) {
-                styleUpdates = newProp;
-            }
-
-            template.setProperty(element, propName, styleUpdates);
-
-            return;
         default: // string values
 
             if (oldProp != null) {
