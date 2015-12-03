@@ -66,14 +66,24 @@ if (ExecutionEnvironment.canUseDOM) {
                 }
                 // custom attributes
             } else {
-                // NOTE!! This 'trick' helps us avoiding touching the DOM if it's not a valid attribute
-                const limitation = HTMLPropertyLimitation[node.tagName]
-                if (limitation && limitation[name]) {
-                    if (limitation[name][value]) {
+
+                if (process.env.NODE_ENV !== 'production') {
+
+                    // NOTE!! This 'trick' helps us avoiding touching the DOM if it's not a valid attribute
+                    const limitation = HTMLPropertyLimitation[node.tagName]
+                    if (limitation && limitation[name]) {
+                        if (limitation[name][value]) {
+                            node.setAttribute(name, value);
+                        } else {
+                            console.warn('Are you sure you\'re doing something right now? Head back to school');
+                        }
+                    } else if (name && (name.length > 1)) {
                         node.setAttribute(name, value);
                     }
-                } else if (name && (name.length > 1)) {
-                    node.setAttribute(name, value);
+                } else {
+                    if (name && (name.length > 1)) {
+                        node.setAttribute(name, value);
+                    }
                 }
             }
         },
