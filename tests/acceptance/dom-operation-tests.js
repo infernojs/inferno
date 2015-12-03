@@ -107,12 +107,12 @@ export default function domOperationTests(describe, expect) {
 
             it('should not set negative numbers on "cols" attribute', () => {
                 setProperty(container, 'cols', -444);
-                expect(container.getAttribute('cols')).to.eql('-444');
+                expect(container.getAttribute('cols')).to.be.null;
             });
 
             it('should not set zerio as a number on "cols" attribute', () => {
                 setProperty(container, 'cols', 0);
-                expect(container.getAttribute('cols')).to.eql('0');
+                expect(container.getAttribute('cols')).to.be.null;
             });
 
             it('should not set positive numbers on "cols" attribute', () => {

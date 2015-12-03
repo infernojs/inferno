@@ -63,7 +63,6 @@ const Whitelist = {
     autoPlay: BOOLEAN,
     capture: BOOLEAN,
     checked: PROPERTY | BOOLEAN,
-    cols: POSITIVE_NUMERIC_VALUE,
     controls: BOOLEAN,
     currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
     default: BOOLEAN,
@@ -102,7 +101,7 @@ const Whitelist = {
     /**
      * Numeric attributes
      */
-    cols: NUMERIC_VALUE,
+    cols: POSITIVE_NUMERIC_VALUE,
     rows: NUMERIC_VALUE,
     rowspan: NUMERIC_VALUE,
     size: POSITIVE_NUMERIC_VALUE,
