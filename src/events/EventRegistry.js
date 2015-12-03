@@ -2,52 +2,16 @@ import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import addRootListener from './addRootListener';
 import setHandler from './setHandler';
 import focusEvents from './shared/focusEvents';
+import {
+    standardNativeEventMapping,
+    nonBubbleableEventMapping } from './shared/eventMapping';
 
-const standardNativeEvents = [
- 'click', 'dblclick', 'mouseup', 'mousedown', 'contextmenu',   // mouse buttons
- 'wheel', 'mousewheel',                                        // mouse wheel
- 'mouseover', 'mouseout', 'mousemove', 'selectstart',          // mouse movement
- 'keydown', 'keypress', 'keyup',                               // keyboard
- 'copy', 'cut', 'paste',                                       // text
- 'change', 'reset', 'select', 'submit', 'focusout', 'focusin', // form elements
 
- // W3C native events
- 'show',                                                       // mouse buttons
- 'input',                                                      // form elements
- 'touchstart', 'touchmove', 'touchend', 'touchcancel',         // touch
- 'textInput',                                                  // TextEvent
- 'focus', 'blur',                                              // Non-standard
+const standardNativeEvents = Object.keys(standardNativeEventMapping)
+    .map(key => standardNativeEventMapping[key]);
 
- // Drag and Drop events
- 'drag', 'drop',                                               // dnd
- 'dragstart', 'dragend',                                       // dnd
- 'dragenter', 'dragleave',                                     // dnd
- 'dragover',                                                   // dnd
- 'dragexit',                                                   // Not supported
- 
- // composition events
-  'compositionstart', 'compositionend', 'compositionupdate',   // composition
-  'selectionchange'                                            // IE-only
-];
-
-const nonBubbleableEvents = [
- 'input', 'invalid',                                             // form elements
- 'select',                                                       // form elements
- 'load',                                                         // window
- 'unload', 'beforeunload', 'resize',                             // window
- 'orientationchange',                                            // mobile
-
- // Media
- 'seeked', 'ended', 'durationchange', 'timeupdate', 'play',      // media
- 'pause', 'ratechange', 'loadstart', 'progress', 'suspend',      // media
- 'emptied', 'stalled', 'loadeddata', 'canplay',                  // media
- 'canplaythrough','playing', 'waiting', 'seeking',               // media
- 'volumechange',                                                 // media
-
-  // Misc Events
- 'loadedmetadata', 'scroll', 'error', 'abort',                   // misc
- 'mouseenter', 'mouseleave'                                      // misc
-];
+const nonBubbleableEvents = Object.keys(nonBubbleableEventMapping)
+    .map(key => nonBubbleableEventMapping[key]);
 
 let EventRegistry = {};
 
