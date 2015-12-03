@@ -94,7 +94,7 @@ const Whitelist = {
     volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
     itemScope: BOOLEAN,
     className: null,
-	tabindex: PROPERTY,
+	tabindex: PROPERTY | NUMERIC_VALUE,
 
     /**
      * Numeric attributes
