@@ -2145,21 +2145,21 @@ describe('should set boolean element property', () => {
 
 		it('Second render (update)', () => {
 			Inferno.render(Inferno.createFragment(-444, template), container);
-			expect(container.firstChild.getAttribute('size')).to.eql('-444');
+			expect(container.firstChild.getAttribute('size')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<label size="-444"></label>'
+				'<label></label>' 
 			);
 		});
 		
 		it('Third render (update)', () => {
 			Inferno.render(Inferno.createFragment(0, template), container);
-			expect(container.firstChild.getAttribute('size')).to.eql('0');
+			expect(container.firstChild.getAttribute('size')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<label size="0"></label>'
+				'<label></label>'
 			);
 		});
 	});
