@@ -182,26 +182,25 @@ export default function domOperationTests(describe, expect) {
                 expect(container.getAttribute('allowtransparency')).to.eql('true');
             });
 
-            it('should set allowTransparency as an capture', () => {
+            it('should set capture as an capture', () => {
                 setProperty(container, 'capture', 'capture');
                 expect(container.getAttribute('capture')).to.eql('capture');
             });
 
-            it('should set allowTransparency as an classID', () => {
+            it('should set classID as an attribute', () => {
                 setProperty(container, 'classID', 'classID');
                 expect(container.getAttribute('classid')).to.eql('classID');
             });
 
-            it('should set allowTransparency as an capture', () => {
+            it('should set capture as an attribute', () => {
                 setProperty(container, 'dateTime', 'dateTime');
                 expect(container.getAttribute('datetime')).to.eql('dateTime');
             });
 
-            it('should set allowTransparency as an formEncType', () => {
+            it('should set formEncType as an attribute', () => {
                 setProperty(container, 'formEncType', 'formEncType');
                 expect(container.getAttribute('formenctype')).to.eql('formEncType');
             });
-
         });
     });
 }

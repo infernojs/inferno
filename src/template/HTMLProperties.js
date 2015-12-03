@@ -3,6 +3,7 @@ const BOOLEAN = 0x2;
 const NUMERIC_VALUE = 0x4;
 const POSITIVE_NUMERIC_VALUE = 0x6 | 0x4;
 const OBJECT = 0x1 | 0x20;
+const FORM = 0x30;
 
 const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
@@ -154,17 +155,16 @@ const Whitelist = {
     /**
      * Form
      */
-    form: null,
-    formAction: null,
-    formEncType: null,
-    formMethod: null,
-    formTarget: null,
-    frameBorder: null,
+    form: FORM, // nodeName - SELECT, OPTION, TEXTAREA, LABEL, FIELDSET, OBJECT, LEGEND
+    formAction: FORM,
+    formEncType: FORM,
+    formMethod: FORM,
+    formTarget: FORM,
+    frameBorder: FORM,
 
     /**
      * Others
      */
-
     srcSet: null,
     scrolling: null,
     nonce: null,
@@ -209,7 +209,8 @@ for (let propName in Whitelist) {
         hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
         hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
         hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
-        museUseObject: checkBitmask(propConfig, OBJECT)
+        museUseObject: checkBitmask(propConfig, OBJECT),
+        hasFormElement: checkBitmask(propConfig, FORM)
     };
 }
 

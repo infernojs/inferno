@@ -3,6 +3,7 @@ import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import removeSelectValueForProperty from './removeSelectValueForProperty';
+import isFormElement from '../util/isFormElement';
 
 /*
  * Template interface
@@ -28,20 +29,25 @@ if (ExecutionEnvironment.canUseDOM) {
             if (propertyInfo) {
                 if (value == null ||
                     propertyInfo.hasBooleanValue && !value ||
-                    propertyInfo.hasNumericValue && isNaN(value) ||
+                    propertyInfo.hasNumericValue && isNaN(value) || // Todo! Find alternative for 'isNaN'
                     propertyInfo.hasPositiveNumericValue && value < 1) {
                     template.removeProperty(node, name);
                 } else {
-                    if (propertyInfo.mustUseProperty) {
 
-                        let propName = propertyInfo.propertyName;
+                    let propName = propertyInfo.propertyName;
+
+                    // E.g. 'form' is actually a legitimate readOnly property, that is to be
+                    // mutated, but must be mutated by setAttribute...
+                    if (propertyInfo.hasFormElement && (isFormElement(node.tagName.toLowerCase()))) {
+                        node.setAttribute(propName, '' + value);
+                    } else if (propertyInfo.mustUseProperty) {
 
                         if (propertyInfo.museUseObject) {
                             if (propName === 'style') {
                                 setValueForStyles(node, value)
                             }
                         } else if (propName === 'value' && (node.tagName === 'SELECT')) {
-                                setSelectValueForProperty(node, value);
+                            setSelectValueForProperty(node, value);
                         } else if ('' + node[propName] !== '' + value) {
                             node[propName] = value;
                         }
@@ -59,9 +65,9 @@ if (ExecutionEnvironment.canUseDOM) {
                 }
                 // custom attributes
             } else if (name && (name.length > 1)) {
-                    node.setAttribute(name, value);
-            }        
-       },
+                node.setAttribute(name, value);
+            }
+        },
 
         /**
          * Removes the value for a property on a node.
