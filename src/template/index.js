@@ -77,13 +77,11 @@ if (ExecutionEnvironment.canUseDOM) {
                         } else {
                             console.warn('Are you sure you\'re doing something right now? Head back to school');
                         }
-                    } else if (name && (name.length > 1)) {
-                        node.setAttribute(name, value);
                     }
-                } else {
-                    if (name && (name.length > 1)) {
-                        node.setAttribute(name, value);
-                    }
+                    return;
+                }
+                if (name && (name.length > 1)) {
+                    node.setAttribute(name, value);
                 }
             }
         },
