@@ -84,7 +84,6 @@ export const nonBubbleableEventMapping = {
 let propertyToEventType = {};
 [standardNativeEventMapping, nonBubbleableEventMapping].forEach(mapping => {
     Object.keys(mapping).reduce((state, property) => {
-        console.log(property, mapping[property]);
         state[property] = mapping[property];
         return state;
     }, propertyToEventType);
