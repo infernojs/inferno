@@ -67,8 +67,11 @@ if (ExecutionEnvironment.canUseDOM) {
                 // custom attributes
             } else if (name && (name.length > 1)) {
                 // NOTE!! This 'trick' helps us avoiding touching the DOM if it's not a valid attribute
-                if (HTMLPropertyLimitation[node.tagName]) {
-                    if (HTMLPropertyLimitation[node.tagName][name][value]) {
+				
+				const limitation = HTMLPropertyLimitation[node.tagName];
+				
+                if (limitation) {
+                    if (limitation[name][value]) {
                         node.setAttribute(name, value);
                     }
                 } else {
