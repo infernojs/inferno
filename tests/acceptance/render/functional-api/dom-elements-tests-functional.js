@@ -2316,5 +2316,21 @@ describe('should bail out if attribute name shorter then 2', () => {
 		});
 	});
 
+describe('should support alternative names', () => {
+		let template = Inferno.createTemplate((createElement, createComponent, arg, arg1) =>
+			createElement('button', { disabled : true })
+		);
+
+		it('Initial render (creation)', () => {
+            
+			Inferno.render(Inferno.createFragment('c1', template), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<button disabled="true"></button>'
+			);
+		});
+	});
+
 }
 

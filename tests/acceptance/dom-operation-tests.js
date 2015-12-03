@@ -197,10 +197,6 @@ export default function domOperationTests(describe, expect) {
                 expect(container.getAttribute('datetime')).to.eql('dateTime');
             });
 
-            it('should set formEncType as an attribute', () => {
-                setProperty(container, 'formEncType', 'formEncType');
-                expect(container.getAttribute('formenctype')).to.eql('formEncType');
-            });
         });
     });
 }

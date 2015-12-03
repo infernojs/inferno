@@ -5,6 +5,23 @@ import setValueForStyles from './setValueForStyles';
 import removeSelectValueForProperty from './removeSelectValueForProperty';
 import isFormElement from '../util/isFormElement';
 
+const nodeAttributes = {
+
+// TODO!! Limit this even more, so A element, with target attr, only touch DOM if
+// either of this values matches.
+/*    A: {
+        target: {
+            blank: true,
+            parent: true,
+            top: true,
+            self: true
+        }
+    },*/
+    BUTTON: {
+        disabled: true
+    }
+};
+
 /*
  * Template interface
  */
@@ -65,7 +82,14 @@ if (ExecutionEnvironment.canUseDOM) {
                 }
                 // custom attributes
             } else if (name && (name.length > 1)) {
-                node.setAttribute(name, value);
+                // NOTE!! This 'trick' helps us avoiding touching the DOM if it's not a valid attribute
+                if (nodeAttributes[node.tagName]) {
+                    if (nodeAttributes[node.tagName][name]) {
+                        node.setAttribute(name, value);
+                    }
+                } else {
+                    node.setAttribute(name, value);
+                }
             }
         },
 
