@@ -90,7 +90,6 @@ const Whitelist = {
     seamless: BOOLEAN,
     selected: PROPERTY | BOOLEAN,
     style: OBJECT,
-    size: POSITIVE_NUMERIC_VALUE,
     srcLang: PROPERTY,
     srcObject: PROPERTY,
     start: NUMERIC_VALUE,
@@ -106,7 +105,7 @@ const Whitelist = {
     cols: NUMERIC_VALUE,
     rows: NUMERIC_VALUE,
     rowspan: NUMERIC_VALUE,
-    size: NUMERIC_VALUE,
+    size: POSITIVE_NUMERIC_VALUE,
     sizes: NUMERIC_VALUE,
     start: NUMERIC_VALUE,
 
