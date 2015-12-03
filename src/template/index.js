@@ -57,9 +57,9 @@ if (ExecutionEnvironment.canUseDOM) {
                         const namespace = propertyInfo.attributeNamespace;
 
                         if (namespace) {
-                            node.setAttributeNS(namespace, attributeName, '' + value);
+                            node.setAttributeNS(namespace, attributeName, value);
                         } else {
-                            node.setAttribute(attributeName, '' + value);
+                            node.setAttribute(attributeName, value);
                         }
                     }
                 }
