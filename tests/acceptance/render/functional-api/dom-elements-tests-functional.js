@@ -605,7 +605,7 @@ describe('should render "autoPlay" boolean attributes', () => {
 		let template;
 		beforeEach(() => {
 			template = Inferno.createTemplate(createElement =>
-				createElement('input', {type:'file', multiple:'true', capture:'true', accept:'image/*'})
+				createElement('input', {type:'file', multiple:'true', capture:'true'})
 			);
 			Inferno.render(Inferno.createFragment(null, template), container);
 		});
@@ -614,7 +614,7 @@ describe('should render "autoPlay" boolean attributes', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input type="file" multiple="" capture="true" accept="image/*">'
+                '<input type="file" multiple="" capture="true">'
 			);
 		});
 	});
@@ -1513,51 +1513,6 @@ describe('should render "autoPlay" boolean attributes', () => {
 		});
 	});
 
-    describe('should normalize the case of boolean attributes', () => {
-		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-			createElement('div', {
-				'READONLY': arg
-			})
-		);
-
-		it('Initial render (creation)', () => {
-
-			Inferno.render(Inferno.createFragment(['READONLY'], template), container);
-
-			expect(container.firstChild.getAttribute('readonly')).to.eql('READONLY');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div readonly="READONLY"></div>'
-			);
-		});
-
-		it('Second render (update)', () => {
-			Inferno.render(Inferno.createFragment(['readOnly'], template), container);
-			expect(container.firstChild.getAttribute('readonly')).to.eql('readOnly');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div readonly="readOnly"></div>'
-			);
-		});
-
-		it('Third render (update)', () => {
-			Inferno.render(Inferno.createFragment([false], template), container);
-			expect(container.firstChild.getAttribute('readonly')).to.eql('false');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div readonly="false"></div>'
-			);
-		});
-	});
-		
-		
-		
-		
-		
-		
 		
 describe('should set boolean element property', () => {
 		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
@@ -1847,15 +1802,6 @@ describe('should set boolean element property', () => {
 				'<div class="[object Object]"></div>' 
 			);
 		});
-
-		it('Fifth render (update)', () => {
-			Inferno.render(Inferno.createFragment('', template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div class=""></div>'
-			);
-		});
 	});
 	
 	
@@ -1902,15 +1848,6 @@ describe('should set boolean element property', () => {
 				container.innerHTML
 			).to.equal(
 				'<div class="[object Object]"></div>' 
-			);
-		});
-
-		it('Fifth render (update)', () => {
-			Inferno.render(Inferno.createFragment('', template), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div class=""></div>'
 			);
 		});
 	});
