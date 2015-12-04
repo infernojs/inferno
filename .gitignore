@@ -2,6 +2,7 @@
 node_modules
 .DS_Store
 .build
+.jshintrc
 .idea
 dist/*
 .vscode
