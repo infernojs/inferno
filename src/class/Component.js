@@ -1,4 +1,4 @@
-import queueStateChanges from './queueStateChanges';
+import queueStateChanges from '../core/queueStateChanges';
 
 class Component {
 	constructor(props, context) {

@@ -1,7 +1,7 @@
-import domElementsTestsFunctional from './functional-api/dom-elements-tests-functional.js';
-import domComponentsTestsFunctional from './functional-api/dom-components-tests-functional.js';
-import domElementsTestsJsx from './inferno-jsx/dom-elements-tests-jsx.js';
-import domComponentsTestsJsx from './inferno-jsx/dom-components-tests-jsx.js';
+import domElementsTestsNoJSX from './no-jsx/dom-elements-tests.js';
+//import domComponentsTestsFunctional from './functional-api/dom-components-tests-functional.js';
+//import domElementsTestsJsx from './inferno-jsx/dom-elements-tests-jsx.js';
+//import domComponentsTestsJsx from './inferno-jsx/dom-components-tests-jsx.js';
 import Inferno from '../../../src';
 
 export default function domElementsTests(describe, expect) {
@@ -12,23 +12,24 @@ export default function domElementsTests(describe, expect) {
             container.innerHTML = '';
         });
         afterEach(() => {
-            Inferno.clearDomElement(container);
+            Inferno.render(null, container);
         });
 
         describe('using the Inferno functional API', () => {
 			describe('HTML', () => {
-				domElementsTestsFunctional(describe, expect, container);
+                domElementsTestsNoJSX(describe, expect, container);
+				//domElementsTestsFunctional(describe, expect, container);
 			});
 			describe('Components', () => {
-				domComponentsTestsFunctional(describe, expect, container);
+				//domComponentsTestsFunctional(describe, expect, container);
 			})
         });
         describe('using the Inferno JSX plugin', () => {
 			describe('HTML', () => {
-				domElementsTestsJsx(describe, expect, container);
+				//domElementsTestsJsx(describe, expect, container);
 			});
 			describe('Components', () => {
-				domComponentsTestsJsx(describe, expect, container);
+				//domComponentsTestsJsx(describe, expect, container);
 			});
         });
     });
