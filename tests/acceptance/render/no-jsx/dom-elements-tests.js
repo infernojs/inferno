@@ -229,6 +229,36 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
+	describe('should render a basic example #7', () => {
+		it('Initial render (creation)', () => {
+			const div = Inferno.createTemplate((child) => ({
+				tag: 'div',
+				children: child
+			}));
+
+			const span1 = Inferno.createTemplate(() => 'Hello world!');
+
+			Inferno.render(div(span1()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div>Hello world!</div>`
+			);
+
+			const span2 = Inferno.createTemplate((child) => ({
+				tag: 'span',
+				children: 'Im updated!'
+			}));
+
+			Inferno.render(div(span2()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div><span>Im updated!</span></div>`
+			);
+		});
+	});
+
 	describe('should render "disabled" boolean attributes', () => {
 		let template;
 

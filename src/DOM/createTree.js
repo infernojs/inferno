@@ -1,6 +1,6 @@
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
-import createRootNodeWithDynamicChildren from './shapes/rootNodeWithDynamicChildren';
+import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createRootStaticNode from './shapes/rootStaticNode';
 
@@ -123,7 +123,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					if (children != null) {
 						if (children.type === ObjectTypes.VARIABLE) {
 							if (isRoot) {
-								node = createRootNodeWithDynamicChildren(templateNode, children.index, domNamespace);
+								node = createRootNodeWithDynamicChild(templateNode, children.index, domNamespace);
 							}
 						} else {
 							let subTreeForChildren = [];

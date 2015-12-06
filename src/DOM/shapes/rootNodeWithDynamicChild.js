@@ -5,7 +5,7 @@ import { updateKeyed } from '../domMutate';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicChildren(templateNode, valueIndex, domNamespace) {
+export default function createRootNodeWithDynamicChild(templateNode, valueIndex, domNamespace) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -58,11 +58,20 @@ export default function createRootNodeWithDynamicChildren(templateNode, valueInd
 					if (isArray(lastValue)) {
 						updateKeyed(nextValue, lastValue, domNode, null);
 					} else {
-						// TODO
+						//debugger;
 					}
 				} else {
-					//debugger;
-					// TODO
+					const tree = nextValue.domTree;
+
+					if (tree !== null) {
+						if (lastValue.domTree !== null) {
+							tree.update(lastValue, nextValue);
+						} else {
+							// TODO implement
+						}
+					} else if (nextValue !== lastValue) {
+						domNode.firstChild.nodeValue = nextValue;
+					}
 				}
 			}
 		}
