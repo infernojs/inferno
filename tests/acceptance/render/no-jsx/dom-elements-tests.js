@@ -7,7 +7,6 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		let template;
 
 		beforeEach(() => {
-			//template = Inferno.createTemplate(createElement => createElement('div', null, 'Hello world'));
 			template = Inferno.createTemplate(() => ({
 				tag: 'div',
 				text: 'Hello world'
@@ -31,86 +30,91 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			);
 		});
 	});
-//
-//	describe('should render a basic example #2', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('ul', null,
-//						createElement('li', null, 'Im a li-tag'),
-//						createElement('li', null, 'Im a li-tag'),
-//						createElement('li', null, 'Im a li-tag')
-//					)
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				`<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>`
-//			);
-//		});
-//	});
-//
-//	describe('should render a basic example #3', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('ul', null,
-//						createElement('li', null, createElement('span', null, 'Im a li-tag')),
-//						createElement('li', null, createElement('span', null, 'Im a li-tag')),
-//						createElement('li', null, createElement('span', null, 'Im a li-tag'))
-//					)
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				`<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
-//			);
-//		});
-//	});
-//
-//	describe('should render "disabled" boolean attributes', () => {
-//		let template;
-//
-//		it('Initial render (creation)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { disabled: true })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//
-//			expect(container.firstChild.getAttribute('disabled')).to.eql('true');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div disabled="true"></div>'
-//			);
-//		});
-//
-// 	it('Second render (update)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { disabled: false })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//	});
-//
+
+	describe('should render a basic example #2', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'ul',
+				children: [
+					{tag: 'li', text: 'Im a li-tag'},
+					{tag: 'li', text: 'Im a li-tag'},
+					{tag: 'li', text: 'Im a li-tag'}
+				]
+			}));
+
+			Inferno.render(template(), container);
+		});
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>`
+			);
+		});
+	});
+
+	describe('should render a basic example #3', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'ul',
+				children: [
+					{tag: 'li', children: {tag: 'span', text: 'Im a li-tag'}},
+					{tag: 'li', children: {tag: 'span', text: 'Im a li-tag'}},
+					{tag: 'li', children: {tag: 'span', text: 'Im a li-tag'}}
+				]
+			}));
+
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
+			);
+		});
+	});
+
+	describe('should render "disabled" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { disabled: true }
+			}));
+
+			Inferno.render(template(), container);
+
+			expect(container.firstChild.getAttribute('disabled')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div disabled="true"></div>'
+			);
+		});
+
+ 		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { disabled: false }
+			}));
+
+			Inferno.render(template(), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+	});
+
 //	describe('should render "hidden" boolean attributes', () => {
 //		let template;
 //
