@@ -112,7 +112,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 			oldItemsMap[oldItem.key] = oldItem;
 			oldNextItem = oldItem;
 		}
-		var nextItem = (endIndex + 1 < itemsLength) ? items[endIndex + 1] : null;
+		let nextItem = (endIndex + 1 < itemsLength) ? items[endIndex + 1] : null;
 		for (let i = endIndex; i >= startIndex; i--) {
 			item = items[i];
 			const key = item.key;

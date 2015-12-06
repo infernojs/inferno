@@ -26,8 +26,8 @@ export default function createRootNodeWithDynamicChildren(templateNode, valueInd
 						const childItem = value[i];
 						domNode.appendChild(childItem.domTree.create(childItem));
 					}
-				} else {
-					//debugger;
+				} else if (typeof value === 'object') {
+					domNode.appendChild(value.domTree.create(value));
 				}
 			}
 			item.rootNode = domNode;
@@ -37,7 +37,7 @@ export default function createRootNodeWithDynamicChildren(templateNode, valueInd
 			let domNode;
 
 			if (node !== lastItem.domTree) {
-				var lastDomNode = lastItem.rootNode;
+				const lastDomNode = lastItem.rootNode;
 				domNode = this.create(nextItem);
 				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
 				// TODO recycle old node

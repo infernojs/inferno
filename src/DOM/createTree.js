@@ -28,7 +28,7 @@ function createStaticTreeChildren(children, parentNode, domNamespace) {
 		}
 	} else {
 		if (typeof children === 'string' || typeof children === 'number') {
-			parentNode.textContent = node;
+			parentNode.textContent = children;
 		} else {
 			createStaticNode(children, parentNode, domNamespace);
 		}

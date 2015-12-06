@@ -22,7 +22,7 @@ export default function createRootStaticNode(templateNode) {
 		},
 		update(lastItem, nextItem) {
 			if (node !== lastItem.domTree) {
-				var lastDomNode = lastItem.rootNode;
+				const lastDomNode = lastItem.rootNode;
 				const domNode = this.create(nextItem);
 				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
 				// TODO recycle old node

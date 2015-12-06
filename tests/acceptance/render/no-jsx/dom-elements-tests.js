@@ -122,6 +122,20 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			).to.equal(
 				`<ul><li>Im a dynamic li-tag</li><li>Im a dynamic li-tag</li><li>Im a dynamic li-tag</li></ul>`
 			);
+
+			Inferno.render(template('Im a dynamic li-tag #2'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul><li>Im a dynamic li-tag #2</li><li>Im a dynamic li-tag #2</li><li>Im a dynamic li-tag #2</li></ul>`
+			);
+
+			Inferno.render(template('Im a dynamic li-tag #3'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul><li>Im a dynamic li-tag #3</li><li>Im a dynamic li-tag #3</li><li>Im a dynamic li-tag #3</li></ul>`
+			);
 		});
 	});
 
@@ -190,6 +204,27 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				container.innerHTML
 			).to.equal(
 				`<div><div></div></div>`
+			);
+		});
+	});
+
+	describe('should render a basic example #6', () => {
+		it('Initial render (creation)', () => {
+			const div = Inferno.createTemplate((child) => ({
+				tag: 'div',
+				children: child
+			}));
+
+			const span = Inferno.createTemplate(() => ({
+				tag: 'span',
+				children: "Hello world!"
+			}));
+
+			Inferno.render(div(span()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div><span>Hello world!</span></div>`
 			);
 		});
 	});

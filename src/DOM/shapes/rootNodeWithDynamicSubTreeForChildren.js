@@ -25,6 +25,8 @@ export default function createRootNodeWithDynamicSubTreeChildren(templateNode, s
 						const subTree = subTreeForChildren[i];
 						domNode.appendChild(subTree.create(item));
 					}
+				} else if (typeof subTreeForChildren === 'object') {
+					domNode.appendChild(subTreeForChildren.create(item));
 				}
 			}
 
@@ -35,7 +37,7 @@ export default function createRootNodeWithDynamicSubTreeChildren(templateNode, s
 			let domNode;
 
 			if (node !== lastItem.domTree) {
-				var lastDomNode = lastItem.rootNode;
+				const lastDomNode = lastItem.rootNode;
 				domNode = this.create(nextItem);
 				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
 				// TODO recycle old node
@@ -45,7 +47,16 @@ export default function createRootNodeWithDynamicSubTreeChildren(templateNode, s
 			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
 
-			// TODO
+			if (subTreeForChildren != null) {
+				if (isArray(subTreeForChildren)) {
+					for (let i = 0; i < subTreeForChildren.length; i++) {
+						const subTree = subTreeForChildren[i];
+						subTree.update(lastItem, nextItem);
+					}
+				} else if (typeof subTreeForChildren === 'object') {
+					subTreeForChildren.update(lastItem, nextItem);
+				}
+			}
 		}
 	};
 	return node;
