@@ -94,7 +94,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 			nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
 			for (; startIndex <= endIndex; startIndex++) {
 				item = items[startIndex];
-				insertOrAppend(parentNode, item.tree.create(item), nextNode);
+				insertOrAppend(parentNode, item.domTree.create(item), nextNode);
 			}
 		}
 	} else if (startIndex > endIndex) {

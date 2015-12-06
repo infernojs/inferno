@@ -1,6 +1,7 @@
 import createDOMTree from '../DOM/createTree';
 import createHTMLStringTree from '../HTMLString/createHTMLStringTree';
 import { createVariable } from './variables';
+import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 
 export default function createTemplate(callback) {
 	let construct = callback.construct;
@@ -12,8 +13,10 @@ export default function createTemplate(callback) {
 			callbackArguments[i] = createVariable(i);
 		}
 		const schema = callback.apply(undefined, callbackArguments);
-		const domTree = createDOMTree(schema, true);
-		const htmlStringTree = createHTMLStringTree(schema, true);
+		const dynamicNodeMap = new Map();
+		scanTreeForDynamicNodes(schema, dynamicNodeMap);
+		const domTree = createDOMTree(schema, true, dynamicNodeMap);
+		const htmlStringTree = createHTMLStringTree(schema, true, dynamicNodeMap);
 		const key = schema.key;
 		const keyIndex = key ? key.index : -1;
 		const hasComponents = false;
@@ -69,8 +72,8 @@ export default function createTemplate(callback) {
 				break;
 			default:
 				if(!hasComponents) {
-					construct = (...vArray) => {
-						const key = vArray[keyIndex];
+					construct = (...values) => {
+						const key = values[keyIndex];
 						return {
 							domTree,
 							htmlStringTree,

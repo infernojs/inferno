@@ -28,6 +28,15 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				'Hello world'
 			);
 		});
+		it('Third render (update)', () => {
+			template = Inferno.createTemplate(() => 'Hello world 2');
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'Hello world 2'
+			);
+		});
 	});
 
 	describe('should render a basic example', () => {
@@ -56,6 +65,24 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				'<div>Hello world</div>'
 			);
 		});
+		it('Third render (update)', () => {
+			template = Inferno.createTemplate((text) => ({
+				tag: 'div',
+				text
+			}));
+			Inferno.render(template('Dynamic Text!'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Dynamic Text!</div>'
+			);
+			Inferno.render(template('Dynamic Text 2!'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Dynamic Text 2!</div>'
+			);
+		});
 	});
 
 	describe('should render a basic example #2', () => {
@@ -70,14 +97,30 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 					{tag: 'li', text: 'Im a li-tag'}
 				]
 			}));
-
 			Inferno.render(template(), container);
 		});
 		it('Initial render (creation)', () => {
+			Inferno.render(template(), container);
 			expect(
 				container.innerHTML
 			).to.equal(
 				`<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>`
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate((text) => ({
+				tag: 'ul',
+				children: [
+					{tag: 'li', text: text},
+					{tag: 'li', text: text},
+					{tag: 'li', text: text}
+				]
+			}));
+			Inferno.render(template('Im a dynamic li-tag'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul><li>Im a dynamic li-tag</li><li>Im a dynamic li-tag</li><li>Im a dynamic li-tag</li></ul>`
 			);
 		});
 	});
@@ -103,6 +146,50 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				container.innerHTML
 			).to.equal(
 				`<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
+			);
+		});
+	});
+
+	describe('should render a basic example #4', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				children: [
+					'Hey ',
+					'there ',
+					'world!'
+				]
+			}));
+
+			Inferno.render(template(), container);
+		});
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div>Hey there world!</div>`
+			);
+		});
+	});
+
+	describe('should render a basic example #5', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				children: {tag: 'div'}
+			}));
+
+			Inferno.render(template(), container);
+		});
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div><div></div></div>`
 			);
 		});
 	});

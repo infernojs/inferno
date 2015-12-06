@@ -1,10 +1,13 @@
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
+import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithDynamicChildren from './shapes/rootNodeWithDynamicChildren';
+import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createRootStaticNode from './shapes/rootStaticNode';
 
 import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
 import addDOMAttributes from './addAttributes';
+
 
 function createStaticAttributes(node, domNode) {
 	if (node.attrs != null) {
@@ -12,96 +15,133 @@ function createStaticAttributes(node, domNode) {
 	}
 }
 
-function createStaticTreeChildren(children, parentNode) {
+function createStaticTreeChildren(children, parentNode, domNamespace) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const childItem = children[i];
-			createStaticNode(childItem, parentNode);
+			if (typeof childItem === 'string' || typeof childItem === 'number') {
+				const textNode = document.createTextNode(childItem);
+				parentNode.appendChild(textNode);
+			} else {
+				createStaticNode(childItem, parentNode, domNamespace);
+			}
 		}
 	} else {
-		createStaticNode(children, parentNode);
+		if (typeof children === 'string' || typeof children === 'number') {
+			parentNode.textContent = node;
+		} else {
+			createStaticNode(children, parentNode, domNamespace);
+		}
 	}
 }
 
-function createStaticNode(node, parentNode) {
-	const tag = node.tag;
+function createStaticNode(node, parentNode, domNamespace) {
+	let staticNode;
 
-	if (tag) {
-		const staticNode = document.createElement(tag);
-		const text = node.text;
+	if (typeof node === 'string' || typeof node === 'number') {
+		staticNode = document.createTextNode(node);
+	} else {
+		const tag = node.tag;
 
-		if (text != null) {
-			staticNode.textContent = text;
-		} else {
-			const children = node.children;
-			createStaticTreeChildren(children, staticNode);
+		if (tag) {
+			// TODO handle SVG namespaces with IS
+			switch (tag) {
+				case 'svg': domNamespace = 'http://www.w3.org/2000/svg'; break;
+				case 'math': domNamespace = 'http://www.w3.org/1998/Math/MathML'; break;
+				default: break;
+			}
+			if (domNamespace) {
+				staticNode = document.createElementNS(domNamespace, tag);
+			} else {
+				staticNode = document.createElement(tag);
+			}
+			const text = node.text;
+
+			if (text != null) {
+				staticNode.textContent = text;
+			} else {
+				const children = node.children;
+				if (children != null) {
+					createStaticTreeChildren(children, staticNode, domNamespace);
+				}
+			}
+			createStaticAttributes(node, staticNode);
+		} else if (node.text) {
+			staticNode = document.createTextNode(node.text);
 		}
-		createStaticAttributes(node, staticNode);
+	}
+	if (parentNode === null) {
+		return staticNode;
+	} else {
 		parentNode.appendChild(staticNode);
 	}
 }
 
-export default function createDOMTree(schema, isRoot) {
+export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
+	const isNodeDynamic = dynamicNodeMap.get(schema);
 	let node;
+	let templateNode;
 
-	if (typeof schema === 'string' || typeof schema === 'number') {
-		const templateNode = document.createTextNode(schema);
+	if (!isNodeDynamic) {
+		templateNode = createStaticNode(schema, null, domNamespace);
 
 		if (isRoot) {
 			node = createRootStaticNode(templateNode);
 		}
-	} else if (schema.type) {
-		// TODO
 	} else {
-		const tag = schema.tag;
-
-		if(tag) {
-			const templateNode = document.createElement(tag);
-			const text = schema.text;
-
-			if (text != null) {
-				if (text.type === ObjectTypes.VARIABLE) {
-					if (isRoot) {
-						node = createRootNodeWithDynamicText(templateNode, text.index);
-					}
-				} else {
-					// TODO check if text is empty
-					if (text != null) {
-						templateNode.textContent = text;
-					}
-					if (isRoot) {
-						node = createRootStaticNode(templateNode);
-					}
-				}
-			} else {
-				const children = schema.children;
-
-				if (children != null) {
-					if (children.type === ObjectTypes.VARIABLE) {
-						if (isRoot) {
-							node = createRootNodeWithDynamicChildren(templateNode, children.index);
-						}
-					} else {
-						createStaticTreeChildren(children, templateNode);
-						if (isRoot) {
-							node = createRootStaticNode(templateNode, children);
-						}
-					}
-				} else {
-					createStaticAttributes(schema, templateNode);
-					if (isRoot) {
-						node = createRootStaticNode(templateNode, children);
-					}
-				}
-			}
-		} else if (schema.text) {
-			const templateNode = document.createTextNode(schema.text);
-
-			if (isRoot) {
-				node = createRootStaticNode(templateNode);
-			}
+		if (schema.type === ObjectTypes.VARIABLE) {
+			// TODO
 		} else {
-			throw Error(`Inferno Error: Invalid template supplied "${ schema }". Ensure the template is of the correct format.`);
+			const tag = schema.tag;
+
+			if(tag) {
+				switch (tag) {
+					case 'svg': domNamespace = 'http://www.w3.org/2000/svg'; break;
+					case 'math': domNamespace = 'http://www.w3.org/1998/Math/MathML'; break;
+					default: break;
+				}
+				// TODO handle SVG namespaces with IS
+				if (domNamespace) {
+					templateNode = document.createElementNS(domNamespace, tag);
+				} else {
+					templateNode = document.createElement(tag);
+				}
+
+				const text = schema.text;
+
+				if (text != null) {
+					if (text.type === ObjectTypes.VARIABLE) {
+						if (isRoot) {
+							node = createRootNodeWithDynamicText(templateNode, text.index);
+						} else {
+							node = createNodeWithDynamicText(templateNode, text.index);
+						}
+					}
+				} else {
+					const children = schema.children;
+
+					if (children != null) {
+						if (children.type === ObjectTypes.VARIABLE) {
+							if (isRoot) {
+								node = createRootNodeWithDynamicChildren(templateNode, children.index, domNamespace);
+							}
+						} else {
+							let subTreeForChildren = [];
+							if(isArray(children)) {
+								for (let i = 0; i < children.length; i++) {
+									const childItem = children[i];
+									subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap, domNamespace));
+								}
+							} else if (typeof children === 'object') {
+								subTreeForChildren = createDOMTree(children, false, dynamicNodeMap, domNamespace);
+							}
+							if (isRoot) {
+								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, domNamespace);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	return node;
