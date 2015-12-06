@@ -17,11 +17,6 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 
 	} else {
 		if (node != null) {
-			if (node.tag != null) {
-				if (node.tag.type === ObjectTypes.VARIABLE) {
-					nodeIsDynamic = true;
-				}
-			}
 			if (node.text != null) {
 				if (node.text.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;

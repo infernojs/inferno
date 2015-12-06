@@ -44,6 +44,9 @@ function createStaticNode(node, parentNode, domNamespace) {
 		const tag = node.tag;
 
 		if (tag) {
+			if (tag.type === ObjectTypes.VARIABLE) {
+				throw Error(`Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`);
+			}
 			// TODO handle SVG namespaces with IS
 			switch (tag) {
 				case 'svg': domNamespace = 'http://www.w3.org/2000/svg'; break;
@@ -95,6 +98,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 			const tag = schema.tag;
 
 			if(tag) {
+				if (tag.type === ObjectTypes.VARIABLE) {
+					throw Error(`Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`);
+				}
 				switch (tag) {
 					case 'svg': domNamespace = 'http://www.w3.org/2000/svg'; break;
 					case 'math': domNamespace = 'http://www.w3.org/1998/Math/MathML'; break;
