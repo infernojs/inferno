@@ -1,7 +1,7 @@
-import isArray from '../util/isArray';
-import { isRecyclingEnabled, recycle } from '../core/recycling';
-import { getValueWithIndex } from '../core/variables';
-import { updateKeyed } from '../core/domController';
+import isArray from '../../util/isArray';
+import { isRecyclingEnabled, recycle } from '../recycling';
+import { getValueWithIndex } from '../../core/variables';
+import { updateKeyed } from '../domMutate';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -24,7 +24,7 @@ export default function createRootNodeWithDynamicChildren(templateNode, valueInd
 				if (isArray(value)) {
 					for (let i = 0; i < value.length; i++) {
 						const childItem = value[i];
-						domNode.appendChild(childItem.tree.create(childItem));
+						domNode.appendChild(childItem.domTree.create(childItem));
 					}
 				} else {
 					//debugger;
@@ -36,7 +36,7 @@ export default function createRootNodeWithDynamicChildren(templateNode, valueInd
 		update(lastItem, nextItem) {
 			let domNode;
 
-			if (node !== lastItem.tree) {
+			if (node !== lastItem.domTree) {
 				var lastDomNode = lastItem.rootNode;
 				domNode = this.create(nextItem);
 				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);

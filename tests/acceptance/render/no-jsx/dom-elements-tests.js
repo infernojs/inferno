@@ -3,6 +3,33 @@ import Inferno from '../../../../src';
 
 export default function domElementsTestsNoJSX(describe, expect, container) {
 
+	describe('should render a basic text node', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				text: 'Hello world'
+			}));
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'Hello world'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'Hello world'
+			);
+		});
+	});
+
 	describe('should render a basic example', () => {
 		let template;
 
@@ -216,40 +243,39 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 
 	});
 
-//describe('should render "autoPlay" boolean attributes', () => {
-//		let template;
-//
-//		it('Initial render (creation)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { autoPlay: [] })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//
-//			expect(container.firstChild.getAttribute('autoPlay')).to.eql('');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div autoplay=""></div>'
-//			);
-//		});
-//
-// 	it('Second render (update)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { controls: false })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//	});
+	describe('should render "autoPlay" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { autoPlay: [] }
+			}));
+			Inferno.render(template(), container);
+
+			expect(container.firstChild.getAttribute('autoPlay')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autoplay=""></div>'
+			);
+		});
+
+ 		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { controls: false }
+			}));
+			Inferno.render(template(), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+	});
 //
 //
 //

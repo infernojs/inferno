@@ -2,7 +2,7 @@ const recyclingEnabled = true;
 
 export function pool(item) {
 	const key = item.key;
-	const tree = item.tree;
+	const tree = item.domTree;
 	if (key === null) {
 		tree.pool.push(item);
 	} else {

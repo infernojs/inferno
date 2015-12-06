@@ -34,7 +34,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
 		stop = true;
 		while (startItem.key === oldStartItem.key) {
-			startItem.tree.update(oldStartItem, startItem);
+			startItem.domTree.update(oldStartItem, startItem);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -48,7 +48,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 		endItem = items[endIndex];
 		oldEndItem = oldItems[oldEndIndex];
 		while (endItem.key === oldEndItem.key) {
-			endItem.tree.update(oldEndItem, endItem);
+			endItem.domTree.update(oldEndItem, endItem);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -61,7 +61,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 		}
 		while (endItem.key === oldStartItem.key) {
 			nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
-			endItem.tree.update(oldStartItem, endItem);
+			endItem.domTree.update(oldStartItem, endItem);
 			insertOrAppend(parentNode, endItem.rootNode, nextNode);
 			endIndex--;
 			oldStartIndex++;
@@ -75,7 +75,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 		}
 		while (startItem.key === oldEndItem.key) {
 			nextNode = oldItems[oldStartIndex].rootNode;
-			startItem.tree.update(oldEndItem, startItem);
+			startItem.domTree.update(oldEndItem, startItem);
 			insertOrAppend(parentNode, startItem.rootNode, nextNode);
 			startIndex++;
 			oldEndIndex--;
@@ -121,7 +121,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 			if (oldItem) {
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
-				item.tree.update(oldItem, item);
+				item.domTree.update(oldItem, item);
 				// TODO optimise
 				if (item.rootNode.nextSibling != (nextItem && nextItem.rootNode)) {
 					nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
@@ -129,7 +129,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 				}
 			} else {
 				nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
-				insertOrAppend(parentNode, item.tree.create(item), nextNode);
+				insertOrAppend(parentNode, item.domTree.create(item), nextNode);
 			}
 			nextItem = item;
 		}
@@ -150,7 +150,6 @@ export function insertOrAppend(parentNode, newNode, nextNode) {
 		parentNode.appendChild(newNode);
 	}
 }
-
 
 export function remove(item, parentNode) {
 	parentNode.removeChild(item.rootNode);

@@ -1,5 +1,5 @@
-import { isRecyclingEnabled, recycle } from '../core/recycling';
-import { getValueWithIndex } from '../core/variables';
+import { isRecyclingEnabled, recycle } from '../recycling';
+import { getValueWithIndex } from '../../core/variables';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -28,7 +28,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex) 
 		update(lastItem, nextItem) {
 			let domNode;
 
-			if (node !== lastItem.tree) {
+			if (node !== lastItem.domTree) {
 				const lastDomNode = lastItem.rootNode;
 				domNode = this.create(nextItem);
 				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);

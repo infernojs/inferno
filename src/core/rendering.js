@@ -1,4 +1,4 @@
-import { remove } from './domController';
+import createDOMFragment from '../DOM/createFragment';
 
 const rootFragments = [];
 
@@ -27,40 +27,11 @@ export function removeRootFragment(rootFragment) {
 	return false;
 }
 
-export function createFragment(parentNode, nextNode) {
-	let lastItem;
-	const fragment =  {
-		parentNode,
-		render(nextItem) {
-			const tree = nextItem.tree;
-
-			if (lastItem) {
-				tree.update(lastItem, nextItem);
-			} else {
-				const dom = tree.create(nextItem);
-
-				if (nextNode) {
-					parentNode.insertBefore(dom, nextNode);
-				} else if (parentNode) {
-					parentNode.appendChild(dom);
-				}
-			}
-			lastItem = nextItem;
-			return fragment;
-		},
-		remove() {
-			remove(lastItem, parentNode);
-			return fragment;
-		}
-	};
-	return fragment;
-}
-
 export function render(nextItem, parentNode) {
 	const rootFragment = getRootFragmentAtNode(parentNode);
 
 	if (rootFragment === null) {
-		const fragment = createFragment(parentNode);
+		const fragment = createDOMFragment(parentNode);
 		fragment.render(nextItem);
 		rootFragments.push(fragment);
 	} else {

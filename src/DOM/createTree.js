@@ -1,30 +1,29 @@
-import createRootNodeWithDynamicText from '../shapes/rootNodeWithDynamicText';
-import createRootNodeWithDynamicChildren from '../shapes/rootNodeWithDynamicChildren';
-import createRootStaticNode from '../shapes/rootStaticNode';
-import { ObjectTypes } from './variables';
-import isArray from '../util/isArray';
-import addDOMAttributes from '../DOM/addAttributes';
+import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
+import createRootNodeWithDynamicChildren from './shapes/rootNodeWithDynamicChildren';
+import createRootStaticNode from './shapes/rootStaticNode';
 
-function createStaticAttributes(node, domNode, isDOM) {
+import { ObjectTypes } from '../core/variables';
+import isArray from '../util/isArray';
+import addDOMAttributes from './addAttributes';
+
+function createStaticAttributes(node, domNode) {
 	if (node.attrs != null) {
-		if (isDOM) {
-			addDOMAttributes(node, domNode, node.attrs);
-		}
+		addDOMAttributes(node, domNode, node.attrs);
 	}
 }
 
-function createStaticTreeChildren(children, parentNode, isDOM) {
+function createStaticTreeChildren(children, parentNode) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const childItem = children[i];
-			createStaticNode(childItem, parentNode, isDOM);
+			createStaticNode(childItem, parentNode);
 		}
 	} else {
-		createStaticNode(children, parentNode, isDOM);
+		createStaticNode(children, parentNode);
 	}
 }
 
-function createStaticNode(node, parentNode, isDOM) {
+function createStaticNode(node, parentNode) {
 	const tag = node.tag;
 
 	if (tag) {
@@ -35,19 +34,22 @@ function createStaticNode(node, parentNode, isDOM) {
 			staticNode.textContent = text;
 		} else {
 			const children = node.children;
-			createStaticTreeChildren(children, staticNode, isDOM);
+			createStaticTreeChildren(children, staticNode);
 		}
-		createStaticAttributes(node, staticNode, isDOM);
+		createStaticAttributes(node, staticNode);
 		parentNode.appendChild(staticNode);
 	}
 }
 
-// TODO implement when isDOM is false, for now we use only use DOM
-export default function createTree(schema, isRoot, isDOM) {
+export default function createDOMTree(schema, isRoot) {
 	let node;
 
-	if (typeof schema === 'string') {
-		// TODO
+	if (typeof schema === 'string' || typeof schema === 'number') {
+		const templateNode = document.createTextNode(schema);
+
+		if (isRoot) {
+			node = createRootStaticNode(templateNode);
+		}
 	} else if (schema.type) {
 		// TODO
 	} else {
@@ -80,18 +82,26 @@ export default function createTree(schema, isRoot, isDOM) {
 							node = createRootNodeWithDynamicChildren(templateNode, children.index);
 						}
 					} else {
-						createStaticTreeChildren(children, templateNode, isDOM);
+						createStaticTreeChildren(children, templateNode);
 						if (isRoot) {
 							node = createRootStaticNode(templateNode, children);
 						}
 					}
 				} else {
-					createStaticAttributes(schema, templateNode, isDOM);
+					createStaticAttributes(schema, templateNode);
 					if (isRoot) {
 						node = createRootStaticNode(templateNode, children);
 					}
 				}
 			}
+		} else if (schema.text) {
+			const templateNode = document.createTextNode(schema.text);
+
+			if (isRoot) {
+				node = createRootStaticNode(templateNode);
+			}
+		} else {
+			throw Error(`Inferno Error: Invalid template supplied "${ schema }". Ensure the template is of the correct format.`);
 		}
 	}
 	return node;

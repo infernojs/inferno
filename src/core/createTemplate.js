@@ -1,8 +1,6 @@
-import createTree from './createTree';
+import createDOMTree from '../DOM/createTree';
+import createHTMLStringTree from '../HTMLString/createHTMLStringTree';
 import { createVariable } from './variables';
-
-// TODO question? do we do this twice, once for DOM - Inferno.render and once for strings - Inferno.renderToString? and
-// then do we store both?
 
 export default function createTemplate(callback) {
 	let construct = callback.construct;
@@ -14,8 +12,8 @@ export default function createTemplate(callback) {
 			callbackArguments[i] = createVariable(i);
 		}
 		const schema = callback.apply(undefined, callbackArguments);
-		// TODO, the third param is isDOM
-		const tree = createTree(schema, true, true);
+		const domTree = createDOMTree(schema, true);
+		const htmlStringTree = createHTMLStringTree(schema, true);
 		const key = schema.key;
 		const keyIndex = key ? key.index : -1;
 		const hasComponents = false;
@@ -23,7 +21,8 @@ export default function createTemplate(callback) {
 		switch (callbackLength) {
 			case 0:
 				construct = () => ({
-					tree,
+					domTree,
+					htmlStringTree,
 					key: null,
 					nextItem: null,
 					rootNode: null
@@ -37,7 +36,8 @@ export default function createTemplate(callback) {
 							key = v0;
 						}
 						return {
-							tree,
+							domTree,
+							htmlStringTree,
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -56,7 +56,8 @@ export default function createTemplate(callback) {
 							key = v1;
 						}
 						return {
-							tree,
+							domTree,
+							htmlStringTree,
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -71,7 +72,8 @@ export default function createTemplate(callback) {
 					construct = (...vArray) => {
 						const key = vArray[keyIndex];
 						return {
-							tree,
+							domTree,
+							htmlStringTree,
 							key,
 							nextItem: null,
 							rootNode: null,
