@@ -3,27 +3,28 @@ import createRootNodeWithDynamicChildren from '../shapes/rootNodeWithDynamicChil
 import createRootStaticNode from '../shapes/rootStaticNode';
 import { ObjectTypes } from './variables';
 import isArray from '../util/isArray';
+import addDOMAttributes from '../DOM/addAttributes';
 
-function createStaticAttributes(node) {
+function createStaticAttributes(node, domNode, isDOM) {
 	if (node.attrs != null) {
-		for (let attr in node.attrs) {
-			
+		if (isDOM) {
+			addDOMAttributes(node, domNode, node.attrs);
 		}
 	}
 }
 
-function createStaticTreeChildren(children, parentNode) {
+function createStaticTreeChildren(children, parentNode, isDOM) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const childItem = children[i];
-			createStaticNode(childItem, parentNode);
+			createStaticNode(childItem, parentNode, isDOM);
 		}
 	} else {
-		createStaticNode(children, parentNode);
+		createStaticNode(children, parentNode, isDOM);
 	}
 }
 
-function createStaticNode(node, parentNode) {
+function createStaticNode(node, parentNode, isDOM) {
 	const tag = node.tag;
 
 	if (tag) {
@@ -34,14 +35,15 @@ function createStaticNode(node, parentNode) {
 			staticNode.textContent = text;
 		} else {
 			const children = node.children;
-			createStaticTreeChildren(children, staticNode);
+			createStaticTreeChildren(children, staticNode, isDOM);
 		}
-		createStaticAttributes(staticNode);
+		createStaticAttributes(node, staticNode, isDOM);
 		parentNode.appendChild(staticNode);
 	}
 }
 
-export default function createTree(schema, isRoot) {
+// TODO implement when isDOM is false, for now we use only use DOM
+export default function createTree(schema, isRoot, isDOM) {
 	let node;
 
 	if (typeof schema === 'string') {
@@ -78,13 +80,13 @@ export default function createTree(schema, isRoot) {
 							node = createRootNodeWithDynamicChildren(templateNode, children.index);
 						}
 					} else {
-						createStaticTreeChildren(children, templateNode);
+						createStaticTreeChildren(children, templateNode, isDOM);
 						if (isRoot) {
 							node = createRootStaticNode(templateNode, children);
 						}
 					}
 				} else {
-					createStaticAttributes(templateNode);
+					createStaticAttributes(schema, templateNode, isDOM);
 					if (isRoot) {
 						node = createRootStaticNode(templateNode, children);
 					}

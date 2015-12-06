@@ -115,111 +115,107 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
-//	describe('should render "hidden" boolean attributes', () => {
-//		let template;
-//
-//		it('Initial render (creation)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { hidden: true })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//
-//			expect(container.firstChild.getAttribute('hidden')).to.eql('true');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div hidden="true"></div>'
-//			);
-//		});
-//
-// 	it('Second render (update)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { hidden: false })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//	});
-//
-//describe('should render "required" boolean attributes', () => {
-//		let template;
-//
-//		it('Initial render (creation)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { required: 'required' })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//
-//			expect(container.firstChild.getAttribute('required')).to.eql('required');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div required="required"></div>'
-//			);
-//		});
-//
-// 	it('Second render (update)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { hidden: 'NaN' })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div hidden="NaN"></div>'
-//			);
-//		});
-//
-//	});
-//
-//	describe('should render "itemScope" boolean attributes', () => {
-//		let template;
-//
-//		it('Initial render (creation)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { itemScope: 'itemScope' })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//
-//			expect(container.firstChild.getAttribute('itemScope')).to.eql('itemScope');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				 '<div itemscope="itemScope"></div>'
-//			);
-//		});
-//
-// 	it('Second render (update)', () => {
-//
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { allowFullScreen: false })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//	});
-//
+	describe('should render "hidden" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { hidden: true }
+			}));
+			Inferno.render(template(), container);
+
+			expect(container.firstChild.getAttribute('hidden')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div hidden="true"></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { hidden: false }
+			}));
+			Inferno.render(template(), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+	});
+
+	describe('should render "required" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { required: 'required' }
+			}));
+			Inferno.render(template(), container);
+
+			expect(container.firstChild.getAttribute('required')).to.eql('required');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div required="required"></div>'
+			);
+		});
+
+ 		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { hidden: 'NaN' }
+			}));
+			Inferno.render(template(), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div hidden="NaN"></div>'
+			);
+		});
+	});
+
+	describe('should render "itemScope" boolean attributes', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { itemScope: 'itemScope' }
+			}));
+			Inferno.render(template(), container);
+
+			expect(container.firstChild.getAttribute('itemScope')).to.eql('itemScope');
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div itemscope="itemScope"></div>'
+			);
+		});
+
+ 		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { allowFullScreen: false }
+			}));
+			Inferno.render(template(), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+	});
+
 //describe('should render "autoPlay" boolean attributes', () => {
 //		let template;
 //

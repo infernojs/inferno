@@ -1,6 +1,9 @@
 import createTree from './createTree';
 import { createVariable } from './variables';
 
+// TODO question? do we do this twice, once for DOM - Inferno.render and once for strings - Inferno.renderToString? and
+// then do we store both?
+
 export default function createTemplate(callback) {
 	let construct = callback.construct;
 
@@ -11,7 +14,8 @@ export default function createTemplate(callback) {
 			callbackArguments[i] = createVariable(i);
 		}
 		const schema = callback.apply(undefined, callbackArguments);
-		const tree = createTree(schema, true);
+		// TODO, the third param is isDOM
+		const tree = createTree(schema, true, true);
 		const key = schema.key;
 		const keyIndex = key ? key.index : -1;
 		const hasComponents = false;
