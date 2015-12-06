@@ -3,6 +3,7 @@ import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createRootStaticNode from './shapes/rootStaticNode';
+import createStaticNode from './shapes/staticNode';
 
 import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
@@ -24,19 +25,19 @@ function createStaticTreeChildren(children, parentNode, domNamespace) {
 				const textNode = document.createTextNode(childItem);
 				parentNode.appendChild(textNode);
 			} else {
-				createStaticNode(childItem, parentNode, domNamespace);
+				createStaticTreeNode(childItem, parentNode, domNamespace);
 			}
 		}
 	} else {
 		if (typeof children === 'string' || typeof children === 'number') {
 			parentNode.textContent = children;
 		} else {
-			createStaticNode(children, parentNode, domNamespace);
+			createStaticTreeNode(children, parentNode, domNamespace);
 		}
 	}
 }
 
-function createStaticNode(node, parentNode, domNamespace) {
+function createStaticTreeNode(node, parentNode, domNamespace) {
 	let staticNode;
 
 	if (typeof node === 'string' || typeof node === 'number') {
@@ -82,15 +83,17 @@ function createStaticNode(node, parentNode, domNamespace) {
 }
 
 export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
-	const isNodeDynamic = dynamicNodeMap.get(schema);
+	const dynamicFlags = dynamicNodeMap.get(schema);
 	let node;
 	let templateNode;
 
-	if (!isNodeDynamic) {
-		templateNode = createStaticNode(schema, null, domNamespace);
+	if (!dynamicFlags) {
+		templateNode = createStaticTreeNode(schema, null, domNamespace);
 
 		if (isRoot) {
 			node = createRootStaticNode(templateNode);
+		} else {
+			node = createStaticNode(templateNode);
 		}
 	} else {
 		if (schema.type === ObjectTypes.VARIABLE) {
@@ -113,16 +116,26 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 				} else {
 					templateNode = document.createElement(tag);
 				}
+				const attrs = schema.attrs;
 
+				if (attrs != null) {
+					if (dynamicFlags.ATTRS === true) {
+
+					} else {
+						// TODO static attrs on dynamic node
+					}
+				}
 				const text = schema.text;
 
 				if (text != null) {
-					if (text.type === ObjectTypes.VARIABLE) {
+					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
 							node = createRootNodeWithDynamicText(templateNode, text.index);
 						} else {
 							node = createNodeWithDynamicText(templateNode, text.index);
 						}
+					} else {
+						// TODO static text on a dynamic node
 					}
 				} else {
 					const children = schema.children;
@@ -132,7 +145,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 							if (isRoot) {
 								node = createRootNodeWithDynamicChild(templateNode, children.index, domNamespace);
 							}
-						} else {
+						} else if (dynamicFlags.CHILDREN === true) {
 							let subTreeForChildren = [];
 							if(isArray(children)) {
 								for (let i = 0; i < children.length; i++) {
@@ -145,6 +158,8 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 							if (isRoot) {
 								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, domNamespace);
 							}
+						} else {
+							// TODO static children on a dynamic node
 						}
 					}
 				}

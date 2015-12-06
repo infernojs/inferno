@@ -1,6 +1,5 @@
 import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { updateKeyed } from '../domMutate';
 
 const recyclingEnabled = isRecyclingEnabled();
 

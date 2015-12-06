@@ -3,32 +3,35 @@ import isArray from '../util/isArray';
 
 export default function scanTreeForDynamicNodes(node, nodeMap) {
 	let nodeIsDynamic = false;
-	//const dynamicCursors = {
-	//	NODE: null,
-	//	TAG: null,
-	//	TEXT: null,
-	//	ATTRS: null,
-	//	CHILDREN: null,
-	//	KEY: null
-	//};
+	const dynamicFlags = {
+		NODE: false,
+		TEXT: false,
+		ATTRS: {}, //attrs can have many cursors
+		CHILDREN: false,
+		KEY: false
+	};
 
 	if (node.type === ObjectTypes.VARIABLE) {
 		nodeIsDynamic = true;
+		dynamicFlags.NODE = true;
 
 	} else {
 		if (node != null) {
 			if (node.text != null) {
 				if (node.text.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
+					dynamicFlags.TEXT = true;
 				}
 			}
 			if (node.attrs != null) {
 				if (node.attrs.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
+					dynamicFlags.ATTRS = true;
 				} else {
 					for (let attr in node.attrs) {
 						const attrVal = node.attrs[attr];
 						if (attrVal != null && attrVal.type === ObjectTypes.VARIABLE) {
+							dynamicFlags.ATTRS[attr] = attrVal.index;
 							nodeIsDynamic = true;
 						}
 					}
@@ -44,14 +47,16 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 							const result = scanTreeForDynamicNodes(childItem, nodeMap);
 
 							if (result === true) {
-								nodeIsDynamic = true
+								nodeIsDynamic = true;
+								dynamicFlags.CHILDREN = true;
 							}
 						}
 					} else if (typeof node === 'object') {
 						const result = scanTreeForDynamicNodes(node.children, nodeMap);
 
 						if (result === true) {
-							nodeIsDynamic = true
+							nodeIsDynamic = true;
+							dynamicFlags.CHILDREN = true;
 						}
 					}
 				}
@@ -59,12 +64,13 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 			if (node.key != null) {
 				if (node.key.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
+					dynamicFlags.KEY = true;
 				}
 			}
 		}
 	}
 	if (nodeIsDynamic === true) {
-		nodeMap.set(node, true);
+		nodeMap.set(node, dynamicFlags);
 	}
 	return nodeIsDynamic;
 }

@@ -26,10 +26,14 @@ function createElement(tag, attrs, ...children) {
 			vNode.attrs = attrs;
 		}
 		if(children) {
-			if (children.length === 1) {
+			if (children.length) {
 				vNode.children = createElement(children[0]);
 			} else {
-				vNode.children = createChildren(children);
+				if (typeof children[0] === 'string' || typeof children[0] === 'number') {
+					vNode.children = children[0];
+				} else {
+					vNode.children = createElement(children[0]);
+				}
 			}
 		}
 		return vNode;
