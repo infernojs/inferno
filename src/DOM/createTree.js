@@ -8,6 +8,7 @@ import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
 import addDOMAttributes from './addAttributes';
 
+const tagError = `Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`;
 
 function createStaticAttributes(node, domNode) {
 	if (node.attrs != null) {
@@ -45,7 +46,7 @@ function createStaticNode(node, parentNode, domNamespace) {
 
 		if (tag) {
 			if (tag.type === ObjectTypes.VARIABLE) {
-				throw Error(`Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`);
+				throw Error(tagError);
 			}
 			// TODO handle SVG namespaces with IS
 			switch (tag) {
@@ -99,7 +100,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 
 			if(tag) {
 				if (tag.type === ObjectTypes.VARIABLE) {
-					throw Error(`Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`);
+					throw Error(tagError);
 				}
 				switch (tag) {
 					case 'svg': domNamespace = 'http://www.w3.org/2000/svg'; break;
