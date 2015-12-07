@@ -6,7 +6,7 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 	const dynamicFlags = {
 		NODE: false,
 		TEXT: false,
-		ATTRS: {}, //attrs can have many cursors
+		ATTRS: false, //attrs can also be an object
 		CHILDREN: false,
 		KEY: false
 	};

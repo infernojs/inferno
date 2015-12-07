@@ -137,6 +137,37 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				`<ul><li>Im a dynamic li-tag #3</li><li>Im a dynamic li-tag #3</li><li>Im a dynamic li-tag #3</li></ul>`
 			);
 		});
+		it('Third render (update)', () => {
+			template = Inferno.createTemplate((text) => ({
+				tag: 'ul',
+				attrs: { className: 'container' },
+				children: [
+					{tag: 'li', attrs: { className: 'row' }, text: text},
+					{tag: 'li', attrs: { className: 'row' }, text: text},
+					{tag: 'li', attrs: { className: 'row' }, text: text}
+				]
+			}));
+			Inferno.render(template('Im a dynamic li-tag'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul class="container"><li class="row">Im a dynamic li-tag</li><li class="row">Im a dynamic li-tag</li><li class="row">Im a dynamic li-tag</li></ul>`
+			);
+
+			Inferno.render(template('Im a dynamic li-tag #2'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul class="container"><li class="row">Im a dynamic li-tag #2</li><li class="row">Im a dynamic li-tag #2</li><li class="row">Im a dynamic li-tag #2</li></ul>`
+			);
+
+			Inferno.render(template('Im a dynamic li-tag #3'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul class="container"><li class="row">Im a dynamic li-tag #3</li><li class="row">Im a dynamic li-tag #3</li><li class="row">Im a dynamic li-tag #3</li></ul>`
+			);
+		});
 	});
 
 	describe('should render a basic example #3', () => {

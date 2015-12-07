@@ -120,9 +120,11 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 
 				if (attrs != null) {
 					if (dynamicFlags.ATTRS === true) {
-
+						//debugger;
+					} else if (dynamicFlags.ATTRS !== false) {
+						//debugger;
 					} else {
-						// TODO static attrs on dynamic node
+						createStaticAttributes(schema, templateNode);
 					}
 				}
 				const text = schema.text;
@@ -135,7 +137,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 							node = createNodeWithDynamicText(templateNode, text.index);
 						}
 					} else {
-						// TODO static text on a dynamic node
+						templateNode.textContent = text;
 					}
 				} else {
 					const children = schema.children;
