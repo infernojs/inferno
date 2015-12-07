@@ -3,7 +3,7 @@ import { getValueWithIndex } from '../../core/variables';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicClassName, otherDynamicAttrs) {
+export default function createRootNodeWithDynamicText(templateNode, valueIndex, otherDynamicAttrs) {
 	const node = {
 		pool: [],
 		keyedPool: [],

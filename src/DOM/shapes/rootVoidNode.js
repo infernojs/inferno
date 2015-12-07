@@ -1,10 +1,10 @@
 import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { applyDynamicAttrs } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootVoidNode(templateNode, dynamicClassName, otherDynamicAttrs) {
+export default function createRootVoidNode(templateNode, otherDynamicAttrs) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -17,7 +17,7 @@ export default function createRootVoidNode(templateNode, dynamicClassName, other
 				}
 			}
 			domNode = templateNode.cloneNode(true);
-			applyDynamicAttrs(item, domNode, dynamicClassName, otherDynamicAttrs);
+			addDOMDynamicAttributes(item, domNode, otherDynamicAttrs);
 
 			item.rootNode = domNode;
 			return domNode;
@@ -35,7 +35,7 @@ export default function createRootVoidNode(templateNode, dynamicClassName, other
 
 			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
-			applyDynamicAttrs(nextItem, domNode, dynamicClassName, otherDynamicAttrs);
+			updateDOMDynamicAttributes(lastItem, nextItem, domNode, otherDynamicAttrs);
 
 			nextItem.rootNode = lastItem.rootNode;
 		}

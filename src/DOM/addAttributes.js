@@ -8,26 +8,43 @@ import { getValueWithIndex } from '../core/variables';
  * @param{ HTMLElement } node
  * @param{ Object } attrs
  */
-export default function addDOMAttributes(vNode, domNode, attrs, useProperties) {
+export function addDOMStaticAttributes(vNode, domNode, attrs) {
 	for (let attrName in attrs) {
 		const attrVal = attrs[attrName];
 
 		if (attrVal) {
-			if (useProperties && eventMapping[attrName]) {
-				addListener(vNode, domNode, eventMapping[attrName], attrVal);
+			template.setProperty(vNode, domNode, attrName, attrVal, false);
+		}
+	}
+}
+
+export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
+	for (let attrName in dynamicAttrs) {
+		const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+
+		if (attrVal) {
+			if (eventMapping[attrName]) {
+				addListener(item, domNode, eventMapping[attrName], attrVal);
 			} else {
-				template.setProperty(vNode, domNode, attrName, attrVal, useProperties);
+				template.setProperty(item, domNode, attrName, attrVal, true);
 			}
 		}
 	}
 }
 
-// TODO do we check last attrs against new attrs?
-export function applyDynamicAttrs(item, domNode, dynamicClassName, otherDynamicAttrs) {
-	const attrs = {};
+export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+	for (let attrName in dynamicAttrs) {
+		const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
+		const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-	for (let attr in otherDynamicAttrs) {
-		attrs[attr] = getValueWithIndex(item, otherDynamicAttrs[attr]);
+		if (lastAttrVal !== nextAttrVal) {
+			if (nextAttrVal) {
+				if (eventMapping[attrName]) {
+					addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+				} else {
+					template.setProperty(nextItem, domNode, attrName, nextAttrVal, true);
+				}
+			}
+		}
 	}
-	addDOMAttributes(item, domNode, attrs, true);
 }

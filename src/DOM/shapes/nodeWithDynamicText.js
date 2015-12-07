@@ -1,6 +1,6 @@
 import { getValueWithIndex } from '../../core/variables';
 
-export default function createNodeWithDynamicText(templateNode, valueIndex, dynamicClassName, otherDynamicAttrs) {
+export default function createNodeWithDynamicText(templateNode, valueIndex, otherDynamicAttrs) {
 	var domNode;
 
 	const node = {

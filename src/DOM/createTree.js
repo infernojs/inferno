@@ -10,13 +10,13 @@ import createRootVoidNode from './shapes/rootVoidNode';
 
 import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
-import addDOMAttributes from './addAttributes';
+import { addDOMStaticAttributes } from './addAttributes';
 
 const tagError = `Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`;
 
 function createStaticAttributes(node, domNode) {
 	if (node.attrs != null) {
-		addDOMAttributes(node, domNode, node.attrs, false);
+		addDOMStaticAttributes(node, domNode, node.attrs);
 	}
 }
 
@@ -125,18 +125,12 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 				}
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
-				let dynamicClassName = null;
 
 				if (attrs != null) {
 					if (dynamicFlags.ATTRS === true) {
 						dynamicAttrs = attrs;
 					} else if (dynamicFlags.ATTRS !== false) {
 						dynamicAttrs = dynamicFlags.ATTRS;
-
-						if (dynamicFlags.ATTRS.class !== undefined) {
-							dynamicClassName = dynamicFlags.ATTRS.class;
-							delete dynamicAttrs.ATTRS.class;
-						}
 					} else {
 						createStaticAttributes(schema, templateNode);
 					}
@@ -146,9 +140,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 				if (text != null) {
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
-							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicClassName, dynamicAttrs);
+							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
 						} else {
-							node = createNodeWithDynamicText(templateNode, text.index, dynamicClassName, dynamicAttrs);
+							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
 						}
 					} else {
 						templateNode.textContent = text;
@@ -160,7 +154,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						if (children.type === ObjectTypes.VARIABLE) {
 							if (isRoot) {
 								node = createRootNodeWithDynamicChild(
-									templateNode, children.index, dynamicClassName, dynamicAttrs, domNamespace
+									templateNode, children.index, dynamicAttrs, domNamespace
 								);
 							}
 						} else if (dynamicFlags.CHILDREN === true) {
@@ -175,7 +169,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 							}
 							if (isRoot) {
 								node = createRootNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicClassName, dynamicAttrs, domNamespace
+									templateNode, subTreeForChildren, dynamicAttrs, domNamespace
 								);
 							}
 						} else {
@@ -183,7 +177,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						}
 					} else {
 						if (isRoot) {
-							node = createRootVoidNode(templateNode, dynamicClassName, dynamicAttrs);
+							node = createRootVoidNode(templateNode, dynamicAttrs);
 						}
 					}
 				}

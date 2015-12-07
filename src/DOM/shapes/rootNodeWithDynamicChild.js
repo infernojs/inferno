@@ -5,7 +5,7 @@ import { updateKeyed } from '../domMutate';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicClassName, otherDynamicAttrs, domNamespace) {
+export default function createRootNodeWithDynamicChild(templateNode, valueIndex, otherDynamicAttrs, domNamespace) {
 	const node = {
 		pool: [],
 		keyedPool: [],
