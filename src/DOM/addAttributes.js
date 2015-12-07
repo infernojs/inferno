@@ -18,15 +18,27 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 	}
 }
 
+// A fast className setter as its the most common property to regularly change
+function fastPropSet(attrName, attrVal, domNode) {
+	if (attrName === 'class' || attrName === 'className') {
+		domNode.className = attrVal;
+		return true;
+	}
+	return false;
+}
+
 export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 	for (let attrName in dynamicAttrs) {
 		const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
 		if (attrVal) {
-			if (eventMapping[attrName]) {
-				addListener(item, domNode, eventMapping[attrName], attrVal);
-			} else {
-				template.setProperty(item, domNode, attrName, attrVal, true);
+			if (fastPropSet(attrName, attrVal, domNode) === false) {
+				if (eventMapping[attrName]) {
+					addListener(item, domNode, eventMapping[attrName], attrVal);
+				} else {
+					template.setProperty(item, domNode, attrName, attrVal, true);
+
+				}
 			}
 		}
 	}
@@ -39,10 +51,12 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
 		if (lastAttrVal !== nextAttrVal) {
 			if (nextAttrVal) {
-				if (eventMapping[attrName]) {
-					addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
-				} else {
-					template.setProperty(nextItem, domNode, attrName, nextAttrVal, true);
+				if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+					if (eventMapping[attrName]) {
+						addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+					} else {
+						template.setProperty(nextItem, domNode, attrName, nextAttrVal, true);
+					}
 				}
 			}
 		}

@@ -1,9 +1,10 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicText(templateNode, valueIndex, otherDynamicAttrs) {
+export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -21,6 +22,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 
 			if(value != null) {
 				domNode.textContent = value;
+			}
+			if (dynamicAttrs) {
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -42,6 +46,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 
 			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
 				domNode.firstChild.nodeValue = nextValue;
+			}
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
 		}
 	};

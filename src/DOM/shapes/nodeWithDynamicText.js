@@ -1,6 +1,7 @@
 import { getValueWithIndex } from '../../core/variables';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
-export default function createNodeWithDynamicText(templateNode, valueIndex, otherDynamicAttrs) {
+export default function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 	var domNode;
 
 	const node = {
@@ -11,6 +12,9 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, othe
 			if(value != null) {
 				domNode.textContent = value;
 			}
+			if (dynamicAttrs) {
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+			}
 			return domNode;
 		},
 		update(lastItem, nextItem) {
@@ -18,6 +22,9 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, othe
 
 			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
 				domNode.firstChild.nodeValue = nextValue;
+			}
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
 		}
 	};

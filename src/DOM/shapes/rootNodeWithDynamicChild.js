@@ -2,10 +2,11 @@ import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicChild(templateNode, valueIndex, otherDynamicAttrs, domNamespace) {
+export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -29,6 +30,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				} else if (typeof value === 'object') {
 					domNode.appendChild(value.domTree.create(value));
 				}
+			}
+			if (dynamicAttrs) {
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -73,6 +77,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						domNode.firstChild.nodeValue = nextValue;
 					}
 				}
+			}
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
 		}
 	};

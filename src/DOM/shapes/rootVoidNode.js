@@ -4,7 +4,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttri
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootVoidNode(templateNode, otherDynamicAttrs) {
+export default function createRootVoidNode(templateNode, dynamicAttrs) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -17,9 +17,10 @@ export default function createRootVoidNode(templateNode, otherDynamicAttrs) {
 				}
 			}
 			domNode = templateNode.cloneNode(true);
-			addDOMDynamicAttributes(item, domNode, otherDynamicAttrs);
-
 			item.rootNode = domNode;
+			if (dynamicAttrs) {
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+			}
 			return domNode;
 		},
 		update(lastItem, nextItem) {
@@ -35,9 +36,10 @@ export default function createRootVoidNode(templateNode, otherDynamicAttrs) {
 
 			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
-			updateDOMDynamicAttributes(lastItem, nextItem, domNode, otherDynamicAttrs);
-
 			nextItem.rootNode = lastItem.rootNode;
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+			}
 		}
 	};
 	return node;
