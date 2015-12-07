@@ -7,15 +7,15 @@ import addListener from './events/addListener';
  * @param{ HTMLElement } node
  * @param{ Object } attrs
  */
-export default function addDOMAttributes(vNode, domNode, attrs) {
+export default function addDOMAttributes(vNode, domNode, attrs, useProperties) {
 	for (let attrName in attrs) {
 		const attrVal = attrs[attrName];
 
 		if (attrVal) {
-			if (eventMapping[attrName]) {
+			if (useProperties && eventMapping[attrName]) {
 				addListener(vNode, domNode, eventMapping[attrName], attrVal);
 			} else {
-				template.setProperty(vNode, domNode, attrName, attrVal);
+				template.setProperty(vNode, domNode, attrName, attrVal, useProperties);
 			}
 		}
 	}

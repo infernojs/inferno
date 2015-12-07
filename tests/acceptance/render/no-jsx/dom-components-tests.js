@@ -2,7 +2,7 @@ import get from '../../../tools/get';
 import Inferno from '../../../../src';
 import waits from '../../../tools/waits';
 
-export default function domComponentsTestsFunctional(describe, expect, container) {
+export default function domComponentsTestsNoJSX(describe, expect, container) {
 	class BasicComponent1 extends Inferno.Component {
 		template(createElement, createComponent, name, title) {
 			return createElement("div", {className: "basic"},

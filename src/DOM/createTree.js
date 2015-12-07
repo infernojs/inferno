@@ -15,7 +15,7 @@ const tagError = `Inferno Error: Tag names cannot be dynamic, they must always b
 
 function createStaticAttributes(node, domNode) {
 	if (node.attrs != null) {
-		addDOMAttributes(node, domNode, node.attrs);
+		addDOMAttributes(node, domNode, node.attrs, false);
 	}
 }
 

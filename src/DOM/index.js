@@ -12,7 +12,7 @@ export default {
 	 * @param {string} name
 	 * @param {*} value
 	 */
-	setProperty(vNode, domNode, name, value) {
+	setProperty(vNode, domNode, name, value, useProperties) {
 		const propertyInfo = HTMLProperties[name];
 
 		if (propertyInfo) {
@@ -20,19 +20,29 @@ export default {
 				propertyInfo.hasBooleanValue && !value ||
 				propertyInfo.hasNumericValue && isNaN(value) || // Todo! Find alternative for 'isNaN'
 				propertyInfo.hasPositiveNumericValue && value < 1) {
-				template.removeProperty(vNode, domNode, name);
+				template.removeProperty(vNode, domNode, name, useProperties);
 			} else {
 				const propName = propertyInfo.propertyName;
 
 				if (propertyInfo.mustUseProperty) {
 					if (propertyInfo.museUseObject) {
 						if (propName === 'style') {
-							setValueForStyles(vNode, domNode, value)
+							setValueForStyles(vNode, domNode, value, useProperties)
 						}
-					} else if (propName === 'value' && (domNode.tag === 'select')) {
-						setSelectValueForProperty(vNode, domNode, value);
+					} else if (propName === 'value' && (vNode.tag === 'select')) {
+						setSelectValueForProperty(vNode, domNode, value, useProperties);
 					} else if ('' + domNode[propName] !== '' + value) {
-						domNode[propName] = value;
+						if (useProperties) {
+							domNode[propName] = value;
+						} else {
+							if (value === true) {
+								domNode.setAttribute(propName, propName);
+							} else if (value === false) {
+								domNode.removeAttribute(propName);
+							} else {
+								domNode.setAttribute(propName, value);
+							}
+						}
 					}
 				} else {
 
@@ -58,7 +68,7 @@ export default {
 	 * @param {DOMElement} node
 	 * @param {string} name
 	 */
-	removeProperty(vNode, domNode, name) {
+	removeProperty(vNode, domNode, name, useProperties) {
 		const propertyInfo = HTMLProperties[name];
 
 		if (propertyInfo) {
@@ -70,7 +80,7 @@ export default {
 				} else if (propertyInfo.museUseObject) {
 					domNode.removeAttribute(propName);
 				} else if (propName === 'value' && (vNode.tag === 'select')) {
-					removeSelectValueForProperty(node, domNode, propName);
+					removeSelectValueForProperty(node, domNode, propName, useProperties);
 				} else {
 					if ('' + domNode[propName] !== '') {
 						domNode[propName] = '';

@@ -441,7 +441,6 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				'<div></div>'
 			);
 		});
-
 	});
 
 	describe('should render "autoPlay" boolean attributes', () => {
@@ -475,7 +474,61 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				'<div></div>'
 			);
 		});
+	});
 
+	describe('should render "checked" boolean property', () => {
+		let template;
+
+		it('Initial render (creation)', () => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'input',
+				attrs: { checked: true, type: 'checkbox' }
+			}));
+			Inferno.render(template(), container);
+
+			expect(container.firstChild.checked).to.eql(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input checked="checked" type="checkbox">'
+			);
+		});
+	});
+
+	describe('should render "select" boolean on select options', () => {
+		it('Initial render (creation)', () => {
+			const template = Inferno.createTemplate(function() {
+				return {
+					tag: 'select',
+					attrs: {
+						multiple: true,
+						value: 'foo'
+					},
+					children: [{
+						tag: 'option',
+						attrs: {
+							value: 'foo'
+						},
+						children: 'foo'
+					}, {
+						tag: 'option',
+						attrs: {
+							value: 'bar'
+						},
+						children: 'bar'
+					}]
+
+				};
+			});
+			Inferno.render(template(), container);
+			expect(container.firstChild.children[0].selected).to.eql(true);
+			expect(container.firstChild.children[1].selected).to.eql(false);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+			);
+		});
 	});
 //
 //
