@@ -83,41 +83,40 @@ export default function vdomBenchTests(describe, expect) {
         });
 
         describe('using the Inferno functional API (vdom tests)', () => {
-            let template1 = Inferno.createTemplate((createElement, createComponent, children) => {
-                return createElement("div", null, children);
+            var t1 = Inferno.createTemplate(function(key, children) {
+                return {
+                    tag: 'div',
+                    key: key,
+                    children: children
+                }
             });
 
-            let template2 = Inferno.createTemplate((createElement, createComponent, text) => {
-                return createElement("span", null, text);
+            var t2 = Inferno.createTemplate(function(key) {
+                return {
+                    tag: 'span',
+                    key: key,
+                    text: key
+                }
             });
 
             function renderTree(nodes) {
-                var children = [];
+                var children = new Array(nodes.length);
                 var i;
-                var e;
                 var n;
 
                 for (i = 0; i < nodes.length; i++) {
-                  n = nodes[i];
-                  if (n.children !== null) {
-                    children.push(
-                        Inferno.createFragment([renderTree(n.children)], template1, n.key)
-                    );
-                  } else {
-                    children.push(
-                        Inferno.createFragment([n.key.toString()], template2, n.key)
-                    );
-                  }
+                    n = nodes[i];
+                    if (n.children !== null) {
+                        children[i] = t1(n.key, renderTree(n.children));
+                    } else {
+                        children[i] = t2(n.key);
+                    }
                 }
-
                 return children;
             }
 
             function render(dataModel) {
-                Inferno.render(
-                    Inferno.createFragment([renderTree(dataModel)], template1),
-                    container
-                );
+                Inferno.render(t1(null, renderTree(dataModel)), container);
             }
 
             it('vdom benchmark: render - insertFirst(500)', () => {
@@ -147,7 +146,7 @@ export default function vdomBenchTests(describe, expect) {
                 );
 
                 //clear down after the update
-                Inferno.unmountComponentAtNode(container);
+                Inferno.render(null, container);
             });
 
             it('vdom benchmark: render - insertFirst(500)', () => {
@@ -177,7 +176,7 @@ export default function vdomBenchTests(describe, expect) {
                 );
 
                 //clear down after the update
-                Inferno.unmountComponentAtNode(container);
+                Inferno.render(null, container);
             });
         });
     });
