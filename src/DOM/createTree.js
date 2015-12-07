@@ -4,6 +4,8 @@ import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createRootStaticNode from './shapes/rootStaticNode';
 import createStaticNode from './shapes/staticNode';
+import createRootDynamicNode from './shapes/rootDynamicNode';
+import createDynamicNode from './shapes/dynamicNode';
 
 import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
@@ -96,8 +98,12 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 			node = createStaticNode(templateNode);
 		}
 	} else {
-		if (schema.type === ObjectTypes.VARIABLE) {
-			// TODO
+		if (dynamicFlags.NODE === true) {
+			if (isRoot) {
+				node = createRootDynamicNode(schema.index, domNamespace);
+			} else {
+				node = createDynamicNode(schema.index, domNamespace);
+			}
 		} else {
 			const tag = schema.tag;
 

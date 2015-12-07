@@ -261,7 +261,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 	});
 
 	describe('should render a basic example #7', () => {
-		it('Initial render (creation)', () => {
+		it('Render and update', () => {
 			const div = Inferno.createTemplate((child) => ({
 				tag: 'div',
 				children: child
@@ -286,6 +286,24 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				container.innerHTML
 			).to.equal(
 				`<div><span>Im updated!</span></div>`
+			);
+		});
+	});
+
+	describe('should render a basic example #8', () => {
+		it('Render and update', () => {
+			const div = Inferno.createTemplate((text) => ({
+				tag: 'div',
+				children: [
+					'There is ', text, ' spoon!'
+				]
+			}));
+
+			Inferno.render(div('no'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div>There is no spoon!</div>`
 			);
 		});
 	});
