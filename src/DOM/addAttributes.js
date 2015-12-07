@@ -13,7 +13,7 @@ export default function addDOMAttributes(vNode, domNode, attrs) {
 
 		if (attrVal) {
 			if (eventMapping[attrName]) {
-				addListener(node, domNode, eventMapping[attrName], attrVal);
+				addListener(vNode, domNode, eventMapping[attrName], attrVal);
 			} else {
 				template.setProperty(vNode, domNode, attrName, attrVal);
 			}
