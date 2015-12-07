@@ -705,7 +705,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		it('Initial render (creation)', () => {
 			let worked = false;
 			const template = Inferno.createTemplate((handler) => ({
-				tag: 'select',
+				tag: 'div',
 				attrs: { onClick: handler },
 				children: 'Hello world!'
 			}));
@@ -714,6 +714,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			const event = new Event('click');
 			container.firstChild.dispatchEvent(event);
 			expect(worked).to.equal(true);
+			expect(container.innerHTML).to.equal('<div>Hello world!</div>');
 		});
 	});
 
