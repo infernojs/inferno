@@ -8,6 +8,7 @@ import createStaticNode from './shapes/staticNode';
 import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
 import createRootVoidNode from './shapes/rootVoidNode';
+import createVoidNode from './shapes/voidNode';
 
 import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
@@ -174,6 +175,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 								);
 							}
 						} else {
+							templateNode.textContent = children;
 							if (isRoot) {
 								node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
 							}
@@ -181,6 +183,8 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					} else {
 						if (isRoot) {
 							node = createRootVoidNode(templateNode, dynamicAttrs);
+						} else {
+							node = createVoidNode(templateNode, dynamicAttrs);
 						}
 					}
 				}
