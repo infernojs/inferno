@@ -530,70 +530,71 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			);
 		});
 	});
-//
-//
-//
-//	describe('should render boolean attributes', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//					createElement('div', { autoFocus: 'true' })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//
-//			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div autofocus="true"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should render "className" attribute', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('div', { className: 'Dominic rocks!' })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(container.firstChild.getAttribute('class')).to.eql('Dominic rocks!');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div class="Dominic rocks!"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('shouldn\'t render null value', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { value: null })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//
-//			expect( container.value ).to.be.undefined;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input>'
-//			);
-//		});
-//	});
+
+	describe('should render boolean attributes', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { autoFocus: true }
+			}));
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="true"></div>'
+			);
+		});
+	});
+
+	describe('should render "className" attribute', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: { className: 'this-works' }
+			}));
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(container.firstChild.getAttribute('class')).to.eql('this-works');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="this-works"></div>'
+			);
+		});
+	});
+
+	describe('shouldn\'t render null value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'input',
+				attrs: { value: null }
+			}));
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+
+			expect( container.value ).to.be.undefined;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
 //
 //	describe('should set values as properties by default', () => {
 //		let template;

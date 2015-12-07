@@ -35,13 +35,10 @@ export default {
 						if (useProperties) {
 							domNode[propName] = value;
 						} else {
-							if (value === true) {
-								domNode.setAttribute(propName, propName);
-							} else if (value === false) {
-								domNode.removeAttribute(propName);
-							} else {
-								domNode.setAttribute(propName, value);
+							if (propertyInfo.hasBooleanValue && value === true) {
+								value = propName;
 							}
+							domNode.setAttribute(propName, value);
 						}
 					}
 				} else {
