@@ -1,6 +1,7 @@
 import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
+import { getValueWithIndex } from '../core/variables';
 
 /**
  * Set HTML attributes on the template
@@ -19,4 +20,14 @@ export default function addDOMAttributes(vNode, domNode, attrs, useProperties) {
 			}
 		}
 	}
+}
+
+// TODO do we check last attrs against new attrs?
+export function applyDynamicAttrs(item, domNode, dynamicClassName, otherDynamicAttrs) {
+	const attrs = {};
+
+	for (let attr in otherDynamicAttrs) {
+		attrs[attr] = getValueWithIndex(item, otherDynamicAttrs[attr]);
+	}
+	addDOMAttributes(item, domNode, attrs, true);
 }

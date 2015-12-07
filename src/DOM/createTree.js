@@ -6,6 +6,7 @@ import createRootStaticNode from './shapes/rootStaticNode';
 import createStaticNode from './shapes/staticNode';
 import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
+import createRootVoidNode from './shapes/rootVoidNode';
 
 import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
@@ -123,12 +124,19 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					templateNode = document.createElement(tag);
 				}
 				const attrs = schema.attrs;
+				let dynamicAttrs = null;
+				let dynamicClassName = null;
 
 				if (attrs != null) {
 					if (dynamicFlags.ATTRS === true) {
-						//debugger;
+						dynamicAttrs = attrs;
 					} else if (dynamicFlags.ATTRS !== false) {
-						//debugger;
+						dynamicAttrs = dynamicFlags.ATTRS;
+
+						if (dynamicFlags.ATTRS.class !== undefined) {
+							dynamicClassName = dynamicFlags.ATTRS.class;
+							delete dynamicAttrs.ATTRS.class;
+						}
 					} else {
 						createStaticAttributes(schema, templateNode);
 					}
@@ -138,9 +146,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 				if (text != null) {
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
-							node = createRootNodeWithDynamicText(templateNode, text.index);
+							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicClassName, dynamicAttrs);
 						} else {
-							node = createNodeWithDynamicText(templateNode, text.index);
+							node = createNodeWithDynamicText(templateNode, text.index, dynamicClassName, dynamicAttrs);
 						}
 					} else {
 						templateNode.textContent = text;
@@ -151,7 +159,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					if (children != null) {
 						if (children.type === ObjectTypes.VARIABLE) {
 							if (isRoot) {
-								node = createRootNodeWithDynamicChild(templateNode, children.index, domNamespace);
+								node = createRootNodeWithDynamicChild(
+									templateNode, children.index, dynamicClassName, dynamicAttrs, domNamespace
+								);
 							}
 						} else if (dynamicFlags.CHILDREN === true) {
 							let subTreeForChildren = [];
@@ -164,10 +174,16 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 								subTreeForChildren = createDOMTree(children, false, dynamicNodeMap, domNamespace);
 							}
 							if (isRoot) {
-								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, domNamespace);
+								node = createRootNodeWithDynamicSubTreeForChildren(
+									templateNode, subTreeForChildren, dynamicClassName, dynamicAttrs, domNamespace
+								);
 							}
 						} else {
 							// TODO static children on a dynamic node
+						}
+					} else {
+						if (isRoot) {
+							node = createRootVoidNode(templateNode, dynamicClassName, dynamicAttrs);
 						}
 					}
 				}

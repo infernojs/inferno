@@ -1,27 +1,24 @@
+import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { getValueWithIndex } from '../../core/variables';
+import { applyDynamicAttrs } from '../addAttributes';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicClassName, otherDynamicAttrs) {
+export default function createRootVoidNode(templateNode, dynamicClassName, otherDynamicAttrs) {
 	const node = {
 		pool: [],
 		keyedPool: [],
 		create(item) {
 			let domNode;
-
 			if (recyclingEnabled) {
 				domNode = recycle(node, item);
 				if (domNode) {
 					return domNode;
 				}
 			}
-			domNode = templateNode.cloneNode(false);
-			const value = getValueWithIndex(item, valueIndex);
+			domNode = templateNode.cloneNode(true);
+			applyDynamicAttrs(item, domNode, dynamicClassName, otherDynamicAttrs);
 
-			if(value != null) {
-				domNode.textContent = value;
-			}
 			item.rootNode = domNode;
 			return domNode;
 		},
@@ -38,11 +35,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 
 			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			applyDynamicAttrs(nextItem, domNode, dynamicClassName, otherDynamicAttrs);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				domNode.firstChild.nodeValue = nextValue;
-			}
+			nextItem.rootNode = lastItem.rootNode;
 		}
 	};
 	return node;

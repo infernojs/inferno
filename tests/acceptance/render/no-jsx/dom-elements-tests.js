@@ -586,8 +586,38 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 
 		it('Initial render (creation)', () => {
+			expect( container.firstChild.value ).to.equal('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
 
-			expect( container.value ).to.be.undefined;
+	describe('shouldn\'t render dynamic null value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((value) => ({
+				tag: 'input',
+				attrs: { value }
+			}));
+			Inferno.render(template(null), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect( container.firstChild.value ).to.equal('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(template('foo'), container);
+			expect( container.firstChild.value ).to.equal('foo');
 			expect(
 				container.innerHTML
 			).to.equal(

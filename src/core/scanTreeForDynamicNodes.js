@@ -31,6 +31,9 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 					for (let attr in node.attrs) {
 						const attrVal = node.attrs[attr];
 						if (attrVal != null && attrVal.type === ObjectTypes.VARIABLE) {
+							if(dynamicFlags.ATTRS === false) {
+								dynamicFlags.ATTRS = {};
+							}
 							dynamicFlags.ATTRS[attr] = attrVal.index;
 							nodeIsDynamic = true;
 						}
