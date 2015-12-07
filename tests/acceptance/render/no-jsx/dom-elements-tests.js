@@ -625,90 +625,98 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			);
 		});
 	});
-//
-//	describe('should set values as properties by default', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { title: 'Tip!' })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input title="Tip!">'
-//			);
-//		});
-//	});
-//
-//	describe('should render value multiple attribute', () => {
-//		beforeEach(() => {
-//			const template = Inferno.createTemplate(createElement =>
-//				createElement('select', { multiple: true, value: 'foo' },
-//					createElement('option', { value: 'foo' }, 'Im a li-tag'),
-//					createElement('option', { value: 'bar' }, 'Im a li-tag')
-//				)
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(get(container.firstChild)).to.eql(['foo']);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<select multiple=""><option value="foo">Im a li-tag</option><option value="bar">Im a li-tag</option></select>'
-//			);
-//			expect(container.querySelector("select").multiple).to.equal(true);
-//		});
-//	});
-//
-//	describe('should render value multiple attribute', () => {
-//    let template;
-//
-//    beforeEach(() => {
-//        template = Inferno.createTemplate(t =>
-//            t('select', {
-//                    multiple: true,
-//                    value: ['bar', 'dominic']
-//                },
-//                t('optgroup', {
-//                    label: 'foo-group'
-//                }, t('option', {
-//                    value: 'foo'
-//                }, 'Im a li-tag')),
-//                t('optgroup', {
-//                    label: 'bar-group'
-//                }, t('option', {
-//                    value: 'bar'
-//                }, 'Im a li-tag')),
-//                t('optgroup', {
-//                    label: 'dominic-group'
-//                }, t('option', {
-//                    value: 'dominic'
-//                }, 'Im a li-tag'))
-//            )
-//        );
-//        Inferno.render(Inferno.createFragment(null, template), container);
-//    });
-//
-//    it('Initial render (creation)', () => {
-//        expect(
-//            container.innerHTML
-//        ).to.equal(
-//            '<select multiple=""><optgroup label="foo-group"><option value="foo">Im a li-tag</option></optgroup><optgroup label="bar-group"><option value="bar">Im a li-tag</option></optgroup><optgroup label="dominic-group"><option value="dominic">Im a li-tag</option></optgroup></select>'
-//        );
-//    });
-//});
-//
-//
-//
+
+	describe('should set values as properties by default', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'input',
+				attrs: { title: 'Tip!' }
+			}));
+			Inferno.render(template(null), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input title="Tip!">'
+			);
+		});
+	});
+
+	describe('should render value multiple attribute', () => {
+		beforeEach(() => {
+			const template = Inferno.createTemplate(() => ({
+				tag: 'select',
+				attrs: { multiple: true, value: 'foo' },
+				children: [
+					{tag: 'option', attrs: {value: 'foo'}, text: 'Im a li-tag'},
+					{tag: 'option', attrs: {value: 'bar'}, text: 'Im a li-tag'}
+				]
+			}));
+			Inferno.render(template(null), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(get(container.firstChild)).to.eql(['foo']);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select multiple="multiple"><option value="foo" selected="selected">Im a li-tag</option><option value="bar">Im a li-tag</option></select>'
+			);
+			expect(container.querySelector("select").multiple).to.equal(true);
+		});
+	});
+
+	describe('should render value multiple attribute', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() => ({
+				tag: 'select',
+				attrs: {
+					multiple: true,
+					value: ['bar', 'dominic']
+				},
+				children: [
+					{tag: 'optgroup', attrs: {label: 'foo-group'}, children: {tag: 'option', attrs: {value: 'foo'}, text: 'Im a li-tag'}},
+					{tag: 'optgroup', attrs: {label: 'bar-group'}, children: {tag: 'option', attrs: {value: 'bar'}, text: 'Im a li-tag'}},
+					{tag: 'optgroup', attrs: {label: 'dominic-group'}, children: {tag: 'option', attrs: {value: 'dominic'}, text: 'Im a li-tag'}}
+				]
+			}));
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select multiple="multiple"><optgroup label="foo-group"><option value="foo">Im a li-tag</option></optgroup>'
+				+ '<optgroup label="bar-group"><option value="bar" selected="selected">Im a li-tag</option></optgroup><optgroup label="dominic-group">'
+				+ '<option value="dominic" selected="selected">Im a li-tag</option></optgroup></select>'
+			);
+		});
+	});
+
+	describe('should render element with click event listener added', () => {
+		it('Initial render (creation)', () => {
+			let worked = false;
+			const template = Inferno.createTemplate((handler) => ({
+				tag: 'select',
+				attrs: { onClick: handler },
+				children: 'Hello world!'
+			}));
+			Inferno.render(template(() => { worked = true; }), container);
+
+			const event = new Event('click');
+			container.firstChild.dispatchEvent(event);
+			expect(worked).to.equal(true);
+		});
+	});
+
 //	describe('should render a basic example with dynamic values', () => {
 //		let template;
 //

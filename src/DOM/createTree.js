@@ -1,5 +1,6 @@
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
+import createRootNodeWithStaticText from './shapes/rootNodeWithStaticText';
 import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createRootStaticNode from './shapes/rootStaticNode';
@@ -173,7 +174,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 								);
 							}
 						} else {
-							// TODO static children on a dynamic node
+							if (isRoot) {
+								node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
+							}
 						}
 					} else {
 						if (isRoot) {
