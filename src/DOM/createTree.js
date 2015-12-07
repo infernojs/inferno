@@ -3,7 +3,9 @@ import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithStaticText from './shapes/rootNodeWithStaticText';
 import createNodeWithStaticText from './shapes/nodeWithStaticText';
 import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
+import createNodeWithDynamicChild from './shapes/nodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
+import createNodeWithDynamicSubTreeForChildren from './shapes/nodeWithDynamicSubTreeForChildren';
 import createRootStaticNode from './shapes/rootStaticNode';
 import createStaticNode from './shapes/staticNode';
 import createRootDynamicNode from './shapes/rootDynamicNode';
@@ -149,6 +151,11 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						}
 					} else {
 						templateNode.textContent = text;
+						if (isRoot) {
+							node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
+						} else {
+							node = createNodeWithStaticText(templateNode, dynamicAttrs);
+						}
 					}
 				} else {
 					const children = schema.children;
@@ -157,6 +164,10 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						if (children.type === ObjectTypes.VARIABLE) {
 							if (isRoot) {
 								node = createRootNodeWithDynamicChild(
+									templateNode, children.index, dynamicAttrs, domNamespace
+								);
+							} else {
+								node = createNodeWithDynamicChild(
 									templateNode, children.index, dynamicAttrs, domNamespace
 								);
 							}
@@ -172,6 +183,10 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 							}
 							if (isRoot) {
 								node = createRootNodeWithDynamicSubTreeForChildren(
+									templateNode, subTreeForChildren, dynamicAttrs, domNamespace
+								);
+							} else {
+								node = createNodeWithDynamicSubTreeForChildren(
 									templateNode, subTreeForChildren, dynamicAttrs, domNamespace
 								);
 							}
