@@ -1,6 +1,8 @@
 import get from '../../../tools/get';
 import Inferno from '../../../../src';
 
+const { createElement } = Inferno.TemplateFactory;
+
 export default function domElementsTestsNoJSX(describe, expect, container) {
 
 	describe('should render a basic text node', () => {
@@ -671,7 +673,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
-	describe('should render value multiple attribute', () => {
+	describe('should render value multiple attribute #2', () => {
 		let template;
 
 		beforeEach(() => {
@@ -718,154 +720,185 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
-//	describe('should render a basic example with dynamic values', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
-//					createElement('div', null, 'Hello world - ', val1, ' ', val2)
-//			);
-//			Inferno.render(Inferno.createFragment(['Inferno', 'Owns'], template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div>Hello world - Inferno Owns</div>'
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(['Test', 'Works!'], template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div>Hello world - Test Works!</div>'
-//			);
-//		});
-//	});
-//
-//	describe('should render a basic example with dynamic values and props', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
-//				createElement('div', {className: 'foo'},
-//					createElement('span', {className: 'bar'}, val1),
-//					createElement('span', {className: 'yar'}, val2)
-//				)
-//			);
-//			Inferno.render(Inferno.createFragment(['Inferno', 'Rocks'], template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(['Rocks', 'Inferno'], template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				`<div class="foo"><span class="bar">Rocks</span><span class="yar">Inferno</span></div>`
-//			);
-//		});
-//	});
-//
-//
-//
-//	//// Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
-//	describe('should properly render "className" property on a custom element', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('custom-elem', { className: "Hello, world!" })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<custom-elem class="Hello, world!"></custom-elem>'
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('custom-elem', { className: "Hello, Inferno!" })
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<custom-elem class="Hello, Inferno!"></custom-elem>'
-//			);
-//		});
-//	});
-//
-//
-//	describe('should properly render boolean attributes (HTML5)', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { checked: true, disabled: true})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(container.querySelector("input").checked).to.equal(true);
-//			expect(container.querySelector("input").disabled).to.equal(true);
-//		});
-//		it('Second render (update)', () => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { checked: false, disabled: false})
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(container.querySelector("input").checked).to.equal(false);
-//			expect(container.querySelector("input").disabled).to.equal(false);
-//		});
-//	});
-//
-//	describe('should properly render boolean attributes (truthy)', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { checked: true, disabled: true})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input disabled="true">'
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { checked: false, disabled: true})
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input disabled="true">'
-//			);
-//		});
-//	});
-//
+	describe('should render a basic example with dynamic values', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((val1, val2) => ({
+				tag: 'div',
+				children: [
+					'Hello world - ',
+					val1,
+					' ',
+					val2
+				]
+			}));
+			Inferno.render(template('Inferno', 'Owns'), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world - Inferno Owns</div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template('Test', 'Works!'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world - Test Works!</div>'
+			);
+		});
+	});
+
+
+	describe('should render a basic example with dynamic values (with createElement)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((val1, val2) =>
+					createElement('div', null, 'Hello world - ', val1, ' ', val2)
+			);
+			Inferno.render(template('Inferno', 'Owns'), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world - Inferno Owns</div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template('Test', 'Works!'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world - Test Works!</div>'
+			);
+		});
+	});
+
+	describe('should render a basic example with dynamic values and props (with createElement)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((val1, val2) =>
+				createElement('div', {className: 'foo'},
+					createElement('span', {className: 'bar'}, val1),
+					createElement('span', {className: 'yar'}, val2)
+				)
+			);
+			Inferno.render(template('Inferno', 'Rocks'), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template('Rocks', 'Inferno'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<div class="foo"><span class="bar">Rocks</span><span class="yar">Inferno</span></div>`
+			);
+		});
+	});
+
+	// Just to prove that we don't share the same issues as React - https://github.com/facebook/react/issues/4933
+	describe('should properly render "className" property on a custom element (with createElement)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('custom-elem', { className: "Hello, world!" })
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<custom-elem class="Hello, world!"></custom-elem>'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() =>
+				createElement('custom-elem', { className: "Hello, Inferno!" })
+			);
+
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<custom-elem class="Hello, Inferno!"></custom-elem>'
+			);
+		});
+	});
+
+	describe('should properly render boolean attributes (HTML5) (with createElement)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { checked: true, disabled: true})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(container.querySelector("input").checked).to.equal(true);
+			expect(container.querySelector("input").disabled).to.equal(true);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { checked: false, disabled: false})
+			);
+
+			Inferno.render(template(), container);
+			expect(container.querySelector("input").checked).to.equal(false);
+			expect(container.querySelector("input").disabled).to.equal(false);
+		});
+	});
+
+	describe('should properly render boolean attributes (truthy) (with createElement)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { checked: true, disabled: true})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input checked="checked" disabled="true">'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { checked: false, disabled: true})
+			);
+
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input disabled="true">'
+			);
+		});
+	});
+
 //	describe('should not render overloaded boolean attributes (falsy)', () => {
 //		let template;
 //

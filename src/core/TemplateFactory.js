@@ -5,9 +5,7 @@ function createChildren(children) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const childItem = children[i];
-			if (typeof childItem === 'string' || typeof childItem === 'number') {
-				childrenArray.push(createElement(childItem));
-			}
+			childrenArray.push(childItem);
 		}
 	}
 	return childrenArray;
@@ -18,22 +16,18 @@ function createElement(tag, attrs, ...children) {
 		const vNode = {
 			tag
 		};
-		if(attrs) {
+		if (attrs) {
 			if(attrs.key !== undefined) {
 				vNode.key = attrs.key;
 				delete attrs.key;
 			}
 			vNode.attrs = attrs;
 		}
-		if(children) {
+		if (children) {
 			if (children.length) {
-				vNode.children = createElement(children[0]);
+				vNode.children = createChildren(children);
 			} else {
-				if (typeof children[0] === 'string' || typeof children[0] === 'number') {
-					vNode.children = children[0];
-				} else {
-					vNode.children = createElement(children[0]);
-				}
+				vNode.children = children[0];
 			}
 		}
 		return vNode;
