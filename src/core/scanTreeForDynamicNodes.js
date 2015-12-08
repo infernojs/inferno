@@ -3,8 +3,6 @@ import isArray from '../util/isArray';
 
 export default function scanTreeForDynamicNodes(node, nodeMap) {
 	let nodeIsDynamic = false;
-	let nodeHasComponents = false;
-
 	const dynamicFlags = {
 		NODE: false,
 		TEXT: false,
@@ -23,7 +21,6 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 			if (node.tag != null) {
 				if (node.tag.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
-					nodeHasComponents = true;
 					dynamicFlags.COMPONENTS = true;
 				}
 			}
@@ -59,23 +56,17 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 							const childItem = node.children[i];
 							const result = scanTreeForDynamicNodes(childItem, nodeMap);
 
-							if (result.nodeIsDynamic === true) {
+							if (result === true) {
 								nodeIsDynamic = true;
 								dynamicFlags.CHILDREN = true;
-								if (result.nodeHasComponents === true) {
-									nodeHasComponents = true;
-								}
 							}
 						}
 					} else if (typeof node === 'object') {
 						const result = scanTreeForDynamicNodes(node.children, nodeMap);
 
-						if (result.nodeIsDynamic === true) {
+						if (result === true) {
 							nodeIsDynamic = true;
 							dynamicFlags.CHILDREN = true;
-							if (result.nodeHasComponents === true) {
-								nodeHasComponents = true;
-							}
 						}
 					}
 				}
@@ -91,5 +82,5 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 	if (nodeIsDynamic === true) {
 		nodeMap.set(node, dynamicFlags);
 	}
-	return { nodeIsDynamic, nodeHasComponents };
+	return nodeIsDynamic;
 }

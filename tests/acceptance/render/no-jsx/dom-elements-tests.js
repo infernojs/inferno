@@ -2011,7 +2011,159 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			);
 		});
 	});
-//
+	describe('various random DOM tests', () => {
+		it('Test should throw an error as the text property cannot be used with the children property on the same node', () => {
+			expect(() => {
+				const template = Inferno.createTemplate(() => ({
+					tag: 'div',
+					text: 'Hello',
+					children: {
+						tag: 'span',
+						children: {
+							tag: 'span',
+							children: 'World!'
+						}
+					}
+				}));
+			}).to.throw(Error);
+		});
+		it('Test should render correctly #2', () => {
+			// CASE #2 - This children are not rendered at all
+			const template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: {
+					id: 'foo'
+				},
+				children: {
+					tag: 'span',
+					children: {
+						tag: 'span',
+						children: 'Invisible child!!'
+					}
+				}
+			}));
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div id="foo"><span><span>Invisible child!!</span></span></div>'
+			);
+		});
+		it('Test should render correctly #3', () => {
+			// CASE #3 - This will insert the text as [Object Object]
+			const template = Inferno.createTemplate((val1) => ({
+				tag: 'div',
+				attrs: {
+					id: val1
+				},
+				children: {
+					text: 'Hello, World'
+				}
+			}));
+			Inferno.render(template('test'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div id="test">Hello, World</div>'
+			);
+		});
+		it('Test should render correctly #4', () => {
+			// CASE #4 - This will insert the text as [Object Object], and it's sub-children as [Object Object]
+			const template = Inferno.createTemplate((val1, val2) => ({
+				tag: 'div',
+				attrs: {
+					id: val1
+				},
+				children: [{
+					text: 'Hello, World'
+				}, {
+					tag: 'span',
+					text: 'Hello, World'
+				}]
+			}));
+			Inferno.render(template('test'), container);
+		});
+		it('Test should render correctly #5', () => {
+			// CASE #5 - No attributes are set, and multiple [Object Object]
+			const template = Inferno.createTemplate((val1, val2) => ({
+				tag: 'div',
+				attrs: {
+					id: val1
+				},
+				children: [{
+					text: 'Hello, World'
+				}, {
+					tag: 'span',
+					attrs: {
+						class: 'foo'
+					},
+					text: 'Hello, World'
+				}]
+			}));
+			Inferno.render(template('test'), container);
+		});
+		it('Test should render correctly #6', () => {
+			// CASE #6 - This children are not rendered at all
+			const template = Inferno.createTemplate(() => ({
+				tag: 'div',
+				attrs: {
+					id: 'foo'
+				},
+				children: {
+					tag: 'span',
+					children: {
+						tag: 'span',
+						children: 'Invisible child!!'
+					}
+				}
+			}));
+			Inferno.render(template(), container);
+		});
+		it('Test should render correctly #7', () => {
+			// CASE #7 - This children are not rendered at all
+			const template = Inferno.createTemplate((child) => ({
+				tag: 'div',
+				children: child
+			}));
+			Inferno.render(template('foo'), container);
+		});
+		it('Test should render correctly #8', () => {
+			// CASE #8 - This throws erorr in the console
+			const template = Inferno.createTemplate((child) => ({
+				tag: 'div',
+				children: child
+			}));
+
+			Inferno.render(template(['1', '2', '3']), container);
+		});
+		it('Test should render correctly #9', () => {
+			// CASE #9 - No message in console, and nothing rendered
+			const template = Inferno.createTemplate((child) => ({
+				tag: 'div',
+				attrs: {
+					class: 'hello, world'
+				},
+				children: child
+			}));
+			const b = Inferno.createTemplate(() => ({
+				tag: 'span',
+				children: ['1', '2', '3']
+			}));
+			const span = Inferno.createTemplate((b) => ({
+				tag: 'span',
+				children: b
+			}));
+			Inferno.render(template(span(b())), container);
+		});
+	});
+
+
+
+
+
+
+
+
 //   describe('should properly render class attribute', () => {
 //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
 //			createElement('div', {

@@ -78,11 +78,14 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 				staticNode = document.createElement(tag);
 			}
 			const text = node.text;
+			const children = node.children;
 
 			if (text != null) {
+				if (children != null) {
+					throw Error('Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.');
+				}
 				staticNode.textContent = text;
 			} else {
-				const children = node.children;
 				if (children != null) {
 					createStaticTreeChildren(children, staticNode, domNamespace);
 				}
@@ -151,8 +154,12 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					}
 				}
 				const text = schema.text;
+				const children = schema.children;
 
 				if (text != null) {
+					if (children != null) {
+						throw Error('Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.');
+					}
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
 							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
@@ -168,8 +175,6 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						}
 					}
 				} else {
-					const children = schema.children;
-
 					if (children != null) {
 						if (children.type === ObjectTypes.VARIABLE) {
 							if (isRoot) {
@@ -200,12 +205,24 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 									templateNode, subTreeForChildren, dynamicAttrs, domNamespace
 								);
 							}
-						} else {
+						} else if (typeof children === 'string' || typeof children === 'number') {
 							templateNode.textContent = children;
 							if (isRoot) {
 								node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
 							} else {
 								node = createNodeWithStaticText(templateNode, dynamicAttrs);
+							}
+						} else {
+							const childNodeDynamicFlags = dynamicNodeMap.get(children);
+
+							if (!childNodeDynamicFlags) {
+								createStaticTreeChildren(children, templateNode, domNamespace);
+
+								if (isRoot) {
+									node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
+								} else {
+									node = createNodeWithStaticText(templateNode, dynamicAttrs);
+								}
 							}
 						}
 					} else {

@@ -5,6 +5,10 @@ export default function createDOMFragment(parentNode, nextNode) {
 	const fragment =  {
 		parentNode,
 		render(nextItem) {
+			if (!nextItem) {
+				return;
+			}
+
 			const tree = nextItem.domTree;
 
 			if (lastItem) {
