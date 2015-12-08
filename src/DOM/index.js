@@ -1,4 +1,4 @@
-import HTMLProperties from './HTMLProperties';
+import DOMRegistry from './DOMRegistry';
 import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import removeSelectValueForProperty from './removeSelectValueForProperty';
@@ -13,7 +13,7 @@ const template = {
 	 * @param {*} value
 	 */
 	setProperty(vNode, domNode, name, value, useProperties) {
-		const propertyInfo = HTMLProperties[name];
+		const propertyInfo = DOMRegistry[name];
 
 		if (propertyInfo) {
 			if (value == null ||
@@ -70,7 +70,7 @@ const template = {
 	 * @param {string} name
 	 */
 	removeProperty(vNode, domNode, name, useProperties) {
-		const propertyInfo = HTMLProperties[name];
+		const propertyInfo = DOMRegistry[name];
 
 		if (propertyInfo) {
 			if (propertyInfo.mustUseProperty) {
