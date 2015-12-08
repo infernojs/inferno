@@ -66,7 +66,7 @@ const Whitelist = {
 	currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
 	default: BOOLEAN,
 	defer: BOOLEAN,
-	disabled: BOOLEAN,
+	disabled: PROPERTY | BOOLEAN,
 	download: BOOLEAN,
 	enabled: BOOLEAN,
 	formNoValidate: BOOLEAN,

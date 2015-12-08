@@ -3,7 +3,7 @@ import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import removeSelectValueForProperty from './removeSelectValueForProperty';
 
-export default {
+const template = {
 	/**
 	 * Sets the value for a property on a node. If a value is specified as
 	 * '' (empty string), the corresponding style property will be unset.
@@ -19,7 +19,8 @@ export default {
 			if (value == null ||
 				propertyInfo.hasBooleanValue && !value ||
 				propertyInfo.hasNumericValue && isNaN(value) || // Todo! Find alternative for 'isNaN'
-				propertyInfo.hasPositiveNumericValue && value < 1) {
+				propertyInfo.hasPositiveNumericValue && value < 1 ||
+				value.length === 0) {
 				template.removeProperty(vNode, domNode, name, useProperties);
 			} else {
 				const propName = propertyInfo.propertyName;
@@ -42,7 +43,6 @@ export default {
 						}
 					}
 				} else {
-
 					const attributeName = propertyInfo.attributeName;
 					const namespace = propertyInfo.attributeNamespace;
 
@@ -55,7 +55,11 @@ export default {
 			}
 			// custom attributes
 		} else if (name && (name.length > 1)) {
-			domNode.setAttribute(name, value);
+			if (value === null) {
+				domNode.removeAttribute(name);
+			} else {
+				domNode.setAttribute(name, value);
+			}
 		}
 	},
 
@@ -72,15 +76,23 @@ export default {
 			if (propertyInfo.mustUseProperty) {
 				let propName = propertyInfo.propertyName;
 				if (propertyInfo.hasBooleanValue) {
-					domNode[propName] = false;
+					if (useProperties) {
+						domNode[propName] = false;
+					} else {
+						domNode.removeAttribute(propName);
+					}
 					// 'style' and 'dataset' property has to be removed as an attribute
 				} else if (propertyInfo.museUseObject) {
 					domNode.removeAttribute(propName);
 				} else if (propName === 'value' && (vNode.tag === 'select')) {
 					removeSelectValueForProperty(node, domNode, propName, useProperties);
 				} else {
-					if ('' + domNode[propName] !== '') {
-						domNode[propName] = '';
+					if (useProperties) {
+						if ('' + domNode[propName] !== '') {
+							domNode[propName] = '';
+						}
+					} else {
+						domNode.removeAttribute(propName);
 					}
 				}
 			} else {
@@ -92,3 +104,5 @@ export default {
 		}
 	}
 };
+
+export default template;

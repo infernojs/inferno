@@ -315,23 +315,23 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 
 		it('Initial render (creation)', () => {
 			template = Inferno.createTemplate(() => ({
-				tag: 'div',
+				tag: 'input',
 				attrs: { disabled: true }
 			}));
 
 			Inferno.render(template(), container);
 
-			expect(container.firstChild.getAttribute('disabled')).to.eql('true');
+			expect(container.firstChild.disabled).to.eql(true);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div disabled="true"></div>'
+				'<input disabled="disabled">'
 			);
 		});
 
  		it('Second render (update)', () => {
 			template = Inferno.createTemplate(() => ({
-				tag: 'div',
+				tag: 'input',
 				attrs: { disabled: false }
 			}));
 
@@ -340,7 +340,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div></div>'
+				'<input>'
 			);
 		});
 	});
@@ -455,11 +455,11 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			}));
 			Inferno.render(template(), container);
 
-			expect(container.firstChild.getAttribute('autoPlay')).to.eql('');
+			expect(container.firstChild.getAttribute('autoPlay')).to.eql(null);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div autoplay=""></div>'
+				'<div></div>'
 			);
 		});
 
@@ -882,7 +882,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input checked="checked" disabled="true">'
+				'<input checked="checked" disabled="disabled">'
 			);
 		});
 		it('Second render (update)', () => {
@@ -894,1224 +894,1123 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<input disabled="true">'
+				'<input disabled="disabled">'
 			);
 		});
 	});
 
-//	describe('should not render overloaded boolean attributes (falsy)', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('div', { checked: false, disabled: false})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('span', { checked: false, disabled: false})
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<span></span>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render boolean attributes (falsy)', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { checked:"false", disabled:"false"})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				 '<input disabled="false">'
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input disabled="false">'
-//			);
-//		});
-//	});
-//
-//	describe('should render video / audio attributes', () => {
-//		let template;
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', {type:'file', multiple:'true', capture:'true'})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//                '<input type="file" multiple="" capture="true">'
-//			);
-//		});
-//	});
-//
-//
-//	describe('shouldn\'t render undefined value', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { checked: undefined})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input>'
-//			);
-//		});
-//	});
-//
-//	describe('should be rendered as custom attribute', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('div', { 'custom-attr': 123})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div custom-attr="123"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should not render null properties', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('web-component', { className: null, id: null})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<web-component></web-component>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render "id" property', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('web-component', { id: 123 })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<web-component id="123"></web-component>'
-//			);
-//		});
-//	});
-//
-//	describe('should render overloaded boolean as a number value', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { download: 0 })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input>'
-//			);
-//		});
-//	});
-//
-//	describe('should render download with boolean false value', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { href:"/images/xxx.jpg", download: false} )
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input href="/images/xxx.jpg">'
-//			);
-//		});
-//	});
-//
-//	describe('should render download with boolean null value', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { href: "/images/xxx.jpg", download: null})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input href="/images/xxx.jpg">'
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', {checked:true, disabled: true})
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input disabled="true">'
-//			);
-//		});
-//	});
-//
-//	describe('should render "overloaded" boolean properties', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { href:"/images/xxx.jpg", download:"true" })
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input href="/images/xxx.jpg" download="true">'
-//			);
-//		});
-//
-//
-//		it('Third render (update)', () => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { checked:true, disabled:true })
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input disabled="true">'
-//			);
-//		});
-//	});
-//
-//		describe('should not render overloaded "allowFullScreen" boolean attributes', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { allowFullScreen: false})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input>'
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', {checked:true, disabled: true})
-//			);
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input disabled="true">'
-//			);
-//		});
-//	});
-//
-//
-//
-//	describe('should not render "scoped" boolean attributes as "null"', () => {
-//		let template;
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('input', { scoped: null})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<input>'
-//			);
-//		});
-//	});
-//
-//
-//	describe('should properly render "muted" boolean property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				muted: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//
-//			expect(container.firstChild.muted).to.be.false;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(container.firstChild.muted).to.be.undefined;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(container.firstChild.muted).to.be.true;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render "required" boolean property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				required: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//
-//			expect(container.getAttribute('required')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(container.getAttribute('required')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div required="true"></div>'
-//			);
-//		});
-//	});
-//
-//
-//
-//	describe('should properly render "hidden" boolean property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				hidden: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//
-//			expect(container.getAttribute('hidden')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(container.getAttribute('hidden')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div hidden="true"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render "draggable" boolean property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				draggable: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//
-//			expect(container.getAttribute('draggable')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div draggable="false"></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(container.getAttribute('draggable')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div draggable="true"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render "formNoValidate" boolean property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				formNoValidate: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//
-//			expect(container.getAttribute('formNoValidate')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(container.getAttribute('formNoValidate')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div formnovalidate="true"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render "seamless" boolean property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				seamless: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//
-//			expect(container.getAttribute('seamless')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(container.getAttribute('seamless')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div seamless="true"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render numeric properties', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				start: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(123, template), container);
-//
-//			expect(container.getAttribute('seamless')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div start="123"></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(-4, template), container);
-//
-//			expect(container.getAttribute('seamless')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div start="-4"></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(0, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div start="0"></div>'
-//			);
-//		});
-//	});
-//
-//
-//	describe('should properly render "title" attribute', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				title: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(123, template), container);
-//
-//			expect(container.getAttribute('seamless')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div title="123"></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('Hello', template), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div title="Hello"></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment([], template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//	});
-//
-//
-//
-//	describe('should properly render "contentEditable" attribute', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				contentEditable: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(123, template), container);
-//
-//			expect(container.getAttribute('seamless')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div contenteditable="123"></div>'
-//			);
-//		});
-//
-//		it('Second render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('Hello', template), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				 '<div contenteditable="Hello"></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment([], template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should populate the `value` attribute on select multiple using groups', () => {
-//	   let template;
-//
-//	   beforeEach(() => {
-//		   template = Inferno.createTemplate((createElement, createComponent, val1, val2) =>
-//			   	createElement('select', {multiple: true, value: ['foo', 'bar']},
-//					createElement('optgroup', {label: 'foo-group'},
-//						createElement('option', {value: 'bar'}, val1)
-//					),
-//					createElement('optgroup', {label: 'bar-group'},
-//						createElement('option', {value: 'foo'}, val2)
-//					)
-//				)
-//			);
-//		   Inferno.render(Inferno.createFragment(['bar', 'foo'], template), container);
-//	   });
-//
-//	   it('Initial render (creation)', () => {
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   `<select multiple=""><optgroup label="foo-group"><option>bar</option></optgroup><optgroup label="bar-group"><option>foo</option></optgroup></select>`
-//		   );
-//	   });
-//	   it('Second render (update)', () => {
-//		   Inferno.render(Inferno.createFragment(['Rocks', 'Inferno'], template), container);
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   `<select multiple=""><optgroup label="foo-group"><option>Rocks</option></optgroup><optgroup label="bar-group"><option>Inferno</option></optgroup></select>`
-//		   );
-//	   });
-//	});
-//
+	describe('should not render overloaded boolean attributes (falsy) (with createElement)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('div', { checked: false, disabled: false})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() =>
+				createElement('span', { checked: false, disabled: false})
+			);
+
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<span></span>'
+			);
+		});
+	});
+
+	describe('should properly render boolean attributes (falsy)', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { checked:"false", disabled:"false"})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<input>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
+
+	describe('should render video / audio attributes', () => {
+		let template;
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', {type:'file', multiple:'true', capture:'true'})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+                '<input type="file" multiple="true" capture="true">'
+			);
+		});
+	});
+
+	describe('shouldn\'t render undefined value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { checked: undefined})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
+
+	describe('should be rendered as custom attribute', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('div', { 'custom-attr': 123})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div custom-attr="123"></div>'
+			);
+		});
+	});
+
+	describe('should not render null properties', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('web-component', { className: null, id: null})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<web-component></web-component>'
+			);
+		});
+	});
+
+	describe('should properly render "id" property', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('web-component', { id: 123 })
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<web-component id="123"></web-component>'
+			);
+		});
+	});
+
+	describe('should render overloaded boolean as a number value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { download: 0 })
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
+
+	describe('should render download with boolean false value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { href:"/images/xxx.jpg", download: false} )
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input href="/images/xxx.jpg">'
+			);
+		});
+	});
+
+	describe('should render download with boolean null value', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { href: "/images/xxx.jpg", download: null})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input href="/images/xxx.jpg">'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', {checked:true, disabled: true})
+			);
+
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input checked="checked" disabled="disabled">'
+			);
+		});
+	});
+
+	describe('should render "overloaded" boolean properties', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { href:"/images/xxx.jpg", download:"true" })
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input href="/images/xxx.jpg" download="true">'
+			);
+		});
+
+
+		it('Third render (update)', () => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { checked:true, disabled:true })
+			);
+
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input checked="checked" disabled="disabled">'
+			);
+		});
+	});
+
+	describe('should not render overloaded "allowFullScreen" boolean attributes', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { allowFullScreen: false})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+		it('Second render (update)', () => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', {checked:true, disabled: true})
+			);
+
+			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input checked="checked" disabled="disabled">'
+			);
+		});
+	});
+
+	describe('should not render "scoped" boolean attributes as "null"', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('input', { scoped: null})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
+
+	describe('should properly render "muted" boolean property', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('audio', {
+				muted: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.firstChild.muted).to.be.false;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<audio></audio>'
+			);
+		});
+
+		it('Second render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.firstChild.muted).to.be.false;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<audio></audio>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(container.firstChild.muted).to.be.true;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<audio></audio>'
+			);
+		});
+	});
+
+	describe('should properly render "required" boolean property', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				required: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.getAttribute('required')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (creation)', () => {
+			Inferno.render(template(null), container);
+			expect(container.getAttribute('required')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div required="true"></div>'
+			);
+		});
+	});
+
+	describe('should properly render "hidden" boolean property', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				hidden: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.getAttribute('hidden')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (creation)', () => {
+			Inferno.render(template(null), container);
+			expect(container.getAttribute('hidden')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div hidden="true"></div>'
+			);
+		});
+	});
+
+	describe('should properly render "draggable" boolean property', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				draggable: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.getAttribute('draggable')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div draggable="false"></div>'
+			);
+		});
+		it('Second render (creation)', () => {
+			Inferno.render(template(null), container);
+			expect(container.getAttribute('draggable')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div draggable="true"></div>'
+			);
+		});
+	});
+
+	describe('should properly render "formNoValidate" boolean property', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				formNoValidate: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.getAttribute('formNoValidate')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (creation)', () => {
+			Inferno.render(template(null), container);
+			expect(container.getAttribute('formNoValidate')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div formnovalidate="true"></div>'
+			);
+		});
+	});
+
+	describe('should properly render "seamless" boolean property', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				seamless: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.getAttribute('seamless')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (creation)', () => {
+			Inferno.render(template(null), container);
+			expect(container.getAttribute('seamless')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div seamless="true"></div>'
+			);
+		});
+	});
+
+	describe('should properly render numeric properties', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				start: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(123), container);
+			expect(container.getAttribute('seamless')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div start="123"></div>'
+			);
+		});
+		it('Second render (creation)', () => {
+			Inferno.render(template(-4), container);
+			expect(container.getAttribute('seamless')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div start="-4"></div>'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(0), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div start="0"></div>'
+			);
+		});
+	});
+
+	describe('should properly render "title" attribute', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				title: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(123), container);
+			expect(container.getAttribute('seamless')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div title="123"></div>'
+			);
+		});
+		it('Second render (creation)', () => {
+			Inferno.render(template('Hello'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div title="Hello"></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(template([]), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+	});
+
+	describe('should properly render "contentEditable" attribute', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				contentEditable: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+
+			Inferno.render(template(123), container);
+
+			expect(container.getAttribute('seamless')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div contenteditable="123"></div>'
+			);
+		});
+
+		it('Second render (creation)', () => {
+
+			Inferno.render(template('Hello'), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				 '<div contenteditable="Hello"></div>'
+			);
+		});
+
+		it('Third render (update)', () => {
+			Inferno.render(template([]), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+	});
+
+	describe('should populate the `value` attribute on select multiple using groups', () => {
+	   let template;
+
+	   beforeEach(() => {
+		   template = Inferno.createTemplate((val1, val2) =>
+			   	createElement('select', {multiple: true, value: ['foo', 'bar']},
+					createElement('optgroup', {label: 'foo-group'},
+						createElement('option', {value: 'bar'}, val1)
+					),
+					createElement('optgroup', {label: 'bar-group'},
+						createElement('option', {value: 'foo'}, val2)
+					)
+				)
+			);
+		   Inferno.render(template('bar', 'foo'), container);
+	   });
+
+	   it('Initial render (creation)', () => {
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   `<select multiple="multiple"><optgroup label="foo-group"><option value="bar">bar</option></optgroup><optgroup label="bar-group"><option value="foo">foo</option></optgroup></select>`
+		   );
+	   });
+	   it('Second render (update)', () => {
+		   Inferno.render(template('Rocks', 'Inferno'), container);
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   `<select multiple="multiple"><optgroup label="foo-group"><option value="bar">Rocks</option></optgroup><optgroup label="bar-group"><option value="foo">Inferno</option></optgroup></select>`
+		   );
+	   });
+	});
+
 //	///**
 //	// * Styles
 //	// */
-//
-//	describe('should handle basic styles', () => {
-//	   let template;
-//	   const styleRule = { width:200, height:200 };
-//
-//	   beforeEach(() => {
-//		   template = Inferno.createTemplate(createElement =>
-//			   createElement('div', { style: styleRule })
-//		   );
-//		   Inferno.render(Inferno.createFragment(null, template), container);
-//	   });
-//
-//	   it('Initial render (creation)', () => {
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   '<div style="width: 200px; height: 200px;"></div>'
-//		   );
-//	   });
-//	});
-//
-//	describe('should update styles when "style" changes from null to object', () => {
-//	   let template;
-//	   const styles = {color: 'red'};
-//
-//	   beforeEach(() => {
-//		   template = Inferno.createTemplate(createElement =>
-//			   createElement('div', { style: {null} })
-//		   );
-//		   Inferno.render(Inferno.createFragment(null, template), container);
-//	   });
-//
-//	   it('Initial render (creation)', () => {
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   '<div></div>'
-//		   );
-//	   });
-//	   it('Second render (update)', () => {
-//		   template = Inferno.createTemplate(createElement =>
-//			   createElement('div', { style: styles })
-//		   );
-//		   Inferno.render(Inferno.createFragment(null, template), container);
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   '<div style="color: red;"></div>'
-//		   );
-//	   });
-//	});
-//
-//	describe('should ignore null styles', () => {
-//	   let template;
-//	   const styleRule = { backgroundColor: null, display: 'none' };
-//
-//	   beforeEach(() => {
-//		   template = Inferno.createTemplate(createElement =>
-//			   createElement('div', { style: styleRule })
-//		   );
-//		   Inferno.render(Inferno.createFragment(null, template), container);
-//	   });
-//
-//	   it('Initial render (creation)', () => {
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   '<div style="display: none;"></div>'
-//		   );
-//	   });
-//	});
-//
-//	describe('should not set NaN value on styles', () => {
-//	   let template;
-//	   const styleRule = { 'font-size': parseFloat('zoo') } ;
-//
-//	   beforeEach(() => {
-//		   template = Inferno.createTemplate(createElement =>
-//			   createElement('div', { style: styleRule })
-//		   );
-//		   Inferno.render(Inferno.createFragment(null, template), container);
-//	   });
-//
-//	   it('Initial render (creation)', () => {
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   '<div></div>'
-//		   );
-//	   });
-//	});
-//
-//	describe('should trim values so `px` will be appended correctly', () => {
-//	   let template;
-//	   const styleRule = { margin: '16 ' };
-//
-//	   beforeEach(() => {
-//		   template = Inferno.createTemplate(createElement =>
-//			   createElement('div', { style: styleRule })
-//		   );
-//		   Inferno.render(Inferno.createFragment(null, template), container);
-//	   });
-//
-//	   it('Initial render (creation)', () => {
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   '<div style="margin: 16px;"></div>'
-//		   );
-//	   });
-//	});
-//
-//	describe('should support number values', () => {
-//	   let template;
-//	   const styleRule = { width: 7 };
-//
-//	   beforeEach(() => {
-//		   template = Inferno.createTemplate(createElement =>
-//			   createElement('div', { style: styleRule })
-//		   );
-//		   Inferno.render(Inferno.createFragment(null, template), container);
-//	   });
-//
-//	   it('Initial render (creation)', () => {
-//
-//		   expect(
-//			   container.innerHTML
-//		   ).to.equal(
-//			   '<div style="width: 7px;"></div>'
-//		   );
-//	   });
-//	});
-//
-//	describe('should properly render input download attribute', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
-//			createElement('div', {
-//				download: val1
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//
-//			expect(container.firstChild.getAttribute('download')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div download="true"></div>'
-//			);
-//		});
-//	});
-//
-//    describe('should properly render scope attribute', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
-//			createElement('div', {
-//				scope: val1
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('scope', template), container);
-//
-//			expect(container.firstChild.getAttribute('scope')).to.eql('scope');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div scope="scope"></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div scope="true"></div>'
-//			);
-//		});
-//	});
-//
-//
-//
-//    describe('should properly render HTMLL5 data-* attribute', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
-//			createElement('div', {
-//				data: val1
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('val', template), container);
-//
-//			//expect(container.firstChild.getAttribute('scope')).to.eql('scope');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div data="val"></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div data="true"></div>'
-//			);
-//		});
-//	});
-//
-//    describe('should properly render value property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, val1) =>
-//			createElement('div', {
-//				value: val1
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('val', template), container);
-//
-//			expect(container.firstChild.value).to.eql('val');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(container.firstChild.value).to.eql(true);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//	});
-//
-//
-//describe('should set boolean element property', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				'type': 'checkbox',
-//				'checked': arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(['checked'], template), container);
-//
-//			expect(container.firstChild.checked).to.eql('checked');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div type="checkbox"></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//
-//			expect(container.firstChild.checked).to.eql(true);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div type="checkbox"></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment([''], template), container);
-//
-//			expect(container.firstChild.checked).to.eql(false);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div type="checkbox"></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(['lala'], template), container);
-//
-//			expect(container.firstChild.checked).to.eql('lala');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div type="checkbox"></div>'
-//			);
-//		});
-//
-//		it('Fourth render (update)', () => {
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//
-//			expect(container.firstChild.checked).to.be.undefined;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div type="checkbox"></div>'
-//			);
-//		});
-//
-//		it('Fifth render (update)', () => {
-//			Inferno.render(Inferno.createFragment([null], template), container);
-//
-//			expect(container.firstChild.checked).to.be.undefined;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div type="checkbox"></div>'
-//			);
-//		});
-//	});
-//
-//
-//
-//
-//
-//	describe('should support number values', () => {
-//		let template;
-//		const styleRule = {
-//			width: 7
-//		};
-//
-//		beforeEach(() => {
-//			template = Inferno.createTemplate(createElement =>
-//				createElement('div', {
-//					style: styleRule
-//				})
-//			);
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//		});
-//
-//		it('Initial render (creation)', () => {
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div style="width: 7px;"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should properly render name attribute', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				name: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('simple', template), container);
-//
-//			expect(container.firstChild.getAttribute('name')).to.eql('simple');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div name="simple"></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div name="true"></div>'
-//			);
-//		});
-//	});
-//
-//
-//	describe('should properly render id attribute', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				id: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('simple', template), container);
-//
-//			expect(container.firstChild.getAttribute('id')).to.eql('simple');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div id="simple"></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div id="true"></div>'
-//			);
-//		});
-//	});
-//
-//
-//   describe('should ignore falsy values', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				class: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment(undefined, template), container);
-//
-//			expect(container.firstChild.getAttribute('class')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(null, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment(false, template), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div class="false"></div>'
-//			);
-//		});
-//	});
-//
-//	describe('should set truthy boolean values', () => {
-//		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-//			createElement('div', {
-//				disabled: arg
-//			})
-//		);
-//
-//		it('Initial render (creation)', () => {
-//
-//			Inferno.render(Inferno.createFragment('', template), container);
-//
-//			expect(container.firstChild.getAttribute('disabled')).to.be.null;
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div></div>'
-//			);
-//		});
-//
-//		it('Second render (update)', () => {
-//			Inferno.render(Inferno.createFragment(true, template), container);
-//			expect(container.firstChild.getAttribute('disabled')).to.equal('true');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div disabled="true"></div>'
-//			);
-//		});
-//
-//		it('Third render (update)', () => {
-//			Inferno.render(Inferno.createFragment('true', template), container);
-//            expect(container.firstChild.getAttribute('disabled')).to.equal('true');
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				'<div disabled="true"></div>'
-//			);
-//		});
-//	});
+
+	describe('should handle basic styles', () => {
+	   let template;
+	   const styleRule = { width:200, height:200 };
+
+	   beforeEach(() => {
+		   template = Inferno.createTemplate(() =>
+			   createElement('div', { style: styleRule })
+		   );
+		   Inferno.render(template(), container);
+	   });
+
+	   it('Initial render (creation)', () => {
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   '<div style="width: 200px; height: 200px;"></div>'
+		   );
+	   });
+	});
+
+	describe('should update styles when "style" changes from null to object', () => {
+	   let template;
+	   const styles = {color: 'red'};
+
+	   beforeEach(() => {
+		   template = Inferno.createTemplate(() =>
+			   createElement('div', { style: {null} })
+		   );
+		   Inferno.render(template(), container);
+	   });
+
+	   it('Initial render (creation)', () => {
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   '<div></div>'
+		   );
+	   });
+	   it('Second render (update)', () => {
+		   template = Inferno.createTemplate(() =>
+			   createElement('div', { style: styles })
+		   );
+		   Inferno.render(template(), container);
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   '<div style="color: red;"></div>'
+		   );
+	   });
+	});
+
+	describe('should ignore null styles', () => {
+	   let template;
+	   const styleRule = { backgroundColor: null, display: 'none' };
+
+	   beforeEach(() => {
+		   template = Inferno.createTemplate(() =>
+			   createElement('div', { style: styleRule })
+		   );
+		   Inferno.render(template(), container);
+	   });
+
+	   it('Initial render (creation)', () => {
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   '<div style="display: none;"></div>'
+		   );
+	   });
+	});
+
+	describe('should not set NaN value on styles', () => {
+	   let template;
+	   const styleRule = { 'font-size': parseFloat('zoo') } ;
+
+	   beforeEach(() => {
+		   template = Inferno.createTemplate(() =>
+			   createElement('div', { style: styleRule })
+		   );
+		   Inferno.render(template(), container);
+	   });
+
+	   it('Initial render (creation)', () => {
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   '<div></div>'
+		   );
+	   });
+	});
+
+	describe('should trim values so `px` will be appended correctly', () => {
+	   let template;
+	   const styleRule = { margin: '16 ' };
+
+	   beforeEach(() => {
+		   template = Inferno.createTemplate(() =>
+			   createElement('div', { style: styleRule })
+		   );
+		   Inferno.render(template(), container);
+	   });
+
+	   it('Initial render (creation)', () => {
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   '<div style="margin: 16px;"></div>'
+		   );
+	   });
+	});
+
+	describe('should support number values', () => {
+	   let template;
+	   const styleRule = { width: 7 };
+
+	   beforeEach(() => {
+		   template = Inferno.createTemplate(() =>
+			   createElement('div', { style: styleRule })
+		   );
+		   Inferno.render(template(), container);
+	   });
+
+	   it('Initial render (creation)', () => {
+
+		   expect(
+			   container.innerHTML
+		   ).to.equal(
+			   '<div style="width: 7px;"></div>'
+		   );
+	   });
+	});
+
+	describe('should properly render input download attribute', () => {
+		let template = Inferno.createTemplate((val1) =>
+			createElement('div', {
+				download: val1
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(false), container);
+			expect(container.firstChild.getAttribute('download')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div download="true"></div>'
+			);
+		});
+	});
+
+    describe('should properly render scope attribute', () => {
+		let template = Inferno.createTemplate((val1) =>
+			createElement('div', {
+				scope: val1
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template('scope'), container);
+			expect(container.firstChild.getAttribute('scope')).to.eql('scope');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div scope="scope"></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div scope="true"></div>'
+			);
+		});
+	});
+
+    describe('should properly render HTMLL5 data-* attribute', () => {
+		let template = Inferno.createTemplate((val1) =>
+			createElement('div', {
+				data: val1
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template('val'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div data="val"></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div data="true"></div>'
+			);
+		});
+	});
+
+    describe('should properly render value property', () => {
+		let template = Inferno.createTemplate((val1) =>
+			createElement('div', {
+				value: val1
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template('val'), container);
+			expect(container.firstChild.value).to.eql('val');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(container.firstChild.value).to.eql(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+	});
+
+	describe('should set boolean element property', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('input', {
+				'type': 'checkbox',
+				'checked': arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template('checked'), container);
+			expect(container.firstChild.checked).to.eql(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="checkbox">'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(container.firstChild.checked).to.eql(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="checkbox">'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(''), container);
+			expect(container.firstChild.checked).to.eql(false);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="checkbox">'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template('lala'), container);
+			expect(container.firstChild.checked).to.eql(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="checkbox">'
+			);
+		});
+		it('Fourth render (update)', () => {
+			Inferno.render(template(null), container);
+			expect(container.firstChild.checked).to.be.false;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="checkbox">'
+			);
+		});
+
+		it('Fifth render (update)', () => {
+			Inferno.render(template('null'), container);
+			expect(container.firstChild.checked).to.be.true;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input type="checkbox">'
+			);
+		});
+	});
+
+	describe('should support number values', () => {
+		let template;
+		const styleRule = {
+			width: 7
+		};
+
+		beforeEach(() => {
+			template = Inferno.createTemplate(() =>
+				createElement('div', {
+					style: styleRule
+				})
+			);
+			Inferno.render(template(), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="width: 7px;"></div>'
+			);
+		});
+	});
+
+	describe('should properly render name attribute', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				name: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template('simple'), container);
+			expect(container.firstChild.getAttribute('name')).to.eql('simple');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div name="simple"></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div name="true"></div>'
+			);
+		});
+	});
+
+	describe('should properly render id attribute', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				id: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template('simple'), container);
+			expect(container.firstChild.getAttribute('id')).to.eql('simple');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div id="simple"></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div id="true"></div>'
+			);
+		});
+	});
+
+   describe('should ignore falsy values', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				class: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(undefined), container);
+			expect(container.firstChild.getAttribute('class')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(null), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="false"></div>'
+			);
+		});
+	});
+
+	describe('should set truthy boolean values', () => {
+		let template = Inferno.createTemplate((arg) =>
+			createElement('div', {
+				disabled: arg
+			})
+		);
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(''), container);
+			expect(container.firstChild.getAttribute('disabled')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(true), container);
+			expect(container.firstChild.disabled).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template('true'), container);
+            expect(container.firstChild.disabled).to.equal(true);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+		});
+	});
 //
 //   describe('should properly render class attribute', () => {
 //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>

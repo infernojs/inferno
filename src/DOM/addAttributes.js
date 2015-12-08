@@ -21,7 +21,9 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 // A fast className setter as its the most common property to regularly change
 function fastPropSet(attrName, attrVal, domNode) {
 	if (attrName === 'class' || attrName === 'className') {
-		domNode.className = attrVal;
+		if (attrVal != null) {
+			domNode.className = attrVal;
+		}
 		return true;
 	}
 	return false;
@@ -31,7 +33,7 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 	for (let attrName in dynamicAttrs) {
 		const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
-		if (attrVal) {
+		if (attrVal !== undefined) {
 			if (fastPropSet(attrName, attrVal, domNode) === false) {
 				if (eventMapping[attrName]) {
 					addListener(item, domNode, eventMapping[attrName], attrVal);
@@ -50,7 +52,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 		const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
 		if (lastAttrVal !== nextAttrVal) {
-			if (nextAttrVal) {
+			if (nextAttrVal !== undefined) {
 				if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
 					if (eventMapping[attrName]) {
 						addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);

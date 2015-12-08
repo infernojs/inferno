@@ -19,9 +19,22 @@ import { addDOMStaticAttributes } from './addAttributes';
 
 const tagError = `Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`;
 
-function createStaticAttributes(node, domNode) {
-	if (node.attrs != null) {
-		addDOMStaticAttributes(node, domNode, node.attrs);
+function createStaticAttributes(node, domNode, excludeAttrs) {
+	const attrs = node.attrs;
+
+	if (attrs != null) {
+		if (excludeAttrs) {
+			const newAttrs = {...attrs};
+
+			for (let attr in excludeAttrs) {
+				if (newAttrs[attr]) {
+					delete newAttrs[attr];
+				}
+			}
+			addDOMStaticAttributes(node, domNode, newAttrs);
+		} else {
+			addDOMStaticAttributes(node, domNode, attrs);
+		}
 	}
 }
 
@@ -136,6 +149,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						dynamicAttrs = attrs;
 					} else if (dynamicFlags.ATTRS !== false) {
 						dynamicAttrs = dynamicFlags.ATTRS;
+						createStaticAttributes(schema, templateNode, dynamicAttrs);
 					} else {
 						createStaticAttributes(schema, templateNode);
 					}
