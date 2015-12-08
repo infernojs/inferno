@@ -3,7 +3,6 @@ import queueStateChanges from '../core/queueStateChanges';
 class Component {
 	constructor(props, context) {
 		this.props = props || {};
-		this.context = context;
 		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;

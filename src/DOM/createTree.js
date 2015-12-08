@@ -12,12 +12,11 @@ import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
 import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
+import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
 
 import { ObjectTypes } from '../core/variables';
 import isArray from '../util/isArray';
 import { addDOMStaticAttributes } from './addAttributes';
-
-const tagError = `Inferno Error: Tag names cannot be dynamic, they must always be static. Try using an alternative template to achieve the same results.`;
 
 function createStaticAttributes(node, domNode, excludeAttrs) {
 	const attrs = node.attrs;
@@ -67,9 +66,6 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 		const tag = node.tag;
 
 		if (tag) {
-			if (tag.type === ObjectTypes.VARIABLE) {
-				throw Error(tagError);
-			}
 			// TODO handle SVG namespaces with IS
 			switch (tag) {
 				case 'svg': domNamespace = 'http://www.w3.org/2000/svg'; break;
@@ -128,7 +124,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 
 			if(tag) {
 				if (tag.type === ObjectTypes.VARIABLE) {
-					throw Error(tagError);
+					return createRootNodeWithComponent(tag.index, schema.attrs, domNamespace);
 				}
 				switch (tag) {
 					case 'svg': domNamespace = 'http://www.w3.org/2000/svg'; break;

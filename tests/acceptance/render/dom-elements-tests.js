@@ -1,5 +1,5 @@
 import domElementsTestsNoJSX from './no-jsx/dom-elements-tests.js';
-//import domComponentsTestsFunctional from './functional-api/dom-components-tests-functional.js';
+import domComponentsTestsNoJSX from './no-jsx/dom-components-tests.js';
 //import domElementsTestsJsx from './inferno-jsx/dom-elements-tests-jsx.js';
 //import domComponentsTestsJsx from './inferno-jsx/dom-components-tests-jsx.js';
 import Inferno from '../../../src';
@@ -15,16 +15,15 @@ export default function domElementsTests(describe, expect) {
             Inferno.render(null, container);
         });
 
-        describe('using the Inferno functional API', () => {
+        describe('using the Inferno with no JSX plugin', () => {
 			describe('HTML', () => {
                 domElementsTestsNoJSX(describe, expect, container);
-				//domElementsTestsFunctional(describe, expect, container);
 			});
 			describe('Components', () => {
-				//domComponentsTestsFunctional(describe, expect, container);
+				domComponentsTestsNoJSX(describe, expect, container);
 			})
         });
-        describe('using the Inferno JSX plugin', () => {
+        describe('using the Inferno with the JSX plugin', () => {
 			describe('HTML', () => {
 				//domElementsTestsJsx(describe, expect, container);
 			});
