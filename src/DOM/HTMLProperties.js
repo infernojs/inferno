@@ -177,9 +177,9 @@ const Whitelist = {
     /**
      * RDFa Properties
      */
-    datatype: MUST_USE_ATTRIBUTE,
+    datatype: null,
     // property is also supported for OpenGraph in meta tags.
-    property: MUST_USE_ATTRIBUTE,
+    property: null,
     /**
      * Others
      */
