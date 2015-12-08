@@ -85,7 +85,7 @@ const template = {
 				} else if (propertyInfo.museUseObject) {
 					domNode.removeAttribute(propName);
 				} else if (propName === 'value' && (vNode.tag === 'select')) {
-					removeSelectValueForProperty(node, domNode, propName, useProperties);
+					removeSelectValueForProperty(vNode, domNode, propName, useProperties);
 				} else {
 					if (useProperties) {
 						if ('' + domNode[propName] !== '') {
