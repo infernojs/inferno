@@ -2012,7 +2012,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 	describe('various random DOM tests', () => {
-		it('Test should throw an error as the text property cannot be used with the children property on the same node', () => {
+		it('should throw an error as the text property cannot be used with the children property on the same node', () => {
 			expect(() => {
 				const template = Inferno.createTemplate(() => ({
 					tag: 'div',
@@ -2027,8 +2027,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				}));
 			}).to.throw(Error);
 		});
-		it('Test should render correctly #2', () => {
-			// CASE #2 - This children are not rendered at all
+		it('should render a static shape div (static attr) > span > span > text', () => {
 			const template = Inferno.createTemplate(() => ({
 				tag: 'div',
 				attrs: {
@@ -2038,7 +2037,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 					tag: 'span',
 					children: {
 						tag: 'span',
-						children: 'Invisible child!!'
+						children: 'Visible child!!'
 					}
 				}
 			}));
@@ -2046,11 +2045,10 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div id="foo"><span><span>Invisible child!!</span></span></div>'
+				'<div id="foo"><span><span>Visible child!!</span></span></div>'
 			);
 		});
-		it('Test should render correctly #3', () => {
-			// CASE #3 - This will insert the text as [Object Object]
+		it('should render a shape div (dynamic attr) > text', () => {
 			const template = Inferno.createTemplate((val1) => ({
 				tag: 'div',
 				attrs: {
@@ -2067,8 +2065,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				'<div id="test">Hello, World</div>'
 			);
 		});
-		it('Test should render correctly #4', () => {
-			// CASE #4 - This will insert the text as [Object Object], and it's sub-children as [Object Object]
+		it('should render a shape div (dynamic attr) > text, span > text', () => {
 			const template = Inferno.createTemplate((val1) => ({
 				tag: 'div',
 				attrs: {
@@ -2088,9 +2085,8 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				'<div id="test">Hello, World<span>Hello, World</span></div>'
 			);
 		});
-		it('Test should render correctly #5', () => {
-			// CASE #5 - No attributes are set, and multiple [Object Object]
-			const template = Inferno.createTemplate((val1, val2) => ({
+		it('should render a shape div (dynamic attr) > text, span (static attr) > text', () => {
+			const template = Inferno.createTemplate((val1) => ({
 				tag: 'div',
 				attrs: {
 					id: val1
@@ -2106,9 +2102,13 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				}]
 			}));
 			Inferno.render(template('test'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div id="test">Hello, World<span class="foo">Hello, World</span></div>'
+			);
 		});
-		it('Test should render correctly #6', () => {
-			// CASE #6 - This children are not rendered at all
+		it('should render a static shape div > span > span > text', () => {
 			const template = Inferno.createTemplate(() => ({
 				tag: 'div',
 				attrs: {
@@ -2118,21 +2118,30 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 					tag: 'span',
 					children: {
 						tag: 'span',
-						children: 'Invisible child!!'
+						children: 'Visible child!!'
 					}
 				}
 			}));
 			Inferno.render(template(), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div id="foo"><span><span>Visible child!!</span></span></div>'
+			);
 		});
-		it('Test should render correctly #7', () => {
-			// CASE #7 - This children are not rendered at all
+		it('should render a shape div > text (dynamic)', () => {
 			const template = Inferno.createTemplate((child) => ({
 				tag: 'div',
 				children: child
 			}));
 			Inferno.render(template('foo'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>foo</div>'
+			);
 		});
-		it('Test should render correctly #8', () => {
+		it('should render a shape div > [ text, text, text ] (dynamic)', () => {
 			// CASE #8 - This throws erorr in the console
 			const template = Inferno.createTemplate((child) => ({
 				tag: 'div',
@@ -2141,8 +2150,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 
 			Inferno.render(template(['1', '2', '3']), container);
 		});
-		it('Test should render correctly #9', () => {
-			// CASE #9 - No message in console, and nothing rendered
+		it('should render a shape div (static attrs) > fragment [ span > fragment [ span > text, text, text ] ]', () => {
 			const template = Inferno.createTemplate((child) => ({
 				tag: 'div',
 				attrs: {

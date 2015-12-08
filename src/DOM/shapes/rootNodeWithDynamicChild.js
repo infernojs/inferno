@@ -26,10 +26,18 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				if (isArray(value)) {
 					for (let i = 0; i < value.length; i++) {
 						const childItem = value[i];
-						domNode.appendChild(childItem.domTree.create(childItem));
+
+						if (typeof childItem === 'object') {
+							domNode.appendChild(childItem.domTree.create(childItem));
+						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
+							const textNode = document.createTextNode(childItem);
+							domNode.appendChild(textNode);
+						}
 					}
 				} else if (typeof value === 'object') {
 					domNode.appendChild(value.domTree.create(value));
+				} else if (typeof value === 'string' || typeof value === 'number') {
+					domNode.textContent = value;
 				}
 			}
 			if (dynamicAttrs) {
@@ -63,9 +71,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 					if (isArray(lastValue)) {
 						updateKeyed(nextValue, lastValue, domNode, null);
 					} else {
-						//debugger;
+						// TODO
 					}
-				} else {
+				} else if (typeof nextValue === 'object') {
 					const tree = nextValue.domTree;
 
 					if (tree !== null) {
@@ -74,9 +82,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						} else {
 							// TODO implement
 						}
-					} else if (nextValue !== lastValue) {
-						domNode.firstChild.nodeValue = nextValue;
 					}
+				} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
+					domNode.firstChild.nodeValue = nextValue;
 				}
 			}
 			if (dynamicAttrs) {
