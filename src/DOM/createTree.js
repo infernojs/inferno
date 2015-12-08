@@ -1,7 +1,7 @@
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
-import createRootNodeWithStaticText from './shapes/rootNodeWithStaticText';
-import createNodeWithStaticText from './shapes/nodeWithStaticText';
+import createRootNodeWithStaticChild from './shapes/rootNodeWithStaticChild';
+import createNodeWithStaticChild from './shapes/nodeWithStaticChild';
 import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createNodeWithDynamicChild from './shapes/nodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
@@ -71,16 +71,10 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
         staticNode = document.createTextNode(node);
     } else {
         const tag = node.tag;
-        
-		// TODO! Get this working! I guess 'schema' is the vdom object, so this has to be passed into
-		// this function
-		
         if (tag) {
-
             // extract the 'xmlns' attribute from vnode attrs
-            let namespace = schema.attrs && schema.attrs.xmlns || null;
-            let is = schema.attrs && schema.attrs.is || null;
-
+            let namespace = node.attrs && node.attrs.xmlns || null;
+            let is = node.attrs && node.attrs.is || null;
             // if the users have defined the 'xmlns' attribute, we need to use that as default namespace, so
             // ignore everything else if this is defined
             if (!namespace) { // no xmlns attribute
@@ -208,9 +202,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
                     } else {
                         templateNode.textContent = text;
                         if (isRoot) {
-                            node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
+                            node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
                         } else {
-                            node = createNodeWithStaticText(templateNode, dynamicAttrs);
+                            node = createNodeWithStaticChild(templateNode, dynamicAttrs);
                         }
                     }
                 } else {
@@ -247,9 +241,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
                         } else if (typeof children === 'string' || typeof children === 'number') {
                             templateNode.textContent = children;
                             if (isRoot) {
-                                node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
+                                node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
                             } else {
-                                node = createNodeWithStaticText(templateNode, dynamicAttrs);
+                                node = createNodeWithStaticChild(templateNode, dynamicAttrs);
                             }
                         } else {
                             const childNodeDynamicFlags = dynamicNodeMap.get(children);
@@ -258,9 +252,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
                                 createStaticTreeChildren(children, templateNode, domNamespace);
 
                                 if (isRoot) {
-                                    node = createRootNodeWithStaticText(templateNode, dynamicAttrs);
+                                    node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
                                 } else {
-                                    node = createNodeWithStaticText(templateNode, dynamicAttrs);
+                                    node = createNodeWithStaticChild(templateNode, dynamicAttrs);
                                 }
                             }
                         }

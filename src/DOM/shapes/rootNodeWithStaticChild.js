@@ -4,7 +4,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttri
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithStaticText(templateNode, dynamicAttrs) {
+export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
 	const node = {
 		pool: [],
 		keyedPool: [],

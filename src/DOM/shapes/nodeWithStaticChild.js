@@ -1,7 +1,7 @@
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
-export default function createNodeWithStaticText(templateNode, dynamicAttrs) {
+export default function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 	let domNode;
 	const node = {
 		create(item) {

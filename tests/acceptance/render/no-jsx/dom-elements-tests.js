@@ -2069,7 +2069,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 		it('Test should render correctly #4', () => {
 			// CASE #4 - This will insert the text as [Object Object], and it's sub-children as [Object Object]
-			const template = Inferno.createTemplate((val1, val2) => ({
+			const template = Inferno.createTemplate((val1) => ({
 				tag: 'div',
 				attrs: {
 					id: val1
@@ -2082,6 +2082,11 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				}]
 			}));
 			Inferno.render(template('test'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div id="test">Hello, World<span>Hello, World</span></div>'
+			);
 		});
 		it('Test should render correctly #5', () => {
 			// CASE #5 - No attributes are set, and multiple [Object Object]
