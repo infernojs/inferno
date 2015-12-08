@@ -26,7 +26,7 @@ const template = {
 				const propName = propertyInfo.propertyName;
 
 				if (propertyInfo.mustUseProperty) {
-					if (propertyInfo.museUseObject) {
+					if (propertyInfo.mustUseObject) {
 						if (propName === 'style') {
 							setValueForStyles(vNode, domNode, value, useProperties)
 						}
@@ -82,7 +82,7 @@ const template = {
 						domNode.removeAttribute(propName);
 					}
 					// 'style' and 'dataset' property has to be removed as an attribute
-				} else if (propertyInfo.museUseObject) {
+				} else if (propertyInfo.mustUseObject) {
 					domNode.removeAttribute(propName);
 				} else if (propName === 'value' && (vNode.tag === 'select')) {
 					removeSelectValueForProperty(vNode, domNode, propName, useProperties);
