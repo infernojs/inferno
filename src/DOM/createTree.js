@@ -64,7 +64,7 @@ function createStaticTreeChildren(children, parentNode, domNamespace) {
     }
 }
 
-function createStaticTreeNode(node, parentNode, domNamespace) {
+function createStaticTreeNode(node, parentNode, domNamespace, schema) {
     let staticNode;
 
     if (typeof node === 'string' || typeof node === 'number') {
@@ -75,10 +75,10 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
         if (tag) {
 
             // extract the 'xmlns' attribute from vnode attrs
-            let namespace = node.attrs && node.attrs.xmlns || null;
-            let is = node.attrs && node.attrs.is || null;
+            let namespace = schema.attrs && schema.attrs.xmlns || null;
+            let is = schema.attrs && schema.attrs.is || null;
 
-            // if the uses have devined 'xmlns' attribute, we need to use that as default namespace, so
+            // if the users have defined the 'xmlns' attribute, we need to use that as default namespace, so
             // ignore everything else if this is defined
             if (!namespace) {
                 switch (tag) {
@@ -139,7 +139,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
     let templateNode;
 
     if (!dynamicFlags) {
-        templateNode = createStaticTreeNode(schema, null, domNamespace);
+        templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
 
         if (isRoot) {
             node = createRootStaticNode(templateNode);
