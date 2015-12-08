@@ -71,7 +71,10 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
         staticNode = document.createTextNode(node);
     } else {
         const tag = node.tag;
-
+        
+		// TODO! Get this working! I guess 'schema' is the vdom object, so this has to be passed into
+		// this function
+		
         if (tag) {
 
             // extract the 'xmlns' attribute from vnode attrs
@@ -80,7 +83,7 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
 
             // if the users have defined the 'xmlns' attribute, we need to use that as default namespace, so
             // ignore everything else if this is defined
-            if (!namespace) {
+            if (!namespace) { // no xmlns attribute
                 switch (tag) {
                     case 'svg':
                         domNamespace = 'http://www.w3.org/2000/svg';
@@ -91,7 +94,7 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
                     default:
                         break;
                 }
-            } else {
+            } else { // xmlns attribute set by the end-dev
                 domNamespace = namespace;
             }
 
