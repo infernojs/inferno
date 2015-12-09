@@ -2578,6 +2578,152 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
+	describe('should set className on root node, and update an node with dynamic attributes on static child', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			attrs: { class: 'Hello!' },
+			children: {
+				tag: 'div',
+				children: {
+					tag: 'span',
+					attrs: {
+						id: child
+					}
+				}
+			}
+		}));
+		
+		it('first render (creation)', () => {
+
+			Inferno.render(template('id#1'), container);
+			expect(container.firstChild.innerHTML).to.equal('<div><span id="id#1"></span></div>');
+		});
+		it('second render - (update)', () => {
+			Inferno.render(template('id#2'), container);
+			expect(container.firstChild.innerHTML).to.equal('<div><span id="id#2"></span></div>');
+
+		});
+	});
+
+	describe('should update an node with static child and dynamic custom attribute and static text and dynamic children', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: {
+				tag: 'div',
+				children: child
+			}
+		}));
+
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(function(val) {
+				return {
+					tag: 'span',
+					attrs: { custom_attr: val },
+					child: 'Hello!!'
+				};
+			});
+			const span2 = Inferno.createTemplate(function(val) { // This child, and attrs never set
+				return {
+					tag: 'span',
+					attrs: { caught_fire: val },
+					children: 'Hello, world'
+				};
+			});
+			Inferno.render(template(span('id#1', span2('custom'))), container);
+			expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1"></span></div>'); // WILL NOT FAIL
+		});
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(function(val, child) {
+				return {
+					tag: 'span',
+					attrs: { caught_fire: val },
+					children: child
+				};
+			});
+
+			const span2 = Inferno.createTemplate(function(val) {
+				return {
+					tag: 'span',
+					attrs: { caught_fire: val },
+					children: 'Hello, world'
+				};
+			});
+
+			Inferno.render(template(span('id#2', span2('custom'))), container);
+			expect(container.firstChild.innerHTML).to.equal('<div><span caught_fire="id#2"><span caught_fire="custom">Hello, world</span></span></div>');
+		});
+	});
+
+	describe('should render "select" boolean on select options', () => {
+		const template = Inferno.createTemplate(function(val) {
+			return {
+				tag: 'select',
+				attrs: {
+					multiple: true,
+					value: val
+				},
+				children: [{
+					tag: 'option',
+					attrs: {
+						value: 'foo'
+					},
+					children: 'foo'
+				}, {
+					tag: 'option',
+					attrs: {
+						value: 'bar'
+					},
+					children: 'bar'
+				}]
+
+			};
+		});
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template('foo'), container);
+			expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
+			expect(container.firstChild.children[1].selected).to.eql(false);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select multiple="multiple"><option>foo</option><option>bar</option></select>' // Missing selected markup
+			);
+		});
+		it('Initial render (creation)', () => {
+			const template = Inferno.createTemplate(function() {
+				return {
+					tag: 'select',
+					attrs: {
+						multiple: true,
+						value: 'foo'
+					},
+					children: [{
+						tag: 'option',
+						attrs: {
+							value: 'foo'
+						},
+						children: 'foo'
+					}, {
+						tag: 'option',
+						attrs: {
+							value: 'bar'
+						},
+						children: 'bar'
+					}]
+
+				};
+			});
+			Inferno.render(template('bar'), container);
+			expect(container.firstChild.children[0].selected).to.eql(true);
+			expect(container.firstChild.children[1].selected).to.eql(false);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+			);
+		});
+	});
+
 //   describe('should properly render class attribute', () => {
 //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
 //			createElement('div', {

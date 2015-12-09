@@ -5,7 +5,8 @@ export const ObjectTypes = {
 };
 
 export const ValueTypes = {
-	TEXT: 0
+	TEXT: 0,
+	ARRAY: 1
 };
 
 export function createVariable(index) {
