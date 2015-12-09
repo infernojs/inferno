@@ -52,6 +52,11 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 }
 
 export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+	if (dynamicAttrs.index !== undefined) {
+		const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
+		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
+		return;
+	}
 	for (let attrName in dynamicAttrs) {
 		const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
 		const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);

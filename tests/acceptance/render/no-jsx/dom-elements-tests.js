@@ -2213,6 +2213,12 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			).to.equal(
 				'<div class="test"></div>'
 			);
+			Inferno.render(template({className: 'foo'}), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="foo"></div>'
+			);
 		});
 	});
 
