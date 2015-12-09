@@ -2396,8 +2396,6 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
-	// NOTE !! This test will not fail!!!
-	// IT will not fail because the attributes on the root node are not set, and therefor not in the HTML Markup / innerHTML
 	describe('should set className on root node, and update an node with dynamic attributes on static child', () => {
 		const template = Inferno.createTemplate((child) => ({
 			tag: 'div',
@@ -2424,13 +2422,6 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
-
-	//	ANOTHER EXAMPLE - THIS WILL NOT FAIL. BUT
-	//
-	// - attributes are not set
-	// - dynamic children are not set on creation
-	// - ++
-	//
 	describe('should update an node with static child and dynamic custom attribute and static text and dynamic children', () => {
 		const template = Inferno.createTemplate((child) => ({
 			tag: 'div',
@@ -2481,9 +2472,6 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
-	// IMPORTANT TO FIX
-	// Upon creation no select / select multiple value are set. They are returned falsy even they
-	// should have been truthy
 	describe('should render "select" boolean on select options', () => {
 		const template = Inferno.createTemplate(function(val) {
 			return {
