@@ -2149,6 +2149,11 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			}));
 
 			Inferno.render(template(['1', '2', '3']), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>123</div>'
+			);
 		});
 		it('should render a shape div (static attrs) > fragment [ span > fragment [ span > text, text, text ] ]', () => {
 			const template = Inferno.createTemplate((child) => ({
@@ -2183,6 +2188,31 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				]
 			}));
 			expect(() => { Inferno.render(template(['Hello'], 'Bar'), container) }).to.throw(Error);
+		});
+		it('should render a shape void div (dynamic attrs)', () => {
+			const template = Inferno.createTemplate((className) => ({
+				tag: 'div',
+				attrs: {className: className}
+			}));
+
+			Inferno.render(template('test'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="test"></div>'
+			);
+		});
+		it('should render a shape void div (dynamic attrs) #2', () => {
+			const template = Inferno.createTemplate((attrs) => ({
+				tag: 'div',
+				attrs: attrs
+			}));
+			Inferno.render(template({className: 'test'}), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="test"></div>'
+			);
 		});
 	});
 

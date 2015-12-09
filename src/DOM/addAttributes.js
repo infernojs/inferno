@@ -30,8 +30,13 @@ function fastPropSet(attrName, attrVal, domNode) {
 }
 
 export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
+	if (dynamicAttrs.index !== undefined) {
+		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
+		addDOMStaticAttributes(item, domNode, dynamicAttrs);
+		return;
+	}
 	for (let attrName in dynamicAttrs) {
-		const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+		let attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
 		if (attrVal !== undefined) {
 			if (fastPropSet(attrName, attrVal, domNode) === false) {
