@@ -18,7 +18,7 @@ const template = {
 		if (propertyInfo) {
 			if (value == null ||
 				propertyInfo.hasBooleanValue && !value ||
-				propertyInfo.hasNumericValue && isNaN(value) || // Todo! Find alternative for 'isNaN'
+				propertyInfo.hasNumericValue && (value !== value) ||
 				propertyInfo.hasPositiveNumericValue && value < 1 ||
 				value.length === 0) {
 				template.removeProperty(vNode, domNode, name, useProperties);
@@ -26,10 +26,8 @@ const template = {
 				const propName = propertyInfo.propertyName;
 
 				if (propertyInfo.mustUseProperty) {
-					if (propertyInfo.mustUseObject) {
-						if (propName === 'style') {
+					if (propertyInfo.mustUseObject && (propName === 'style')) {
 							setValueForStyles(vNode, domNode, value, useProperties)
-						}
 					} else if (propName === 'value' && (vNode.tag === 'select')) {
 						setSelectValueForProperty(vNode, domNode, value, useProperties);
 					} else if ('' + domNode[propName] !== '' + value) {
@@ -53,9 +51,9 @@ const template = {
 					}
 				}
 			}
-			// custom attributes
-		} else if (name && (name.length > 1)) {
-			if (value === null) {
+		// HTML attributes and custom attributes
+		} else if (name && (name.length > 2)) {
+			if (value == null) {
 				domNode.removeAttribute(name);
 			} else {
 				domNode.setAttribute(name, value);
@@ -84,8 +82,6 @@ const template = {
 					// 'style' and 'dataset' property has to be removed as an attribute
 				} else if (propertyInfo.mustUseObject) {
 					domNode.removeAttribute(propName);
-				} else if (propName === 'value' && (vNode.tag === 'select')) {
-					removeSelectValueForProperty(vNode, domNode, propName, useProperties);
 				} else {
 					if (useProperties) {
 						if ('' + domNode[propName] !== '') {
@@ -98,7 +94,7 @@ const template = {
 			} else {
 				domNode.removeAttribute(propertyInfo.attributeName);
 			}
-			// Custom attributes
+		// HTML attributes and custom attributes
 		} else {
 			domNode.removeAttribute(name);
 		}
