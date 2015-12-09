@@ -110,7 +110,7 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
 
             if (text != null) {
                 if (children != null) {
-                    throw Error('Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.');
+                    throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
                 }
                 staticNode.textContent = text;
             } else {
@@ -135,8 +135,16 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
     let node;
     let templateNode;
 
+	if (isArray(schema)) {
+		throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+	}
+
     if (!dynamicFlags) {
-        templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
+		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
+
+		if (!templateNode) {
+			throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+		}
 
         if (isRoot) {
             node = createRootStaticNode(templateNode);

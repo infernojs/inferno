@@ -2011,6 +2011,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			);
 		});
 	});
+
 	describe('various random DOM tests', () => {
 		it('should throw an error as the text property cannot be used with the children property on the same node', () => {
 			expect(() => {
@@ -2142,7 +2143,6 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			);
 		});
 		it('should render a shape div > [ text, text, text ] (dynamic)', () => {
-			// CASE #8 - This throws erorr in the console
 			const template = Inferno.createTemplate((child) => ({
 				tag: 'div',
 				children: child
@@ -2167,15 +2167,234 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				children: b
 			}));
 			Inferno.render(template(span(b())), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="hello, world"><span><span>123</span></span></div>'
+			);
+		});
+		it('should throw and error when trying to render a shape div > text (dynamic), text, text (dynamic) due to dynamic variables being arrays', () => {
+			const template = Inferno.createTemplate((val1, val2) => ({
+				tag: 'div',
+				children: [
+					val1,
+					' foo',
+					val2
+				]
+			}));
+			expect(() => { Inferno.render(template(['Hello'], 'Bar'), container) }).to.throw(Error);
 		});
 	});
 
+	describe('should patch a wrapped text node with its container', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
 
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(() => ({
+				tag: 'div',
+				children: 'Hello'
+			}));
+			Inferno.render(template(span()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div>Hello</div></div>'
+			);
+		});
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(() => ({
+				tag: 'span',
+				children: 'Good bye!'
+			}));
+			Inferno.render(template(span()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>Good bye!</span></div>'
+			);
+		});
+	});
 
+	describe('should patch a text node into a tag node', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
 
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(function() {
+				return 'Hello'
+			});
+			Inferno.render(template(span()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello</div>'
+			);
+		});
 
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(() => ({
+				tag: 'span',
+				children: 'Good bye!'
+			}));
+			Inferno.render(template(span()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>Good bye!</span></div>'
+			);
+		});
+	});
 
+	describe('should patch a tag node into a text node', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
 
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(() => ({
+				tag: 'span',
+				children: 'Good bye!'
+			}));
+			Inferno.render(template(span()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>Good bye!</span></div>'
+			);
+		});
+
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(function() {
+				return 'Hello'
+			});
+			Inferno.render(template(span()), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello</div>'
+			);
+		});
+	});
+
+	describe('should render text then update it', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
+
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(function() {
+				return 'Hello'
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('Hello');
+		});
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(function() {
+				return 'Hello, World'
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('Hello, World');
+		});
+	});
+
+	describe('should render text then update to an array of text nodes', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
+
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children: 'Hello'};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello</span>');
+		});
+
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children :['Hello ', 'World', '!']};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		});
+	});
+
+	describe('should render an array of text nodes then update to a single text node', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
+
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children :['Hello ', 'World', '!']};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		});
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children: 'Hello'};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello</span>');
+		});
+	});
+
+	describe('should update and array of text nodes to another array of text nodes', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
+
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children :['Hello ', 'World']};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello World</span>');
+		});
+
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children :['Hello ', 'World', '!']};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+
+		});
+	});
+
+	describe('should update and array of text nodes to another array of text nodes #2', () => {
+		const template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children: child
+		}));
+
+		it('first render (creation)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children :['Hello ', 'World', '!']};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		});
+
+		it('second render - (update)', () => {
+			const span = Inferno.createTemplate(function() {
+				return {tag: 'span', children :['Hello ', 'World']};
+			});
+			Inferno.render(template(span()), container);
+			expect(container.firstChild.innerHTML).to.equal('<span>Hello World</span>');
+		});
+	});
 
 //   describe('should properly render class attribute', () => {
 //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>

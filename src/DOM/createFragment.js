@@ -8,7 +8,6 @@ export default function createDOMFragment(parentNode, nextNode) {
 			if (!nextItem) {
 				return;
 			}
-
 			const tree = nextItem.domTree;
 
 			if (lastItem) {

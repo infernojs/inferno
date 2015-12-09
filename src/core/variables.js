@@ -1,3 +1,5 @@
+import isArray from '../util/isArray';
+
 export const ObjectTypes = {
 	VARIABLE: 1
 };
@@ -20,5 +22,7 @@ export function getValueWithIndex(item, index) {
 export function getTypeFromValue(value) {
 	if (typeof value === 'string' || typeof value === 'number') {
 		return ValueTypes.TEXT;
+	} else if (isArray(value)) {
+		return ValueTypes.ARRAY;
 	}
 }

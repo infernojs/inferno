@@ -13,6 +13,9 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 					// TODO check if string is empty?
 					domNode = document.createTextNode(value);
 					break;
+				case ValueTypes.ARRAY:
+					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+					break;
 				default: break;
 			}
 
