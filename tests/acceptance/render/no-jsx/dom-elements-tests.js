@@ -1271,7 +1271,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div required="required"></div>'
+				'<div></div>'
 			);
 		});
 	});
@@ -1306,7 +1306,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div hidden="hidden"></div>'
+				'<div hidden=""></div>'
 			);
 		});
 	});

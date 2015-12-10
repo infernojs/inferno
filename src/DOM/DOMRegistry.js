@@ -72,7 +72,7 @@ const Whitelist = {
     download: BOOLEAN,
     enabled: BOOLEAN,
     formNoValidate: BOOLEAN,
-    hidden: BOOLEAN | BOOLEAN,
+    hidden: PROPERTY | BOOLEAN,
     loop: BOOLEAN,
     // Caution; `option.selected` is not updated if `select.multiple` is
     // disabled with `removeAttribute`.
@@ -83,7 +83,7 @@ const Whitelist = {
     paused: PROPERTY,
     playbackRate: PROPERTY | NUMERIC_VALUE,
     readOnly: BOOLEAN,
-    required: BOOLEAN | BOOLEAN,
+    required: PROPERTY | BOOLEAN,
     reversed: BOOLEAN,
     draggable: BOOLEAN,
 	scoped: BOOLEAN,
