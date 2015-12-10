@@ -35,13 +35,11 @@ const DOMAttributeNames = {
     xmlBase: 'xml:base',
     xmlLang: 'xml:lang',
     xmlSpace: 'xml:space',
-    viewBox: 'viewBox'
+    viewBox: 'viewBox' // SVG - Edge case. The letter 'b' need to be uppercase
 };
 
 const DOMPropertyNames = {
-    autoCapitalize: 'autocapitalize',
     autoComplete: 'autocomplete',
-    autoCorrect: 'autocorrect',
     autoFocus: 'autofocus',
     autoPlay: 'autoplay',
     autoSave: 'autosave',
@@ -58,7 +56,7 @@ const DOMPropertyNames = {
 const Whitelist = {
     allowFullScreen: BOOLEAN,
     async: BOOLEAN,
-    autoFocus: PROPERTY | BOOLEAN,
+    autoFocus: BOOLEAN,
     autoPlay: null,
     capture: BOOLEAN,
     checked: PROPERTY | BOOLEAN,
@@ -66,45 +64,52 @@ const Whitelist = {
     currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
     default: BOOLEAN,
     defaultChecked: BOOLEAN,
-	defaultSelected: BOOLEAN,
-	defer: BOOLEAN,
+    defaultMuted: BOOLEAN,
+    defaultSelected: BOOLEAN,
+    defer: BOOLEAN,
     disabled: PROPERTY | BOOLEAN,
-    download: BOOLEAN,
+    download: null,
     enabled: BOOLEAN,
     formNoValidate: BOOLEAN,
-    hidden: PROPERTY | BOOLEAN,
+    hidden: PROPERTY | BOOLEAN, // 3.2.5 - Global attributes
     loop: BOOLEAN,
     // Caution; `option.selected` is not updated if `select.multiple` is
     // disabled with `removeAttribute`.
     multiple: PROPERTY | BOOLEAN,
     muted: PROPERTY | BOOLEAN,
     noValidate: BOOLEAN,
+    noShade: PROPERTY | BOOLEAN,
+    noResize: BOOLEAN,
+    noWrap: BOOLEAN,
+    typeMustMatch: BOOLEAN,
     open: BOOLEAN,
     paused: PROPERTY,
     playbackRate: PROPERTY | NUMERIC_VALUE,
     readOnly: BOOLEAN,
     required: PROPERTY | BOOLEAN,
     reversed: BOOLEAN,
-    draggable: BOOLEAN,
-	scoped: BOOLEAN,
-	visible: BOOLEAN,
-	trueSpeed: BOOLEAN,
-	sortable: BOOLEAN,
-	inert: BOOLEAN,
-	indeterminate: BOOLEAN,
-	nohref: BOOLEAN,
-	compact: BOOLEAN,
-	declare: BOOLEAN,
+    draggable: null, // 3.2.5 - Global attributes
+    dropzone: null, // 3.2.5 - Global attributes
+    scoped: BOOLEAN,
+    visible: BOOLEAN,
+    trueSpeed: BOOLEAN,
+    sortable: BOOLEAN,
+    inert: BOOLEAN,
+    indeterminate: BOOLEAN,
+    nohref: BOOLEAN,
+    compact: BOOLEAN,
+    declare: BOOLEAN,
     ismap: PROPERTY | BOOLEAN,
-    pauseOnExist: PROPERTY | BOOLEAN,
+    pauseOnExit: PROPERTY | BOOLEAN,
     seamless: BOOLEAN,
+    translate: BOOLEAN, // 3.2.5 - Global attributes
     selected: PROPERTY | BOOLEAN,
-    style: OBJECT,
+    style: OBJECT, // 3.2.5 - Global attributes
     srcLang: PROPERTY,
     srcObject: PROPERTY,
     value: PROPERTY,
     volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
-    itemScope: BOOLEAN,
+    itemScope: BOOLEAN, // 3.2.5 - Global attributes
     className: null,
     tabindex: PROPERTY | NUMERIC_VALUE,
 
@@ -133,9 +138,12 @@ const Whitelist = {
     'xml:space': null,
 
     /**
-     * Common attributes
+     * 3.2.5 - Global attributes
      */
-
+    itemprop: true,
+    itemref: true,
+    itemscope: true,
+    itemtype: true,
     id: null,
     class: null,
     dir: null,
@@ -181,6 +189,12 @@ const Whitelist = {
     unselectable: null,
 
     /**
+     * Firefox
+     */
+
+    continuous: BOOLEAN,
+
+    /**
      * Safari
      */
 
@@ -193,13 +207,12 @@ const Whitelist = {
     datatype: null,
     // property is also supported for OpenGraph in meta tags.
     property: null,
+
     /**
      * Others
      */
-
-    // autoSave allows WebKit/Blink to persist values of input fields on page reloads
-    autosave: null,
-    srcSet: null,
+    
+	srcSet: null,
     scrolling: null,
     nonce: null,
     method: null,
@@ -213,17 +226,17 @@ const Whitelist = {
     height: null,
     width: null,
     dateTime: null,
-    contentEditable: null,
+    contenteditable: null, // 3.2.5 - Global attributes
     contextMenu: null,
     classID: null,
     cellPadding: null,
     cellSpacing: null,
     charSet: null,
     allowTransparency: null,
-    spellcheck: null
+    spellcheck: null // 3.2.5 - Global attributes
 };
 
-let DOMPropertyContainer = {};
+let HTMLPropsContainer = {};
 
 function checkBitmask(value, bitmask) {
     return bitmask !== null && ((value & bitmask) === bitmask);
@@ -233,7 +246,7 @@ for (let propName in Whitelist) {
 
     const propConfig = Whitelist[propName];
 
-    DOMPropertyContainer[propName] = {
+    HTMLPropsContainer[propName] = {
         attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
         attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
         propertyName: DOMPropertyNames[propName] || propName,
@@ -246,4 +259,4 @@ for (let propName in Whitelist) {
     };
 }
 
-export default DOMPropertyContainer;
+export default HTMLPropsContainer;
