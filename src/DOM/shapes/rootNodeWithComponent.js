@@ -1,23 +1,54 @@
 import isArray from '../../util/isArray';
-import { getValueWithIndex } from '../../core/variables';
+import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 export default function createRootNodeWithComponent(componentIndex, props, domNamespace) {
+	let instance;
+	let lastRender;
 	const node = {
 		create(item) {
 			const Component = getValueWithIndex(item, componentIndex);
-			const instance = new Component(props);
+			instance = new Component(getValueForProps(props, item));
 			instance.componentWillMount();
-			const nextItem = instance.render();
-			const domNode = nextItem.domTree.create(nextItem);
+			const nextRender = instance.render();
+			const domNode = nextRender.domTree.create(nextRender);
 
 			item.rootNode = domNode;
+			lastRender = nextRender;
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			let domNode;
-			// TODO
+			const prevProps = instance.props;
+			const prevState = instance.state;
+			const nextState = instance.state;
+			const nextProps = getValueForProps(props, nextItem);
+
+			if(!nextProps.children) {
+				nextProps.children = prevProps.children;
+			}
+
+			if(prevProps !== nextProps || prevState !== nextState) {
+				if(prevProps !== nextProps) {
+					instance._blockRender = true;
+					instance.componentWillReceiveProps(nextProps);
+					instance._blockRender = false;
+				}
+				const shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
+
+				if(shouldUpdate) {
+					instance._blockSetState = true;
+					instance.componentWillUpdate(nextProps, nextState);
+					instance._blockSetState = false;
+					instance.props = nextProps;
+					instance.state = nextState;
+					const nextRender = instance.render();
+					nextRender.domTree.update(lastRender, nextRender);
+					instance.componentDidUpdate(prevProps, prevState);
+					lastRender = nextRender;
+				}
+			}
+			debugger;
 
 		}
 	};

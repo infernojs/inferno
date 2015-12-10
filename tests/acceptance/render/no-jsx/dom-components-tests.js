@@ -20,12 +20,12 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 		let template;
 
 		beforeEach(() => {
-			template = Inferno.createTemplate((Component) =>
+			template = Inferno.createTemplate((Component, title) =>
 				createElement('div', null,
-					createElement(Component, {title: "abc", name: "basic-render"})
+					createElement(Component, {title: title, name: "basic-render"})
 				)
 			);
-			Inferno.render(template(BasicComponent1), container);
+			Inferno.render(template(BasicComponent1, 'abc'), container);
 		});
 
 		it('Initial render (creation)', () => {
@@ -35,6 +35,16 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 				'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
 			);
 		});
+
+		it('Second render (update)', () => {
+			Inferno.render(template(BasicComponent1, '123'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is 123</span></div></div>'
+			);
+		});
+
 		//it('Second render (update)', () => {
 		//	Inferno.render(Inferno.createFragment([
 		//		{component: BasicComponent1, props: {title: "123", name: "basic-update"}}

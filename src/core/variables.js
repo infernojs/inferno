@@ -27,3 +27,18 @@ export function getTypeFromValue(value) {
 		return ValueTypes.ARRAY;
 	}
 }
+
+export function getValueForProps(props, item) {
+	const newProps = {};
+
+	for (let name in props) {
+		const val = props[name];
+
+		if (val && val.index) {
+			newProps[name] = getValueWithIndex(item, val.index);
+		} else {
+			newProps[name] = val;
+		}
+	}
+	return newProps;
+}

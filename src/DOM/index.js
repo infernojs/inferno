@@ -41,7 +41,7 @@ const template = {
 						}
 					}
 				} else {
-					
+
 					const attributeName = propertyInfo.attributeName;
 					const namespace = propertyInfo.attributeNamespace;
 
@@ -49,7 +49,7 @@ const template = {
 					if (propertyInfo.hasBooleanValue && value === true) {
 						value = attributeName;
 					}
-					
+
 					if (namespace) {
 						domNode.setAttributeNS(namespace, attributeName, value);
 					} else {

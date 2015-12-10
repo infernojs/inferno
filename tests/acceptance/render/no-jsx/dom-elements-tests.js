@@ -1250,7 +1250,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 
 		it('Initial render (creation)', () => {
 			Inferno.render(template(false), container);
-			expect(container.getAttribute('required')).to.be.null;
+			expect(container.firstChild.getAttribute('required')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -1259,7 +1259,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 		it('Second render (creation)', () => {
 			Inferno.render(template(null), container);
-			expect(container.getAttribute('required')).to.be.null;
+			expect(container.firstChild.getAttribute('required')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -1268,6 +1268,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 		it('Third render (update)', () => {
 			Inferno.render(template(true), container);
+			expect(container.firstChild.required).to.be.true;
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -1285,7 +1286,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 
 		it('Initial render (creation)', () => {
 			Inferno.render(template(false), container);
-			expect(container.getAttribute('hidden')).to.be.null;
+			expect(container.firstChild.getAttribute('hidden')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -1294,7 +1295,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 		it('Second render (creation)', () => {
 			Inferno.render(template(null), container);
-			expect(container.getAttribute('hidden')).to.be.null;
+			expect(container.firstChild.getAttribute('hidden')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -1303,6 +1304,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		});
 		it('Third render (update)', () => {
 			Inferno.render(template(true), container);
+			expect(container.firstChild.hidden).to.be.true;
 			expect(
 				container.innerHTML
 			).to.equal(
