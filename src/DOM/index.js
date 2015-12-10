@@ -13,7 +13,7 @@ const template = {
 	 * @param {*} value
 	 */
 	setProperty(vNode, domNode, name, value, useProperties) {
-		const propertyInfo = DOMRegistry[name];
+		const propertyInfo = DOMRegistry[name] || null;
 
 		if (propertyInfo) {
 			if (value == null ||
@@ -41,9 +41,15 @@ const template = {
 						}
 					}
 				} else {
+					
 					const attributeName = propertyInfo.attributeName;
 					const namespace = propertyInfo.attributeNamespace;
 
+                    // if 'truthy' value, and boolean, it will be 'propName=propName'
+					if (propertyInfo.hasBooleanValue && value === true) {
+						value = attributeName;
+					}
+					
 					if (namespace) {
 						domNode.setAttributeNS(namespace, attributeName, value);
 					} else {
