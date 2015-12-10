@@ -38,7 +38,10 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 					for (let attr in node.attrs) {
 						const attrVal = node.attrs[attr];
 						if (attrVal != null && attrVal.type === ObjectTypes.VARIABLE) {
-							if(dynamicFlags.ATTRS === false) {
+							if (attr === 'xmlns') {
+								throw Error('Inferno Error: The "xmlns" attribute cannot be dynamic. Please use static value for "xmlns" attribute instead.');
+							}
+							if (dynamicFlags.ATTRS === false) {
 								dynamicFlags.ATTRS = {};
 							}
 							dynamicFlags.ATTRS[attr] = attrVal.index;

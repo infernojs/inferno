@@ -72,12 +72,10 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
     } else {
         const tag = node.tag;
         if (tag) {
-            // extract the 'xmlns' attribute from vnode attrs
             let namespace = node.attrs && node.attrs.xmlns || null;
             let is = node.attrs && node.attrs.is || null;
-            // if the users have defined the 'xmlns' attribute, we need to use that as default namespace, so
-            // ignore everything else if this is defined
-            if (!namespace) { // no xmlns attribute
+
+            if (!namespace) {
                 switch (tag) {
                     case 'svg':
                         domNamespace = 'http://www.w3.org/2000/svg';
@@ -88,10 +86,9 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
                     default:
                         break;
                 }
-            } else { // xmlns attribute set by the end-dev
+            } else {
                 domNamespace = namespace;
             }
-
             if (domNamespace) {
                 if (is) {
                     staticNode = document.createElementNS(domNamespace, tag, is);
@@ -165,22 +162,36 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
                 if (tag.type === ObjectTypes.VARIABLE) {
                     return createRootNodeWithComponent(tag.index, schema.attrs, domNamespace);
                 }
-                switch (tag) {
-                    case 'svg':
-                        domNamespace = 'http://www.w3.org/2000/svg';
-                        break;
-                    case 'math':
-                        domNamespace = 'http://www.w3.org/1998/Math/MathML';
-                        break;
-                    default:
-                        break;
-                }
-                // TODO handle SVG namespaces with IS
-                if (domNamespace) {
-                    templateNode = document.createElementNS(domNamespace, tag);
-                } else {
-                    templateNode = document.createElement(tag);
-                }
+				let namespace = schema.attrs && schema.attrs.xmlns || null;
+				let is = schema.attrs && schema.attrs.is || null;
+
+				if (!namespace) {
+					switch (tag) {
+						case 'svg':
+							domNamespace = 'http://www.w3.org/2000/svg';
+							break;
+						case 'math':
+							domNamespace = 'http://www.w3.org/1998/Math/MathML';
+							break;
+						default:
+							break;
+					}
+				} else {
+					domNamespace = namespace;
+				}
+				if (domNamespace) {
+					if (is) {
+						templateNode = document.createElementNS(domNamespace, tag, is);
+					} else {
+						templateNode = document.createElementNS(domNamespace, tag);
+					}
+				} else {
+					if (is) {
+						templateNode = document.createElement(tag, is);
+					} else {
+						templateNode = document.createElement(tag);
+					}
+				}
                 const attrs = schema.attrs;
                 let dynamicAttrs = null;
 

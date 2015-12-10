@@ -58,7 +58,7 @@ const DOMPropertyNames = {
 const Whitelist = {
     allowFullScreen: BOOLEAN,
     async: BOOLEAN,
-    autoFocus: BOOLEAN,
+    autoFocus: PROPERTY | BOOLEAN,
     autoPlay: null,
     capture: BOOLEAN,
     checked: PROPERTY | BOOLEAN,
@@ -72,7 +72,7 @@ const Whitelist = {
     download: BOOLEAN,
     enabled: BOOLEAN,
     formNoValidate: BOOLEAN,
-    hidden: BOOLEAN,
+    hidden: BOOLEAN | BOOLEAN,
     loop: BOOLEAN,
     // Caution; `option.selected` is not updated if `select.multiple` is
     // disabled with `removeAttribute`.
@@ -83,7 +83,7 @@ const Whitelist = {
     paused: PROPERTY,
     playbackRate: PROPERTY | NUMERIC_VALUE,
     readOnly: BOOLEAN,
-    required: BOOLEAN,
+    required: BOOLEAN | BOOLEAN,
     reversed: BOOLEAN,
     draggable: BOOLEAN,
 	scoped: BOOLEAN,
