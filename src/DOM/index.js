@@ -2,6 +2,8 @@ import DOMRegistry from './DOMRegistry';
 import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import removeSelectValueForProperty from './removeSelectValueForProperty';
+import isDataAttribute from './isDataAttribute';
+import isAriaAttribute from './isAriaAttribute';
 
 const template = {
 	/**
@@ -58,13 +60,19 @@ const template = {
 				}
 			}
 		// HTML attributes and custom attributes
-		} else if (name && (name.length > 2)) {
-			if (value == null) {
-				domNode.removeAttribute(name);
-			} else {
-				domNode.setAttribute(name, value);
-			}
-		}
+		 } else if (name && (name.length > 2)) {
+            if (value == null) {
+                domNode.removeAttribute(name);
+            } else {
+                 // data-* and aria attributes should be lowercase;
+                if (isDataAttribute(name) || isAriaAttribute(name)) {
+                    domNode.setAttribute(name.toLowerCase(), value);
+                } else {
+
+                    domNode.setAttribute(name, value);
+                }
+            }
+        }
 	},
 
 	/**
