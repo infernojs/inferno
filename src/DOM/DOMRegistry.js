@@ -2,8 +2,8 @@ const PROPERTY = 0x1;
 const BOOLEAN = 0x2;
 const NUMERIC_VALUE = 0x4;
 const POSITIVE_NUMERIC_VALUE = 0x6 | 0x4;
-const NEED_REVIEW = 0x8;
 const OBJECT = 0x1 | 0x20;
+const NEED_REVIEW = 0x30;
 
 const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
