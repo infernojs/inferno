@@ -3,6 +3,7 @@ import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import review from './review';
 import isDataAttribute from './isDataAttribute';
+import isAriaAttribute from './isAriaAttribute';
 
 const template = {
 
@@ -66,8 +67,8 @@ const template = {
             if (value == null) {
                 domNode.removeAttribute(name);
             } else {
-                 // data-* attributes should be lowercase;
-                if (isDataAttribute(name)) {
+                 // data-* and aria attributes should be lowercase;
+                if (isDataAttribute(name) || isAriaAttribute(name)) {
                     domNode.setAttribute(name.toLowerCase(), value);
                 } else {
 
