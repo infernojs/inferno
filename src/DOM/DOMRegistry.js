@@ -68,7 +68,7 @@ const Whitelist = {
     defaultSelected: BOOLEAN,
     defer: BOOLEAN,
     disabled: PROPERTY | BOOLEAN,
-    download: null,
+    download: BOOLEAN,
     enabled: BOOLEAN,
     formNoValidate: BOOLEAN,
     hidden: PROPERTY | BOOLEAN, // 3.2.5 - Global attributes
@@ -88,7 +88,7 @@ const Whitelist = {
     readOnly: BOOLEAN,
     required: PROPERTY | BOOLEAN,
     reversed: BOOLEAN,
-    draggable: null, // 3.2.5 - Global attributes
+    draggable: BOOLEAN, // 3.2.5 - Global attributes
     dropzone: null, // 3.2.5 - Global attributes
     scoped: BOOLEAN,
     visible: BOOLEAN,
@@ -226,7 +226,7 @@ const Whitelist = {
     height: null,
     width: null,
     dateTime: null,
-    contenteditable: null, // 3.2.5 - Global attributes
+    contenteditable: PROPERTY | BOOLEAN, // 3.2.5 - Global attributes
     contextMenu: null,
     classID: null,
     cellPadding: null,

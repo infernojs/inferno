@@ -1497,34 +1497,28 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 		);
 
 		it('Initial render (creation)', () => {
-
 			Inferno.render(template(123), container);
-
-			expect(container.getAttribute('seamless')).to.be.null;
+			expect(container.firstChild.getAttribute('seamless')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div contenteditable="123"></div>'
 			);
 		});
-
 		it('Second render (creation)', () => {
-
 			Inferno.render(template('Hello'), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
 				 '<div contenteditable="Hello"></div>'
 			);
 		});
-
 		it('Third render (update)', () => {
 			Inferno.render(template([]), container);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div></div>'
+				'<div contenteditable=""></div>'
 			);
 		});
 	});

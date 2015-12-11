@@ -48,8 +48,6 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 					lastRender = nextRender;
 				}
 			}
-			debugger;
-
 		}
 	};
 	return node;
