@@ -2,6 +2,7 @@ const PROPERTY = 0x1;
 const BOOLEAN = 0x2;
 const NUMERIC_VALUE = 0x4;
 const POSITIVE_NUMERIC_VALUE = 0x6 | 0x4;
+const NEED_REVIEW = 0x8;
 const OBJECT = 0x1 | 0x20;
 
 const xlink = 'http://www.w3.org/1999/xlink';
@@ -107,7 +108,7 @@ const Whitelist = {
     style: OBJECT, // 3.2.5 - Global attributes
     srcLang: PROPERTY,
     srcObject: PROPERTY,
-    value: PROPERTY,
+    value: PROPERTY | NEED_REVIEW,
     volume: PROPERTY | POSITIVE_NUMERIC_VALUE,
     itemScope: BOOLEAN, // 3.2.5 - Global attributes
     className: null,
@@ -226,7 +227,7 @@ const Whitelist = {
     height: null,
     width: null,
     dateTime: null,
-    contenteditable: PROPERTY | BOOLEAN, // 3.2.5 - Global attributes
+    contenteditable: null, // 3.2.5 - Global attributes
     contextMenu: null,
     classID: null,
     cellPadding: null,
@@ -254,6 +255,7 @@ for (let propName in Whitelist) {
         mustUseProperty: checkBitmask(propConfig, PROPERTY),
         hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
         hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
+        needReview: checkBitmask(propConfig, NEED_REVIEW),
         hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
         mustUseObject: checkBitmask(propConfig, OBJECT)
     };
