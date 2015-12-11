@@ -2,6 +2,7 @@ import DOMRegistry from './DOMRegistry';
 import setSelectValueForProperty from './setSelectValueForProperty';
 import setValueForStyles from './setValueForStyles';
 import review from './review';
+import isDataAttribute from './isDataAttribute';
 
 const template = {
 
@@ -65,7 +66,13 @@ const template = {
             if (value == null) {
                 domNode.removeAttribute(name);
             } else {
-                domNode.setAttribute(name, value);
+                 // data-* attributes should be lowercase;
+                if (isDataAttribute(name)) {
+                    domNode.setAttribute(name.toLowerCase(), value);
+                } else {
+
+                    domNode.setAttribute(name, value);
+                }
             }
         }
     },
