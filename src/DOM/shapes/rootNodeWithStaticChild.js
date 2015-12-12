@@ -34,7 +34,6 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 				// TODO recycle old node
 				return;
 			}
-
 			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
 			if (dynamicAttrs) {

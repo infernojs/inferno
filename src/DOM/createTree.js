@@ -13,6 +13,7 @@ import createDynamicNode from './shapes/dynamicNode';
 import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
 import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
+import createNodeWithComponent from './shapes/nodeWithComponent';
 
 import {
     ObjectTypes
@@ -160,7 +161,11 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 
             if (tag) {
                 if (tag.type === ObjectTypes.VARIABLE) {
-                    return createRootNodeWithComponent(tag.index, schema.attrs, domNamespace);
+                    if (isRoot) {
+                        return createRootNodeWithComponent(tag.index, schema.attrs, domNamespace);
+                    } else {
+                        return createNodeWithComponent(tag.index, schema.attrs, domNamespace);
+                    }
                 }
 				let namespace = schema.attrs && schema.attrs.xmlns || null;
 				let is = schema.attrs && schema.attrs.is || null;

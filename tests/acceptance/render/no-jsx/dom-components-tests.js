@@ -85,87 +85,78 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 				true
 			);
 		});
-		//it('Second render (update)', () => {
-		//	Inferno.render(Inferno.createFragment([
-		//		{component: BasicComponent1b, props: {title: "123", isChecked: false}}
-		//	], template), container);
-		//	expect(
-		//		container.innerHTML
-		//	).to.equal(
-		//		'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
-		//	);
-		//	expect(
-		//		container.querySelector("input").checked
-		//	).to.equal(
-		//		false
-		//	);
-		//});
-		//it('Third render (update)', () => {
-		//	Inferno.render(Inferno.createFragment([
-		//		{component: BasicComponent1b, props: {title: "123", isChecked: true}}
-		//	], template), container);
-		//	expect(
-		//		container.innerHTML
-		//	).to.equal(
-		//		'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
-		//	);
-		//	expect(
-		//		container.querySelector("input").checked
-		//	).to.equal(
-		//		true
-		//	);
-		//});
+		it('Second render (update)', () => {
+			Inferno.render(template(BasicComponent1b, "123", false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				false
+			);
+		});
+		it('Third render (update)', () => {
+			Inferno.render(template(BasicComponent1b, "123", true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				true
+			);
+		});
 	});
 
-	//class BasicComponent1c extends Inferno.Component {
-	//	template(createElement, createComponent, isEnabled, title) {
-	//		return createElement("div", {className: "basic"},
-	//			createElement('label', {},
-	//				createElement("input", {type: 'password', enabled: isEnabled}),
-	//				"The title is ",
-	//				title
-	//			)
-	//		);
-	//	}
-	//	render() {
-	//		return Inferno.createFragment([this.props.isEnabled, this.props.title], this.template);
-	//	}
-	//}
-	//
-	//describe('should render a basic component with inputs #2', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((createElement, createComponent, Component) =>
-	//				createElement('div', null,
-	//					createComponent(Component)
-	//				)
-	//		);
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1c, props: {title: "abc", isEnabled: true}}
-	//		], template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><div class="basic"><label><input type="password" enabled="true">The title is abc</label></div></div>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1c, props: {title: "123", isEnabled: false}}
-	//		], template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
-	//		);
-	//	});
-	//});
-	//
+	class BasicComponent1c extends Inferno.Component {
+		render() {
+			const template = Inferno.createTemplate((isEnabled, title, type) =>
+				createElement("div", {className: "basic"},
+					createElement('label', {},
+						createElement("input", {type, enabled: isEnabled}),
+						"The title is ",
+						title
+					)
+				)
+			);
+			return template(this.props.isEnabled, this.props.title, this.props.type);
+		}
+	}
+
+	describe('should render a basic component with inputs #2', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((Component, title, isEnabled) =>
+					createElement('div', null,
+						createElement(Component, {title, isEnabled, type: 'password'})
+					)
+			);
+			Inferno.render(template(BasicComponent1c, 'abc', true), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password" enabled="enabled">The title is abc</label></div></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(BasicComponent1c, '123', false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
+			);
+		});
+	});
+
 	//class BasicComponent1d extends Inferno.Component {
 	//	template(createElement, createComponent, isDisabled, title) {
 	//		return createElement("div", {className: "basic"},
@@ -307,38 +298,34 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 	//		);
 	//	});
 	//});
-	//
-	//describe('should render a basic root component', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((createElement, createComponent, Component) =>
-	//			createComponent(Component)
-	//		);
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1, props: {title: "abc", name: "basic-render"}}
-	//		], template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div class="basic"><span class="basic-render">The title is abc</span></div>'
-	//		);
-	//	});
-	//	it('Second render (update)', () => {
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1, props: {title: "123", name: "basic-update"}}
-	//		], template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div class="basic"><span class="basic-update">The title is 123</span></div>'
-	//		);
-	//	});
-	//});
-	//
+
+	describe('should render a basic root component', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((Component, title, name) =>
+				createElement(Component, {title, name})
+			);
+			Inferno.render(template(BasicComponent1, 'abc', 'basic-render'), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="basic"><span class="basic-render">The title is abc</span></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(BasicComponent1, '123', 'basic-update'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			);
+		});
+	});
+
 	//class BasicComponent2 extends Inferno.Component {
 	//	template(createElement, createComponent, name, title, children) {
 	//		return createElement("div", {className: "basic"},

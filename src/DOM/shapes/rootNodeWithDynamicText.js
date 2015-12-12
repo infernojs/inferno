@@ -39,7 +39,6 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				// TODO recycle old node
 				return;
 			}
-
 			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
 			const nextValue = getValueWithIndex(nextItem, valueIndex);

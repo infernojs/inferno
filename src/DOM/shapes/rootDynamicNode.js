@@ -43,7 +43,6 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 				// TODO recycle old node
 				return;
 			}
-
 			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
 

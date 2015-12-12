@@ -16,7 +16,7 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 				case ValueTypes.ARRAY:
 					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 					break;
-				default: debugger; break;
+				default: break;
 			}
 
 			return domNode;

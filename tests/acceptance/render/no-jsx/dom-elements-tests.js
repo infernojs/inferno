@@ -2931,7 +2931,7 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			).to.equal(
 				'<div class="bar1" id="foo1"><div id="foo3"><span>bar3</span></div><div class="bar2">foo2</div></div>'
 			);
-			
+
 			Inferno.render(template('yar1', 'noo1', 'yar2', 'noo2', 'yar3', 'noo3'), container);
 			expect(
 				container.innerHTML
