@@ -33,6 +33,7 @@ export default function createTemplate(callback) {
 			case 1:
 				construct = (v0) => {
 					let key;
+
 					if (keyIndex === 0) {
 						key = v0;
 					}
@@ -49,6 +50,7 @@ export default function createTemplate(callback) {
 			case 2:
 				construct = (v0, v1) => {
 					let key;
+
 					if (keyIndex === 0) {
 						key = v0;
 					} else if (keyIndex === 1) {
@@ -66,14 +68,24 @@ export default function createTemplate(callback) {
 				};
 				break;
 			default:
-				construct = (...values) => {
-					const key = values[keyIndex];
+				construct = (v0, v1, ...values) => {
+					let key;
+
+					if (keyIndex === 0) {
+						key = v0;
+					} else if (keyIndex === 1) {
+						key = v1;
+					} else if (keyIndex > 1) {
+						key = values[keyIndex];
+					}
 					return {
 						domTree,
 						htmlStringTree,
 						key,
 						nextItem: null,
 						rootNode: null,
+						v0,
+						v1,
 						values
 					};
 				};

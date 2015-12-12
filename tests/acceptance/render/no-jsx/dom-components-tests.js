@@ -44,92 +44,79 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 				'<div><div class="basic"><span class="basic-render">The title is 123</span></div></div>'
 			);
 		});
+	});
 
+	class BasicComponent1b extends Inferno.Component {
+		render() {
+			const template = Inferno.createTemplate((isChecked, title) =>
+				createElement("div", {className: "basic"},
+					createElement('label', {},
+						createElement("input", {type: 'checkbox', checked: isChecked}),
+						"The title is ",
+						title
+					)
+				)
+			);
+			return template(this.props.isChecked, this.props.title);
+		}
+	}
+
+	describe('should render a basic component with inputs', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((Component, title, isChecked) =>
+				createElement('div', null,
+					createElement(Component, {title, isChecked})
+				)
+			);
+			Inferno.render(template(BasicComponent1b, "abc", true), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="checkbox">The title is abc</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				true
+			);
+		});
 		//it('Second render (update)', () => {
 		//	Inferno.render(Inferno.createFragment([
-		//		{component: BasicComponent1, props: {title: "123", name: "basic-update"}}
+		//		{component: BasicComponent1b, props: {title: "123", isChecked: false}}
 		//	], template), container);
 		//	expect(
 		//		container.innerHTML
 		//	).to.equal(
-		//		'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
+		//		'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
+		//	);
+		//	expect(
+		//		container.querySelector("input").checked
+		//	).to.equal(
+		//		false
+		//	);
+		//});
+		//it('Third render (update)', () => {
+		//	Inferno.render(Inferno.createFragment([
+		//		{component: BasicComponent1b, props: {title: "123", isChecked: true}}
+		//	], template), container);
+		//	expect(
+		//		container.innerHTML
+		//	).to.equal(
+		//		'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
+		//	);
+		//	expect(
+		//		container.querySelector("input").checked
+		//	).to.equal(
+		//		true
 		//	);
 		//});
 	});
-	//
-	//class BasicComponent1b extends Inferno.Component {
-	//	template(createElement, createComponent, isChecked, title) {
-	//		return createElement("div", {className: "basic"},
-	//			createElement('label', {},
-	//				createElement("input", {type: 'checkbox', checked: isChecked}),
-	//				"The title is ",
-	//				title
-	//			)
-	//		);
-	//	}
-	//	render() {
-	//		return Inferno.createFragment([this.props.isChecked, this.props.title], this.template);
-	//	}
-	//}
-	//
-	//describe('should render a basic component with inputs', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((createElement, createComponent, Component) =>
-	//				createElement('div', null,
-	//					createComponent(Component)
-	//				)
-	//		);
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1b, props: {title: "abc", isChecked: true}}
-	//		], template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><div class="basic"><label><input type="checkbox">The title is abc</label></div></div>'
-	//		);
-	//		expect(
-	//			container.querySelector("input").checked
-	//		).to.equal(
-	//			true
-	//		);
-	//	});
-	//	it('Second render (update)', () => {
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1b, props: {title: "123", isChecked: false}}
-	//		], template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
-	//		);
-	//		expect(
-	//			container.querySelector("input").checked
-	//		).to.equal(
-	//			false
-	//		);
-	//	});
-	//	it('Third render (update)', () => {
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1b, props: {title: "123", isChecked: true}}
-	//		], template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><div class="basic"><label><input type="checkbox">The title is 123</label></div></div>'
-	//		);
-	//		expect(
-	//			container.querySelector("input").checked
-	//		).to.equal(
-	//			true
-	//		);
-	//	});
-	//});
-	//
+
 	//class BasicComponent1c extends Inferno.Component {
 	//	template(createElement, createComponent, isEnabled, title) {
 	//		return createElement("div", {className: "basic"},
