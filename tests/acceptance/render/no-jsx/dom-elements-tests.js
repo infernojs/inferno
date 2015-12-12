@@ -2891,7 +2891,52 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<select multiple="multiple"><option>foo</option><option>bar</option></select>' // Missing selected markup
+				'<select multiple="multiple"><option>foo</option><option>bar</option></select>'
+			);
+		});
+	});
+
+	describe('should handle lots of dynamic variables', () => {
+		const template = Inferno.createTemplate(function(val1, val2, val3, val4, val5, val6) {
+			return {
+				tag: 'div',
+				attrs: {
+					className: val2,
+					id: val1
+				},
+				children: [{
+					tag: 'div',
+					attrs: {
+						id: val5
+					},
+					children: {
+						tag: 'span',
+						text: val6
+					}
+				}, {
+					tag: 'div',
+					attrs: {
+						className: val4
+					},
+					children: val3
+				}]
+
+			};
+		});
+
+		it('Create and update', () => {
+			Inferno.render(template('foo1', 'bar1', 'foo2', 'bar2', 'foo3', 'bar3'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="bar1" id="foo1"><div id="foo3"><span>bar3</span></div><div class="bar2">foo2</div></div>'
+			);
+			
+			Inferno.render(template('yar1', 'noo1', 'yar2', 'noo2', 'yar3', 'noo3'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="noo1" id="yar1"><div id="yar3"><span>noo3</span></div><div class="noo2">yar2</div></div>'
 			);
 		});
 	});

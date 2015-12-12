@@ -39,7 +39,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 
 			if (nextValue !== lastValue) {
 				if (typeof nextValue === 'string') {
-					//debugger;
+					domNode.firstChild.nodeValue = nextValue;
 				} else if (nextValue === null) {
 					// TODO
 				} else if (isArray(nextValue)) {
