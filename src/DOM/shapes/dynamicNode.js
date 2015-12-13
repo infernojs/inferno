@@ -5,12 +5,15 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 
 	const node = {
 		create(item) {
-			const value = getValueWithIndex(item, valueIndex);
+			let value = getValueWithIndex(item, valueIndex);
 			const type = getTypeFromValue(value);
 
 			switch (type) {
 				case ValueTypes.TEXT:
 					// TODO check if string is empty?
+					if (value == null) {
+						value = '';
+					}
 					domNode = document.createTextNode(value);
 					break;
 				case ValueTypes.ARRAY:
@@ -25,7 +28,7 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
@@ -40,6 +43,9 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 				switch (nextType) {
 					case ValueTypes.TEXT:
 						// TODO check if string is empty?
+						if (nextValue == null) {
+							nextValue = '';
+						}
 						domNode.nodeValue = nextValue;
 						break;
 					case ValueTypes.ARRAY:

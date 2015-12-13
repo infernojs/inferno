@@ -3,6 +3,8 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import unmountComponent from '../../core/unmountComponent';
+import recreateNode from '../recreateNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -27,22 +29,27 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 			instance.componentWillMount();
 			const nextRender = instance.render();
 
+			nextRender.parent = item;
 			domNode = nextRender.domTree.create(nextRender);
 			item.rootNode = domNode;
 			lastRender = nextRender;
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			let domNode;
+			const Component = getValueWithIndex(nextItem, componentIndex);
 
-			if (node !== lastItem.domTree) {
-				const lastDomNode = lastItem.rootNode;
-				domNode = this.create(nextItem);
-				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
-				// TODO recycle old node
+			if (Component !== instance.constructor) {
+				//unmount component
+				unmountComponent(instance);
+				recreateNode(lastItem, nextItem, node);
 				return;
 			}
-			domNode = lastItem.rootNode;
+			if (node !== lastItem.domTree) {
+				recreateNode(lastItem, nextItem, node);
+				return;
+			}
+			const domNode = lastItem.rootNode;
+
 			nextItem.rootNode = domNode;
 
 			const prevProps = instance.props;
@@ -69,6 +76,8 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 					instance.props = nextProps;
 					instance.state = nextState;
 					const nextRender = instance.render();
+
+					nextRender.parent = nextItem;
 					nextRender.domTree.update(lastRender, nextRender);
 					nextItem.rootNode = nextRender.rootNode;
 					instance.componentDidUpdate(prevProps, prevState);

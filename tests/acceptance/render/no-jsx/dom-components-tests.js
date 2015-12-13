@@ -369,64 +369,106 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 				'<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
 			);
 		});
+		it('Third render (update)', () => {
+			template = Inferno.createTemplate((Component, title, name) =>
+				createElement('div', null,
+					createElement(Component, {title, name},
+						createElement('span', null, 'The title is definitely ',  title)
+					)
+				)
+			);
+
+			Inferno.render(
+				template(BasicComponent2, "12345", "basic-update"), container
+			);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-update">The title is 12345</span><span>The title is definitely 12345</span></div></div>'
+			);
+		});
 	});
 
-	//class BasicComponent2b extends Inferno.Component {
-	//	template(createElement, createComponent, children) {
-	//		return createElement('div', null,
-	//			createElement('span', null, 'component!'),
-	//			createElement('div', null, children)
-	//		)
-	//	}
-	//	render() {
-	//		return Inferno.createFragment(this.props.children, this.template);
-	//	}
-	//}
-	//
-	//describe('should render a basic component with component children', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((createElement, createComponent, Component1, Component2, Component3) =>
-	//			createComponent(Component1,
-	//				createComponent(Component2,
-	//					createComponent(Component3)
-	//				)
-	//			)
-	//		);
-	//
-	//		Inferno.render(
-	//			Inferno.createFragment([
-	//				{ component: BasicComponent2b },
-	//				{ component: BasicComponent2b },
-	//				{ component: BasicComponent2b }
-	//			], template), container
-	//		);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
-	//		);
-	//	});
-	//	it('Second render (update) - should be the same', () => {
-	//		Inferno.render(
-	//			Inferno.createFragment([
-	//				{ component: BasicComponent2b },
-	//				{ component: BasicComponent2b },
-	//				{ component: BasicComponent2b }
-	//			], template), container
-	//		);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
-	//		);
-	//	});
-	//});
-	//
+	class BasicComponent2b extends Inferno.Component {
+		render() {
+			const template = Inferno.createTemplate((children) =>
+				createElement('div', null,
+					createElement('span', null, 'component!'),
+					createElement('div', null, children)
+				)
+			);
+			return template(this.props.children);
+		}
+	}
+
+	class BasicComponent2c extends Inferno.Component {
+		render() {
+			const template = Inferno.createTemplate((children) =>
+					createElement('div', null,
+						createElement('span', null, 'other component!'),
+						createElement('div', null, children)
+					)
+			);
+			return template(this.props.children);
+		}
+	}
+
+
+	describe('should render a basic component with component children', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((Component1, Component2, Component3) =>
+				createElement(Component1, null,
+					createElement(Component2, null,
+						createElement(Component3, null)
+					)
+				)
+			);
+			Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+			);
+		});
+		it('Second render (update) - should be the same', () => {
+			Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+			);
+		});
+		it('Second render (update) - should be a bit different', () => {
+			Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+			);
+		});
+		it('Second render (update) - should be a lot different', () => {
+			Inferno.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+			);
+		});
+		it('Second render (update) - should be completely different', () => {
+			Inferno.render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+			);
+		});
+	});
+
 	//describe('should render a basic component with component children #2', () => {
 	//	let template;
 	//	let componentWillMountCount;

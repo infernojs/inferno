@@ -23,6 +23,7 @@ export default function createTemplate(callback) {
 		switch (callbackLength) {
 			case 0:
 				construct = () => ({
+					parent: null,
 					domTree,
 					htmlStringTree,
 					key: null,
@@ -38,6 +39,7 @@ export default function createTemplate(callback) {
 						key = v0;
 					}
 					return {
+						parent: null,
 						domTree,
 						htmlStringTree,
 						key,
@@ -57,6 +59,7 @@ export default function createTemplate(callback) {
 						key = v1;
 					}
 					return {
+						parent: null,
 						domTree,
 						htmlStringTree,
 						key,
@@ -79,6 +82,7 @@ export default function createTemplate(callback) {
 						key = values[keyIndex];
 					}
 					return {
+						parent: null,
 						domTree,
 						htmlStringTree,
 						key,

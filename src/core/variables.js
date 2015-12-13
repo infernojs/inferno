@@ -22,7 +22,7 @@ export function getValueWithIndex(item, index) {
 }
 
 export function getTypeFromValue(value) {
-	if (typeof value === 'string' || typeof value === 'number') {
+	if (typeof value === 'string' || typeof value === 'number' || value === undefined) {
 		return ValueTypes.TEXT;
 	} else if (isArray(value)) {
 		return ValueTypes.ARRAY;

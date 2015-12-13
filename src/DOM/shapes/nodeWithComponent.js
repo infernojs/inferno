@@ -3,18 +3,28 @@ import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
+function getCorrectItemForValues(node, item) {
+	if (node !== item.domTree && item.parent) {
+		return getCorrectItemForValues(node, item.parent);
+	} else {
+		return item;
+	}
+}
+
 export default function createNodeWithComponent(componentIndex, props, domNamespace) {
 	let instance;
 	let lastRender;
 	let domNode;
 	const node = {
 		create(item) {
-			const Component = getValueWithIndex(item, componentIndex);
+			const valueItem = getCorrectItemForValues(node, item);
+			const Component = getValueWithIndex(valueItem, componentIndex);
 
-			instance = new Component(getValueForProps(props, item));
+			instance = new Component(getValueForProps(props, valueItem));
 			instance.componentWillMount();
 			const nextRender = instance.render();
 
+			nextRender.parent = item;
 			domNode = nextRender.domTree.create(nextRender);
 			lastRender = nextRender;
 			return domNode;
@@ -44,6 +54,8 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 					instance.props = nextProps;
 					instance.state = nextState;
 					const nextRender = instance.render();
+
+					nextRender.parent = nextItem;
 					nextRender.domTree.update(lastRender, nextRender);
 					instance.componentDidUpdate(prevProps, prevState);
 					lastRender = nextRender;

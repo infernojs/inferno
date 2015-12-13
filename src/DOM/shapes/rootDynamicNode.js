@@ -1,5 +1,6 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
+import recreateNode from '../recreateNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -16,12 +17,15 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 					return domNode;
 				}
 			}
-			const value = getValueWithIndex(item, valueIndex);
+			let value = getValueWithIndex(item, valueIndex);
 			const type = getTypeFromValue(value);
 
 			switch (type) {
 				case ValueTypes.TEXT:
 					// TODO check if string is empty?
+					if (value == null) {
+						value = '';
+					}
 					domNode = document.createTextNode(value);
 					break;
 				case ValueTypes.ARRAY:
@@ -34,16 +38,12 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			let domNode;
-
 			if (node !== lastItem.domTree) {
-				const lastDomNode = lastItem.rootNode;
-				domNode = this.create(nextItem);
-				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
-				// TODO recycle old node
+				recreateNode(lastItem, nextItem, node);
 				return;
 			}
-			domNode = lastItem.rootNode;
+			const domNode = lastItem.rootNode;
+
 			nextItem.rootNode = domNode;
 
 			const nextValue = getValueWithIndex(nextItem, valueIndex);

@@ -1,6 +1,7 @@
 import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import recreateNode from '../recreateNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -24,17 +25,12 @@ export default function createRootVoidNode(templateNode, dynamicAttrs) {
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			let domNode;
-
 			if (node !== lastItem.domTree) {
-				const lastDomNode = lastItem.rootNode;
-				domNode = this.create(nextItem);
-				lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
-				// TODO recycle old node
+				recreateNode(lastItem, nextItem, node);
 				return;
 			}
+			const domNode = lastItem.rootNode;
 
-			domNode = lastItem.rootNode;
 			nextItem.rootNode = domNode;
 			nextItem.rootNode = lastItem.rootNode;
 			if (dynamicAttrs) {
