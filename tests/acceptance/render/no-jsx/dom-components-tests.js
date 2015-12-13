@@ -413,7 +413,6 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 		}
 	}
 
-
 	describe('should render a basic component with component children', () => {
 		let template;
 
