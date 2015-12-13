@@ -1,7 +1,7 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
-import recreateNode from '../recreateNode';
+import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -32,7 +32,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 		},
 		update(lastItem, nextItem) {
 			if (node !== lastItem.domTree) {
-				recreateNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
 			const domNode = lastItem.rootNode;

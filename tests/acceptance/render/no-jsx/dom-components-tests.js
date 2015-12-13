@@ -468,99 +468,86 @@ export default function domComponentsTestsNoJSX(describe, expect, container) {
 		});
 	});
 
-	//describe('should render a basic component with component children #2', () => {
-	//	let template;
-	//	let componentWillMountCount;
-	//
-	//	class ComponentLifecycleCheck extends Inferno.Component {
-	//		template(createElement, createComponent, children) {
-	//			return createElement('div', null,
-	//				createElement('span', null, 'component!'),
-	//				createElement('div', null, children)
-	//			)
-	//		}
-	//		render() {
-	//			return Inferno.createFragment(this.props.children, this.template);
-	//		}
-	//		componentWillUnmount() {
-	//			componentWillMountCount++;
-	//		}
-	//	}
-	//
-	//	beforeEach(() => {
-	//		componentWillMountCount = 0;
-	//		template = Inferno.createTemplate((createElement, createComponent, Component1, Component2, Component3) =>
-	//				createComponent(Component1,
-	//					createComponent(Component2,
-	//						createComponent(Component3)
-	//					)
-	//				)
-	//		);
-	//
-	//		Inferno.render(
-	//			Inferno.createFragment([
-	//				{ component: ComponentLifecycleCheck },
-	//				{ component: ComponentLifecycleCheck },
-	//				{ component: ComponentLifecycleCheck }
-	//			], template), container
-	//		);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			componentWillMountCount
-	//		).to.equal(
-	//			0
-	//		);
-	//	});
-	//	it('Second render (update) - remove all components', () => {
-	//		Inferno.render(null, container);
-	//		expect(
-	//			componentWillMountCount
-	//		).to.equal(
-	//			3
-	//		);
-	//	});
-	//});
-	//
-	//describe('should render multiple components', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((createElement, createComponent, Component, Component2) =>
-	//			createElement('div', null,
-	//				createComponent(Component),
-	//				createComponent(Component2)
-	//			)
-	//		);
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1, props: {title: "component 1", name: "basic-render"}},
-	//			{component: BasicComponent1, props: {title: "component 2", name: "basic-render"}}
-	//		], template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>'
-	//			+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
-	//		);
-	//	});
-	//
-	//	it('Second render (update)', () => {
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent1, props: {title: "component 1", name: "basic-render"}},
-	//			null
-	//		], template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>'
-	//		);
-	//	});
-	//});
-	//
+	describe('should render a basic component and correctly mount', () => {
+		let template;
+		let componentWillMountCount;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			render() {
+				const template = Inferno.createTemplate((children) =>
+					createElement('div', null,
+						createElement('span', null, 'component!'),
+						createElement('div', null, children)
+					)
+				);
+				return template(this.props.children);
+			}
+			componentWillMount() {
+				componentWillMountCount++;
+			}
+		}
+
+		beforeEach(() => {
+			componentWillMountCount = 0;
+			template = Inferno.createTemplate((Component1, Component2, Component3) =>
+					createElement(Component1, null,
+						createElement(Component2, null,
+							createElement(Component3, null)
+						)
+					)
+			);
+		});
+
+		it('Initial render (creation)', () => {
+			Inferno.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
+			expect(
+				componentWillMountCount
+			).to.equal(
+				3
+			);
+		});
+		it('Initial render (update)', () => {
+			Inferno.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
+			expect(
+				componentWillMountCount
+			).to.equal(
+				2
+			);
+		});
+	});
+
+	describe('should render multiple components', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((Component, title1, name1, Component2, title2, name2) =>
+				createElement('div', null,
+					createElement(Component, {title: title1, name: name1}),
+					createElement(Component2, {title: title2, name: name2})
+				)
+			);
+			Inferno.render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>'
+				+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
+			);
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(template(BasicComponent1, 'component 1', 'basic-render'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>'
+			);
+		});
+	});
+
 	//class BasicComponent3 extends Inferno.Component {
 	//	template(createElement, createComponent, styles, styles2, title) {
 	//		return createElement("div", {style: styles},

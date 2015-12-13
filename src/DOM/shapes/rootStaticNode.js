@@ -1,6 +1,6 @@
 import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
-import recreateNode from '../recreateNode';
+import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -22,7 +22,7 @@ export default function createRootStaticNode(templateNode) {
 		},
 		update(lastItem, nextItem) {
 			if (node !== lastItem.domTree) {
-				recreateNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
 			nextItem.rootNode = lastItem.rootNode;

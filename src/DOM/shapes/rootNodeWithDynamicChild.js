@@ -3,7 +3,7 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
-import recreateNode from '../recreateNode';
+import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -11,7 +11,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item) {
+		create(item, parentComponent, treeLifecycle) {
 			let domNode;
 
 			if (recyclingEnabled) {
@@ -29,7 +29,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						const childItem = value[i];
 
 						if (typeof childItem === 'object') {
-							domNode.appendChild(childItem.domTree.create(childItem));
+							domNode.appendChild(childItem.domTree.create(childItem, parentComponent));
 						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
 							const textNode = document.createTextNode(childItem);
 							domNode.appendChild(textNode);
@@ -47,9 +47,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem) {
+		update(lastItem, nextItem, parentComponent, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -74,7 +74,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 
 					if (tree !== null) {
 						if (lastValue.domTree !== null) {
-							tree.update(lastValue, nextValue);
+							tree.update(lastValue, nextValue, parentComponent);
 						} else {
 							// TODO implement
 						}

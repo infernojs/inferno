@@ -3,7 +3,7 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
-import recreateNode from '../recreateNode';
+import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -11,7 +11,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item) {
+		create(item, parentComponent, treeLifecycle) {
 			let domNode;
 			if (recyclingEnabled) {
 				domNode = recycle(node, item);
@@ -24,10 +24,10 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						domNode.appendChild(subTree.create(item));
+						domNode.appendChild(subTree.create(item, parentComponent));
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					domNode.appendChild(subTreeForChildren.create(item));
+					domNode.appendChild(subTreeForChildren.create(item, parentComponent));
 				}
 			}
 			if (dynamicAttrs) {
@@ -36,9 +36,9 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem) {
+		update(lastItem, nextItem, parentComponent, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -48,10 +48,10 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						subTree.update(lastItem, nextItem);
+						subTree.update(lastItem, nextItem, parentComponent);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					subTreeForChildren.update(lastItem, nextItem);
+					subTreeForChildren.update(lastItem, nextItem, parentComponent);
 				}
 			}
 			if (dynamicAttrs) {

@@ -4,7 +4,7 @@ import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import unmountComponent from '../../core/unmountComponent';
-import recreateNode from '../recreateNode';
+import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -14,7 +14,7 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item) {
+		create(item, parentComponent, treeLifecycle) {
 			let domNode;
 
 			if (recyclingEnabled) {
@@ -25,27 +25,33 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 			}
 			const Component = getValueWithIndex(item, componentIndex);
 
+			if (Component == null) {
+				//bad component, make a text node
+				domNode = document.createTextNode('');
+				item.rootNode = domNode;
+				return domNode;
+			}
 			instance = new Component(getValueForProps(props, item));
 			instance.componentWillMount();
 			const nextRender = instance.render();
 
 			nextRender.parent = item;
-			domNode = nextRender.domTree.create(nextRender);
+			domNode = nextRender.domTree.create(nextRender, instance);
 			item.rootNode = domNode;
 			lastRender = nextRender;
 			return domNode;
 		},
-		update(lastItem, nextItem) {
+		update(lastItem, nextItem, parentComponent, treeLifecycle) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
 
 			if (Component !== instance.constructor) {
-				//unmount component
 				unmountComponent(instance);
-				recreateNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
 			if (node !== lastItem.domTree) {
-				recreateNode(lastItem, nextItem, node);
+				unmountComponent(instance);
+				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -78,7 +84,7 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 					const nextRender = instance.render();
 
 					nextRender.parent = nextItem;
-					nextRender.domTree.update(lastRender, nextRender);
+					nextRender.domTree.update(lastRender, nextRender, instance);
 					nextItem.rootNode = nextRender.rootNode;
 					instance.componentDidUpdate(prevProps, prevState);
 					lastRender = nextRender;

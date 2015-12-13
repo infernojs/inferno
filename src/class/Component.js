@@ -8,6 +8,7 @@ class Component {
 		this._deferSetState = false;
 		this._pendingSetState = false;
 		this._pendingState = {};
+		this._componentTree = [];
 		this.state = {};
 	}
 	render() {}
