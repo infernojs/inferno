@@ -712,9 +712,11 @@ export default function domElementsTestsNoJSX(describe, expect, container) {
 				children: 'Hello world!'
 			}));
 			Inferno.render(template(() => { worked = true; }), container);
-
-			const event = new Event('click');
+			const event = new Event('click', { bubbles: true, cancelable: true });
+			//or this won't work
+			document.body.appendChild(container);
 			container.firstChild.dispatchEvent(event);
+			document.body.removeChild(container);
 			expect(worked).to.equal(true);
 			expect(container.innerHTML).to.equal('<div>Hello world!</div>');
 		});
