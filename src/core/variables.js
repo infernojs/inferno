@@ -6,7 +6,8 @@ export const ObjectTypes = {
 
 export const ValueTypes = {
 	TEXT: 0,
-	ARRAY: 1
+	ARRAY: 1,
+	TREE:21
 };
 
 export function createVariable(index) {
@@ -25,6 +26,8 @@ export function getTypeFromValue(value) {
 		return ValueTypes.TEXT;
 	} else if (isArray(value)) {
 		return ValueTypes.ARRAY;
+	} else if (typeof value === 'object' &&  value.create) {
+		return ValueTypes.TREE;
 	}
 }
 

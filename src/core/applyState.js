@@ -1,5 +1,3 @@
-import updateComponent from '../core/updateComponent';
-
 function applyState(component) {
 	var blockRender = component._blockRender;
 	requestAnimationFrame(() => {
@@ -13,7 +11,8 @@ function applyState(component) {
 			};
 			component._pendingState = {};
 			component._pendingSetState = false;
-			updateComponent(component, component.props, nextState, blockRender);
+			//updateComponent(component, component.props, nextState, blockRender);
+			// TODO
 		} else {
 			applyState(component);
 		}

@@ -161,10 +161,29 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 
             if (tag) {
                 if (tag.type === ObjectTypes.VARIABLE) {
+                    const lastAttrs = schema.attrs;
+                    const attrs = { ...lastAttrs };
+                    let children = null;
+
+                    if (schema.children) {
+                        if (isArray(schema.children) && schema.children.length > 1) {
+                            attrs.children = [];
+                            for (let i = 0; i < schema.children.length; i++) {
+                                const childNode = schema.children[i];
+                                attrs.children.push(createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
+                            }
+                        } else {
+                            if (isArray(schema.children) && schema.children.length === 1) {
+                                attrs.children = createDOMTree(schema.children[0], false, dynamicNodeMap, domNamespace);
+                            } else {
+                                attrs.children = createDOMTree(schema.children, false, dynamicNodeMap, domNamespace);
+                            }
+                        }
+                    }
                     if (isRoot) {
-                        return createRootNodeWithComponent(tag.index, schema.attrs, domNamespace);
+                        return createRootNodeWithComponent(tag.index, attrs, children, domNamespace);
                     } else {
-                        return createNodeWithComponent(tag.index, schema.attrs, domNamespace);
+                        return createNodeWithComponent(tag.index, attrs, children, domNamespace);
                     }
                 }
 				let namespace = schema.attrs && schema.attrs.xmlns || null;

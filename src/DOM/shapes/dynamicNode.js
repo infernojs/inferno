@@ -16,6 +16,9 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 				case ValueTypes.ARRAY:
 					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 					break;
+				case ValueTypes.TREE:
+					domNode = value.create(item);
+					break;
 				default: break;
 			}
 
@@ -38,6 +41,12 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 					case ValueTypes.TEXT:
 						// TODO check if string is empty?
 						domNode.nodeValue = nextValue;
+						break;
+					case ValueTypes.ARRAY:
+						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+						break;
+					case ValueTypes.TREE:
+						//debugger;
 						break;
 					default: break;
 				}
