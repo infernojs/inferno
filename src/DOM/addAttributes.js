@@ -1,6 +1,7 @@
 import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
+import setValueForStyles from './setValueForStyles';
 import { getValueWithIndex } from '../core/variables';
 
 /**
@@ -9,12 +10,25 @@ import { getValueWithIndex } from '../core/variables';
  * @param{ Object } attrs
  */
 export function addDOMStaticAttributes(vNode, domNode, attrs) {
+	
+	let styleUpdates;
+	
 	for (let attrName in attrs) {
 		const attrVal = attrs[attrName];
 
 		if (attrVal) {
+			if ( attrName === 'style') {
+                 
+				 styleUpdates = attrVal;
+			
+			} else {
 			template.setProperty(vNode, domNode, attrName, attrVal, false);
+			}
 		}
+	}
+	
+	if ( styleUpdates) {
+		setValueForStyles(vNode, domNode, styleUpdates);
 	}
 }
 
@@ -35,10 +49,20 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 		addDOMStaticAttributes(item, domNode, dynamicAttrs);
 		return;
 	}
+	
+	let styleUpdates;
+	
 	for (let attrName in dynamicAttrs) {
 		let attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
 		if (attrVal !== undefined) {
+			
+			if ( attrName === 'style') {
+                 
+				 styleUpdates = attrVal;
+			
+			} else {
+			
 			if (fastPropSet(attrName, attrVal, domNode) === false) {
 				if (eventMapping[attrName]) {
 					addListener(item, domNode, eventMapping[attrName], attrVal);
@@ -47,7 +71,12 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 
 				}
 			}
+		  }
 		}
+	}
+	
+	if ( styleUpdates) {
+		setValueForStyles(vNode, domNode, styleUpdates);
 	}
 }
 

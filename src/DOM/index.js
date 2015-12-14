@@ -1,6 +1,5 @@
 import DOMRegistry from './DOMRegistry';
 import setSelectValueForProperty from './setSelectValueForProperty';
-import setValueForStyles from './setValueForStyles';
 
 const template = {
     /**
@@ -57,8 +56,6 @@ const template = {
             }
         } else if (value == null) {
             domNode.removeAttribute(name);
-        } else if (name === 'style') {
-            setValueForStyles(vNode, domNode, value)
         } else if (name) {
             domNode.setAttribute(name, value);
         }
