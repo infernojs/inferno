@@ -86,12 +86,22 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
 		return;
 	}
+	
+	let styleUpdates;
+	
 	for (let attrName in dynamicAttrs) {
 		const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
 		const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
 		if (lastAttrVal !== nextAttrVal) {
 			if (nextAttrVal !== undefined) {
+				
+				if ( attrName === 'style') {
+                 
+				 styleUpdates = attrVal;
+			
+			} else {
+				
 				if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
 					if (eventMapping[attrName]) {
 						addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
@@ -99,7 +109,12 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 						template.setProperty(nextItem, domNode, attrName, nextAttrVal, true);
 					}
 				}
+			  }
 			}
 		}
 	}
+	
+    if ( styleUpdates) {
+		setValueForStyles(vNode, domNode, styleUpdates);
+	}	
 }
