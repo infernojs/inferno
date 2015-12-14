@@ -76,7 +76,7 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 	}
 	
 	if ( styleUpdates) {
-		setValueForStyles(vNode, domNode, styleUpdates);
+		setValueForStyles(item, domNode, styleUpdates);
 	}
 }
 
