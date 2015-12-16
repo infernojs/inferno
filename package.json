@@ -17,6 +17,8 @@
         "babel-preset-stage-0": "^6.3.13",
         "babel-preset-es2015-rollup": "^1.0.0",
         "babel-eslint": "^5.0.0-beta6",
+        "babel-plugin-syntax-object-rest-spread": "^6.3.13",
+        "babel-plugin-transform-object-rest-spread": "^6.3.13",
         "eslint": "^1.10.3",
         "eslint-loader": "^1.1.1",
         "istanbul-instrumenter-loader": "^0.1.3",
