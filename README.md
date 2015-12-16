@@ -1,7 +1,7 @@
 # InfernoJS
 
-[![Build Status](https://travis-ci.org/trueadm/inferno.svg)](https://travis-ci.org/trueadm/inferno)
-[![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=inferno-gulp&service=github)](https://coveralls.io/github/trueadm/inferno?branch=inferno-gulp)
+[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=perf-spike)](https://travis-ci.org/trueadm/inferno)
+[![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=inferno-gulp&service=github)](https://coveralls.io/github/trueadm/inferno?branch=inferno-spike)
 
 Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. It takes an unconventional approach to the Virtual DOM; Inferno does not rely on diffing the DOM (an expensive operation), but instead on smart value diffing  static node caching, assuring that it only performs the minimal work involved in updating the DOM. 
 
