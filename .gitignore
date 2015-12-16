@@ -1,8 +1,8 @@
-*.log
+.git
+lib
+coverage
 node_modules
 .DS_Store
-.build
-.idea
-dist/*
-.vscode
-jsconfig.json
+*.log
+*.swp
+*~

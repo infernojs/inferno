@@ -1,0 +1,10 @@
+./test/node/**/*.js
+./test/shared/**/*.js
+
+--require ./config/mocha.conf.js
+--reporter spec
+--ui bdd
+--compilers js:babel-core/register
+--recursive
+--timeout 15000
+--bail
