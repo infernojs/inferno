@@ -1,5 +1,5 @@
 import createDOMTree from '../DOM/createTree';
-import createHTMLStringTree from '../HTMLString/createHTMLStringTree';
+import createHTMLStringTree from '../htmlString/createHTMLStringTree';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 
