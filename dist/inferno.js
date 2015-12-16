@@ -1467,7 +1467,7 @@
   	// TODO recycle old node
   }
 
-  const recyclingEnabled$2 = isRecyclingEnabled();
+  const recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	const node = {
@@ -1476,7 +1476,7 @@
   		create(item) {
   			let domNode;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1545,7 +1545,7 @@
   	return node;
   }
 
-  const recyclingEnabled$1 = isRecyclingEnabled();
+  const recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	const node = {
@@ -1554,7 +1554,7 @@
   		create(item) {
   			let domNode;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
