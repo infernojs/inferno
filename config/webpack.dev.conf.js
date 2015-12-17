@@ -1,33 +1,28 @@
-const webpack = require('webpack');
-const path = require('path');
-const node_modules_dir = path.resolve(__dirname, 'node_modules');
+const webpack = require('webpack')
 
 module.exports = {
-    // entry points 
-    entry: path.resolve(__dirname, '../src'),
-    cache: true,
-    debug: true,
-    output: {
-        path: path.resolve(__dirname, '../dist'),
-        filename: 'inferno.js',
-        libraryTarget: 'umd',
-        library: 'Inferno'
-    },
-    module: {
-        loaders: [{
-            test: /\.js$/,
-            exclude: [node_modules_dir],
-            loader: 'babel-loader'
-        }]
-    },
-    resolve: {
-        extensions: ['', '.js']
-    },
-    plugins: [
-        new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.DefinePlugin({
-            '__DEV__': true,
-            'process.env.NODE_ENV': JSON.stringify('development')
-        })
-    ]
-};
+  entry: 'mocha!./test/bootstrap.js',
+  output: {
+    path: './test',
+    filename: 'specs.js',
+    publicPath: 'http://localhost:8080/'
+  },
+  devtool: 'source-map',
+  module: {
+    loaders: [{
+      test: /\.js$/,
+      exclude: /node_modules\/dist/,
+      loader: 'babel-loader'
+    }]
+  },
+  devServer: {
+    contentBase: './test',
+    port: 8080,
+    noInfo: true,
+	hot: true,
+    inline: true
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
+}
