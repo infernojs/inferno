@@ -57,8 +57,8 @@
     },
     "scripts": {
         "clean": "rm -rf coverage && rm -rf dist",
-        "prod": "webpack --config ./config/webpack.prod.conf --progress --profile --colors",
-        "build": "webpack --config ./config/webpack.dev.conf --progress --profile --colors",   
+        "prod": "webpack --config ./config/webpack.prod.conf -p --optimize-minimize  --profile --colors",
+        "build": "webpack --config ./config/webpack.dev.conf --profile --colors",
         "browser": "webpack-dev-server --quiet --config config/webpack.test.conf.js --host 0.0.0.0",
         "test:browser": "karma start config/karma.conf.js --single-run",
         "test:server": "mocha --opts config/mocha.opts",

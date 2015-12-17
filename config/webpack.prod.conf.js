@@ -2,20 +2,29 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const webpackConfig = require('./webpack.dev.conf')
 
-module.exports = Object.assign({}, webpackConfig, {
-
+module.exports = {
+    // entry points 
+    entry: path.join(__dirname, '../src'),
     cache: false,
     debug: false,
     devtool: false,
-    hot: false,
-    build: true,
     output: {
         path: path.join(__dirname, '../dist'),
         filename: 'inferno.min.js',
         libraryTarget: 'umd',
         library: 'Inferno'
+    },
+    module: {
+        loaders: [{
+            test: /\.js$/,
+            exclude: /node_modules/,
+            include: path.join(__dirname, '../src'),
+            loader: 'babel-loader'
+        }]
+    },
+    resolve: {
+        extensions: ['', '.js']
     },
     plugins: [
         // optimizations
@@ -27,7 +36,7 @@ module.exports = Object.assign({}, webpackConfig, {
                 comments: false
             },
             compress: {
-                unused: true,
+			    unused: true,
                 dead_code: true,
                 warnings: false,
                 screw_ie8: true
@@ -38,4 +47,4 @@ module.exports = Object.assign({}, webpackConfig, {
             'process.env.NODE_ENV': JSON.stringify('production')
         })
     ]
-});
+};
