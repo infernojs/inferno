@@ -1,3 +1,4 @@
+// Webpack config for creating the production bundle.
 const webpack = require('webpack');
 const path = require('path');
 const node_modules_dir = path.resolve(__dirname, 'node_modules');
@@ -5,11 +6,12 @@ const node_modules_dir = path.resolve(__dirname, 'node_modules');
 module.exports = {
     // entry points 
     entry: path.resolve(__dirname, '../src'),
-    cache: true,
-    debug: true,
+    cache: false,
+    debug: false,
+    devtool: false,
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'inferno.js',
+        filename: 'inferno.min.js',
         libraryTarget: 'umd',
         library: 'Inferno'
     },
@@ -24,10 +26,24 @@ module.exports = {
         extensions: ['', '.js']
     },
     plugins: [
+        // optimizations
+        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.NoErrorsPlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            output: {
+                comments: false
+            },
+            compress: {
+                unused: true,
+                dead_code: true,
+                warnings: false,
+                screw_ie8: true
+            }
+        }),
         new webpack.DefinePlugin({
-            '__DEV__': true,
-            'process.env.NODE_ENV': JSON.stringify('development')
+            '__DEV__': false,
+            'process.env.NODE_ENV': JSON.stringify('production')
         })
     ]
 };
