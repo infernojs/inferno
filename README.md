@@ -4,11 +4,11 @@
 [![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=inferno-gulp&service=github)](https://coveralls.io/github/trueadm/inferno?branch=inferno-spike)
 [![npm version](https://badge.fury.io/js/inferno.svg)](https://badge.fury.io/js/inferno)
 
-Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. It takes an unconventional approach to the Virtual DOM; Inferno does not rely on diffing the DOM (an expensive operation), but instead on smart value diffing  static node caching, assuring that it only performs the minimal work involved in updating the DOM. 
+Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. Unlike typical virtual DOM libraries like React, Mitrhil, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
 
-In addition to this, we've painstakingly optimized the code to make sure that there is as little overhead as possible. We are currently the fastest vDOM implementation on the [benchmarks](#benchmarks). To date, there is no faster JavaScript framework out there in any benchmark tested.
+In addition to this, we've painstakingly optimized the code to make sure that there is as little overhead as possible. We believe that Inferno is currently the fastest vDOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
-Inferno is compatible with the React API and JSX syntax, and works great with Flux, Cycle, and RxJS.
+In principle: Inferno is almost 90% compatible with the stanard React API, furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
 
 ## Algorithm
 
@@ -110,7 +110,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 ### Inferno.render
 
 ```javascript
-Inferno.render(t7`<div></div>`, document.body);
+Inferno.render(<div></div>, document.body);
 ```
 
 Render a fragment into the DOM in the supplied container and return a reference to the component. If the fragment was previously rendered into container, this will
@@ -131,7 +131,7 @@ Remove a rendered Inferno component from the DOM and clean up its event handlers
 ```
 
 ```js
-Inferno.renderToString(t7`<MyComponent></MyComponent>`);
+Inferno.renderToString(<MyComponent></MyComponent>);
 ```
 
 Render a fragment to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
