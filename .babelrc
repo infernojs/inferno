@@ -1,19 +1,17 @@
 {
+    "env": {
+        "development": {
+            "presets": [
+                "es2015", "stage-0"
+            ]
+        },
+        "production": {
+            "presets": [
+                "es2015-rollup"
+            ]
 
-"ignore": [
-    "foo.js",
-    "bar/**/*.js"
-  ],
-  "presets": [
-    "es2015", "stage-0"
-  ],
-"env": {
-    "start": {
-      /* TODO: */
-      /* fill with hmr settings when there is a new release */
-      /* to play nice with babel 6*/
-    }
-  },
-/* Add plugins here**/
-"plugins": ["babel-plugin-syntax-jsx"]
+        }
+    },
+    /* Add plugins here**/
+    "plugins": ["babel-plugin-syntax-jsx", "syntax-object-rest-spread", "transform-object-rest-spread"]
 }
