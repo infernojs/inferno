@@ -11,7 +11,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, parentComponent, treeLifecycle) {
+		create(item, treeLifecycle) {
 			let domNode;
 
 			if (recyclingEnabled) {
@@ -29,7 +29,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						const childItem = value[i];
 
 						if (typeof childItem === 'object') {
-							domNode.appendChild(childItem.domTree.create(childItem, parentComponent));
+							domNode.appendChild(childItem.domTree.create(childItem));
 						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
 							const textNode = document.createTextNode(childItem);
 							domNode.appendChild(textNode);
@@ -47,7 +47,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
 				recreateRootNode(lastItem, nextItem, node);
 				return;
@@ -74,7 +74,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 
 					if (tree !== null) {
 						if (lastValue.domTree !== null) {
-							tree.update(lastValue, nextValue, parentComponent);
+							tree.update(lastValue, nextValue);
 						} else {
 							// TODO implement
 						}

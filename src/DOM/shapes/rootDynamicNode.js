@@ -8,7 +8,7 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, parentComponent, treeLifecycle) {
+		create(item, treeLifecycle) {
 			let domNode;
 
 			if (recyclingEnabled) {
@@ -32,7 +32,7 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 					break;
 				case ValueTypes.TREE:
-					domNode = value.create(item, parentComponent);
+					domNode = value.create(item);
 					break;
 				default: break;
 			}
@@ -40,7 +40,7 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
 				recreateRootNode(lastItem, nextItem, node);
 				return;

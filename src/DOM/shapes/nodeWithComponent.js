@@ -18,7 +18,7 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 	let lastRender;
 	let domNode;
 	const node = {
-		create(item, parentComponent, treeLifecycle) {
+		create(item, treeLifecycle) {
 			const valueItem = getCorrectItemForValues(node, item);
 			const Component = getValueWithIndex(valueItem, componentIndex);
 
@@ -35,7 +35,7 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 			lastRender = nextRender;
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
 
 			if (Component !== instance.constructor) {

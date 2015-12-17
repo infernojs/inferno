@@ -4,7 +4,7 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 	let domNode;
 
 	const node = {
-		create(item, parentComponent) {
+		create(item) {
 			let value = getValueWithIndex(item, valueIndex);
 			const type = getTypeFromValue(value);
 
@@ -20,14 +20,14 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 					break;
 				case ValueTypes.TREE:
-					domNode = value.create(item, parentComponent);
+					domNode = value.create(item);
 					break;
 				default: break;
 			}
 
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent) {
+		update(lastItem, nextItem) {
 			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 

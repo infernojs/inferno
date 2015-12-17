@@ -6,7 +6,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttri
 export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
 	let domNode;
 	const node = {
-		create(item, parentComponent, treeLifecycle) {
+		create(item, treeLifecycle) {
 			domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
@@ -23,7 +23,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						}
 					}
 				} else if (typeof value === 'object') {
-					domNode.appendChild(value.domTree.create(value, parentComponent));
+					domNode.appendChild(value.domTree.create(value));
 				} else if (typeof value === 'string' || typeof value === 'number') {
 					domNode.textContent = value;
 				}
@@ -33,7 +33,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 			}
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle) {
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -53,7 +53,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 
 					if (tree !== null) {
 						if (lastValue.domTree !== null) {
-							tree.update(lastValue, nextValue, parentComponent);
+							tree.update(lastValue, nextValue);
 						} else {
 							// TODO implement
 						}

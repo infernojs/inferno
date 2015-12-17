@@ -6,7 +6,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttri
 export default function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
 	let domNode;
 	const node = {
-		create(item, parentComponent, treeLifecycle) {
+		create(item, treeLifecycle) {
 			domNode = templateNode.cloneNode(false);
 			if (subTreeForChildren != null) {
 				if (isArray(subTreeForChildren)) {
@@ -15,7 +15,7 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 						domNode.appendChild(subTree.create(item));
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					domNode.appendChild(subTreeForChildren.create(item, parentComponent));
+					domNode.appendChild(subTreeForChildren.create(item));
 				}
 			}
 			if (dynamicAttrs) {
@@ -23,7 +23,7 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 			}
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle) {
 			if (subTreeForChildren != null) {
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
@@ -31,7 +31,7 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 						subTree.update(lastItem, nextItem);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					subTreeForChildren.update(lastItem, nextItem, parentComponent);
+					subTreeForChildren.update(lastItem, nextItem);
 				}
 			}
 			if (dynamicAttrs) {

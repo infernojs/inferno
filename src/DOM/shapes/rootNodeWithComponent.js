@@ -14,7 +14,7 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, parentComponent, treeLifecycle) {
+		create(item, treeLifecycle) {
 			let domNode;
 
 			if (recyclingEnabled) {
@@ -41,7 +41,7 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 			lastRender = nextRender;
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
 
 			if (Component !== instance.constructor) {

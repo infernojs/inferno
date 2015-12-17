@@ -11,7 +11,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, parentComponent, treeLifecycle) {
+		create(item, treeLifecycle) {
 			let domNode;
 			if (recyclingEnabled) {
 				domNode = recycle(node, item);
@@ -24,10 +24,10 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						domNode.appendChild(subTree.create(item, parentComponent));
+						domNode.appendChild(subTree.create(item));
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					domNode.appendChild(subTreeForChildren.create(item, parentComponent));
+					domNode.appendChild(subTreeForChildren.create(item));
 				}
 			}
 			if (dynamicAttrs) {
@@ -36,7 +36,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
 				recreateRootNode(lastItem, nextItem, node);
 				return;
@@ -48,10 +48,10 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						subTree.update(lastItem, nextItem, parentComponent);
+						subTree.update(lastItem, nextItem);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					subTreeForChildren.update(lastItem, nextItem, parentComponent);
+					subTreeForChildren.update(lastItem, nextItem);
 				}
 			}
 			if (dynamicAttrs) {

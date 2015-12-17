@@ -2,7 +2,6 @@ import { remove } from './domMutate';
 
 export default function createDOMFragment(parentNode, nextNode) {
 	let lastItem;
-	const _componentTree = [];
 	const treeSuccessListeners = [];
 	const treeLifecycle = {
 		addTreeSuccessListener(listener) {
@@ -21,7 +20,6 @@ export default function createDOMFragment(parentNode, nextNode) {
 	};
 	const fragment =  {
 		parentNode,
-		_componentTree,
 		render(nextItem) {
 			if (!nextItem) {
 				return;
@@ -29,9 +27,9 @@ export default function createDOMFragment(parentNode, nextNode) {
 			const tree = nextItem.domTree;
 
 			if (lastItem) {
-				tree.update(lastItem, nextItem, _componentTree, treeLifecycle);
+				tree.update(lastItem, nextItem, treeLifecycle);
 			} else {
-				const dom = tree.create(nextItem, _componentTree, treeLifecycle);
+				const dom = tree.create(nextItem, treeLifecycle);
 
 				if (nextNode) {
 					parentNode.insertBefore(dom, nextNode);
