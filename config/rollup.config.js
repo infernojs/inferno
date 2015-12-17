@@ -15,12 +15,6 @@ const banner =
     ' * Released under the ' + pack.license + ' License.\n' +
     ' */'
 
-// update main file
-const main = fs
-    .readFileSync('src/index.js', 'utf-8')
-    .replace(/boily\.version = '[\d\.]+'/, "boily.version = '" + pack.version + "'")
-fs.writeFileSync('src/index.js', main)
-
 
 function write(dest, code) {
     return new Promise(function(resolve, reject) {

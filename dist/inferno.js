@@ -88,7 +88,7 @@
   	return recyclingEnabled$9;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$8 = isRecyclingEnabled();
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode) {
   	var stop = false;
@@ -99,7 +99,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$8) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -241,7 +241,7 @@
 
   function remove(item, parentNode) {
   	parentNode.removeChild(item.rootNode);
-  	if (recyclingEnabled) {
+  	if (recyclingEnabled$8) {
   		pool(item);
   	}
   }
@@ -1585,7 +1585,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1594,7 +1594,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1642,7 +1642,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
   	var node = {
@@ -1651,7 +1651,7 @@
   		create: function create(item, parentComponent, treeLifecycle) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1795,7 +1795,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
   	var node = {
@@ -1803,7 +1803,7 @@
   		keyedPool: [],
   		create: function create(item, parentComponent, treeLifecycle) {
   			var domNode = undefined;
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1891,7 +1891,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
   	var node = {
@@ -1899,7 +1899,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1933,7 +1933,7 @@
   	return node;
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex, domNamespace) {
   	var node = {
@@ -1942,7 +1942,7 @@
   		create: function create(item, parentComponent, treeLifecycle) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2071,7 +2071,7 @@
   	return node;
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2079,7 +2079,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2135,7 +2135,7 @@
   	// unmount all our child components too
   }
 
-  var recyclingEnabled$8 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootNodeWithComponent(componentIndex, props, domNamespace) {
   	var instance = undefined;
@@ -2146,7 +2146,7 @@
   		create: function create(item, parentComponent, treeLifecycle) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$8) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
