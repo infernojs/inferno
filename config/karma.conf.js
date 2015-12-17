@@ -11,7 +11,6 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
-           '../node_modules/es6-map-shim/es6-map-shim.js',
 		    '../test/browser/**/*.js',
             '../test/shared/**/*.js'
         ],

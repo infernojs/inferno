@@ -47,8 +47,7 @@
         "babel-plugin-syntax-jsx": "^6.3.13",
         "karma-chrome-launcher": "^0.2.2",
         "pre-commit": "^1.1.2",
-        "mkdirp": "^0.5.1",
-        "es6-map-shim": "^0.2.1"
+        "mkdirp": "^0.5.1"
     },
     "files": [
         "dist",

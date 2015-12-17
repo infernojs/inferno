@@ -2,7 +2,7 @@ language: node_js
 
 node_js:
   - 'stable'
-  - "4"
+  - '4'
 
 # Use container-based Travis infrastructure.
 sudo: true
