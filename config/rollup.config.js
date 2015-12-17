@@ -84,7 +84,11 @@ rollup.rollup({
                     moduleName: pack.name
                 }).code
                 const minified = uglify.minify(code, {
-                    fromString: true
+                      fromString: true,
+                    unused: true,
+                    dead_code: true,
+                    warnings: false,
+                    screw_ie8: true
                 }).code
                 return write('dist/' + pack.name + '.min.js', minified)
             })
