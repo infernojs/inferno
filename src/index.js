@@ -3,7 +3,7 @@ import { render, renderToString, unmountComponentsAtNode } from './core/renderin
 import Component from './class/Component';
 import TemplateFactory from './core/TemplateFactory';
 
-module.exports = {
+export default {
 	Component,
 	createTemplate,
 	TemplateFactory,

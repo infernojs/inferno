@@ -1,12 +1,12 @@
 /*!
- * inferno v0.4.0
+ * Inferno v0.4.0
  * (c) 2015 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  factory();
+  global.Inferno = factory();
 }(this, function () { 'use strict';
 
   var babelHelpers = {};
@@ -1795,7 +1795,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
   	var node = {
@@ -1803,7 +1803,7 @@
   		keyedPool: [],
   		create: function create(item, parentComponent, treeLifecycle) {
   			var domNode = undefined;
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1891,7 +1891,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
   	var node = {
@@ -1899,7 +1899,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1933,7 +1933,7 @@
   	return node;
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex, domNamespace) {
   	var node = {
@@ -1942,7 +1942,7 @@
   		create: function create(item, parentComponent, treeLifecycle) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2071,7 +2071,7 @@
   	return node;
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2079,7 +2079,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2863,7 +2863,7 @@
   	return Component;
   })();
 
-  module.exports = {
+  var index = {
   	Component: Component,
   	createTemplate: createTemplate,
   	TemplateFactory: TemplateFactory,
@@ -2871,5 +2871,7 @@
   	renderToString: renderToString,
   	unmountComponentsAtNode: unmountComponentsAtNode
   };
+
+  return index;
 
 }));

@@ -1,5 +1,5 @@
 {
-    "name": "inferno",
+    "name": "Inferno",
     "description": "A framework for building lightning fast user interfaces",
     "version": "0.4.0",
     "license": "MPL-2.0",
@@ -65,7 +65,7 @@
         "clean": "rm -rf coverage && rm -rf dist",
         "build": "set NODE_ENV=production && npm run lint:source && mkdirp dist && node config/rollup.config.js",
         "build:win": "set NODE_ENV=production && mkdirp dist && node config/rollup.config.js",
-        "build:mac": "NODE_ENV=production && mkdirp dist && node config/rollup.config.js",
+        "build:mac": "NODE_ENV=production && mkdirp dist && node config/rollup..config.js",
         "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
         "test:browser": "karma start config/karma.conf.js --single-run",
         "test:server": "mocha --opts config/mocha.opts",
