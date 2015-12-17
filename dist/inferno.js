@@ -11,6 +11,34 @@
 
   var babelHelpers = {};
 
+  babelHelpers.typeof = function (obj) {
+    return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  };
+
+  babelHelpers.classCallCheck = function (instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  babelHelpers.createClass = (function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  })();
+
   babelHelpers.extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
@@ -26,26 +54,26 @@
   };
 
   babelHelpers;
-  const recyclingEnabled$9 = true;
+  var recyclingEnabled$9 = true;
 
   function pool(item) {
-  	const key = item.key;
-  	const tree = item.domTree;
+  	var key = item.key;
+  	var tree = item.domTree;
   	if (key === null) {
   		tree.pool.push(item);
   	} else {
-  		const keyedPool = tree.keyedPool; // TODO rename
+  		var keyedPool = tree.keyedPool; // TODO rename
   		(keyedPool[key] || (keyedPool[key] = [])).push(item);
   	}
   }
 
   function recycle(tree, item) {
   	// TODO use depth as key
-  	const key = item.key;
-  	let recyclableItem;
+  	var key = item.key;
+  	var recyclableItem = undefined;
   	// TODO faster to check pool size first?
   	if (key !== null) {
-  		const keyPool = tree.keyedPool[key];
+  		var keyPool = tree.keyedPool[key];
   		recyclableItem = keyPool && keyPool.pop();
   	} else {
   		recyclableItem = tree.pool.pop();
@@ -60,19 +88,19 @@
   	return recyclingEnabled$9;
   }
 
-  const recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode) {
-  	let stop = false;
-  	let startIndex = 0;
-  	let oldStartIndex = 0;
-  	const itemsLength = items.length;
-  	const oldItemsLength = oldItems.length;
+  	var stop = false;
+  	var startIndex = 0;
+  	var oldStartIndex = 0;
+  	var itemsLength = items.length;
+  	var oldItemsLength = oldItems.length;
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
   		if (recyclingEnabled) {
-  			for (let i = 0; i < oldItemsLength; i++) {
+  			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
   		}
@@ -80,15 +108,15 @@
   		return;
   	}
 
-  	let endIndex = itemsLength - 1;
-  	let oldEndIndex = oldItemsLength - 1;
-  	let startItem = itemsLength > 0 && items[startIndex];
-  	let oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
-  	let endItem;
-  	let oldEndItem;
-  	let nextNode;
-  	let oldItem;
-  	let item;
+  	var endIndex = itemsLength - 1;
+  	var oldEndIndex = oldItemsLength - 1;
+  	var startItem = itemsLength > 0 && items[startIndex];
+  	var oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
+  	var endItem = undefined;
+  	var oldEndItem = undefined;
+  	var nextNode = undefined;
+  	var oldItem = undefined;
+  	var item = undefined;
 
   	// TODO don't read key too often
   	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
@@ -163,19 +191,19 @@
   			remove(oldItem, parentNode);
   		}
   	} else {
-  		const oldItemsMap = {};
-  		let oldNextItem = oldEndIndex + 1 < oldItemsLength ? oldItems[oldEndIndex + 1] : null;
+  		var oldItemsMap = {};
+  		var oldNextItem = oldEndIndex + 1 < oldItemsLength ? oldItems[oldEndIndex + 1] : null;
 
-  		for (let i = oldEndIndex; i >= oldStartIndex; i--) {
+  		for (var i = oldEndIndex; i >= oldStartIndex; i--) {
   			oldItem = oldItems[i];
   			oldItem.nextItem = oldNextItem;
   			oldItemsMap[oldItem.key] = oldItem;
   			oldNextItem = oldItem;
   		}
-  		let nextItem = endIndex + 1 < itemsLength ? items[endIndex + 1] : null;
-  		for (let i = endIndex; i >= startIndex; i--) {
+  		var nextItem = endIndex + 1 < itemsLength ? items[endIndex + 1] : null;
+  		for (var i = endIndex; i >= startIndex; i--) {
   			item = items[i];
-  			const key = item.key;
+  			var key = item.key;
 
   			oldItem = oldItemsMap[key];
   			if (oldItem) {
@@ -193,7 +221,7 @@
   			}
   			nextItem = item;
   		}
-  		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+  		for (var i = oldStartIndex; i <= oldEndIndex; i++) {
   			oldItem = oldItems[i];
   			if (oldItemsMap[oldItem.key] !== null) {
   				oldItem = oldItems[oldStartIndex];
@@ -219,16 +247,16 @@
   }
 
   function createDOMFragment(parentNode, nextNode) {
-  	let lastItem;
-  	const _componentTree = [];
-  	const treeSuccessListeners = [];
-  	const treeLifecycle = {
-  		addTreeSuccessListener(listener) {
+  	var lastItem = undefined;
+  	var _componentTree = [];
+  	var treeSuccessListeners = [];
+  	var treeLifecycle = {
+  		addTreeSuccessListener: function addTreeSuccessListener(listener) {
   			treeSuccessListeners.push(listener);
   		},
-  		removeTreeSuccessListener(listener) {
-  			for (let i = 0; i < treeSuccessListeners.length; i++) {
-  				const treeSuccessListener = treeSuccessListeners[i];
+  		removeTreeSuccessListener: function removeTreeSuccessListener(listener) {
+  			for (var i = 0; i < treeSuccessListeners.length; i++) {
+  				var treeSuccessListener = treeSuccessListeners[i];
 
   				if (treeSuccessListener === listener) {
   					treeSuccessListeners.splice(i, 1);
@@ -237,19 +265,19 @@
   			}
   		}
   	};
-  	const fragment = {
-  		parentNode,
-  		_componentTree,
-  		render(nextItem) {
+  	var fragment = {
+  		parentNode: parentNode,
+  		_componentTree: _componentTree,
+  		render: function render(nextItem) {
   			if (!nextItem) {
   				return;
   			}
-  			const tree = nextItem.domTree;
+  			var tree = nextItem.domTree;
 
   			if (lastItem) {
   				tree.update(lastItem, nextItem, _componentTree, treeLifecycle);
   			} else {
-  				const dom = tree.create(nextItem, _componentTree, treeLifecycle);
+  				var dom = tree.create(nextItem, _componentTree, treeLifecycle);
 
   				if (nextNode) {
   					parentNode.insertBefore(dom, nextNode);
@@ -260,7 +288,7 @@
   			lastItem = nextItem;
   			return fragment;
   		},
-  		remove() {
+  		remove: function remove$$() {
   			remove(lastItem, parentNode);
   			return fragment;
   		}
@@ -268,18 +296,18 @@
   	return fragment;
   }
 
-  const rootFragments = [];
+  var rootFragments = [];
 
   function unmountComponentsAtFragment(fragment) {}
 
   function getRootFragmentAtNode(node) {
-  	const rootFragmentsLength = rootFragments.length;
+  	var rootFragmentsLength = rootFragments.length;
 
   	if (rootFragmentsLength === 0) {
   		return null;
   	}
-  	for (let i = 0; i < rootFragmentsLength; i++) {
-  		const rootFragment = rootFragments[i];
+  	for (var i = 0; i < rootFragmentsLength; i++) {
+  		var rootFragment = rootFragments[i];
   		if (rootFragment.parentNode === node) {
   			return rootFragment;
   		}
@@ -288,7 +316,7 @@
   }
 
   function removeRootFragment(rootFragment) {
-  	for (let i = 0; i < rootFragments.length; i++) {
+  	for (var i = 0; i < rootFragments.length; i++) {
   		if (rootFragments[i] === rootFragment) {
   			rootFragments.splice(i, 1);
   			return true;
@@ -298,10 +326,10 @@
   }
 
   function render(nextItem, parentNode) {
-  	const rootFragment = getRootFragmentAtNode(parentNode);
+  	var rootFragment = getRootFragmentAtNode(parentNode);
 
   	if (rootFragment === null) {
-  		const fragment = createDOMFragment(parentNode);
+  		var fragment = createDOMFragment(parentNode);
   		fragment.render(nextItem);
   		rootFragments.push(fragment);
   	} else {
@@ -320,27 +348,29 @@
   }
 
   function unmountComponentsAtNode(parentNode) {
-  	const rootFragment = getRootFragmentAtNode(parentNode);
+  	var rootFragment = getRootFragmentAtNode(parentNode);
   	unmountComponentsAtFragment(rootFragment);
   }
 
-  var isArray = (x => x.constructor === Array)
+  var isArray = (function (x) {
+    return x.constructor === Array;
+  })
 
   function createChildren(children) {
-  	const childrenArray = [];
+  	var childrenArray = [];
   	if (isArray(children)) {
-  		for (let i = 0; i < children.length; i++) {
-  			const childItem = children[i];
+  		for (var i = 0; i < children.length; i++) {
+  			var childItem = children[i];
   			childrenArray.push(childItem);
   		}
   	}
   	return childrenArray;
   }
 
-  function createElement(tag, attrs, ...children) {
+  function createElement(tag, attrs) {
   	if (tag) {
-  		const vNode = {
-  			tag
+  		var vNode = {
+  			tag: tag
   		};
   		if (attrs) {
   			if (attrs.key !== undefined) {
@@ -349,6 +379,11 @@
   			}
   			vNode.attrs = attrs;
   		}
+
+  		for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+  			children[_key - 2] = arguments[_key];
+  		}
+
   		if (children) {
   			if (children.length) {
   				vNode.children = createChildren(children);
@@ -365,14 +400,14 @@
   }
 
   var TemplateFactory = {
-  	createElement
+  	createElement: createElement
   };
 
-  const ObjectTypes = {
+  var ObjectTypes = {
   	VARIABLE: 1
   };
 
-  const ValueTypes$1 = {
+  var ValueTypes$1 = {
   	TEXT: 0,
   	ARRAY: 1,
   	TREE: 21
@@ -380,7 +415,7 @@
 
   function createVariable(index) {
   	return {
-  		index,
+  		index: index,
   		type: ObjectTypes.VARIABLE
   	};
   }
@@ -394,16 +429,16 @@
   		return ValueTypes$1.TEXT;
   	} else if (isArray(value)) {
   		return ValueTypes$1.ARRAY;
-  	} else if (typeof value === 'object' && value.create) {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && value.create) {
   		return ValueTypes$1.TREE;
   	}
   }
 
   function getValueForProps(props, item) {
-  	const newProps = {};
+  	var newProps = {};
 
-  	for (let name in props) {
-  		const val = props[name];
+  	for (var name in props) {
+  		var val = props[name];
 
   		if (val && val.index) {
   			newProps[name] = getValueWithIndex(item, val.index);
@@ -414,15 +449,15 @@
   	return newProps;
   }
 
-  const PROPERTY = 0x1;
-  const BOOLEAN = 0x2;
-  const NUMERIC_VALUE = 0x4;
-  const POSITIVE_NUMERIC_VALUE = 0x6 | 0x4;
+  var PROPERTY = 0x1;
+  var BOOLEAN = 0x2;
+  var NUMERIC_VALUE = 0x4;
+  var POSITIVE_NUMERIC_VALUE = 0x6 | 0x4;
 
-  const xlink = 'http://www.w3.org/1999/xlink';
-  const xml = 'http://www.w3.org/XML/1998/namespace';
+  var xlink = 'http://www.w3.org/1999/xlink';
+  var xml = 'http://www.w3.org/XML/1998/namespace';
 
-  const DOMAttributeNamespaces = {
+  var DOMAttributeNamespaces = {
       'xlink:actuate': xlink,
       'xlink:arcrole': xlink,
       'xlink:href': xlink,
@@ -435,7 +470,7 @@
       'xml:space': xml
   };
 
-  const DOMAttributeNames = {
+  var DOMAttributeNames = {
       acceptCharset: 'accept-charset',
       className: 'class',
       htmlFor: 'for',
@@ -453,7 +488,7 @@
       viewBox: 'viewBox' // SVG - Edge case. The letter 'b' need to be uppercase
   };
 
-  const DOMPropertyNames = {
+  var DOMPropertyNames = {
       autoComplete: 'autocomplete',
       autoFocus: 'autofocus',
       autoPlay: 'autoplay',
@@ -468,7 +503,7 @@
   // This 'whitelist' contains edge cases such as attributes
   // that should be seen as a property or boolean property.
   // ONLY EDIT THIS IF YOU KNOW WHAT YOU ARE DOING!!
-  const Whitelist = {
+  var Whitelist = {
       allowFullScreen: BOOLEAN,
       async: BOOLEAN,
       autoFocus: BOOLEAN,
@@ -650,15 +685,15 @@
       spellcheck: null // 3.2.5 - Global attributes
   };
 
-  let HTMLPropsContainer = {};
+  var HTMLPropsContainer = {};
 
   function checkBitmask(value, bitmask) {
       return bitmask !== null && (value & bitmask) === bitmask;
   }
 
-  for (let propName in Whitelist) {
+  for (var propName in Whitelist) {
 
-      const propConfig = Whitelist[propName];
+      var propConfig = Whitelist[propName];
 
       HTMLPropsContainer[propName] = {
           attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
@@ -673,8 +708,8 @@
   }
 
   function inArray(arr, item) {
-      const len = arr.length;
-      let i = 0;
+      var len = arr.length;
+      var i = 0;
 
       while (i < len) {
           if (arr[i++] == item) {
@@ -687,12 +722,12 @@
 
   // TODO!! Optimize!!
   function setSelectValueForProperty(vNode, domNode, value, useProperties) {
-  	const isMultiple = isArray(value);
-  	const options = domNode.options;
-  	const len = options.length;
+  	var isMultiple = isArray(value);
+  	var options = domNode.options;
+  	var len = options.length;
 
-  	let i = 0,
-  	    optionNode;
+  	var i = 0,
+  	    optionNode = undefined;
   	while (i < len) {
   		optionNode = options[i++];
   		if (useProperties) {
@@ -707,7 +742,7 @@
   	}
   }
 
-  const template = {
+  var template = {
       /**
        * Sets the value for a property on a node. If a value is specified as
        * '' (empty string), the corresponding style property will be unset.
@@ -716,15 +751,16 @@
        * @param {string} name
        * @param {*} value
        */
-      setProperty(vNode, domNode, name, value, useProperties) {
 
-          const propertyInfo = HTMLPropsContainer[name] || null;
+      setProperty: function setProperty(vNode, domNode, name, value, useProperties) {
+
+          var propertyInfo = HTMLPropsContainer[name] || null;
 
           if (propertyInfo) {
               if (value == null || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && value !== value || propertyInfo.hasPositiveNumericValue && value < 1 || value.length === 0) {
                   template.removeProperty(vNode, domNode, name, useProperties);
               } else {
-                  const propName = propertyInfo.propertyName;
+                  var propName = propertyInfo.propertyName;
 
                   if (propertyInfo.mustUseProperty) {
                       if (propName === 'value' && vNode.tag === 'select') {
@@ -741,8 +777,8 @@
                       }
                   } else {
 
-                      const attributeName = propertyInfo.attributeName;
-                      const namespace = propertyInfo.attributeNamespace;
+                      var attributeName = propertyInfo.attributeName;
+                      var namespace = propertyInfo.attributeNamespace;
 
                       // if 'truthy' value, and boolean, it will be 'propName=propName'
                       if (propertyInfo.hasBooleanValue && value === true) {
@@ -769,12 +805,12 @@
        * @param {DOMElement} node
        * @param {string} name
        */
-      removeProperty(vNode, domNode, name, useProperties) {
-          const propertyInfo = HTMLPropsContainer[name];
+      removeProperty: function removeProperty(vNode, domNode, name, useProperties) {
+          var propertyInfo = HTMLPropsContainer[name];
 
           if (propertyInfo) {
               if (propertyInfo.mustUseProperty) {
-                  let propName = propertyInfo.propertyName;
+                  var propName = propertyInfo.propertyName;
                   if (propertyInfo.hasBooleanValue) {
                       if (useProperties) {
                           domNode[propName] = false;
@@ -800,7 +836,7 @@
       }
   };
 
-  const standardNativeEventMapping = {
+  var standardNativeEventMapping = {
   	onBlur: 'blur',
   	onChange: 'change',
   	onClick: 'click',
@@ -847,7 +883,7 @@
   	onWheel: 'wheel'
   };
 
-  const nonBubbleableEventMapping = {
+  var nonBubbleableEventMapping = {
   	onAbort: 'abort',
   	onBeforeUnload: 'beforeunload',
   	onCanPlay: 'canplay',
@@ -883,16 +919,16 @@
   	onWaiting: 'waiting'
   };
 
-  let propertyToEventType = {};
-  [standardNativeEventMapping, nonBubbleableEventMapping].forEach(mapping => {
-  	Object.keys(mapping).reduce((state, property) => {
+  var propertyToEventType = {};
+  [standardNativeEventMapping, nonBubbleableEventMapping].forEach(function (mapping) {
+  	Object.keys(mapping).reduce(function (state, property) {
   		state[property] = mapping[property];
   		return state;
   	}, propertyToEventType);
   });
 
-  const INFERNO_PROP = '__Inferno__id__';
-  let counter = 1;
+  var INFERNO_PROP = '__Inferno__id__';
+  var counter = 1;
 
   function InfernoNodeID(node, get) {
   	return node[INFERNO_PROP] || (get ? 0 : node[INFERNO_PROP] = counter++);
@@ -909,7 +945,7 @@
   	blur: 'focusout' // DOM L3
   };
 
-  const canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+  var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 
   /**
    * Simple, lightweight module assisting with the detection and context of
@@ -943,26 +979,30 @@
    * @return {Function} wrapped handler
    */
   function setHandler(type, handler) {
-    let hook = eventHooks[type];
+    var hook = eventHooks[type];
     if (hook) {
-      let hooked = hook(handler);
+      var hooked = hook(handler);
       hooked.originalHandler = handler;
       return hooked;
     }
 
-    return { handler, originalHandler: handler };
+    return { handler: handler, originalHandler: handler };
   }
 
-  const standardNativeEvents = Object.keys(standardNativeEventMapping).map(key => standardNativeEventMapping[key]);
+  var standardNativeEvents = Object.keys(standardNativeEventMapping).map(function (key) {
+  	return standardNativeEventMapping[key];
+  });
 
-  const nonBubbleableEvents = Object.keys(nonBubbleableEventMapping).map(key => nonBubbleableEventMapping[key]);
+  var nonBubbleableEvents = Object.keys(nonBubbleableEventMapping).map(function (key) {
+  	return nonBubbleableEventMapping[key];
+  });
 
-  let EventRegistry = {};
+  var EventRegistry = {};
 
   if (ExecutionEnvironment.canUseDOM) {
-  	let i = 0;
-  	let type;
-  	const nativeFocus = 'onfocusin' in document.documentElement;
+  	var i = 0;
+  	var type = undefined;
+  	var nativeFocus = 'onfocusin' in document.documentElement;
 
   	for (; i < standardNativeEvents.length; i++) {
   		type = standardNativeEvents[i];
@@ -977,15 +1017,15 @@
   			// IE has `focusin` and `focusout` events which bubble.
   			// @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
   			EventRegistry[type]._focusBlur = nativeFocus ? function () {
-  				const _type = this._type;
-  				let handler = setHandler(_type, e => {
+  				var _type = this._type;
+  				var handler = setHandler(_type, function (e) {
   					addRootListener(e, _type);
   				}).handler;
   				document.addEventListener(focusEvents[_type], handler);
   			}
   			// firefox doesn't support focusin/focusout events
   			: function () {
-  				const _type = this._type;
+  				var _type = this._type;
   				document.addEventListener(_type, setHandler(_type, addRootListener).handler, true);
   			};
   		}
@@ -1065,14 +1105,14 @@
   }
 
   function getFormElementType(node) {
-  	const name = node.nodeName.toLowerCase();
+  	var name = node.nodeName.toLowerCase();
   	if (name !== 'input') {
   		if (name === 'select' && node.multiple) {
   			return 'select-multiple';
   		}
   		return name;
   	}
-  	const type = node.getAttribute('type');
+  	var type = node.getAttribute('type');
   	if (!type) {
   		return 'text';
   	}
@@ -1080,12 +1120,12 @@
   }
 
   function selectValues(node) {
-  	let result = [];
-  	let index = node.selectedIndex;
-  	let option;
-  	let options = node.options;
-  	let length = options.length;
-  	let i = index < 0 ? length : 0;
+  	var result = [];
+  	var index = node.selectedIndex;
+  	var option = undefined;
+  	var options = node.options;
+  	var length = options.length;
+  	var i = index < 0 ? length : 0;
 
   	for (; i < length; i++) {
 
@@ -1101,7 +1141,7 @@
   }
 
   function getFormElementValues(node) {
-  	const name = getFormElementType(node);
+  	var name = getFormElementType(node);
 
   	switch (name) {
   		case 'checkbox':
@@ -1121,13 +1161,13 @@
   var setupHooks = {};
 
   function createListenerArguments(target, event) {
-  	const type = event.type;
-  	const nodeName = target.nodeName.toLowerCase();
+  	var type = event.type;
+  	var nodeName = target.nodeName.toLowerCase();
 
-  	let tagHooks;
+  	var tagHooks = undefined;
 
   	if (tagHooks = setupHooks[type]) {
-  		let hook = tagHooks[nodeName];
+  		var hook = tagHooks[nodeName];
   		if (hook) {
   			return hook(target, event);
   		}
@@ -1144,7 +1184,7 @@
 
   function addRootListener(e, type) {
   	type || (type = e.type);
-  	const registry = EventRegistry[type];
+  	var registry = EventRegistry[type];
 
   	// Support: Safari 6-8+
   	// Target should not be a text node
@@ -1152,14 +1192,14 @@
   		e.target = e.target.parentNode;
   	}
 
-  	let target = e.target,
+  	var target = e.target,
   	    listenersCount = registry._counter,
-  	    listeners,
-  	    listener,
-  	    nodeID,
-  	    event,
-  	    args,
-  	    defaultArgs;
+  	    listeners = undefined,
+  	    listener = undefined,
+  	    nodeID = undefined,
+  	    event = undefined,
+  	    args = undefined,
+  	    defaultArgs = undefined;
 
   	if (listenersCount > 0) {
   		event = eventInterface(e, type);
@@ -1176,7 +1216,7 @@
   				// where an event handler takes more than one argument
   				// listener is a function, and length is the number of
   				// arguments that function takes
-  				let numArgs = listener.originalHandler.length;
+  				var numArgs = listener.originalHandler.length;
   				args = defaultArgs;
   				if (numArgs > 1) {
   					args = createListenerArguments(target, event);
@@ -1203,10 +1243,10 @@
   }
 
   function createEventListener(type) {
-  	return e => {
-  		const target = e.target;
-  		const listener = listenersStorage[InfernoNodeID(target)][type];
-  		const args = listener.originalHandler.length > 1 ? createListenerArguments(target, e) : [e];
+  	return function (e) {
+  		var target = e.target;
+  		var listener = listenersStorage[InfernoNodeID(target)][type];
+  		var args = listener.originalHandler.length > 1 ? createListenerArguments(target, e) : [e];
 
   		listener.originalHandler.apply(target, args);
   	};
@@ -1216,7 +1256,7 @@
   	if (!domNode) {
   		return null; // TODO! Should we throw?
   	}
-  	const registry = EventRegistry[type];
+  	var registry = EventRegistry[type];
 
   	// only add listeners for registered events
   	if (registry) {
@@ -1225,13 +1265,13 @@
   			if (registry._focusBlur) {
   				registry._focusBlur();
   			} else if (registry._bubbles) {
-  				let handler = setHandler(type, addRootListener).handler;
+  				var handler = setHandler(type, addRootListener).handler;
   				document.addEventListener(type, handler, false);
   			}
   			registry._enabled = true;
   		}
-  		const nodeID = InfernoNodeID(domNode),
-  		      listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
+  		var nodeID = InfernoNodeID(domNode),
+  		    listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
 
   		if (listeners[type]) {
   			if (listeners[type].destroy) {
@@ -1256,7 +1296,7 @@
   	}
   }
 
-  const unitlessProps = {
+  var unitlessProps = {
   	flex: true,
   	base: true,
   	zoom: true,
@@ -1305,7 +1345,7 @@
   	WebkitAnimationIterationCount: true
   };
 
-  var unitlessProperties = (str => {
+  var unitlessProperties = (function (str) {
   	return str in unitlessProps;
   })
 
@@ -1315,7 +1355,7 @@
    * @param {String} name The boolean attribute name to set.
    * @param {String} value The boolean attribute value to set.
    */
-  var addPixelSuffixToValueIfNeeded = ((name, value) => {
+  var addPixelSuffixToValueIfNeeded = (function (name, value) {
   	if (value === null || value === '') {
   		return '';
   	}
@@ -1341,9 +1381,9 @@
    * @param {DOMElement} node
    * @param {object} styles
    */
-  var setValueForStyles = ((vNode, domNode, styles) => {
-    for (let styleName in styles) {
-      let styleValue = styles[styleName];
+  var setValueForStyles = (function (vNode, domNode, styles) {
+    for (var styleName in styles) {
+      var styleValue = styles[styleName];
 
       domNode.style[styleName] = styleValue == null ? '' : addPixelSuffixToValueIfNeeded(styleName, styleValue);
     }
@@ -1356,17 +1396,17 @@
    */
   function addDOMStaticAttributes(vNode, domNode, attrs) {
 
-  	let styleUpdates;
+  	var styleUpdates = undefined;
 
-  	for (let attrName in attrs) {
-  		const attrVal = attrs[attrName];
+  	for (var attrName in attrs) {
+  		var _attrVal = attrs[attrName];
 
-  		if (attrVal) {
+  		if (_attrVal) {
   			if (attrName === 'style') {
 
-  				styleUpdates = attrVal;
+  				styleUpdates = _attrVal;
   			} else {
-  				template.setProperty(vNode, domNode, attrName, attrVal, false);
+  				template.setProperty(vNode, domNode, attrName, _attrVal, false);
   			}
   		}
   	}
@@ -1394,23 +1434,23 @@
   		return;
   	}
 
-  	let styleUpdates;
+  	var styleUpdates = undefined;
 
-  	for (let attrName in dynamicAttrs) {
-  		let attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+  	for (var attrName in dynamicAttrs) {
+  		var _attrVal2 = getValueWithIndex(item, dynamicAttrs[attrName]);
 
-  		if (attrVal !== undefined) {
+  		if (_attrVal2 !== undefined) {
 
   			if (attrName === 'style') {
 
-  				styleUpdates = attrVal;
+  				styleUpdates = _attrVal2;
   			} else {
 
-  				if (fastPropSet(attrName, attrVal, domNode) === false) {
+  				if (fastPropSet(attrName, _attrVal2, domNode) === false) {
   					if (propertyToEventType[attrName]) {
-  						addListener(item, domNode, propertyToEventType[attrName], attrVal);
+  						addListener(item, domNode, propertyToEventType[attrName], _attrVal2);
   					} else {
-  						template.setProperty(item, domNode, attrName, attrVal, true);
+  						template.setProperty(item, domNode, attrName, _attrVal2, true);
   					}
   				}
   			}
@@ -1424,16 +1464,16 @@
 
   function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
   	if (dynamicAttrs.index !== undefined) {
-  		const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
+  		var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
   		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
   		return;
   	}
 
-  	let styleUpdates;
+  	var styleUpdates = undefined;
 
-  	for (let attrName in dynamicAttrs) {
-  		const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
-  		const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
+  	for (var attrName in dynamicAttrs) {
+  		var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
+  		var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
   		if (lastAttrVal !== nextAttrVal) {
   			if (nextAttrVal !== undefined) {
@@ -1461,20 +1501,20 @@
   }
 
   function recreateRootNode(lastItem, nextItem, node) {
-  	const lastDomNode = lastItem.rootNode;
-  	const domNode = node.create(nextItem);
+  	var lastDomNode = lastItem.rootNode;
+  	var domNode = node.create(nextItem);
   	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
   	// TODO recycle old node
   }
 
-  const recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
-  	const node = {
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item) {
-  			let domNode;
+  		create: function create(item) {
+  			var domNode = undefined;
 
   			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
@@ -1483,7 +1523,7 @@
   				}
   			}
   			domNode = templateNode.cloneNode(false);
-  			const value = getValueWithIndex(item, valueIndex);
+  			var value = getValueWithIndex(item, valueIndex);
 
   			if (value != null) {
   				domNode.textContent = value;
@@ -1494,15 +1534,15 @@
   			item.rootNode = domNode;
   			return domNode;
   		},
-  		update(lastItem, nextItem) {
+  		update: function update(lastItem, nextItem) {
   			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			const domNode = lastItem.rootNode;
+  			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
-  			const nextValue = getValueWithIndex(nextItem, valueIndex);
+  			var nextValue = getValueWithIndex(nextItem, valueIndex);
 
   			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
   				domNode.firstChild.nodeValue = nextValue;
@@ -1518,10 +1558,10 @@
   function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var domNode;
 
-  	const node = {
-  		create(item) {
+  	var node = {
+  		create: function create(item) {
   			domNode = templateNode.cloneNode(false);
-  			const value = getValueWithIndex(item, valueIndex);
+  			var value = getValueWithIndex(item, valueIndex);
 
   			if (value != null) {
   				domNode.textContent = value;
@@ -1531,8 +1571,8 @@
   			}
   			return domNode;
   		},
-  		update(lastItem, nextItem) {
-  			const nextValue = getValueWithIndex(nextItem, valueIndex);
+  		update: function update(lastItem, nextItem) {
+  			var nextValue = getValueWithIndex(nextItem, valueIndex);
 
   			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
   				domNode.firstChild.nodeValue = nextValue;
@@ -1545,14 +1585,14 @@
   	return node;
   }
 
-  const recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
-  	const node = {
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item) {
-  			let domNode;
+  		create: function create(item) {
+  			var domNode = undefined;
 
   			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
@@ -1567,12 +1607,12 @@
   			item.rootNode = domNode;
   			return domNode;
   		},
-  		update(lastItem, nextItem) {
+  		update: function update(lastItem, nextItem) {
   			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			const domNode = lastItem.rootNode;
+  			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
   			if (dynamicAttrs) {
@@ -1584,16 +1624,16 @@
   }
 
   function createNodeWithStaticChild(templateNode, dynamicAttrs) {
-  	let domNode;
-  	const node = {
-  		create(item) {
+  	var domNode = undefined;
+  	var node = {
+  		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
   			}
   			return domNode;
   		},
-  		update(lastItem, nextItem) {
+  		update: function update(lastItem, nextItem) {
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
@@ -1602,14 +1642,14 @@
   	return node;
   }
 
-  const recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
-  	const node = {
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item, parentComponent, treeLifecycle) {
-  			let domNode;
+  		create: function create(item, parentComponent, treeLifecycle) {
+  			var domNode = undefined;
 
   			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
@@ -1618,21 +1658,21 @@
   				}
   			}
   			domNode = templateNode.cloneNode(false);
-  			const value = getValueWithIndex(item, valueIndex);
+  			var value = getValueWithIndex(item, valueIndex);
 
   			if (value != null) {
   				if (isArray(value)) {
-  					for (let i = 0; i < value.length; i++) {
-  						const childItem = value[i];
+  					for (var i = 0; i < value.length; i++) {
+  						var childItem = value[i];
 
-  						if (typeof childItem === 'object') {
+  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
   							domNode.appendChild(childItem.domTree.create(childItem, parentComponent));
   						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
-  							const textNode = document.createTextNode(childItem);
+  							var textNode = document.createTextNode(childItem);
   							domNode.appendChild(textNode);
   						}
   					}
-  				} else if (typeof value === 'object') {
+  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
   					domNode.appendChild(value.domTree.create(value));
   				} else if (typeof value === 'string' || typeof value === 'number') {
   					domNode.textContent = value;
@@ -1644,16 +1684,16 @@
   			item.rootNode = domNode;
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+  		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
   			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			const domNode = lastItem.rootNode;
+  			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
-  			const nextValue = getValueWithIndex(nextItem, valueIndex);
-  			const lastValue = getValueWithIndex(lastItem, valueIndex);
+  			var nextValue = getValueWithIndex(nextItem, valueIndex);
+  			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
   			if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
@@ -1666,8 +1706,8 @@
   						} else {
   							// TODO
   						}
-  					} else if (typeof nextValue === 'object') {
-  							const tree = nextValue.domTree;
+  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  							var tree = nextValue.domTree;
 
   							if (tree !== null) {
   								if (lastValue.domTree !== null) {
@@ -1689,25 +1729,25 @@
   }
 
   function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
-  	let domNode;
-  	const node = {
-  		create(item, parentComponent, treeLifecycle) {
+  	var domNode = undefined;
+  	var node = {
+  		create: function create(item, parentComponent, treeLifecycle) {
   			domNode = templateNode.cloneNode(false);
-  			const value = getValueWithIndex(item, valueIndex);
+  			var value = getValueWithIndex(item, valueIndex);
 
   			if (value != null) {
   				if (isArray(value)) {
-  					for (let i = 0; i < value.length; i++) {
-  						const childItem = value[i];
+  					for (var i = 0; i < value.length; i++) {
+  						var childItem = value[i];
 
-  						if (typeof childItem === 'object') {
+  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
   							domNode.appendChild(childItem.domTree.create(childItem));
   						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
-  							const textNode = document.createTextNode(childItem);
+  							var textNode = document.createTextNode(childItem);
   							domNode.appendChild(textNode);
   						}
   					}
-  				} else if (typeof value === 'object') {
+  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
   					domNode.appendChild(value.domTree.create(value, parentComponent));
   				} else if (typeof value === 'string' || typeof value === 'number') {
   					domNode.textContent = value;
@@ -1718,9 +1758,9 @@
   			}
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent, treeLifecycle) {
-  			const nextValue = getValueWithIndex(nextItem, valueIndex);
-  			const lastValue = getValueWithIndex(lastItem, valueIndex);
+  		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+  			var nextValue = getValueWithIndex(nextItem, valueIndex);
+  			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
   			if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
@@ -1733,8 +1773,8 @@
   						} else {
   							//debugger;
   						}
-  					} else if (typeof nextValue === 'object') {
-  							const tree = nextValue.domTree;
+  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  							var tree = nextValue.domTree;
 
   							if (tree !== null) {
   								if (lastValue.domTree !== null) {
@@ -1755,15 +1795,15 @@
   	return node;
   }
 
-  const recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
-  	const node = {
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item, parentComponent, treeLifecycle) {
-  			let domNode;
-  			if (recyclingEnabled$4) {
+  		create: function create(item, parentComponent, treeLifecycle) {
+  			var domNode = undefined;
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1772,11 +1812,11 @@
   			domNode = templateNode.cloneNode(false);
   			if (subTreeForChildren != null) {
   				if (isArray(subTreeForChildren)) {
-  					for (let i = 0; i < subTreeForChildren.length; i++) {
-  						const subTree = subTreeForChildren[i];
+  					for (var i = 0; i < subTreeForChildren.length; i++) {
+  						var subTree = subTreeForChildren[i];
   						domNode.appendChild(subTree.create(item, parentComponent));
   					}
-  				} else if (typeof subTreeForChildren === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
   					domNode.appendChild(subTreeForChildren.create(item, parentComponent));
   				}
   			}
@@ -1786,21 +1826,21 @@
   			item.rootNode = domNode;
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+  		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
   			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			const domNode = lastItem.rootNode;
+  			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
   			if (subTreeForChildren != null) {
   				if (isArray(subTreeForChildren)) {
-  					for (let i = 0; i < subTreeForChildren.length; i++) {
-  						const subTree = subTreeForChildren[i];
+  					for (var i = 0; i < subTreeForChildren.length; i++) {
+  						var subTree = subTreeForChildren[i];
   						subTree.update(lastItem, nextItem, parentComponent);
   					}
-  				} else if (typeof subTreeForChildren === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.update(lastItem, nextItem, parentComponent);
   				}
   			}
@@ -1813,17 +1853,17 @@
   }
 
   function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
-  	let domNode;
-  	const node = {
-  		create(item, parentComponent, treeLifecycle) {
+  	var domNode = undefined;
+  	var node = {
+  		create: function create(item, parentComponent, treeLifecycle) {
   			domNode = templateNode.cloneNode(false);
   			if (subTreeForChildren != null) {
   				if (isArray(subTreeForChildren)) {
-  					for (let i = 0; i < subTreeForChildren.length; i++) {
-  						const subTree = subTreeForChildren[i];
+  					for (var i = 0; i < subTreeForChildren.length; i++) {
+  						var subTree = subTreeForChildren[i];
   						domNode.appendChild(subTree.create(item));
   					}
-  				} else if (typeof subTreeForChildren === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
   					domNode.appendChild(subTreeForChildren.create(item, parentComponent));
   				}
   			}
@@ -1832,14 +1872,14 @@
   			}
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+  		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
   			if (subTreeForChildren != null) {
   				if (isArray(subTreeForChildren)) {
-  					for (let i = 0; i < subTreeForChildren.length; i++) {
-  						const subTree = subTreeForChildren[i];
+  					for (var i = 0; i < subTreeForChildren.length; i++) {
+  						var subTree = subTreeForChildren[i];
   						subTree.update(lastItem, nextItem);
   					}
-  				} else if (typeof subTreeForChildren === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.update(lastItem, nextItem, parentComponent);
   				}
   			}
@@ -1851,15 +1891,15 @@
   	return node;
   }
 
-  const recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
-  	const node = {
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item) {
-  			let domNode;
-  			if (recyclingEnabled$5) {
+  		create: function create(item) {
+  			var domNode = undefined;
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1869,7 +1909,7 @@
   			item.rootNode = domNode;
   			return domNode;
   		},
-  		update(lastItem, nextItem) {
+  		update: function update(lastItem, nextItem) {
   			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
@@ -1883,33 +1923,33 @@
   function createStaticNode(templateNode) {
   	var domNode;
 
-  	const node = {
-  		create() {
+  	var node = {
+  		create: function create() {
   			domNode = templateNode.cloneNode(true);
   			return domNode;
   		},
-  		update() {}
+  		update: function update() {}
   	};
   	return node;
   }
 
-  const recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex, domNamespace) {
-  	const node = {
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item, parentComponent, treeLifecycle) {
-  			let domNode;
+  		create: function create(item, parentComponent, treeLifecycle) {
+  			var domNode = undefined;
 
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
   				}
   			}
-  			let value = getValueWithIndex(item, valueIndex);
-  			const type = getTypeFromValue(value);
+  			var value = getValueWithIndex(item, valueIndex);
+  			var type = getTypeFromValue(value);
 
   			switch (type) {
   				case ValueTypes.TEXT:
@@ -1932,21 +1972,21 @@
   			item.rootNode = domNode;
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent, treeLifecycle) {
+  		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
   			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			const domNode = lastItem.rootNode;
+  			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
 
-  			const nextValue = getValueWithIndex(nextItem, valueIndex);
-  			const lastValue = getValueWithIndex(lastItem, valueIndex);
+  			var nextValue = getValueWithIndex(nextItem, valueIndex);
+  			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
   			if (nextValue !== lastValue) {
-  				const nextType = getTypeFromValue(nextValue);
-  				const lastType = getTypeFromValue(lastValue);
+  				var nextType = getTypeFromValue(nextValue);
+  				var lastType = getTypeFromValue(lastValue);
 
   				if (lastType !== nextType) {
   					// TODO replace node and rebuild
@@ -1968,12 +2008,12 @@
   }
 
   function createDynamicNode(valueIndex, domNamespace) {
-  	let domNode;
+  	var domNode = undefined;
 
-  	const node = {
-  		create(item, parentComponent) {
-  			let value = getValueWithIndex(item, valueIndex);
-  			const type = getTypeFromValue$1(value);
+  	var node = {
+  		create: function create(item, parentComponent) {
+  			var value = getValueWithIndex(item, valueIndex);
+  			var type = getTypeFromValue$1(value);
 
   			switch (type) {
   				case ValueTypes$1.TEXT:
@@ -1995,13 +2035,13 @@
 
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent) {
-  			let nextValue = getValueWithIndex(nextItem, valueIndex);
-  			const lastValue = getValueWithIndex(lastItem, valueIndex);
+  		update: function update(lastItem, nextItem, parentComponent) {
+  			var nextValue = getValueWithIndex(nextItem, valueIndex);
+  			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
   			if (nextValue !== lastValue) {
-  				const nextType = getTypeFromValue$1(nextValue);
-  				const lastType = getTypeFromValue$1(lastValue);
+  				var nextType = getTypeFromValue$1(nextValue);
+  				var lastType = getTypeFromValue$1(lastValue);
 
   				if (lastType !== nextType) {
   					// TODO replace node and rebuild
@@ -2031,15 +2071,15 @@
   	return node;
   }
 
-  const recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
-  	const node = {
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item) {
-  			let domNode;
-  			if (recyclingEnabled$7) {
+  		create: function create(item) {
+  			var domNode = undefined;
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2052,12 +2092,12 @@
   			}
   			return domNode;
   		},
-  		update(lastItem, nextItem) {
+  		update: function update(lastItem, nextItem) {
   			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			const domNode = lastItem.rootNode;
+  			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
   			nextItem.rootNode = lastItem.rootNode;
@@ -2070,16 +2110,16 @@
   }
 
   function createVoidNode(templateNode, dynamicAttrs) {
-  	let domNode;
-  	const node = {
-  		create(item) {
+  	var domNode = undefined;
+  	var node = {
+  		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
   			}
   			return domNode;
   		},
-  		update(lastItem, nextItem) {
+  		update: function update(lastItem, nextItem) {
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
@@ -2095,16 +2135,16 @@
   	// unmount all our child components too
   }
 
-  const recyclingEnabled$8 = isRecyclingEnabled();
+  var recyclingEnabled$8 = isRecyclingEnabled();
 
   function createRootNodeWithComponent(componentIndex, props, domNamespace) {
-  	let instance;
-  	let lastRender;
-  	const node = {
+  	var instance = undefined;
+  	var lastRender = undefined;
+  	var node = {
   		pool: [],
   		keyedPool: [],
-  		create(item, parentComponent, treeLifecycle) {
-  			let domNode;
+  		create: function create(item, parentComponent, treeLifecycle) {
+  			var domNode = undefined;
 
   			if (recyclingEnabled$8) {
   				domNode = recycle(node, item);
@@ -2112,7 +2152,7 @@
   					return domNode;
   				}
   			}
-  			const Component = getValueWithIndex(item, componentIndex);
+  			var Component = getValueWithIndex(item, componentIndex);
 
   			if (Component == null) {
   				//bad component, make a text node
@@ -2122,7 +2162,7 @@
   			}
   			instance = new Component(getValueForProps(props, item));
   			instance.componentWillMount();
-  			const nextRender = instance.render();
+  			var nextRender = instance.render();
 
   			nextRender.parent = item;
   			domNode = nextRender.domTree.create(nextRender, instance);
@@ -2130,8 +2170,8 @@
   			lastRender = nextRender;
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent, treeLifecycle) {
-  			const Component = getValueWithIndex(nextItem, componentIndex);
+  		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+  			var Component = getValueWithIndex(nextItem, componentIndex);
 
   			if (Component !== instance.constructor) {
   				unmountComponent(instance);
@@ -2143,14 +2183,14 @@
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			const domNode = lastItem.rootNode;
+  			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
 
-  			const prevProps = instance.props;
-  			const prevState = instance.state;
-  			const nextState = instance.state;
-  			const nextProps = getValueForProps(props, nextItem);
+  			var prevProps = instance.props;
+  			var prevState = instance.state;
+  			var nextState = instance.state;
+  			var nextProps = getValueForProps(props, nextItem);
 
   			if (!nextProps.children) {
   				nextProps.children = prevProps.children;
@@ -2162,7 +2202,7 @@
   					instance.componentWillReceiveProps(nextProps);
   					instance._blockRender = false;
   				}
-  				const shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
+  				var shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
 
   				if (shouldUpdate) {
   					instance._blockSetState = true;
@@ -2170,7 +2210,7 @@
   					instance._blockSetState = false;
   					instance.props = nextProps;
   					instance.state = nextState;
-  					const nextRender = instance.render();
+  					var nextRender = instance.render();
 
   					nextRender.parent = nextItem;
   					nextRender.domTree.update(lastRender, nextRender, instance);
@@ -2185,7 +2225,7 @@
   }
 
   function recreateRootNode$1(lastDomNode, nextItem, node) {
-  	const domNode = node.create(nextItem);
+  	var domNode = node.create(nextItem);
   	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
   	// TODO recycle old node
   }
@@ -2199,13 +2239,13 @@
   }
 
   function createNodeWithComponent(componentIndex, props, domNamespace) {
-  	let instance;
-  	let lastRender;
-  	let domNode;
-  	const node = {
-  		create(item, parentComponent, treeLifecycle) {
-  			const valueItem = getCorrectItemForValues(node, item);
-  			const Component = getValueWithIndex(valueItem, componentIndex);
+  	var instance = undefined;
+  	var lastRender = undefined;
+  	var domNode = undefined;
+  	var node = {
+  		create: function create(item, parentComponent, treeLifecycle) {
+  			var valueItem = getCorrectItemForValues(node, item);
+  			var Component = getValueWithIndex(valueItem, componentIndex);
 
   			if (Component == null) {
   				//bad component, make a text node
@@ -2213,25 +2253,25 @@
   			}
   			instance = new Component(getValueForProps(props, valueItem));
   			instance.componentWillMount();
-  			const nextRender = instance.render();
+  			var nextRender = instance.render();
 
   			nextRender.parent = item;
   			domNode = nextRender.domTree.create(nextRender, instance);
   			lastRender = nextRender;
   			return domNode;
   		},
-  		update(lastItem, nextItem, parentComponent, treeLifecycle) {
-  			const Component = getValueWithIndex(nextItem, componentIndex);
+  		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+  			var Component = getValueWithIndex(nextItem, componentIndex);
 
   			if (Component !== instance.constructor) {
   				unmountComponent(instance);
   				recreateRootNode$1(domNode, nextItem, node);
   				return;
   			}
-  			const prevProps = instance.props;
-  			const prevState = instance.state;
-  			const nextState = instance.state;
-  			const nextProps = getValueForProps(props, nextItem);
+  			var prevProps = instance.props;
+  			var prevState = instance.state;
+  			var nextState = instance.state;
+  			var nextProps = getValueForProps(props, nextItem);
 
   			if (!nextProps.children) {
   				nextProps.children = prevProps.children;
@@ -2243,7 +2283,7 @@
   					instance.componentWillReceiveProps(nextProps);
   					instance._blockRender = false;
   				}
-  				const shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
+  				var shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
 
   				if (shouldUpdate) {
   					instance._blockSetState = true;
@@ -2251,7 +2291,7 @@
   					instance._blockSetState = false;
   					instance.props = nextProps;
   					instance.state = nextState;
-  					const nextRender = instance.render();
+  					var nextRender = instance.render();
 
   					nextRender.parent = nextItem;
   					nextRender.domTree.update(lastRender, nextRender, instance);
@@ -2264,16 +2304,14 @@
   	return node;
   }
 
-  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
   function createStaticAttributes(node, domNode, excludeAttrs) {
-      const attrs = node.attrs;
+      var attrs = node.attrs;
 
       if (attrs != null) {
           if (excludeAttrs) {
-              const newAttrs = _extends({}, attrs);
+              var newAttrs = babelHelpers.extends({}, attrs);
 
-              for (let attr in excludeAttrs) {
+              for (var attr in excludeAttrs) {
                   if (newAttrs[attr]) {
                       delete newAttrs[attr];
                   }
@@ -2287,10 +2325,10 @@
 
   function createStaticTreeChildren(children, parentNode, domNamespace) {
       if (isArray(children)) {
-          for (let i = 0; i < children.length; i++) {
-              const childItem = children[i];
+          for (var i = 0; i < children.length; i++) {
+              var childItem = children[i];
               if (typeof childItem === 'string' || typeof childItem === 'number') {
-                  const textNode = document.createTextNode(childItem);
+                  var textNode = document.createTextNode(childItem);
                   parentNode.appendChild(textNode);
               } else {
                   createStaticTreeNode(childItem, parentNode, domNamespace);
@@ -2306,15 +2344,15 @@
   }
 
   function createStaticTreeNode(node, parentNode, domNamespace, schema) {
-      let staticNode;
+      var staticNode = undefined;
 
       if (typeof node === 'string' || typeof node === 'number') {
           staticNode = document.createTextNode(node);
       } else {
-          const tag = node.tag;
+          var tag = node.tag;
           if (tag) {
-              let namespace = node.attrs && node.attrs.xmlns || null;
-              let is = node.attrs && node.attrs.is || null;
+              var namespace = node.attrs && node.attrs.xmlns || null;
+              var is = node.attrs && node.attrs.is || null;
 
               if (!namespace) {
                   switch (tag) {
@@ -2343,8 +2381,8 @@
                       staticNode = document.createElement(tag);
                   }
               }
-              const text = node.text;
-              const children = node.children;
+              var text = node.text;
+              var children = node.children;
 
               if (text != null) {
                   if (children != null) {
@@ -2369,9 +2407,9 @@
   }
 
   function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
-      const dynamicFlags = dynamicNodeMap.get(schema);
-      let node;
-      let templateNode;
+      var dynamicFlags = dynamicNodeMap.get(schema);
+      var node = undefined;
+      var templateNode = undefined;
 
       if (isArray(schema)) {
           throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
@@ -2397,37 +2435,37 @@
                   node = createDynamicNode(schema.index, domNamespace);
               }
           } else {
-              const tag = schema.tag;
+              var tag = schema.tag;
 
               if (tag) {
                   if (tag.type === ObjectTypes.VARIABLE) {
-                      const lastAttrs = schema.attrs;
-                      const attrs = _extends({}, lastAttrs);
-                      let children = null;
+                      var lastAttrs = schema.attrs;
+                      var _attrs = babelHelpers.extends({}, lastAttrs);
+                      var _children = null;
 
                       if (schema.children) {
                           if (isArray(schema.children) && schema.children.length > 1) {
-                              attrs.children = [];
-                              for (let i = 0; i < schema.children.length; i++) {
-                                  const childNode = schema.children[i];
-                                  attrs.children.push(createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
+                              _attrs.children = [];
+                              for (var i = 0; i < schema.children.length; i++) {
+                                  var childNode = schema.children[i];
+                                  _attrs.children.push(createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
                               }
                           } else {
                               if (isArray(schema.children) && schema.children.length === 1) {
-                                  attrs.children = createDOMTree(schema.children[0], false, dynamicNodeMap, domNamespace);
+                                  _attrs.children = createDOMTree(schema.children[0], false, dynamicNodeMap, domNamespace);
                               } else {
-                                  attrs.children = createDOMTree(schema.children, false, dynamicNodeMap, domNamespace);
+                                  _attrs.children = createDOMTree(schema.children, false, dynamicNodeMap, domNamespace);
                               }
                           }
                       }
                       if (isRoot) {
-                          return createRootNodeWithComponent(tag.index, attrs, children, domNamespace);
+                          return createRootNodeWithComponent(tag.index, _attrs, _children, domNamespace);
                       } else {
-                          return createNodeWithComponent(tag.index, attrs, children, domNamespace);
+                          return createNodeWithComponent(tag.index, _attrs, _children, domNamespace);
                       }
                   }
-                  let namespace = schema.attrs && schema.attrs.xmlns || null;
-                  let is = schema.attrs && schema.attrs.is || null;
+                  var namespace = schema.attrs && schema.attrs.xmlns || null;
+                  var is = schema.attrs && schema.attrs.is || null;
 
                   if (!namespace) {
                       switch (tag) {
@@ -2456,8 +2494,8 @@
                           templateNode = document.createElement(tag);
                       }
                   }
-                  const attrs = schema.attrs;
-                  let dynamicAttrs = null;
+                  var attrs = schema.attrs;
+                  var dynamicAttrs = null;
 
                   if (attrs != null) {
                       if (dynamicFlags.ATTRS === true) {
@@ -2469,8 +2507,8 @@
                           createStaticAttributes(schema, templateNode);
                       }
                   }
-                  const text = schema.text;
-                  const children = schema.children;
+                  var text = schema.text;
+                  var children = schema.children;
 
                   if (text != null) {
                       if (children != null) {
@@ -2499,13 +2537,13 @@
                                   node = createNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, domNamespace);
                               }
                           } else if (dynamicFlags.CHILDREN === true) {
-                              let subTreeForChildren = [];
+                              var subTreeForChildren = [];
                               if (isArray(children)) {
-                                  for (let i = 0; i < children.length; i++) {
-                                      const childItem = children[i];
+                                  for (var i = 0; i < children.length; i++) {
+                                      var childItem = children[i];
                                       subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap, domNamespace));
                                   }
-                              } else if (typeof children === 'object') {
+                              } else if ((typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
                                   subTreeForChildren = createDOMTree(children, false, dynamicNodeMap, domNamespace);
                               }
                               if (isRoot) {
@@ -2521,7 +2559,7 @@
                                   node = createNodeWithStaticChild(templateNode, dynamicAttrs);
                               }
                           } else {
-                              const childNodeDynamicFlags = dynamicNodeMap.get(children);
+                              var childNodeDynamicFlags = dynamicNodeMap.get(children);
 
                               if (!childNodeDynamicFlags) {
                                   createStaticTreeChildren(children, templateNode, domNamespace);
@@ -2550,8 +2588,8 @@
   function createHTMLStringTree() {}
 
   function scanTreeForDynamicNodes(node, nodeMap) {
-  	let nodeIsDynamic = false;
-  	const dynamicFlags = {
+  	var nodeIsDynamic = false;
+  	var dynamicFlags = {
   		NODE: false,
   		TEXT: false,
   		ATTRS: false, //attrs can also be an object
@@ -2582,8 +2620,8 @@
   					nodeIsDynamic = true;
   					dynamicFlags.ATTRS = true;
   				} else {
-  					for (let attr in node.attrs) {
-  						const attrVal = node.attrs[attr];
+  					for (var attr in node.attrs) {
+  						var attrVal = node.attrs[attr];
   						if (attrVal != null && attrVal.type === ObjectTypes.VARIABLE) {
   							if (attr === 'xmlns') {
   								throw Error('Inferno Error: The "xmlns" attribute cannot be dynamic. Please use static value for "xmlns" attribute instead.');
@@ -2602,17 +2640,17 @@
   					nodeIsDynamic = true;
   				} else {
   					if (isArray(node.children)) {
-  						for (let i = 0; i < node.children.length; i++) {
-  							const childItem = node.children[i];
-  							const result = scanTreeForDynamicNodes(childItem, nodeMap);
+  						for (var i = 0; i < node.children.length; i++) {
+  							var childItem = node.children[i];
+  							var result = scanTreeForDynamicNodes(childItem, nodeMap);
 
   							if (result === true) {
   								nodeIsDynamic = true;
   								dynamicFlags.CHILDREN = true;
   							}
   						}
-  					} else if (typeof node === 'object') {
-  						const result = scanTreeForDynamicNodes(node.children, nodeMap);
+  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers.typeof(node)) === 'object') {
+  						var result = scanTreeForDynamicNodes(node.children, nodeMap);
 
   						if (result === true) {
   							nodeIsDynamic = true;
@@ -2636,112 +2674,118 @@
   }
 
   function createTemplate(callback) {
-  	let construct = callback.construct;
+  	var construct = callback.construct;
 
   	if (!construct) {
-  		const callbackLength = callback.length;
-  		const callbackArguments = new Array(callbackLength);
-  		for (let i = 0; i < callbackLength; i++) {
-  			callbackArguments[i] = createVariable(i);
-  		}
-  		const schema = callback.apply(undefined, callbackArguments);
-  		const dynamicNodeMap = new Map();
-  		scanTreeForDynamicNodes(schema, dynamicNodeMap);
-  		const domTree = createDOMTree(schema, true, dynamicNodeMap);
-  		const htmlStringTree = createHTMLStringTree(schema, true, dynamicNodeMap);
-  		const key = schema.key;
-  		const keyIndex = key ? key.index : -1;
+  		(function () {
+  			var callbackLength = callback.length;
+  			var callbackArguments = new Array(callbackLength);
+  			for (var i = 0; i < callbackLength; i++) {
+  				callbackArguments[i] = createVariable(i);
+  			}
+  			var schema = callback.apply(undefined, callbackArguments);
+  			var dynamicNodeMap = new Map();
+  			scanTreeForDynamicNodes(schema, dynamicNodeMap);
+  			var domTree = createDOMTree(schema, true, dynamicNodeMap);
+  			var htmlStringTree = createHTMLStringTree(schema, true, dynamicNodeMap);
+  			var key = schema.key;
+  			var keyIndex = key ? key.index : -1;
 
-  		switch (callbackLength) {
-  			case 0:
-  				construct = () => ({
-  					parent: null,
-  					domTree,
-  					htmlStringTree,
-  					key: null,
-  					nextItem: null,
-  					rootNode: null
-  				});
-  				break;
-  			case 1:
-  				construct = v0 => {
-  					let key;
-
-  					if (keyIndex === 0) {
-  						key = v0;
-  					}
-  					return {
-  						parent: null,
-  						domTree,
-  						htmlStringTree,
-  						key,
-  						nextItem: null,
-  						rootNode: null,
-  						v0
+  			switch (callbackLength) {
+  				case 0:
+  					construct = function () {
+  						return {
+  							parent: null,
+  							domTree: domTree,
+  							htmlStringTree: htmlStringTree,
+  							key: null,
+  							nextItem: null,
+  							rootNode: null
+  						};
   					};
-  				};
-  				break;
-  			case 2:
-  				construct = (v0, v1) => {
-  					let key;
+  					break;
+  				case 1:
+  					construct = function (v0) {
+  						var key = undefined;
 
-  					if (keyIndex === 0) {
-  						key = v0;
-  					} else if (keyIndex === 1) {
-  						key = v1;
-  					}
-  					return {
-  						parent: null,
-  						domTree,
-  						htmlStringTree,
-  						key,
-  						nextItem: null,
-  						rootNode: null,
-  						v0,
-  						v1
+  						if (keyIndex === 0) {
+  							key = v0;
+  						}
+  						return {
+  							parent: null,
+  							domTree: domTree,
+  							htmlStringTree: htmlStringTree,
+  							key: key,
+  							nextItem: null,
+  							rootNode: null,
+  							v0: v0
+  						};
   					};
-  				};
-  				break;
-  			default:
-  				construct = (v0, v1, ...values) => {
-  					let key;
+  					break;
+  				case 2:
+  					construct = function (v0, v1) {
+  						var key = undefined;
 
-  					if (keyIndex === 0) {
-  						key = v0;
-  					} else if (keyIndex === 1) {
-  						key = v1;
-  					} else if (keyIndex > 1) {
-  						key = values[keyIndex];
-  					}
-  					return {
-  						parent: null,
-  						domTree,
-  						htmlStringTree,
-  						key,
-  						nextItem: null,
-  						rootNode: null,
-  						v0,
-  						v1,
-  						values
+  						if (keyIndex === 0) {
+  							key = v0;
+  						} else if (keyIndex === 1) {
+  							key = v1;
+  						}
+  						return {
+  							parent: null,
+  							domTree: domTree,
+  							htmlStringTree: htmlStringTree,
+  							key: key,
+  							nextItem: null,
+  							rootNode: null,
+  							v0: v0,
+  							v1: v1
+  						};
   					};
-  				};
-  				break;
-  		}
-  		callback.construct = construct;
+  					break;
+  				default:
+  					construct = function (v0, v1) {
+  						for (var _len = arguments.length, values = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+  							values[_key - 2] = arguments[_key];
+  						}
+
+  						var key = undefined;
+
+  						if (keyIndex === 0) {
+  							key = v0;
+  						} else if (keyIndex === 1) {
+  							key = v1;
+  						} else if (keyIndex > 1) {
+  							key = values[keyIndex];
+  						}
+  						return {
+  							parent: null,
+  							domTree: domTree,
+  							htmlStringTree: htmlStringTree,
+  							key: key,
+  							nextItem: null,
+  							rootNode: null,
+  							v0: v0,
+  							v1: v1,
+  							values: values
+  						};
+  					};
+  					break;
+  			}
+  			callback.construct = construct;
+  		})();
   	}
   	return construct;
   }
 
-  var _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
   function applyState(component) {
   	var blockRender = component._blockRender;
-  	requestAnimationFrame(() => {
+  	requestAnimationFrame(function () {
   		if (component._deferSetState === false) {
   			component._pendingSetState = false;
-  			const pendingState = component._pendingState;
-  			const oldState = component.state;
-  			const nextState = _extends$1({}, oldState, pendingState);
+  			var pendingState = component._pendingState;
+  			var oldState = component.state;
+  			var nextState = babelHelpers.extends({}, oldState, pendingState);
   			component._pendingState = {};
   			component._pendingSetState = false;
   			//updateComponent(component, component.props, nextState, blockRender);
@@ -2753,7 +2797,7 @@
   }
 
   function queueStateChanges(component, newState) {
-  	for (let stateKey in newState) {
+  	for (var stateKey in newState) {
   		component._pendingState[stateKey] = newState[stateKey];
   	}
   	if (component._pendingSetState === false) {
@@ -2762,8 +2806,10 @@
   	}
   }
 
-  class Component {
-  	constructor(props, context) {
+  var Component = (function () {
+  	function Component(props, context) {
+  		babelHelpers.classCallCheck(this, Component);
+
   		this.props = props || {};
   		this._blockRender = false;
   		this._blockSetState = false;
@@ -2773,34 +2819,57 @@
   		this._componentTree = [];
   		this.state = {};
   	}
-  	render() {}
-  	forceUpdate() {}
-  	setState(newState, callback) {
-  		// TODO the callback
-  		if (this._blockSetState === false) {
-  			queueStateChanges(this, newState);
-  		} else {
-  			throw Error("Inferno Error: Cannot update state via setState() in componentWillUpdate()");
+
+  	babelHelpers.createClass(Component, [{
+  		key: "render",
+  		value: function render() {}
+  	}, {
+  		key: "forceUpdate",
+  		value: function forceUpdate() {}
+  	}, {
+  		key: "setState",
+  		value: function setState(newState, callback) {
+  			// TODO the callback
+  			if (this._blockSetState === false) {
+  				queueStateChanges(this, newState);
+  			} else {
+  				throw Error("Inferno Error: Cannot update state via setState() in componentWillUpdate()");
+  			}
   		}
-  	}
-  	componentDidMount() {}
-  	componentWillMount() {}
-  	componentWillUnmount() {}
-  	componentDidUpdate() {}
-  	shouldComponentUpdate() {
-  		return true;
-  	}
-  	componentWillReceiveProps() {}
-  	componentWillUpdate() {}
-  }
+  	}, {
+  		key: "componentDidMount",
+  		value: function componentDidMount() {}
+  	}, {
+  		key: "componentWillMount",
+  		value: function componentWillMount() {}
+  	}, {
+  		key: "componentWillUnmount",
+  		value: function componentWillUnmount() {}
+  	}, {
+  		key: "componentDidUpdate",
+  		value: function componentDidUpdate() {}
+  	}, {
+  		key: "shouldComponentUpdate",
+  		value: function shouldComponentUpdate() {
+  			return true;
+  		}
+  	}, {
+  		key: "componentWillReceiveProps",
+  		value: function componentWillReceiveProps() {}
+  	}, {
+  		key: "componentWillUpdate",
+  		value: function componentWillUpdate() {}
+  	}]);
+  	return Component;
+  })();
 
   module.exports = {
-  	Component,
-  	createTemplate,
-  	TemplateFactory,
-  	render,
-  	renderToString,
-  	unmountComponentsAtNode
+  	Component: Component,
+  	createTemplate: createTemplate,
+  	TemplateFactory: TemplateFactory,
+  	render: render,
+  	renderToString: renderToString,
+  	unmountComponentsAtNode: unmountComponentsAtNode
   };
 
 }));
