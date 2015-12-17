@@ -8,7 +8,7 @@ Inferno is a lightweight isomorphic framework for building shockingly performant
 
 In addition to this, we've painstakingly optimized the code to make sure that there is as little overhead as possible. We believe that Inferno is currently the fastest vDOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
-In principle: Inferno is almost 90% compatible with the stanard React API, furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
+In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
 
 ## Algorithm
 
