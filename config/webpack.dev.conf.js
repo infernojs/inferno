@@ -1,13 +1,14 @@
 const webpack = require('webpack');
 const path = require('path');
+const node_modules_dir = path.resolve(__dirname, 'node_modules');
 
 module.exports = {
     // entry points 
-    entry: path.join(__dirname, '../src'),
+    entry: path.resolve(__dirname, '../src'),
     cache: true,
     debug: true,
     output: {
-        path: path.join(__dirname, '../dist'),
+        path: path.resolve(__dirname, '../dist'),
         filename: 'inferno.js',
         libraryTarget: 'umd',
         library: 'Inferno'
@@ -15,8 +16,7 @@ module.exports = {
     module: {
         loaders: [{
             test: /\.js$/,
-            exclude: /node_modules/,
-            include: path.join(__dirname, '../src'),
+            exclude: [node_modules_dir],
             loader: 'babel-loader'
         }]
     },
