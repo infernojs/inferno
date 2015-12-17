@@ -6,5 +6,5 @@ require('./browser/acceptance/no-jsx/dom-components-tests'); // no-jsx component
 require('./browser/acceptance/no-jsx/dom-elements-tests'); // no-jsx dom-elements-tests
 
 require('./browser/performance/render/vdom-bench-tests'); // benchmark
-//require('./shared/boily'); // shared
-require('./node/boily'); // node
+require('./shared/inferno'); // shared
+require('./node/inferno'); // node
