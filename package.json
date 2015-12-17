@@ -57,9 +57,16 @@
     },
     "scripts": {
         "clean": "rm -rf coverage && rm -rf dist",
+<<<<<<< HEAD
         "prod": "webpack --config ./config/webpack.prod.conf --progress --profile --colors",
         "build": "webpack --config ./config/webpack.dev.conf --progress --profile --colors",   
         "browser": "webpack-dev-server --quiet --config config/webpack.test.conf.js --host 0.0.0.0",
+=======
+        "build": "set NODE_ENV=production && npm run lint:source && mkdirp dist && node config/rollup.config.js",
+        "build:win": "set NODE_ENV=production && mkdirp dist && node config/rollup.config.js",
+        "build:mac": "NODE_ENV=production && mkdirp dist && node config/rollup.config.js",
+        "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
+>>>>>>> origin/perf-spike
         "test:browser": "karma start config/karma.conf.js --single-run",
         "test:server": "mocha --opts config/mocha.opts",
         "test:browser": "karma start config/karma.conf.js --single-run",
