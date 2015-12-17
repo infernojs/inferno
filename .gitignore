@@ -1,5 +1,11 @@
 .git
 lib
+.build
+.jshintrc
+.idea
+dist/*
+.vscode
+jsconfig.json
 coverage
 node_modules
 .DS_Store

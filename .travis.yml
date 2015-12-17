@@ -2,6 +2,7 @@ language: node_js
 
 node_js:
   - 'stable'
+  - "4"
 
 # Use container-based Travis infrastructure.
 sudo: true
@@ -28,9 +29,6 @@ install:
    
 notifications:
   email: true
-branches:
-  except:
-    - "/^v\\d+\\.\\d+\\.\\d+$/"
 
   after_script:
 # Upload to coveralls, but don't _fail_ if coveralls is down.
