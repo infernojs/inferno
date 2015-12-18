@@ -872,7 +872,7 @@ describe('should render a basic root component', () => {
 					createElement(Component)
 			);
 			Inferno.render(template(ComponentLifecycleCheck), container);
-			waits(100, done)
+			waits(30, done)
 		});
 
 		it("componentWillMountCount to have fired once", () => {
