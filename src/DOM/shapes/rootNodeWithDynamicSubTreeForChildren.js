@@ -48,7 +48,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						subTree.update(lastItem, nextItem);
+						subTree.update(lastItem, nextItem, treeLifecycle);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
 					subTreeForChildren.update(lastItem, nextItem, treeLifecycle);

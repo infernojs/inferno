@@ -27,7 +27,7 @@ import waits from '../../../tools/waits';
 		}
 	}
 
-describe('should render a basic component', () => {
+	describe('should render a basic component', () => {
 		let template;
 
 		beforeEach(() => {
@@ -56,6 +56,45 @@ describe('should render a basic component', () => {
 			);
 		});
 	});
+
+	 function BasicStatelessComponent1({name, title}) {
+		 const template = Inferno.createTemplate((name, title) =>
+				 createElement("div", {className: "basic"},
+					 createElement("span", {className: name}, "The title is ", title)
+				 )
+		 );
+		 return template(name, title);
+	 }
+
+	 describe('should render a basic stateless component', () => {
+		 let template;
+
+		 beforeEach(() => {
+			 template = Inferno.createTemplate((Component, title) =>
+					 createElement('div', null,
+						 createElement(Component, {title: title, name: "basic-render"})
+					 )
+			 );
+			 Inferno.render(template(BasicStatelessComponent1, 'abc'), container);
+		 });
+
+		 it('Initial render (creation)', () => {
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+			 );
+		 });
+
+		 it('Second render (update)', () => {
+			 Inferno.render(template(BasicStatelessComponent1, '123'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is 123</span></div></div>'
+			 );
+		 });
+	 });
 	
 	class BasicComponent1b extends Inferno.Component {
 		render() {
@@ -311,7 +350,7 @@ describe('should render a basic component', () => {
 	//});
 
 
-describe('should render a basic root component', () => {
+	describe('should render a basic root component', () => {
 		let template;
 
 		beforeEach(() => {
@@ -337,6 +376,33 @@ describe('should render a basic root component', () => {
 			);
 		});
 	});
+
+	 describe('should render a basic root stateless component', () => {
+		 let template;
+
+		 beforeEach(() => {
+			 template = Inferno.createTemplate((Component, title, name) =>
+					 createElement(Component, {title, name})
+			 );
+			 Inferno.render(template(BasicStatelessComponent1, 'abc', 'basic-render'), container);
+		 });
+
+		 it('Initial render (creation)', () => {
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div class="basic"><span class="basic-render">The title is abc</span></div>'
+			 );
+		 });
+		 it('Second render (update)', () => {
+			 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			 );
+		 });
+	 });
 
 	class BasicComponent2 extends Inferno.Component {
 		render() {
