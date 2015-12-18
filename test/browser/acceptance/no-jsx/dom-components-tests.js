@@ -1,7 +1,7 @@
 import Inferno from '../../../../src';
 import waits from '../../../tools/waits';
 
- describe('DOM components ( no-jsx)', () => {
+ describe('DOM component tests (no-jsx)', () => {
 
   let container;
 

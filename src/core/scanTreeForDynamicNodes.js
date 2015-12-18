@@ -12,6 +12,10 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 		COMPONENTS: false
 	};
 
+	if (node == null) {
+		return false;
+	}
+
 	if (node.type === ObjectTypes.VARIABLE) {
 		nodeIsDynamic = true;
 		dynamicFlags.NODE = true;

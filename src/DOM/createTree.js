@@ -68,6 +68,9 @@ function createStaticTreeChildren(children, parentNode, domNamespace) {
 function createStaticTreeNode(node, parentNode, domNamespace, schema) {
     let staticNode;
 
+    if (node == null) {
+        return null;
+    }
     if (typeof node === 'string' || typeof node === 'number') {
         staticNode = document.createTextNode(node);
     } else {
