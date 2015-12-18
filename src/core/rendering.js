@@ -2,10 +2,6 @@ import createDOMFragment from '../DOM/createFragment';
 
 const rootFragments = [];
 
-function unmountComponentsAtFragment(fragment) {
-
-}
-
 export function getRootFragmentAtNode(node) {
 	const rootFragmentsLength = rootFragments.length;
 
@@ -40,7 +36,6 @@ export function render(nextItem, parentNode) {
 		rootFragments.push(fragment);
 	} else {
 		if (nextItem === null) {
-			unmountComponentsAtFragment(rootFragment);
 			rootFragment.remove();
 			removeRootFragment(rootFragment);
 		} else {
@@ -51,9 +46,4 @@ export function render(nextItem, parentNode) {
 
 export function renderToString(nextItem) {
 	// TODO
-}
-
-export function unmountComponentsAtNode(parentNode) {
-	const rootFragment = getRootFragmentAtNode(parentNode);
-	unmountComponentsAtFragment(rootFragment);
 }

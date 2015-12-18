@@ -3,94 +3,78 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
-import unmountComponent from '../../core/unmountComponent';
 import recreateRootNode from '../recreateRootNode';
+import updateComponent from '../../core/updateComponent';
 
 const recyclingEnabled = isRecyclingEnabled();
 
 export default function createRootNodeWithComponent(componentIndex, props, domNamespace) {
 	let instance;
 	let lastRender;
+  let currentItem;
 	const node = {
-		pool: [],
-		keyedPool: [],
-		create(item, treeLifecycle) {
-			let domNode;
+    pool: [],
+    keyedPool: [],
+    create(item, treeLifecycle) {
+      let domNode;
 
-			if (recyclingEnabled) {
-				domNode = recycle(node, item);
-				if (domNode) {
-					return domNode;
-				}
-			}
-			const Component = getValueWithIndex(item, componentIndex);
+      if (recyclingEnabled) {
+        domNode = recycle(node, item);
+        if (domNode) {
+          return domNode;
+        }
+      }
+      const Component = getValueWithIndex(item, componentIndex);
 
-			if (Component == null) {
-				//bad component, make a text node
-				domNode = document.createTextNode('');
-				item.rootNode = domNode;
-				return domNode;
-			}
-			instance = new Component(getValueForProps(props, item));
-			instance.componentWillMount();
-			const nextRender = instance.render();
+      if (Component == null) {
+        //bad component, make a text node
+        domNode = document.createTextNode('');
+        item.rootNode = domNode;
+        return domNode;
+      }
+      instance = new Component(getValueForProps(props, item));
+      instance.componentWillMount();
+      const nextRender = instance.render();
 
-			nextRender.parent = item;
-			domNode = nextRender.domTree.create(nextRender, instance);
-			item.rootNode = domNode;
-			lastRender = nextRender;
-			return domNode;
-		},
-		update(lastItem, nextItem, treeLifecycle) {
-			const Component = getValueWithIndex(nextItem, componentIndex);
+      nextRender.parent = item;
+      domNode = nextRender.domTree.create(nextRender, treeLifecycle);
+      item.rootNode = domNode;
+      lastRender = nextRender;
+      treeLifecycle.addTreeSuccessListener(instance.componentDidMount);
+      instance.forceUpdate = () => {
+        const nextRender = instance.render();
 
-			if (Component !== instance.constructor) {
-				unmountComponent(instance);
-				recreateRootNode(lastItem, nextItem, node);
-				return;
-			}
-			if (node !== lastItem.domTree) {
-				unmountComponent(instance);
-				recreateRootNode(lastItem, nextItem, node);
-				return;
-			}
-			const domNode = lastItem.rootNode;
+        nextRender.parent = currentItem;
+        nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+        currentItem.rootNode = nextRender.rootNode;
+        lastRender = nextRender;
+      };
+      currentItem = item;
+      return domNode;
+    },
+    update(lastItem, nextItem, treeLifecycle) {
+      const Component = getValueWithIndex(nextItem, componentIndex);
 
-			nextItem.rootNode = domNode;
+      if (node !== lastItem.domTree || Component !== instance.constructor) {
+        recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+        return;
+      }
+      const domNode = lastItem.rootNode;
+      const prevProps = instance.props;
+      const prevState = instance.state;
+      const nextState = instance.state;
+      const nextProps = getValueForProps(props, nextItem);
 
-			const prevProps = instance.props;
-			const prevState = instance.state;
-			const nextState = instance.state;
-			const nextProps = getValueForProps(props, nextItem);
-
-			if(!nextProps.children) {
-				nextProps.children = prevProps.children;
-			}
-
-			if(prevProps !== nextProps || prevState !== nextState) {
-				if(prevProps !== nextProps) {
-					instance._blockRender = true;
-					instance.componentWillReceiveProps(nextProps);
-					instance._blockRender = false;
-				}
-				const shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
-
-				if(shouldUpdate) {
-					instance._blockSetState = true;
-					instance.componentWillUpdate(nextProps, nextState);
-					instance._blockSetState = false;
-					instance.props = nextProps;
-					instance.state = nextState;
-					const nextRender = instance.render();
-
-					nextRender.parent = nextItem;
-					nextRender.domTree.update(lastRender, nextRender, instance);
-					nextItem.rootNode = nextRender.rootNode;
-					instance.componentDidUpdate(prevProps, prevState);
-					lastRender = nextRender;
-				}
-			}
-		}
-	};
+      currentItem = nextItem;
+      nextItem.rootNode = domNode;
+      updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+    },
+    remove(item, treeLifecycle) {
+      if (instance) {
+        lastRender.domTree.remove(lastRender, treeLifecycle);
+        instance.componentWillUnmount();
+      }
+    }
+  };
 	return node;
 }

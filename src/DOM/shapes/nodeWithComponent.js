@@ -2,8 +2,8 @@ import isArray from '../../util/isArray';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
-import unmountComponent from '../../core/unmountComponent';
 import recreateNode from '../recreateNode';
+import updateComponent from '../../core/updateComponent';
 
 function getCorrectItemForValues(node, item) {
 	if (node !== item.domTree && item.parent) {
@@ -17,6 +17,7 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 	let instance;
 	let lastRender;
 	let domNode;
+	let currentItem;
 	const node = {
 		create(item, treeLifecycle) {
 			const valueItem = getCorrectItemForValues(node, item);
@@ -31,16 +32,24 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 			const nextRender = instance.render();
 
 			nextRender.parent = item;
-			domNode = nextRender.domTree.create(nextRender, instance);
+			domNode = nextRender.domTree.create(nextRender, treeLifecycle);
 			lastRender = nextRender;
+			treeLifecycle.addTreeSuccessListener(instance.componentDidMount);
+			instance.forceUpdate = () => {
+				const nextRender = instance.render();
+
+				nextRender.parent = currentItem;
+				nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+				lastRender = nextRender;
+			};
+			currentItem = item;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
 
 			if (Component !== instance.constructor) {
-				unmountComponent(instance);
-				recreateNode(domNode, nextItem, node);
+				recreateNode(domNode, nextItem, node, treeLifecycle);
 				return;
 			}
 			const prevProps = instance.props;
@@ -48,31 +57,13 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 			const nextState = instance.state;
 			const nextProps = getValueForProps(props, nextItem);
 
-			if(!nextProps.children) {
-				nextProps.children = prevProps.children;
-			}
-
-			if(prevProps !== nextProps || prevState !== nextState) {
-				if(prevProps !== nextProps) {
-					instance._blockRender = true;
-					instance.componentWillReceiveProps(nextProps);
-					instance._blockRender = false;
-				}
-				const shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
-
-				if(shouldUpdate) {
-					instance._blockSetState = true;
-					instance.componentWillUpdate(nextProps, nextState);
-					instance._blockSetState = false;
-					instance.props = nextProps;
-					instance.state = nextState;
-					const nextRender = instance.render();
-
-					nextRender.parent = nextItem;
-					nextRender.domTree.update(lastRender, nextRender, instance);
-					instance.componentDidUpdate(prevProps, prevState);
-					lastRender = nextRender;
-				}
+			currentItem = nextItem;
+			updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+		},
+		remove(item, treeLifecycle) {
+			if (instance) {
+				lastRender.domTree.remove(lastRender, treeLifecycle);
+				instance.componentWillUnmount();
 			}
 		}
 	};

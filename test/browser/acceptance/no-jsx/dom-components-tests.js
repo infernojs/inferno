@@ -1,4 +1,5 @@
 import Inferno from '../../../../src';
+import waits from '../../../tools/waits';
 
  describe('DOM components ( no-jsx)', () => {
 
@@ -9,7 +10,7 @@ import Inferno from '../../../../src';
         });
 
         afterEach(() => {
-           // Inferno.clearDomElement(container);
+           Inferno.render(null, container);
         });
 		
 
@@ -559,54 +560,45 @@ describe('should render a basic root component', () => {
 		});
 	});
 	
-	//class BasicComponent3 extends Inferno.Component {
-	//	template(createElement, createComponent, styles, styles2, title) {
-	//		return createElement("div", {style: styles},
-	//			createElement("span", {style: styles2}, "The title is ", title)
-	//		);
-	//	}
-	//	render() {
-	//		return Inferno.createFragment([this.props.styles, this.props.styles, this.props.title], this.template);
-	//	}
-	//}
-	//
-	///*
-	//	IMPORTANT: These tests and the above component highlight the fact that fragment values passed into a template can ONLY apply to
-	//	 a single element. Thus why we need styles and styles2, which actually have the exact same value in all these below tests
-	//
-	//	 TODO This is a concern with the FUNCTIONAL_API, maybe we can implement some kind of warning system for DEV mode?
-	// */
-	//describe('should render a basic component with styling', () => {
-	//	let template;
-	//
-	//	beforeEach(() => {
-	//		template = Inferno.createTemplate((createElement, createComponent, Component) =>
-	//			createComponent(Component)
-	//		);
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent3, props: {title: "styled!", styles: { color: "red", padding: 10}}}
-	//		], template), container);
-	//	});
-	//
-	//	it('Initial render (creation)', () => {
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
-	//		);
-	//	});
-	//	it('Second render (update)', () => {
-	//		Inferno.render(Inferno.createFragment([
-	//			{component: BasicComponent3, props: {title: "styled (again)!", styles: { color: "blue", margin: 20}}}
-	//		], template), container);
-	//		expect(
-	//			container.innerHTML
-	//		).to.equal(
-	//			'<div style="color: blue; margin: 20px;"><span style="color: blue; margin: 20px;">The title is styled (again)!</span></div>'
-	//		);
-	//	});
-	//});
-	//
+	class BasicComponent3 extends Inferno.Component {
+		render() {
+			const template = Inferno.createTemplate((styles, title) =>
+				createElement("div", {style: styles},
+					createElement("span", {style: styles}, "The title is ", title)
+				)
+			);
+
+			return template(this.props.styles, this.props.title);
+		}
+	}
+
+	describe('should render a basic component with styling', () => {
+		let template;
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((Component, props) =>
+				createElement(Component, props)
+			);
+			Inferno.render(template(BasicComponent3, {title: "styled!", styles: { color: "red", padding: 10}}), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+			);
+		});
+		it('Second render (update)', () => {
+			Inferno.render(template(BasicComponent3, {title: "styled (again)!", styles: { color: "blue", padding: 20}}), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: blue; padding: 20px;"><span style="color: blue; padding: 20px;">The title is styled (again)!</span></div>'
+			);
+		});
+	});
+
 	//describe('should render a basic component and remove styling #1', () => {
 	//	let template;
 	//
@@ -744,181 +736,164 @@ describe('should render a basic root component', () => {
 	//		);
 	//	});
 	//});
-	//
-	//describe('should mount and unmount a basic component', () => {
-	//	let mountCount;
-	//	let unmountCount;
-	//	let template;
-	//
-	//	class ComponentLifecycleCheck extends Inferno.Component {
-	//		template(createElement) {
-	//			return createElement('div', null,
-	//				createElement('span', null)
-	//			)
-	//		}
-	//		render() {
-	//			return Inferno.createFragment(null, this.template);
-	//		}
-	//		componentDidMount() {
-	//			mountCount++;
-	//		}
-	//		componentWillUnmount() {
-	//			unmountCount++;
-	//		}
-	//	}
-	//
-	//	beforeEach(() => {
-	//		mountCount = 0;
-	//		unmountCount = 0;
-	//
-	//		template = Inferno.createTemplate((createElement, createComponent, Component) =>
-	//			createComponent(Component)
-	//		);
-	//		Inferno.render(Inferno.createFragment([{
-	//			component: ComponentLifecycleCheck,
-	//			props: {}
-	//		}], template), container);
-	//	});
-	//
-	//	it("should have mounted the component", () => {
-	//		expect(mountCount).to.equal(1);
-	//	});
-	//
-	//	//it("should have unmounted the component", () => {
-	//	//	Inferno.render(<div></div>, container);
-	//	//	expect(container.innerHTML).to.equal('<div></div>');
-	//	//	expect(unmountCount).to.equal(1);
-	//	//});
-	//});
-	//
-	//describe('should mount and unmount a basic component #2', () => {
-	//	let mountCount;
-	//	let unmountCount;
-	//	let template;
-	//
-	//	class ComponentLifecycleCheck extends Inferno.Component {
-	//		template(createElement) {
-	//			return createElement('div', null,
-	//				createElement('span', null)
-	//			)
-	//		}
-	//		render() {
-	//			return Inferno.createFragment(null, this.template);
-	//		}
-	//		componentDidMount() {
-	//			mountCount++;
-	//		}
-	//		componentWillUnmount() {
-	//			unmountCount++;
-	//		}
-	//	}
-	//
-	//	beforeEach(() => {
-	//		mountCount = 0;
-	//		unmountCount = 0;
-	//
-	//		template = Inferno.createTemplate((createElement, createComponent, Component) =>
-	//			createComponent(Component)
-	//		);
-	//		Inferno.render(Inferno.createFragment([{
-	//			component: ComponentLifecycleCheck,
-	//			props: {}
-	//		}], template), container);
-	//	});
-	//
-	//	it("should have mounted the component", () => {
-	//		expect(mountCount).to.equal(1);
-	//	});
-	//	it("should have unmounted the component", () => {
-	//		Inferno.render(Inferno.createFragment([{
-	//			component: null,
-	//			props: {}
-	//		}], template), container);
-	//		expect(unmountCount).to.equal(1);
-	//	});
-	//});
-	//
-	//describe('state changes should trigger all lifecycle events for an update', () => {
-	//	let componentWillMountCount;
-	//	let shouldComponentUpdateCount;
-	//	let componentDidUpdateCount;
-	//	let componentWillUpdateCount;
-	//	let componentWillReceivePropsCount;
-	//	let template;
-	//
-	//	class ComponentLifecycleCheck extends Inferno.Component {
-	//		constructor() {
-	//			super();
-	//			this.state = {
-	//				counter: 0
-	//			};
-	//		}
-	//		template(createElement, createComponent, counter) {
-	//			return createElement('div', null,
-	//				createElement('span', null, counter)
-	//			)
-	//		}
-	//		render() {
-	//			return Inferno.createFragment(this.state.counter, this.template);
-	//		}
-	//		componentWillMount() {
-	//			componentWillMountCount++;
-	//			this.setState({
-	//				counter: this.state.counter + 1
-	//			});
-	//		}
-	//		shouldComponentUpdate() {
-	//			shouldComponentUpdateCount++;
-	//			return true;
-	//		}
-	//		componentDidUpdate() {
-	//			componentDidUpdateCount++;
-	//		}
-	//		componentWillUpdate() {
-	//			componentWillUpdateCount++;
-	//		}
-	//		componentWillReceiveProps() {
-	//			componentWillReceivePropsCount++;
-	//		}
-	//	}
-	//
-	//	beforeEach((done) => {
-	//		componentWillMountCount = 0;
-	//		shouldComponentUpdateCount = 0;
-	//		componentDidUpdateCount = 0;
-	//		componentWillUpdateCount = 0;
-	//		componentWillReceivePropsCount = 0;
-	//
-	//		template = Inferno.createTemplate((createElement, createComponent, Component) =>
-	//			createComponent(Component)
-	//		);
-	//		Inferno.render(Inferno.createFragment([{
-	//			component: ComponentLifecycleCheck,
-	//			props: {}
-	//		}], template), container);
-	//		waits(30, done)
-	//	});
-	//
-	//	it("componentWillMountCount to have fired once", () => {
-	//		expect(componentWillMountCount).to.equal(1);
-	//	});
-	//	it("shouldComponentUpdateCount to have fired once", () => {
-	//		expect(shouldComponentUpdateCount).to.equal(1);
-	//	});
-	//	it("componentWillUpdateCount to have fired once", () => {
-	//		expect(componentWillUpdateCount).to.equal(1);
-	//	});
-	//	it("componentDidUpdateCount to have fired once", () => {
-	//		expect(componentDidUpdateCount).to.equal(1);
-	//	});
-	//	it("componentWillReceivePropsCount not to have fired", () => {
-	//		expect(componentWillReceivePropsCount).to.equal(0);
-	//	});
-	//	it("the element in the component should show the new state", () => {
-	//		expect(container.innerHTML).to.equal(
-	//			'<div><span>1</span></div>'
-	//		);
-	//	});
-	//});
-	
+
+	describe('should mount and unmount a basic component', () => {
+		let mountCount;
+		let unmountCount;
+		let template;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			render() {
+				const template = Inferno.createTemplate(() =>
+					createElement('div', null,
+						createElement('span', null)
+					)
+				);
+				return template();
+			}
+			componentDidMount() {
+				mountCount++;
+			}
+			componentWillUnmount() {
+				unmountCount++;
+			}
+		}
+
+		beforeEach(() => {
+			mountCount = 0;
+			unmountCount = 0;
+			template = Inferno.createTemplate((Component) =>
+				createElement(Component)
+			);
+			Inferno.render(template(ComponentLifecycleCheck), container);
+		});
+
+		it("should have mounted the component", () => {
+			expect(mountCount).to.equal(1);
+		});
+		it("should have unmounted the component", () => {
+			Inferno.render(null, container);
+			expect(unmountCount).to.equal(1);
+		});
+	});
+
+	describe('should mount and unmount a basic component #2', () => {
+		let mountCount;
+		let unmountCount;
+		let template;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			render() {
+				const template = Inferno.createTemplate(() =>
+						createElement('div', null,
+							createElement('span', null)
+						)
+				);
+				return template();
+			}
+			componentDidMount() {
+				mountCount++;
+			}
+			componentWillUnmount() {
+				unmountCount++;
+			}
+		}
+
+		beforeEach(() => {
+			mountCount = 0;
+			unmountCount = 0;
+			template = Inferno.createTemplate((Component) =>
+					createElement(Component)
+			);
+
+			Inferno.render(template(ComponentLifecycleCheck), container);
+		});
+
+		it("should have mounted the component", () => {
+			expect(mountCount).to.equal(1);
+		});
+		it("should have unmounted the component", () => {
+			Inferno.render(template(null), container);
+			expect(unmountCount).to.equal(1);
+		});
+	});
+
+	describe('state changes should trigger all lifecycle events for an update', () => {
+		let componentWillMountCount;
+		let shouldComponentUpdateCount;
+		let componentDidUpdateCount;
+		let componentWillUpdateCount;
+		let componentWillReceivePropsCount;
+		let template;
+
+		class ComponentLifecycleCheck extends Inferno.Component {
+			constructor() {
+				super();
+				this.state = {
+					counter: 0
+				};
+			}
+			render() {
+				const template = Inferno.createTemplate((counter) =>
+					createElement('div', null,
+						createElement('span', null, counter)
+					)
+				);
+				return template(this.state.counter);
+			}
+			componentWillMount() {
+				componentWillMountCount++;
+				this.setState({
+					counter: this.state.counter + 1
+				});
+			}
+			shouldComponentUpdate() {
+				shouldComponentUpdateCount++;
+				return true;
+			}
+			componentDidUpdate() {
+				componentDidUpdateCount++;
+			}
+			componentWillUpdate() {
+				componentWillUpdateCount++;
+			}
+			componentWillReceiveProps() {
+				componentWillReceivePropsCount++;
+			}
+		}
+
+		beforeEach((done) => {
+			componentWillMountCount = 0;
+			shouldComponentUpdateCount = 0;
+			componentDidUpdateCount = 0;
+			componentWillUpdateCount = 0;
+			componentWillReceivePropsCount = 0;
+			template = Inferno.createTemplate((Component) =>
+					createElement(Component)
+			);
+			Inferno.render(template(ComponentLifecycleCheck), container);
+			waits(100, done)
+		});
+
+		it("componentWillMountCount to have fired once", () => {
+			expect(componentWillMountCount).to.equal(1);
+		});
+		it("shouldComponentUpdateCount to have fired once", () => {
+			expect(shouldComponentUpdateCount).to.equal(1);
+		});
+		it("componentWillUpdateCount to have fired once", () => {
+			expect(componentWillUpdateCount).to.equal(1);
+		});
+		it("componentDidUpdateCount to have fired once", () => {
+			expect(componentDidUpdateCount).to.equal(1);
+		});
+		it("componentWillReceivePropsCount not to have fired", () => {
+			expect(componentWillReceivePropsCount).to.equal(0);
+		});
+		it("the element in the component should show the new state", () => {
+			expect(container.innerHTML).to.equal(
+				'<div><span>1</span></div>'
+			);
+		});
+	});
 });	

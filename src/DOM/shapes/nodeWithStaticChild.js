@@ -15,7 +15,10 @@ export default function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(lastItem) {
+
+    }
 	};
 	return node;
 }

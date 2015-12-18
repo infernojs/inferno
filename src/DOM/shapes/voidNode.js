@@ -15,7 +15,10 @@ export default function createVoidNode(templateNode, dynamicAttrs) {
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(lastItem) {
+
+    }
 	};
 	return node;
 }

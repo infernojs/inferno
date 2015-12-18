@@ -42,7 +42,7 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 		},
 		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, nod, treeLifecyclee);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -69,7 +69,14 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 					default: break;
 				}
 			}
-		}
+		},
+    remove(item, treeLifecycle) {
+      const value = getValueWithIndex(item, valueIndex);
+
+      if (getTypeFromValue(value) === ValueTypes.TREE) {
+        value.remove(item, treeLifecycle);
+      }
+    }
 	};
 	return node;
 }

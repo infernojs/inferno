@@ -2,7 +2,7 @@ import { remove } from './domMutate';
 
 export default function createDOMFragment(parentNode, nextNode) {
 	let lastItem;
-	const treeSuccessListeners = [];
+	let treeSuccessListeners = [];
 	const treeLifecycle = {
 		addTreeSuccessListener(listener) {
 			treeSuccessListeners.push(listener);
@@ -37,11 +37,21 @@ export default function createDOMFragment(parentNode, nextNode) {
 					parentNode.appendChild(dom);
 				}
 			}
+			if (treeSuccessListeners.length > 0) {
+				for (let i = 0; i < treeSuccessListeners.length; i++) {
+					treeSuccessListeners[i]();
+				}
+			}
 			lastItem = nextItem;
 			return fragment;
 		},
 		remove() {
+			const tree = lastItem.domTree;
+			if (lastItem) {
+				tree.remove(lastItem, treeLifecycle);
+			}
 			remove(lastItem, parentNode);
+			treeSuccessListeners = [];
 			return fragment;
 		}
 	};

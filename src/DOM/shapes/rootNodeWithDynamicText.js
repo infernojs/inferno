@@ -30,9 +30,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem) {
+		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -46,7 +46,10 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(lastItem) {
+
+    }
 	};
 	return node;
 }

@@ -34,6 +34,9 @@ export function getTypeFromValue(value) {
 export function getValueForProps(props, item) {
 	const newProps = {};
 
+	if (props.index) {
+		return getValueWithIndex(item, props.index);
+	}
 	for (let name in props) {
 		const val = props[name];
 
@@ -44,4 +47,18 @@ export function getValueForProps(props, item) {
 		}
 	}
 	return newProps;
+}
+
+export function removeValueTree(value, treeLifecycle) {
+  if (isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const child = value[i];
+
+      removeValueTree(child, treeLifecycle)
+    }
+  } else if (typeof value === 'object') {
+    const tree = value.domTree;
+
+    tree.remove(value, treeLifecycle);
+  }
 }

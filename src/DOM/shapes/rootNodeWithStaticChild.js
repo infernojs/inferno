@@ -25,9 +25,9 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem) {
+		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -36,7 +36,10 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(lastItem) {
+
+    }
 	};
 	return node;
 }

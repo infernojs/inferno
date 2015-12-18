@@ -1,5 +1,5 @@
 import isArray from '../../util/isArray';
-import { getValueWithIndex } from '../../core/variables';
+import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
@@ -16,14 +16,14 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						const childItem = value[i];
 
 						if (typeof childItem === 'object') {
-							domNode.appendChild(childItem.domTree.create(childItem));
+							domNode.appendChild(childItem.domTree.create(childItem, treeLifecycle));
 						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
 							const textNode = document.createTextNode(childItem);
 							domNode.appendChild(textNode);
 						}
 					}
 				} else if (typeof value === 'object') {
-					domNode.appendChild(value.domTree.create(value));
+					domNode.appendChild(value.domTree.create(value, treeLifecycle));
 				} else if (typeof value === 'string' || typeof value === 'number') {
 					domNode.textContent = value;
 				}
@@ -44,7 +44,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 					// TODO
 				} else if (isArray(nextValue)) {
 					if (isArray(lastValue)) {
-						updateKeyed(nextValue, lastValue, domNode, null);
+						updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle);
 					} else {
 						//debugger;
 					}
@@ -53,7 +53,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 
 					if (tree !== null) {
 						if (lastValue.domTree !== null) {
-							tree.update(lastValue, nextValue);
+							tree.update(lastValue, nextValue, treeLifecycle);
 						} else {
 							// TODO implement
 						}
@@ -65,7 +65,12 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(item, treeLifecycle) {
+      const value = getValueWithIndex(item, valueIndex);
+
+      removeValueTree(value, treeLifecycle);
+    }
 	};
 	return node;
 }

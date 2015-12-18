@@ -26,7 +26,10 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(lastItem) {
+
+    }
 	};
 	return node;
 }

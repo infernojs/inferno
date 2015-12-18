@@ -8,7 +8,10 @@ export default function createStaticNode(templateNode) {
 			domNode = templateNode.cloneNode(true);
 			return domNode;
 		},
-		update() {}
+		update() {},
+    remove(lastItem) {
+
+    }
 	};
 	return node;
 }

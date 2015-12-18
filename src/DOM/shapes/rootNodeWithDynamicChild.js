@@ -1,6 +1,6 @@
 import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { getValueWithIndex } from '../../core/variables';
+import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
@@ -29,14 +29,14 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						const childItem = value[i];
 
 						if (typeof childItem === 'object') {
-							domNode.appendChild(childItem.domTree.create(childItem));
+							domNode.appendChild(childItem.domTree.create(childItem, treeLifecycle));
 						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
 							const textNode = document.createTextNode(childItem);
 							domNode.appendChild(textNode);
 						}
 					}
 				} else if (typeof value === 'object') {
-					domNode.appendChild(value.domTree.create(value));
+					domNode.appendChild(value.domTree.create(value, treeLifecycle));
 				} else if (typeof value === 'string' || typeof value === 'number') {
 					domNode.textContent = value;
 				}
@@ -49,7 +49,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 		},
 		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -74,7 +74,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 
 					if (tree !== null) {
 						if (lastValue.domTree !== null) {
-							tree.update(lastValue, nextValue);
+							tree.update(lastValue, nextValue, treeLifecycle);
 						} else {
 							// TODO implement
 						}
@@ -86,7 +86,12 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(item, treeLifecycle) {
+      const value = getValueWithIndex(item, valueIndex);
+
+      removeValueTree(value, treeLifecycle);
+    }
 	};
 	return node;
 }

@@ -2,7 +2,7 @@ import { isRecyclingEnabled, pool } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
+export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle) {
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
@@ -34,7 +34,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
 		stop = true;
 		while (startItem.key === oldStartItem.key) {
-			startItem.domTree.update(oldStartItem, startItem);
+			startItem.domTree.update(oldStartItem, startItem, treeLifecycle);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -48,7 +48,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 		endItem = items[endIndex];
 		oldEndItem = oldItems[oldEndIndex];
 		while (endItem.key === oldEndItem.key) {
-			endItem.domTree.update(oldEndItem, endItem);
+			endItem.domTree.update(oldEndItem, endItem, treeLifecycle);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -61,7 +61,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 		}
 		while (endItem.key === oldStartItem.key) {
 			nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
-			endItem.domTree.update(oldStartItem, endItem);
+			endItem.domTree.update(oldStartItem, endItem, treeLifecycle);
 			insertOrAppend(parentNode, endItem.rootNode, nextNode);
 			endIndex--;
 			oldStartIndex++;
@@ -75,7 +75,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 		}
 		while (startItem.key === oldEndItem.key) {
 			nextNode = oldItems[oldStartIndex].rootNode;
-			startItem.domTree.update(oldEndItem, startItem);
+			startItem.domTree.update(oldEndItem, startItem, treeLifecycle);
 			insertOrAppend(parentNode, startItem.rootNode, nextNode);
 			startIndex++;
 			oldEndIndex--;
@@ -94,7 +94,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 			nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
 			for (; startIndex <= endIndex; startIndex++) {
 				item = items[startIndex];
-				insertOrAppend(parentNode, item.domTree.create(item), nextNode);
+				insertOrAppend(parentNode, item.domTree.create(item, treeLifecycle), nextNode);
 			}
 		}
 	} else if (startIndex > endIndex) {
@@ -121,7 +121,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 			if (oldItem) {
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
-				item.domTree.update(oldItem, item);
+				item.domTree.update(oldItem, item, treeLifecycle);
 				// TODO optimise
 				if (item.rootNode.nextSibling != (nextItem && nextItem.rootNode)) {
 					nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
@@ -129,7 +129,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode) {
 				}
 			} else {
 				nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
-				insertOrAppend(parentNode, item.domTree.create(item), nextNode);
+				insertOrAppend(parentNode, item.domTree.create(item, treeLifecycle), nextNode);
 			}
 			nextItem = item;
 		}

@@ -24,10 +24,10 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						domNode.appendChild(subTree.create(item));
+						domNode.appendChild(subTree.create(item, treeLifecycle));
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					domNode.appendChild(subTreeForChildren.create(item));
+					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle));
 				}
 			}
 			if (dynamicAttrs) {
@@ -38,7 +38,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 		},
 		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node);
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -51,13 +51,25 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 						subTree.update(lastItem, nextItem);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					subTreeForChildren.update(lastItem, nextItem);
+					subTreeForChildren.update(lastItem, nextItem, treeLifecycle);
 				}
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-		}
+		},
+    remove(item, treeLifecycle) {
+      if (subTreeForChildren != null) {
+        if (isArray(subTreeForChildren)) {
+          for (let i = 0; i < subTreeForChildren.length; i++) {
+            const subTree = subTreeForChildren[i];
+            subTree.remove(item, treeLifecycle);
+          }
+        } else if (typeof subTreeForChildren === 'object') {
+          subTreeForChildren.remove(item, treeLifecycle);
+        }
+      }
+    }
 	};
 	return node;
 }

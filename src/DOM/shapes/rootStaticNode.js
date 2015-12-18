@@ -26,7 +26,10 @@ export default function createRootStaticNode(templateNode) {
 				return;
 			}
 			nextItem.rootNode = lastItem.rootNode;
-		}
+		},
+    remove(lastItem) {
+
+    }
 	};
 	return node;
 }

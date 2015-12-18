@@ -14,7 +14,7 @@ describe('DOM operations ( no-jsx)', () => {
     });
 
     afterEach(() => {
-        // Inferno.clearDomElement(container);
+        Inferno.render(null, container);
     });
 
 
@@ -2247,8 +2247,8 @@ describe('DOM operations ( no-jsx)', () => {
             );
         });
         it('Third render (update)', () => {
-            Inferno.render(template('true'), container);
-            expect(container.firstChild.disabled).to.equal('true');
+            Inferno.render(template(false), container);
+            expect(container.firstChild.disabled).to.equal(false);
             expect(
                 container.innerHTML
             ).to.equal(
