@@ -16,6 +16,18 @@ describe('DOM element tests (jsx)', () => {
 		Inferno.render(null, container);
 	});
 
-   // took out the tests
+	describe('should render a basic example #2', () => {
+		beforeEach(() => {
+			Inferno.render(<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>, container);
+		});
+/*		it('Initial render (creation)', () => {
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>`
+			);
+		}); */
+	});
+
 	
 });
