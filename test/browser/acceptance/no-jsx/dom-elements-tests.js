@@ -3758,10 +3758,10 @@ describe('DOM element tests (no-jsx)', () => {
                 template = Inferno.createTemplate((val) =>
                     val
                 );
-                Inferno.render(template('abc'), container);
             });
 
             it('Initial render (creation)', () => {
+                Inferno.render(template('abc'), container);
                 expect(container.innerHTML).to.eql('abc');
             });
 
