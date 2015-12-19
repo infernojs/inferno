@@ -6,7 +6,6 @@ const {
 } = Inferno.TemplateFactory;
 
 describe('DOM element tests (no-jsx)', () => {
-
     let container;
 
     beforeEach(() => {
@@ -16,7 +15,6 @@ describe('DOM element tests (no-jsx)', () => {
     afterEach(() => {
         Inferno.render(null, container);
     });
-
 
     describe('should render a basic text node', () => {
         let template;
