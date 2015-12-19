@@ -14,6 +14,8 @@ import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
 import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
 import createNodeWithComponent from './shapes/nodeWithComponent';
+import createRootDynamicTextNode from './shapes/rootDynamicTextNode';
+import createDynamicTextNode from './shapes/dynamicTextNode';
 
 import {
     ObjectTypes
@@ -161,6 +163,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
             }
         } else {
             const tag = schema.tag;
+            const text = schema.text;
 
             if (tag) {
                 if (tag.type === ObjectTypes.VARIABLE) {
@@ -232,7 +235,6 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
                         createStaticAttributes(schema, templateNode);
                     }
                 }
-                const text = schema.text;
                 const children = schema.children;
 
                 if (text != null) {
@@ -311,6 +313,13 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
                             node = createVoidNode(templateNode, dynamicAttrs);
                         }
                     }
+                }
+            } else if (text) {
+                templateNode = document.createTextNode('');
+                if (isRoot) {
+                    node = createRootDynamicTextNode(templateNode, text.index);
+                } else {
+                    node = createDynamicTextNode(templateNode, text.index);
                 }
             }
         }
