@@ -42,7 +42,7 @@
     "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
-    "babel-core": "^6.3.17",
+    "babel-core": "^6.3.21",
     "babel-plugin-syntax-jsx": "^6.3.13",
     "babel-plugin-inferno": "^0.2.0",
     "babel-plugin-syntax-object-rest-spread": "^6.3.13",
