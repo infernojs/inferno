@@ -80,7 +80,8 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 - one of the fastest front end frameworks for rendering UI
 - components have a similar API to React ES6 components
-- isomorphic for easy server-side rendering
+- components can also be stateless like React components (pure functions)
+- isomorphic/universal for easy server-side rendering
 
 ## Benchmarks
 
@@ -116,14 +117,6 @@ Inferno.render(<div></div>, document.body);
 Render a fragment into the DOM in the supplied container and return a reference to the component. If the fragment was previously rendered into container, this will
 perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno component.
 
-### Inferno.unmountComponentAtNode
-
-```javascript
-Inferno.unmountComponentAtNode(document.getElementById("myApp"));
-```
-
-Remove a rendered Inferno component from the DOM and clean up its event handlers and state.
-
 ### Inferno.renderToString
 
 ```js
@@ -142,7 +135,7 @@ Render a fragment to its initial HTML. This should only be used on the server. I
 // TODO
 ```
 
-### Inferno.createFragment
+### Inferno.TemplateFactory
 
 ```js
 // TODO
@@ -164,9 +157,9 @@ Inferno is still in early development and there are still many missing features 
 
 ## Todo
 
-- implement strict isomorphism
+- implement isomorphism/universal server side rendering
 - add API docs
-- add more examples
+- add examples repo
 
 ### Inferno is supported by BrowserStack
 
