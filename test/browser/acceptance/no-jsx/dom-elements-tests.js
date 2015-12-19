@@ -3651,6 +3651,7 @@ describe('DOM element tests (no-jsx)', () => {
     //			expect(container.firstChild.getAttribute('autocorrect')).to.equal('autocorrect');
     //			expect(
     //				container.innerHTML
+
     //			).to.equal(
     //				'<label autocorrect="autocorrect"></label>'
     //			);
