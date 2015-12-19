@@ -45,6 +45,7 @@
     "dependencies": {
         "babel-core": "^6.3.17",
         "babel-plugin-syntax-jsx": "^6.3.13",
+        "babel-plugin-inferno": "0.2.0",
         "karma-chrome-launcher": "^0.2.2",
         "pre-commit": "^1.1.2",
         "mkdirp": "^0.5.1"
