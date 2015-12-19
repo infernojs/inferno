@@ -1,5 +1,5 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { getValueWithIndex } from '../../core/variables';
+import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();

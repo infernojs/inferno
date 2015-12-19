@@ -3247,12 +3247,40 @@ describe('DOM element tests (no-jsx)', () => {
     });
 
     describe('it should handle dynamic root text nodes', () => {
-        it('Initial render (creation)', () => {
-            const template = Inferno.createTemplate((val) => ({
+        let template;
+        beforeEach(() => {
+            template = Inferno.createTemplate((val) => ({
                 text: val
             }));
             Inferno.render(template('abc'), container);
+        });
+
+        it('Initial render (creation)', () => {
             expect(container.innerHTML).to.eql('abc');
+        });
+
+        it('Initial render (update)', () => {
+            Inferno.render(template('123'), container);
+            expect(container.innerHTML).to.eql('123');
+        });
+    });
+
+    describe('it should handle root dynamic nodes', () => {
+        let template;
+        beforeEach(() => {
+            template = Inferno.createTemplate((val) =>
+                val
+            );
+            Inferno.render(template('abc'), container);
+        });
+
+        it('Initial render (creation)', () => {
+            expect(container.innerHTML).to.eql('abc');
+        });
+
+        it('Initial render (update)', () => {
+            Inferno.render(template('123'), container);
+            expect(container.innerHTML).to.eql('123');
         });
     });
 
