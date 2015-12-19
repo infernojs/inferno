@@ -1,89 +1,91 @@
 {
-    "name": "Inferno",
-    "description": "A framework for building lightning fast user interfaces",
-    "version": "0.4.0",
-    "license": "MPL-2.0",
-    "author": {
-        "name": "Dominic Gannaway",
-        "email": "dg@domgan.com"
-    },
-    "bugs": {
-        "url": "https://github.com/trueadm/inferno/issues"
-    },
-    "devDependencies": {
-        "babel-cli": "^6.3.17",
-        "babel-loader": "^6.2.0",
-        "babel-preset-es2015": "^6.3.13",
-        "babel-preset-stage-0": "^6.3.13",
-        "babel-preset-es2015-rollup": "^1.0.0",
-        "babel-eslint": "^5.0.0-beta6",
-        "babel-plugin-syntax-object-rest-spread": "^6.3.13",
-        "babel-plugin-transform-object-rest-spread": "^6.3.13",
-        "eslint": "^1.10.3",
-        "eslint-loader": "^1.1.1",
-        "istanbul-instrumenter-loader": "^0.1.3",
-        "karma": "^0.13.15",
-        "karma-coverage": "^0.5.3",
-        "karma-coveralls": "^1.1.2",
-        "karma-mocha": "^0.2.1",
-        "karma-mocha-reporter": "^1.1.3",
-        "karma-sourcemap-loader": "^0.3.6",
-        "karma-webpack": "^1.7.0",
-        "karma-sinon-chai": "^1.1.0",
-        "mocha": "^2.3.4",
-        "mocha-loader": "^0.7.1",
-        "mocha-lcov-reporter": "^1.0.0",
-        "rollup": "^0.21.2",
-        "rollup-plugin-babel": "^2.2.0",
-        "rollup-plugin-replace": "^1.1.0",
-        "rollup-plugin-npm": "^1.1.0",
-        "uglify-js": "^2.6.1",
-        "webpack": "^1.12.9",
-        "webpack-dev-server": "^1.14.0",
-        "npm-check-updates": "^2.5.4"
-    },
-    "dependencies": {
-        "babel-core": "^6.3.17",
-        "babel-plugin-syntax-jsx": "^6.3.13",
-        "karma-chrome-launcher": "^0.2.2",
-        "pre-commit": "^1.1.2",
-        "mkdirp": "^0.5.1"
-    },
-    "files": [
-        "dist",
-        "src"
-    ],
-    "homepage": "https://github.com/trueadm/inferno#readme",
-    "jsnext:main": "src/index.js",
-    "keywords": ["es2015"],
-    "main": "./dist/inferno.min.js",
-    "repository": {
-        "type": "git",
-        "url": "git+ssh://git@github.com/trueadm/inferno.git"
-    },
-    "scripts": {
-        "clean": "rm -rf coverage && rm -rf dist",
-        "build": "mkdirp dist && node config/rollup.config.js",
-        "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
-        "test:browser": "karma start config/karma.conf.js --single-run",
-        "test:server": "mocha --opts config/mocha.opts",
-        "test:browser": "karma start config/karma.conf.js --single-run",
-        "test": "npm run test:server && npm run test:browser",
-        "lint:source": "eslint ./src/**/*.js",
-        "lint:fix": "eslint --fix ./src/**/*.js",
-        "lint:shared": "eslint ./test/shared/**/*.js",
-        "lint:server": "eslint ./test/server/**/*.js",
-        "lint:browser": "eslint ./test/browser/**/*.js",
-        "watch:server": "npm run test:server -- --watch",
-        "watch:browser": "./node_modules/.bin/karma start --auto-watch --no-single-run",
-        "packages": "npm list --depth=0",
-        "package:purge": "rm -rf node_modules",
-        "package:reinstall": "npm run package:purge && npm install",
-        "package:check": "./node_modules/.bin/ncu",
-        "package:upgrade": "./node_modules/.bin/ncu -u",
-        "package:prod": "./node_modules/.bin/ncu -u",
-        "package:dev": "./node_modules/.bin/ncu -p -u",
-        "preversion": "[[ -z $(git status --porcelain) ]] && npm run build && git add -A dist && git commit -m 'Build lib'",
-        "postpublish": "git push origin master --follow-tags"
-    }
+  "name": "Inferno",
+  "description": "A framework for building lightning fast user interfaces",
+  "version": "0.4.0",
+  "license": "MPL-2.0",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/trueadm/inferno/issues"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.3.17",
+    "babel-eslint": "^5.0.0-beta6",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-inferno": "^0.2.0",
+    "babel-plugin-syntax-object-rest-spread": "^6.3.13",
+    "babel-plugin-transform-object-rest-spread": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-es2015-rollup": "^1.0.0",
+    "babel-preset-stage-0": "^6.3.13",
+    "eslint": "^1.10.3",
+    "eslint-loader": "^1.1.1",
+    "istanbul-instrumenter-loader": "^0.1.3",
+    "karma": "^0.13.15",
+    "karma-coverage": "^0.5.3",
+    "karma-coveralls": "^1.1.2",
+    "karma-mocha": "^0.2.1",
+    "karma-mocha-reporter": "^1.1.3",
+    "karma-sinon-chai": "^1.1.0",
+    "karma-sourcemap-loader": "^0.3.6",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.3.4",
+    "mocha-lcov-reporter": "^1.0.0",
+    "mocha-loader": "^0.7.1",
+    "npm-check-updates": "^2.5.4",
+    "rollup": "^0.21.2",
+    "rollup-plugin-babel": "^2.2.0",
+    "rollup-plugin-npm": "^1.1.0",
+    "rollup-plugin-replace": "^1.1.0",
+    "uglify-js": "^2.6.1",
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.3.17",
+    "babel-plugin-syntax-jsx": "^6.3.13",
+    "karma-chrome-launcher": "^0.2.2",
+    "pre-commit": "^1.1.2",
+    "mkdirp": "^0.5.1"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "homepage": "https://github.com/trueadm/inferno#readme",
+  "jsnext:main": "src/index.js",
+  "keywords": [
+    "es2015"
+  ],
+  "main": "./dist/inferno.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/trueadm/inferno.git"
+  },
+  "scripts": {
+    "clean": "rm -rf coverage && rm -rf dist",
+    "build": "mkdirp dist && node config/rollup.config.js",
+    "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
+    "test:browser": "karma start config/karma.conf.js --single-run",
+    "test:server": "mocha --opts config/mocha.opts",
+    "test": "npm run test:server && npm run test:browser",
+    "lint:source": "eslint ./src/**/*.js",
+    "lint:fix": "eslint --fix ./src/**/*.js",
+    "lint:shared": "eslint ./test/shared/**/*.js",
+    "lint:server": "eslint ./test/server/**/*.js",
+    "lint:browser": "eslint ./test/browser/**/*.js",
+    "watch:server": "npm run test:server -- --watch",
+    "watch:browser": "./node_modules/.bin/karma start --auto-watch --no-single-run",
+    "packages": "npm list --depth=0",
+    "package:purge": "rm -rf node_modules",
+    "package:reinstall": "npm run package:purge && npm install",
+    "package:check": "./node_modules/.bin/ncu",
+    "package:upgrade": "./node_modules/.bin/ncu -u",
+    "package:prod": "./node_modules/.bin/ncu -u",
+    "package:dev": "./node_modules/.bin/ncu -p -u",
+    "preversion": "[[ -z $(git status --porcelain) ]] && npm run build && git add -A dist && git commit -m 'Build lib'",
+    "postpublish": "git push origin master --follow-tags"
+  }
 }
