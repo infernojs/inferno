@@ -54,7 +54,7 @@
     };
 
     babelHelpers;
-    var recyclingEnabled$9 = true;
+    var recyclingEnabled$10 = true;
 
     function pool(item) {
     	var key = item.key;
@@ -85,10 +85,10 @@
     }
 
     function isRecyclingEnabled() {
-    	return recyclingEnabled$9;
+    	return recyclingEnabled$10;
     }
 
-    var recyclingEnabled$8 = isRecyclingEnabled();
+    var recyclingEnabled = isRecyclingEnabled();
 
     function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle) {
     	var stop = false;
@@ -99,7 +99,7 @@
 
     	// TODO only if there are no other children
     	if (itemsLength === 0 && oldItemsLength >= 5) {
-    		if (recyclingEnabled$8) {
+    		if (recyclingEnabled) {
     			for (var i = 0; i < oldItemsLength; i++) {
     				pool(oldItems[i]);
     			}
@@ -241,7 +241,7 @@
 
     function remove(item, parentNode) {
     	parentNode.removeChild(item.rootNode);
-    	if (recyclingEnabled$8) {
+    	if (recyclingEnabled) {
     		pool(item);
     	}
     }
@@ -407,7 +407,7 @@
     	VARIABLE: 1
     };
 
-    var ValueTypes$1 = {
+    var ValueTypes = {
     	TEXT: 0,
     	ARRAY: 1,
     	TREE: 21
@@ -424,13 +424,13 @@
     	return index < 2 ? index === 0 ? item.v0 : item.v1 : item.values[index - 2];
     }
 
-    function getTypeFromValue$1(value) {
+    function getTypeFromValue(value) {
     	if (typeof value === 'string' || typeof value === 'number' || value === undefined) {
-    		return ValueTypes$1.TEXT;
+    		return ValueTypes.TEXT;
     	} else if (isArray(value)) {
-    		return ValueTypes$1.ARRAY;
+    		return ValueTypes.ARRAY;
     	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && value.create) {
-    		return ValueTypes$1.TREE;
+    		return ValueTypes.TREE;
     	}
     }
 
@@ -1526,7 +1526,7 @@
     	// TODO recycle old node
     }
 
-    var recyclingEnabled = isRecyclingEnabled();
+    var recyclingEnabled$1 = isRecyclingEnabled();
 
     function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
     	var node = {
@@ -1535,7 +1535,7 @@
     		create: function create(item) {
     			var domNode = undefined;
 
-    			if (recyclingEnabled) {
+    			if (recyclingEnabled$1) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -1606,7 +1606,7 @@
     	return node;
     }
 
-    var recyclingEnabled$1 = isRecyclingEnabled();
+    var recyclingEnabled$2 = isRecyclingEnabled();
 
     function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
     	var node = {
@@ -1615,7 +1615,7 @@
     		create: function create(item) {
     			var domNode = undefined;
 
-    			if (recyclingEnabled$1) {
+    			if (recyclingEnabled$2) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -1828,7 +1828,7 @@
     	return node;
     }
 
-    var recyclingEnabled$2 = isRecyclingEnabled();
+    var recyclingEnabled$4 = isRecyclingEnabled();
 
     function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
     	var node = {
@@ -1836,7 +1836,7 @@
     		keyedPool: [],
     		create: function create(item, treeLifecycle) {
     			var domNode = undefined;
-    			if (recyclingEnabled$2) {
+    			if (recyclingEnabled$4) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -1948,7 +1948,7 @@
     	return node;
     }
 
-    var recyclingEnabled$4 = isRecyclingEnabled();
+    var recyclingEnabled$5 = isRecyclingEnabled();
 
     function createRootStaticNode(templateNode) {
     	var node = {
@@ -1956,7 +1956,7 @@
     		keyedPool: [],
     		create: function create(item) {
     			var domNode = undefined;
-    			if (recyclingEnabled$4) {
+    			if (recyclingEnabled$5) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -2079,20 +2079,20 @@
     	var node = {
     		create: function create(item, treeLifecycle) {
     			var value = getValueWithIndex(item, valueIndex);
-    			var type = getTypeFromValue$1(value);
+    			var type = getTypeFromValue(value);
 
     			switch (type) {
-    				case ValueTypes$1.TEXT:
+    				case ValueTypes.TEXT:
     					// TODO check if string is empty?
     					if (value == null) {
     						value = '';
     					}
     					domNode = document.createTextNode(value);
     					break;
-    				case ValueTypes$1.ARRAY:
+    				case ValueTypes.ARRAY:
     					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
     					break;
-    				case ValueTypes$1.TREE:
+    				case ValueTypes.TREE:
     					domNode = value.create(item, treeLifecycle);
     					break;
     				default:
@@ -2106,8 +2106,8 @@
     			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
     			if (nextValue !== lastValue) {
-    				var nextType = getTypeFromValue$1(nextValue);
-    				var lastType = getTypeFromValue$1(lastValue);
+    				var nextType = getTypeFromValue(nextValue);
+    				var lastType = getTypeFromValue(lastValue);
 
     				if (lastType !== nextType) {
     					// TODO replace node and rebuild
@@ -2115,17 +2115,17 @@
     				}
 
     				switch (nextType) {
-    					case ValueTypes$1.TEXT:
+    					case ValueTypes.TEXT:
     						// TODO check if string is empty?
     						if (nextValue == null) {
     							nextValue = '';
     						}
     						domNode.nodeValue = nextValue;
     						break;
-    					case ValueTypes$1.ARRAY:
+    					case ValueTypes.ARRAY:
     						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
     						break;
-    					case ValueTypes$1.TREE:
+    					case ValueTypes.TREE:
     						//debugger;
     						break;
     					default:
@@ -2136,7 +2136,7 @@
     		remove: function remove(item, treeLifecycle) {
     			var value = getValueWithIndex(item, valueIndex);
 
-    			if (getTypeFromValue$1(value) === ValueTypes$1.TREE) {
+    			if (getTypeFromValue(value) === ValueTypes.TREE) {
     				value.remove(item, treeLifecycle);
     			}
     		}
@@ -2144,7 +2144,7 @@
     	return node;
     }
 
-    var recyclingEnabled$5 = isRecyclingEnabled();
+    var recyclingEnabled$7 = isRecyclingEnabled();
 
     function createRootVoidNode(templateNode, dynamicAttrs) {
     	var node = {
@@ -2152,7 +2152,7 @@
     		keyedPool: [],
     		create: function create(item) {
     			var domNode = undefined;
-    			if (recyclingEnabled$5) {
+    			if (recyclingEnabled$7) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -2228,7 +2228,7 @@
     	}
     }
 
-    var recyclingEnabled$7 = isRecyclingEnabled();
+    var recyclingEnabled$8 = isRecyclingEnabled();
 
     function createRootNodeWithComponent(componentIndex, props, domNamespace) {
     	var instance = undefined;
@@ -2240,7 +2240,7 @@
     		create: function create(item, treeLifecycle) {
     			var domNode = undefined;
 
-    			if (recyclingEnabled$7) {
+    			if (recyclingEnabled$8) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -2423,6 +2423,74 @@
     	return node;
     }
 
+    var recyclingEnabled$9 = isRecyclingEnabled();
+
+    function createRootDynamicTextNode(templateNode, valueIndex) {
+    	var node = {
+    		pool: [],
+    		keyedPool: [],
+    		create: function create(item) {
+    			var domNode = undefined;
+
+    			if (recyclingEnabled$9) {
+    				domNode = recycle(node, item);
+    				if (domNode) {
+    					return domNode;
+    				}
+    			}
+    			domNode = templateNode.cloneNode(false);
+    			var value = getValueWithIndex(item, valueIndex);
+
+    			if (value != null) {
+    				domNode.nodeValue = value;
+    			}
+    			item.rootNode = domNode;
+    			return domNode;
+    		},
+    		update: function update(lastItem, nextItem, treeLifecycle) {
+    			if (node !== lastItem.domTree) {
+    				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+    				return;
+    			}
+    			var domNode = lastItem.rootNode;
+
+    			nextItem.rootNode = domNode;
+    			var nextValue = getValueWithIndex(nextItem, valueIndex);
+
+    			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
+    				domNode.nodeValue = nextValue;
+    			}
+    		},
+    		remove: function remove(lastItem) {}
+    	};
+    	return node;
+    }
+
+    function createDynamicTextNode(templateNode, valueIndex) {
+    	var domNode;
+
+    	var node = {
+    		create: function create(item) {
+    			domNode = templateNode.cloneNode(false);
+    			var value = getValueWithIndex(item, valueIndex);
+
+    			if (value != null) {
+    				domNode.nodeValue = value;
+    			}
+    			return domNode;
+    		},
+    		update: function update(lastItem, nextItem) {
+    			var nextValue = getValueWithIndex(nextItem, valueIndex);
+
+    			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
+    				domNode.nodeValue = nextValue;
+    			}
+    		},
+    		remove: function remove(lastItem) {}
+    	};
+    	return node;
+    }
+
     function createStaticAttributes(node, domNode, excludeAttrs) {
         var attrs = node.attrs;
 
@@ -2558,6 +2626,7 @@
                 }
             } else {
                 var tag = schema.tag;
+                var text = schema.text;
 
                 if (tag) {
                     if (tag.type === ObjectTypes.VARIABLE) {
@@ -2629,7 +2698,6 @@
                             createStaticAttributes(schema, templateNode);
                         }
                     }
-                    var text = schema.text;
                     var children = schema.children;
 
                     if (text != null) {
@@ -2700,6 +2768,13 @@
                                 node = createVoidNode(templateNode, dynamicAttrs);
                             }
                         }
+                    }
+                } else if (text) {
+                    templateNode = document.createTextNode('');
+                    if (isRoot) {
+                        node = createRootDynamicTextNode(templateNode, text.index);
+                    } else {
+                        node = createDynamicTextNode(templateNode, text.index);
                     }
                 }
             }

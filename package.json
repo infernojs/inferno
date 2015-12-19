@@ -14,7 +14,7 @@
     "babel-cli": "^6.3.17",
     "babel-eslint": "^5.0.0-beta6",
     "babel-loader": "^6.2.0",
-    "babel-plugin-inferno": "^0.2.0",
+    "babel-plugin-inferno": "^0.2.4",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-es2015-rollup": "^1.0.0",
     "babel-preset-stage-0": "^6.3.13",
