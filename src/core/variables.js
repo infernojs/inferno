@@ -7,7 +7,8 @@ export const ObjectTypes = {
 export const ValueTypes = {
 	TEXT: 0,
 	ARRAY: 1,
-	TREE:21
+	TREE: 2,
+	EMPTY_OBJECT: 3
 };
 
 export function createVariable(index) {
@@ -22,12 +23,14 @@ export function getValueWithIndex(item, index) {
 }
 
 export function getTypeFromValue(value) {
-	if (typeof value === 'string' || typeof value === 'number' || value === undefined) {
+	if (typeof value === 'string' || typeof value === 'number' || value == null) {
 		return ValueTypes.TEXT;
 	} else if (isArray(value)) {
 		return ValueTypes.ARRAY;
 	} else if (typeof value === 'object' &&  value.create) {
 		return ValueTypes.TREE;
+	} else if (typeof value === 'object' && Object.keys(value).length === 0) {
+		return ValueTypes.EMPTY_OBJECT;
 	}
 }
 

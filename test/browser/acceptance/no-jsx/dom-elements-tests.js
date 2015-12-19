@@ -3752,53 +3752,42 @@ describe('DOM element tests (no-jsx)', () => {
 
 
   describe('should handle root dynamic nodes', () => {
-            let template;
-            beforeEach(() => {
-                template = Inferno.createTemplate((val) =>
-                    val
-                );
-            });
-
-            it('Initial render (creation)', () => {
-                Inferno.render(template('abc'), container);
-                expect(container.innerHTML).to.eql('abc');
-            });
-
-            it('Second render (update)', () => {
-                Inferno.render(template('123'), container);
-                expect(container.innerHTML).to.eql('123');
-            });
-
-            it('Third render (update)', () => {
-                Inferno.render(template(undefined), container);
-                expect(container.innerHTML).to.equal('');
-            });
-
-            it('Fourth render (update)', () => {
-                Inferno.render(template(null), container);
-                expect(container.innerHTML).to.be.null;
-            });
-
-            it('Fifth render (update)', () => {
-                Inferno.render(template(''), container);
-                expect(container.innerHTML).to.eql('');
-            });
-
-            it('Sixth render (update)', () => {
-                Inferno.render(template(123 + 'abc'), container);
-                expect(container.innerHTML).to.eql('');
-            });
-
-            it('Seventh render (update)', () => {
-                Inferno.render(template({}), container);
-                expect(container.innerHTML).to.be.null;
-            });
-
-            it('Eigth render (update)', () => {
-                Inferno.render(template([]), container);
-                expect(container.innerHTML).to.be.null;
-            });
-
+        let template;
+        beforeEach(() => {
+            template = Inferno.createTemplate((val) =>
+                val
+            );
         });
 
+        it('Initial render (creation)', () => {
+            Inferno.render(template('abc'), container);
+            expect(container.innerHTML).to.eql('abc');
+        });
+        it('Second render (update)', () => {
+            Inferno.render(template('123'), container);
+            expect(container.innerHTML).to.eql('123');
+        });
+        it('Third render (update)', () => {
+            Inferno.render(template(undefined), container);
+            expect(container.innerHTML).to.equal('');
+        });
+        it('Fourth render (update)', () => {
+            Inferno.render(template(null), container);
+            expect(container.innerHTML).to.equal('');
+        });
+        it('Fifth render (update)', () => {
+            Inferno.render(template(''), container);
+            expect(container.innerHTML).to.eql('');
+        });
+        it('Sixth render (update)', () => {
+            Inferno.render(template(123 + 'abc'), container);
+            expect(container.innerHTML).to.eql('123abc');
+        });
+        it('Seventh render (update)', () => {
+            expect(() => Inferno.render(template({}), container)).to.throw;
+        });
+        it('Eigth render (update)', () => {
+            expect(() => Inferno.render(template([]), container)).to.throw;
+        });
+    });
 });

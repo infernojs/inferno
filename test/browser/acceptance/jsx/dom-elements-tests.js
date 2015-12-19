@@ -138,7 +138,7 @@ describe('DOM element tests (jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				`<select multiple=""><option value="foo">I'm a li-tag</option><option value="bar">I'm a li-tag</option></select>`
+				`<select multiple="multiple"><option value="foo" selected="selected">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>`
 			);
 		});
 	});
