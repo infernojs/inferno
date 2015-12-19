@@ -88,9 +88,9 @@
     	return recyclingEnabled$9;
     }
 
-    var recyclingEnabled = isRecyclingEnabled();
+    var recyclingEnabled$8 = isRecyclingEnabled();
 
-    function updateKeyed(items, oldItems, parentNode, parentNextNode) {
+    function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle) {
     	var stop = false;
     	var startIndex = 0;
     	var oldStartIndex = 0;
@@ -99,7 +99,7 @@
 
     	// TODO only if there are no other children
     	if (itemsLength === 0 && oldItemsLength >= 5) {
-    		if (recyclingEnabled) {
+    		if (recyclingEnabled$8) {
     			for (var i = 0; i < oldItemsLength; i++) {
     				pool(oldItems[i]);
     			}
@@ -122,7 +122,7 @@
     	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
     		stop = true;
     		while (startItem.key === oldStartItem.key) {
-    			startItem.domTree.update(oldStartItem, startItem);
+    			startItem.domTree.update(oldStartItem, startItem, treeLifecycle);
     			startIndex++;
     			oldStartIndex++;
     			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -136,7 +136,7 @@
     		endItem = items[endIndex];
     		oldEndItem = oldItems[oldEndIndex];
     		while (endItem.key === oldEndItem.key) {
-    			endItem.domTree.update(oldEndItem, endItem);
+    			endItem.domTree.update(oldEndItem, endItem, treeLifecycle);
     			endIndex--;
     			oldEndIndex--;
     			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -149,7 +149,7 @@
     		}
     		while (endItem.key === oldStartItem.key) {
     			nextNode = endIndex + 1 < itemsLength ? items[endIndex + 1].rootNode : parentNextNode;
-    			endItem.domTree.update(oldStartItem, endItem);
+    			endItem.domTree.update(oldStartItem, endItem, treeLifecycle);
     			insertOrAppend(parentNode, endItem.rootNode, nextNode);
     			endIndex--;
     			oldStartIndex++;
@@ -163,7 +163,7 @@
     		}
     		while (startItem.key === oldEndItem.key) {
     			nextNode = oldItems[oldStartIndex].rootNode;
-    			startItem.domTree.update(oldEndItem, startItem);
+    			startItem.domTree.update(oldEndItem, startItem, treeLifecycle);
     			insertOrAppend(parentNode, startItem.rootNode, nextNode);
     			startIndex++;
     			oldEndIndex--;
@@ -182,7 +182,7 @@
     			nextNode = endIndex + 1 < itemsLength ? items[endIndex + 1].rootNode : parentNextNode;
     			for (; startIndex <= endIndex; startIndex++) {
     				item = items[startIndex];
-    				insertOrAppend(parentNode, item.domTree.create(item), nextNode);
+    				insertOrAppend(parentNode, item.domTree.create(item, treeLifecycle), nextNode);
     			}
     		}
     	} else if (startIndex > endIndex) {
@@ -209,7 +209,7 @@
     			if (oldItem) {
     				oldItemsMap[key] = null;
     				oldNextItem = oldItem.nextItem;
-    				item.domTree.update(oldItem, item);
+    				item.domTree.update(oldItem, item, treeLifecycle);
     				// TODO optimise
     				if (item.rootNode.nextSibling != (nextItem && nextItem.rootNode)) {
     					nextNode = nextItem && nextItem.rootNode || parentNextNode;
@@ -217,7 +217,7 @@
     				}
     			} else {
     				nextNode = nextItem && nextItem.rootNode || parentNextNode;
-    				insertOrAppend(parentNode, item.domTree.create(item), nextNode);
+    				insertOrAppend(parentNode, item.domTree.create(item, treeLifecycle), nextNode);
     			}
     			nextItem = item;
     		}
@@ -241,14 +241,13 @@
 
     function remove(item, parentNode) {
     	parentNode.removeChild(item.rootNode);
-    	if (recyclingEnabled) {
+    	if (recyclingEnabled$8) {
     		pool(item);
     	}
     }
 
     function createDOMFragment(parentNode, nextNode) {
     	var lastItem = undefined;
-    	var _componentTree = [];
     	var treeSuccessListeners = [];
     	var treeLifecycle = {
     		addTreeSuccessListener: function addTreeSuccessListener(listener) {
@@ -267,7 +266,6 @@
     	};
     	var fragment = {
     		parentNode: parentNode,
-    		_componentTree: _componentTree,
     		render: function render(nextItem) {
     			if (!nextItem) {
     				return;
@@ -275,9 +273,9 @@
     			var tree = nextItem.domTree;
 
     			if (lastItem) {
-    				tree.update(lastItem, nextItem, _componentTree, treeLifecycle);
+    				tree.update(lastItem, nextItem, treeLifecycle);
     			} else {
-    				var dom = tree.create(nextItem, _componentTree, treeLifecycle);
+    				var dom = tree.create(nextItem, treeLifecycle);
 
     				if (nextNode) {
     					parentNode.insertBefore(dom, nextNode);
@@ -285,11 +283,21 @@
     					parentNode.appendChild(dom);
     				}
     			}
+    			if (treeSuccessListeners.length > 0) {
+    				for (var i = 0; i < treeSuccessListeners.length; i++) {
+    					treeSuccessListeners[i]();
+    				}
+    			}
     			lastItem = nextItem;
     			return fragment;
     		},
     		remove: function remove$$() {
+    			var tree = lastItem.domTree;
+    			if (lastItem) {
+    				tree.remove(lastItem, treeLifecycle);
+    			}
     			remove(lastItem, parentNode);
+    			treeSuccessListeners = [];
     			return fragment;
     		}
     	};
@@ -297,8 +305,6 @@
     }
 
     var rootFragments = [];
-
-    function unmountComponentsAtFragment(fragment) {}
 
     function getRootFragmentAtNode(node) {
     	var rootFragmentsLength = rootFragments.length;
@@ -334,7 +340,6 @@
     		rootFragments.push(fragment);
     	} else {
     		if (nextItem === null) {
-    			unmountComponentsAtFragment(rootFragment);
     			rootFragment.remove();
     			removeRootFragment(rootFragment);
     		} else {
@@ -345,11 +350,6 @@
 
     function renderToString(nextItem) {
     	// TODO
-    }
-
-    function unmountComponentsAtNode(parentNode) {
-    	var rootFragment = getRootFragmentAtNode(parentNode);
-    	unmountComponentsAtFragment(rootFragment);
     }
 
     var isArray = (function (x) {
@@ -437,6 +437,9 @@
     function getValueForProps(props, item) {
     	var newProps = {};
 
+    	if (props.index) {
+    		return getValueWithIndex(item, props.index);
+    	}
     	for (var name in props) {
     		var val = props[name];
 
@@ -447,6 +450,20 @@
     		}
     	}
     	return newProps;
+    }
+
+    function removeValueTree(value, treeLifecycle) {
+    	if (isArray(value)) {
+    		for (var i = 0; i < value.length; i++) {
+    			var child = value[i];
+
+    			removeValueTree(child, treeLifecycle);
+    		}
+    	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+    		var tree = value.domTree;
+
+    		tree.remove(value, treeLifecycle);
+    	}
     }
 
     var PROPERTY = 0x1;
@@ -1500,14 +1517,16 @@
     	}
     }
 
-    function recreateRootNode(lastItem, nextItem, node) {
+    function recreateRootNode(lastItem, nextItem, node, treeLifecycle) {
     	var lastDomNode = lastItem.rootNode;
-    	var domNode = node.create(nextItem);
+    	var lastTree = lastItem.domTree;
+    	lastTree.remove(lastItem);
+    	var domNode = node.create(nextItem, treeLifecycle);
     	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
     	// TODO recycle old node
     }
 
-    var recyclingEnabled$1 = isRecyclingEnabled();
+    var recyclingEnabled = isRecyclingEnabled();
 
     function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
     	var node = {
@@ -1516,7 +1535,7 @@
     		create: function create(item) {
     			var domNode = undefined;
 
-    			if (recyclingEnabled$1) {
+    			if (recyclingEnabled) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -1534,9 +1553,9 @@
     			item.rootNode = domNode;
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			if (node !== lastItem.domTree) {
-    				recreateRootNode(lastItem, nextItem, node);
+    				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
     				return;
     			}
     			var domNode = lastItem.rootNode;
@@ -1550,7 +1569,8 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
-    		}
+    		},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
@@ -1580,12 +1600,13 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
-    		}
+    		},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
 
-    var recyclingEnabled$2 = isRecyclingEnabled();
+    var recyclingEnabled$1 = isRecyclingEnabled();
 
     function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
     	var node = {
@@ -1594,7 +1615,7 @@
     		create: function create(item) {
     			var domNode = undefined;
 
-    			if (recyclingEnabled$2) {
+    			if (recyclingEnabled$1) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -1607,9 +1628,9 @@
     			item.rootNode = domNode;
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			if (node !== lastItem.domTree) {
-    				recreateRootNode(lastItem, nextItem, node);
+    				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
     				return;
     			}
     			var domNode = lastItem.rootNode;
@@ -1618,7 +1639,8 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
-    		}
+    		},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
@@ -1637,7 +1659,8 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
-    		}
+    		},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
@@ -1648,7 +1671,7 @@
     	var node = {
     		pool: [],
     		keyedPool: [],
-    		create: function create(item, parentComponent, treeLifecycle) {
+    		create: function create(item, treeLifecycle) {
     			var domNode = undefined;
 
     			if (recyclingEnabled$3) {
@@ -1666,14 +1689,14 @@
     						var childItem = value[i];
 
     						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
-    							domNode.appendChild(childItem.domTree.create(childItem, parentComponent));
+    							domNode.appendChild(childItem.domTree.create(childItem, treeLifecycle));
     						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
     							var textNode = document.createTextNode(childItem);
     							domNode.appendChild(textNode);
     						}
     					}
     				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
-    					domNode.appendChild(value.domTree.create(value));
+    					domNode.appendChild(value.domTree.create(value, treeLifecycle));
     				} else if (typeof value === 'string' || typeof value === 'number') {
     					domNode.textContent = value;
     				}
@@ -1684,9 +1707,9 @@
     			item.rootNode = domNode;
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			if (node !== lastItem.domTree) {
-    				recreateRootNode(lastItem, nextItem, node);
+    				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
     				return;
     			}
     			var domNode = lastItem.rootNode;
@@ -1711,7 +1734,7 @@
 
     							if (tree !== null) {
     								if (lastValue.domTree !== null) {
-    									tree.update(lastValue, nextValue, parentComponent);
+    									tree.update(lastValue, nextValue, treeLifecycle);
     								} else {
     									// TODO implement
     								}
@@ -1723,6 +1746,11 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			var value = getValueWithIndex(item, valueIndex);
+
+    			removeValueTree(value, treeLifecycle);
     		}
     	};
     	return node;
@@ -1731,7 +1759,7 @@
     function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
     	var domNode = undefined;
     	var node = {
-    		create: function create(item, parentComponent, treeLifecycle) {
+    		create: function create(item, treeLifecycle) {
     			domNode = templateNode.cloneNode(false);
     			var value = getValueWithIndex(item, valueIndex);
 
@@ -1741,14 +1769,14 @@
     						var childItem = value[i];
 
     						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
-    							domNode.appendChild(childItem.domTree.create(childItem));
+    							domNode.appendChild(childItem.domTree.create(childItem, treeLifecycle));
     						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
     							var textNode = document.createTextNode(childItem);
     							domNode.appendChild(textNode);
     						}
     					}
     				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
-    					domNode.appendChild(value.domTree.create(value, parentComponent));
+    					domNode.appendChild(value.domTree.create(value, treeLifecycle));
     				} else if (typeof value === 'string' || typeof value === 'number') {
     					domNode.textContent = value;
     				}
@@ -1758,7 +1786,7 @@
     			}
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			var nextValue = getValueWithIndex(nextItem, valueIndex);
     			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -1769,7 +1797,7 @@
     					// TODO
     				} else if (isArray(nextValue)) {
     						if (isArray(lastValue)) {
-    							updateKeyed(nextValue, lastValue, domNode, null);
+    							updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle);
     						} else {
     							//debugger;
     						}
@@ -1778,7 +1806,7 @@
 
     							if (tree !== null) {
     								if (lastValue.domTree !== null) {
-    									tree.update(lastValue, nextValue, parentComponent);
+    									tree.update(lastValue, nextValue, treeLifecycle);
     								} else {
     									// TODO implement
     								}
@@ -1790,20 +1818,25 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			var value = getValueWithIndex(item, valueIndex);
+
+    			removeValueTree(value, treeLifecycle);
     		}
     	};
     	return node;
     }
 
-    var recyclingEnabled$4 = isRecyclingEnabled();
+    var recyclingEnabled$2 = isRecyclingEnabled();
 
     function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
     	var node = {
     		pool: [],
     		keyedPool: [],
-    		create: function create(item, parentComponent, treeLifecycle) {
+    		create: function create(item, treeLifecycle) {
     			var domNode = undefined;
-    			if (recyclingEnabled$4) {
+    			if (recyclingEnabled$2) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -1814,10 +1847,10 @@
     				if (isArray(subTreeForChildren)) {
     					for (var i = 0; i < subTreeForChildren.length; i++) {
     						var subTree = subTreeForChildren[i];
-    						domNode.appendChild(subTree.create(item, parentComponent));
+    						domNode.appendChild(subTree.create(item, treeLifecycle));
     					}
     				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
-    					domNode.appendChild(subTreeForChildren.create(item, parentComponent));
+    					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle));
     				}
     			}
     			if (dynamicAttrs) {
@@ -1826,9 +1859,9 @@
     			item.rootNode = domNode;
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			if (node !== lastItem.domTree) {
-    				recreateRootNode(lastItem, nextItem, node);
+    				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
     				return;
     			}
     			var domNode = lastItem.rootNode;
@@ -1838,14 +1871,26 @@
     				if (isArray(subTreeForChildren)) {
     					for (var i = 0; i < subTreeForChildren.length; i++) {
     						var subTree = subTreeForChildren[i];
-    						subTree.update(lastItem, nextItem, parentComponent);
+    						subTree.update(lastItem, nextItem, treeLifecycle);
     					}
     				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
-    					subTreeForChildren.update(lastItem, nextItem, parentComponent);
+    					subTreeForChildren.update(lastItem, nextItem, treeLifecycle);
     				}
     			}
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+    			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			if (subTreeForChildren != null) {
+    				if (isArray(subTreeForChildren)) {
+    					for (var i = 0; i < subTreeForChildren.length; i++) {
+    						var subTree = subTreeForChildren[i];
+    						subTree.remove(item, treeLifecycle);
+    					}
+    				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+    					subTreeForChildren.remove(item, treeLifecycle);
+    				}
     			}
     		}
     	};
@@ -1855,16 +1900,16 @@
     function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
     	var domNode = undefined;
     	var node = {
-    		create: function create(item, parentComponent, treeLifecycle) {
+    		create: function create(item, treeLifecycle) {
     			domNode = templateNode.cloneNode(false);
     			if (subTreeForChildren != null) {
     				if (isArray(subTreeForChildren)) {
     					for (var i = 0; i < subTreeForChildren.length; i++) {
     						var subTree = subTreeForChildren[i];
-    						domNode.appendChild(subTree.create(item));
+    						domNode.appendChild(subTree.create(item, treeLifecycle));
     					}
     				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
-    					domNode.appendChild(subTreeForChildren.create(item, parentComponent));
+    					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle));
     				}
     			}
     			if (dynamicAttrs) {
@@ -1872,26 +1917,38 @@
     			}
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			if (subTreeForChildren != null) {
     				if (isArray(subTreeForChildren)) {
     					for (var i = 0; i < subTreeForChildren.length; i++) {
     						var subTree = subTreeForChildren[i];
-    						subTree.update(lastItem, nextItem);
+    						subTree.update(lastItem, nextItem, treeLifecycle);
     					}
     				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
-    					subTreeForChildren.update(lastItem, nextItem, parentComponent);
+    					subTreeForChildren.update(lastItem, nextItem, treeLifecycle);
     				}
     			}
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+    			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			if (subTreeForChildren != null) {
+    				if (isArray(subTreeForChildren)) {
+    					for (var i = 0; i < subTreeForChildren.length; i++) {
+    						var subTree = subTreeForChildren[i];
+    						subTree.remove(item, treeLifecycle);
+    					}
+    				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+    					subTreeForChildren.remove(item, treeLifecycle);
+    				}
     			}
     		}
     	};
     	return node;
     }
 
-    var recyclingEnabled$5 = isRecyclingEnabled();
+    var recyclingEnabled$4 = isRecyclingEnabled();
 
     function createRootStaticNode(templateNode) {
     	var node = {
@@ -1899,7 +1956,7 @@
     		keyedPool: [],
     		create: function create(item) {
     			var domNode = undefined;
-    			if (recyclingEnabled$5) {
+    			if (recyclingEnabled$4) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -1915,7 +1972,8 @@
     				return;
     			}
     			nextItem.rootNode = lastItem.rootNode;
-    		}
+    		},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
@@ -1928,7 +1986,8 @@
     			domNode = templateNode.cloneNode(true);
     			return domNode;
     		},
-    		update: function update() {}
+    		update: function update() {},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
@@ -1939,7 +1998,7 @@
     	var node = {
     		pool: [],
     		keyedPool: [],
-    		create: function create(item, parentComponent, treeLifecycle) {
+    		create: function create(item, treeLifecycle) {
     			var domNode = undefined;
 
     			if (recyclingEnabled$6) {
@@ -1963,7 +2022,7 @@
     					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
     					break;
     				case ValueTypes.TREE:
-    					domNode = value.create(item, parentComponent);
+    					domNode = value.create(item);
     					break;
     				default:
     					break;
@@ -1972,9 +2031,9 @@
     			item.rootNode = domNode;
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			if (node !== lastItem.domTree) {
-    				recreateRootNode(lastItem, nextItem, node);
+    				recreateRootNode(lastItem, nextItem, nod, treeLifecyclee);
     				return;
     			}
     			var domNode = lastItem.rootNode;
@@ -2002,6 +2061,13 @@
     						break;
     				}
     			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			var value = getValueWithIndex(item, valueIndex);
+
+    			if (getTypeFromValue(value) === ValueTypes.TREE) {
+    				value.remove(item, treeLifecycle);
+    			}
     		}
     	};
     	return node;
@@ -2011,7 +2077,7 @@
     	var domNode = undefined;
 
     	var node = {
-    		create: function create(item, parentComponent) {
+    		create: function create(item, treeLifecycle) {
     			var value = getValueWithIndex(item, valueIndex);
     			var type = getTypeFromValue$1(value);
 
@@ -2027,7 +2093,7 @@
     					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
     					break;
     				case ValueTypes$1.TREE:
-    					domNode = value.create(item, parentComponent);
+    					domNode = value.create(item, treeLifecycle);
     					break;
     				default:
     					break;
@@ -2035,7 +2101,7 @@
 
     			return domNode;
     		},
-    		update: function update(lastItem, nextItem, parentComponent) {
+    		update: function update(lastItem, nextItem, treeLifecycle) {
     			var nextValue = getValueWithIndex(nextItem, valueIndex);
     			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -2066,12 +2132,19 @@
     						break;
     				}
     			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			var value = getValueWithIndex(item, valueIndex);
+
+    			if (getTypeFromValue$1(value) === ValueTypes$1.TREE) {
+    				value.remove(item, treeLifecycle);
+    			}
     		}
     	};
     	return node;
     }
 
-    var recyclingEnabled$7 = isRecyclingEnabled();
+    var recyclingEnabled$5 = isRecyclingEnabled();
 
     function createRootVoidNode(templateNode, dynamicAttrs) {
     	var node = {
@@ -2079,7 +2152,7 @@
     		keyedPool: [],
     		create: function create(item) {
     			var domNode = undefined;
-    			if (recyclingEnabled$7) {
+    			if (recyclingEnabled$5) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -2104,7 +2177,8 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
-    		}
+    		},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
@@ -2123,30 +2197,50 @@
     			if (dynamicAttrs) {
     				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
     			}
-    		}
+    		},
+    		remove: function remove(lastItem) {}
     	};
     	return node;
     }
 
-    function unmountComponent(instance) {
-    	// TODO
-    	// if we have a parentComponent, remove us from there
-    	// unmount us and then
-    	// unmount all our child components too
+    function updateComponent(component, prevState, nextState, prevProps, nextProps, renderCallback, blockRender) {
+    	if (!nextProps.children) {
+    		nextProps.children = prevProps.children;
+    	}
+
+    	if (prevProps !== nextProps || prevState !== nextState) {
+    		if (prevProps !== nextProps) {
+    			component._blockRender = true;
+    			component.componentWillReceiveProps(nextProps);
+    			component._blockRender = false;
+    		}
+    		var shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
+
+    		if (shouldUpdate) {
+    			component._blockSetState = true;
+    			component.componentWillUpdate(nextProps, nextState);
+    			component._blockSetState = false;
+    			component.props = nextProps;
+    			component.state = nextState;
+    			renderCallback();
+    			component.componentDidUpdate(prevProps, prevState);
+    		}
+    	}
     }
 
-    var recyclingEnabled$8 = isRecyclingEnabled();
+    var recyclingEnabled$7 = isRecyclingEnabled();
 
     function createRootNodeWithComponent(componentIndex, props, domNamespace) {
     	var instance = undefined;
     	var lastRender = undefined;
+    	var currentItem = undefined;
     	var node = {
     		pool: [],
     		keyedPool: [],
-    		create: function create(item, parentComponent, treeLifecycle) {
+    		create: function create(item, treeLifecycle) {
     			var domNode = undefined;
 
-    			if (recyclingEnabled$8) {
+    			if (recyclingEnabled$7) {
     				domNode = recycle(node, item);
     				if (domNode) {
     					return domNode;
@@ -2154,78 +2248,87 @@
     			}
     			var Component = getValueWithIndex(item, componentIndex);
 
+    			currentItem = item;
     			if (Component == null) {
     				//bad component, make a text node
     				domNode = document.createTextNode('');
     				item.rootNode = domNode;
     				return domNode;
-    			}
-    			instance = new Component(getValueForProps(props, item));
-    			instance.componentWillMount();
-    			var nextRender = instance.render();
+    			} else if (typeof Component === 'function') {
+    				//stateless component
+    				if (!Component.prototype.render) {
+    					var nextRender = Component(getValueForProps(props, item));
 
-    			nextRender.parent = item;
-    			domNode = nextRender.domTree.create(nextRender, instance);
-    			item.rootNode = domNode;
-    			lastRender = nextRender;
-    			return domNode;
-    		},
-    		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
-    			var Component = getValueWithIndex(nextItem, componentIndex);
-
-    			if (Component !== instance.constructor) {
-    				unmountComponent(instance);
-    				recreateRootNode(lastItem, nextItem, node);
-    				return;
-    			}
-    			if (node !== lastItem.domTree) {
-    				unmountComponent(instance);
-    				recreateRootNode(lastItem, nextItem, node);
-    				return;
-    			}
-    			var domNode = lastItem.rootNode;
-
-    			nextItem.rootNode = domNode;
-
-    			var prevProps = instance.props;
-    			var prevState = instance.state;
-    			var nextState = instance.state;
-    			var nextProps = getValueForProps(props, nextItem);
-
-    			if (!nextProps.children) {
-    				nextProps.children = prevProps.children;
-    			}
-
-    			if (prevProps !== nextProps || prevState !== nextState) {
-    				if (prevProps !== nextProps) {
-    					instance._blockRender = true;
-    					instance.componentWillReceiveProps(nextProps);
-    					instance._blockRender = false;
-    				}
-    				var shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
-
-    				if (shouldUpdate) {
-    					instance._blockSetState = true;
-    					instance.componentWillUpdate(nextProps, nextState);
-    					instance._blockSetState = false;
-    					instance.props = nextProps;
-    					instance.state = nextState;
+    					nextRender.parent = item;
+    					domNode = nextRender.domTree.create(nextRender, treeLifecycle);
+    					lastRender = nextRender;
+    					item.rootNode = domNode;
+    				} else {
+    					instance = new Component(getValueForProps(props, item));
+    					instance.componentWillMount();
     					var nextRender = instance.render();
 
-    					nextRender.parent = nextItem;
-    					nextRender.domTree.update(lastRender, nextRender, instance);
-    					nextItem.rootNode = nextRender.rootNode;
-    					instance.componentDidUpdate(prevProps, prevState);
+    					nextRender.parent = item;
+    					domNode = nextRender.domTree.create(nextRender, treeLifecycle);
+    					item.rootNode = domNode;
     					lastRender = nextRender;
+    					treeLifecycle.addTreeSuccessListener(instance.componentDidMount);
+    					instance.forceUpdate = function () {
+    						var nextRender = instance.render();
+
+    						nextRender.parent = currentItem;
+    						nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+    						currentItem.rootNode = nextRender.rootNode;
+    						lastRender = nextRender;
+    					};
     				}
+    			}
+    			return domNode;
+    		},
+    		update: function update(lastItem, nextItem, treeLifecycle) {
+    			var Component = getValueWithIndex(nextItem, componentIndex);
+
+    			currentItem = nextItem;
+    			if (!Component) {
+    				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+    				return;
+    			}
+    			if (typeof Component === 'function') {
+    				if (!Component.prototype.render) {
+    					var nextRender = Component(getValueForProps(props, nextItem));
+
+    					nextRender.parent = currentItem;
+    					nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+    					currentItem.rootNode = nextRender.rootNode;
+    					lastRender = nextRender;
+    				} else {
+    					if (!instance || node !== lastItem.domTree || Component !== instance.constructor) {
+    						recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+    						return;
+    					}
+    					var domNode = lastItem.rootNode;
+    					var prevProps = instance.props;
+    					var prevState = instance.state;
+    					var nextState = instance.state;
+    					var nextProps = getValueForProps(props, nextItem);
+
+    					nextItem.rootNode = domNode;
+    					updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+    				}
+    			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			if (instance) {
+    				lastRender.domTree.remove(lastRender, treeLifecycle);
+    				instance.componentWillUnmount();
     			}
     		}
     	};
     	return node;
     }
 
-    function recreateRootNode$1(lastDomNode, nextItem, node) {
-    	var domNode = node.create(nextItem);
+    function recreateRootNode$1(lastDomNode, nextItem, node, treeLifecycle) {
+    	var domNode = node.create(nextItem, treeLifecycle);
     	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
     	// TODO recycle old node
     }
@@ -2242,62 +2345,78 @@
     	var instance = undefined;
     	var lastRender = undefined;
     	var domNode = undefined;
+    	var currentItem = undefined;
     	var node = {
-    		create: function create(item, parentComponent, treeLifecycle) {
+    		create: function create(item, treeLifecycle) {
     			var valueItem = getCorrectItemForValues(node, item);
     			var Component = getValueWithIndex(valueItem, componentIndex);
 
+    			currentItem = item;
     			if (Component == null) {
     				//bad component, make a text node
     				return document.createTextNode('');
-    			}
-    			instance = new Component(getValueForProps(props, valueItem));
-    			instance.componentWillMount();
-    			var nextRender = instance.render();
+    			} else if (typeof Component === 'function') {
+    				//stateless component
+    				if (!Component.prototype.render) {
+    					var nextRender = Component(getValueForProps(props, valueItem));
 
-    			nextRender.parent = item;
-    			domNode = nextRender.domTree.create(nextRender, instance);
-    			lastRender = nextRender;
-    			return domNode;
-    		},
-    		update: function update(lastItem, nextItem, parentComponent, treeLifecycle) {
-    			var Component = getValueWithIndex(nextItem, componentIndex);
-
-    			if (Component !== instance.constructor) {
-    				unmountComponent(instance);
-    				recreateRootNode$1(domNode, nextItem, node);
-    				return;
-    			}
-    			var prevProps = instance.props;
-    			var prevState = instance.state;
-    			var nextState = instance.state;
-    			var nextProps = getValueForProps(props, nextItem);
-
-    			if (!nextProps.children) {
-    				nextProps.children = prevProps.children;
-    			}
-
-    			if (prevProps !== nextProps || prevState !== nextState) {
-    				if (prevProps !== nextProps) {
-    					instance._blockRender = true;
-    					instance.componentWillReceiveProps(nextProps);
-    					instance._blockRender = false;
-    				}
-    				var shouldUpdate = instance.shouldComponentUpdate(nextProps, nextState);
-
-    				if (shouldUpdate) {
-    					instance._blockSetState = true;
-    					instance.componentWillUpdate(nextProps, nextState);
-    					instance._blockSetState = false;
-    					instance.props = nextProps;
-    					instance.state = nextState;
+    					nextRender.parent = item;
+    					domNode = nextRender.domTree.create(nextRender, treeLifecycle);
+    					lastRender = nextRender;
+    				} else {
+    					instance = new Component(getValueForProps(props, valueItem));
+    					instance.componentWillMount();
     					var nextRender = instance.render();
 
-    					nextRender.parent = nextItem;
-    					nextRender.domTree.update(lastRender, nextRender, instance);
-    					instance.componentDidUpdate(prevProps, prevState);
+    					nextRender.parent = item;
+    					domNode = nextRender.domTree.create(nextRender, treeLifecycle);
     					lastRender = nextRender;
+    					treeLifecycle.addTreeSuccessListener(instance.componentDidMount);
+    					instance.forceUpdate = function () {
+    						var nextRender = instance.render();
+
+    						nextRender.parent = currentItem;
+    						nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+    						lastRender = nextRender;
+    					};
     				}
+    			}
+    			return domNode;
+    		},
+    		update: function update(lastItem, nextItem, treeLifecycle) {
+    			var Component = getValueWithIndex(nextItem, componentIndex);
+    			currentItem = nextItem;
+
+    			if (!Component) {
+    				recreateRootNode$1(domNode, nextItem, node, treeLifecycle);
+    				return;
+    			}
+    			if (typeof Component === 'function') {
+    				//stateless component
+    				if (!Component.prototype.render) {
+    					var nextRender = Component(getValueForProps(props, nextItem));
+
+    					nextRender.parent = currentItem;
+    					nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+    					lastRender = nextRender;
+    				} else {
+    					if (!instance || Component !== instance.constructor) {
+    						recreateRootNode$1(domNode, nextItem, node, treeLifecycle);
+    						return;
+    					}
+    					var prevProps = instance.props;
+    					var prevState = instance.state;
+    					var nextState = instance.state;
+    					var nextProps = getValueForProps(props, nextItem);
+
+    					updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+    				}
+    			}
+    		},
+    		remove: function remove(item, treeLifecycle) {
+    			if (instance) {
+    				lastRender.domTree.remove(lastRender, treeLifecycle);
+    				instance.componentWillUnmount();
     			}
     		}
     	};
@@ -2346,6 +2465,9 @@
     function createStaticTreeNode(node, parentNode, domNamespace, schema) {
         var staticNode = undefined;
 
+        if (node == null) {
+            return null;
+        }
         if (typeof node === 'string' || typeof node === 'number') {
             staticNode = document.createTextNode(node);
         } else {
@@ -2598,6 +2720,10 @@
     		COMPONENTS: false
     	};
 
+    	if (node == null) {
+    		return false;
+    	}
+
     	if (node.type === ObjectTypes.VARIABLE) {
     		nodeIsDynamic = true;
     		dynamicFlags.NODE = true;
@@ -2780,6 +2906,7 @@
 
     function applyState(component) {
     	var blockRender = component._blockRender;
+
     	requestAnimationFrame(function () {
     		if (component._deferSetState === false) {
     			component._pendingSetState = false;
@@ -2788,11 +2915,10 @@
     			var nextState = babelHelpers.extends({}, oldState, pendingState);
     			component._pendingState = {};
     			component._pendingSetState = false;
-    			//updateComponent(component, component.props, nextState, blockRender);
-    			// TODO
+    			updateComponent(component, oldState, nextState, component.props, component.props, component.forceUpdate, blockRender);
     		} else {
-    				applyState(component);
-    			}
+    			applyState(component);
+    		}
     	});
     }
 
@@ -2868,8 +2994,7 @@
     	createTemplate: createTemplate,
     	TemplateFactory: TemplateFactory,
     	render: render,
-    	renderToString: renderToString,
-    	unmountComponentsAtNode: unmountComponentsAtNode
+    	renderToString: renderToString
     };
 
     return index;
