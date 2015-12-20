@@ -123,66 +123,80 @@ describe('DOM component tests (no-jsx)', () => {
 		 });
 	 });
 
-	 describe('should render a basic stateless component with a render stream', () => {
-		 let template;
-		 const listeners = [];
+	 //describe('should render a basic stateless component with a render stream', () => {
+		// let template;
+		// const listeners = [];
+	 //
+		// function addEventListener(callback) {
+		//	 listeners.push(callback);
+		// }
+		// function removeEventListener(callback) {
+		//	 const index = listeners.indexOf(callback);
+	 //
+		//	 if (index > -1) {
+		//		 listeners.splice(index, 1);
+		//	 }
+		// }
+		// function trigger(data) {
+		//	 listeners.forEach(listener => listener(data));
+		// }
+	 //
+		// function BasicStatelessComponentWithStreamingRender({name}) {
+		//	 const template = Inferno.createTemplate((name, title) =>
+		//		 createElement("div", {className: "basic"},
+		//			 createElement("span", {className: name}, "The title is ", title)
+		//		 )
+		//	 );
+	 //
+		//	 return new Observable(observer => {
+		//		 const handler = title => observer.next(template(name, title));
+	 //
+		//		 addEventListener(handler);
+		//		 return () => {
+		//			 removeEventListener(handler);
+		//		 };
+		//	 });
+		// }
+	 //
+		// it('Initial render and update', () => {
+		//	 const template = Inferno.createTemplate((Component) =>
+		//			 createElement('div', null,
+		//				 createElement(Component, {name: "basic-render"})
+		//			 )
+		//	 );
+		//	 Inferno.render(template(BasicStatelessComponentWithStreamingRender), container);
+	 //
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div></div>'
+		//	 );
+	 //
+		//	 trigger('streaming data!');
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div><div class="basic"><span class="basic-render">The title is streaming data!</span></div></div>'
+		//	 );
+	 //
+		//	 trigger('streaming data #2!');
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div><div class="basic"><span class="basic-render">The title is streaming data #2!</span></div></div>'
+		//	 );
+	 //
+		//	 Inferno.render(template(BasicStatelessComponentWithStreamingRender), container);
+	 //
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div></div>'
+		//	 );
+	 //
+		// });
+	 //});
 
-		 function addEventListener(callback) {
-			 listeners.push(callback);
-		 }
-		 function removeEventListener(callback) {
-			 const index = listeners.indexOf(callback);
-
-			 if (index > -1) {
-				 listeners.splice(index, 1);
-			 }
-		 }
-		 function trigger(data) {
-			 listeners.forEach(listener => listener(data));
-		 }
-
-		 function BasicStatelessComponentWithStreamingRender({name}) {
-			 const template = Inferno.createTemplate((name, title) =>
-				 createElement("div", {className: "basic"},
-					 createElement("span", {className: name}, "The title is ", title)
-				 )
-			 );
-
-			 return new Observable(observer => {
-				 const handler = title => observer.next(template(name, title));
-
-				 addEventListener(handler);
-				 return () => {
-					 removeEventListener(handler);
-				 };
-			 });
-		 }
-
-		 it('Initial render and update', () => {
-			 const template = Inferno.createTemplate((Component) =>
-					 createElement('div', null,
-						 createElement(Component, {name: "basic-render"})
-					 )
-			 );
-			 Inferno.render(template(BasicStatelessComponentWithStreamingRender), container);
-
-			 expect(
-				 container.innerHTML
-			 ).to.equal(
-				 '<div></div>'
-			 );
-
-			 trigger('streaming data!');
-
-			 expect(
-				 container.innerHTML
-			 ).to.equal(
-				 '<div><div class="basic"><span class="basic-render">The title is streaming data!</span></div></div>'
-			 );
-		 });
-
-	 });
-	
 	class BasicComponent1b extends Inferno.Component {
 		render() {
 			const template = Inferno.createTemplate((isChecked, title) =>
