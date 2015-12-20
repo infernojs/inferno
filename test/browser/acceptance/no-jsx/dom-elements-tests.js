@@ -2598,15 +2598,17 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>123</div>'
             );
-			/*
+            
+			// Dominic. This does an update, but fails. WHY??
+
 			Inferno.render(template(['1', '2', '4']), container);
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div>124</div>'
             );
-			*/
         });
+
         it('should render a shape div (static attrs) > fragment [ span > fragment [ span > text, text, text ] ]', () => {
             const template = Inferno.createTemplate((child) => ({
                 tag: 'div',
