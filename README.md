@@ -28,15 +28,27 @@ npm install --save inferno
 ## Testing
 
 ```sh
-npm run test
+npm run test:browser // browser tests
+
+npm run test:server // node tests
+
+npm run test // browser and node tests
+
 ```
 
 ## Building
 
 ```sh
-npm run build:dev
-npm run build:prod
+npm run build
+
 ```
+## Linting
+
+```sh
+npm run lint:source // lint the source
+
+```
+
 
 ## Overview
 
