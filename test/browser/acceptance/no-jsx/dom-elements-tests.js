@@ -4231,4 +4231,62 @@ describe('DOM element tests (no-jsx)', () => {
             expect(container.firstChild.children[1].children[0].selected).to.eql(false);
         });
     });
+	
+	
+	
+	 describe('should insert an additionnal tag node"', () => {
+
+        const template = Inferno.createTemplate((child) => ({
+            tag: 'div',
+
+            children: child
+        }));
+
+        it('first render (creation)', () => {
+
+            const span = Inferno.createTemplate(() => ({
+                tag: 'div'
+            }));
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+        });
+
+        it('second render - (update)', () => {
+
+            const span = Inferno.createTemplate(() => ({
+                tag: 'div'
+            }));
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+        });
+
+        it('third render - (update)', () => {
+
+            const span = Inferno.createTemplate(() => ({
+                tag: 'div'
+            }));
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+            // Dominic! You unset dynamic children here, still they exist. 
+            Inferno.render(template(null), container);
+
+            expect(container.firstChild.innerHTML).to.equal('');
+
+        });
+    });
 });
