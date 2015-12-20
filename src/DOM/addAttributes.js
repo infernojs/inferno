@@ -91,7 +91,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 		if (lastAttrVal !== nextAttrVal) {
 			if (nextAttrVal !== undefined) {
 				if ( attrName === 'style') {
-					styleUpdates = attrVal;
+					styleUpdates = nextAttrVal;
 				} else {
 					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
 						if (eventMapping[attrName]) {
@@ -105,6 +105,6 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 		}
 	}
     if ( styleUpdates) {
-		setValueForStyles(vNode, domNode, styleUpdates);
+		setValueForStyles(domNode, domNode, styleUpdates);
 	}	
 }
