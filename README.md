@@ -98,6 +98,8 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ### Inferno.Component
 
+Stateful component:
+
 ```js
 class MyComponent extends Component {
   render() {
@@ -108,10 +110,19 @@ class MyComponent extends Component {
 
 This is the base class for Inferno Components when they're defined using ES6 classes.
 
+Statless component:
+
+```js
+const MyComponent => ({ name, age }) => 
+  <span>My name is: { name } and my age is: {age}</span>  
+);
+
+Stateless components are first-class functions where their only argument is the `props` passed through from their parent.
+
 ### Inferno.render
 
 ```javascript
-Inferno.render(<div></div>, document.body);
+Inferno.render(<div />, document.body);
 ```
 
 Render a fragment into the DOM in the supplied container and return a reference to the component. If the fragment was previously rendered into container, this will
@@ -120,12 +131,10 @@ perform an update on it and only mutate the DOM as necessary to reflect the late
 ### Inferno.renderToString
 
 ```js
-// TODO
+Inferno.renderToString(<MyComponent />);
 ```
 
-```js
-Inferno.renderToString(<MyComponent></MyComponent>);
-```
+[Note: currently in development]
 
 Render a fragment to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
 
@@ -138,7 +147,7 @@ const template = Inferno.createTemplate(() => ({
   children: [
     'This', ' is ', 'a test!'
   ]
-});
+}));
 
 Inferno.render(template(), document.body);
 ```
