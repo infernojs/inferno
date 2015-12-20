@@ -4137,4 +4137,98 @@ describe('DOM element tests (no-jsx)', () => {
 			);
 		});
 	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	describe('should populates the value attribute on select multiple using groups', () => {
+        const template = Inferno.createTemplate(function(val) {
+            return {
+                tag: 'select',
+                attrs: {
+                    multiple: true,
+                    value: val
+                },
+                children: [{
+                    tag: 'optGroup',
+                    attrs: {
+                        label: 'foo-group'
+                    },
+                    children: {
+                        tag: 'option',
+                        attrs: {
+                            value: 'foo'
+                        }
+                    }
+                }, {
+                    tag: 'optGroup',
+                    attrs: {
+                        label: 'bar-group'
+                    },
+                    children: {
+                        tag: 'option',
+                        attrs: {
+                            value: 'bar'
+                        }
+                    }
+                }]
+            };
+        });
+
+        it('Initial render (creation)', () => {
+            Inferno.render(template(['foo', 'bar']), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(true);
+
+            Inferno.render(template(null), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+
+        });
+
+        it('Second render (update)', () => {
+            Inferno.render(template('foo'), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+
+        });
+
+        it('Third render (update)', () => {
+            Inferno.render(template('bar'), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(true);
+
+        });
+
+        it('Third render (update)', () => {
+            Inferno.render(template(null), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+        });
+    });
 });
