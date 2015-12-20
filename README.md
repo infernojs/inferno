@@ -132,14 +132,32 @@ Render a fragment to its initial HTML. This should only be used on the server. I
 ### Inferno.createTemplate
 
 ```js
-// TODO
-```
+const template = Inferno.createTemplate(() => ({
+  tag: 'div',
+  attrs: { className: 'test'},
+  children: [
+    'This', ' is ', 'a test!'
+  ]
+});
 
+Inferno.render(template(), document.body);
+```
 ### Inferno.TemplateFactory
 
 ```js
 // TODO
 ```
+
+### Inferno.createRef
+
+```js
+const divRef = Inferno.createRef();
+
+Inferno.render(<div ref={ divRef } />, document.body);
+divRef.element.textContent = 'Modifying the DOM node directly!';
+```
+
+Creates a mutable object that links an Inferno rendered template node to its real DOM node upon being mounted to the DOM.
 
 ## Performance
 
