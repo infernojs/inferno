@@ -4289,4 +4289,85 @@ describe('DOM element tests (no-jsx)', () => {
 
         });
     });
+	
+	
+	
+        describe('should update a wrapped text node with 4 arguments', () => {
+
+            const template = Inferno.createTemplate((val1, val2, val3, val4) => ({
+                tag: 'div',
+                children: [
+                    val1,
+                    val2,
+                    val3,
+                    val4
+                ]
+            }));
+
+            it('Initial render (creation)', () => {
+                Inferno.render(template('Hello', ' world!', ' and ', 'Bar'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello world! and Bar</div>'
+                );
+
+                Inferno.render(template('Hello', ' world!', ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello world! and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', [], ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', null, ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', {}, ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello [Object Object] and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', 'poz', ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello poz and Zoo</div>'
+                );
+
+
+            });
+            it('Second render (update)', () => {
+                Inferno.render(template('The ', 'bar', ' is', ' is dead!'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>The bar is is dead!</div>'
+                );
+            });
+        });
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 });
