@@ -4360,7 +4360,56 @@ describe('DOM element tests (no-jsx)', () => {
         });
 
 	
-	
+	describe('should update a node with static text', () => {
+
+            const template = Inferno.createTemplate((val) => ({
+                tag: 'div',
+                text: 'Hello, World',
+                attrs: {
+                    id: val
+                }
+            }));
+
+
+            it('Initial render (creation)', () => {
+                Inferno.render(template('Hello'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Hello">Hello, World</div>'
+                );
+
+                Inferno.render(template('Bar'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Bar">Hello, World</div>'
+                );
+
+                Inferno.render(template(null), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello, World</div>'
+                );
+
+                Inferno.render(template(undefined), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello, World</div>'
+                );
+
+            });
+            it('Second render (update)', () => {
+                Inferno.render(template('foo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="foo">Hello, World</div>'
+                );
+            });
+        });
 	
 	
 	
