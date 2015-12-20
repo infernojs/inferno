@@ -1,5 +1,5 @@
 export default function createRef() {
-    return {
-        element: null
-    }
-};
+	return {
+		element: null
+	};
+}

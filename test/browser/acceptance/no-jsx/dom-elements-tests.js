@@ -3751,7 +3751,7 @@ describe('DOM element tests (no-jsx)', () => {
     //	});
 
 
-  describe('should handle root dynamic nodes', () => {
+	describe('should handle root dynamic nodes', () => {
         let template;
         beforeEach(() => {
             template = Inferno.createTemplate((val) =>
@@ -3789,5 +3789,25 @@ describe('DOM element tests (no-jsx)', () => {
         it('Eigth render (update)', () => {
             expect(() => Inferno.render(template([]), container)).to.throw;
         });
-    });
+	});
+
+	describe('should support refs', () => {
+		let template;
+		const divRef = Inferno.createRef();
+
+		beforeEach(() => {
+			template = Inferno.createTemplate((divRef) =>
+				createElement('div', { ref: divRef })
+			);
+			Inferno.render(template(divRef), container);
+		});
+
+		it('Initial render (creation)', () => {
+			expect(
+				divRef.element
+			).to.equal(
+				container.firstChild
+			);
+		});
+	});
 });

@@ -39,6 +39,9 @@ function fastPropSet(attrName, attrVal, domNode) {
 			domNode.className = attrVal;
 		}
 		return true;
+	} else if (attrName === 'ref') {
+		attrVal.element = domNode;
+		return true;
 	}
 	return false;
 }
@@ -49,32 +52,25 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 		addDOMStaticAttributes(item, domNode, dynamicAttrs);
 		return;
 	}
-	
 	let styleUpdates;
 	
 	for (let attrName in dynamicAttrs) {
 		let attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
 		if (attrVal !== undefined) {
-			
 			if ( attrName === 'style') {
-                 
 				 styleUpdates = attrVal;
-			
 			} else {
-			
-			if (fastPropSet(attrName, attrVal, domNode) === false) {
-				if (eventMapping[attrName]) {
-					addListener(item, domNode, eventMapping[attrName], attrVal);
-				} else {
-					template.setProperty(item, domNode, attrName, attrVal, true);
-
+				if (fastPropSet(attrName, attrVal, domNode) === false) {
+					if (eventMapping[attrName]) {
+						addListener(item, domNode, eventMapping[attrName], attrVal);
+					} else {
+						template.setProperty(item, domNode, attrName, attrVal, true);
+					}
 				}
-			}
-		  }
+		    }
 		}
 	}
-	
 	if ( styleUpdates) {
 		setValueForStyles(item, domNode, styleUpdates);
 	}
@@ -86,7 +82,6 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
 		return;
 	}
-	
 	let styleUpdates;
 	
 	for (let attrName in dynamicAttrs) {
@@ -95,25 +90,20 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
 		if (lastAttrVal !== nextAttrVal) {
 			if (nextAttrVal !== undefined) {
-				
 				if ( attrName === 'style') {
-                 
-				 styleUpdates = attrVal;
-			
-			} else {
-				
-				if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
-					if (eventMapping[attrName]) {
-						addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
-					} else {
-						template.setProperty(nextItem, domNode, attrName, nextAttrVal, true);
+					styleUpdates = attrVal;
+				} else {
+					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+						if (eventMapping[attrName]) {
+							addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+						} else {
+							template.setProperty(nextItem, domNode, attrName, nextAttrVal, true);
+						}
 					}
-				}
-			  }
+			    }
 			}
 		}
 	}
-	
     if ( styleUpdates) {
 		setValueForStyles(vNode, domNode, styleUpdates);
 	}	
