@@ -11,7 +11,6 @@ If you're having trouble getting Inferno to do what you want, there are a couple
 
 * [Stack Overflow questions tagged infernojs](http://stackoverflow.com/questions/tagged/infernojs)
 * [The Inferno Documentation](http://docs.infernojs.org)
-* [@InfernoJS on Twitter](http://twitter.com/InfernoJS)
 
 Of course, if you've encountered a bug, then the best course of action is to raise an issue (if no-one else has!).
 
