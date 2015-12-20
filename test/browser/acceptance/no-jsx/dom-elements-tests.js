@@ -23,17 +23,32 @@ describe('DOM element tests (no-jsx)', () => {
             template = Inferno.createTemplate(() => ({
                 text: 'Hello world'
             }));
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
                 'Hello world'
             );
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                'Hello world'
+            );
+
         });
         it('Second render (update)', () => {
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                'Hello world'
+            );
             Inferno.render(template(), container);
             expect(
                 container.innerHTML
@@ -60,10 +75,18 @@ describe('DOM element tests (no-jsx)', () => {
                 tag: 'div',
                 text: 'Hello world'
             }));
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>Hello world</div>'
+            );
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
@@ -115,9 +138,15 @@ describe('DOM element tests (no-jsx)', () => {
                     text: 'Im a li-tag'
                 }]
             }));
-            Inferno.render(template(), container);
+
         });
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<ul><li>Im a li-tag</li><li>Im a li-tag</li><li>Im a li-tag</li></ul>`
+            );
             Inferno.render(template(), container);
             expect(
                 container.innerHTML
@@ -153,6 +182,12 @@ describe('DOM element tests (no-jsx)', () => {
                 `<ul><li>Im a dynamic li-tag #2</li><li>Im a dynamic li-tag #2</li><li>Im a dynamic li-tag #2</li></ul>`
             );
 
+            Inferno.render(template('Im a dynamic li-tag #3'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<ul><li>Im a dynamic li-tag #3</li><li>Im a dynamic li-tag #3</li><li>Im a dynamic li-tag #3</li></ul>`
+            );
             Inferno.render(template('Im a dynamic li-tag #3'), container);
             expect(
                 container.innerHTML
@@ -236,16 +271,23 @@ describe('DOM element tests (no-jsx)', () => {
                 }]
             }));
 
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
+            );
+            Inferno.render(template(), container);
             expect(
                 container.innerHTML
             ).to.equal(
                 `<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
             );
         });
+
     });
 
     describe('should render a basic example #4', () => {
@@ -283,9 +325,17 @@ describe('DOM element tests (no-jsx)', () => {
                 }
             }));
 
-            Inferno.render(template(), container);
         });
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div><div></div></div>`
+            );
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
@@ -360,6 +410,13 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 `<div>There is no spoon!</div>`
             );
+            Inferno.render(div('one'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div>There is one spoon!</div>`
+            );
+
         });
     });
 
@@ -374,6 +431,14 @@ describe('DOM element tests (no-jsx)', () => {
                 }
             }));
 
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.disabled).to.eql(true);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input disabled="disabled">'
+            );
             Inferno.render(template(), container);
 
             expect(container.firstChild.disabled).to.eql(true);
@@ -420,6 +485,15 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div hidden="hidden"></div>'
             );
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.hidden).to.eql(true);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div hidden="hidden"></div>'
+            );
+
         });
 
         it('Second render (update)', () => {
@@ -429,6 +503,13 @@ describe('DOM element tests (no-jsx)', () => {
                     hidden: false
                 }
             }));
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
             Inferno.render(template(), container);
 
             expect(
@@ -643,10 +724,19 @@ describe('DOM element tests (no-jsx)', () => {
                     className: 'this-works'
                 }
             }));
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.getAttribute('class')).to.eql('this-works');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div class="this-works"></div>'
+            );
+            Inferno.render(template(), container);
+
             expect(container.firstChild.getAttribute('class')).to.eql('this-works');
             expect(
                 container.innerHTML
@@ -1031,10 +1121,25 @@ describe('DOM element tests (no-jsx)', () => {
                     disabled: true
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input checked="checked" disabled="disabled">'
+            );
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input checked="checked" disabled="disabled">'
+            );
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
@@ -1199,10 +1304,18 @@ describe('DOM element tests (no-jsx)', () => {
                     id: null
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<web-component></web-component>'
+            );
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
@@ -1241,10 +1354,18 @@ describe('DOM element tests (no-jsx)', () => {
                     download: 0
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input>'
+            );
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
@@ -1791,15 +1912,24 @@ describe('DOM element tests (no-jsx)', () => {
                     style: styleRule
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div style="width: 200px; height: 200px;"></div>'
             );
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 200px; height: 200px;"></div>'
+            );
+
         });
     });
 
@@ -1817,15 +1947,24 @@ describe('DOM element tests (no-jsx)', () => {
                     }
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div></div>'
             );
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
         });
         it('Second render (update)', () => {
             template = Inferno.createTemplate(() =>
@@ -1855,10 +1994,18 @@ describe('DOM element tests (no-jsx)', () => {
                     style: styleRule
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="display: none;"></div>'
+            );
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
@@ -1879,10 +2026,18 @@ describe('DOM element tests (no-jsx)', () => {
                     style: styleRule
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+            Inferno.render(template(), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
@@ -1927,16 +2082,22 @@ describe('DOM element tests (no-jsx)', () => {
                     style: styleRule
                 })
             );
-            Inferno.render(template(), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
 
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div style="width: 7px;"></div>'
             );
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 7px;"></div>'
+            );
+
         });
     });
 
@@ -1948,6 +2109,13 @@ describe('DOM element tests (no-jsx)', () => {
         );
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(false), container);
+            expect(container.firstChild.getAttribute('download')).to.be.null;
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
             Inferno.render(template(false), container);
             expect(container.firstChild.getAttribute('download')).to.be.null;
             expect(
@@ -2174,6 +2342,13 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div id="simple"></div>'
             );
+            Inferno.render(template('simple'), container);
+            expect(container.firstChild.getAttribute('id')).to.eql('simple');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="simple"></div>'
+            );
         });
         it('Second render (update)', () => {
             Inferno.render(template(true), container);
@@ -2291,6 +2466,12 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div id="foo"><span><span>Visible child!!</span></span></div>'
             );
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="foo"><span><span>Visible child!!</span></span></div>'
+            );
         });
         it('should render a shape div (dynamic attr) > text', () => {
             const template = Inferno.createTemplate((val1) => ({
@@ -2302,6 +2483,12 @@ describe('DOM element tests (no-jsx)', () => {
                     text: 'Hello, World'
                 }
             }));
+            Inferno.render(template('test'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="test">Hello, World</div>'
+            );
             Inferno.render(template('test'), container);
             expect(
                 container.innerHTML
@@ -2327,6 +2514,12 @@ describe('DOM element tests (no-jsx)', () => {
                 container.innerHTML
             ).to.equal(
                 '<div id="test">Hello, World<span>Hello, World</span></div>'
+            );
+            Inferno.render(template('foo'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="foo">Hello, World<span>Hello, World</span></div>'
             );
         });
         it('should render a shape div (dynamic attr) > text, span (static attr) > text', () => {
@@ -2385,6 +2578,13 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>foo</div>'
             );
+            Inferno.render(template('bar'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>bar</div>'
+            );
+
         });
         it('should render a shape div > [ text, text, text ] (dynamic)', () => {
             const template = Inferno.createTemplate((child) => ({
@@ -2398,7 +2598,17 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>123</div>'
             );
+            
+			// Dominic. This does an update, but fails. WHY??
+
+			Inferno.render(template(['1', '2', '4']), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>124</div>'
+            );
         });
+
         it('should render a shape div (static attrs) > fragment [ span > fragment [ span > text, text, text ] ]', () => {
             const template = Inferno.createTemplate((child) => ({
                 tag: 'div',
@@ -2491,12 +2701,26 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div><div>Hello</div></div>'
             );
+
+            Inferno.render(template(span()), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div><div>Hello</div></div>'
+            );
+
         });
         it('second render - (update)', () => {
             const span = Inferno.createTemplate(() => ({
                 tag: 'span',
                 children: 'Good bye!'
             }));
+            Inferno.render(template(span()), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div><span>Good bye!</span></div>'
+            );
             Inferno.render(template(span()), container);
             expect(
                 container.innerHTML
@@ -2555,6 +2779,12 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div><span>Good bye!</span></div>'
             );
+            Inferno.render(template(span()), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div><span>Good bye!</span></div>'
+            );
         });
 
         it('second render - (update)', () => {
@@ -2607,6 +2837,8 @@ describe('DOM element tests (no-jsx)', () => {
             });
             Inferno.render(template(span()), container);
             expect(container.firstChild.innerHTML).to.equal('<span>Hello</span>');
+            Inferno.render(template(span()), container);
+            expect(container.firstChild.innerHTML).to.equal('<span>Hello</span>');
         });
 
         it('second render - (update)', () => {
@@ -2636,6 +2868,9 @@ describe('DOM element tests (no-jsx)', () => {
             });
             Inferno.render(template(span()), container);
             expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+            Inferno.render(template(span()), container);
+            expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+
         });
         it('second render - (update)', () => {
             const span = Inferno.createTemplate(function() {
@@ -2728,11 +2963,14 @@ describe('DOM element tests (no-jsx)', () => {
         it('first render (creation)', () => {
             Inferno.render(template('id#1'), container);
             expect(container.firstChild.innerHTML).to.equal('<div class="hello!"><span id="id#1"></span></div>');
+            Inferno.render(template('id#3'), container);
+            expect(container.firstChild.innerHTML).to.equal('<div class="hello!"><span id="id#3"></span></div>');
         });
         it('second render - (update)', () => {
             Inferno.render(template('id#2'), container);
             expect(container.firstChild.innerHTML).to.equal('<div class="hello!"><span id="id#2"></span></div>');
-
+            Inferno.render(template('id#4'), container);
+            expect(container.firstChild.innerHTML).to.equal('<div class="hello!"><span id="id#4"></span></div>');
         });
     });
 
@@ -2748,6 +2986,9 @@ describe('DOM element tests (no-jsx)', () => {
         it('first render (creation)', () => {
             Inferno.render(template("testing"), container);
             expect(container.innerHTML).to.equal('<div xmlns="testing" id="testing"></div>');
+            expect(container.firstChild.namespaceURI).to.eql("testing");
+            Inferno.render(template("testing123"), container);
+            expect(container.innerHTML).to.equal('<div xmlns="testing" id="testing123"></div>');
             expect(container.firstChild.namespaceURI).to.eql("testing");
         });
         it('second render - (update)', () => {
@@ -2788,6 +3029,10 @@ describe('DOM element tests (no-jsx)', () => {
 
             Inferno.render(template(span('id#1', span2('custom'))), container);
             expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1"></span></div>'); // WILL NOT FAIL
+
+            Inferno.render(template(span('id#2', span2('custom'))), container);
+            expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#2"></span></div>'); // WILL NOT FAIL
+
         });
         it('second render - (update)', () => {
             const span = Inferno.createTemplate(function(val, child) {
@@ -2830,6 +3075,9 @@ describe('DOM element tests (no-jsx)', () => {
 
             Inferno.render(template(child()), container);
             expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+            Inferno.render(template(child()), container);
+            expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+
         });
         it('Second render (update)', () => {
             const child = Inferno.createTemplate(() => ({
@@ -3135,6 +3383,14 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div class="muffins"></div>'
             );
+            Inferno.render(template('muffins'), container);
+            expect(container.firstChild.getAttribute('class')).to.eql('muffins');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div class="muffins"></div>'
+            );
+
         });
         it('Second render (update)', () => {
             Inferno.render(template(true), container);
@@ -3250,11 +3506,14 @@ describe('DOM element tests (no-jsx)', () => {
             template = Inferno.createTemplate((val) => ({
                 text: val
             }));
-            Inferno.render(template('abc'), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template('abc'), container);
             expect(container.innerHTML).to.eql('abc');
+            Inferno.render(template('abcd'), container);
+            expect(container.innerHTML).to.eql('abcd');
+
         });
 
         it('Initial render (update)', () => {
@@ -3269,16 +3528,21 @@ describe('DOM element tests (no-jsx)', () => {
             template = Inferno.createTemplate((val) =>
                 val
             );
-            Inferno.render(template('abc'), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template('abc'), container);
             expect(container.innerHTML).to.eql('abc');
+            Inferno.render(template('abcd'), container);
+            expect(container.innerHTML).to.eql('abcd');
+
         });
 
         it('Initial render (update)', () => {
             Inferno.render(template('123'), container);
             expect(container.innerHTML).to.eql('123');
+            Inferno.render(template('1234'), container);
+            expect(container.innerHTML).to.eql('1234');
         });
     });
 
@@ -3782,6 +4046,8 @@ describe('DOM element tests (no-jsx)', () => {
         it('Sixth render (update)', () => {
             Inferno.render(template(123 + 'abc'), container);
             expect(container.innerHTML).to.eql('123abc');
+            Inferno.render(template(123 + 'abc'), container);
+            expect(container.innerHTML).to.eql('123abc');
         });
         it('Seventh render (update)', () => {
             expect(() => Inferno.render(template({}), container)).to.throw;
@@ -3799,10 +4065,18 @@ describe('DOM element tests (no-jsx)', () => {
 			template = Inferno.createTemplate((divRef) =>
 				createElement('div', { ref: divRef })
 			);
-			Inferno.render(template(divRef), container);
 		});
 
 		it('Initial render (creation)', () => {
+			Inferno.render(template(divRef), container);
+
+			expect(
+				divRef.element
+			).to.equal(
+				container.firstChild
+			);
+			Inferno.render(template(divRef), container);
+
 			expect(
 				divRef.element
 			).to.equal(
