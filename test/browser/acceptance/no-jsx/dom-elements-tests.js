@@ -427,11 +427,26 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 `<div>There is no spoon!</div>`
             );
+
             Inferno.render(div('one'), container);
             expect(
                 container.innerHTML
             ).to.equal(
                 `<div>There is one spoon!</div>`
+            );
+
+            Inferno.render(div(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div>There is one spoon!</div>`
+            );
+
+            Inferno.render(div(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div>There is spoon!</div>`
             );
 
         });
@@ -4284,9 +4299,15 @@ describe('DOM element tests (no-jsx)', () => {
             Inferno.render(template(span()), container);
 
             expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
             Inferno.render(template(span()), container);
 
             expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.innerHTML).to.equal('');
+
         });
 
         it('third render - (update)', () => {
@@ -4306,8 +4327,6 @@ describe('DOM element tests (no-jsx)', () => {
 
         });
     });
-	
-	
 	
         describe('should update a wrapped text node with 4 arguments', () => {
 
