@@ -195,6 +195,7 @@ Inferno.render(template(), document.body);
 
 Inferno.render(template(BasicComponent, 'abc'), container);
 ```
+Inferno.TemplateFactory is hyperscript function that works the same way as React.creactElement(). It's first argument is the node, second argument is the attributes and the third and last argument is it's children.
 
 ### Inferno.createRef
 
