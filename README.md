@@ -51,7 +51,6 @@ npm run lint:source // lint the source
 
 ```
 
-
 ## Overview
 
 Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.
@@ -192,6 +191,10 @@ Inferno tries to address two problems with creating UI components:
 
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
 time a framework offered more fun without compromising performance.
+
+## JSX
+ 
+Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 
 ## Still under development
 
