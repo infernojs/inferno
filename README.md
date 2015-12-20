@@ -98,7 +98,7 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ### Inferno.Component
 
-Stateful component:
+**Stateful component:**
 
 ```js
 class MyComponent extends Component {
@@ -110,7 +110,7 @@ class MyComponent extends Component {
 
 This is the base class for Inferno Components when they're defined using ES6 classes.
 
-Statless component:
+**Stateless component:**
 
 ```js
 const MyComponent => ({ name, age }) => 
