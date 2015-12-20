@@ -2598,8 +2598,6 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>123</div>'
             );
-            
-			// Dominic. This does an update, but fails. WHY??
 
 			Inferno.render(template(['1', '2', '4']), container);
             expect(

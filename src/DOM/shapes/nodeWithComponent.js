@@ -25,16 +25,37 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 
 			currentItem = item;
 			if (Component == null) {
-				//bad component, make a text node
-				return document.createTextNode('');
+				domNode = document.createTextNode('');
+				return domNode;
 			} else if (typeof Component === 'function') {
 				//stateless component
 				if (!Component.prototype.render) {
 					const nextRender = Component(getValueForProps(props, valueItem));
 
-					nextRender.parent = item;
-					domNode = nextRender.domTree.create(nextRender, treeLifecycle);
-					lastRender = nextRender;
+					if (nextRender.domTree) {
+						nextRender.parent = item;
+						domNode = nextRender.domTree.create(nextRender, treeLifecycle);
+						lastRender = nextRender;
+					} else {
+						let init = false;
+
+						if (typeof Observable !== 'undefined' && nextRender instanceof Observable) {
+							nextRender.subscribe({
+								next(observedRender) {
+									if (!init) {
+										init = true;
+									}
+									const newDomNode = observedRender.domTree.create(observedRender, treeLifecycle);
+									domNode.parentNode.replaceChild(newDomNode, domNode);
+								}
+							});
+							lastRender = nextRender;
+							domNode = document.createTextNode('');
+							return domNode;
+						} else {
+							throw Error('Inferno Error: Observable was not defined, please ensure a polyfill for observables exists in global scope.');
+						}
+					}
 				} else {
 					instance = new Component(getValueForProps(props, valueItem));
 					instance.componentWillMount();

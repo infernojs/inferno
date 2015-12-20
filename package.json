@@ -43,13 +43,14 @@
   },
   "dependencies": {
     "babel-core": "^6.3.21",
-    "babel-plugin-syntax-jsx": "^6.3.13",
     "babel-plugin-inferno": "^0.2.4",
+    "babel-plugin-syntax-jsx": "^6.3.13",
     "babel-plugin-syntax-object-rest-spread": "^6.3.13",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
     "karma-chrome-launcher": "^0.2.2",
+    "mkdirp": "^0.5.1",
     "pre-commit": "^1.1.2",
-    "mkdirp": "^0.5.1"
+    "zen-observable": "^0.1.9"
   },
   "files": [
     "dist",

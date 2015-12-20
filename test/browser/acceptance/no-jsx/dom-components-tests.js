@@ -1,7 +1,10 @@
 import Inferno from '../../../../src';
 import waits from '../../../tools/waits';
+import Observable from "zen-observable";
 
- describe('DOM component tests (no-jsx)', () => {
+global.Observable = Observable;
+
+describe('DOM component tests (no-jsx)', () => {
 
   let container;
 
@@ -118,6 +121,66 @@ import waits from '../../../tools/waits';
 				 '<div><div class="basic"><span class="basic-render">The title is 123</span></div></div>'
 			 );
 		 });
+	 });
+
+	 describe('should render a basic stateless component with a render stream', () => {
+		 let template;
+		 const listeners = [];
+
+		 function addEventListener(callback) {
+			 listeners.push(callback);
+		 }
+		 function removeEventListener(callback) {
+			 const index = listeners.indexOf(callback);
+
+			 if (index > -1) {
+				 listeners.splice(index, 1);
+			 }
+		 }
+		 function trigger(data) {
+			 listeners.forEach(listener => listener(data));
+		 }
+
+		 function BasicStatelessComponentWithStreamingRender({name}) {
+			 const template = Inferno.createTemplate((name, title) =>
+				 createElement("div", {className: "basic"},
+					 createElement("span", {className: name}, "The title is ", title)
+				 )
+			 );
+
+			 return new Observable(observer => {
+				 const handler = title => observer.next(template(name, title));
+
+				 addEventListener(handler);
+				 return () => {
+					 removeEventListener(handler);
+				 };
+			 });
+		 }
+
+		 it('Initial render and update', () => {
+			 const template = Inferno.createTemplate((Component) =>
+					 createElement('div', null,
+						 createElement(Component, {name: "basic-render"})
+					 )
+			 );
+			 Inferno.render(template(BasicStatelessComponentWithStreamingRender), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div></div>'
+			 );
+
+			 trigger('streaming data!');
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is streaming data!</span></div></div>'
+			 );
+		 });
+
 	 });
 	
 	class BasicComponent1b extends Inferno.Component {
@@ -939,13 +1002,12 @@ import waits from '../../../tools/waits';
 			mountCount = 0;
 			unmountCount = 0;
 			template = Inferno.createTemplate((Component) =>
-					createElement(Component)
+				createElement(Component)
 			);
-
+			Inferno.render(template(ComponentLifecycleCheck), container);
 		});
 
 		it("should have mounted the component", () => {
-			Inferno.render(template(ComponentLifecycleCheck), container);
 			expect(mountCount).to.equal(1);
 		});
 		it("should have unmounted the component", () => {

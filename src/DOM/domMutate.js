@@ -143,6 +143,32 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	}
 }
 
+// TODO can we improve performance here?
+export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle) {
+	const itemsLength = Math.max(items.length, oldItems.length);
+
+	for (let i = 0; i < itemsLength ; i++) {
+		const item = items[i];
+		const oldItem = oldItems[i];
+
+		if (item !== oldItem) {
+			if (item != null) {
+				if (oldItem != null) {
+					if (typeof item === 'string' || typeof item === 'number') {
+						domNodeList[i].nodeValue = item;
+					} else if (typeof item === 'object') {
+						item.domTree.update(oldItem, item, treeLifecycle);
+					}
+				} else {
+					// TODO
+				}
+			} else {
+				// TODO
+			}
+		}
+	}
+}
+
 export function insertOrAppend(parentNode, newNode, nextNode) {
 	if (nextNode) {
 		parentNode.insertBefore(newNode, nextNode);
