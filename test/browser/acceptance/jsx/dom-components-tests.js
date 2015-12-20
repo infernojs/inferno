@@ -1,7 +1,21 @@
-import get from '../../../tools/get';
 import Inferno from '../../../../src';
+import get from '../../../tools/get';
 
-export default function domComponentsTestsJsx(describe, expect, container) {
+const {
+	createElement
+} = Inferno.TemplateFactory;
+
+describe('DOM element tests (jsx)', () => {
+	let container;
+
+	beforeEach(() => {
+		container = document.createElement('div');
+	});
+
+	afterEach(() => {
+		Inferno.render(null, container);
+	});
+
 	class BasicComponent1 extends Inferno.Component {
 		render() {
 			return (
@@ -272,13 +286,12 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 	});
 
 	class BasicComponent3 extends Inferno.Component {
-		template(createElement, createComponent, styles, title) {
-			return createElement("div", {style: styles},
-				createElement("span", {style: styles}, "The title is ", title)
-			);
-		}
 		render() {
-			return Inferno.createFragment([this.props.styles, this.props.title], this.template);
+			return (
+				<div style={ this.props.styles }>
+					<span style={ this.props.styles }>The title is { this.props.title }</span>
+				</div>
+			);
 		}
 	}
 
@@ -334,4 +347,4 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 			);
 		});
 	});
-}
+});
