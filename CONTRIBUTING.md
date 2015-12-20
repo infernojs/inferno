@@ -77,4 +77,4 @@ Above all, code should be clean and readable, and commented where necessary. If 
 Small print
 -----------
 
-There's no contributor license agreement - contributions are made on a common sense basis. Inferno is distributed under the MIT license, which means your contributions will be too.
+There's no contributor license agreement - contributions are made on a common sense basis. Inferno is distributed under the MPL-2.0 license, which means your contributions will be too.
