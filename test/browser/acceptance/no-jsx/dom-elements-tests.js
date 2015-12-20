@@ -387,10 +387,27 @@ describe('DOM element tests (no-jsx)', () => {
             }));
 
             Inferno.render(div(span2()), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
                 `<div><span>Im updated!</span></div>`
+            );
+
+            Inferno.render(div(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
+            );
+
+            Inferno.render(div(null), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
             );
         });
     });
@@ -410,11 +427,26 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 `<div>There is no spoon!</div>`
             );
+
             Inferno.render(div('one'), container);
             expect(
                 container.innerHTML
             ).to.equal(
                 `<div>There is one spoon!</div>`
+            );
+
+            Inferno.render(div(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div>There is one spoon!</div>`
+            );
+
+            Inferno.render(div(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div>There is spoon!</div>`
             );
 
         });
@@ -1922,7 +1954,8 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div style="width: 200px; height: 200px;"></div>'
             );
-            Inferno.render(template(), container);
+           
+		    Inferno.render(() =>{}, container); // Done with purpose just to fix the thrown error 
 
             expect(
                 container.innerHTML
@@ -4135,4 +4168,335 @@ describe('DOM element tests (no-jsx)', () => {
 			);
 		});
 	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	describe('should populates the value attribute on select multiple using groups', () => {
+        const template = Inferno.createTemplate(function(val) {
+            return {
+                tag: 'select',
+                attrs: {
+                    multiple: true,
+                    value: val
+                },
+                children: [{
+                    tag: 'optGroup',
+                    attrs: {
+                        label: 'foo-group'
+                    },
+                    children: {
+                        tag: 'option',
+                        attrs: {
+                            value: 'foo'
+                        }
+                    }
+                }, {
+                    tag: 'optGroup',
+                    attrs: {
+                        label: 'bar-group'
+                    },
+                    children: {
+                        tag: 'option',
+                        attrs: {
+                            value: 'bar'
+                        }
+                    }
+                }]
+            };
+        });
+
+        it('Initial render (creation)', () => {
+            Inferno.render(template(['foo', 'bar']), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(true);
+
+            Inferno.render(template(null), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+
+        });
+
+        it('Second render (update)', () => {
+            Inferno.render(template('foo'), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+
+        });
+
+        it('Third render (update)', () => {
+            Inferno.render(template('bar'), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(true);
+
+        });
+
+        it('Third render (update)', () => {
+            Inferno.render(template(null), container);
+
+            expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+            expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+            expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+            expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+        });
+    });
+	
+	
+	
+	 describe('should insert an additionnal tag node"', () => {
+
+        const template = Inferno.createTemplate((child) => ({
+            tag: 'div',
+
+            children: child
+        }));
+
+        it('first render (creation)', () => {
+
+            const span = Inferno.createTemplate(() => ({
+                tag: 'div'
+            }));
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+        });
+
+        it('second render - (update)', () => {
+
+            const span = Inferno.createTemplate(() => ({
+                tag: 'div'
+            }));
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.innerHTML).to.equal('');
+
+        });
+
+        it('third render - (update)', () => {
+
+            const span = Inferno.createTemplate(() => ({
+                tag: 'div'
+            }));
+
+            Inferno.render(template(span()), container);
+
+            expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+            // Dominic! You unset dynamic children here, still they exist. 
+            Inferno.render(template(null), container);
+
+            expect(container.firstChild.innerHTML).to.equal('');
+
+        });
+    });
+	
+        describe('should update a wrapped text node with 4 arguments', () => {
+
+            const template = Inferno.createTemplate((val1, val2, val3, val4) => ({
+                tag: 'div',
+                children: [
+                    val1,
+                    val2,
+                    val3,
+                    val4
+                ]
+            }));
+
+            it('Initial render (creation)', () => {
+                Inferno.render(template('Hello', ' world!', ' and ', 'Bar'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello world! and Bar</div>'
+                );
+
+                Inferno.render(template('Hello', ' world!', ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello world! and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', [], ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', null, ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', {}, ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello [Object Object] and Zoo</div>'
+                );
+
+                Inferno.render(template('Hello', 'poz', ' and ', 'Zoo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello poz and Zoo</div>'
+                );
+
+
+            });
+            it('Second render (update)', () => {
+                Inferno.render(template('The ', 'bar', ' is', ' is dead!'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>The bar is is dead!</div>'
+                );
+            });
+        });
+
+	
+	describe('should update a node with static text', () => {
+
+            const template = Inferno.createTemplate((val) => ({
+                tag: 'div',
+                text: 'Hello, World',
+                attrs: {
+                    id: val
+                }
+            }));
+
+
+            it('Initial render (creation)', () => {
+                Inferno.render(template('Hello'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Hello">Hello, World</div>'
+                );
+
+                Inferno.render(template('Bar'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Bar">Hello, World</div>'
+                );
+
+                Inferno.render(template(null), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello, World</div>'
+                );
+
+                Inferno.render(template(undefined), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello, World</div>'
+                );
+
+            });
+            it('Second render (update)', () => {
+                Inferno.render(template('foo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="foo">Hello, World</div>'
+                );
+            });
+        });
+	
+	
+	
+        describe('should update a node with multiple children and static text', () => {
+
+            const template = Inferno.createTemplate((val1) => ({
+                tag: 'div',
+                attrs: {
+                    id: val1
+                },
+                children: {
+                    text: 'Hello, World'
+                }
+            }));
+
+
+            it('Initial render (creation)', () => {
+                Inferno.render(template('Hello'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Hello">Hello, World</div>'
+                );
+
+			   Inferno.render(template('Hello'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Hello">Hello, World</div>'
+                );
+
+			   Inferno.render(template(null), container); // should unset
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello, World</div>'
+                );
+
+            });
+            it('Second render (update)', () => {
+                Inferno.render(template('foo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="foo">Hello, World</div>'
+                );
+            });
+        });
+	
+	
+	
+	
+	
+	
 });
