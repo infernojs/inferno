@@ -36,15 +36,24 @@ import waits from '../../../tools/waits';
 					createElement(Component, {title: title, name: "basic-render"})
 				)
 			);
-			Inferno.render(template(BasicComponent1, 'abc'), container);
 		});
 
 		it('Initial render (creation)', () => {
+			Inferno.render(template(BasicComponent1, 'abc'), container);
+
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
 			);
+			Inferno.render(template(BasicComponent1, 'abc'), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+			);
+
 		});
 
 		it('Second render (update)', () => {
@@ -53,6 +62,12 @@ import waits from '../../../tools/waits';
 				container.innerHTML
 			).to.equal(
 				'<div><div class="basic"><span class="basic-render">The title is 123</span></div></div>'
+			);
+			Inferno.render(template(BasicComponent1, '1234'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is 1234</span></div></div>'
 			);
 		});
 	});
@@ -75,15 +90,24 @@ import waits from '../../../tools/waits';
 						 createElement(Component, {title: title, name: "basic-render"})
 					 )
 			 );
-			 Inferno.render(template(BasicStatelessComponent1, 'abc'), container);
 		 });
 
 		 it('Initial render (creation)', () => {
+			 Inferno.render(template(BasicStatelessComponent1, 'abc'), container);
+
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
 				 '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
 			 );
+			 Inferno.render(template(BasicStatelessComponent1, 'abcd'), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is abcd</span></div></div>'
+			 );
+
 		 });
 
 		 it('Second render (update)', () => {
@@ -187,15 +211,24 @@ import waits from '../../../tools/waits';
 						createElement(Component, {title, isEnabled, type: 'password'})
 					)
 			);
-			Inferno.render(template(BasicComponent1c, 'abc', true), container);
 		});
 
 		it('Initial render (creation)', () => {
+			Inferno.render(template(BasicComponent1c, 'abc', true), container);
+
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div><div class="basic"><label><input type="password" enabled="enabled">The title is abc</label></div></div>'
 			);
+			Inferno.render(template(BasicComponent1c, null, true), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password" enabled="enabled">The title is </label></div></div>'
+			);
+
 		});
 		it('Second render (update)', () => {
 			Inferno.render(template(BasicComponent1c, '123', false), container);
@@ -357,15 +390,24 @@ import waits from '../../../tools/waits';
 			template = Inferno.createTemplate((Component, title, name) =>
 				createElement(Component, {title, name})
 			);
-			Inferno.render(template(BasicComponent1, 'abc', 'basic-render'), container);
 		});
 
 		it('Initial render (creation)', () => {
+			Inferno.render(template(BasicComponent1, 'abc', 'basic-render'), container);
+
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div class="basic"><span class="basic-render">The title is abc</span></div>'
 			);
+			Inferno.render(template(BasicComponent1, 'abc', 'basic-render'), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="basic"><span class="basic-render">The title is abc</span></div>'
+			);
+
 		});
 		it('Second render (update)', () => {
 			Inferno.render(template(BasicComponent1, '123', 'basic-update'), container);
@@ -374,6 +416,13 @@ import waits from '../../../tools/waits';
 			).to.equal(
 				'<div class="basic"><span class="basic-update">The title is 123</span></div>'
 			);
+			Inferno.render(template(BasicComponent1, '1234', 'basic-update'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="basic"><span class="basic-update">The title is 1234</span></div>'
+			);
+
 		});
 	});
 
@@ -427,10 +476,18 @@ import waits from '../../../tools/waits';
 					)
 				)
 			);
-			Inferno.render(template(BasicComponent2, "abc", "basic-render"), container);
 		});
 
 		it('Initial render (creation)', () => {
+			Inferno.render(template(BasicComponent2, "abc", "basic-render"), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
+			);
+			Inferno.render(template(BasicComponent2, "abc", "basic-render"), container);
+
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -527,6 +584,13 @@ import waits from '../../../tools/waits';
 			).to.equal(
 				'<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 			);
+			Inferno.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2b), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>component!</span><div><div><span>other component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+			);
+
 		});
 		it('Second render (update) - should be a lot different', () => {
 			Inferno.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
