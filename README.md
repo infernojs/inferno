@@ -116,6 +116,7 @@ Statless component:
 const MyComponent => ({ name, age }) => 
   <span>My name is: { name } and my age is: {age}</span>  
 );
+```
 
 Stateless components are first-class functions where their only argument is the `props` passed through from their parent.
 
