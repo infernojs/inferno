@@ -237,6 +237,12 @@ import waits from '../../../tools/waits';
 			).to.equal(
 				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
 			);
+			Inferno.render(template(BasicComponent1c, '123', false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
+			);
 		});
 	});
 	
@@ -936,10 +942,10 @@ import waits from '../../../tools/waits';
 					createElement(Component)
 			);
 
-			Inferno.render(template(ComponentLifecycleCheck), container);
 		});
 
 		it("should have mounted the component", () => {
+			Inferno.render(template(ComponentLifecycleCheck), container);
 			expect(mountCount).to.equal(1);
 		});
 		it("should have unmounted the component", () => {

@@ -2621,12 +2621,23 @@ describe('DOM element tests (no-jsx)', () => {
                 tag: 'span',
                 children: ['1', '2', '3']
             }));
+			
             const span = Inferno.createTemplate((b) => ({
                 tag: 'span',
                 children: b
             }));
-            Inferno.render(template(span(b())), container);
-            expect(
+            
+			Inferno.render(template(span(b())), container);
+            
+			expect(
+                container.innerHTML
+            ).to.equal(
+                '<div class="hello, world"><span><span>123</span></span></div>'
+            );
+			
+			Inferno.render(template(span(b())), container);
+            
+			expect(
                 container.innerHTML
             ).to.equal(
                 '<div class="hello, world"><span><span>123</span></span></div>'
@@ -2995,6 +3006,9 @@ describe('DOM element tests (no-jsx)', () => {
             Inferno.render(template("undefined"), container);
             expect(container.innerHTML).to.equal('<div xmlns="testing" id="undefined"></div>');
             expect(container.firstChild.namespaceURI).to.eql("testing");
+            Inferno.render(template("undefined"), container);
+            expect(container.innerHTML).to.equal('<div xmlns="testing" id="undefined"></div>');
+            expect(container.firstChild.namespaceURI).to.eql("testing");
         });
     });
 
@@ -3056,6 +3070,9 @@ describe('DOM element tests (no-jsx)', () => {
 
             Inferno.render(template(span('id#2', span2('custom'))), container);
             expect(container.firstChild.innerHTML).to.equal('<div><span caught_fire="id#2"><span caught_fire="custom">Hello, world</span></span></div>');
+            Inferno.render(template(span(null, span2('custom'))), container);
+            expect(container.firstChild.innerHTML).to.equal('<div><span><span caught_fire="custom">Hello, world</span></span></div>');
+
         });
     });
 
@@ -3101,6 +3118,8 @@ describe('DOM element tests (no-jsx)', () => {
                 }
             }));
 
+            Inferno.render(template(child()), container);
+            expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
             Inferno.render(template(child()), container);
             expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
         });
@@ -3170,6 +3189,14 @@ describe('DOM element tests (no-jsx)', () => {
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template('foo'), container);
+            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
+            expect(container.firstChild.children[1].selected).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option>foo</option><option>bar</option></select>' // Missing selected markup
+            );
             Inferno.render(template('foo'), container);
             expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
             expect(container.firstChild.children[1].selected).to.eql(false);
@@ -3332,6 +3359,14 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<select multiple="multiple"><option>foo</option><option>bar</option></select>' // Missing selected markup
             );
+            Inferno.render(template('foo'), container);
+            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
+            expect(container.firstChild.children[1].selected).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option>foo</option><option>bar</option></select>' // Missing selected markup
+            );
         });
         it('Initial render (creation)', () => {
             const template = Inferno.createTemplate(function() {
@@ -3444,6 +3479,14 @@ describe('DOM element tests (no-jsx)', () => {
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template('foo'), container);
+            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
+            expect(container.firstChild.children[1].selected).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option>foo</option><option>bar</option></select>'
+            );
             Inferno.render(template('foo'), container);
             expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
             expect(container.firstChild.children[1].selected).to.eql(false);
@@ -4026,10 +4069,20 @@ describe('DOM element tests (no-jsx)', () => {
         it('Initial render (creation)', () => {
             Inferno.render(template('abc'), container);
             expect(container.innerHTML).to.eql('abc');
+            Inferno.render(template('abc'), container);
+            expect(container.innerHTML).to.eql('abc');
         });
         it('Second render (update)', () => {
+
+            Inferno.render(template('124'), container);
+            expect(container.innerHTML).to.eql('124');
+
             Inferno.render(template('123'), container);
             expect(container.innerHTML).to.eql('123');
+
+            Inferno.render(template(null), container);
+            expect(container.innerHTML).to.eql('');
+
         });
         it('Third render (update)', () => {
             Inferno.render(template(undefined), container);
