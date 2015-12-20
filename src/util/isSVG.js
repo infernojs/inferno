@@ -1,9 +1,9 @@
-import isBrowser from './isBrowser';
+import ExecutionEnvironment from './ExecutionEnvironment';
 
 let isSVG;
 
-if (isBrowser()) {
-	var implementation = document.implementation;
+if (ExecutionEnvironment.canUseDOM) {
+	let { implementation } = document;
 	isSVG = (
 		implementation &&
 		implementation.hasFeature &&
