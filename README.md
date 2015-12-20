@@ -1,7 +1,9 @@
 # InfernoJS
 
-[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=perf-spike)](https://travis-ci.org/trueadm/inferno)
-[![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=inferno-gulp&service=github)](https://coveralls.io/github/trueadm/inferno?branch=inferno-spike)
+[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=master)](https://travis-ci.org/trueadm/inferno)
+[![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=master&service=github)](https://coveralls.io/github/trueadm/inferno?branch=master)
+[![Dependency Status](https://david-dm.org/trueadm/inferno.svg)](https://david-dm.org/trueadm/inferno)
+[![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
 [![npm version](https://badge.fury.io/js/inferno.svg)](https://badge.fury.io/js/inferno)
 
 Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. Unlike typical virtual DOM libraries like React, Mitrhil, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
@@ -48,7 +50,6 @@ npm run build
 npm run lint:source // lint the source
 
 ```
-
 
 ## Overview
 
@@ -191,9 +192,13 @@ Inferno tries to address two problems with creating UI components:
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
 time a framework offered more fun without compromising performance.
 
-## Early Stages
+## JSX
+ 
+Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 
-Inferno is still in early development and there are still many missing features and optimizations to be made. Don't use this framework in production just yet.
+## Still under development
+
+Inferno is still under development, and there are some missing features and optimizations to be made.The high priority now is the server side rendring (SSR).
 
 ## Todo
 
