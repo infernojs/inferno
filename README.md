@@ -53,7 +53,7 @@ Inferno.render(
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
-```javascript{
+```js
 class Component extends Inferno.Component {
   constructor(props) {
     super(props);
@@ -63,15 +63,15 @@ class Component extends Inferno.Component {
   }
   render() {
     return (
-        <div>
-          <h1>Header!</h1>
-          <span>Counter is at: { this.state.counter }</span>
-        </div>
+      <div>
+        <h1>Header!</h1>
+        <span>Counter is at: { this.state.counter }</span>
+      </div>
     )
   }
+}
 
-  Inferno.render(<Component />, document.body);
-});
+Inferno.render(<Component />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
