@@ -16,6 +16,29 @@ describe('DOM element tests (jsx)', () => {
 		Inferno.render(null, container);
 	});
 
+
+describe('should support refs', () => {
+        let template;
+        let divRef = Inferno.createRef();
+
+        beforeEach(() => {
+            template = Inferno.createTemplate((t, divRef) =>
+                < div ref = {
+                    divRef
+                } > < /div>
+            );
+            Inferno.render(Inferno.createFragment(divRef, template), container);
+        });
+
+        it('Initial render (creation)', () => {
+            expect(
+                divRef.element
+            ).to.equal(
+                container.firstChild
+            );
+        });
+    });
+
 	describe('should render a basic example', () => {
 		beforeEach(() => {
 			Inferno.render(<div>Hello world</div>, container);
