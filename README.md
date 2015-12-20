@@ -193,9 +193,9 @@ Inferno tries to address two problems with creating UI components:
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
 time a framework offered more fun without compromising performance.
 
-## Early Stages
+## Still under development
 
-Inferno is still in early development and there are still many missing features and optimizations to be made. Don't use this framework in production just yet.
+Inferno is still under development, and there are some missing features and optimizations to be made.The high priority now is the server side rendring (SSR).
 
 ## Todo
 
