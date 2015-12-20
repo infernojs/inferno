@@ -18,17 +18,17 @@ Of course, if you've encountered a bug, then the best course of action is to rai
 Reporting security vulnerabilities
 ----------------------------------
 
-If you think you've found a security vulnerability, please email [ractive-js-security@googlegroups.com](mailto:ractive-js-security@googlegroups.com) with details, and someone from the core team will respond to you.
+If you think you've found a security vulnerability, please email [Dominic Gannaway](mailto:dg@domgan.com) with details, and he will respond to you if he isn't at work by that time.
 
 
 Raising issues
 --------------
 
-Before submitting an issue, please make sure you're using the latest released version - http://cdn.infernojs.org/latest/ractive.js.
+Before submitting an issue, please make sure you're using the latest released version - http://cdn.infernojs.org/latest/inferno.js.
 
-If the bug persists, it may have been fixed in the latest development version. You can always get the most recent successful build from http://cdn.infernojs.org/edge/ractive.js.
+If the bug persists, it may have been fixed in the latest development version. You can always get the most recent successful build from http://cdn.infernojs.org/edge/inferno.js.
 
-The best issues contain a reproducible demonstration of the bug in the form of a JSFiddle or similar. [This JSFiddle](http://jsfiddle.net/rich_harris/va6jU/) has a basic setup to get started with - even better, you could create a failing test using [this fiddle](http://jsfiddle.net/rich_harris/UG7Eq/) as a base.
+Don't publish any issues without a *jsFiddle* so we can reproduce and fix the bug straight away. 
 
 
 Pull requests
@@ -37,11 +37,13 @@ Pull requests
 
 **Pull requests against the master branch will not be merged!**
 
-All pull requests are welcome. You should create a new branch, based on the [dev branch](https://github.com/infernojs/ractive/tree/dev), and submit the PR against the dev branch.
+All pull requests are welcome. You should create a new branch, based on the [dev branch](https://github.com/infernojs/inferno/tree/dev), and submit the PR against the dev branch.
 
 *Caveat for what follows: If in doubt, submit the request - a PR that needs tweaking is infinitely more valuable than a request that wasn't made because you were worrying about meeting these requirements.*
 
 Before submitting, run `npm run build` (which will concatenate, lint and test the code) to ensure the build passes - but don't include files from outside the `src` and `test` folders in the PR.
+
+And make sure the PR haven't been published before!
 
 There isn't (yet) a formal style guide for Inferno, so please take care to adhere to existing conventions:
 
