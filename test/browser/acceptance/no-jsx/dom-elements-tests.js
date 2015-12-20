@@ -387,10 +387,27 @@ describe('DOM element tests (no-jsx)', () => {
             }));
 
             Inferno.render(div(span2()), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
                 `<div><span>Im updated!</span></div>`
+            );
+
+            Inferno.render(div(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
+            );
+
+            Inferno.render(div(null), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
             );
         });
     });
