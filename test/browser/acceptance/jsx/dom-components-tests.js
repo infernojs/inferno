@@ -296,17 +296,27 @@ describe('DOM element tests (jsx)', () => {
 	}
 
 	describe('should render a basic component with styling', () => {
-		beforeEach(() => {
+
+		it('Initial render (creation)', () => {
+
 			Inferno.render((
 				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
 			), container);
-		});
 
-		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+			);
+
+Inferno.render((
+				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 100 }} />
+			), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding: 100px;"><span style="color: red; padding: 100px;">The title is styled!</span></div>' 
 			);
 		});
 		it('Second render (update)', () => {
@@ -323,13 +333,13 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should render a basic component and remove styling #1', () => {
-		beforeEach(() => {
+
+		it('Initial render (creation)', () => {
+
 			Inferno.render((
 				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
 			), container);
-		});
 
-		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
