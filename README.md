@@ -168,8 +168,34 @@ Inferno.render(template(), document.body);
 ### Inferno.TemplateFactory
 
 ```js
-// TODO
+
+    class BasicComponent extends Inferno.Component {
+        render() {
+            const template = Inferno.createTemplate((name, title) =>
+                TemplateFactory("div", {
+                        className: "basic"
+                    },
+                    TemplateFactory("span", {
+                        className: name
+                    }, "The title is ", title)
+                )
+            );
+            return template(this.props.name, this.props.title);
+        }
+    }
+  
+  const template = Inferno.createTemplate((Component, title) =>
+                TemplateFactory('div', null,
+                    TemplateFactory(Component, {
+                        title: title,
+                        name: "basic-render"
+                    })
+                )
+            );
+
+Inferno.render(template(BasicComponent, 'abc'), container);
 ```
+Inferno.TemplateFactory is hyperscript function that works the same way as React.creactElement(). It's first argument is the node, second argument is the attributes and the third and last argument is it's children.
 
 ### Inferno.createRef
 

@@ -774,43 +774,74 @@ describe('DOM component tests (no-jsx)', () => {
 	});
 	
 	class BasicComponent3 extends Inferno.Component {
-		render() {
-			const template = Inferno.createTemplate((styles, title) =>
-				createElement("div", {style: styles},
-					createElement("span", {style: styles}, "The title is ", title)
-				)
-			);
+        render() {
+            const template = Inferno.createTemplate((styles, title) =>
+                createElement("div", {
+                        style: styles
+                    },
+                    createElement("span", {
+                        style: styles
+                    }, "The title is ", title)
+                )
+            );
 
-			return template(this.props.styles, this.props.title);
-		}
-	}
+            return template(this.props.styles, this.props.title);
+        }
+    }
 
-	describe('should render a basic component with styling', () => {
-		let template;
+    describe('should render a basic component with styling', () => {
+        let template;
 
-		beforeEach(() => {
-			template = Inferno.createTemplate((Component, props) =>
-				createElement(Component, props)
-			);
-			Inferno.render(template(BasicComponent3, {title: "styled!", styles: { color: "red", padding: 10}}), container);
-		});
+        beforeEach(() => {
+            template = Inferno.createTemplate((Component, props) =>
+                createElement(Component, props)
+            );
+        });
 
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
-			);
-		});
-		it('Second render (update)', () => {
-			Inferno.render(template(BasicComponent3, {title: "styled (again)!", styles: { color: "blue", padding: 20}}), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div style="color: blue; padding: 20px;"><span style="color: blue; padding: 20px;">The title is styled (again)!</span></div>'
-			);
-		});
-	});
+        it('Initial render (creation)', () => {
+            Inferno.render(template(BasicComponent3, {
+                title: "styled!",
+                styles: {
+                    color: "red",
+                    padding: 10
+                }
+            }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+            );
+            Inferno.render(template(BasicComponent3, {
+                title: "styled!",
+                styles: {
+                    color: "red",
+                    padding: 10
+                }
+            }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+            );
+
+        });
+        it('Second render (update)', () => {
+            Inferno.render(template(BasicComponent3, {
+                title: "styled (again)!",
+                styles: {
+                    color: "blue",
+                    padding: 20
+                }
+            }), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="color: blue; padding: 20px;"><span style="color: blue; padding: 20px;">The title is styled (again)!</span></div>'
+            );
+        });
+    });
 
 	//describe('should render a basic component and remove styling #1', () => {
 	//	let template;
