@@ -4413,6 +4413,51 @@ describe('DOM element tests (no-jsx)', () => {
 	
 	
 	
+        describe('should update a node with multiple children and static text', () => {
+
+            const template = Inferno.createTemplate((val1) => ({
+                tag: 'div',
+                attrs: {
+                    id: val1
+                },
+                children: {
+                    text: 'Hello, World'
+                }
+            }));
+
+
+            it('Initial render (creation)', () => {
+                Inferno.render(template('Hello'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Hello">Hello, World</div>'
+                );
+
+			   Inferno.render(template('Hello'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="Hello">Hello, World</div>'
+                );
+
+			   Inferno.render(template(null), container); // should unset
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div>Hello, World</div>'
+                );
+
+            });
+            it('Second render (update)', () => {
+                Inferno.render(template('foo'), container);
+                expect(
+                    container.innerHTML
+                ).to.equal(
+                    '<div id="foo">Hello, World</div>'
+                );
+            });
+        });
 	
 	
 	
