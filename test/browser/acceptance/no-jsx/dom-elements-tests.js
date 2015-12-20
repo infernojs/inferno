@@ -4495,8 +4495,146 @@ describe('DOM element tests (no-jsx)', () => {
         });
 	
 	
+	 describe('should set static styles', () => {
+
+        let template = Inferno.createTemplate(() => ({
+            tag: 'div',
+            attrs: {
+                style: {
+                    width: 200,
+                    height: 200
+                }
+            }
+        }));
+
+        it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+            expect(container.firstChild.hasAttribute('style')).to.be.true;
+            expect(container.firstChild.getAttribute('style')).to.equal('width: 200px; height: 200px;')
+            Inferno.render(template(), container);
+            expect(container.firstChild.hasAttribute('style')).to.be.true;
+            expect(container.firstChild.getAttribute('style')).to.equal('width: 200px; height: 200px;')
+
+        });
+
+        it('Second render (update)', () => {
+            Inferno.render(template(), container);
+            expect(container.firstChild.hasAttribute('style')).to.be.true;
+            expect(container.firstChild.getAttribute('style')).to.equal('width: 200px; height: 200px;')
+            Inferno.render(template(), container);
+            expect(container.firstChild.hasAttribute('style')).to.be.true;
+            expect(container.firstChild.getAttribute('style')).to.equal('width: 200px; height: 200px;')
+
+        });
+
+    });
+	
+	describe('should set and remove styles', () => {
+
+        let template;
+
+        template = Inferno.createTemplate((styleRule) =>
+            createElement('div', {
+                style: styleRule
+            })
+        );
+
+        it('Initial render (creation)', () => {
+            Inferno.render(template({
+                width: 7
+            }), container);
+
+            expect(container.firstChild.hasAttribute('style')).to.be.true;
+            expect(container.firstChild.getAttribute('style')).to.equal('width: 7px;');
+
+        });
+
+
+        it('Second render (update)', () => {
+            Inferno.render(template({
+                width: 8
+            }), container);
+
+            expect(container.firstChild.hasAttribute('style')).to.be.true;
+            expect(container.firstChild.getAttribute('style')).to.equal('width: 8px;');
+            Inferno.render(template({
+                width: 8
+            }), container);
+
+            expect(container.firstChild.hasAttribute('style')).to.be.true;
+            expect(container.firstChild.getAttribute('style')).to.equal('width: 8px;');
+
+        });
+
+        it('Third render (update)', () => {
+            Inferno.render(template(null), container);
+
+            expect(container.firstChild.hasAttribute('style')).to.be.false;
+        });
+    });
 	
 	
-	
-	
+	 describe('should render styling on root node, and set and remove styling on multiple children', () => {
+
+        let template;
+
+        template = Inferno.createTemplate((styleRule) =>
+            createElement('div', {
+                style: {
+                    width: '200px'
+                }
+            }, createElement('div', {
+                class: 'Hello, world!'
+            }, createElement('div', {
+                style: styleRule
+            })))
+        );
+
+        it('Initial render (creation)', () => {
+            Inferno.render(template({
+                color: "red",
+                padding: 10
+            }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding: 10px;"></div></div></div>'
+            );
+            Inferno.render(template({
+                color: "red",
+                padding: 10
+            }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding: 10px;"></div></div></div>'
+            );
+
+        });
+
+        it('Second render (update)', () => {
+            Inferno.render(template(null), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>'
+            );
+        });
+
+        it('Third render (update)', () => {
+            Inferno.render(template({
+                color: "blue",
+                margin: 20
+            }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin: 20px;"></div></div></div>'
+            );
+        });
+    });
 });
