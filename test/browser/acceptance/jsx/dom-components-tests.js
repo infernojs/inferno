@@ -102,6 +102,24 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				false
 			);
+
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ null } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				null
+			);
+
 		});
 		it('Third render (update)', () => {
 			Inferno.render((

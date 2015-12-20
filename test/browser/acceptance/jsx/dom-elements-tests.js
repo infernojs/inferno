@@ -82,17 +82,54 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should render "className" attribute', () => {
-		beforeEach(() => {
-			Inferno.render(<div className='Dominic rocks!' />, container);
-		});
+
 		it('Initial render (creation)', () => {
+			Inferno.render(<div className='Dominic rocks!' />, container);
 			expect(container.firstChild.getAttribute('class')).to.eql('Dominic rocks!');
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div class="Dominic rocks!"></div>'
 			);
+
+			Inferno.render(<div className='' />, container);
+			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
+
+			Inferno.render(<div className={null} />, container);
+			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
+
+
+			Inferno.render(<div className={undefined} />, container);
+			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
+
+
 		});
+
+		it('Second render (update)', () => {
+			Inferno.render(<div className='Inferno rocks!' />, container);
+			expect(container.firstChild.getAttribute('class')).to.eql('Inferno rocks!');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
+		});
+
 	});
 
 	describe('shouldn\'t render null value', () => {
@@ -110,10 +147,11 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should set values as properties by default', () => {
-		beforeEach(() => {
-			Inferno.render(<input title='Tip!' />, container);
-		});
+
 		it('Initial render (creation)', () => {
+
+			Inferno.render(<input title='Tip!' />, container);
+
 			expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 			expect(
 				container.innerHTML

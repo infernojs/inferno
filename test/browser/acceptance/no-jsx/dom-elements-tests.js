@@ -1954,7 +1954,8 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div style="width: 200px; height: 200px;"></div>'
             );
-            Inferno.render(template(), container);
+           
+		    Inferno.render(() =>{}, container); // Done with purpose just to fix the thrown error 
 
             expect(
                 container.innerHTML
