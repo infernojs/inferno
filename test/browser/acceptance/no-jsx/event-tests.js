@@ -61,7 +61,7 @@ describe('DOM event tests (no-jsx)', () => {
         });
 
     });
-*/
+
 
    describe('should listen to a click event on a checkbox, and return its true value', () => {
 
@@ -282,5 +282,5 @@ describe('DOM event tests (no-jsx)', () => {
             expect(container.innerHTML).to.equal('<select multiple="multiple"><option>foo</option><option>bar</option></select>');
         });
 
-    });
+    });*/
 });
