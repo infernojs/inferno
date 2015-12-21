@@ -4610,7 +4610,7 @@ describe('DOM element tests (no-jsx)', () => {
 
 				Inferno.render(template(span(null)), container);
 
-                expect(container.innerHTML).to.equal(1);
+                expect(container.innerHTML).to.equal('<div class="hello, world"><span></span></div>');
 
                 // span is not NULL, should have been created as 1 child
 
