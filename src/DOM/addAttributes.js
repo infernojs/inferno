@@ -1,7 +1,7 @@
 import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
-//import removeListener from './events/removeListener';  Where is this file???
+import removeListener from './events/removeListener';
 import setValueForStyles from './setValueForStyles';
 import { getValueWithIndex } from '../core/variables';
 
@@ -127,9 +127,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
                         styleUpdates = null;
                     } else {
 						if (eventMapping[attrName]) {
-							
-							// TODO! Find this file, include it and get this working!
-							//removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+							removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
 						} else {
                         template.removeProperty(null, domNode, attrName, true);
 						}

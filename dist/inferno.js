@@ -94,7 +94,7 @@
   	return recyclingEnabled$10;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$9 = isRecyclingEnabled();
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle) {
   	var stop = false;
@@ -105,7 +105,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$9) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -275,7 +275,7 @@
   function remove(item, parentNode) {
   	if (item.rootNode !== null) {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$9) {
   			pool(item);
   		}
   	}
@@ -1358,6 +1358,44 @@
   	}
   }
 
+  var eventListener = {};
+
+  /**
+   * Remove event listeners from a node
+   */
+  function removeListener(node, type) {
+
+      if (!node) {
+          return null; // TODO! Should we throw?
+      }
+
+      var nodeID = InfernoNodeID(node, true);
+
+      if (nodeID) {
+          var listeners = listenersStorage[nodeID];
+
+          if (listeners && listeners[type]) {
+              if (listeners[type] && listeners[type].destroy) {
+                  listeners[type].destroy();
+              }
+              listeners[type] = null;
+
+              var registry = EventRegistry[type];
+
+              if (registry) {
+                  if (registry._bubbles) {
+                      --registry._counter;
+                      // TODO Run tests and check if this works, or code should be removed
+                      //				} else if (registry._focusBlur) {
+                      //					node.removeEventListener(type, eventListener[focusEvents[type]]);					
+                  } else {
+                          node.removeEventListener(type, eventListener[type]);
+                      }
+              }
+          }
+      }
+  }
+
   var unitlessProps = {
   	flex: true,
   	base: true,
@@ -1498,6 +1536,7 @@
   		addDOMStaticAttributes(item, domNode, dynamicAttrs);
   		return;
   	}
+
   	var styleUpdates = undefined;
 
   	for (var attrName in dynamicAttrs) {
@@ -1522,34 +1561,65 @@
   	}
   }
 
+  function set(domNode, attrName, nextAttrVal, nextItem, styleUpdates) {
+
+  	if (attrName === 'style') {
+
+  		styleUpdates = nextAttrVal;
+  	} else {
+
+  		if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+  			if (propertyToEventType[attrName]) {
+  				addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
+  			} else {
+  				template.setProperty(null, domNode, attrName, nextAttrVal, true);
+  			}
+  		}
+  	}
+  }
+
   function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
   	if (dynamicAttrs.index !== undefined) {
   		var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
   		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
   		return;
   	}
+
   	var styleUpdates = undefined;
 
   	for (var attrName in dynamicAttrs) {
+
   		var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
   		var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-  		if (lastAttrVal !== nextAttrVal) {
-  			if (nextAttrVal !== undefined) {
+  		if (lastAttrVal === nextAttrVal) {
+  			return;
+  		}
+
+  		if (nextAttrVal) {
+
+  			if (!lastAttrVal || lastAttrVal == null) {
+  				if (nextAttrVal != null) {
+  					set(domNode, attrName, nextAttrVal, nextItem, styleUpdates);
+  				}
+  			} else if (nextAttrVal == null) {
+
   				if (attrName === 'style') {
-  					styleUpdates = nextAttrVal;
+  					styleUpdates = null;
   				} else {
-  					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
-  						if (propertyToEventType[attrName]) {
-  							addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
-  						} else {
-  							template.setProperty(null, domNode, attrName, nextAttrVal, true);
-  						}
+  					if (propertyToEventType[attrName]) {
+  						removeListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
+  					} else {
+  						template.removeProperty(null, domNode, attrName, true);
   					}
   				}
+  			} else if (lastAttrVal !== nextAttrVal) {
+
+  				set(domNode, attrName, nextAttrVal, nextItem, styleUpdates);
   			}
   		}
   	}
+
   	if (styleUpdates != null) {
   		setValueForStyles(domNode, domNode, styleUpdates);
   	} else if (styleUpdates == null) {
@@ -1566,7 +1636,7 @@
   	// TODO recycle old node
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1575,7 +1645,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1646,7 +1716,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1655,7 +1725,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1705,7 +1775,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
   	var keyedChildren = true;
@@ -1716,7 +1786,7 @@
   		create: function create(item, treeLifecycle) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1900,7 +1970,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
   	var node = {
@@ -1908,7 +1978,7 @@
   		keyedPool: [],
   		create: function create(item, treeLifecycle) {
   			var domNode = undefined;
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2050,7 +2120,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
   	var node = {
@@ -2058,7 +2128,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2094,7 +2164,7 @@
   	return node;
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex, domNamespace) {
   	var node = {
@@ -2103,7 +2173,7 @@
   		create: function create(item, treeLifecycle) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2252,7 +2322,7 @@
   	return node;
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2260,7 +2330,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2525,7 +2595,7 @@
   	return node;
   }
 
-  var recyclingEnabled$9 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootDynamicTextNode(templateNode, valueIndex) {
   	var node = {
@@ -2534,7 +2604,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$9) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
