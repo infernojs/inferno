@@ -25,7 +25,7 @@ const template = {
                 const propName = propertyInfo.propertyName;
 
                 if (propertyInfo.mustUseProperty) {
-                    if (propName === 'value' && (vNode.tag === 'select')) {
+                    if (propName === 'value' && ((vNode !== null && vNode.tag === 'select') || (domNode.tagName === 'SELECT'))) {
                         setSelectValueForProperty(vNode, domNode, value, useProperties);
                     } else if ('' + domNode[propName] !== '' + value) {
                         if (useProperties) {

@@ -53,6 +53,9 @@ export function getValueForProps(props, item) {
 }
 
 export function removeValueTree(value, treeLifecycle) {
+	if (value == null) {
+		return;
+	}
   if (isArray(value)) {
     for (let i = 0; i < value.length; i++) {
       const child = value[i];

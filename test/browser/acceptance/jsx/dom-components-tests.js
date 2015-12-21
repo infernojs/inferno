@@ -103,7 +103,6 @@ describe('DOM element tests (jsx)', () => {
 				false
 			);
 
-
 			Inferno.render((
 				<div>
 					<BasicComponent1b title="123" isChecked={ null } />
@@ -117,7 +116,7 @@ describe('DOM element tests (jsx)', () => {
 			expect(
 				container.querySelector("input").checked
 			).to.equal(
-				null
+				false
 			);
 
 		});
@@ -314,9 +313,7 @@ describe('DOM element tests (jsx)', () => {
 	}
 
 	describe('should render a basic component with styling', () => {
-
 		it('Initial render (creation)', () => {
-
 			Inferno.render((
 				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
 			), container);
@@ -327,7 +324,7 @@ describe('DOM element tests (jsx)', () => {
 				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
 			);
 
-Inferno.render((
+			Inferno.render((
 				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 100 }} />
 			), container);
 
@@ -351,17 +348,15 @@ Inferno.render((
 	});
 
 	describe('should render a basic component and remove styling #1', () => {
-
 		it('Initial render (creation)', () => {
-
 			Inferno.render((
-				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
+				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 20 }} />
 			), container);
 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+				'<div style="color: red; padding: 20px;"><span style="color: red; padding: 20px;">The title is styled!</span></div>'
 			);
 		});
 		it('Second render (update)', () => {

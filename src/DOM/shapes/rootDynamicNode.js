@@ -45,7 +45,7 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 		},
 		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, nod, treeLifecyclee);
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -60,7 +60,7 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 				const lastType = getTypeFromValue(lastValue);
 
 				if(lastType !== nextType) {
-					// TODO replace node and rebuild
+					recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 					return;
 				}
 

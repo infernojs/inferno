@@ -439,14 +439,14 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                `<div>There is one spoon!</div>`
+                `<div>There is  spoon!</div>`
             );
 
             Inferno.render(div(null), container);
             expect(
                 container.innerHTML
             ).to.equal(
-                `<div>There is spoon!</div>`
+                `<div>There is  spoon!</div>`
             );
 
         });
@@ -1948,20 +1948,15 @@ describe('DOM element tests (no-jsx)', () => {
 
         it('Initial render (creation)', () => {
             Inferno.render(template(), container);
-
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div style="width: 200px; height: 200px;"></div>'
             );
-           
-		    Inferno.render(() =>{}, container); // Done with purpose just to fix the thrown error 
 
             expect(
-                container.innerHTML
-            ).to.equal(
-                '<div style="width: 200px; height: 200px;"></div>'
-            );
+	            () => Inferno.render(() => {}, container)
+            ).to.throw;
 
         });
     });
@@ -4168,15 +4163,7 @@ describe('DOM element tests (no-jsx)', () => {
 			);
 		});
 	});
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	describe('should populates the value attribute on select multiple using groups', () => {
         const template = Inferno.createTemplate(function(val) {
             return {
@@ -4216,7 +4203,6 @@ describe('DOM element tests (no-jsx)', () => {
 
             expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
             expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
-
             expect(container.firstChild.children[0].children[0].selected).to.eql(true);
             expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
@@ -4224,93 +4210,67 @@ describe('DOM element tests (no-jsx)', () => {
 
             expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
             expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
-
             expect(container.firstChild.children[0].children[0].selected).to.eql(false);
             expect(container.firstChild.children[1].children[0].selected).to.eql(false);
 
         });
-
         it('Second render (update)', () => {
             Inferno.render(template('foo'), container);
 
             expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
             expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
-
             expect(container.firstChild.children[0].children[0].selected).to.eql(true);
             expect(container.firstChild.children[1].children[0].selected).to.eql(false);
-
         });
-
         it('Third render (update)', () => {
             Inferno.render(template('bar'), container);
 
             expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
             expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
-
             expect(container.firstChild.children[0].children[0].selected).to.eql(false);
             expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
         });
-
         it('Third render (update)', () => {
             Inferno.render(template(null), container);
 
             expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
             expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
-
             expect(container.firstChild.children[0].children[0].selected).to.eql(false);
             expect(container.firstChild.children[1].children[0].selected).to.eql(false);
         });
     });
-	
-	
-	
-	 describe('should insert an additionnal tag node"', () => {
 
+	describe('should insert an additional tag node', () => {
         const template = Inferno.createTemplate((child) => ({
             tag: 'div',
-
             children: child
         }));
 
         it('first render (creation)', () => {
-
             const span = Inferno.createTemplate(() => ({
                 tag: 'div'
             }));
 
             Inferno.render(template(span()), container);
-
             expect(container.firstChild.innerHTML).to.equal('<div></div>');
-
             Inferno.render(template(span()), container);
-
             expect(container.firstChild.innerHTML).to.equal('<div></div>');
-
         });
-
         it('second render - (update)', () => {
-
             const span = Inferno.createTemplate(() => ({
                 tag: 'div'
             }));
 
             Inferno.render(template(span()), container);
-
             expect(container.firstChild.innerHTML).to.equal('<div></div>');
-
             Inferno.render(template(span()), container);
-
             expect(container.firstChild.innerHTML).to.equal('<div></div>');
-
             Inferno.render(template(), container);
-
-            expect(container.firstChild.innerHTML).to.equal('');
-
+            expect(container.innerHTML).to.equal('');
         });
 
         it('third render - (update)', () => {
-
             const span = Inferno.createTemplate(() => ({
                 tag: 'div'
             }));
@@ -4318,17 +4278,12 @@ describe('DOM element tests (no-jsx)', () => {
             Inferno.render(template(span()), container);
 
             expect(container.firstChild.innerHTML).to.equal('<div></div>');
-
-            // Dominic! You unset dynamic children here, still they exist. 
             Inferno.render(template(null), container);
-
-            expect(container.firstChild.innerHTML).to.equal('');
-
+            expect(container.innerHTML).to.equal('');
         });
     });
 	
         describe('should update a wrapped text node with 4 arguments', () => {
-
             const template = Inferno.createTemplate((val1, val2, val3, val4) => ({
                 tag: 'div',
                 children: [
@@ -4354,12 +4309,9 @@ describe('DOM element tests (no-jsx)', () => {
                     '<div>Hello world! and Zoo</div>'
                 );
 
-                Inferno.render(template('Hello', [], ' and ', 'Zoo'), container);
                 expect(
-                    container.innerHTML
-                ).to.equal(
-                    '<div>Hello and Zoo</div>'
-                );
+	                () => Inferno.render(template('Hello', [], ' and ', 'Zoo'), container)
+                ).to.throw;
 
                 Inferno.render(template('Hello', null, ' and ', 'Zoo'), container);
                 expect(
@@ -4368,21 +4320,16 @@ describe('DOM element tests (no-jsx)', () => {
                     '<div>Hello and Zoo</div>'
                 );
 
-                Inferno.render(template('Hello', {}, ' and ', 'Zoo'), container);
                 expect(
-                    container.innerHTML
-                ).to.equal(
-                    '<div>Hello [Object Object] and Zoo</div>'
-                );
+	                () => Inferno.render(template('Hello', {}, ' and ', 'Zoo'), container)
+                ).to.throw;
 
-                Inferno.render(template('Hello', 'poz', ' and ', 'Zoo'), container);
+                Inferno.render(template('Hello', ' poz', ' and ', 'Zoo'), container);
                 expect(
                     container.innerHTML
                 ).to.equal(
                     '<div>Hello poz and Zoo</div>'
                 );
-
-
             });
             it('Second render (update)', () => {
                 Inferno.render(template('The ', 'bar', ' is', ' is dead!'), container);
@@ -4496,7 +4443,6 @@ describe('DOM element tests (no-jsx)', () => {
 	
 	
 	 describe('should set static styles', () => {
-
         let template = Inferno.createTemplate(() => ({
             tag: 'div',
             attrs: {
@@ -4516,7 +4462,6 @@ describe('DOM element tests (no-jsx)', () => {
             expect(container.firstChild.getAttribute('style')).to.equal('width: 200px; height: 200px;')
 
         });
-
         it('Second render (update)', () => {
             Inferno.render(template(), container);
             expect(container.firstChild.hasAttribute('style')).to.be.true;
@@ -4526,11 +4471,9 @@ describe('DOM element tests (no-jsx)', () => {
             expect(container.firstChild.getAttribute('style')).to.equal('width: 200px; height: 200px;')
 
         });
-
     });
 	
 	describe('should set and remove styles', () => {
-
         let template;
 
         template = Inferno.createTemplate((styleRule) =>
@@ -4543,13 +4486,9 @@ describe('DOM element tests (no-jsx)', () => {
             Inferno.render(template({
                 width: 7
             }), container);
-
             expect(container.firstChild.hasAttribute('style')).to.be.true;
             expect(container.firstChild.getAttribute('style')).to.equal('width: 7px;');
-
         });
-
-
         it('Second render (update)', () => {
             Inferno.render(template({
                 width: 8
@@ -4560,22 +4499,17 @@ describe('DOM element tests (no-jsx)', () => {
             Inferno.render(template({
                 width: 8
             }), container);
-
             expect(container.firstChild.hasAttribute('style')).to.be.true;
             expect(container.firstChild.getAttribute('style')).to.equal('width: 8px;');
-
         });
-
         it('Third render (update)', () => {
             Inferno.render(template(null), container);
-
             expect(container.firstChild.hasAttribute('style')).to.be.false;
         });
     });
 	
 	
 	 describe('should render styling on root node, and set and remove styling on multiple children', () => {
-
         let template;
 
         template = Inferno.createTemplate((styleRule) =>
@@ -4613,7 +4547,6 @@ describe('DOM element tests (no-jsx)', () => {
             );
 
         });
-
         it('Second render (update)', () => {
             Inferno.render(template(null), container);
 
@@ -4623,7 +4556,6 @@ describe('DOM element tests (no-jsx)', () => {
                 '<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>'
             );
         });
-
         it('Third render (update)', () => {
             Inferno.render(template({
                 color: "blue",

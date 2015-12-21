@@ -50,8 +50,8 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 			if (nextValue !== lastValue) {
 				if (typeof nextValue === 'string') {
 					domNode.firstChild.nodeValue = nextValue;
-				} else if (nextValue === null) {
-					// TODO
+				} else if (nextValue == null) {
+					domNode.parentNode.removeChild(domNode);
 				} else if (isArray(nextValue)) {
 					if (isArray(lastValue)) {
 						if (keyedChildren) {

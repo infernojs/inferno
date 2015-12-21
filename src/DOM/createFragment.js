@@ -26,6 +26,10 @@ export default function createDOMFragment(parentNode, nextNode) {
 			}
 			const tree = nextItem.domTree;
 
+			if (!tree) {
+				throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+			}
+
 			if (lastItem) {
 				tree.update(lastItem, nextItem, treeLifecycle);
 			} else {

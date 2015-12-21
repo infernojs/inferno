@@ -72,8 +72,11 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 			if (nextValue !== lastValue) {
 				if (typeof nextValue === 'string') {
 					domNode.firstChild.nodeValue = nextValue;
-				} else if (nextValue === null) {
-					// TODO
+				} else if (nextValue == null) {
+					if (domNode !== null) {
+						domNode.parentNode.removeChild(domNode);
+						nextItem.rootNode = null;
+					}
 				} else if (isArray(nextValue)) {
 					if (isArray(lastValue)) {
 						if (keyedChildren) {

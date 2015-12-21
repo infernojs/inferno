@@ -157,6 +157,7 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 					if (typeof item === 'string' || typeof item === 'number') {
 						domNodeList[i].nodeValue = item;
 					} else if (typeof item === 'object') {
+						debugger;
 						item.domTree.update(oldItem, item, treeLifecycle);
 					}
 				} else {
@@ -178,8 +179,10 @@ export function insertOrAppend(parentNode, newNode, nextNode) {
 }
 
 export function remove(item, parentNode) {
-	parentNode.removeChild(item.rootNode);
-	if (recyclingEnabled) {
-		pool(item);
+	if (item.rootNode !== null) {
+		parentNode.removeChild(item.rootNode);
+		if (recyclingEnabled) {
+			pool(item);
+		}
 	}
 }

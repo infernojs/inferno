@@ -1,4 +1,5 @@
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
+import recreateNode from '../recreateNode';
 
 export default function createDynamicNode(valueIndex, domNamespace) {
 	let domNode;
@@ -39,7 +40,7 @@ export default function createDynamicNode(valueIndex, domNamespace) {
 				const lastType = getTypeFromValue(lastValue);
 
 				if(lastType !== nextType) {
-					// TODO replace node and rebuild
+					recreateNode(domNode, nextItem, node, treeLifecycle);
 					return;
 				}
 

@@ -51,7 +51,17 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 						subTree.update(lastItem, nextItem, treeLifecycle);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					subTreeForChildren.update(lastItem, nextItem, treeLifecycle);
+					const newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle);
+
+					if(newDomNode) {
+						const replaceNode = domNode.firstChild;
+
+						if (replaceNode) {
+							domNode.replaceChild(newDomNode, replaceNode)
+						} else {
+							domNode.appendChild(newDomNode);
+						}
+					}
 				}
 			}
 			if (dynamicAttrs) {
