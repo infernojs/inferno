@@ -103,44 +103,39 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
         const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
         const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-        if (lastAttrVal === nextAttrVal) {
-		      return;
-		}
 
-            if (nextAttrVal) {
+        if (nextAttrVal) {
 
-                if (!lastAttrVal || (lastAttrVal == null)) {
-                    if (nextAttrVal != null) {
-                        set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
-                    }
-
-                } else if (nextAttrVal == null) {
-
-                    if (attrName === 'style') {
-                        styleUpdates = null;
-                    } else {
-						if (eventMapping[attrName]) {
-							removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
-						} else {
-                        template.removeProperty(null, domNode, attrName, true);
-						}
-                    }
-                } else if (lastAttrVal !== nextAttrVal) {
-    if (attrName === 'style') {
-
-        styleUpdates = nextAttrVal;
-
-    } else {
+            if (!lastAttrVal || (lastAttrVal == null)) { // Is this hit?
+                if (nextAttrVal != null) {
 
                     set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
                 }
-				}
+
+            } else if (nextAttrVal == null) {
+
+                if (attrName === 'style') {
+                      styleUpdates = null;
+                } else {
+                    if (eventMapping[attrName]) { // Is this hit?
+                        removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                    } else {
+                        template.removeProperty(null, domNode, attrName, true);
+                    }
+                }
+            } else if (lastAttrVal !== nextAttrVal) {
+                if (attrName === 'style') {
+                    styleUpdates = nextAttrVal;
+                } else {
+                    set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
+                }
             }
+        }
     }
 
     if (styleUpdates != null) {
-		setValueForStyles(domNode, domNode, styleUpdates);
-	} else if (styleUpdates == null) {
-	    domNode.removeAttribute('style');
+        setValueForStyles(domNode, domNode, styleUpdates);
+    } else if (styleUpdates == null) {
+        domNode.removeAttribute('style');
     }
 }
