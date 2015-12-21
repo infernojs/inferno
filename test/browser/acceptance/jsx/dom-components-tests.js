@@ -1,7 +1,21 @@
-import get from '../../../tools/get';
 import Inferno from '../../../../src';
+import get from '../../../tools/get';
 
-export default function domComponentsTestsJsx(describe, expect, container) {
+const {
+	createElement
+} = Inferno.TemplateFactory;
+
+describe('DOM element tests (jsx)', () => {
+	let container;
+
+	beforeEach(() => {
+		container = document.createElement('div');
+	});
+
+	afterEach(() => {
+		Inferno.render(null, container);
+	});
+
 	class BasicComponent1 extends Inferno.Component {
 		render() {
 			return (
@@ -88,6 +102,23 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 			).to.equal(
 				false
 			);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ null } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				false
+			);
+
 		});
 		it('Third render (update)', () => {
 			Inferno.render((
@@ -272,28 +303,35 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 	});
 
 	class BasicComponent3 extends Inferno.Component {
-		template(createElement, createComponent, styles, title) {
-			return createElement("div", {style: styles},
-				createElement("span", {style: styles}, "The title is ", title)
-			);
-		}
 		render() {
-			return Inferno.createFragment([this.props.styles, this.props.title], this.template);
+			return (
+				<div style={ this.props.styles }>
+					<span style={ this.props.styles }>The title is { this.props.title }</span>
+				</div>
+			);
 		}
 	}
 
 	describe('should render a basic component with styling', () => {
-		beforeEach(() => {
+		it('Initial render (creation)', () => {
 			Inferno.render((
 				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
 			), container);
-		});
 
-		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+			);
+
+			Inferno.render((
+				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 100 }} />
+			), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding: 100px;"><span style="color: red; padding: 100px;">The title is styled!</span></div>' 
 			);
 		});
 		it('Second render (update)', () => {
@@ -310,17 +348,15 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 	});
 
 	describe('should render a basic component and remove styling #1', () => {
-		beforeEach(() => {
-			Inferno.render((
-				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
-			), container);
-		});
-
 		it('Initial render (creation)', () => {
+			Inferno.render((
+				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 20 }} />
+			), container);
+
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+				'<div style="color: red; padding: 20px;"><span style="color: red; padding: 20px;">The title is styled!</span></div>'
 			);
 		});
 		it('Second render (update)', () => {
@@ -334,4 +370,4 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 			);
 		});
 	});
-}
+});

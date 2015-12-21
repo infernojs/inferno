@@ -25,8 +25,8 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 
 			currentItem = item;
 			if (Component == null) {
-				//bad component, make a text node
-				return document.createTextNode('');
+				domNode = document.createTextNode('');
+				return domNode;
 			} else if (typeof Component === 'function') {
 				//stateless component
 				if (!Component.prototype.render) {

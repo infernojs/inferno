@@ -1,7 +1,10 @@
 import Inferno from '../../../../src';
 import waits from '../../../tools/waits';
+import Observable from "zen-observable";
 
- describe('DOM component tests (no-jsx)', () => {
+global.Observable = Observable;
+
+describe('DOM component tests (no-jsx)', () => {
 
   let container;
 
@@ -119,7 +122,81 @@ import waits from '../../../tools/waits';
 			 );
 		 });
 	 });
-	
+
+	 //describe('should render a basic stateless component with a render stream', () => {
+		// let template;
+		// const listeners = [];
+	 //
+		// function addEventListener(callback) {
+		//	 listeners.push(callback);
+		// }
+		// function removeEventListener(callback) {
+		//	 const index = listeners.indexOf(callback);
+	 //
+		//	 if (index > -1) {
+		//		 listeners.splice(index, 1);
+		//	 }
+		// }
+		// function trigger(data) {
+		//	 listeners.forEach(listener => listener(data));
+		// }
+	 //
+		// function BasicStatelessComponentWithStreamingRender({name}) {
+		//	 const template = Inferno.createTemplate((name, title) =>
+		//		 createElement("div", {className: "basic"},
+		//			 createElement("span", {className: name}, "The title is ", title)
+		//		 )
+		//	 );
+	 //
+		//	 return new Observable(observer => {
+		//		 const handler = title => observer.next(template(name, title));
+	 //
+		//		 addEventListener(handler);
+		//		 return () => {
+		//			 removeEventListener(handler);
+		//		 };
+		//	 });
+		// }
+	 //
+		// it('Initial render and update', () => {
+		//	 const template = Inferno.createTemplate((Component) =>
+		//			 createElement('div', null,
+		//				 createElement(Component, {name: "basic-render"})
+		//			 )
+		//	 );
+		//	 Inferno.render(template(BasicStatelessComponentWithStreamingRender), container);
+	 //
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div></div>'
+		//	 );
+	 //
+		//	 trigger('streaming data!');
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div><div class="basic"><span class="basic-render">The title is streaming data!</span></div></div>'
+		//	 );
+	 //
+		//	 trigger('streaming data #2!');
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div><div class="basic"><span class="basic-render">The title is streaming data #2!</span></div></div>'
+		//	 );
+	 //
+		//	 Inferno.render(template(BasicStatelessComponentWithStreamingRender), container);
+	 //
+		//	 expect(
+		//		 container.innerHTML
+		//	 ).to.equal(
+		//		 '<div></div>'
+		//	 );
+	 //
+		// });
+	 //});
+
 	class BasicComponent1b extends Inferno.Component {
 		render() {
 			const template = Inferno.createTemplate((isChecked, title) =>
@@ -231,6 +308,12 @@ import waits from '../../../tools/waits';
 
 		});
 		it('Second render (update)', () => {
+			Inferno.render(template(BasicComponent1c, '123', false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
+			);
 			Inferno.render(template(BasicComponent1c, '123', false), container);
 			expect(
 				container.innerHTML
@@ -691,43 +774,74 @@ import waits from '../../../tools/waits';
 	});
 	
 	class BasicComponent3 extends Inferno.Component {
-		render() {
-			const template = Inferno.createTemplate((styles, title) =>
-				createElement("div", {style: styles},
-					createElement("span", {style: styles}, "The title is ", title)
-				)
-			);
+        render() {
+            const template = Inferno.createTemplate((styles, title) =>
+                createElement("div", {
+                        style: styles
+                    },
+                    createElement("span", {
+                        style: styles
+                    }, "The title is ", title)
+                )
+            );
 
-			return template(this.props.styles, this.props.title);
-		}
-	}
+            return template(this.props.styles, this.props.title);
+        }
+    }
 
-	describe('should render a basic component with styling', () => {
-		let template;
+    describe('should render a basic component with styling', () => {
+        let template;
 
-		beforeEach(() => {
-			template = Inferno.createTemplate((Component, props) =>
-				createElement(Component, props)
-			);
-			Inferno.render(template(BasicComponent3, {title: "styled!", styles: { color: "red", padding: 10}}), container);
-		});
+        beforeEach(() => {
+            template = Inferno.createTemplate((Component, props) =>
+                createElement(Component, props)
+            );
+        });
 
-		it('Initial render (creation)', () => {
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
-			);
-		});
-		it('Second render (update)', () => {
-			Inferno.render(template(BasicComponent3, {title: "styled (again)!", styles: { color: "blue", padding: 20}}), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div style="color: blue; padding: 20px;"><span style="color: blue; padding: 20px;">The title is styled (again)!</span></div>'
-			);
-		});
-	});
+        it('Initial render (creation)', () => {
+            Inferno.render(template(BasicComponent3, {
+                title: "styled!",
+                styles: {
+                    color: "red",
+                    padding: 10
+                }
+            }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+            );
+            Inferno.render(template(BasicComponent3, {
+                title: "styled!",
+                styles: {
+                    color: "red",
+                    padding: 10
+                }
+            }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+            );
+
+        });
+        it('Second render (update)', () => {
+            Inferno.render(template(BasicComponent3, {
+                title: "styled (again)!",
+                styles: {
+                    color: "blue",
+                    padding: 20
+                }
+            }), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="color: blue; padding: 20px;"><span style="color: blue; padding: 20px;">The title is styled (again)!</span></div>'
+            );
+        });
+    });
 
 	//describe('should render a basic component and remove styling #1', () => {
 	//	let template;
@@ -933,9 +1047,8 @@ import waits from '../../../tools/waits';
 			mountCount = 0;
 			unmountCount = 0;
 			template = Inferno.createTemplate((Component) =>
-					createElement(Component)
+				createElement(Component)
 			);
-
 			Inferno.render(template(ComponentLifecycleCheck), container);
 		});
 

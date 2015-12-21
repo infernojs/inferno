@@ -65,7 +65,7 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 					if (eventMapping[attrName]) {
 						addListener(item, domNode, eventMapping[attrName], attrVal);
 					} else {
-						template.setProperty(item, domNode, attrName, attrVal, true);
+						template.setProperty(null, domNode, attrName, attrVal, true);
 					}
 				}
 		    }
@@ -97,14 +97,16 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 						if (eventMapping[attrName]) {
 							addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
 						} else {
-							template.setProperty(nextItem, domNode, attrName, nextAttrVal, true);
+							template.setProperty(null, domNode, attrName, nextAttrVal, true);
 						}
 					}
 			    }
 			}
 		}
 	}
-    if ( styleUpdates) {
+    if (styleUpdates != null) {
 		setValueForStyles(domNode, domNode, styleUpdates);
-	}	
+	} else if (styleUpdates == null) {
+	    domNode.removeAttribute('style');
+    }
 }
