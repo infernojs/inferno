@@ -131,6 +131,18 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
                 }
             }
         }
+		
+		if (lastAttrVal) {
+		if ((!nextAttrVal
+                || !(attrName !== nextAttrVal)) && (lastAttrVal != null)) {
+                // remove attrs
+                 if (eventMapping[attrName]) {
+                        removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                    } else {
+                        template.removeProperty(null, domNode, attrName, true);
+                    }
+            }
+		}
     }
 
     if (styleUpdates != null) {
