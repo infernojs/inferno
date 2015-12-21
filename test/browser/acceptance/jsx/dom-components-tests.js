@@ -113,6 +113,19 @@ describe('DOM element tests (jsx)', () => {
 				false
 			);
 
+         const checked = Inferno.render((<span></span>), container);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ checked } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+
 			Inferno.render((
 				<div>
 					<BasicComponent1b title="123" isChecked={ null } />
@@ -211,6 +224,21 @@ describe('DOM element tests (jsx)', () => {
 			Inferno.render((
 				<div>
 					<BasicComponent1 title='123' name={text} />
+				</div>
+			), container);
+			
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span>The title is <span>Hello!</span></span></div></div>'
+			);
+			
+			
+			const text1 = Inferno.render((<span id={null} class={345}>Hello!</span>), container);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1 title='123' name={text1} />
 				</div>
 			), container);
 			
