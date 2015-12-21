@@ -35,7 +35,7 @@ describe('DOM event tests (no-jsx)', () => {
             expect(container.innerHTML).to.equal('<div>Hello world!</div>');
         });
     });
-
+/*
    describe('should listen to a click event on a textarea, and return its value', () => {
         it('Initial render (creation)', () => {
             let worked;
@@ -61,7 +61,7 @@ describe('DOM event tests (no-jsx)', () => {
         });
 
     });
-
+*/
 
    describe('should listen to a click event on a checkbox, and return its true value', () => {
 
