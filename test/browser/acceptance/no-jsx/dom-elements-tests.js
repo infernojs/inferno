@@ -3633,6 +3633,22 @@ describe('DOM element tests (no-jsx)', () => {
                 '<div class="muffins"></div>'
             );
 
+            Inferno.render(template(), container);
+            expect(container.firstChild.getAttribute('class')).to.eql('');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(template(null), container);
+            expect(container.firstChild.getAttribute('class')).to.eql('');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
         });
         it('Second render (update)', () => {
             Inferno.render(template(true), container);
@@ -3649,6 +3665,19 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div class=""></div>'
             );
+            Inferno.render(template({}), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div class=""></div>'
+            );
+            Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
         });
         it('Fourth render (update)', () => {
             Inferno.render(template({}), container);
