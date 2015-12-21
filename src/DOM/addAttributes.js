@@ -1,6 +1,7 @@
 import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
+//import removeListener from './events/removeListener';  Where is this file???
 import setValueForStyles from './setValueForStyles';
 import { getValueWithIndex } from '../core/variables';
 
@@ -52,6 +53,7 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 		addDOMStaticAttributes(item, domNode, dynamicAttrs);
 		return;
 	}
+
 	let styleUpdates;
 	
 	for (let attrName in dynamicAttrs) {
@@ -76,34 +78,69 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 	}
 }
 
+function set(domNode, attrName, nextAttrVal, nextItem, styleUpdates) {
+
+    if (attrName === 'style') {
+
+        styleUpdates = nextAttrVal;
+
+    } else {
+
+        if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+            if (eventMapping[attrName]) {
+                addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+            } else {
+                template.setProperty(null, domNode, attrName, nextAttrVal, true);
+            }
+        }
+    }
+}
+
 export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
 	if (dynamicAttrs.index !== undefined) {
 		const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
 		return;
 	}
-	let styleUpdates;
 	
-	for (let attrName in dynamicAttrs) {
-		const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
-		const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
+	let styleUpdates;
 
-		if (lastAttrVal !== nextAttrVal) {
-			if (nextAttrVal !== undefined) {
-				if ( attrName === 'style') {
-					styleUpdates = nextAttrVal;
-				} else {
-					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
-						if (eventMapping[attrName]) {
-							addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
-						} else {
-							template.setProperty(null, domNode, attrName, nextAttrVal, true);
-						}
-					}
-			    }
-			}
+    for (let attrName in dynamicAttrs) {
+
+        const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
+        const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
+
+        if (lastAttrVal === nextAttrVal) {
+		      return;
 		}
-	}
+
+            if (nextAttrVal) {
+
+                if (!lastAttrVal || (lastAttrVal == null)) {
+                    if (nextAttrVal != null) {
+                        set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
+                    }
+
+                } else if (nextAttrVal == null) {
+
+                    if (attrName === 'style') {
+                        styleUpdates = null;
+                    } else {
+						if (eventMapping[attrName]) {
+							
+							// TODO! Find this file, include it and get this working!
+							//removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+						} else {
+                        template.removeProperty(null, domNode, attrName, true);
+						}
+                    }
+                } else if (lastAttrVal !== nextAttrVal) {
+
+                    set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
+                }
+            }
+    }
+
     if (styleUpdates != null) {
 		setValueForStyles(domNode, domNode, styleUpdates);
 	} else if (styleUpdates == null) {
