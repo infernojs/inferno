@@ -7,5 +7,5 @@ require('./browser/acceptance/jsx/dom-elements-tests'); // jsx dom-elements-test
 
 require('./browser/performance/render/vdom-bench-tests'); // benchmark
 // TODO let's add these when we have actual tests for them
-//require('./shared/inferno'); // shared
-//require('./node/inferno'); // node
+// require('./shared/inferno'); // shared
+// require('./node/inferno'); // node
