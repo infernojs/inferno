@@ -80,12 +80,6 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 
 function set(domNode, attrName, nextAttrVal, nextItem, styleUpdates) {
 
-    if (attrName === 'style') {
-
-        styleUpdates = nextAttrVal;
-
-    } else {
-
         if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
             if (eventMapping[attrName]) {
                 addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
@@ -93,7 +87,6 @@ function set(domNode, attrName, nextAttrVal, nextItem, styleUpdates) {
                 template.setProperty(null, domNode, attrName, nextAttrVal, true);
             }
         }
-    }
 }
 
 export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
@@ -133,9 +126,15 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 						}
                     }
                 } else if (lastAttrVal !== nextAttrVal) {
+    if (attrName === 'style') {
+
+        styleUpdates = nextAttrVal;
+
+    } else {
 
                     set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
                 }
+				}
             }
     }
 
