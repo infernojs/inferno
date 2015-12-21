@@ -4569,4 +4569,57 @@ describe('DOM element tests (no-jsx)', () => {
             );
         });
     });
+	
+	
+	 describe('should update a div it class attribute, and dynamic children with static text', () => {
+
+            const template = Inferno.createTemplate((child) => ({
+                tag: 'div',
+                attrs: {
+                    class: 'hello, world'
+                },
+                children: child
+            }));
+
+
+            it('first render - creation', () => {
+
+                const b = Inferno.createTemplate(() => ({
+                    tag: 'span',
+                    children: ['1', '2', '3', ]
+                }));
+
+                const span = Inferno.createTemplate((b) => ({
+                    tag: 'span',
+					
+					// Dominic! If 'b' is null, it should still create a span child and return. It doesn't!
+					
+                    children: b
+                }));
+
+                Inferno.render(template(span(b())), container);
+                
+				// THIS IS CORRECT
+                
+				expect(container.firstChild.nodeType).to.equal(1);
+                expect(container.firstChild.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.firstChild.firstChild.childNodes.length).to.equal(3);
+                expect(container.firstChild.tagName).to.equal('DIV');
+				
+                // STUDY THIS - I'm putting 'null' on the span() func. Meaning the span should have been a child, right?
+
+				Inferno.render(template(span(null)), container);
+
+                expect(container.innerHTML).to.equal(1);
+
+                // span is not NULL, should have been created as 1 child
+
+                expect(container.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.tagName).to.equal('DIV');
+                expect(container.firstChild.firstChild.tagName).to.equal('SPAN'); // Where is the SPAN ??
+				
+            });// JavaScript Document
+			
+  });
+	
 });
