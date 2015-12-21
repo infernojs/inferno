@@ -1,4 +1,5 @@
-dist/*
-node_modules/*
-**/node_modules/*
-config/**
+dist/
+node_modules/
+config/
+coverage/
+old_tests/
