@@ -2738,14 +2738,13 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div><div>Hello</div></div>'
             );
-
-            Inferno.render(template(span()), container);
+         // Dominic! This should ONLY unset the div child inside the span() temp function. As it is now, also the root node are removed.
+            Inferno.render(template(null), container);
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div><div>Hello</div></div>'
+                '<div></div>'
             );
-
         });
         it('second render - (update)', () => {
             const span = Inferno.createTemplate(() => ({
@@ -3566,6 +3565,41 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div class="noo1" id="yar1"><div id="yar3"><span>noo3</span></div><div class="noo2">yar2</div></div>'
             );
+			
+		   Inferno.render(template('yar1', null, 'yar2', 'noo2', 'yar3', null), container);
+
+		   expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		   expect(container.firstChild.getAttribute('class')).to.equal('noo1');
+           expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		   expect(container.firstChild.firstChild.textContent).to.equal('');
+		   expect(container.firstChild.firstChild.firstChild.textContent).to.equal('noo3');
+
+
+		   Inferno.render(template('yar1', 123, 'yar2', 'noo2', 'yar3', undefined), container);
+
+		   expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		   expect(container.firstChild.getAttribute('class')).to.equal('123');
+           expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		   expect(container.firstChild.firstChild.textContent).to.equal('');
+		   expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		   Inferno.render(template(null, null, null, null, null, null), container);
+
+		   expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		   expect(container.firstChild.getAttribute('class')).to.equal('');
+           expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		   expect(container.firstChild.firstChild.textContent).to.equal('');
+		   expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		   Inferno.render(template(undefined, undefined, undefined, undefined, undefined, undefined), container);
+
+		   expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		   expect(container.firstChild.getAttribute('class')).to.equal('');
+           expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		   expect(container.firstChild.firstChild.textContent).to.equal('');
+		   expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		   
         });
     });
 
