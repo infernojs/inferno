@@ -136,12 +136,73 @@ describe('DOM component tests (no-jsx)', () => {
 			 ).to.equal(
 				 '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
 			 );
+
 			 Inferno.render(template(BasicStatelessComponent1, 'abcd'), container);
 
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
 				 '<div><div class="basic"><span class="basic-render">The title is abcd</span></div></div>'
+			 );
+
+
+           const text = Inferno.createTemplate( function() { 
+                 return { text: '123abc' }
+           });
+
+
+			 Inferno.render(template(BasicStatelessComponent1, text), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is 123abc</span></div></div>'
+			 );
+
+           const text1 = Inferno.createTemplate( function() { 
+                return { tag:'span', children: { text: '123abc'} }
+           });
+
+
+			 Inferno.render(template(BasicStatelessComponent1, text1), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is <span>123abc</span></span></div></div>'
+			 );
+
+			 Inferno.render(template(BasicStatelessComponent1), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is </span></div></div>'
+			 );
+
+			 Inferno.render(template(undefined), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div></div>'
+			 );
+
+			 Inferno.render(template(BasicStatelessComponent1), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is </span></div></div>'
+			 );
+			 
+			 
+			 Inferno.render(template('123', null), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is </span></div></div>'
 			 );
 
 		 });
@@ -153,6 +214,27 @@ describe('DOM component tests (no-jsx)', () => {
 			 ).to.equal(
 				 '<div><div class="basic"><span class="basic-render">The title is 123</span></div></div>'
 			 );
+
+           const text1 = Inferno.createTemplate( function() { 
+                 return { tag:'span', children: { text: '123abc'} }
+           });
+
+
+			 Inferno.render(template(BasicStatelessComponent1, text1), container);
+
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div><div class="basic"><span class="basic-render">The title is <span>123abc</span></span></div></div>'
+			 );
+
+			 Inferno.render(template(null, '123'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 ''
+			 );
+
 		 });
 	 });
 
