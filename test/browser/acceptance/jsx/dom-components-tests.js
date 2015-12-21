@@ -205,6 +205,32 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
 			);
+			
+			const text = Inferno.render((<span>Hello!</span>), container);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1 title='123' name={text} />
+				</div>
+			), container);
+			
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span>The title is <span>Hello!</span></span></div></div>'
+			);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1 title='123' name={[]} />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span>The title is 123</span></div></div>'
+			);
+
 		});
 	});
 
