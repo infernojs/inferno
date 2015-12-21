@@ -215,6 +215,18 @@ describe('DOM SVG tests (no-jsx)', () => {
 				).to.equal(
 					'<svg xmlns="http://www.w3.org/2000/svg"></svg>'
 				);
+				Inferno.render(template(), container);
+
+				expect(container.firstChild.tagName.toLowerCase()).to.eql("svg");
+				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+				expect(container.firstChild.getAttribute("xmlns")).to.eql("http://www.w3.org/2000/svg");
+				expect(container.firstChild.getAttribute("class")).to.eql(null);
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+				);
+
 			});
 		});
 
