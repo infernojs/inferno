@@ -4618,7 +4618,64 @@ describe('DOM element tests (no-jsx)', () => {
                 expect(container.firstChild.tagName).to.equal('DIV');
                 expect(container.firstChild.firstChild.tagName).to.equal('SPAN'); // Where is the SPAN ??
 				
-            });// JavaScript Document
+            });
+			
+			it('second render - update', () => {
+
+                const b = Inferno.createTemplate(() => ({
+                    tag: 'circle',
+                    children: ['1', '3', '1', ]
+                }));
+
+                const span = Inferno.createTemplate((b) => ({
+                    tag: 'svg',
+                    children: b
+                }));
+
+                Inferno.render(template(span(b())), container);
+
+                expect(container.firstChild.nodeType).to.equal(1);
+                expect(container.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.firstChild.firstChild.childNodes.length).to.equal(3);
+                expect(container.firstChild.tagName).to.equal('DIV');
+
+            });
+
+            it('Third render - update', () => {
+
+                const b = Inferno.createTemplate(() => ({
+                    text: 5467
+                }));
+
+                const span = Inferno.createTemplate((b) => ({
+                    tag: 'a',
+
+                    attrs: {
+                        id: 'fooBar',
+						className: 'foo'
+                    },
+
+                    children: b
+                }));
+
+                Inferno.render(template(span(b())), container);
+
+                expect(container.firstChild.nodeType).to.equal(1);
+                expect(container.firstChild.tagName).to.equal('DIV');
+                expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('id')).to.equal('fooBar');
+				expect(container.firstChild.firstChild.textContent).to.equal('123');				
+								
+				  Inferno.render(template(span(b())), container);
+
+                expect(container.firstChild.nodeType).to.equal(1);
+                expect(container.firstChild.tagName).to.equal('DIV');
+                expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('id')).to.equal('fooBar');
+				expect(container.firstChild.firstChild.getAttribute('class')).to.equal('foo');
+				expect(container.firstChild.firstChild.textContent).to.equal('5467');				
+
+            });
 			
   });
 	
