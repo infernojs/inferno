@@ -11,7 +11,7 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
-		    '../test/browser/**/*.js',
+            '../test/browser/**/*.js',
             '../test/shared/**/*.js'
         ],
         // list of files to exclude
@@ -46,21 +46,12 @@ module.exports = function(config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['mocha', 'coverage'],
+        reporters: ['mocha', 'coverage', 'coveralls'],
 
         coverageReporter: {
-            reporters: [{
-                type: 'html',
-                dir: '../coverage'
-            }, {
-                type: 'text',
-                dir: '../coverage'
-            }, {
-                type: 'lcov',
-                dir: '../coverage'
-            }]
+            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files 
+            dir: 'coverage/'
         },
-
         browsers: ['Chrome'],
         // custom launchers
         customLaunchers: {
