@@ -532,7 +532,15 @@
       'xlink:type': xlink,
       'xml:base': xml,
       'xml:lang': xml,
-      'xml:space': xml
+      'xml:space': xml,
+      // React compat for non-working JSX namespace support
+      xlinkActuate: xlink,
+      xlinkArcrole: xlink,
+      xlinkHref: xlink,
+      xlinkRole: xlink,
+      xlinkShow: xlink,
+      xlinkTitle: xlink,
+      xlinkType: xlink
   };
 
   var DOMAttributeNames = {
@@ -540,6 +548,7 @@
       className: 'class',
       htmlFor: 'for',
       httpEquiv: 'http-equiv',
+      // React compat for non-working JSX namespace support
       xlinkActuate: 'xlink:actuate',
       xlinkArcrole: 'xlink:arcrole',
       xlinkHref: 'xlink:href',
@@ -547,6 +556,7 @@
       xlinkShow: 'xlink:show',
       xlinkTitle: 'xlink:title',
       xlinkType: 'xlink:type',
+      // others...
       xmlBase: 'xml:base',
       xmlLang: 'xml:lang',
       xmlSpace: 'xml:space',
@@ -626,6 +636,21 @@
       itemScope: BOOLEAN, // 3.2.5 - Global attributes
       className: null,
       tabindex: PROPERTY | NUMERIC_VALUE,
+
+      /**
+       * React compat for non-working JSX namespace support
+       */
+
+      xlinkActuate: null,
+      xlinkArcrole: null,
+      xlinkHref: null,
+      xlinkRole: null,
+      xlinkShow: null,
+      xlinkTitle: null,
+      xlinkType: null,
+      xmlBase: null,
+      xmlLang: null,
+      xmlSpace: null,
 
       /**
        * Numeric attributes
@@ -1647,7 +1672,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1656,7 +1681,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1727,7 +1752,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1736,7 +1761,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1786,7 +1811,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
   	var keyedChildren = true;
@@ -1797,7 +1822,7 @@
   		create: function create(item, treeLifecycle) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1981,7 +2006,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
   	var node = {
@@ -1989,7 +2014,7 @@
   		keyedPool: [],
   		create: function create(item, treeLifecycle) {
   			var domNode = undefined;
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2136,7 +2161,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
   	var node = {
@@ -2144,7 +2169,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2573,11 +2598,13 @@
   						nextRender.parent = currentItem;
   						var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
 
-  						lastRender = nextRender;
   						if (newDomNode) {
   							domNode = newDomNode;
   							lastRender.rootNode = domNode;
+  							lastRender = nextRender;
   							return domNode;
+  						} else {
+  							lastRender = nextRender;
   						}
   					};
   				}
@@ -2590,6 +2617,7 @@
 
   			if (!Component) {
   				recreateRootNode$1(domNode, nextItem, node, treeLifecycle);
+  				lastRender.rootNode = domNode;
   				return domNode;
   			}
   			if (typeof Component === 'function') {
@@ -2600,10 +2628,13 @@
   					nextRender.parent = currentItem;
   					var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
 
-  					lastRender = nextRender;
   					if (newDomNode) {
   						domNode = newDomNode;
+  						lastRender.rootNode = domNode;
+  						lastRender = nextRender;
   						return domNode;
+  					} else {
+  						lastRender = nextRender;
   					}
   				} else {
   					if (!instance || Component !== instance.constructor) {
@@ -2697,6 +2728,8 @@
   	return node;
   }
 
+  var invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+
   function createStaticAttributes(node, domNode, excludeAttrs) {
       var attrs = node.attrs;
 
@@ -2782,7 +2815,7 @@
 
               if (text != null) {
                   if (children != null) {
-                      throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+                      throw Error(invalidTemplateError);
                   }
                   staticNode.textContent = text;
               } else {
@@ -2794,6 +2827,9 @@
           } else if (node.text) {
               staticNode = document.createTextNode(node.text);
           }
+      }
+      if (staticNode === undefined) {
+          throw Error(invalidTemplateError);
       }
       if (parentNode === null) {
           return staticNode;
@@ -2808,14 +2844,14 @@
       var templateNode = undefined;
 
       if (isArray(schema)) {
-          throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+          throw Error(invalidTemplateError);
       }
 
       if (!dynamicFlags) {
           templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
 
           if (!templateNode) {
-              throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+              throw Error(invalidTemplateError);
           }
 
           if (isRoot) {
