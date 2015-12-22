@@ -1,9 +1,4 @@
 @echo off
-REM usage:
-REM http://stackoverflow.com/questions/9385899/separate-tokens-in-batch-file
-REM http://stackoverflow.com/questions/14952295/set-output-of-a-command-as-a-variable-with-pipes/25954264#25954264
-REM http://stackoverflow.com/questions/2763875/batch-file-include-external-file-for-variables
-REM http://stackoverflow.com/questions/10149194/something-like-a-function-method-in-batch-files/31165500#31165500
 setlocal
 
 REM echo DEBUG: dotenv_config_path=%dotenv_config_path%
