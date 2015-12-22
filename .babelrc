@@ -13,5 +13,5 @@
         }
     },
     /* Add plugins here**/
-    "plugins": ["babel-plugin-syntax-jsx", "syntax-object-rest-spread", "transform-object-rest-spread", "babel-plugin-inferno"]
+    "plugins": ["babel-plugin-syntax-jsx", "babel-plugin-inferno"]
 }
