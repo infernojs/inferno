@@ -28,12 +28,7 @@ install:
   - npm install
    
 notifications:
-   email:
-        recipients:
-		    - dg@domgan.com
-            - kflash123@gmail.com
-        on_success: change
-        on_failure: always
+  email: true
 
   after_script:
 # Upload to coveralls, but don't _fail_ if coveralls is down.
