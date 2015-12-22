@@ -76,7 +76,6 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 					if (domNode !== null) {
 						const childNode = document.createTextNode('');
 						domNode.replaceChild(childNode, domNode.firstChild);
-						nextItem.rootNode = childNode;
 					}
 				} else if (isArray(nextValue)) {
 					if (isArray(lastValue)) {
@@ -86,22 +85,22 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle);
 						}
 					} else {
-						// TODO
+						// do nothing for now!
 					}
 				} else if (typeof nextValue === 'object') {
 					const tree = nextValue.domTree;
 
 					if (tree != null) {
 						if (lastValue != null) {
-							if (lastValue.domTree !== null) {
+							if (lastValue.domTree != null) {
 								tree.update(lastValue, nextValue, treeLifecycle);
 							} else {
-								// TODO implement
+								recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+								return;
 							}
 						} else {
-							debugger;
 							const childNode = tree.create(nextValue, treeLifecycle);
-							domNode.appendChild(childNode);
+							domNode.replaceChild(childNode, domNode.firstChild);
 						}
 					}
 				} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
