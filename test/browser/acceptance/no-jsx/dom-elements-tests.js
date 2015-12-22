@@ -399,7 +399,7 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                ''
+                '<div></div>'
             );
 
             Inferno.render(div(null), container);
@@ -407,7 +407,7 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                ''
+                '<div></div>'
             );
         });
     });
@@ -2738,7 +2738,6 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div><div>Hello</div></div>'
             );
-         // Dominic! This should ONLY unset the div child inside the span() temp function. As it is now, also the root node are removed.
             Inferno.render(template(null), container);
             expect(
                 container.innerHTML
@@ -2893,7 +2892,7 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div>Good bye!</div>'
+	            '<div><span>Good bye!</span></div>'
             );
 
         });
@@ -2953,8 +2952,7 @@ describe('DOM element tests (no-jsx)', () => {
             Inferno.render(template(null), container);
             expect(container.firstChild.innerHTML).to.equal('');
 
-
-     const spanWithChildren = Inferno.createTemplate(function() {
+            const spanWithChildren = Inferno.createTemplate(function() {
                 return {
                     tag: 'span',
                     children: {
@@ -2967,10 +2965,9 @@ describe('DOM element tests (no-jsx)', () => {
 						}
                 };
             });
+	        debugger;
             Inferno.render(template(spanWithChildren()), container);
             expect(container.firstChild.innerHTML).to.equal('<span><dominic id="foo"><span>Hello</span></dominic></span>');
-
-
         });
 
         it('second render - (update)', () => {

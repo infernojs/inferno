@@ -51,7 +51,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				if (typeof nextValue === 'string') {
 					domNode.firstChild.nodeValue = nextValue;
 				} else if (nextValue == null) {
-					domNode.parentNode.removeChild(domNode);
+					domNode.removeChild(domNode.firstChild);
 				} else if (isArray(nextValue)) {
 					if (isArray(lastValue)) {
 						if (keyedChildren) {
@@ -65,7 +65,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				} else if (typeof nextValue === 'object') {
 					const tree = nextValue.domTree;
 
-					if (tree !== null) {
+					if (tree != null) {
 						if (lastValue.domTree !== null) {
 							tree.update(lastValue, nextValue, treeLifecycle);
 						} else {
