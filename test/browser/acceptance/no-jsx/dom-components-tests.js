@@ -706,6 +706,33 @@ describe('DOM component tests (no-jsx)', () => {
 			 );
 
 		 });
+		 
+		 it('Third render (update)', () => {
+
+            const text1 = Inferno.createTemplate(() => {
+                return {
+                    tag: 'span',
+                    text: null
+                }
+            });
+
+            expect(
+                () => Inferno.render(template(BasicStatelessComponent1, text1), container)
+            ).to.throw;
+        });
+
+		  it('Fourth render (update)', () => {
+
+            const text1 = Inferno.createTemplate(() => {
+                return {
+                    tag: 'span'
+                }
+            });
+
+            expect(
+                () => Inferno.render(template(BasicStatelessComponent1, text1), container)
+            ).to.throw;
+        });
 	 });
 
 	class BasicComponent2 extends Inferno.Component {
