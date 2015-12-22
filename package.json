@@ -52,7 +52,7 @@
     "mkdirp": "^0.5.1",
     "pre-commit": "^1.1.2",
     "zen-observable": "^0.1.9",
-	"rimraf": "^2.4.2",
+	"rimraf": "^2.4.4",
 	"dotenv": "^1.2.0"
   },
   "files": [
