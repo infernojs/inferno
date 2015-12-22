@@ -218,7 +218,7 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
 			);
-			
+
 			const text = Inferno.render((<span>Hello!</span>), container);
 
 			Inferno.render((
@@ -226,14 +226,14 @@ describe('DOM element tests (jsx)', () => {
 					<BasicComponent1 title='123' name={text} />
 				</div>
 			), container);
-			
+
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div><div class="basic"><span>The title is <span>Hello!</span></span></div></div>'
 			);
-			
-			
+
+
 			const text1 = Inferno.render((<span id={null} class={345}>Hello!</span>), container);
 
 			Inferno.render((
@@ -241,7 +241,7 @@ describe('DOM element tests (jsx)', () => {
 					<BasicComponent1 title='123' name={text1} />
 				</div>
 			), container);
-			
+
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -431,6 +431,31 @@ describe('DOM element tests (jsx)', () => {
 				container.innerHTML
 			).to.equal(
 				'<div><span>The title is styles are removed!</span></div>'
+			);
+		});
+	});
+
+	describe('should render a basic component with SVG', () => {
+		class Component extends Inferno.Component {
+			constructor(props) {
+				super(props);
+			}
+			render() {
+				return (
+					<svg class="alert-icon">
+						<use xlinkHref="#error"></use>
+					</svg>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(<Component />, container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding: 20px;"><span style="color: red; padding: 20px;">The title is styled!</span></div>'
 			);
 		});
 	});
