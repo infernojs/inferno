@@ -455,7 +455,7 @@ describe('DOM element tests (jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: red; padding: 20px;"><span style="color: red; padding: 20px;">The title is styled!</span></div>'
+				'<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>'
 			);
 		});
 	});
