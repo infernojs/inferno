@@ -38,8 +38,9 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 		},
 		update(lastItem, nextItem, treeLifecycle) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-				return;
+				const newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+				nextItem.rootNode = newDomNode;
+				return newDomNode;
 			}
 			const domNode = lastItem.rootNode;
 
@@ -48,7 +49,11 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						subTree.update(lastItem, nextItem, treeLifecycle);
+						const newDomNode = subTree.update(lastItem, nextItem, treeLifecycle);
+
+						if(newDomNode && domNode.childNodes[i] !== newDomNode) {
+							domNode.replaceChild(newDomNode, domNode.childNodes[i]);
+						}
 					}
 				} else if (typeof subTreeForChildren === 'object') {
 					const newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle);

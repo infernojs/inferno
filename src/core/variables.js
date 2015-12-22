@@ -8,7 +8,8 @@ export const ValueTypes = {
 	TEXT: 0,
 	ARRAY: 1,
 	TREE: 2,
-	EMPTY_OBJECT: 3
+	EMPTY_OBJECT: 3,
+	FUNCTION: 4
 };
 
 export function createVariable(index) {
@@ -31,6 +32,8 @@ export function getTypeFromValue(value) {
 		return ValueTypes.TREE;
 	} else if (typeof value === 'object' && Object.keys(value).length === 0) {
 		return ValueTypes.EMPTY_OBJECT;
+	} else if (typeof value === 'function') {
+		return ValueTypes.FUNCTION;
 	}
 }
 

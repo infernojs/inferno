@@ -37,6 +37,9 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 				case ValueTypes.EMPTY_OBJECT:
 					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 					break;
+				case ValueTypes.FUNCTION:
+					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+					break;
 				default: break;
 			}
 

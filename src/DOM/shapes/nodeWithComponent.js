@@ -48,8 +48,14 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 						const nextRender = instance.render();
 
 						nextRender.parent = currentItem;
-						nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+						const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+
 						lastRender = nextRender;
+						if (newDomNode) {
+							domNode = newDomNode;
+							lastRender.rootNode = domNode;
+							return domNode;
+						}
 					};
 				}
 			}
@@ -61,7 +67,7 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 
 			if (!Component) {
 				recreateNode(domNode, nextItem, node, treeLifecycle);
-				return;
+				return domNode;
 			}
 			if (typeof Component === 'function') {
 				//stateless component
@@ -69,19 +75,24 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 					const nextRender = Component(getValueForProps(props, nextItem));
 
 					nextRender.parent = currentItem;
-					nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+					const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+
 					lastRender = nextRender;
+					if (newDomNode) {
+						domNode = newDomNode;
+						return domNode;
+					}
 				} else {
 					if (!instance || Component !== instance.constructor) {
 						recreateNode(domNode, nextItem, node, treeLifecycle);
-						return;
+						return domNode;
 					}
 					const prevProps = instance.props;
 					const prevState = instance.state;
 					const nextState = instance.state;
 					const nextProps = getValueForProps(props, nextItem);
 
-					updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+					return updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
 				}
 			}
 		},
