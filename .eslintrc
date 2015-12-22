@@ -75,7 +75,6 @@
       "builtinGlobals":true
     }],
     "no-return-assign": [2, "except-parens"],
-    "no-self-compare": 2,
     "no-with": 2,
     "radix": 2,
     "vars-on-top": 2,
@@ -103,7 +102,9 @@
     "lines-around-comment": [2, {
       "beforeBlockComment": true,
       "allowBlockStart": true,
-      "allowBlockEnd": true
+      "allowBlockEnd": true,
+      "allowObjectStart": true,
+      "allowObjectEnd": true
     }],
     "linebreak-style": [2, "unix"],
     "new-cap": [2, {
@@ -124,7 +125,6 @@
       "arraysInObjects": true,
       "objectsInObjects": true
       }],
-    "operator-linebreak": [2, "before"],
     "padded-blocks": [2, "never"],
     "quote-props": [2, "as-needed"],
     "quotes": [2, "single", "avoid-escape"],
