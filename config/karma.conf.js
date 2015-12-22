@@ -49,8 +49,16 @@ module.exports = function(config) {
         reporters: ['mocha', 'coverage'],
 
         coverageReporter: {
-            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files 
-            dir: 'coverage/'
+            reporters: [{
+                type: 'html',
+                dir: '../coverage'
+            }, {
+                type: 'text',
+                dir: '../coverage'
+            }, {
+                type: 'lcov',
+                dir: '../coverage'
+            }]
         },
         browsers: ['Chrome'],
         // custom launchers
