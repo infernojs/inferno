@@ -28,12 +28,12 @@ module.exports = function(config) {
             module: {
                 postLoaders: [{
                     test: /\.js$/,
-                    exclude: /(test|node_modules|dist)\//,
+                    exclude: /test|node_modules\/dist/,
                     loader: 'isparta-instrumenter-loader'
                 }],
                 loaders: [{
                     test: /\.js$/,
-                    exclude: /(node_modules|bower_components)\//,
+                    exclude: /node_modules\/dist/,
                     loader: 'babel-loader'
                 }]
             }
