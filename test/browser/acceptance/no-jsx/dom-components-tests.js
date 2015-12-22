@@ -210,6 +210,49 @@ describe('DOM component tests (no-jsx)', () => {
 				 ''
 			 );
 		 });
+		 
+		  it('Third render (update)', () => {
+
+            const text1 = Inferno.createTemplate(() => {
+                return {
+                    tag: 'span',
+                    children: {
+                        text: null
+                    }
+                }
+            });
+
+            expect(
+                () => Redric.render(template(BasicStatelessComponent1, text1), container)
+            ).to.throw;
+        });
+
+		  it('Fourth render (update)', () => {
+
+            const text1 = Inferno.createTemplate(() => {
+                return {
+                    tag: 'span',
+                    text: null
+                }
+            });
+
+            expect(
+                () => Redric.render(template(BasicStatelessComponent1, text1), container)
+            ).to.throw;
+        });
+
+		  it('Fifth render (update)', () => {
+
+            const text1 = Inferno.createTemplate(() => {
+                return {
+                    tag: 'span'
+                }
+            });
+
+            expect(
+                () => Redric.render(template(BasicStatelessComponent1, text1), container)
+            ).to.throw;
+        });
 	 });
 
 	 //describe('should render a basic stateless component with a render stream', () => {
