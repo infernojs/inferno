@@ -27,6 +27,8 @@ import {
 }
 from './addAttributes';
 
+const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+
 function createStaticAttributes(node, domNode, excludeAttrs) {
     const attrs = node.attrs;
 
@@ -113,7 +115,7 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
 
             if (text != null) {
                 if (children != null) {
-                    throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+                    throw Error(invalidTemplateError);
                 }
                 staticNode.textContent = text;
             } else {
@@ -125,6 +127,9 @@ function createStaticTreeNode(node, parentNode, domNamespace, schema) {
         } else if (node.text) {
             staticNode = document.createTextNode(node.text);
         }
+    }
+    if (staticNode === undefined) {
+        throw Error(invalidTemplateError);
     }
     if (parentNode === null) {
         return staticNode;
@@ -139,14 +144,14 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
     let templateNode;
 
 	if (isArray(schema)) {
-		throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+		throw Error(invalidTemplateError);
 	}
 
     if (!dynamicFlags) {
 		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
 
 		if (!templateNode) {
-			throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+			throw Error(invalidTemplateError);
 		}
 
         if (isRoot) {

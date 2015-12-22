@@ -50,11 +50,13 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 						nextRender.parent = currentItem;
 						const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
 
-						lastRender = nextRender;
 						if (newDomNode) {
 							domNode = newDomNode;
 							lastRender.rootNode = domNode;
+							lastRender = nextRender;
 							return domNode;
+						} else {
+							lastRender = nextRender;
 						}
 					};
 				}
@@ -67,6 +69,7 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 
 			if (!Component) {
 				recreateNode(domNode, nextItem, node, treeLifecycle);
+				lastRender.rootNode = domNode;
 				return domNode;
 			}
 			if (typeof Component === 'function') {
@@ -77,10 +80,13 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 					nextRender.parent = currentItem;
 					const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
 
-					lastRender = nextRender;
 					if (newDomNode) {
 						domNode = newDomNode;
+						lastRender.rootNode = domNode;
+						lastRender = nextRender;
 						return domNode;
+					} else {
+						lastRender = nextRender;
 					}
 				} else {
 					if (!instance || Component !== instance.constructor) {

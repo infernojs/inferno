@@ -162,7 +162,6 @@ describe('DOM component tests (no-jsx)', () => {
 				 '<div><div class="basic"><span class="basic-render">The title is </span></div></div>'
 			 );
 
-			 debugger;
 			 Inferno.render(template(undefined), container);
 			 expect(
 				 container.innerHTML
@@ -191,44 +190,33 @@ describe('DOM component tests (no-jsx)', () => {
 			 ).to.equal(
 				 '<div><div class="basic"><span class="basic-render">The title is 123</span></div></div>'
 			 );
-
 	         const text1 = Inferno.createTemplate( function() {
                 return { tag:'span', children: { text: '123abc'} }
 	         });
 
-			 Inferno.render(template(BasicStatelessComponent1, text1), container);
 			 expect(
-				 container.innerHTML
-			 ).to.equal(
-				 '<div><div class="basic"><span class="basic-render">The title is <span>123abc</span></span></div></div>'
-			 );
-
+				 () => Inferno.render(template(BasicStatelessComponent1, text1), container)
+			 ).to.throw;
 			 Inferno.render(template(null, '123'), container);
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
-				 ''
+				 '<div></div>'
 			 );
 		 });
-		 
-		  it('Third render (update)', () => {
-
-            const text1 = Inferno.createTemplate(() => {
-                return {
-                    tag: 'span',
-                    children: {
-                        text: null
-                    }
-                }
-            });
-
+		 it('Third render (update)', () => {
             expect(
-                () => Redric.render(template(BasicStatelessComponent1, text1), container)
+                () => Inferno.createTemplate(() => {
+	                return {
+		                tag: 'span',
+		                children: {
+			                text: null
+		                }
+	                }
+                })
             ).to.throw;
         });
-
-		  it('Fourth render (update)', () => {
-
+		 it('Fourth render (update)', () => {
             const text1 = Inferno.createTemplate(() => {
                 return {
                     tag: 'span',
@@ -237,12 +225,10 @@ describe('DOM component tests (no-jsx)', () => {
             });
 
             expect(
-                () => Redric.render(template(BasicStatelessComponent1, text1), container)
+                () => Inferno.render(template(BasicStatelessComponent1, text1), container)
             ).to.throw;
         });
-
-		  it('Fifth render (update)', () => {
-
+		 it('Fifth render (update)', () => {
             const text1 = Inferno.createTemplate(() => {
                 return {
                     tag: 'span'
@@ -250,7 +236,7 @@ describe('DOM component tests (no-jsx)', () => {
             });
 
             expect(
-                () => Redric.render(template(BasicStatelessComponent1, text1), container)
+                () => Inferno.render(template(BasicStatelessComponent1, text1), container)
             ).to.throw;
         });
 	 });
