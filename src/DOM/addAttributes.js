@@ -79,14 +79,13 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
 }
 
 function set(domNode, attrName, nextAttrVal, nextItem, styleUpdates) {
-
-        if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
-            if (eventMapping[attrName]) {
-                addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
-            } else {
-                template.setProperty(null, domNode, attrName, nextAttrVal, true);
-            }
+    if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+        if (eventMapping[attrName]) {
+            addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+        } else {
+            template.setProperty(null, domNode, attrName, nextAttrVal, true);
         }
+    }
 }
 
 export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
@@ -95,25 +94,18 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
 		return;
 	}
-	
 	let styleUpdates;
 
     for (let attrName in dynamicAttrs) {
-
         const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
         const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-
-        if (nextAttrVal) {
-
+        if (nextAttrVal !== undefined) {
             if (!lastAttrVal || (lastAttrVal == null)) { // Is this hit?
                 if (nextAttrVal != null) {
-
                     set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
                 }
-
             } else if (nextAttrVal == null) {
-
                 if (attrName === 'style') {
                       styleUpdates = null;
                 } else {
@@ -131,9 +123,8 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
                 }
             }
         }
-		
-		if (lastAttrVal) {
-		if ((!nextAttrVal
+		if (lastAttrVal !== undefined) {
+			if ((nextAttrVal === undefined
                 || !(attrName !== nextAttrVal)) && (lastAttrVal != null)) {
                 // remove attrs
                  if (eventMapping[attrName]) {
