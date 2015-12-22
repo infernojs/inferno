@@ -40,7 +40,8 @@
 	"rollup-plugin-commonjs": "^1.4.0",
     "uglify-js": "^2.6.1",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.14.0",
+	"isparta": "^4.0.0"
   },
   "dependencies": {
     "babel-core": "^6.3.21",
@@ -94,7 +95,8 @@
     "preversion": "[[ -z $(git status --porcelain) ]] && npm run build && git add -A dist && git commit -m 'Build lib'",
     "postpublish": "git push origin master --follow-tags",
 	"check_env:mac": "node check_env.js",
-    "check_env:win": "set NODE_ENV=development && node check_env.js"
+    "check_env:win": "set NODE_ENV=development && node check_env.js",
+	"coverage:node": "babel-node node_modules/isparta/bin/isparta cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/node/**/*.js"
 
   }
 }
