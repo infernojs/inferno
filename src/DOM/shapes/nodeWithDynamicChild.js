@@ -1,76 +1,79 @@
 import isArray from '../../util/isArray';
+import isVoid from '../../util/isVoid';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
-export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
+export default function createNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs ) {
 	let domNode;
 	const node = {
-		create(item, treeLifecycle) {
-			domNode = templateNode.cloneNode(false);
-			const value = getValueWithIndex(item, valueIndex);
+		create( item, treeLifecycle ) {
+			domNode = templateNode.cloneNode( false );
+			const value = getValueWithIndex( item, valueIndex );
 
-			if (value != null) {
-				if (isArray(value)) {
-					for (let i = 0; i < value.length; i++) {
+			if ( !isVoid( value ) ) {
+				if ( isArray( value ) ) {
+					for ( let i = 0; i < value.length; i++ ) {
 						const childItem = value[i];
 
-						if (typeof childItem === 'object') {
-							domNode.appendChild(childItem.domTree.create(childItem, treeLifecycle));
-						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
-							const textNode = document.createTextNode(childItem);
-							domNode.appendChild(textNode);
+						if ( typeof childItem === 'object' ) {
+							domNode.appendChild( childItem.domTree.create( childItem, treeLifecycle ) );
+						} else if ( typeof childItem === 'string' || typeof childItem === 'number' ) {
+							const textNode = document.createTextNode( childItem );
+
+							domNode.appendChild( textNode );
 						}
 					}
-				} else if (typeof value === 'object') {
-					domNode.appendChild(value.domTree.create(value, treeLifecycle));
-				} else if (typeof value === 'string' || typeof value === 'number') {
+				} else if ( typeof value === 'object' ) {
+					domNode.appendChild( value.domTree.create( value, treeLifecycle ) );
+				} else if ( typeof value === 'string' || typeof value === 'number' ) {
 					domNode.textContent = value;
 				}
 			}
-			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+			if ( dynamicAttrs ) {
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs );
 			}
 			return domNode;
 		},
-		update(lastItem, nextItem, treeLifecycle) {
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
-			const lastValue = getValueWithIndex(lastItem, valueIndex);
+		update( lastItem, nextItem, treeLifecycle ) {
+			const nextValue = getValueWithIndex( nextItem, valueIndex );
+			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if (nextValue !== lastValue) {
-				if (typeof nextValue === 'string') {
+			if ( nextValue !== lastValue ) {
+				if ( typeof nextValue === 'string' ) {
 					domNode.firstChild.nodeValue = nextValue;
-				} else if (nextValue === null) {
+				} else if ( nextValue === null ) {
 					// TODO
-				} else if (isArray(nextValue)) {
-					if (isArray(lastValue)) {
-						updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle);
+				} else if ( isArray( nextValue ) ) {
+					if ( isArray( lastValue ) ) {
+						updateKeyed( nextValue, lastValue, domNode, null, treeLifecycle );
 					} else {
-						//debugger;
+						// debugger;
 					}
-				} else if (typeof nextValue === 'object') {
+				} else if ( typeof nextValue === 'object' ) {
 					const tree = nextValue.domTree;
 
-					if (tree !== null) {
-						if (lastValue.domTree !== null) {
-							tree.update(lastValue, nextValue, treeLifecycle);
+					if ( tree !== null ) {
+						if ( lastValue.domTree !== null ) {
+							tree.update( lastValue, nextValue, treeLifecycle );
 						} else {
 							// TODO implement
 						}
 					}
-				} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
+				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
 					domNode.firstChild.nodeValue = nextValue;
 				}
 			}
-			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+			if ( dynamicAttrs ) {
+				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-    remove(item, treeLifecycle) {
-      const value = getValueWithIndex(item, valueIndex);
+		remove( item, treeLifecycle ) {
+			const value = getValueWithIndex( item, valueIndex );
 
-      removeValueTree(value, treeLifecycle);
-    }
+			removeValueTree( value, treeLifecycle );
+		}
 	};
+
 	return node;
 }

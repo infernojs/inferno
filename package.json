@@ -74,7 +74,6 @@
     "test": "npm run test:server && npm run test:browser",
     "lint": "eslint .",
     "lint:source": "eslint ./src",
-    "lint:fix": "eslint --fix ./src",
     "lint:shared": "eslint ./test/shared",
     "lint:server": "eslint ./test/server",
     "lint:browser": "eslint ./test/browser",

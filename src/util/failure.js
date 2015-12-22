@@ -1,30 +1,28 @@
-let failure = function() {};
+let failure = function () {};
 
-if (process.env.NODE_ENV !== 'production') {
-	
-  failure = function (condition, format, ...args) {
+if ( process.env.NODE_ENV !== 'production' ) {
 
-    if (format === undefined) {
-      throw new Error('`Error(condition, format, ...args)` requires a failure ' + 'message argument');
-    }
+	failure = function ( condition, format, ...args ) {
 
-    if (!condition) {
-      
-	  let argIndex = 0;
-      
-	  const message = 'Error: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-	  
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      
-	  try {
-        throw new Error(message);
-      } catch (x) {}
-    }
-  };
+		if ( format === undefined ) {
+			throw new Error( '`Error(condition, format, ...args)` requires a failure ' + 'message argument' );
+		}
+
+		if ( !condition ) {
+			let argIndex = 0;
+			const message = 'Error: ' + format.replace( /%s/g, function () {
+				return args[argIndex++];
+			} );
+
+			if ( typeof console !== 'undefined' ) {
+				console.error( message );
+			} try {
+				throw new Error( message );
+			} catch ( x ) {
+				// noop
+			}
+		}
+	};
 }
 
 export default failure;

@@ -1,58 +1,62 @@
-function stopPropagation() {
-	this._isPropagationStopped = true;
-	if (this._stopPropagation) {
-		this._stopPropagation();
-	} else {
-		this.cancelBubble = true;
+const CustomEvent = {
+
+	stopPropagation() {
+		this._isPropagationStopped = true;
+		if ( this._stopPropagation ) {
+			this._stopPropagation();
+		} else {
+			this.cancelBubble = true;
+		}
+	},
+
+	isPropagationStopped() {
+		return this._isPropagationStopped;
+	},
+
+	stopImmediatePropagation() {
+		this._isImmediatePropagationStopped = true;
+		this._isPropagationStopped = true;
+		if ( this._stopImmediatePropagation ) {
+			this._stopImmediatePropagation();
+		} else {
+			this.cancelBubble = true;
+		}
+	},
+
+	isImmediatePropagationStopped() {
+		return this._isImmediatePropagationStopped;
+	},
+
+	preventDefault() {
+		this._isDefaultPrevented = true;
+
+		if ( this._preventDefault ) {
+			this._preventDefault();
+		} else {
+			this.returnValue = false;
+		}
+	},
+
+	isDefaultPrevented() {
+		return this._isDefaultPrevented;
 	}
-}
 
-function isPropagationStopped() {
-	return this._isPropagationStopped;
-}
+};
 
-function stopImmediatePropagation() {
-	this._isImmediatePropagationStopped = true;
-	this._isPropagationStopped = true;
-	if (this._stopImmediatePropagation) {
-		this._stopImmediatePropagation();
-	} else {
-		this.cancelBubble = true;
-	}
-}
-
-function isImmediatePropagationStopped() {
-	return this._isImmediatePropagationStopped;
-}
-
-function preventDefault() {
-	this._isDefaultPrevented = true;
-
-	if (this._preventDefault) {
-		this._preventDefault();
-	} else {
-		this.returnValue = false;
-	}
-}
-
-function isDefaultPrevented() {
-	return this._isDefaultPrevented;
-}
-
-function eventInterface(nativeEvent) {
+function eventInterface( nativeEvent ) {
 
 	// Extend nativeEvent
 	nativeEvent._stopPropagation = nativeEvent.stopPropagation;
-	nativeEvent.stopPropagation = stopPropagation;
-	nativeEvent.isPropagationStopped = isPropagationStopped;
+	nativeEvent.stopPropagation = CustomEvent.stopPropagation;
+	nativeEvent.isPropagationStopped = CustomEvent.isPropagationStopped;
 
 	nativeEvent._stopImmediatePropagation = nativeEvent.stopImmediatePropagation;
-	nativeEvent.stopImmediatePropagation = stopImmediatePropagation;
-	nativeEvent.isImmediatePropagationStopped = isImmediatePropagationStopped;
+	nativeEvent.stopImmediatePropagation = CustomEvent.stopImmediatePropagation;
+	nativeEvent.isImmediatePropagationStopped = CustomEvent.isImmediatePropagationStopped;
 
 	nativeEvent._preventDefault = nativeEvent.preventDefault;
-	nativeEvent.preventDefault = preventDefault;
-	nativeEvent.isDefaultPrevented = isDefaultPrevented;
+	nativeEvent.preventDefault = CustomEvent.preventDefault;
+	nativeEvent.isDefaultPrevented = CustomEvent.isDefaultPrevented;
 
 	return nativeEvent;
 }
