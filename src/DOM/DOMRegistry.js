@@ -16,7 +16,15 @@ const DOMAttributeNamespaces = {
     'xlink:type': xlink,
     'xml:base': xml,
     'xml:lang': xml,
-    'xml:space': xml
+    'xml:space': xml,
+    // React compat for non-working JSX namespace support
+    xlinkActuate: xlink,
+    xlinkArcrole: xlink,
+    xlinkHref: xlink,
+    xlinkRole: xlink,
+    xlinkShow: xlink,
+    xlinkTitle: xlink,
+    xlinkType: xlink
 };
 
 const DOMAttributeNames = {
@@ -24,6 +32,7 @@ const DOMAttributeNames = {
     className: 'class',
     htmlFor: 'for',
     httpEquiv: 'http-equiv',
+    // React compat for non-working JSX namespace support
     xlinkActuate: 'xlink:actuate',
     xlinkArcrole: 'xlink:arcrole',
     xlinkHref: 'xlink:href',
@@ -31,6 +40,7 @@ const DOMAttributeNames = {
     xlinkShow: 'xlink:show',
     xlinkTitle: 'xlink:title',
     xlinkType: 'xlink:type',
+    // others...
     xmlBase: 'xml:base',
     xmlLang: 'xml:lang',
     xmlSpace: 'xml:space',
@@ -110,6 +120,21 @@ const Whitelist = {
     itemScope: BOOLEAN, // 3.2.5 - Global attributes
     className: null,
     tabindex: PROPERTY | NUMERIC_VALUE,
+
+    /**
+     * React compat for non-working JSX namespace support
+     */
+
+    xlinkActuate: null,
+    xlinkArcrole: null,
+    xlinkHref: null,
+    xlinkRole: null,
+    xlinkShow: null,
+    xlinkTitle: null,
+    xlinkType: null,
+    xmlBase: null,
+    xmlLang: null,
+    xmlSpace: null,
 
     /**
      * Numeric attributes
@@ -209,8 +234,8 @@ const Whitelist = {
     /**
      * Others
      */
-    
-	srcSet: null,
+
+    srcSet: null,
     scrolling: null,
     nonce: null,
     method: null,
