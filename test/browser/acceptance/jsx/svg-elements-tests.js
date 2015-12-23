@@ -15,7 +15,7 @@ describe('SVG element tests (jsx)', () => {
 	afterEach(() => {
 		Inferno.render(null, container);
 	});
-
+/*
      it('should remove arbitrary SVG camel case attributes', function() {
 
 	  Inferno.render(<svg theWord="the-bird"></svg>, container);
@@ -35,7 +35,7 @@ describe('SVG element tests (jsx)', () => {
  
        expect(container.childNodes[0].getAttribute('theword')).to.equal('the-bird');
      });
-	 
+	 */
 
 	 it('should update namespaced SVG attributes', function() {
  
