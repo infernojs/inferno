@@ -36,32 +36,14 @@ describe('DOM element tests (jsx)', () => {
 			);
 		});
 		it('Second render (update)', () => {
-			Inferno.render(<div>Hello world 2</div>, container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div>Hello world 2</div>'
-			);
+			Inferno.   	describe('should render a simple div with inline style', () => {
+		beforeEach(() => {
+			Inferno.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);
 		});
-	});
-
-   	describe('should render a simple div with inline style', () => {
 
 		it('Initial render (creation)', () => {
 
-			Inferno.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);			
              expect(container.nodeName).to.equal('DIV');
-			Inferno.render(<div id={'foo'}>Hello, world! 2</div>, container);
-
-             expect(container.nodeName).to.equal('DIV');
-
-			Inferno.render(<div>Hello world 2</div>, container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div>Hello world 2</div>'
-			);
-
 		});
 
 		it('Second render (update)', () => {
@@ -87,58 +69,32 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should render a basic example #3', () => {
+		beforeEach(() => {
+			Inferno.render(
+				<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>,
+				container
+			);
+		});
 		it('Initial render (creation)', () => {
-			Inferno.render(
-				<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>,
-				container
-			);
-
 			expect(
 				container.innerHTML
 			).to.equal(
 				`<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
 			);
-
-			Inferno.render(
-				<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>,
-				container
-			);
-
-			expect(
-				container.innerHTML
-			).to.equal(
-				`<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
-			);
-
 		});
 	});
 
 	describe('should render "autoFocus" boolean attributes', () => {
-		it('Initial render (creation)', () => {
+		beforeEach(() => {
 			Inferno.render(<div autoFocus='true' />, container);
+		});
+		it('Initial render (creation)', () => {
 			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div autofocus="true"></div>'
 			);
-
-			Inferno.render(<div autoFocus='false' />, container);
-			expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div autofocus="false"></div>'
-			);
-
-			Inferno.render(<div autoFocus='' />, container);
-			expect(container.firstChild.getAttribute('autoFocus')).to.eql(null);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div></div>'
-			);
-
 		});
 	});
 
@@ -147,6 +103,47 @@ describe('DOM element tests (jsx)', () => {
 		it('Initial render (creation)', () => {
 			Inferno.render(<div className='Dominic rocks!' />, container);
 			expect(container.firstChild.className).to.eql('Dominic rocks!');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
+
+			Inferno.render(<div className='' />, container);
+			xpect(container.firstChild.className).to.eql('');
+
+			Inferno.render(<div className={null} />, container);
+			expect(container.firstChild.className).to.eql('');
+
+			Inferno.render(<div className={undefined} />, container);
+			expect(container.firstChild.className).to.eql('');
+		});
+
+		it('Second render (update)', () => {
+			Inferno.render(<div className='Inferno rocks!' />, container);
+			expect(container.firstChild.getAttribute('class')).to.eql('Inferno rocks!');falseexpect(
+				contv>'
+			);
+		});
+
+	});
+
+	describe('shouldn\'t render null value', () => {
+		beforeEach(() => {
+			Inferno.render(<inputnull={ null } />, container);
+		});
+		it('Initial render (creationpect( container.value ).to.be.undefined;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+		});
+	});
+
+	describe('should set values as properties by default', () => {
+		it('Initial render (creation)', () => {
+			Inferno.render(<input title='Tip!' />, container);
 			expect(
 				container.innerHTML
 			).to.equal(
