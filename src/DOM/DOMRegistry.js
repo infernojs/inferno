@@ -165,7 +165,7 @@ const Whitelist = {
 
     autoCapitalize: null,
 
-    // Some version of IE (like IE9) actually throw an exception
+    // Some version of IE ( like IE9 ) actually throw an exception
     // if you set input.type = 'something-unknown'
     type: null,
 
@@ -236,11 +236,11 @@ const Whitelist = {
 
 let HTMLPropsContainer = {};
 
-function checkBitmask(value, bitmask) {
-    return bitmask !== null && ((value & bitmask) === bitmask);
+function checkBitmask( value, bitmask ) {
+    return bitmask !== null && ( ( value & bitmask ) === bitmask );
 }
 
-for (let propName in Whitelist) {
+for ( let propName in Whitelist ) {
 
     const propConfig = Whitelist[propName];
 
@@ -249,10 +249,10 @@ for (let propName in Whitelist) {
         attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
         propertyName: DOMPropertyNames[propName] || propName,
 
-        mustUseProperty: checkBitmask(propConfig, PROPERTY),
-        hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
-        hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
-        hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE),
+        mustUseProperty: checkBitmask( propConfig, PROPERTY ),
+        hasBooleanValue: checkBitmask( propConfig, BOOLEAN ),
+        hasNumericValue: checkBitmask( propConfig, NUMERIC_VALUE ),
+        hasPositiveNumericValue: checkBitmask( propConfig, POSITIVE_NUMERIC_VALUE ),
     };
 }
 

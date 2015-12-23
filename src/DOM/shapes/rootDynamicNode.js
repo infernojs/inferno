@@ -4,41 +4,41 @@ import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootDynamicNode(valueIndex, domNamespace) {
+export default function createRootDynamicNode( valueIndex, domNamespace ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, treeLifecycle) {
+		create( item, treeLifecycle ) {
 			let domNode;
 
-			if (recyclingEnabled) {
-				domNode = recycle(node, item);
-				if (domNode) {
+			if ( recyclingEnabled ) {
+				domNode = recycle( node, item );
+				if ( domNode ) {
 					return domNode;
 				}
 			}
-			let value = getValueWithIndex(item, valueIndex);
-			const type = getTypeFromValue(value);
+			let value = getValueWithIndex( item, valueIndex );
+			const type = getTypeFromValue( value );
 
-			switch (type) {
+			switch ( type ) {
 				case ValueTypes.TEXT:
 					// TODO check if string is empty?
-					if (value == null) {
+					if ( value == null ) {
 						value = '';
 					}
-					domNode = document.createTextNode(value);
+					domNode = document.createTextNode( value );
 					break;
 				case ValueTypes.ARRAY:
-					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 					break;
 				case ValueTypes.TREE:
-					domNode = value.create(item);
+					domNode = value.create( item );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 					break;
 				case ValueTypes.FUNCTION:
-					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 					break;
 				default: break;
 			}
@@ -46,28 +46,28 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+		update( lastItem, nextItem, treeLifecycle ) {
+			if ( node !== lastItem.domTree ) {
+				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
 				return;
 			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
 
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
-			const lastValue = getValueWithIndex(lastItem, valueIndex);
+			const nextValue = getValueWithIndex( nextItem, valueIndex );
+			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if (nextValue !== lastValue) {
-				const nextType = getTypeFromValue(nextValue);
-				const lastType = getTypeFromValue(lastValue);
+			if ( nextValue !== lastValue ) {
+				const nextType = getTypeFromValue( nextValue );
+				const lastType = getTypeFromValue( lastValue );
 
-				if(lastType !== nextType) {
-					recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+				if ( lastType !== nextType ) {
+					recreateRootNode( lastItem, nextItem, node, treeLifecycle );
 					return;
 				}
 
-				switch (nextType) {
+				switch ( nextType ) {
 					case ValueTypes.TEXT:
 						// TODO check if string is empty?
 						domNode.nodeValue = nextValue;
@@ -76,11 +76,11 @@ export default function createRootDynamicNode(valueIndex, domNamespace) {
 				}
 			}
 		},
-    remove(item, treeLifecycle) {
-      const value = getValueWithIndex(item, valueIndex);
+    remove( item, treeLifecycle ) {
+      const value = getValueWithIndex( item, valueIndex );
 
-      if (getTypeFromValue(value) === ValueTypes.TREE) {
-        value.remove(item, treeLifecycle);
+      if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
+        value.remove( item, treeLifecycle );
       }
     }
 	};
