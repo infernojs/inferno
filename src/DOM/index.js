@@ -31,7 +31,12 @@ const template = {
                         if (useProperties) {
 							
 							if (propertyInfo.hasBooleanValue) {
-							    domNode[propName] = !!value; // is this working?
+								if (!!value) {
+								domNode[propName] = true;
+								} else {
+								domNode[propName] = false;
+								}
+							    
 							} else {
 							domNode[propName] = value;
 							}
