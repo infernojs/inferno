@@ -25,20 +25,23 @@ const template = {
                 const propName = propertyInfo.propertyName;
 
                 if (propertyInfo.mustUseProperty) {
+					
                     if (propName === 'value' && ((vNode !== null && vNode.tag === 'select') || (domNode.tagName === 'SELECT'))) {
                         setSelectValueForProperty(vNode, domNode, value, useProperties);
                     } else if ('' + domNode[propName] !== '' + value) {
                         if (useProperties) {
 							
 							if (propertyInfo.hasBooleanValue) {
-								if (!!value) {
-								domNode[propName] = true;
-								} else {
-								domNode[propName] = false;
-								}
-							    
+
+    							if (name === value || !!value) {
+						        	domNode[propName] = true;
+							    } else {
+						        	domNode[propName] = false;
+    							}
 							} else {
+    						
 							domNode[propName] = value;
+							
 							}
                             
                         } else {
