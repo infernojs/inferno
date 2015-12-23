@@ -143,10 +143,12 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
     let node;
     let templateNode;
 
+    if (schema == null) {
+        throw Error(invalidTemplateError);
+    }
 	if (isArray(schema)) {
 		throw Error(invalidTemplateError);
 	}
-
     if (!dynamicFlags) {
 		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
 

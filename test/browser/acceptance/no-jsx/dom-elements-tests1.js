@@ -642,16 +642,6 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<input disabled="disabled">'
             );
-
-            Inferno.render(template(), container);
-
-            expect(container.firstChild.disabled).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input>'
-            );
-
         });
 
         it('Second render (update)', () => {
@@ -713,14 +703,6 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div hidden="hidden"></div>'
             );
-
-            expect(container.firstChild.hidden).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<div></div>'
-            );
-
         });
 
         it('Second render (update)', () => {
@@ -1357,9 +1339,8 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div>Hello world - Test</div>'
+                '<div>Hello world - Test </div>'
             );
-
         });
         it('Second render (update)', () => {
             Inferno.render(template('Test', 'Works!'), container);
@@ -1684,7 +1665,7 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<span></span>'
+                '<span disabled="false"></span>'
             );
         });
     });
@@ -1867,18 +1848,10 @@ describe('DOM element tests (no-jsx)', () => {
 
         it('Initial render (creation)', () => {
             Inferno.render(template(), container);
-
             expect(
                 container.innerHTML
             ).to.equal(
-                '<input download="0">'
-            );
-            Inferno.render(template(), container);
-
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input download="0">'
+                '<input>'
             );
         });
     });
@@ -1956,9 +1929,7 @@ describe('DOM element tests (no-jsx)', () => {
         });
 
         it('Initial render (creation)', () => {
-
             Inferno.render(template(), container);
-
             expect(
                 container.innerHTML
             ).to.equal(
@@ -1966,7 +1937,6 @@ describe('DOM element tests (no-jsx)', () => {
             );
 
             Inferno.render(template(), container);
-
             expect(
                 container.innerHTML
             ).to.equal(
@@ -2004,7 +1974,6 @@ describe('DOM element tests (no-jsx)', () => {
                 '<input checked="checked" disabled="disabled">'
             );
 
-
             template = Inferno.createTemplate(() =>
                 createElement('input', {
                     checked: 'true',
@@ -2012,13 +1981,13 @@ describe('DOM element tests (no-jsx)', () => {
                 })
             );
 
+            //kflash -- look at this please
             Inferno.render(template(), container);
             expect(
                 container.innerHTML
             ).to.equal(
                 '<input checked="checked" disabled="disabled">'
             );
-
 
             template = Inferno.createTemplate(() =>
                 createElement('input', {
@@ -2033,7 +2002,6 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<input checked="checked">'
             );
-
         });
     });
 

@@ -233,16 +233,11 @@ describe('DOM element tests2 (no-jsx)', () => {
                 '<div>Hello</div>'
             );
 
-            const text = Inferno.createTemplate(function() {
-                return undefined
-            });
-
-            Inferno.render(template(text()), container);
             expect(
-                container.innerHTML
-            ).to.equal(
-                '<div></div>'
-            );
+                () => Inferno.createTemplate(function() {
+                    return undefined
+                })
+            ).to.throw;
         });
     });
 
@@ -265,12 +260,6 @@ describe('DOM element tests2 (no-jsx)', () => {
             });
             Inferno.render(template(span()), container);
             expect(container.firstChild.innerHTML).to.equal('Hello, World');
-			
-			 const template = Inferno.createTemplate((child) => ({
-            tag: 'div',
-            children: child
-        }));
-			
         });
     });
 
