@@ -403,6 +403,28 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 `<div><span>Hello world!</span></div>`
             );
+
+            Inferno.render(div(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(div(undefined), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(div(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
         });
     });
 
@@ -552,6 +574,16 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<input disabled="disabled">'
             );
+
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.disabled).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input>'
+            );
+
         });
 
         it('Second render (update)', () => {
@@ -597,6 +629,13 @@ describe('DOM element tests (no-jsx)', () => {
                 container.innerHTML
             ).to.equal(
                 '<div hidden="hidden"></div>'
+            );
+
+            expect(container.firstChild.hidden).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
             );
 
         });
@@ -811,6 +850,23 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
             );
+            Inferno.render(template(), container);
+            expect(container.firstChild.children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].selected).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+            );
+            Inferno.render(template(), container);
+            expect(container.firstChild.children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].selected).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+            );
+
         });
 		
 		 it('Initial render (creation)', () => {
@@ -956,16 +1012,25 @@ describe('DOM element tests (no-jsx)', () => {
                     title: 'Tip!'
                 }
             }));
-            Inferno.render(template(null), container);
+
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(null), container);
             expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
             expect(
                 container.innerHTML
             ).to.equal(
                 '<input title="Tip!">'
             );
+            Inferno.render(template(null), container);
+            expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input title="Tip!">'
+            );
+
         });
     });
 
@@ -991,10 +1056,11 @@ describe('DOM element tests (no-jsx)', () => {
                     text: 'Im a li-tag'
                 }]
             }));
-            Inferno.render(template(null), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+
             expect(get(container.firstChild)).to.eql(['foo']);
             expect(
                 container.innerHTML
@@ -1002,6 +1068,18 @@ describe('DOM element tests (no-jsx)', () => {
                 '<select multiple="multiple"><option value="foo" selected="selected">Im a li-tag</option><option value="bar">Im a li-tag</option></select>'
             );
             expect(container.querySelector("select").multiple).to.equal(true);
+
+
+            Inferno.render(template(), container);
+
+            expect(get(container.firstChild)).to.eql(['foo']);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option value="foo" selected="selected">Im a li-tag</option><option value="bar">Im a li-tag</option></select>'
+            );
+            expect(container.querySelector("select").multiple).to.equal(true);
+
         });
     });
 
