@@ -585,23 +585,21 @@ describe('DOM component tests (no-jsx)', () => {
 				'<div><div class="basic"><label><input type="password" enabled="enabled">The title is </label></div></div>'
 			);
 
-            
 			// Render into a different component
             Inferno.render(template(BasicComponent1b, "abc", true), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div><div class="basic"><label><input type="checkbox">The title is abc</label></div></div>'
 			);
+			//will never be true is we aren't setting isChecked on props as the template we're using isn't for this component
 			expect(
 				container.querySelector("input").checked
 			).to.equal(
-				true
+				false
 			);
 
 			Inferno.render(template(null, null, true), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -624,42 +622,39 @@ describe('DOM component tests (no-jsx)', () => {
 				'<div></div>'
 			);
 
-            // Fix! This should give one whitespace
-			Inferno.render(template(' ', '', ''), container);
+			template = Inferno.createTemplate((child1, child2, child3) =>
+					createElement('div', null,
+						child1, child2, child3
+					)
+			);
 
+			Inferno.render(template(' ', '', ''), container);
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div> </div>'
 			);
 
-            // Fix! This should give two whitespace
 			Inferno.render(template(' ', ' ', ''), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div>  </div>'
 			);
 
-            // Fix! This should give three whitespace
 			Inferno.render(template(' ', ' ', ' '), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div>  </div>'
+				'<div>   </div>'
 			);
 
-			// Missing whitespace on each side of 'abc'
 			Inferno.render(template(' ', 'abc', ' '), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div> abc </div>'
 			);
-
 		});
 		it('Second render (update)', () => {
 			Inferno.render(template(BasicComponent1c, '123', false), container);
@@ -686,7 +681,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password">The title is  123  </label></div></div>'
+				'<div><div class="basic"><label><input type="password">The title is   123  </label></div></div>'
 			);
 
 			Inferno.render(template(BasicComponent1c, 123, false), container);
@@ -700,7 +695,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password">The title is </label></div></div>'
+				'<div><div class="basic"><label><input type="password">The title is  </label></div></div>'
 			);
 
 		});

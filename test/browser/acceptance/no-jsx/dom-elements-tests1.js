@@ -2795,8 +2795,4 @@ Inferno.render(template(), container);
 
         });
     });
-
-
-
-
 });
