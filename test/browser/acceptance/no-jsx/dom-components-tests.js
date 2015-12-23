@@ -874,6 +874,24 @@ describe('DOM component tests (no-jsx)', () => {
 				''
 			);
 
+          Inferno.render(template(BasicComponent1, '你好，世界！', null), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+			   '<div><div class="basic"><span>The title is 你好，世界！</span></div></div>'
+			);
+			Inferno.render(template(BasicComponent1, '123', null), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+			   '<div><div class="basic"><span>The title is 123</span></div></div>'
+			);
+			Inferno.render(template(BasicComponent1, 123, null), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+			   '<div><div class="basic"><span>The title is 123</span></div></div>'
+			);
 		});
 		it('Second render (update)', () => {
 			Inferno.render(template(BasicComponent1, '你好，世界！', null), container);
@@ -1071,6 +1089,19 @@ describe('DOM component tests (no-jsx)', () => {
 				 '<div class="basic"><span class=" basic-render ">The title is  abc </span></div>'
 			 );
 
+             Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			 );
+			 
+			  Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			 );
 		 });
 		 it('Second render (update)', () => {
 			 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
@@ -1115,6 +1146,8 @@ describe('DOM component tests (no-jsx)', () => {
                 () => Inferno.render(template(BasicStatelessComponent1, text1), container)
             ).to.throw;
         });
+		
+		
 	 });
 
 	class BasicComponent2 extends Inferno.Component {
@@ -1269,6 +1302,13 @@ describe('DOM component tests (no-jsx)', () => {
 			).to.equal(
 				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 			);
+			
+			 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			 );
 
 
 		});
