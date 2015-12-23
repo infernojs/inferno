@@ -27,6 +27,13 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				'<div>Hello world</div>'
 			);
+
+			Inferno.render(<div>Hello world 2</div>, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world 2</div>'
+			);
 		});
 		it('Second render (update)', () => {
 			Inferno.render(<div>Hello world 2</div>, container);
@@ -47,6 +54,13 @@ describe('DOM element tests (jsx)', () => {
 			Inferno.render(<div id={'foo'}>Hello, world! 2</div>, container);
 
              expect(container.nodeName).to.equal('DIV');
+
+			Inferno.render(<div>Hello world 2</div>, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world 2</div>'
+			);
 
 		});
 
@@ -73,18 +87,29 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should render a basic example #3', () => {
-		beforeEach(() => {
+		it('Initial render (creation)', () => {
 			Inferno.render(
 				<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>,
 				container
 			);
-		});
-		it('Initial render (creation)', () => {
+
 			expect(
 				container.innerHTML
 			).to.equal(
 				`<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
 			);
+
+			Inferno.render(
+				<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>,
+				container
+			);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				`<ul><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li><li><span>Im a li-tag</span></li></ul>`
+			);
+
 		});
 	});
 
@@ -130,6 +155,13 @@ describe('DOM element tests (jsx)', () => {
 				'<div class="Dominic rocks!"></div>'
 			);
 
+            Inferno.render(<div autoFocus='true' />, container);
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="true"></div>'
+			);
 			Inferno.render(<div className='' />, container);
 			expect(container.firstChild.className).to.eql('');
 
@@ -215,7 +247,7 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should render value multiple attribute', () => {
-		beforeEach(() => {
+		it('Initial render (creation)', () => {
 			Inferno.render((
 				<select multiple={ true } value='foo'>
 					<option value='foo'>I'm a li-tag</option>
@@ -223,14 +255,59 @@ describe('DOM element tests (jsx)', () => {
 				</select>),
 				container
 			);
-		});
-		it('Initial render (creation)', () => {
+
 			expect(get(container.firstChild)).to.eql(['foo']);
 			expect(
 				container.innerHTML
 			).to.equal(
-				`<select multiple="multiple"><option value="foo" selected="selected">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>`
+				'<select multiple="multiple"><option value="foo" selected="selected">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>'
 			);
+
+			Inferno.render((
+				<select multiple={ false } value='foo'>
+					<option value='foo'>I'm a li-tag</option>
+					<option value='bar'>I'm a li-tag</option>
+				</select>),
+				container
+			);
+
+			expect(get(container.firstChild)).to.eql(['foo']);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select><option value="foo" selected="selected">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>'
+			);
+
+			Inferno.render((
+				<select multiple={ null } value='foo'>
+					<option value='foo'>I'm a li-tag</option>
+					<option value='bar'>I'm a li-tag</option>
+				</select>),
+				container
+			);
+
+			expect(get(container.firstChild)).to.eql(['foo']);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select><option value="foo" selected="selected">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>'
+			);
+
+            Inferno.render((
+				<select multiple={ undefined } value='foo'>
+					<option value='foo'>I'm a li-tag</option>
+					<option value='bar'>I'm a li-tag</option>
+				</select>),
+				container
+			);
+
+			expect(get(container.firstChild)).to.eql(['foo']);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<select><option value="foo" selected="selected">I\'m a li-tag</option><option value="bar">I\'m a li-tag</option></select>'
+			);
+
 		});
 	});
 
@@ -245,6 +322,13 @@ describe('DOM element tests (jsx)', () => {
 				container.innerHTML
 			).to.equal(
 				'<div>Hello world - Inferno Owns</div>'
+			);
+			const values = ['Test', 'Works!'];
+			Inferno.render(<div>Hello world - { values[0] } { values[1] }</div>, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world - Test Works!</div>'
 			);
 		});
 		it('Second render (update)', () => {
@@ -275,6 +359,19 @@ describe('DOM element tests (jsx)', () => {
 				container.innerHTML
 			).to.equal(
 				`<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
+			);
+			const values = ['Rocks', 'Inferno'];
+			Inferno.render(
+					<div className="foo">
+						<span className="bar">{ values[0] }</span>
+						<span className="yar">{ values[1] }</span>
+					</div>,
+				container
+			);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="foo"><span class="bar">Rocks</span><span class="yar">Inferno</span></div>'
 			);
 		});
 		it('Second render (update)', () => {
