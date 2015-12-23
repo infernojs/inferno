@@ -2177,6 +2177,15 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div scope="scope"></div>'
             );
+
+            Inferno.render(template(), container);
+            expect(container.firstChild.getAttribute('scope')).to.eql('scope');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
         });
         it('Second render (update)', () => {
             Inferno.render(template(true), container);
@@ -2606,11 +2615,19 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>foo</div>'
             );
+
             Inferno.render(template('bar'), container);
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div>bar</div>'
+            );
+
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
             );
 
         });
@@ -2633,6 +2650,49 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>124</div>'
             );
+
+			Inferno.render(template(['1', '2']), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>12</div>'
+            );
+
+			Inferno.render(template([1, 2]), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>12</div>'
+            );
+
+			Inferno.render(template([1, undefined, 2]), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>12</div>'
+            );
+
+			Inferno.render(template([1, null, 2]), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>12</div>'
+            );
+            
+			Inferno.render(template([null]), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+			Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
         });
 
         it('should render a shape div (static attrs) > fragment [ span > fragment [ span > text, text, text ] ]', () => {
@@ -2668,6 +2728,15 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div class="hello, world"><span><span>123</span></span></div>'
             );
+
+			Inferno.render(template(undefined), container);
+            
+			expect(
+                container.innerHTML
+            ).to.equal(
+                '<div class="hello, world"></div>'
+            );
+
         });
         it('should throw and error when trying to render a shape div > text (dynamic), text, text (dynamic) due to dynamic variables being arrays', () => {
             const template = Inferno.createTemplate((val1, val2) => ({
@@ -2696,7 +2765,29 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div class="test"></div>'
             );
+
+            Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+          Inferno.render(template(123), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div class="123"></div>'
+            );
         });
+		
         it('should render a shape void div (dynamic attrs) #2', () => {
             const template = Inferno.createTemplate((attrs) => ({
                 tag: 'div',
@@ -2744,6 +2835,21 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div></div>'
             );
+
+            Inferno.render(template(undefined), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
         });
         it('second render - (update)', () => {
             const span = Inferno.createTemplate(() => ({
@@ -2771,6 +2877,13 @@ describe('DOM element tests (no-jsx)', () => {
             );
 
             Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(template(), container);
             expect(
                 container.innerHTML
             ).to.equal(
@@ -2902,6 +3015,17 @@ describe('DOM element tests (no-jsx)', () => {
                 container.innerHTML
             ).to.equal(
                 '<div>Hello</div>'
+            );
+
+            const text = Inferno.createTemplate(function() {
+                return undefined
+            });
+
+            Inferno.render(template(text()), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
             );
         });
     });
@@ -3090,60 +3214,60 @@ describe('DOM element tests (no-jsx)', () => {
             Inferno.render(template(span()), container);
             expect(container.firstChild.innerHTML).to.equal('<span>Hello World</span>');
             
-			let span;
+			let spanish;
             
-			 span = Inferno.createTemplate(function() {
+			 spanish = Inferno.createTemplate(function() {
                 return {
                     tag: 'b',
                     children: ['Hello ', null]
                 };
             });
-            Inferno.render(template(span()), container);
+            Inferno.render(template(spanish()), container);
             expect(container.firstChild.innerHTML).to.equal('<b>Hello </b>');
 
-             span = Inferno.createTemplate(function() {
+             spanish = Inferno.createTemplate(function() {
                 return {
                     tag: 'b',
                     children: ['Hello ', null]
                 };
             });
-            Inferno.render(template(span()), container);
+            Inferno.render(template(spanish()), container);
             expect(container.firstChild.innerHTML).to.equal('<b>Hello </b>');
 
-            span = Inferno.createTemplate(function() {
+            spanish = Inferno.createTemplate(function() {
                 return {
                     tag: 'b',
                     children: [null, null]
                 };
             });
-            Inferno.render(template(span()), container);
+            Inferno.render(template(spanish()), container);
             expect(container.firstChild.innerHTML).to.equal('<b></b>');
 
-            span = Inferno.createTemplate(function() {
+            spanish = Inferno.createTemplate(function() {
                 return {
                     tag: 'b',
                     children: [undefined, undefined]
                 };
             });
-            Inferno.render(template(span()), container);
+            Inferno.render(template(spanish()), container);
             expect(container.firstChild.innerHTML).to.equal('<b></b>');
 
-            span = Inferno.createTemplate(function() {
+            spanish = Inferno.createTemplate(function() {
                 return {
                     tag: 'b',
                     children: [undefined, null]
                 };
             });
-            Inferno.render(template(span()), container);
+            Inferno.render(template(spanish()), container);
             expect(container.firstChild.innerHTML).to.equal('<b></b>');
 			
-             span = Inferno.createTemplate(function() {
+             spanish = Inferno.createTemplate(function() {
                 return {
                     tag: 'b',
                     children: null
                 };
             });
-            Inferno.render(template(span()), container);
+            Inferno.render(template(spanish()), container);
             expect(container.firstChild.innerHTML).to.equal('');
 
         });
