@@ -29,7 +29,13 @@ const template = {
                         setSelectValueForProperty(vNode, domNode, value, useProperties);
                     } else if ('' + domNode[propName] !== '' + value) {
                         if (useProperties) {
-                            domNode[propName] = value;
+							
+							if (propertyInfo.hasBooleanValue) {
+							    domNode[propName] = !!value; // is this working?
+							} else {
+							domNode[propName] = value;
+							}
+                            
                         } else {
                             if (propertyInfo.hasBooleanValue && value === true) {
                                 value = propName;
