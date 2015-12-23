@@ -24,7 +24,7 @@ module.exports = function(config) {
             '../test/browser/**/*.js': ['webpack'],
         },
         webpack: {
-            devtool: 'source-map',
+//            devtool: 'source-map',
             module: {
                 postLoaders: [{
                     test: /\.js$/,
