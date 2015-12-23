@@ -2253,7 +2253,7 @@ describe('DOM element tests (no-jsx)', () => {
 
         it('Initial render (creation)', () => {
             Inferno.render(template(false), container);
-            expect(container.getAttribute('draggable')).to.be.null;
+            expect(container.firstChild.getAttribute('draggable')).to.be.null;
             expect(
                 container.innerHTML
             ).to.equal(
@@ -2261,26 +2261,24 @@ describe('DOM element tests (no-jsx)', () => {
             );
 
             Inferno.render(template(true), container);
-            expect(container.getAttribute('draggable')).to.be.true;
+            expect(container.firstChild.getAttribute('draggable')).to.equal('draggable');
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div></div>'
+                '<div draggable="draggable"></div>'
             );
 
             Inferno.render(template(false), container);
-            expect(container.getAttribute('draggable')).to.be.null;
+            expect(container.firstChild.getAttribute('draggable')).to.be.null;
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div></div>'
             );
-
-
         });
         it('Second render (creation)', () => {
             Inferno.render(template(null), container);
-            expect(container.getAttribute('draggable')).to.be.null;
+            expect(container.firstChild.getAttribute('draggable')).to.be.null;
             expect(
                 container.innerHTML
             ).to.equal(
