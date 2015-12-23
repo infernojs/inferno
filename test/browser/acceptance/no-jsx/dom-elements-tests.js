@@ -112,6 +112,31 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>Dynamic Text!</div>'
             );
+            
+			// This inject undefined where it should be nothing
+            Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+			// This inject undefined where it should be nothing
+            Inferno.render(template(undefined), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+			// This inject undefined where it should be nothing
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
             Inferno.render(template('Dynamic Text 2!'), container);
             expect(
                 container.innerHTML
@@ -241,6 +266,22 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 `<ul class="container"><li class="row">Im a dynamic li-tag #3</li><li class="row">Im a dynamic li-tag #3</li><li class="row">Im a dynamic li-tag #3</li></ul>`
             );
+           
+		   // This inserts 'undefined' where nothing should be inserted!
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<ul class="container"><li class="row">Im a dynamic li-tag #3</li><li class="row"></li><li class="row">Im a dynamic li-tag #3</li></ul>`
+            );
+			
+           Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<ul class="container"><li class="row">Im a dynamic li-tag #3</li><li class="row"></li><li class="row">Im a dynamic li-tag #3</li></ul>`
+            );
+
         });
     });
 
@@ -409,6 +450,31 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div></div>'
             );
+
+            Inferno.render(div(undefined), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(div(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
+            );
+
+            Inferno.render(null, container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
+            );
+
         });
     });
 
@@ -443,6 +509,13 @@ describe('DOM element tests (no-jsx)', () => {
             );
 
             Inferno.render(div(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div>There is  spoon!</div>`
+            );
+
+            Inferno.render(div(undefined), container);
             expect(
                 container.innerHTML
             ).to.equal(
@@ -587,6 +660,14 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div hidden="NaN"></div>'
             );
+
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div hidden="NaN"></div>'
+            );
         });
     });
 
@@ -683,11 +764,20 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<input checked="checked" type="checkbox">'
             );
+
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.checked).to.eql(true);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input checked="checked" type="checkbox">'
+            );
         });
     });
 
     describe('should render "select" boolean on select options', () => {
-        it('Initial render (creation)', () => {
+
             const template = Inferno.createTemplate(function() {
                 return {
                     tag: 'select',
@@ -711,6 +801,19 @@ describe('DOM element tests (no-jsx)', () => {
 
                 };
             });
+
+        it('Initial render (creation)', () => {
+            Inferno.render(template(), container);
+            expect(container.firstChild.children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].selected).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+            );
+        });
+		
+		 it('Initial render (creation)', () => {
             Inferno.render(template(), container);
             expect(container.firstChild.children[0].selected).to.eql(true);
             expect(container.firstChild.children[1].selected).to.eql(false);
@@ -767,6 +870,15 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div class="this-works"></div>'
             );
+            Inferno.render(template(), container);
+
+            expect(container.firstChild.getAttribute('class')).to.eql('this-works');
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div class="this-works"></div>'
+            );
+
             Inferno.render(template(), container);
 
             expect(container.firstChild.getAttribute('class')).to.eql('this-works');
@@ -1037,6 +1149,13 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>Hello world - Test Works!</div>'
             );
+
+            Inferno.render(template('Test', 'Works!'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>Hello world - Test Works!</div>'
+            );
         });
     });
 
@@ -1056,14 +1175,31 @@ describe('DOM element tests (no-jsx)', () => {
                     }, val2)
                 )
             );
-            Inferno.render(template('Inferno', 'Rocks'), container);
         });
 
         it('Initial render (creation)', () => {
+            Inferno.render(template('Inferno', 'Rocks'), container);
+
             expect(
                 container.innerHTML
             ).to.equal(
                 `<div class="foo"><span class="bar">Inferno</span><span class="yar">Rocks</span></div>`
+            );
+
+            Inferno.render(template('Inferno', null), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div class="foo"><span class="bar">Inferno</span><span class="yar"></span></div>`
+            );
+
+            Inferno.render(template(null, null), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                `<div class="foo"><span class="bar"></span><span class="yar"></span></div>`
             );
         });
         it('Second render (update)', () => {
@@ -1219,7 +1355,7 @@ describe('DOM element tests (no-jsx)', () => {
             template = Inferno.createTemplate(() =>
                 createElement('span', {
                     checked: false,
-                    disabled: false
+                    disabled: 'false'
                 })
             );
 
@@ -1538,6 +1674,20 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<input checked="checked" disabled="disabled">'
             );
+
+            template = Inferno.createTemplate(() =>
+                createElement('input', {
+                    checked: false,
+                    disabled: false
+                })
+            );
+
+            Inferno.render(template(), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<input>'
+            );
         });
     });
 
@@ -1587,6 +1737,15 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<audio></audio>'
             );
+
+            Inferno.render(template(null), container);
+            expect(container.firstChild.muted).to.be.false;
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<audio></audio>'
+            );
+
         });
 
         it('Third render (update)', () => {
@@ -1703,6 +1862,13 @@ describe('DOM element tests (no-jsx)', () => {
                 container.innerHTML
             ).to.equal(
                 '<div draggable="draggable"></div>'
+            );
+
+            Inferno.render(template(false), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div></div>'
             );
         });
     });
