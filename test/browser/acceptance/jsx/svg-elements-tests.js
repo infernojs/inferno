@@ -16,18 +16,9 @@ describe('SVG element tests (jsx)', () => {
 		Inferno.render(null, container);
 	});
 
-     it('should remove arbitrary SVG hyphenated attributes', function() {
-     
-	  Inferno.render(<svg>the-word="the-bird"</svg>, container);
-      // innerHTML shows this correctly
-       expect(container.firstChild.hasAttribute('the-word')).to.equal(true);
-	  Inferno.render(<svg></svg>, container);
-       expect(container.firstChild.hasAttribute('the-word')).to.equal(false);
-     });
-
      it('should remove arbitrary SVG camel case attributes', function() {
 
-	  Inferno.render(<svg>the-word="the-bird"</svg>, container);
+	  Inferno.render(<svg theWord="the-bird"></svg>, container);
        expect(container.firstChild.hasAttribute('theWord')).to.equal(true);
        Inferno.render(<svg></svg>, container);
        expect(container.firstChild.hasAttribute('theWord')).to.equal(false);
@@ -37,15 +28,15 @@ describe('SVG element tests (jsx)', () => {
 	 it('should update arbitrary hyphenated attributes for SVG tags', function() {
  
        var beforeUpdate = createElement('svg', {}, null);
-       ReactDOM.render(beforeUpdate, container);
+       Inferno.render(beforeUpdate, container);
  
-       var afterUpdate = <svg>the-word="the-bird"</svg>;
+       var afterUpdate = <svg theword="the-bird"></svg>;
        Inferno.render(afterUpdate, container);
  
-       expect(container.childNodes[0].getAttribute('the-word')).to.equal('the-bird');
+       expect(container.childNodes[0].getAttribute('theword')).to.equal('the-bird');
      });
- 
 	 
+
 	 it('should update namespaced SVG attributes', function() {
  
        var beforeUpdate = (
