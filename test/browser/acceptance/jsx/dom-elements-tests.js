@@ -39,13 +39,15 @@ describe('DOM element tests (jsx)', () => {
 	});
 
    	describe('should render a simple div with inline style', () => {
-		beforeEach(() => {
-			Inferno.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);
-		});
 
 		it('Initial render (creation)', () => {
-			
+
+			Inferno.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);			
              expect(container.nodeName).to.equal('DIV');
+			Inferno.render(<div id={'foo'}>Hello, world! 2</div>, container);
+
+             expect(container.nodeName).to.equal('DIV');
+
 		});
 
 		it('Second render (update)', () => {
