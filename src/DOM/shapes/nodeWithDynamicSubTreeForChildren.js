@@ -20,7 +20,7 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
 			}
 			return domNode;
 		},

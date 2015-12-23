@@ -1,17 +1,9 @@
 import isArray from '../../util/isArray';
-import { getValueWithIndex, getValueForProps } from '../../core/variables';
+import { getValueWithIndex, getValueForProps, getCorrectItemForValues } from '../../core/variables';
 import { updateKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateNode from '../recreateNode';
 import updateComponent from '../../core/updateComponent';
-
-function getCorrectItemForValues(node, item) {
-	if (node !== item.domTree && item.parent) {
-		return getCorrectItemForValues(node, item.parent);
-	} else {
-		return item;
-	}
-}
 
 export default function createNodeWithComponent(componentIndex, props, domNamespace) {
 	let instance;

@@ -3,7 +3,7 @@ import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
 import removeListener from './events/removeListener';
 import setValueForStyles from './setValueForStyles';
-import { getValueWithIndex } from '../core/variables';
+import { getValueWithIndex, getCorrectItemForValues } from '../core/variables';
 
 /**
  * Set HTML attributes on the template
@@ -11,7 +11,6 @@ import { getValueWithIndex } from '../core/variables';
  * @param{ Object } attrs
  */
 export function addDOMStaticAttributes(vNode, domNode, attrs) {
-	
 	let styleUpdates;
 	
 	for (let attrName in attrs) {
@@ -47,17 +46,17 @@ function fastPropSet(attrName, attrVal, domNode) {
 	return false;
 }
 
-export function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
+export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
+	const valueItem = getCorrectItemForValues(node, item);
+	let styleUpdates;
+
 	if (dynamicAttrs.index !== undefined) {
-		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
+		dynamicAttrs = getValueWithIndex(valueItem, dynamicAttrs.index);
 		addDOMStaticAttributes(item, domNode, dynamicAttrs);
 		return;
 	}
-
-	let styleUpdates;
-	
 	for (let attrName in dynamicAttrs) {
-		let attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+		let attrVal = getValueWithIndex(valueItem, dynamicAttrs[attrName]);
 
 		if (attrVal !== undefined) {
 			if ( attrName === 'style') {

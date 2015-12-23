@@ -53,7 +53,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
 			}
 			item.rootNode = domNode;
 			return domNode;

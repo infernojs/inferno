@@ -1032,7 +1032,6 @@ describe('DOM component tests (no-jsx)', () => {
 
 		 it('Initial render (creation)', () => {
 			 Inferno.render(template(BasicStatelessComponent1, 'abc', 'basic-render'), container);
-
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
@@ -1040,43 +1039,34 @@ describe('DOM component tests (no-jsx)', () => {
 			 );
 
 			 Inferno.render(template(null, 'abc', 'basic-render'), container);
-
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
 				 ''
 			 );
-             
-			 // Missing whitespace to left for class name
-			 Inferno.render(template(BasicStatelessComponent1, 'abc', 'basic-render '), container);
 
+			 Inferno.render(template(BasicStatelessComponent1, 'abc', 'basic-render '), container);
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
 				 '<div class="basic"><span class="basic-render ">The title is abc</span></div>'
 			 );
 
-			 // Missing whitespace to right for class name
 			 Inferno.render(template(BasicStatelessComponent1, 'abc', ' basic-render'), container);
-
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
 				 '<div class="basic"><span class=" basic-render">The title is abc</span></div>'
 			 );
 
-			 // Missing whitespace to right and left for class name
 			 Inferno.render(template(BasicStatelessComponent1, 'abc', ' basic-render '), container);
-
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
 				 '<div class="basic"><span class=" basic-render ">The title is abc</span></div>'
 			 );
 
-			 // Missing whitespace to right and left for class name, AND 'abc'
 			 Inferno.render(template(BasicStatelessComponent1, ' abc ', ' basic-render '), container);
-
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
@@ -1090,7 +1080,7 @@ describe('DOM component tests (no-jsx)', () => {
 				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
 			 );
 			 
-			  Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
 			 expect(
 				 container.innerHTML
 			 ).to.equal(
@@ -1260,24 +1250,22 @@ describe('DOM component tests (no-jsx)', () => {
 			).to.equal(
 				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 			);
-            
-			// NOTE! This is wrong! It removes two components here -  '<div><span>component!</span><div></div></div>'
+
             // Should only remove the on in the middle, or I'm wrong?
+			// -- You're wrong, the 3rd component is a child of the 2nd component, so if the 2nd is null, the 3rd will never be rendered
 			Inferno.render(template(BasicComponent2b, null, BasicComponent2b), container);
 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+				'<div><span>component!</span><div></div></div>'
 			);
-			
-			// THIS is correct. Only one component left :)
-			Inferno.render(template(BasicComponent2b, null, null), container);
 
+			Inferno.render(template(BasicComponent2b, null, null), container);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+				'<div><span>component!</span><div></div></div>'
 			);
 
 			Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
@@ -1288,23 +1276,20 @@ describe('DOM component tests (no-jsx)', () => {
 				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 			);
 
-            // THIS is wrong! All components should have been removed! But 1 is left
 			Inferno.render(template(null, null, null), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+				''
 			);
-			
-			 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
-			 expect(
-				 container.innerHTML
-			 ).to.equal(
-				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
-			 );
 
-
+			//it doesn't pass in the correct props, so this is a bad test really as 123 and basic-update will never pass through
+			Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="basic"><span>The title is </span></div>'
+			);
 		});
 		it('Second render (update) - should be the same', () => {
 			Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
@@ -1314,7 +1299,7 @@ describe('DOM component tests (no-jsx)', () => {
 				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 			);
 		});
-		it('Second render (update) - should be a bit different', () => {
+		it('Third render (update) - should be a bit different', () => {
 			Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
 			expect(
 				container.innerHTML
@@ -1329,7 +1314,7 @@ describe('DOM component tests (no-jsx)', () => {
 			);
 
 		});
-		it('Second render (update) - should be a lot different', () => {
+		it('Forth render (update) - should be a lot different', () => {
 			Inferno.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
 			expect(
 				container.innerHTML
@@ -1341,7 +1326,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+				'<div><span>component!</span><div></div></div>'
 			);
 
             // Fix me! Should be only one component left
@@ -1349,7 +1334,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><span>component!</span><div><div><div></div></div></div></div></div></div>'
+				''
 			);
 
 			Inferno.render(template(null, null, null), container);
@@ -1360,7 +1345,7 @@ describe('DOM component tests (no-jsx)', () => {
 			);
 
 		});
-		it('Second render (update) - should be completely different', () => {
+		it('Fifth render (update) - should be completely different', () => {
 			Inferno.render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
 			expect(
 				container.innerHTML

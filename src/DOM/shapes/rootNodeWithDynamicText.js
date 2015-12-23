@@ -25,7 +25,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				domNode.textContent = value;
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -39,9 +39,14 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 
 			nextItem.rootNode = domNode;
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				domNode.firstChild.nodeValue = nextValue;
+			if (nextValue !== lastValue) {
+				if (lastValue == null) {
+					domNode.textContent = nextValue;
+				} else {
+					domNode.firstChild.nodeValue = nextValue;
+				}
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);

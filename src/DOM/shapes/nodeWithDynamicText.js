@@ -13,7 +13,7 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 				domNode.textContent = value;
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
 			}
 			return domNode;
 		},

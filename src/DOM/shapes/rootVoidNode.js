@@ -20,7 +20,7 @@ export default function createRootVoidNode(templateNode, dynamicAttrs) {
 			domNode = templateNode.cloneNode(true);
 			item.rootNode = domNode;
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
 			}
 			return domNode;
 		},

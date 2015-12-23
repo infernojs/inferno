@@ -39,7 +39,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
 			}
 			return domNode;
 		},

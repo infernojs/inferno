@@ -31,7 +31,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
 			}
 			item.rootNode = domNode;
 			return domNode;

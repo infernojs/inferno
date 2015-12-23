@@ -112,37 +112,6 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div>Hello world</div>'
             );
-			
-			// This inject undefined where it should be nothing
-            Inferno.render(template(undefined), container);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<div></div>'
-            );
-
-			// This inject undefined where it should be nothing
-            Inferno.render(template(), container);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<div></div>'
-            );
-			
-			// This inject undefined where it should be nothing
-            Inferno.render(template(), container);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<div></div>'
-            );
-
-            Inferno.render(template('Dynamic Text 2!'), container);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<div>Dynamic Text 2!</div>'
-            );
         });
         it('Second render (update)', () => {
             Inferno.render(template(), container);
@@ -629,7 +598,7 @@ describe('DOM element tests (no-jsx)', () => {
                 `<div>There is  spoon!</div>`
             );
 
-            template = Inferno.createTemplate(() => ({
+            const template = Inferno.createTemplate(() => ({
                 tag: 'input',
                 attrs: {
                     disabled: true

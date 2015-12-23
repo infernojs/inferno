@@ -76,8 +76,19 @@ export default function createRootNodeWithComponent(componentIndex, props, domNa
 					const nextRender = Component(getValueForProps(props, nextItem));
 
 					nextRender.parent = currentItem;
-					nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
-					currentItem.rootNode = nextRender.rootNode;
+					const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+
+					if (newDomNode) {
+						if (nextRender.rootNode.parentNode) {
+							nextRender.rootNode.parentNode.replaceChild(newDomNode, nextRender.rootNode);
+						} else {
+							lastItem.rootNode.parentNode.replaceChild(newDomNode, lastItem.rootNode);
+						}
+						currentItem.rootNode = newDomNode;
+					} else {
+						currentItem.rootNode = nextRender.rootNode;
+					}
+
 					lastRender = nextRender;
 				} else {
 					if (!instance || node !== lastItem.domTree || Component !== instance.constructor) {
