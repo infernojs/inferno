@@ -5913,17 +5913,17 @@ describe('DOM element tests (no-jsx)', () => {
             expect(container.firstChild.tagName).to.equal('DIV');
 
 
-            const b = Inferno.createTemplate(() => ({
+            const bb = Inferno.createTemplate(() => ({
                 tag: 'circle',
                 children: ['1', '3', 1, ]
             }));
 
-            const span = Inferno.createTemplate((b) => ({
+            const spann = Inferno.createTemplate((b) => ({
                 tag: 'svg',
                 children: b
             }));
 
-            Inferno.render(template(span(b())), container);
+            Inferno.render(template(spann(bb())), container);
             expect(container.firstChild.nodeType).to.equal(1);
             expect(container.firstChild.childNodes.length).to.equal(1);
             expect(container.firstChild.firstChild.firstChild.childNodes.length).to.equal(3);
