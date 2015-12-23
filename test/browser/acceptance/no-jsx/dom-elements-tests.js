@@ -3663,6 +3663,16 @@ describe('DOM element tests (no-jsx)', () => {
             });
             Inferno.render(template(span1()), container);
             expect(container.firstChild.innerHTML).to.equal('<span>Hello!</span>');
+            
+			// Whitespace issue!
+            const span2 = Inferno.createTemplate(function() {
+                return {
+                    tag: 'span',
+                    children: ['Hello', null, '  !  ']
+                };
+            });
+            Inferno.render(template(span1()), container);
+            expect(container.firstChild.innerHTML).to.equal('<span>Hello  !  </span>');
 
         });
     });
@@ -4059,6 +4069,8 @@ describe('DOM element tests (no-jsx)', () => {
 
             Inferno.render(template(child()), container);
             expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+
+
         });
         it('Fourth render (update)', () => {
             const child = Inferno.createTemplate(() => ({
@@ -4080,6 +4092,25 @@ describe('DOM element tests (no-jsx)', () => {
 
             Inferno.render(template(child()), container);
             expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+
+            const child1 = Inferno.createTemplate(() => ({
+                tag: 'circle',
+                children: {
+                    tag: 'circle',
+                    children: {
+                        tag: 'g',
+                        children: {
+                            tag: 'g',
+                            children: null
+
+                        }
+                    }
+                }
+            }));
+
+            Inferno.render(template(child1()), container);
+            expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+
         });
     });
 
@@ -4166,6 +4197,44 @@ describe('DOM element tests (no-jsx)', () => {
                 container.innerHTML
             ).to.equal(
                 '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+            );
+			
+			const template1 = Inferno.createTemplate(function() {
+                return {
+                    tag: 'select',
+                    attrs: {
+                        multiple: true,
+                        value: 'foo'
+                    },
+                    children: [{
+                        tag: 'option',
+                        attrs: {
+                            value: 'foo'
+                        },
+                        children: 'foo'
+                    }, {
+                        tag: 'option',
+                        attrs: {
+                            value: 'bar'
+                        },
+                        children: 'bar'
+                    }, {
+                        tag: 'option',
+                        attrs: {
+                            value: 'zoo'
+                        },
+                        children: 'zoo'
+                    }]
+
+                };
+            });
+            Inferno.render(template1('zoo'), container);
+            expect(container.firstChild.children[0].selected).to.eql(true);
+            expect(container.firstChild.children[1].selected).to.eql(false);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<select multiple="multiple"><option>foo</option><option>bar</option><option selected="selected">zoo</option></select>'
             );
 
         });
