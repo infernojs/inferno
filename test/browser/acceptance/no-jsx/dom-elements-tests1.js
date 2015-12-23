@@ -2311,24 +2311,23 @@ describe('DOM element tests (no-jsx)', () => {
 
         it('Initial render (creation)', () => {
             Inferno.render(template(false), container);
-            expect(container.getAttribute('formNoValidate')).to.be.null;
+	        expect(container.firstChild.getAttribute('formNoValidate')).to.be.null;
             expect(
                 container.innerHTML
             ).to.equal(
                 '<div></div>'
             );
             Inferno.render(template(true), container);
-            expect(container.getAttribute('formNoValidate')).to.be.true;
+	        expect(container.firstChild.getAttribute('formNoValidate')).to.equal('formnovalidate');
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div></div>'
+                '<div formnovalidate="formnovalidate"></div>'
             );
-
         });
         it('Second render (creation)', () => {
             Inferno.render(template(null), container);
-            expect(container.getAttribute('formNoValidate')).to.be.null;
+	        expect(container.firstChild.getAttribute('formNoValidate')).to.be.null;
             expect(
                 container.innerHTML
             ).to.equal(
