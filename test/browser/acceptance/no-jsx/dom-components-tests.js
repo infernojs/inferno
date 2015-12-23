@@ -1095,6 +1095,13 @@ describe('DOM component tests (no-jsx)', () => {
 			 ).to.equal(
 				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
 			 );
+			 
+			  Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			 );
 		 });
 		 it('Second render (update)', () => {
 			 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
@@ -1140,12 +1147,7 @@ describe('DOM component tests (no-jsx)', () => {
             ).to.throw;
         });
 		
-		 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
-			 expect(
-				 container.innerHTML
-			 ).to.equal(
-				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
-			 );
+		
 	 });
 
 	class BasicComponent2 extends Inferno.Component {
@@ -1300,6 +1302,13 @@ describe('DOM component tests (no-jsx)', () => {
 			).to.equal(
 				'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 			);
+			
+			 Inferno.render(template(BasicStatelessComponent1, '123', 'basic-update'), container);
+			 expect(
+				 container.innerHTML
+			 ).to.equal(
+				 '<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			 );
 
 
 		});
