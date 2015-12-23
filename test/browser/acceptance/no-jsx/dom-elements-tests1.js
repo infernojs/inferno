@@ -2196,7 +2196,7 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 '<div hidden=""></div>'
             );
-            
+
 			// First we set to false, then true, and then false again.  The last one fails!!
             Inferno.render(template(false), container);
             expect(container.firstChild.getAttribute('hidden')).to.be.null;

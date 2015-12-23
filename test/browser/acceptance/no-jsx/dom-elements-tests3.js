@@ -177,7 +177,7 @@ describe('DOM element tests3 (no-jsx)', () => {
             Inferno.render(template(span1()), container);
             expect(container.firstChild.innerHTML).to.equal('<span></span>');
 			
-			 spanish = Inferno.createTemplate(function() {
+			 const spanish = Inferno.createTemplate(function() {
                 return {
                     tag: 'b',
                     children: ['Hello ', null]
@@ -375,7 +375,7 @@ describe('DOM element tests3 (no-jsx)', () => {
             );
 
             Inferno.render(template(), container);
-            expect(container.firstChild.getAttribute('scope')).to.eql('scope');
+            expect(container.firstChild.getAttribute('scope')).to.be.null;
             expect(
                 container.innerHTML
             ).to.equal(
@@ -395,7 +395,7 @@ describe('DOM element tests3 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div></div>'
+                '<div scope="false"></div>' 
             );
 
             Inferno.render(template(true), container);
