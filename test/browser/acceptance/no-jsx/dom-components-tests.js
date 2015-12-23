@@ -747,7 +747,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password" disabled="abc">The title is abc</label></div></div>'
+				'<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").disabled
@@ -755,12 +755,11 @@ describe('DOM component tests (no-jsx)', () => {
 				true
 			);
 
-			Inferno.render(template(BasicComponent1d, 'abc', 'true'), container);
-
+			Inferno.render(template(BasicComponent1d, 'abc', true), container);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password" disabled="true">The title is abc</label></div></div>'
+				'<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").disabled
@@ -786,7 +785,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
+				'<div><div class="basic"><label><input type="password" disabled="">The title is 123</label></div></div>'
 			);
 			expect(
 				container.querySelector("input").disabled
@@ -798,7 +797,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="basic"><label><input type="password">The title is </label></div></div>'
+				'<div><div class="basic"><label><input type="password">The title is  </label></div></div>'
 			);
 			expect(
 				container.querySelector("input").disabled
@@ -842,7 +841,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				''
+				'<div></div>'
 			);
 
 			Inferno.render(template(undefined, undefined, undefined), container);
@@ -850,7 +849,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				''
+				'<div></div>'
 			);
 
 			Inferno.render(template(undefined, null, undefined), container);
@@ -858,7 +857,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				''
+				'<div></div>'
 			);
 
 			Inferno.render(template(null, undefined, null), container);
@@ -866,7 +865,7 @@ describe('DOM component tests (no-jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				''
+				'<div></div>'
 			);
 
           Inferno.render(template(BasicComponent1, '你好，世界！', null), container);
