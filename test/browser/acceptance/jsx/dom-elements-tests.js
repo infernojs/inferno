@@ -87,16 +87,33 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should render "autoFocus" boolean attributes', () => {
-		beforeEach(() => {
-			Inferno.render(<div autoFocus='true' />, container);
-		});
+
 		it('Initial render (creation)', () => {
+			Inferno.render(<div autoFocus='true' />, container);
 			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div autofocus="true"></div>'
 			);
+
+			Inferno.render(<div autoFocus='false' />, container);
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="true"></div>'
+			);
+           
+		   // This one should not be set as true, but removed 
+			Inferno.render(<div autoFocus='' />, container);
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="true"></div>'
+			);
+
 		});
 	});
 
@@ -134,16 +151,41 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('shouldn\'t render null value', () => {
-		beforeEach(() => {
-			Inferno.render(<input values={ null } />, container);
-		});
 		it('Initial render (creation)', () => {
+			Inferno.render(<input values={ null } />, container);
 			expect( container.value ).to.be.undefined;
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<input>'
 			);
+
+			Inferno.render(<input values={ undefined } />, container);
+			expect( container.value ).to.be.undefined;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+            // should null be set?
+			Inferno.render(<input values='null' />, container);
+			expect( container.value ).to.be.undefined;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+			
+            // should undefined be set?
+			Inferno.render(<input values='undefined' />, container);
+			expect( container.value ).to.be.undefined;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>'
+			);
+			
+			
 		});
 	});
 
@@ -157,6 +199,16 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				'<input title="Tip!">'
 			);
+
+			Inferno.render(<input title='' />, container);
+
+			expect(container.firstChild.getAttribute('title')).to.be.null;
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<input>' 
+			);
+
 		});
 	});
 
