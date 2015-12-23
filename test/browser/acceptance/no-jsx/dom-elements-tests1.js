@@ -2190,11 +2190,11 @@ describe('DOM element tests (no-jsx)', () => {
                 '<div></div>'
             );
             Inferno.render(template(true), container);
-            expect(container.firstChild.getAttribute('hidden')).to.be.true;
+            expect(container.firstChild.hidden).to.be.true;
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div></div>'
+                '<div hidden=""></div>'
             );
             
 			// First we set to false, then true, and then false again.  The last one fails!!
@@ -2226,11 +2226,11 @@ describe('DOM element tests (no-jsx)', () => {
             );
 
             Inferno.render(template(false), container);
-            expect(container.firstChild.hidden).to.be.null;
+            expect(container.firstChild.hidden).to.be.false;
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div hidden=""></div>'
+                '<div></div>'
             );
 
             Inferno.render(template(true), container);
