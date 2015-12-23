@@ -401,10 +401,11 @@ describe('DOM component tests (no-jsx)', () => {
 					createElement(Component, {title, isChecked})
 				)
 			);
-			Inferno.render(template(BasicComponent1b, "abc", true), container);
 		});
 
 		it('Initial render (creation)', () => {
+			Inferno.render(template(BasicComponent1b, "abc", true), container);
+
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -415,6 +416,47 @@ describe('DOM component tests (no-jsx)', () => {
 			).to.equal(
 				true
 			);
+
+
+			Inferno.render(template(BasicComponent1b, "abc", true), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="checkbox">The title is abc</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				true
+			);
+
+			Inferno.render(template(BasicComponent1b, "abc", 'true'), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="checkbox">The title is abc</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				true
+			);
+
+			Inferno.render(template(BasicComponent1b, "abc", 'false'), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="checkbox">The title is abc</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				false
+			);
+
 		});
 		it('Second render (update)', () => {
 			Inferno.render(template(BasicComponent1b, "123", false), container);
@@ -431,6 +473,18 @@ describe('DOM component tests (no-jsx)', () => {
 
 
 			Inferno.render(template(BasicComponent1b, null, false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="checkbox">The title is </label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				false
+			);
+
+			Inferno.render(template(BasicComponent1b, null, null), container);
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -508,6 +562,58 @@ describe('DOM component tests (no-jsx)', () => {
 				'<div></div>'
 			);
 
+			Inferno.render(template(null, null, null), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+			
+			Inferno.render(template(undefined, undefined, undefined), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div></div>'
+			);
+
+            // Fix! This should give one whitespace
+			Inferno.render(template(' ', '', ''), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div> </div>'
+			);
+
+            // Fix! This should give one whitespace
+			Inferno.render(template(' ', '', ''), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div> </div>'
+			);
+
+            // Fix! This should give two whitespace
+			Inferno.render(template(' ', ' ', ''), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>  </div>'
+			);
+
+            // Fix! This should give three whitespace
+			Inferno.render(template(' ', ' ', ' '), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>  </div>'
+			);
+
 		});
 		it('Second render (update)', () => {
 			Inferno.render(template(BasicComponent1c, '123', false), container);
@@ -522,6 +628,14 @@ describe('DOM component tests (no-jsx)', () => {
 			).to.equal(
 				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
 			);
+
+			Inferno.render(template(BasicComponent1c, ' ', false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password">The title is </label></div></div>'
+			);
+
 		});
 	});
 	
@@ -576,6 +690,31 @@ describe('DOM component tests (no-jsx)', () => {
 			).to.equal(
 				false
 			);
+
+			Inferno.render(template(BasicComponent1d, '123', true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").disabled
+			).to.equal(
+				true
+			);
+
+			Inferno.render(template(BasicComponent1d, ' ', false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input type="password">The title is </label></div></div>'
+			);
+			expect(
+				container.querySelector("input").disabled
+			).to.equal(
+				false
+			);
+
 		});
 	});
 
