@@ -114,7 +114,6 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should render "autoFocus" boolean attributes', () => {
-
 		it('Initial render (creation)', () => {
 			Inferno.render(<div autoFocus='true' />, container);
 			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
@@ -129,16 +128,15 @@ describe('DOM element tests (jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div autofocus="true"></div>'
+				'<div autofocus="false"></div>'
 			);
-           
-		   // This one should not be set as true, but removed 
+
 			Inferno.render(<div autoFocus='' />, container);
-			expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql(null);
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div autofocus="true"></div>'
+				'<div></div>'
 			);
 
 		});
