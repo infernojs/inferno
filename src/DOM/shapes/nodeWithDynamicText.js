@@ -18,10 +18,24 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			let nextValue = getValueWithIndex(nextItem, valueIndex);
+			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				domNode.firstChild.nodeValue = nextValue;
+			if (nextValue !== lastValue) {
+				if (nextValue == null) {
+					if (lastValue == null) {
+						domNode.textContent = ' ';
+						domNode.firstChild.nodeValue = '';
+					} else {
+						domNode.textContent = '';
+					}
+				} else {
+					if (lastValue == null) {
+						domNode.textContent = nextValue;
+					} else {
+						domNode.firstChild.nodeValue = nextValue;
+					}
+				}
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);

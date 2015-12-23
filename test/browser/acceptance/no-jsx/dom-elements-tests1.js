@@ -303,20 +303,19 @@ describe('DOM element tests (no-jsx)', () => {
             ).to.equal(
                 `<ul class="container"><li class="row">Im a dynamic li-tag #3</li><li class="row">Im a dynamic li-tag #3</li><li class="row">Im a dynamic li-tag #3</li></ul>`
             );
-           
-		   // This inserts 'undefined' where nothing should be inserted!
+
             Inferno.render(template(), container);
             expect(
                 container.innerHTML
             ).to.equal(
-                `<ul class="container"><li class="row">Im a dynamic li-tag #3</li><li class="row"></li><li class="row">Im a dynamic li-tag #3</li></ul>`
+                `<ul class="container"><li class="row"></li><li class="row"></li><li class="row"></li></ul>`
             );
 			
            Inferno.render(template(null), container);
             expect(
                 container.innerHTML
             ).to.equal(
-                `<ul class="container"><li class="row">Im a dynamic li-tag #3</li><li class="row"></li><li class="row">Im a dynamic li-tag #3</li></ul>`
+                `<ul class="container"><li class="row"></li><li class="row"></li><li class="row"></li></ul>`
             );
 
         });
@@ -1175,7 +1174,7 @@ describe('DOM element tests (no-jsx)', () => {
                 }]
             }));
 
-Inferno.render(template(), container);
+            Inferno.render(template(), container);
 
             expect(get(container.firstChild)).to.eql(['foo']);
             expect(
@@ -1188,8 +1187,10 @@ Inferno.render(template(), container);
     });
 
     describe('should render value multiple attribute', () => {
+        let template;
+
         beforeEach(() => {
-            const template = Inferno.createTemplate(() => ({
+            template = Inferno.createTemplate(() => ({
                 tag: 'select',
                 attrs: {
                     multiple: true,

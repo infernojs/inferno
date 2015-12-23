@@ -49,11 +49,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						const newDomNode = subTree.update(lastItem, nextItem, treeLifecycle);
-
-						if(newDomNode && domNode.childNodes[i] !== newDomNode) {
-							domNode.replaceChild(newDomNode, domNode.childNodes[i]);
-						}
+						subTree.update(lastItem, nextItem, treeLifecycle);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
 					const newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle);

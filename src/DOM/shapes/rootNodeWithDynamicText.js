@@ -38,14 +38,23 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
-				if (lastValue == null) {
-					domNode.textContent = nextValue;
+				if (nextValue == null) {
+					if (lastValue == null) {
+						domNode.textContent = ' ';
+						domNode.firstChild.nodeValue = '';
+					} else {
+						domNode.textContent = '';
+					}
 				} else {
-					domNode.firstChild.nodeValue = nextValue;
+					if (lastValue == null) {
+						domNode.textContent = nextValue;
+					} else {
+						domNode.firstChild.nodeValue = nextValue;
+					}
 				}
 			}
 			if (dynamicAttrs) {
