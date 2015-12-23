@@ -179,10 +179,8 @@ export function insertOrAppend(parentNode, newNode, nextNode) {
 }
 
 export function remove(item, parentNode) {
-	if (item.rootNode !== null) {
-		parentNode.removeChild(item.rootNode);
-		if (recyclingEnabled) {
-			pool(item);
-		}
+	parentNode.removeChild(item.rootNode);
+	if (recyclingEnabled) {
+		pool(item);
 	}
 }

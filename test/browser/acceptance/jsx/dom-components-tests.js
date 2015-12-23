@@ -5,7 +5,7 @@ const {
 	createElement
 } = Inferno.TemplateFactory;
 
-describe('DOM element tests (jsx)', () => {
+describe('DOM component tests (jsx)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -508,6 +508,6 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				''
 			);
-	});
+		});
 	});
 });

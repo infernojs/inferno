@@ -50,11 +50,13 @@ export default function createDOMFragment(parentNode, nextNode) {
 			return fragment;
 		},
 		remove() {
-			const tree = lastItem.domTree;
 			if (lastItem) {
-				tree.remove(lastItem, treeLifecycle);
+				const tree = lastItem.domTree;
+				if (lastItem) {
+					tree.remove(lastItem, treeLifecycle);
+				}
+				remove(lastItem, parentNode);
 			}
-			remove(lastItem, parentNode);
 			treeSuccessListeners = [];
 			return fragment;
 		}
