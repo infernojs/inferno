@@ -201,6 +201,52 @@ describe('DOM element tests (jsx)', () => {
 		});
 	});
 
+ it('should handle className', function() {
+      Inferno.render(<div style={{}} />, container);
+
+      Inferno.render(<div className={'foo'} />, container);
+      expect(container.firstChild.className).to.equal('foo');
+      Inferno.render(<div className={'bar'} />, container);
+      expect(container.firstChild.className).to.equal('bar');
+      Inferno.render(<div className={null} />, container);
+      expect(container.firstChild.className).to.equal('');
+    });
+	
+	 it('should update styles if initially null', function() {
+      var styles = null;
+
+      Inferno.render(<div style={styles} />, container);
+
+      var stubStyle = container.firstChild.style;
+
+      styles = {display: 'block'};
+
+      Inferno.render(<div style={styles} />, container);
+      expect(stubStyle.display).to.equal('block');
+    });
+	
+
+	 it('should skip child object attribute on web components', function() {
+      var container = document.createElement('div');
+
+      // Test initial render to null
+      Inferno.render(<my-component children={['foo']} />, container);
+      expect(container.firstChild.hasAttribute('children')).to.be.false;
+
+      // Test updates to null
+      Inferno.render(<my-component children={['foo']} />, container);
+      expect(container.firstChild.hasAttribute('children')).to.be.false;
+    });
+
+    it('should remove attributes', function() {
+      var container = document.createElement('div');
+      Inferno.render(<img height="17" />, container);
+
+      expect(container.firstChild.hasAttribute('height')).to.be.true;
+      Inferno.render(<img />, container);
+      expect(container.firstChild.hasAttribute('height')).to.be.false;
+    });
+	
 	describe('should render value multiple attribute', () => {
 		beforeEach(() => {
 			Inferno.render((
