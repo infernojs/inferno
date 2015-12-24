@@ -886,4 +886,55 @@ describe('various random DOM tests', () => {
     });
 
 
+        it('should render multiple text in an array #1', () => {
+            const template = Inferno.createTemplate((val1) => ({
+                tag: 'div',
+                attrs: {
+                    id: val1
+                },
+                text: ['I', ' am', ' a', ' teddybear', ', ', ' but', ' do', ' not', ' play', ' with', ' me', '!']
+            }));
+            Inferno.render(template('test'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="test">I am a teddybear, but do not play with me!</div>'
+            );
+        });
+
+        it('should render multiple text in an array #2', () => {
+            const template = Inferno.createTemplate((val1) => ({
+                tag: 'div',
+                attrs: {
+                    id: val1
+                }, children: {
+                tag: 'span',
+				text: ['I', ' am', ' a', ' teddybear', ', ', ' but', ' do', ' not', ' play', ' with', ' me', '!']
+				}
+            }));
+            Inferno.render(template('test'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="test"><span>I am a teddybear, but do not play with me!</span></div>'
+            );
+        });
+
+        it('should render multiple text as number in an array', () => {
+            const template = Inferno.createTemplate((val1) => ({
+                tag: 'div',
+                attrs: {
+                    id: val1
+                },
+                text: [1,2,3,4,5,6,7,8]
+            }));
+            Inferno.render(template('test'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="test">12345678</div>'
+            );
+        });
+
+
 });
