@@ -152,24 +152,21 @@ describe('DOM element tests (jsx)', () => {
 	});
 	
 	it('should render "autoFocus" boolean attributes', () => {
+		Inferno.render(<div autoFocus='true' />, container);
+		expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div autofocus="true"></div>'
+		);
 
-			Inferno.render(<div autoFocus='true' />, container);
-
-			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div autofocus="true"></div>'
-			);
-
-			Inferno.render(<div autoFocus='true' />, container);
-
-			expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div autofocus="false"></div>'
-			);
+		Inferno.render(<div autoFocus='false' />, container);
+		expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div autofocus="false"></div>'
+		);
 	});
 
 	describe('shouldn\'t render null value', () => {
@@ -187,7 +184,6 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should set values as properties by default', () => {
-
 		it('Initial render (creation)', () => {
 
 			Inferno.render(<input title='Tip!' />, container);
