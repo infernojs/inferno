@@ -314,6 +314,38 @@ describe('DOM element tests (jsx)', () => {
       Inferno.render(<div dir="ltr" />, container);
     });
 	
+	 it('handles multiple child updates without interference', function() {
+
+      // ABCD
+      Inferno.render(
+        <div>
+          <div key="one">
+            <div key="A">A</div><div key="B">B</div>
+          </div>
+          <div key="two">
+            <div key="C">C</div><div key="D">D</div>
+          </div>
+        </div>,
+        container
+      );
+      // BADC
+      Inferno.render(
+        <div>
+          <div key="one">
+            <div key="B">B</div><div key="A">A</div>
+          </div>
+          <div key="two">
+            <div key="D">D</div><div key="C">C</div>
+          </div>
+        </div>,
+        container
+      );
+
+      expect(container.textContent).to.equal('BADC');
+    });
+	
+	
+	
 	describe('should render value multiple attribute', () => {
 		beforeEach(() => {
 			Inferno.render((
