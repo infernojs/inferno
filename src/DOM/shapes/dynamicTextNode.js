@@ -3,7 +3,6 @@ import { getValueWithIndex } from '../../core/variables';
 
 export default function createDynamicTextNode( templateNode, valueIndex ) {
 	let domNode;
-
 	const node = {
 		create( item ) {
 			domNode = templateNode.cloneNode( false );
@@ -22,7 +21,7 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 			}
 		},
 		remove( /* lastItem */ ) {
-			// todo
+
 		}
 	};
 

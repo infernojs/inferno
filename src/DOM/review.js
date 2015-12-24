@@ -5,4 +5,3 @@ export default function review( domNode, propertyInfo, propName, value ) {
 	}
 	return false;
 }
-

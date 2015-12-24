@@ -1,4 +1,5 @@
 import isArray from '../util/isArray';
+import isVoid from '../util/isVoid';
 import inArray from '../util/inArray';
 import isVoid from '../util/isVoid';
 

@@ -92,7 +92,6 @@
       "objectsInArrays": false,
       "arraysInArrays": false
     }],
-    "eol-last": 2,
     "indent": [2, "tab", {
       "SwitchCase": 1
     }],

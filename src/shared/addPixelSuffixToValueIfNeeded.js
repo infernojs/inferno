@@ -24,4 +24,3 @@ export default ( name, value ) => {
 	}
 	return value + 'px';
 };
-

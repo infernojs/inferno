@@ -1,9 +1,10 @@
+import isVoid from '../util/isVoid';
 import addPixelSuffixToValueIfNeeded from '../shared/addPixelSuffixToValueIfNeeded';
 import isVoid from '../util/isVoid';
 
 /**
  * Sets the value for multiple styles on a node. If a value is specified as
- * '' (empty string), the corresponding style property will be unset.
+ * '' ( empty string ), the corresponding style property will be unset.
  *
  * @param {DOMElement} node
  * @param {object} styles
@@ -17,4 +18,3 @@ export default ( vNode, domNode, styles ) => {
 		}
 	}
 };
-

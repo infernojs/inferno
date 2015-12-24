@@ -21,7 +21,7 @@ function createElement( tag, attrs, ...children ) {
 		};
 
 		if ( attrs ) {
-			if ( !isUndefined( attrs.key ) ) {
+			if ( attrs.key !== undefined ) {
 				vNode.key = attrs.key;
 				delete attrs.key;
 			}

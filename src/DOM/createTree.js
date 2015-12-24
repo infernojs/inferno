@@ -28,6 +28,8 @@ import {
 }
 from './addAttributes';
 
+const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+
 function createStaticAttributes( node, domNode, excludeAttrs ) {
 	const attrs = node.attrs;
 
@@ -116,7 +118,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 			if ( !isVoid( text ) ) {
 				if ( !isVoid( children ) ) {
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					throw Error( invalidTemplateError );
 				}
 				staticNode.textContent = text;
 			} else {
@@ -128,6 +130,9 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 		} else if ( node.text ) {
 			staticNode = document.createTextNode( node.text );
 		}
+	}
+	if ( staticNode === undefined ) {
+		throw Error( invalidTemplateError );
 	}
 	if ( parentNode === null ) {
 		return staticNode;
@@ -141,15 +146,17 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 	let node;
 	let templateNode;
 
-	if ( isArray( schema ) ) {
-		throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+	if ( isVoid( schema ) ) {
+		throw Error( invalidTemplateError );
 	}
-
+	if ( isArray( schema ) ) {
+		throw Error( invalidTemplateError );
+	}
 	if ( !dynamicFlags ) {
 		templateNode = createStaticTreeNode( schema, null, domNamespace, schema );
 
 		if ( !templateNode ) {
-			throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+			throw Error( invalidTemplateError );
 		}
 
 		if ( isRoot ) {
@@ -172,7 +179,6 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				if ( tag.type === ObjectTypes.VARIABLE ) {
 					const lastAttrs = schema.attrs;
 					const attrs = { ...lastAttrs };
-					const children = null;
 
 					if ( schema.children ) {
 						if ( isArray( schema.children ) && schema.children.length > 1 ) {
@@ -191,9 +197,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					}
 					if ( isRoot ) {
-						return createRootNodeWithComponent( tag.index, attrs, children, domNamespace );
+						return createRootNodeWithComponent( tag.index, attrs, null, domNamespace );
 					} else {
-						return createNodeWithComponent( tag.index, attrs, children, domNamespace );
+						return createNodeWithComponent( tag.index, attrs, null, domNamespace );
 					}
 				}
 				const namespace = schema.attrs && schema.attrs.xmlns || null;

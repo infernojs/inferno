@@ -3,7 +3,6 @@ lib
 .build
 .jshintrc
 .idea
-dist/*
 .vscode
 jsconfig.json
 coverage

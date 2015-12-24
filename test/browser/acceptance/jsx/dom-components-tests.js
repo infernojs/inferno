@@ -1,7 +1,21 @@
-import get from '../../../tools/get';
 import Inferno from '../../../../src';
+import get from '../../../tools/get';
 
-export default function domComponentsTestsJsx(describe, expect, container) {
+const {
+	createElement
+} = Inferno.TemplateFactory;
+
+describe('DOM component tests (jsx)', () => {
+	let container;
+
+	beforeEach(() => {
+		container = document.createElement('div');
+	});
+
+	afterEach(() => {
+		Inferno.render(null, container);
+	});
+
 	class BasicComponent1 extends Inferno.Component {
 		render() {
 			return (
@@ -35,6 +49,16 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 			).to.equal(
 				'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
 			);
+
+			Inferno.render((
+				<div><BasicComponent1 title={null} name="basic-update" /></div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-update">The title is </span></div></div>'
+			);
+
 		});
 	});
 
@@ -88,6 +112,53 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 			).to.equal(
 				false
 			);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ true } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				true
+			);
+
+
+         const checked = Inferno.render((<span></span>), container);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ checked } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ null } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				false
+			);
+
 		});
 		it('Third render (update)', () => {
 			Inferno.render((
@@ -163,6 +234,16 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 				container.innerHTML
 			).to.equal(
 				'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
+			);
+			Inferno.render((
+				<div>
+					<BasicComponent1 title='123' name={[]} />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="">The title is 123</span></div></div>'
 			);
 		});
 	});
@@ -272,28 +353,56 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 	});
 
 	class BasicComponent3 extends Inferno.Component {
-		template(createElement, createComponent, styles, title) {
-			return createElement("div", {style: styles},
-				createElement("span", {style: styles}, "The title is ", title)
-			);
-		}
 		render() {
-			return Inferno.createFragment([this.props.styles, this.props.title], this.template);
+			return (
+				<div style={ this.props.styles }>
+					<span style={ this.props.styles }>The title is { this.props.title }</span>
+				</div>
+			);
 		}
 	}
 
 	describe('should render a basic component with styling', () => {
-		beforeEach(() => {
+		it('Initial render (creation)', () => {
 			Inferno.render((
 				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
 			), container);
-		});
 
-		it('Initial render (creation)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
 				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+			);
+
+			Inferno.render((
+				<BasicComponent3 title="styled!" styles={null} />
+			), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styled!</span></div>'
+			);
+
+            // This is wrong! The style are not removed. It's still there - '<div><span style="color: red; padding: 100px;">The title is styled!</span></div>'
+			Inferno.render((
+				<BasicComponent3 title="styled!" styles={undefined} />
+			), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styled!</span></div>'
+			);
+
+			Inferno.render((
+				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 100 }} />
+			), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding: 100px;"><span style="color: red; padding: 100px;">The title is styled!</span></div>' 
 			);
 		});
 		it('Second render (update)', () => {
@@ -310,17 +419,15 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 	});
 
 	describe('should render a basic component and remove styling #1', () => {
-		beforeEach(() => {
-			Inferno.render((
-				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
-			), container);
-		});
-
 		it('Initial render (creation)', () => {
+			Inferno.render((
+				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 20 }} />
+			), container);
+
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+				'<div style="color: red; padding: 20px;"><span style="color: red; padding: 20px;">The title is styled!</span></div>'
 			);
 		});
 		it('Second render (update)', () => {
@@ -332,6 +439,75 @@ export default function domComponentsTestsJsx(describe, expect, container) {
 			).to.equal(
 				'<div><span>The title is styles are removed!</span></div>'
 			);
+
+			Inferno.render((
+				<BasicComponent3 title="styles are removed!" styles={ false } />
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styles are removed!</span></div>'
+			);
+
+			Inferno.render((
+				<BasicComponent3 title="styles are removed!" styles={ true } />
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styles are removed!</span></div>'
+			);
+
+			Inferno.render((
+				<BasicComponent3 title="styles are removed!" styles={ undefined } />
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styles are removed!</span></div>'
+			);
+
 		});
 	});
-}
+
+	describe('should render a basic component with SVG', () => {
+		class Component extends Inferno.Component {
+			constructor(props) {
+				super(props);
+			}
+			render() {
+				return (
+					<svg class="alert-icon">
+						<use xlinkHref="#error"></use>
+					</svg>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(<Component />, container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>'
+			);
+
+			Inferno.render(null, container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				''
+			);
+
+			Inferno.render(undefined, container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				''
+			);
+		});
+	});
+});

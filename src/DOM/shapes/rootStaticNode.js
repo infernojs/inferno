@@ -28,7 +28,7 @@ export default function createRootStaticNode( templateNode ) {
 			nextItem.rootNode = lastItem.rootNode;
 		},
 		remove( /* lastItem */ ) {
-      // todo
+
 		}
 	};
 

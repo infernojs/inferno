@@ -3,7 +3,7 @@ import updateComponent from './updateComponent';
 function applyState( component ) {
 	const blockRender = component._blockRender;
 
-	requestAnimationFrame( ( ) => {
+	requestAnimationFrame( () => {
 		if ( component._deferSetState === false ) {
 			component._pendingSetState = false;
 			const pendingState = component._pendingState;

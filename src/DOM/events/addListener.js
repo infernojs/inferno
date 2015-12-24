@@ -16,7 +16,7 @@ export default function addListener( vNode, domNode, type, listener ) {
 		if ( !registry._enabled ) {
 			// handle focus / blur events
 			if ( registry._focusBlur ) {
-				registry._focusBlur( );
+				registry._focusBlur();
 			} else if ( registry._bubbles ) {
 				const handler = setHandler( type, addRootListener ).handler;
 
@@ -29,7 +29,7 @@ export default function addListener( vNode, domNode, type, listener ) {
 
 		if ( listeners[type] ) {
 			if ( listeners[type].destroy ) {
-				listeners[type].destroy( );
+				listeners[type].destroy();
 			}
 		}
 		if ( registry._bubbles ) {

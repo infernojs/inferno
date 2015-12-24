@@ -6,7 +6,7 @@ export default function createVoidNode( templateNode, dynamicAttrs ) {
 		create( item ) {
 			domNode = templateNode.cloneNode( true );
 			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs );
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs, null );
 			}
 			return domNode;
 		},
@@ -16,7 +16,7 @@ export default function createVoidNode( templateNode, dynamicAttrs ) {
 			}
 		},
 		remove( /* lastItem */ ) {
-			// todo
+
 		}
 	};
 

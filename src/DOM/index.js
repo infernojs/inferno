@@ -12,12 +12,13 @@ const template = {
 	 * @param {*} value
 	 */
 	setProperty( vNode, domNode, name, value, useProperties ) {
+
 		const propertyInfo = DOMRegistry[name] || null;
 
 		if ( propertyInfo ) {
 			if ( isVoid( value ) ||
 				propertyInfo.hasBooleanValue && !value ||
-				propertyInfo.hasNumericValue && ( value !== value ) || // faster isNaN protection
+				propertyInfo.hasNumericValue && ( value !== value ) ||
 				propertyInfo.hasPositiveNumericValue && value < 1 ||
 				value.length === 0 ) {
 				template.removeProperty( vNode, domNode, name, useProperties );
@@ -25,11 +26,19 @@ const template = {
 				const propName = propertyInfo.propertyName;
 
 				if ( propertyInfo.mustUseProperty ) {
-					if ( propName === 'value' && ( vNode.tag === 'select' ) ) {
+					if ( propName === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
 						setSelectValueForProperty( vNode, domNode, value, useProperties );
 					} else if ( '' + domNode[propName] !== '' + value ) {
 						if ( useProperties ) {
-							domNode[propName] = value;
+							if ( propertyInfo.hasBooleanValue ) {
+								if ( name === value || !!value ) {
+									domNode[propName] = true;
+								} else {
+									domNode[propName] = false;
+								}
+							} else {
+								domNode[propName] = value;
+							}
 						} else {
 							if ( propertyInfo.hasBooleanValue && value === true ) {
 								value = propName;
@@ -38,6 +47,7 @@ const template = {
 						}
 					}
 				} else {
+
 					const attributeName = propertyInfo.attributeName;
 					const namespace = propertyInfo.attributeNamespace;
 

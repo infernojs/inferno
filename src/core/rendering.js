@@ -38,7 +38,7 @@ export function render( nextItem, parentNode ) {
 		rootFragments.push( fragment );
 	} else {
 		if ( nextItem === null ) {
-			rootFragment.remove( );
+			rootFragment.remove();
 			removeRootFragment( rootFragment );
 		} else {
 			rootFragment.render( nextItem );

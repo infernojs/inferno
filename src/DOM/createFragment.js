@@ -3,6 +3,7 @@ import { remove } from './domMutate';
 export default function createDOMFragment( parentNode, nextNode ) {
 	let lastItem;
 	let treeSuccessListeners = [];
+	const context = {};
 	const treeLifecycle = {
 		addTreeSuccessListener( listener ) {
 			treeSuccessListeners.push( listener );
@@ -18,7 +19,7 @@ export default function createDOMFragment( parentNode, nextNode ) {
 			}
 		}
 	};
-	const fragment = {
+	const fragment =	{
 		parentNode,
 		render( nextItem ) {
 			if ( !nextItem ) {
@@ -26,10 +27,14 @@ export default function createDOMFragment( parentNode, nextNode ) {
 			}
 			const tree = nextItem.domTree;
 
+			if ( !tree ) {
+				throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+			}
+
 			if ( lastItem ) {
-				tree.update( lastItem, nextItem, treeLifecycle );
+				tree.update( lastItem, nextItem, treeLifecycle, context );
 			} else {
-				const dom = tree.create( nextItem, treeLifecycle );
+				const dom = tree.create( nextItem, treeLifecycle, context );
 
 				if ( nextNode ) {
 					parentNode.insertBefore( dom, nextNode );
@@ -37,7 +42,7 @@ export default function createDOMFragment( parentNode, nextNode ) {
 					parentNode.appendChild( dom );
 				}
 			}
-			if ( treeSuccessListeners.length ) {
+			if ( treeSuccessListeners.length > 0 ) {
 				for ( let i = 0; i < treeSuccessListeners.length; i++ ) {
 					treeSuccessListeners[i]();
 				}
@@ -46,9 +51,9 @@ export default function createDOMFragment( parentNode, nextNode ) {
 			return fragment;
 		},
 		remove() {
-			const tree = lastItem.domTree;
-
 			if ( lastItem ) {
+				const tree = lastItem.domTree;
+
 				tree.remove( lastItem, treeLifecycle );
 			}
 			remove( lastItem, parentNode );

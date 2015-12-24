@@ -1,4 +1,4 @@
-import infernoNodeID	from './infernoNodeID';
+import infernoNodeID from './infernoNodeID';
 import listenersStorage from '../../shared/listenersStorage';
 import EventRegistry from './EventRegistry';
 import eventInterface from './eventInterface';
@@ -27,13 +27,13 @@ export default function addRootListener( e, type ) {
 		event = eventInterface( e, type );
 		defaultArgs = args = [event];
 	}
-	// NOTE: Only the event blubbling phase is modeled. This is done because
+	// NOTE: Only the event bubbling phase is modeled. This is done because
 	// handlers specified on props can not specify they are handled on the
 	// capture phase.
 	while ( target !== null
 	&& listenersCount > 0
 	&& target !== document.parentNode ) {
-		if ( ( nodeID = infernoNodeID( target, true ) )	 ) {
+		if ( ( nodeID = infernoNodeID( target, true ) ) ) {
 			listeners = listenersStorage[nodeID];
 			if ( listeners && listeners[type] && ( listener = listeners[type] ) ) {
 				// lazily instantiate additional arguments in the case
@@ -56,7 +56,7 @@ export default function addRootListener( e, type ) {
 
 				// Check if progagation stopped. There is only one listener per
 				// type, so we do not need to check immediate propagation.
-				if ( event.isPropagationStopped( ) ) {
+				if ( event.isPropagationStopped() ) {
 					break;
 				}
 

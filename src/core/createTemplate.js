@@ -13,6 +13,7 @@ export default function createTemplate( callback ) {
 		for ( let i = 0; i < callbackLength; i++ ) {
 			callbackArguments[i] = createVariable( i );
 		}
+
 		const schema = callback( ...callbackArguments );
 		const dynamicNodeMap = new Map();
 

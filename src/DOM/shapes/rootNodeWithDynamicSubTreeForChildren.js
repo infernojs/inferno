@@ -10,7 +10,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create( item, treeLifecycle ) {
+		create( item, treeLifecycle, context ) {
 			let domNode;
 
 			if ( recyclingEnabled ) {
@@ -25,22 +25,24 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
 						const subTree = subTreeForChildren[i];
 
-						domNode.appendChild( subTree.create( item, treeLifecycle ) );
+						domNode.appendChild( subTree.create( item, treeLifecycle, context ) );
 					}
 				} else if ( typeof subTreeForChildren === 'object' ) {
-					domNode.appendChild( subTreeForChildren.create( item, treeLifecycle ) );
+					domNode.appendChild( subTreeForChildren.create( item, treeLifecycle, context ) );
 				}
 			}
 			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs );
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem, treeLifecycle ) {
+		update( lastItem, nextItem, treeLifecycle, context ) {
 			if ( node !== lastItem.domTree ) {
-				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
-				return;
+				const newDomNode = recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+
+				nextItem.rootNode = newDomNode;
+				return newDomNode;
 			}
 			const domNode = lastItem.rootNode;
 
@@ -50,10 +52,20 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
 						const subTree = subTreeForChildren[i];
 
-						subTree.update( lastItem, nextItem, treeLifecycle );
+						subTree.update( lastItem, nextItem, treeLifecycle, context );
 					}
 				} else if ( typeof subTreeForChildren === 'object' ) {
-					subTreeForChildren.update( lastItem, nextItem, treeLifecycle );
+					const newDomNode = subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
+
+					if ( newDomNode ) {
+						const replaceNode = domNode.firstChild;
+
+						if ( replaceNode ) {
+							domNode.replaceChild( newDomNode, replaceNode );
+						} else {
+							domNode.appendChild( newDomNode );
+						}
+					}
 				}
 			}
 			if ( dynamicAttrs ) {

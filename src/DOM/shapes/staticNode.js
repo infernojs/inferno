@@ -1,6 +1,5 @@
 export default function createStaticNode( templateNode ) {
 	let domNode;
-
 	const node = {
 		create() {
 			domNode = templateNode.cloneNode( true );
@@ -8,7 +7,7 @@ export default function createStaticNode( templateNode ) {
 		},
 		update() {},
 		remove( /* lastItem */ ) {
-			// todo
+
 		}
 	};
 

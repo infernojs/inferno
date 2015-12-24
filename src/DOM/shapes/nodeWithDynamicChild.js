@@ -1,13 +1,15 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
-import { updateKeyed } from '../domMutate';
+import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 export default function createNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs ) {
 	let domNode;
+	let keyedChildren = true;
+	const childNodeList = [];
 	const node = {
-		create( item, treeLifecycle ) {
+		create( item, treeLifecycle, context ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
@@ -17,45 +19,57 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						const childItem = value[i];
 
 						if ( typeof childItem === 'object' ) {
-							domNode.appendChild( childItem.domTree.create( childItem, treeLifecycle ) );
+							const childNode = childItem.domTree.create( childItem, treeLifecycle, context );
+
+							if ( childItem.key === undefined ) {
+								keyedChildren = false;
+							}
+							childNodeList.push( childNode );
+							domNode.appendChild( childNode );
 						} else if ( typeof childItem === 'string' || typeof childItem === 'number' ) {
 							const textNode = document.createTextNode( childItem );
 
 							domNode.appendChild( textNode );
+							childNodeList.push( textNode );
+							keyedChildren = false;
 						}
 					}
 				} else if ( typeof value === 'object' ) {
-					domNode.appendChild( value.domTree.create( value, treeLifecycle ) );
+					domNode.appendChild( value.domTree.create( value, treeLifecycle, context ) );
 				} else if ( typeof value === 'string' || typeof value === 'number' ) {
 					domNode.textContent = value;
 				}
 			}
 			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs );
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs, null );
 			}
 			return domNode;
 		},
-		update( lastItem, nextItem, treeLifecycle ) {
+		update( lastItem, nextItem, treeLifecycle, context ) {
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
 			if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
 					domNode.firstChild.nodeValue = nextValue;
-				} else if ( nextValue === null ) {
-					// TODO
+				} else if ( isVoid( nextValue ) ) {
+					domNode.removeChild( domNode.firstChild );
 				} else if ( isArray( nextValue ) ) {
 					if ( isArray( lastValue ) ) {
-						updateKeyed( nextValue, lastValue, domNode, null, treeLifecycle );
+						if ( keyedChildren ) {
+							updateKeyed( nextValue, lastValue, domNode, null, treeLifecycle, context );
+						} else {
+							updateNonKeyed( nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context );
+						}
 					} else {
 						// debugger;
 					}
 				} else if ( typeof nextValue === 'object' ) {
 					const tree = nextValue.domTree;
 
-					if ( tree !== null ) {
+					if ( !isVoid( tree ) ) {
 						if ( lastValue.domTree !== null ) {
-							tree.update( lastValue, nextValue, treeLifecycle );
+							tree.update( lastValue, nextValue, treeLifecycle, context );
 						} else {
 							// TODO implement
 						}

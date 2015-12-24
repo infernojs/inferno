@@ -20,7 +20,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "eslint": "^1.10.3",
     "eslint-loader": "^1.1.1",
-    "istanbul-instrumenter-loader": "^0.1.3",
+    "isparta-instrumenter-loader": "^1.0.0",
     "karma": "^0.13.15",
     "karma-coverage": "^0.5.3",
     "karma-coveralls": "^1.1.2",
@@ -33,23 +33,28 @@
     "mocha-lcov-reporter": "^1.0.0",
     "mocha-loader": "^0.7.1",
     "npm-check-updates": "^2.5.4",
-    "rollup": "^0.21.2",
+    "rollup": "^0.22.0",
     "rollup-plugin-babel": "^2.2.0",
     "rollup-plugin-npm": "^1.1.0",
     "rollup-plugin-replace": "^1.1.0",
+    "rollup-plugin-commonjs": "^1.4.0",
     "uglify-js": "^2.6.1",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.14.0",
+	"isparta": "^4.0.0"
   },
   "dependencies": {
-    "babel-core": "^6.3.21",
-    "babel-plugin-syntax-jsx": "^6.3.13",
+    "babel-core": "^6.3.26",
     "babel-plugin-inferno": "^0.2.4",
+    "babel-plugin-syntax-jsx": "^6.3.13",
     "babel-plugin-syntax-object-rest-spread": "^6.3.13",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
     "karma-chrome-launcher": "^0.2.2",
+    "mkdirp": "^0.5.1",
     "pre-commit": "^1.1.2",
-    "mkdirp": "^0.5.1"
+    "zen-observable": "^0.1.9",
+	"rimraf": "^2.4.4",
+	"dotenv": "^1.2.0"
   },
   "files": [
     "dist",
@@ -66,14 +71,15 @@
     "url": "git+ssh://git@github.com/trueadm/inferno.git"
   },
   "scripts": {
-    "clean": "rm -rf coverage && rm -rf dist",
-    "build": "mkdirp dist && node config/rollup.config.js",
+    "clean": "rimraf coverage/ dist/",
+    "build": "npm run clean && mkdirp dist && babel-node config/rollup.config.js",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
     "test:browser": "karma start config/karma.conf.js --single-run",
     "test:server": "mocha --opts config/mocha.opts",
     "test": "npm run test:server && npm run test:browser",
-    "lint": "eslint .",
+    "lint": "eslint src/ test/shared test/server test/browser",
     "lint:source": "eslint ./src",
+    "lint:fix": "eslint --fix ./src",
     "lint:shared": "eslint ./test/shared",
     "lint:server": "eslint ./test/server",
     "lint:browser": "eslint ./test/browser",
@@ -87,6 +93,10 @@
     "package:prod": "./node_modules/.bin/ncu -u",
     "package:dev": "./node_modules/.bin/ncu -p -u",
     "preversion": "[[ -z $(git status --porcelain) ]] && npm run build && git add -A dist && git commit -m 'Build lib'",
-    "postpublish": "git push origin master --follow-tags"
+    "postpublish": "git push origin master --follow-tags",
+	"check_env:mac": "node check_env.js",
+    "check_env:win": "set NODE_ENV=development && node check_env.js",
+	"coverage:node": "babel-node node_modules/isparta/bin/isparta cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/node/**/*.js"
+
   }
 }

@@ -19,7 +19,7 @@ export default function createRootNodeWithStaticChild( templateNode, dynamicAttr
 			}
 			domNode = templateNode.cloneNode( true );
 			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs );
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -37,7 +37,7 @@ export default function createRootNodeWithStaticChild( templateNode, dynamicAttr
 			}
 		},
 		remove( /* lastItem */ ) {
-			// todo
+
 		}
 	};
 

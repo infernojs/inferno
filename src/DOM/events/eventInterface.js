@@ -1,4 +1,13 @@
-const CustomEvent = {
+/* eslint no-invalid-this:0 */
+
+function stopPropagation() {
+	this._isPropagationStopped = true;
+	if ( this._stopPropagation ) {
+		this._stopPropagation();
+	} else {
+		this.cancelBubble = true;
+	}
+}
 
 	stopPropagation() {
 		this._isPropagationStopped = true;
@@ -9,9 +18,15 @@ const CustomEvent = {
 		}
 	},
 
-	isPropagationStopped() {
-		return this._isPropagationStopped;
-	},
+function stopImmediatePropagation() {
+	this._isImmediatePropagationStopped = true;
+	this._isPropagationStopped = true;
+	if ( this._stopImmediatePropagation ) {
+		this._stopImmediatePropagation();
+	} else {
+		this.cancelBubble = true;
+	}
+}
 
 	stopImmediatePropagation() {
 		this._isImmediatePropagationStopped = true;
@@ -37,8 +52,10 @@ const CustomEvent = {
 		}
 	},
 
-	isDefaultPrevented() {
-		return this._isDefaultPrevented;
+	if ( this._preventDefault ) {
+		this._preventDefault();
+	} else {
+		this.returnValue = false;
 	}
 
 };

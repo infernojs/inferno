@@ -1,4 +1,5 @@
 export default function getFormElementType( node ) {
+
 	const name = node.nodeName.toLowerCase();
 
 	if ( name !== 'input' ) {
@@ -7,6 +8,7 @@ export default function getFormElementType( node ) {
 		}
 		return name;
 	}
+
 	const type = node.getAttribute( 'type' );
 
 	if ( !type ) {

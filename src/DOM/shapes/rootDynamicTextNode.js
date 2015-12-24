@@ -1,3 +1,4 @@
+import isVoid from '../../util/isVoid';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
@@ -42,7 +43,7 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 			}
 		},
 		remove( /* lastItem */ ) {
-			// todo
+
 		}
 	};
 

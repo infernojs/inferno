@@ -1,6 +1,8 @@
-const canUseDOM = !!( typeof window !== 'undefined' &&
-		window.document &&
-		window.document.createElement );
+const canUseDOM = !!(
+	typeof window !== 'undefined' &&
+	window.document &&
+	window.document.createElement
+);
 
 /**
  * Simple, lightweight module assisting with the detection and context of
