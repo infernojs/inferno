@@ -1627,7 +1627,7 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<input checked="true">'
+                '<input checked="checked">'
             );
 
         });
@@ -1719,7 +1719,7 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<input type="file" multiple="true" capture="true">'
+                '<input type="file" multiple="multiple" capture="true">'
             );
 
             Inferno.render(template(), container);
@@ -1727,7 +1727,7 @@ describe('DOM element tests (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<input type="file" multiple="true" capture="true">'
+                '<input type="file" multiple="multiple" capture="true">'
             );
 
         });
@@ -1981,7 +1981,6 @@ describe('DOM element tests (no-jsx)', () => {
                 })
             );
 
-            //kflash -- look at this please
             Inferno.render(template(), container);
             expect(
                 container.innerHTML

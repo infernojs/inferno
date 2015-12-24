@@ -30,22 +30,17 @@ const template = {
                         setSelectValueForProperty(vNode, domNode, value, useProperties);
                     } else if ('' + domNode[propName] !== '' + value) {
                         if (useProperties) {
-							
 							if (propertyInfo.hasBooleanValue) {
-
     							if (name === value || !!value) {
 						        	domNode[propName] = true;
 							    } else {
 						        	domNode[propName] = false;
     							}
 							} else {
-    						
-							domNode[propName] = value;
-							
+							    domNode[propName] = value;
 							}
-                            
                         } else {
-                            if (propertyInfo.hasBooleanValue && value === true) {
+                            if (propertyInfo.hasBooleanValue && (value === true || value === 'true')) {
                                 value = propName;
                             }
                             domNode.setAttribute(propName, value);

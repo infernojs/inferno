@@ -22,6 +22,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			const value = getValueWithIndex(item, valueIndex);
 
 			if(value != null) {
+				if (typeof value !== 'string') {
+					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral as a value, this is intended for low-level optimisation purposes.');
+				}
 				domNode.textContent = value;
 			}
 			if (dynamicAttrs) {
@@ -50,6 +53,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 						domNode.textContent = '';
 					}
 				} else {
+					if (typeof nextValue !== 'string') {
+						throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral as a value, this is intended for low-level optimisation purposes.');
+					}
 					if (lastValue == null) {
 						domNode.textContent = nextValue;
 					} else {

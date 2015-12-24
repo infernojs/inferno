@@ -18,11 +18,10 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 
 		if (attrVal) {
 			if ( attrName === 'style') {
-                 
 				 styleUpdates = attrVal;
 			
 			} else {
-			template.setProperty(vNode, domNode, attrName, attrVal, false);
+				template.setProperty(vNode, domNode, attrName, attrVal, false);
 			}
 		}
 	}
