@@ -150,6 +150,27 @@ describe('DOM element tests (jsx)', () => {
 		});
 
 	});
+	
+	it('should render "autoFocus" boolean attributes', () => {
+
+			Inferno.render(<div autoFocus='true' />, container);
+
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="true"></div>'
+			);
+
+			Inferno.render(<div autoFocus='true' />, container);
+
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="false"></div>'
+			);
+	});
 
 	describe('shouldn\'t render null value', () => {
 		beforeEach(() => {
@@ -259,4 +280,6 @@ describe('DOM element tests (jsx)', () => {
 			);
 		});
 	});
+	
+	
 });
