@@ -38,21 +38,21 @@ describe('DOM element tests (jsx)', () => {
 		});
 	});
 
-   	describe('should render a simple div with inline style', () => {
+	describe('should render a simple div with inline style', () => {
 		beforeEach(() => {
 			Inferno.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);
 		});
 
 		it('Initial render (creation)', () => {
-			
-             expect(container.nodeName).to.equal('DIV');
+
+			expect(container.nodeName).to.equal('DIV');
 		});
 
 		it('Second render (update)', () => {
 
 			Inferno.render(<div id={'foo'}>Hello, world! 2</div>, container);
 
-             expect(container.nodeName).to.equal('DIV');
+			expect(container.nodeName).to.equal('DIV');
 		});
 	});
 
@@ -104,7 +104,7 @@ describe('DOM element tests (jsx)', () => {
 
 		it('Initial render (creation)', () => {
 			Inferno.render(<div className='Dominic rocks!' />, container);
-			expect(container.firstChild.className).to.eql('Dominic rocks!');
+			expect(container.firstChild.getAttribute('class')).to.eql('Dominic rocks!');
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -112,13 +112,31 @@ describe('DOM element tests (jsx)', () => {
 			);
 
 			Inferno.render(<div className='' />, container);
-			expect(container.firstChild.className).to.eql('');
+			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
 
 			Inferno.render(<div className={null} />, container);
-			expect(container.firstChild.className).to.eql('');
+			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
+
 
 			Inferno.render(<div className={undefined} />, container);
-			expect(container.firstChild.className).to.eql('');
+			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="Dominic rocks!"></div>'
+			);
+
+
 		});
 
 		it('Second render (update)', () => {
@@ -127,10 +145,31 @@ describe('DOM element tests (jsx)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div class="Inferno rocks!"></div>'
+				'<div class="Dominic rocks!"></div>'
 			);
 		});
 
+	});
+	
+	it('should render "autoFocus" boolean attributes', () => {
+
+			Inferno.render(<div autoFocus='true' />, container);
+
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('true');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="true"></div>'
+			);
+
+			Inferno.render(<div autoFocus='true' />, container);
+
+			expect(container.firstChild.getAttribute('autoFocus')).to.eql('false');
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div autofocus="false"></div>'
+			);
 	});
 
 	describe('shouldn\'t render null value', () => {
@@ -148,7 +187,9 @@ describe('DOM element tests (jsx)', () => {
 	});
 
 	describe('should set values as properties by default', () => {
+
 		it('Initial render (creation)', () => {
+
 			Inferno.render(<input title='Tip!' />, container);
 
 			expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
@@ -163,10 +204,10 @@ describe('DOM element tests (jsx)', () => {
 	describe('should render value multiple attribute', () => {
 		beforeEach(() => {
 			Inferno.render((
-				<select multiple={ true } value='foo'>
-					<option value='foo'>I'm a li-tag</option>
-					<option value='bar'>I'm a li-tag</option>
-				</select>),
+					<select multiple={ true } value='foo'>
+						<option value='foo'>I'm a li-tag</option>
+						<option value='bar'>I'm a li-tag</option>
+					</select>),
 				container
 			);
 		});
@@ -226,10 +267,10 @@ describe('DOM element tests (jsx)', () => {
 		it('Second render (update)', () => {
 			const values = ['Rocks', 'Inferno'];
 			Inferno.render(
-					<div className="foo">
-						<span className="bar">{ values[0] }</span>
-						<span className="yar">{ values[1] }</span>
-					</div>,
+				<div className="foo">
+					<span className="bar">{ values[0] }</span>
+					<span className="yar">{ values[1] }</span>
+				</div>,
 				container
 			);
 			expect(
@@ -239,4 +280,6 @@ describe('DOM element tests (jsx)', () => {
 			);
 		});
 	});
+	
+	
 });

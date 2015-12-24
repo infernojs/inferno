@@ -273,11 +273,9 @@
   }
 
   function remove(item, parentNode) {
-  	if (item.rootNode !== null) {
-  		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled) {
-  			pool(item);
-  		}
+  	parentNode.removeChild(item.rootNode);
+  	if (recyclingEnabled) {
+  		pool(item);
   	}
   }
 
@@ -331,11 +329,13 @@
   			return fragment;
   		},
   		remove: function remove$$() {
-  			var tree = lastItem.domTree;
   			if (lastItem) {
-  				tree.remove(lastItem, treeLifecycle);
+  				var tree = lastItem.domTree;
+  				if (lastItem) {
+  					tree.remove(lastItem, treeLifecycle);
+  				}
+  				remove(lastItem, parentNode);
   			}
-  			remove(lastItem, parentNode);
   			treeSuccessListeners = [];
   			return fragment;
   		}
@@ -465,6 +465,13 @@
   	return index < 2 ? index === 0 ? item.v0 : item.v1 : item.values[index - 2];
   }
 
+  function getCorrectItemForValues(node, item) {
+  	if (node && node !== item.domTree && item.parent) {
+  		return getCorrectItemForValues(node, item.parent);
+  	}
+  	return item;
+  }
+
   function getTypeFromValue(value) {
   	if (typeof value === 'string' || typeof value === 'number' || value == null) {
   		return ValueTypes.TEXT;
@@ -532,7 +539,15 @@
       'xlink:type': xlink,
       'xml:base': xml,
       'xml:lang': xml,
-      'xml:space': xml
+      'xml:space': xml,
+      // React compat for non-working JSX namespace support
+      xlinkActuate: xlink,
+      xlinkArcrole: xlink,
+      xlinkHref: xlink,
+      xlinkRole: xlink,
+      xlinkShow: xlink,
+      xlinkTitle: xlink,
+      xlinkType: xlink
   };
 
   var DOMAttributeNames = {
@@ -540,6 +555,7 @@
       className: 'class',
       htmlFor: 'for',
       httpEquiv: 'http-equiv',
+      // React compat for non-working JSX namespace support
       xlinkActuate: 'xlink:actuate',
       xlinkArcrole: 'xlink:arcrole',
       xlinkHref: 'xlink:href',
@@ -547,6 +563,7 @@
       xlinkShow: 'xlink:show',
       xlinkTitle: 'xlink:title',
       xlinkType: 'xlink:type',
+      // others...
       xmlBase: 'xml:base',
       xmlLang: 'xml:lang',
       xmlSpace: 'xml:space',
@@ -626,6 +643,21 @@
       itemScope: BOOLEAN, // 3.2.5 - Global attributes
       className: null,
       tabindex: PROPERTY | NUMERIC_VALUE,
+
+      /**
+       * React compat for non-working JSX namespace support
+       */
+
+      xlinkActuate: null,
+      xlinkArcrole: null,
+      xlinkHref: null,
+      xlinkRole: null,
+      xlinkShow: null,
+      xlinkTitle: null,
+      xlinkType: null,
+      xmlBase: null,
+      xmlLang: null,
+      xmlSpace: null,
 
       /**
        * Numeric attributes
@@ -828,11 +860,23 @@
                   var propName = propertyInfo.propertyName;
 
                   if (propertyInfo.mustUseProperty) {
+
                       if (propName === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
                           setSelectValueForProperty(vNode, domNode, value, useProperties);
                       } else if ('' + domNode[propName] !== '' + value) {
                           if (useProperties) {
-                              domNode[propName] = value;
+
+                              if (propertyInfo.hasBooleanValue) {
+
+                                  if (name === value || !!value) {
+                                      domNode[propName] = true;
+                                  } else {
+                                      domNode[propName] = false;
+                                  }
+                              } else {
+
+                                  domNode[propName] = value;
+                              }
                           } else {
                               if (propertyInfo.hasBooleanValue && value === true) {
                                   value = propName;
@@ -1498,7 +1542,6 @@
    * @param{ Object } attrs
    */
   function addDOMStaticAttributes(vNode, domNode, attrs) {
-
   	var styleUpdates = undefined;
 
   	for (var attrName in attrs) {
@@ -1533,17 +1576,17 @@
   	return false;
   }
 
-  function addDOMDynamicAttributes(item, domNode, dynamicAttrs) {
+  function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
+  	var valueItem = getCorrectItemForValues(node, item);
+  	var styleUpdates = undefined;
+
   	if (dynamicAttrs.index !== undefined) {
-  		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
+  		dynamicAttrs = getValueWithIndex(valueItem, dynamicAttrs.index);
   		addDOMStaticAttributes(item, domNode, dynamicAttrs);
   		return;
   	}
-
-  	var styleUpdates = undefined;
-
   	for (var attrName in dynamicAttrs) {
-  		var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+  		var attrVal = getValueWithIndex(valueItem, dynamicAttrs[attrName]);
 
   		if (attrVal !== undefined) {
   			if (attrName === 'style') {
@@ -1565,7 +1608,6 @@
   }
 
   function set(domNode, attrName, nextAttrVal, nextItem, styleUpdates) {
-
   	if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
   		if (propertyToEventType[attrName]) {
   			addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
@@ -1581,24 +1623,19 @@
   		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
   		return;
   	}
-
   	var styleUpdates = undefined;
 
   	for (var attrName in dynamicAttrs) {
-
   		var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
   		var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-  		if (nextAttrVal) {
-
+  		if (nextAttrVal !== undefined) {
   			if (!lastAttrVal || lastAttrVal == null) {
   				// Is this hit?
   				if (nextAttrVal != null) {
-
   					set(domNode, attrName, nextAttrVal, nextItem, styleUpdates);
   				}
   			} else if (nextAttrVal == null) {
-
   				if (attrName === 'style') {
   					styleUpdates = null;
   				} else {
@@ -1617,9 +1654,8 @@
   				}
   			}
   		}
-
-  		if (lastAttrVal) {
-  			if ((!nextAttrVal || !(attrName !== nextAttrVal)) && lastAttrVal != null) {
+  		if (lastAttrVal !== undefined) {
+  			if ((nextAttrVal === undefined || !(attrName !== nextAttrVal)) && lastAttrVal != null) {
   				// remove attrs
   				if (propertyToEventType[attrName]) {
   					removeListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
@@ -1642,7 +1678,10 @@
   	var lastTree = lastItem.domTree;
   	lastTree.remove(lastItem);
   	var domNode = node.create(nextItem, treeLifecycle);
-  	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
+  	var parentNode = lastDomNode.parentNode;
+  	if (parentNode) {
+  		parentNode.replaceChild(domNode, lastDomNode);
+  	}
   	nextItem.rootNode = domNode;
   	return domNode;
   }
@@ -1669,7 +1708,7 @@
   				domNode.textContent = value;
   			}
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
   			}
   			item.rootNode = domNode;
   			return domNode;
@@ -1683,9 +1722,23 @@
 
   			nextItem.rootNode = domNode;
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
+  			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-  			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-  				domNode.firstChild.nodeValue = nextValue;
+  			if (nextValue !== lastValue) {
+  				if (nextValue == null) {
+  					if (lastValue == null) {
+  						domNode.textContent = ' ';
+  						domNode.firstChild.nodeValue = '';
+  					} else {
+  						domNode.textContent = '';
+  					}
+  				} else {
+  					if (lastValue == null) {
+  						domNode.textContent = nextValue;
+  					} else {
+  						domNode.firstChild.nodeValue = nextValue;
+  					}
+  				}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -1708,15 +1761,29 @@
   				domNode.textContent = value;
   			}
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
+  			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-  			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-  				domNode.firstChild.nodeValue = nextValue;
+  			if (nextValue !== lastValue) {
+  				if (nextValue == null) {
+  					if (lastValue == null) {
+  						domNode.textContent = ' ';
+  						domNode.firstChild.nodeValue = '';
+  					} else {
+  						domNode.textContent = '';
+  					}
+  				} else {
+  					if (lastValue == null) {
+  						domNode.textContent = nextValue;
+  					} else {
+  						domNode.firstChild.nodeValue = nextValue;
+  					}
+  				}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -1744,7 +1811,7 @@
   			}
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
   			}
   			item.rootNode = domNode;
   			return domNode;
@@ -1772,7 +1839,7 @@
   		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
   			return domNode;
   		},
@@ -1834,7 +1901,7 @@
   				}
   			}
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
   			}
   			item.rootNode = domNode;
   			return domNode;
@@ -1855,8 +1922,8 @@
   					domNode.firstChild.nodeValue = nextValue;
   				} else if (nextValue == null) {
   					if (domNode !== null) {
-  						domNode.parentNode.removeChild(domNode);
-  						nextItem.rootNode = null;
+  						var childNode = document.createTextNode('');
+  						domNode.replaceChild(childNode, domNode.firstChild);
   					}
   				} else if (isArray(nextValue)) {
   					if (isArray(lastValue)) {
@@ -1866,21 +1933,27 @@
   							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle);
   						}
   					} else {
-  						// TODO
+  						// do nothing for now!
   					}
   				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
   						var tree = nextValue.domTree;
 
-  						if (tree !== null) {
-  							if (lastValue.domTree !== null) {
-  								tree.update(lastValue, nextValue, treeLifecycle);
+  						if (tree != null) {
+  							if (lastValue != null) {
+  								if (lastValue.domTree != null) {
+  									tree.update(lastValue, nextValue, treeLifecycle);
+  								} else {
+  									recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+  									return;
+  								}
   							} else {
-  								// TODO implement
+  								var childNode = tree.create(nextValue, treeLifecycle);
+  								domNode.replaceChild(childNode, domNode.firstChild);
   							}
   						}
   					} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
-  							domNode.firstChild.nodeValue = nextValue;
-  						}
+  						domNode.firstChild.nodeValue = nextValue;
+  					}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -1931,7 +2004,7 @@
   				}
   			}
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
   			return domNode;
   		},
@@ -1943,7 +2016,7 @@
   				if (typeof nextValue === 'string') {
   					domNode.firstChild.nodeValue = nextValue;
   				} else if (nextValue == null) {
-  					domNode.parentNode.removeChild(domNode);
+  					domNode.removeChild(domNode.firstChild);
   				} else if (isArray(nextValue)) {
   					if (isArray(lastValue)) {
   						if (keyedChildren) {
@@ -1957,7 +2030,7 @@
   				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
   						var tree = nextValue.domTree;
 
-  						if (tree !== null) {
+  						if (tree != null) {
   							if (lastValue.domTree !== null) {
   								tree.update(lastValue, nextValue, treeLifecycle);
   							} else {
@@ -1981,7 +2054,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace) {
   	var node = {
@@ -1989,7 +2062,7 @@
   		keyedPool: [],
   		create: function create(item, treeLifecycle) {
   			var domNode = undefined;
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2007,7 +2080,7 @@
   				}
   			}
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
   			}
   			item.rootNode = domNode;
   			return domNode;
@@ -2025,11 +2098,7 @@
   				if (isArray(subTreeForChildren)) {
   					for (var i = 0; i < subTreeForChildren.length; i++) {
   						var subTree = subTreeForChildren[i];
-  						var newDomNode = subTree.update(lastItem, nextItem, treeLifecycle);
-
-  						if (newDomNode && domNode.childNodes[i] !== newDomNode) {
-  							domNode.replaceChild(newDomNode, domNode.childNodes[i]);
-  						}
+  						subTree.update(lastItem, nextItem, treeLifecycle);
   					}
   				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
   					var newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle);
@@ -2087,7 +2156,7 @@
   				}
   			}
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
   			return domNode;
   		},
@@ -2136,7 +2205,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
   	var node = {
@@ -2144,7 +2213,7 @@
   		keyedPool: [],
   		create: function create(item) {
   			var domNode = undefined;
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2361,7 +2430,7 @@
   			domNode = templateNode.cloneNode(true);
   			item.rootNode = domNode;
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
   			}
   			return domNode;
   		},
@@ -2389,7 +2458,7 @@
   		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
   			return domNode;
   		},
@@ -2499,8 +2568,19 @@
   					var nextRender = Component(getValueForProps(props, nextItem));
 
   					nextRender.parent = currentItem;
-  					nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
-  					currentItem.rootNode = nextRender.rootNode;
+  					var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+
+  					if (newDomNode) {
+  						if (nextRender.rootNode.parentNode) {
+  							nextRender.rootNode.parentNode.replaceChild(newDomNode, nextRender.rootNode);
+  						} else {
+  							lastItem.rootNode.parentNode.replaceChild(newDomNode, lastItem.rootNode);
+  						}
+  						currentItem.rootNode = newDomNode;
+  					} else {
+  						currentItem.rootNode = nextRender.rootNode;
+  					}
+
   					lastRender = nextRender;
   				} else {
   					if (!instance || node !== lastItem.domTree || Component !== instance.constructor) {
@@ -2526,14 +2606,6 @@
   		}
   	};
   	return node;
-  }
-
-  function getCorrectItemForValues(node, item) {
-  	if (node !== item.domTree && item.parent) {
-  		return getCorrectItemForValues(node, item.parent);
-  	} else {
-  		return item;
-  	}
   }
 
   function createNodeWithComponent(componentIndex, props, domNamespace) {
@@ -2573,11 +2645,13 @@
   						nextRender.parent = currentItem;
   						var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
 
-  						lastRender = nextRender;
   						if (newDomNode) {
   							domNode = newDomNode;
   							lastRender.rootNode = domNode;
+  							lastRender = nextRender;
   							return domNode;
+  						} else {
+  							lastRender = nextRender;
   						}
   					};
   				}
@@ -2590,6 +2664,7 @@
 
   			if (!Component) {
   				recreateRootNode$1(domNode, nextItem, node, treeLifecycle);
+  				lastRender.rootNode = domNode;
   				return domNode;
   			}
   			if (typeof Component === 'function') {
@@ -2600,10 +2675,13 @@
   					nextRender.parent = currentItem;
   					var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
 
-  					lastRender = nextRender;
   					if (newDomNode) {
   						domNode = newDomNode;
+  						lastRender.rootNode = domNode;
+  						lastRender = nextRender;
   						return domNode;
+  					} else {
+  						lastRender = nextRender;
   					}
   				} else {
   					if (!instance || Component !== instance.constructor) {
@@ -2697,6 +2775,8 @@
   	return node;
   }
 
+  var invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+
   function createStaticAttributes(node, domNode, excludeAttrs) {
       var attrs = node.attrs;
 
@@ -2782,7 +2862,7 @@
 
               if (text != null) {
                   if (children != null) {
-                      throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+                      throw Error(invalidTemplateError);
                   }
                   staticNode.textContent = text;
               } else {
@@ -2794,6 +2874,9 @@
           } else if (node.text) {
               staticNode = document.createTextNode(node.text);
           }
+      }
+      if (staticNode === undefined) {
+          throw Error(invalidTemplateError);
       }
       if (parentNode === null) {
           return staticNode;
@@ -2807,15 +2890,17 @@
       var node = undefined;
       var templateNode = undefined;
 
-      if (isArray(schema)) {
-          throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+      if (schema == null) {
+          throw Error(invalidTemplateError);
       }
-
+      if (isArray(schema)) {
+          throw Error(invalidTemplateError);
+      }
       if (!dynamicFlags) {
           templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
 
           if (!templateNode) {
-              throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+              throw Error(invalidTemplateError);
           }
 
           if (isRoot) {

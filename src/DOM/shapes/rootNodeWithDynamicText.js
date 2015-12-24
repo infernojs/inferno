@@ -2,6 +2,7 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
+import isVoid from '../../util/isVoid';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -21,11 +22,11 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( value != null ) {
+			if ( !isVoid( value ) ) {
 				domNode.textContent = value;
 			}
 			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs );
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -38,18 +39,34 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
-			const nextValue = getValueWithIndex( nextItem, valueIndex );
 
-			if ( nextValue !== getValueWithIndex( lastItem, valueIndex ) ) {
-				domNode.firstChild.nodeValue = nextValue;
+			const nextValue = getValueWithIndex( nextItem, valueIndex );
+			const lastValue = getValueWithIndex( lastItem, valueIndex );
+
+			if ( nextValue !== lastValue ) {
+				if ( isVoid( nextValue ) ) {
+					if ( isVoid( lastValue ) ) {
+						domNode.textContent = ' ';
+						domNode.firstChild.nodeValue = '';
+					} else {
+						domNode.textContent = '';
+					}
+				} else {
+					if ( isVoid( lastValue ) ) {
+						domNode.textContent = nextValue;
+					} else {
+						domNode.firstChild.nodeValue = nextValue;
+					}
+				}
 			}
 			if ( dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-    remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
-    }
+		}
 	};
+
 	return node;
 }

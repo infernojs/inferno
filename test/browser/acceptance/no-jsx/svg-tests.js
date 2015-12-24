@@ -33,9 +33,9 @@ describe('DOM SVG tests (no-jsx)', () => {
 
 			it('Second render (update)', () => {
 				const template = Inferno.createTemplate((val1) =>
-					createElement('svg', {fontSize: 200}, null)
+					createElement('svg', {fontSize: val1}, null)
 				);
-				Inferno.render(template(false), container);
+				Inferno.render(template(200), container);
 
 				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -45,6 +45,40 @@ describe('DOM SVG tests (no-jsx)', () => {
 				).to.equal(
 					'<svg fontSize="200"></svg>'
 				);
+
+				Inferno.render(template(), container);
+
+				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
+				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+				expect(container.firstChild.getAttribute('fontSize')).to.be.null;
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<svg></svg>'
+				);
+				
+				Inferno.render(template(300), container);
+
+				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
+				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+				expect(container.firstChild.getAttribute('fontSize')).to.eql('300');
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<svg fontSize="300"></svg>'
+				);
+
+				Inferno.render(template(), container);
+
+				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
+				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+				expect(container.firstChild.getAttribute('fontSize')).to.be.null;
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<svg></svg>'
+				);
+
 			});
 		});
 
@@ -56,10 +90,10 @@ describe('DOM SVG tests (no-jsx)', () => {
 							version: '1.1',
 							baseProfile: 'full',
 							width: '200',
-							height: '200'
+							height: val1
 						}, null)
 				);
-				Inferno.render(template(false), container);
+				Inferno.render(template(200), container);
 
 				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -75,10 +109,10 @@ describe('DOM SVG tests (no-jsx)', () => {
 				);
 			});
 			it('Second render (update)', () => {
-				const template = Inferno.createTemplate((val1) =>
+				const template = Inferno.createTemplate(() =>
 						createElement('svg', {width: 200}, null)
 				);
-				Inferno.render(template(false), container);
+				Inferno.render(template(), container);
 
 				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -88,15 +122,26 @@ describe('DOM SVG tests (no-jsx)', () => {
 				).to.equal(
 					'<svg width="200"></svg>'
 				);
+				Inferno.render(template(), container);
+
+				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
+				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+				expect(container.firstChild.getAttribute('width')).to.eql('200');
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<svg width="200"></svg>'
+				);
+
 			});
 		});
 
 		describe('should set "class" attribute', () => {
 			it('Initial render (creation)', () => {
-				const template = Inferno.createTemplate((val1) =>
+				const template = Inferno.createTemplate(() =>
 					createElement('svg', {xmlns: "http://www.w3.org/2000/svg", className: "hello, world!"})
 				);
-				Inferno.render(template(false), container);
+				Inferno.render(template(), container);
 
 				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -111,9 +156,9 @@ describe('DOM SVG tests (no-jsx)', () => {
 			});
 			it('Second render (update)', () => {
 				const template = Inferno.createTemplate((val1) =>
-					createElement('svg', {height: 200})
+					createElement('svg', {height: val1})
 				);
-				Inferno.render(template(false), container);
+				Inferno.render(template(200), container);
 
 				expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -184,10 +229,10 @@ describe('DOM SVG tests (no-jsx)', () => {
 
 		describe('should set "className" property as a "class" attribute', () => {
 			it('Initial render (creation)', () => {
-				const template = Inferno.createTemplate((val1) =>
+				const template = Inferno.createTemplate(() =>
 					createElement('svg', {xmlns: 'http://www.w3.org/2000/svg', className: 'hello, world!'})
 				);
-				Inferno.render(template(false), container);
+				Inferno.render(template(), container);
 
 				expect(container.firstChild.tagName.toLowerCase()).to.eql("svg");
 				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -293,9 +338,9 @@ describe('DOM SVG tests (no-jsx)', () => {
 			});
 			it('Second render (update)', () => {
 				const template = Inferno.createTemplate((val1) =>
-						createElement('svg', {width: 200})
+						createElement('svg', {width: val1})
 				);
-				Inferno.render(template(false), container);
+				Inferno.render(template(200), container);
 
 				expect(container.firstChild.tagName.toLowerCase()).to.eql("svg");
 				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -305,6 +350,18 @@ describe('DOM SVG tests (no-jsx)', () => {
 				).to.equal(
 					'<svg width="200"></svg>'
 				);
+
+				Inferno.render(template(55), container);
+
+				expect(container.firstChild.tagName.toLowerCase()).to.eql("svg");
+				expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+				expect(container.firstChild.getAttribute("width")).to.eql('55');
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<svg width="55"></svg>'
+				);
+
 			});
 		});
 

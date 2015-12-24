@@ -1,6 +1,6 @@
+import isVoid from '../../util/isVoid';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
@@ -21,7 +21,7 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( value != null ) {
+			if ( !isVoid( value ) ) {
 				domNode.nodeValue = value;
 			}
 			item.rootNode = domNode;
@@ -41,9 +41,10 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 				domNode.nodeValue = nextValue;
 			}
 		},
-		remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
 		}
 	};
+
 	return node;
 }

@@ -1,4 +1,3 @@
-import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 export default function createNodeWithStaticChild( templateNode, dynamicAttrs ) {
@@ -7,7 +6,7 @@ export default function createNodeWithStaticChild( templateNode, dynamicAttrs ) 
 		create( item ) {
 			domNode = templateNode.cloneNode( true );
 			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs );
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs, null );
 			}
 			return domNode;
 		},
@@ -16,9 +15,10 @@ export default function createNodeWithStaticChild( templateNode, dynamicAttrs ) 
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-    remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
-    }
+		}
 	};
+
 	return node;
 }

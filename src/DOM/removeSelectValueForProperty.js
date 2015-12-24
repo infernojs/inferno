@@ -1,5 +1,5 @@
 // TODO!! Optimize!!
-export default function removeSelectValueForProperty( vNode, domNode, propName ) {
+export default function removeSelectValueForProperty( vNode, domNode ) {
 	const options = domNode.options;
 	const len = options.length;
 

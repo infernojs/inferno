@@ -4,7 +4,24 @@ import setHandler from './setHandler';
 import focusEvents from '../../shared/focusEvents';
 import {
 	standardNativeEventMapping,
-	nonBubbleableEventMapping } from '../../shared/eventMapping';
+	nonBubbleableEventMapping
+} from '../../shared/eventMapping';
+
+function nativeFocusListener( type ) {
+	document.addEventListener(
+		focusEvents[type],
+		setHandler( type, e => {
+			addRootListener( e, type );
+		} ).handler,
+		false );
+}
+
+function customFocusListener( type ) {
+	document.addEventListener(
+		type,
+		setHandler( type, addRootListener ).handler,
+		true );
+}
 
 const standardNativeEvents = Object.keys( standardNativeEventMapping )
 	.map( key => standardNativeEventMapping[key] );
@@ -12,7 +29,7 @@ const standardNativeEvents = Object.keys( standardNativeEventMapping )
 const nonBubbleableEvents = Object.keys( nonBubbleableEventMapping )
 	.map( key => nonBubbleableEventMapping[key] );
 
-let EventRegistry = {};
+const EventRegistry = {};
 
 if ( ExecutionEnvironment.canUseDOM ) {
 	let i = 0;
@@ -29,23 +46,10 @@ if ( ExecutionEnvironment.canUseDOM ) {
 		};
 		// 'focus' and 'blur'
 		if ( focusEvents[type] ) {
-			// IE has `focusin` and `focusout` events which bubble.
 			// @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-			EventRegistry[type]._focusBlur = nativeFocus ? function() {
-				const _type = this._type;
-				let handler = setHandler(_type, e => {
-					addRootListener( e, _type );
-				}).handler;
-				document.addEventListener( focusEvents[_type], handler );
-			}
-				// firefox doesn't support focusin/focusout events
-				: function() {
-				const _type = this._type;
-				document.addEventListener(
-					_type,
-					setHandler( _type, addRootListener ).handler,
-					true);
-			};
+			EventRegistry[type]._focusBlur = nativeFocus ?
+				nativeFocusListener( type ) : // IE has focusin/focusout events which bubble
+				customFocusListener( type ); // firefox doesn't support focusin/focusout events
 		}
 	}
 	// For non-bubbleable events - e.g. scroll - we are setting the events directly on the node

@@ -1,15 +1,14 @@
+import isVoid from '../../util/isVoid';
 import { getValueWithIndex } from '../../core/variables';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 export default function createDynamicTextNode( templateNode, valueIndex ) {
-	var domNode;
-
+	let domNode;
 	const node = {
 		create( item ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( value != null ) {
+			if ( !isVoid( value ) ) {
 				domNode.nodeValue = value;
 			}
 			return domNode;
@@ -21,9 +20,10 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 				domNode.nodeValue = nextValue;
 			}
 		},
-		remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
 		}
 	};
+
 	return node;
 }

@@ -1,11 +1,11 @@
 import getFormElementType from './getFormElementType';
 
 function selectValues( node ) {
-	let result = [];
-	let index = node.selectedIndex;
+	const result = [];
+	const index = node.selectedIndex;
+	const options = node.options;
+	const length = options.length;
 	let option;
-	let options = node.options;
-	let length = options.length;
 	let i = index < 0 ? length : 0;
 
 	for ( ; i < length; i++ ) {
@@ -14,7 +14,7 @@ function selectValues( node ) {
 		// IMPORTANT! IE9 doesn't update selected after form reset
 		if ( ( option.selected || i === index ) &&
 				// Don't return options that are disabled or in a disabled optgroup
-			!option.disabled && ( !option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP') ) {
+			!option.disabled && ( !option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP' ) ) {
 			result.push( option.value );
 		}
 	}

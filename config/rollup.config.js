@@ -31,12 +31,10 @@ function createBundle() {
             }),
             npm({
                 jsnext: true,
-                skip: [
-                    'react',
-                ],
+				main: true,
             }),
             commonjs({
-                sourceMap: false,
+                sourceMap: true,
             }),
             replace({
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

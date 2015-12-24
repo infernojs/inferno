@@ -10,6 +10,7 @@ class Component {
 		this._pendingState = {};
 		this._componentTree = [];
 		this.state = {};
+		this.context = {};
 	}
 	render() {}
 	forceUpdate() {}
@@ -18,7 +19,7 @@ class Component {
 		if ( this._blockSetState === false ) {
 			queueStateChanges( this, newState );
 		} else {
-			throw Error( 'Inferno Error: Cannot update state via setState() in componentWillUpdate()' );
+			throw Error( 'Inferno Error: Cannot update state via setState( ) in componentWillUpdate( )' );
 		}
 	}
 	componentDidMount() {}
@@ -28,6 +29,7 @@ class Component {
 	shouldComponentUpdate() { return true; }
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
+	getChildContext() {}
 }
 
 export default Component;
