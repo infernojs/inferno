@@ -886,7 +886,37 @@ describe('various random DOM tests', () => {
     });
 
 
-        it('should render multiple text in an array #1', () => {
+       
+	    it('should render multiple text in an array  with null #1', () => {
+            const template = Inferno.createTemplate((text) => ({
+                tag: 'div',
+                children: {
+                    tag: 'span',
+                    children: text
+                }
+            }));
+            Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
+            );
+        });
+
+	    it('should render multiple text in an array with null #2', () => {
+            const template = Inferno.createTemplate((text) => ({
+                tag: 'div',
+                children: text
+            }));
+            Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
+            );
+        });
+	   
+	    it('should render multiple text in an array #1', () => {
             const template = Inferno.createTemplate((val1) => ({
                 tag: 'div',
                 attrs: {
@@ -901,6 +931,7 @@ describe('various random DOM tests', () => {
                 '<div id="test">I am a teddybear, but do not play with me!</div>'
             );
         });
+		
 		
 		it('should render dynamic multiple text in an array #3', () => {
             const template = Inferno.createTemplate((val1) => ({
