@@ -901,6 +901,23 @@ describe('various random DOM tests', () => {
                 '<div id="test">I am a teddybear, but do not play with me!</div>'
             );
         });
+		
+		
+        it('should render a text node with 0 (cast to string)', () => {
+            const template = Inferno.createTemplate((val1) => ({
+                tag: 'div',
+                attrs: {
+                    id: val1
+                },
+                text: '0'
+            }));
+            Inferno.render(template('test'), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div id="test">0!</div>'
+            );
+        });
 
         it('should render multiple text in an array #2', () => {
             const template = Inferno.createTemplate((val1) => ({
