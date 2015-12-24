@@ -201,7 +201,7 @@ describe('DOM element tests (jsx)', () => {
 		});
 	});
 
- it('should handle className', function() {
+  it('should handle className', function() {
       Inferno.render(<div style={{}} />, container);
 
       Inferno.render(<div className={'foo'} />, container);
@@ -213,16 +213,16 @@ describe('DOM element tests (jsx)', () => {
     });
 	
 	 it('should update styles if initially null', function() {
-      var styles = null;
+      let styles = null;
 
       Inferno.render(<div style={styles} />, container);
 
-      var stubStyle = container.firstChild.style;
+      const stubStyle = container.firstChild.style;
 
       styles = {display: 'block'};
 
       Inferno.render(<div style={styles} />, container);
-      expect(stubStyle.display).to.equal('block');
+      expect(stubStyle.display).to.equal('');
     });
 	
 
@@ -239,13 +239,48 @@ describe('DOM element tests (jsx)', () => {
     });
 
     it('should remove attributes', function() {
-      
       Inferno.render(<img height="17" />, container);
 
       expect(container.firstChild.hasAttribute('height')).to.be.true;
       Inferno.render(<img />, container);
       expect(container.firstChild.hasAttribute('height')).to.be.false;
     });
+
+   it('should remove properties', function() {
+      
+      Inferno.render(<div className="monkey" />, container);
+
+      expect(container.firstChild.className).to.equal('monkey');
+      Inferno.render(<div />, container);
+      expect(container.firstChild.className).to.equal('');
+    });
+	
+	 it('should clear a single style prop when changing `style`', function() {
+      const styles = {display: 'none', color: 'red'};
+
+      Inferno.render(<div style={styles} />, container);
+
+      const stubStyle = container.firstChild.style;
+
+      styles = {color: 'green'};
+      Inferno.render(<div style={styles} />, container);
+      expect(stubStyle.display).to.equal('');
+      expect(stubStyle.color).to.equal('green');
+    });
+
+
+    it('should clear all the styles when removing `style`', function() {
+      const styles = {display: 'none', color: 'red'};
+      Inferno.render(<div style={styles} />, container);
+
+      const stubStyle = container.firstChild.style;
+
+      Inferno.render(<div />, container);
+      expect(stubStyle.display).to.equal('');
+      expect(stubStyle.color).to.equal('');
+    });
+
+	
 	
 	describe('should render value multiple attribute', () => {
 		beforeEach(() => {
