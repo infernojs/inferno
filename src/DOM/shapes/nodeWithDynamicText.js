@@ -10,8 +10,8 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			const value = getValueWithIndex(item, valueIndex);
 
 			if(value != null) {
-				if (typeof value !== 'string') {
-					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral as a value, this is intended for low-level optimisation purposes.');
+				if (typeof value !== 'string' && typeof value !== 'number') {
+					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
 				}
 				domNode.textContent = value;
 			}
@@ -33,8 +33,8 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 						domNode.textContent = '';
 					}
 				} else {
-					if (typeof nextValue !== 'string') {
-						throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral as a value, this is intended for low-level optimisation purposes.');
+					if (typeof nextValue !== 'string' && typeof nextValue !== 'number') {
+						throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
 					}
 					if (lastValue == null) {
 						domNode.textContent = nextValue;
