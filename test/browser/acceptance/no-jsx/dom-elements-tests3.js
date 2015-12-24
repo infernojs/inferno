@@ -253,7 +253,7 @@ describe('DOM element tests3 (no-jsx)', () => {
                 };
             });
             Inferno.render(template(spanish()), container);
-            expect(container.firstChild.innerHTML).to.equal('');
+            expect(container.firstChild.innerHTML).to.equal('<b></b>');
 
         });
     });
@@ -416,7 +416,7 @@ describe('DOM element tests3 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div scope="true"></div>'
+                '<div scope="false"></div>'
             );
 
             Inferno.render(template(null), container);
