@@ -81,12 +81,13 @@ export const nonBubbleableEventMapping = {
 	onWaiting: 'waiting'
 };
 
-let propertyToEventType = {};
-[standardNativeEventMapping, nonBubbleableEventMapping].forEach(mapping => {
-	Object.keys(mapping).reduce((state, property) => {
+const propertyToEventType = {};
+
+[ standardNativeEventMapping, nonBubbleableEventMapping ].forEach( mapping => {
+	Object.keys( mapping ).reduce( ( state, property ) => {
 		state[property] = mapping[property];
 		return state;
-	}, propertyToEventType);
-});
+	}, propertyToEventType );
+} );
 
 export default propertyToEventType;

@@ -1,2 +1,2 @@
-// type -> node -> function(target, event)
+// type -> node -> function( target, event )
 export default {};

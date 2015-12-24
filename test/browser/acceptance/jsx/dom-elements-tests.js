@@ -2,7 +2,7 @@ import Inferno from '../../../../src';
 import get from '../../../tools/get';
 
 const {
-	createElement
+  createElement
 } = Inferno.TemplateFactory;
 
 describe('DOM element tests (jsx)', () => {
@@ -223,7 +223,7 @@ describe('DOM element tests (jsx)', () => {
 
 	describe('should render a basic example with dynamic values', () => {
 		beforeEach(() => {
-			const values = ['Inferno', 'Owns'];
+			const values = [ 'Inferno', 'Owns' ];
 			Inferno.render(<div>Hello world - { values[0] } { values[1] }</div>, container);
 		});
 
@@ -235,7 +235,7 @@ describe('DOM element tests (jsx)', () => {
 			);
 		});
 		it('Second render (update)', () => {
-			const values = ['Test', 'Works!'];
+			const values = [ 'Test', 'Works!' ];
 			Inferno.render(<div>Hello world - { values[0] } { values[1] }</div>, container);
 			expect(
 				container.innerHTML
@@ -247,7 +247,7 @@ describe('DOM element tests (jsx)', () => {
 
 	describe('should render a basic example with dynamic values and props', () => {
 		beforeEach(() => {
-			const values = ['Inferno', 'Rocks'];
+			const values = [ 'Inferno', 'Rocks' ];
 			Inferno.render(
 				<div className="foo">
 					<span className="bar">{ values[0] }</span>
@@ -265,7 +265,7 @@ describe('DOM element tests (jsx)', () => {
 			);
 		});
 		it('Second render (update)', () => {
-			const values = ['Rocks', 'Inferno'];
+			const values = [ 'Rocks', 'Inferno' ];
 			Inferno.render(
 				<div className="foo">
 					<span className="bar">{ values[0] }</span>

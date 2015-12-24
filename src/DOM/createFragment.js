@@ -1,49 +1,49 @@
 import { remove } from './domMutate';
 
-export default function createDOMFragment(parentNode, nextNode) {
+export default function createDOMFragment( parentNode, nextNode ) {
 	let lastItem;
 	let treeSuccessListeners = [];
-	let context = {};
+	const context = {};
 	const treeLifecycle = {
-		addTreeSuccessListener(listener) {
-			treeSuccessListeners.push(listener);
+		addTreeSuccessListener( listener ) {
+			treeSuccessListeners.push( listener );
 		},
-		removeTreeSuccessListener(listener) {
-			for (let i = 0; i < treeSuccessListeners.length; i++) {
+		removeTreeSuccessListener( listener ) {
+			for ( let i = 0; i < treeSuccessListeners.length; i++ ) {
 				const treeSuccessListener = treeSuccessListeners[i];
 
-				if (treeSuccessListener === listener) {
-					treeSuccessListeners.splice(i, 1);
+				if ( treeSuccessListener === listener ) {
+					treeSuccessListeners.splice( i, 1 );
 					return;
 				}
 			}
 		}
 	};
-	const fragment =  {
+	const fragment =	{
 		parentNode,
-		render(nextItem) {
-			if (!nextItem) {
+		render( nextItem ) {
+			if ( !nextItem ) {
 				return;
 			}
 			const tree = nextItem.domTree;
 
-			if (!tree) {
-				throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+			if ( !tree ) {
+				throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 			}
 
-			if (lastItem) {
-				tree.update(lastItem, nextItem, treeLifecycle, context);
+			if ( lastItem ) {
+				tree.update( lastItem, nextItem, treeLifecycle, context );
 			} else {
-				const dom = tree.create(nextItem, treeLifecycle, context);
+				const dom = tree.create( nextItem, treeLifecycle, context );
 
-				if (nextNode) {
-					parentNode.insertBefore(dom, nextNode);
-				} else if (parentNode) {
-					parentNode.appendChild(dom);
+				if ( nextNode ) {
+					parentNode.insertBefore( dom, nextNode );
+				} else if ( parentNode ) {
+					parentNode.appendChild( dom );
 				}
 			}
-			if (treeSuccessListeners.length > 0) {
-				for (let i = 0; i < treeSuccessListeners.length; i++) {
+			if ( treeSuccessListeners.length > 0 ) {
+				for ( let i = 0; i < treeSuccessListeners.length; i++ ) {
 					treeSuccessListeners[i]();
 				}
 			}
@@ -51,16 +51,16 @@ export default function createDOMFragment(parentNode, nextNode) {
 			return fragment;
 		},
 		remove() {
-			if (lastItem) {
+			if ( lastItem ) {
 				const tree = lastItem.domTree;
-				if (lastItem) {
-					tree.remove(lastItem, treeLifecycle);
-				}
-				remove(lastItem, parentNode);
+
+				tree.remove( lastItem, treeLifecycle );
 			}
+			remove( lastItem, parentNode );
 			treeSuccessListeners = [];
 			return fragment;
 		}
 	};
+
 	return fragment;
 }

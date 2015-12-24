@@ -12,5 +12,5 @@ require('./browser/acceptance/jsx/svg-elements-tests'); // jsx svg-elements-test
 
 require('./browser/performance/render/vdom-bench-tests'); // benchmark
 // TODO let's add these when we have actual tests for them
-//require('./shared/inferno'); // shared
-//require('./node/inferno'); // node
+// require('./shared/inferno'); // shared
+// require('./node/inferno'); // node
