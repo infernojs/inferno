@@ -915,6 +915,31 @@ describe('various random DOM tests', () => {
                 ''
             );
         });
+		 it('should render static text as object', () => {
+            const template = Inferno.createTemplate((text) => ({
+                tag: 'div',
+                children: {}
+            }));
+            Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
+            );
+        });
+
+		 it('should render static text as null inside array', () => {
+            const template = Inferno.createTemplate((text) => ({
+                tag: 'div',
+                children: [null]
+            }));
+            Inferno.render(template(null), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                ''
+            );
+        });
 	   
 	    it('should render multiple text in an array #1', () => {
             const template = Inferno.createTemplate((val1) => ({
