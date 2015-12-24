@@ -281,6 +281,38 @@ describe('DOM element tests (jsx)', () => {
     });
 
 	
+	it('should update styles when `style` changes from null to object', function() {
+      const styles = {color: 'red'};
+      Inferno.render(<div style={styles} />, container);
+      Inferno.render(<div />, container);
+      Inferno.render(<div style={styles} />, container);
+
+      const stubStyle = container.firstChild.style;
+      expect(stubStyle.color).to.equal('red');
+    });
+	
+	
+	  it('should not update when switching between null/undefined', function() {
+      var container = document.createElement('div');
+      var node = Inferno.render(<div />, container);
+
+      node.setAttribute = setter;
+
+      Inferno.render(<div dir={null} />, container);
+      Inferno.render(<div dir={undefined} />, container);
+      Inferno.render(<div />, container);
+      Inferno.render(<div dir="ltr" />, container);
+    });
+	
+	 it('should not update when switching between null/undefined', function() {
+
+      const node = Inferno.render(<div />, container);
+
+      Inferno.render(<div dir={null} />, container);
+      Inferno.render(<div dir={undefined} />, container);
+      Inferno.render(<div />, container);
+      Inferno.render(<div dir="ltr" />, container);
+    });
 	
 	describe('should render value multiple attribute', () => {
 		beforeEach(() => {
