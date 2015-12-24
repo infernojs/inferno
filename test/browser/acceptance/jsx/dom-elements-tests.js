@@ -227,7 +227,7 @@ describe('DOM element tests (jsx)', () => {
 	
 
 	 it('should skip child object attribute on web components', function() {
-      var container = document.createElement('div');
+      
 
       // Test initial render to null
       Inferno.render(<my-component children={['foo']} />, container);
@@ -239,7 +239,7 @@ describe('DOM element tests (jsx)', () => {
     });
 
     it('should remove attributes', function() {
-      var container = document.createElement('div');
+      
       Inferno.render(<img height="17" />, container);
 
       expect(container.firstChild.hasAttribute('height')).to.be.true;
