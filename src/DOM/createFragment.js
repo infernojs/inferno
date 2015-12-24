@@ -3,6 +3,7 @@ import { remove } from './domMutate';
 export default function createDOMFragment(parentNode, nextNode) {
 	let lastItem;
 	let treeSuccessListeners = [];
+	let context = {};
 	const treeLifecycle = {
 		addTreeSuccessListener(listener) {
 			treeSuccessListeners.push(listener);
@@ -31,9 +32,9 @@ export default function createDOMFragment(parentNode, nextNode) {
 			}
 
 			if (lastItem) {
-				tree.update(lastItem, nextItem, treeLifecycle);
+				tree.update(lastItem, nextItem, treeLifecycle, context);
 			} else {
-				const dom = tree.create(nextItem, treeLifecycle);
+				const dom = tree.create(nextItem, treeLifecycle, context);
 
 				if (nextNode) {
 					parentNode.insertBefore(dom, nextNode);

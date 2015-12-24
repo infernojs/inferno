@@ -10,6 +10,7 @@ class Component {
 		this._pendingState = {};
 		this._componentTree = [];
 		this.state = {};
+		this.context = {};
 	}
 	render() {}
 	forceUpdate() {}
@@ -28,6 +29,7 @@ class Component {
 	shouldComponentUpdate() { return true; }
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
+	getChildContext() {}
 }
 
 export default Component;

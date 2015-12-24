@@ -11,7 +11,7 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 	let domNode;
 	let currentItem;
 	const node = {
-		create(item, treeLifecycle) {
+		create(item, treeLifecycle, context) {
 			const valueItem = getCorrectItemForValues(node, item);
 			const Component = getValueWithIndex(valueItem, componentIndex);
 
@@ -22,25 +22,35 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 			} else if (typeof Component === 'function') {
 				//stateless component
 				if (!Component.prototype.render) {
-					const nextRender = Component(getValueForProps(props, valueItem));
+					const nextRender = Component(getValueForProps(props, valueItem), context);
 
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create(nextRender, treeLifecycle);
+					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
 					lastRender = nextRender;
 				} else {
 					instance = new Component(getValueForProps(props, valueItem));
+					instance.context = context;
 					instance.componentWillMount();
 					const nextRender = instance.render();
+					const childContext = instance.getChildContext();
 
+					if (childContext) {
+						context = {...context, ...childContext};
+					}
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create(nextRender, treeLifecycle);
+					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
 					lastRender = nextRender;
 					treeLifecycle.addTreeSuccessListener(instance.componentDidMount);
 					instance.forceUpdate = () => {
+						instance.context = context;
 						const nextRender = instance.render();
+						const childContext = instance.getChildContext();
 
+						if (childContext) {
+							context = {...context, ...childContext};
+						}
 						nextRender.parent = currentItem;
-						const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+						const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
 
 						if (newDomNode) {
 							domNode = newDomNode;
@@ -55,22 +65,22 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 			}
 			return domNode;
 		},
-		update(lastItem, nextItem, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle, context) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
 			currentItem = nextItem;
 
 			if (!Component) {
-				recreateNode(domNode, nextItem, node, treeLifecycle);
+				recreateNode(domNode, nextItem, node, treeLifecycle, context);
 				lastRender.rootNode = domNode;
 				return domNode;
 			}
 			if (typeof Component === 'function') {
 				//stateless component
 				if (!Component.prototype.render) {
-					const nextRender = Component(getValueForProps(props, nextItem));
+					const nextRender = Component(getValueForProps(props, nextItem), context);
 
 					nextRender.parent = currentItem;
-					const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle);
+					const newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
 
 					if (newDomNode) {
 						domNode = newDomNode;
@@ -82,7 +92,7 @@ export default function createNodeWithComponent(componentIndex, props, domNamesp
 					}
 				} else {
 					if (!instance || Component !== instance.constructor) {
-						recreateNode(domNode, nextItem, node, treeLifecycle);
+						recreateNode(domNode, nextItem, node, treeLifecycle, context);
 						return domNode;
 					}
 					const prevProps = instance.props;

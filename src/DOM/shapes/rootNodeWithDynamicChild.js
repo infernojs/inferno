@@ -13,7 +13,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, treeLifecycle) {
+		create(item, treeLifecycle, context) {
 			let domNode;
 
 			if (recyclingEnabled) {
@@ -31,7 +31,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						const childItem = value[i];
 
 						if (typeof childItem === 'object') {
-							const childNode = childItem.domTree.create(childItem, treeLifecycle);
+							const childNode = childItem.domTree.create(childItem, treeLifecycle, context);
 
 							if (childItem.key === undefined) {
 								keyedChildren = false;
@@ -47,7 +47,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						}
 					}
 				} else if (typeof value === 'object') {
-					domNode.appendChild(value.domTree.create(value, treeLifecycle));
+					domNode.appendChild(value.domTree.create(value, treeLifecycle, context));
 				} else if (typeof value === 'string' || typeof value === 'number') {
 					domNode.textContent = value;
 				}
@@ -58,9 +58,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle, context) {
 			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -80,9 +80,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				} else if (isArray(nextValue)) {
 					if (isArray(lastValue)) {
 						if (keyedChildren) {
-							updateKeyed(nextValue, lastValue, domNode, null);
+							updateKeyed(nextValue, lastValue, domNode, null, context);
 						} else {
-							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle);
+							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
 						}
 					} else {
 						// do nothing for now!
@@ -93,13 +93,13 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 					if (tree != null) {
 						if (lastValue != null) {
 							if (lastValue.domTree != null) {
-								tree.update(lastValue, nextValue, treeLifecycle);
+								tree.update(lastValue, nextValue, treeLifecycle, context);
 							} else {
-								recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+								recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 								return;
 							}
 						} else {
-							const childNode = tree.create(nextValue, treeLifecycle);
+							const childNode = tree.create(nextValue, treeLifecycle, context);
 							domNode.replaceChild(childNode, domNode.firstChild);
 						}
 					}

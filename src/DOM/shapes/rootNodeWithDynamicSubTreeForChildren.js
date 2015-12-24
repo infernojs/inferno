@@ -11,7 +11,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, treeLifecycle) {
+		create(item, treeLifecycle, context) {
 			let domNode;
 			if (recyclingEnabled) {
 				domNode = recycle(node, item);
@@ -24,10 +24,10 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						domNode.appendChild(subTree.create(item, treeLifecycle));
+						domNode.appendChild(subTree.create(item, treeLifecycle, context));
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle));
+					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle, context));
 				}
 			}
 			if (dynamicAttrs) {
@@ -36,9 +36,9 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle, context) {
 			if (node !== lastItem.domTree) {
-				const newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+				const newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				nextItem.rootNode = newDomNode;
 				return newDomNode;
 			}
@@ -49,10 +49,10 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
-						subTree.update(lastItem, nextItem, treeLifecycle);
+						subTree.update(lastItem, nextItem, treeLifecycle, context);
 					}
 				} else if (typeof subTreeForChildren === 'object') {
-					const newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle);
+					const newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
 
 					if(newDomNode) {
 						const replaceNode = domNode.firstChild;

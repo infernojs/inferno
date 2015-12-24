@@ -8,7 +8,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 	let keyedChildren = true;
 	let childNodeList = [];
 	const node = {
-		create(item, treeLifecycle) {
+		create(item, treeLifecycle, context) {
 			domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
@@ -18,7 +18,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						const childItem = value[i];
 
 						if (typeof childItem === 'object') {
-							const childNode = childItem.domTree.create(childItem, treeLifecycle);
+							const childNode = childItem.domTree.create(childItem, treeLifecycle, context);
 
 							if (childItem.key === undefined) {
 								keyedChildren = false;
@@ -33,7 +33,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						}
 					}
 				} else if (typeof value === 'object') {
-					domNode.appendChild(value.domTree.create(value, treeLifecycle));
+					domNode.appendChild(value.domTree.create(value, treeLifecycle, context));
 				} else if (typeof value === 'string' || typeof value === 'number') {
 					domNode.textContent = value;
 				}
@@ -43,7 +43,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 			}
 			return domNode;
 		},
-		update(lastItem, nextItem, treeLifecycle) {
+		update(lastItem, nextItem, treeLifecycle, context) {
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -55,9 +55,9 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				} else if (isArray(nextValue)) {
 					if (isArray(lastValue)) {
 						if (keyedChildren) {
-							updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle);
+							updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
 						} else {
-							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle);
+							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
 						}
 					} else {
 						//debugger;
@@ -67,7 +67,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 
 					if (tree != null) {
 						if (lastValue.domTree !== null) {
-							tree.update(lastValue, nextValue, treeLifecycle);
+							tree.update(lastValue, nextValue, treeLifecycle, context);
 						} else {
 							// TODO implement
 						}
