@@ -495,5 +495,25 @@ describe('DOM element tests3 (no-jsx)', () => {
         });
     });
 
+
+    describe('should properly render dynamic child with null and number', () => {
+
+ const templateFunc = (child) => ({
+                tag: 'div',
+                children: child
+            });
+        const template = Inferno.createTemplate(templateFunc)
+        );
+
+        it('Initial render (creation)', () => {
+            Inferno.render(template([1, 2, null]), container);
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>12</div>'
+            );
+        });
+    });
+
     
 });
