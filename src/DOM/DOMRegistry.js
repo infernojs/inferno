@@ -32,6 +32,21 @@ const DOMAttributeNames = {
     className: 'class',
     htmlFor: 'for',
     httpEquiv: 'http-equiv',
+	// SVG
+	clipPath: 'clip-path',
+    fillOpacity: 'fill-opacity',
+    fontFamily: 'font-family',
+    fontSize: 'font-size',
+    markerEnd: 'marker-end',
+    markerMid: 'marker-mid',
+    markerStart: 'marker-start',
+    stopColor: 'stop-color',
+    stopOpacity: 'stop-opacity',
+    strokeDasharray: 'stroke-dasharray',
+    strokeLinecap: 'stroke-linecap',
+    strokeOpacity: 'stroke-opacity',
+    strokeWidth: 'stroke-width',
+    textAnchor: 'text-anchor',
     // React compat for non-working JSX namespace support
     xlinkActuate: 'xlink:actuate',
     xlinkArcrole: 'xlink:arcrole',
@@ -135,6 +150,25 @@ const Whitelist = {
     xmlBase: null,
     xmlLang: null,
     xmlSpace: null,
+
+    /**
+     * SVG
+     */
+	 
+	clipPath: null,
+    fillOpacity: null,
+    fontFamily: null,
+    fontSize: null,
+    markerEnd: null,
+    markerMid: null,
+    markerStart: null,
+    stopColor: null,
+    stopOpacity: null,
+    strokeDasharray: null,
+    strokeLinecap: null,
+    strokeOpacity: null,
+    strokeWidth: null,
+    textAnchor: null,
 
     /**
      * Numeric attributes
