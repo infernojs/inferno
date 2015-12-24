@@ -256,7 +256,7 @@ describe('DOM element tests (jsx)', () => {
     });
 	
 	 it('should clear a single style prop when changing `style`', function() {
-      const styles = {display: 'none', color: 'red'};
+      let styles = {display: 'none', color: 'red'};
 
       Inferno.render(<div style={styles} />, container);
 
