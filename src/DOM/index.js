@@ -74,7 +74,6 @@ const template = {
             domNode.setAttribute(name, value);
         }
     },
-
     /**
      * Removes the value for a property on a node.
      *
