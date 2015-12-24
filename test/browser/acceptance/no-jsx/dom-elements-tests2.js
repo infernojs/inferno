@@ -902,6 +902,18 @@ describe('various random DOM tests', () => {
             );
         });
 		
+		it('should render dynamic multiple text in an array #3', () => {
+            const template = Inferno.createTemplate((val1) => ({
+                text: val1
+            }));
+            Inferno.render(template(['I', ' am', ' a', ' teddybear', ', ', ' but', ' do', ' not', ' play', ' with', ' me', '!']), container);
+            expect(
+                container.textContent
+            ).to.equal(
+                'I am a teddybear, but do not play with me!'
+            );
+        });
+		
 		
         it('should render a text node with 0 (cast to string)', () => {
             const template = Inferno.createTemplate((val1) => ({
