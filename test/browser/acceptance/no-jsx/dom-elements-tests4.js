@@ -2322,5 +2322,73 @@ describe('DOM element tests4 (no-jsx)', () => {
         });
     });
 
+       it('should render a div with static child and dynamic attribute', () => {
 
+            const div = Inferno.createTemplate((val) => ({
+                tag: 'div',
+                attrs: val,
+                children: {
+                    tag: 'span',
+                    attrs: val
+                }
+            }));
+
+                Inferno.render(div({
+                    id: 'id#1'
+                }), container);
+                expect(container.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.getAttribute('id')).to.equal('id#1');
+
+                Inferno.render(div({
+                    id: 'id#2'
+                }), container);
+                expect(container.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.getAttribute('id')).to.equal('id#2');
+
+                Inferno.render(div(null), container);
+                expect(container.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.getAttribute('id')).to.be.null;
+
+                Inferno.render(div(undefined), container);
+                expect(container.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.getAttribute('id')).to.be.null;
+
+                Inferno.render(div([]), container);
+                expect(container.firstChild.childNodes.length).to.equal(1);
+                expect(container.firstChild.getAttribute('id')).to.be.null;
+        });
+		
+		
+		it('should render root node without children and with dynamic attrs', () => {
+         
+		    let template = Inferno.createTemplate((attrs) => ({
+					tag:'div',
+                    attrs: attrs
+                }));
+
+                Inferno.render(template({id:'test'}), container);
+				expect(container.firstChild.getAttribute('id')).to.equal('test');
+
+                Inferno.render(template({id:'blablabla'}), container);
+				
+				expect(container.firstChild.getAttribute('id')).to.equal('blablabla');
+
+                Inferno.render(template({id:'tralala'}), container);
+				expect(container.firstChild.getAttribute('id')).to.equal('tralala');
+
+                Inferno.render(template(null), container);
+				expect(container.firstChild.getAttribute('id')).to.be.null;
+
+                Inferno.render(template({id:null}), container);
+				expect(container.firstChild.getAttribute('id')).to.be.null;
+
+                Inferno.render(template({id:undefined}), container);
+				expect(container.firstChild.getAttribute('id')).to.be.null;
+
+                Inferno.render(template(undefined), container);
+				expect(container.firstChild.getAttribute('id')).to.be.null;
+
+                Inferno.render(template([]), container);
+				expect(container.firstChild.getAttribute('id')).to.be.null;
+        });
 });
