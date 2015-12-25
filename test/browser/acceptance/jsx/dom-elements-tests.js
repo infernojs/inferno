@@ -77,6 +77,35 @@ describe('DOM element tests (jsx)', () => {
 
 	});
 
+   	it('should render a simple div with multiple children', () => {
+	    Inferno.render(<div><span></span></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+	    Inferno.render(<div><span></span></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+	    Inferno.render(<div></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(0);
+	    Inferno.render(<div><span></span><span></span><span></span><span></span><span></span></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(5);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+	    Inferno.render(<div><span></span><span></span><span></span></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(3);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+
+       // This children + the text node are never set
+	    Inferno.render(<div><span></span><b>Hello, World!</b><span></span></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(3);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+        expect(container.firstChild.firstChild.innerHTML).to.equal('SPAN');
+
+	});
 	
 	describe('should render a basic example', () => {
 		beforeEach(() => {
