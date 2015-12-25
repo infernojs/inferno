@@ -2822,4 +2822,37 @@ describe('DOM element tests (no-jsx)', () => {
                 '<div style="width: 7px;"></div>'
             );
     });
+
+
+	it('should dynamically update styles on root node', () => {
+
+        let template = Inferno.createTemplate((value) => ({
+                tag: 'div',
+                attrs: {
+                    style: value
+                }
+            }))
+        
+		const style = {
+            width: 200,
+            height: 200
+        };
+            Inferno.render(template(style), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                 '<div style="width: 200px; height: 200px;"></div>'
+            );
+
+            Inferno.render(template(style), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 200px; height: 200px;"></div>'
+            );
+    });
+
+
 });
