@@ -1,4 +1,4 @@
-import InfernoNodeID from './InfernoNodeID';
+import infernoNodeID from './infernoNodeID';
 import addRootListener from './addRootListener';
 import EventRegistry from './EventRegistry';
 import listenersStorage from '../../shared/listenersStorage';
@@ -18,12 +18,13 @@ export default function addListener( vNode, domNode, type, listener ) {
 			if ( registry._focusBlur ) {
 				registry._focusBlur();
 			} else if ( registry._bubbles ) {
-				let handler = setHandler( type, addRootListener ).handler;
+				const handler = setHandler( type, addRootListener ).handler;
+
 				document.addEventListener( type, handler, false );
 			}
 			registry._enabled = true;
 		}
-		const nodeID = InfernoNodeID( domNode ),
+		const nodeID = infernoNodeID( domNode ),
 			listeners = listenersStorage[nodeID] || ( listenersStorage[nodeID] = {} );
 
 		if ( listeners[type] ) {

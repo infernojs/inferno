@@ -9,7 +9,8 @@ export default function createListenerArguments( target, event ) {
 	let tagHooks;
 
 	if ( ( tagHooks = setupHooks[type] ) ) {
-		let hook = tagHooks[nodeName];
+		const hook = tagHooks[nodeName];
+
 		if ( hook ) {
 			return hook( target, event );
 		}
@@ -18,7 +19,7 @@ export default function createListenerArguments( target, event ) {
 	// Form elements with a value attribute will have the arguments:
 	// [event, value]
 	if ( isFormElement( nodeName ) ) {
-		return [event, getFormElementValues( target )];
+		return [ event, getFormElementValues( target ) ];
 	}
 	// Fallback to just event
 	return [event];

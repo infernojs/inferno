@@ -1,3 +1,5 @@
+/* eslint no-invalid-this:0 */
+
 function stopPropagation() {
 	this._isPropagationStopped = true;
 	if ( this._stopPropagation ) {
