@@ -16,6 +16,22 @@ describe('DOM element tests (jsx)', () => {
 		Inferno.render(null, container);
 	});
 
+	it('should render and unset a simple div with dynamic span child', () => {
+
+        const child = <span></span>
+		
+	    Inferno.render(<div>{child}</div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+
+	    Inferno.render(<div>{null}</div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal(''); // should be removed, not be #text
+
+	});
+	
 	describe('should render a basic example', () => {
 		beforeEach(() => {
 			Inferno.render(<div>Hello world</div>, container);
