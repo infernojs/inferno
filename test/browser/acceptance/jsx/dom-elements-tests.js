@@ -106,6 +106,73 @@ describe('DOM element tests (jsx)', () => {
         expect(container.firstChild.firstChild.innerHTML).to.equal('SPAN');
 
 	});
+
+it('should render a simple div with dynamic span child', () => {
+
+        const child = <span></span>
+		
+	    Inferno.render(<div>{child}</div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+	    Inferno.render(<div>{child}</div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+	});
+
+	it('should render a simple div with static child and dynamic attributes', () => {
+
+        let attrs;
+		
+		attrs = 'id#1'
+		
+	    Inferno.render(<div><div id={attrs}></div></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.firstChild.getAttribute('id')).to.equal('id#1');
+
+		attrs = null
+		
+	    Inferno.render(<div><div id={attrs}></div></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.firstChild.getAttribute('id')).to.be.null;
+
+		attrs = undefined
+		
+	    Inferno.render(<div id={attrs}></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(0);
+        expect(container.firstChild.getAttribute('id')).to.be.null;
+
+        attrs = 'id#4'
+
+	    Inferno.render(<div><div id={attrs}></div></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.firstChild.getAttribute('id')).to.equal('id#4');
+
+        attrs = 13 - 44 *4 /4;
+       
+	    const b = <b className={123} >Hello, World!</b>
+	    const n = <n>{b}</n>
+	   
+	    Inferno.render(<div class='Hello, World!'><span><div id={attrs}>{n}</div></span></div>, container);
+        expect(container.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.getAttribute('class')).to.equal('Hello, World!');
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+        expect(container.firstChild.firstChild.firstChild.nodeName).to.equal('DIV');
+        expect(container.firstChild.firstChild.firstChild.getAttribute('id')).to.equal('-31');
+        expect(container.firstChild.firstChild.firstChild.firstChild.nodeName).to.equal('N');
+        expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.nodeName).to.equal('B');
+        expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.innerHTML).to.equal('Hello, World!');
+        expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('123');
+	});
 	
 	describe('should render a basic example', () => {
 		beforeEach(() => {
