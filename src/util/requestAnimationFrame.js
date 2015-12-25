@@ -14,7 +14,7 @@ if ( ExecutionEnvironment.canUseDOM ) {
 		window.webkitRequestAnimationFrame ||
 		window.mozRequestAnimationFrame;
 
-	const nativecancelAnimationFrame =
+	const nativeCancelAnimationFrame =
 		window.cancelAnimationFrame ||
 		window.webkitCancelAnimationFrame ||
 		window.webkitCancelRequestAnimationFrame ||
@@ -22,17 +22,19 @@ if ( ExecutionEnvironment.canUseDOM ) {
 
 	requestAnimationFrame =
 		nativeRequestAnimationFrame ||
-		function( callback ) {
+		function ( callback ) {
 			const currTime = Date.now();
-			let timeDelay = Math.max( 0, 16 - ( currTime - lastTime ) ); // 1000 / 60 = 16.666
+			const timeDelay = Math.max( 0, 16 - ( currTime - lastTime ) ); // 1000 / 60 = 16.666
+
 			lastTime = currTime + timeDelay;
-			return window.setTimeout( function() {
+			return window.setTimeout( function () {
 				callback( Date.now() );
-			}, timeDelay);
+			}, timeDelay );
 		};
 
-	cancelAnimationFrame = cancelAnimationFrame ||
-		function( frameId ) {
+	cancelAnimationFrame =
+		nativeCancelAnimationFrame ||
+		function ( frameId ) {
 			window.clearTimeout( frameId );
 		};
 }

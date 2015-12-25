@@ -30,12 +30,12 @@ export default function addRootListener( e, type ) {
 	// NOTE: Only the event blubbling phase is modeled. This is done because
 	// handlers specified on props can not specify they are handled on the
 	// capture phase.
-	while(target !== null
+	while (target !== null
 	&& listenersCount > 0
 	&& target !== document.parentNode) {
-		if( ( nodeID = InfernoNodeID( target, true ) ) ) {
+		if ( ( nodeID = InfernoNodeID( target, true ) ) ) {
 			listeners = listenersStorage[nodeID];
-			if( listeners && listeners[type] && ( listener = listeners[type] ) ) {
+			if ( listeners && listeners[type] && ( listener = listeners[type] ) ) {
 				// lazily instantiate additional arguments in the case
 				// where an event handler takes more than one argument
 				// listener is a function, and length is the number of

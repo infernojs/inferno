@@ -8,7 +8,7 @@ export default function setSelectValueForProperty( vNode, domNode, value, usePro
 	const len = options.length;
 
 	let i = 0, optionNode;
-	while( i < len ) {
+	while ( i < len ) {
 		optionNode = options[i++];
 		if ( useProperties ) {
 			optionNode.selected = value != null &&

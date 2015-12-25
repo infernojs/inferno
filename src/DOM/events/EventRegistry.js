@@ -31,7 +31,7 @@ if ( ExecutionEnvironment.canUseDOM ) {
 		if ( focusEvents[type] ) {
 			// IE has `focusin` and `focusout` events which bubble.
 			// @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-			EventRegistry[type]._focusBlur = nativeFocus ? function() {
+			EventRegistry[type]._focusBlur = nativeFocus ? function () {
 				const _type = this._type;
 				let handler = setHandler(_type, e => {
 					addRootListener( e, _type );
@@ -39,7 +39,7 @@ if ( ExecutionEnvironment.canUseDOM ) {
 				document.addEventListener( focusEvents[_type], handler );
 			}
 				// firefox doesn't support focusin/focusout events
-				: function() {
+				: function () {
 				const _type = this._type;
 				document.addEventListener(
 					_type,

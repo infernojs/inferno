@@ -54,7 +54,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 				} else if ( typeof subTreeForChildren === 'object' ) {
 					const newDomNode = subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
 
-					if( newDomNode ) {
+					if ( newDomNode ) {
 						const replaceNode = domNode.firstChild;
 
 						if ( replaceNode ) {

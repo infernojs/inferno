@@ -1,4 +1,4 @@
-let failure = function() {};
+let failure = function () {};
 
 if ( process.env.NODE_ENV !== 'production' ) {
 	
