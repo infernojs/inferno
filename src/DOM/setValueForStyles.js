@@ -1,3 +1,4 @@
+import isVoid from '../util/isVoid';
 import addPixelSuffixToValueIfNeeded from '../shared/addPixelSuffixToValueIfNeeded';
 
 /**
@@ -8,9 +9,11 @@ import addPixelSuffixToValueIfNeeded from '../shared/addPixelSuffixToValueIfNeed
  * @param {object} styles
  */
 export default ( vNode, domNode, styles ) => {
-	for ( let styleName in styles ) {
-		let styleValue = styles[styleName];
+	for ( const styleName in styles ) {
+		if ( styles.hasOwnProperty( styleName ) ) {
+			const styleValue = styles[styleName];
 
-		domNode.style[styleName] = styleValue == null ? '' : addPixelSuffixToValueIfNeeded( styleName, styleValue );
+			domNode.style[styleName] = isVoid( styleValue ) ? '' : addPixelSuffixToValueIfNeeded( styleName, styleValue );
+		}
 	}
 };

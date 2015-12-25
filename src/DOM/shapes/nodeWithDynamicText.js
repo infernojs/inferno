@@ -1,15 +1,16 @@
+import isVoid from '../../util/isVoid';
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 export default function createNodeWithDynamicText( templateNode, valueIndex, dynamicAttrs ) {
-	var domNode;
+	let domNode;
 
 	const node = {
 		create( item ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( value != null ) {
+			if ( !isVoid( value ) ) {
 				if ( typeof value !== 'string' && typeof value !== 'number' ) {
 					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 				}
@@ -21,12 +22,12 @@ export default function createNodeWithDynamicText( templateNode, valueIndex, dyn
 			return domNode;
 		},
 		update( lastItem, nextItem ) {
-			let nextValue = getValueWithIndex( nextItem, valueIndex );
+			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
 			if ( nextValue !== lastValue ) {
-				if ( nextValue == null ) {
-					if ( lastValue == null ) {
+				if ( isVoid( nextValue ) ) {
+					if ( isVoid( lastValue ) ) {
 						domNode.textContent = ' ';
 						domNode.firstChild.nodeValue = '';
 					} else {
@@ -36,7 +37,7 @@ export default function createNodeWithDynamicText( templateNode, valueIndex, dyn
 					if ( typeof nextValue !== 'string' && typeof nextValue !== 'number' ) {
 						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 					}
-					if ( lastValue == null ) {
+					if ( isVoid( lastValue ) ) {
 						domNode.textContent = nextValue;
 					} else {
 						domNode.firstChild.nodeValue = nextValue;
@@ -47,9 +48,10 @@ export default function createNodeWithDynamicText( templateNode, valueIndex, dyn
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-	remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
-	}
+		}
 	};
+
 	return node;
 }

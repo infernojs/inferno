@@ -1,3 +1,4 @@
+import isVoid from '../util/isVoid';
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithStaticChild from './shapes/rootNodeWithStaticChild';
@@ -32,7 +33,7 @@ const invalidTemplateError = 'Inferno Error: A valid template node must be retur
 function createStaticAttributes( node, domNode, excludeAttrs ) {
 	const attrs = node.attrs;
 
-	if ( attrs != null ) {
+	if ( !isVoid( attrs ) ) {
 		if ( excludeAttrs ) {
 			const newAttrs = {...attrs
 			};
@@ -72,7 +73,7 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 	let staticNode;
 
-	if ( node == null ) {
+	if ( isVoid( node ) ) {
 		return null;
 	}
 	if ( typeof node === 'string' || typeof node === 'number' ) {
@@ -113,8 +114,8 @@ function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 			const text = node.text;
 			const children = node.children;
 
-			if ( text != null ) {
-				if ( children != null ) {
+			if ( !isVoid( text ) ) {
+				if ( !isVoid( children ) ) {
 					throw Error( invalidTemplateError );
 				}
 				if ( typeof text !== 'string' && typeof text !== 'number' ) {
@@ -122,7 +123,7 @@ function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 				}
 				staticNode.textContent = text;
 			} else {
-				if ( children != null ) {
+				if ( !isVoid( children ) ) {
 					createStaticTreeChildren( children, staticNode, domNamespace );
 				}
 			}
@@ -146,7 +147,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 	let node;
 	let templateNode;
 
-	if ( schema == null ) {
+	if ( isVoid( schema ) ) {
 		throw Error( invalidTemplateError );
 	}
 	if ( isArray( schema ) ) {
@@ -235,7 +236,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
 
-				if ( attrs != null ) {
+				if ( !isVoid( attrs ) ) {
 					if ( dynamicFlags.ATTRS === true ) {
 						dynamicAttrs = attrs;
 					} else if ( dynamicFlags.ATTRS !== false ) {
@@ -247,8 +248,8 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				}
 				const children = schema.children;
 
-				if ( text != null ) {
-					if ( children != null ) {
+				if ( !isVoid( text ) ) {
+					if ( !isVoid( children ) ) {
 						throw Error( 'Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.' );
 					}
 					if ( dynamicFlags.TEXT === true ) {
@@ -270,7 +271,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					}
 				} else {
-					if ( children != null ) {
+					if ( !isVoid( children ) ) {
 						if ( children.type === ObjectTypes.VARIABLE ) {
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicChild(

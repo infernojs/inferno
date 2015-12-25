@@ -154,7 +154,7 @@ const Whitelist = {
 	/**
 	 * SVG
 	 */
-	 
+
 	clipPath: null,
 	fillOpacity: null,
 	fontFamily: null,
@@ -293,26 +293,28 @@ const Whitelist = {
 	spellcheck: null // 3.2.5 - Global attributes
 };
 
-let HTMLPropsContainer = {};
+const HTMLPropsContainer = {};
 
 function checkBitmask( value, bitmask ) {
 	return bitmask !== null && ( ( value & bitmask ) === bitmask );
 }
 
-for ( let propName in Whitelist ) {
+for ( const propName in Whitelist ) {
+	if ( Whitelist.hasOwnProperty( propName ) ) {
 
-	const propConfig = Whitelist[propName];
+		const propConfig = Whitelist[propName];
 
-	HTMLPropsContainer[propName] = {
-		attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
-		attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
-		propertyName: DOMPropertyNames[propName] || propName,
+		HTMLPropsContainer[propName] = {
+			attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
+			attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
+			propertyName: DOMPropertyNames[propName] || propName,
 
-		mustUseProperty: checkBitmask( propConfig, PROPERTY ),
-		hasBooleanValue: checkBitmask( propConfig, BOOLEAN ),
-		hasNumericValue: checkBitmask( propConfig, NUMERIC_VALUE ),
-		hasPositiveNumericValue: checkBitmask( propConfig, POSITIVE_NUMERIC_VALUE ),
-	};
+			mustUseProperty: checkBitmask( propConfig, PROPERTY ),
+			hasBooleanValue: checkBitmask( propConfig, BOOLEAN ),
+			hasNumericValue: checkBitmask( propConfig, NUMERIC_VALUE ),
+			hasPositiveNumericValue: checkBitmask( propConfig, POSITIVE_NUMERIC_VALUE )
+		};
+	}
 }
 
 export default HTMLPropsContainer;

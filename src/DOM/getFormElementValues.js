@@ -1,11 +1,11 @@
 import getFormElementType from './getFormElementType';
 
 function selectValues( node ) {
-	let result = [];
-	let index = node.selectedIndex;
+	const result = [];
+	const index = node.selectedIndex;
+	const options = node.options;
+	const length = options.length;
 	let option;
-	let options = node.options;
-	let length = options.length;
 	let i = index < 0 ? length : 0;
 
 	for ( ; i < length; i++ ) {

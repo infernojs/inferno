@@ -1,4 +1,5 @@
 import isArray from '../../util/isArray';
+import isVoid from '../../util/isVoid';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
@@ -7,9 +8,9 @@ import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs, domNamespace ) {
+export default function createRootNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs ) {
 	let keyedChildren = true;
-	let childNodeList = [];
+	const childNodeList = [];
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -25,7 +26,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( value != null ) {
+			if ( !isVoid( value ) ) {
 				if ( isArray( value ) ) {
 					for ( let i = 0; i < value.length; i++ ) {
 						const childItem = value[i];
@@ -72,9 +73,10 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
 					domNode.firstChild.nodeValue = nextValue;
-				} else if ( nextValue == null ) {
+				} else if ( isVoid( nextValue ) ) {
 					if ( domNode !== null ) {
-						const childNode = document.createTextNode( '');
+						const childNode = document.createTextNode( '' );
+
 						domNode.replaceChild( childNode, domNode.firstChild );
 					}
 				} else if ( isArray( nextValue ) ) {
@@ -90,9 +92,9 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				} else if ( typeof nextValue === 'object' ) {
 					const tree = nextValue.domTree;
 
-					if ( tree != null ) {
-						if ( lastValue != null ) {
-							if ( lastValue.domTree != null ) {
+					if ( !isVoid( tree ) ) {
+						if ( !isVoid( lastValue ) ) {
+							if ( !isVoid( lastValue.domTree ) ) {
 								tree.update( lastValue, nextValue, treeLifecycle, context );
 							} else {
 								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
@@ -100,6 +102,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 							}
 						} else {
 							const childNode = tree.create( nextValue, treeLifecycle, context );
+
 							domNode.replaceChild( childNode, domNode.firstChild );
 						}
 					}
@@ -111,11 +114,12 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-	remove( item, treeLifecycle ) {
-	  const value = getValueWithIndex( item, valueIndex );
+		remove( item, treeLifecycle ) {
+			const value = getValueWithIndex( item, valueIndex );
 
-	  removeValueTree( value, treeLifecycle );
-	}
+			removeValueTree( value, treeLifecycle );
+		}
 	};
+
 	return node;
 }

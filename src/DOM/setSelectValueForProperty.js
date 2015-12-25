@@ -1,4 +1,5 @@
 import isArray from '../util/isArray';
+import isVoid from '../util/isVoid';
 import inArray from '../util/inArray';
 
 // TODO!! Optimize!!
@@ -8,13 +9,14 @@ export default function setSelectValueForProperty( vNode, domNode, value, usePro
 	const len = options.length;
 
 	let i = 0, optionNode;
+
 	while ( i < len ) {
 		optionNode = options[i++];
 		if ( useProperties ) {
-			optionNode.selected = value != null &&
+			optionNode.selected = !isVoid( value ) &&
 				( isMultiple ? inArray( value, optionNode.value ) : optionNode.value === value );
 		} else {
-			if ( value != null && ( isMultiple ? inArray(value, optionNode.value ) : optionNode.value === value) ) {
+			if ( !isVoid( value ) && ( isMultiple ? inArray( value, optionNode.value ) : optionNode.value === value ) ) {
 				optionNode.setAttribute( 'selected', 'selected' );
 			} else {
 				optionNode.removeAttribute( 'selected' );

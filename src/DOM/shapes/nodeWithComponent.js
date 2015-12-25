@@ -1,11 +1,10 @@
-import isArray from '../../util/isArray';
+/* eslint new-cap:0 */
+import isVoid from '../../util/isVoid';
 import { getValueWithIndex, getValueForProps, getCorrectItemForValues } from '../../core/variables';
-import { updateKeyed } from '../domMutate';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateNode from '../recreateNode';
 import updateComponent from '../../core/updateComponent';
 
-export default function createNodeWithComponent( componentIndex, props, domNamespace ) {
+export default function createNodeWithComponent( componentIndex, props ) {
 	let instance;
 	let lastRender;
 	let domNode;
@@ -16,11 +15,11 @@ export default function createNodeWithComponent( componentIndex, props, domNames
 			const Component = getValueWithIndex( valueItem, componentIndex );
 
 			currentItem = item;
-			if ( Component == null ) {
-				domNode = document.createTextNode( '');
+			if ( isVoid( Component ) ) {
+				domNode = document.createTextNode( '' );
 				return domNode;
 			} else if ( typeof Component === 'function' ) {
-				//stateless component
+				// stateless component
 				if ( !Component.prototype.render ) {
 					const nextRender = Component( getValueForProps( props, valueItem ), context );
 
@@ -35,7 +34,7 @@ export default function createNodeWithComponent( componentIndex, props, domNames
 					const childContext = instance.getChildContext();
 
 					if ( childContext ) {
-						context = {...context, ...childContext};
+						context = { ...context, ...childContext };
 					}
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
@@ -47,7 +46,7 @@ export default function createNodeWithComponent( componentIndex, props, domNames
 						const childContext = instance.getChildContext();
 
 						if ( childContext ) {
-							context = {...context, ...childContext};
+							context = { ...context, ...childContext };
 						}
 						nextRender.parent = currentItem;
 						const newDomNode = nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
@@ -67,15 +66,15 @@ export default function createNodeWithComponent( componentIndex, props, domNames
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
 			const Component = getValueWithIndex( nextItem, componentIndex );
-			currentItem = nextItem;
 
+			currentItem = nextItem;
 			if ( !Component ) {
 				recreateNode( domNode, nextItem, node, treeLifecycle, context );
 				lastRender.rootNode = domNode;
 				return domNode;
 			}
 			if ( typeof Component === 'function' ) {
-				//stateless component
+				// stateless component
 				if ( !Component.prototype.render ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
 
@@ -111,5 +110,6 @@ export default function createNodeWithComponent( componentIndex, props, domNames
 			}
 		}
 	};
+
 	return node;
 }

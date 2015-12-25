@@ -1,3 +1,4 @@
+import isVoid from '../util/isVoid';
 import { isRecyclingEnabled, pool } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
@@ -113,6 +114,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 			oldNextItem = oldItem;
 		}
 		let nextItem = ( endIndex + 1 < itemsLength ) ? items[endIndex + 1] : null;
+
 		for ( let i = endIndex; i >= startIndex; i-- ) {
 			item = items[i];
 			const key = item.key;
@@ -122,6 +124,8 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
 				item.domTree.update( oldItem, item, treeLifecycle );
+
+				/* eslint eqeqeq:0 */
 				// TODO optimise
 				if ( item.rootNode.nextSibling != ( nextItem && nextItem.rootNode ) ) {
 					nextNode = ( nextItem && nextItem.rootNode ) || parentNextNode;
@@ -147,17 +151,17 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle ) {
 	const itemsLength = Math.max( items.length, oldItems.length );
 
-	for ( let i = 0; i < itemsLength ; i++ ) {
+	for ( let i = 0; i < itemsLength; i++ ) {
 		const item = items[i];
 		const oldItem = oldItems[i];
 
 		if ( item !== oldItem ) {
-			if ( item != null ) {
-				if ( oldItem != null ) {
+			if ( !isVoid( item ) ) {
+				if ( !isVoid( oldItem ) ) {
 					if ( typeof item === 'string' || typeof item === 'number' ) {
 						domNodeList[i].nodeValue = item;
 					} else if ( typeof item === 'object' ) {
-						debugger;
+						// debugger;
 						item.domTree.update( oldItem, item, treeLifecycle );
 					}
 				} else {
