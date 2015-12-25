@@ -502,8 +502,6 @@ it('should render a simple div with dynamic span child', () => {
       var container = document.createElement('div');
       var node = Inferno.render(<div />, container);
 
-      node.setAttribute = setter;
-
       Inferno.render(<div dir={null} />, container);
       Inferno.render(<div dir={undefined} />, container);
       Inferno.render(<div />, container);

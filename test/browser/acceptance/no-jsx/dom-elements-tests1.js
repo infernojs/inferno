@@ -2729,4 +2729,97 @@ describe('DOM element tests (no-jsx)', () => {
 
         });
     });
+	
+	 it('should support number values', () => {
+
+        const styleRule = {
+            width: 7
+        };
+
+        let template = Inferno.createTemplate(() =>
+                createElement('div', {
+                    style: styleRule
+                })
+            );
+
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 7px;"></div>'
+            );
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 7px;"></div>'
+            );
+    });
+	
+	it('should support set width and height', () => {
+
+        let template = Inferno.createTemplate(() =>
+                createElement('div', {
+                    style: {
+            width: 200,
+            height: 200
+        }
+                })
+            );
+
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                 '<div style="width: 200px; height: 200px;"></div>'
+            );
+
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                 '<div style="width: 200px; height: 200px;"></div>'
+            );
+
+            Inferno.render(template(), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                 '<div style="width: 200px; height: 200px;"></div>'
+            );
+
+    });
+
+
+	it('should dynamically support number values on root node', () => {
+
+        let template = Inferno.createTemplate((style) =>
+                createElement('div', {
+                    style: style
+                })
+            );
+
+            Inferno.render(template({
+            width: 7
+        }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 7px;"></div>'
+            );
+
+            Inferno.render(template({
+            width: 7
+        }), container);
+
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div style="width: 7px;"></div>'
+            );
+    });
 });
