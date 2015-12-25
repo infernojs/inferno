@@ -487,7 +487,7 @@ describe('DOM element tests2 (no-jsx)', () => {
                 container.innerHTML
             ).to.equal(
                 '<div></div>'
-            );
+            ); 
 
         });
 
@@ -729,7 +729,7 @@ describe('DOM element tests2 (no-jsx)', () => {
             );
 
             Inferno.render(template(false), container);
-            expect(container.firstChild.checked).to.be.null;
+            expect(container.firstChild.checked).to.be.false;
             expect(
                 container.innerHTML
             ).to.equal(

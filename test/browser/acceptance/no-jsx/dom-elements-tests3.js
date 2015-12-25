@@ -81,7 +81,7 @@ describe('DOM element tests3 (no-jsx)', () => {
                 };
             });
             Inferno.render(template(span1()), container);
-            expect(container.firstChild.innerHTML).to.equal('<span>Hello  !  </span>');
+            expect(container.firstChild.innerHTML).to.equal('<span>Hello!</span>');
 
         });
     });
@@ -504,7 +504,7 @@ describe('DOM element tests3 (no-jsx)', () => {
         });;
 
         it('Initial render (creation)', () => {
-            Inferno.render(template([1, 2, null]), container);
+            Inferno.render(template(['1', '2', null]), container);
             expect(
                 container.innerHTML
             ).to.equal(

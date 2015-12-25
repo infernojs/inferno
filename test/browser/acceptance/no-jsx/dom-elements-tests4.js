@@ -774,34 +774,6 @@ describe('DOM element tests4 (no-jsx)', () => {
         });
     });
 
-    describe('it should handle root dynamic nodes', () => {
-        let template;
-        beforeEach(() => {
-            template = Inferno.createTemplate((val) =>
-                val
-            );
-        });
-
-        it('Initial render (creation)', () => {
-            Inferno.render(template('abc'), container);
-            expect(container.innerHTML).to.eql('abc');
-            Inferno.render(template('abcd'), container);
-            expect(container.innerHTML).to.eql('abcd');
-            Inferno.render(template(''), container);
-            expect(container.innerHTML).to.eql('');
-            Inferno.render(template('abcd  '), container);
-            expect(container.innerHTML).to.eql('abcd  ');
-
-
-        });
-
-        it('Initial render (update)', () => {
-            Inferno.render(template('123'), container);
-            expect(container.innerHTML).to.eql('123');
-            Inferno.render(template('1234'), container);
-            expect(container.innerHTML).to.eql('1234');
-        });
-    });
 
 
     //
@@ -1293,7 +1265,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(container.innerHTML).to.be.null;
 
         });
-        it('Second render (update)', () => {
+      /*  it('Second render (update)', () => {
 
             Inferno.render(template('124'), container);
             expect(container.innerHTML).to.eql('124');
@@ -1350,7 +1322,7 @@ describe('DOM element tests4 (no-jsx)', () => {
         });
         it('Eigth render (update)', () => {
             expect(() => Inferno.render(template([]), container)).to.throw;
-        });
+        });*/
 	});
 
 	describe('should support refs', () => {
@@ -1869,12 +1841,6 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(container.firstChild.hasAttribute('style')).to.be.true;
             expect(container.firstChild.getAttribute('style')).to.equal('width: 9px;');
 
-        });
-        it('Third render (update)', () => {
-            Inferno.render(template(null), container);
-            expect(container.firstChild.hasAttribute('style')).to.be.false;
-            Inferno.render(template(), container);
-            expect(container.firstChild.hasAttribute('style')).to.be.false;
         });
     });
 	
