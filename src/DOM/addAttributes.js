@@ -95,23 +95,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 	    const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
         const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-        if (nextAttrVal && !lastAttrVal) {
-
-            if (attrName === 'style') {
-
-                for (styleName in lastAttrVal) {
-                    if (lastAttrVal[styleName]) {
-                        styleUpdates = styleUpdates || {};
-                        styleUpdates[styleName] = '';
-                    }
-                }
-
-            } else {
-                template.removeProperty(null, domNode, attrName, true);
-            }
-        }
-
-        if (!nextAttrVal || nextAttrVal !== lastAttrVal) {
+        if (nextAttrVal !== lastAttrVal) {
 
             if (attrName === 'style') {
 
@@ -140,9 +124,8 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
                 if (eventMapping[attrName]) {
                     addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
                 } else {
-                    if (attrName === 'style') {
-                        styleUpdates = null;
-                    } else {
+
+                    if (attrName !== 'style') {
                         template.setProperty(null, domNode, attrName, nextAttrVal, true);
                     }
                 }
