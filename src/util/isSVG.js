@@ -2,7 +2,7 @@ import ExecutionEnvironment from './ExecutionEnvironment';
 
 let isSVG;
 
-if (ExecutionEnvironment.canUseDOM) {
+if ( ExecutionEnvironment.canUseDOM ) {
 	let { implementation } = document;
 	isSVG = (
 		implementation &&

@@ -1,17 +1,17 @@
 import isArray from '../../util/isArray';
 
-export default function createStaticNode(templateNode) {
+export default function createStaticNode( templateNode ) {
 	var domNode;
 
 	const node = {
 		create() {
-			domNode = templateNode.cloneNode(true);
+			domNode = templateNode.cloneNode( true );
 			return domNode;
 		},
 		update() {},
-    remove(lastItem) {
+	remove( lastItem ) {
 
-    }
+	}
 	};
 	return node;
 }

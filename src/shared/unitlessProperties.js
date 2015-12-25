@@ -47,6 +47,6 @@ const unitlessProps = {
 	WebkitAnimationIterationCount: true
 };
 
-export default (str) => {
+export default ( str ) => {
 	return str in unitlessProps;
 };

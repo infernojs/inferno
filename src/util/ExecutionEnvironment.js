@@ -1,6 +1,6 @@
 const canUseDOM = !!(typeof window !== 'undefined' &&
-    window.document &&
-    window.document.createElement);
+	window.document &&
+	window.document.createElement);
 
 /**
  * Simple, lightweight module assisting with the detection and context of
@@ -14,7 +14,7 @@ export default {
 
   canUseWorkers: typeof Worker !== 'undefined',
 
-  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
+  canUseEventListeners: canUseDOM && !!( window.addEventListener || window.attachEvent ),
 
   canUseViewport: canUseDOM && !!window.screen,
 

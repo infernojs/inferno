@@ -4,32 +4,32 @@ import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootStaticNode(templateNode) {
+export default function createRootStaticNode( templateNode ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item) {
+		create( item ) {
 			let domNode;
-			if (recyclingEnabled) {
-				domNode = recycle(node, item);
-				if (domNode) {
+			if ( recyclingEnabled ) {
+				domNode = recycle( node, item );
+				if ( domNode ) {
 					return domNode;
 				}
 			}
-			domNode = templateNode.cloneNode(true);
+			domNode = templateNode.cloneNode( true );
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem) {
-			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node);
+		update( lastItem, nextItem ) {
+			if ( node !== lastItem.domTree ) {
+				recreateRootNode( lastItem, nextItem, node );
 				return;
 			}
 			nextItem.rootNode = lastItem.rootNode;
 		},
-    remove(lastItem) {
+	remove( lastItem ) {
 
-    }
+	}
 	};
 	return node;
 }

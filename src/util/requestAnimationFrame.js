@@ -5,39 +5,39 @@ import noop from './noop';
 let requestAnimationFrame = noop;
 let cancelAnimationFrame = noop;
 
-if (ExecutionEnvironment.canUseDOM) {
+if ( ExecutionEnvironment.canUseDOM ) {
 
-    let lastTime = 0;
+	let lastTime = 0;
 
-    const nativeRequestAnimationFrame =
-        window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame;
+	const nativeRequestAnimationFrame =
+		window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame;
 
-    const nativecancelAnimationFrame =
-        window.cancelAnimationFrame ||
-        window.webkitCancelAnimationFrame ||
-        window.webkitCancelRequestAnimationFrame ||
-        window.mozCancelAnimationFrame;
+	const nativecancelAnimationFrame =
+		window.cancelAnimationFrame ||
+		window.webkitCancelAnimationFrame ||
+		window.webkitCancelRequestAnimationFrame ||
+		window.mozCancelAnimationFrame;
 
-    requestAnimationFrame =
-        nativeRequestAnimationFrame ||
-        function(callback) {
-            const currTime = Date.now();
-            let timeDelay = Math.max(0, 16 - (currTime - lastTime)); // 1000 / 60 = 16.666
-            lastTime = currTime + timeDelay;
-            return window.setTimeout(function() {
-                callback(Date.now());
-            }, timeDelay);
-        };
+	requestAnimationFrame =
+		nativeRequestAnimationFrame ||
+		function( callback ) {
+			const currTime = Date.now();
+			let timeDelay = Math.max( 0, 16 - ( currTime - lastTime ) ); // 1000 / 60 = 16.666
+			lastTime = currTime + timeDelay;
+			return window.setTimeout( function() {
+				callback( Date.now() );
+			}, timeDelay);
+		};
 
-    cancelAnimationFrame = cancelAnimationFrame ||
-        function(frameId) {
-            window.clearTimeout(frameId);
-        };
+	cancelAnimationFrame = cancelAnimationFrame ||
+		function( frameId ) {
+			window.clearTimeout( frameId );
+		};
 }
 
 export {
-    requestAnimationFrame,
-    cancelAnimationFrame
+	requestAnimationFrame,
+	cancelAnimationFrame
 };

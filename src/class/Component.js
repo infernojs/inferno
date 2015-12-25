@@ -1,7 +1,7 @@
 import queueStateChanges from '../core/queueStateChanges';
 
 class Component {
-	constructor(props, context) {
+	constructor( props, context ) {
 		this.props = props || {};
 		this._blockRender = false;
 		this._blockSetState = false;
@@ -14,12 +14,12 @@ class Component {
 	}
 	render() {}
 	forceUpdate() {}
-	setState(newState, callback) {
+	setState( newState, callback ) {
 		// TODO the callback
-		if(this._blockSetState === false) {
-			queueStateChanges(this, newState);
+		if( this._blockSetState === false ) {
+			queueStateChanges( this, newState );
 		} else {
-			throw Error("Inferno Error: Cannot update state via setState() in componentWillUpdate()");
+			throw Error( 'Inferno Error: Cannot update state via setState() in componentWillUpdate()' );
 		}
 	}
 	componentDidMount() {}

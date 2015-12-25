@@ -7,115 +7,115 @@ import recreateRootNode from '../recreateRootNode';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, domNamespace) {
+export default function createRootNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs, domNamespace ) {
 	let keyedChildren = true;
 	let childNodeList = [];
 	const node = {
 		pool: [],
 		keyedPool: [],
-		create(item, treeLifecycle, context) {
+		create( item, treeLifecycle, context ) {
 			let domNode;
 
-			if (recyclingEnabled) {
-				domNode = recycle(node, item);
-				if (domNode) {
+			if ( recyclingEnabled ) {
+				domNode = recycle( node, item );
+				if ( domNode ) {
 					return domNode;
 				}
 			}
-			domNode = templateNode.cloneNode(false);
-			const value = getValueWithIndex(item, valueIndex);
+			domNode = templateNode.cloneNode( false );
+			const value = getValueWithIndex( item, valueIndex );
 
-			if (value != null) {
-				if (isArray(value)) {
-					for (let i = 0; i < value.length; i++) {
+			if ( value != null ) {
+				if ( isArray( value ) ) {
+					for ( let i = 0; i < value.length; i++ ) {
 						const childItem = value[i];
 
-						if (typeof childItem === 'object') {
-							const childNode = childItem.domTree.create(childItem, treeLifecycle, context);
+						if ( typeof childItem === 'object' ) {
+							const childNode = childItem.domTree.create( childItem, treeLifecycle, context );
 
-							if (childItem.key === undefined) {
+							if ( childItem.key === undefined ) {
 								keyedChildren = false;
 							}
-							childNodeList.push(childNode);
-							domNode.appendChild(childNode);
-						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
-							const textNode = document.createTextNode(childItem);
+							childNodeList.push( childNode );
+							domNode.appendChild( childNode );
+						} else if ( typeof childItem === 'string' || typeof childItem === 'number' ) {
+							const textNode = document.createTextNode( childItem );
 
-							domNode.appendChild(textNode);
-							childNodeList.push(textNode);
+							domNode.appendChild( textNode );
+							childNodeList.push( textNode );
 							keyedChildren = false;
 						}
 					}
-				} else if (typeof value === 'object') {
-					domNode.appendChild(value.domTree.create(value, treeLifecycle, context));
-				} else if (typeof value === 'string' || typeof value === 'number') {
+				} else if ( typeof value === 'object' ) {
+					domNode.appendChild( value.domTree.create( value, treeLifecycle, context ) );
+				} else if ( typeof value === 'string' || typeof value === 'number' ) {
 					domNode.textContent = value;
 				}
 			}
-			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
+			if ( dynamicAttrs ) {
+				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update(lastItem, nextItem, treeLifecycle, context) {
-			if (node !== lastItem.domTree) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+		update( lastItem, nextItem, treeLifecycle, context ) {
+			if ( node !== lastItem.domTree ) {
+				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 				return;
 			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
-			const lastValue = getValueWithIndex(lastItem, valueIndex);
+			const nextValue = getValueWithIndex( nextItem, valueIndex );
+			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if (nextValue !== lastValue) {
-				if (typeof nextValue === 'string') {
+			if ( nextValue !== lastValue ) {
+				if ( typeof nextValue === 'string' ) {
 					domNode.firstChild.nodeValue = nextValue;
-				} else if (nextValue == null) {
-					if (domNode !== null) {
-						const childNode = document.createTextNode('');
-						domNode.replaceChild(childNode, domNode.firstChild);
+				} else if ( nextValue == null ) {
+					if ( domNode !== null ) {
+						const childNode = document.createTextNode( '');
+						domNode.replaceChild( childNode, domNode.firstChild );
 					}
-				} else if (isArray(nextValue)) {
-					if (isArray(lastValue)) {
-						if (keyedChildren) {
-							updateKeyed(nextValue, lastValue, domNode, null, context);
+				} else if ( isArray( nextValue ) ) {
+					if ( isArray( lastValue ) ) {
+						if ( keyedChildren ) {
+							updateKeyed( nextValue, lastValue, domNode, null, context );
 						} else {
-							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
+							updateNonKeyed( nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context );
 						}
 					} else {
 						// do nothing for now!
 					}
-				} else if (typeof nextValue === 'object') {
+				} else if ( typeof nextValue === 'object' ) {
 					const tree = nextValue.domTree;
 
-					if (tree != null) {
-						if (lastValue != null) {
-							if (lastValue.domTree != null) {
-								tree.update(lastValue, nextValue, treeLifecycle, context);
+					if ( tree != null ) {
+						if ( lastValue != null ) {
+							if ( lastValue.domTree != null ) {
+								tree.update( lastValue, nextValue, treeLifecycle, context );
 							} else {
-								recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 								return;
 							}
 						} else {
-							const childNode = tree.create(nextValue, treeLifecycle, context);
-							domNode.replaceChild(childNode, domNode.firstChild);
+							const childNode = tree.create( nextValue, treeLifecycle, context );
+							domNode.replaceChild( childNode, domNode.firstChild );
 						}
 					}
-				} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
+				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
 					domNode.firstChild.nodeValue = nextValue;
 				}
 			}
-			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+			if ( dynamicAttrs ) {
+				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-    remove(item, treeLifecycle) {
-      const value = getValueWithIndex(item, valueIndex);
+	remove( item, treeLifecycle ) {
+	  const value = getValueWithIndex( item, valueIndex );
 
-      removeValueTree(value, treeLifecycle);
-    }
+	  removeValueTree( value, treeLifecycle );
+	}
 	};
 	return node;
 }
