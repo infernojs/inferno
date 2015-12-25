@@ -35,10 +35,9 @@ function createStaticAttributes( node, domNode, excludeAttrs ) {
 
 	if ( !isVoid( attrs ) ) {
 		if ( excludeAttrs ) {
-			const newAttrs = {...attrs
-			};
+			const newAttrs = { ...attrs };
 
-			for ( let attr in excludeAttrs ) {
+			for ( const attr in excludeAttrs ) {
 				if ( newAttrs[attr] ) {
 					delete newAttrs[attr];
 				}
@@ -54,8 +53,10 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 	if ( isArray( children ) ) {
 		for ( let i = 0; i < children.length; i++ ) {
 			const childItem = children[i];
+
 			if ( typeof childItem === 'string' || typeof childItem === 'number' ) {
 				const textNode = document.createTextNode( childItem );
+
 				parentNode.appendChild( textNode );
 			} else {
 				createStaticTreeNode( childItem, parentNode, domNamespace );
@@ -70,7 +71,7 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 	}
 }
 
-function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
+function createStaticTreeNode( node, parentNode, domNamespace ) {
 	let staticNode;
 
 	if ( isVoid( node ) ) {
@@ -80,9 +81,10 @@ function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 		staticNode = document.createTextNode( node );
 	} else {
 		const tag = node.tag;
+
 		if ( tag ) {
-			let namespace = node.attrs && node.attrs.xmlns || null;
-			let is = node.attrs && node.attrs.is || null;
+			const namespace = node.attrs && node.attrs.xmlns || null;
+			const is = node.attrs && node.attrs.is || null;
 
 			if ( !namespace ) {
 				switch ( tag ) {
@@ -99,13 +101,13 @@ function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 				domNamespace = namespace;
 			}
 			if ( domNamespace ) {
-				if ( is) {
+				if ( is ) {
 					staticNode = document.createElementNS( domNamespace, tag, is );
 				} else {
 					staticNode = document.createElementNS( domNamespace, tag );
 				}
 			} else {
-				if ( is) {
+				if ( is ) {
 					staticNode = document.createElement( tag, is );
 				} else {
 					staticNode = document.createElement( tag );
@@ -180,13 +182,14 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				if ( tag.type === ObjectTypes.VARIABLE ) {
 					const lastAttrs = schema.attrs;
 					const attrs = { ...lastAttrs };
-					let children = null;
+					const children = null;
 
 					if ( schema.children ) {
 						if ( isArray( schema.children ) && schema.children.length > 1 ) {
 							attrs.children = [];
 							for ( let i = 0; i < schema.children.length; i++ ) {
 								const childNode = schema.children[i];
+
 								attrs.children.push( createDOMTree( childNode, false, dynamicNodeMap, domNamespace ) );
 							}
 						} else {
@@ -203,8 +206,8 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						return createNodeWithComponent( tag.index, attrs, children, domNamespace );
 					}
 				}
-				let namespace = schema.attrs && schema.attrs.xmlns || null;
-				let is = schema.attrs && schema.attrs.is || null;
+				const namespace = schema.attrs && schema.attrs.xmlns || null;
+				const is = schema.attrs && schema.attrs.is || null;
 
 				if ( !namespace ) {
 					switch ( tag ) {
@@ -221,13 +224,13 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					domNamespace = namespace;
 				}
 				if ( domNamespace ) {
-					if ( is) {
+					if ( is ) {
 						templateNode = document.createElementNS( domNamespace, tag, is );
 					} else {
 						templateNode = document.createElementNS( domNamespace, tag );
 					}
 				} else {
-					if ( is) {
+					if ( is ) {
 						templateNode = document.createElement( tag, is );
 					} else {
 						templateNode = document.createElement( tag );
@@ -284,9 +287,11 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 							}
 						} else if ( dynamicFlags.CHILDREN === true ) {
 							let subTreeForChildren = [];
+
 							if ( isArray( children ) ) {
 								for ( let i = 0; i < children.length; i++ ) {
 									const childItem = children[i];
+
 									subTreeForChildren.push( createDOMTree( childItem, false, dynamicNodeMap, domNamespace ) );
 								}
 							} else if ( typeof children === 'object' ) {
@@ -330,7 +335,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					}
 				}
 			} else if ( text ) {
-				templateNode = document.createTextNode( '');
+				templateNode = document.createTextNode( '' );
 				if ( isRoot ) {
 					node = createRootDynamicTextNode( templateNode, text.index );
 				} else {

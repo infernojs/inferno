@@ -1,3 +1,4 @@
+import isVoid from '../util/isVoid';
 import DOMRegistry from './DOMRegistry';
 import setSelectValueForProperty from './setSelectValueForProperty';
 
@@ -15,18 +16,18 @@ const template = {
 		const propertyInfo = DOMRegistry[name] || null;
 
 		if ( propertyInfo ) {
-			if (value == null ||
+			if ( isVoid( value ) ||
 				propertyInfo.hasBooleanValue && !value ||
 				propertyInfo.hasNumericValue && ( value !== value ) ||
 				propertyInfo.hasPositiveNumericValue && value < 1 ||
-				value.length === 0) {
+				value.length === 0 ) {
 				template.removeProperty( vNode, domNode, name, useProperties );
 			} else {
 				const propName = propertyInfo.propertyName;
 
 				if ( propertyInfo.mustUseProperty ) {
-					
-					if ( propName === 'value' && ( (vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' )) ) {
+
+					if ( propName === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
 						setSelectValueForProperty( vNode, domNode, value, useProperties );
 					} else if ( '' + domNode[propName] !== '' + value ) {
 						if ( useProperties ) {
@@ -63,12 +64,13 @@ const template = {
 					}
 				}
 			}
-		} else if ( value == null ) {
+		} else if ( isVoid( value ) ) {
 			domNode.removeAttribute( name );
 		} else if ( name ) {
 			domNode.setAttribute( name, value );
 		}
 	},
+
 	/**
 	 * Removes the value for a property on a node.
 	 *
@@ -80,7 +82,8 @@ const template = {
 
 		if ( propertyInfo ) {
 			if ( propertyInfo.mustUseProperty ) {
-				let propName = propertyInfo.propertyName;
+				const propName = propertyInfo.propertyName;
+
 				if ( propertyInfo.hasBooleanValue ) {
 					if ( useProperties ) {
 						domNode[propName] = false;
