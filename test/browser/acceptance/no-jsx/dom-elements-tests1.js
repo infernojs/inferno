@@ -2876,7 +2876,7 @@ const style = {
             expect(
                 container.innerHTML
             ).to.equal(
-                 '<div style="width: 200px; height: 200px;"></div>'
+                 '<div><span style="width: 200px; height: 200px;"></span></div>'
             );
 
             Inferno.render(template(style), container);
@@ -2884,7 +2884,7 @@ const style = {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div style="width: 200px; height: 200px;"></div>'
+               '<div><span style="width: 200px; height: 200px;"></span></div>'
             );
     });
 });
