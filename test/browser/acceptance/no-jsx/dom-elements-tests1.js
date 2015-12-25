@@ -2796,15 +2796,18 @@ describe('DOM element tests (no-jsx)', () => {
 
 	it('should dynamically support number values on root node', () => {
 
-        let template = Inferno.createTemplate((style) =>
-                createElement('div', {
-                    style: style
-                })
-            );
+       let template = Inferno.createTemplate((value) => ({
+                tag: 'div',
+                attrs: {
+                    style: value
+                }
+            }))
 
-            Inferno.render(template({
+const style = {
             width: 7
-        }), container);
+        };
+		
+            Inferno.render(template(style), container);
 
             expect(
                 container.innerHTML
@@ -2812,9 +2815,7 @@ describe('DOM element tests (no-jsx)', () => {
                 '<div style="width: 7px;"></div>'
             );
 
-            Inferno.render(template({
-            width: 7
-        }), container);
+            Inferno.render(template(style), container);
 
             expect(
                 container.innerHTML
