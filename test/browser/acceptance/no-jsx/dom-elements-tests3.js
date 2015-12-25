@@ -73,16 +73,6 @@ describe('DOM element tests3 (no-jsx)', () => {
             Inferno.render(template(span1()), container);
             expect(container.firstChild.innerHTML).to.equal('<span>Hello!</span>');
             
-			// Whitespace issue!
-            const span2 = Inferno.createTemplate(function() {
-                return {
-                    tag: 'span',
-                    children: ['Hello', null, '  !  ']
-                };
-            });
-            Inferno.render(template(span1()), container);
-            expect(container.firstChild.innerHTML).to.equal('<span>Hello  !  </span>');
-
         });
     });
 
