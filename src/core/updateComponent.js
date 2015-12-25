@@ -1,4 +1,4 @@
-export default function updateComponent( component, prevState, nextState, prevProps, nextProps, renderCallback, blockRender ) {
+export default function updateComponent( component, prevState, nextState, prevProps, nextProps, renderCallback ) {
 	if ( !nextProps.children ) {
 		nextProps.children = prevProps.children;
 	}
@@ -18,6 +18,7 @@ export default function updateComponent( component, prevState, nextState, prevPr
 			component.props = nextProps;
 			component.state = nextState;
 			const newDomNode = renderCallback();
+
 			component.componentDidUpdate( prevProps, prevState );
 			return newDomNode;
 		}

@@ -1,4 +1,5 @@
 import isArray from '../util/isArray';
+import isVoid from '../util/isVoid';
 
 export const ObjectTypes = {
 	VARIABLE: 1
@@ -31,11 +32,11 @@ export function getCorrectItemForValues( node, item ) {
 }
 
 export function getTypeFromValue( value ) {
-	if ( typeof value === 'string' || typeof value === 'number' || value == null ) {
+	if ( typeof value === 'string' || typeof value === 'number' || isVoid( value ) ) {
 		return ValueTypes.TEXT;
 	} else if ( isArray( value ) ) {
 		return ValueTypes.ARRAY;
-	} else if ( typeof value === 'object' &&  value.create ) {
+	} else if ( typeof value === 'object' && value.create ) {
 		return ValueTypes.TREE;
 	} else if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
 		return ValueTypes.EMPTY_OBJECT;
@@ -50,31 +51,33 @@ export function getValueForProps( props, item ) {
 	if ( props.index ) {
 		return getValueWithIndex( item, props.index );
 	}
-	for ( let name in props ) {
-		const val = props[name];
+	for ( const name in props ) {
+		if ( props.hasOwnProperty( name ) ) {
+			const val = props[name];
 
-		if ( val && val.index ) {
-			newProps[name] = getValueWithIndex( item, val.index );
-		} else {
-			newProps[name] = val;
+			if ( val && val.index ) {
+				newProps[name] = getValueWithIndex( item, val.index );
+			} else {
+				newProps[name] = val;
+			}
 		}
 	}
 	return newProps;
 }
 
 export function removeValueTree( value, treeLifecycle ) {
-	if ( value == null ) {
+	if ( isVoid( value ) ) {
 		return;
 	}
-  if ( isArray( value ) ) {
-	for ( let i = 0; i < value.length; i++ ) {
-	  const child = value[i];
+	if ( isArray( value ) ) {
+		for ( let i = 0; i < value.length; i++ ) {
+			const child = value[i];
 
-	  removeValueTree( child, treeLifecycle )
+			removeValueTree( child, treeLifecycle );
+		}
+	} else if ( typeof value === 'object' ) {
+		const tree = value.domTree;
+
+		tree.remove( value, treeLifecycle );
 	}
-  } else if ( typeof value === 'object' ) {
-	const tree = value.domTree;
-
-	tree.remove( value, treeLifecycle );
-  }
 }

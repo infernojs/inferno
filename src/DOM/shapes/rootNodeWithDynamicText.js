@@ -21,7 +21,7 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if( value != null ) {
+			if ( value != null ) {
 				if ( typeof value !== 'string' && typeof value !== 'number' ) {
 					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 				}

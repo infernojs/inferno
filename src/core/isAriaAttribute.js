@@ -3,5 +3,6 @@ export default function isAriaAttribute( str ) {
 		str[0] === 'a' &&
 		str[1] === 'r' &&
 		str[2] === 'i' &&
-		str[3] === 'a');
+		str[3] === 'a'
+	);
 }

@@ -1,6 +1,7 @@
-const canUseDOM = !!(typeof window !== 'undefined' &&
+const canUseDOM = !!( typeof window !== 'undefined' &&
 	window.document &&
-	window.document.createElement);
+	window.document.createElement
+);
 
 /**
  * Simple, lightweight module assisting with the detection and context of
@@ -10,14 +11,14 @@ const canUseDOM = !!(typeof window !== 'undefined' &&
  */
 export default {
 
-  canUseDOM: canUseDOM,
+	canUseDOM: canUseDOM,
 
-  canUseWorkers: typeof Worker !== 'undefined',
+	canUseWorkers: typeof Worker !== 'undefined',
 
-  canUseEventListeners: canUseDOM && !!( window.addEventListener || window.attachEvent ),
+	canUseEventListeners: canUseDOM && !!( window.addEventListener || window.attachEvent ),
 
-  canUseViewport: canUseDOM && !!window.screen,
+	canUseViewport: canUseDOM && !!window.screen,
 
-  isInWorker: !canUseDOM // For now, this is true - might change in the future.
+	isInWorker: !canUseDOM // For now, this is true - might change in the future.
 
 };

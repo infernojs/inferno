@@ -4,5 +4,6 @@ export default function isDataAttribute( str ) {
 		str[1] === 'a' &&
 		str[2] === 't' &&
 		str[3] === 'a' &&
-		str[4] === '-');
+		str[4] === '-'
+	);
 }

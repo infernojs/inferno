@@ -2,9 +2,11 @@ import isArray from '../util/isArray';
 
 function createChildren( children ) {
 	const childrenArray = [];
+
 	if ( isArray( children ) ) {
 		for ( let i = 0; i < children.length; i++ ) {
 			const childItem = children[i];
+
 			childrenArray.push( childItem );
 		}
 	}
@@ -16,8 +18,9 @@ function createElement( tag, attrs, ...children ) {
 		const vNode = {
 			tag
 		};
+
 		if ( attrs ) {
-			if( attrs.key !== undefined ) {
+			if ( attrs.key !== undefined ) {
 				vNode.key = attrs.key;
 				delete attrs.key;
 			}

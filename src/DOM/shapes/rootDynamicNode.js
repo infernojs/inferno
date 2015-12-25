@@ -62,7 +62,7 @@ export default function createRootDynamicNode( valueIndex, domNamespace ) {
 				const nextType = getTypeFromValue( nextValue );
 				const lastType = getTypeFromValue( lastValue );
 
-				if( lastType !== nextType ) {
+				if ( lastType !== nextType ) {
 					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 					return;
 				}

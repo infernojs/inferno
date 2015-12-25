@@ -11,7 +11,7 @@ export default ( name, value ) => {
 		return '';
 	}
 
-	if ( value === 0 || ( unitlessProperties(name )) ) {
+	if ( value === 0 || ( unitlessProperties( name ) ) ) {
 		return '' + value; // cast to string
 	}
 
