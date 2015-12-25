@@ -212,6 +212,20 @@ it('should render a simple div with dynamic span child', () => {
 
 	});
 	
+	    it('should render a simple div children set to empty array', () => {
+
+			Inferno.render(<div>{[]}</div>, container);
+			
+             expect(container.nodeName).to.equal('DIV');
+             expect(container.firstChild.textContent).to.equal('');
+
+			Inferno.render(<div>{[]}</div>, container);
+			
+             expect(container.nodeName).to.equal('DIV');
+             expect(container.firstChild.textContent).to.equal('');
+	});	
+
+	
 	describe('should render a basic example', () => {
 		beforeEach(() => {
 			Inferno.render(<div>Hello world</div>, container);
