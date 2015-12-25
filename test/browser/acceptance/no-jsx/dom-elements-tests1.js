@@ -5,7 +5,7 @@ const {
     createElement
 } = Inferno.TemplateFactory;
 
-describe('DOM element tests (no-jsx)', () => {
+describe('DOM element tests1 (no-jsx)', () => {
     let container;
 
     beforeEach(() => {

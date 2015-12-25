@@ -33,20 +33,23 @@ describe('DOM element tests (jsx)', () => {
 	});
 	
    	it('should render a simple div with span child and dynamic attributes', () => {
-
-	    Inferno.render(<div id={'hello'}></div>, container);
+let id = "Hello!";
+	    Inferno.render(<div id={id}></div>, container);
+		// Check it out! id are chaned to dir
+		//console.log(container.innerHTML)
+		
         expect(container.firstChild.nodeName).to.equal('DIV');
         expect(container.firstChild.childNodes.length).to.equal(0);
-        expect(container.firstChild.getAttribute('id')).to.equal('hello');
-
+        expect(container.getAttribute('id')).to.equal('hello');
+/*
 	    Inferno.render(<div></div>, container);
         expect(container.firstChild.nodeName).to.equal('DIV');
         expect(container.firstChild.childNodes.length).to.equal(0);
 
-	    Inferno.render(<div>{null}</div>, container);
+	    Inferno.render(<div>id={null}</div>, container);
         expect(container.firstChild.nodeName).to.equal('DIV');
         expect(container.firstChild.childNodes.length).to.equal(0);
-
+*/
 	});
 
    	it('should render a simple div with span child and various dynamic attributes', () => {
@@ -322,33 +325,32 @@ it('should render a simple div with dynamic span child', () => {
 			);
 
 			Inferno.render(<div className='' />, container);
-			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(container.firstChild.getAttribute('class')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div class="Dominic rocks!"></div>'
+				'<div></div>'
 			);
 
 			Inferno.render(<div className={null} />, container);
-			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(container.firstChild.getAttribute('class')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div class="Dominic rocks!"></div>'
+				'<div></div>'
 			);
 
 
 			Inferno.render(<div className={undefined} />, container);
-			expect(container.firstChild.getAttribute('class')).to.eql('');
+			expect(container.firstChild.getAttribute('class')).to.be.null;
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div class="Dominic rocks!"></div>'
+				'<div></div>'
 			);
 
-
 		});
-
+/*
 		it('Second render (update)', () => {
 			Inferno.render(<div className='Inferno rocks!' />, container);
 			expect(container.firstChild.getAttribute('class')).to.eql('Inferno rocks!');
@@ -357,7 +359,7 @@ it('should render a simple div with dynamic span child', () => {
 			).to.equal(
 				'<div class="Dominic rocks!"></div>'
 			);
-		});
+		});  */
 
 	});
 	
