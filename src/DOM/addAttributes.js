@@ -102,7 +102,13 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
         if (nextAttrVal !== undefined) {
             if (!lastAttrVal || (lastAttrVal == null)) { // Is this hit?
                 if (nextAttrVal != null) {
+                    
+					 if (attrName === 'style') {
+                    styleUpdates = nextAttrVal;
+                } else {
                     set(domNode, attrName, nextAttrVal, nextItem, styleUpdates)
+                }
+				
                 }
             } else if (nextAttrVal == null) {
                 if (attrName === 'style') {
