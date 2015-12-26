@@ -502,7 +502,6 @@ describe('DOM component tests (jsx)', () => {
 			);
 
 			Inferno.render(undefined, container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -510,4 +509,41 @@ describe('DOM component tests (jsx)', () => {
 			);
 		});
 	});
+
+	describe('should render a basic component with a list of values from state', () => {
+		class Component extends Inferno.Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					organizations: [
+						{name: 'test1', key: '1'},
+						{name: 'test2', key: '2'},
+						{name: 'test3', key: '3'},
+						{name: 'test4', key: '4'},
+						{name: 'test5', key: '5'},
+						{name: 'test6', key: '6'}
+					]
+				};
+			}
+			render() {
+				return (
+					<ul class="login-organizationlist">
+						{this.state.organizations.map((result) => {
+							return <li>{ result.name }</li>;
+						})}
+					</ul>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(<Component />, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
+		});
+	});
 });
+

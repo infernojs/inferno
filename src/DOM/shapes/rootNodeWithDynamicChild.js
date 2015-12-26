@@ -18,7 +18,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			let domNode;
 
 			if ( recyclingEnabled ) {
-				domNode = recycle( node, item );
+				domNode = recycle( node, item, treeLifecycle, context );
 				if ( domNode ) {
 					return domNode;
 				}

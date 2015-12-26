@@ -13,7 +13,7 @@ export function pool( item ) {
 	}
 }
 
-export function recycle( tree, item ) {
+export function recycle( tree, item, treeLifecycle, context ) {
 	// TODO use depth as key
 	const key = item.key;
 	let recyclableItem;
@@ -27,7 +27,7 @@ export function recycle( tree, item ) {
 		recyclableItem = tree.pool.pop();
 	}
 	if ( recyclableItem ) {
-		tree.update( recyclableItem, item );
+		tree.update( recyclableItem, item, treeLifecycle, context );
 		return item.rootNode;
 	}
 }
