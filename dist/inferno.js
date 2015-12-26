@@ -546,6 +546,39 @@
   	}
   }
 
+  var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+
+  /**
+   * Simple, lightweight module assisting with the detection and context of
+   * Worker. Helps avoid circular dependencies and allows code to reason about
+   * whether or not they are in a Worker, even if they never include the main
+   * `ReactWorker` dependency.
+   */
+  var ExecutionEnvironment = {
+
+  	canUseDOM: canUseDOM,
+
+  	canUseWorkers: typeof Worker !== 'undefined',
+
+  	canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
+
+  	canUseViewport: canUseDOM && !!window.screen,
+
+  	isInWorker: !canUseDOM // For now, this is true - might change in the future.
+
+  };
+
+  var isSVG = undefined;
+
+  if (ExecutionEnvironment.canUseDOM) {
+  	var _document = document;
+  	var implementation = _document.implementation;
+
+  	isSVG = implementation && implementation.hasFeature && implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#BasicStructure', '1.1');
+  }
+
+  var isSVG$1 = isSVG;
+
   var PROPERTY = 0x1;
   var BOOLEAN = 0x2;
   var NUMERIC_VALUE = 0x4;
@@ -1115,28 +1148,6 @@
   	blur: 'focusout' // DOM L3
   };
 
-  var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-
-  /**
-   * Simple, lightweight module assisting with the detection and context of
-   * Worker. Helps avoid circular dependencies and allows code to reason about
-   * whether or not they are in a Worker, even if they never include the main
-   * `ReactWorker` dependency.
-   */
-  var ExecutionEnvironment = {
-
-  	canUseDOM: canUseDOM,
-
-  	canUseWorkers: typeof Worker !== 'undefined',
-
-  	canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
-
-  	canUseViewport: canUseDOM && !!window.screen,
-
-  	isInWorker: !canUseDOM // For now, this is true - might change in the future.
-
-  };
-
   var eventHooks = {};
 
   /**
@@ -1650,7 +1661,11 @@
   function fastPropSet(attrName, attrVal, domNode) {
   	if (attrName === 'class' || attrName === 'className') {
   		if (!isVoid(attrVal)) {
-  			domNode.className = attrVal;
+  			if (isSVG$1) {
+  				domNode.setAttribute('class', attrVal);
+  			} else {
+  				domNode.className = attrVal;
+  			}
   		}
   		return true;
   	} else if (attrName === 'ref') {
@@ -1670,7 +1685,7 @@
   		return;
   	}
   	for (var attrName in dynamicAttrs) {
-  		if (dynamicAttrs.hasOwnProperty(attrName)) {
+  		if (attrName != null) {
   			var attrVal = getValueWithIndex(valueItem, dynamicAttrs[attrName]);
 
   			if (attrVal !== undefined) {

@@ -34,16 +34,16 @@ export function getCorrectItemForValues( node, item ) {
 export function getTypeFromValue( value ) {
 	if ( typeof value === 'string' || typeof value === 'number' || isVoid( value ) ) {
 		return ValueTypes.TEXT;
-	} 
+	}
 	if ( isArray( value ) ) {
 		return ValueTypes.ARRAY;
-	} 
+	}
 	if ( typeof value === 'object' && value.create ) {
 		return ValueTypes.TREE;
-	} 
+	}
 	if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
 		return ValueTypes.EMPTY_OBJECT;
-	} 
+	}
 	if ( typeof value === 'function' ) {
 		return ValueTypes.FUNCTION;
 	}

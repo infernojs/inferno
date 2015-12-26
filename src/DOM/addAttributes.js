@@ -39,9 +39,9 @@ function fastPropSet( attrName, attrVal, domNode ) {
 	if ( attrName === 'class' || attrName === 'className' ) {
 		if ( !isVoid( attrVal ) ) {
 			if ( isSVG ) {
-			    domNode.setAttribute('class', attrVal);
+				domNode.setAttribute( 'class', attrVal );
 			} else {
-			   domNode.className = attrVal;
+				domNode.className = attrVal;
 			}
 		}
 		return true;
@@ -62,7 +62,7 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 		return;
 	}
 	for ( const attrName in dynamicAttrs ) {
-		if ( attrName != null ) {
+		if ( !isVoid( attrName ) ) {
 			const attrVal = getValueWithIndex( valueItem, dynamicAttrs[attrName] );
 
 			if ( attrVal !== undefined ) {
