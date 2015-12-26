@@ -10,7 +10,7 @@ const recyclingEnabled = isRecyclingEnabled();
 
 export default function createRootNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs ) {
 	let keyedChildren = true;
-	const childNodeList = [];
+	let childNodeList = [];
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -61,6 +61,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
 			if ( node !== lastItem.domTree ) {
+				childNodeList = [];
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 				return;
 			}
@@ -76,8 +77,13 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				} else if ( isVoid( nextValue ) ) {
 					if ( domNode !== null ) {
 						const childNode = document.createTextNode( '' );
+						const replaceNode = domNode.firstChild;
 
-						domNode.replaceChild( childNode, domNode.firstChild );
+						if ( replaceNode ) {
+							domNode.replaceChild( childNode, domNode.firstChild );
+						} else {
+							domNode.appendChild( childNode );
+						}
 					}
 				} else if ( isArray( nextValue ) ) {
 					if ( isArray( lastValue ) ) {

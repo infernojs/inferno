@@ -53,7 +53,11 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 				if ( typeof nextValue === 'string' ) {
 					domNode.firstChild.nodeValue = nextValue;
 				} else if ( isVoid( nextValue ) ) {
-					domNode.removeChild( domNode.firstChild );
+					const firstChild = domNode.firstChild;
+
+					if ( firstChild ) {
+						domNode.removeChild(domNode.firstChild);
+					}
 				} else if ( isArray( nextValue ) ) {
 					if ( isArray( lastValue ) ) {
 						if ( keyedChildren ) {

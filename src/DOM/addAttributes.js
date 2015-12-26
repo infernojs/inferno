@@ -16,17 +16,15 @@ export function addDOMStaticAttributes( vNode, domNode, attrs ) {
 	let styleUpdates;
 
 	for ( const attrName in attrs ) {
-		if ( attrs.hasOwnProperty( attrName ) ) {
-			const attrVal = attrs[attrName];
+        const attrVal = attrs[attrName];
 
-			if ( attrVal ) {
-				if ( attrName === 'style' ) {
-					styleUpdates = attrVal;
-				} else {
-					template.setProperty( vNode, domNode, attrName, attrVal, false );
-				}
-			}
-		}
+        if ( attrVal ) {
+            if ( attrName === 'style' ) {
+                styleUpdates = attrVal;
+            } else {
+                template.setProperty( vNode, domNode, attrName, attrVal, false );
+            }
+        }
 	}
 
 	if ( styleUpdates ) {
@@ -93,6 +91,14 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
     if (dynamicAttrs.index !== undefined) {
         const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
+        if ( nextDynamicAttrs == null ) {
+            const lastDynamicAttrs = getValueWithIndex(lastItem, dynamicAttrs.index);
+
+            for ( let attrName in lastDynamicAttrs) {
+                template.removeProperty(null, domNode, attrName, true);
+            }
+            return;
+        }
         addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
         return;
     }

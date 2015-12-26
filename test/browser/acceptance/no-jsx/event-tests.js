@@ -62,19 +62,17 @@ describe('DOM event tests (no-jsx)', () => {
 
     });
 
-
    describe('should listen to a click event on a checkbox, and return its true value', () => {
-
-            let worked, val, event;
-            const template = Inferno.createTemplate((handler) => ({
-                tag: 'input',
-                attrs: {
-					type: "checkbox",
-                    checked: "checked",
-                    onClick: handler
-                },
-                children: 'Hello world!'
-            }));
+        let worked, val, event;
+        const template = Inferno.createTemplate((handler) => ({
+            tag: 'input',
+            attrs: {
+                type: "checkbox",
+                checked: "checked",
+                onClick: handler
+            },
+            children: 'Hello world!'
+        }));
 
         it('Initial render (creation)', () => {
             Inferno.render(template((e, value) => {

@@ -161,14 +161,21 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 					if ( typeof item === 'string' || typeof item === 'number' ) {
 						domNodeList[i].nodeValue = item;
 					} else if ( typeof item === 'object' ) {
-						// debugger;
 						item.domTree.update( oldItem, item, treeLifecycle, context );
 					}
 				} else {
-					// TODO
+					if ( typeof item === 'string' || typeof item === 'number' ) {
+						const childNode = document.createTextNode(item);
+						domNodeList[i] = childNode;
+						parentNode.appendChild(childNode);
+					}
+
 				}
 			} else {
-				// TODO
+				if ( domNodeList[i] ) {
+					parentNode.removeChild(domNodeList[i]);
+					domNodeList.splice(i, 1);
+				}
 			}
 		}
 	}

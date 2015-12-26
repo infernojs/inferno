@@ -503,22 +503,22 @@ describe('DOM element tests2 (no-jsx)', () => {
                 tag: 'span',
                 children: ['1', '2', '3']
             }));
-			
+
             const span = Inferno.createTemplate((b) => ({
                 tag: 'span',
                 children: b
             }));
-            
+
 			Inferno.render(template(span(b())), container);
-            
+
 			expect(
                 container.innerHTML
             ).to.equal(
                 '<div class="hello, world"><span><span>123</span></span></div>'
             );
-			
+
 			Inferno.render(template(span(b())), container);
-            
+
 			expect(
                 container.innerHTML
             ).to.equal(
@@ -526,7 +526,7 @@ describe('DOM element tests2 (no-jsx)', () => {
             );
 
 			Inferno.render(template(undefined), container);
-            
+
 			expect(
                 container.innerHTML
             ).to.equal(
@@ -583,7 +583,7 @@ describe('DOM element tests2 (no-jsx)', () => {
                 '<div class="123"></div>'
             );
         });
-		
+
         it('should render a shape void div (dynamic attrs) #2', () => {
             const template = Inferno.createTemplate((attrs) => ({
                 tag: 'div',
