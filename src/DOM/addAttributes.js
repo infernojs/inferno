@@ -86,10 +86,8 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 }
 
 /**
-   * Reconciles the properties by detecting differences in property values and
-   * updating the DOM as necessary. This function is probably the single most
+   * NOTE!! This function is probably the single most
    * critical path for performance optimization.
-   *
    */
 export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
     if (dynamicAttrs.index !== undefined) {
