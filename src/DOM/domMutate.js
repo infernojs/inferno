@@ -1,4 +1,6 @@
 import isVoid from '../util/isVoid';
+import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../core/variables';
+import isArray from '../util/isArray';
 import { isRecyclingEnabled, pool } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
@@ -167,9 +169,8 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 					if ( typeof item === 'string' || typeof item === 'number' ) {
 						const childNode = document.createTextNode(item);
 						domNodeList[i] = childNode;
-						parentNode.appendChild(childNode);
+						insertOrAppend( parentNode, childNode, parentNextNode );
 					}
-
 				}
 			} else {
 				if ( domNodeList[i] ) {
@@ -193,5 +194,57 @@ export function remove( item, parentNode ) {
 	parentNode.removeChild( item.rootNode );
 	if ( recyclingEnabled ) {
 		pool( item );
+	}
+}
+
+export function createVirtualList ( value, childNodeList, treeLifecycle, context ) {
+	const domNode = document.createDocumentFragment();
+	let keyedChildren = true;
+
+	for ( let i = 0; i < value.length; i++ ) {
+		const childNode = value[i];
+		const childType = getTypeFromValue( childNode );
+		let childDomNode;
+
+		switch ( childType ) {
+			case ValueTypes.TEXT:
+				childDomNode = document.createTextNode( childNode );
+				childNodeList.push( childDomNode );
+				domNode.appendChild( childDomNode );
+				keyedChildren = false;
+				break;
+			case ValueTypes.FRAGMENT:
+				if ( childNode.key === undefined ) {
+					keyedChildren = false;
+				}
+				childDomNode = childNode.domTree.create( childNode, treeLifecycle, context );
+				childNodeList.push( childDomNode );
+				domNode.appendChild (childDomNode );
+				break;
+			case ValueTypes.EMPTY_OBJECT:
+				throw Error( infernoBadTemplate );
+			case ValueTypes.FUNCTION:
+				throw Error( infernoBadTemplate );
+				break;
+			case ValueTypes.ARRAY:
+				throw Error( 'Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].' );
+			default: break;
+		}
+	}
+	return { domNode, keyedChildren };
+}
+
+export function updateVirtualList ( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context ) {
+	// NOTE: if someone switches from keyed to non-keyed, the node order won't be right...
+	if ( isArray( lastValue ) ) {
+		// need to do this otherwise domNode will be an empty document fragment
+		domNode = childNodeList[0].parentNode;
+		if ( keyedChildren ) {
+			updateKeyed( nextValue, lastValue, domNode, nextDomNode, treeLifecycle, context );
+		} else {
+			updateNonKeyed( nextValue, lastValue, childNodeList, domNode, nextDomNode, treeLifecycle, context );
+		}
+	} else {
+		// TODO
 	}
 }

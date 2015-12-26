@@ -1,9 +1,15 @@
 import isVoid from '../../util/isVoid';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateNode from '../recreateNode';
+import { createVirtualList, updateVirtualList } from '../domMutate';
+
+const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 export default function createDynamicNode( valueIndex ) {
 	let domNode;
+	let childNodeList = [];
+	let keyedChildren = true;
+	let nextDomNode;
 
 	const node = {
 		create( item, treeLifecycle, context ) {
@@ -19,14 +25,20 @@ export default function createDynamicNode( valueIndex ) {
 					domNode = document.createTextNode( value );
 					break;
 				case ValueTypes.ARRAY:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					const virtualList = createVirtualList (value, childNodeList, treeLifecycle, context );
+					domNode = virtualList.domNode;
+					keyedChildren = virtualList.keyedChildren;
+					treeLifecycle.addTreeSuccessListener(() => {
+						nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
+					});
+					break;
 				case ValueTypes.TREE:
 					domNode = value.create( item, treeLifecycle, context );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					throw Error( infernoBadTemplate );
 				case ValueTypes.FUNCTION:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					throw Error( infernoBadTemplate );
 					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.domTree.create( value, treeLifecycle, context );
@@ -58,7 +70,8 @@ export default function createDynamicNode( valueIndex ) {
 						domNode.nodeValue = nextValue;
 						break;
 					case ValueTypes.ARRAY:
-						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+						updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context );
+						break;
 					case ValueTypes.TREE:
 						// debugger;
 						break;

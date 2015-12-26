@@ -2,10 +2,14 @@ import isVoid from '../../util/isVoid';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
+import { createVirtualList, updateVirtualList } from '../domMutate';
 
 const recyclingEnabled = isRecyclingEnabled();
 
 export default function createRootDynamicNode( valueIndex ) {
+	let nextDomNode;
+	let childNodeList = [];
+	let keyedChildren = true;
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -30,7 +34,13 @@ export default function createRootDynamicNode( valueIndex ) {
 					domNode = document.createTextNode( value );
 					break;
 				case ValueTypes.ARRAY:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					const virtualList = createVirtualList (value, childNodeList, treeLifecycle, context );
+					domNode = virtualList.domNode;
+					keyedChildren = virtualList.keyedChildren;
+					treeLifecycle.addTreeSuccessListener(() => {
+						nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
+					});
+					break;
 				case ValueTypes.TREE:
 					domNode = value.create( item, treeLifecycle, context );
 					break;
@@ -73,6 +83,9 @@ export default function createRootDynamicNode( valueIndex ) {
 					case ValueTypes.TEXT:
 						// TODO check if string is empty?
 						domNode.nodeValue = nextValue;
+						break;
+					case ValueTypes.ARRAY:
+						// TODO
 						break;
 					default: break;
 				}

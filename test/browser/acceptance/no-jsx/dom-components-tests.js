@@ -1842,4 +1842,53 @@ describe('DOM component tests (no-jsx)', () => {
 			);
 		});
 	});
+
+	describe('should render a basic component with a list of values from state', () => {
+		const tpl2026545261 = Inferno.createTemplate(function (v0) {
+			return {
+				tag: 'ul',
+				attrs: {
+					class: 'login-organizationlist'
+				},
+				children: ['', v0, '']
+			};
+		});
+		const tpl3192647933 = Inferno.createTemplate(function (v0) {
+			return {
+				tag: 'li',
+				children: v0
+			};
+		});
+		const tpl1546018623 = Inferno.createTemplate(function (v0) {
+			return {tag: v0};
+		});
+
+		class Component extends Inferno.Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					organizations: [
+						{name: 'test1', key: '1'},
+						{name: 'test2', key: '2'},
+						{name: 'test3', key: '3'},
+						{name: 'test4', key: '4'},
+						{name: 'test5', key: '5'},
+						{name: 'test6', key: '6'}
+					]
+				};
+			}
+			render() {
+				return tpl2026545261(this.state.organizations.map(function (result) {
+					return tpl3192647933(result.name);
+				}));
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(tpl1546018623(Component), container);
+			expect(container.innerHTML).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
+		});
+	});
 });	

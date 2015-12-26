@@ -543,9 +543,20 @@ describe('DOM element tests2 (no-jsx)', () => {
                     val2
                 ]
             }));
-            expect(() => {
-                Inferno.render(template(['Hello'], 'Bar'), container)
-            }).to.throw(Error);
+
+            Inferno.render(template(['Hello'], 'Bar'), container)
+            expect(
+                container.innerHTML
+            ).to.equal(
+                '<div>Hello fooBar</div>'
+            );
+
+	        Inferno.render(template(['Hello', '123'], 'Bar'), container)
+	        expect(
+		        container.innerHTML
+	        ).to.equal(
+		        '<div>Hello123 fooBar</div>'
+	        );
         });
         it('should render a shape void div (dynamic attrs)', () => {
             const template = Inferno.createTemplate((className) => ({
