@@ -46,7 +46,7 @@ it('should keep parent namespace', () => {
 	 expect(container.childNodes[0].childNodes[1].firstChild.tagName).to.equal('g');
 	 expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	 expect(container.childNodes[0].childNodes[1].firstChild.firstChild.tagName).to.equal('circle');
-	 expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	 expect(container.childNodes[0].childNodes[1].firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
      Inferno.render(<svg xmlns='http://www.w3.org/2000/svg'><circle/></svg>, container);	 
      expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');

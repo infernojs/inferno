@@ -1,4 +1,5 @@
 import isVoid from '../util/isVoid';
+import isSVG from '../util/isSVG';
 import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
@@ -37,7 +38,11 @@ export function addDOMStaticAttributes( vNode, domNode, attrs ) {
 function fastPropSet( attrName, attrVal, domNode ) {
 	if ( attrName === 'class' || attrName === 'className' ) {
 		if ( !isVoid( attrVal ) ) {
-			domNode.className = attrVal;
+			if ( isSVG ) {
+			    domNode.setAttribute('class', attrVal);
+			} else {
+			   domNode.className = attrVal;
+			}
 		}
 		return true;
 	} else if ( attrName === 'ref' ) {
