@@ -85,76 +85,87 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 	}
 }
 
-function set( domNode, attrName, nextAttrVal, nextItem ) {
-	if ( fastPropSet( domNode, attrName, nextAttrVal ) === false ) {
-		if ( eventMapping[attrName] ) {
-			addListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
-		} else {
-			template.setProperty( null, domNode, attrName, nextAttrVal, true );
-		}
-	}
-}
+export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+    if (dynamicAttrs.index !== undefined) {
+        const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
-export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs ) {
-	if ( dynamicAttrs.index !== undefined ) {
-		const nextDynamicAttrs = getValueWithIndex( nextItem, dynamicAttrs.index );
+        addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
+        return;
+    }
 
-		addDOMStaticAttributes( nextItem, domNode, nextDynamicAttrs );
-		return;
-	}
-	let styleUpdates;
+      let styleUpdates;
+      let styleName;
 
-	for ( const attrName in dynamicAttrs ) {
-		if ( !dynamicAttrs.hasOwnProperty( attrName ) ) {
-			continue;
-		}
+    for (const attrName in dynamicAttrs) {
 
-		const lastAttrVal = getValueWithIndex( lastItem, dynamicAttrs[attrName] );
-		const nextAttrVal = getValueWithIndex( nextItem, dynamicAttrs[attrName] );
+        const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
+        const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-		if ( nextAttrVal !== undefined ) {
-			if ( !lastAttrVal || ( isVoid( lastAttrVal ) ) ) { // Is this hit?
-				if ( !isVoid( nextAttrVal ) ) {
+        if ( !isVoid( lastAttrVal ) ) {
 
-					if ( attrName === 'style' ) {
-						styleUpdates = nextAttrVal;
-					} else {
-						set( domNode, attrName, nextAttrVal, nextItem, styleUpdates );
-					}
+            if ( isVoid( nextAttrVal) ) {
 
-				}
-			} else if ( isVoid( nextAttrVal ) ) {
-				if ( attrName === 'style' ) {
-					styleUpdates = null;
-				} else {
-					if ( eventMapping[attrName] ) { // Is this hit?
-						removeListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
-					} else {
-						template.removeProperty( null, domNode, attrName, true );
-					}
-				}
-			} else if ( lastAttrVal !== nextAttrVal ) {
-				if ( attrName === 'style' ) {
-					styleUpdates = nextAttrVal;
-				} else {
-					set( domNode, attrName, nextAttrVal, nextItem, styleUpdates );
-				}
-			}
-		}
-		if ( lastAttrVal !== undefined ) {
-			if ( ( nextAttrVal === undefined
-				|| !( attrName !== nextAttrVal ) ) && ( !isVoid( lastAttrVal ) ) ) {
-				// remove attrs
-				if ( eventMapping[attrName] ) {
-					removeListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
-				} else {
-					template.removeProperty( null, domNode, attrName, true );
-				}
-			}
-		}
-	}
+                if (attrName === 'style') {
 
-	if ( !isVoid( styleUpdates ) ) {
-		setValueForStyles( domNode, domNode, styleUpdates );
-	}
+                    for (styleName in lastAttrVal) {
+                        if (lastAttrVal[styleName] &&
+                            (!nextAttrVal || !nextAttrVal[styleName])) {
+                            styleUpdates = styleUpdates || {};
+                            styleUpdates[styleName] = '';
+                        }
+                    }
+                } else if (eventMapping[attrName]) {
+
+                    removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                } else {
+                    template.removeProperty(null, domNode, attrName, true);
+                }
+
+            } else if (attrName === 'style') {
+                // Remove and update styles.
+                for (styleName in lastAttrVal) {
+                    if (lastAttrVal[styleName] &&
+                        (!nextAttrVal || !nextAttrVal[styleName])) {
+                        styleUpdates = styleUpdates || {};
+                        styleUpdates[styleName] = '';
+                    }
+                }
+                // Insert new styles.
+                for (styleName in nextAttrVal) {
+                    if (lastAttrVal[styleName] !== nextAttrVal[styleName]) {
+                        styleUpdates = styleUpdates || {};
+                        styleUpdates[styleName] = nextAttrVal[styleName];
+                    }
+                }
+
+            } else if (lastAttrVal !== nextAttrVal) {
+
+                if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+                    if (eventMapping[attrName]) {
+                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                    } else {
+                        template.setProperty(null, domNode, attrName, nextAttrVal, true);
+                    }
+                }
+            }
+        } else if ( !isVoid( nextAttrVal ) ) {
+            if (attrName === 'style') {
+                styleUpdates = nextAttrVal;
+            } else {
+
+                if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+                    if (eventMapping[attrName]) {
+                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                    } else {
+                        template.setProperty(null, domNode, attrName, nextAttrVal, true);
+                    }
+                }
+            }
+        }
+   }
+
+    if (styleUpdates) {
+
+        setValueForStyles(domNode, domNode, styleUpdates);
+    }
 }
