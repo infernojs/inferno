@@ -4,7 +4,7 @@ import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
 import removeListener from './events/removeListener';
-import setValueForStyles from './setValueForStyles';
+
 import { getValueWithIndex, getCorrectItemForValues } from '../core/variables';
 
 /**
@@ -30,7 +30,7 @@ export function addDOMStaticAttributes( vNode, domNode, attrs ) {
 	}
 
 	if ( styleUpdates ) {
-		setValueForStyles( vNode, domNode, styleUpdates );
+    template.setCSS( vNode, domNode, styleUpdates );
 	}
 }
 
@@ -81,7 +81,7 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 		}
 	}
 	if ( styleUpdates ) {
-		setValueForStyles( item, domNode, styleUpdates );
+		template.setCSS( item, domNode, styleUpdates );
 	}
 }
 
@@ -96,7 +96,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
         addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
         return;
     }
- 
+
  /**
    * TODO: Benchmark areas that can be improved with caching.
    */
@@ -169,6 +169,6 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
    }
 
     if (styleUpdates) {
-        setValueForStyles(domNode, domNode, styleUpdates);
+        template.setCSS(domNode, domNode, styleUpdates);
     }
 }
