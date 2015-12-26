@@ -3,7 +3,7 @@ import { isRecyclingEnabled, pool } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLifecycle ) {
+export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLifecycle, context ) {
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
@@ -35,7 +35,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 	outer: while ( !stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex ) {
 		stop = true;
 		while ( startItem.key === oldStartItem.key ) {
-			startItem.domTree.update( oldStartItem, startItem, treeLifecycle );
+			startItem.domTree.update( oldStartItem, startItem, treeLifecycle, context );
 			startIndex++;
 			oldStartIndex++;
 			if ( startIndex > endIndex || oldStartIndex > oldEndIndex ) {
@@ -49,7 +49,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 		endItem = items[endIndex];
 		oldEndItem = oldItems[oldEndIndex];
 		while ( endItem.key === oldEndItem.key ) {
-			endItem.domTree.update( oldEndItem, endItem, treeLifecycle );
+			endItem.domTree.update( oldEndItem, endItem, treeLifecycle, context );
 			endIndex--;
 			oldEndIndex--;
 			if ( startIndex > endIndex || oldStartIndex > oldEndIndex ) {
@@ -62,7 +62,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 		}
 		while ( endItem.key === oldStartItem.key ) {
 			nextNode = ( endIndex + 1 < itemsLength ) ? items[endIndex + 1].rootNode : parentNextNode;
-			endItem.domTree.update( oldStartItem, endItem, treeLifecycle );
+			endItem.domTree.update( oldStartItem, endItem, treeLifecycle, context );
 			insertOrAppend( parentNode, endItem.rootNode, nextNode );
 			endIndex--;
 			oldStartIndex++;
@@ -76,7 +76,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 		}
 		while ( startItem.key === oldEndItem.key ) {
 			nextNode = oldItems[oldStartIndex].rootNode;
-			startItem.domTree.update( oldEndItem, startItem, treeLifecycle );
+			startItem.domTree.update( oldEndItem, startItem, treeLifecycle, context );
 			insertOrAppend( parentNode, startItem.rootNode, nextNode );
 			startIndex++;
 			oldEndIndex--;
@@ -95,7 +95,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 			nextNode = ( endIndex + 1 < itemsLength ) ? items[endIndex + 1].rootNode : parentNextNode;
 			for ( ; startIndex <= endIndex; startIndex++ ) {
 				item = items[startIndex];
-				insertOrAppend( parentNode, item.domTree.create( item, treeLifecycle ), nextNode );
+				insertOrAppend( parentNode, item.domTree.create( item, treeLifecycle, context ), nextNode );
 			}
 		}
 	} else if ( startIndex > endIndex ) {
@@ -123,7 +123,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 			if ( oldItem ) {
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
-				item.domTree.update( oldItem, item, treeLifecycle );
+				item.domTree.update( oldItem, item, treeLifecycle, context );
 
 				/* eslint eqeqeq:0 */
 				// TODO optimise
@@ -133,7 +133,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 				}
 			} else {
 				nextNode = ( nextItem && nextItem.rootNode ) || parentNextNode;
-				insertOrAppend( parentNode, item.domTree.create( item, treeLifecycle ), nextNode );
+				insertOrAppend( parentNode, item.domTree.create( item, treeLifecycle, context ), nextNode );
 			}
 			nextItem = item;
 		}
@@ -148,7 +148,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 }
 
 // TODO can we improve performance here?
-export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle ) {
+export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context ) {
 	const itemsLength = Math.max( items.length, oldItems.length );
 
 	for ( let i = 0; i < itemsLength; i++ ) {
@@ -162,7 +162,7 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 						domNodeList[i].nodeValue = item;
 					} else if ( typeof item === 'object' ) {
 						// debugger;
-						item.domTree.update( oldItem, item, treeLifecycle );
+						item.domTree.update( oldItem, item, treeLifecycle, context );
 					}
 				} else {
 					// TODO
