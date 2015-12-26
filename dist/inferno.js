@@ -60,7 +60,7 @@
   	};
   }
 
-  var recyclingEnabled$9 = true;
+  var recyclingEnabled$10 = true;
 
   function pool(item) {
   	var key = item.key;
@@ -95,14 +95,14 @@
   }
 
   function isRecyclingEnabled() {
-  	return recyclingEnabled$9;
+  	return recyclingEnabled$10;
   }
 
   var isVoid = (function (x) {
     return x === null || typeof x === 'undefined';
   })
 
-  var recyclingEnabled$8 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
   	var stop = false;
@@ -113,7 +113,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$8) {
+  		if (recyclingEnabled) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -285,7 +285,7 @@
 
   function remove(item, parentNode) {
   	parentNode.removeChild(item.rootNode);
-  	if (recyclingEnabled$8) {
+  	if (recyclingEnabled) {
   		pool(item);
   	}
   }
@@ -1807,7 +1807,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1816,7 +1816,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1929,7 +1929,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1938,7 +1938,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2196,7 +2196,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2205,7 +2205,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2358,7 +2358,53 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
+
+  function createRootStaticNode(templateNode) {
+  	var node = {
+  		pool: [],
+  		keyedPool: [],
+  		create: function create(item) {
+  			var domNode = undefined;
+
+  			if (recyclingEnabled$5) {
+  				domNode = recycle(node, item);
+  				if (domNode) {
+  					return domNode;
+  				}
+  			}
+  			domNode = templateNode.cloneNode(true);
+  			item.rootNode = domNode;
+  			return domNode;
+  		},
+  		update: function update(lastItem, nextItem) {
+  			if (node !== lastItem.domTree) {
+  				recreateRootNode(lastItem, nextItem, node);
+  				return;
+  			}
+  			nextItem.rootNode = lastItem.rootNode;
+  		},
+  		remove: function remove() /* lastItem */{}
+  	};
+
+  	return node;
+  }
+
+  function createStaticNode(templateNode) {
+  	var domNode = undefined;
+  	var node = {
+  		create: function create() {
+  			domNode = templateNode.cloneNode(true);
+  			return domNode;
+  		},
+  		update: function update() {},
+  		remove: function remove() /* lastItem */{}
+  	};
+
+  	return node;
+  }
+
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var node = {
@@ -2367,7 +2413,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2517,7 +2563,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2526,7 +2572,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2606,7 +2652,7 @@
   	}
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$8 = isRecyclingEnabled();
 
   function createRootNodeWithComponent(componentIndex, props) {
   	var instance = undefined;
@@ -2618,7 +2664,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$8) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2837,7 +2883,7 @@
   	return node;
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$9 = isRecyclingEnabled();
 
   function createRootDynamicTextNode(templateNode, valueIndex) {
   	var node = {
@@ -2846,7 +2892,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled$9) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3054,9 +3100,9 @@
   		}
 
   		if (isRoot) {
-  			node = createRootVoidNode(templateNode);
+  			node = createRootStaticNode(templateNode);
   		} else {
-  			node = createVoidNode(templateNode);
+  			node = createStaticNode(templateNode);
   		}
   	} else {
   		if (dynamicFlags.NODE === true) {
