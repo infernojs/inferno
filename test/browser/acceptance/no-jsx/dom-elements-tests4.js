@@ -1171,33 +1171,6 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(container.firstChild.hasAttribute('style')).to.be.false;
             expect(container.firstChild.getAttribute('style')).to.be.null;
 
-        });
-        it('Second render (update)', () => {
-            Inferno.render(template({
-                width: 8
-            }), container);
-
-            expect(container.firstChild.hasAttribute('style')).to.be.true;
-            expect(container.firstChild.getAttribute('style')).to.equal('width: 8px;');
-
-            Inferno.render(template({
-                width: 8
-            }), container);
-            expect(container.firstChild.hasAttribute('style')).to.be.true;
-            expect(container.firstChild.getAttribute('style')).to.equal('width: 8px;');
-
-
-            Inferno.render(template(), container);
-            expect(container.firstChild.hasAttribute('style')).to.be.false;
-
-            Inferno.render(template({
-                width: 9
-            }), container);
-            expect(container.firstChild.hasAttribute('style')).to.be.true;
-            expect(container.firstChild.getAttribute('style')).to.equal('width: 9px;');
-
-        });
-        it('Third render (update)', () => {
             Inferno.render(template(null), container);
             expect(container.firstChild.hasAttribute('style')).to.be.false;
             Inferno.render(template(), container);
