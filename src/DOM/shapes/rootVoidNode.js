@@ -1,4 +1,3 @@
-import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
@@ -11,6 +10,7 @@ export default function createRootVoidNode( templateNode, dynamicAttrs ) {
 		keyedPool: [],
 		create( item ) {
 			let domNode;
+
 			if ( recyclingEnabled ) {
 				domNode = recycle( node, item );
 				if ( domNode ) {
@@ -37,9 +37,10 @@ export default function createRootVoidNode( templateNode, dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-	remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
-	}
+		}
 	};
+
 	return node;
 }

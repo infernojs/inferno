@@ -16,41 +16,7 @@ describe('DOM element tests (jsx)', () => {
 		Inferno.render(null, container);
 	});
 
-	it('should render and unset a simple div with dynamic span child', () => {
-
-        const child = <span></span>
-		
-	    Inferno.render(<div>{child}</div>, container);
-        expect(container.firstChild.nodeName).to.equal('DIV');
-        expect(container.firstChild.childNodes.length).to.equal(1);
-        expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-
-	    Inferno.render(<div>{null}</div>, container);
-        expect(container.firstChild.nodeName).to.equal('DIV');
-        expect(container.firstChild.childNodes.length).to.equal(1);
-        expect(container.firstChild.firstChild.nodeName).to.equal(''); // should be removed, not be #text
-
-	});
-	
-   	it('should render a simple div with span child and dynamic attributes', () => {
-let id = "Hello!";
-	    Inferno.render(<div id={id}></div>, container);
-		// Check it out! id are chaned to dir
-		//console.log(container.innerHTML)
-		
-        expect(container.firstChild.nodeName).to.equal('DIV');
-        expect(container.firstChild.childNodes.length).to.equal(0);
-        expect(container.getAttribute('id')).to.equal('hello');
 /*
-	    Inferno.render(<div></div>, container);
-        expect(container.firstChild.nodeName).to.equal('DIV');
-        expect(container.firstChild.childNodes.length).to.equal(0);
-
-	    Inferno.render(<div>id={null}</div>, container);
-        expect(container.firstChild.nodeName).to.equal('DIV');
-        expect(container.firstChild.childNodes.length).to.equal(0);
-*/
-	});
 
    	it('should render a simple div with span child and various dynamic attributes', () => {
 
@@ -73,13 +39,9 @@ let id = "Hello!";
         expect(container.firstChild.childNodes.length).to.equal(0);
         expect(container.firstChild.getAttribute('class')).to.equal('hello');
 
-	    Inferno.render(<div title='hello'></div>, container);
-        expect(container.firstChild.nodeName).to.equal('DIV');
-        expect(container.firstChild.childNodes.length).to.equal(0);
-        expect(container.firstChild.getAttribute('title')).to.equal('hello');
 
 	});
-
+*/
    	it('should render a simple div with multiple children', () => {
 	    Inferno.render(<div><span></span></div>, container);
         expect(container.firstChild.nodeName).to.equal('DIV');
@@ -106,8 +68,6 @@ let id = "Hello!";
         expect(container.firstChild.nodeName).to.equal('DIV');
         expect(container.firstChild.childNodes.length).to.equal(3);
         expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-        expect(container.firstChild.firstChild.innerHTML).to.equal('SPAN');
-
 	});
 
 it('should render a simple div with dynamic span child', () => {
@@ -251,23 +211,6 @@ it('should render a simple div with dynamic span child', () => {
 		});
 	});
 
-	describe('should render a simple div with inline style', () => {
-		beforeEach(() => {
-			Inferno.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);
-		});
-
-		it('Initial render (creation)', () => {
-
-			expect(container.nodeName).to.equal('DIV');
-		});
-
-		it('Second render (update)', () => {
-
-			Inferno.render(<div id={'foo'}>Hello, world! 2</div>, container);
-
-			expect(container.nodeName).to.equal('DIV');
-		});
-	});
 
 
 	describe('should render a basic example #2', () => {
@@ -409,7 +352,7 @@ it('should render a simple div with dynamic span child', () => {
 		});
 	});
 
-  it('should handle className', function() {
+  it('should handle className', () => {
       Inferno.render(<div style={{}} />, container);
 
       Inferno.render(<div className={'foo'} />, container);
@@ -420,41 +363,9 @@ it('should render a simple div with dynamic span child', () => {
       expect(container.firstChild.className).to.equal('');
     });
 	
-	 it('should update styles if initially null', function() {
-      let styles = null;
-
-      Inferno.render(<div style={styles} />, container);
-
-      const stubStyle = container.firstChild.style;
-
-      styles = {display: 'block'};
-
-      Inferno.render(<div style={styles} />, container);
-      expect(stubStyle.display).to.equal('');
-    });
 	
 
-	 it('should skip child object attribute on web components', function() {
-      
-
-      // Test initial render to null
-      Inferno.render(<my-component children={['foo']} />, container);
-      expect(container.firstChild.hasAttribute('children')).to.be.false;
-
-      // Test updates to null
-      Inferno.render(<my-component children={['foo']} />, container);
-      expect(container.firstChild.hasAttribute('children')).to.be.false;
-    });
-
-    it('should remove attributes', function() {
-      Inferno.render(<img height="17" />, container);
-
-      expect(container.firstChild.hasAttribute('height')).to.be.true;
-      Inferno.render(<img />, container);
-      expect(container.firstChild.hasAttribute('height')).to.be.false;
-    });
-
-   it('should remove properties', function() {
+   it('should remove properties', () => {
       
       Inferno.render(<div className="monkey" />, container);
 
@@ -462,45 +373,9 @@ it('should render a simple div with dynamic span child', () => {
       Inferno.render(<div />, container);
       expect(container.firstChild.className).to.equal('');
     });
-	
-	 it('should clear a single style prop when changing `style`', function() {
-      let styles = {display: 'none', color: 'red'};
 
-      Inferno.render(<div style={styles} />, container);
-
-      const stubStyle = container.firstChild.style;
-
-      styles = {color: 'green'};
-      Inferno.render(<div style={styles} />, container);
-      expect(stubStyle.display).to.equal('');
-      expect(stubStyle.color).to.equal('green');
-    });
-
-
-    it('should clear all the styles when removing `style`', function() {
-      const styles = {display: 'none', color: 'red'};
-      Inferno.render(<div style={styles} />, container);
-
-      const stubStyle = container.firstChild.style;
-
-      Inferno.render(<div />, container);
-      expect(stubStyle.display).to.equal('');
-      expect(stubStyle.color).to.equal('');
-    });
-
-	
-	it('should update styles when `style` changes from null to object', function() {
-      const styles = {color: 'red'};
-      Inferno.render(<div style={styles} />, container);
-      Inferno.render(<div />, container);
-      Inferno.render(<div style={styles} />, container);
-
-      const stubStyle = container.firstChild.style;
-      expect(stubStyle.color).to.equal('red');
-    });
-	
-	
-	  it('should not update when switching between null/undefined', function() {
+		
+	  it('should not update when switching between null/undefined', () => {
       var container = document.createElement('div');
       var node = Inferno.render(<div />, container);
 
@@ -510,7 +385,7 @@ it('should render a simple div with dynamic span child', () => {
       Inferno.render(<div dir="ltr" />, container);
     });
 	
-	 it('should not update when switching between null/undefined', function() {
+	 it('should not update when switching between null/undefined', () => {
 
       const node = Inferno.render(<div />, container);
 
@@ -519,39 +394,7 @@ it('should render a simple div with dynamic span child', () => {
       Inferno.render(<div />, container);
       Inferno.render(<div dir="ltr" />, container);
     });
-	
-	 it('handles multiple child updates without interference', function() {
-
-      // ABCD
-      Inferno.render(
-        <div>
-          <div key="one">
-            <div key="A">A</div><div key="B">B</div>
-          </div>
-          <div key="two">
-            <div key="C">C</div><div key="D">D</div>
-          </div>
-        </div>,
-        container
-      );
-      // BADC
-      Inferno.render(
-        <div>
-          <div key="one">
-            <div key="B">B</div><div key="A">A</div>
-          </div>
-          <div key="two">
-            <div key="D">D</div><div key="C">C</div>
-          </div>
-        </div>,
-        container
-      );
-
-      expect(container.textContent).to.equal('BADC');
-    });
-	
-	
-	
+		
 	describe('should render value multiple attribute', () => {
 		beforeEach(() => {
 			Inferno.render((

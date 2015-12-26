@@ -1,3 +1,4 @@
+import isVoid from '../util/isVoid';
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithStaticChild from './shapes/rootNodeWithStaticChild';
@@ -32,12 +33,11 @@ const invalidTemplateError = 'Inferno Error: A valid template node must be retur
 function createStaticAttributes( node, domNode, excludeAttrs ) {
 	const attrs = node.attrs;
 
-	if ( attrs != null ) {
+	if ( !isVoid( attrs ) ) {
 		if ( excludeAttrs ) {
-			const newAttrs = {...attrs
-			};
+			const newAttrs = { ...attrs };
 
-			for ( let attr in excludeAttrs ) {
+			for ( const attr in excludeAttrs ) {
 				if ( newAttrs[attr] ) {
 					delete newAttrs[attr];
 				}
@@ -53,8 +53,10 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 	if ( isArray( children ) ) {
 		for ( let i = 0; i < children.length; i++ ) {
 			const childItem = children[i];
+
 			if ( typeof childItem === 'string' || typeof childItem === 'number' ) {
 				const textNode = document.createTextNode( childItem );
+
 				parentNode.appendChild( textNode );
 			} else {
 				createStaticTreeNode( childItem, parentNode, domNamespace );
@@ -69,19 +71,20 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 	}
 }
 
-function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
+function createStaticTreeNode( node, parentNode, domNamespace ) {
 	let staticNode;
 
-	if ( node == null ) {
+	if ( isVoid( node ) ) {
 		return null;
 	}
 	if ( typeof node === 'string' || typeof node === 'number' ) {
 		staticNode = document.createTextNode( node );
 	} else {
 		const tag = node.tag;
+
 		if ( tag ) {
-			let namespace = node.attrs && node.attrs.xmlns || null;
-			let is = node.attrs && node.attrs.is || null;
+			const namespace = node.attrs && node.attrs.xmlns || null;
+			const is = node.attrs && node.attrs.is || null;
 
 			if ( !namespace ) {
 				switch ( tag ) {
@@ -98,13 +101,13 @@ function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 				domNamespace = namespace;
 			}
 			if ( domNamespace ) {
-				if ( is) {
+				if ( is ) {
 					staticNode = document.createElementNS( domNamespace, tag, is );
 				} else {
 					staticNode = document.createElementNS( domNamespace, tag );
 				}
 			} else {
-				if ( is) {
+				if ( is ) {
 					staticNode = document.createElement( tag, is );
 				} else {
 					staticNode = document.createElement( tag );
@@ -113,8 +116,8 @@ function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 			const text = node.text;
 			const children = node.children;
 
-			if ( text != null ) {
-				if ( children != null ) {
+			if ( !isVoid( text ) ) {
+				if ( !isVoid( children ) ) {
 					throw Error( invalidTemplateError );
 				}
 				if ( typeof text !== 'string' && typeof text !== 'number' ) {
@@ -122,7 +125,7 @@ function createStaticTreeNode( node, parentNode, domNamespace, schema ) {
 				}
 				staticNode.textContent = text;
 			} else {
-				if ( children != null ) {
+				if ( !isVoid( children ) ) {
 					createStaticTreeChildren( children, staticNode, domNamespace );
 				}
 			}
@@ -146,7 +149,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 	let node;
 	let templateNode;
 
-	if ( schema == null ) {
+	if ( isVoid( schema ) ) {
 		throw Error( invalidTemplateError );
 	}
 	if ( isArray( schema ) ) {
@@ -179,13 +182,14 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				if ( tag.type === ObjectTypes.VARIABLE ) {
 					const lastAttrs = schema.attrs;
 					const attrs = { ...lastAttrs };
-					let children = null;
+					const children = null;
 
 					if ( schema.children ) {
 						if ( isArray( schema.children ) && schema.children.length > 1 ) {
 							attrs.children = [];
 							for ( let i = 0; i < schema.children.length; i++ ) {
 								const childNode = schema.children[i];
+
 								attrs.children.push( createDOMTree( childNode, false, dynamicNodeMap, domNamespace ) );
 							}
 						} else {
@@ -202,8 +206,8 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						return createNodeWithComponent( tag.index, attrs, children, domNamespace );
 					}
 				}
-				let namespace = schema.attrs && schema.attrs.xmlns || null;
-				let is = schema.attrs && schema.attrs.is || null;
+				const namespace = schema.attrs && schema.attrs.xmlns || null;
+				const is = schema.attrs && schema.attrs.is || null;
 
 				if ( !namespace ) {
 					switch ( tag ) {
@@ -220,13 +224,13 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					domNamespace = namespace;
 				}
 				if ( domNamespace ) {
-					if ( is) {
+					if ( is ) {
 						templateNode = document.createElementNS( domNamespace, tag, is );
 					} else {
 						templateNode = document.createElementNS( domNamespace, tag );
 					}
 				} else {
-					if ( is) {
+					if ( is ) {
 						templateNode = document.createElement( tag, is );
 					} else {
 						templateNode = document.createElement( tag );
@@ -235,7 +239,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
 
-				if ( attrs != null ) {
+				if ( !isVoid( attrs ) ) {
 					if ( dynamicFlags.ATTRS === true ) {
 						dynamicAttrs = attrs;
 					} else if ( dynamicFlags.ATTRS !== false ) {
@@ -247,8 +251,8 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				}
 				const children = schema.children;
 
-				if ( text != null ) {
-					if ( children != null ) {
+				if ( !isVoid( text ) ) {
+					if ( !isVoid( children ) ) {
 						throw Error( 'Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.' );
 					}
 					if ( dynamicFlags.TEXT === true ) {
@@ -270,7 +274,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					}
 				} else {
-					if ( children != null ) {
+					if ( !isVoid( children ) ) {
 						if ( children.type === ObjectTypes.VARIABLE ) {
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicChild(
@@ -283,9 +287,11 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 							}
 						} else if ( dynamicFlags.CHILDREN === true ) {
 							let subTreeForChildren = [];
+
 							if ( isArray( children ) ) {
 								for ( let i = 0; i < children.length; i++ ) {
 									const childItem = children[i];
+
 									subTreeForChildren.push( createDOMTree( childItem, false, dynamicNodeMap, domNamespace ) );
 								}
 							} else if ( typeof children === 'object' ) {
@@ -329,7 +335,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					}
 				}
 			} else if ( text ) {
-				templateNode = document.createTextNode( '');
+				templateNode = document.createTextNode( '' );
 				if ( isRoot ) {
 					node = createRootDynamicTextNode( templateNode, text.index );
 				} else {

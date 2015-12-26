@@ -1,4 +1,3 @@
-import isArray from '../../util/isArray';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import recreateRootNode from '../recreateRootNode';
 
@@ -10,6 +9,7 @@ export default function createRootStaticNode( templateNode ) {
 		keyedPool: [],
 		create( item ) {
 			let domNode;
+
 			if ( recyclingEnabled ) {
 				domNode = recycle( node, item );
 				if ( domNode ) {
@@ -27,9 +27,10 @@ export default function createRootStaticNode( templateNode ) {
 			}
 			nextItem.rootNode = lastItem.rootNode;
 		},
-	remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
-	}
+		}
 	};
+
 	return node;
 }

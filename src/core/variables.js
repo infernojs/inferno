@@ -9,8 +9,7 @@ export const ValueTypes = {
 	ARRAY: 1,
 	TREE: 2,
 	EMPTY_OBJECT: 3,
-	FUNCTION: 4,
-	FRAGMENT: 5
+	FUNCTION: 4
 };
 
 export function createVariable( index ) {
@@ -32,17 +31,22 @@ export function getCorrectItemForValues( node, item ) {
 }
 
 export function getTypeFromValue( value ) {
-	if ( typeof value === 'string' || typeof value === 'number' || value == null ) {
+	if ( typeof value === 'string' || typeof value === 'number' || isVoid( value ) ) {
 		return ValueTypes.TEXT;
-	} else if ( isArray( value ) ) {
+	}
+	if ( isArray( value ) ) {
 		return ValueTypes.ARRAY;
-	} else if ( typeof value === 'object' &&  value.create ) {
+	}
+	if ( typeof value === 'object' && value.create ) {
 		return ValueTypes.TREE;
-	} else if ( typeof value === 'object' &&  value.domTree ) {
+	}
+	if ( typeof value === 'object' &&  value.domTree ) {
 		return ValueTypes.FRAGMENT;
-	} else if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
+	}
+	if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
 		return ValueTypes.EMPTY_OBJECT;
-	} else if ( typeof value === 'function' ) {
+	}
+	if ( typeof value === 'function' ) {
 		return ValueTypes.FUNCTION;
 	}
 }
@@ -66,18 +70,18 @@ export function getValueForProps( props, item ) {
 }
 
 export function removeValueTree( value, treeLifecycle ) {
-	if ( value == null ) {
+	if ( isVoid( value ) ) {
 		return;
 	}
-  if ( isArray( value ) ) {
-	for ( let i = 0; i < value.length; i++ ) {
-	  const child = value[i];
+	if ( isArray( value ) ) {
+		for ( let i = 0; i < value.length; i++ ) {
+			const child = value[i];
 
-	  removeValueTree( child, treeLifecycle )
+			removeValueTree( child, treeLifecycle );
+		}
+	} else if ( typeof value === 'object' ) {
+		const tree = value.domTree;
+
+		tree.remove( value, treeLifecycle );
 	}
-  } else if ( typeof value === 'object' ) {
-	const tree = value.domTree;
-
-	tree.remove( value, treeLifecycle );
-  }
 }

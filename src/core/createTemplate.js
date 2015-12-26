@@ -9,11 +9,13 @@ export default function createTemplate( callback ) {
 	if ( !construct ) {
 		const callbackLength = callback.length;
 		const callbackArguments = new Array( callbackLength );
+
 		for ( let i = 0; i < callbackLength; i++ ) {
-			callbackArguments[i] = createVariable(i);
+			callbackArguments[i] = createVariable( i );
 		}
-		const schema = callback.apply( undefined, callbackArguments );
+		const schema = callback( ...callbackArguments );
 		const dynamicNodeMap = new Map();
+
 		scanTreeForDynamicNodes( schema, dynamicNodeMap );
 		const domTree = createDOMTree( schema, true, dynamicNodeMap );
 		const htmlStringTree = createHTMLStringTree( schema, true, dynamicNodeMap );
@@ -32,7 +34,7 @@ export default function createTemplate( callback ) {
 				} );
 				break;
 			case 1:
-				construct = ( v0) => {
+				construct = ( v0 ) => {
 					let key;
 
 					if ( keyIndex === 0 ) {

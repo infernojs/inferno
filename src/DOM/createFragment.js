@@ -3,7 +3,7 @@ import { remove } from './domMutate';
 export default function createDOMFragment( parentNode, nextNode ) {
 	let lastItem;
 	let treeSuccessListeners = [];
-	let context = {};
+	const context = {};
 	const treeLifecycle = {
 		addTreeSuccessListener( listener ) {
 			treeSuccessListeners.push( listener );
@@ -19,7 +19,7 @@ export default function createDOMFragment( parentNode, nextNode ) {
 			}
 		}
 	};
-	const fragment =  {
+	const fragment = {
 		parentNode,
 		render( nextItem ) {
 			if ( !nextItem ) {
@@ -53,6 +53,7 @@ export default function createDOMFragment( parentNode, nextNode ) {
 		remove() {
 			if ( lastItem ) {
 				const tree = lastItem.domTree;
+
 				if ( lastItem ) {
 					tree.remove( lastItem, treeLifecycle );
 				}
@@ -62,5 +63,6 @@ export default function createDOMFragment( parentNode, nextNode ) {
 			return fragment;
 		}
 	};
+
 	return fragment;
 }

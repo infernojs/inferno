@@ -1,5 +1,8 @@
+import isVoid from '../util/isVoid';
+import isArray from '../util/isArray';
+import inArray from '../util/inArray';
 import DOMRegistry from './DOMRegistry';
-import setSelectValueForProperty from './setSelectValueForProperty';
+import addPixelSuffixToValueIfNeeded from '../shared/addPixelSuffixToValueIfNeeded';
 
 const template = {
 	/**
@@ -15,19 +18,19 @@ const template = {
 		const propertyInfo = DOMRegistry[name] || null;
 
 		if ( propertyInfo ) {
-			if (value == null ||
+			if ( isVoid( value ) ||
 				propertyInfo.hasBooleanValue && !value ||
 				propertyInfo.hasNumericValue && ( value !== value ) ||
 				propertyInfo.hasPositiveNumericValue && value < 1 ||
-				value.length === 0) {
+				value.length === 0 ) {
 				template.removeProperty( vNode, domNode, name, useProperties );
 			} else {
 				const propName = propertyInfo.propertyName;
 
 				if ( propertyInfo.mustUseProperty ) {
-					
-					if ( propName === 'value' && ( (vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' )) ) {
-						setSelectValueForProperty( vNode, domNode, value, useProperties );
+
+					if ( propName === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
+						template.setSelectValueForProperty( vNode, domNode, value, useProperties );
 					} else if ( '' + domNode[propName] !== '' + value ) {
 						if ( useProperties ) {
 							if ( propertyInfo.hasBooleanValue ) {
@@ -63,12 +66,22 @@ const template = {
 					}
 				}
 			}
-		} else if ( value == null ) {
+		} else if ( isVoid( value ) ) {
 			domNode.removeAttribute( name );
 		} else if ( name ) {
 			domNode.setAttribute( name, value );
 		}
 	},
+    setCSS( vNode, domNode, styles ) {
+
+  for ( const styleName in styles ) {
+    if ( styles.hasOwnProperty( styleName ) ) {
+      const styleValue = styles[styleName];
+
+      domNode.style[styleName] = isVoid( styleValue ) ? '' : addPixelSuffixToValueIfNeeded( styleName, styleValue );
+    }
+  }
+  },
 	/**
 	 * Removes the value for a property on a node.
 	 *
@@ -80,8 +93,11 @@ const template = {
 
 		if ( propertyInfo ) {
 			if ( propertyInfo.mustUseProperty ) {
-				let propName = propertyInfo.propertyName;
-				if ( propertyInfo.hasBooleanValue ) {
+				const propName = propertyInfo.propertyName;
+
+        if(name === 'value' && domNode.tagName === 'SELECT') {
+         template.removeSelectValueForProperty( vNode, domNode )
+        }	else if ( propertyInfo.hasBooleanValue ) {
 					if ( useProperties ) {
 						domNode[propName] = false;
 					} else {
@@ -103,7 +119,40 @@ const template = {
 		} else {
 			domNode.removeAttribute( name );
 		}
-	}
+	},
+  setSelectValueForProperty( vNode, domNode, value, useProperties ) {
+    const isMultiple = isArray( value );
+    const options = domNode.options;
+    const len = options.length;
+
+    value = typeof value === 'number' ? '' + value : value;
+
+    let i = 0, optionNode;
+
+    while ( i < len ) {
+      optionNode = options[i++];
+      if ( useProperties ) {
+        optionNode.selected = !isVoid( value ) &&
+          ( isMultiple ? inArray( value, optionNode.value ) : optionNode.value === value );
+      } else {
+        if ( !isVoid( value ) && ( isMultiple ? inArray( value, optionNode.value ) : optionNode.value === value ) ) {
+          optionNode.setAttribute( 'selected', 'selected' );
+        } else {
+          optionNode.removeAttribute( 'selected' );
+        }
+      }
+    }
+  },
+  removeSelectValueForProperty( vNode, domNode/* , propName */ ) {
+    const options = domNode.options;
+    const len = options.length;
+
+    let i = 0;
+
+    while ( i < len ) {
+      options[i++].selected = false;
+    }
+  }
 };
 
 export default template;

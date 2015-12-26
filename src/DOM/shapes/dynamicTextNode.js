@@ -1,15 +1,15 @@
+import isVoid from '../../util/isVoid';
 import { getValueWithIndex } from '../../core/variables';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 export default function createDynamicTextNode( templateNode, valueIndex ) {
-	var domNode;
+	let domNode;
 
 	const node = {
 		create( item ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( value != null ) {
+			if ( !isVoid( value ) ) {
 				if ( typeof value !== 'string' && typeof value !== 'number' ) {
 					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 				}
@@ -27,9 +27,10 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 				domNode.nodeValue = nextValue;
 			}
 		},
-		remove( lastItem ) {
+		remove( /* lastItem */ ) {
 
 		}
 	};
+
 	return node;
 }

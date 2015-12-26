@@ -101,132 +101,7 @@ describe('DOM element tests4 (no-jsx)', () => {
 
         });
     });
-
-    describe('should keep parent namespace', () => {
-
-        const template = Inferno.createTemplate((child) => ({
-            tag: 'svg',
-            attrs: {
-                xmlns: 'http://www.w3.org/1999/xhtml'
-            },
-            children: child
-        }));
-        it('Initial render (creation)', () => {
-            const child = Inferno.createTemplate(() => ({
-                tag: 'circle'
-            }));
-
-            Inferno.render(template(child()), container);
-            expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-            Inferno.render(template(child()), container);
-            expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-            const child1 = Inferno.createTemplate(() => ({
-                tag: null
-            }));
-			
-            Inferno.render(template(child1()), container);
-            expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-            const child2 = Inferno.createTemplate(() => ({
-                tag: 'svg'
-            }));
-			
-            Inferno.render(template(child2()), container);
-            expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-
-        });
-        it('Second render (update)', () => {
-            const child = Inferno.createTemplate(() => ({
-                tag: 'circle',
-                children: {
-                    tag: 'circle'
-                }
-            }));
-
-            Inferno.render(template(child()), container);
-            expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-        });
-        it('Third render (update)', () => {
-            const child = Inferno.createTemplate(() => ({
-                tag: 'circle',
-                children: {
-                    tag: 'circle',
-                    children: {
-                        tag: 'g'
-                    }
-                }
-            }));
-
-            Inferno.render(template(child()), container);
-            expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-            Inferno.render(template(child()), container);
-            expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-        });
-        it('Fourth render (update)', () => {
-            const child = Inferno.createTemplate(() => ({
-                tag: 'circle',
-                children: {
-                    tag: 'circle',
-                    children: {
-                        tag: 'g',
-                        children: {
-                            tag: 'g'
-                        }
-                    }
-                }
-            }));
-
-            Inferno.render(template(child()), container);
-            expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-
-        });
-        it('Fourth render (update)', () => {
-            const child = Inferno.createTemplate(() => ({
-                tag: 'circle',
-                children: {
-                    tag: 'circle',
-                    children: {
-                        tag: 'g',
-                        children: {
-                            tag: 'g',
-                            children: {
-                                tag: 'circle'
-                            }
-
-                        }
-                    }
-                }
-            }));
-
-            Inferno.render(template(child()), container);
-            expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-            const child1 = Inferno.createTemplate(() => ({
-                tag: 'circle',
-                children: {
-                    tag: 'circle',
-                    children: {
-                        tag: 'g',
-                        children: {
-                            tag: 'g',
-                            children: null
-
-                        }
-                    }
-                }
-            }));
-
-            Inferno.render(template(child1()), container);
-            expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-
-        });
-    });
-
+  
     describe('should render "select" boolean on select options', () => {
         const template = Inferno.createTemplate(function(val) {
             return {
@@ -774,477 +649,7 @@ describe('DOM element tests4 (no-jsx)', () => {
         });
     });
 
-
-
-    //
-    //
-    //	  describe('should properly render className attribute', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('div', {
-    //				className: arg
-    //			})
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment('muffins', template), container);
-    //
-    //			expect(container.firstChild.getAttribute('class')).to.eql('muffins');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<div class="muffins"></div>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(true, template), container);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<div class="true"></div>'
-    //			);
-    //		});
-    //
-    //		it('Third render (update)', () => {
-    //			Inferno.render(Inferno.createFragment([], template), container);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<div></div>'
-    //			);
-    //		});
-    //
-    //		it('Fourth render (update)', () => {
-    //			Inferno.render(Inferno.createFragment({}, template), container);
-    //			expect(
-
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<div class="[object Object]"></div>'
-    //			);
-    //		});
-    //	});
-    //
-    //	describe('should properly render and update a radio button attribute', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('input', { type:'radio', checked:arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(true, template), container);
-    //
-    //			expect(container.firstChild.checked).to.equal(true);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<input type="radio">'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(false, template), container);
-    //			expect(container.firstChild.checked).to.equal(false);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<input type="radio">'
-    //			);
-    //		});
-    //	});
-    //
-    //    describe('should properly render and update a checkbox attribute', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('div', { type:'checkbox', checked:arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(true, template), container);
-    //
-    //			expect(container.firstChild.checked).to.equal(true);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="checkbox"></div>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(false, template), container);
-    //			expect(container.firstChild.checked).to.equal(false);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="checkbox"></div>'
-    //			);
-    //		});
-    //
-    //		it('Third render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(null, template), container);
-    //			expect(container.firstChild.checked).to.equal(undefined);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="checkbox"></div>'
-    //			);
-    //		});
-    //
-    //		it('Fourth render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(undefined, template), container);
-    //			expect(container.firstChild.checked).to.equal(undefined);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="checkbox"></div>'
-    //			);
-    //		});
-    //
-    //		it('Fifth render (update)', () => {
-    //			Inferno.render(Inferno.createFragment([], template), container);
-    //			expect(container.firstChild.checked).to.equal(undefined);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="checkbox"></div>'
-    //			);
-    //		});
-    //
-    //		it('Sixth render (update)', () => {
-    //			Inferno.render(Inferno.createFragment({}, template), container);
-    //			expect(container.firstChild.checked).to.eql({});
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="checkbox"></div>'
-    //			);
-    //		});
-    //	});
-    //
-    //	describe('should properly update from checkbox to radio button', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg, arg1) =>
-    //			createElement('div', { type:arg, checked:arg1 })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(['checkbox', true], template), container);
-    //
-    //			expect(container.firstChild.checked).to.equal(true);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="checkbox"></div>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['radio', true], template), container);
-    //			expect(container.firstChild.checked).to.equal(true);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div type="radio"></div>'
-    //			);
-    //		});
-    //	});
-    //
-    //	describe('should properly update from checkbox to radio button', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg, arg1) =>
-    //			createElement('input', { type:arg, checked:arg1 })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(['checkbox', true], template), container);
-    //
-    //			expect(container.firstChild.checked).to.equal(true);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				  '<input type="checkbox">'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['radio', true], template), container);
-    //			expect(container.firstChild.checked).to.equal(true);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<input type="radio">'
-    //			);
-    //		});
-    //
-    //		it('Third render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['radio', 'checked'], template), container);
-    //			expect(container.firstChild.checked).to.equal(true);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<input type="radio">'
-    //			);
-    //		});
-    //
-    //		it('Fourth render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['radio', ''], template), container);
-    //			expect(container.firstChild.checked).to.equal(false);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<input type="radio">'
-    //			);
-    //		});
-    //	});
-    //
-    //	describe('should render custom attribute', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('div', { 'custom-attr' : arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment([123], template), container);
-    //
-    //			expect(container.firstChild.getAttribute('custom-attr')).to.equal('123');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<div custom-attr="123"></div>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['test.jpg', true], template), container);
-    //			expect(container.firstChild.getAttribute('custom-attr')).to.equal('test.jpg');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<div custom-attr="test.jpg"></div>'
-    //			);
-    //		});
-    //	});
-    //
-    //	describe('should support "size" attribute', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('label', { 'size' : arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(123, template), container);
-    //
-    //			expect(container.firstChild.getAttribute('size')).to.equal('123');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<label size="123"></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['test.jpg'], template), container);
-    //			expect(container.firstChild.getAttribute('size')).to.be.null;
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(-444, template), container);
-    //			expect(container.firstChild.getAttribute('size')).to.be.null;
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label></label>'
-    //			);
-    //		});
-    //
-    //		it('Third render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(0, template), container);
-    //			expect(container.firstChild.getAttribute('size')).to.be.null;
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label></label>'
-    //			);
-    //		});
-    //	});
-    //
-    //	describe('should support "rowspan" attribute', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('label', { 'rowspan' : arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(123, template), container);
-    //
-    //			expect(container.firstChild.getAttribute('rowspan')).to.equal('123');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<label rowspan="123"></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['test.jpg'], template), container);
-    //			expect(container.firstChild.getAttribute('rowspan')).to.be.null;
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(-444, template), container);
-    //			expect(container.firstChild.getAttribute('rowspan')).to.eql('-444');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label rowspan="-444"></label>'
-    //			);
-    //		});
-    //
-    //		it('Third render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(0, template), container);
-    //			expect(container.firstChild.getAttribute('rowspan')).to.eql('0');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label rowspan="0"></label>'
-    //			);
-    //		});
-    //	});
-    //
-    //describe('should support "autocorrect" attribute', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('label', { 'autocorrect' : arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(123, template), container);
-    //
-    //			expect(container.firstChild.getAttribute('autocorrect')).to.equal('123');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<label autocorrect="123"></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['autocorrect'], template), container);
-    //			expect(container.firstChild.getAttribute('autocorrect')).to.equal('autocorrect');
-    //			expect(
-    //				container.innerHTML
-
-    //			).to.equal(
-    //				'<label autocorrect="autocorrect"></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(-444, template), container);
-    //			expect(container.firstChild.getAttribute('autocorrect')).to.eql('-444');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label autocorrect="-444"></label>'
-    //			);
-    //		});
-    //
-    //		it('Third render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(0, template), container);
-    //			expect(container.firstChild.getAttribute('autocorrect')).to.be.null;
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label></label>'
-    //			);
-    //		});
-    //	});
-    //
-    //describe('should bail out if attribute name shorter then 2', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('label', { 'a' : arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment(123, template), container);
-    //
-    //			expect(container.firstChild.getAttribute('a')).to.be.null;
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<label></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['world'], template), container);
-    //			expect(container.firstChild.getAttribute('a')).to.be.null;
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label></label>'
-    //			);
-    //		});
-    //	});
-    //
-    //	describe('should support alternative names', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg) =>
-    //			createElement('label', { 'for' : arg })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment('c1', template), container);
-    //
-    //			expect(container.firstChild.getAttribute('for')).to.equal('c1');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				 '<label for="c1"></label>'
-    //			);
-    //		});
-    //
-    //		it('Second render (update)', () => {
-    //			Inferno.render(Inferno.createFragment(['test.jpg', true], template), container);
-    //			expect(container.firstChild.getAttribute('for')).to.equal('test.jpg');
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<label for="test.jpg"></label>'
-    //			);
-    //		});
-    //	});
-    //
-    //     describe('should support alternative names', () => {
-    //		let template = Inferno.createTemplate((createElement, createComponent, arg, arg1) =>
-    //			createElement('button', { disabled : true })
-    //		);
-    //
-    //		it('Initial render (creation)', () => {
-    //
-    //			Inferno.render(Inferno.createFragment('c1', template), container);
-    //			expect(
-    //				container.innerHTML
-    //			).to.equal(
-    //				'<button disabled="true"></button>'
-    //			);
-    //		});
-    //	});
-
-
-	describe('should handle root dynamic nodes', () => {
+    describe('should should handle root dynamic nodes', () => {
         let template;
         beforeEach(() => {
             template = Inferno.createTemplate((val) =>
@@ -1255,75 +660,25 @@ describe('DOM element tests4 (no-jsx)', () => {
         it('Initial render (creation)', () => {
             Inferno.render(template('abc'), container);
             expect(container.innerHTML).to.eql('abc');
-            Inferno.render(template('abc'), container);
-            expect(container.innerHTML).to.eql('abc');
+            Inferno.render(template('abcd'), container);
+            expect(container.innerHTML).to.eql('abcd');
             Inferno.render(template(''), container);
             expect(container.innerHTML).to.eql('');
-            Inferno.render(template(null), container);
-            expect(container.innerHTML).to.eql('');
-            Inferno.render(template(), container);
-            expect(container.innerHTML).to.be.null;
+            Inferno.render(template('abcd  '), container);
+            expect(container.innerHTML).to.eql('abcd  ');
+
 
         });
-      /*  it('Second render (update)', () => {
 
-            Inferno.render(template('124'), container);
-            expect(container.innerHTML).to.eql('124');
-
+        it('Initial render (update)', () => {
             Inferno.render(template('123'), container);
             expect(container.innerHTML).to.eql('123');
+            Inferno.render(template('1234'), container);
+            expect(container.innerHTML).to.eql('1234');
+        });
+    });
 
-            Inferno.render(template(123), container);
-            expect(container.innerHTML).to.eql('123');
-
-            Inferno.render(template(null), container);
-            expect(container.innerHTML).to.eql('');
-
-            Inferno.render(template(), container);
-            expect(container.innerHTML).to.eql('');
-
-        });
-        it('Third render (update)', () => {
-            Inferno.render(template(undefined), container);
-            expect(container.innerHTML).to.equal('');
-            Inferno.render(template(null), container);
-            expect(container.innerHTML).to.equal('');
-            Inferno.render(template(), container);
-            expect(container.innerHTML).to.equal('');
-        });
-        it('Fourth render (update)', () => {
-            Inferno.render(template(null), container);
-            expect(container.innerHTML).to.equal('');
-            Inferno.render(template(), container);
-            expect(container.innerHTML).to.be.null;
-            Inferno.render(template(undefined), container);
-            expect(container.innerHTML).to.equal('');
-            Inferno.render(template(null), container);
-            expect(container.innerHTML).to.equal('');
-
-        });
-        it('Fifth render (update)', () => {
-            Inferno.render(template(''), container);
-            expect(container.innerHTML).to.eql('');
-        });
-        it('Sixth render (update)', () => {
-            Inferno.render(template(123 + 'abc'), container);
-            expect(container.innerHTML).to.eql('123abc');
-            Inferno.render(template(123 + 'abc'), container);
-            expect(container.innerHTML).to.eql('123abc');
-            Inferno.render(template(), container);
-            expect(container.innerHTML).to.eql('');
-            Inferno.render(template(null), container);
-            expect(container.innerHTML).to.eql('');
-        });
-        it('Seventh render (update)', () => {
-            expect(() => Inferno.render(template({}), container)).to.throw;
-            expect(() => Inferno.render(template({}), container)).to.throw;
-        });
-        it('Eigth render (update)', () => {
-            expect(() => Inferno.render(template([]), container)).to.throw;
-        });*/
-	});
+	
 
 	describe('should support refs', () => {
 		let template;
@@ -1816,31 +1171,10 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(container.firstChild.hasAttribute('style')).to.be.false;
             expect(container.firstChild.getAttribute('style')).to.be.null;
 
-        });
-        it('Second render (update)', () => {
-            Inferno.render(template({
-                width: 8
-            }), container);
-
-            expect(container.firstChild.hasAttribute('style')).to.be.true;
-            expect(container.firstChild.getAttribute('style')).to.equal('width: 8px;');
-
-            Inferno.render(template({
-                width: 8
-            }), container);
-            expect(container.firstChild.hasAttribute('style')).to.be.true;
-            expect(container.firstChild.getAttribute('style')).to.equal('width: 8px;');
-
-
+            Inferno.render(template(null), container);
+            expect(container.firstChild.hasAttribute('style')).to.be.false;
             Inferno.render(template(), container);
             expect(container.firstChild.hasAttribute('style')).to.be.false;
-
-            Inferno.render(template({
-                width: 9
-            }), container);
-            expect(container.firstChild.hasAttribute('style')).to.be.true;
-            expect(container.firstChild.getAttribute('style')).to.equal('width: 9px;');
-
         });
     });
 	
@@ -2089,9 +1423,10 @@ describe('DOM element tests4 (no-jsx)', () => {
     });
 	
 	
-	 describe('should render "select" boolean on select options with numbers', () => {
+	
+    it('should render "select" boolean on select options with numbers', () => {
 
-        const template = Inferno.createTemplate(function(val) {
+        const template = Inferno.createTemplate((val) => {
             return {
                 tag: 'select',
                 attrs: {
@@ -2114,147 +1449,28 @@ describe('DOM element tests4 (no-jsx)', () => {
             };
         });
 
-        it('Initial render (creation)', () => {
-
             Inferno.render(template(2), container);
 
             expect(container.firstChild.children[0].selected).to.eql(false);
             expect(container.firstChild.children[1].selected).to.eql(true);
-            expect(
-                container.innerHTML
+             expect(
+              container.innerHTML
             ).to.equal(
                 '<select multiple="multiple"><option>1</option><option>2</option></select>'
             );
-
-            Inferno.render(template(2), container);
-
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(true);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-            
-			Inferno.render(template(null), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-			Inferno.render(template([1, null]), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(true);// SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
-
-        it('Second render ( update)', () => {
 
             Inferno.render(template(1), container);
-            expect(container.firstChild.children[0].selected).to.eql(true );// SHOULD BE TRUE
+
+            expect(container.firstChild.children[0].selected).to.eql(true);
             expect(container.firstChild.children[1].selected).to.eql(false);
             expect(
                 container.innerHTML
             ).to.equal(
                 '<select multiple="multiple"><option>1</option><option>2</option></select>'
             );
-			
-			Inferno.render(template([1, null]), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-			
-			Inferno.render(template([null, null]), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(true); 
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-			Inferno.render(template(2), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(false); 
-            expect(container.firstChild.children[1].selected).to.eql(true);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
-
-
-        it('Third render ( update)', () => {
-
-            Inferno.render(template('bdddd'), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-            Inferno.render(template(), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
-
-        it('Forth render ( update)', () => {
-
-            Inferno.render(template(null), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-            Inferno.render(template(undefined), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-            Inferno.render(template(), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
     });
+
+
 
        it('should render a div with static child and dynamic attribute', () => {
 
@@ -2326,16 +1542,5 @@ describe('DOM element tests4 (no-jsx)', () => {
                 Inferno.render(template(null), container);
 				expect(container.firstChild.getAttribute('id')).to.be.null;
 
-                Inferno.render(template({id:null}), container);
-				expect(container.firstChild.getAttribute('id')).to.be.null;
-
-                Inferno.render(template({id:undefined}), container);
-				expect(container.firstChild.getAttribute('id')).to.be.null;
-
-                Inferno.render(template(undefined), container);
-				expect(container.firstChild.getAttribute('id')).to.be.null;
-
-                Inferno.render(template([]), container);
-				expect(container.firstChild.getAttribute('id')).to.be.null;
         });
 });

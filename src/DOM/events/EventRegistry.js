@@ -12,7 +12,28 @@ const standardNativeEvents = Object.keys( standardNativeEventMapping )
 const nonBubbleableEvents = Object.keys( nonBubbleableEventMapping )
 	.map( key => nonBubbleableEventMapping[key] );
 
-let EventRegistry = {};
+const EventRegistry = {};
+
+function getFocusBlur( nativeFocus ) {
+	if ( typeof getFocusBlur.fn === 'undefined' ) {
+		getFocusBlur.fn = nativeFocus ? function () {
+			const _type = this._type;
+			const handler = setHandler( _type, e => {
+				addRootListener( e, _type );
+			} ).handler;
+
+			document.addEventListener( focusEvents[_type], handler );
+		} : function () {
+			const _type = this._type;
+
+			document.addEventListener(
+				_type,
+				setHandler( _type, addRootListener ).handler,
+				true );
+		};
+	}
+	return getFocusBlur.fn;
+}
 
 if ( ExecutionEnvironment.canUseDOM ) {
 	let i = 0;
@@ -31,21 +52,7 @@ if ( ExecutionEnvironment.canUseDOM ) {
 		if ( focusEvents[type] ) {
 			// IE has `focusin` and `focusout` events which bubble.
 			// @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
-			EventRegistry[type]._focusBlur = nativeFocus ? function () {
-				const _type = this._type;
-				let handler = setHandler(_type, e => {
-					addRootListener( e, _type );
-				} ).handler;
-				document.addEventListener( focusEvents[_type], handler );
-			}
-				// firefox doesn't support focusin/focusout events
-				: function () {
-				const _type = this._type;
-				document.addEventListener(
-					_type,
-					setHandler( _type, addRootListener ).handler,
-					true);
-			};
+			EventRegistry[type]._focusBlur = getFocusBlur( nativeFocus );
 		}
 	}
 	// For non-bubbleable events - e.g. scroll - we are setting the events directly on the node

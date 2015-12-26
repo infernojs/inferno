@@ -1,14 +1,13 @@
-import isArray from '../../util/isArray';
+/* eslint new-cap:0 */
+import isVoid from '../../util/isVoid';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
-import { updateKeyed } from '../domMutate';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 import updateComponent from '../../core/updateComponent';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export default function createRootNodeWithComponent( componentIndex, props, domNamespace ) {
+export default function createRootNodeWithComponent( componentIndex, props ) {
 	let instance;
 	let lastRender;
 	let currentItem;
@@ -27,13 +26,13 @@ export default function createRootNodeWithComponent( componentIndex, props, domN
 			const Component = getValueWithIndex( item, componentIndex );
 
 			currentItem = item;
-			if ( Component == null ) {
-				//bad component, make a text node
-				domNode = document.createTextNode( '');
+			if ( isVoid( Component ) ) {
+				// bad component, make a text node
+				domNode = document.createTextNode( '' );
 				item.rootNode = domNode;
 				return domNode;
 			} else if ( typeof Component === 'function' ) {
-				//stateless component
+				// stateless component
 				if ( !Component.prototype.render ) {
 					const nextRender = Component( getValueForProps( props, item ), context );
 
@@ -49,7 +48,7 @@ export default function createRootNodeWithComponent( componentIndex, props, domN
 					const childContext = instance.getChildContext();
 
 					if ( childContext ) {
-						context = {...context, ...childContext};
+						context = { ...context, ...childContext };
 					}
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
@@ -62,7 +61,7 @@ export default function createRootNodeWithComponent( componentIndex, props, domN
 						const childContext = instance.getChildContext();
 
 						if ( childContext ) {
-							context = {...context, ...childContext};
+							context = { ...context, ...childContext };
 						}
 						nextRender.parent = currentItem;
 						nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
@@ -123,5 +122,6 @@ export default function createRootNodeWithComponent( componentIndex, props, domN
 			}
 		}
 	};
+
 	return node;
 }

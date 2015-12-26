@@ -1,8 +1,10 @@
+import isVoid from '../util/isVoid';
+import isSVG from '../util/isSVG';
 import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
 import removeListener from './events/removeListener';
-import setValueForStyles from './setValueForStyles';
+
 import { getValueWithIndex, getCorrectItemForValues } from '../core/variables';
 
 /**
@@ -12,31 +14,35 @@ import { getValueWithIndex, getCorrectItemForValues } from '../core/variables';
  */
 export function addDOMStaticAttributes( vNode, domNode, attrs ) {
 	let styleUpdates;
-	
-	for ( let attrName in attrs ) {
-		const attrVal = attrs[attrName];
 
-		if ( attrVal ) {
-			if ( attrName === 'style' ) {
-				 
-				 styleUpdates = attrVal;
-			
-			} else {
-			template.setProperty( vNode, domNode, attrName, attrVal, false );
+	for ( const attrName in attrs ) {
+		if ( attrs.hasOwnProperty( attrName ) ) {
+			const attrVal = attrs[attrName];
+
+			if ( attrVal ) {
+				if ( attrName === 'style' ) {
+					styleUpdates = attrVal;
+				} else {
+					template.setProperty( vNode, domNode, attrName, attrVal, false );
+				}
 			}
 		}
 	}
-	
+
 	if ( styleUpdates ) {
-		setValueForStyles( vNode, domNode, styleUpdates );
+    template.setCSS( vNode, domNode, styleUpdates );
 	}
 }
 
 // A fast className setter as its the most common property to regularly change
 function fastPropSet( attrName, attrVal, domNode ) {
 	if ( attrName === 'class' || attrName === 'className' ) {
-		if ( attrVal != null ) {
-			domNode.className = attrVal;
+		if ( !isVoid( attrVal ) ) {
+			if ( isSVG ) {
+				domNode.setAttribute( 'class', attrVal );
+			} else {
+				domNode.className = attrVal;
+			}
 		}
 		return true;
 	} else if ( attrName === 'ref' ) {
@@ -55,93 +61,114 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 		addDOMStaticAttributes( item, domNode, dynamicAttrs );
 		return;
 	}
-	for ( let attrName in dynamicAttrs ) {
-		let attrVal = getValueWithIndex( valueItem, dynamicAttrs[attrName] );
+	for ( const attrName in dynamicAttrs ) {
+		if ( !isVoid( attrName ) ) {
+			const attrVal = getValueWithIndex( valueItem, dynamicAttrs[attrName] );
 
-		if ( attrVal !== undefined ) {
-			if ( attrName === 'style' ) {
-				 styleUpdates = attrVal;
-			} else {
-				if ( fastPropSet( attrName, attrVal, domNode ) === false ) {
-					if ( eventMapping[attrName] ) {
-						addListener( item, domNode, eventMapping[attrName], attrVal );
-					} else {
-						template.setProperty( null, domNode, attrName, attrVal, true );
+			if ( attrVal !== undefined ) {
+				if ( attrName === 'style' ) {
+					styleUpdates = attrVal;
+				} else {
+					if ( fastPropSet( attrName, attrVal, domNode ) === false ) {
+						if ( eventMapping[attrName] ) {
+							addListener( item, domNode, eventMapping[attrName], attrVal );
+						} else {
+							template.setProperty( null, domNode, attrName, attrVal, true );
+						}
 					}
 				}
 			}
 		}
 	}
 	if ( styleUpdates ) {
-		setValueForStyles( item, domNode, styleUpdates );
+		template.setCSS( item, domNode, styleUpdates );
 	}
 }
 
-function set( domNode, attrName, nextAttrVal, nextItem, styleUpdates ) {
-	if ( fastPropSet( domNode, attrName, nextAttrVal ) === false ) {
-		if ( eventMapping[attrName] ) {
-			addListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
-		} else {
-			template.setProperty( null, domNode, attrName, nextAttrVal, true );
-		}
-	}
-}
+/**
+   * NOTE!! This function is probably the single most
+   * critical path for performance optimization.
+   */
+export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+    if (dynamicAttrs.index !== undefined) {
+        const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
-export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs ) {
-	if ( dynamicAttrs.index !== undefined ) {
-		const nextDynamicAttrs = getValueWithIndex( nextItem, dynamicAttrs.index );
-		addDOMStaticAttributes( nextItem, domNode, nextDynamicAttrs );
-		return;
-	}
-	let styleUpdates;
+        addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
+        return;
+    }
 
-	for ( let attrName in dynamicAttrs ) {
-		const lastAttrVal = getValueWithIndex( lastItem, dynamicAttrs[attrName] );
-		const nextAttrVal = getValueWithIndex( nextItem, dynamicAttrs[attrName] );
+ /**
+   * TODO: Benchmark areas that can be improved with caching.
+   */
+      let styleUpdates;
+      let styleName;
 
-		if ( nextAttrVal !== undefined ) {
-			if ( !lastAttrVal || ( lastAttrVal == null ) ) { // Is this hit?
-				if ( nextAttrVal != null ) {
-					
-					 if ( attrName === 'style' ) {
-					styleUpdates = nextAttrVal;
-				} else {
-					set( domNode, attrName, nextAttrVal, nextItem, styleUpdates )
-				}
-				
-				}
-			} else if ( nextAttrVal == null ) {
-				if ( attrName === 'style' ) {
-					  styleUpdates = null;
-				} else {
-					if ( eventMapping[attrName] ) { // Is this hit?
-						removeListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
-					} else {
-						template.removeProperty( null, domNode, attrName, true );
-					}
-				}
-			} else if ( lastAttrVal !== nextAttrVal ) {
-				if ( attrName === 'style' ) {
-					styleUpdates = nextAttrVal;
-				} else {
-					set( domNode, attrName, nextAttrVal, nextItem, styleUpdates )
-				}
-			}
-		}
-		if ( lastAttrVal !== undefined ) {
-			if ((nextAttrVal === undefined
-				|| !( attrName !== nextAttrVal )) && ( lastAttrVal != null ) ) {
-				// remove attrs
-				 if ( eventMapping[attrName] ) {
-						removeListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
-					} else {
-						template.removeProperty( null, domNode, attrName, true );
-					}
-			}
-		}
-	}
+    for (const attrName in dynamicAttrs) {
 
-	if ( styleUpdates != null ) {
-		setValueForStyles( domNode, domNode, styleUpdates );
-	} 
+        const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
+        const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
+
+        if ( !isVoid( lastAttrVal ) ) {
+
+            if ( isVoid( nextAttrVal ) ) {
+                if ( attrName === 'style' ) {
+                    for ( styleName in lastAttrVal ) {
+                        if (lastAttrVal[styleName] &&
+                            (!nextAttrVal || !nextAttrVal[styleName] ) ) {
+                            styleUpdates = styleUpdates || {}; // Remove this line, and receive 10 failing tests!!
+                            styleUpdates[styleName] = '';
+                        }
+                    }
+                } else if ( eventMapping[attrName] ) {
+                    removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
+                } else {
+                    template.removeProperty(null, domNode, attrName, true);
+                }
+
+            } else if ( attrName === 'style' ) {
+                // Unset styles on `lastAttrVal` but not on `nextAttrVal`.
+			    for (styleName in lastAttrVal) {
+                    if (lastAttrVal[styleName] &&
+                        (!nextAttrVal || !nextAttrVal[styleName])) {
+                        styleUpdates = styleUpdates || {}; // Remove this line, and receive 14 failing tests!!
+                        styleUpdates[styleName] = '';
+                    }
+                }
+                 // Update styles that changed since `lastAttrVal`.
+                for ( styleName in nextAttrVal ) {
+                    if (lastAttrVal[styleName] !== nextAttrVal[styleName]) {
+                        styleUpdates = styleUpdates || {};
+                        styleUpdates[styleName] = nextAttrVal[styleName];
+                    }
+                }
+
+            } else if ( lastAttrVal !== nextAttrVal ) {
+
+                if ( fastPropSet(domNode, attrName, nextAttrVal ) === false) {
+                    if ( eventMapping[attrName] ) {
+                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
+                    } else {
+                        template.setProperty(null, domNode, attrName, nextAttrVal, true);
+                    }
+                }
+            }
+        } else if ( !isVoid( nextAttrVal ) ) {
+            if (attrName === 'style') {
+                styleUpdates = nextAttrVal;
+            } else {
+
+                if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+                    if (eventMapping[attrName]) {
+                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
+                    } else {
+                        template.setProperty(null, domNode, attrName, nextAttrVal, true);
+                    }
+                }
+            }
+        }
+   }
+
+    if (styleUpdates) {
+        template.setCSS(domNode, domNode, styleUpdates);
+    }
 }

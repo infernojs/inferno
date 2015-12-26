@@ -10,6 +10,7 @@ export function getRootFragmentAtNode( node ) {
 	}
 	for ( let i = 0; i < rootFragmentsLength; i++ ) {
 		const rootFragment = rootFragments[i];
+
 		if ( rootFragment.parentNode === node ) {
 			return rootFragment;
 		}
@@ -32,6 +33,7 @@ export function render( nextItem, parentNode ) {
 
 	if ( rootFragment === null ) {
 		const fragment = createDOMFragment( parentNode );
+
 		fragment.render( nextItem );
 		rootFragments.push( fragment );
 	} else {
@@ -44,6 +46,6 @@ export function render( nextItem, parentNode ) {
 	}
 }
 
-export function renderToString( nextItem ) {
+export function renderToString( /* nextItem */ ) {
 	// TODO
 }
