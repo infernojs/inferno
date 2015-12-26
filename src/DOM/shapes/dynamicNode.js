@@ -29,6 +29,9 @@ export default function createDynamicNode( valueIndex, domNamespace ) {
 				case ValueTypes.FUNCTION:
 					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 					break;
+				case ValueTypes.FRAGMENT:
+					domNode = value.domTree.create( value, treeLifecycle, context );
+					break;
 				default: break;
 			}
 

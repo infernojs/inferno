@@ -9,7 +9,8 @@ export const ValueTypes = {
 	ARRAY: 1,
 	TREE: 2,
 	EMPTY_OBJECT: 3,
-	FUNCTION: 4
+	FUNCTION: 4,
+	FRAGMENT: 5
 };
 
 export function createVariable( index ) {
@@ -37,6 +38,8 @@ export function getTypeFromValue( value ) {
 		return ValueTypes.ARRAY;
 	} else if ( typeof value === 'object' &&  value.create ) {
 		return ValueTypes.TREE;
+	} else if ( typeof value === 'object' &&  value.domTree ) {
+		return ValueTypes.FRAGMENT;
 	} else if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
 		return ValueTypes.EMPTY_OBJECT;
 	} else if ( typeof value === 'function' ) {

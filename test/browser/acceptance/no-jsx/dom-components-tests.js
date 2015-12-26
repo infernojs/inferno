@@ -1801,4 +1801,45 @@ describe('DOM component tests (no-jsx)', () => {
 			);
 		});
 	});
+
+	describe('should render a basic component with conditional fragment', () => {
+		const tpl4282471407 = Inferno.createTemplate(function (v0) {
+			return {
+				tag: 'div',
+				children: ['', v0, '', {
+					tag: 'p',
+					children: 'test'
+				}, '']
+			};
+		});
+		const tpl3625453295 = Inferno.createTemplate(function () {
+			return {
+				tag: 'h1',
+				children: 'BIG'
+			};
+		});
+		const tpl4021787591 = Inferno.createTemplate(function () {
+			return {
+				tag: 'h2',
+				children: 'small'
+			};
+		});
+		const tpl1546018623 = Inferno.createTemplate(function (v0) {
+			return {tag: v0};
+		});
+
+		class Component extends Inferno.Component {
+			render() {
+				let condition = true; // some logic
+				return tpl4282471407(condition ? tpl3625453295(null) : tpl4021787591(null));
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(tpl1546018623(Component), container);
+			expect(container.innerHTML).to.equal(
+				'<div><h1>BIG</h1><p>test</p></div>'
+			);
+		});
+	});
 });	
