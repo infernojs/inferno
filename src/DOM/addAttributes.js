@@ -85,6 +85,12 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 	}
 }
 
+/**
+   * Reconciles the properties by detecting differences in property values and
+   * updating the DOM as necessary. This function is probably the single most
+   * critical path for performance optimization.
+   *
+   */
 export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
     if (dynamicAttrs.index !== undefined) {
         const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
@@ -92,7 +98,12 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
         addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
         return;
     }
-
+/**
+   *
+   * TODO: Benchmark whether checking for changed values in memory actually
+   *       improves performance (especially statically positioned elements).
+   * TODO: Benchmark areas that can be improved with caching.
+   */
       let styleUpdates;
       let styleName;
 
@@ -103,45 +114,43 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
         if ( !isVoid( lastAttrVal ) ) {
 
-            if ( isVoid( nextAttrVal) ) {
+            if ( isVoid( nextAttrVal ) ) {
+                if ( attrName === 'style' ) {
 
-                if (attrName === 'style') {
-
-                    for (styleName in lastAttrVal) {
+                    for ( styleName in lastAttrVal ) {
                         if (lastAttrVal[styleName] &&
-                            (!nextAttrVal || !nextAttrVal[styleName])) {
+                            (!nextAttrVal || !nextAttrVal[styleName] ) ) {
                             styleUpdates = styleUpdates || {};
                             styleUpdates[styleName] = '';
                         }
                     }
-                } else if (eventMapping[attrName]) {
-
+                } else if ( eventMapping[attrName] ) {
                     removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
                 } else {
                     template.removeProperty(null, domNode, attrName, true);
                 }
 
-            } else if (attrName === 'style') {
-                // Remove and update styles.
-                for (styleName in lastAttrVal) {
+            } else if ( attrName === 'style' ) {
+                // Unset styles on `lastAttrVal` but not on `nextAttrVal`.
+			    for (styleName in lastAttrVal) {
                     if (lastAttrVal[styleName] &&
                         (!nextAttrVal || !nextAttrVal[styleName])) {
                         styleUpdates = styleUpdates || {};
                         styleUpdates[styleName] = '';
                     }
                 }
-                // Insert new styles.
-                for (styleName in nextAttrVal) {
+                 // Update styles that changed since `lastAttrVal`.
+                for ( styleName in nextAttrVal ) {
                     if (lastAttrVal[styleName] !== nextAttrVal[styleName]) {
                         styleUpdates = styleUpdates || {};
                         styleUpdates[styleName] = nextAttrVal[styleName];
                     }
                 }
 
-            } else if (lastAttrVal !== nextAttrVal) {
+            } else if ( lastAttrVal !== nextAttrVal ) {
 
-                if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
-                    if (eventMapping[attrName]) {
+                if ( fastPropSet(domNode, attrName, nextAttrVal ) === false) {
+                    if ( eventMapping[attrName] ) {
                         addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
                     } else {
                         template.setProperty(null, domNode, attrName, nextAttrVal, true);
@@ -165,7 +174,6 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
    }
 
     if (styleUpdates) {
-
         setValueForStyles(domNode, domNode, styleUpdates);
     }
 }
