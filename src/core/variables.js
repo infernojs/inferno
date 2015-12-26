@@ -34,13 +34,17 @@ export function getCorrectItemForValues( node, item ) {
 export function getTypeFromValue( value ) {
 	if ( typeof value === 'string' || typeof value === 'number' || isVoid( value ) ) {
 		return ValueTypes.TEXT;
-	} else if ( isArray( value ) ) {
+	} 
+	if ( isArray( value ) ) {
 		return ValueTypes.ARRAY;
-	} else if ( typeof value === 'object' && value.create ) {
+	} 
+	if ( typeof value === 'object' && value.create ) {
 		return ValueTypes.TREE;
-	} else if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
+	} 
+	if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
 		return ValueTypes.EMPTY_OBJECT;
-	} else if ( typeof value === 'function' ) {
+	} 
+	if ( typeof value === 'function' ) {
 		return ValueTypes.FUNCTION;
 	}
 }
