@@ -96,10 +96,8 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
         addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
         return;
     }
-/**
-   *
-   * TODO: Benchmark whether checking for changed values in memory actually
-   *       improves performance (especially statically positioned elements).
+ 
+ /**
    * TODO: Benchmark areas that can be improved with caching.
    */
       let styleUpdates;
@@ -114,16 +112,15 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
             if ( isVoid( nextAttrVal ) ) {
                 if ( attrName === 'style' ) {
-
                     for ( styleName in lastAttrVal ) {
                         if (lastAttrVal[styleName] &&
                             (!nextAttrVal || !nextAttrVal[styleName] ) ) {
-                            styleUpdates = styleUpdates || {};
+                            styleUpdates = styleUpdates || {}; // Remove this line, and receive 10 failing tests!!
                             styleUpdates[styleName] = '';
                         }
                     }
                 } else if ( eventMapping[attrName] ) {
-                    removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                    removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
                 } else {
                     template.removeProperty(null, domNode, attrName, true);
                 }
@@ -133,7 +130,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 			    for (styleName in lastAttrVal) {
                     if (lastAttrVal[styleName] &&
                         (!nextAttrVal || !nextAttrVal[styleName])) {
-                        styleUpdates = styleUpdates || {};
+                        styleUpdates = styleUpdates || {}; // Remove this line, and receive 14 failing tests!!
                         styleUpdates[styleName] = '';
                     }
                 }
@@ -149,7 +146,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
                 if ( fastPropSet(domNode, attrName, nextAttrVal ) === false) {
                     if ( eventMapping[attrName] ) {
-                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
                     } else {
                         template.setProperty(null, domNode, attrName, nextAttrVal, true);
                     }
@@ -162,7 +159,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
                 if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
                     if (eventMapping[attrName]) {
-                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
                     } else {
                         template.setProperty(null, domNode, attrName, nextAttrVal, true);
                     }
