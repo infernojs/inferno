@@ -62,7 +62,7 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 		return;
 	}
 	for ( const attrName in dynamicAttrs ) {
-		if ( dynamicAttrs.hasOwnProperty( attrName ) ) {
+		if ( attrName != null ) {
 			const attrVal = getValueWithIndex( valueItem, dynamicAttrs[attrName] );
 
 			if ( attrVal !== undefined ) {

@@ -76,7 +76,23 @@ it('should keep parent namespace', () => {
 	 expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
   })
   
-  it('should set and remove class attribute', () => {
+  it('should set and remove dynamic className property', () => {
+  
+    let value = 'foo';
+
+  	Inferno.render(<svg className={value}></svg>, container);
+
+     expect(container.firstChild.tagName).to.eql('svg');
+     expect(container.firstChild.getAttribute('class')).to.equal('foo');
+	 
+   	 Inferno.render(<svg></svg>, container);
+
+    expect(container.firstChild.tagName).to.eql('svg');
+    expect(container.firstChild.hasAttribute('class')).to.be.false;
+	
+  });
+
+  it('should set and remove dynamic class attribute', () => {
   
     let value = 'foo';
 
@@ -85,10 +101,31 @@ it('should keep parent namespace', () => {
      expect(container.firstChild.tagName).to.eql('svg');
      expect(container.firstChild.getAttribute('class')).to.equal('foo');
 	 
-  	 Inferno.render(<svg></svg>, container);
+   	 Inferno.render(<svg></svg>, container);
+
+    expect(container.firstChild.tagName).to.eql('svg');
+    expect(container.firstChild.hasAttribute('class')).to.be.false;
+	
+  });
+
+  it('should set static class attribute, update to dynamic attr, and remove', () => {
+  
+  	 Inferno.render(<svg class='bar'></svg>, container);
 
      expect(container.firstChild.tagName).to.eql('svg');
-     expect(container.firstChild.hasAttribute('class')).to.be.false;
+     expect(container.firstChild.getAttribute('class')).to.equal('bar');
+
+    let value = 'foo';
+
+  	Inferno.render(<svg class={value}></svg>, container);
+    expect(container.firstChild.tagName).to.eql('svg');
+    expect(container.firstChild.getAttribute('class')).to.equal('foo');
+	 
+    Inferno.render(<svg></svg>, container);
+
+    expect(container.firstChild.tagName).to.eql('svg');
+    expect(container.firstChild.hasAttribute('class')).to.be.false;
+	
   });
   
   it('should remove known SVG camel case attributes', () => {
