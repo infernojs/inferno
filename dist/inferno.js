@@ -102,7 +102,7 @@
     return x === null || typeof x === 'undefined';
   })
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$8 = isRecyclingEnabled();
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
   	var stop = false;
@@ -113,7 +113,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$8) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -285,7 +285,7 @@
 
   function remove(item, parentNode) {
   	parentNode.removeChild(item.rootNode);
-  	if (recyclingEnabled) {
+  	if (recyclingEnabled$8) {
   		pool(item);
   	}
   }
@@ -1636,150 +1636,160 @@
    * @param{ Object } attrs
    */
   function addDOMStaticAttributes(vNode, domNode, attrs) {
-  	var styleUpdates = undefined;
+    var styleUpdates = undefined;
 
-  	for (var attrName in attrs) {
-  		if (attrs.hasOwnProperty(attrName)) {
-  			var attrVal = attrs[attrName];
+    for (var attrName in attrs) {
+      if (attrs.hasOwnProperty(attrName)) {
+        var attrVal = attrs[attrName];
 
-  			if (attrVal) {
-  				if (attrName === 'style') {
-  					styleUpdates = attrVal;
-  				} else {
-  					template.setProperty(vNode, domNode, attrName, attrVal, false);
-  				}
-  			}
-  		}
-  	}
+        if (attrVal) {
+          if (attrName === 'style') {
+            styleUpdates = attrVal;
+          } else {
+            template.setProperty(vNode, domNode, attrName, attrVal, false);
+          }
+        }
+      }
+    }
 
-  	if (styleUpdates) {
-  		setValueForStyles(vNode, domNode, styleUpdates);
-  	}
+    if (styleUpdates) {
+      setValueForStyles(vNode, domNode, styleUpdates);
+    }
   }
 
   // A fast className setter as its the most common property to regularly change
   function fastPropSet(attrName, attrVal, domNode) {
-  	if (attrName === 'class' || attrName === 'className') {
-  		if (!isVoid(attrVal)) {
-  			if (isSVG$1) {
-  				domNode.setAttribute('class', attrVal);
-  			} else {
-  				domNode.className = attrVal;
-  			}
-  		}
-  		return true;
-  	} else if (attrName === 'ref') {
-  		attrVal.element = domNode;
-  		return true;
-  	}
-  	return false;
+    if (attrName === 'class' || attrName === 'className') {
+      if (!isVoid(attrVal)) {
+        if (isSVG$1) {
+          domNode.setAttribute('class', attrVal);
+        } else {
+          domNode.className = attrVal;
+        }
+      }
+      return true;
+    } else if (attrName === 'ref') {
+      attrVal.element = domNode;
+      return true;
+    }
+    return false;
   }
 
   function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
-  	var valueItem = getCorrectItemForValues(node, item);
-  	var styleUpdates = undefined;
+    var valueItem = getCorrectItemForValues(node, item);
+    var styleUpdates = undefined;
 
-  	if (dynamicAttrs.index !== undefined) {
-  		dynamicAttrs = getValueWithIndex(valueItem, dynamicAttrs.index);
-  		addDOMStaticAttributes(item, domNode, dynamicAttrs);
-  		return;
-  	}
-  	for (var attrName in dynamicAttrs) {
-  		if (attrName != null) {
-  			var attrVal = getValueWithIndex(valueItem, dynamicAttrs[attrName]);
+    if (dynamicAttrs.index !== undefined) {
+      dynamicAttrs = getValueWithIndex(valueItem, dynamicAttrs.index);
+      addDOMStaticAttributes(item, domNode, dynamicAttrs);
+      return;
+    }
+    for (var attrName in dynamicAttrs) {
+      if (!isVoid(attrName)) {
+        var attrVal = getValueWithIndex(valueItem, dynamicAttrs[attrName]);
 
-  			if (attrVal !== undefined) {
-  				if (attrName === 'style') {
-  					styleUpdates = attrVal;
-  				} else {
-  					if (fastPropSet(attrName, attrVal, domNode) === false) {
-  						if (propertyToEventType[attrName]) {
-  							addListener(item, domNode, propertyToEventType[attrName], attrVal);
-  						} else {
-  							template.setProperty(null, domNode, attrName, attrVal, true);
-  						}
-  					}
-  				}
-  			}
-  		}
-  	}
-  	if (styleUpdates) {
-  		setValueForStyles(item, domNode, styleUpdates);
-  	}
+        if (attrVal !== undefined) {
+          if (attrName === 'style') {
+            styleUpdates = attrVal;
+          } else {
+            if (fastPropSet(attrName, attrVal, domNode) === false) {
+              if (propertyToEventType[attrName]) {
+                addListener(item, domNode, propertyToEventType[attrName], attrVal);
+              } else {
+                template.setProperty(null, domNode, attrName, attrVal, true);
+              }
+            }
+          }
+        }
+      }
+    }
+    if (styleUpdates) {
+      setValueForStyles(item, domNode, styleUpdates);
+    }
   }
 
-  function set(domNode, attrName, nextAttrVal, nextItem) {
-  	if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
-  		if (propertyToEventType[attrName]) {
-  			addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
-  		} else {
-  			template.setProperty(null, domNode, attrName, nextAttrVal, true);
-  		}
-  	}
-  }
-
+  /**
+     * NOTE!! This function is probably the single most
+     * critical path for performance optimization.
+     */
   function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
-  	if (dynamicAttrs.index !== undefined) {
-  		var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
+    if (dynamicAttrs.index !== undefined) {
+      var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
-  		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
-  		return;
-  	}
-  	var styleUpdates = undefined;
+      addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
+      return;
+    }
 
-  	for (var attrName in dynamicAttrs) {
-  		if (!dynamicAttrs.hasOwnProperty(attrName)) {
-  			continue;
-  		}
+    /**
+      * TODO: Benchmark areas that can be improved with caching.
+      */
+    var styleUpdates = undefined;
+    var styleName = undefined;
 
-  		var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
-  		var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
+    for (var attrName in dynamicAttrs) {
 
-  		if (nextAttrVal !== undefined) {
-  			if (!lastAttrVal || isVoid(lastAttrVal)) {
-  				// Is this hit?
-  				if (!isVoid(nextAttrVal)) {
+      var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
+      var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-  					if (attrName === 'style') {
-  						styleUpdates = nextAttrVal;
-  					} else {
-  						set(domNode, attrName, nextAttrVal, nextItem, styleUpdates);
-  					}
-  				}
-  			} else if (isVoid(nextAttrVal)) {
-  				if (attrName === 'style') {
-  					styleUpdates = null;
-  				} else {
-  					if (propertyToEventType[attrName]) {
-  						// Is this hit?
-  						removeListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
-  					} else {
-  						template.removeProperty(null, domNode, attrName, true);
-  					}
-  				}
-  			} else if (lastAttrVal !== nextAttrVal) {
-  				if (attrName === 'style') {
-  					styleUpdates = nextAttrVal;
-  				} else {
-  					set(domNode, attrName, nextAttrVal, nextItem, styleUpdates);
-  				}
-  			}
-  		}
-  		if (lastAttrVal !== undefined) {
-  			if ((nextAttrVal === undefined || !(attrName !== nextAttrVal)) && !isVoid(lastAttrVal)) {
-  				// remove attrs
-  				if (propertyToEventType[attrName]) {
-  					removeListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
-  				} else {
-  					template.removeProperty(null, domNode, attrName, true);
-  				}
-  			}
-  		}
-  	}
+      if (!isVoid(lastAttrVal)) {
 
-  	if (!isVoid(styleUpdates)) {
-  		setValueForStyles(domNode, domNode, styleUpdates);
-  	}
+        if (isVoid(nextAttrVal)) {
+          if (attrName === 'style') {
+            for (styleName in lastAttrVal) {
+              if (lastAttrVal[styleName] && (!nextAttrVal || !nextAttrVal[styleName])) {
+                styleUpdates = styleUpdates || {}; // Remove this line, and receive 10 failing tests!!
+                styleUpdates[styleName] = '';
+              }
+            }
+          } else if (propertyToEventType[attrName]) {
+            removeListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal); // TODO! Write tests for this!
+          } else {
+              template.removeProperty(null, domNode, attrName, true);
+            }
+        } else if (attrName === 'style') {
+          // Unset styles on `lastAttrVal` but not on `nextAttrVal`.
+          for (styleName in lastAttrVal) {
+            if (lastAttrVal[styleName] && (!nextAttrVal || !nextAttrVal[styleName])) {
+              styleUpdates = styleUpdates || {}; // Remove this line, and receive 14 failing tests!!
+              styleUpdates[styleName] = '';
+            }
+          }
+          // Update styles that changed since `lastAttrVal`.
+          for (styleName in nextAttrVal) {
+            if (lastAttrVal[styleName] !== nextAttrVal[styleName]) {
+              styleUpdates = styleUpdates || {};
+              styleUpdates[styleName] = nextAttrVal[styleName];
+            }
+          }
+        } else if (lastAttrVal !== nextAttrVal) {
+
+          if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+            if (propertyToEventType[attrName]) {
+              addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal); // TODO! Write tests for this!
+            } else {
+                template.setProperty(null, domNode, attrName, nextAttrVal, true);
+              }
+          }
+        }
+      } else if (!isVoid(nextAttrVal)) {
+        if (attrName === 'style') {
+          styleUpdates = nextAttrVal;
+        } else {
+
+          if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
+            if (propertyToEventType[attrName]) {
+              addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal); // TODO! Write tests for this!
+            } else {
+                template.setProperty(null, domNode, attrName, nextAttrVal, true);
+              }
+          }
+        }
+      }
+    }
+
+    if (styleUpdates) {
+      setValueForStyles(domNode, domNode, styleUpdates);
+    }
   }
 
   function recreateRootNode(lastItem, nextItem, node, treeLifecycle, context) {
@@ -1797,7 +1807,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1806,7 +1816,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1980,7 +1990,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -1991,7 +2001,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2186,7 +2196,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2195,7 +2205,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2348,7 +2358,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var node = {
@@ -2357,7 +2367,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2507,7 +2517,7 @@
   	return node;
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2516,7 +2526,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2596,7 +2606,7 @@
   	}
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootNodeWithComponent(componentIndex, props) {
   	var instance = undefined;
@@ -2608,7 +2618,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2827,7 +2837,7 @@
   	return node;
   }
 
-  var recyclingEnabled$8 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootDynamicTextNode(templateNode, valueIndex) {
   	var node = {
@@ -2836,7 +2846,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$8) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
