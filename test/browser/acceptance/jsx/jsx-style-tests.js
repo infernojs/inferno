@@ -1,6 +1,6 @@
 import Inferno from '../../../../src';
 
-describe('SVG element tests (jsx)', () => {
+describe('CSS style tests (jsx)', () => {
 
      let container;
 
