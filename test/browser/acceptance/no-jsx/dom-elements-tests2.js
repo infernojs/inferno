@@ -729,33 +729,6 @@ describe('DOM element tests2 (no-jsx)', () => {
             );
 
             Inferno.render(template(false), container);
-            expect(container.firstChild.checked).to.be.null;
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input type="checkbox">'
-            );
-
-        });
-        it('Second render (update)', () => {
-            Inferno.render(template(true), container);
-            expect(container.firstChild.checked).to.eql(true);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input type="checkbox">'
-            );
-        });
-        it('Third render (update)', () => {
-            Inferno.render(template(''), container);
-            expect(container.firstChild.checked).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input type="checkbox">'
-            );
-
-            Inferno.render(template(null), container);
             expect(container.firstChild.checked).to.be.false;
             expect(
                 container.innerHTML
@@ -763,41 +736,6 @@ describe('DOM element tests2 (no-jsx)', () => {
                 '<input type="checkbox">'
             );
 
-            Inferno.render(template(true), container);
-            expect(container.firstChild.checked).to.eql(true);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input type="checkbox">'
-            );
-        });
-        it('Third render (update)', () => {
-            Inferno.render(template('lala'), container);
-            expect(container.firstChild.checked).to.eql(true);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input type="checkbox">'
-            );
-        });
-        it('Fourth render (update)', () => {
-            Inferno.render(template(null), container);
-            expect(container.firstChild.checked).to.be.false;
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input type="checkbox">'
-            );
-        });
-
-        it('Fifth render (update)', () => {
-            Inferno.render(template('null'), container);
-            expect(container.firstChild.checked).to.be.true;
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<input type="checkbox">'
-            );
         });
     });
 
