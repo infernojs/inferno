@@ -35,7 +35,7 @@ describe('DOM event tests (no-jsx)', () => {
             expect(container.innerHTML).to.equal('<div>Hello world!</div>');
         });
     });
-/*
+
    describe('should listen to a click event on a textarea, and return its value', () => {
         it('Initial render (creation)', () => {
             let worked;
@@ -62,19 +62,17 @@ describe('DOM event tests (no-jsx)', () => {
 
     });
 
-
    describe('should listen to a click event on a checkbox, and return its true value', () => {
-
-            let worked, val, event;
-            const template = Inferno.createTemplate((handler) => ({
-                tag: 'input',
-                attrs: {
-					type: "checkbox",
-                    checked: "checked",
-                    onClick: handler
-                },
-                children: 'Hello world!'
-            }));
+        let worked, val, event;
+        const template = Inferno.createTemplate((handler) => ({
+            tag: 'input',
+            attrs: {
+                type: "checkbox",
+                checked: "checked",
+                onClick: handler
+            },
+            children: 'Hello world!'
+        }));
 
         it('Initial render (creation)', () => {
             Inferno.render(template((e, value) => {
@@ -282,5 +280,5 @@ describe('DOM event tests (no-jsx)', () => {
             expect(container.innerHTML).to.equal('<select multiple="multiple"><option>foo</option><option>bar</option></select>');
         });
 
-    });*/
+    });
 });

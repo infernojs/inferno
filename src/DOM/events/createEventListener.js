@@ -1,15 +1,15 @@
 import listenersStorage from '../../shared/listenersStorage';
 import createListenerArguments from './createListenerArguments';
-import InfernoNodeID from './InfernoNodeID';
+import infernoNodeID from './infernoNodeID';
 
-export default function createEventListener(type) {
+export default function createEventListener( type ) {
 	return e => {
 		const target = e.target;
-		const listener = listenersStorage[InfernoNodeID(target)][type];
+		const listener = listenersStorage[infernoNodeID( target )][type];
 		const args = listener.originalHandler.length > 1
-			? createListenerArguments(target, e)
+			? createListenerArguments( target, e )
 			: [e];
 
-		listener.originalHandler.apply(target, args);
+		listener.originalHandler.apply( target, args );
 	};
 }

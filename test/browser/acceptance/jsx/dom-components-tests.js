@@ -5,7 +5,7 @@ const {
 	createElement
 } = Inferno.TemplateFactory;
 
-describe('DOM element tests (jsx)', () => {
+describe('DOM component tests (jsx)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -49,6 +49,16 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
 			);
+
+			Inferno.render((
+				<div><BasicComponent1 title={null} name="basic-update" /></div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-update">The title is </span></div></div>'
+			);
+
 		});
 	});
 
@@ -101,6 +111,36 @@ describe('DOM element tests (jsx)', () => {
 				container.querySelector("input").checked
 			).to.equal(
 				false
+			);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ true } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			);
+			expect(
+				container.querySelector("input").checked
+			).to.equal(
+				true
+			);
+
+
+         const checked = Inferno.render((<span></span>), container);
+
+			Inferno.render((
+				<div>
+					<BasicComponent1b title="123" isChecked={ checked } />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><label><input>The title is 123</label></div></div>'
 			);
 
 			Inferno.render((
@@ -194,6 +234,16 @@ describe('DOM element tests (jsx)', () => {
 				container.innerHTML
 			).to.equal(
 				'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
+			);
+			Inferno.render((
+				<div>
+					<BasicComponent1 title='123' name={[]} />
+				</div>
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="">The title is 123</span></div></div>'
 			);
 		});
 	});
@@ -325,6 +375,27 @@ describe('DOM element tests (jsx)', () => {
 			);
 
 			Inferno.render((
+				<BasicComponent3 title="styled!" styles={null} />
+			), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styled!</span></div>'
+			);
+
+            // This is wrong! The style are not removed. It's still there - '<div><span style="color: red; padding: 100px;">The title is styled!</span></div>'
+			Inferno.render((
+				<BasicComponent3 title="styled!" styles={undefined} />
+			), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styled!</span></div>'
+			);
+
+			Inferno.render((
 				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 100 }} />
 			), container);
 
@@ -368,6 +439,111 @@ describe('DOM element tests (jsx)', () => {
 			).to.equal(
 				'<div><span>The title is styles are removed!</span></div>'
 			);
+
+			Inferno.render((
+				<BasicComponent3 title="styles are removed!" styles={ false } />
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styles are removed!</span></div>'
+			);
+
+			Inferno.render((
+				<BasicComponent3 title="styles are removed!" styles={ true } />
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styles are removed!</span></div>'
+			);
+
+			Inferno.render((
+				<BasicComponent3 title="styles are removed!" styles={ undefined } />
+			), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><span>The title is styles are removed!</span></div>'
+			);
+
+		});
+	});
+
+	describe('should render a basic component with SVG', () => {
+		class Component extends Inferno.Component {
+			constructor(props) {
+				super(props);
+			}
+			render() {
+				return (
+					<svg class="alert-icon">
+						<use xlinkHref="#error"></use>
+					</svg>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(<Component />, container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>'
+			);
+
+			Inferno.render(null, container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				''
+			);
+
+			Inferno.render(undefined, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				''
+			);
+		});
+	});
+
+	describe('should render a basic component with a list of values from state', () => {
+		class Component extends Inferno.Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					organizations: [
+						{name: 'test1', key: '1'},
+						{name: 'test2', key: '2'},
+						{name: 'test3', key: '3'},
+						{name: 'test4', key: '4'},
+						{name: 'test5', key: '5'},
+						{name: 'test6', key: '6'}
+					]
+				};
+			}
+			render() {
+				return (
+					<ul class="login-organizationlist">
+						{this.state.organizations.map((result) => {
+							return <li>{ result.name }</li>;
+						})}
+					</ul>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(<Component />, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
 		});
 	});
 });
+

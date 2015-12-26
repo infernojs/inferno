@@ -1,8 +1,14 @@
-export default function recreateRootNode(lastItem, nextItem, node, treeLifecycle) {
+export default function recreateRootNode( lastItem, nextItem, node, treeLifecycle, context ) {
 	const lastDomNode = lastItem.rootNode;
 	const lastTree = lastItem.domTree;
-	lastTree.remove(lastItem);
-	const domNode = node.create(nextItem, treeLifecycle);
-	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
-	// TODO recycle old node
+
+	lastTree.remove( lastItem );
+	const domNode = node.create( nextItem, treeLifecycle, context );
+	const parentNode = lastDomNode.parentNode;
+
+	if ( parentNode ) {
+		parentNode.replaceChild( domNode, lastDomNode );
+	}
+	nextItem.rootNode = domNode;
+	return domNode;
 }

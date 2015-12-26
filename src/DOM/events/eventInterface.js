@@ -1,6 +1,8 @@
+/* eslint no-invalid-this:0 */
+
 function stopPropagation() {
 	this._isPropagationStopped = true;
-	if (this._stopPropagation) {
+	if ( this._stopPropagation ) {
 		this._stopPropagation();
 	} else {
 		this.cancelBubble = true;
@@ -14,7 +16,7 @@ function isPropagationStopped() {
 function stopImmediatePropagation() {
 	this._isImmediatePropagationStopped = true;
 	this._isPropagationStopped = true;
-	if (this._stopImmediatePropagation) {
+	if ( this._stopImmediatePropagation ) {
 		this._stopImmediatePropagation();
 	} else {
 		this.cancelBubble = true;
@@ -28,7 +30,7 @@ function isImmediatePropagationStopped() {
 function preventDefault() {
 	this._isDefaultPrevented = true;
 
-	if (this._preventDefault) {
+	if ( this._preventDefault ) {
 		this._preventDefault();
 	} else {
 		this.returnValue = false;
@@ -39,7 +41,7 @@ function isDefaultPrevented() {
 	return this._isDefaultPrevented;
 }
 
-function eventInterface(nativeEvent) {
+function eventInterface( nativeEvent ) {
 
 	// Extend nativeEvent
 	nativeEvent._stopPropagation = nativeEvent.stopPropagation;

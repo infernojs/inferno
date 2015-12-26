@@ -1,93 +1,97 @@
 import { ObjectTypes } from './variables';
 import isArray from '../util/isArray';
+import isVoid from '../util/isVoid';
 
-export default function scanTreeForDynamicNodes(node, nodeMap) {
+export default function scanTreeForDynamicNodes( node, nodeMap ) {
 	let nodeIsDynamic = false;
 	const dynamicFlags = {
 		NODE: false,
 		TEXT: false,
-		ATTRS: false, //attrs can also be an object
+		ATTRS: false, // attrs can also be an object
 		CHILDREN: false,
 		KEY: false,
 		COMPONENTS: false
 	};
 
-	if (node == null) {
+	if ( isVoid( node ) ) {
 		return false;
 	}
 
-	if (node.type === ObjectTypes.VARIABLE) {
+	if ( node.type === ObjectTypes.VARIABLE ) {
 		nodeIsDynamic = true;
 		dynamicFlags.NODE = true;
 
 	} else {
-		if (node != null) {
-			if (node.tag != null) {
-				if (node.tag.type === ObjectTypes.VARIABLE) {
+		if ( !isVoid( node ) ) {
+			if ( !isVoid( node.tag ) ) {
+				if ( node.tag.type === ObjectTypes.VARIABLE ) {
 					nodeIsDynamic = true;
 					dynamicFlags.COMPONENTS = true;
 				}
 			}
-			if (node.text != null) {
-				if (node.text.type === ObjectTypes.VARIABLE) {
+			if ( !isVoid( node.text ) ) {
+				if ( node.text.type === ObjectTypes.VARIABLE ) {
 					nodeIsDynamic = true;
 					dynamicFlags.TEXT = true;
 				}
 			}
-			if (node.attrs != null) {
-				if (node.attrs.type === ObjectTypes.VARIABLE) {
+			if ( !isVoid( node.attrs ) ) {
+				if ( node.attrs.type === ObjectTypes.VARIABLE ) {
 					nodeIsDynamic = true;
 					dynamicFlags.ATTRS = true;
 				} else {
-					for (let attr in node.attrs) {
-						const attrVal = node.attrs[attr];
-						if (attrVal != null && attrVal.type === ObjectTypes.VARIABLE) {
-							if (attr === 'xmlns') {
-								throw Error('Inferno Error: The "xmlns" attribute cannot be dynamic. Please use static value for "xmlns" attribute instead.');
+					for ( const attr in node.attrs ) {
+						if ( node.attrs.hasOwnProperty( attr ) ) {
+							const attrVal = node.attrs[attr];
+
+							if ( !isVoid( attrVal ) && attrVal.type === ObjectTypes.VARIABLE ) {
+								if ( attr === 'xmlns' ) {
+									throw Error( `Inferno Error: The 'xmlns' attribute cannot be dynamic. Please use static value for 'xmlns' attribute instead.` );
+								}
+								if ( dynamicFlags.ATTRS === false ) {
+									dynamicFlags.ATTRS = {};
+								}
+								dynamicFlags.ATTRS[attr] = attrVal.index;
+								nodeIsDynamic = true;
 							}
-							if (dynamicFlags.ATTRS === false) {
-								dynamicFlags.ATTRS = {};
-							}
-							dynamicFlags.ATTRS[attr] = attrVal.index;
-							nodeIsDynamic = true;
 						}
 					}
 				}
 			}
-			if (node.children != null) {
-				if (node.children.type === ObjectTypes.VARIABLE) {
+			if ( !isVoid( node.children ) ) {
+				if ( node.children.type === ObjectTypes.VARIABLE ) {
 					nodeIsDynamic = true;
 				} else {
-					if (isArray(node.children)) {
-						for (let i = 0; i < node.children.length; i++) {
+					if ( isArray( node.children ) ) {
+						for ( let i = 0; i < node.children.length; i++ ) {
 							const childItem = node.children[i];
-							const result = scanTreeForDynamicNodes(childItem, nodeMap);
+							const result = scanTreeForDynamicNodes( childItem, nodeMap );
 
-							if (result === true) {
+							if ( result === true ) {
 								nodeIsDynamic = true;
 								dynamicFlags.CHILDREN = true;
 							}
 						}
-					} else if (typeof node === 'object') {
-						const result = scanTreeForDynamicNodes(node.children, nodeMap);
+					} else if ( typeof node === 'object' ) {
+						const result = scanTreeForDynamicNodes( node.children, nodeMap );
 
-						if (result === true) {
+						if ( result === true ) {
 							nodeIsDynamic = true;
 							dynamicFlags.CHILDREN = true;
 						}
 					}
 				}
 			}
-			if (node.key != null) {
-				if (node.key.type === ObjectTypes.VARIABLE) {
+			if ( !isVoid( node.key ) ) {
+				if ( node.key.type === ObjectTypes.VARIABLE ) {
 					nodeIsDynamic = true;
 					dynamicFlags.KEY = true;
 				}
 			}
 		}
 	}
-	if (nodeIsDynamic === true) {
-		nodeMap.set(node, dynamicFlags);
+	if ( nodeIsDynamic === true ) {
+		nodeMap.set( node, dynamicFlags );
 	}
 	return nodeIsDynamic;
 }

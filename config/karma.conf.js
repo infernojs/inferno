@@ -1,3 +1,5 @@
+const path = require('path');
+
 // Karma configuration
 module.exports = function(config) {
     config.set({
@@ -11,7 +13,7 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
-		    '../test/browser/**/*.js',
+            '../test/browser/**/*.js',
             '../test/shared/**/*.js'
         ],
         // list of files to exclude
@@ -24,17 +26,18 @@ module.exports = function(config) {
             '../test/browser/**/*.js': ['webpack'],
         },
         webpack: {
-            devtool: 'source-map',
+//            devtool: 'source-map',
             module: {
+                postLoaders: [{
+                    test: /(\.jsx)|(\.js)$/,
+                    exclude: /test|node_modules\/dist/,
+                    loader: 'isparta-instrumenter-loader',
+					include: path.join(__dirname, '../src')
+                }],
                 loaders: [{
                     test: /\.js$/,
-                    exclude: /node_modules\/dist/,
+                    exclude: /(src|bower_components|node_modules)/,
                     loader: 'babel-loader'
-                }],
-                postLoaders: [{
-                    test: /\.js$/,
-                    exclude: /test|node_modules\/dist/,
-                    loader: 'istanbul-instrumenter'
                 }]
             }
         },
@@ -60,7 +63,6 @@ module.exports = function(config) {
                 dir: '../coverage'
             }]
         },
-
         browsers: ['Chrome'],
         // custom launchers
         customLaunchers: {
