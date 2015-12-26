@@ -72,15 +72,27 @@ const template = {
 			domNode.setAttribute( name, value );
 		}
 	},
+  /**
+   * Sets the value for multiple styles on a node.  If a value is specified as
+   * '' (empty string), the corresponding style property will be unset.
+   *
+   * @param {DOMElement} node
+   * @param {object} styles
+   */
     setCSS( vNode, domNode, styles ) {
 
-  for ( const styleName in styles ) {
-    if ( styles.hasOwnProperty( styleName ) ) {
-      const styleValue = styles[styleName];
+    let style = domNode.style;
 
-      domNode.style[styleName] = isVoid( styleValue ) ? '' : addPixelSuffixToValueIfNeeded( styleName, styleValue );
+    for (let styleName in styles) {
+
+      let styleValue = styles[styleName];
+
+      if ( !isVoid( styleValue ) ) {
+        style[styleName] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
+      } else {
+        style[styleName] = '';
+      }
     }
-  }
   },
 	/**
 	 * Removes the value for a property on a node.
