@@ -26,19 +26,49 @@ describe('SVG element tests (jsx)', () => {
       expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});	
 
-  it('should keep parent namespace', () => {
+it('should keep parent namespace', () => {
   
      Inferno.render(<svg xmlns='http://www.w3.org/2000/svg'><circle/></svg>, container);	 
      expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-     Inferno.render(<svg xmlns='http://www.w3.org/2000/svg'><circle xmlns='http://www.w3.org/2000/svg'/><circle xmlns='http://www.w3.org/2000/svg'/></svg>, container);	 
-	 expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-     expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-     Inferno.render(<svg><circle/><g xmlns='http://www.w3.org/2000/svg'></g></svg>, container);	 
-     expect(container.firstChild.firstChild.tagName).to.equal('circle');
-     expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-     expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+     Inferno.render(<svg width="100" height="100">
+					<g><circle cx="50" cy="50" r="40" stroke="green" fill="yellow" /></g>
+					<g><circle cx="50" cy="50" r="40" stroke="green" fill="yellow" /></g>
+					</svg>, container);	 
+	 expect(container.childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+   	 expect(container.childNodes[0].childNodes[0].tagName).to.equal('g');
+	 expect(container.childNodes[0].childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	 expect(container.childNodes[0].childNodes[0].firstChild.tagName).to.equal('circle');
+	 expect(container.childNodes[0].childNodes[0].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+   	 expect(container.childNodes[0].childNodes[1].tagName).to.equal('g');
+	 expect(container.childNodes[0].childNodes[1].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	 expect(container.childNodes[0].childNodes[1].firstChild.tagName).to.equal('circle');
+	 expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
   });
 
+  it('should keep parent namespace with xmlns attribute', () => {
+  
+     Inferno.render(<svg xmlns='http://www.w3.org/2000/svg'><circle/></svg>, container);	 
+     expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+     Inferno.render(<svg width="100" height="100" xmlns='http://www.w3.org/2000/svg'>
+					<g><circle xmlns='http://www.w3.org/2000/svg' cx="50" cy="50" r="40" stroke="green" fill="yellow" /></g>
+					<g><circle xmlns='http://www.w3.org/2000/svg' cx="50" cy="50" r="40" stroke="green" fill="yellow" /></g>
+					</svg>, container);	 
+	 expect(container.childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+   	 expect(container.childNodes[0].childNodes[0].tagName).to.equal('g');
+	 expect(container.childNodes[0].childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	 expect(container.childNodes[0].childNodes[0].firstChild.tagName).to.equal('circle');
+	 expect(container.childNodes[0].childNodes[0].firstChild.getAttribute('xmlns')).to.equal('http://www.w3.org/2000/svg');
+	 expect(container.childNodes[0].childNodes[0].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+   	 expect(container.childNodes[0].childNodes[1].tagName).to.equal('g');
+	 expect(container.childNodes[0].childNodes[1].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	 expect(container.childNodes[0].childNodes[1].firstChild.tagName).to.equal('circle');
+	 expect(container.childNodes[0].childNodes[1].firstChild.getAttribute('xmlns')).to.equal('http://www.w3.org/2000/svg');
+	 expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+  })
   
   it('should set and remove class attribute', () => {
   
