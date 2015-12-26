@@ -9,7 +9,7 @@ export default function setSelectValueForProperty( vNode, domNode, value, usePro
 	const len = options.length;
 
 	let i = 0, optionNode;
-
+value = typeof value === 'number' ? '' + value : value;
 	while ( i < len ) {
 		optionNode = options[i++];
 		if ( useProperties ) {

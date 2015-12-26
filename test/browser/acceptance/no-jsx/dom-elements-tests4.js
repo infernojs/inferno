@@ -1423,9 +1423,10 @@ describe('DOM element tests4 (no-jsx)', () => {
     });
 	
 	
-	 describe('should render "select" boolean on select options with numbers', () => {
+	
+    it('should render "select" boolean on select options with numbers', () => {
 
-        const template = Inferno.createTemplate(function(val) {
+        const template = Inferno.createTemplate((val) => {
             return {
                 tag: 'select',
                 attrs: {
@@ -1448,147 +1449,28 @@ describe('DOM element tests4 (no-jsx)', () => {
             };
         });
 
-        it('Initial render (creation)', () => {
-
             Inferno.render(template(2), container);
 
             expect(container.firstChild.children[0].selected).to.eql(false);
             expect(container.firstChild.children[1].selected).to.eql(true);
-            expect(
-                container.innerHTML
+             expect(
+              container.innerHTML
             ).to.equal(
                 '<select multiple="multiple"><option>1</option><option>2</option></select>'
             );
-
-            Inferno.render(template(2), container);
-
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(true);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-            
-			Inferno.render(template(null), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-			Inferno.render(template([1, null]), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(true);// SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
-
-        it('Second render ( update)', () => {
 
             Inferno.render(template(1), container);
-            expect(container.firstChild.children[0].selected).to.eql(true );// SHOULD BE TRUE
+
+            expect(container.firstChild.children[0].selected).to.eql(true);
             expect(container.firstChild.children[1].selected).to.eql(false);
             expect(
                 container.innerHTML
             ).to.equal(
                 '<select multiple="multiple"><option>1</option><option>2</option></select>'
             );
-			
-			Inferno.render(template([1, null]), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-			
-			Inferno.render(template([null, null]), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(true); 
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-			Inferno.render(template(2), container);
-			
-            expect(container.firstChild.children[0].selected).to.eql(false); 
-            expect(container.firstChild.children[1].selected).to.eql(true);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
-
-
-        it('Third render ( update)', () => {
-
-            Inferno.render(template('bdddd'), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-            Inferno.render(template(), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
-
-        it('Forth render ( update)', () => {
-
-            Inferno.render(template(null), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-            Inferno.render(template(undefined), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-            Inferno.render(template(), container);
-            expect(container.firstChild.children[0].selected).to.eql(false);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>1</option><option>2</option></select>'
-            );
-
-        });
     });
+
+
 
        it('should render a div with static child and dynamic attribute', () => {
 
