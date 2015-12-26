@@ -1,4 +1,5 @@
 import isArray from '../util/isArray';
+import isVoid from '../util/isVoid';
 
 export const ObjectTypes = {
 	VARIABLE: 1
