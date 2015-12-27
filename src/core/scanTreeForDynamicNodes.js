@@ -41,7 +41,7 @@ export default function scanTreeForDynamicNodes( node, nodeMap ) {
 					dynamicFlags.ATTRS = true;
 				} else {
 					for ( const attr in node.attrs ) {
-						if ( node.attrs.hasOwnProperty( attr ) ) {
+
 							const attrVal = node.attrs[attr];
 
 							if ( !isVoid( attrVal ) && attrVal.type === ObjectTypes.VARIABLE ) {
@@ -53,7 +53,6 @@ export default function scanTreeForDynamicNodes( node, nodeMap ) {
 								}
 								dynamicFlags.ATTRS[attr] = attrVal.index;
 								nodeIsDynamic = true;
-							}
 						}
 					}
 				}
