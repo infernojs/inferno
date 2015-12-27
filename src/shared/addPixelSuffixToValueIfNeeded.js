@@ -10,14 +10,13 @@ export default function ( name, value ) {
 	if ( value == null || typeof value === 'boolean' || value === '' ) {
 		return '';
 	}
-	const isNonNumeric = isNaN( value );
-
+	// const isNonNumeric = isNaN( value );
 	if ( value == null || value === '' || typeof value === 'boolean' ) {
 		return '';
 	}
 	if ( value === 0 || unitlessProperties[ name] ) {
 		return '' + value; // cast to string
-    }
+	}
 	// isNaN is expensive, so we check for it at the very end
 	if ( isNaN( value) ) {
 		return '' + value; // cast to string
