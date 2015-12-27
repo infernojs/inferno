@@ -1,18 +1,18 @@
 import Inferno from '../src';
 
-describe('Provider', () => {
-    let container;
+describe( 'Provider', () => {
+	let container;
 
-    beforeEach(() => {
-        container = document.createElement('div');
-    });
+    beforeEach( () => {
+        container = document.createElement( 'div' );
+    } );
 
-    afterEach(() => {
-         Inferno.render(null, container);
-    });
+    afterEach( () => {
+         Inferno.render( null, container );
+    } );
 
     const store = {
-      name: 'Hello world!'
+		name: 'Hello world!'
     };
     const childrenTemplate = Inferno.createTemplate(children => children);
     class MainApp extends Inferno.Component {
@@ -21,6 +21,12 @@ describe('Provider', () => {
 		}
     }
 
+	class MainApp2 extends Inferno.Component {
+		render() {
+			return <span>{ this.context.store.name }</span>;
+		}
+	}
+
     class Provider extends Inferno.Component {
 		render() {
             return childrenTemplate( this.props.children );
@@ -28,29 +34,58 @@ describe('Provider', () => {
 		getChildContext() {
 			return {
 				store: this.props.store
-			}
+			};
 		}
     }
 
-    it('should render a basic provider component with its children', () => {
-        Inferno.render((
-            <Provider store={ store }>
-                <MainApp />
-            </Provider>
-        ), container);
-    });
+	describe( 'should render a basic provider component with its children', () => {
+		it( 'Initial render (creation)', () => {
+			Inferno.render( (
+				<Provider store={ store }>
+					<MainApp />
+				</Provider>
+			), container );
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world!</div>'
+			);
 
-    it('Initial render (creation)', () => {
-        Inferno.render((
-            <Provider store={ store }>
-                <MainApp />
-            </Provider>
-        ), container);
+			Inferno.render( (
+				<Provider store={ store }>
+					<MainApp2 />
+				</Provider>
+			), container );
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<span>Hello world!</span>'
+			);
+		} );
 
-        expect(
-          container.innerHTML
-        ).to.equal(
-          '<div>Hello world!</div>'
-        );
-    });
-});
+		it( 'Second render (update)', () => {
+			Inferno.render( (
+				<Provider store={ store }>
+					<MainApp2 />
+				</Provider>
+			), container );
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<span>Hello world!</span>'
+			);
+
+			Inferno.render( (
+				<Provider store={ store }>
+					<MainApp />
+				</Provider>
+			), container );
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div>Hello world!</div>'
+			);
+		} );
+    } );
+} );
