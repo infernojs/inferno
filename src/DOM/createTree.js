@@ -82,7 +82,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 	} else {
 		const tag = node.tag;
 
-		if ( tag ) {
+  if ( tag ) {
 			const is = node.attrs && node.attrs.is || null;
 
           let namespace = node.attrs && node.attrs.xmlns || null;
