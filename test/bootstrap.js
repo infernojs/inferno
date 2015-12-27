@@ -11,6 +11,8 @@ require('./browser/acceptance/jsx/dom-components-tests'); // jsx dom-elements-te
 require('./browser/acceptance/jsx/svg-elements-tests'); // jsx svg-elements-tests
 require('./browser/acceptance/jsx/jsx-style-tests'); // jsx-style-tests-tests
 
+require('./provider'); // jsx-style-tests-tests
+
 require('./browser/performance/render/vdom-bench-tests'); // benchmark
 // TODO let's add these when we have actual tests for them
 //require('./shared/inferno'); // shared
