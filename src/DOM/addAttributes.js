@@ -109,7 +109,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
       let styleUpdates;
       let styleName;
 
-    for (const attrName in dynamicAttrs) {
+    for ( const attrName in dynamicAttrs ) {
 
         const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
         const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
@@ -119,34 +119,35 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
             if ( isVoid( nextAttrVal ) ) {
                 if ( attrName === 'style' ) {
                     for ( styleName in lastAttrVal ) {
-                        if (lastAttrVal[styleName] &&
+                        if ( lastAttrVal[styleName] &&
                             (!nextAttrVal || !nextAttrVal[styleName] ) ) {
                             styleUpdates = styleUpdates || {}; // Remove this line, and receive 10 failing tests!!
                             styleUpdates[styleName] = '';
                         }
                     }
                 } else if ( eventMapping[attrName] ) {
-                    removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
+                    removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
                 } else {
                     template.removeProperty(null, domNode, attrName, true);
                 }
 
             } else if ( attrName === 'style' ) {
-                // Unset styles on `lastAttrVal` but not on `nextAttrVal`.
-			    for (styleName in lastAttrVal) {
+
+            // Unset styles on `lastAttrVal` but not on `nextAttrVal`.
+              for (styleName in lastAttrVal) {
                     if (lastAttrVal[styleName] &&
                         (!nextAttrVal || !nextAttrVal[styleName])) {
                         styleUpdates = styleUpdates || {}; // Remove this line, and receive 14 failing tests!!
                         styleUpdates[styleName] = '';
                     }
-                }
-                 // Update styles that changed since `lastAttrVal`.
-                for ( styleName in nextAttrVal ) {
+              }
+                // Update styles that changed since `lastAttrVal`.
+              for ( styleName in nextAttrVal ) {
                     if (lastAttrVal[styleName] !== nextAttrVal[styleName]) {
                         styleUpdates = styleUpdates || {};
                         styleUpdates[styleName] = nextAttrVal[styleName];
                     }
-                }
+              }
 
             } else if ( lastAttrVal !== nextAttrVal ) {
 
@@ -165,7 +166,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
                 if (fastPropSet(domNode, attrName, nextAttrVal) === false) {
                     if (eventMapping[attrName]) {
-                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
+                        addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
                     } else {
                         template.setProperty(null, domNode, attrName, nextAttrVal, true);
                     }
