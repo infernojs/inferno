@@ -1,5 +1,5 @@
 /*!
- * inferno v0.4.2
+ * inferno v0.4.4
  * (c) 2015 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -378,13 +378,17 @@
   }
 
   function remove(item, parentNode) {
-  	parentNode.removeChild(item.rootNode);
-  	if (recyclingEnabled) {
-  		pool(item);
+  	if (item.rootNode === parentNode) {
+  		parentNode.innerHTML = '';
+  	} else {
+  		parentNode.removeChild(item.rootNode);
+  		if (recyclingEnabled) {
+  			pool(item);
+  		}
   	}
   }
 
-  function createVirtualList(value, childNodeList, treeLifecycle, context) {
+  function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
   	var domNode = document.createDocumentFragment();
   	var keyedChildren = true;
 
@@ -399,6 +403,12 @@
   				childNodeList.push(childDomNode);
   				domNode.appendChild(childDomNode);
   				keyedChildren = false;
+  				break;
+  			case ValueTypes.TREE:
+  				keyedChildren = false;
+  				childDomNode = childNode.create(item, treeLifecycle, context);
+  				childNodeList.push(childDomNode);
+  				domNode.appendChild(childDomNode);
   				break;
   			case ValueTypes.FRAGMENT:
   				if (childNode.key === undefined) {
@@ -424,8 +434,6 @@
   function updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context) {
   	// NOTE: if someone switches from keyed to non-keyed, the node order won't be right...
   	if (isArray(lastValue)) {
-  		// need to do this otherwise domNode will be an empty document fragment
-  		domNode = childNodeList[0].parentNode;
   		if (keyedChildren) {
   			updateKeyed(nextValue, lastValue, domNode, nextDomNode, treeLifecycle, context);
   		} else {
@@ -609,10 +617,10 @@
   typeof document !== 'undefined' && window.document.createElement);
 
   var ExecutionEnvironment = {
-    canUseDOM: canUseDOM,
-    canUseWorkers: typeof Worker !== 'undefined',
-    canUseEventListeners: canUseDOM && !!window.addEventListener,
-    canUseViewport: canUseDOM && !!window.screen
+  	canUseDOM: canUseDOM,
+  	canUseWorkers: typeof Worker !== 'undefined',
+  	canUseEventListeners: canUseDOM && !!window.addEventListener,
+  	canUseViewport: canUseDOM && !!window.screen
   };
 
   var isSVG = undefined;
@@ -968,236 +976,245 @@
    * CSS properties which accept numbers but are not in units of "px".
    */
   var unitlessProperties = {
-    animationIterationCount: true,
-    boxFlex: true,
-    boxFlexGroup: true,
-    boxOrdinalGroup: true,
-    columnCount: true,
-    flex: true,
-    flexGrow: true,
-    flexPositive: true,
-    flexShrink: true,
-    flexNegative: true,
-    flexOrder: true,
-    gridRow: true,
-    gridColumn: true,
-    fontWeight: true,
-    lineClamp: true,
-    lineHeight: true,
-    opacity: true,
-    order: true,
-    orphans: true,
-    tabSize: true,
-    widows: true,
-    zIndex: true,
-    zoom: true,
-
-    // SVG-related properties
-    fillOpacity: true,
-    stopOpacity: true,
-    strokeDashoffset: true,
-    strokeOpacity: true,
-    strokeWidth: true
+  	animationIterationCount: true,
+  	boxFlex: true,
+  	boxFlexGroup: true,
+  	boxOrdinalGroup: true,
+  	columnCount: true,
+  	flex: true,
+  	flexGrow: true,
+  	flexPositive: true,
+  	flexShrink: true,
+  	flexNegative: true,
+  	flexOrder: true,
+  	gridRow: true,
+  	gridColumn: true,
+  	fontWeight: true,
+  	lineClamp: true,
+  	lineHeight: true,
+  	opacity: true,
+  	order: true,
+  	orphans: true,
+  	tabSize: true,
+  	widows: true,
+  	zIndex: true,
+  	zoom: true,
+  	// SVG-related properties
+  	fillOpacity: true,
+  	stopOpacity: true,
+  	strokeDashoffset: true,
+  	strokeOpacity: true,
+  	strokeWidth: true
   };
 
   function prefixKey(prefix, key) {
-    return prefix + key.charAt(0).toUpperCase() + key.substring(1);
+  	return prefix + key[0].toUpperCase() + key.substring(1);
   }
 
-  var prefixes = ['Webkit', 'ms', 'Moz', 'O'];
+  var prefixes = ['Webkit', 'Moz'];
 
   Object.keys(unitlessProperties).forEach(function (prop) {
-    prefixes.forEach(function (prefix) {
-      unitlessProperties[prefixKey(prefix, prop)] = unitlessProperties[prop];
-    });
+  	prefixes.forEach(function (prefix) {
+  		unitlessProperties[prefixKey(prefix, prop)] = unitlessProperties[prop];
+  	});
   });
 
   /**
-   * Normalize CSS properties for SSR
+   * Normalize CSS properties, and add pixel suffix if needed
    *
    * @param {String} name The boolean attribute name to set.
    * @param {String} value The boolean attribute value to set.
    */
   function addPixelSuffixToValueIfNeeded (name, value) {
+  	if (value == null || typeof value === 'boolean' || value === '') {
+  		return '';
+  	}
+  	// const isNonNumeric = isNaN( value );
+  	if (value == null || value === '' || typeof value === 'boolean') {
+  		return '';
+  	}
+  	if (value === 0 || unitlessProperties[name]) {
+  		return '' + value; // cast to string
+  	}
+  	// isNaN is expensive, so we check for it at the very end
+  	if (isNaN(value)) {
+  		return '' + value; // cast to string
+  	}
+  	// Todo! Should we allow auto-trim, or is too expensive?
+  	if (typeof value === 'string') {
+  		value = value.trim();
+  	}
+  	return value + 'px';
+  }
 
-    if (value == null || typeof value === 'boolean' || value === '') {
-      return '';
-    }
-
-    var isNonNumeric = isNaN(value);
-
-    if (value === 0 || isNonNumeric || unitlessProperties[name]) {
-      return '' + value; // cast to string
-    }
-
-    if (typeof value === 'string') {
-      value = value.trim();
-    }
-    return value + 'px';
+  var DASH_REGEX = /([a-z])?([A-Z])/g;
+  var DASHED_REPLACE = function DASHED_REPLACE($$, $1, $2) {
+    return ($1 || '') + '-' + $2.toLowerCase();
   };
 
+  // Since prefix is expected to work on inline style objects, we must
+  // translate the keys to dash case for rendering to CSS.
+  var camelCasePropsToDashCase = (function (str) {
+    return str.replace(DASH_REGEX, DASHED_REPLACE);
+  })
+
   var template = {
-    /**
-     * Sets the value for a property on a node. If a value is specified as
-     * '' ( empty string ), the corresponding style property will be unset.
-     *
-     * @param {DOMElement} node
-     * @param {string} name
-     * @param {*} value
-     */
+  	/**
+    * Sets the value for a property on a node. If a value is specified as
+    * '' ( empty string ), the corresponding style property will be unset.
+    *
+    * @param {DOMElement} node
+    * @param {string} name
+    * @param {*} value
+    */
 
-    setProperty: function setProperty(vNode, domNode, name, value, useProperties) {
+  	setProperty: function setProperty(vNode, domNode, name, value, useProperties) {
+  		var propertyInfo = HTMLPropsContainer[name] || null;
 
-      var propertyInfo = HTMLPropsContainer[name] || null;
+  		if (propertyInfo) {
+  			if (isVoid(value) || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && value !== value || propertyInfo.hasPositiveNumericValue && value < 1 || value.length === 0) {
+  				template.removeProperty(vNode, domNode, name, useProperties);
+  			} else {
+  				var propName = propertyInfo.propertyName;
 
-      if (propertyInfo) {
-        if (isVoid(value) || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && value !== value || propertyInfo.hasPositiveNumericValue && value < 1 || value.length === 0) {
-          template.removeProperty(vNode, domNode, name, useProperties);
-        } else {
-          var propName = propertyInfo.propertyName;
+  				if (propertyInfo.mustUseProperty) {
+  					if (propName === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
+  						template.setSelectValueForProperty(vNode, domNode, value, useProperties);
+  					} else {
+  						if (useProperties) {
+  							if ('' + domNode[propName] !== '' + value) {
+  								domNode[propName] = value;
+  							}
+  						} else {
+  							if (propertyInfo.hasBooleanValue && (value === true || value === 'true')) {
+  								value = propName;
+  							}
+  							domNode.setAttribute(propName, value);
+  						}
+  					}
+  				} else {
+  					var attributeName = propertyInfo.attributeName;
+  					var namespace = propertyInfo.attributeNamespace;
 
-          if (propertyInfo.mustUseProperty) {
+  					// if 'truthy' value, and boolean, it will be 'propName=propName'
+  					if (propertyInfo.hasBooleanValue && value === true) {
+  						value = attributeName;
+  					}
 
-            if (propName === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
-              template.setSelectValueForProperty(vNode, domNode, value, useProperties);
-            } else {
-              if (useProperties) {
-                if ('' + domNode[propName] !== '' + value) {
-                  domNode[propName] = value;
-                }
-              } else {
-                if (propertyInfo.hasBooleanValue && (value === true || value === 'true')) {
-                  value = propName;
-                }
-                domNode.setAttribute(propName, value);
-              }
-            }
-          } else {
+  					if (namespace) {
+  						domNode.setAttributeNS(namespace, attributeName, value);
+  					} else {
+  						domNode.setAttribute(attributeName, value);
+  					}
+  				}
+  			}
+  			// HTML attributes and custom attributes
+  		} else if (isVoid(value)) {
+  				domNode.removeAttribute(name);
+  			} else if (name) {
+  				domNode.setAttribute(name, value);
+  			}
+  	},
 
-            var attributeName = propertyInfo.attributeName;
-            var namespace = propertyInfo.attributeNamespace;
+  	/**
+    * Sets the value for multiple styles on a node.	If a value is specified as
+    * '' ( empty string ), the corresponding style property will be unset.
+    *
+     * @param {vNode} virtual node
+    * @param {DOMElement} node
+    * @param {object} styles
+    */
+  	setCSS: function setCSS(vNode, domNode, styles) {
+  		for (var styleName in styles) {
+  			var styleValue = styles[styleName];
+  			var dashed = camelCasePropsToDashCase(styleName);
 
-            // if 'truthy' value, and boolean, it will be 'propName=propName'
-            if (propertyInfo.hasBooleanValue && value === true) {
-              value = attributeName;
-            }
+  			if (!isVoid(styleValue)) {
+  				domNode.style[dashed] = addPixelSuffixToValueIfNeeded(styleName, styleValue);
+  			} else {
+  				domNode.style[dashed] = '';
+  			}
+  		}
+  	},
 
-            if (namespace) {
-              domNode.setAttributeNS(namespace, attributeName, value);
-            } else {
-              domNode.setAttribute(attributeName, value);
-            }
-          }
-        }
-        // HTML attributes and custom attributes
-      } else if (isVoid(value)) {
-          domNode.removeAttribute(name);
-        } else if (name) {
-          domNode.setAttribute(name, value);
-        }
-    },
+  	/**
+    * Removes the value for a property on a node.
+    *
+    * @param {DOMElement} node
+    * @param {string} name
+    */
+  	removeProperty: function removeProperty(vNode, domNode, name, useProperties) {
+  		var propertyInfo = HTMLPropsContainer[name];
 
-    /**
-     * Sets the value for multiple styles on a node.	If a value is specified as
-     * '' ( empty string ), the corresponding style property will be unset.
-     *
-     * @param {DOMElement} node
-     * @param {object} styles
-     */
-    setCSS: function setCSS(vNode, domNode, styles) {
+  		if (propertyInfo) {
+  			if (propertyInfo.mustUseProperty) {
+  				var propName = propertyInfo.propertyName;
 
-      var style = domNode.style;
+  				if (name === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
+  					template.removeSelectValueForProperty(vNode, domNode);
+  				} else if (propertyInfo.hasBooleanValue) {
+  					if (useProperties) {
+  						domNode[propName] = false;
+  					} else {
+  						domNode.removeAttribute(propName);
+  					}
+  				} else {
+  					if (useProperties) {
+  						if ('' + domNode[propName] !== '') {
+  							domNode[propName] = '';
+  						}
+  					} else {
+  						domNode.removeAttribute(propName);
+  					}
+  				}
+  			} else {
+  				domNode.removeAttribute(propertyInfo.attributeName);
+  			}
+  		} else {
+  			// HTML attributes and custom attributes
+  			domNode.removeAttribute(name);
+  		}
+  	},
 
-      for (var styleName in styles) {
+  	/**
+    * Set the value for a select / select multiple on a node.
+    *
+    * @param {DOMElement} node
+    * @param {string} name
+    */
+  	setSelectValueForProperty: function setSelectValueForProperty(vNode, domNode, value, useProperties) {
+  		var isMultiple = isArray(value);
+  		var options = domNode.options;
+  		var len = options.length;
 
-        var styleValue = styles[styleName];
+  		value = typeof value === 'number' ? '' + value : value;
 
-        if (!isVoid(styleValue)) {
-          style[styleName] = addPixelSuffixToValueIfNeeded(styleName, styleValue);
-        } else {
-          style[styleName] = '';
-        }
-      }
-    },
+  		var i = 0,
+  		    optionNode = undefined;
 
-    /**
-     * Removes the value for a property on a node.
-     *
-     * @param {DOMElement} node
-     * @param {string} name
-     */
-    removeProperty: function removeProperty(vNode, domNode, name, useProperties) {
-      var propertyInfo = HTMLPropsContainer[name];
+  		while (i < len) {
+  			optionNode = options[i++];
+  			if (useProperties) {
+  				optionNode.selected = !isVoid(value) && (isMultiple ? inArray(value, optionNode.value) : optionNode.value === value);
+  			} else {
+  				if (!isVoid(value) && (isMultiple ? inArray(value, optionNode.value) : optionNode.value === value)) {
+  					optionNode.setAttribute('selected', 'selected');
+  				} else {
+  					optionNode.removeAttribute('selected');
+  				}
+  			}
+  		}
+  	},
+  	removeSelectValueForProperty: function removeSelectValueForProperty(vNode, domNode /* , propName */) {
+  		var options = domNode.options;
+  		var len = options.length;
 
-      if (propertyInfo) {
-        if (propertyInfo.mustUseProperty) {
-          var propName = propertyInfo.propertyName;
+  		var i = 0;
 
-          if (name === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
-            template.removeSelectValueForProperty(vNode, domNode);
-          } else if (propertyInfo.hasBooleanValue) {
-            if (useProperties) {
-              domNode[propName] = false;
-            } else {
-              domNode.removeAttribute(propName);
-            }
-          } else {
-            if (useProperties) {
-              if ('' + domNode[propName] !== '') {
-                domNode[propName] = '';
-              }
-            } else {
-              domNode.removeAttribute(propName);
-            }
-          }
-        } else {
-          domNode.removeAttribute(propertyInfo.attributeName);
-        }
-        // HTML attributes and custom attributes
-      } else {
-          domNode.removeAttribute(name);
-        }
-    },
-
-    /**
-     * Set the value for a select / select multiple on a node.
-     *
-     * @param {DOMElement} node
-     * @param {string} name
-     */
-    setSelectValueForProperty: function setSelectValueForProperty(vNode, domNode, value, useProperties) {
-      var isMultiple = isArray(value);
-      var options = domNode.options;
-      var len = options.length;
-
-      value = typeof value === 'number' ? '' + value : value;
-
-      var i = 0,
-          optionNode = undefined;
-
-      while (i < len) {
-        optionNode = options[i++];
-        if (useProperties) {
-          optionNode.selected = !isVoid(value) && (isMultiple ? inArray(value, optionNode.value) : optionNode.value === value);
-        } else {
-          if (!isVoid(value) && (isMultiple ? inArray(value, optionNode.value) : optionNode.value === value)) {
-            optionNode.setAttribute('selected', 'selected');
-          } else {
-            optionNode.removeAttribute('selected');
-          }
-        }
-      }
-    },
-    removeSelectValueForProperty: function removeSelectValueForProperty(vNode, domNode /* , propName */) {
-      var options = domNode.options;
-      var len = options.length;
-
-      var i = 0;
-
-      while (i < len) {
-        options[i++].selected = false;
-      }
-    }
+  		while (i < len) {
+  			options[i++].selected = false;
+  		}
+  	}
   };
 
   var standardNativeEventMapping = {
@@ -2488,9 +2505,9 @@
   var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
-  	// let nextDomNode;
+  	var nextDomNode = undefined;
   	var childNodeList = [];
-  	// let keyedChildren = true;
+  	var keyedChildren = true;
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -2515,12 +2532,14 @@
   					domNode = document.createTextNode(value);
   					break;
   				case ValueTypes.ARRAY:
-  					var virtualList = createVirtualList(value, childNodeList, treeLifecycle, context);
+  					var virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
 
   					domNode = virtualList.domNode;
-  					// keyedChildren = virtualList.keyedChildren;
+  					keyedChildren = virtualList.keyedChildren;
   					treeLifecycle.addTreeSuccessListener(function () {
-  						// nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
+  						nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+  						domNode = childNodeList[0].parentNode;
+  						item.rootNode = domNode;
   					});
   					break;
   				case ValueTypes.TREE:
@@ -2560,14 +2579,13 @@
   					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   					return;
   				}
-
   				switch (nextType) {
   					case ValueTypes.TEXT:
   						// TODO check if string is empty?
   						domNode.nodeValue = nextValue;
   						break;
   					case ValueTypes.ARRAY:
-  						// TODO
+  						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
   						break;
   					default:
   						break;
@@ -2593,7 +2611,6 @@
   	var childNodeList = [];
   	var keyedChildren = true;
   	var nextDomNode = undefined;
-
   	var node = {
   		create: function create(item, treeLifecycle, context) {
   			var value = getValueWithIndex(item, valueIndex);
@@ -2608,12 +2625,13 @@
   					domNode = document.createTextNode(value);
   					break;
   				case ValueTypes.ARRAY:
-  					var virtualList = createVirtualList(value, childNodeList, treeLifecycle, context);
+  					var virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
 
   					domNode = virtualList.domNode;
   					keyedChildren = virtualList.keyedChildren;
   					treeLifecycle.addTreeSuccessListener(function () {
   						nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+  						domNode = childNodeList[0].parentNode;
   					});
   					break;
   				case ValueTypes.TREE:
@@ -2801,33 +2819,46 @@
   					lastRender = nextRender;
   					item.rootNode = domNode;
   				} else {
-  					instance = new Component(getValueForProps(props, item));
-  					instance.context = context;
-  					instance.componentWillMount();
-  					var nextRender = instance.render();
-  					var childContext = instance.getChildContext();
-
-  					if (childContext) {
-  						context = babelHelpers.extends({}, context, childContext);
-  					}
-  					nextRender.parent = item;
-  					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
-  					item.rootNode = domNode;
-  					lastRender = nextRender;
-  					treeLifecycle.addTreeSuccessListener(instance.componentDidMount);
-  					instance.forceUpdate = function () {
+  					(function () {
+  						instance = new Component(getValueForProps(props, item));
   						instance.context = context;
+  						instance.componentWillMount();
   						var nextRender = instance.render();
   						var childContext = instance.getChildContext();
+  						var fragmentFirstChild = undefined;
 
   						if (childContext) {
   							context = babelHelpers.extends({}, context, childContext);
   						}
-  						nextRender.parent = currentItem;
-  						nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
-  						currentItem.rootNode = nextRender.rootNode;
+  						nextRender.parent = item;
+  						domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
+  						item.rootNode = domNode;
   						lastRender = nextRender;
-  					};
+
+  						if (domNode instanceof DocumentFragment) {
+  							fragmentFirstChild = domNode.childNodes[0];
+  						}
+  						treeLifecycle.addTreeSuccessListener(function () {
+  							if (fragmentFirstChild) {
+  								domNode = fragmentFirstChild.parentNode;
+  								item.rootNode = domNode;
+  							}
+  							instance.componentDidMount();
+  						});
+  						instance.forceUpdate = function () {
+  							instance.context = context;
+  							var nextRender = instance.render();
+  							var childContext = instance.getChildContext();
+
+  							if (childContext) {
+  								context = babelHelpers.extends({}, context, childContext);
+  							}
+  							nextRender.parent = currentItem;
+  							nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
+  							currentItem.rootNode = nextRender.rootNode;
+  							lastRender = nextRender;
+  						};
+  					})();
   				}
   			}
   			return domNode;
@@ -2909,39 +2940,51 @@
   					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
   					lastRender = nextRender;
   				} else {
-  					instance = new Component(getValueForProps(props, valueItem));
-  					instance.context = context;
-  					instance.componentWillMount();
-  					var nextRender = instance.render();
-  					var childContext = instance.getChildContext();
-
-  					if (childContext) {
-  						context = babelHelpers.extends({}, context, childContext);
-  					}
-  					nextRender.parent = item;
-  					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
-  					lastRender = nextRender;
-  					treeLifecycle.addTreeSuccessListener(instance.componentDidMount);
-  					instance.forceUpdate = function () {
+  					(function () {
+  						instance = new Component(getValueForProps(props, valueItem));
   						instance.context = context;
+  						instance.componentWillMount();
   						var nextRender = instance.render();
   						var childContext = instance.getChildContext();
+  						var fragmentFirstChild = undefined;
 
   						if (childContext) {
   							context = babelHelpers.extends({}, context, childContext);
   						}
-  						nextRender.parent = currentItem;
-  						var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
+  						nextRender.parent = item;
+  						domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
+  						lastRender = nextRender;
 
-  						if (newDomNode) {
-  							domNode = newDomNode;
-  							lastRender.rootNode = domNode;
-  							lastRender = nextRender;
-  							return domNode;
-  						} else {
-  							lastRender = nextRender;
+  						if (domNode instanceof DocumentFragment) {
+  							fragmentFirstChild = domNode.childNodes[0];
   						}
-  					};
+  						treeLifecycle.addTreeSuccessListener(function () {
+  							if (fragmentFirstChild) {
+  								domNode = fragmentFirstChild.parentNode;
+  							}
+  							instance.componentDidMount();
+  						});
+  						instance.forceUpdate = function () {
+  							instance.context = context;
+  							var nextRender = instance.render();
+  							var childContext = instance.getChildContext();
+
+  							if (childContext) {
+  								context = babelHelpers.extends({}, context, childContext);
+  							}
+  							nextRender.parent = currentItem;
+  							var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
+
+  							if (newDomNode) {
+  								domNode = newDomNode;
+  								lastRender.rootNode = domNode;
+  								lastRender = nextRender;
+  								return domNode;
+  							} else {
+  								lastRender = nextRender;
+  							}
+  						};
+  					})();
   				}
   			}
   			return domNode;
