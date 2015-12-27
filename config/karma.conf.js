@@ -72,13 +72,6 @@ module.exports = function(config) {
             }
         },
 
-        browserDisconnectTimeout: 10000,
-        browserDisconnectTolerance: 2,
-        // concurrency level how many browser should be started simultaneously
-        concurrency: 4,
-        // If browser does not capture in given timeout [ms], kill it
-        captureTimeout: 100000,
-        browserNoActivityTimeout: 30000,
         // enable / disable colors in the output (reporters and logs)
         colors: true,
         // level of logging
@@ -92,7 +85,7 @@ module.exports = function(config) {
     });
     if (process.env.TRAVIS) {
 
-        // Use Chrome as default browser for Travis CI         
+        // Use Chrome as default browser for Travis CI
         config.browsers = ['Chrome_for_Travis_CI'];
         // Used by Travis to push coveralls info corretly to example coveralls.io
         config.reporters = ['mocha', 'coverage', 'coveralls'];
