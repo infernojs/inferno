@@ -1,7 +1,7 @@
 /**
  * CSS properties which accept numbers but are not in units of "px".
  */
-var unitlessProperties = {
+const unitlessProperties = {
   animationIterationCount: true,
   boxFlex: true,
   boxFlexGroup: true,
@@ -35,10 +35,10 @@ var unitlessProperties = {
 };
 
 function prefixKey(prefix, key) {
-  return prefix + key.charAt(0).toUpperCase() + key.substring(1);
+  return prefix + key[0].toUpperCase() + key.substring(1);
 }
 
-var prefixes = ['Webkit', 'ms', 'Moz', 'O'];
+const prefixes = ['Webkit', 'Moz'];
 
 Object.keys(unitlessProperties).forEach(function(prop) {
   prefixes.forEach(function(prefix) {
