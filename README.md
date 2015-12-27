@@ -1,6 +1,6 @@
 # InfernoJS
 
-[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=dev)](https://travis-ci.org/trueadm/inferno)
+[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=master)](https://travis-ci.org/trueadm/inferno)
 [![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=master&service=github)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependency Status](https://david-dm.org/trueadm/inferno.svg)](https://david-dm.org/trueadm/inferno)
 [![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
@@ -169,33 +169,35 @@ Inferno.render(template(), document.body);
 
 ```js
 
-    class BasicComponent extends Inferno.Component {
-        render() {
-            const template = Inferno.createTemplate((name, title) =>
-                TemplateFactory("div", {
-                        className: "basic"
-                    },
-                    TemplateFactory("span", {
-                        className: name
-                    }, "The title is ", title)
-                )
-            );
-            return template(this.props.name, this.props.title);
-        }
+const { createElement } = Inferno.TemplateFactory;
+
+class BasicComponent extends Inferno.Component {
+    render() {
+        const template = Inferno.createTemplate((name, title) =>
+            createElement('div', {
+                    className: 'basic'
+                },
+                createElement('span', {
+                    className: name
+                }, 'The title is ', title)
+            )
+        );
+        return template(this.props.name, this.props.title);
     }
-  
-  const template = Inferno.createTemplate((Component, title) =>
-                TemplateFactory('div', null,
-                    TemplateFactory(Component, {
-                        title: title,
-                        name: "basic-render"
-                    })
-                )
-            );
+}
+
+const template = Inferno.createTemplate((Component, title) =>
+    createElement('div', null,
+        createElement(Component, {
+            title: title,
+            name: 'basic-render'
+        })
+    )
+);
 
 Inferno.render(template(BasicComponent, 'abc'), container);
 ```
-Inferno.TemplateFactory is hyperscript function that works the same way as React.creactElement(). It's first argument is the node, second argument is the attributes and the third and last argument is it's children.
+`Inferno.TemplateFactory` provides a factory `createElement()` function that can be used to build up virtual DOM structures in a similar sense to how `React.creactElement()` works. It's first argument is the node, second argument is the attributes and all remaining arguments are it's children.
 
 ### Inferno.createRef
 
