@@ -87,7 +87,7 @@ const Whitelist = {
 	autoPlay: null,
 	capture: BOOLEAN,
 	checked: PROPERTY | BOOLEAN,
-	controls: BOOLEAN,
+	controls: PROPERTY | BOOLEAN,
 	currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
 	default: BOOLEAN,
 	defaultChecked: BOOLEAN,
@@ -117,6 +117,7 @@ const Whitelist = {
 	required: PROPERTY | BOOLEAN,
 	reversed: BOOLEAN,
   radioGroup: PROPERTY,
+  icon: PROPERTY,
   draggable: BOOLEAN, // 3.2.5 - Global attributes
 	dropzone: null, // 3.2.5 - Global attributes
 	scoped: PROPERTY | BOOLEAN,
