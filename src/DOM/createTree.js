@@ -83,28 +83,33 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 		const tag = node.tag;
 
 		if ( tag ) {
-			const namespace = node.attrs && node.attrs.xmlns || null;
 			const is = node.attrs && node.attrs.is || null;
 
-			if ( !namespace ) {
-				switch ( tag ) {
-					case 'svg':
-						domNamespace = 'http://www.w3.org/2000/svg';
-						break;
-					case 'math':
-						domNamespace = 'http://www.w3.org/1998/Math/MathML';
-						break;
-					default:
-						break;
+          let namespace = node.attrs && node.attrs.xmlns || null;
+
+              if ( namespace == null ) {
+
+                  switch ( tag ) {
+                      case 'svg':
+                          namespace = 'http://www.w3.org/2000/svg';
+						          break;
+            					case 'math':
+                          namespace = 'http://www.w3.org/1998/Math/MathML';
+						          break;
+					        default:
+
+                    if ( parentNode ) { // TODO! Fix SVG edge case
+
+                      namespace = domNamespace;
+                    }
 				}
-			} else {
-				domNamespace = namespace;
 			}
-			if ( domNamespace ) {
+
+			if ( namespace ) {
 				if ( is ) {
-					staticNode = document.createElementNS( domNamespace, tag, is );
+					staticNode = document.createElementNS( namespace, tag, is );
 				} else {
-					staticNode = document.createElementNS( domNamespace, tag );
+					staticNode = document.createElementNS( namespace, tag );
 				}
 			} else {
 				if ( is ) {
@@ -126,13 +131,13 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 				staticNode.textContent = text;
 			} else {
 				if ( !isVoid( children ) ) {
-					createStaticTreeChildren( children, staticNode, domNamespace );
+					createStaticTreeChildren( children, staticNode, namespace );
 				}
 			}
 			createStaticAttributes( node, staticNode );
-		} else if ( node.text ) {
-			staticNode = document.createTextNode( node.text );
-		}
+    } else if ( node.text ) {
+        staticNode = document.createTextNode(node.text);
+    }
 	}
 	if ( staticNode === undefined ) {
 		throw Error( invalidTemplateError );
