@@ -6,20 +6,20 @@ import unitlessProperties from './unitlessProperties';
  * @param {String} name The boolean attribute name to set.
  * @param {String} value The boolean attribute value to set.
  */
-export default ( name, value ) => {
-	if ( value === null || ( value === '' ) ) {
-		return '';
-	}
+export default function ( name, value ) {
 
-	if ( value === 0 || ( unitlessProperties( name ) ) ) {
-		return '' + value; // cast to string
-	}
+  if (value == null || typeof value === 'boolean' || value === '') {
+    return '';
+  }
 
-	if ( isNaN( value ) ) {
-		return '' + value; // cast to string
-	}
+  const isNonNumeric = isNaN(value);
 
-	if ( typeof value === 'string' ) {
+  if (value === 0 || isNonNumeric ||
+    unitlessProperties[ name]) {
+    return '' + value; // cast to string
+  }
+
+  if ( typeof value === 'string' ) {
 		value = value.trim();
 	}
 	return value + 'px';
