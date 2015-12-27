@@ -2,14 +2,14 @@ import isVoid from '../../util/isVoid';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
-import { createVirtualList/* , updateVirtualList */ } from '../domMutate';
+import { createVirtualList, updateVirtualList } from '../domMutate';
 
 const recyclingEnabled = isRecyclingEnabled();
 
 export default function createRootDynamicNode( valueIndex ) {
-	// let nextDomNode;
+	let nextDomNode;
 	let childNodeList = [];
-	// let keyedChildren = true;
+	let keyedChildren = true;
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -34,12 +34,14 @@ export default function createRootDynamicNode( valueIndex ) {
 					domNode = document.createTextNode( value );
 					break;
 				case ValueTypes.ARRAY:
-					const virtualList = createVirtualList( value, childNodeList, treeLifecycle, context );
+					const virtualList = createVirtualList( value, item, childNodeList, treeLifecycle, context );
 
 					domNode = virtualList.domNode;
-					// keyedChildren = virtualList.keyedChildren;
+					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener( () => {
-						// nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
+						nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+						domNode = childNodeList[0].parentNode;
+						item.rootNode = domNode;
 					} );
 					break;
 				case ValueTypes.TREE:
@@ -78,14 +80,13 @@ export default function createRootDynamicNode( valueIndex ) {
 					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 					return;
 				}
-
 				switch ( nextType ) {
 					case ValueTypes.TEXT:
 						// TODO check if string is empty?
 						domNode.nodeValue = nextValue;
 						break;
 					case ValueTypes.ARRAY:
-						// TODO
+						updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context );
 						break;
 					default: break;
 				}

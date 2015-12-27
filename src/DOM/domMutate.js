@@ -193,13 +193,17 @@ export function insertOrAppend( parentNode, newNode, nextNode ) {
 }
 
 export function remove( item, parentNode ) {
-	parentNode.removeChild( item.rootNode );
-	if ( recyclingEnabled ) {
-		pool( item );
+	if ( item.rootNode === parentNode ) {
+		parentNode.innerHTML = '';
+	} else {
+		parentNode.removeChild( item.rootNode );
+		if ( recyclingEnabled ) {
+			pool( item );
+		}
 	}
 }
 
-export function createVirtualList( value, childNodeList, treeLifecycle, context ) {
+export function createVirtualList( value, item, childNodeList, treeLifecycle, context ) {
 	const domNode = document.createDocumentFragment();
 	let keyedChildren = true;
 
@@ -214,6 +218,12 @@ export function createVirtualList( value, childNodeList, treeLifecycle, context 
 				childNodeList.push( childDomNode );
 				domNode.appendChild( childDomNode );
 				keyedChildren = false;
+				break;
+			case ValueTypes.TREE:
+				keyedChildren = false;
+				childDomNode = childNode.create( item, treeLifecycle, context );
+				childNodeList.push( childDomNode );
+				domNode.appendChild( childDomNode );
 				break;
 			case ValueTypes.FRAGMENT:
 				if ( childNode.key === undefined ) {
@@ -238,8 +248,6 @@ export function createVirtualList( value, childNodeList, treeLifecycle, context 
 export function updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context ) {
 	// NOTE: if someone switches from keyed to non-keyed, the node order won't be right...
 	if ( isArray( lastValue ) ) {
-		// need to do this otherwise domNode will be an empty document fragment
-		domNode = childNodeList[0].parentNode;
 		if ( keyedChildren ) {
 			updateKeyed( nextValue, lastValue, domNode, nextDomNode, treeLifecycle, context );
 		} else {

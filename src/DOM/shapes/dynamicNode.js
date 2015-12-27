@@ -10,7 +10,6 @@ export default function createDynamicNode( valueIndex ) {
 	let childNodeList = [];
 	let keyedChildren = true;
 	let nextDomNode;
-
 	const node = {
 		create( item, treeLifecycle, context ) {
 			let value = getValueWithIndex( item, valueIndex );
@@ -25,12 +24,13 @@ export default function createDynamicNode( valueIndex ) {
 					domNode = document.createTextNode( value );
 					break;
 				case ValueTypes.ARRAY:
-					const virtualList = createVirtualList( value, childNodeList, treeLifecycle, context );
+					const virtualList = createVirtualList( value, item, childNodeList, treeLifecycle, context );
 
 					domNode = virtualList.domNode;
 					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener( () => {
 						nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
+						domNode = childNodeList[0].parentNode;
 					} );
 					break;
 				case ValueTypes.TREE:

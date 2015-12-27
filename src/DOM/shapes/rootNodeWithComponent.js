@@ -46,6 +46,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					instance.componentWillMount();
 					const nextRender = instance.render();
 					const childContext = instance.getChildContext();
+					let fragmentFirstChild;
 
 					if ( childContext ) {
 						context = { ...context, ...childContext };
@@ -54,7 +55,17 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
 					item.rootNode = domNode;
 					lastRender = nextRender;
-					treeLifecycle.addTreeSuccessListener( instance.componentDidMount );
+
+					if ( domNode instanceof DocumentFragment ) {
+						fragmentFirstChild = domNode.childNodes[0];
+					}
+					treeLifecycle.addTreeSuccessListener( () => {
+						if ( fragmentFirstChild ) {
+							domNode = fragmentFirstChild.parentNode;
+							item.rootNode = domNode;
+						}
+						instance.componentDidMount();
+					} );
 					instance.forceUpdate = () => {
 						instance.context = context;
 						const nextRender = instance.render();

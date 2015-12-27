@@ -80,7 +80,7 @@ const template = {
 			let styleValue = styles[styleName];
 
 			if ( !isVoid( styleValue ) ) {
-				style[camelCasePropsToDashCase(styleName)] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
+				style[camelCasePropsToDashCase( styleName )] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
 			} else {
 				style[styleName] = '';
 			}
