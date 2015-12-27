@@ -7,7 +7,8 @@ const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
 
 const DOMAttributeNamespaces = {
-	'xlink:actuate': xlink,
+  // None-JSX compat
+  'xlink:actuate': xlink,
 	'xlink:arcrole': xlink,
 	'xlink:href': xlink,
 	'xlink:role': xlink,
@@ -17,7 +18,7 @@ const DOMAttributeNamespaces = {
 	'xml:base': xml,
 	'xml:lang': xml,
 	'xml:space': xml,
-	// React compat for non-working JSX namespace support
+  // JSX compat
 	xlinkActuate: xlink,
 	xlinkArcrole: xlink,
 	xlinkHref: xlink,
@@ -28,11 +29,13 @@ const DOMAttributeNamespaces = {
 };
 
 const DOMAttributeNames = {
-	acceptCharset: 'accept-charset',
+
+  acceptCharset: 'accept-charset',
 	className: 'class',
 	htmlFor: 'for',
 	httpEquiv: 'http-equiv',
-	// SVG
+
+  // SVG
 	clipPath: 'clip-path',
 	fillOpacity: 'fill-opacity',
 	fontFamily: 'font-family',
@@ -47,7 +50,9 @@ const DOMAttributeNames = {
 	strokeOpacity: 'stroke-opacity',
 	strokeWidth: 'stroke-width',
 	textAnchor: 'text-anchor',
-	// React compat for non-working JSX namespace support
+  viewBox: 'viewBox', // Edge case. The letter 'b' need to be uppercase
+
+  // JSX compat
 	xlinkActuate: 'xlink:actuate',
 	xlinkArcrole: 'xlink:arcrole',
 	xlinkHref: 'xlink:href',
@@ -55,11 +60,10 @@ const DOMAttributeNames = {
 	xlinkShow: 'xlink:show',
 	xlinkTitle: 'xlink:title',
 	xlinkType: 'xlink:type',
-	// others...
 	xmlBase: 'xml:base',
 	xmlLang: 'xml:lang',
-	xmlSpace: 'xml:space',
-	viewBox: 'viewBox' // SVG - Edge case. The letter 'b' need to be uppercase
+	xmlSpace: 'xml:space'
+
 };
 
 const DOMPropertyNames = {
@@ -69,7 +73,6 @@ const DOMPropertyNames = {
 	autoSave: 'autosave',
 	hrefLang: 'hreflang',
 	radioGroup: 'radiogroup',
-	spellCheck: 'spellcheck',
 	srcDoc: 'srcdoc',
 	srcSet: 'srcset'
 };
@@ -290,7 +293,9 @@ const Whitelist = {
 	cellSpacing: null,
 	charSet: null,
 	allowTransparency: null,
-	spellcheck: null // 3.2.5 - Global attributes
+	spellcheck: null, // 3.2.5 - Global attributes
+  srcDoc: PROPERTY,
+  srcSet: null
 };
 
 const HTMLPropsContainer = {};
@@ -300,9 +305,8 @@ function checkBitmask( value, bitmask ) {
 }
 
 for ( const propName in Whitelist ) {
-	if ( Whitelist.hasOwnProperty( propName ) ) {
 
-		const propConfig = Whitelist[propName];
+  const propConfig = Whitelist[propName];
 
 		HTMLPropsContainer[propName] = {
 			attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
@@ -313,8 +317,7 @@ for ( const propName in Whitelist ) {
 			hasBooleanValue: checkBitmask( propConfig, BOOLEAN ),
 			hasNumericValue: checkBitmask( propConfig, NUMERIC_VALUE ),
 			hasPositiveNumericValue: checkBitmask( propConfig, POSITIVE_NUMERIC_VALUE )
-		};
-	}
+	};
 }
 
 export default HTMLPropsContainer;
