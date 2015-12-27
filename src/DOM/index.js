@@ -34,15 +34,7 @@ const template = {
 					} else  {
 	  				if ( useProperties ) {
               if ( '' + domNode[propName] !== '' + value ) {
-                if ( propertyInfo.hasBooleanValue ) {
-  								if ( name === value || !!value ) {
-  									domNode[propName] = true;
-  								} else {
-  									domNode[propName] = false;
-	  							}
-  							} else {
-  								domNode[propName] = value;
-						  	}
+  						  domNode[propName] = value;
               }
 						} else {
 							if ( propertyInfo.hasBooleanValue && ( value === true || value === 'true' ) ) {
@@ -68,6 +60,7 @@ const template = {
 					}
 				}
 			}
+      // HTML attributes and custom attributes
 		} else if ( isVoid( value ) ) {
 			domNode.removeAttribute( name );
 		} else if ( name ) {
@@ -111,7 +104,7 @@ const template = {
 			if ( propertyInfo.mustUseProperty ) {
 				const propName = propertyInfo.propertyName;
 
-				if ( name === 'value' && domNode.tagName === 'SELECT' ) {
+        if ( name === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
 					template.removeSelectValueForProperty( vNode, domNode );
 				}	else if ( propertyInfo.hasBooleanValue ) {
 					if ( useProperties ) {
@@ -136,6 +129,13 @@ const template = {
 			domNode.removeAttribute( name );
 		}
 	},
+
+  /**
+   * Set the value for a select / select multiple on a node.
+   *
+   * @param {DOMElement} node
+   * @param {string} name
+   */
 	setSelectValueForProperty( vNode, domNode, value, useProperties ) {
 		const isMultiple = isArray( value );
 		const options = domNode.options;
