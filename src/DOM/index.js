@@ -70,19 +70,21 @@ const template = {
 	 * Sets the value for multiple styles on a node.	If a value is specified as
 	 * '' ( empty string ), the corresponding style property will be unset.
 	 *
+   * @param {vNode} virtual node
 	 * @param {DOMElement} node
 	 * @param {object} styles
 	 */
 	setCSS( vNode, domNode, styles ) {
-		let style = domNode.style;
 
 		for ( let styleName in styles ) {
-			let styleValue = styles[styleName];
 
-			if ( !isVoid( styleValue ) ) {
-				style[camelCasePropsToDashCase(styleName)] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
+			let styleValue = styles[styleName];
+      let dashed = camelCasePropsToDashCase(styleName);
+
+      if ( !isVoid( styleValue ) ) {
+        domNode.style[dashed] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
 			} else {
-				style[styleName] = '';
+        domNode.style[dashed] = '';
 			}
 		}
 	},
