@@ -37,9 +37,9 @@ export default function createRootDynamicNode( valueIndex ) {
 					const virtualList = createVirtualList( value, childNodeList, treeLifecycle, context );
 
 					domNode = virtualList.domNode;
-					// keyedChildren = virtualList.keyedChildren;
+					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener( () => {
-						// nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
+						nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
 					} );
 					break;
 				case ValueTypes.TREE:

@@ -169,7 +169,6 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 				} else {
 					if ( typeof item === 'string' || typeof item === 'number' ) {
 						const childNode = document.createTextNode( item );
-
 						domNodeList[i] = childNode;
 						insertOrAppend( parentNode, childNode, parentNextNode );
 					}
