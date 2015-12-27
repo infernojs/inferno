@@ -141,7 +141,7 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 				}
 				// Update styles that changed since `lastAttrVal`.
 				for ( styleName in nextAttrVal ) {
-					if ( lastAttrVal[styleName] !== nextAttrVal[styleName] ) {
+					if ( nextAttrVal[styleName] && ( lastAttrVal[styleName] !== nextAttrVal[styleName] ) )  {
 						styleUpdates[styleName] = nextAttrVal[styleName];
 					}
 				}
