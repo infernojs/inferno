@@ -1,52 +1,50 @@
-const unitlessProps = {
-	flex: true,
-	base: true,
-	zoom: true,
-	order: true,
-	marker: true,
-	stress: true,
-	volume: true,
-	widows: true,
-	zIndex: true,
-	boxFlex: true,
-	gridRow: true,
-	opacity: true,
-	orphans: true,
-	tabSize: true,
-	flexGrow: true,
-	richness: true,
-	flexOrder: true,
-	lineClamp: true,
-	msBoxFlex: true,
-	flexShrink: true,
-	fontWeight: true,
-	gridColumn: true,
-	lineHeight: true,
-	pitchRange: true,
-	MozBoxFlex: true,
-	columnCount: true,
-	stopOpacity: true,
-	fillOpacity: true,
-	strokeWidth: true,
-	boxFlexGroup: true,
-	counterReset: true,
-	flexPositive: true,
-	flexNegative: true,
-	strokeOpacity: true,
-	WebkitBoxFlex: true,
-	WebkitGridRow: true,
-	WebkitFlexGrow: true,
-	boxOrdinalGroup: true,
-	WebkitFlexShrink: true,
-	counterIncrement: true,
-	strokeDashoffset: true,
-	WebkitStrokeWidth: true,
-	MozBoxOrdinalGroup: true,
-	WebkitBoxOrdinalGroup: true,
-	animationIterationCount: true,
-	WebkitAnimationIterationCount: true
+/**
+ * CSS properties which accept numbers but are not in units of "px".
+ */
+var unitlessProperties = {
+  animationIterationCount: true,
+  boxFlex: true,
+  boxFlexGroup: true,
+  boxOrdinalGroup: true,
+  columnCount: true,
+  flex: true,
+  flexGrow: true,
+  flexPositive: true,
+  flexShrink: true,
+  flexNegative: true,
+  flexOrder: true,
+  gridRow: true,
+  gridColumn: true,
+  fontWeight: true,
+  lineClamp: true,
+  lineHeight: true,
+  opacity: true,
+  order: true,
+  orphans: true,
+  tabSize: true,
+  widows: true,
+  zIndex: true,
+  zoom: true,
+
+  // SVG-related properties
+  fillOpacity: true,
+  stopOpacity: true,
+  strokeDashoffset: true,
+  strokeOpacity: true,
+  strokeWidth: true,
 };
 
-export default ( str ) => {
-	return str in unitlessProps;
-};
+function prefixKey(prefix, key) {
+  return prefix + key.charAt(0).toUpperCase() + key.substring(1);
+}
+
+var prefixes = ['Webkit', 'ms', 'Moz', 'O'];
+
+Object.keys(unitlessProperties).forEach(function(prop) {
+  prefixes.forEach(function(prefix) {
+    unitlessProperties[prefixKey(prefix, prop)] = unitlessProperties[prop];
+  });
+});
+
+export default unitlessProperties;
+
