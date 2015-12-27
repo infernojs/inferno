@@ -53,7 +53,7 @@
 			"setWithoutGet": true
 		}],
 		"curly": [2, "all"],
-		"eqeqeq": 2,
+		"eqeqeq": [2, "allow-null"],
 		"no-alert": 1,
 		"no-div-regex": 2,
 		"no-eq-null": 2,
