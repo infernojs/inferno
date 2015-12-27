@@ -188,7 +188,7 @@
   	}
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -200,7 +200,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$1) {
+  		if (recyclingEnabled) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -379,7 +379,7 @@
 
   function remove(item, parentNode) {
   	parentNode.removeChild(item.rootNode);
-  	if (recyclingEnabled$1) {
+  	if (recyclingEnabled) {
   		pool(item);
   	}
   }
@@ -603,26 +603,16 @@
   	createElement: createElement
   };
 
-  var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+  var canUseDOM = !!(typeof window !== 'undefined' &&
+  // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
+  // As a workaround, check if document is undefined
+  typeof document !== 'undefined' && window.document.createElement);
 
-  /**
-   * Simple, lightweight module assisting with the detection and context of
-   * Worker. Helps avoid circular dependencies and allows code to reason about
-   * whether or not they are in a Worker, even if they never include the main
-   * `ReactWorker` dependency.
-   */
   var ExecutionEnvironment = {
-
-  	canUseDOM: canUseDOM,
-
-  	canUseWorkers: typeof Worker !== 'undefined',
-
-  	canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
-
-  	canUseViewport: canUseDOM && !!window.screen,
-
-  	isInWorker: !canUseDOM // For now, this is true - might change in the future.
-
+    canUseDOM: canUseDOM,
+    canUseWorkers: typeof Worker !== 'undefined',
+    canUseEventListeners: canUseDOM && !!window.addEventListener,
+    canUseViewport: canUseDOM && !!window.screen
   };
 
   var isSVG = undefined;
@@ -1079,15 +1069,7 @@
   					} else {
   						if (useProperties) {
   							if ('' + domNode[propName] !== '' + value) {
-  								if (propertyInfo.hasBooleanValue) {
-  									if (name === value || !!value) {
-  										domNode[propName] = true;
-  									} else {
-  										domNode[propName] = false;
-  									}
-  								} else {
-  									domNode[propName] = value;
-  								}
+  								domNode[propName] = value;
   							}
   						} else {
   							if (propertyInfo.hasBooleanValue && (value === true || value === 'true')) {
@@ -1113,11 +1095,12 @@
   					}
   				}
   			}
+  			// HTML attributes and custom attributes
   		} else if (isVoid(value)) {
-  			domNode.removeAttribute(name);
-  		} else if (name) {
-  			domNode.setAttribute(name, value);
-  		}
+  				domNode.removeAttribute(name);
+  			} else if (name) {
+  				domNode.setAttribute(name, value);
+  			}
   	},
 
   	/**
@@ -1156,7 +1139,7 @@
   			if (propertyInfo.mustUseProperty) {
   				var propName = propertyInfo.propertyName;
 
-  				if (name === 'value' && domNode.tagName === 'SELECT') {
+  				if (name === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
   					template.removeSelectValueForProperty(vNode, domNode);
   				} else if (propertyInfo.hasBooleanValue) {
   					if (useProperties) {
@@ -1181,6 +1164,13 @@
   				domNode.removeAttribute(name);
   			}
   	},
+
+  	/**
+    * Set the value for a select / select multiple on a node.
+    *
+    * @param {DOMElement} node
+    * @param {string} name
+    */
   	setSelectValueForProperty: function setSelectValueForProperty(vNode, domNode, value, useProperties) {
   		var isMultiple = isArray(value);
   		var options = domNode.options;
@@ -1894,7 +1884,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1903,7 +1893,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2455,7 +2445,7 @@
   	return node;
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
   	var node = {
@@ -2464,7 +2454,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2501,7 +2491,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	// let nextDomNode;
@@ -2513,7 +2503,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
