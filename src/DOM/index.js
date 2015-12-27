@@ -3,7 +3,7 @@ import isArray from '../util/isArray';
 import inArray from '../util/inArray';
 import DOMRegistry from './DOMRegistry';
 import addPixelSuffixToValueIfNeeded from '../shared/addPixelSuffixToValueIfNeeded';
-import hyphenateStyleName from '../shared/hyphenateStyleName';
+import camelCasePropsToDashCase from '../shared/camelCasePropsToDashCase';
 
 const template = {
 	/**
@@ -80,7 +80,7 @@ const template = {
 			let styleValue = styles[styleName];
 
 			if ( !isVoid( styleValue ) ) {
-				style[hyphenateStyleName(styleName)] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
+				style[camelCasePropsToDashCase(styleName)] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
 			} else {
 				style[styleName] = '';
 			}
