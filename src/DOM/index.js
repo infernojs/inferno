@@ -14,7 +14,6 @@ const template = {
 	 * @param {*} value
 	 */
 	setProperty( vNode, domNode, name, value, useProperties ) {
-
 		const propertyInfo = DOMRegistry[name] || null;
 
 		if ( propertyInfo ) {
@@ -28,14 +27,13 @@ const template = {
 				const propName = propertyInfo.propertyName;
 
 				if ( propertyInfo.mustUseProperty ) {
-
 					if ( propName === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
 						template.setSelectValueForProperty( vNode, domNode, value, useProperties );
-					} else  {
-	  				if ( useProperties ) {
-              if ( '' + domNode[propName] !== '' + value ) {
-  						  domNode[propName] = value;
-              }
+					} else {
+						if ( useProperties ) {
+							if ( '' + domNode[propName] !== '' + value ) {
+								domNode[propName] = value;
+							}
 						} else {
 							if ( propertyInfo.hasBooleanValue && ( value === true || value === 'true' ) ) {
 								value = propName;
@@ -44,7 +42,6 @@ const template = {
 						}
 					}
 				} else {
-
 					const attributeName = propertyInfo.attributeName;
 					const namespace = propertyInfo.attributeNamespace;
 
@@ -60,7 +57,7 @@ const template = {
 					}
 				}
 			}
-      // HTML attributes and custom attributes
+        // HTML attributes and custom attributes
 		} else if ( isVoid( value ) ) {
 			domNode.removeAttribute( name );
 		} else if ( name ) {
@@ -76,11 +73,9 @@ const template = {
 	 * @param {object} styles
 	 */
 	setCSS( vNode, domNode, styles ) {
-
 		let style = domNode.style;
 
 		for ( let styleName in styles ) {
-
 			let styleValue = styles[styleName];
 
 			if ( !isVoid( styleValue ) ) {
@@ -104,9 +99,9 @@ const template = {
 			if ( propertyInfo.mustUseProperty ) {
 				const propName = propertyInfo.propertyName;
 
-        if ( name === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
+				if ( name === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
 					template.removeSelectValueForProperty( vNode, domNode );
-				}	else if ( propertyInfo.hasBooleanValue ) {
+				} else if ( propertyInfo.hasBooleanValue ) {
 					if ( useProperties ) {
 						domNode[propName] = false;
 					} else {
@@ -124,8 +119,8 @@ const template = {
 			} else {
 				domNode.removeAttribute( propertyInfo.attributeName );
 			}
-			// HTML attributes and custom attributes
 		} else {
+			// HTML attributes and custom attributes
 			domNode.removeAttribute( name );
 		}
 	},
