@@ -101,6 +101,7 @@
     "coverage:node": "babel-node node_modules/isparta/bin/isparta cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/node/**/*.js"
   },
   "pre-commit": [
-    "lint:source"
+    "lint:source",
+    "test"
   ]
 }
