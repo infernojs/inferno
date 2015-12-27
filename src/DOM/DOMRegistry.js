@@ -104,7 +104,8 @@ const Whitelist = {
 	// disabled with `removeAttribute`.
 	multiple: PROPERTY | BOOLEAN,
 	muted: PROPERTY | BOOLEAN,
-	noValidate: BOOLEAN,
+  mediaGroup: PROPERTY,
+  noValidate: BOOLEAN,
 	noShade: PROPERTY | BOOLEAN,
 	noResize: BOOLEAN,
 	noWrap: BOOLEAN,
@@ -115,12 +116,14 @@ const Whitelist = {
 	readOnly: BOOLEAN,
 	required: PROPERTY | BOOLEAN,
 	reversed: BOOLEAN,
-	draggable: BOOLEAN, // 3.2.5 - Global attributes
+  radioGroup: PROPERTY,
+  draggable: BOOLEAN, // 3.2.5 - Global attributes
 	dropzone: null, // 3.2.5 - Global attributes
-	scoped: BOOLEAN,
+	scoped: PROPERTY | BOOLEAN,
 	visible: BOOLEAN,
 	trueSpeed: BOOLEAN,
-	sortable: BOOLEAN,
+  sandbox: PROPERTY,
+  sortable: BOOLEAN,
 	inert: BOOLEAN,
 	indeterminate: BOOLEAN,
 	nohref: BOOLEAN,
