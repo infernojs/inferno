@@ -92,7 +92,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<div>Hello world</div>'
             );
-			
+
 			 const template1 = Inferno.createTemplate(() => ({
                 tag: 'div',
                 text: 'Static Text!'
@@ -105,7 +105,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<div>Static Text!</div>'
             );
-			
+
 			 Inferno.render(template(), container);
             expect(
                 container.innerHTML
@@ -124,7 +124,7 @@ describe('DOM element tests1 (no-jsx)', () => {
         it('Third render (update)', () => {
 
             // This doesn't use dynamic update function
-			
+
             template = Inferno.createTemplate((text) => ({
                 tag: 'div',
                 text
@@ -149,7 +149,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<div>Static Text!</div>'
             );
-            
+
 			// This inject undefined where it should be nothing
             Inferno.render(template(null), container);
             expect(
@@ -310,7 +310,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 `<ul class="container"><li class="row"></li><li class="row"></li><li class="row"></li></ul>`
             );
-			
+
            Inferno.render(template(null), container);
             expect(
                 container.innerHTML
@@ -418,7 +418,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 `<div><div></div></div>`
             );
-			
+
 		   const div = Inferno.createTemplate((child) => ({
                 tag: 'div',
                 children: child
@@ -659,7 +659,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<input>'
             );
-			
+
 			  template = Inferno.createTemplate(() => ({
                 tag: 'div',
                 attrs: {
@@ -748,7 +748,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<div required="required"></div>'
             );
-			
+
 			template = Inferno.createTemplate(() => ({
                 tag: 'div',
                 attrs: {
@@ -844,7 +844,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<div></div>'
             );
-			
+
 			 template = Inferno.createTemplate(() => ({
                 tag: 'div',
                 attrs: {
@@ -941,7 +941,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+              '<select multiple="multiple"><option value="foo" selected="selected">foo</option><option value="bar">bar</option></select>'
             );
             Inferno.render(template(), container);
             expect(container.firstChild.children[0].selected).to.eql(true);
@@ -949,7 +949,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+              '<select multiple="multiple"><option value="foo" selected="selected">foo</option><option value="bar">bar</option></select>'
             );
             Inferno.render(template(), container);
             expect(container.firstChild.children[0].selected).to.eql(true);
@@ -957,11 +957,11 @@ describe('DOM element tests1 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+              '<select multiple="multiple"><option value="foo" selected="selected">foo</option><option value="bar">bar</option></select>'
             );
 
         });
-		
+
 		 it('Initial render (creation)', () => {
             Inferno.render(template(), container);
             expect(container.firstChild.children[0].selected).to.eql(true);
@@ -969,7 +969,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+              '<select multiple="multiple"><option value="foo" selected="selected">foo</option><option value="bar">bar</option></select>'
             );
         });
     });
@@ -1084,7 +1084,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<input>'
             );
-			
+
 			            Inferno.render(template('foo'), container);
             expect(container.firstChild.value).to.equal('foo');
             expect(
@@ -1134,7 +1134,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<input title="Tip!">'
             );
-			
+
 			  template = Inferno.createTemplate(() => ({
                 tag: 'select',
                 attrs: {
@@ -1437,7 +1437,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 `<div class="foo"><span class="bar">Rocks</span><span class="yar">Inferno</span></div>`
             );
-			
+
            Inferno.render(template(null, 'Rocks'), container);
 
             expect(
@@ -1570,7 +1570,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<input checked="checked" disabled="disabled">'
             );
-			
+
 			template = Inferno.createTemplate(() =>
                 createElement('input', {
                     checked: false,
@@ -1687,7 +1687,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<input>'
+  '<input checked="false" disabled="false">'
             );
         });
         it('Second render (update)', () => {
@@ -1695,7 +1695,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<input>'
+                '<input checked="false" disabled="false">'
             );
         });
     });
@@ -1942,7 +1942,7 @@ describe('DOM element tests1 (no-jsx)', () => {
             ).to.equal(
                 '<input href="/images/xxx.jpg" download="true">'
             );
-			
+
 			template = Inferno.createTemplate(() =>
                 createElement('input', {
                     checked: true,
@@ -2729,7 +2729,7 @@ describe('DOM element tests1 (no-jsx)', () => {
 
         });
     });
-	
+
 	 it('should support number values', () => {
 
         const styleRule = {
@@ -2755,7 +2755,7 @@ describe('DOM element tests1 (no-jsx)', () => {
                 '<div style="width: 7px;"></div>'
             );
     });
-	
+
 	it('should support set width and height', () => {
 
         let template = Inferno.createTemplate(() =>
@@ -2806,7 +2806,7 @@ describe('DOM element tests1 (no-jsx)', () => {
 const style = {
             width: 7
         };
-		
+
             Inferno.render(template(style), container);
 
             expect(
@@ -2833,7 +2833,7 @@ const style = {
                     style: value
                 }
             }))
-        
+
 		const style = {
             width: 200,
             height: 200
@@ -2866,7 +2866,7 @@ const style = {
                 }
 				}
             }))
-        
+
 		const style = {
             width: 200,
             height: 200

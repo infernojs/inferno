@@ -46,7 +46,7 @@ describe('DOM element tests4 (no-jsx)', () => {
                     children: 'Hello, world'
                 };
             });
-			
+
 			 const span3 = Inferno.createTemplate(function(val) { // This child, and attrs never set
                 return {
                     tag: 'span',
@@ -101,132 +101,8 @@ describe('DOM element tests4 (no-jsx)', () => {
 
         });
     });
-  
-    describe('should render "select" boolean on select options', () => {
-        const template = Inferno.createTemplate(function(val) {
-            return {
-                tag: 'select',
-                attrs: {
-                    multiple: true,
-                    value: val
-                },
-                children: [{
-                    tag: 'option',
-                    attrs: {
-                        value: 'foo'
-                    },
-                    children: 'foo'
-                }, {
-                    tag: 'option',
-                    attrs: {
-                        value: 'bar'
-                    },
-                    children: 'bar'
-                }]
 
-            };
-        });
 
-        it('Initial render (creation)', () => {
-            Inferno.render(template('foo'), container);
-            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>'
-            );
-            Inferno.render(template('foo'), container);
-            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>'
-            );
-        });
-        it('Initial render (creation)', () => {
-            const template = Inferno.createTemplate(function() {
-                return {
-                    tag: 'select',
-                    attrs: {
-                        multiple: true,
-                        value: 'foo'
-                    },
-                    children: [{
-                        tag: 'option',
-                        attrs: {
-                            value: 'foo'
-                        },
-                        children: 'foo'
-                    }, {
-                        tag: 'option',
-                        attrs: {
-                            value: 'bar'
-                        },
-                        children: 'bar'
-                    }]
-
-                };
-            });
-            Inferno.render(template('bar'), container);
-            expect(container.firstChild.children[0].selected).to.eql(true);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
-            );
-
-            Inferno.render(template(null), container);
-            expect(container.firstChild.children[0].selected).to.eql(true);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
-            );
-			
-			const template1 = Inferno.createTemplate(function() {
-                return {
-                    tag: 'select',
-                    attrs: {
-                        multiple: true,
-                        value: 'foo'
-                    },
-                    children: [{
-                        tag: 'option',
-                        attrs: {
-                            value: 'foo'
-                        },
-                        children: 'foo'
-                    }, {
-                        tag: 'option',
-                        attrs: {
-                            value: 'bar'
-                        },
-                        children: 'bar'
-                    }, {
-                        tag: 'option',
-                        attrs: {
-                            value: 'zoo'
-                        },
-                        children: 'zoo'
-                    }]
-
-                };
-            });
-            Inferno.render(template1('zoo'), container);
-            expect(container.firstChild.children[0].selected).to.eql(true);
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option><option>zoo</option></select>'
-            );
-
-        });
-    });
 
     describe('should set className on root node, and update an node with dynamic attributes on static child', () => {
         const template = Inferno.createTemplate((child) => ({
@@ -357,7 +233,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>' // Missing selected markup
+              '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
             );
             Inferno.render(template('foo'), container);
             expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
@@ -365,7 +241,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>' // Missing selected markup
+              '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
             );
         });
         it('Initial render (creation)', () => {
@@ -398,7 +274,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-                '<select multiple="multiple"><option selected="selected">foo</option><option>bar</option></select>'
+              '<select multiple="multiple"><option value="foo" selected="selected">foo</option><option value="bar">bar</option></select>'
             );
         });
     });
@@ -409,7 +285,7 @@ describe('DOM element tests4 (no-jsx)', () => {
                 class: arg
             })
         );
-		
+
             Inferno.render(template('muffins'), container);
             expect(container.firstChild.getAttribute('class')).to.eql('muffins');
             expect(
@@ -424,7 +300,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             ).to.equal(
                 '<div></div>'
             );
-		
+
             Inferno.render(template(null), container);
             expect(container.firstChild.getAttribute('class')).to.be.null;
             expect(
@@ -432,7 +308,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             ).to.equal(
                 '<div></div>'
             );
-			
+
 			 Inferno.render(template(null));
             expect(container.firstChild.getAttribute('class')).to.be.null;
             expect(
@@ -440,7 +316,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             ).to.equal(
                 '<div></div>'
             );
-			
+
 			Inferno.render(template(null), null);
             expect(container.firstChild.getAttribute('class')).to.be.null;
             expect(
@@ -448,7 +324,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             ).to.equal(
                 '<div></div>'
             );
-			
+
 			 Inferno.render(template(true), container);
             expect(
                 container.innerHTML
@@ -462,7 +338,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             ).to.equal(
                 '<div class="false"></div>'
             );
-			
+
 			 Inferno.render(template([]), container);
             expect(
                 container.innerHTML
@@ -473,7 +349,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(
                 container.innerHTML
             ).to.equal(
-               '<div class="[object Object]"></div>' 
+               '<div class="[object Object]"></div>'
             );
             Inferno.render(template(null), container);
             expect(
@@ -483,69 +359,6 @@ describe('DOM element tests4 (no-jsx)', () => {
             );
     });
 
-    describe('should render "select" boolean on select options', () => {
-        const template = Inferno.createTemplate(function(val) {
-            return {
-                tag: 'select',
-                attrs: {
-                    multiple: true,
-                    value: val
-                },
-                children: [{
-                    tag: 'option',
-                    attrs: {
-                        value: 'foo'
-                    },
-                    children: 'foo'
-                }, {
-                    tag: 'option',
-                    attrs: {
-                        value: 'bar'
-                    },
-                    children: 'bar'
-                }]
-
-            };
-        });
-
-        it('Initial render (creation)', () => {
-            Inferno.render(template('foo'), container);
-            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>'
-            );
-            Inferno.render(template('foo'), container);
-            expect(container.firstChild.children[0].selected).to.eql(true); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>'
-            );
-
-            Inferno.render(template(null), container);
-            expect(container.firstChild.children[0].selected).to.eql(false); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>'
-            );
-
-            Inferno.render(template(), container);
-            expect(container.firstChild.children[0].selected).to.eql(false); // SHOULD BE TRUE
-            expect(container.firstChild.children[1].selected).to.eql(false);
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<select multiple="multiple"><option>foo</option><option>bar</option></select>'
-            );
-
-        });
-    });
 
     describe('should handle lots of dynamic variables', () => {
         const template = Inferno.createTemplate(function(val1, val2, val3, val4, val5, val6) {
@@ -589,7 +402,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             ).to.equal(
                 '<div class="noo1" id="yar1"><div id="yar3"><span>noo3</span></div><div class="noo2">yar2</div></div>'
             );
-			
+
 		   Inferno.render(template('yar1', null, 'yar2', 'noo2', 'yar3', null), container);
 		   expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		   expect(container.firstChild.getAttribute('class')).to.equal(null);
@@ -619,7 +432,7 @@ describe('DOM element tests4 (no-jsx)', () => {
 		   expect(container.firstChild.firstChild.textContent).to.equal('');
 		   expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
 
-		   
+
         });
     });
 
@@ -822,7 +635,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(container.innerHTML).to.equal('<div></div>');
         });
     });
-	
+
         describe('should update a wrapped text node with 4 arguments', () => {
             const template = Inferno.createTemplate((val1, val2, val3, val4) => ({
                 tag: 'div',
@@ -877,7 +690,7 @@ describe('DOM element tests4 (no-jsx)', () => {
                 ).to.equal(
                     '<div>Hello poz and Zoo  </div>'
                 );
-                
+
 				Inferno.render(template('Hello', ' poz', ' and ', null), container);
                 expect(
                     container.innerHTML
@@ -897,7 +710,7 @@ describe('DOM element tests4 (no-jsx)', () => {
                 expect(
                     container.innerHTML
                 ).to.equal(
-                   '<div>The  is dead!</div>' 
+                   '<div>The  is dead!</div>'
                 );
 
                 Inferno.render(template('The ', 'bar ', null, ' is dead! '), container);
@@ -911,7 +724,7 @@ describe('DOM element tests4 (no-jsx)', () => {
                 expect(
                     container.innerHTML
                 ).to.equal(
-                    '<div>bar is is dead!</div>' 
+                    '<div>bar is is dead!</div>'
                 );
 
                 Inferno.render(template(null, null, null, ' is dead!'), container);
@@ -924,7 +737,7 @@ describe('DOM element tests4 (no-jsx)', () => {
             });
         });
 
-	
+
 	describe('should update a node with static text', () => {
 
             const template = Inferno.createTemplate((val) => ({
@@ -996,9 +809,9 @@ describe('DOM element tests4 (no-jsx)', () => {
 
             });
         });
-	
-	
-	
+
+
+
         describe('should update a node with multiple children and static text', () => {
 
             const template = Inferno.createTemplate((val1) => ({
@@ -1097,8 +910,8 @@ describe('DOM element tests4 (no-jsx)', () => {
                 );
             });
         });
-	
-	
+
+
 	 describe('should set static styles', () => {
         let template = Inferno.createTemplate(() => ({
             tag: 'div',
@@ -1129,7 +942,7 @@ describe('DOM element tests4 (no-jsx)', () => {
 
         });
     });
-	
+
 	describe('should set and remove styles', () => {
         let template;
 
@@ -1165,8 +978,8 @@ describe('DOM element tests4 (no-jsx)', () => {
             expect(container.firstChild.hasAttribute('style')).to.be.false;
         });
     });
-	
-	
+
+
 	 describe('should render styling on root node, and set and remove styling on multiple children', () => {
         let template;
 
@@ -1302,8 +1115,8 @@ describe('DOM element tests4 (no-jsx)', () => {
 
         });
     });
-	
-	
+
+
 	 describe('should update a div it class attribute, and dynamic children with static text', () => {
         const template = Inferno.createTemplate((child) => ({
             tag: 'div',
@@ -1409,9 +1222,9 @@ describe('DOM element tests4 (no-jsx)', () => {
 			expect(container.firstChild.firstChild.textContent).to.equal('5467');
         });
     });
-	
-	
-	
+
+
+
     it('should render "select" boolean on select options with numbers', () => {
 
         const template = Inferno.createTemplate((val) => {
@@ -1444,8 +1257,8 @@ describe('DOM element tests4 (no-jsx)', () => {
          expect(
           container.innerHTML
         ).to.equal(
-            '<select multiple="multiple"><option>1</option><option>2</option></select>'
-        );
+           '<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
+         );
 
         Inferno.render(template(1), container);
 
@@ -1454,7 +1267,7 @@ describe('DOM element tests4 (no-jsx)', () => {
         expect(
             container.innerHTML
         ).to.equal(
-            '<select multiple="multiple"><option>1</option><option>2</option></select>'
+          '<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
         );
     });
 

@@ -31,17 +31,19 @@ const template = {
 
 					if ( propName === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
 						template.setSelectValueForProperty( vNode, domNode, value, useProperties );
-					} else if ( '' + domNode[propName] !== '' + value ) {
-						if ( useProperties ) {
-							if ( propertyInfo.hasBooleanValue ) {
-								if ( name === value || !!value ) {
-									domNode[propName] = true;
-								} else {
-									domNode[propName] = false;
-								}
-							} else {
-								domNode[propName] = value;
-							}
+					} else  {
+	  				if ( useProperties ) {
+              if ( '' + domNode[propName] !== '' + value ) {
+                if ( propertyInfo.hasBooleanValue ) {
+  								if ( name === value || !!value ) {
+  									domNode[propName] = true;
+  								} else {
+  									domNode[propName] = false;
+	  							}
+  							} else {
+  								domNode[propName] = value;
+						  	}
+              }
 						} else {
 							if ( propertyInfo.hasBooleanValue && ( value === true || value === 'true' ) ) {
 								value = propName;
