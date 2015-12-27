@@ -54,7 +54,6 @@
 		}],
 		"curly": [2, "all"],
 		"eqeqeq": 2,
-		"guard-for-in": 1,
 		"no-alert": 1,
 		"no-div-regex": 2,
 		"no-eq-null": 2,
@@ -152,7 +151,6 @@
 		"no-const-assign": 2,
 		"no-this-before-super": 2,
 		"no-var": 2,
-		"prefer-const": 2,
 		"prefer-spread": 2
 	}
 }
