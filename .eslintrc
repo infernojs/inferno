@@ -84,7 +84,7 @@
 		"no-shadow-restricted-names": 2,
 		/* "no-shadow": 2, */
 		"no-undef": 2,
-		"no-unused-vars": 2,
+		"no-unused-vars": [2, "local"],
 		"no-use-before-define": [2, "nofunc"],
 		"array-bracket-spacing": [2, "always", {
 			"singleValue": false,

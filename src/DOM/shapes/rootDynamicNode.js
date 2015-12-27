@@ -2,14 +2,14 @@ import isVoid from '../../util/isVoid';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
-import { createVirtualList, updateVirtualList } from '../domMutate';
+import { createVirtualList/* , updateVirtualList */ } from '../domMutate';
 
 const recyclingEnabled = isRecyclingEnabled();
 
 export default function createRootDynamicNode( valueIndex ) {
-	let nextDomNode;
+	// let nextDomNode;
 	let childNodeList = [];
-	let keyedChildren = true;
+	// let keyedChildren = true;
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -34,12 +34,13 @@ export default function createRootDynamicNode( valueIndex ) {
 					domNode = document.createTextNode( value );
 					break;
 				case ValueTypes.ARRAY:
-					const virtualList = createVirtualList (value, childNodeList, treeLifecycle, context );
+					const virtualList = createVirtualList( value, childNodeList, treeLifecycle, context );
+
 					domNode = virtualList.domNode;
-					keyedChildren = virtualList.keyedChildren;
-					treeLifecycle.addTreeSuccessListener(() => {
-						nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
-					});
+					// keyedChildren = virtualList.keyedChildren;
+					treeLifecycle.addTreeSuccessListener( () => {
+						// nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
+					} );
 					break;
 				case ValueTypes.TREE:
 					domNode = value.create( item, treeLifecycle, context );
@@ -48,7 +49,6 @@ export default function createRootDynamicNode( valueIndex ) {
 					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 				case ValueTypes.FUNCTION:
 					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
-					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.domTree.create( value, treeLifecycle, context );
 					break;

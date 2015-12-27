@@ -7,8 +7,8 @@ const xlink = 'http://www.w3.org/1999/xlink';
 const xml = 'http://www.w3.org/XML/1998/namespace';
 
 const DOMAttributeNamespaces = {
-  // None-JSX compat
-  'xlink:actuate': xlink,
+	// None-JSX compat
+	'xlink:actuate': xlink,
 	'xlink:arcrole': xlink,
 	'xlink:href': xlink,
 	'xlink:role': xlink,
@@ -18,7 +18,7 @@ const DOMAttributeNamespaces = {
 	'xml:base': xml,
 	'xml:lang': xml,
 	'xml:space': xml,
-  // JSX compat
+	// JSX compat
 	xlinkActuate: xlink,
 	xlinkArcrole: xlink,
 	xlinkHref: xlink,
@@ -30,12 +30,12 @@ const DOMAttributeNamespaces = {
 
 const DOMAttributeNames = {
 
-  acceptCharset: 'accept-charset',
+	acceptCharset: 'accept-charset',
 	className: 'class',
 	htmlFor: 'for',
 	httpEquiv: 'http-equiv',
 
-  // SVG
+	// SVG
 	clipPath: 'clip-path',
 	fillOpacity: 'fill-opacity',
 	fontFamily: 'font-family',
@@ -50,9 +50,9 @@ const DOMAttributeNames = {
 	strokeOpacity: 'stroke-opacity',
 	strokeWidth: 'stroke-width',
 	textAnchor: 'text-anchor',
-  viewBox: 'viewBox', // Edge case. The letter 'b' need to be uppercase
+	viewBox: 'viewBox', // Edge case. The letter 'b' need to be uppercase
 
-  // JSX compat
+	// JSX compat
 	xlinkActuate: 'xlink:actuate',
 	xlinkArcrole: 'xlink:arcrole',
 	xlinkHref: 'xlink:href',
@@ -104,8 +104,8 @@ const Whitelist = {
 	// disabled with `removeAttribute`.
 	multiple: PROPERTY | BOOLEAN,
 	muted: PROPERTY | BOOLEAN,
-  mediaGroup: PROPERTY,
-  noValidate: BOOLEAN,
+	mediaGroup: PROPERTY,
+	noValidate: BOOLEAN,
 	noShade: PROPERTY | BOOLEAN,
 	noResize: BOOLEAN,
 	noWrap: BOOLEAN,
@@ -116,15 +116,15 @@ const Whitelist = {
 	readOnly: BOOLEAN,
 	required: PROPERTY | BOOLEAN,
 	reversed: BOOLEAN,
-  radioGroup: PROPERTY,
-  icon: PROPERTY,
-  draggable: BOOLEAN, // 3.2.5 - Global attributes
+	radioGroup: PROPERTY,
+	icon: PROPERTY,
+	draggable: BOOLEAN, // 3.2.5 - Global attributes
 	dropzone: null, // 3.2.5 - Global attributes
 	scoped: PROPERTY | BOOLEAN,
 	visible: BOOLEAN,
 	trueSpeed: BOOLEAN,
-  sandbox: PROPERTY,
-  sortable: BOOLEAN,
+	sandbox: PROPERTY,
+	sortable: BOOLEAN,
 	inert: BOOLEAN,
 	indeterminate: BOOLEAN,
 	nohref: BOOLEAN,
@@ -298,8 +298,7 @@ const Whitelist = {
 	charSet: null,
 	allowTransparency: null,
 	spellcheck: null, // 3.2.5 - Global attributes
-  srcDoc: PROPERTY,
-  srcSet: null
+	srcDoc: PROPERTY
 };
 
 const HTMLPropsContainer = {};
@@ -310,17 +309,17 @@ function checkBitmask( value, bitmask ) {
 
 for ( const propName in Whitelist ) {
 
-  const propConfig = Whitelist[propName];
+	const propConfig = Whitelist[propName];
 
-		HTMLPropsContainer[propName] = {
-			attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
-			attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
-			propertyName: DOMPropertyNames[propName] || propName,
+	HTMLPropsContainer[propName] = {
+		attributeName: DOMAttributeNames[propName] || propName.toLowerCase(),
+		attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
+		propertyName: DOMPropertyNames[propName] || propName,
 
-			mustUseProperty: checkBitmask( propConfig, PROPERTY ),
-			hasBooleanValue: checkBitmask( propConfig, BOOLEAN ),
-			hasNumericValue: checkBitmask( propConfig, NUMERIC_VALUE ),
-			hasPositiveNumericValue: checkBitmask( propConfig, POSITIVE_NUMERIC_VALUE )
+		mustUseProperty: checkBitmask( propConfig, PROPERTY ),
+		hasBooleanValue: checkBitmask( propConfig, BOOLEAN ),
+		hasNumericValue: checkBitmask( propConfig, NUMERIC_VALUE ),
+		hasPositiveNumericValue: checkBitmask( propConfig, POSITIVE_NUMERIC_VALUE )
 	};
 }
 

@@ -42,17 +42,17 @@ export default function scanTreeForDynamicNodes( node, nodeMap ) {
 				} else {
 					for ( const attr in node.attrs ) {
 
-							const attrVal = node.attrs[attr];
+						const attrVal = node.attrs[attr];
 
-							if ( !isVoid( attrVal ) && attrVal.type === ObjectTypes.VARIABLE ) {
-								if ( attr === 'xmlns' ) {
-									throw Error( `Inferno Error: The 'xmlns' attribute cannot be dynamic. Please use static value for 'xmlns' attribute instead.` );
-								}
-								if ( dynamicFlags.ATTRS === false ) {
-									dynamicFlags.ATTRS = {};
-								}
-								dynamicFlags.ATTRS[attr] = attrVal.index;
-								nodeIsDynamic = true;
+						if ( !isVoid( attrVal ) && attrVal.type === ObjectTypes.VARIABLE ) {
+							if ( attr === 'xmlns' ) {
+								throw Error( `Inferno Error: The 'xmlns' attribute cannot be dynamic. Please use static value for 'xmlns' attribute instead.` );
+							}
+							if ( dynamicFlags.ATTRS === false ) {
+								dynamicFlags.ATTRS = {};
+							}
+							dynamicFlags.ATTRS[attr] = attrVal.index;
+							nodeIsDynamic = true;
 						}
 					}
 				}

@@ -1,9 +1,10 @@
 import isVoid from '../util/isVoid';
-import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../core/variables';
+import { /* getValueWithIndex, */ getTypeFromValue, ValueTypes } from '../core/variables';
 import isArray from '../util/isArray';
 import { isRecyclingEnabled, pool } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
+const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLifecycle, context ) {
 	let stop = false;
@@ -167,15 +168,16 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 					}
 				} else {
 					if ( typeof item === 'string' || typeof item === 'number' ) {
-						const childNode = document.createTextNode(item);
+						const childNode = document.createTextNode( item );
+
 						domNodeList[i] = childNode;
 						insertOrAppend( parentNode, childNode, parentNextNode );
 					}
 				}
 			} else {
 				if ( domNodeList[i] ) {
-					parentNode.removeChild(domNodeList[i]);
-					domNodeList.splice(i, 1);
+					parentNode.removeChild( domNodeList[i] );
+					domNodeList.splice( i, 1 );
 				}
 			}
 		}
@@ -197,7 +199,7 @@ export function remove( item, parentNode ) {
 	}
 }
 
-export function createVirtualList ( value, childNodeList, treeLifecycle, context ) {
+export function createVirtualList( value, childNodeList, treeLifecycle, context ) {
 	const domNode = document.createDocumentFragment();
 	let keyedChildren = true;
 
@@ -219,13 +221,12 @@ export function createVirtualList ( value, childNodeList, treeLifecycle, context
 				}
 				childDomNode = childNode.domTree.create( childNode, treeLifecycle, context );
 				childNodeList.push( childDomNode );
-				domNode.appendChild (childDomNode );
+				domNode.appendChild( childDomNode );
 				break;
 			case ValueTypes.EMPTY_OBJECT:
 				throw Error( infernoBadTemplate );
 			case ValueTypes.FUNCTION:
 				throw Error( infernoBadTemplate );
-				break;
 			case ValueTypes.ARRAY:
 				throw Error( 'Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].' );
 			default: break;
@@ -234,7 +235,7 @@ export function createVirtualList ( value, childNodeList, treeLifecycle, context
 	return { domNode, keyedChildren };
 }
 
-export function updateVirtualList ( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context ) {
+export function updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context ) {
 	// NOTE: if someone switches from keyed to non-keyed, the node order won't be right...
 	if ( isArray( lastValue ) ) {
 		// need to do this otherwise domNode will be an empty document fragment

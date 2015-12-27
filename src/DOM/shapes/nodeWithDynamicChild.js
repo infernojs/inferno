@@ -56,7 +56,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					const firstChild = domNode.firstChild;
 
 					if ( firstChild ) {
-						domNode.removeChild(domNode.firstChild);
+						domNode.removeChild( domNode.firstChild );
 					}
 				} else if ( isArray( nextValue ) ) {
 					if ( isArray( lastValue ) ) {
