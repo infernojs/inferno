@@ -72,28 +72,30 @@ const template = {
 			domNode.setAttribute( name, value );
 		}
 	},
-  /**
-   * Sets the value for multiple styles on a node.  If a value is specified as
-   * '' ( empty string ), the corresponding style property will be unset.
-   *
-   * @param {DOMElement} node
-   * @param {object} styles
-   */
-    setCSS( vNode, domNode, styles ) {
 
-    let style = domNode.style;
+	/**
+	 * Sets the value for multiple styles on a node.	If a value is specified as
+	 * '' ( empty string ), the corresponding style property will be unset.
+	 *
+	 * @param {DOMElement} node
+	 * @param {object} styles
+	 */
+	setCSS( vNode, domNode, styles ) {
 
-    for ( let styleName in styles ) {
+		let style = domNode.style;
 
-      let styleValue = styles[styleName];
+		for ( let styleName in styles ) {
 
-      if ( !isVoid( styleValue ) ) {
-        style[styleName] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
-      } else {
-        style[styleName] = '';
-      }
-    }
-  },
+			let styleValue = styles[styleName];
+
+			if ( !isVoid( styleValue ) ) {
+				style[styleName] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
+			} else {
+				style[styleName] = '';
+			}
+		}
+	},
+
 	/**
 	 * Removes the value for a property on a node.
 	 *
@@ -107,9 +109,9 @@ const template = {
 			if ( propertyInfo.mustUseProperty ) {
 				const propName = propertyInfo.propertyName;
 
-        if( name === 'value' && domNode.tagName === 'SELECT' ) {
-         template.removeSelectValueForProperty( vNode, domNode )
-        }	else if ( propertyInfo.hasBooleanValue ) {
+				if ( name === 'value' && domNode.tagName === 'SELECT' ) {
+					template.removeSelectValueForProperty( vNode, domNode );
+				}	else if ( propertyInfo.hasBooleanValue ) {
 					if ( useProperties ) {
 						domNode[propName] = false;
 					} else {
