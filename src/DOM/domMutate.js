@@ -167,15 +167,15 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 					}
 				} else {
 					if ( typeof item === 'string' || typeof item === 'number' ) {
-						const childNode = document.createTextNode(item);
+						const childNode = document.createTextNode( item );
 						domNodeList[i] = childNode;
 						insertOrAppend( parentNode, childNode, parentNextNode );
 					}
 				}
 			} else {
 				if ( domNodeList[i] ) {
-					parentNode.removeChild(domNodeList[i]);
-					domNodeList.splice(i, 1);
+					parentNode.removeChild( domNodeList[i] );
+					domNodeList.splice( i, 1 );
 				}
 			}
 		}

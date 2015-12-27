@@ -74,7 +74,7 @@ const template = {
 	},
   /**
    * Sets the value for multiple styles on a node.  If a value is specified as
-   * '' (empty string), the corresponding style property will be unset.
+   * '' ( empty string ), the corresponding style property will be unset.
    *
    * @param {DOMElement} node
    * @param {object} styles
@@ -83,7 +83,7 @@ const template = {
 
     let style = domNode.style;
 
-    for (let styleName in styles) {
+    for ( let styleName in styles ) {
 
       let styleValue = styles[styleName];
 
@@ -107,7 +107,7 @@ const template = {
 			if ( propertyInfo.mustUseProperty ) {
 				const propName = propertyInfo.propertyName;
 
-        if(name === 'value' && domNode.tagName === 'SELECT') {
+        if( name === 'value' && domNode.tagName === 'SELECT' ) {
          template.removeSelectValueForProperty( vNode, domNode )
         }	else if ( propertyInfo.hasBooleanValue ) {
 					if ( useProperties ) {
