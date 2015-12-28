@@ -1,5 +1,4 @@
 import isVoid from '../util/isVoid';
-import isSVGElement from '../util/isSVGElement';
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithStaticChild from './shapes/rootNodeWithStaticChild';
@@ -86,36 +85,36 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 		if ( tag ) {
 			const is = node.attrs && node.attrs.is || null;
 
-			let namespace = node.attrs && node.attrs.xmlns || null;
+			if ( domNamespace === undefined  ) {
 
-			if ( namespace == null ) {
+				if( node.attrs && node.attrs.xmlns  ) {
+					domNamespace = node.attrs.xmlns;
+				} else {
+					switch ( tag ) {
+						case 'svg':
+							domNamespace = 'http://www.w3.org/2000/svg';
+							break;
+						case 'math':
+							domNamespace = 'http://www.w3.org/1998/Math/MathML';
+							break;
+						default:
 
-				switch ( tag ) {
-					case 'svg':
-						namespace = 'http://www.w3.org/2000/svg';
-						break;
-					case 'math':
-						namespace = 'http://www.w3.org/1998/Math/MathML';
-						break;
-					default:
-						// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
-						// E.g. <div><svg><svg></div> - will inherit the wrong namespace and 'svg' will not work
-						if ( parentNode ) {
-							// TODO! What is most expensive? Checking namespaceURI or SVG lookup? Svap the order, maybe?
-							if ( parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' && ( isSVGElement( node.tag ) ) ) { // or mathML
-									namespace = 'http://www.w3.org/2000/svg';
-							} else {
-								namespace = domNamespace;
+							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
+							// E.g. <div><svg><svg></div> - will not work
+							if ( parentNode !== null) {
+								if ( node.tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' )  { // or mathML
+									domNamespace = 'http://www.w3.org/2000/svg';
+								}
 							}
-						}
+					}
 				}
 			}
 
-			if ( namespace ) {
+			if ( domNamespace ) {
 				if ( is ) {
-					staticNode = document.createElementNS( namespace, tag, is );
+					staticNode = document.createElementNS( domNamespace, tag, is );
 				} else {
-					staticNode = document.createElementNS( namespace, tag );
+					staticNode = document.createElementNS( domNamespace, tag );
 				}
 			} else {
 				if ( is ) {
@@ -137,7 +136,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 				staticNode.textContent = text;
 			} else {
 				if ( !isVoid( children ) ) {
-					createStaticTreeChildren( children, staticNode, namespace );
+					createStaticTreeChildren( children, staticNode, domNamespace );
 				}
 			}
 			createStaticAttributes( node, staticNode );
@@ -156,6 +155,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 }
 
 export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamespace ) {
+
 	const dynamicFlags = dynamicNodeMap.get( schema );
 	let node;
 	let templateNode;
@@ -217,22 +217,32 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						return createNodeWithComponent( tag.index, attrs, children, domNamespace );
 					}
 				}
-				const namespace = schema.attrs && schema.attrs.xmlns || null;
-				const is = schema.attrs && schema.attrs.is || null;
 
-				if ( !namespace ) {
-					switch ( tag ) {
-						case 'svg':
-							domNamespace = 'http://www.w3.org/2000/svg';
-							break;
-						case 'math':
-							domNamespace = 'http://www.w3.org/1998/Math/MathML';
-							break;
-						default:
-							break;
+				const is = schema.attrs && schema.attrs.is;
+
+				if ( domNamespace === undefined) {
+
+					if(schema.attrs && schema.attrs.xmlns ) {
+						domNamespace = schema.attrs.xmlns;
+					} else {
+
+						switch ( tag ) {
+							case 'svg':
+								domNamespace = 'http://www.w3.org/2000/svg';
+								break;
+							case 'math':
+								domNamespace = 'http://www.w3.org/1998/Math/MathML';
+								break;
+							default:
+							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
+							// E.g. <div><svg><svg></div> - will not work
+								//if ( !isVoid( parentNode ) ) {
+								//	if ( node.tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' ) { // or mathML
+//									domNamespace = 'http://www.w3.org/2000/svg';
+//									}
+//								}
+						}
 					}
-				} else {
-					domNamespace = namespace;
 				}
 				if ( domNamespace ) {
 					if ( is ) {
@@ -289,12 +299,10 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						if ( children.type === ObjectTypes.VARIABLE ) {
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicChild(
-									templateNode, children.index, dynamicAttrs, domNamespace
-								);
+									templateNode, children.index, dynamicAttrs, domNamespace );
 							} else {
 								node = createNodeWithDynamicChild(
-									templateNode, children.index, dynamicAttrs, domNamespace
-								);
+									templateNode, children.index, dynamicAttrs, domNamespace );
 							}
 						} else if ( dynamicFlags.CHILDREN === true ) {
 							let subTreeForChildren = [];
@@ -310,12 +318,10 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 							}
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicAttrs, domNamespace
-								);
+									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
 							} else {
 								node = createNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicAttrs, domNamespace
-								);
+									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
 							}
 						} else if ( typeof children === 'string' || typeof children === 'number' ) {
 							templateNode.textContent = children;
