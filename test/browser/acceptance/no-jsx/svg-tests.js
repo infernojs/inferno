@@ -517,4 +517,29 @@ describe('DOM SVG tests (no-jsx)', () => {
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
 	})
+	/*
+	// xmlns as dynamic attr
+	it('should solve SVG edge case with XMLNS attribute when wrapped inside a non-namespace element ( dynamic )', () => {
+
+		let child = Inferno.createTemplate(() => ({
+			tag: 'svg',
+			attrs: {
+				xmlns: 'http://www.w3.org/2000/svg',
+			}
+		}));
+
+		let template = Inferno.createTemplate((ns, child) => ({
+			tag: 'div',
+			attrs: {
+				xmlns: ns
+			},
+			children:child
+		}));
+
+		Inferno.render(template('http://www.w3.org/2000/svg', child()), container);
+
+		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	})
+	 */
 });
