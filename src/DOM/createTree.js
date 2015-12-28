@@ -1,5 +1,5 @@
 import isVoid from '../util/isVoid';
-import svgWhitelist from '../shared/svgWhitelist';
+import isSVGElement from '../util/isSVGElement';
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithStaticChild from './shapes/rootNodeWithStaticChild';
@@ -99,9 +99,8 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 						break;
 					default:
 
-						if ( parentNode ) { // TODO! Fix SVG edge case
-
-							if ( svgWhitelist(node.tag) && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg'){ // or mathML
+						if ( parentNode ) {
+							if ( parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' && ( isSVGElement( node.tag ) ) ) { // or mathML
 									namespace = 'http://www.w3.org/2000/svg';
 							} else {
 								namespace = domNamespace;
