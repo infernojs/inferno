@@ -105,10 +105,6 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ## Inferno Top-Level API
 
-```js
-// TODO
-```
-
 ### Inferno.Component
 
 **Stateful component:**
