@@ -77,12 +77,12 @@ const template = {
 	setCSS( vNode, domNode, styles ) {
 		for ( let styleName in styles ) {
 			let styleValue = styles[styleName];
-            let dashed = camelCasePropsToDashCase(styleName);
+			let dashed = camelCasePropsToDashCase( styleName );
 
 			if ( !isVoid( styleValue ) ) {
 				domNode.style[dashed] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
 			} else {
-                domNode.style[dashed] = '';
+				domNode.style[dashed] = '';
 			}
 		}
 	},

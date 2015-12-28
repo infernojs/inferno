@@ -1,3 +1,4 @@
+import isVoid from '../util/isVoid';
 import unitlessProperties from './unitlessProperties';
 
 /**
@@ -7,18 +8,18 @@ import unitlessProperties from './unitlessProperties';
  * @param {String} value The boolean attribute value to set.
  */
 export default function ( name, value ) {
-	if ( value == null || typeof value === 'boolean' || value === '' ) {
+	if ( isVoid( value ) || typeof value === 'boolean' || value === '' ) {
 		return '';
 	}
 	// const isNonNumeric = isNaN( value );
-	if ( value == null || value === '' || typeof value === 'boolean' ) {
+	if ( isVoid( value ) || value === '' || typeof value === 'boolean' ) {
 		return '';
 	}
 	if ( value === 0 || unitlessProperties[ name] ) {
 		return '' + value; // cast to string
 	}
 	// isNaN is expensive, so we check for it at the very end
-	if ( isNaN( value) ) {
+	if ( isNaN( value ) ) {
 		return '' + value; // cast to string
 	}
 	// Todo! Should we allow auto-trim, or is too expensive?

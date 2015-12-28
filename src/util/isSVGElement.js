@@ -29,6 +29,6 @@ function isSVGElement( nodeName ) {
 		|| nodeName === 'tspan'
 		|| nodeName === 'use'
 		|| nodeName === 'view';
-};
+}
 
 export default isSVGElement;

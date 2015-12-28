@@ -86,9 +86,9 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 		if ( tag ) {
 			const is = node.attrs && node.attrs.is || null;
 
-			if ( domNamespace === undefined  ) {
+			if ( domNamespace === undefined ) {
 
-				if( node.attrs && node.attrs.xmlns  ) {
+				if ( node.attrs && node.attrs.xmlns ) {
 					domNamespace = node.attrs.xmlns;
 				} else {
 					switch ( tag ) {
@@ -101,8 +101,8 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 						default:
 							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
 							// E.g. <div><svg><svg></div> - will not work
-							if ( parentNode !== null) {
-								if ( tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' )  { // only used by static children
+							if ( parentNode !== null ) {
+								if ( tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' ) { // only used by static children
 									domNamespace = 'http://www.w3.org/2000/svg';
 								}
 							} else if ( isSVGElement( tag ) ) { // only used by dynamic children
@@ -143,7 +143,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 			}
 			createStaticAttributes( node, staticNode );
 		} else if ( node.text ) {
-			staticNode = document.createTextNode(node.text);
+			staticNode = document.createTextNode( node.text );
 		}
 	}
 	if ( staticNode === undefined ) {
@@ -222,9 +222,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 
 				const is = schema.attrs && schema.attrs.is;
 
-				if ( domNamespace === undefined) {
+				if ( domNamespace === undefined ) {
 
-					if(schema.attrs && schema.attrs.xmlns ) {
+					if ( schema.attrs && schema.attrs.xmlns ) {
 						domNamespace = schema.attrs.xmlns;
 					} else {
 

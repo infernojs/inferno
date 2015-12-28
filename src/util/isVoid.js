@@ -1,1 +1,1 @@
-export default x => ( x === null ) || ( typeof x === 'undefined' );
+export default x => ( x === null ) || ( x === undefined );
