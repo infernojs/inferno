@@ -233,3 +233,4 @@ Inferno is still under development, and there are some missing features and opti
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
+
