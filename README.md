@@ -1,6 +1,6 @@
 # InfernoJS
 
-[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=dev)](https://travis-ci.org/trueadm/inferno)
+[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=master)](https://travis-ci.org/trueadm/inferno)
 [![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=master&service=github)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependency Status](https://david-dm.org/trueadm/inferno.svg)](https://david-dm.org/trueadm/inferno)
 [![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
