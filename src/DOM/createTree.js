@@ -90,6 +90,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 			const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 			const SVGNamespace = 'http://www.w3.org/2000/svg';
 
+			// https://jsperf.com/type-of-undefined-vs-undefined/76
 			if ( domNamespace === undefined ) {
 
 				if ( node.attrs && node.attrs.xmlns ) {
@@ -105,11 +106,11 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 						default:
 							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
 							// E.g. <div><svg><svg></div> - will not work
-							if ( parentNode !== null ) {
+							if ( parentNode !== null ) { // only used by static children
 								// check only for top-level element for both mathML and SVG
-								if ( tag === 'svg' && parentNode.namespaceURI !== SVGNamespace) { // only used by static children
+								if ( tag === 'svg' && parentNode.namespaceURI !== SVGNamespace ) {
 									domNamespace = SVGNamespace;
-								} else if ( tag === 'math' && parentNode.namespaceURI !== MathNamespace ) { // only used by static children
+								} else if ( tag === 'math' && parentNode.namespaceURI !== MathNamespace ) {
 									domNamespace = MathNamespace;
 								}
 							} else if ( isSVGElement( tag ) ) { // only used by dynamic children
@@ -236,7 +237,6 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					if ( schema.attrs && schema.attrs.xmlns ) {
 						domNamespace = schema.attrs.xmlns;
 					} else {
-
 						switch ( tag ) {
 							case 'svg':
 								domNamespace = 'http://www.w3.org/2000/svg';
@@ -247,6 +247,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					}
 				}
+
 				if ( domNamespace ) {
 					if ( is ) {
 						templateNode = document.createElementNS( domNamespace, tag, is );

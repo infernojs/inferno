@@ -441,7 +441,7 @@ describe('DOM SVG tests (no-jsx)', () => {
 	it('should solve SVG edge when wrapped inside a non-namespace element ( dynamic )', () => {
 
 		let child = Inferno.createTemplate(() => ({
-			tag: 'circle',
+			tag: 'svg',
 		}));
 
 		let template = Inferno.createTemplate((child) => ({
@@ -476,7 +476,7 @@ describe('DOM SVG tests (no-jsx)', () => {
 	it('should solve SVG edge case with XMLNS attribute when wrapped inside a non-namespace element ( dynamic )', () => {
 
 		let child = Inferno.createTemplate(() => ({
-			tag: 'circle',
+			tag: 'svg',
 			attrs: {
 				xmlns: 'http://www.w3.org/2000/svg',
 			}
