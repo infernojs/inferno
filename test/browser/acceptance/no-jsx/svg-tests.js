@@ -330,4 +330,94 @@ describe('DOM SVG tests (no-jsx)', () => {
 			});
 		});
 	});
+
+	it('should keep parent namespace ( dynamic)', () => {
+
+		let child,
+			template = Inferno.createTemplate((child) => ({
+				tag: 'svg',
+				attrs: {
+					xmlns: 'http://www.w3.org/2000/svg'
+				},
+				children: child
+			}));
+
+		child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+		}));
+
+		Inferno.render(template(child()), container);
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+		child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+			attrs: {
+				xmlns: 'http://www.w3.org/2000/svg'
+			},
+			children: {
+				tag: 'circle',
+				attrs: {
+					xmlns: 'http://www.w3.org/2000/svg'
+				}
+			}
+		}));
+
+		Inferno.render(template(child()), container);
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+		child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+			children: {
+				tag: 'circle',
+				children: {
+					tag: 'g',
+					attrs: {
+						xmlns: 'http://www.w3.org/2000/svg'
+					}
+				}
+			}
+		}));
+
+		Inferno.render(template(child()), container);
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+		child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+			children: {
+				tag: 'circle',
+				children: {
+					tag: 'g',
+					children: {
+						tag: 'g'
+					}
+				}
+			}
+		}));
+
+		Inferno.render(template(child()), container);
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+
+		child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+			children: {
+				tag: 'circle',
+				children: {
+					tag: 'g',
+					children: {
+						tag: 'g',
+						children: {
+							tag: 'circle'
+						}
+
+					}
+				}
+
+			}
+		}));
+
+		Inferno.render(template(child()), container);
+		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+	})
 });
