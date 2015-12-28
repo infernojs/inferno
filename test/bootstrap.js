@@ -5,6 +5,8 @@ require('./browser/acceptance/no-jsx/dom-elements-tests2'); // no-jsx dom-elemen
 require('./browser/acceptance/no-jsx/dom-elements-tests3'); // no-jsx dom-elements-tests
 require('./browser/acceptance/no-jsx/dom-elements-tests4'); // no-jsx dom-elements-tests
 require('./browser/acceptance/no-jsx/svg-tests'); // no-jsx svg tests
+require('./browser/acceptance/no-jsx//mathml-tests'); // no-jsx mathML tests
+
 //require('./browser/acceptance/no-jsx/event-tests'); // no-jsx event tests
 require('./browser/acceptance/jsx/dom-elements-tests'); // jsx dom-elements-tests
 require('./browser/acceptance/jsx/dom-components-tests'); // jsx dom-elements-tests
