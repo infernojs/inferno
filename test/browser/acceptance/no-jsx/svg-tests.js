@@ -450,11 +450,48 @@ describe('DOM SVG tests (no-jsx)', () => {
 		}));
 
 		Inferno.render(template(child()), container);
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	})
+
+	it('should solve SVG edge case with XMLNS attribute when wrapped inside a non-namespace element ( static)', () => {
+
+		let template = Inferno.createTemplate(() => ({
+			tag: 'div',
+			attrs: {
+				xmlns: 'http://www.w3.org/2000/svg',
+			},
+			children:{
+				tag: 'svg'
+
+			}
+		}));
+
+		Inferno.render(template(), container);
+
+		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+	})
+
+	it('should solve SVG edge case with XMLNS attribute when wrapped inside a non-namespace element ( dynamic )', () => {
+
+		let child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+			attrs: {
+				xmlns: 'http://www.w3.org/2000/svg',
+			}
+		}));
+
+		let template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children:child
+		}));
+
+		Inferno.render(template(child()), container);
 
 		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	})
-
 	it('should diff from SVG namespace to mathML namespace ( dynamic )', () => {
 
 		let child;
