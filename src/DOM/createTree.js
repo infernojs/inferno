@@ -98,8 +98,10 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 						namespace = 'http://www.w3.org/1998/Math/MathML';
 						break;
 					default:
-
+						// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
+						// E.g. <div><svg><svg></div> - will inherit the wrong namespace and 'svg' will not work
 						if ( parentNode ) {
+							// TODO! What is most expensive? Checking namespaceURI or SVG lookup? Svap the order, maybe?
 							if ( parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' && ( isSVGElement( node.tag ) ) ) { // or mathML
 									namespace = 'http://www.w3.org/2000/svg';
 							} else {
