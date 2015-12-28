@@ -1,4 +1,5 @@
 import isVoid from '../util/isVoid';
+import svgWhitelist from '../shared/svgWhitelist';
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithStaticChild from './shapes/rootNodeWithStaticChild';
@@ -100,8 +101,8 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 						if ( parentNode ) { // TODO! Fix SVG edge case
 
-							if ( parentNode.namespaceURI === 'http://www.w3.org/2000/svg'){ // or mathML
-								namespace = domNamespace; // Todo! Finish this
+							if ( svgWhitelist(node.tag) && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg'){ // or mathML
+									namespace = 'http://www.w3.org/2000/svg';
 							} else {
 								namespace = domNamespace;
 							}
