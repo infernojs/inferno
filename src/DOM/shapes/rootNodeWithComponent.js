@@ -14,16 +14,21 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
+		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			let domNode;
+			let toUseItem = item;
 
+			if ( node.overrideItem !== null ) {
+				toUseItem = node.overrideItem;
+			}
 			if ( recyclingEnabled ) {
 				domNode = recycle( node, item, treeLifecycle, context );
 				if ( domNode ) {
 					return domNode;
 				}
 			}
-			const Component = getValueWithIndex( item, componentIndex );
+			const Component = getValueWithIndex( toUseItem, componentIndex );
 
 			currentItem = item;
 			if ( isVoid( Component ) ) {
@@ -34,14 +39,14 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 			} else if ( typeof Component === 'function' ) {
 				// stateless component
 				if ( !Component.prototype.render ) {
-					const nextRender = Component( getValueForProps( props, item ), context );
+					const nextRender = Component( getValueForProps( props, toUseItem ), context );
 
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
 					lastRender = nextRender;
 					item.rootNode = domNode;
 				} else {
-					instance = new Component( getValueForProps( props, item ) );
+					instance = new Component( getValueForProps( props, toUseItem ) );
 					instance.context = context;
 					instance.componentWillMount();
 					const nextRender = instance.render();

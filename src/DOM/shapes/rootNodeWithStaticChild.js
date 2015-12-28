@@ -8,6 +8,7 @@ export default function createRootNodeWithStaticChild( templateNode, dynamicAttr
 	const node = {
 		pool: [],
 		keyedPool: [],
+		overrideItem: null,
 		create( item ) {
 			let domNode;
 

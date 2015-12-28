@@ -10,6 +10,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 	const node = {
 		pool: [],
 		keyedPool: [],
+		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			let domNode;
 

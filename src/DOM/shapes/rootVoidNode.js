@@ -8,6 +8,7 @@ export default function createRootVoidNode( templateNode, dynamicAttrs ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
+		overrideItem: null,
 		create( item ) {
 			let domNode;
 

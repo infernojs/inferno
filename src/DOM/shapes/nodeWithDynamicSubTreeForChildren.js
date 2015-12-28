@@ -6,6 +6,7 @@ import recreateNode from '../recreateNode';
 export default function createNodeWithDynamicSubTreeForChildren( templateNode, subTreeForChildren, dynamicAttrs ) {
 	let domNode;
 	const node = {
+		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			domNode = templateNode.cloneNode( false );
 			if ( !isVoid( subTreeForChildren ) ) {

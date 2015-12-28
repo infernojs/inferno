@@ -7,6 +7,7 @@ export default function createRootStaticNode( templateNode ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
+		overrideItem: null,
 		create( item ) {
 			let domNode;
 

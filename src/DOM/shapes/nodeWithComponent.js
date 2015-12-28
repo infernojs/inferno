@@ -1,6 +1,6 @@
 /* eslint new-cap:0 */
 import isVoid from '../../util/isVoid';
-import { getValueWithIndex, getValueForProps, getCorrectItemForValues } from '../../core/variables';
+import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateNode from '../recreateNode';
 import updateComponent from '../../core/updateComponent';
 
@@ -10,9 +10,14 @@ export default function createNodeWithComponent( componentIndex, props ) {
 	let domNode;
 	let currentItem;
 	const node = {
+		overrideItem: null,
 		create( item, treeLifecycle, context ) {
-			const valueItem = getCorrectItemForValues( node, item );
-			const Component = getValueWithIndex( valueItem, componentIndex );
+			let toUseItem = item;
+
+			if ( node.overrideItem !== null ) {
+				toUseItem = node.overrideItem;
+			}
+			const Component = getValueWithIndex( toUseItem, componentIndex );
 
 			currentItem = item;
 			if ( isVoid( Component ) ) {
@@ -21,13 +26,13 @@ export default function createNodeWithComponent( componentIndex, props ) {
 			} else if ( typeof Component === 'function' ) {
 				// stateless component
 				if ( !Component.prototype.render ) {
-					const nextRender = Component( getValueForProps( props, valueItem ), context );
+					const nextRender = Component( getValueForProps( props, toUseItem ), context );
 
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
 					lastRender = nextRender;
 				} else {
-					instance = new Component( getValueForProps( props, valueItem ) );
+					instance = new Component( getValueForProps( props, toUseItem ) );
 					instance.context = context;
 					instance.componentWillMount();
 					const nextRender = instance.render();

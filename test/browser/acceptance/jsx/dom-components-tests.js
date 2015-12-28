@@ -581,5 +581,32 @@ describe('DOM component tests (jsx)', () => {
 			);
 		});
 	});
+
+	describe('should render a basic component with an element and components as children', () => {
+		class Navbar extends Inferno.Component {
+			render() {
+				return (
+					<ul>
+						<li>Nav1</li>
+					</ul>
+				);
+			}
+		}
+
+		class Main extends Inferno.Component {
+			render() {
+				return (
+					<div className="main">
+						<Navbar />
+						<div id="app"/>
+					</div>
+				);
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(<Main/>, container);
+		});
+	});
 });
 

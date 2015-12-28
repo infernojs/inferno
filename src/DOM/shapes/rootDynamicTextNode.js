@@ -9,6 +9,7 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
+		overrideItem: null,
 		create( item ) {
 			let domNode;
 

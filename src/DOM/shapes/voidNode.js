@@ -3,6 +3,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttri
 export default function createVoidNode( templateNode, dynamicAttrs ) {
 	let domNode;
 	const node = {
+		overrideItem: null,
 		create( item ) {
 			domNode = templateNode.cloneNode( true );
 			if ( dynamicAttrs ) {

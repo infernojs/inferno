@@ -13,6 +13,7 @@ export default function createRootDynamicNode( valueIndex ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
+		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			let domNode;
 

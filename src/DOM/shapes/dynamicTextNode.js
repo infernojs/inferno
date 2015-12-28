@@ -5,6 +5,7 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 	let domNode;
 
 	const node = {
+		overrideItem: null,
 		create( item ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );

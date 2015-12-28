@@ -11,6 +11,7 @@ export default function createDynamicNode( valueIndex ) {
 	let keyedChildren = true;
 	let nextDomNode;
 	const node = {
+		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			let value = getValueWithIndex( item, valueIndex );
 			const type = getTypeFromValue( value );

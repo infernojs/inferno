@@ -9,6 +9,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 	let keyedChildren = true;
 	const childNodeList = [];
 	const node = {
+		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );

@@ -5,7 +5,7 @@ import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
 import removeListener from './events/removeListener';
 
-import { getValueWithIndex, getCorrectItemForValues } from '../core/variables';
+import { getValueWithIndex } from '../core/variables';
 
 /**
  * Set HTML attributes on the template
@@ -51,17 +51,16 @@ function fastPropSet( attrName, attrVal, domNode ) {
 }
 
 export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
-	const valueItem = getCorrectItemForValues( node, item );
 	let styleUpdates;
 
 	if ( dynamicAttrs.index !== undefined ) {
-		dynamicAttrs = getValueWithIndex( valueItem, dynamicAttrs.index );
+		dynamicAttrs = getValueWithIndex( item, dynamicAttrs.index );
 		addDOMStaticAttributes( item, domNode, dynamicAttrs );
 		return;
 	}
 	for ( const attrName in dynamicAttrs ) {
 		if ( !isVoid( attrName ) ) {
-			const attrVal = getValueWithIndex( valueItem, dynamicAttrs[attrName] );
+			const attrVal = getValueWithIndex( item, dynamicAttrs[attrName] );
 
 			if ( attrVal !== undefined ) {
 				if ( attrName === 'style' ) {
