@@ -453,7 +453,31 @@ describe('DOM SVG tests (no-jsx)', () => {
 
 		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	})
 
+	it('should diff from SVG namespace to mathML namespace ( dynamic )', () => {
+
+		let child;
+
+		let template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children:child
+		}));
+
+
+		child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+		}));
+		Inferno.render(template(child()), container);
+
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+		child = Inferno.createTemplate(() => ({
+			tag: 'math',
+		}));
+		Inferno.render(template(child()), container);
+
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
 	})
 });
