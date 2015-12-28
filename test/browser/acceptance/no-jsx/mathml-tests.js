@@ -39,10 +39,10 @@ describe('DOM mathML tests (no-jsx)', () => {
 		}));
 
 		Inferno.render(template(), container);
-
-		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
+		Inferno.render(template(), container);
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
 	})
 
@@ -60,13 +60,17 @@ describe('DOM mathML tests (no-jsx)', () => {
 		Inferno.render(template(child()), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
+		// Update works!!
+		Inferno.render(template(child()), container);
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+
 	})
 
 	/**
 	 * This is an edge case, and will turn out wrong for the end-dev because of stupidity, but at
 	 * least the correct namespace is kept all the way down to the last element.
 	 * */
-	it('should solve mathML edge when wrapped inside a non-namespace element ( dynamic )', () => {
+	it('should solve mathML edge when wrapped inside multiple non-namespace element children ( dynamic )', () => {
 
 		let child = Inferno.createTemplate(() => ({
 			tag: 'math',

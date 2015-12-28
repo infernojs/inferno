@@ -86,7 +86,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 		if ( tag ) {
 
-			const is = node.attrs && node.attrs.is || null;
+			const is = node.attrs && node.attrs.is;
 			const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 			const SVGNamespace = 'http://www.w3.org/2000/svg';
 
@@ -114,7 +114,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 								}
 							} else if ( isSVGElement( tag ) ) { // only used by dynamic children
 								domNamespace = SVGNamespace;
-							}else if ( isMathMLElement( tag ) ) { // only used by dynamic children
+							} else if ( isMathMLElement( tag ) ) { // only used by dynamic children
 								domNamespace = MathNamespace;
 							}
 					}
