@@ -1,5 +1,5 @@
 /*!
- * inferno v0.4.4
+ * inferno v0.4.5
  * (c) 2015 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -130,13 +130,6 @@
   	return index < 2 ? index === 0 ? item.v0 : item.v1 : item.values[index - 2];
   }
 
-  function getCorrectItemForValues(node, item) {
-  	if (node && node !== item.domTree && item.parent) {
-  		return getCorrectItemForValues(node, item.parent);
-  	}
-  	return item;
-  }
-
   function getTypeFromValue(value) {
   	if (typeof value === 'string' || typeof value === 'number' || isVoid(value)) {
   		return ValueTypes.TEXT;
@@ -166,6 +159,10 @@
   			newProps[name] = getValueWithIndex(item, val.index);
   		} else {
   			newProps[name] = val;
+  		}
+
+  		if (name === 'children') {
+  			newProps[name].overrideItem = item;
   		}
   	}
   	return newProps;
@@ -1792,17 +1789,16 @@
   }
 
   function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
-  	var valueItem = getCorrectItemForValues(node, item);
   	var styleUpdates = undefined;
 
   	if (dynamicAttrs.index !== undefined) {
-  		dynamicAttrs = getValueWithIndex(valueItem, dynamicAttrs.index);
+  		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
   		addDOMStaticAttributes(item, domNode, dynamicAttrs);
   		return;
   	}
   	for (var attrName in dynamicAttrs) {
   		if (!isVoid(attrName)) {
-  			var attrVal = getValueWithIndex(valueItem, dynamicAttrs[attrName]);
+  			var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
   			if (attrVal !== undefined) {
   				if (attrName === 'style') {
@@ -1935,6 +1931,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -2003,6 +2000,7 @@
   	var domNode = undefined;
 
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
@@ -2051,16 +2049,17 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2094,6 +2093,7 @@
   function createNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
@@ -2112,7 +2112,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2120,10 +2120,11 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2241,6 +2242,7 @@
   	var keyedChildren = true;
   	var childNodeList = [];
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
@@ -2334,6 +2336,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
@@ -2424,6 +2427,7 @@
   function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			domNode = templateNode.cloneNode(false);
   			if (!isVoid(subTreeForChildren)) {
@@ -2496,6 +2500,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -2525,6 +2530,7 @@
   function createStaticNode(templateNode) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create() {
   			domNode = templateNode.cloneNode(true);
   			return domNode;
@@ -2545,6 +2551,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
@@ -2646,6 +2653,7 @@
   	var keyedChildren = true;
   	var nextDomNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var value = getValueWithIndex(item, valueIndex);
   			var type = getTypeFromValue(value);
@@ -2734,6 +2742,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -2772,6 +2781,7 @@
   function createVoidNode(templateNode, dynamicAttrs) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
@@ -2826,16 +2836,21 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
+  			var toUseItem = item;
 
+  			if (node.overrideItem !== null) {
+  				toUseItem = node.overrideItem;
+  			}
   			if (recyclingEnabled$8) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
   				}
   			}
-  			var Component = getValueWithIndex(item, componentIndex);
+  			var Component = getValueWithIndex(toUseItem, componentIndex);
 
   			currentItem = item;
   			if (isVoid(Component)) {
@@ -2846,7 +2861,7 @@
   			} else if (typeof Component === 'function') {
   				// stateless component
   				if (!Component.prototype.render) {
-  					var nextRender = Component(getValueForProps(props, item), context);
+  					var nextRender = Component(getValueForProps(props, toUseItem), context);
 
   					nextRender.parent = item;
   					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
@@ -2854,7 +2869,7 @@
   					item.rootNode = domNode;
   				} else {
   					(function () {
-  						instance = new Component(getValueForProps(props, item));
+  						instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
   						var nextRender = instance.render();
@@ -2957,9 +2972,14 @@
   	var domNode = undefined;
   	var currentItem = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
-  			var valueItem = getCorrectItemForValues(node, item);
-  			var Component = getValueWithIndex(valueItem, componentIndex);
+  			var toUseItem = item;
+
+  			if (node.overrideItem !== null) {
+  				toUseItem = node.overrideItem;
+  			}
+  			var Component = getValueWithIndex(toUseItem, componentIndex);
 
   			currentItem = item;
   			if (isVoid(Component)) {
@@ -2968,14 +2988,14 @@
   			} else if (typeof Component === 'function') {
   				// stateless component
   				if (!Component.prototype.render) {
-  					var nextRender = Component(getValueForProps(props, valueItem), context);
+  					var nextRender = Component(getValueForProps(props, toUseItem), context);
 
   					nextRender.parent = item;
   					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
   					lastRender = nextRender;
   				} else {
   					(function () {
-  						instance = new Component(getValueForProps(props, valueItem));
+  						instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
   						var nextRender = instance.render();
@@ -3079,6 +3099,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -3127,6 +3148,7 @@
   	var domNode = undefined;
 
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
