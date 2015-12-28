@@ -1,6 +1,7 @@
 import isVoid from '../util/isVoid';
 import isArray from '../util/isArray';
 import inArray from '../util/inArray';
+import isValidAttribute from '../util/isValidAttribute';
 import DOMRegistry from './DOMRegistry';
 import addPixelSuffixToValueIfNeeded from '../shared/addPixelSuffixToValueIfNeeded';
 import camelCasePropsToDashCase from '../shared/camelCasePropsToDashCase';
@@ -28,7 +29,7 @@ const template = {
 				const propName = propertyInfo.propertyName;
 
 				if ( propertyInfo.mustUseProperty ) {
-					if ( propName === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
+					if ( propName === 'value' && ( ( !isVoid( vNode ) && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
 						template.setSelectValueForProperty( vNode, domNode, value, useProperties );
 					} else {
 						if ( useProperties ) {
@@ -36,7 +37,7 @@ const template = {
 								domNode[propName] = value;
 							}
 						} else {
-							if ( propertyInfo.hasBooleanValue && ( value === true || value === 'true' ) ) {
+							if ( propertyInfo.hasBooleanValue && (value === true || value === 'true' ) ) {
 								value = propName;
 							}
 							domNode.setAttribute( propName, value );
@@ -46,23 +47,26 @@ const template = {
 					const attributeName = propertyInfo.attributeName;
 					const namespace = propertyInfo.attributeNamespace;
 
-					// if 'truthy' value, and boolean, it will be 'propName=propName'
-					if ( propertyInfo.hasBooleanValue && value === true ) {
-						value = attributeName;
-					}
-
 					if ( namespace ) {
 						domNode.setAttributeNS( namespace, attributeName, value );
 					} else {
+						// if 'truthy' value, and boolean, it will be 'propName=propName'
+						if ( propertyInfo.hasBooleanValue && value === true ) {
+							value = attributeName;
+						}
 						domNode.setAttribute( attributeName, value );
 					}
 				}
 			}
         // HTML attributes and custom attributes
-		} else if ( isVoid( value ) ) {
-			domNode.removeAttribute( name );
-		} else if ( name ) {
-			domNode.setAttribute( name, value );
+		} else {
+			if ( isValidAttribute ( name ) ) {
+				if ( isVoid( value ) ) {
+					domNode.removeAttribute( name );
+				} else if ( name ) {
+					domNode.setAttribute( name, value );
+				}
+			}
 		}
 	},
 

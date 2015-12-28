@@ -188,7 +188,7 @@
   	}
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -200,7 +200,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$1) {
+  		if (recyclingEnabled) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -382,7 +382,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled$1) {
+  		if (recyclingEnabled) {
   			pool(item);
   		}
   	}
@@ -616,6 +616,10 @@
   	return nodeName === 'svg' || nodeName === 'clipPath' || nodeName === 'circle' || nodeName === 'defs' || nodeName === 'desc' || nodeName === 'ellipse' || nodeName === 'filter' || nodeName === 'g' || nodeName === 'line' || nodeName === 'linearGradient' || nodeName === 'mask' || nodeName === 'marker' || nodeName === 'metadata' || nodeName === 'mpath' || nodeName === 'path' || nodeName === 'pattern' || nodeName === 'polygon' || nodeName === 'polyline' || nodeName === 'pattern' || nodeName === 'radialGradient' || nodeName === 'rect' || nodeName === 'set' || nodeName === 'stop' || nodeName === 'symbol' || nodeName === 'switch' || nodeName === 'text' || nodeName === 'tspan' || nodeName === 'use' || nodeName === 'view';
   }
 
+  function isMathMLElement(nodeName) {
+  	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
+  }
+
   var canUseDOM = !!(typeof window !== 'undefined' &&
   // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
   // As a workaround, check if document is undefined
@@ -647,6 +651,28 @@
   		if (arr[i++] === item) {
   			return true;
   		}
+  	}
+
+  	return false;
+  }
+
+  function isValidAttribute(strings) {
+  	var i = 0;
+  	var character = undefined;
+
+  	while (i <= strings.length) {
+  		character = strings[i];
+  		if (!isNaN(character * 1)) {
+  			return false;
+  		} else {
+  			if (character == character.toUpperCase()) {
+  				return false;
+  			}
+  			if (character === character.toLowerCase()) {
+  				return true;
+  			}
+  		}
+  		i++;
   	}
 
   	return false;
@@ -1083,7 +1109,7 @@
   				var propName = propertyInfo.propertyName;
 
   				if (propertyInfo.mustUseProperty) {
-  					if (propName === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
+  					if (propName === 'value' && (!isVoid(vNode) && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
   						template.setSelectValueForProperty(vNode, domNode, value, useProperties);
   					} else {
   						if (useProperties) {
@@ -1101,23 +1127,26 @@
   					var attributeName = propertyInfo.attributeName;
   					var namespace = propertyInfo.attributeNamespace;
 
-  					// if 'truthy' value, and boolean, it will be 'propName=propName'
-  					if (propertyInfo.hasBooleanValue && value === true) {
-  						value = attributeName;
-  					}
-
   					if (namespace) {
   						domNode.setAttributeNS(namespace, attributeName, value);
   					} else {
+  						// if 'truthy' value, and boolean, it will be 'propName=propName'
+  						if (propertyInfo.hasBooleanValue && value === true) {
+  							value = attributeName;
+  						}
   						domNode.setAttribute(attributeName, value);
   					}
   				}
   			}
   			// HTML attributes and custom attributes
-  		} else if (isVoid(value)) {
-  				domNode.removeAttribute(name);
-  			} else if (name) {
-  				domNode.setAttribute(name, value);
+  		} else {
+  				if (isValidAttribute(name)) {
+  					if (isVoid(value)) {
+  						domNode.removeAttribute(name);
+  					} else if (name) {
+  						domNode.setAttribute(name, value);
+  					}
+  				}
   			}
   	},
 
@@ -1900,7 +1929,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1909,7 +1938,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2022,7 +2051,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -2031,7 +2060,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2083,7 +2112,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2094,7 +2123,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -3181,8 +3210,12 @@
   		var tag = node.tag;
 
   		if (tag) {
-  			var is = node.attrs && node.attrs.is || null;
 
+  			var is = node.attrs && node.attrs.is;
+  			var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
+  			var SVGNamespace = 'http://www.w3.org/2000/svg';
+
+  			// https://jsperf.com/type-of-undefined-vs-undefined/76
   			if (domNamespace === undefined) {
 
   				if (node.attrs && node.attrs.xmlns) {
@@ -3190,22 +3223,28 @@
   				} else {
   					switch (tag) {
   						case 'svg':
-  							domNamespace = 'http://www.w3.org/2000/svg';
+  							domNamespace = SVGNamespace;
   							break;
   						case 'math':
-  							domNamespace = 'http://www.w3.org/1998/Math/MathML';
+  							domNamespace = MathNamespace;
   							break;
   						default:
   							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
   							// E.g. <div><svg><svg></div> - will not work
   							if (parentNode !== null) {
-  								if (tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg') {
-  									// only used by static children
-  									domNamespace = 'http://www.w3.org/2000/svg';
+  								// only used by static children
+  								// check only for top-level element for both mathML and SVG
+  								if (tag === 'svg' && parentNode.namespaceURI !== SVGNamespace) {
+  									domNamespace = SVGNamespace;
+  								} else if (tag === 'math' && parentNode.namespaceURI !== MathNamespace) {
+  									domNamespace = MathNamespace;
   								}
   							} else if (isSVGElement(tag)) {
   								// only used by dynamic children
-  								domNamespace = 'http://www.w3.org/2000/svg';
+  								domNamespace = SVGNamespace;
+  							} else if (isMathMLElement(tag)) {
+  								// only used by dynamic children
+  								domNamespace = MathNamespace;
   							}
   					}
   				}
@@ -3326,7 +3365,6 @@
   					if (schema.attrs && schema.attrs.xmlns) {
   						domNamespace = schema.attrs.xmlns;
   					} else {
-
   						switch (tag) {
   							case 'svg':
   								domNamespace = 'http://www.w3.org/2000/svg';
@@ -3337,6 +3375,7 @@
   						}
   					}
   				}
+
   				if (domNamespace) {
   					if (is) {
   						templateNode = document.createElementNS(domNamespace, tag, is);
