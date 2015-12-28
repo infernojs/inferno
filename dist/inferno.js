@@ -99,7 +99,7 @@
   }
 
   var isVoid = (function (x) {
-    return x === null || typeof x === 'undefined';
+    return x === null || x === undefined;
   })
 
   var isArray = (function (x) {
@@ -188,7 +188,7 @@
   	}
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -200,7 +200,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$1) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -382,7 +382,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$1) {
   			pool(item);
   		}
   	}
@@ -610,6 +610,11 @@
   var TemplateFactory = {
   	createElement: createElement
   };
+
+  // To be compat with React, we support at least the same SVG elements
+  function isSVGElement(nodeName) {
+  	return nodeName === 'svg' || nodeName === 'clipPath' || nodeName === 'circle' || nodeName === 'defs' || nodeName === 'desc' || nodeName === 'ellipse' || nodeName === 'filter' || nodeName === 'g' || nodeName === 'line' || nodeName === 'linearGradient' || nodeName === 'mask' || nodeName === 'marker' || nodeName === 'metadata' || nodeName === 'mpath' || nodeName === 'path' || nodeName === 'pattern' || nodeName === 'polygon' || nodeName === 'polyline' || nodeName === 'pattern' || nodeName === 'radialGradient' || nodeName === 'rect' || nodeName === 'set' || nodeName === 'stop' || nodeName === 'symbol' || nodeName === 'switch' || nodeName === 'text' || nodeName === 'tspan' || nodeName === 'use' || nodeName === 'view';
+  }
 
   var canUseDOM = !!(typeof window !== 'undefined' &&
   // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
@@ -1026,11 +1031,11 @@
    * @param {String} value The boolean attribute value to set.
    */
   function addPixelSuffixToValueIfNeeded (name, value) {
-  	if (value == null || typeof value === 'boolean' || value === '') {
+  	if (isVoid(value) || typeof value === 'boolean' || value === '') {
   		return '';
   	}
   	// const isNonNumeric = isNaN( value );
-  	if (value == null || value === '' || typeof value === 'boolean') {
+  	if (isVoid(value) || value === '' || typeof value === 'boolean') {
   		return '';
   	}
   	if (value === 0 || unitlessProperties[name]) {
@@ -1895,7 +1900,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1904,7 +1909,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3176,23 +3181,36 @@
   		var tag = node.tag;
 
   		if (tag) {
-  			var namespace = node.attrs && node.attrs.xmlns || null;
   			var is = node.attrs && node.attrs.is || null;
 
-  			if (!namespace) {
-  				switch (tag) {
-  					case 'svg':
-  						domNamespace = 'http://www.w3.org/2000/svg';
-  						break;
-  					case 'math':
-  						domNamespace = 'http://www.w3.org/1998/Math/MathML';
-  						break;
-  					default:
-  						break;
+  			if (domNamespace === undefined) {
+
+  				if (node.attrs && node.attrs.xmlns) {
+  					domNamespace = node.attrs.xmlns;
+  				} else {
+  					switch (tag) {
+  						case 'svg':
+  							domNamespace = 'http://www.w3.org/2000/svg';
+  							break;
+  						case 'math':
+  							domNamespace = 'http://www.w3.org/1998/Math/MathML';
+  							break;
+  						default:
+  							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
+  							// E.g. <div><svg><svg></div> - will not work
+  							if (parentNode !== null) {
+  								if (tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg') {
+  									// only used by static children
+  									domNamespace = 'http://www.w3.org/2000/svg';
+  								}
+  							} else if (isSVGElement(tag)) {
+  								// only used by dynamic children
+  								domNamespace = 'http://www.w3.org/2000/svg';
+  							}
+  					}
   				}
-  			} else {
-  				domNamespace = namespace;
   			}
+
   			if (domNamespace) {
   				if (is) {
   					staticNode = document.createElementNS(domNamespace, tag, is);
@@ -3238,6 +3256,7 @@
   }
 
   function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
+
   	var dynamicFlags = dynamicNodeMap.get(schema);
   	var node = undefined;
   	var templateNode = undefined;
@@ -3299,22 +3318,24 @@
   						return createNodeWithComponent(tag.index, _attrs, _children, domNamespace);
   					}
   				}
-  				var namespace = schema.attrs && schema.attrs.xmlns || null;
-  				var is = schema.attrs && schema.attrs.is || null;
 
-  				if (!namespace) {
-  					switch (tag) {
-  						case 'svg':
-  							domNamespace = 'http://www.w3.org/2000/svg';
-  							break;
-  						case 'math':
-  							domNamespace = 'http://www.w3.org/1998/Math/MathML';
-  							break;
-  						default:
-  							break;
+  				var is = schema.attrs && schema.attrs.is;
+
+  				if (domNamespace === undefined) {
+
+  					if (schema.attrs && schema.attrs.xmlns) {
+  						domNamespace = schema.attrs.xmlns;
+  					} else {
+
+  						switch (tag) {
+  							case 'svg':
+  								domNamespace = 'http://www.w3.org/2000/svg';
+  								break;
+  							case 'math':
+  								domNamespace = 'http://www.w3.org/1998/Math/MathML';
+  								break;
+  						}
   					}
-  				} else {
-  					domNamespace = namespace;
   				}
   				if (domNamespace) {
   					if (is) {
