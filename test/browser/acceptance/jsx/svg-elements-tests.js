@@ -241,7 +241,7 @@ it('should keep parent namespace', () => {
  			expect(
  				container.innerHTML
  			).to.equal(
- 				'<svg class="alert-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use> </svg>'
+			    '<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>'
  			);
 
   		Inferno.render(<Component />, container);
@@ -249,7 +249,7 @@ it('should keep parent namespace', () => {
  			expect(
  				container.innerHTML
  			).to.equal(
- 				'<svg class="alert-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use> </svg>'
+			    '<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>'
  			);
  	});
  });
