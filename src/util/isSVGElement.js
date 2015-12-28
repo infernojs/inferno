@@ -2,6 +2,7 @@
 function isSVGElement( nodeName ) {
 	return nodeName === 'svg'
 		|| nodeName === 'clipPath'
+		|| nodeName === 'circle'
 		|| nodeName === 'defs'
 		|| nodeName === 'desc'
 		|| nodeName === 'ellipse'

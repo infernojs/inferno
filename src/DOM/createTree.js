@@ -1,4 +1,5 @@
 import isVoid from '../util/isVoid';
+import isSVGElement from '../util/isSVGElement';
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
 import createNodeWithDynamicText from './shapes/nodeWithDynamicText';
 import createRootNodeWithStaticChild from './shapes/rootNodeWithStaticChild';
@@ -98,13 +99,14 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 							domNamespace = 'http://www.w3.org/1998/Math/MathML';
 							break;
 						default:
-
 							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
 							// E.g. <div><svg><svg></div> - will not work
 							if ( parentNode !== null) {
-								if ( node.tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' )  { // or mathML
+								if ( tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' )  { // only used by static children
 									domNamespace = 'http://www.w3.org/2000/svg';
 								}
+							} else if ( isSVGElement( tag ) ) { // only used by dynamic children
+								domNamespace = 'http://www.w3.org/2000/svg';
 							}
 					}
 				}
@@ -233,14 +235,6 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 							case 'math':
 								domNamespace = 'http://www.w3.org/1998/Math/MathML';
 								break;
-							default:
-							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
-							// E.g. <div><svg><svg></div> - will not work
-								//if ( !isVoid( parentNode ) ) {
-								//	if ( node.tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg' ) { // or mathML
-//									domNamespace = 'http://www.w3.org/2000/svg';
-//									}
-//								}
 						}
 					}
 				}

@@ -380,7 +380,7 @@ describe('DOM SVG tests (no-jsx)', () => {
 		}));
 
 		Inferno.render(template(child()), container);
-		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
 		child = Inferno.createTemplate(() => ({
@@ -397,7 +397,7 @@ describe('DOM SVG tests (no-jsx)', () => {
 		}));
 
 		Inferno.render(template(child()), container);
-		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
 		child = Inferno.createTemplate(() => ({
 			tag: 'circle',
@@ -418,6 +418,42 @@ describe('DOM SVG tests (no-jsx)', () => {
 		}));
 
 		Inferno.render(template(child()), container);
-		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	})
+
+	it('should solve SVG edge when wrapped inside a non-namespace element ( static)', () => {
+
+		let template = Inferno.createTemplate(() => ({
+			tag: 'div',
+			children:{
+				tag: 'svg'
+
+			}
+		}));
+
+		Inferno.render(template(), container);
+
+		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+	})
+
+	it('should solve SVG edge when wrapped inside a non-namespace element ( dynamic )', () => {
+
+		let child = Inferno.createTemplate(() => ({
+			tag: 'circle',
+		}));
+
+		let template = Inferno.createTemplate((child) => ({
+			tag: 'div',
+			children:child
+		}));
+
+		Inferno.render(template(child()), container);
+
+		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+
 	})
 });
