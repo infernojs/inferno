@@ -90,6 +90,6 @@ module.exports = function(config) {
         // Used by Travis to push coveralls info corretly to example coveralls.io
         config.reporters = ['mocha', 'coverage', 'coveralls'];
         // Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
-        config.browserNoActivityTimeout = 120000;
+       // config.browserNoActivityTimeout = 120000;
     }
 };
