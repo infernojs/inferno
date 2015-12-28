@@ -85,7 +85,10 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 		const tag = node.tag;
 
 		if ( tag ) {
+
 			const is = node.attrs && node.attrs.is || null;
+			const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
+			const SVGNamespace = 'http://www.w3.org/2000/svg';
 
 			if ( domNamespace === undefined ) {
 
@@ -94,25 +97,25 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 				} else {
 					switch ( tag ) {
 						case 'svg':
-							domNamespace = 'http://www.w3.org/2000/svg';
+							domNamespace = SVGNamespace;
 							break;
 						case 'math':
-							domNamespace = 'http://www.w3.org/1998/Math/MathML';
+							domNamespace = MathNamespace;
 							break;
 						default:
 							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
 							// E.g. <div><svg><svg></div> - will not work
 							if ( parentNode !== null ) {
 								// check only for top-level element for both mathML and SVG
-								if ( tag === 'svg' && parentNode.namespaceURI !== 'http://www.w3.org/2000/svg') { // only used by static children
-									domNamespace = 'http://www.w3.org/2000/svg';
-								} else if ( tag === 'math' && parentNode.namespaceURI !== 'http://www.w3.org/1998/Math/MathML' ) { // only used by static children
-									domNamespace = 'http://www.w3.org/1998/Math/MathML';
+								if ( tag === 'svg' && parentNode.namespaceURI !== SVGNamespace) { // only used by static children
+									domNamespace = SVGNamespace;
+								} else if ( tag === 'math' && parentNode.namespaceURI !== MathNamespace ) { // only used by static children
+									domNamespace = MathNamespace;
 								}
 							} else if ( isSVGElement( tag ) ) { // only used by dynamic children
-								domNamespace = 'http://www.w3.org/2000/svg';
+								domNamespace = SVGNamespace;
 							}else if ( isMathMLElement( tag ) ) { // only used by dynamic children
-								domNamespace = 'http://www.w3.org/1998/Math/MathML';
+								domNamespace = MathNamespace;
 							}
 					}
 				}
