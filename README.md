@@ -1,6 +1,6 @@
 # InfernoJS
 
-[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=master)](https://travis-ci.org/trueadm/inferno)
+[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=dev)](https://travis-ci.org/trueadm/inferno)
 [![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=master&service=github)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependency Status](https://david-dm.org/trueadm/inferno.svg)](https://david-dm.org/trueadm/inferno)
 [![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
@@ -104,10 +104,6 @@ This is essential for low-power devices such as tablets and phones, where users 
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Inferno Top-Level API
-
-```js
-// TODO
-```
 
 ### Inferno.Component
 
@@ -237,3 +233,4 @@ Inferno is still under development, and there are some missing features and opti
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
+
