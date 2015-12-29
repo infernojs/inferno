@@ -5,6 +5,8 @@ import styleAccessor from '../util/styleAccessor';
 import isValidAttribute from '../util/isValidAttribute';
 import DOMRegistry from './DOMRegistry';
 
+
+
 const template = {
 	/**
 	 * Sets the value for a property on a node. If a value is specified as
@@ -85,26 +87,26 @@ const template = {
 
 			const style = domNode.style;
 
-			if ( isVoid( styleValue ) ||
-				typeof styleValue === 'boolean' ) { // Todo! Should we check for typeof boolean?
-				style[styleName] = '';
-			} else {
+			if ( !isVoid( styleValue ) ) {
 
 				// The 'hook' contains all browser supported CSS properties.
 				// No 'custom-css' are allowed or will work.
 				const hook = styleAccessor[styleName];
 
 				if ( hook ) {
-					if ( !hook.unitless ) {
-						// Todo! Should we allow auto-trim, or is it too expensive?
-						if ( typeof styleValue === 'string' ){
+					if ( !hook.unitless &&
+						!isNaN( styleValue ) ) {
+						if ( typeof styleValue === 'string' ) {
 							styleValue = styleValue.trim();
-						} else {
-							styleValue = styleValue + 'px';
 						}
+						styleValue = styleValue + 'px';
 					}
 					style[hook.unPrefixed] = styleValue;
+				// non-standard
 				}
+				// Do nothing!
+			} else {
+				style[styleName] = '';
 			}
 		}
 	},
