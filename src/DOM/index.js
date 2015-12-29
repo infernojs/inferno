@@ -98,18 +98,10 @@ const template = {
 
 				if ( hook ) {
 					if ( !hook.unitless ) {
-						// Todo! Should we allow auto-trim, or is it too expensive?
-						if ( typeof styleValue === 'string' ){
-							styleValue = styleValue.trim();
-						} else {
+						if ( typeof styleValue !== 'string' ) {
 							styleValue = styleValue + 'px';
 						}
-					} else if ( styleValue === 0 ||
-						hook.unitless ||
-						isNaN( styleValue )) {
-						styleValue = styleValue;
 					}
-
 						style[hook.unPrefixed] = styleValue;
 				}
 			}
