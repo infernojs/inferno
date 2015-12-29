@@ -706,15 +706,12 @@
   	var props = Array.prototype.slice.call(computed, 0);
 
   	props.forEach(function (propName) {
-  		var prefix = propName[0] === "-" ? propName.substr(1, propName.indexOf("-", 1) - 1) : null;
+  		var prefix = propName[0] === '-' ? propName.substr(1, propName.indexOf('-', 1) - 1) : null;
   		var stylePropName = propName.replace(reDash, function (str) {
   			return str[1].toUpperCase();
   		});
 
   		HOOK[stylePropName] = {
-  			propName: propName.replace(reDash, function (str) {
-  				return str[1].toUpperCase();
-  			}),
   			unPrefixed: prefix ? propName.substr(prefix.length + 2) : propName,
   			unitless: unitlessProperties[propName] ? true : false
   		};
@@ -1143,22 +1140,24 @@
 
   			var styleValue = styles[styleName];
 
-  			if (isVoid(styleValue)) {
-  				domNode.style[styleName] = '';
+  			var style = domNode.style;
+
+  			if (isVoid(styleValue) || typeof styleValue === 'boolean') {
+  				// Todo! Should we check for typeof boolean?
+  				style[styleName] = '';
   			} else {
 
+  				// The 'hook' contains all browser supported CSS properties.
+  				// No 'custom-css' are allowed or will work.
   				var hook = HOOK[styleName];
 
   				if (hook) {
   					if (!hook.unitless) {
-  						// Todo! Should we allow auto-trim, or is it øætoo expensive?
-  						if (typeof styleValue === 'string') {
-  							styleValue = styleValue.trim();
-  						} else {
+  						if (typeof styleValue !== 'string') {
   							styleValue = styleValue + 'px';
   						}
   					}
-  					domNode.style[hook.unPrefixed] = styleValue;
+  					style[hook.unPrefixed] = styleValue;
   				}
   			}
   		}
@@ -1959,6 +1958,7 @@
   			}
   			var domNode = lastItem.rootNode;
 
+  			nextItem.id = lastItem.id;
   			nextItem.rootNode = domNode;
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
@@ -2076,6 +2076,7 @@
   			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
+  			nextItem.id = lastItem.id;
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
@@ -2171,6 +2172,7 @@
   			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
+  			nextItem.id = lastItem.id;
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -2347,8 +2349,9 @@
   				if (isArray(subTreeForChildren)) {
   					for (var i = 0; i < subTreeForChildren.length; i++) {
   						var subTree = subTreeForChildren[i];
+  						var childNode = subTree.create(item, treeLifecycle, context);
 
-  						domNode.appendChild(subTree.create(item, treeLifecycle, context));
+  						domNode.appendChild(childNode);
   					}
   				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
   					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle, context));
@@ -2361,6 +2364,8 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
+  			nextItem.id = lastItem.id;
+
   			if (node !== lastItem.domTree) {
   				var newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 
@@ -2378,17 +2383,7 @@
   						subTree.update(lastItem, nextItem, treeLifecycle, context);
   					}
   				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
-  					var newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
-
-  					if (newDomNode) {
-  						var replaceNode = domNode.firstChild;
-
-  						if (replaceNode) {
-  							domNode.replaceChild(newDomNode, replaceNode);
-  						} else {
-  							domNode.appendChild(newDomNode);
-  						}
-  					}
+  					subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
   				}
   			}
   			if (dynamicAttrs) {
@@ -2421,11 +2416,12 @@
   }
 
   function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
-  	var domNode = undefined;
+  	var domNodeMap = {};
   	var node = {
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
-  			domNode = templateNode.cloneNode(false);
+  			var domNode = templateNode.cloneNode(false);
+
   			if (!isVoid(subTreeForChildren)) {
   				if (isArray(subTreeForChildren)) {
   					for (var i = 0; i < subTreeForChildren.length; i++) {
@@ -2440,9 +2436,12 @@
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
+  			domNodeMap[item.id] = domNode;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
+  			var domNode = domNodeMap[lastItem.id];
+
   			if (node !== lastItem.domTree) {
   				recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
   				return domNode;
@@ -2516,6 +2515,7 @@
   				return;
   			}
   			nextItem.rootNode = lastItem.rootNode;
+  			nextItem.id = lastItem.id;
   		},
   		remove: function remove() /* lastItem */{}
   	};
@@ -2604,6 +2604,7 @@
   			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
+  			nextItem.id = lastItem.id;
 
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
@@ -2763,6 +2764,7 @@
   			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
+  			nextItem.id = lastItem.id;
   			nextItem.rootNode = lastItem.rootNode;
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2826,14 +2828,15 @@
   var recyclingEnabled$8 = isRecyclingEnabled();
 
   function createRootNodeWithComponent(componentIndex, props) {
-  	var instance = undefined;
-  	var lastRender = undefined;
   	var currentItem = undefined;
+  	var statelessRender = undefined;
   	var node = {
+  		instance: null,
   		pool: [],
   		keyedPool: [],
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
+  			var instance = node.instance;
   			var domNode = undefined;
   			var toUseItem = item;
 
@@ -2861,11 +2864,11 @@
 
   					nextRender.parent = item;
   					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
-  					lastRender = nextRender;
+  					statelessRender = nextRender;
   					item.rootNode = domNode;
   				} else {
   					(function () {
-  						instance = new Component(getValueForProps(props, toUseItem));
+  						instance = node.instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
   						var nextRender = instance.render();
@@ -2878,7 +2881,7 @@
   						nextRender.parent = item;
   						domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
   						item.rootNode = domNode;
-  						lastRender = nextRender;
+  						instance._lastRender = nextRender;
 
   						if (domNode instanceof DocumentFragment) {
   							fragmentFirstChild = domNode.childNodes[0];
@@ -2892,16 +2895,16 @@
   						});
   						instance.forceUpdate = function () {
   							instance.context = context;
-  							var nextRender = instance.render();
+  							var nextRender = instance.render.call(instance);
   							var childContext = instance.getChildContext();
 
   							if (childContext) {
   								context = babelHelpers.extends({}, context, childContext);
   							}
   							nextRender.parent = currentItem;
-  							nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
+  							nextRender.domTree.update(instance._lastRender, nextRender, treeLifecycle, context);
   							currentItem.rootNode = nextRender.rootNode;
-  							lastRender = nextRender;
+  							instance._lastRender = nextRender;
   						};
   					})();
   				}
@@ -2910,7 +2913,9 @@
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			var Component = getValueWithIndex(nextItem, componentIndex);
+  			var instance = node.instance;
 
+  			nextItem.id = lastItem.id;
   			currentItem = nextItem;
   			if (!Component) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
@@ -2921,7 +2926,7 @@
   					var nextRender = Component(getValueForProps(props, nextItem), context);
 
   					nextRender.parent = currentItem;
-  					var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
+  					var newDomNode = nextRender.domTree.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
 
   					if (newDomNode) {
   						if (nextRender.rootNode.parentNode) {
@@ -2934,7 +2939,7 @@
   						currentItem.rootNode = nextRender.rootNode;
   					}
 
-  					lastRender = nextRender;
+  					statelessRender = nextRender;
   				} else {
   					if (!instance || node !== lastItem.domTree || Component !== instance.constructor) {
   						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
@@ -2952,8 +2957,10 @@
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
+  			var instance = node.instance;
+
   			if (instance) {
-  				lastRender.domTree.remove(lastRender, treeLifecycle);
+  				instance._lastRender.domTree.remove(instance._lastRender, treeLifecycle);
   				instance.componentWillUnmount();
   			}
   		}
@@ -2963,14 +2970,15 @@
   }
 
   function createNodeWithComponent(componentIndex, props) {
-  	var instance = undefined;
-  	var lastRender = undefined;
   	var domNode = undefined;
   	var currentItem = undefined;
+  	var statelessRender = undefined;
   	var node = {
   		overrideItem: null,
+  		instance: null,
   		create: function create(item, treeLifecycle, context) {
   			var toUseItem = item;
+  			var instance = node.instance;
 
   			if (node.overrideItem !== null) {
   				toUseItem = node.overrideItem;
@@ -2988,7 +2996,7 @@
 
   					nextRender.parent = item;
   					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
-  					lastRender = nextRender;
+  					statelessRender = nextRender;
   				} else {
   					(function () {
   						instance = new Component(getValueForProps(props, toUseItem));
@@ -3003,7 +3011,7 @@
   						}
   						nextRender.parent = item;
   						domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
-  						lastRender = nextRender;
+  						instance._lastRender = nextRender;
 
   						if (domNode instanceof DocumentFragment) {
   							fragmentFirstChild = domNode.childNodes[0];
@@ -3014,26 +3022,26 @@
   							}
   							instance.componentDidMount();
   						});
-  						instance.forceUpdate = function () {
+  						instance.forceUpdate = (function () {
   							instance.context = context;
-  							var nextRender = instance.render();
+  							var nextRender = instance.render.call(instance);
   							var childContext = instance.getChildContext();
 
   							if (childContext) {
   								context = babelHelpers.extends({}, context, childContext);
   							}
   							nextRender.parent = currentItem;
-  							var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
+  							var newDomNode = nextRender.domTree.update(instance._lastRender, nextRender, treeLifecycle, context);
 
   							if (newDomNode) {
   								domNode = newDomNode;
-  								lastRender.rootNode = domNode;
-  								lastRender = nextRender;
+  								instance._lastRender.rootNode = domNode;
+  								instance._lastRender = nextRender;
   								return domNode;
   							} else {
-  								lastRender = nextRender;
+  								instance._lastRender = nextRender;
   							}
-  						};
+  						}).bind(instance);
   					})();
   				}
   			}
@@ -3041,11 +3049,14 @@
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			var Component = getValueWithIndex(nextItem, componentIndex);
+  			var instance = node.instance;
 
   			currentItem = nextItem;
   			if (!Component) {
   				recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
-  				lastRender.rootNode = domNode;
+  				if (instance) {
+  					instance._lastRender.rootNode = domNode;
+  				}
   				return domNode;
   			}
   			if (typeof Component === 'function') {
@@ -3054,15 +3065,15 @@
   					var nextRender = Component(getValueForProps(props, nextItem), context);
 
   					nextRender.parent = currentItem;
-  					var newDomNode = nextRender.domTree.update(lastRender, nextRender, treeLifecycle, context);
+  					var newDomNode = nextRender.domTree.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
 
+  					statelessRender = nextRender;
   					if (newDomNode) {
+  						if (domNode.parentNode) {
+  							domNode.parentNode.replaceChild(newDomNode, domNode);
+  						}
   						domNode = newDomNode;
-  						lastRender.rootNode = domNode;
-  						lastRender = nextRender;
   						return domNode;
-  					} else {
-  						lastRender = nextRender;
   					}
   				} else {
   					if (!instance || Component !== instance.constructor) {
@@ -3079,8 +3090,10 @@
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
+  			var instance = node.instance;
+
   			if (instance) {
-  				lastRender.domTree.remove(lastRender, treeLifecycle);
+  				instance._lastRender.domTree.remove(instance._lastRender, treeLifecycle);
   				instance.componentWillUnmount();
   			}
   		}
@@ -3125,6 +3138,7 @@
   			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
+  			nextItem.id = lastItem.id;
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
 
   			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
@@ -3609,6 +3623,10 @@
   	return nodeIsDynamic;
   }
 
+  function createId() {
+  	return Symbol();
+  }
+
   function createTemplate(callback) {
   	var construct = callback.construct;
 
@@ -3636,6 +3654,7 @@
   							parent: null,
   							domTree: domTree,
   							htmlStringTree: htmlStringTree,
+  							id: createId(),
   							key: null,
   							nextItem: null,
   							rootNode: null
@@ -3653,6 +3672,7 @@
   							parent: null,
   							domTree: domTree,
   							htmlStringTree: htmlStringTree,
+  							id: createId(),
   							key: key,
   							nextItem: null,
   							rootNode: null,
@@ -3673,6 +3693,7 @@
   							parent: null,
   							domTree: domTree,
   							htmlStringTree: htmlStringTree,
+  							id: createId(),
   							key: key,
   							nextItem: null,
   							rootNode: null,
@@ -3700,6 +3721,7 @@
   							parent: null,
   							domTree: domTree,
   							htmlStringTree: htmlStringTree,
+  							id: createId(),
   							key: key,
   							nextItem: null,
   							rootNode: null,
@@ -3755,7 +3777,7 @@
   		this._deferSetState = false;
   		this._pendingSetState = false;
   		this._pendingState = {};
-  		this._componentTree = [];
+  		this._lastRender = null;
   		this.state = {};
   		this.context = {};
   	}

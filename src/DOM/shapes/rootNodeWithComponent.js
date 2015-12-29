@@ -74,7 +74,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					} );
 					instance.forceUpdate = () => {
 						instance.context = context;
-						const nextRender = instance.render();
+						const nextRender = instance.render.call( instance );
 						const childContext = instance.getChildContext();
 
 						if ( childContext ) {
