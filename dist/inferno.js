@@ -1,5 +1,5 @@
 /*!
- * inferno v0.4.4
+ * inferno v0.4.5
  * (c) 2015 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -130,13 +130,6 @@
   	return index < 2 ? index === 0 ? item.v0 : item.v1 : item.values[index - 2];
   }
 
-  function getCorrectItemForValues(node, item) {
-  	if (node && node !== item.domTree && item.parent) {
-  		return getCorrectItemForValues(node, item.parent);
-  	}
-  	return item;
-  }
-
   function getTypeFromValue(value) {
   	if (typeof value === 'string' || typeof value === 'number' || isVoid(value)) {
   		return ValueTypes.TEXT;
@@ -166,6 +159,10 @@
   			newProps[name] = getValueWithIndex(item, val.index);
   		} else {
   			newProps[name] = val;
+  		}
+
+  		if (name === 'children') {
+  			newProps[name].overrideItem = item;
   		}
   	}
   	return newProps;
@@ -370,10 +367,17 @@
   }
 
   function insertOrAppend(parentNode, newNode, nextNode) {
+
+  	var activeNode = document.activeElement;
+
   	if (nextNode) {
   		parentNode.insertBefore(newNode, nextNode);
   	} else {
   		parentNode.appendChild(newNode);
+  	}
+
+  	if (activeNode !== document.body && document.activeElement !== activeNode) {
+  		activeNode.focus();
   	}
   }
 
@@ -611,6 +615,10 @@
   	createElement: createElement
   };
 
+  var isStringOrNumber = (function (x) {
+    return typeof x === 'string' || typeof x === 'number';
+  })
+
   // To be compat with React, we support at least the same SVG elements
   function isSVGElement(nodeName) {
   	return nodeName === 'svg' || nodeName === 'clipPath' || nodeName === 'circle' || nodeName === 'defs' || nodeName === 'desc' || nodeName === 'ellipse' || nodeName === 'filter' || nodeName === 'g' || nodeName === 'line' || nodeName === 'linearGradient' || nodeName === 'mask' || nodeName === 'marker' || nodeName === 'metadata' || nodeName === 'mpath' || nodeName === 'path' || nodeName === 'pattern' || nodeName === 'polygon' || nodeName === 'polyline' || nodeName === 'pattern' || nodeName === 'radialGradient' || nodeName === 'rect' || nodeName === 'set' || nodeName === 'stop' || nodeName === 'symbol' || nodeName === 'switch' || nodeName === 'text' || nodeName === 'tspan' || nodeName === 'use' || nodeName === 'view';
@@ -654,6 +662,63 @@
   	}
 
   	return false;
+  }
+
+  var HOOK = {};
+  var reDash = /\-./g;
+
+  var unitlessProperties = {
+  	'box-flex': true,
+  	'animation-iteration-count': true,
+  	'tab-size': true,
+  	'box-flex-group': true,
+  	'column-count': true,
+  	'counter-increment': true,
+  	'stop-opacity': true,
+  	'stroke-dashoffset': true,
+  	'stroke-opacity': true,
+  	'stroke-width': true,
+  	'transform': true,
+  	'transform-origin': true,
+  	'flex-grow': true,
+  	'flex-positive': true,
+  	'flex': true,
+  	'float': true,
+  	'fill-opacity': true,
+  	'font-weight': true,
+  	'grid-column': true,
+  	'flex-shrink': true,
+  	'line-height': true,
+  	'line-clamp': true,
+  	'flex-order': true,
+  	'opacity': true,
+  	'orphans': true,
+  	'order': true,
+  	'widows': true,
+  	'z-index': true,
+  	'zoom': true
+  };
+
+  // Don't execute this in nodejS
+  if (ExecutionEnvironment.canUseDOM) {
+  	// get browser supported CSS properties
+  	var computed = window.getComputedStyle(document.documentElement);
+  	var props = Array.prototype.slice.call(computed, 0);
+
+  	props.forEach(function (propName) {
+  		var prefix = propName[0] === "-" ? propName.substr(1, propName.indexOf("-", 1) - 1) : null;
+  		var stylePropName = propName.replace(reDash, function (str) {
+  			return str[1].toUpperCase();
+  		});
+
+  		HOOK[stylePropName] = {
+  			propName: propName.replace(reDash, function (str) {
+  				return str[1].toUpperCase();
+  			}),
+  			unPrefixed: prefix ? propName.substr(prefix.length + 2) : propName,
+  			unitless: unitlessProperties[propName] ? true : false
+  		};
+  	});
   }
 
   function isValidAttribute(strings) {
@@ -1003,92 +1068,6 @@
   	};
   }
 
-  /**
-   * CSS properties which accept numbers but are not in units of "px".
-   */
-  var unitlessProperties = {
-  	animationIterationCount: true,
-  	boxFlex: true,
-  	boxFlexGroup: true,
-  	boxOrdinalGroup: true,
-  	columnCount: true,
-  	flex: true,
-  	flexGrow: true,
-  	flexPositive: true,
-  	flexShrink: true,
-  	flexNegative: true,
-  	flexOrder: true,
-  	gridRow: true,
-  	gridColumn: true,
-  	fontWeight: true,
-  	lineClamp: true,
-  	lineHeight: true,
-  	opacity: true,
-  	order: true,
-  	orphans: true,
-  	tabSize: true,
-  	widows: true,
-  	zIndex: true,
-  	zoom: true,
-  	// SVG-related properties
-  	fillOpacity: true,
-  	stopOpacity: true,
-  	strokeDashoffset: true,
-  	strokeOpacity: true,
-  	strokeWidth: true
-  };
-
-  function prefixKey(prefix, key) {
-  	return prefix + key[0].toUpperCase() + key.substring(1);
-  }
-
-  var prefixes = ['Webkit', 'Moz'];
-
-  Object.keys(unitlessProperties).forEach(function (prop) {
-  	prefixes.forEach(function (prefix) {
-  		unitlessProperties[prefixKey(prefix, prop)] = unitlessProperties[prop];
-  	});
-  });
-
-  /**
-   * Normalize CSS properties, and add pixel suffix if needed
-   *
-   * @param {String} name The boolean attribute name to set.
-   * @param {String} value The boolean attribute value to set.
-   */
-  function addPixelSuffixToValueIfNeeded (name, value) {
-  	if (isVoid(value) || typeof value === 'boolean' || value === '') {
-  		return '';
-  	}
-  	// const isNonNumeric = isNaN( value );
-  	if (isVoid(value) || value === '' || typeof value === 'boolean') {
-  		return '';
-  	}
-  	if (value === 0 || unitlessProperties[name]) {
-  		return '' + value; // cast to string
-  	}
-  	// isNaN is expensive, so we check for it at the very end
-  	if (isNaN(value)) {
-  		return '' + value; // cast to string
-  	}
-  	// Todo! Should we allow auto-trim, or is too expensive?
-  	if (typeof value === 'string') {
-  		value = value.trim();
-  	}
-  	return value + 'px';
-  }
-
-  var DASH_REGEX = /([a-z])?([A-Z])/g;
-  var DASHED_REPLACE = function DASHED_REPLACE($$, $1, $2) {
-    return ($1 || '') + '-' + $2.toLowerCase();
-  };
-
-  // Since prefix is expected to work on inline style objects, we must
-  // translate the keys to dash case for rendering to CSS.
-  var camelCasePropsToDashCase = (function (str) {
-    return str.replace(DASH_REGEX, DASHED_REPLACE);
-  })
-
   var template = {
   	/**
     * Sets the value for a property on a node. If a value is specified as
@@ -1159,14 +1138,28 @@
     * @param {object} styles
     */
   	setCSS: function setCSS(vNode, domNode, styles) {
-  		for (var styleName in styles) {
-  			var styleValue = styles[styleName];
-  			var dashed = camelCasePropsToDashCase(styleName);
 
-  			if (!isVoid(styleValue)) {
-  				domNode.style[dashed] = addPixelSuffixToValueIfNeeded(styleName, styleValue);
+  		for (var styleName in styles) {
+
+  			var styleValue = styles[styleName];
+
+  			if (isVoid(styleValue)) {
+  				domNode.style[styleName] = '';
   			} else {
-  				domNode.style[dashed] = '';
+
+  				var hook = HOOK[styleName];
+
+  				if (hook) {
+  					if (!hook.unitless) {
+  						// Todo! Should we allow auto-trim, or is it øætoo expensive?
+  						if (typeof styleValue === 'string') {
+  							styleValue = styleValue.trim();
+  						} else {
+  							styleValue = styleValue + 'px';
+  						}
+  					}
+  					domNode.style[hook.unPrefixed] = styleValue;
+  				}
   			}
   		}
   	},
@@ -1792,17 +1785,16 @@
   }
 
   function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
-  	var valueItem = getCorrectItemForValues(node, item);
   	var styleUpdates = undefined;
 
   	if (dynamicAttrs.index !== undefined) {
-  		dynamicAttrs = getValueWithIndex(valueItem, dynamicAttrs.index);
+  		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
   		addDOMStaticAttributes(item, domNode, dynamicAttrs);
   		return;
   	}
   	for (var attrName in dynamicAttrs) {
   		if (!isVoid(attrName)) {
-  			var attrVal = getValueWithIndex(valueItem, dynamicAttrs[attrName]);
+  			var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
   			if (attrVal !== undefined) {
   				if (attrName === 'style') {
@@ -1935,6 +1927,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -2003,6 +1996,7 @@
   	var domNode = undefined;
 
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
@@ -2051,16 +2045,17 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2094,6 +2089,7 @@
   function createNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
@@ -2112,7 +2108,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2120,10 +2116,11 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2241,6 +2238,7 @@
   	var keyedChildren = true;
   	var childNodeList = [];
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
@@ -2334,6 +2332,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
@@ -2424,6 +2423,7 @@
   function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			domNode = templateNode.cloneNode(false);
   			if (!isVoid(subTreeForChildren)) {
@@ -2496,6 +2496,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -2525,6 +2526,7 @@
   function createStaticNode(templateNode) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create() {
   			domNode = templateNode.cloneNode(true);
   			return domNode;
@@ -2545,6 +2547,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
@@ -2646,6 +2649,7 @@
   	var keyedChildren = true;
   	var nextDomNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var value = getValueWithIndex(item, valueIndex);
   			var type = getTypeFromValue(value);
@@ -2734,6 +2738,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -2772,6 +2777,7 @@
   function createVoidNode(templateNode, dynamicAttrs) {
   	var domNode = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
@@ -2826,16 +2832,21 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
+  			var toUseItem = item;
 
+  			if (node.overrideItem !== null) {
+  				toUseItem = node.overrideItem;
+  			}
   			if (recyclingEnabled$8) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
   				}
   			}
-  			var Component = getValueWithIndex(item, componentIndex);
+  			var Component = getValueWithIndex(toUseItem, componentIndex);
 
   			currentItem = item;
   			if (isVoid(Component)) {
@@ -2846,7 +2857,7 @@
   			} else if (typeof Component === 'function') {
   				// stateless component
   				if (!Component.prototype.render) {
-  					var nextRender = Component(getValueForProps(props, item), context);
+  					var nextRender = Component(getValueForProps(props, toUseItem), context);
 
   					nextRender.parent = item;
   					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
@@ -2854,7 +2865,7 @@
   					item.rootNode = domNode;
   				} else {
   					(function () {
-  						instance = new Component(getValueForProps(props, item));
+  						instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
   						var nextRender = instance.render();
@@ -2957,9 +2968,14 @@
   	var domNode = undefined;
   	var currentItem = undefined;
   	var node = {
+  		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
-  			var valueItem = getCorrectItemForValues(node, item);
-  			var Component = getValueWithIndex(valueItem, componentIndex);
+  			var toUseItem = item;
+
+  			if (node.overrideItem !== null) {
+  				toUseItem = node.overrideItem;
+  			}
+  			var Component = getValueWithIndex(toUseItem, componentIndex);
 
   			currentItem = item;
   			if (isVoid(Component)) {
@@ -2968,14 +2984,14 @@
   			} else if (typeof Component === 'function') {
   				// stateless component
   				if (!Component.prototype.render) {
-  					var nextRender = Component(getValueForProps(props, valueItem), context);
+  					var nextRender = Component(getValueForProps(props, toUseItem), context);
 
   					nextRender.parent = item;
   					domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
   					lastRender = nextRender;
   				} else {
   					(function () {
-  						instance = new Component(getValueForProps(props, valueItem));
+  						instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
   						var nextRender = instance.render();
@@ -3079,6 +3095,7 @@
   	var node = {
   		pool: [],
   		keyedPool: [],
+  		overrideItem: null,
   		create: function create(item) {
   			var domNode = undefined;
 
@@ -3127,6 +3144,7 @@
   	var domNode = undefined;
 
   	var node = {
+  		overrideItem: null,
   		create: function create(item) {
   			domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
@@ -3181,7 +3199,7 @@
   		for (var i = 0; i < children.length; i++) {
   			var childItem = children[i];
 
-  			if (typeof childItem === 'string' || typeof childItem === 'number') {
+  			if (isStringOrNumber(childItem)) {
   				var textNode = document.createTextNode(childItem);
 
   				parentNode.appendChild(textNode);
@@ -3190,7 +3208,7 @@
   			}
   		}
   	} else {
-  		if (typeof children === 'string' || typeof children === 'number') {
+  		if (isStringOrNumber(children)) {
   			parentNode.textContent = children;
   		} else {
   			createStaticTreeNode(children, parentNode, domNamespace);
@@ -3204,13 +3222,14 @@
   	if (isVoid(node)) {
   		return null;
   	}
-  	if (typeof node === 'string' || typeof node === 'number') {
+  	if (isStringOrNumber(node)) {
   		staticNode = document.createTextNode(node);
   	} else {
   		var tag = node.tag;
 
   		if (tag) {
 
+  			var nodeName = tag.toLowerCase();
   			var is = node.attrs && node.attrs.is;
   			var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
   			var SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -3221,7 +3240,7 @@
   				if (node.attrs && node.attrs.xmlns) {
   					domNamespace = node.attrs.xmlns;
   				} else {
-  					switch (tag) {
+  					switch (nodeName) {
   						case 'svg':
   							domNamespace = SVGNamespace;
   							break;
@@ -3234,15 +3253,15 @@
   							if (parentNode !== null) {
   								// only used by static children
   								// check only for top-level element for both mathML and SVG
-  								if (tag === 'svg' && parentNode.namespaceURI !== SVGNamespace) {
+  								if (nodeName === 'svg' && parentNode.namespaceURI !== SVGNamespace) {
   									domNamespace = SVGNamespace;
-  								} else if (tag === 'math' && parentNode.namespaceURI !== MathNamespace) {
+  								} else if (nodeName === 'math' && parentNode.namespaceURI !== MathNamespace) {
   									domNamespace = MathNamespace;
   								}
-  							} else if (isSVGElement(tag)) {
+  							} else if (isSVGElement(nodeName)) {
   								// only used by dynamic children
   								domNamespace = SVGNamespace;
-  							} else if (isMathMLElement(tag)) {
+  							} else if (isMathMLElement(nodeName)) {
   								// only used by dynamic children
   								domNamespace = MathNamespace;
   							}
@@ -3252,15 +3271,15 @@
 
   			if (domNamespace) {
   				if (is) {
-  					staticNode = document.createElementNS(domNamespace, tag, is);
+  					staticNode = document.createElementNS(domNamespace, nodeName, is);
   				} else {
-  					staticNode = document.createElementNS(domNamespace, tag);
+  					staticNode = document.createElementNS(domNamespace, nodeName);
   				}
   			} else {
   				if (is) {
-  					staticNode = document.createElement(tag, is);
+  					staticNode = document.createElement(nodeName, is);
   				} else {
-  					staticNode = document.createElement(tag);
+  					staticNode = document.createElement(nodeName);
   				}
   			}
   			var text = node.text;
@@ -3270,7 +3289,7 @@
   				if (!isVoid(children)) {
   					throw Error(invalidTemplateError);
   				}
-  				if (typeof text !== 'string' && typeof text !== 'number') {
+  				if (!isStringOrNumber(text)) {
   					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
   				}
   				staticNode.textContent = text;
@@ -3330,6 +3349,7 @@
   			var text = schema.text;
 
   			if (tag) {
+
   				if (tag.type === ObjectTypes.VARIABLE) {
   					var lastAttrs = schema.attrs;
   					var _attrs = babelHelpers.extends({}, lastAttrs);
@@ -3358,6 +3378,7 @@
   					}
   				}
 
+  				var nodeName = tag.toLowerCase();
   				var is = schema.attrs && schema.attrs.is;
 
   				if (domNamespace === undefined) {
@@ -3365,7 +3386,7 @@
   					if (schema.attrs && schema.attrs.xmlns) {
   						domNamespace = schema.attrs.xmlns;
   					} else {
-  						switch (tag) {
+  						switch (nodeName) {
   							case 'svg':
   								domNamespace = 'http://www.w3.org/2000/svg';
   								break;
@@ -3375,18 +3396,17 @@
   						}
   					}
   				}
-
   				if (domNamespace) {
   					if (is) {
-  						templateNode = document.createElementNS(domNamespace, tag, is);
+  						templateNode = document.createElementNS(domNamespace, nodeName, is);
   					} else {
-  						templateNode = document.createElementNS(domNamespace, tag);
+  						templateNode = document.createElementNS(domNamespace, nodeName);
   					}
   				} else {
   					if (is) {
-  						templateNode = document.createElement(tag, is);
+  						templateNode = document.createElement(nodeName, is);
   					} else {
-  						templateNode = document.createElement(tag);
+  						templateNode = document.createElement(nodeName);
   					}
   				}
   				var attrs = schema.attrs;
@@ -3415,7 +3435,7 @@
   							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
   						}
   					} else {
-  						if (typeof text === 'string' || typeof text === 'number') {
+  						if (isStringOrNumber(text)) {
   							templateNode.textContent = text;
   						} else {
   							throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
@@ -3437,21 +3457,24 @@
   						} else if (dynamicFlags.CHILDREN === true) {
   							var subTreeForChildren = [];
 
-  							if (isArray(children)) {
-  								for (var i = 0; i < children.length; i++) {
-  									var childItem = children[i];
+  							if ((typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
+  								if (isArray(children)) {
+  									for (var i = 0; i < children.length; i++) {
+  										var childItem = children[i];
 
-  									subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap, domNamespace));
+  										subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap, domNamespace));
+  									}
+  								} else {
+  									subTreeForChildren = createDOMTree(children, false, dynamicNodeMap, domNamespace);
   								}
-  							} else if ((typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
-  								subTreeForChildren = createDOMTree(children, false, dynamicNodeMap, domNamespace);
   							}
+
   							if (isRoot) {
   								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace);
   							} else {
   								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace);
   							}
-  						} else if (typeof children === 'string' || typeof children === 'number') {
+  						} else if (isStringOrNumber(children)) {
   							templateNode.textContent = children;
   							if (isRoot) {
   								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
@@ -3461,7 +3484,7 @@
   						} else {
   							var childNodeDynamicFlags = dynamicNodeMap.get(children);
 
-  							if (!childNodeDynamicFlags) {
+  							if (childNodeDynamicFlags === undefined) {
   								createStaticTreeChildren(children, templateNode, domNamespace);
 
   								if (isRoot) {
