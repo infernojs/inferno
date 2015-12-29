@@ -86,6 +86,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 		if ( tag ) {
 
+			const nodeName = tag.toLowerCase();
 			const is = node.attrs && node.attrs.is;
 			const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 			const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -96,7 +97,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 				if ( node.attrs && node.attrs.xmlns ) {
 					domNamespace = node.attrs.xmlns;
 				} else {
-					switch ( tag ) {
+					switch ( nodeName ) {
 						case 'svg':
 							domNamespace = SVGNamespace;
 							break;
@@ -108,14 +109,14 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 							// E.g. <div><svg><svg></div> - will not work
 							if ( parentNode !== null ) { // only used by static children
 								// check only for top-level element for both mathML and SVG
-								if ( tag === 'svg' && parentNode.namespaceURI !== SVGNamespace ) {
+								if ( nodeName === 'svg' && parentNode.namespaceURI !== SVGNamespace ) {
 									domNamespace = SVGNamespace;
-								} else if ( tag === 'math' && parentNode.namespaceURI !== MathNamespace ) {
+								} else if ( nodeName === 'math' && parentNode.namespaceURI !== MathNamespace ) {
 									domNamespace = MathNamespace;
 								}
-							} else if ( isSVGElement( tag ) ) { // only used by dynamic children
+							} else if ( isSVGElement( nodeName ) ) { // only used by dynamic children
 								domNamespace = SVGNamespace;
-							} else if ( isMathMLElement( tag ) ) { // only used by dynamic children
+							} else if ( isMathMLElement( nodeName ) ) { // only used by dynamic children
 								domNamespace = MathNamespace;
 							}
 					}
@@ -124,15 +125,15 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 			if ( domNamespace ) {
 				if ( is ) {
-					staticNode = document.createElementNS( domNamespace, tag, is );
+					staticNode = document.createElementNS( domNamespace, nodeName, is );
 				} else {
-					staticNode = document.createElementNS( domNamespace, tag );
+					staticNode = document.createElementNS( domNamespace, nodeName );
 				}
 			} else {
 				if ( is ) {
-					staticNode = document.createElement( tag, is );
+					staticNode = document.createElement( nodeName, is );
 				} else {
-					staticNode = document.createElement( tag );
+					staticNode = document.createElement( nodeName );
 				}
 			}
 			const text = node.text;
@@ -202,6 +203,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 			const text = schema.text;
 
 			if ( tag ) {
+
 				if ( tag.type === ObjectTypes.VARIABLE ) {
 					const lastAttrs = schema.attrs;
 					const attrs = { ...lastAttrs };
@@ -230,6 +232,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					}
 				}
 
+				const nodeName = tag.toLowerCase();
 				const is = schema.attrs && schema.attrs.is;
 
 				if ( domNamespace === undefined ) {
@@ -237,7 +240,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					if ( schema.attrs && schema.attrs.xmlns ) {
 						domNamespace = schema.attrs.xmlns;
 					} else {
-						switch ( tag ) {
+						switch ( nodeName ) {
 							case 'svg':
 								domNamespace = 'http://www.w3.org/2000/svg';
 								break;
@@ -250,15 +253,15 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 
 				if ( domNamespace ) {
 					if ( is ) {
-						templateNode = document.createElementNS( domNamespace, tag, is );
+						templateNode = document.createElementNS( domNamespace, nodeName, is );
 					} else {
-						templateNode = document.createElementNS( domNamespace, tag );
+						templateNode = document.createElementNS( domNamespace, nodeName );
 					}
 				} else {
 					if ( is ) {
-						templateNode = document.createElement( tag, is );
+						templateNode = document.createElement( nodeName, is );
 					} else {
-						templateNode = document.createElement( tag );
+						templateNode = document.createElement( nodeName );
 					}
 				}
 				const attrs = schema.attrs;
