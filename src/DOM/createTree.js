@@ -1,4 +1,5 @@
 import isVoid from '../util/isVoid';
+import isStringOrNumber from '../util/isStringOrNumber';
 import isSVGElement from '../util/isSVGElement';
 import isMathMLElement from '../util/isMathMLElement';
 import createRootNodeWithDynamicText from './shapes/rootNodeWithDynamicText';
@@ -56,7 +57,7 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 		for ( let i = 0; i < children.length; i++ ) {
 			const childItem = children[i];
 
-			if ( typeof childItem === 'string' || typeof childItem === 'number' ) {
+			if ( isStringOrNumber ( childItem ) ) {
 				const textNode = document.createTextNode( childItem );
 
 				parentNode.appendChild( textNode );
@@ -65,7 +66,7 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 			}
 		}
 	} else {
-		if ( typeof children === 'string' || typeof children === 'number' ) {
+		if ( isStringOrNumber ( children ) ) {
 			parentNode.textContent = children;
 		} else {
 			createStaticTreeNode( children, parentNode, domNamespace );
@@ -79,7 +80,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 	if ( isVoid( node ) ) {
 		return null;
 	}
-	if ( typeof node === 'string' || typeof node === 'number' ) {
+	if ( isStringOrNumber ( node ) ) {
 		staticNode = document.createTextNode( node );
 	} else {
 		const tag = node.tag;
@@ -143,7 +144,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 				if ( !isVoid( children ) ) {
 					throw Error( invalidTemplateError );
 				}
-				if ( typeof text !== 'string' && typeof text !== 'number' ) {
+				if ( !isStringOrNumber ( text ) ) {
 					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 				}
 				staticNode.textContent = text;
@@ -250,7 +251,6 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					}
 				}
-
 				if ( domNamespace ) {
 					if ( is ) {
 						templateNode = document.createElementNS( domNamespace, nodeName, is );
@@ -290,7 +290,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 							node = createNodeWithDynamicText( templateNode, text.index, dynamicAttrs );
 						}
 					} else {
-						if ( typeof text === 'string' || typeof text === 'number' ) {
+						if ( isStringOrNumber ( text ) ) {
 							templateNode.textContent = text;
 						} else {
 							throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
@@ -314,23 +314,26 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						} else if ( dynamicFlags.CHILDREN === true ) {
 							let subTreeForChildren = [];
 
-							if ( isArray( children ) ) {
-								for ( let i = 0; i < children.length; i++ ) {
-									const childItem = children[i];
+							if ( typeof children === 'object' ) {
+								if ( isArray( children ) ) {
+									for ( let i = 0; i < children.length; i++ ) {
+										const childItem = children[i];
 
-									subTreeForChildren.push( createDOMTree( childItem, false, dynamicNodeMap, domNamespace ) );
+										subTreeForChildren.push( createDOMTree( childItem, false, dynamicNodeMap, domNamespace ) );
+									}
+								} else {
+									subTreeForChildren = createDOMTree( children, false, dynamicNodeMap, domNamespace );
 								}
-							} else if ( typeof children === 'object' ) {
-								subTreeForChildren = createDOMTree( children, false, dynamicNodeMap, domNamespace );
 							}
+
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
+								templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
 							} else {
 								node = createNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
+								templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
 							}
-						} else if ( typeof children === 'string' || typeof children === 'number' ) {
+						} else if ( isStringOrNumber ( children ) ) {
 							templateNode.textContent = children;
 							if ( isRoot ) {
 								node = createRootNodeWithStaticChild( templateNode, dynamicAttrs );
@@ -340,7 +343,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						} else {
 							const childNodeDynamicFlags = dynamicNodeMap.get( children );
 
-							if ( !childNodeDynamicFlags ) {
+							if ( childNodeDynamicFlags === undefined) {
 								createStaticTreeChildren( children, templateNode, domNamespace );
 
 								if ( isRoot ) {
