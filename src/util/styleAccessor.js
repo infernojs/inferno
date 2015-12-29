@@ -32,7 +32,7 @@ const unitlessProperties = {
 	'order': true,
 	'widows': true,
 	'z-index': true,
-	'zoom': true,
+	'zoom': true
 };
 
 // Don't execute this in nodejS
@@ -42,11 +42,10 @@ if ( ExecutionEnvironment.canUseDOM )  {
 	const props = Array.prototype.slice.call(computed, 0);
 
 	props.forEach(function(propName) {
-		let prefix = propName[0] === "-" ? propName.substr(1, propName.indexOf("-", 1) - 1) : null;
+		let prefix = propName[0] === '-' ? propName.substr(1, propName.indexOf('-', 1) - 1) : null;
 		let stylePropName = propName.replace(reDash, (str) => str[1].toUpperCase());
 
 		HOOK[stylePropName] =  {
-			propName: propName.replace(reDash, str => str[1].toUpperCase()),
 			unPrefixed: prefix ? propName.substr(prefix.length + 2) : propName,
 			unitless: unitlessProperties[propName] ? true : false
 		};
