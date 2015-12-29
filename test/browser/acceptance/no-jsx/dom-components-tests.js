@@ -1465,27 +1465,27 @@ describe('DOM component tests (no-jsx)', () => {
                 title: "styled!",
                 styles: {
                     color: "red",
-                    padding: 10
+                    paddingLeft: 10
                 }
             }), container);
 
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+	            '<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
             );
             Inferno.render(template(BasicComponent3, {
                 title: "styled!",
                 styles: {
                     color: "red",
-                    padding: 10
+                    paddingTop: 10
                 }
             }), container);
 
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+	            '<div style="color: red; padding-top: 10px;"><span style="color: red; padding-top: 10px;">The title is styled!</span></div>'
             );
 
         });
@@ -1494,13 +1494,13 @@ describe('DOM component tests (no-jsx)', () => {
                 title: "styled (again)!",
                 styles: {
                     color: "blue",
-                    padding: 20
+                    paddingBottom: 20
                 }
             }), container);
             expect(
                 container.innerHTML
             ).to.equal(
-                '<div style="color: blue; padding: 20px;"><span style="color: blue; padding: 20px;">The title is styled (again)!</span></div>'
+	            '<div style="color: blue; padding-bottom: 20px;"><span style="color: blue; padding-bottom: 20px;">The title is styled (again)!</span></div>'
             );
         });
     });

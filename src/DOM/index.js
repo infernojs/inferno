@@ -1,10 +1,9 @@
 import isVoid from '../util/isVoid';
 import isArray from '../util/isArray';
 import inArray from '../util/inArray';
+import styleAccessor from '../util/styleAccessor';
 import isValidAttribute from '../util/isValidAttribute';
 import DOMRegistry from './DOMRegistry';
-import addPixelSuffixToValueIfNeeded from '../shared/addPixelSuffixToValueIfNeeded';
-import camelCasePropsToDashCase from '../shared/camelCasePropsToDashCase';
 
 const template = {
 	/**
@@ -79,14 +78,28 @@ const template = {
 	 * @param {object} styles
 	 */
 	setCSS( vNode, domNode, styles ) {
-		for ( let styleName in styles ) {
-			let styleValue = styles[styleName];
-			let dashed = camelCasePropsToDashCase( styleName );
 
-			if ( !isVoid( styleValue ) ) {
-				domNode.style[dashed] = addPixelSuffixToValueIfNeeded( styleName, styleValue );
+		for ( let styleName in styles ) {
+
+			let styleValue = styles[styleName];
+
+			if ( isVoid( styleValue ) ) {
+				domNode.style[styleName] = '';
 			} else {
-				domNode.style[dashed] = '';
+
+				const hook = styleAccessor[styleName];
+
+				if ( hook ) {
+					if ( !hook.unitless ) {
+						// Todo! Should we allow auto-trim, or is it øætoo expensive?
+						if ( typeof styleValue === 'string' ){
+							styleValue = styleValue.trim();
+						} else {
+							styleValue = styleValue + 'px';
+						}
+					}
+					domNode.style[hook.unPrefixed] = styleValue;
+				}
 			}
 		}
 	},

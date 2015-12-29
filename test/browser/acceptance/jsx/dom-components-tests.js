@@ -365,13 +365,13 @@ describe('DOM component tests (jsx)', () => {
 	describe('should render a basic component with styling', () => {
 		it('Initial render (creation)', () => {
 			Inferno.render((
-				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 10 }} />
+				<BasicComponent3 title="styled!" styles={{ color: "red", paddingLeft: 10 }} />
 			), container);
 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: red; padding: 10px;"><span style="color: red; padding: 10px;">The title is styled!</span></div>'
+				'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 			);
 
 			Inferno.render((
@@ -396,24 +396,24 @@ describe('DOM component tests (jsx)', () => {
 			);
 
 			Inferno.render((
-				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 100 }} />
+				<BasicComponent3 title="styled!" styles={{ color: "red", paddingRight: 100 }} />
 			), container);
 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: red; padding: 100px;"><span style="color: red; padding: 100px;">The title is styled!</span></div>' 
+				'<div style="color: red; padding-right: 100px;"><span style="color: red; padding-right: 100px;">The title is styled!</span></div>'
 			);
 		});
 		it('Second render (update)', () => {
 			Inferno.render((
-				<BasicComponent3 title="styled (again)!" styles={{ color: "blue", margin: 20 }} />
+				<BasicComponent3 title="styled (again)!" styles={{ color: "blue", marginTop: 20 }} />
 			), container);
 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: blue; margin: 20px;"><span style="color: blue; margin: 20px;">The title is styled (again)!</span></div>'
+				'<div style="color: blue; margin-top: 20px;"><span style="color: blue; margin-top: 20px;">The title is styled (again)!</span></div>'
 			);
 		});
 	});
@@ -421,13 +421,13 @@ describe('DOM component tests (jsx)', () => {
 	describe('should render a basic component and remove styling #1', () => {
 		it('Initial render (creation)', () => {
 			Inferno.render((
-				<BasicComponent3 title="styled!" styles={{ color: "red", padding: 20 }} />
+				<BasicComponent3 title="styled!" styles={{ color: "red", paddingRight: 20 }} />
 			), container);
 
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="color: red; padding: 20px;"><span style="color: red; padding: 20px;">The title is styled!</span></div>'
+				'<div style="color: red; padding-right: 20px;"><span style="color: red; padding-right: 20px;">The title is styled!</span></div>'
 			);
 		});
 		it('Second render (update)', () => {

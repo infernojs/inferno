@@ -211,7 +211,7 @@ describe('DOM SVG tests (no-jsx)', () => {
 				expect(
 					container.innerHTML
 				).to.equal(
-					'<svg width="100" height="200" viewBox="0 0 50 50" preserveAspectRatio="xMinYMin meet" style="border: 1px solid rgb(204, 204, 204);"><circle cx="25" cy="25" r="25" style="stroke: rgb(0, 0, 0);"></circle></svg>'
+					'<svg width="100" height="200" viewBox="0 0 50 50" preserveAspectRatio="xMinYMin meet"><circle cx="25" cy="25" r="25" style="stroke: rgb(0, 0, 0);"></circle></svg>'
 				);
 			});
 			it('Second render (update)', () => {

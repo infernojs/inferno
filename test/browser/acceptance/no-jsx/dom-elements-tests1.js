@@ -2675,30 +2675,6 @@ describe('DOM element tests1 (no-jsx)', () => {
         });
     });
 
-    describe('should trim values so `px` will be appended correctly', () => {
-        let template;
-        const styleRule = {
-            margin: '16 '
-        };
-
-        beforeEach(() => {
-            template = Inferno.createTemplate(() =>
-                createElement('div', {
-                    style: styleRule
-                })
-            );
-            Inferno.render(template(), container);
-        });
-
-        it('Initial render (creation)', () => {
-            expect(
-                container.innerHTML
-            ).to.equal(
-                '<div style="margin: 16px;"></div>'
-            );
-        });
-    });
-
     describe('should support number values', () => {
         let template;
         const styleRule = {
