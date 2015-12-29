@@ -8,14 +8,15 @@ import updateComponent from '../../core/updateComponent';
 const recyclingEnabled = isRecyclingEnabled();
 
 export default function createRootNodeWithComponent( componentIndex, props ) {
-	let instance;
-	let lastRender;
 	let currentItem;
+	let statelessRender;
 	const node = {
+		instance: null,
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
+			let instance = node.instance;
 			let domNode;
 			let toUseItem = item;
 
@@ -43,10 +44,10 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
-					lastRender = nextRender;
+					statelessRender = nextRender;
 					item.rootNode = domNode;
 				} else {
-					instance = new Component( getValueForProps( props, toUseItem ) );
+					instance = node.instance = new Component( getValueForProps( props, toUseItem ) );
 					instance.context = context;
 					instance.componentWillMount();
 					const nextRender = instance.render();
@@ -59,7 +60,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
 					item.rootNode = domNode;
-					lastRender = nextRender;
+					instance._lastRender = nextRender;
 
 					if ( domNode instanceof DocumentFragment ) {
 						fragmentFirstChild = domNode.childNodes[0];
@@ -80,9 +81,9 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 							context = { ...context, ...childContext };
 						}
 						nextRender.parent = currentItem;
-						nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
+						nextRender.domTree.update( instance._lastRender, nextRender, treeLifecycle, context );
 						currentItem.rootNode = nextRender.rootNode;
-						lastRender = nextRender;
+						instance._lastRender = nextRender;
 					};
 				}
 			}
@@ -90,7 +91,9 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
 			const Component = getValueWithIndex( nextItem, componentIndex );
+			let instance = node.instance;
 
+			nextItem.id = lastItem.id;
 			currentItem = nextItem;
 			if ( !Component ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
@@ -101,7 +104,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
 
 					nextRender.parent = currentItem;
-					const newDomNode = nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
+					const newDomNode = nextRender.domTree.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
 
 					if ( newDomNode ) {
 						if ( nextRender.rootNode.parentNode ) {
@@ -114,7 +117,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 						currentItem.rootNode = nextRender.rootNode;
 					}
 
-					lastRender = nextRender;
+					statelessRender = nextRender;
 				} else {
 					if ( !instance || node !== lastItem.domTree || Component !== instance.constructor ) {
 						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
@@ -132,8 +135,10 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 			}
 		},
 		remove( item, treeLifecycle ) {
+			let instance = node.instance;
+
 			if ( instance ) {
-				lastRender.domTree.remove( lastRender, treeLifecycle );
+				instance._lastRender.domTree.remove( instance._lastRender, treeLifecycle );
 				instance.componentWillUnmount();
 			}
 		}

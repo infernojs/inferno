@@ -4,11 +4,12 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttri
 import recreateNode from '../recreateNode';
 
 export default function createNodeWithDynamicSubTreeForChildren( templateNode, subTreeForChildren, dynamicAttrs ) {
-	let domNode;
+	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
-			domNode = templateNode.cloneNode( false );
+			const domNode = templateNode.cloneNode( false );
+
 			if ( !isVoid( subTreeForChildren ) ) {
 				if ( isArray( subTreeForChildren ) ) {
 					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
@@ -23,9 +24,12 @@ export default function createNodeWithDynamicSubTreeForChildren( templateNode, s
 			if ( dynamicAttrs ) {
 				addDOMDynamicAttributes( item, domNode, dynamicAttrs, null );
 			}
+			domNodeMap[item.id] = domNode;
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
+			const domNode = domNodeMap[lastItem.id];
+
 			if ( node !== lastItem.domTree ) {
 				recreateNode( domNode, nextItem, node, treeLifecycle,context );
 				return domNode;

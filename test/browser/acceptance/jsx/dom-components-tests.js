@@ -1,5 +1,6 @@
 import Inferno from '../../../../src';
 import get from '../../../tools/get';
+import waits from '../../../tools/waits';
 
 const {
 	createElement
@@ -608,5 +609,68 @@ describe('DOM component tests (jsx)', () => {
 			Inferno.render(<Main/>, container);
 		});
 	});
-});
 
+	describe('should render a component with a list of children that dynamically update via setState', () => {
+		class Counter extends Inferno.Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					count: 0
+				};
+				this.incrementCount = this.incrementCount.bind(this);
+				setTimeout(this.incrementCount, 10);
+			}
+			incrementCount(){
+				this.setState({
+					count: this.state.count + 1
+				});
+			}
+			render(){
+				return (
+					<div class="my-component">
+						<h1>{this.props.car} {this.state.count}</h1>
+						<button type="button" onClick={this.incrementCount}>Increment</button>
+					</div>
+				);
+			}
+		}
+
+		class Wrapper extends Inferno.Component {
+			constructor(props) {
+				super(props);
+			}
+			render() {
+				return (
+					<div>
+						{["Saab", "Volvo", "BMW"].map(function(c) {
+							return (<Counter car={c} />)
+						})}
+					</div>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			Inferno.render(<Wrapper/>, container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="my-component"><h1>Saab 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 0</h1><button type="button">Increment</button></div></div>'
+			);
+		});
+
+		it('Second render (update)', (done) => {
+			Inferno.render(<Wrapper/>, container);
+
+			waits(30, () => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<div><div class="my-component"><h1>Saab 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 1</h1><button type="button">Increment</button></div></div>'
+				);
+				done();
+			});
+		});
+	});
+});

@@ -33,6 +33,7 @@ export default function createRootNodeWithStaticChild( templateNode, dynamicAttr
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
+			nextItem.id = lastItem.id;
 			if ( dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}

@@ -3,6 +3,10 @@ import createHTMLStringTree from '../htmlString/createHTMLStringTree';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 
+function createId() {
+	return Symbol();
+}
+
 export default function createTemplate( callback ) {
 	let construct = callback.construct;
 
@@ -28,6 +32,7 @@ export default function createTemplate( callback ) {
 					parent: null,
 					domTree,
 					htmlStringTree,
+					id: createId(),
 					key: null,
 					nextItem: null,
 					rootNode: null
@@ -44,6 +49,7 @@ export default function createTemplate( callback ) {
 						parent: null,
 						domTree,
 						htmlStringTree,
+						id: createId(),
 						key,
 						nextItem: null,
 						rootNode: null,
@@ -64,6 +70,7 @@ export default function createTemplate( callback ) {
 						parent: null,
 						domTree,
 						htmlStringTree,
+						id: createId(),
 						key,
 						nextItem: null,
 						rootNode: null,
@@ -87,6 +94,7 @@ export default function createTemplate( callback ) {
 						parent: null,
 						domTree,
 						htmlStringTree,
+						id: createId(),
 						key,
 						nextItem: null,
 						rootNode: null,

@@ -69,6 +69,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
+			nextItem.id = lastItem.id;
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 

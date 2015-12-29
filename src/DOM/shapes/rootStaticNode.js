@@ -27,6 +27,7 @@ export default function createRootStaticNode( templateNode ) {
 				return;
 			}
 			nextItem.rootNode = lastItem.rootNode;
+			nextItem.id = lastItem.id;
 		},
 		remove( /* lastItem */ ) {
 

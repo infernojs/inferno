@@ -33,6 +33,7 @@ export default function createRootVoidNode( templateNode, dynamicAttrs ) {
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
+			nextItem.id = lastItem.id;
 			nextItem.rootNode = lastItem.rootNode;
 			if ( dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );

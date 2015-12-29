@@ -5,14 +5,15 @@ import recreateNode from '../recreateNode';
 import updateComponent from '../../core/updateComponent';
 
 export default function createNodeWithComponent( componentIndex, props ) {
-	let instance;
-	let lastRender;
 	let domNode;
 	let currentItem;
+	let statelessRender;
 	const node = {
 		overrideItem: null,
+		instance: null,
 		create( item, treeLifecycle, context ) {
 			let toUseItem = item;
+			let instance = node.instance;
 
 			if ( node.overrideItem !== null ) {
 				toUseItem = node.overrideItem;
@@ -30,7 +31,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
-					lastRender = nextRender;
+					statelessRender = nextRender;
 				} else {
 					instance = new Component( getValueForProps( props, toUseItem ) );
 					instance.context = context;
@@ -44,7 +45,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 					}
 					nextRender.parent = item;
 					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
-					lastRender = nextRender;
+					instance._lastRender = nextRender;
 
 					if ( domNode instanceof DocumentFragment ) {
 						fragmentFirstChild = domNode.childNodes[0];
@@ -55,7 +56,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 						}
 						instance.componentDidMount();
 					} );
-					instance.forceUpdate = () => {
+					instance.forceUpdate = function () {
 						instance.context = context;
 						const nextRender = instance.render();
 						const childContext = instance.getChildContext();
@@ -64,28 +65,31 @@ export default function createNodeWithComponent( componentIndex, props ) {
 							context = { ...context, ...childContext };
 						}
 						nextRender.parent = currentItem;
-						const newDomNode = nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
+						const newDomNode = nextRender.domTree.update( instance._lastRender, nextRender, treeLifecycle, context );
 
 						if ( newDomNode ) {
 							domNode = newDomNode;
-							lastRender.rootNode = domNode;
-							lastRender = nextRender;
+							instance._lastRender.rootNode = domNode;
+							instance._lastRender = nextRender;
 							return domNode;
 						} else {
-							lastRender = nextRender;
+							instance._lastRender = nextRender;
 						}
-					};
+					}.bind( instance );
 				}
 			}
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
 			const Component = getValueWithIndex( nextItem, componentIndex );
+			let instance = node.instance;
 
 			currentItem = nextItem;
 			if ( !Component ) {
 				recreateNode( domNode, nextItem, node, treeLifecycle, context );
-				lastRender.rootNode = domNode;
+				if ( instance ) {
+					instance._lastRender.rootNode = domNode;
+				}
 				return domNode;
 			}
 			if ( typeof Component === 'function' ) {
@@ -94,15 +98,15 @@ export default function createNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
 
 					nextRender.parent = currentItem;
-					const newDomNode = nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
+					const newDomNode = nextRender.domTree.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
 
+					statelessRender = nextRender;
 					if ( newDomNode ) {
+						if ( domNode.parentNode ) {
+							domNode.parentNode.replaceChild(newDomNode, domNode);
+						}
 						domNode = newDomNode;
-						lastRender.rootNode = domNode;
-						lastRender = nextRender;
 						return domNode;
-					} else {
-						lastRender = nextRender;
 					}
 				} else {
 					if ( !instance || Component !== instance.constructor ) {
@@ -119,8 +123,10 @@ export default function createNodeWithComponent( componentIndex, props ) {
 			}
 		},
 		remove( item, treeLifecycle ) {
+			let instance = node.instance;
+
 			if ( instance ) {
-				lastRender.domTree.remove( lastRender, treeLifecycle );
+				instance._lastRender.domTree.remove( instance._lastRender, treeLifecycle );
 				instance.componentWillUnmount();
 			}
 		}

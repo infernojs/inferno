@@ -42,6 +42,7 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			}
 			const domNode = lastItem.rootNode;
 
+			nextItem.id = lastItem.id;
 			nextItem.rootNode = domNode;
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );

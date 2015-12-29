@@ -25,8 +25,9 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 				if ( isArray( subTreeForChildren ) ) {
 					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
 						const subTree = subTreeForChildren[i];
+						const childNode = subTree.create( item, treeLifecycle, context );
 
-						domNode.appendChild( subTree.create( item, treeLifecycle, context ) );
+						domNode.appendChild( childNode );
 					}
 				} else if ( typeof subTreeForChildren === 'object' ) {
 					domNode.appendChild( subTreeForChildren.create( item, treeLifecycle, context ) );
@@ -39,6 +40,8 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
+			nextItem.id = lastItem.id;
+
 			if ( node !== lastItem.domTree ) {
 				const newDomNode = recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 
@@ -56,17 +59,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 						subTree.update( lastItem, nextItem, treeLifecycle, context );
 					}
 				} else if ( typeof subTreeForChildren === 'object' ) {
-					const newDomNode = subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
-
-					if ( newDomNode ) {
-						const replaceNode = domNode.firstChild;
-
-						if ( replaceNode ) {
-							domNode.replaceChild( newDomNode, replaceNode );
-						} else {
-							domNode.appendChild( newDomNode );
-						}
-					}
+					subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
 				}
 			}
 			if ( dynamicAttrs ) {
