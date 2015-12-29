@@ -185,10 +185,17 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 }
 
 export function insertOrAppend( parentNode, newNode, nextNode ) {
+
+	let activeNode = document.activeElement;
+
 	if ( nextNode ) {
 		parentNode.insertBefore( newNode, nextNode );
 	} else {
 		parentNode.appendChild( newNode );
+	}
+
+	if (activeNode !== document.body && document.activeElement !== activeNode) {
+		activeNode.focus();
 	}
 }
 
