@@ -87,26 +87,31 @@ const template = {
 
 			const style = domNode.style;
 
-			if ( !isVoid( styleValue ) ) {
+			if ( isVoid( styleValue ) ||
+				typeof styleValue === 'boolean' ) { // Todo! Should we check for typeof boolean?
+				style[styleName] = '';
+			} else {
 
 				// The 'hook' contains all browser supported CSS properties.
 				// No 'custom-css' are allowed or will work.
 				const hook = styleAccessor[styleName];
 
 				if ( hook ) {
-					if ( !hook.unitless &&
-						!isNaN( styleValue ) ) {
-						if ( typeof styleValue === 'string' ) {
+					if ( !hook.unitless ) {
+						// Todo! Should we allow auto-trim, or is it too expensive?
+						if ( typeof styleValue === 'string' ){
 							styleValue = styleValue.trim();
+						} else {
+							styleValue = styleValue + 'px';
 						}
-						styleValue = styleValue + 'px';
+					} else if ( styleValue === 0 ||
+						hook.unitless ||
+						isNaN( styleValue )) {
+						styleValue = styleValue;
 					}
-					style[hook.unPrefixed] = styleValue;
-				// non-standard
+
+						style[hook.unPrefixed] = styleValue;
 				}
-				// Do nothing!
-			} else {
-				style[styleName] = '';
 			}
 		}
 	},
