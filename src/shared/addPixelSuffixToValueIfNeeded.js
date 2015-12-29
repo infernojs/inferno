@@ -1,5 +1,5 @@
 import isVoid from '../util/isVoid';
-import unitlessProperties from './unitlessProperties';
+import isUnitless from '../util/isUnitless';
 
 /**
  * Normalize CSS properties, and add pixel suffix if needed
@@ -15,7 +15,7 @@ export default function ( name, value ) {
 	if ( isVoid( value ) || value === '' || typeof value === 'boolean' ) {
 		return '';
 	}
-	if ( value === 0 || unitlessProperties[ name] ) {
+	if ( value === 0 || isUnitless( name) ) {
 		return '' + value; // cast to string
 	}
 	// isNaN is expensive, so we check for it at the very end
