@@ -1,6 +1,7 @@
 import Inferno from '../../../../src';
 import get from '../../../tools/get';
 import waits from '../../../tools/waits';
+import { requestAnimationFrame } from '../../../../src/util/requestAnimationFrame';
 
 const {
 	createElement
@@ -665,14 +666,9 @@ describe('DOM component tests (jsx)', () => {
 		it('Second render (update)', (done) => {
 			Inferno.render(<Wrapper/>, container);
 			let buttons = Array.prototype.slice.call(container.querySelectorAll('button'), 0);
-			let clickEvent = document.createEvent('MouseEvents');
-			clickEvent.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-			buttons.forEach(button => {
-				button.dispatchEvent(clickEvent);
-			});
+			buttons.forEach(button => button.click());
 
-			waits(0, () => {
-
+			requestAnimationFrame(() => {
 				expect(
 					container.innerHTML
 				).to.equal(
