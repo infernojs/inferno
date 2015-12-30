@@ -11,9 +11,11 @@ describe('DOM component tests (jsx)', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(() => {
+		document.body.removeChild(container);
 		Inferno.render(null, container);
 	});
 
@@ -618,7 +620,6 @@ describe('DOM component tests (jsx)', () => {
 					count: 0
 				};
 				this.incrementCount = this.incrementCount.bind(this);
-				setTimeout(this.incrementCount, 10);
 			}
 			incrementCount(){
 				this.setState({
@@ -662,8 +663,15 @@ describe('DOM component tests (jsx)', () => {
 
 		it('Second render (update)', (done) => {
 			Inferno.render(<Wrapper/>, container);
+			let buttons = Array.prototype.slice.call(container.querySelectorAll('button'), 0);
+			let clickEvent = document.createEvent('MouseEvents');
+			clickEvent.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+			buttons.forEach(button => {
+				button.dispatchEvent(clickEvent);
+			});
 
-			waits(30, () => {
+			waits(0, () => {
+
 				expect(
 					container.innerHTML
 				).to.equal(
