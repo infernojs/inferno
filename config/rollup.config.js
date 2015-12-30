@@ -58,18 +58,6 @@ function zip() {
     })
 }
 
-function write(dest, code) {
-    return new Promise(function(resolve, reject) {
-        fs.writeFile(dest, code, function(err) {
-            if (err) {
-                return reject(err);
-            }
-            console.log('\x1b[1m\x1b[34m' + dest + '\x1b[39m\x1b[22m' + ' ' + (code.length / 1024).toFixed(2) + 'kb')
-            resolve()
-        })
-    })
-}
-
 function writeBundle(bundle, {
     minify = true
 }) {
@@ -104,8 +92,17 @@ function writeBundle(bundle, {
         map
     } = result;
 
-    write(dest, code)
-    write(`${dest}.map`, JSON.stringify(map))
+	const throwIfError = (err) => {
+		if (err) {
+			throw err;
+		}
+
+		console.log('\x1b[1m\x1b[34m' + dest + '\x1b[39m\x1b[22m' + ' ' + (code.length / 1024).toFixed(2) + 'kb')
+	};
+
+	fs.writeFile(dest, code, throwIfError);
+	fs.writeFile(`${dest}.map`, JSON.stringify(map), throwIfError);
+
 }
 
 // -----------------------------------------------------------------------------
