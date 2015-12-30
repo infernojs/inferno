@@ -39,7 +39,7 @@
     "mocha-lcov-reporter": "^1.0.0",
     "mocha-loader": "^0.7.1",
     "npm-check-updates": "^2.5.6",
-    "rollup": "^0.22.1",
+    "rollup": "^0.23.1",
     "rollup-plugin-babel": "^2.3.2",
     "rollup-plugin-commonjs": "^2.1.0",
     "rollup-plugin-npm": "^1.2.0",

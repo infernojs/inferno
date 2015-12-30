@@ -185,8 +185,8 @@
   	}
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
-  var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+  var recyclingEnabled$9 = isRecyclingEnabled();
+  var infernoBadTemplate$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
   	var stop = false;
@@ -197,7 +197,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$9) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -386,7 +386,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled) {
+  		if (recyclingEnabled$9) {
   			pool(item);
   		}
   	}
@@ -423,9 +423,9 @@
   				domNode.appendChild(childDomNode);
   				break;
   			case ValueTypes.EMPTY_OBJECT:
-  				throw Error(infernoBadTemplate);
+  				throw Error(infernoBadTemplate$1);
   			case ValueTypes.FUNCTION:
-  				throw Error(infernoBadTemplate);
+  				throw Error(infernoBadTemplate$1);
   			case ValueTypes.ARRAY:
   				throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
   			default:
@@ -661,58 +661,136 @@
   	return false;
   }
 
+  var noop = (function () {})
+
   var HOOK = {};
   var reDash = /\-./g;
 
+  /* eslint-disable quote-props */
   var unitlessProperties = {
-  	'box-flex': true,
   	'animation-iteration-count': true,
-  	'tab-size': true,
+  	'box-flex': true,
   	'box-flex-group': true,
   	'column-count': true,
   	'counter-increment': true,
+  	'fill-opacity': true,
+  	'flex': true,
+  	'flex-grow': true,
+  	'flex-order': true,
+  	'flex-positive': true,
+  	'flex-shrink': true,
+  	'float': true,
+  	'font-weight': true,
+  	'grid-column': true,
+  	'line-height': true,
+  	'line-clamp': true,
+  	'opacity': true,
+  	'order': true,
+  	'orphans': true,
   	'stop-opacity': true,
   	'stroke-dashoffset': true,
   	'stroke-opacity': true,
   	'stroke-width': true,
+  	'tab-size': true,
   	'transform': true,
   	'transform-origin': true,
-  	'flex-grow': true,
-  	'flex-positive': true,
-  	'flex': true,
-  	'float': true,
-  	'fill-opacity': true,
-  	'font-weight': true,
-  	'grid-column': true,
-  	'flex-shrink': true,
-  	'line-height': true,
-  	'line-clamp': true,
-  	'flex-order': true,
-  	'opacity': true,
-  	'orphans': true,
-  	'order': true,
   	'widows': true,
   	'z-index': true,
   	'zoom': true
   };
 
+  /* eslint-enable quote-props */
+
+  var directions = ['Top', 'Right', 'Bottom', 'Left'];
+  var dirMap = function dirMap(prefix, postfix) {
+  	return directions.map(function (dir) {
+  		return (prefix || '') + dir + (postfix || '');
+  	});
+  };
+  var shortCuts = {
+  	// rely on cssText
+  	font: [/*
+          font-style
+          font-variant
+          font-weight
+          font-size/line-height
+          font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;
+          */],
+  	padding: dirMap('padding'),
+  	margin: dirMap('margin'),
+  	'border-width': dirMap('border', 'Width'),
+  	'border-style': dirMap('border', 'Style')
+  };
+  var cssToJSName = function cssToJSName(cssName) {
+  	return cssName.replace(reDash, function (str) {
+  		return str[1].toUpperCase();
+  	});
+  };
+
   // Don't execute this in nodejS
   if (ExecutionEnvironment.canUseDOM) {
-  	// get browser supported CSS properties
-  	var computed = window.getComputedStyle(document.documentElement);
-  	var props = Array.prototype.slice.call(computed, 0);
+  	(function () {
+  		// get browser supported CSS properties
+  		var computed = window.getComputedStyle(document.documentElement);
+  		var props = Array.prototype.slice.call(computed, 0);
 
-  	props.forEach(function (propName) {
-  		var prefix = propName[0] === '-' ? propName.substr(1, propName.indexOf('-', 1) - 1) : null;
-  		var stylePropName = propName.replace(reDash, function (str) {
-  			return str[1].toUpperCase();
+  		props.forEach(function (propName) {
+  			var prefix = propName[0] === '-' ? propName.substr(1, propName.indexOf('-', 1) - 1) : null;
+  			var stylePropName = cssToJSName(propName);
+
+  			HOOK[stylePropName] = {
+  				unPrefixed: prefix ? propName.substr(prefix.length + 2) : propName,
+  				unitless: unitlessProperties[propName] ? true : false,
+  				shorthand: null
+  			};
   		});
 
-  		HOOK[stylePropName] = {
-  			unPrefixed: prefix ? propName.substr(prefix.length + 2) : propName,
-  			unitless: unitlessProperties[propName] ? true : false
+  		var lenMap = {
+  			1: function _(values, props, style) {
+  				return props.forEach(function (prop) {
+  					return style[prop] = values[0];
+  				});
+  			},
+  			2: function _(values, props, style) {
+  				return values.forEach(function (value, index) {
+  					style[props[index]] = style[props[index + 2]] = value;
+  				});
+  			},
+  			4: function _(values, props, style) {
+  				return props.forEach(function (prop, index) {
+  					style[prop] = values[index];
+  				});
+  			}
   		};
-  	});
+
+  		// normalize property shortcuts
+  		Object.keys(shortCuts).forEach(function (propName) {
+  			var stylePropName = cssToJSName(propName);
+
+  			HOOK[stylePropName] = {
+  				unPrefixed: propName,
+  				unitless: false,
+  				shorthand: function shorthand(value, style) {
+  					var type = typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value);
+
+  					if (type === 'number') {
+  						value += 'px';
+  					}
+  					if (!value) {
+  						return;
+  					}
+  					if ('cssText' in style) {
+  						// normalize setting complex property across browsers
+  						style.cssText += ';' + propName + ':' + value;
+  					} else {
+  						var values = value.split(' ');
+
+  						(lenMap[values.length] || noop)(values, shortCuts[propName], style);
+  					}
+  				}
+  			};
+  		});
+  	})();
   }
 
   function isValidAttribute(strings) {
@@ -1134,7 +1212,6 @@
   	setCSS: function setCSS(vNode, domNode, styles) {
 
   		for (var styleName in styles) {
-
   			var styleValue = styles[styleName];
 
   			var style = domNode.style;
@@ -1149,12 +1226,17 @@
   				var hook = HOOK[styleName];
 
   				if (hook) {
-  					if (!hook.unitless) {
-  						if (typeof styleValue !== 'string') {
-  							styleValue = styleValue + 'px';
+  					if (hook.shorthand) {
+
+  						hook.shorthand(styleValue, style);
+  					} else {
+  						if (!hook.unitless) {
+  							if (typeof styleValue !== 'string') {
+  								styleValue = styleValue + 'px';
+  							}
   						}
+  						style[hook.unPrefixed] = styleValue;
   					}
-  					style[hook.unPrefixed] = styleValue;
   				}
   			}
   		}
@@ -1917,7 +1999,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1927,7 +2009,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2042,7 +2124,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -2052,7 +2134,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2106,7 +2188,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2118,7 +2200,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2325,7 +2407,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2335,7 +2417,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2486,7 +2568,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootStaticNode(templateNode) {
   	var node = {
@@ -2496,7 +2578,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2535,7 +2617,7 @@
   	return node;
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2548,7 +2630,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2639,7 +2721,7 @@
   	return node;
   }
 
-  var infernoBadTemplate$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+  var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function createDynamicNode(valueIndex) {
   	var domNode = undefined;
@@ -2674,9 +2756,9 @@
   					domNode = value.create(item, treeLifecycle, context);
   					break;
   				case ValueTypes.EMPTY_OBJECT:
-  					throw Error(infernoBadTemplate$1);
+  					throw Error(infernoBadTemplate);
   				case ValueTypes.FUNCTION:
-  					throw Error(infernoBadTemplate$1);
+  					throw Error(infernoBadTemplate);
   				case ValueTypes.FRAGMENT:
   					domNode = value.domTree.create(value, treeLifecycle, context);
   					break;
@@ -2730,7 +2812,7 @@
   	return node;
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2740,7 +2822,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2822,7 +2904,7 @@
   	}
   }
 
-  var recyclingEnabled$8 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootNodeWithComponent(componentIndex, props) {
   	var currentItem = undefined;
@@ -2840,7 +2922,7 @@
   			if (node.overrideItem !== null) {
   				toUseItem = node.overrideItem;
   			}
-  			if (recyclingEnabled$8) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -3099,7 +3181,7 @@
   	return node;
   }
 
-  var recyclingEnabled$9 = isRecyclingEnabled();
+  var recyclingEnabled$8 = isRecyclingEnabled();
 
   function createRootDynamicTextNode(templateNode, valueIndex) {
   	var node = {
@@ -3109,7 +3191,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$9) {
+  			if (recyclingEnabled$8) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3752,6 +3834,35 @@
   	}
 
   	return construct;
+  }
+
+  // Server side workaround
+  var requestAnimationFrame = noop;
+  var cancelAnimationFrame = noop;
+
+  if (ExecutionEnvironment.canUseDOM) {
+  	(function () {
+
+  		var lastTime = 0;
+
+  		var nativeRequestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
+
+  		var nativeCancelAnimationFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame;
+
+  		requestAnimationFrame = nativeRequestAnimationFrame || function (callback) {
+  			var currTime = Date.now();
+  			var timeDelay = Math.max(0, 16 - (currTime - lastTime)); // 1000 / 60 = 16.666
+
+  			lastTime = currTime + timeDelay;
+  			return window.setTimeout(function () {
+  				callback(Date.now());
+  			}, timeDelay);
+  		};
+
+  		cancelAnimationFrame = nativeCancelAnimationFrame || function (frameId) {
+  			window.clearTimeout(frameId);
+  		};
+  	})();
   }
 
   function applyState(component) {
