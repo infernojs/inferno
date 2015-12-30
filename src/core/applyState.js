@@ -1,4 +1,5 @@
 import updateComponent from './updateComponent';
+import { requestAnimationFrame } from './../util/requestAnimationFrame';
 
 function applyState( component ) {
 	const blockRender = component._blockRender;
