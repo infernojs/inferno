@@ -19,36 +19,35 @@ export default function createDOMFragment( parentNode, nextNode ) {
 			}
 		}
 	};
-	const fragment = {
+	return {
 		parentNode,
 		render( nextItem ) {
-			if ( !nextItem ) {
-				return;
-			}
-			const tree = nextItem.domTree;
 
-			if ( !tree ) {
-				throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
-			}
+			if ( nextItem ) {
 
-			if ( lastItem ) {
-				tree.update( lastItem, nextItem, treeLifecycle, context );
-			} else {
-				const dom = tree.create( nextItem, treeLifecycle, context );
+				const tree = nextItem.domTree;
 
-				if ( nextNode ) {
-					parentNode.insertBefore( dom, nextNode );
-				} else if ( parentNode ) {
-					parentNode.appendChild( dom );
+				if (tree ) {
+
+					if ( lastItem ) {
+						tree.update( lastItem, nextItem, treeLifecycle, context );
+					} else {
+						const dom = tree.create( nextItem, treeLifecycle, context );
+
+						if ( nextNode ) {
+							parentNode.insertBefore( dom, nextNode );
+						} else if ( parentNode ) {
+							parentNode.appendChild( dom );
+						}
+					}
+					if ( treeSuccessListeners.length > 0 ) {
+						for ( let i = 0; i < treeSuccessListeners.length; i++ ) {
+							treeSuccessListeners[i]();
+						}
+					}
+					lastItem = nextItem;
 				}
 			}
-			if ( treeSuccessListeners.length > 0 ) {
-				for ( let i = 0; i < treeSuccessListeners.length; i++ ) {
-					treeSuccessListeners[i]();
-				}
-			}
-			lastItem = nextItem;
-			return fragment;
 		},
 		remove() {
 			if ( lastItem ) {
@@ -60,9 +59,6 @@ export default function createDOMFragment( parentNode, nextNode ) {
 				remove( lastItem, parentNode );
 			}
 			treeSuccessListeners = [];
-			return fragment;
 		}
 	};
-
-	return fragment;
 }
