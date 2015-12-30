@@ -1,39 +1,43 @@
 import ExecutionEnvironment from './ExecutionEnvironment';
+import noop from './noop';
 
 const HOOK = {};
 const reDash = /\-./g;
 
+/* eslint-disable quote-props */
 const unitlessProperties = {
-	'box-flex': true,
 	'animation-iteration-count': true,
-	'tab-size': true,
+	'box-flex': true,
 	'box-flex-group': true,
 	'column-count': true,
 	'counter-increment': true,
+	'fill-opacity': true,
+	'flex': true,
+	'flex-grow': true,
+	'flex-order': true,
+	'flex-positive': true,
+	'flex-shrink': true,
+	'float': true,
+	'font-weight': true,
+	'grid-column': true,
+	'line-height': true,
+	'line-clamp': true,
+	'opacity': true,
+	'order': true,
+	'orphans': true,
 	'stop-opacity': true,
 	'stroke-dashoffset': true,
 	'stroke-opacity': true,
 	'stroke-width': true,
+	'tab-size': true,
 	'transform': true,
 	'transform-origin': true,
-	'flex-grow': true,
-	'flex-positive': true,
-	'flex': true,
-	'float': true,
-	'fill-opacity': true,
-	'font-weight': true,
-	'grid-column': true,
-	'flex-shrink': true,
-	'line-height': true,
-	'line-clamp': true,
-	'flex-order': true,
-	'opacity': true,
-	'orphans': true,
-	'order': true,
 	'widows': true,
 	'z-index': true,
 	'zoom': true
 };
+
+/* eslint-enable quote-props */
 
 export let directions = [ 'Top', 'Right', 'Bottom', 'Left' ];
 export let dirMap = ( prefix, postfix ) =>
@@ -77,7 +81,7 @@ if ( ExecutionEnvironment.canUseDOM ) {
 	} );
 
 	const lenMap = {
-		1: ( values, props, style ) => props.forEach( prop => style[prop] = values[0]),
+		1: ( values, props, style ) => props.forEach( prop => style[prop] = values[0] ),
 		2: ( values, props, style ) => values.forEach( ( value, index ) => {
 			style[props[index]] = style[props[index + 2]] = value;
 		} ),
@@ -108,7 +112,7 @@ if ( ExecutionEnvironment.canUseDOM ) {
 				} else {
 					let values = value.split( ' ' );
 
-					lenMap[values.length]( values, shortCuts[propName], style );
+					( lenMap[values.length] || noop )( values, shortCuts[propName], style );
 				}
 			}
 		};
