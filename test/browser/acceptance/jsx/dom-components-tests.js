@@ -11,6 +11,7 @@ describe('DOM component tests (jsx)', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
