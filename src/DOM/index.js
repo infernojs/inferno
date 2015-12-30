@@ -5,8 +5,6 @@ import styleAccessor from '../util/styleAccessor';
 import isValidAttribute from '../util/isValidAttribute';
 import DOMRegistry from './DOMRegistry';
 
-
-
 const template = {
 	/**
 	 * Sets the value for a property on a node. If a value is specified as
@@ -38,7 +36,7 @@ const template = {
 								domNode[propName] = value;
 							}
 						} else {
-							if ( propertyInfo.hasBooleanValue && (value === true || value === 'true' ) ) {
+							if ( propertyInfo.hasBooleanValue && ( value === true || value === 'true' ) ) {
 								value = propName;
 							}
 							domNode.setAttribute( propName, value );
@@ -61,7 +59,7 @@ const template = {
 			}
         // HTML attributes and custom attributes
 		} else {
-			if ( isValidAttribute ( name ) ) {
+			if ( isValidAttribute( name ) ) {
 				if ( isVoid( value ) ) {
 					domNode.removeAttribute( name );
 				} else if ( name ) {
@@ -82,7 +80,6 @@ const template = {
 	setCSS( vNode, domNode, styles ) {
 
 		for ( let styleName in styles ) {
-
 			let styleValue = styles[styleName];
 
 			const style = domNode.style;
@@ -97,12 +94,17 @@ const template = {
 				const hook = styleAccessor[styleName];
 
 				if ( hook ) {
-					if ( !hook.unitless ) {
-						if ( typeof styleValue !== 'string' ) {
-							styleValue = styleValue + 'px';
+					if ( hook.shorthand ) {
+
+						hook.shorthand( styleValue, style );
+					} else {
+						if ( !hook.unitless ) {
+							if ( typeof styleValue !== 'string' ) {
+								styleValue = styleValue + 'px';
+							}
 						}
-					}
 						style[hook.unPrefixed] = styleValue;
+					}
 				}
 			}
 		}
