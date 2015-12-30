@@ -31,7 +31,7 @@ module.exports = function(config) {
                 postLoaders: [{
                     test: /(\.jsx)|(\.js)$/,
                     exclude: /test|node_modules\/dist/,
-                    loader: 'isparta-instrumenter-loader',
+                    loader: 'isparta',
 					include: path.join(__dirname, '../src')
                 }],
                 loaders: [{
