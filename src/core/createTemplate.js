@@ -1,10 +1,21 @@
 import createDOMTree from '../DOM/createTree';
+import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import createHTMLStringTree from '../htmlString/createHTMLStringTree';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 
 function createId() {
-	return Symbol();
+	if ( ExecutionEnvironment.canUseSymbol) {
+		return Symbol();
+	} else {
+		let uniqueId = null;
+
+		function getUniqueName(prefix) {
+				if (!uniqueId) uniqueId = (Date.now());
+				return (prefix || 'id') + (uniqueId++);
+			};
+		return getUniqueName('Inferno');
+	}
 }
 
 export default function createTemplate( callback ) {
@@ -107,5 +118,6 @@ export default function createTemplate( callback ) {
 		}
 		callback.construct = construct;
 	}
+
 	return construct;
 }

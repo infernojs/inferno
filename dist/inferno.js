@@ -467,36 +467,35 @@
   			}
   		}
   	};
-  	var fragment = {
+  	return {
   		parentNode: parentNode,
   		render: function render(nextItem) {
-  			if (!nextItem) {
-  				return;
-  			}
-  			var tree = nextItem.domTree;
 
-  			if (!tree) {
-  				throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
-  			}
+  			if (nextItem) {
 
-  			if (lastItem) {
-  				tree.update(lastItem, nextItem, treeLifecycle, context);
-  			} else {
-  				var dom = tree.create(nextItem, treeLifecycle, context);
+  				var tree = nextItem.domTree;
 
-  				if (nextNode) {
-  					parentNode.insertBefore(dom, nextNode);
-  				} else if (parentNode) {
-  					parentNode.appendChild(dom);
+  				if (tree) {
+
+  					if (lastItem) {
+  						tree.update(lastItem, nextItem, treeLifecycle, context);
+  					} else {
+  						var dom = tree.create(nextItem, treeLifecycle, context);
+
+  						if (nextNode) {
+  							parentNode.insertBefore(dom, nextNode);
+  						} else if (parentNode) {
+  							parentNode.appendChild(dom);
+  						}
+  					}
+  					if (treeSuccessListeners.length > 0) {
+  						for (var i = 0; i < treeSuccessListeners.length; i++) {
+  							treeSuccessListeners[i]();
+  						}
+  					}
+  					lastItem = nextItem;
   				}
   			}
-  			if (treeSuccessListeners.length > 0) {
-  				for (var i = 0; i < treeSuccessListeners.length; i++) {
-  					treeSuccessListeners[i]();
-  				}
-  			}
-  			lastItem = nextItem;
-  			return fragment;
   		},
   		remove: function remove$$() {
   			if (lastItem) {
@@ -508,11 +507,8 @@
   				remove(lastItem, parentNode);
   			}
   			treeSuccessListeners = [];
-  			return fragment;
   		}
   	};
-
-  	return fragment;
   }
 
   var rootFragments = [];
@@ -637,7 +633,8 @@
   	canUseDOM: canUseDOM,
   	canUseWorkers: typeof Worker !== 'undefined',
   	canUseEventListeners: canUseDOM && !!window.addEventListener,
-  	canUseViewport: canUseDOM && !!window.screen
+  	canUseViewport: canUseDOM && !!window.screen,
+  	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
   };
 
   var isSVG = undefined;
@@ -3624,7 +3621,25 @@
   }
 
   function createId() {
-  	return Symbol();
+  	if (ExecutionEnvironment.canUseSymbol) {
+  		return Symbol();
+  	} else {
+  		var _ret = (function () {
+  			var getUniqueName = function getUniqueName(prefix) {
+  				if (!uniqueId) uniqueId = Date.now();
+  				return (prefix || 'id') + uniqueId++;
+  			};
+
+  			var uniqueId = null;
+
+  			;
+  			return {
+  				v: getUniqueName('Inferno')
+  			};
+  		})();
+
+  		if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+  	}
   }
 
   function createTemplate(callback) {
@@ -3735,6 +3750,7 @@
   			callback.construct = construct;
   		})();
   	}
+
   	return construct;
   }
 
