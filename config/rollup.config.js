@@ -9,13 +9,22 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'uglify-js';
 import pack from '../package.json';
 
+const development = process.argv[2] === 'dev';
+const production = process.argv[2] === 'prod';
+
+if ( development ) {
+	process.env.NODE_ENV = 'development;'
+} else {
+	process.env.NODE_ENV = 'production;'
+}
+
 const copyright =
     '/*!\n' +
     ' * ' + pack.name + ' v' + pack.version + '\n' +
     ' * (c) ' + new Date().getFullYear() + ' ' + pack.author.name + '\n' +
     ' * Released under the ' + pack.license + ' License.\n' +
     ' */'
-	
+
 function createBundle() {
     let bundle = rollup.rollup({
         entry: p.resolve('src/index.js'),
@@ -52,16 +61,14 @@ function zip() {
             if (err) return reject(err)
             zlib.gzip(buf, function(err, buf) {
                 if (err) return reject(err)
-                write('dist/' + pack.name + '.min.js.gz', buf).then(resolve)
+	            fs.writeFile('dist/' + pack.name + '.min.js.gz', buf);
             })
         })
     })
 }
 
-function writeBundle(bundle, {
-    minify = true
-}) {
-    const filename = minify ? pack.name + '.min.js' : pack.name + '.js';
+function writeBundle(bundle) {
+    const filename = production ? pack.name + '.min.js' : pack.name + '.js';
     const dest = p.resolve(`dist/${filename}`);
 
     let result = bundle.generate({
@@ -74,7 +81,7 @@ function writeBundle(bundle, {
         },
     });
 
-    if (minify) {
+    if (production) {
         result = uglify.minify(result.code, {
             fromString: true,
             inSourceMap: result.map,
@@ -112,12 +119,10 @@ process.on('unhandledRejection', (reason) => {
 });
 
 createBundle().then((bundle) => {
-    writeBundle(bundle, {
-        minify: false
-    }); // Development
-    writeBundle(bundle, {
-        minify: true
-    }); // Production
-	
-	zip(); // gZip
+
+	writeBundle(bundle);
+
+	if ( production ) {
+		zip(); // gZip
+	}
 })

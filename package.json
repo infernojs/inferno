@@ -78,7 +78,9 @@
   },
   "scripts": {
     "clean": "rimraf coverage/ dist/",
-    "build": "npm run clean && mkdirp dist && babel-node config/rollup.config.js",
+    "build:dev": "babel-node config/rollup.config.js dev",
+    "build:prod": "babel-node config/rollup.config.js prod",
+    "build": "npm run clean && mkdirp dist && npm run build:dev && npm run build:prod",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
     "test:browser": "karma start config/karma.conf.js --single-run",
     "test:server": "mocha --opts config/mocha.opts",
