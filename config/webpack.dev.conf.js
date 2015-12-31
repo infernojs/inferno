@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const glob = require('glob');
 
-const entries = glob.sync('./test/specs/no-jsx/**/*.spec.browser.js.spec.js')
+const entries = glob.sync('./test/specs/no-jsx/**/*.spec.browser.js')
 	//.concat(glob.sync('./test/specs/no-jsx/**/*.spec.js'))
     //	.concat(glob.sync('./test/specs/no-jsx/**/*.spec.server.js'))
 	.concat(glob.sync('./test/specs/jsx/**/*.spec.browser.js'))
