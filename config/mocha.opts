@@ -1,5 +1,5 @@
-./test/specs/**/*spec.server.js
-./test/specs/**/*spec.js
+./test/specs/no-jsx/**/*spec.server.js
+./test/specs/no-jsx/**/*spec.js
 ./test/specs/jsx/**/*spec.server.js
 ./test/specs/jsx/**/*spec.js
 

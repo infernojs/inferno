@@ -15,9 +15,9 @@ module.exports = function(config) {
 		// list of files / patterns to load in the browser
 		files: [
 			'../src/**/*__tests__*/**/*spec.ut.js', // UT
-			'../test/specs/**/*spec.browser.js', // AT
-			'../test/specs/**/*spec.server.js', // AT
-			'../test/specs/**/*spec.js', // AT
+			'../test/specs/no-jsx/**/*spec.browser.js', // AT
+			'../test/specs/no-jsx/**/*spec.server.js', // AT
+			'../test/specs/no-jsx/**/*spec.js', // AT
 			'../test/specs/jsx/**/*spec.browser.js', // AT
 			'../test/specs/jsx/**/*spec.server.js', // AT
 			'../test/specs/jsx/**/*spec.js' // AT
@@ -29,9 +29,9 @@ module.exports = function(config) {
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
 			'../src/**/*__tests__*/**/*spec.ut.js': ['webpack'], // UT
-			'../test/specs/**/*spec.server.js': ['webpack'], // AT
-			'../test/specs/**/*spec.js': ['webpack'], // AT
-			'../test/specs/**/*.spec.browser.js': ['webpack'], // AT
+			'../test/specs/no-jsx/**/*spec.server.js': ['webpack'], // AT
+			'../test/specs/no-jsx/**/*spec.js': ['webpack'], // AT
+			'../test/specs/no-jsx/**/*.spec.browser.js': ['webpack'], // AT
 			'../test/specs/jsx/**/*spec.server.js': ['webpack'], // AT
 			'../test/specs/jsx/**/*spec.js': ['webpack'], // AT
 			'../test/specs/jsx/**/*.spec.browser.js': ['webpack'], // AT
