@@ -35,7 +35,7 @@
 		"no-empty-character-class": 2,
 		"no-empty": 0,
 		"no-ex-assign": 2,
-		"no-extra-semi": 2,
+		"no-extra-semi": 0,
 		"no-func-assign": 2,
 		"no-inner-declarations": [2, "both"],
 		"no-invalid-regexp": 2,
@@ -52,7 +52,7 @@
 			"setWithoutGet": true
 		}],
 		"curly": [2, "all"],
-		"eqeqeq": [2, "allow-null"],
+		"eqeqeq": [0, "allow-null"],
 		"no-alert": 1,
 		"no-div-regex": 2,
 		"no-eq-null": 2,
@@ -83,7 +83,7 @@
 		"no-shadow-restricted-names": 2,
 		/* "no-shadow": 2, */
 		"no-undef": 0,
-		"no-unused-vars": [2, "local"],
+		"no-unused-vars": [0, "local"],
 		"no-use-before-define": [2, "nofunc"],
 		"array-bracket-spacing": [2, "always", {
 			"singleValue": false,
@@ -109,14 +109,14 @@
 			"capIsNew":true
 		}],
 		"new-parens": 2,
-		"newline-after-var": [2, "always"],
+		"newline-after-var": [0, "always"],
 		"no-array-constructor": 2,
 		"no-mixed-spaces-and-tabs": 2,
 		"no-multiple-empty-lines": [2, {
 			"max": 1
 		}],
 		"no-new-object": 2,
-		"no-spaced-func": 2,
+		"no-spaced-func": 0,
 		"no-trailing-spaces": 2,
 		"object-curly-spacing": [2, "always", {
 			"arraysInObjects": true,
@@ -128,14 +128,14 @@
 		"semi-spacing": [2, {
 			"after": true
 		}],
-		"semi": [2, "always"],
+		"semi": [0, "always"],
 		"space-after-keywords": [2, "always"],
-		"space-before-blocks": [2, "always"],
+		"space-before-blocks": [0, "always"],
 		"space-before-function-paren": [2, {
 			"anonymous": "always",
 			"named": "never"
 		}],
-		"space-in-parens": [2, "always"],
+		"space-in-parens": [0, "always"],
 		"space-infix-ops": 2,
 		"space-return-throw-case": 2,
 		"space-unary-ops": [2, {
