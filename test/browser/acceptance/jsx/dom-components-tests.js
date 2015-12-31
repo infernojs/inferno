@@ -1,6 +1,7 @@
 import Inferno from '../../../../src';
 import get from '../../../tools/get';
 import waits from '../../../tools/waits';
+import { requestAnimationFrame } from '../../../../src/util/requestAnimationFrame';
 
 const {
 	createElement
@@ -11,9 +12,12 @@ describe('DOM component tests (jsx)', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		container.style.display = 'none';
+		document.body.appendChild(container);
 	});
 
 	afterEach(() => {
+		document.body.removeChild(container);
 		Inferno.render(null, container);
 	});
 
@@ -618,7 +622,6 @@ describe('DOM component tests (jsx)', () => {
 					count: 0
 				};
 				this.incrementCount = this.incrementCount.bind(this);
-				setTimeout(this.incrementCount, 10);
 			}
 			incrementCount(){
 				this.setState({
@@ -662,8 +665,10 @@ describe('DOM component tests (jsx)', () => {
 
 		it('Second render (update)', (done) => {
 			Inferno.render(<Wrapper/>, container);
+			let buttons = Array.prototype.slice.call(container.querySelectorAll('button'), 0);
+			buttons.forEach(button => button.click());
 
-			waits(30, () => {
+			requestAnimationFrame(() => {
 				expect(
 					container.innerHTML
 				).to.equal(
