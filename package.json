@@ -98,7 +98,6 @@
     "package:prod": "./node_modules/.bin/ncu -u",
     "package:dev": "./node_modules/.bin/ncu -p -u",
     "preversion": "[[ -z $(git status --porcelain) ]] && npm run build && git add -A dist && git commit -m 'Build lib'",
-    "prepublish": "npm run lint && npm run clean && npm run build && npm test",
     "postpublish": "git push origin master --follow-tags"
   },
   "pre-commit": [
