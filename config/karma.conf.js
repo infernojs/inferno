@@ -16,11 +16,11 @@ module.exports = function(config) {
 		files: [
 			'../src/**/*__tests__*/**/*spec.ut.js', // UT
 			'../test/specs/no-jsx/**/*spec.browser.js', // AT
-			'../test/specs/no-jsx/**/*spec.server.js', // AT
-			'../test/specs/no-jsx/**/*spec.js', // AT
+			//'../test/specs/no-jsx/**/*spec.server.js', // AT
+//			'../test/specs/no-jsx/**/*spec.js', // AT
 			'../test/specs/jsx/**/*spec.browser.js', // AT
-			'../test/specs/jsx/**/*spec.server.js', // AT
-			'../test/specs/jsx/**/*spec.js' // AT
+			//'../test/specs/jsx/**/*spec.server.js', // AT
+			//'../test/specs/jsx/**/*spec.js' // AT
 
 		],
 		// list of files to exclude
