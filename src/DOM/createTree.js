@@ -57,7 +57,7 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 		for ( let i = 0; i < children.length; i++ ) {
 			const childItem = children[i];
 
-			if ( isStringOrNumber ( childItem ) ) {
+			if ( isStringOrNumber( childItem ) ) {
 				const textNode = document.createTextNode( childItem );
 
 				parentNode.appendChild( textNode );
@@ -66,7 +66,7 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 			}
 		}
 	} else {
-		if ( isStringOrNumber ( children ) ) {
+		if ( isStringOrNumber( children ) ) {
 			parentNode.textContent = children;
 		} else {
 			createStaticTreeNode( children, parentNode, domNamespace );
@@ -80,7 +80,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 	if ( isVoid( node ) ) {
 		return null;
 	}
-	if ( isStringOrNumber ( node ) ) {
+	if ( isStringOrNumber( node ) ) {
 		staticNode = document.createTextNode( node );
 	} else {
 		const tag = node.tag;
@@ -144,7 +144,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 				if ( !isVoid( children ) ) {
 					throw Error( invalidTemplateError );
 				}
-				if ( !isStringOrNumber ( text ) ) {
+				if ( !isStringOrNumber( text ) ) {
 					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 				}
 				staticNode.textContent = text;
@@ -290,7 +290,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 							node = createNodeWithDynamicText( templateNode, text.index, dynamicAttrs );
 						}
 					} else {
-						if ( isStringOrNumber ( text ) ) {
+						if ( isStringOrNumber( text ) ) {
 							templateNode.textContent = text;
 						} else {
 							throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
@@ -333,7 +333,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 								node = createNodeWithDynamicSubTreeForChildren(
 								templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
 							}
-						} else if ( isStringOrNumber ( children ) ) {
+						} else if ( isStringOrNumber( children ) ) {
 							templateNode.textContent = children;
 							if ( isRoot ) {
 								node = createRootNodeWithStaticChild( templateNode, dynamicAttrs );

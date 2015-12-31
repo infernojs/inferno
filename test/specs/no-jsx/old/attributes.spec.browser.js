@@ -1,4 +1,4 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../src/index';
 
 describe( 'Attributes / properties - (non-JSX)', () => {
 

@@ -1,5 +1,6 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
+import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
@@ -27,7 +28,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 							}
 							childNodeList.push( childNode );
 							domNode.appendChild( childNode );
-						} else if ( typeof childItem === 'string' || typeof childItem === 'number' ) {
+						} else if ( isStringOrNumber( childItem ) ) {
 							const textNode = document.createTextNode( childItem );
 
 							domNode.appendChild( textNode );
@@ -37,7 +38,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					}
 				} else if ( typeof value === 'object' ) {
 					domNode.appendChild( value.domTree.create( value, treeLifecycle, context ) );
-				} else if ( typeof value === 'string' || typeof value === 'number' ) {
+				} else if ( isStringOrNumber( value ) ) {
 					domNode.textContent = value;
 				}
 			}
@@ -79,7 +80,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 							// TODO implement
 						}
 					}
-				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
+				} else if ( isStringOrNumber( nextValue ) ) {
 					domNode.firstChild.nodeValue = nextValue;
 				}
 			}

@@ -1,5 +1,6 @@
 import isArray from '../util/isArray';
 import isVoid from '../util/isVoid';
+import isStringOrNumber from '../util/isStringOrNumber';
 
 export const ObjectTypes = {
 	VARIABLE: 1
@@ -26,7 +27,7 @@ export function getValueWithIndex( item, index ) {
 }
 
 export function getTypeFromValue( value ) {
-	if ( typeof value === 'string' || typeof value === 'number' || isVoid( value ) ) {
+	if ( isStringOrNumber( value ) || isVoid( value ) ) {
 		return ValueTypes.TEXT;
 	} else if ( isArray( value ) ) {
 		return ValueTypes.ARRAY;

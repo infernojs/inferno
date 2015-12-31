@@ -1,6 +1,7 @@
 import isVoid from '../util/isVoid';
 import { /* getValueWithIndex, */ getTypeFromValue, ValueTypes } from '../core/variables';
 import isArray from '../util/isArray';
+import isStringOrNumber from '../util/isStringOrNumber';
 import { isRecyclingEnabled, pool } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
@@ -161,13 +162,13 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 		if ( item !== oldItem ) {
 			if ( !isVoid( item ) ) {
 				if ( !isVoid( oldItem ) ) {
-					if ( typeof item === 'string' || typeof item === 'number' ) {
+					if ( isStringOrNumber( item ) ) {
 						domNodeList[i].nodeValue = item;
 					} else if ( typeof item === 'object' ) {
 						item.domTree.update( oldItem, item, treeLifecycle, context );
 					}
 				} else {
-					if ( typeof item === 'string' || typeof item === 'number' ) {
+					if ( isStringOrNumber( item ) ) {
 						const childNode = document.createTextNode( item );
 
 						domNodeList[i] = childNode;
@@ -232,7 +233,7 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 				childNodeList.push( childDomNode );
 				if ( childDomNode === undefined ) {
 					throw Error('Inferno Error: Children must be provided as templates.');
-				}			
+				}
 				domNode.appendChild( childDomNode );
 				break;
 			case ValueTypes.FRAGMENT:
