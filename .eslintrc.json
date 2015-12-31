@@ -82,7 +82,7 @@
 		"no-delete-var": 2,
 		"no-shadow-restricted-names": 2,
 		/* "no-shadow": 2, */
-		"no-undef": 2,
+		"no-undef": 0,
 		"no-unused-vars": [2, "local"],
 		"no-use-before-define": [2, "nofunc"],
 		"array-bracket-spacing": [2, "always", {
@@ -103,7 +103,7 @@
 			"allowObjectStart": true,
 			"allowObjectEnd": true
 		}],
-		"linebreak-style": [2, "unix"],
+		"linebreak-style": [0, "unix"],
 		"new-cap": [2, {
 			"newIsCap": true,
 			"capIsNew":true

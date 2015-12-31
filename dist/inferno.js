@@ -6,22 +6,20 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  global.Inferno = factory();
+  (global.Inferno = factory());
 }(this, function () { 'use strict';
 
-  var babelHelpers = {};
-
-  babelHelpers.typeof = function (obj) {
+  function babelHelpers_typeof (obj) {
     return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  babelHelpers.classCallCheck = function (instance, Constructor) {
+  function babelHelpers_classCallCheck (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  babelHelpers.createClass = (function () {
+  var babelHelpers_createClass = (function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -39,7 +37,7 @@
     };
   })();
 
-  babelHelpers.extends = Object.assign || function (target) {
+  var babelHelpers_extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -53,7 +51,6 @@
     return target;
   };
 
-  babelHelpers;
   function createRef() {
   	return {
   		element: null
@@ -135,11 +132,11 @@
   		return ValueTypes.TEXT;
   	} else if (isArray(value)) {
   		return ValueTypes.ARRAY;
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && value.create) {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.create) {
   		return ValueTypes.TREE;
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && value.domTree) {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.domTree) {
   		return ValueTypes.FRAGMENT;
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && Object.keys(value).length === 0) {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && Object.keys(value).length === 0) {
   		return ValueTypes.EMPTY_OBJECT;
   	} else if (typeof value === 'function') {
   		return ValueTypes.FUNCTION;
@@ -178,7 +175,7 @@
 
   			removeValueTree(child, treeLifecycle);
   		}
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
   		var tree = value.domTree;
 
   		tree.remove(value, treeLifecycle);
@@ -345,7 +342,7 @@
   				if (!isVoid(oldItem)) {
   					if (typeof item === 'string' || typeof item === 'number') {
   						domNodeList[i].nodeValue = item;
-  					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+  					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers_typeof(item)) === 'object') {
   						item.domTree.update(oldItem, item, treeLifecycle, context);
   					}
   				} else {
@@ -771,7 +768,7 @@
   				unPrefixed: propName,
   				unitless: false,
   				shorthand: function shorthand(value, style) {
-  					var type = typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value);
+  					var type = typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value);
 
   					if (type === 'number') {
   						value += 'px';
@@ -2214,7 +2211,7 @@
   					for (var i = 0; i < value.length; i++) {
   						var childItem = value[i];
 
-  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
+  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
   							var childNode = childItem.domTree.create(childItem, treeLifecycle, context);
 
   							if (childItem.key === undefined) {
@@ -2230,7 +2227,7 @@
   							keyedChildren = false;
   						}
   					}
-  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
   					domNode.appendChild(value.domTree.create(value, treeLifecycle, context));
   				} else if (typeof value === 'string' || typeof value === 'number') {
   					domNode.textContent = value;
@@ -2279,7 +2276,7 @@
   					} else {
   						// do nothing for now!
   					}
-  				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
   						var tree = nextValue.domTree;
 
   						if (!isVoid(tree)) {
@@ -2329,7 +2326,7 @@
   					for (var i = 0; i < value.length; i++) {
   						var childItem = value[i];
 
-  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
+  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
   							var childNode = childItem.domTree.create(childItem, treeLifecycle, context);
 
   							if (childItem.key === undefined) {
@@ -2345,7 +2342,7 @@
   							keyedChildren = false;
   						}
   					}
-  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
   					domNode.appendChild(value.domTree.create(value, treeLifecycle, context));
   				} else if (typeof value === 'string' || typeof value === 'number') {
   					domNode.textContent = value;
@@ -2379,7 +2376,7 @@
   					} else {
   						// debugger;
   					}
-  				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
   						var tree = nextValue.domTree;
 
   						if (!isVoid(tree)) {
@@ -2432,7 +2429,7 @@
 
   						domNode.appendChild(childNode);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle, context));
   				}
   			}
@@ -2461,7 +2458,7 @@
 
   						subTree.update(lastItem, nextItem, treeLifecycle, context);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
   				}
   			}
@@ -2477,7 +2474,7 @@
 
   						subTree.remove(item, treeLifecycle);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.remove(item, treeLifecycle);
   				}
   			}
@@ -2508,7 +2505,7 @@
 
   						domNode.appendChild(subTree.create(item, treeLifecycle, context));
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					domNode.appendChild(subTreeForChildren.create(item, treeLifecycle, context));
   				}
   			}
@@ -2532,7 +2529,7 @@
 
   						subTree.update(lastItem, nextItem, treeLifecycle, context);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					var newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
 
   					if (newDomNode) {
@@ -2558,7 +2555,7 @@
 
   						subTree.remove(item, treeLifecycle);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.remove(item, treeLifecycle);
   				}
   			}
@@ -2955,7 +2952,7 @@
   						var fragmentFirstChild = undefined;
 
   						if (childContext) {
-  							context = babelHelpers.extends({}, context, childContext);
+  							context = babelHelpers_extends({}, context, childContext);
   						}
   						nextRender.parent = item;
   						domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
@@ -2978,7 +2975,7 @@
   							var childContext = instance.getChildContext();
 
   							if (childContext) {
-  								context = babelHelpers.extends({}, context, childContext);
+  								context = babelHelpers_extends({}, context, childContext);
   							}
   							nextRender.parent = currentItem;
   							nextRender.domTree.update(instance._lastRender, nextRender, treeLifecycle, context);
@@ -3086,7 +3083,7 @@
   						var fragmentFirstChild = undefined;
 
   						if (childContext) {
-  							context = babelHelpers.extends({}, context, childContext);
+  							context = babelHelpers_extends({}, context, childContext);
   						}
   						nextRender.parent = item;
   						domNode = nextRender.domTree.create(nextRender, treeLifecycle, context);
@@ -3107,7 +3104,7 @@
   							var childContext = instance.getChildContext();
 
   							if (childContext) {
-  								context = babelHelpers.extends({}, context, childContext);
+  								context = babelHelpers_extends({}, context, childContext);
   							}
   							nextRender.parent = currentItem;
   							var newDomNode = nextRender.domTree.update(instance._lastRender, nextRender, treeLifecycle, context);
@@ -3273,7 +3270,7 @@
 
   	if (!isVoid(attrs)) {
   		if (excludeAttrs) {
-  			var newAttrs = babelHelpers.extends({}, attrs);
+  			var newAttrs = babelHelpers_extends({}, attrs);
 
   			for (var attr in excludeAttrs) {
   				if (newAttrs[attr]) {
@@ -3445,7 +3442,7 @@
 
   				if (tag.type === ObjectTypes.VARIABLE) {
   					var lastAttrs = schema.attrs;
-  					var _attrs = babelHelpers.extends({}, lastAttrs);
+  					var _attrs = babelHelpers_extends({}, lastAttrs);
   					var _children = null;
 
   					if (schema.children) {
@@ -3550,7 +3547,7 @@
   						} else if (dynamicFlags.CHILDREN === true) {
   							var subTreeForChildren = [];
 
-  							if ((typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
+  							if ((typeof children === 'undefined' ? 'undefined' : babelHelpers_typeof(children)) === 'object') {
   								if (isArray(children)) {
   									for (var i = 0; i < children.length; i++) {
   										var childItem = children[i];
@@ -3678,7 +3675,7 @@
   								dynamicFlags.CHILDREN = true;
   							}
   						}
-  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers.typeof(node)) === 'object') {
+  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers_typeof(node)) === 'object') {
   						var result = scanTreeForDynamicNodes(node.children, nodeMap);
 
   						if (result === true) {
@@ -3702,25 +3699,13 @@
   	return nodeIsDynamic;
   }
 
+  var uniqueId = Date.now();
+
   function createId() {
   	if (ExecutionEnvironment.canUseSymbol) {
   		return Symbol();
   	} else {
-  		var _ret = (function () {
-  			var getUniqueName = function getUniqueName(prefix) {
-  				if (!uniqueId) uniqueId = Date.now();
-  				return (prefix || 'id') + uniqueId++;
-  			};
-
-  			var uniqueId = null;
-
-  			;
-  			return {
-  				v: getUniqueName('Inferno')
-  			};
-  		})();
-
-  		if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+  		return uniqueId++;
   	}
   }
 
@@ -3873,7 +3858,7 @@
   			component._pendingSetState = false;
   			var pendingState = component._pendingState;
   			var oldState = component.state;
-  			var nextState = babelHelpers.extends({}, oldState, pendingState);
+  			var nextState = babelHelpers_extends({}, oldState, pendingState);
 
   			component._pendingState = {};
   			component._pendingSetState = false;
@@ -3896,7 +3881,7 @@
 
   var Component = (function () {
   	function Component(props /* , context */) {
-  		babelHelpers.classCallCheck(this, Component);
+  		babelHelpers_classCallCheck(this, Component);
 
   		this.props = props || {};
   		this._blockRender = false;
@@ -3909,7 +3894,7 @@
   		this.context = {};
   	}
 
-  	babelHelpers.createClass(Component, [{
+  	babelHelpers_createClass(Component, [{
   		key: 'render',
   		value: function render() {}
   	}, {
