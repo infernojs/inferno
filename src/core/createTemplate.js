@@ -4,17 +4,13 @@ import createHTMLStringTree from '../htmlString/createHTMLStringTree';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 
+let uniqueId = Date.now();
+
 function createId() {
-	if ( ExecutionEnvironment.canUseSymbol) {
+	if ( ExecutionEnvironment.canUseSymbol ) {
 		return Symbol();
 	} else {
-		let uniqueId = null;
-
-		function getUniqueName(prefix) {
-				if (!uniqueId) uniqueId = (Date.now());
-				return (prefix || 'id') + (uniqueId++);
-			};
-		return getUniqueName('Inferno');
+		return uniqueId++;
 	}
 }
 
