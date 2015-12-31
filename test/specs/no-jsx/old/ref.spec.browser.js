@@ -1,4 +1,4 @@
-import Inferno from '../../../src';
+import Inferno from '../../../../src';
 
 const { createElement } = Inferno.TemplateFactory;
 

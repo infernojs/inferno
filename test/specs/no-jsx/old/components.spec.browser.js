@@ -1,5 +1,5 @@
-import Inferno from '../../../src';
-import waits from '../../tools/waits';
+import Inferno from '../../../../src';
+import waits from '../../../tools/waits';
 
 const { createElement } = Inferno.TemplateFactory;
 
