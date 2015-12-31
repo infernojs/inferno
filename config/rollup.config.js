@@ -47,9 +47,6 @@ function createBundle() {
 			}),
 			replace({
 				'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-				exclude: 'node_modules/**',
-				VERSION: pack.version,
-
 			}),
 		],
 	});
@@ -69,6 +66,7 @@ function zip() {
 		})
 	})
 }
+
 
 function writeBundle(bundle) {
 	const filename = production ? pack.name + '.min.js' : pack.name + '.js';
@@ -97,10 +95,7 @@ function writeBundle(bundle) {
 		result.code += `\n//# sourceMappingURL=${filename}.map`;
 	}
 
-	let {
-		code,
-		map
-		} = result;
+	let { code, map } = result;
 
 	const throwIfError = (err) => {
 		if (err) {
@@ -112,20 +107,14 @@ function writeBundle(bundle) {
 
 	fs.writeFile(dest, code, throwIfError);
 	fs.writeFile(`${dest}.map`, JSON.stringify(map), throwIfError);
-
 }
 
 // -----------------------------------------------------------------------------
 
-process.on('unhandledRejection', (reason) => {
-	throw reason;
-});
-
 createBundle().then((bundle) => {
 
-	writeBundle(bundle);
-
-	if ( production ) {
-		zip(); // gZip
-	}
+	writeBundle(bundle, ); // Development
+if(production){
+	zip(); // gZip
+}
 })
