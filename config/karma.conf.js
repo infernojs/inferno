@@ -6,7 +6,7 @@ module.exports = function(config) {
 	config.set({
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: '',
+		basePath: '../',
 
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -14,11 +14,11 @@ module.exports = function(config) {
 
 		// list of files / patterns to load in the browser
 		files: [
-			'../src/**/*__tests__*/**/*spec.ut.js', // UT
-			'../test/specs/no-jsx/**/*spec.browser.js', // AT
+			'src/**/*__tests__*/**/*spec.ut.js', // UT
+			'test/specs/no-jsx/**/*spec.browser.js', // AT
 			//'../test/specs/no-jsx/**/*spec.server.js', // AT
 //			'../test/specs/no-jsx/**/*spec.js', // AT
-			'../test/specs/jsx/**/*spec.browser.js', // AT
+			'test/specs/jsx/**/*spec.browser.js', // AT
 			//'../test/specs/jsx/**/*spec.server.js', // AT
 			//'../test/specs/jsx/**/*spec.js' // AT
 
@@ -28,13 +28,13 @@ module.exports = function(config) {
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
-			'../src/**/*__tests__*/**/*spec.ut.js': ['webpack'], // UT
-			'../test/specs/no-jsx/**/*spec.server.js': ['webpack'], // AT
-			'../test/specs/no-jsx/**/*spec.js': ['webpack'], // AT
-			'../test/specs/no-jsx/**/*.spec.browser.js': ['webpack'], // AT
-			'../test/specs/jsx/**/*spec.server.js': ['webpack'], // AT
-			'../test/specs/jsx/**/*spec.js': ['webpack'], // AT
-			'../test/specs/jsx/**/*.spec.browser.js': ['webpack'], // AT
+			'src/**/*__tests__*/**/*spec.ut.js': ['webpack'], // UT
+//			'../test/specs/no-jsx/**/*spec.server.js': ['webpack'], // AT
+//			'../test/specs/no-jsx/**/*spec.js': ['webpack'], // AT
+			'test/specs/no-jsx/**/*.spec.browser.js': ['webpack'], // AT
+			//'../test/specs/jsx/**/*spec.server.js': ['webpack'], // AT
+			//'../test/specs/jsx/**/*spec.js': ['webpack'], // AT
+			'test/specs/jsx/**/*.spec.browser.js': ['webpack'], // AT
 
 		},
 		webpack: {
@@ -43,7 +43,7 @@ module.exports = function(config) {
 					test: /(\.jsx)|(\.js)$/,
 					exclude: /test|dist|.git|node_modules\/dist/,
 					loader: 'isparta',
-					include: path.join(__dirname, '../src')
+				//	include: path.join(__dirname, '../src')
 				}],
 				loaders: [{
 					test: /\.js$/,
