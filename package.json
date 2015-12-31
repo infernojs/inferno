@@ -1,5 +1,6 @@
 {
-  "name": "inferno",
+  "name": "inferno-build",
+  "private": true,
   "description": "A framework for building lightning fast user interfaces",
   "version": "0.4.5",
   "license": "MPL-2.0",
