@@ -230,6 +230,9 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 				keyedChildren = false;
 				childDomNode = childNode.create( item, treeLifecycle, context );
 				childNodeList.push( childDomNode );
+				if ( childDomNode === undefined ) {
+					throw Error('Inferno Error: Children must be provided as templates.');
+				}			
 				domNode.appendChild( childDomNode );
 				break;
 			case ValueTypes.FRAGMENT:

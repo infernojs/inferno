@@ -81,6 +81,12 @@ describe( 'Components (JSX)', () => {
 		}
 	}
 
+	class BasicComponent1c extends Inferno.Component {
+		render() {
+			return (<span>Hello World</span>);
+		}
+	}
+
 	it('should render a basic component with inputs', () => {
 
 		Inferno.render((
@@ -259,6 +265,18 @@ describe( 'Components (JSX)', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-update">The title is 123</span><span>Im a child</span></div></div>'
 		);
+	});
+
+	it('should throw error when a component is included as a child without a template', () => {
+		
+		expect(() => Inferno.render((
+			<div>
+				<BasicComponent2 title="abc" name="basic-render">
+					<span>A child</span>
+					<BasicComponent1c/>
+				</BasicComponent2>
+			</div>
+		), container)).to.throw('Inferno Error: Children must be provided as templates.');
 	});
 
 	it('should render multiple components', () => {
