@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Inferno CSS transform example</title>
+	</head>
+	<body>
+		<script src="../../../dist/inferno.min.js"></script>
+		<script>
+            const transform = Inferno.createTemplate((val) => {
+                        return {
+                            tag: 'div',
+                            attrs: {
+                                style: {
+                                    width:400,
+                                    height:200,
+                                    marginLeft:200,
+                                    backgroundColor:'red',
+                                    transform: 'rotate(45deg)',
+                                    transformOrigin: '20% 40%'
+                                }
+                            },
+                            children: [{
+                                tag: 'div',
+                                attrs: {
+                                    style: {
+                                        width:400,
+                                        height:200,
+                                        marginLeft:200,
+                                        backgroundColor:'blue',
+                                        transform: 'rotate(145deg)',
+                                        transformOrigin: '20% 40%'
+                                    }
+                                },
+                            }, {
+                                tag: 'div',
+                                attrs: {
+                                    style: {
+                                        width:400,
+                                        height:200,
+                                        marginLeft:200,
+                                        backgroundColor:'yellow',
+                                        transform: 'rotate(245deg)',
+                                        transformOrigin: '30% 40%'
+                                    }
+                                },
+                            }]
+                        };
+            }),
+				parentNode = document.getElementsByTagName('body')[0];
+			Inferno.render(transform(), parentNode);
+		</script>
+	</body>
+</html>
