@@ -5,7 +5,11 @@ describe('getFormElementType ( UT tests)', () => {
 
 	let container;
 
-	it('should ret form values for radio button and checkboxes (property)', () => {
+	it('should return null if there is no node as first arg', () => {
+		expect(getFormElementValues()).to.be.null;
+	});
+
+		it('should get form values for radio button and checkboxes (property)', () => {
 		container = document.createElement('input');
 		container.checked = true;
 		// type is missing, return nothing
@@ -25,7 +29,7 @@ describe('getFormElementType ( UT tests)', () => {
 		expect(getFormElementValues(container)).to.equal(true);
 	});
 
-	it('should ret form values for radio button and checkboxes ( attribute)', () => {
+	it('should get form values for radio button and checkboxes ( attribute)', () => {
 		container = document.createElement('input');
 		container.checked = true;
 		container.type = 'checkbox';
@@ -42,7 +46,7 @@ describe('getFormElementType ( UT tests)', () => {
 		expect(getFormElementValues(container)).to.equal(true);
 	});
 
-	it('should ret form values for radio button and checkboxes ( attribute)', () => {
+	it('should get form values for select / select multiple', () => {
 		container = document.createElement('select');
 		container.multiple = false;
 		container.value = 1;

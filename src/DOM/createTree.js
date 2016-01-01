@@ -170,16 +170,17 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamespace ) {
 
-	const dynamicFlags = dynamicNodeMap.get( schema );
-	let node;
-	let templateNode;
-
 	if ( isVoid( schema ) ) {
 		throw Error( invalidTemplateError );
 	}
 	if ( isArray( schema ) ) {
 		throw Error( invalidTemplateError );
 	}
+
+	const dynamicFlags = dynamicNodeMap.get( schema );
+	let node;
+	let templateNode;
+
 	if ( !dynamicFlags ) {
 		templateNode = createStaticTreeNode( schema, null, domNamespace, schema );
 

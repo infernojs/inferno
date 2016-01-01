@@ -1,6 +1,7 @@
 import getFormElementType from './getFormElementType';
 
 function selectValues( node ) {
+
 	const result = [];
 	const index = node.selectedIndex;
 	const options = node.options;
@@ -28,6 +29,11 @@ function selectValues( node ) {
 }
 
 export default function getFormElementValues( node ) {
+
+	if ( node == null ) {
+		return null;
+	}
+
 	const name = getFormElementType( node );
 
 	switch ( name ) {
