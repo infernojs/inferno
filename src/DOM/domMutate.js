@@ -201,7 +201,17 @@ export function insertOrAppend( parentNode, newNode, nextNode ) {
 }
 
 export function remove( item, parentNode ) {
-	if ( item.rootNode === parentNode ) {
+	const rootNode = item.rootNode;
+
+	// This shit will throw if empty, or empty array or empty object literal
+	// TODO! Find a beter solution. I think this solution is slooow !!??
+
+	if  ( isVoid( rootNode ) ||
+		!( rootNode.nodeType) ) {
+		return null;
+	}
+
+	if ( rootNode === parentNode ) {
 		parentNode.innerHTML = '';
 	} else {
 		parentNode.removeChild( item.rootNode );
