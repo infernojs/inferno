@@ -1,7 +1,7 @@
 import createTemplate from '../createTemplate';
 import { render, renderToString } from '../rendering';
 
-describe('createTemplate', () => {
+describe('createTemplate  ( UT tests)', () => {
 
 	let container;
 
