@@ -1,4 +1,4 @@
-import { insertOrAppend, remove, createVirtualList, updateNonKeyed } from '../domMutate';
+import { insertOrAppend, remove, createVirtualList, updateNonKeyed, updateVirtualList, updateKeyed } from '../domMutate';
 import { render, renderToString } from '../../core/rendering';
 
 describe('domMutate ( UT tests)', () => {
@@ -23,7 +23,12 @@ describe('domMutate ( UT tests)', () => {
 		});
 	});
 
+	describe('updateKeyed()', () => {
 
+		it ( 'should be a function', () => {
+			expect(updateKeyed).to.be.a.function;
+		});
+	});
 
 	describe('updateNonKeyed()', () => {
 		it ( 'should be a function', () => {
@@ -92,17 +97,41 @@ describe('domMutate ( UT tests)', () => {
 
 			expect(nodeList[0].innerHTML).to.equal('');
 			expect(nodeList[1].innerHTML).to.equal('');
-
 		});
 	});
 
-
-
 	describe('createVirtualList()', () => {
+
 		it ( 'should be a function', () => {
 			expect(createVirtualList).to.be.a.function;
 		});
-		// TODO
+
+		it ( 'should do nothing if first arg in createVirtualList has no length', () => {
+			createVirtualList(null)
+			createVirtualList()
+			createVirtualList({})
+			// Just dummy - means nothing. Added just to make sure the test runs as planned
+			expect(container.innerHTML).to.equal('');
+		});
+	});
+
+	describe('updateVirtualList()', () => {
+
+		it ( 'should be a function', () => {
+			expect(updateVirtualList).to.be.a.function;
+		});
+
+		it ( 'should do nothing if first arg in updateVirtualList has no length', () => {
+			updateVirtualList(null)
+			// Just dummy - means nothing. Added just to make sure the test runs as planned
+			expect(container.innerHTML).to.equal('');
+			updateVirtualList()
+			// Just dummy - means nothing. Added just to make sure the test runs as planned
+			expect(container.innerHTML).to.equal('');
+			updateVirtualList({})
+			// Just dummy - means nothing. Added just to make sure the test runs as planned
+			expect(container.innerHTML).to.equal('');
+		});
 	});
 
 	describe('remove()', () => {
@@ -171,5 +200,4 @@ describe('domMutate ( UT tests)', () => {
 			expect(container.innerHTML).to.equal('');
 		});
 	});
-
 });

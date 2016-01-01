@@ -8,6 +8,9 @@ const recyclingEnabled = isRecyclingEnabled();
 const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLifecycle, context ) {
+
+	// This is all internals so no validation needed
+
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
@@ -243,6 +246,10 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 	const domNode = document.createDocumentFragment();
 	let keyedChildren = true;
 
+	if ( value == null) {
+		return;
+	}
+
 	for ( let i = 0; i < value.length; i++ ) {
 		const childNode = value[i];
 		const childType = getTypeFromValue( childNode );
@@ -285,6 +292,9 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 }
 
 export function updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context ) {
+	if ( lastValue == null) {
+		return null;
+	}
 	// NOTE: if someone switches from keyed to non-keyed, the node order won't be right...
 	if ( isArray( lastValue ) ) {
 		if ( keyedChildren ) {
