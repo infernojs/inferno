@@ -200,6 +200,6 @@ describe('rendering ( UT tests)', () => {
 		});
 	})
 
-	
+
 });
 
