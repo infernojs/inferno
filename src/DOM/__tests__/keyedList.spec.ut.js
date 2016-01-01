@@ -6,7 +6,7 @@ function createDataModels() {
 	let dataModels = [];
 
 	dataModels.push(addGroupSingleChild(500));
-	dataModels.push(addGroupSingleChild(500));
+	dataModels.push(addGroupSingleChild(400));
 	dataModels.push(addGroupSingleChild(5));
 	dataModels.push(addGroupSingleChild(50));
 	dataModels.push(addGroupSingleChild(300));
@@ -102,6 +102,22 @@ const t2 = createTemplate((key) => {
 	}
 });
 
+const t3 = createTemplate((key, children) => {
+	return {
+		tag: 'div',
+		key: key,
+		children: children
+	}
+});
+
+const t4 = createTemplate((key) => {
+	return {
+		tag: 'span',
+		key: key,
+		children: key
+	}
+});
+
 function renderTree(nodes) {
 	var children = new Array(nodes.length);
 	var i;
@@ -118,12 +134,32 @@ function renderTree(nodes) {
 	return children;
 }
 
+function renderTree1(nodes) {
+	var children = new Array(nodes.length);
+	var i;
+	var n;
+
+	for (i = 0; i < nodes.length; i++) {
+		n = nodes[i];
+		if (n.children !== null) {
+			children[i] = t3(n.key, renderTree1(n.children));
+		} else {
+			children[i] = t4(n.key);
+		}
+	}
+	return children;
+}
+
 function renderr(dataModel) {
 	render(t1(null, renderTree(dataModel)), container);
 }
 
-it('vdom benchmark: render - insertFirst(500)', () => {
-	//we use the first dataModel for this
+function second_render(dataModel) {
+	render(t1(null, renderTree1(dataModel)), container);
+}
+
+it('should render various combinations', () => {
+
 	let dataModel = dataModels[0];
 
 	renderr(dataModel);
@@ -132,7 +168,36 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//we use the first dataModel for this
+	dataModel = dataModels[0];
+
+	renderr(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
+	dataModel = dataModels[3];
+	dataModel.reverse();
+
+	renderr(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
+	render(null, container);
+
+	dataModel = dataModels[0];
+	dataModel.reverse();
+
+	second_render(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
+	render(null, container);
+
 	dataModel = dataModels[0];
 	dataModel.reverse();
 
@@ -142,10 +207,8 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
 	render(null, container);
 
-	//we use the first dataModel for this
 	dataModel = dataModels[1];
 	dataModel.reverse();
 
@@ -155,7 +218,6 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
 	render(null, container);
 
 
@@ -168,10 +230,19 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
 	render(null, container);
 
-	//we use the first dataModel for this
+	dataModel = dataModels[1];
+
+	second_render(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
+	render(null, container);
+
+
 	dataModel = dataModels[1];
 
 	renderr(dataModel);
@@ -180,10 +251,8 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
 	render(null, container);
 
-	//we use the first dataModel for this
 	dataModel = dataModels[4];
 
 	renderr(dataModel);
@@ -192,7 +261,17 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
+	render(null, container);
+
+	dataModel = dataModels[2];
+	dataModel.reverse()
+
+	second_render(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
 	render(null, container);
 
 	dataModel = dataModels[2];
@@ -204,7 +283,17 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
+	render(null, container);
+
+	dataModel = dataModels[3];
+	dataModel.reverse()
+
+	second_render(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
 	render(null, container);
 
 	dataModel = dataModels[3];
@@ -216,10 +305,19 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
 	render(null, container);
 
-	//we use the first dataModel for this
+	dataModel = dataModels[1];
+	shuffle(dataModel);
+
+	second_render(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
+	render(null, container);
+
 	dataModel = dataModels[1];
 	shuffle(dataModel);
 
@@ -229,6 +327,5 @@ it('vdom benchmark: render - insertFirst(500)', () => {
 		createExpected(dataModel)
 	);
 
-	//clear down after the update
 	render(null, container);
 });
