@@ -59,6 +59,9 @@ const template = {
 			}
         // HTML attributes and custom attributes
 		} else {
+			// Regarding the specs each attribute name should be lowercases.
+			// However. Use of 'toLowerCase()' is slow, so we simply avoid setting the
+			// attribute if the first letter is capitalized - e.g. 'Knockle'
 			if ( isValidAttribute( name ) ) {
 				if ( isVoid( value ) ) {
 					domNode.removeAttribute( name );

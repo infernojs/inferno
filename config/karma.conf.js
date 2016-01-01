@@ -41,13 +41,13 @@ module.exports = function(config) {
 			module: {
 				postLoaders: [{
 					test: /(\.jsx)|(\.js)$/,
-					exclude: /test|dist|.git|node_modules\/dist/,
+					exclude: /test|.git|node_modules\/dist/,
 					loader: 'isparta',
 				//	include: path.join(__dirname, '../src')
 				}],
 				loaders: [{
 					test: /\.js$/,
-					exclude: /(src|dist|.git|node_modules)/,
+					exclude: /(src\/dist|.git|node_modules)/,
 					loader: 'babel-loader'
 				}]
 			}
