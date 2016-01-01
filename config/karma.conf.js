@@ -43,7 +43,7 @@ module.exports = function(config) {
 					test: /(\.jsx)|(\.js)$/,
 					exclude: /test|.git|node_modules\/dist/,
 					loader: 'isparta',
-				//	include: path.join(__dirname, '../src')
+					//	include: path.join(__dirname, '../src')
 				}],
 				loaders: [{
 					test: /\.js$/,
