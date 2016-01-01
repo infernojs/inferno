@@ -1,6 +1,6 @@
 /*!
- * inferno v0.4.5
- * (c) 2015 Dominic Gannaway
+ * inferno-build v0.4.5
+ * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
 (function (global, factory) {
@@ -57,7 +57,7 @@
   	};
   }
 
-  var recyclingEnabled$10 = true;
+  var recyclingEnabled$9 = true;
 
   function pool(item) {
   	var key = item.key;
@@ -92,7 +92,7 @@
   }
 
   function isRecyclingEnabled() {
-  	return recyclingEnabled$10;
+  	return recyclingEnabled$9;
   }
 
   var isVoid = (function (x) {
@@ -101,6 +101,10 @@
 
   var isArray = (function (x) {
     return x.constructor === Array;
+  })
+
+  var isStringOrNumber = (function (x) {
+    return typeof x === 'string' || typeof x === 'number';
   })
 
   var ObjectTypes = {
@@ -128,7 +132,7 @@
   }
 
   function getTypeFromValue(value) {
-  	if (typeof value === 'string' || typeof value === 'number' || isVoid(value)) {
+  	if (isStringOrNumber(value) || isVoid(value)) {
   		return ValueTypes.TEXT;
   	} else if (isArray(value)) {
   		return ValueTypes.ARRAY;
@@ -182,10 +186,13 @@
   	}
   }
 
-  var recyclingEnabled$9 = isRecyclingEnabled();
-  var infernoBadTemplate$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+  var recyclingEnabled = isRecyclingEnabled();
+  var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
+
+  	// This is all internals so no validation needed
+
   	var stop = false;
   	var startIndex = 0;
   	var oldStartIndex = 0;
@@ -194,7 +201,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$9) {
+  		if (recyclingEnabled) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -331,7 +338,17 @@
 
   // TODO can we improve performance here?
   function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-  	var itemsLength = Math.max(items.length, oldItems.length);
+
+  	var itemsLength = undefined;
+  	// We can't calculate length of 0 in the cases either items or oldItems is 0.
+  	// In this cases we need workaround
+  	if (items && oldItems) {
+  		itemsLength = Math.max(items.length, oldItems.length);
+  	} else if (items) {
+  		itemsLength = items = itemsLength;
+  	} else if (oldItems) {
+  		itemsLength = oldItems = itemsLength;
+  	}
 
   	for (var i = 0; i < itemsLength; i++) {
   		var item = items[i];
@@ -339,14 +356,20 @@
 
   		if (item !== oldItem) {
   			if (!isVoid(item)) {
+
   				if (!isVoid(oldItem)) {
-  					if (typeof item === 'string' || typeof item === 'number') {
-  						domNodeList[i].nodeValue = item;
+  					if (isStringOrNumber(item)) {
+
+  						var domNode = domNodeList[i];
+
+  						if (domNode) {
+  							domNode.nodeValue = item;
+  						}
   					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers_typeof(item)) === 'object') {
   						item.domTree.update(oldItem, item, treeLifecycle, context);
   					}
   				} else {
-  					if (typeof item === 'string' || typeof item === 'number') {
+  					if (isStringOrNumber(item)) {
   						var childNode = document.createTextNode(item);
 
   						domNodeList[i] = childNode;
@@ -354,6 +377,7 @@
   					}
   				}
   			} else {
+
   				if (domNodeList[i]) {
   					parentNode.removeChild(domNodeList[i]);
   					domNodeList.splice(i, 1);
@@ -379,11 +403,20 @@
   }
 
   function remove(item, parentNode) {
-  	if (item.rootNode === parentNode) {
+  	var rootNode = item.rootNode;
+
+  	// This shit will throw if empty, or empty array or empty object literal
+  	// TODO! Find a beter solution. I think this solution is slooow !!??
+
+  	if (isVoid(rootNode) || !rootNode.nodeType) {
+  		return null;
+  	}
+
+  	if (rootNode === parentNode) {
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled$9) {
+  		if (recyclingEnabled) {
   			pool(item);
   		}
   	}
@@ -392,6 +425,10 @@
   function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
   	var domNode = document.createDocumentFragment();
   	var keyedChildren = true;
+
+  	if (value == null) {
+  		return;
+  	}
 
   	for (var i = 0; i < value.length; i++) {
   		var childNode = value[i];
@@ -409,6 +446,9 @@
   				keyedChildren = false;
   				childDomNode = childNode.create(item, treeLifecycle, context);
   				childNodeList.push(childDomNode);
+  				if (childDomNode === undefined) {
+  					throw Error('Inferno Error: Children must be provided as templates.');
+  				}
   				domNode.appendChild(childDomNode);
   				break;
   			case ValueTypes.FRAGMENT:
@@ -420,9 +460,9 @@
   				domNode.appendChild(childDomNode);
   				break;
   			case ValueTypes.EMPTY_OBJECT:
-  				throw Error(infernoBadTemplate$1);
+  				throw Error(infernoBadTemplate);
   			case ValueTypes.FUNCTION:
-  				throw Error(infernoBadTemplate$1);
+  				throw Error(infernoBadTemplate);
   			case ValueTypes.ARRAY:
   				throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
   			default:
@@ -433,6 +473,9 @@
   }
 
   function updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context) {
+  	if (lastValue == null) {
+  		return null;
+  	}
   	// NOTE: if someone switches from keyed to non-keyed, the node order won't be right...
   	if (isArray(lastValue)) {
   		if (keyedChildren) {
@@ -607,10 +650,6 @@
   var TemplateFactory = {
   	createElement: createElement
   };
-
-  var isStringOrNumber = (function (x) {
-    return typeof x === 'string' || typeof x === 'number';
-  })
 
   // To be compat with React, we support at least the same SVG elements
   function isSVGElement(nodeName) {
@@ -790,6 +829,7 @@
   	})();
   }
 
+  /* eslint eqeqeq:0 */
   function isValidAttribute(strings) {
   	var i = 0;
   	var character = undefined;
@@ -1188,6 +1228,9 @@
   			}
   			// HTML attributes and custom attributes
   		} else {
+  				// Regarding the specs each attribute name should be lowercases.
+  				// However. Use of 'toLowerCase()' is slow, so we simply avoid setting the
+  				// attribute if the first letter is capitalized - e.g. 'Knockle'
   				if (isValidAttribute(name)) {
   					if (isVoid(value)) {
   						domNode.removeAttribute(name);
@@ -1597,6 +1640,7 @@
   }
 
   function selectValues(node) {
+
   	var result = [];
   	var index = node.selectedIndex;
   	var options = node.options;
@@ -1607,6 +1651,9 @@
   	for (; i < length; i++) {
 
   		option = options[i];
+
+  		var selected = option.selected || option.getAttribute('selected');
+
   		// IMPORTANT! IE9 doesn't update selected after form reset
   		if ((option.selected || i === index) &&
   		// Don't return options that are disabled or in a disabled optgroup
@@ -1614,17 +1661,31 @@
   			result.push(option.value);
   		}
   	}
+  	if (result.length < 2) {
+  		return result[0];
+  	}
   	return result;
   }
 
   function getFormElementValues(node) {
+
+  	if (node == null) {
+  		return null;
+  	}
+
   	var name = getFormElementType(node);
 
   	switch (name) {
   		case 'checkbox':
   		case 'radio':
-  			if (node.checked) {
-  				return true;
+  			var checked = node.getAttribute('checked') || node.checked;
+
+  			if (checked) {
+  				if (checked === false || checked === 'false') {
+  					return false;
+  				} else {
+  					return true;
+  				}
   			}
   			return false;
   		case 'select-multiple':
@@ -1996,7 +2057,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -2006,7 +2067,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2121,7 +2182,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -2131,7 +2192,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2219,7 +2280,7 @@
   							}
   							childNodeList.push(childNode);
   							domNode.appendChild(childNode);
-  						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
+  						} else if (isStringOrNumber(childItem)) {
   							var textNode = document.createTextNode(childItem);
 
   							domNode.appendChild(textNode);
@@ -2229,7 +2290,7 @@
   					}
   				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
   					domNode.appendChild(value.domTree.create(value, treeLifecycle, context));
-  				} else if (typeof value === 'string' || typeof value === 'number') {
+  				} else if (isStringOrNumber(value)) {
   					domNode.textContent = value;
   				}
   			}
@@ -2293,7 +2354,7 @@
   								domNode.replaceChild(childNode, domNode.firstChild);
   							}
   						}
-  					} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
+  					} else if (isStringOrNumber(nextValue)) {
   						domNode.firstChild.nodeValue = nextValue;
   					}
   			}
@@ -2334,7 +2395,7 @@
   							}
   							childNodeList.push(childNode);
   							domNode.appendChild(childNode);
-  						} else if (typeof childItem === 'string' || typeof childItem === 'number') {
+  						} else if (isStringOrNumber(childItem)) {
   							var textNode = document.createTextNode(childItem);
 
   							domNode.appendChild(textNode);
@@ -2344,7 +2405,7 @@
   					}
   				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
   					domNode.appendChild(value.domTree.create(value, treeLifecycle, context));
-  				} else if (typeof value === 'string' || typeof value === 'number') {
+  				} else if (isStringOrNumber(value)) {
   					domNode.textContent = value;
   				}
   			}
@@ -2386,7 +2447,7 @@
   								// TODO implement
   							}
   						}
-  					} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
+  					} else if (isStringOrNumber(nextValue)) {
   							domNode.firstChild.nodeValue = nextValue;
   						}
   			}
@@ -2567,55 +2628,6 @@
 
   var recyclingEnabled$5 = isRecyclingEnabled();
 
-  function createRootStaticNode(templateNode) {
-  	var node = {
-  		pool: [],
-  		keyedPool: [],
-  		overrideItem: null,
-  		create: function create(item) {
-  			var domNode = undefined;
-
-  			if (recyclingEnabled$5) {
-  				domNode = recycle(node, item);
-  				if (domNode) {
-  					return domNode;
-  				}
-  			}
-  			domNode = templateNode.cloneNode(true);
-  			item.rootNode = domNode;
-  			return domNode;
-  		},
-  		update: function update(lastItem, nextItem) {
-  			if (node !== lastItem.domTree) {
-  				recreateRootNode(lastItem, nextItem, node);
-  				return;
-  			}
-  			nextItem.rootNode = lastItem.rootNode;
-  			nextItem.id = lastItem.id;
-  		},
-  		remove: function remove() /* lastItem */{}
-  	};
-
-  	return node;
-  }
-
-  function createStaticNode(templateNode) {
-  	var domNode = undefined;
-  	var node = {
-  		overrideItem: null,
-  		create: function create() {
-  			domNode = templateNode.cloneNode(true);
-  			return domNode;
-  		},
-  		update: function update() {},
-  		remove: function remove() /* lastItem */{}
-  	};
-
-  	return node;
-  }
-
-  var recyclingEnabled$2 = isRecyclingEnabled();
-
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
   	var childNodeList = [];
@@ -2627,7 +2639,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2718,7 +2730,7 @@
   	return node;
   }
 
-  var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+  var infernoBadTemplate$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function createDynamicNode(valueIndex) {
   	var domNode = undefined;
@@ -2753,9 +2765,9 @@
   					domNode = value.create(item, treeLifecycle, context);
   					break;
   				case ValueTypes.EMPTY_OBJECT:
-  					throw Error(infernoBadTemplate);
+  					throw Error(infernoBadTemplate$1);
   				case ValueTypes.FUNCTION:
-  					throw Error(infernoBadTemplate);
+  					throw Error(infernoBadTemplate$1);
   				case ValueTypes.FRAGMENT:
   					domNode = value.domTree.create(value, treeLifecycle, context);
   					break;
@@ -3405,16 +3417,17 @@
 
   function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 
-  	var dynamicFlags = dynamicNodeMap.get(schema);
-  	var node = undefined;
-  	var templateNode = undefined;
-
   	if (isVoid(schema)) {
   		throw Error(invalidTemplateError);
   	}
   	if (isArray(schema)) {
   		throw Error(invalidTemplateError);
   	}
+
+  	var dynamicFlags = dynamicNodeMap.get(schema);
+  	var node = undefined;
+  	var templateNode = undefined;
+
   	if (!dynamicFlags) {
   		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
 
@@ -3423,9 +3436,9 @@
   		}
 
   		if (isRoot) {
-  			node = createRootStaticNode(templateNode);
+  			node = createRootVoidNode(templateNode);
   		} else {
-  			node = createStaticNode(templateNode);
+  			node = createVoidNode(templateNode);
   		}
   	} else {
   		if (dynamicFlags.NODE === true) {
@@ -3710,115 +3723,121 @@
   }
 
   function createTemplate(callback) {
-  	var construct = callback.construct;
 
-  	if (!construct) {
-  		(function () {
-  			var callbackLength = callback.length;
-  			var callbackArguments = new Array(callbackLength);
+  	if (typeof callback === 'function') {
 
-  			for (var i = 0; i < callbackLength; i++) {
-  				callbackArguments[i] = createVariable(i);
-  			}
-  			var schema = callback.apply(undefined, callbackArguments);
-  			var dynamicNodeMap = new Map();
+  		var construct = callback.construct || null;
 
-  			scanTreeForDynamicNodes(schema, dynamicNodeMap);
-  			var domTree = createDOMTree(schema, true, dynamicNodeMap);
-  			var htmlStringTree = createHTMLStringTree(schema, true, dynamicNodeMap);
-  			var key = schema.key;
-  			var keyIndex = key ? key.index : -1;
+  		if (construct == null) {
+  			(function () {
+  				var callbackLength = callback.length;
+  				var callbackArguments = new Array(callbackLength);
 
-  			switch (callbackLength) {
-  				case 0:
-  					construct = function () {
-  						return {
-  							parent: null,
-  							domTree: domTree,
-  							htmlStringTree: htmlStringTree,
-  							id: createId(),
-  							key: null,
-  							nextItem: null,
-  							rootNode: null
+  				for (var i = 0; i < callbackLength; i++) {
+  					callbackArguments[i] = createVariable(i);
+  				}
+  				var schema = callback.apply(undefined, callbackArguments);
+  				var dynamicNodeMap = new Map();
+
+  				scanTreeForDynamicNodes(schema, dynamicNodeMap);
+  				var domTree = createDOMTree(schema, true, dynamicNodeMap);
+  				var htmlStringTree = createHTMLStringTree(schema, true, dynamicNodeMap);
+  				var key = schema.key;
+  				var keyIndex = key ? key.index : -1;
+
+  				switch (callbackLength) {
+  					case 0:
+  						construct = function () {
+  							return {
+  								parent: null,
+  								domTree: domTree,
+  								htmlStringTree: htmlStringTree,
+  								id: createId(),
+  								key: null,
+  								nextItem: null,
+  								rootNode: null
+  							};
   						};
-  					};
-  					break;
-  				case 1:
-  					construct = function (v0) {
-  						var key = undefined;
+  						break;
+  					case 1:
+  						construct = function (v0) {
+  							var key = undefined;
 
-  						if (keyIndex === 0) {
-  							key = v0;
-  						}
-  						return {
-  							parent: null,
-  							domTree: domTree,
-  							htmlStringTree: htmlStringTree,
-  							id: createId(),
-  							key: key,
-  							nextItem: null,
-  							rootNode: null,
-  							v0: v0
+  							if (keyIndex === 0) {
+  								key = v0;
+  							}
+  							return {
+  								parent: null,
+  								domTree: domTree,
+  								htmlStringTree: htmlStringTree,
+  								id: createId(),
+  								key: key,
+  								nextItem: null,
+  								rootNode: null,
+  								v0: v0
+  							};
   						};
-  					};
-  					break;
-  				case 2:
-  					construct = function (v0, v1) {
-  						var key = undefined;
+  						break;
+  					case 2:
+  						construct = function (v0, v1) {
+  							var key = undefined;
 
-  						if (keyIndex === 0) {
-  							key = v0;
-  						} else if (keyIndex === 1) {
-  							key = v1;
-  						}
-  						return {
-  							parent: null,
-  							domTree: domTree,
-  							htmlStringTree: htmlStringTree,
-  							id: createId(),
-  							key: key,
-  							nextItem: null,
-  							rootNode: null,
-  							v0: v0,
-  							v1: v1
+  							if (keyIndex === 0) {
+  								key = v0;
+  							} else if (keyIndex === 1) {
+  								key = v1;
+  							}
+  							return {
+  								parent: null,
+  								domTree: domTree,
+  								htmlStringTree: htmlStringTree,
+  								id: createId(),
+  								key: key,
+  								nextItem: null,
+  								rootNode: null,
+  								v0: v0,
+  								v1: v1
+  							};
   						};
-  					};
-  					break;
-  				default:
-  					construct = function (v0, v1) {
-  						for (var _len = arguments.length, values = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-  							values[_key - 2] = arguments[_key];
-  						}
+  						break;
+  					default:
+  						construct = function (v0, v1) {
+  							for (var _len = arguments.length, values = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+  								values[_key - 2] = arguments[_key];
+  							}
 
-  						var key = undefined;
+  							var key = undefined;
 
-  						if (keyIndex === 0) {
-  							key = v0;
-  						} else if (keyIndex === 1) {
-  							key = v1;
-  						} else if (keyIndex > 1) {
-  							key = values[keyIndex];
-  						}
-  						return {
-  							parent: null,
-  							domTree: domTree,
-  							htmlStringTree: htmlStringTree,
-  							id: createId(),
-  							key: key,
-  							nextItem: null,
-  							rootNode: null,
-  							v0: v0,
-  							v1: v1,
-  							values: values
+  							if (keyIndex === 0) {
+  								key = v0;
+  							} else if (keyIndex === 1) {
+  								key = v1;
+  							} else if (keyIndex > 1) {
+  								key = values[keyIndex];
+  							}
+  							return {
+  								parent: null,
+  								domTree: domTree,
+  								htmlStringTree: htmlStringTree,
+  								id: createId(),
+  								key: key,
+  								nextItem: null,
+  								rootNode: null,
+  								v0: v0,
+  								v1: v1,
+  								values: values
+  							};
   						};
-  					};
-  					break;
-  			}
-  			callback.construct = construct;
-  		})();
+  						break;
+  				}
+  				if (construct != null) {
+  					callback.construct = construct;
+  				}
+  			})();
+  		}
+
+  		return construct;
   	}
-
-  	return construct;
   }
 
   // Server side workaround
@@ -3952,4 +3971,4 @@
   return index;
 
 }));
-//# sourceMappingURL=inferno.js.map
+//# sourceMappingURL=inferno-build.js.map
