@@ -153,7 +153,17 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 
 // TODO can we improve performance here?
 export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context ) {
-	const itemsLength = Math.max( items.length, oldItems.length );
+
+	let  itemsLength;
+	// We can't calculate length of 0 in the cases either items or oldItems is 0.
+	// In this cases we need workaround
+	if ( items && oldItems ) {
+		itemsLength = Math.max( items.length, oldItems.length );
+	} else if ( items ) {
+		itemsLength = items = itemsLength;
+	} else if ( oldItems ) {
+		itemsLength = oldItems = itemsLength;
+	}
 
 	for ( let i = 0; i < itemsLength; i++ ) {
 		const item = items[i];
@@ -161,9 +171,16 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 
 		if ( item !== oldItem ) {
 			if ( !isVoid( item ) ) {
+
 				if ( !isVoid( oldItem ) ) {
 					if ( isStringOrNumber( item ) ) {
-						domNodeList[i].nodeValue = item;
+
+						let domNode = domNodeList[i];
+
+						if ( domNode ) {
+							domNode.nodeValue = item;
+						}
+
 					} else if ( typeof item === 'object' ) {
 						item.domTree.update( oldItem, item, treeLifecycle, context );
 					}
@@ -176,6 +193,7 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 					}
 				}
 			} else {
+
 				if ( domNodeList[i] ) {
 					parentNode.removeChild( domNodeList[i] );
 					domNodeList.splice( i, 1 );
