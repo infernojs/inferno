@@ -10,8 +10,8 @@ import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createNodeWithDynamicChild from './shapes/nodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createNodeWithDynamicSubTreeForChildren from './shapes/nodeWithDynamicSubTreeForChildren';
-import createRootStaticNode from './shapes/rootStaticNode';
-import createStaticNode from './shapes/staticNode';
+//import createRootStaticNode from './shapes/rootStaticNode';
+//import createStaticNode from './shapes/staticNode';
 import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
 import createRootVoidNode from './shapes/rootVoidNode';
@@ -189,9 +189,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 		}
 
 		if ( isRoot ) {
-			node = createRootStaticNode( templateNode );
+			node = createRootVoidNode( templateNode );
 		} else {
-			node = createStaticNode( templateNode );
+			node = createVoidNode( templateNode );
 		}
 	} else {
 		if ( dynamicFlags.NODE === true ) {
