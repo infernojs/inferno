@@ -11,12 +11,18 @@ function selectValues( node ) {
 	for ( ; i < length; i++ ) {
 
 		option = options[i];
+
+		let selected = option.selected || option.getAttribute('selected')
+
 		// IMPORTANT! IE9 doesn't update selected after form reset
 		if ( ( option.selected || i === index ) &&
 				// Don't return options that are disabled or in a disabled optgroup
 			!option.disabled && ( !option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP' ) ) {
 			result.push( option.value );
 		}
+	}
+	if ( result.length < 2) {
+		return result[0];
 	}
 	return result;
 }
@@ -27,8 +33,14 @@ export default function getFormElementValues( node ) {
 	switch ( name ) {
 		case 'checkbox':
 		case 'radio':
-			if ( node.checked ) {
-				return true;
+			const checked = node.getAttribute('checked') || node.checked;
+
+			if ( checked ) {
+				if ( checked === false || checked === 'false') {
+					return false;
+				} else {
+					return true;
+				}
 			}
 			return false;
 		case 'select-multiple':

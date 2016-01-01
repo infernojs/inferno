@@ -5,26 +5,16 @@ describe('getFormElementType ( UT tests)', () => {
 
 	let container;
 
-	beforeEach(() => {
-		container = document.createElement('div');
-	})
-
-	afterEach(() => {
-		render(null, container);
-	});
-
 	it('should return various element types', () => {
 
-		let node;
-
-		node = document.createElement('select');
-		expect(getFormElementType(node)).to.equal('select');
-		node.multiple = true;
-		expect(getFormElementType(node)).to.equal('select-multiple');
-		node = document.createElement('input');
+		container = document.createElement('select');
+		expect(getFormElementType(container)).to.equal('select');
+		container.multiple = true;
+		expect(getFormElementType(container)).to.equal('select-multiple');
+		container = document.createElement('input');
 		// no 'type', so return 'text'
-		expect(getFormElementType(node)).to.equal('text');
-		node.type = 'checkbox';
-		expect(getFormElementType(node)).to.equal('checkbox');
+		expect(getFormElementType(container)).to.equal('text');
+		container.type = 'checkbox';
+		expect(getFormElementType(container)).to.equal('checkbox');
 	});
 });
