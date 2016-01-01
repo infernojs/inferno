@@ -105,6 +105,7 @@ describe('Template', () => {
 		expect(container.getAttribute('allowFullScreen')).to.equal('simple');
 	});
 
+
 	it('should remove falsey boolean properties', true, () => {
 		template.setProperty(null, container, 'allowFullScreen', false);
 		expect(container.allowFullScreen).to.be.null;
