@@ -6,7 +6,7 @@ const uglify = require('uglify-js');
 const npm = require('rollup-plugin-npm');
 const babel = require('rollup-plugin-babel');
 const replace = require('rollup-plugin-replace');
-const commonjs = require('rollup-plugin-commonjs');
+//const commonjs = require('rollup-plugin-commonjs');
 const pack = require('../package.json');
 
 const development = process.argv[2] === 'dev';
@@ -46,9 +46,9 @@ function createBundle() {
 				jsnext: true,
 				main: true
 			}),
-			commonjs({
-				sourceMap: true
-			}),
+			//commonjs({
+			//		sourceMap: true
+			//}),
 			replace({
 				'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
 			})
