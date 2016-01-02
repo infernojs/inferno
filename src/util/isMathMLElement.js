@@ -20,7 +20,7 @@ function isMathMLElement( nodeName ) {
 		|| nodeName === 'msup'
 		|| nodeName === 'msubsup'
 		|| nodeName === 'mtr'
-		|| nodeName === 'mtext'
+		|| nodeName === 'mtext';
 }
 
 export default isMathMLElement;

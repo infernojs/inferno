@@ -1,4 +1,5 @@
 import getFormElementType from './getFormElementType';
+import isVoid from '../util/isVoid';
 
 function selectValues( node ) {
 
@@ -13,7 +14,7 @@ function selectValues( node ) {
 
 		option = options[i];
 
-		let selected = option.selected || option.getAttribute('selected')
+		let selected = option.selected || option.getAttribute( 'selected' );
 
 		// IMPORTANT! IE9 doesn't update selected after form reset
 		if ( ( option.selected || i === index ) &&
@@ -22,7 +23,7 @@ function selectValues( node ) {
 			result.push( option.value );
 		}
 	}
-	if ( result.length < 2) {
+	if ( result.length < 2 ) {
 		return result[0];
 	}
 	return result;
@@ -30,7 +31,7 @@ function selectValues( node ) {
 
 export default function getFormElementValues( node ) {
 
-	if ( node == null ) {
+	if ( isVoid( node ) ) {
 		return null;
 	}
 
@@ -39,14 +40,10 @@ export default function getFormElementValues( node ) {
 	switch ( name ) {
 		case 'checkbox':
 		case 'radio':
-			const checked = node.getAttribute('checked') || node.checked;
+			const checked = node.getAttribute( 'checked' ) || node.checked;
 
-			if ( checked ) {
-				if ( checked === false || checked === 'false') {
-					return false;
-				} else {
-					return true;
-				}
+			if ( !isVoid( checked ) ) {
+				return ( checked !== false ) && ( checked !== 'false' );
 			}
 			return false;
 		case 'select-multiple':

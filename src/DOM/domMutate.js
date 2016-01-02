@@ -1,5 +1,5 @@
 import isVoid from '../util/isVoid';
-import { /* getValueWithIndex, */ getTypeFromValue, ValueTypes } from '../core/variables';
+import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../core/variables';
 import isArray from '../util/isArray';
 import isStringOrNumber from '../util/isStringOrNumber';
 import { isRecyclingEnabled, pool } from './recycling';
@@ -157,7 +157,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 // TODO can we improve performance here?
 export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context ) {
 
-	let  itemsLength;
+	let itemsLength;
 	// We can't calculate length of 0 in the cases either items or oldItems is 0.
 	// In this cases we need workaround
 	if ( items && oldItems ) {
@@ -216,7 +216,7 @@ export function insertOrAppend( parentNode, newNode, nextNode ) {
 		parentNode.appendChild( newNode );
 	}
 
-	if (activeNode !== document.body && document.activeElement !== activeNode) {
+	if ( activeNode !== document.body && document.activeElement !== activeNode ) {
 		activeNode.focus();
 	}
 }
@@ -227,8 +227,8 @@ export function remove( item, parentNode ) {
 	// This shit will throw if empty, or empty array or empty object literal
 	// TODO! Find a beter solution. I think this solution is slooow !!??
 
-	if  ( isVoid( rootNode ) ||
-		!( rootNode.nodeType) ) {
+	if ( isVoid( rootNode ) ||
+		!rootNode.nodeType ) {
 		return null;
 	}
 
@@ -246,7 +246,7 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 	const domNode = document.createDocumentFragment();
 	let keyedChildren = true;
 
-	if ( value == null) {
+	if ( isVoid( value ) ) {
 		return;
 	}
 
@@ -267,7 +267,7 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 				childDomNode = childNode.create( item, treeLifecycle, context );
 				childNodeList.push( childDomNode );
 				if ( childDomNode === undefined ) {
-					throw Error('Inferno Error: Children must be provided as templates.');
+					throw Error( 'Inferno Error: Children must be provided as templates.' );
 				}
 				domNode.appendChild( childDomNode );
 				break;
@@ -292,7 +292,7 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 }
 
 export function updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context ) {
-	if ( lastValue == null) {
+	if ( isVoid( lastValue ) ) {
 		return null;
 	}
 	// NOTE: if someone switches from keyed to non-keyed, the node order won't be right...

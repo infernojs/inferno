@@ -2,3 +2,4 @@ dist/*
 node_modules/*
 **/node_modules/*
 config/**
+**/__tests__

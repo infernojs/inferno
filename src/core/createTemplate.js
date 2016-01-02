@@ -3,6 +3,7 @@ import ExecutionEnvironment from '../util/ExecutionEnvironment';
 import createHTMLStringTree from '../htmlString/createHTMLStringTree';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
+import isVoid from '../util/isVoid';
 
 let uniqueId = Date.now();
 
@@ -16,11 +17,11 @@ function createId() {
 
 export default function createTemplate( callback ) {
 
-	if ( typeof callback === 'function') {
+	if ( typeof callback === 'function' ) {
 
 		let construct = callback.construct || null;
 
-		if ( construct == null) {
+		if ( isVoid( construct ) ) {
 			const callbackLength = callback.length;
 			const callbackArguments = new Array( callbackLength );
 
@@ -115,7 +116,7 @@ export default function createTemplate( callback ) {
 					};
 					break;
 			}
-			if ( construct != null) {
+			if ( !isVoid( construct ) ) {
 				callback.construct = construct;
 			}
 		}

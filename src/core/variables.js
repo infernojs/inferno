@@ -57,7 +57,7 @@ export function getValueForProps( props, item ) {
 			newProps[name] = val;
 		}
 
-		if (name === 'children') {
+		if ( name === 'children' ) {
 			newProps[name].overrideItem = item;
 		}
 	}

@@ -27,7 +27,7 @@ export default function createDOMFragment( parentNode, nextNode ) {
 
 				const tree = nextItem.domTree;
 
-				if (tree ) {
+				if ( tree ) {
 
 					if ( lastItem ) {
 						tree.update( lastItem, nextItem, treeLifecycle, context );
