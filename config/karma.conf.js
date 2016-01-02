@@ -15,10 +15,10 @@ module.exports = function(config) {
 		// list of files / patterns to load in the browser
 		files: [
 			'src/**/*__tests__*/**/*spec.ut.js', // UT
-			'test/specs/no-jsx/**/*spec.browser.js', // AT
+		//	'test/specs/no-jsx/**/*spec.browser.js', // AT
 			//'../test/specs/no-jsx/**/*spec.server.js', // AT
 //			'../test/specs/no-jsx/**/*spec.js', // AT
-			'test/specs/jsx/**/*spec.browser.js', // AT
+			//		'test/specs/jsx/**/*spec.browser.js', // AT
 			//'../test/specs/jsx/**/*spec.server.js', // AT
 			//'../test/specs/jsx/**/*spec.js' // AT
 
@@ -31,17 +31,17 @@ module.exports = function(config) {
 			'src/**/*__tests__*/**/*spec.ut.js': ['webpack'], // UT
 //			'../test/specs/no-jsx/**/*spec.server.js': ['webpack'], // AT
 //			'../test/specs/no-jsx/**/*spec.js': ['webpack'], // AT
-					'test/specs/no-jsx/**/*.spec.browser.js': ['webpack'], // AT
+		//			'test/specs/no-jsx/**/*.spec.browser.js': ['webpack'], // AT
 			//'../test/specs/jsx/**/*spec.server.js': ['webpack'], // AT
 			//'../test/specs/jsx/**/*spec.js': ['webpack'], // AT
-			'test/specs/jsx/**/*.spec.browser.js': ['webpack'], // AT
+			//'test/specs/jsx/**/*.spec.browser.js': ['webpack'], // AT
 
 		},
 		webpack: {
 			module: {
 				postLoaders: [{
 					test: /(\.jsx)|(\.js)$/,
-					exclude: /test|.git|node_modules\/dist/,
+					exclude: /test|.git|packages|node_modules\/dist/,
 					loader: 'isparta',
 				//	include: path.join(__dirname, '../src')
 				}],
