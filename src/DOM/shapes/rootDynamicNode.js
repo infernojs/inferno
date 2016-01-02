@@ -46,14 +46,14 @@ export default function createRootDynamicNode( valueIndex ) {
 					} );
 					break;
 				case ValueTypes.TREE:
-					domNode = value.create( item, treeLifecycle, context );
+					domNode = value.dom.create( item, treeLifecycle, context );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
 					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 				case ValueTypes.FUNCTION:
 					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 				case ValueTypes.FRAGMENT:
-					domNode = value.domTree.create( value, treeLifecycle, context );
+					domNode = value.tree.dom.create( value, treeLifecycle, context );
 					break;
 				default: break;
 			}
@@ -62,7 +62,7 @@ export default function createRootDynamicNode( valueIndex ) {
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 				return;
 			}
@@ -98,7 +98,7 @@ export default function createRootDynamicNode( valueIndex ) {
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.remove( item, treeLifecycle );
+				value.dom.remove( item, treeLifecycle );
 			}
 		}
 	};

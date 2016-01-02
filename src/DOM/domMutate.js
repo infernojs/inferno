@@ -42,7 +42,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 	outer: while ( !stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex ) {
 		stop = true;
 		while ( startItem.key === oldStartItem.key ) {
-			startItem.domTree.update( oldStartItem, startItem, treeLifecycle, context );
+			startItem.tree.dom.update( oldStartItem, startItem, treeLifecycle, context );
 			startIndex++;
 			oldStartIndex++;
 			if ( startIndex > endIndex || oldStartIndex > oldEndIndex ) {
@@ -56,7 +56,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 		endItem = items[endIndex];
 		oldEndItem = oldItems[oldEndIndex];
 		while ( endItem.key === oldEndItem.key ) {
-			endItem.domTree.update( oldEndItem, endItem, treeLifecycle, context );
+			endItem.tree.dom.update( oldEndItem, endItem, treeLifecycle, context );
 			endIndex--;
 			oldEndIndex--;
 			if ( startIndex > endIndex || oldStartIndex > oldEndIndex ) {
@@ -69,7 +69,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 		}
 		while ( endItem.key === oldStartItem.key ) {
 			nextNode = ( endIndex + 1 < itemsLength ) ? items[endIndex + 1].rootNode : parentNextNode;
-			endItem.domTree.update( oldStartItem, endItem, treeLifecycle, context );
+			endItem.tree.dom.update( oldStartItem, endItem, treeLifecycle, context );
 			insertOrAppend( parentNode, endItem.rootNode, nextNode );
 			endIndex--;
 			oldStartIndex++;
@@ -83,7 +83,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 		}
 		while ( startItem.key === oldEndItem.key ) {
 			nextNode = oldItems[oldStartIndex].rootNode;
-			startItem.domTree.update( oldEndItem, startItem, treeLifecycle, context );
+			startItem.tree.update( oldEndItem, startItem, treeLifecycle, context );
 			insertOrAppend( parentNode, startItem.rootNode, nextNode );
 			startIndex++;
 			oldEndIndex--;
@@ -102,7 +102,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 			nextNode = ( endIndex + 1 < itemsLength ) ? items[endIndex + 1].rootNode : parentNextNode;
 			for ( ; startIndex <= endIndex; startIndex++ ) {
 				item = items[startIndex];
-				insertOrAppend( parentNode, item.domTree.create( item, treeLifecycle, context ), nextNode );
+				insertOrAppend( parentNode, item.tree.dom.create( item, treeLifecycle, context ), nextNode );
 			}
 		}
 	} else if ( startIndex > endIndex ) {
@@ -130,7 +130,8 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 			if ( oldItem ) {
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
-				item.domTree.update( oldItem, item, treeLifecycle, context );
+
+				item.tree.update( oldItem, item, treeLifecycle, context );
 
 				/* eslint eqeqeq:0 */
 				// TODO optimise
@@ -140,7 +141,8 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 				}
 			} else {
 				nextNode = ( nextItem && nextItem.rootNode ) || parentNextNode;
-				insertOrAppend( parentNode, item.domTree.create( item, treeLifecycle, context ), nextNode );
+				console.log(tree)
+				insertOrAppend( parentNode, item.tree.dom.create( item, treeLifecycle, context ), nextNode );
 			}
 			nextItem = item;
 		}
@@ -171,7 +173,6 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 	for ( let i = 0; i < itemsLength; i++ ) {
 		const item = items[i];
 		const oldItem = oldItems[i];
-
 		if ( item !== oldItem ) {
 			if ( !isVoid( item ) ) {
 
@@ -185,7 +186,8 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 						}
 
 					} else if ( typeof item === 'object' ) {
-						item.domTree.update( oldItem, item, treeLifecycle, context );
+
+						item.tree.update( oldItem, item, treeLifecycle, context );
 					}
 				} else {
 					if ( isStringOrNumber( item ) ) {
@@ -228,7 +230,7 @@ export function remove( item, parentNode ) {
 	// TODO! Find a beter solution. I think this solution is slooow !!??
 
 	if ( isVoid( rootNode ) ||
-		!rootNode.nodeType ) {
+		!( rootNode.nodeType ) ) {
 		return null;
 	}
 
@@ -275,7 +277,7 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 				if ( childNode.key === undefined ) {
 					keyedChildren = false;
 				}
-				childDomNode = childNode.domTree.create( childNode, treeLifecycle, context );
+				childDomNode = childNode.tree.dom.create( childNode, treeLifecycle, context );
 				childNodeList.push( childDomNode );
 				domNode.appendChild( childDomNode );
 				break;

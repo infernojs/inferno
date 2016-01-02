@@ -10,8 +10,8 @@ import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createNodeWithDynamicChild from './shapes/nodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createNodeWithDynamicSubTreeForChildren from './shapes/nodeWithDynamicSubTreeForChildren';
-// import createRootStaticNode from './shapes/rootStaticNode';
-// import createStaticNode from './shapes/staticNode';
+ // import createRootStaticNode from './shapes/rootStaticNode';
+ // import createStaticNode from './shapes/staticNode';
 import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
 import createRootVoidNode from './shapes/rootVoidNode';
@@ -169,7 +169,6 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 }
 
 export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamespace ) {
-
 	if ( isVoid( schema ) ) {
 		throw Error( invalidTemplateError );
 	}

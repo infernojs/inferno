@@ -1,5 +1,5 @@
 import template from '../index';
-import { render, renderToString } from '../../core/rendering';
+import { render, renderToString } from '../rendering';
 
 describe('Template', () => {
 

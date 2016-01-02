@@ -1,5 +1,5 @@
 import createTree from '../createTree';
-import { render, renderToString } from '../../core/rendering';
+import { render, renderToString } from '../rendering';
 
 describe('createTree ( UT tests)', () => {
 

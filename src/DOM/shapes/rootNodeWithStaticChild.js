@@ -26,7 +26,7 @@ export default function createRootNodeWithStaticChild( templateNode, dynamicAttr
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle ) {
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
 				return;
 			}

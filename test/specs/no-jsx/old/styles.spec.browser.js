@@ -1,4 +1,11 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+addTreeConstructor( 'dom', createDOMTree );
 
 describe( 'CSS style properties - (non-JSX)', () => {
 
@@ -125,7 +132,7 @@ describe( 'CSS style properties - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(arg.expected);
 
@@ -150,10 +157,10 @@ describe( 'CSS style properties - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
-				Inferno.render(Inferno.createTemplate(test.template)(), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
 			});
@@ -174,11 +181,11 @@ describe( 'CSS style properties - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 
 				expect(container.firstChild.getAttribute('style')).to.equal(arg.expected);
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 			});
 		});
@@ -201,10 +208,10 @@ describe( 'CSS style properties - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
 
@@ -232,11 +239,11 @@ describe( 'CSS style properties - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(arg.expected);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(arg.expected);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);

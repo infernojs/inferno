@@ -1,5 +1,5 @@
 import getFormElementType from '../getFormElementType';
-import { render, renderToString } from '../../core/rendering';
+import { render, renderToString } from '../rendering';
 
 describe('getFormElementType ( UT tests)', () => {
 

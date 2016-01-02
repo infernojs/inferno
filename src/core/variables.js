@@ -27,13 +27,14 @@ export function getValueWithIndex( item, index ) {
 }
 
 export function getTypeFromValue( value ) {
+
 	if ( isStringOrNumber( value ) || isVoid( value ) ) {
 		return ValueTypes.TEXT;
 	} else if ( isArray( value ) ) {
 		return ValueTypes.ARRAY;
 	} else if ( typeof value === 'object' &&	value.create ) {
 		return ValueTypes.TREE;
-	} else if ( typeof value === 'object' &&	value.domTree ) {
+	} else if ( typeof value === 'object' &&	value.tree.dom ) { // Dominic!? What do we do here? I guess this also should be checked for server / SSR ???
 		return ValueTypes.FRAGMENT;
 	} else if ( typeof value === 'object' && Object.keys( value ).length === 0 ) {
 		return ValueTypes.EMPTY_OBJECT;
@@ -75,8 +76,8 @@ export function removeValueTree( value, treeLifecycle ) {
 			removeValueTree( child, treeLifecycle );
 		}
 	} else if ( typeof value === 'object' ) {
-		const tree = value.domTree;
+		const tree = value.tree;
 
-		tree.remove( value, treeLifecycle );
+		tree.dom.remove( value, treeLifecycle );
 	}
 }

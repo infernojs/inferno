@@ -1,5 +1,5 @@
 import createTemplate from '../createTemplate';
-import { render, renderToString } from '../rendering';
+import { render, renderToString } from '../../DOM/rendering';
 
 describe('createTemplate  ( UT tests)', () => {
 

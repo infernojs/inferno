@@ -1,4 +1,11 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+addTreeConstructor( 'dom', createDOMTree );
 
 describe( 'mathML - (non-JSX)', () => {
 
@@ -18,13 +25,13 @@ describe( 'mathML - (non-JSX)', () => {
 			tag: 'math'
 		}));
 
-		Inferno.render(template(), container);
+		InfernoDOM.render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/1998/Math/MathML");
 
-		Inferno.render(template(), container);
+		InfernoDOM.render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/1998/Math/MathML");
 
-		Inferno.render(template(), container);
+		InfernoDOM.render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/1998/Math/MathML");
 	});
 
@@ -38,9 +45,9 @@ describe( 'mathML - (non-JSX)', () => {
 			}
 		}));
 
-		Inferno.render(template(), container);
+		InfernoDOM.render(template(), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
-		Inferno.render(template(), container);
+		InfernoDOM.render(template(), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
 	})
@@ -56,9 +63,9 @@ describe( 'mathML - (non-JSX)', () => {
 			children:child
 		}));
 
-		Inferno.render(template(child()), container);
+		InfernoDOM.render(template(child()), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
-		Inferno.render(template(child()), container);
+		InfernoDOM.render(template(child()), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 	})
 
@@ -83,7 +90,7 @@ describe( 'mathML - (non-JSX)', () => {
 			children:child
 		}));
 
-		Inferno.render(template(child()), container);
+		InfernoDOM.render(template(child()), container);
 
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.tagName).to.equal('math');

@@ -1,4 +1,12 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+
+addTreeConstructor( 'dom', createDOMTree );
 import waits from '../../../tools/waits';
 
 describe( 'Components (JSX)', () => {
@@ -32,7 +40,7 @@ describe( 'Components (JSX)', () => {
 	});
 
 	afterEach(() => {
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 	});
 
 	class BasicComponent1 extends Inferno.Component {
@@ -47,7 +55,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should render a basic component', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div><BasicComponent1 title="abc" name="basic-render" /></div>
 		), container);
 
@@ -57,7 +65,7 @@ describe( 'Components (JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div><BasicComponent1 title="abc" name="basic-render" /></div>
 		), container);
 
@@ -89,7 +97,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should render a basic component with inputs', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1b title="abc" isChecked={ true } />
 			</div>
@@ -106,7 +114,7 @@ describe( 'Components (JSX)', () => {
 			true
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1b title="123" isChecked={ false } />
 			</div>
@@ -122,7 +130,7 @@ describe( 'Components (JSX)', () => {
 			false
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1b title="123" isChecked={ true } />
 			</div>
@@ -136,7 +144,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should render a basic component and remove property if null', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1 title='abc' name='basic-render' />
 			</div>
@@ -150,7 +158,7 @@ describe( 'Components (JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1 title='Hello, World!' name='basic-render' />
 			</div>
@@ -164,7 +172,7 @@ describe( 'Components (JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is Hello, World!</span></div></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1 title='123' name={ null } />
 			</div>
@@ -177,7 +185,7 @@ describe( 'Components (JSX)', () => {
 			'<div><div class="basic"><span>The title is 123</span></div></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1 title='abc' name={ null } />
 			</div>
@@ -190,7 +198,7 @@ describe( 'Components (JSX)', () => {
 		);
 
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1 title='123' name='basic-update' />
 			</div>
@@ -204,19 +212,19 @@ describe( 'Components (JSX)', () => {
 
 	it('should render a basic root component', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<BasicComponent1 title='abc' name='basic-render' />
 		), container);
 
 		expect(container.firstChild.getAttribute('class')).to.equal('basic');
 
-		Inferno.render((
+		InfernoDOM.render((
 			<BasicComponent1 title='abc' name='basic-render' />
 		), container);
 
 		expect(container.firstChild.getAttribute('class')).to.equal('basic');
 
-		Inferno.render((
+		InfernoDOM.render((
 			<BasicComponent1 title='123' name='basic-update' />
 		), container);
 		expect(
@@ -239,7 +247,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should render a basic component with children', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent2 title="abc" name="basic-render">
 			<span>Im a child</span>
@@ -253,7 +261,7 @@ describe( 'Components (JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>Im a child</span></div></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent2 title="123" name="basic-update">
 			<span>Im a child</span>
@@ -269,7 +277,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should throw error when a component is included as a child without a template', () => {
 		
-		expect(() => Inferno.render((
+		expect(() => InfernoDOM.render((
 			<div>
 				<BasicComponent2 title="abc" name="basic-render">
 					<span>A child</span>
@@ -281,7 +289,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should render multiple components', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1 title="component 1" name="basic-render" />
 			<BasicComponent1 title="component 2" name="basic-render" />
@@ -295,7 +303,7 @@ describe( 'Components (JSX)', () => {
 			+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<div>
 			<BasicComponent1 title="component 1" name="basic-render" />
 			</div>
@@ -320,7 +328,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should render a basic component with styling', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<BasicComponent3 title="styled!" styles={{ color: "red", paddingLeft: 10 }} />
 		), container);
 
@@ -330,7 +338,7 @@ describe( 'Components (JSX)', () => {
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<BasicComponent3 title="styled (again)!" styles={{ color: "blue", marginBottom: 20 }} />
 		), container);
 
@@ -343,7 +351,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should render a basic component and remove styling', () => {
 
-		Inferno.render((
+		InfernoDOM.render((
 			<BasicComponent3 title="styled!" styles={{ color: "red", paddingTop: 20 }} />
 		), container);
 
@@ -353,7 +361,7 @@ describe( 'Components (JSX)', () => {
 			'<div style="color: red; padding-top: 20px;"><span style="color: red; padding-top: 20px;">The title is styled!</span></div>'
 		);
 
-		Inferno.render((
+		InfernoDOM.render((
 			<BasicComponent3 title="styles are removed!" styles={ null } />
 		), container);
 		expect(
@@ -377,7 +385,7 @@ describe( 'Components (JSX)', () => {
 			}
 		}
 
-		Inferno.render(<Component />, container);
+		InfernoDOM.render(<Component />, container);
 
 		expect(
 			container.innerHTML
@@ -386,7 +394,7 @@ describe( 'Components (JSX)', () => {
 		);
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 
 		expect(
 			container.innerHTML
@@ -394,7 +402,7 @@ describe( 'Components (JSX)', () => {
 			''
 		);
 
-		Inferno.render(<Component />, container);
+		InfernoDOM.render(<Component />, container);
 
 		expect(
 			container.innerHTML
@@ -429,7 +437,7 @@ describe( 'Components (JSX)', () => {
 	}
 	it('should render a basic component with a list of values from state', () => {
 
-		Inferno.render(<Component />, container);
+		InfernoDOM.render(<Component />, container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -459,13 +467,13 @@ describe( 'Components (JSX)', () => {
 			}
 		}
 
-		Inferno.render(<Main/>, container);
+		InfernoDOM.render(<Main/>, container);
 
 	});
 
 	function test(element, expectedTag, expectedClassName) {
 
-		let instance = Inferno.render(element, container);
+		let instance = InfernoDOM.render(element, container);
 		expect(container.firstChild).not.to.be.null;
 		expect(container.firstChild.tagName).to.equal(expectedTag);
 		expect(container.firstChild.className).to.equal(expectedClassName);
@@ -597,7 +605,7 @@ describe( 'Components (JSX)', () => {
 		}
 
 		it('Initial render (creation)', () => {
-			Inferno.render(<Wrapper/>, container);
+			InfernoDOM.render(<Wrapper/>, container);
 
 			expect(
 				container.innerHTML
@@ -607,7 +615,7 @@ describe( 'Components (JSX)', () => {
 		});
 
 		it('Second render (update)', (done) => {
-			Inferno.render(<Wrapper/>, container);
+			InfernoDOM.render(<Wrapper/>, container);
 
 			waits(30, () => {
 				expect(

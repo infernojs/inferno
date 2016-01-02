@@ -1,5 +1,5 @@
 import { insertOrAppend, remove, createVirtualList, updateNonKeyed, updateVirtualList, updateKeyed } from '../domMutate';
-import { render, renderToString } from '../../core/rendering';
+import { render, renderToString } from '../rendering';
 
 describe('domMutate ( UT tests)', () => {
 

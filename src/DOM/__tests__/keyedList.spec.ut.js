@@ -1,6 +1,14 @@
 import {  updateKeyed } from '../domMutate';
-import { render, renderToString } from '../../core/rendering';
+import createDOMTree from '../createTree';
+import { render, renderToString } from '../rendering';
 import createTemplate from '../../core/createTemplate';
+import { addTreeConstructor } from '../../core/createTemplate';
+
+
+
+addTreeConstructor( 'dom', createDOMTree );
+
+
 
 function createDataModels() {
 	let dataModels = [];

@@ -1,5 +1,5 @@
 import createFragment from '../createFragment';
-import { render, renderToString } from '../../core/rendering';
+import { render, renderToString } from '../rendering';
 
 describe('createFragment ( UT tests)', () => {
 

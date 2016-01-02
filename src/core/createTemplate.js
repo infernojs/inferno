@@ -1,11 +1,10 @@
-import createDOMTree from '../DOM/createTree';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
-import createHTMLStringTree from '../htmlString/createHTMLStringTree';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 import isVoid from '../util/isVoid';
 
 let uniqueId = Date.now();
+const treeConstructors = {};
 
 function createId() {
 	if ( ExecutionEnvironment.canUseSymbol ) {
@@ -15,10 +14,22 @@ function createId() {
 	}
 }
 
+export function addTreeConstructor(name, treeConstructor) {
+	treeConstructors[ name ] = treeConstructor;
+}
+
+function applyTreeConstructors( schema, dynamicNodeMap ) {
+	const tree = {};
+
+	for ( let treeConstructor in treeConstructors ) {
+		tree[ treeConstructor ] = treeConstructors[ treeConstructor ]( schema, true, dynamicNodeMap );
+	}
+	return tree;
+}
+
 export default function createTemplate( callback ) {
 
 	if ( typeof callback === 'function' ) {
-
 		let construct = callback.construct || null;
 
 		if ( isVoid( construct ) ) {
@@ -32,8 +43,7 @@ export default function createTemplate( callback ) {
 			const dynamicNodeMap = new Map();
 
 			scanTreeForDynamicNodes( schema, dynamicNodeMap );
-			const domTree = createDOMTree( schema, true, dynamicNodeMap );
-			const htmlStringTree = createHTMLStringTree( schema, true, dynamicNodeMap );
+			const tree = applyTreeConstructors(schema, dynamicNodeMap);
 			const key = schema.key;
 			const keyIndex = key ? key.index : -1;
 
@@ -41,8 +51,7 @@ export default function createTemplate( callback ) {
 				case 0:
 					construct = () => ( {
 						parent: null,
-						domTree,
-						htmlStringTree,
+						tree,
 						id: createId(),
 						key: null,
 						nextItem: null,
@@ -58,8 +67,7 @@ export default function createTemplate( callback ) {
 						}
 						return {
 							parent: null,
-							domTree,
-							htmlStringTree,
+							tree,
 							id: createId(),
 							key,
 							nextItem: null,
@@ -79,8 +87,7 @@ export default function createTemplate( callback ) {
 						}
 						return {
 							parent: null,
-							domTree,
-							htmlStringTree,
+							tree,
 							id: createId(),
 							key,
 							nextItem: null,
@@ -103,8 +110,7 @@ export default function createTemplate( callback ) {
 						}
 						return {
 							parent: null,
-							domTree,
-							htmlStringTree,
+							tree,
 							id: createId(),
 							key,
 							nextItem: null,

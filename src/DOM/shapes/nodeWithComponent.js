@@ -30,7 +30,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, toUseItem ), context );
 
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
+					domNode = nextRender.tree.dom.create( nextRender, treeLifecycle, context );
 					statelessRender = nextRender;
 				} else {
 					instance = new Component( getValueForProps( props, toUseItem ) );
@@ -44,7 +44,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 						context = { ...context, ...childContext };
 					}
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
+					domNode = nextRender.tree.dom.create( nextRender, treeLifecycle, context );
 					instance._lastRender = nextRender;
 
 					if ( domNode instanceof DocumentFragment ) {
@@ -65,7 +65,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 							context = { ...context, ...childContext };
 						}
 						nextRender.parent = currentItem;
-						const newDomNode = nextRender.domTree.update( instance._lastRender, nextRender, treeLifecycle, context );
+						const newDomNode = nextRender.tree.dom.update( instance._lastRender, nextRender, treeLifecycle, context );
 
 						if ( newDomNode ) {
 							domNode = newDomNode;
@@ -98,7 +98,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
 
 					nextRender.parent = currentItem;
-					const newDomNode = nextRender.domTree.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
+					const newDomNode = nextRender.tree.dom.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
 
 					statelessRender = nextRender;
 					if ( newDomNode ) {
@@ -126,7 +126,8 @@ export default function createNodeWithComponent( componentIndex, props ) {
 			let instance = node.instance;
 
 			if ( instance ) {
-				instance._lastRender.domTree.remove( instance._lastRender, treeLifecycle );
+
+				instance._lastRender.tree.dom.remove( instance._lastRender, treeLifecycle );
 				instance.componentWillUnmount();
 			}
 		}

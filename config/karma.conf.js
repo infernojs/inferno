@@ -31,7 +31,7 @@ module.exports = function(config) {
 			'src/**/*__tests__*/**/*spec.ut.js': ['webpack'], // UT
 //			'../test/specs/no-jsx/**/*spec.server.js': ['webpack'], // AT
 //			'../test/specs/no-jsx/**/*spec.js': ['webpack'], // AT
-			'test/specs/no-jsx/**/*.spec.browser.js': ['webpack'], // AT
+					'test/specs/no-jsx/**/*.spec.browser.js': ['webpack'], // AT
 			//'../test/specs/jsx/**/*spec.server.js': ['webpack'], // AT
 			//'../test/specs/jsx/**/*spec.js': ['webpack'], // AT
 			'test/specs/jsx/**/*.spec.browser.js': ['webpack'], // AT
@@ -43,7 +43,7 @@ module.exports = function(config) {
 					test: /(\.jsx)|(\.js)$/,
 					exclude: /test|.git|node_modules\/dist/,
 					loader: 'isparta',
-					//	include: path.join(__dirname, '../src')
+				//	include: path.join(__dirname, '../src')
 				}],
 				loaders: [{
 					test: /\.js$/,

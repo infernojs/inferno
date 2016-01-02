@@ -34,7 +34,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						const childItem = value[i];
 
 						if ( typeof childItem === 'object' ) {
-							const childNode = childItem.domTree.create( childItem, treeLifecycle, context );
+							const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context );
 
 							if ( childItem.key === undefined ) {
 								keyedChildren = false;
@@ -50,7 +50,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						}
 					}
 				} else if ( typeof value === 'object' ) {
-					domNode.appendChild( value.domTree.create( value, treeLifecycle, context ) );
+					domNode.appendChild( value.tree.dom.create( value, treeLifecycle, context ) );
 				} else if ( isStringOrNumber( value ) ) {
 					domNode.textContent = value;
 				}
@@ -62,7 +62,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree ) {
 				childNodeList = [];
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 				return;
@@ -99,18 +99,17 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						// do nothing for now!
 					}
 				} else if ( typeof nextValue === 'object' ) {
-					const tree = nextValue.domTree;
-
+					const tree = nextValue.tree;
 					if ( !isVoid( tree ) ) {
 						if ( !isVoid( lastValue ) ) {
-							if ( !isVoid( lastValue.domTree ) ) {
+							if ( !isVoid( lastValue.tree ) ) {
 								tree.update( lastValue, nextValue, treeLifecycle, context );
 							} else {
 								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 								return;
 							}
 						} else {
-							const childNode = tree.create( nextValue, treeLifecycle, context );
+							const childNode = tree.dom.create( nextValue, treeLifecycle, context );
 
 							domNode.replaceChild( childNode, domNode.firstChild );
 						}

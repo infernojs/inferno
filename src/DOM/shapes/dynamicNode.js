@@ -42,7 +42,7 @@ export default function createDynamicNode( valueIndex ) {
 				case ValueTypes.FUNCTION:
 					throw Error( infernoBadTemplate );
 				case ValueTypes.FRAGMENT:
-					domNode = value.domTree.create( value, treeLifecycle, context );
+					domNode = value.tree.dom.create( value, treeLifecycle, context );
 					break;
 				default: break;
 			}

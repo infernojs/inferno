@@ -36,7 +36,7 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle ) {
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
 				return;
 			}

@@ -1,8 +1,15 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+addTreeConstructor( 'dom', createDOMTree );
 
 const { createElement } = Inferno.TemplateFactory;
 
-describe( 'Inferno.createRed - (non-JSX)', () => {
+describe( 'Inferno.createRef() - (non-JSX)', () => {
 
 	let container;
 
@@ -16,7 +23,7 @@ describe( 'Inferno.createRed - (non-JSX)', () => {
 
 	it('should support ref', () => {
 
-		const divRef = Inferno.createRef();
+		const divRef = InfernoDOM.createRef();
 
 		let template = Inferno.createTemplate((divRef) => ({
 			tag: 'div',
@@ -25,7 +32,7 @@ describe( 'Inferno.createRed - (non-JSX)', () => {
 			}
 		}));
 
-		Inferno.render(template(divRef), container);
+		InfernoDOM.render(template(divRef), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.innerHTML).to.equal('');
 		expect(
@@ -34,7 +41,7 @@ describe( 'Inferno.createRed - (non-JSX)', () => {
 			container.firstChild
 		);
 
-		Inferno.render(template(divRef), container);
+		InfernoDOM.render(template(divRef), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.innerHTML).to.equal('');
 		expect(

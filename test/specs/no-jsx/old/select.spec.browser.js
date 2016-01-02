@@ -1,4 +1,11 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+addTreeConstructor( 'dom', createDOMTree );
 
 describe( 'Select - (non-JSX)', () => {
 
@@ -39,7 +46,7 @@ describe( 'Select - (non-JSX)', () => {
 			};
 		});
 
-		Inferno.render(template(2), container);
+		InfernoDOM.render(template(2), container);
 
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(true);
@@ -49,7 +56,7 @@ describe( 'Select - (non-JSX)', () => {
 			'<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
 		);
 
-		Inferno.render(template(1), container);
+		InfernoDOM.render(template(1), container);
 
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
@@ -110,7 +117,7 @@ describe( 'Select - (non-JSX)', () => {
 			};
 		});
 
-		Inferno.render(template('foo'), container);
+		InfernoDOM.render(template('foo'), container);
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(
@@ -119,7 +126,7 @@ describe( 'Select - (non-JSX)', () => {
 			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
 		);
 
-		Inferno.render(template('bar'), container);
+		InfernoDOM.render(template('bar'), container);
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(true);
 		expect(
@@ -154,7 +161,7 @@ describe( 'Select - (non-JSX)', () => {
 			};
 		});
 
-		Inferno.render(template('foo'), container);
+		InfernoDOM.render(template('foo'), container);
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(
@@ -198,7 +205,7 @@ describe( 'Select - (non-JSX)', () => {
 			};
 		});
 
-		Inferno.render(template(['foo', 'bar']), container);
+		InfernoDOM.render(template(['foo', 'bar']), container);
 
 		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
 		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
@@ -206,7 +213,7 @@ describe( 'Select - (non-JSX)', () => {
 		expect(container.firstChild.children[0].children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
-		Inferno.render(template('foo'), container);
+		InfernoDOM.render(template('foo'), container);
 
 		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
 		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
@@ -215,7 +222,7 @@ describe( 'Select - (non-JSX)', () => {
 		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
 
 
-		Inferno.render(template('bar'), container);
+		InfernoDOM.render(template('bar'), container);
 
 		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
 		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
@@ -223,7 +230,7 @@ describe( 'Select - (non-JSX)', () => {
 		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
-		Inferno.render(template(null), container);
+		InfernoDOM.render(template(null), container);
 
 		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
 		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
@@ -258,7 +265,7 @@ describe( 'Select - (non-JSX)', () => {
 			};
 		});
 
-		Inferno.render(template('foo'), container);
+		InfernoDOM.render(template('foo'), container);
 
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
@@ -280,35 +287,35 @@ describe( 'Select - (non-JSX)', () => {
 			};
 		});
 
-		Inferno.render(template('foo'), container);
+		InfernoDOM.render(template('foo'), container);
 
 		expect(container.firstChild.value).to.eql('foo');
 
-		Inferno.render(template('bar'), container);
+		InfernoDOM.render(template('bar'), container);
 
 		expect(container.firstChild.value).to.eql('bar');
 
-		Inferno.render(template('bar'), container);
+		InfernoDOM.render(template('bar'), container);
 
 		expect(container.firstChild.value).to.eql('bar');
 
-		Inferno.render(template('foo'), container);
+		InfernoDOM.render(template('foo'), container);
 
 		expect(container.firstChild.value).to.eql('foo');
 
-		Inferno.render(template(null), container);
+		InfernoDOM.render(template(null), container);
 
 		expect(container.firstChild.value).to.eql('');
 
-		Inferno.render(template(undefined), container);
+		InfernoDOM.render(template(undefined), container);
 
 		expect(container.firstChild.value).to.eql('');
 
-		Inferno.render(template([]), container);
+		InfernoDOM.render(template([]), container);
 
 		expect(container.firstChild.value).to.eql('');
 
-		Inferno.render(template({}), container);
+		InfernoDOM.render(template({}), container);
 
 		expect(container.firstChild.value).to.eql('[object Object]');
 	});

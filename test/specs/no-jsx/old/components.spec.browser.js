@@ -1,5 +1,13 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
 import waits from '../../../tools/waits';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+addTreeConstructor( 'dom', createDOMTree );
+
 
 const { createElement } = Inferno.TemplateFactory;
 
@@ -12,7 +20,7 @@ describe( 'Components - (non-JSX)', () => {
 	});
 
 	afterEach(() => {
-		Inferno.render(null, container);
+	//	InfernoDOM.render(null, container);
 	});
 
 
@@ -43,7 +51,7 @@ describe( 'Components - (non-JSX)', () => {
 		);
 
 
-		Inferno.render(template(BasicComponent1, 'abc'), container);
+		InfernoDOM.render(template(BasicComponent1, 'abc'), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
@@ -51,7 +59,7 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is abc');
 
-		Inferno.render(template(BasicComponent1, 'abcdef'), container);
+		InfernoDOM.render(template(BasicComponent1, 'abcdef'), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
@@ -59,7 +67,7 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is abcdef');
 
-		Inferno.render(template(BasicComponent1, null), container);
+		InfernoDOM.render(template(BasicComponent1, null), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
@@ -67,7 +75,7 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
 
-		Inferno.render(template(BasicComponent1, undefined), container);
+		InfernoDOM.render(template(BasicComponent1, undefined), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
@@ -75,7 +83,7 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
 
-		Inferno.render(template(BasicComponent1, '1234'), container);
+		InfernoDOM.render(template(BasicComponent1, '1234'), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
@@ -84,10 +92,10 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is 1234');
 
 		// remove the component
-		Inferno.render(template(null, '1234'), container);
+		InfernoDOM.render(template(null, '1234'), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
 
-		Inferno.render(template(null, null), container);
+		InfernoDOM.render(template(null, null), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
 	});
 
@@ -122,7 +130,7 @@ describe( 'Components - (non-JSX)', () => {
 			)
 		);
 
-		Inferno.render(template(BasicComponent1b, "abc", true), container);
+		InfernoDOM.render(template(BasicComponent1b, "abc", true), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
@@ -130,9 +138,7 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
 		expect( container.querySelector("input").checked ).to.equal( true);
 
-		Inferno.render(template(BasicComponent1b, "abc", true), container);
-
-		Inferno.render(template(BasicComponent1b, "abc", null), container);
+		InfernoDOM.render(template(BasicComponent1b, "abc", null), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
@@ -173,7 +179,7 @@ describe( 'Components - (non-JSX)', () => {
 			)
 		);
 
-		Inferno.render(template(BasicComponent1c, 'abc', true), container);
+		InfernoDOM.render(template(BasicComponent1c, 'abc', true), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
@@ -181,7 +187,7 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
-		Inferno.render(template(BasicComponent1c, 'abc', true), container);
+		InfernoDOM.render(template(BasicComponent1c, 'abc', true), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
@@ -190,10 +196,6 @@ describe( 'Components - (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 	});
-
-
-
-
 
 	class BasicComponent1d extends Inferno.Component {
 		render() {
@@ -217,7 +219,7 @@ describe( 'Components - (non-JSX)', () => {
 				createElement(Component, {title, isDisabled})
 			)
 		);
-		Inferno.render(template(BasicComponent1d, 'abc', true), container);
+		InfernoDOM.render(template(BasicComponent1d, 'abc', true), container);
 
 		expect(
 			container.innerHTML
@@ -230,7 +232,7 @@ describe( 'Components - (non-JSX)', () => {
 			true
 		);
 
-		Inferno.render(template(BasicComponent1d, '123', false), container);
+		InfernoDOM.render(template(BasicComponent1d, '123', false), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -250,7 +252,7 @@ describe( 'Components - (non-JSX)', () => {
 				createElement(Component, {title, name})
 			)
 		);
-		Inferno.render(template(BasicComponent1, 'abc', 'basic-render'), container);
+		InfernoDOM.render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
@@ -258,7 +260,7 @@ describe( 'Components - (non-JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent1, '123', null), container);
+		InfernoDOM.render(template(BasicComponent1, '123', null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -273,7 +275,7 @@ describe( 'Components - (non-JSX)', () => {
 				createElement(Component, {title, name})
 			)
 		);
-		Inferno.render(template(BasicComponent1, 'abc', null), container);
+		InfernoDOM.render(template(BasicComponent1, 'abc', null), container);
 
 		expect(
 			container.innerHTML
@@ -281,7 +283,7 @@ describe( 'Components - (non-JSX)', () => {
 			'<div><div class="basic"><span>The title is abc</span></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent1, '123', 'basic-update'), container);
+		InfernoDOM.render(template(BasicComponent1, '123', 'basic-update'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -296,14 +298,14 @@ describe( 'Components - (non-JSX)', () => {
 			createElement(Component, {title, name})
 		);
 
-		Inferno.render(template(BasicComponent1, 'abc', 'basic-render'), container);
+		InfernoDOM.render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div class="basic"><span class="basic-render">The title is abc</span></div>'
 		);
-		Inferno.render(template(BasicComponent1, 'abc', 'basic-render'), container);
+		InfernoDOM.render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
@@ -311,7 +313,7 @@ describe( 'Components - (non-JSX)', () => {
 			'<div class="basic"><span class="basic-render">The title is abc</span></div>'
 		);
 
-		Inferno.render(template(BasicComponent1, 'abc', {}), container);
+		InfernoDOM.render(template(BasicComponent1, 'abc', {}), container);
 
 		expect(
 			container.innerHTML
@@ -319,7 +321,7 @@ describe( 'Components - (non-JSX)', () => {
 			'<div class="basic"><span class="[object Object]">The title is abc</span></div>'
 		);
 
-		Inferno.render(template(null, 'abc', 'basic-render'), container);
+		InfernoDOM.render(template(null, 'abc', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
@@ -327,7 +329,7 @@ describe( 'Components - (non-JSX)', () => {
 			''
 		);
 
-		Inferno.render(template(null, null, null), container);
+		InfernoDOM.render(template(null, null, null), container);
 
 		expect(
 			container.innerHTML
@@ -364,14 +366,14 @@ describe( 'Components - (non-JSX)', () => {
 			)
 		);
 
-		Inferno.render(template(BasicComponent2, "abc", "basic-render"), container);
+		InfernoDOM.render(template(BasicComponent2, "abc", "basic-render"), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
 		);
-		Inferno.render(template(BasicComponent2, "abc", "basic-render"), container);
+		InfernoDOM.render(template(BasicComponent2, "abc", "basic-render"), container);
 
 		expect(
 			container.innerHTML
@@ -379,7 +381,7 @@ describe( 'Components - (non-JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
 		);
 
-		Inferno.render(
+		InfernoDOM.render(
 			template(BasicComponent2, "123", "basic-update"), container
 
 		);
@@ -388,7 +390,7 @@ describe( 'Components - (non-JSX)', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
 		);
-		Inferno.render(
+		InfernoDOM.render(
 			template(BasicComponent2, "1234", "basic-update"), container
 
 		);
@@ -448,7 +450,7 @@ describe( 'Components - (non-JSX)', () => {
 			createElement(Component, props)
 		);
 
-		Inferno.render(template(BasicComponent3, {
+		InfernoDOM.render(template(BasicComponent3, {
 			title: "styled!",
 			styles: {
 				color: "red",
@@ -461,7 +463,7 @@ describe( 'Components - (non-JSX)', () => {
 		).to.equal(
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
-		Inferno.render(template(BasicComponent3, {
+		InfernoDOM.render(template(BasicComponent3, {
 			title: "styled!",
 			styles: {
 				color: "red",
@@ -475,7 +477,7 @@ describe( 'Components - (non-JSX)', () => {
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
 
-		Inferno.render(template(BasicComponent3, {
+		InfernoDOM.render(template(BasicComponent3, {
 			title: "styled (again)!",
 			styles: {
 				color: "blue",
@@ -501,7 +503,7 @@ describe( 'Components - (non-JSX)', () => {
 				)
 			)
 		);
-		Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+		InfernoDOM.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 
 		expect(
 			container.innerHTML
@@ -509,53 +511,53 @@ describe( 'Components - (non-JSX)', () => {
 			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+		InfernoDOM.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
+		InfernoDOM.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
+		InfernoDOM.render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
+		InfernoDOM.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
-		Inferno.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
+		InfernoDOM.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
-		Inferno.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
+		InfernoDOM.render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
+		InfernoDOM.render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
-		Inferno.render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
+		InfernoDOM.render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -595,30 +597,30 @@ describe( 'Components - (non-JSX)', () => {
 		);
 
 
-		Inferno.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
+		InfernoDOM.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
 		expect(
 			componentWillMountCount
 		).to.equal(
 			3
 		);
-		Inferno.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
-		expect(
-			componentWillMountCount
-		).to.equal(
-			5
-		);
-
-		Inferno.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
+		InfernoDOM.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
 		expect(
 			componentWillMountCount
 		).to.equal(
 			6
 		);
-		Inferno.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
+
+		InfernoDOM.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
 		expect(
 			componentWillMountCount
 		).to.equal(
-			7
+			8
+		);
+		InfernoDOM.render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
+		expect(
+			componentWillMountCount
+		).to.equal(
+			10
 		);
 	});
 
@@ -638,14 +640,14 @@ describe( 'Components - (non-JSX)', () => {
 		);
 
 
-		Inferno.render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
+		InfernoDOM.render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 		);
-		Inferno.render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
+		InfernoDOM.render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
@@ -653,7 +655,7 @@ describe( 'Components - (non-JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 		);
 
-		Inferno.render(template(BasicComponent1, 'component 1', 'basic-render'), container);
+		InfernoDOM.render(template(BasicComponent1, 'component 1', 'basic-render'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -690,11 +692,11 @@ describe( 'Components - (non-JSX)', () => {
 		template = Inferno.createTemplate((Component) =>
 			createElement(Component)
 		);
-		Inferno.render(template(ComponentLifecycleCheck), container);
+		InfernoDOM.render(template(ComponentLifecycleCheck), container);
 
 		expect(mountCount).to.equal(1);
 
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(unmountCount).to.equal(1);
 	});
 
@@ -729,11 +731,11 @@ describe( 'Components - (non-JSX)', () => {
 			createElement(Component)
 		);
 
-		Inferno.render(template(ComponentLifecycleCheck), container);
+		InfernoDOM.render(template(ComponentLifecycleCheck), container);
 
 		expect(mountCount).to.equal(1);
 
-		Inferno.render(template(null), container);
+		InfernoDOM.render(template(null), container);
 		expect(unmountCount).to.equal(1);
 
 	});
@@ -791,7 +793,7 @@ describe( 'Components - (non-JSX)', () => {
 			template = Inferno.createTemplate((Component) =>
 				createElement(Component)
 			);
-			Inferno.render(template(ComponentLifecycleCheck), container);
+			InfernoDOM.render(template(ComponentLifecycleCheck), container);
 			waits(30, done)
 		});
 
@@ -851,7 +853,7 @@ describe( 'Components - (non-JSX)', () => {
 		}
 
 		it('Initial render (creation)', () => {
-			Inferno.render(tpl1546018623(Component), container);
+			InfernoDOM.render(tpl1546018623(Component), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
 			);
@@ -901,7 +903,7 @@ describe( 'Components - (non-JSX)', () => {
 		}
 
 		it('Initial render (creation)', () => {
-			Inferno.render(tpl1546018623(Component), container);
+			InfernoDOM.render(tpl1546018623(Component), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);

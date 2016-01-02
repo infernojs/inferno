@@ -1,16 +1,20 @@
-import * as p from 'path';
-import * as fs from 'fs';
-import zlib from 'zlib';
-import rollup from 'rollup';
-import babel from 'rollup-plugin-babel';
-import npm from 'rollup-plugin-npm';
-import commonjs from 'rollup-plugin-commonjs';
-import replace from 'rollup-plugin-replace';
-import uglify from 'uglify-js';
-import pack from '../package.json';
+const p = require('path');
+const fs = require('fs');
+const zlib = require('zlib');
+const rollup = require('rollup');
+const uglify = require('uglify-js');
+const npm = require('rollup-plugin-npm');
+const babel = require('rollup-plugin-babel');
+const replace = require('rollup-plugin-replace');
+const commonjs = require('rollup-plugin-commonjs');
+const pack = require('../package.json');
 
 const development = process.argv[2] === 'dev';
 const production = process.argv[2] === 'prod';
+const dist = process.argv[3];
+const src = process.argv[4];
+const packageName = process.argv[5];
+const moduleName = process.argv[6];
 
 if ( development ) {
 	process.env.NODE_ENV = 'development'
@@ -20,14 +24,14 @@ if ( development ) {
 
 const copyright =
 	'/*!\n' +
-	' * ' + pack.name + ' v' + pack.version + '\n' +
+	' * ' + packageName + ' v' + pack.version + '\n' +
 	' * (c) ' + new Date().getFullYear() + ' ' + pack.author.name + '\n' +
 	' * Released under the ' + pack.license + ' License.\n' +
-	' */'
+	' */';
 
 function createBundle() {
-	let bundle = rollup.rollup({
-		entry: p.resolve('src/index.js'),
+	var bundle = rollup.rollup({
+		entry: p.resolve(src + '/index.js'),
 		plugins: [
 			babel({
 				babelrc: false,
@@ -35,20 +39,20 @@ function createBundle() {
 					'es2015-rollup'
 				],
 				plugins: [
-					'transform-object-rest-spread',
-				],
+					'transform-object-rest-spread'
+				]
 			}),
 			npm({
 				jsnext: true,
-				main: true,
+				main: true
 			}),
 			commonjs({
-				sourceMap: true,
+				sourceMap: true
 			}),
 			replace({
-				'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-			}),
-		],
+				'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+			})
+		]
 	});
 
 	// Cast as native Promise.
@@ -57,11 +61,11 @@ function createBundle() {
 
 function zip() {
 	return new Promise(function(resolve, reject) {
-		fs.readFile('dist/' + pack.name + '.min.js', function(err, buf) {
+		fs.readFile(dist + '/' + packageName + '.min.js', function(err, buf) {
 			if (err) return reject(err)
 			zlib.gzip(buf, function(err, buf) {
 				if (err) return reject(err)
-				fs.writeFile('dist/' + pack.name + '.min.js.gz', buf);
+				fs.writeFile(dist + '/' + packageName + '.min.js.gz', buf);
 			})
 		})
 	})
@@ -69,25 +73,25 @@ function zip() {
 
 
 function writeBundle(bundle) {
-	const filename = production ? pack.name + '.min.js' : pack.name + '.js';
-	const dest = p.resolve(`dist/${filename}`);
+	const filename = production ? packageName + '.min.js' : packageName + '.js';
+	console.log(filename)
+	const dest = p.resolve(dist +`/${filename}`);
 
-	let result = bundle.generate({
+	var result = bundle.generate( {
 		format: 'umd',
-		moduleName: 'Inferno',
+		moduleName: moduleName,
 		banner: copyright,
 		sourceMap: true,
 		sourceMapFile: dest,
-		globals: {
-		},
-	});
+		globals: {}
+	} );
 
 	if (production) {
 		result = uglify.minify(result.code, {
 			fromString: true,
 			inSourceMap: result.map,
 			outSourceMap: `${filename}.map`,
-			warnings: false,
+			warnings: false
 		});
 
 		result.map = JSON.parse(result.map);
@@ -95,7 +99,9 @@ function writeBundle(bundle) {
 		result.code += `\n//# sourceMappingURL=${filename}.map`;
 	}
 
-	let { code, map } = result;
+	var code = result.code;
+	var map = result.map;
+
 
 	const throwIfError = (err) => {
 		if (err) {
@@ -112,9 +118,10 @@ function writeBundle(bundle) {
 // -----------------------------------------------------------------------------
 
 createBundle().then((bundle) => {
-
-	writeBundle(bundle, ); // Development
-if(production){
-	zip(); // gZip
-}
-})
+	writeBundle(bundle); // Development
+	if(production){
+		zip(); // gZip
+	}
+}).catch(e => {
+	console.error(e);
+});

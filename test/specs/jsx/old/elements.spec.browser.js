@@ -1,4 +1,12 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+
+addTreeConstructor( 'dom', createDOMTree );
 
 describe( 'Elements (JSX)', () => {
 
@@ -9,61 +17,61 @@ describe( 'Elements (JSX)', () => {
 	});
 
 	afterEach(() => {
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 	});
 
 
 	it('should render a simple div', () => {
-		Inferno.render(<div></div>, container);
+		InfernoDOM.render(<div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
-		Inferno.render(<div></div>, container);
+		InfernoDOM.render(<div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 	});
 
 	it('should render a simple div with multiple children', () => {
-		Inferno.render(<div><span></span></div>, container);
+		InfernoDOM.render(<div><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-		Inferno.render(<div><span></span></div>, container);
+		InfernoDOM.render(<div><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-		Inferno.render(<div></div>, container);
+		InfernoDOM.render(<div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
-		Inferno.render(<div><span></span><span></span><span></span><span></span><span></span></div>, container);
+		InfernoDOM.render(<div><span></span><span></span><span></span><span></span><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(5);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-		Inferno.render(<div><span></span><span></span><span></span></div>, container);
+		InfernoDOM.render(<div><span></span><span></span><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(3);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-		Inferno.render(<div><span></span><b>Hello, World!</b><span></span></div>, container);
+		InfernoDOM.render(<div><span></span><b>Hello, World!</b><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(3);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 	});
 
 	it('should render a simple div with span child and dynamic id attribute', () => {
-		Inferno.render(<div id={'hello'}></div>, container);
+		InfernoDOM.render(<div id={'hello'}></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('id')).to.equal('hello');
 
-		Inferno.render(<div id={null}></div>, container);
+		InfernoDOM.render(<div id={null}></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('id')).to.be.null;
 
-		Inferno.render(<div id='hello'></div>, container);
+		InfernoDOM.render(<div id='hello'></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('id')).to.equal('hello');
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 	});
@@ -71,16 +79,16 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render a simple div with span child and various dynamic attributes', () => {
 
-		Inferno.render(<div id={'hello'}></div>, container);
+		InfernoDOM.render(<div id={'hello'}></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('id')).to.equal('hello');
 
-		Inferno.render(<div></div>, container);
+		InfernoDOM.render(<div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 		expect(container.innerHTML).to.equal('');
@@ -90,16 +98,16 @@ describe( 'Elements (JSX)', () => {
 
 		const child = <span></span>
 
-		Inferno.render(<div>{child}</div>, container);
+		InfernoDOM.render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-		Inferno.render(<div>{child}</div>, container);
+		InfernoDOM.render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 		expect(container.innerHTML).to.equal('');
@@ -111,7 +119,7 @@ describe( 'Elements (JSX)', () => {
 
 		attrs = 'id#1'
 
-		Inferno.render(<div><div id={attrs}></div></div>, container);
+		InfernoDOM.render(<div><div id={attrs}></div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -119,7 +127,7 @@ describe( 'Elements (JSX)', () => {
 
 		attrs = null
 
-		Inferno.render(<div><div id={attrs}></div></div>, container);
+		InfernoDOM.render(<div><div id={attrs}></div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -127,14 +135,14 @@ describe( 'Elements (JSX)', () => {
 
 		attrs = undefined
 
-		Inferno.render(<div id={attrs}></div>, container);
+		InfernoDOM.render(<div id={attrs}></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('id')).to.be.null;
 
 		attrs = 'id#4'
 
-		Inferno.render(<div><div id={attrs}></div></div>, container);
+		InfernoDOM.render(<div><div id={attrs}></div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -145,7 +153,7 @@ describe( 'Elements (JSX)', () => {
 		let b = <b className={123} >Hello, World!</b>
 		let n = <n>{b}</n>
 
-		Inferno.render(<div class='Hello, World!'><span><div id={attrs}>{n}</div></span></div>, container);
+		InfernoDOM.render(<div class='Hello, World!'><span><div id={attrs}>{n}</div></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -162,7 +170,7 @@ describe( 'Elements (JSX)', () => {
 		b = <b className={1243} >Hello, World!</b>
 		n = <n>{b}</n>
 
-		Inferno.render(<div class='Hello, World!'><span><div id={attrs}>{n}</div></span></div>, container);
+		InfernoDOM.render(<div class='Hello, World!'><span><div id={attrs}>{n}</div></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -175,13 +183,13 @@ describe( 'Elements (JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('1243');
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 
 		attrs = 'id#444'
 
-		Inferno.render(<div class='Hello, Dominic' id={attrs}><div id={attrs}></div></div>, container);
+		InfernoDOM.render(<div class='Hello, Dominic' id={attrs}><div id={attrs}></div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -191,7 +199,7 @@ describe( 'Elements (JSX)', () => {
 
 		attrs = 'id#' + 333 -333 /3
 
-		Inferno.render(<div class='Hello, Dominic' id={attrs}><div id={attrs}></div></div>, container);
+		InfernoDOM.render(<div class='Hello, Dominic' id={attrs}><div id={attrs}></div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -200,7 +208,7 @@ describe( 'Elements (JSX)', () => {
 		expect(container.firstChild.firstChild.getAttribute('id')).to.equal('NaN');
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 
@@ -212,38 +220,38 @@ describe( 'Elements (JSX)', () => {
 
 		child = <span></span>
 
-		Inferno.render(<div>{ child }</div>, container);
+		InfernoDOM.render(<div>{ child }</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 
 		child = <div></div>
 
-		Inferno.render(<div>{child}</div>, container);
+		InfernoDOM.render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
 
 		child = <div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 
-		Inferno.render(<div>{child}</div>, container);
+		InfernoDOM.render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.childNodes.length).to.equal(9);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.nodeName).to.equal('DIV');
 		child = <div>Hello, World!</div>
 
-		Inferno.render(<div>{child}</div>, container);
+		InfernoDOM.render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.innerHTML).to.equal('Hello, World!');
 
-		Inferno.render(<div>{null}</div>, container);
+		InfernoDOM.render(<div>{null}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
-		expect(container.firstChild.firstChild.childNodes.length).to.equal(0);
 
-		Inferno.render(<div></div>, container);
+
+		InfernoDOM.render(<div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 	});
 
@@ -253,21 +261,20 @@ describe( 'Elements (JSX)', () => {
 
 		child = <span><span></span><span></span></span>
 
-		Inferno.render(<div>{child}</div>, container);
+		InfernoDOM.render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.childNodes.length).to.equal(2);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.nodeName).to.equal('SPAN');
 
-		Inferno.render(<div>{null}</div>, container);
+		InfernoDOM.render(<div>{null}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
-		expect(container.firstChild.firstChild.childNodes.length).to.equal(0);
 
 		const divs = <div></div>;
 
 		child = <span><span>{divs}</span></span>
 
-		Inferno.render(<div>{child}</div>, container);
+		InfernoDOM.render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
@@ -278,12 +285,12 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render a simple div children set to undefined', () => {
 
-		Inferno.render(<div>{undefined}</div>, container);
+		InfernoDOM.render(<div>{undefined}</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('');
 
-		Inferno.render(<div>{undefined}</div>, container);
+		InfernoDOM.render(<div>{undefined}</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('');
@@ -291,30 +298,30 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render a simple div children set to null', () => {
 
-		Inferno.render(<div>{null}</div>, container);
+		InfernoDOM.render(<div>{null}</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('');
 
-		Inferno.render(<div>{null}</div>, container);
+		InfernoDOM.render(<div>{null}</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('');
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 	});
 
 	it('should render a simple div children set to null', () => {
 
-		Inferno.render(<div><div>{null}</div></div>, container);
+		InfernoDOM.render(<div><div>{null}</div></div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 
-		Inferno.render(<div><div>{null}</div></div>, container);
+		InfernoDOM.render(<div><div>{null}</div></div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
@@ -322,13 +329,13 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render a double div and a text node', () => {
 
-		Inferno.render(<div>{<div>Hello, World!</div> }</div>, container);
+		InfernoDOM.render(<div>{<div>Hello, World!</div> }</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('Hello, World!');
 
-		Inferno.render(<div>{<div>Hello, Redric!</div> }</div>, container);
+		InfernoDOM.render(<div>{<div>Hello, Redric!</div> }</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -338,26 +345,26 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render a single div with text node', () => {
 
-		Inferno.render(<div><span></span><span></span></div>, container);
+		InfernoDOM.render(<div><span></span><span></span></div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('');
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 	});
 
 	it('should render a simple div with a text node', () => {
 
-		Inferno.render(<div>Hello, world!</div>, container);
+		InfernoDOM.render(<div>Hello, world!</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('Hello, world!');
 
-		Inferno.render(<div>Hello, world! 2</div>, container);
+		InfernoDOM.render(<div>Hello, world! 2</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('Hello, world! 2');
@@ -365,13 +372,13 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render a simple div with attributes', () => {
 
-		Inferno.render(<div id={123}>Hello, world!</div>, container);
+		InfernoDOM.render(<div id={123}>Hello, world!</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.getAttribute('id')).to.equal('123');
 		expect(container.firstChild.textContent).to.equal('Hello, world!');
 
-		Inferno.render(<div id={'foo'}>Hello, world! 2</div>, container);
+		InfernoDOM.render(<div id={'foo'}>Hello, world! 2</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.getAttribute('id')).to.equal('foo');
@@ -380,16 +387,16 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render a simple div with inline style', () => {
 
-		Inferno.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);
+		InfernoDOM.render(<div style="background-color:lightgrey;">Hello, world!</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 
-		Inferno.render(<div id={'foo'}>Hello, world! 2</div>, container);
+		InfernoDOM.render(<div id={'foo'}>Hello, world! 2</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 
@@ -397,7 +404,7 @@ describe( 'Elements (JSX)', () => {
 
 	it('should render "className" attribute', () => {
 
-		Inferno.render(<div className='Dominic rocks!' />, container);
+		InfernoDOM.render(<div className='Dominic rocks!' />, container);
 		expect(container.firstChild.className).to.eql('Dominic rocks!');
 		expect(
 			container.innerHTML
@@ -405,16 +412,16 @@ describe( 'Elements (JSX)', () => {
 			'<div class="Dominic rocks!"></div>'
 		);
 
-		Inferno.render(<div className='' />, container);
+		InfernoDOM.render(<div className='' />, container);
 		expect(container.firstChild.className).to.eql('');
 
-		Inferno.render(<div className={null} />, container);
+		InfernoDOM.render(<div className={null} />, container);
 		expect(container.firstChild.className).to.eql('');
 
-		Inferno.render(<div className={undefined} />, container);
+		InfernoDOM.render(<div className={undefined} />, container);
 		expect(container.firstChild.className).to.eql('');
 
-		Inferno.render(<div className='Inferno rocks!' />, container);
+		InfernoDOM.render(<div className='Inferno rocks!' />, container);
 		expect(container.firstChild.getAttribute('class')).to.eql('Inferno rocks!');
 		expect(
 			container.innerHTML
@@ -425,7 +432,7 @@ describe( 'Elements (JSX)', () => {
 
 	it('shouldn\'t render null value', () => {
 
-		Inferno.render(<input values={ null } />, container);
+		InfernoDOM.render(<input values={ null } />, container);
 
 		expect( container.value ).to.be.undefined;
 		expect(
@@ -434,7 +441,7 @@ describe( 'Elements (JSX)', () => {
 			'<input>'
 		);
 
-		Inferno.render(<input values={ undefined } />, container);
+		InfernoDOM.render(<input values={ undefined } />, container);
 
 		expect( container.value ).to.be.undefined;
 		expect(
@@ -444,7 +451,7 @@ describe( 'Elements (JSX)', () => {
 		);
 
 		// unset
-		Inferno.render(null, container);
+		InfernoDOM.render(null, container);
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(0);
 
@@ -452,7 +459,7 @@ describe( 'Elements (JSX)', () => {
 
 	it('should set values as properties by default', () => {
 
-		Inferno.render(<input title='Tip!' />, container);
+		InfernoDOM.render(<input title='Tip!' />, container);
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
@@ -461,7 +468,7 @@ describe( 'Elements (JSX)', () => {
 			'<input title="Tip!">'
 		);
 
-		Inferno.render(<input title='Tip!' />, container);
+		InfernoDOM.render(<input title='Tip!' />, container);
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
@@ -478,7 +485,7 @@ describe( 'Elements (JSX)', () => {
 		val1 = 'Inferno';
 		val2 = 'Sucks!';
 
-		Inferno.render(<div className='foo'>
+		InfernoDOM.render(<div className='foo'>
 			<span className='bar'>{ val1 }</span>
 			<span className='yar'>{ val2 }</span>
 		</div>, container);
@@ -490,7 +497,7 @@ describe( 'Elements (JSX)', () => {
 		expect(container.childNodes[0].childNodes[1].getAttribute('class')).to.eql('yar');
 		expect(container.childNodes[0].childNodes[1].textContent).to.eql('Sucks!');
 
-		Inferno.render(<div className='fooo'>
+		InfernoDOM.render(<div className='fooo'>
 			<span className='bar'>{ val1 }</span>
 			<span className='yar'>{ val2 }</span>
 		</div>, container);
@@ -509,7 +516,7 @@ describe( 'Elements (JSX)', () => {
 
 		val1 = 'false';
 
-		Inferno.render(<input download={ val1 }></input>, container);
+		InfernoDOM.render(<input download={ val1 }></input>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -517,7 +524,7 @@ describe( 'Elements (JSX)', () => {
 
 		val1 = 'true';
 
-		Inferno.render(<input download={ val1 }></input>, container);
+		InfernoDOM.render(<input download={ val1 }></input>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -526,13 +533,13 @@ describe( 'Elements (JSX)', () => {
 
 	it('should properly render "className" property on a custom element', () => {
 
-		Inferno.render(<custom-elem className="Hello, world!"></custom-elem>, container);
+		InfernoDOM.render(<custom-elem className="Hello, world!"></custom-elem>, container);
 
 		expect(container.firstChild.nodeName).to.equal('CUSTOM-ELEM');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, world!');
 
-		Inferno.render(<custom-elem className="Hello, world!"></custom-elem>, container);
+		InfernoDOM.render(<custom-elem className="Hello, world!"></custom-elem>, container);
 
 		expect(container.firstChild.nodeName).to.equal('CUSTOM-ELEM');
 		expect(container.childNodes.length).to.equal(1);
@@ -541,7 +548,7 @@ describe( 'Elements (JSX)', () => {
 
 	it('should properly render "width" and "height" attributes', () => {
 
-		Inferno.render(<img src="" alt="Smiley face" height={42} width={42}></img>, container);
+		InfernoDOM.render(<img src="" alt="Smiley face" height={42} width={42}></img>, container);
 
 		expect(container.firstChild.nodeName).to.equal('IMG');
 		expect(container.childNodes.length).to.equal(1);
@@ -550,7 +557,7 @@ describe( 'Elements (JSX)', () => {
 		expect(container.firstChild.getAttribute('height')).to.equal('42');
 		expect(container.firstChild.getAttribute('width')).to.equal('42');
 
-		Inferno.render(<img src="" alt="Smiley face" height={42} width={42}></img>, container);
+		InfernoDOM.render(<img src="" alt="Smiley face" height={42} width={42}></img>, container);
 
 		expect(container.firstChild.nodeName).to.equal('IMG');
 		expect(container.childNodes.length).to.equal(1);
@@ -562,7 +569,7 @@ describe( 'Elements (JSX)', () => {
 
 	it('should properly render "width" and "height" attributes', () => {
 
-		Inferno.render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
+		InfernoDOM.render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -571,7 +578,7 @@ describe( 'Elements (JSX)', () => {
 		expect(container.firstChild.getAttribute('capture')).to.equal('capture');
 		expect(container.firstChild.getAttribute('accept')).to.equal('image/*');
 
-		Inferno.render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
+		InfernoDOM.render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -583,43 +590,43 @@ describe( 'Elements (JSX)', () => {
 
 	it('should handle className', () => {
 
-		Inferno.render(<div className={'foo'} />, container);
+		InfernoDOM.render(<div className={'foo'} />, container);
 		expect(container.firstChild.className).to.equal('foo');
-		Inferno.render(<div className={'bar'} />, container);
+		InfernoDOM.render(<div className={'bar'} />, container);
 		expect(container.firstChild.className).to.equal('bar');
-		Inferno.render(<div className={null} />, container);
+		InfernoDOM.render(<div className={null} />, container);
 		expect(container.firstChild.className).to.equal('');
-		Inferno.render(<div className={undefined} />, container);
+		InfernoDOM.render(<div className={undefined} />, container);
 		expect(container.firstChild.className).to.equal('');
-		Inferno.render(<svg className={'fooBar'} />, container);
+		InfernoDOM.render(<svg className={'fooBar'} />, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('fooBar');
 	});
 
 	it('should remove attributes', () => {
-		Inferno.render(<img height="17" />, container);
+		InfernoDOM.render(<img height="17" />, container);
 		expect(container.firstChild.hasAttribute('height')).to.be.true;
-		Inferno.render(<img />, container);
+		InfernoDOM.render(<img />, container);
 		expect(container.firstChild.hasAttribute('height')).to.be.false;
 	});
 
 	it( 'should remove properties', () => {
-		Inferno.render(<div className="monkey" />, container);
+		InfernoDOM.render(<div className="monkey" />, container);
 		expect(container.firstChild.className).to.equal('monkey');
-		Inferno.render(<div />, container);
+		InfernoDOM.render(<div />, container);
 		expect(container.firstChild.className).to.equal('');
-		Inferno.render(<svg className="monkey" />, container);
+		InfernoDOM.render(<svg className="monkey" />, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('monkey');
-		Inferno.render(<svg />, container);
+		InfernoDOM.render(<svg />, container);
 		expect(container.firstChild.getAttribute('class')).to.be.null;
 	});
 
 	it('should not update when switching between null/undefined', () => {
 
-		const node = Inferno.render(<div />, container);
+		const node = InfernoDOM.render(<div />, container);
 
-		Inferno.render(<div dir={null} />, container);
-		Inferno.render(<div dir={undefined} />, container);
-		Inferno.render(<div />, container);
-		Inferno.render(<div dir="ltr" />, container);
+		InfernoDOM.render(<div dir={null} />, container);
+		InfernoDOM.render(<div dir={undefined} />, container);
+		InfernoDOM.render(<div />, container);
+		InfernoDOM.render(<div dir="ltr" />, container);
 	});
 });

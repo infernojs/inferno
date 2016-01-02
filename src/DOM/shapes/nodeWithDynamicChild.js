@@ -21,7 +21,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						const childItem = value[i];
 
 						if ( typeof childItem === 'object' ) {
-							const childNode = childItem.domTree.create( childItem, treeLifecycle, context );
+							const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context );
 
 							if ( childItem.key === undefined ) {
 								keyedChildren = false;
@@ -37,7 +37,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						}
 					}
 				} else if ( typeof value === 'object' ) {
-					domNode.appendChild( value.domTree.create( value, treeLifecycle, context ) );
+					domNode.appendChild( value.tree.dom.create( value, treeLifecycle, context ) );
 				} else if ( isStringOrNumber( value ) ) {
 					domNode.textContent = value;
 				}
@@ -71,11 +71,11 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						// debugger;
 					}
 				} else if ( typeof nextValue === 'object' ) {
-					const tree = nextValue.domTree;
+					const tree = nextValue.tree;
 
 					if ( !isVoid( tree ) ) {
-						if ( lastValue.domTree !== null ) {
-							tree.update( lastValue, nextValue, treeLifecycle, context );
+						if ( lastValue.tree !== null ) {
+							tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 						} else {
 							// TODO implement
 						}

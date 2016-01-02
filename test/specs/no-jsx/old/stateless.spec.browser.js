@@ -1,4 +1,12 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+addTreeConstructor( 'dom', createDOMTree );
+
 
 const { createElement } = Inferno.TemplateFactory;
 
@@ -41,13 +49,13 @@ describe( 'Stateless components - (non-JSX)', () => {
 			)
 		);
 
-		Inferno.render(template(BasicStatelessComponent1, 'abc'), container);
+		InfernoDOM.render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
-		Inferno.render(template(BasicStatelessComponent1, 'abc'), container);
+		InfernoDOM.render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
@@ -70,20 +78,20 @@ describe( 'Stateless components - (non-JSX)', () => {
 		});
 
 		expect(
-			() => Inferno.render(template(BasicStatelessComponent1, text), container)
+			() => InfernoDOM.render(template(BasicStatelessComponent1, text), container)
 		).to.throw;
 		expect(
-			() => Inferno.render(template(BasicStatelessComponent1, text1), container)
+			() => InfernoDOM.render(template(BasicStatelessComponent1, text1), container)
 		).to.throw;
 
-		Inferno.render(template(BasicStatelessComponent1), container);
+		InfernoDOM.render(template(BasicStatelessComponent1), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
 
-		Inferno.render(template(undefined), container);
+		InfernoDOM.render(template(undefined), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -111,12 +119,12 @@ describe( 'Stateless components - (non-JSX)', () => {
 			})
 		);
 
-		Inferno.render(template(BasicStatelessComponent1, 'abc', 'Hello, World!'), container);
+		InfernoDOM.render(template(BasicStatelessComponent1, 'abc', 'Hello, World!'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('The title is abc');
-		Inferno.render(template(BasicStatelessComponent1, 'abc', 'Hello, World!'), container);
+		InfernoDOM.render(template(BasicStatelessComponent1, 'abc', 'Hello, World!'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.tagName).to.equal('SPAN');
@@ -132,7 +140,7 @@ describe( 'Stateless components - (non-JSX)', () => {
 		});
 
 		expect(
-			() => Inferno.render(template(BasicStatelessComponent1, text1), container)
+			() => InfernoDOM.render(template(BasicStatelessComponent1, text1), container)
 		).to.throw;
 	});
 });

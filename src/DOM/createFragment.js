@@ -22,17 +22,14 @@ export default function createDOMFragment( parentNode, nextNode ) {
 	return {
 		parentNode,
 		render( nextItem ) {
-
 			if ( nextItem ) {
-
-				const tree = nextItem.domTree;
+				const tree = nextItem.tree;
 
 				if ( tree ) {
-
 					if ( lastItem ) {
-						tree.update( lastItem, nextItem, treeLifecycle, context );
+						tree.dom.update( lastItem, nextItem, treeLifecycle, context );
 					} else {
-						const dom = tree.create( nextItem, treeLifecycle, context );
+						const dom = tree.dom.create( nextItem, treeLifecycle, context );
 
 						if ( nextNode ) {
 							parentNode.insertBefore( dom, nextNode );
@@ -51,10 +48,10 @@ export default function createDOMFragment( parentNode, nextNode ) {
 		},
 		remove() {
 			if ( lastItem ) {
-				const tree = lastItem.domTree;
+				const tree = lastItem.tree;
 
 				if ( lastItem ) {
-					tree.remove( lastItem, treeLifecycle );
+					tree.dom.remove( lastItem, treeLifecycle );
 				}
 				remove( lastItem, parentNode );
 			}

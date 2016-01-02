@@ -43,7 +43,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, toUseItem ), context );
 
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
+					domNode = nextRender.tree.dom.create( nextRender, treeLifecycle, context );
 					statelessRender = nextRender;
 					item.rootNode = domNode;
 				} else {
@@ -58,7 +58,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 						context = { ...context, ...childContext };
 					}
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
+					domNode = nextRender.tree.dom.create( nextRender, treeLifecycle, context );
 					item.rootNode = domNode;
 					instance._lastRender = nextRender;
 
@@ -81,7 +81,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 							context = { ...context, ...childContext };
 						}
 						nextRender.parent = currentItem;
-						nextRender.domTree.update( instance._lastRender, nextRender, treeLifecycle, context );
+						nextRender.tree.dom.update( instance._lastRender, nextRender, treeLifecycle, context );
 						currentItem.rootNode = nextRender.rootNode;
 						instance._lastRender = nextRender;
 					};
@@ -104,7 +104,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
 
 					nextRender.parent = currentItem;
-					const newDomNode = nextRender.domTree.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
+					const newDomNode = nextRender.tree.dom.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
 
 					if ( newDomNode ) {
 						if ( nextRender.rootNode.parentNode ) {
@@ -119,7 +119,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 
 					statelessRender = nextRender;
 				} else {
-					if ( !instance || node !== lastItem.domTree || Component !== instance.constructor ) {
+					if ( !instance || node !== lastItem.tree || Component !== instance.constructor ) {
 						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 						return;
 					}
@@ -138,7 +138,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 			let instance = node.instance;
 
 			if ( instance ) {
-				instance._lastRender.domTree.remove( instance._lastRender, treeLifecycle );
+				instance._lastRender.tree.dom.remove( instance._lastRender, treeLifecycle );
 				instance.componentWillUnmount();
 			}
 		}

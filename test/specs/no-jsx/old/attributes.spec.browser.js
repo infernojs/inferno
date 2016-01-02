@@ -1,4 +1,9 @@
-import Inferno from '../../../../src/index';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+
+addTreeConstructor( 'dom', createDOMTree );
 
 describe( 'Attributes / properties - (non-JSX)', () => {
 
@@ -40,7 +45,6 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 			expected: null
 		}];
 
-
 		const attrs = ['title',
 			'heLLo123',
 			'data-custom',
@@ -79,12 +83,12 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 						attrs: attr
 					}));
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 					expect(container.firstChild.getAttribute(attrs)).to.equal(def.expected);
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 				});
@@ -139,12 +143,12 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 						attrs: attr
 					}));
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 					expect(container.firstChild.getAttribute(attrs)).to.equal(def.expected);
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 				});
@@ -200,12 +204,12 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 						attrs: attr
 					}));
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 					expect(container.firstChild.getAttribute(attrs)).to.equal(def.expected);
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 				});
@@ -240,7 +244,7 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 						attrs: attr
 					}));
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
@@ -248,7 +252,7 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 
 					expect(container.firstChild[attrs]).to.be.undefined;
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 					expect(container.firstChild.getAttribute(attrs)).to.eql(attrs);
@@ -322,7 +326,7 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 						attrs: attr
 					}));
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
@@ -330,7 +334,7 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 
 					expect(container.firstChild[attrs]).to.be.undefined;
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 					expect(container.firstChild.getAttribute(attrs)).to.eql(def.expected);
@@ -403,7 +407,7 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 						attrs: attr
 					}));
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
@@ -457,14 +461,14 @@ describe( 'Attributes / properties - (non-JSX)', () => {
 						attrs: attr
 					}));
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 					expect(container.firstChild.getAttribute(attrs)).to.eql(def.expected);
 					expect(container.firstChild[attrs]).to.be.undefined;
 
-					Inferno.render(template(att), container);
+					InfernoDOM.render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
 					//  expect(container.firstChild.getAttribute(attrs)).to.eql(attrs);

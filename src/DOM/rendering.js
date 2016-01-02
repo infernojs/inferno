@@ -45,7 +45,3 @@ export function render( nextItem, parentNode ) {
 		}
 	}
 }
-
-export function renderToString( /* nextItem */ ) {
-	// TODO
-}

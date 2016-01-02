@@ -1,4 +1,11 @@
-import Inferno from '../../../../src';
+import Inferno from '../../../../packages/inferno/src/';
+import InfernoDOM from '../../../../packages/inferno-dom/src/';
+
+// WHY would we need this??
+
+import { addTreeConstructor } from '../../../../src/core/createTemplate';
+import createDOMTree from '../../../../src/DOM/createTree';
+addTreeConstructor( 'dom', createDOMTree );
 
 describe( 'Text - (non-JSX)', () => {
 
@@ -90,11 +97,11 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(3);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(3);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
@@ -114,12 +121,12 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
@@ -128,8 +135,7 @@ describe( 'Text - (non-JSX)', () => {
 		});
 	});
 
-
-	emptyDefinitions.forEach((arg) => {
+		emptyDefinitions.forEach((arg) => {
 
 		[{
 			description: 'should create a dynamic text node on a root node with ' + arg.name,
@@ -140,11 +146,11 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(3);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(3);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
@@ -163,12 +169,12 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
@@ -191,13 +197,13 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -218,13 +224,13 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -249,13 +255,13 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -282,13 +288,13 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -303,12 +309,7 @@ describe( 'Text - (non-JSX)', () => {
 		value: ['Hello', ' World'],
 		expected: 'Hello World',
 		children: 2
-	}/*, {
-	 name: 'multiple numbers (subtraction)',
-	 value: [null, 3],
-	 expected: '93',
-	 children: 2
-	 }*/, {
+	}, {
 		name: 'multiple numbers ( cast to string)',
 		value: ['12', '3'],
 		expected: '123',
@@ -343,12 +344,7 @@ describe( 'Text - (non-JSX)', () => {
 		value: 123,
 		expected: '123',
 		children: 1
-	}/*, {
-	 name: 'null inside array',
-	 value: [null],
-	 expected: '',
-	 children: 0
-	 }*/, {
+	}, {
 		name: 'multiple numbers (Addition)',
 		value: [12 + 3, 3],
 		expected: '153',
@@ -382,13 +378,13 @@ describe( 'Text - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(arg.children);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				Inferno.render(Inferno.createTemplate(test.template)(arg.value), container);
+				InfernoDOM.render(Inferno.createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(arg.children);
@@ -397,4 +393,5 @@ describe( 'Text - (non-JSX)', () => {
 			});
 		});
 	});
+
 });
