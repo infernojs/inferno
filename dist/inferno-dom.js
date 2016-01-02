@@ -27,65 +27,29 @@
     return target;
   };
 
+  var canUseDOM = !!(typeof window !== 'undefined' &&
+  // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
+  // As a workaround, check if document is undefined
+  typeof document !== 'undefined' && window.document.createElement);
+
+  var ExecutionEnvironment = {
+  	canUseDOM: canUseDOM,
+  	canUseWorkers: typeof Worker !== 'undefined',
+  	canUseEventListeners: canUseDOM && !!window.addEventListener,
+  	canUseViewport: canUseDOM && !!window.screen,
+  	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
+  };
+
+  var isArray = (function (x) {
+    return x.constructor === Array;
+  })
+
   var isVoid = (function (x) {
     return x === null || x === undefined;
   })
 
   var isStringOrNumber = (function (x) {
     return typeof x === 'string' || typeof x === 'number';
-  })
-
-  // To be compat with React, we support at least the same SVG elements
-  function isSVGElement(nodeName) {
-  	return nodeName === 'svg' || nodeName === 'clipPath' || nodeName === 'circle' || nodeName === 'defs' || nodeName === 'desc' || nodeName === 'ellipse' || nodeName === 'filter' || nodeName === 'g' || nodeName === 'line' || nodeName === 'linearGradient' || nodeName === 'mask' || nodeName === 'marker' || nodeName === 'metadata' || nodeName === 'mpath' || nodeName === 'path' || nodeName === 'pattern' || nodeName === 'polygon' || nodeName === 'polyline' || nodeName === 'pattern' || nodeName === 'radialGradient' || nodeName === 'rect' || nodeName === 'set' || nodeName === 'stop' || nodeName === 'symbol' || nodeName === 'switch' || nodeName === 'text' || nodeName === 'tspan' || nodeName === 'use' || nodeName === 'view';
-  }
-
-  function isMathMLElement(nodeName) {
-  	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
-  }
-
-  var recyclingEnabled$9 = true;
-
-  function pool(item) {
-  	var key = item.key;
-  	var tree = item.tree;
-
-  	if (key === null) {
-  		tree.dom.pool.push(item);
-  	} else {
-
-  		var keyedPool = tree.dom.keyedPool; // TODO rename
-
-  		(keyedPool[key] || (keyedPool[key] = [])).push(item);
-  	}
-  }
-
-  function recycle(tree, item, treeLifecycle, context) {
-  	// TODO use depth as key
-  	var key = item.key;
-  	var recyclableItem = undefined;
-
-  	// TODO faster to check pool size first?
-  	if (key !== null) {
-
-  		var keyPool = tree.keyedPool[key];
-
-  		recyclableItem = keyPool && keyPool.pop();
-  	} else {
-  		recyclableItem = tree.pool.pop();
-  	}
-  	if (recyclableItem) {
-  		tree.update(recyclableItem, item, treeLifecycle, context);
-  		return item.rootNode;
-  	}
-  }
-
-  function isRecyclingEnabled() {
-  	return recyclingEnabled$9;
-  }
-
-  var isArray = (function (x) {
-    return x.constructor === Array;
   })
 
   var ObjectTypes = {
@@ -162,18 +126,60 @@
   	}
   }
 
-  var canUseDOM = !!(typeof window !== 'undefined' &&
-  // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
-  // As a workaround, check if document is undefined
-  typeof document !== 'undefined' && window.document.createElement);
+  var treeConstructors = {};
 
-  var ExecutionEnvironment = {
-  	canUseDOM: canUseDOM,
-  	canUseWorkers: typeof Worker !== 'undefined',
-  	canUseEventListeners: canUseDOM && !!window.addEventListener,
-  	canUseViewport: canUseDOM && !!window.screen,
-  	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
-  };
+  function addTreeConstructor(name, treeConstructor) {
+  	treeConstructors[name] = treeConstructor;
+  }
+
+  // To be compat with React, we support at least the same SVG elements
+  function isSVGElement(nodeName) {
+  	return nodeName === 'svg' || nodeName === 'clipPath' || nodeName === 'circle' || nodeName === 'defs' || nodeName === 'desc' || nodeName === 'ellipse' || nodeName === 'filter' || nodeName === 'g' || nodeName === 'line' || nodeName === 'linearGradient' || nodeName === 'mask' || nodeName === 'marker' || nodeName === 'metadata' || nodeName === 'mpath' || nodeName === 'path' || nodeName === 'pattern' || nodeName === 'polygon' || nodeName === 'polyline' || nodeName === 'pattern' || nodeName === 'radialGradient' || nodeName === 'rect' || nodeName === 'set' || nodeName === 'stop' || nodeName === 'symbol' || nodeName === 'switch' || nodeName === 'text' || nodeName === 'tspan' || nodeName === 'use' || nodeName === 'view';
+  }
+
+  function isMathMLElement(nodeName) {
+  	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
+  }
+
+  var recyclingEnabled$9 = true;
+
+  function pool(item) {
+  	var key = item.key;
+  	var tree = item.tree;
+
+  	if (key === null) {
+  		tree.dom.pool.push(item);
+  	} else {
+
+  		var keyedPool = tree.dom.keyedPool; // TODO rename
+
+  		(keyedPool[key] || (keyedPool[key] = [])).push(item);
+  	}
+  }
+
+  function recycle(tree, item, treeLifecycle, context) {
+  	// TODO use depth as key
+  	var key = item.key;
+  	var recyclableItem = undefined;
+
+  	// TODO faster to check pool size first?
+  	if (key !== null) {
+
+  		var keyPool = tree.keyedPool[key];
+
+  		recyclableItem = keyPool && keyPool.pop();
+  	} else {
+  		recyclableItem = tree.pool.pop();
+  	}
+  	if (recyclableItem) {
+  		tree.update(recyclableItem, item, treeLifecycle, context);
+  		return item.rootNode;
+  	}
+  }
+
+  function isRecyclingEnabled() {
+  	return recyclingEnabled$9;
+  }
 
   var isSVG = undefined;
 
@@ -1555,7 +1561,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1565,7 +1571,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1680,7 +1686,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1690,7 +1696,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3535,10 +3541,17 @@
 
   if (global && global.Inferno) {
   	global.Inferno.addTreeConstructor('dom', createDOMTree);
-  } else {
-  	// is this working?
+  } else if (global && !global.Inferno) {
+
   	var Inferno = require('inferno');
-  	Inferno.addTreeConstructor('dom', createDOMTree);
+
+  	if (typeof Inferno.addTreeConstructor !== 'function') {
+  		throw 'OLD PACKAGE DETECTED!! Upgrade to newest Inferno version before you can use the InfernoDOM package.';
+  	} else {
+  		Inferno.addTreeConstructor('dom', createDOMTree);
+  	}
+  } else {
+  	addTreeConstructor('dom', createDOMTree);
   }
 
   var index = {
