@@ -1,8 +1,4 @@
-./test/specs/no-jsx/**/*spec.server.js
-./test/specs/no-jsx/**/*spec.js
-./test/specs/jsx/**/*spec.server.js
-./test/specs/jsx/**/*spec.js
-
+./src/**/*__tests__*/**/*spec.server.js
 
 --require ./config/mocha.conf.js
 --reporter spec
