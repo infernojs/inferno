@@ -1,7 +1,7 @@
 import createTree from '../createTree';
 import { render, renderToString } from '../rendering';
 
-describe('createTree ( UT tests)', () => {
+describe('createTree', () => {
 
 	it('should throw if array or no "schema"', () => {
 

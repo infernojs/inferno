@@ -1,7 +1,7 @@
 import getFormElementValues from '../getFormElementValues';
 import { render, renderToString } from '../rendering';
 
-describe('getFormElementType ( UT tests)', () => {
+describe('getFormElementType', () => {
 
 	let container;
 

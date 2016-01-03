@@ -19,7 +19,7 @@ describe( 'Components', () => {
 	});
 
 	afterEach(() => {
-		//	render(null, container);
+		render(null, container);
 	});
 
 	class BasicComponent1 extends Component {
@@ -702,9 +702,6 @@ describe( 'Components', () => {
 		expect(unmountCount).to.equal(1);
 	});
 
-
-
-
 	it('should mount and unmount a basic component #2', () => {
 		let mountCount;
 		let unmountCount;
@@ -911,5 +908,93 @@ describe( 'Components', () => {
 			);
 		});
 	});*/
+
+	function BasicStatelessComponent1({
+		name,
+		title
+		}) {
+
+		const template = createTemplate((name, title) =>
+			createElement('div', {
+					className: 'basic'
+				},
+				createElement('span', {
+					className: name
+				}, 'The title is ', title)
+			)
+		);
+		return template(name, title);
+	}
+
+	it('should render a stateless component', () => {
+		let template = createTemplate((Component, title) =>
+			createElement('div', null,
+				createElement(Component, {
+					title: title,
+					name: 'Hello, World!'
+				})
+			)
+		);
+
+		render(template(BasicStatelessComponent1, 'abc'), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+		render(template(BasicStatelessComponent1, 'abc'), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+
+		const text = createTemplate(() => {
+			return {
+				text: '123abc'
+			}
+		});
+
+		const text1 = createTemplate(() => {
+			return {
+				tag: 'span',
+				children: {
+					text: '123abc'
+				}
+			}
+		});
+
+		expect(
+			() => render(template(BasicStatelessComponent1, text), container)
+		).to.throw;
+		expect(
+			() => render(template(BasicStatelessComponent1, text1), container)
+		).to.throw;
+
+		render(template(BasicStatelessComponent1), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
+
+		render(template(undefined), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div></div>'
+		);
+
+		expect(
+			() => createTemplate(() => {
+				return {
+					tag: 'span',
+					children: {
+						text: null
+					}
+				}
+			})
+		).to.throw;
+	});
 
 } );

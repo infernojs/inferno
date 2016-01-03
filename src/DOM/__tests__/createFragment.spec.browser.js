@@ -1,7 +1,7 @@
 import createFragment from '../createFragment';
 import { render, renderToString } from '../rendering';
 
-describe('createFragment ( UT tests)', () => {
+describe('createFragment', () => {
 
 	it('should return the "body" of createFragment', () => {
 		// Not much we can test here, but we will do our best!
