@@ -84,7 +84,7 @@ describe( 'Creation - (non-JSX)', () => {
 				children: [
 					null,
 					null, {
-						tag: 'span'
+					tag: 'span'
 					}
 				]
 			}
@@ -92,6 +92,36 @@ describe( 'Creation - (non-JSX)', () => {
 		tagName: 'div',
 		children: 1,
 		textContent: ''
+	}, {
+		description: 'should render div with three span children and unset first, and middle child',
+		template: () => {
+			return {
+				tag: 'div',
+				children: [
+					null,
+					null,
+					null
+				]
+			}
+		},
+		tagName: 'div',
+		children: 0,
+		textContent: ''
+	}, {
+		description: 'should render div with two null children and one text node',
+		template: () => {
+			return {
+				tag: 'div',
+				children: [
+					null,
+					'Baboy',
+					null
+				]
+			}
+		},
+		tagName: 'div',
+		children: 1,
+		textContent: 'Baboy'
 	}, {
 		description: 'should render div with one textNode and a span children',
 		template: () => {

@@ -98,12 +98,47 @@ describe( 'Update', () => {
 		}));
 
 		render(template(span()), container);
-
 		expect(container.firstChild.innerHTML).to.equal('<div></div>');
-
+		render(template(null), container);
+		expect(container.firstChild.innerHTML).to.equal('');
 		render(template(span()), container);
-
 		expect(container.firstChild.innerHTML).to.equal('<div></div>');
+
+	});
+
+	it('should insert an additionnal tag node"', () => {
+
+		const template = createTemplate((child) => ({
+			tag: 'div',
+
+			children: child
+		}));
+
+		const span = createTemplate(() => ({
+			tag: 'div'
+		}));
+		render(template(null), container);
+		expect(container.firstChild.innerHTML).to.equal('');
+		render(template(span()), container);
+		expect(container.firstChild.innerHTML).to.equal('<div></div>');
+	});
+
+	it('should insert an additionnal tag node"', () => {
+
+		const template = createTemplate((child) => ({
+			tag: 'div',
+
+			children: child
+		}));
+
+		const span = createTemplate(() => ({
+			tag: 'div'
+		}));
+
+		render(template(null), container);
+		expect(container.firstChild.innerHTML).to.equal('');
+		render(template(null), container);
+		expect(container.firstChild.innerHTML).to.equal('');
 	});
 
 	it('should insert multiple additionnal tag node"', () => {
@@ -246,6 +281,67 @@ describe( 'Update', () => {
 		);
 	});
 
+	it('should update a wrapped text node', () => {
+
+		const template = createTemplate((val1, val2) => ({
+			tag: 'div',
+			children: [
+				val1,
+				' foo',
+				val2
+			]
+		}));
+
+		render(template(null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div> foo</div>'
+		);
+
+		render(template(undefined), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div> foo</div>'
+		);
+
+		render(template('Hello', 'Bar'), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello fooBar</div>'
+		);
+
+		render(template('Hello', null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello foo</div>'
+		);
+
+		render(template(null, 'Bar'), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div> fooBar</div>'
+		);
+
+		render(template(undefined), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div> foo</div>'
+		);
+
+		render(template('The', ' is dead!'), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>The foo is dead!</div>'
+		);
+	});
+
 	it('should update a wrapped text node with 4 arguments', () => {
 		const template = createTemplate((val1, val2, val3, val4) => ({
 			tag: 'div',
@@ -262,6 +358,20 @@ describe( 'Update', () => {
 			container.innerHTML
 		).to.equal(
 			'<div>Hello world! and Bar</div>'
+		);
+
+		render(template(null, null, null, null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div></div>'
+		);
+
+		render(template(), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div></div>'
 		);
 
 		render(template('Hello', ' world!', ' and ', 'Zoo'), container);
@@ -298,6 +408,13 @@ describe( 'Update', () => {
 			container.innerHTML
 		).to.equal(
 			'<div>The bar is is dead!</div>'
+		);
+
+		render(template('Hello', ' world!', null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello world!</div>'
 		);
 	});
 
