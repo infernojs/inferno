@@ -153,6 +153,28 @@ describe( 'Text', () => {
 				expect(container.firstChild.nodeType).to.equal(3);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(''), container);
+				expect(container.firstChild.nodeType).to.equal(3);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(3);
+				expect(container.firstChild.textContent).to.equal('');
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(3);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(3);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+			});
 		});
 	});
 
@@ -172,6 +194,19 @@ describe( 'Text', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
+
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
 
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);

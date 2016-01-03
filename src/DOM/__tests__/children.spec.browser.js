@@ -71,8 +71,16 @@ describe( 'Children - (non-JSX)', () => {
 		value: '0',
 		expected: '0'
 	}, {
+		name: 'negative number',
+		value: -44444,
+		expected: '-44444'
+	}, {
+		name: 'negative number (cast to string)',
+		value: '-2344',
+		expected: '-2344'
+	}, {
 		name: 'NaN',
-		value: 'NaN',
+		value: NaN,
 		expected: 'NaN'
 	}, {
 		name: 'empty array',
@@ -111,50 +119,34 @@ describe( 'Children - (non-JSX)', () => {
 		value: [' 1 ', '2', '3  '],
 		expected: ' 1 23  '
 	},
-		/*{
-		 name: 'single null in an array',
-		 value: [1, 2, null],
-		 expected: '12'
-		 },
-		 {
-		 name: 'dobule null in an array',
-		 value: [1, null, null],
-		 expected: '1'
-		 },
-		 {
-		 name: 'triple null in an array',
-		 value: [null, null, null],
-		 expected: ''
-		 },*/
-		{
-			name: 'single undefined in an array',
-			value: [1, 2, undefined],
-			expected: '12'
-		}, {
-			name: 'undefined in the middle of an array',
-			value: [1, undefined, 3],
-			expected: '13'
-		}, {
-			name: 'dobule undefined in an array',
-			value: [1, undefined, undefined],
-			expected: '1'
-		}, {
-			name: 'triple undefined in an array',
-			value: [undefined, undefined, undefined],
-
+	{
+		name: 'single undefined in an array',
+		value: [1, 2, undefined],
+		expected: '12'
+	}, {
+		name: 'undefined in the middle of an array',
+		value: [1, undefined, 3],
+		expected: '13'
+	}, {
+		name: 'dobule undefined in an array',
+		value: [1, undefined, undefined],
+		expected: '1'
+	}, {
+		name: 'triple undefined in an array',
+		value: [undefined, undefined, undefined],
 			expected: ''
-		}, {
-			name: 'single empty string in an array',
-			value: [1, 2, ''],
-			expected: '12'
-		}, {
-			name: 'dobule empty string in an array',
-			value: [1, '', ''],
-			expected: '1'
-		}, {
-			name: 'triple empty string in an array',
-			value: ['', '', ''],
-			expected: ''
+	}, {
+		name: 'single empty string in an array',
+		value: [1, 2, ''],
+		expected: '12'
+	}, {
+		name: 'dobule empty string in an array',
+		value: [1, '', ''],
+		expected: '1'
+	}, {
+		name: 'triple empty string in an array',
+		value: ['', '', ''],
+		expected: ''
 		}
 	];
 
@@ -266,7 +258,37 @@ describe( 'Children - (non-JSX)', () => {
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
+				render(createTemplate(test.template)(), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+
 			});
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+				render(createTemplate(test.template)(undefined), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+			});
+
+
+
 		});
 	});
 
@@ -291,6 +313,15 @@ describe( 'Children - (non-JSX)', () => {
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.textContent).to.equal('');
+				render(createTemplate(test.template)(undefined), container);
+				expect(container.firstChild.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.textContent).to.equal('');
+				render(createTemplate(test.template)(), container);
+				expect(container.firstChild.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.textContent).to.equal('');
 			});
 		});
 	});
