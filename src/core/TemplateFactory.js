@@ -1,4 +1,5 @@
 import isArray from '../util/isArray';
+import isVoid from '../util/isVoid';
 
 function createChildren( children ) {
 	const childrenArray = [];
@@ -14,6 +15,11 @@ function createChildren( children ) {
 }
 
 function createElement( tag, attrs, ...children ) {
+
+	if ( isVoid( tag ) ) {
+		return;
+	}
+
 	if ( tag ) {
 		const vNode = {
 			tag

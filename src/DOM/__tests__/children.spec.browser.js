@@ -266,6 +266,7 @@ describe( 'Children - (non-JSX)', () => {
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
 			});
+
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(), container);
@@ -274,6 +275,26 @@ describe( 'Children - (non-JSX)', () => {
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
 			});
 
 			it(test.description, () => {
@@ -287,6 +308,16 @@ describe( 'Children - (non-JSX)', () => {
 
 			});
 
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+			});
 
 
 		});

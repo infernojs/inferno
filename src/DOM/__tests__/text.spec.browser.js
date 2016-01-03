@@ -134,6 +134,31 @@ describe( 'Text', () => {
 		});
 	});
 
+	emptyDefinitions.forEach((arg) => {
+
+		[{
+			description: 'should create a static text node with null',
+			template: () => ({
+				tag: 'div',
+				text: null
+			})
+		}].forEach((test) => {
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(createTemplate(test.template)(), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+			});
+		});
+	});
+
 		emptyDefinitions.forEach((arg) => {
 
 		[{
@@ -334,6 +359,53 @@ describe( 'Text', () => {
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+			});
 		});
 	});
 
@@ -366,6 +438,21 @@ describe( 'Text', () => {
 	}, {
 		name: 'empty string',
 		value: '',
+		expected: '',
+		children: 0
+	}, {
+		name: 'string with whitespace',
+		value: ' ',
+		expected: ' ',
+		children: 1
+	}, {
+		name: 'string as null',
+		value: null,
+		expected: '',
+		children: 0
+	}, {
+		name: 'string as undefined',
+		value: null,
 		expected: '',
 		children: 0
 	}, {
@@ -425,7 +512,55 @@ describe( 'Text', () => {
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
 			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(0);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(arg.children);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(arg.children);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(0);
+				expect(container.firstChild.textContent).to.equal('');
+
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(0);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(0);
+				expect(container.firstChild.textContent).to.equal('');
+
+			});
+
 		});
 	});
-
 });

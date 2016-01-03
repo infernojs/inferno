@@ -1555,7 +1555,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1565,7 +1565,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1680,7 +1680,7 @@
   	return node;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1690,7 +1690,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2048,7 +2048,7 @@
   	}
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2060,7 +2060,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2266,7 +2266,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2276,7 +2276,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;

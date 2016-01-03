@@ -215,6 +215,39 @@ describe( 'CSS style properties', () => {
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
 
 			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.null;
+				render(createTemplate(test.template)(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
+
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.null;
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.null;
+
+			});
+
+			it(test.description, () => {
+
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.null;
+				render(createTemplate(test.template)(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.null;
+
+			});
 		});
 	});
 
