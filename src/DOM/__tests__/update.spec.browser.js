@@ -428,7 +428,6 @@ describe( 'Update', () => {
 			}
 		}));
 
-
 		render(template('Hello'), container);
 		expect(
 			container.innerHTML
@@ -441,6 +440,27 @@ describe( 'Update', () => {
 			container.innerHTML
 		).to.equal(
 			'<div id="Bar">Hello, World</div>'
+		);
+
+		render(template(), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello, World</div>'
+		);
+
+		render(template(), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello, World</div>'
+		);
+
+		render(template(null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello, World</div>'
 		);
 
 		render(template(null), container);
@@ -500,6 +520,54 @@ describe( 'Update', () => {
 		);
 	});
 
+	it('should update a node with multiple children and static text', () => {
+
+		const template = createTemplate((val1) => ({
+			tag: 'div',
+			attrs: {
+				id: val1
+			},
+			children: {
+				text: 'Hello, World'
+			}
+		}));
+
+		render(template(null), container); // should unset
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello, World</div>'
+		);
+
+		render(template('Hello'), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div id="Hello">Hello, World</div>'
+		);
+
+		render(template(undefined), container); // should unset
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello, World</div>'
+		);
+
+		render(template('foo'), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div id="foo">Hello, World</div>'
+		);
+
+		render(template(), container); // should unset
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div>Hello, World</div>'
+		);
+	});
+
 	it('should update a div with class attribute, and dynamic children with static text', () => {
 
 		const template = createTemplate((child) => ({
@@ -521,8 +589,13 @@ describe( 'Update', () => {
 			children: b
 		}));
 
-		render(template(span(b())), container);
+		render(template(null), container);
 
+		expect(container.firstChild.nodeType).to.equal(1);
+		expect(container.firstChild.childNodes.length).to.equal(0);
+		expect(container.firstChild.tagName).to.equal('DIV');
+
+		render(template(span(b())), container);
 		expect(container.firstChild.nodeType).to.equal(1);
 		expect(container.firstChild.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.firstChild.childNodes.length).to.equal(3);
@@ -563,6 +636,14 @@ describe( 'Update', () => {
 			};
 		});
 
+		render(template(), container);
+
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
 		render(template('foo1', 'bar1', 'foo2', 'bar2', 'foo3', 'bar3'), container);
 
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
@@ -570,6 +651,46 @@ describe( 'Update', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('bar3');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('bar3');
+
+
+		render(template('foo1', 'foo2', 'bar2', 'foo3', 'bar3'), container);
+
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.equal('foo2');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		render(template(null), container);
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		render(template(undefined), container);
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		render(template('yar1', 'noo1', [], 'noo2', 'yar3', 'noo3'), container);
+
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.equal('noo1');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('noo3');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('noo3');
+
+
+		render(template('yar1', 'noo1', [], 'noo2', 'yar3', 123), container);
+
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.equal('noo1');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('123');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('123');
 
 		render(template('yar1', 'noo1', 'yar2', 'noo2', 'yar3', 'noo3'), container);
 
@@ -586,6 +707,34 @@ describe( 'Update', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		render(template('yar1', null, null, 'noo2', null, null), container);
+
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		render(template([], null, null, [], null, null), container);
+
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		render(template([], [], 123, [], null, null), container);
+
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.getAttribute('class')).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.textContent).to.equal('');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
+
+		expect(
+			() => render(template([], [],  [], [], '',  []), container)
+		).to.throw;
 	});
 
 
@@ -648,6 +797,20 @@ describe( 'Update', () => {
 			children: child
 		}));
 
+		render(template(null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div></div>'
+		);
+
+		render(template(null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div></div>'
+		);
+
 		const span = createTemplate(() => ({
 			tag: 'div',
 			children: 'Hello'
@@ -657,13 +820,6 @@ describe( 'Update', () => {
 			container.innerHTML
 		).to.equal(
 			'<div><div>Hello</div></div>'
-		);
-
-		render(template(null), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div></div>'
 		);
 	});
 
@@ -703,11 +859,11 @@ describe( 'Update', () => {
 		);
 
 
-		render(template(span()), container);
+		render(template(), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><span>Good bye!</span></div>'
+			'<div></div>'
 		);
 	});
 
@@ -944,7 +1100,7 @@ describe( 'Update', () => {
 	});
 
 	it('should update an node with static child and text', () => {
-		const template = createTemplate((child) => ({
+		const template = createTemplate(() => ({
 			tag: 'div',
 			children: {
 				tag: 'div',
@@ -952,12 +1108,12 @@ describe( 'Update', () => {
 			}
 		}));
 
-		render(template('id#1'), container);
+		render(template(), container);
 		expect(container.firstChild.innerHTML).to.equal('<div>Hello, World</div>');
-		render(template('id#1'), container);
+		render(template(), container);
 		expect(container.firstChild.innerHTML).to.equal('<div>Hello, World</div>');
 
-		render(template('id#2'), container);
+		render(template(), container);
 		expect(container.firstChild.innerHTML).to.equal('<div>Hello, World</div>');
 	});
 
@@ -995,10 +1151,13 @@ describe( 'Update', () => {
 				children: ['Hello ', 'World']
 			};
 		});
+
+		render(template(null), container);
+		expect(container.firstChild.innerHTML).to.equal('<div></div>' );
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
-		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
+		render(template(null), container);
+		expect(container.firstChild.innerHTML).to.equal('<div></div>' );
 	});
 
 
