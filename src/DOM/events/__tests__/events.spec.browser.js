@@ -1,7 +1,7 @@
 import addListener from '../addListener';
 import removeListener from '../removeListener';
 import addRootListener from '../addRootListener';
-import { render, renderToString } from '../../../core/rendering';
+import { render } from '../../rendering';
 
 describe('Template', () => {
 
