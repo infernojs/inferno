@@ -29,12 +29,14 @@ export default function createDOMFragment( parentNode, nextNode ) {
 					if ( lastItem ) {
 						tree.dom.update( lastItem, nextItem, treeLifecycle, context );
 					} else {
-						const dom = tree.dom.create( nextItem, treeLifecycle, context );
+						if ( tree.dom) {
+							const dom = tree.dom.create( nextItem, treeLifecycle, context );
 
-						if ( nextNode ) {
-							parentNode.insertBefore( dom, nextNode );
-						} else if ( parentNode ) {
-							parentNode.appendChild( dom );
+							if ( nextNode ) {
+								parentNode.insertBefore( dom, nextNode );
+							} else if ( parentNode ) {
+								parentNode.appendChild( dom );
+							}
 						}
 					}
 					if ( treeSuccessListeners.length > 0 ) {
