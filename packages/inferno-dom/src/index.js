@@ -11,12 +11,22 @@ if ( global && global.Inferno ) {
 // TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
 } else if ( global && !global.Inferno ) {
 
-	const Inferno = require( 'inferno' );
+	let Inferno;
 
-	if ( typeof Inferno.addTreeConstructor !== 'function' ) {
-		throw ( 'OLD PACKAGE DETECTED!! Upgrade to newest Inferno version before you can use the InfernoDOM package.' );
-	} else {
-		Inferno.addTreeConstructor( 'dom', createDOMTree );
+	// TODO! Avoid try / catch
+	try {
+		Inferno = require( 'inferno' );
+	} catch ( e ) {
+		Inferno = null;
+		// TODO Should we throw a warning and inform that the Inferno package is not installed?
+	}
+
+	if ( Inferno != null ) {
+		if ( typeof Inferno.addTreeConstructor !== 'function' ) {
+			throw ( 'OLD PACKAGE DETECTED!! Upgrade to newest Inferno version before you can use the InfernoDOM package.' );
+		} else {
+			Inferno.addTreeConstructor( 'dom', createDOMTree );
+		}
 	}
 }
 
