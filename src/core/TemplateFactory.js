@@ -1,25 +1,4 @@
-import isArray from '../util/isArray';
-import isVoid from '../util/isVoid';
-
-function createChildren( children ) {
-	const childrenArray = [];
-
-	if ( isArray( children ) ) {
-		for ( let i = 0; i < children.length; i++ ) {
-			const childItem = children[i];
-
-			childrenArray.push( childItem );
-		}
-	}
-	return childrenArray;
-}
-
 function createElement( tag, attrs, ...children ) {
-
-	if ( isVoid( tag ) ) {
-		return;
-	}
-
 	if ( tag ) {
 		const vNode = {
 			tag
@@ -32,13 +11,11 @@ function createElement( tag, attrs, ...children ) {
 			}
 			vNode.attrs = attrs;
 		}
-		if ( children ) {
-			if ( children.length ) {
-				vNode.children = createChildren( children );
-			} else {
-				vNode.children = children[0];
-			}
+		
+		if ( children.length ) {
+			vNode.children = children;
 		}
+
 		return vNode;
 	} else {
 		return {
