@@ -45,8 +45,10 @@ function fastPropSet( attrName, attrVal, domNode ) {
 		return true;
 	} else if ( attrName === 'ref' ) {
 
-		if ( isVoid( attrVal ) ) {
-			throw ( 'Inferno Error: Inferno.createRef() can not be null or undefined' );
+		if ( process.env.NODE_ENV === 'development' ) {
+			if ( isVoid( attrVal ) ) {
+				throw ( 'Inferno Error: Inferno.createRef() can not be null or undefined' );
+			}
 		}
 
 		attrVal.element = domNode;

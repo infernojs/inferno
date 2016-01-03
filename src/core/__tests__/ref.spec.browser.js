@@ -63,6 +63,5 @@ describe( 'createRef()', () => {
 			() => render(template([]), container)
 		).to.throw;
 
-
 	});
 });

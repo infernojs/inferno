@@ -674,6 +674,7 @@ describe( 'Components (JSX)', () => {
 		});
 
 		it('Second render (update)', (done) => {
+
 			render(<Wrapper/>, container);
 
 			waits(30, () => {

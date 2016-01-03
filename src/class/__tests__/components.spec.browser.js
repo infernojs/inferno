@@ -81,6 +81,10 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
 
+		// remove the component
+		render(template(null, null), container);
+		expect(container.firstChild.tagName).to.equal('DIV');
+
 		render(template(BasicComponent1, '1234'), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -128,6 +132,8 @@ describe( 'Components', () => {
 			)
 		);
 
+		render(template(null, null, false), container);
+
 		render(template(BasicComponent1b, "abc", true), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
@@ -135,6 +141,9 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
 		expect( container.querySelector("input").checked ).to.equal( true);
+
+		render(template(null, null, false), container);
+		render(template(null, null, false), container);
 
 		render(template(BasicComponent1b, "abc", null), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -185,6 +194,7 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+		render(template(null, null, false), container);
 		render(template(BasicComponent1c, 'abc', true), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -217,6 +227,9 @@ describe( 'Components', () => {
 				createElement(Component, {title, isDisabled})
 			)
 		);
+
+		render(template(null, null, false), container);
+
 		render(template(BasicComponent1d, 'abc', true), container);
 
 		expect(
@@ -273,6 +286,11 @@ describe( 'Components', () => {
 				createElement(Component, {title, name})
 			)
 		);
+
+		render(template(null, null, false), container);
+
+		render(template(null, null, false), container);
+
 		render(template(BasicComponent1, 'abc', null), container);
 
 		expect(
@@ -287,6 +305,8 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
 		);
+
+		render(template(null, null, false), container);
 	});
 
 
@@ -295,6 +315,8 @@ describe( 'Components', () => {
 		let template = createTemplate((Component, title, name) =>
 			createElement(Component, {title, name})
 		);
+
+		render(template(null, null, false), container);
 
 		render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
@@ -397,6 +419,8 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-update">The title is 1234</span><span>I\'m a child</span></div></div>'
 		);
+
+		render(template(), container);
 	});
 
 
@@ -425,9 +449,6 @@ describe( 'Components', () => {
 		}
 	}
 
-
-
-
 	class BasicComponent3 extends Component {
 		render() {
 			const template = createTemplate((styles, title) =>
@@ -449,6 +470,7 @@ describe( 'Components', () => {
 		let template = createTemplate((Component, props) =>
 			createElement(Component, props)
 		);
+		render(template(null, null, false), container);
 
 		render(template(BasicComponent3, {
 			title: "styled!",
@@ -476,6 +498,8 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
+
+		render(template(), container);
 
 		render(template(BasicComponent3, {
 			title: "styled (again)!",
@@ -508,12 +532,16 @@ describe( 'Components', () => {
 			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 		);
 
+		render(null, container);
+
 		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 		);
+
+		render(null, container);
 
 		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
 		expect(
@@ -600,6 +628,7 @@ describe( 'Components', () => {
 		).to.equal(
 			3
 		);
+
 		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
 		expect(
 			componentWillMountCount
@@ -657,12 +686,16 @@ describe( 'Components', () => {
 			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 		);
 
+		render(template(BasicComponent1, null, 'basic-render'), container);
+		render(template(BasicComponent1, null, null), container);
+		render(template(null, null, null), container);
 		render(template(BasicComponent1, 'component 1', 'basic-render'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>'
 		);
+		render(template(), container);
 	});
 
 
@@ -818,7 +851,7 @@ describe( 'Components', () => {
 		});
 	});
 
-	/*
+
 	describe('should render a basic component with conditional fragment', () => {
 		const tpl4282471407 = createTemplate(function (v0) {
 			return {
@@ -845,7 +878,7 @@ describe( 'Components', () => {
 			return {tag: v0};
 		});
 
-		class Component extends Component {
+		class conditionalComponent extends Component {
 			render() {
 				let condition = true; // some logic
 				return tpl4282471407(condition ? tpl3625453295(null) : tpl4021787591(null));
@@ -853,7 +886,7 @@ describe( 'Components', () => {
 		}
 
 		it('Initial render (creation)', () => {
-			render(tpl1546018623(Component), container);
+			render(tpl1546018623(conditionalComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
 			);
@@ -880,7 +913,7 @@ describe( 'Components', () => {
 			return {tag: v0};
 		});
 
-		class Component extends Component {
+		class valueComponent extends Component {
 			constructor(props) {
 				super(props);
 				this.state = {
@@ -902,12 +935,17 @@ describe( 'Components', () => {
 		}
 
 		it('Initial render (creation)', () => {
-			render(tpl1546018623(Component), container);
+			render(tpl1546018623(valueComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
+			render(tpl1546018623(null), container);
+			render(tpl1546018623(valueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
 		});
-	});*/
+	});
 
 	function BasicStatelessComponent1({
 		name,
@@ -936,18 +974,22 @@ describe( 'Components', () => {
 			)
 		);
 
+		render(template(null), container);
+
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+		render(template(BasicStatelessComponent1, null), container);
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+		render(template(null, null), container);
 
 		const text = createTemplate(() => {
 			return {
@@ -995,6 +1037,16 @@ describe( 'Components', () => {
 				}
 			})
 		).to.throw;
+
+		render(template(null), container);
+
+		render(template(BasicStatelessComponent1), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
+
 	});
 
 } );

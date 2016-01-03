@@ -201,7 +201,7 @@
 
   function createTemplate(callback) {
 
-  	if (typeof callback === 'function') {
+  	if (callback != null && typeof callback === 'function') {
   		var construct = callback.construct || null;
 
   		if (isVoid(construct)) {
@@ -325,6 +325,11 @@
   }
 
   function createElement(tag, attrs) {
+
+  	if (isVoid(tag)) {
+  		return;
+  	}
+
   	if (tag) {
   		var vNode = {
   			tag: tag
