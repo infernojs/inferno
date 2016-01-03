@@ -4,7 +4,7 @@ const glob = require('glob');
 const entries = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
 	//.concat(glob.sync('./test/specs/no-jsx/**/*.spec.js'))
     //	.concat(glob.sync('./test/specs/no-jsx/**/*.spec.server.js'))
-	//.concat(glob.sync('./test/specs/jsx/**/*.spec.browser.js'))
+	//.concat(glob.sync('./test/**/*.spec.browser.js'))
     //.concat(glob.sync('./test/specs/jsx/**/*.spec.server.js'))
     //.concat(glob.sync('./test/specs/jsx/**/*.spec.js'))
 	.map(function(file) { return 'mocha!' + file; });
