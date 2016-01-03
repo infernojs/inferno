@@ -12,7 +12,7 @@ const entries = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
 module.exports = {
   entry: entries,
   output: {
-    path: './test',
+    path: './config',
     filename: 'specs.js',
     publicPath: 'http://localhost:8080/'
   },
@@ -33,7 +33,7 @@ module.exports = {
     proxy: {
       '/': {
         bypass: function(req, res, proxyOptions) {
-          return '/test/index.html';
+          return '/config/index.html';
         }
       }
     },

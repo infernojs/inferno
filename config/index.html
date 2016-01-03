@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+     <title>Tests</title>
+    <link rel='stylesheet' href='/node_modules/mocha/mocha.css' />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+		ul {
+			list-style-type: none;
+		}
+		h1 {
+			font-size: 36px;
+			margin-left:60px;
+			margin-bottom:-30px;
+		}
+	</style>
+  </head>
+  <body>
+<div class="container">
+		<div class="row">
+			<h1>Unit tests</h1>
+		</div>
+		<div id="mocha"></div>
+	</div>
+  </body>
+</html>
+
+ <!-- Testing libraries -->
+  <script src='/node_modules/mocha/mocha.js'></script>
+  <script src='/node_modules/chai/chai.js'></script>
+  <script src='/node_modules/sinon/lib/sinon.js'></script>
+  <script src='/node_modules/sinon-chai/lib/sinon-chai.js'></script>
+  <script>mocha.setup('bdd')</script>
+ 
+    <!-- Load the built library -->
+  <script src="/specs.js"></script>
+  <script>
+     window.expect = window.chai.expect;
+ </script>
