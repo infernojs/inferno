@@ -26,16 +26,10 @@ describe( 'createTree - SVG', () => {
 			createElement('svg', {height: val1})
 		);
 		render(template(200), container);
-
 		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-
 		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
 		expect(container.firstChild.getAttribute('height')).to.eql('200');
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<svg height="200"></svg>'
-		);
+		render(template(null), container);
 	});
 
 	describe('should set "class" attribute', () => {
@@ -44,17 +38,16 @@ describe( 'createTree - SVG', () => {
 			const template = createTemplate((val1) =>
 				createElement('svg', {height: val1})
 			);
+			render(template(null), container);
 			render(template(200), container);
-
 			expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-
 			expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
 			expect(container.firstChild.getAttribute('height')).to.eql('200');
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<svg height="200"></svg>'
-			);
+			render(template(undefined), container);
+			render(template(200), container);
+			expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
+			expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+			expect(container.firstChild.getAttribute('height')).to.eql('200');
 		});
 	});
 
@@ -71,6 +64,9 @@ describe( 'createTree - SVG', () => {
 				height: val1
 			}, null)
 		);
+
+		render(template(null), container);
+		render(template(null), container);
 		render(template(200), container);
 
 		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
@@ -80,11 +76,7 @@ describe( 'createTree - SVG', () => {
 		expect(container.firstChild.getAttribute('baseProfile')).to.eql('full');
 		expect(container.firstChild.getAttribute('width')).to.eql('200');
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200" height="200"></svg>'
-		)
+		render(template(null), container);
 
 		template = createTemplate(() =>
 			createElement('svg', {width: 200}, null)
@@ -110,24 +102,18 @@ describe( 'createTree - SVG', () => {
 		).to.equal(
 			'<svg width="200"></svg>'
 		);
-	})
-
-
+	});
 
 	it('should set SVG as default namespace for <svg>', () => {
 
-		let template = createTemplate((val) => ({
+		let template = createTemplate(() => ({
 			tag: 'svg'
 		}));
 
-		render(template("test.jpg"), container);
+		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/2000/svg");
-		render(template("test.jpg"), container);
-		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/2000/svg");
-
-		render(template("test.jpg"), container);
-		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/2000/svg");
-		render(template("test.jpg"), container);
+		render(template(null), container);
+		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/2000/svg");
 	});
 
@@ -141,6 +127,7 @@ describe( 'createTree - SVG', () => {
 			}
 		}));
 
+		render(template(null), container);
 		render(template("test.jpg"), container);
 		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.equal("test.jpg");
 
@@ -148,9 +135,46 @@ describe( 'createTree - SVG', () => {
 		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
 	});
 
+	it('should unset a namespaced attributes', () => {
+
+		let template = createTemplate((val) => ({
+			tag: 'image',
+			attrs: {
+				xmlns: "http://www.w3.org/2000/svg",
+				"xlink:href": val
+			}
+		}));
+
+		render(template(null), container);
+		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
+
+		render(template(null), container);
+		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
+	});
+
+	it('should unset a namespaced attributes', () => {
+
+		let template = createTemplate((val) => ({
+			tag: 'image',
+			attrs: {
+				xmlns: "http://www.w3.org/2000/svg",
+				"xlink:href": val
+			}
+		}));
+
+		render(template(null), container);
+		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
+
+		render(template("test.jpg"), container);
+		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.equal("test.jpg");
+	});
+
+
 	it('should use the parent namespace by default (static)', () => {
 
-		let template = createTemplate(() => ({
+		let template;
+
+		template = createTemplate(() => ({
 			tag: 'svg',
 			children: {
 				tag: 'circle'
@@ -160,16 +184,31 @@ describe( 'createTree - SVG', () => {
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+		template = createTemplate(() => ({
+			tag: 'svg',
+			children: {
+				tag: 'path',
+				children: null
+			}
+		}));
+
+
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+		template = createTemplate(() => ({
+			tag: 'svg',
+			children: null
+		}));
+
+		render(template(), container);
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
 
 
@@ -231,6 +270,8 @@ describe( 'createTree - SVG', () => {
 		render(template(child()), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
+		render(template(null), container);
+
 		child = createTemplate(() => ({
 			tag: 'circle',
 			attrs: {
@@ -247,6 +288,8 @@ describe( 'createTree - SVG', () => {
 		render(template(child()), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+		render(template(null), container);
 
 		child = createTemplate(() => ({
 			tag: 'circle',
@@ -299,8 +342,10 @@ describe( 'createTree - SVG', () => {
 			}
 		}));
 
+		render(template(null), container);
 		render(template(child()), container);
 		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		render(template(null), container);
 	})
 
 	it('should set class attribute', () => {
@@ -314,6 +359,7 @@ describe( 'createTree - SVG', () => {
 
 		render(template("foo"), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
+		render(template(null), container);
 
 		render(template('bar'), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('bar');
@@ -415,10 +461,7 @@ describe( 'createTree - SVG', () => {
 		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-	})
-
-
-
+	});
 
 	it('should solve SVG edge when wrapped inside a non-namespace element ( static)', () => {
 
@@ -429,16 +472,14 @@ describe( 'createTree - SVG', () => {
 					xmlns: 'http://www.w3.org/2000/svg'
 				},
 				tag: 'svg'
-
 			}
 		}));
 
 		render(template(), container);
-
-		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-
-	})
+		render(template(), container);
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	});
 
 
 	it('should solve SVG edge when wrapped inside a non-namespace element ( dynamic )', () => {
@@ -452,11 +493,13 @@ describe( 'createTree - SVG', () => {
 			children:child
 		}));
 
+		render(template(null), container);
 		render(template(child()), container);
-
-		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-	})
+		render(template(child()), container);
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+
+	});
 
 	it('should diff from SVG namespace to mathML namespace ( dynamic )', () => {
 
@@ -467,20 +510,20 @@ describe( 'createTree - SVG', () => {
 			children:child
 		}));
 
-
+		render(template(null), container);
 		child = createTemplate(() => ({
 			tag: 'circle',
 		}));
 		render(template(child()), container);
 
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-
+		render(template(null), container);
 		child = createTemplate(() => ({
 			tag: 'math',
 		}));
 		render(template(child()), container);
 
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
-
+		render(template(null), container);
 	})
 });

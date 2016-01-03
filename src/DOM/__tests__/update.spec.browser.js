@@ -184,24 +184,24 @@ describe( 'Update', () => {
 		}));
 
 
-		render(template('Redric', 'Owns'), container);
+		render(template('Inferno', 'Owns'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world - Redric Owns</div>'
+			'<div>Hello world - Inferno Owns</div>'
 		);
-		render(template('Redric', 'Owns'), container);
+		render(template('Inferno', 'Owns'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world - Redric Owns</div>'
+			'<div>Hello world - Inferno Owns</div>'
 		);
 
-		render(template('Redric', null), container);
+		render(template('Inferno', null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world - Redric </div>'
+			'<div>Hello world - Inferno </div>'
 		);
 
 		render(template(null, 'Owns'), container);

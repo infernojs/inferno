@@ -278,12 +278,6 @@ describe( 'Creation - (non-JSX)', () => {
 			expect(container.firstChild.nodeType).to.equal(1);
 			expect(container.firstChild.tagName.toLowerCase()).to.equal(test.tagName);
 			expect(container.firstChild.childNodes.length).to.equal(test.children);
-
-			render(createTemplate(test.template)(), container);
-			expect(container.firstChild.nodeType).to.equal(1);
-			expect(container.firstChild.tagName.toLowerCase()).to.equal(test.tagName);
-			expect(container.firstChild.childNodes.length).to.equal(test.children);
-
 		});
 	});
 });

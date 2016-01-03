@@ -64,8 +64,10 @@ describe( 'createTree - mathML', () => {
 
 		render(template(child()), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+		render(template(null), container);
 		render(template(child()), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+		render(template(null), container);
 	})
 
 	/**
@@ -90,7 +92,6 @@ describe( 'createTree - mathML', () => {
 		}));
 
 		render(template(child()), container);
-
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.tagName).to.equal('math');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('span');
@@ -99,5 +100,17 @@ describe( 'createTree - mathML', () => {
 		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
-	})
+		render(template(undefined), container);
+		render(template([]), container);
+		render(template('123'), container);
+		render(template(child()), container);
+		expect(container.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.tagName).to.equal('math');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('span');
+		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('mo');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+	});
 });

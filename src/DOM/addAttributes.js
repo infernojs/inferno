@@ -44,6 +44,11 @@ function fastPropSet( attrName, attrVal, domNode ) {
 		}
 		return true;
 	} else if ( attrName === 'ref' ) {
+
+		if ( isVoid( attrVal ) ) {
+			throw ( 'Inferno Error: Inferno.createRef() can not be null or undefined' );
+		}
+
 		attrVal.element = domNode;
 		return true;
 	}
@@ -83,9 +88,9 @@ export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
 }
 
 /**
-   * NOTE!! This function is probably the single most
-   * critical path for performance optimization.
-   */
+ * NOTE!! This function is probably the single most
+ * critical path for performance optimization.
+ */
 export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs ) {
 	if ( dynamicAttrs.index !== undefined ) {
 		const nextDynamicAttrs = getValueWithIndex( nextItem, dynamicAttrs.index );
@@ -102,9 +107,9 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 		return;
 	}
 
- /**
-   * TODO: Benchmark areas that can be improved with caching.
-   */
+	/**
+	 * TODO: Benchmark areas that can be improved with caching.
+	 */
 	let styleUpdates = {};
 	let styleName;
 

@@ -38,6 +38,10 @@ describe( 'createRef()', () => {
 			container.firstChild
 		);
 
+		expect(
+			() => render(template(null), container)
+		).to.throw;
+
 		render(template(divRef), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.innerHTML).to.equal('');
@@ -46,5 +50,19 @@ describe( 'createRef()', () => {
 		).to.equal(
 			container.firstChild
 		);
+
+		expect(
+			() => render(template(null), container)
+		).to.throw;
+
+		expect(
+			() => render(template(undefined), container)
+		).to.throw;
+
+		expect(
+			() => render(template([]), container)
+		).to.throw;
+
+
 	});
 });

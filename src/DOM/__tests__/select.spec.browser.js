@@ -65,30 +65,16 @@ describe( 'Select / select multiple', () => {
 			'<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
 		);
 
+		render(template('foo'), container);
 
-
-
-//            render(template(1), container);
-
-//            expect(container.firstChild.children[0].selected).to.eql(true);
-		////          expect(container.firstChild.children[1].selected).to.eql(false);
-//            expect(
-		//              container.innerHTML
-		//        ).to.equal(
-		//          '<select multiple="multiple"><option>1</option><option>2</option></select>'
-		//    );
+		expect(container.firstChild.children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
+		);
 	});
-
-
-
-
-
-
-
-
-
-
-
 
 	it('should render "select" boolean on select options', () => {
 
@@ -112,12 +98,20 @@ describe( 'Select / select multiple', () => {
 					},
 					children: 'bar'
 				}]
-
 			};
 		});
 
 		render(template('foo'), container);
 		expect(container.firstChild.children[0].selected).to.eql(true);
+		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
+		);
+
+		render(template(null), container);
+		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(
 			container.innerHTML
@@ -212,6 +206,14 @@ describe( 'Select / select multiple', () => {
 		expect(container.firstChild.children[0].children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
+		render(template([]), container);
+
+		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+
+		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+
 		render(template('foo'), container);
 
 		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
@@ -260,7 +262,6 @@ describe( 'Select / select multiple', () => {
 					},
 					children: 'bar'
 				}]
-
 			};
 		});
 
@@ -273,6 +274,17 @@ describe( 'Select / select multiple', () => {
 		).to.equal(
 			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
 		);
+
+		render(template(), container);
+
+		expect(container.firstChild.children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
+		);
+
 	});
 
 	it('should assure the value attribute also set the value property for `textarea`', () => {
@@ -309,6 +321,10 @@ describe( 'Select / select multiple', () => {
 		render(template(undefined), container);
 
 		expect(container.firstChild.value).to.eql('');
+
+		render(template('bar'), container);
+
+		expect(container.firstChild.value).to.eql('bar');
 
 		render(template([]), container);
 
