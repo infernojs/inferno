@@ -30,14 +30,14 @@ module.exports = function(config) {
 		webpack: {
 			module: {
 				postLoaders: [{
-					test: /(\.jsx)|(\.js)$/,
-					exclude: /test|.git|packages|node_modules\/dist/,
+					test: /\.js$/,
+					exclude: /.git|packages|node_modules\/dist/,
 					loader: 'isparta',
-				//	include: path.join(__dirname, '../src')
+					include: path.join(__dirname, '../src')
 				}],
 				loaders: [{
 					test: /\.js$/,
-					exclude: /(src\/dist|.git|node_modules)/,
+					exclude: /(src\/dist|packages|.git|node_modules)/,
 					loader: 'babel-loader'
 				}]
 			}
