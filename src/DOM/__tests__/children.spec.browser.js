@@ -70,7 +70,7 @@ describe( 'Children - (non-JSX)', () => {
 		name: 'empty array',
 		value: [],
 		expected: ''
-	}/*, {
+	}, {
 		name: 'simple math',
 		value: 123 - 33,
 		expected: '90'
@@ -132,7 +132,7 @@ describe( 'Children - (non-JSX)', () => {
 		value: ['', '', ''],
 		expected: ''
 		}
-	 */];
+	 ];
 
 
 	preDefined.forEach((arg) => {
@@ -250,7 +250,7 @@ describe( 'Children - (non-JSX)', () => {
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
 			});
-			/*
+
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(), container);
@@ -302,7 +302,7 @@ describe( 'Children - (non-JSX)', () => {
 				expect(container.firstChild.textContent).to.equal('');
 
 			});
-*/
+
 
 		});
 	});

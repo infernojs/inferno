@@ -1690,7 +1690,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1700,7 +1700,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2125,7 +2125,32 @@
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-  			if (nextValue !== lastValue) {
+  			if (lastValue && isVoid(nextValue)) {
+
+  				if (isArray(lastValue)) {
+
+  					for (var i = 0; i < lastValue.length; i++) {
+
+  						if (!isVoid(domNode.childNodes[i])) {
+  							domNode.removeChild(domNode.childNodes[i]);
+  						} else {
+
+  							var firstChild = domNode.firstChild;
+
+  							if (firstChild) {
+  								domNode.removeChild(domNode.firstChild);
+  							}
+  						}
+  					}
+  				} else {
+
+  					var firstChild = domNode.firstChild;
+
+  					if (firstChild) {
+  						domNode.removeChild(domNode.firstChild);
+  					}
+  				}
+  			} else if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
   					var firstChild = domNode.firstChild;
   					if (firstChild) {
@@ -2147,49 +2172,49 @@
   					// if we update from undefined, we will have an array with zero length.
   					// If we check if it's an array, it will throw 'x' is undefined.
   				} else if (nextValue.length !== 0 && isArray(nextValue)) {
-  						if (isArray(lastValue)) {
+  						if (lastValue && isArray(lastValue)) {
   							if (keyedChildren) {
   								updateKeyed(nextValue, lastValue, domNode, null, context);
   							} else {
   								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
   							}
   						} else {
-  							// do nothing for now!
+  							updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
   						}
   					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-  							// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
-  							// throw ': nextValue.tree is undefined'.
-  							var tree = nextValue && nextValue.tree;
-  							if (!isVoid(tree)) {
-  								if (!isVoid(lastValue)) {
-  									// If we update from 'null', there will be no 'tree', and the code will throw.
-  									var _tree = lastValue && lastValue.tree;
+  						// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
+  						// throw ': nextValue.tree is undefined'.
+  						var tree = nextValue && nextValue.tree;
+  						if (!isVoid(tree)) {
+  							if (!isVoid(lastValue)) {
+  								// If we update from 'null', there will be no 'tree', and the code will throw.
+  								var _tree = lastValue && lastValue.tree;
 
-  									if (!isVoid(_tree)) {
-  										_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-  									} else {
-  										recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  										return;
-  									}
+  								if (!isVoid(_tree)) {
+  									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
   								} else {
-  									var childNode = tree.dom.create(nextValue, treeLifecycle, context);
-  									var replaceNode = domNode.firstChild;
+  									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  									return;
+  								}
+  							} else {
+  								var childNode = tree.dom.create(nextValue, treeLifecycle, context);
+  								var replaceNode = domNode.firstChild;
 
-  									if (replaceNode) {
-  										domNode.replaceChild(childNode, domNode.firstChild);
-  									} else {
-  										domNode.appendChild(childNode);
-  									}
+  								if (replaceNode) {
+  									domNode.replaceChild(childNode, domNode.firstChild);
+  								} else {
+  									domNode.appendChild(childNode);
   								}
   							}
-  						} else if (isStringOrNumber(nextValue)) {
-  							var firstChild = domNode.firstChild;
-  							if (firstChild) {
-  								domNode.firstChild.nodeValue = nextValue;
-  							} else {
-  								domNode.textContent = nextValue;
-  							}
   						}
+  					} else if (isStringOrNumber(nextValue)) {
+  						var firstChild = domNode.firstChild;
+  						if (firstChild) {
+  							domNode.firstChild.nodeValue = nextValue;
+  						} else {
+  							domNode.textContent = nextValue;
+  						}
+  					}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2251,7 +2276,32 @@
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-  			if (nextValue !== lastValue) {
+  			if (lastValue && isVoid(nextValue)) {
+
+  				if (isArray(lastValue)) {
+
+  					for (var i = 0; i < lastValue.length; i++) {
+
+  						if (!isVoid(domNode.childNodes[i])) {
+  							domNode.removeChild(domNode.childNodes[i]);
+  						} else {
+
+  							var firstChild = domNode.firstChild;
+
+  							if (firstChild) {
+  								domNode.removeChild(domNode.firstChild);
+  							}
+  						}
+  					}
+  				} else {
+
+  					var firstChild = domNode.firstChild;
+
+  					if (firstChild) {
+  						domNode.removeChild(domNode.firstChild);
+  					}
+  				}
+  			} else if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
 
   					var firstChild = domNode.firstChild;
@@ -2270,43 +2320,44 @@
   					// if we update from undefined, we will have an array with zero length.
   					// If we check if it's an array, it will throw 'x' is undefined.
   				} else if (nextValue.length !== 0 && isArray(nextValue)) {
-  						if (isArray(lastValue)) {
+  						if (lastValue && isArray(lastValue)) {
   							if (keyedChildren) {
   								updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
   							} else {
   								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
   							}
   						} else {
-  							// debugger;
+  							// lastValue is undefined, so set it to an empty array and update
+  							updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
   						}
   					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
 
-  							// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
-  							// throw ': nextValue.tree is undefined'.
-  							var tree = nextValue && nextValue.tree;
+  						// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
+  						// throw ': nextValue.tree is undefined'.
+  						var tree = nextValue && nextValue.tree;
 
-  							if (!isVoid(tree)) {
+  						if (!isVoid(tree)) {
 
-  								// If we update from 'null', there will be no 'tree', and the code will throw.
-  								var _tree = lastValue && lastValue.tree;
+  							// If we update from 'null', there will be no 'tree', and the code will throw.
+  							var _tree = lastValue && lastValue.tree;
 
-  								if (!isVoid(_tree)) {
-  									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-  								} else {
-  									// TODO implement
-  									// NOTE There will be no 'tree' if we update from a null value
-  								}
+  							if (!isVoid(_tree)) {
+  								_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+  							} else {
+  								// TODO implement
+  								// NOTE There will be no 'tree' if we update from a null value
   							}
-  						} else if (isStringOrNumber(nextValue)) {
+  						}
+  					} else if (isStringOrNumber(nextValue)) {
 
-  								var firstChild = domNode.firstChild;
+  							var firstChild = domNode.firstChild;
 
-  								if (firstChild) {
-  									domNode.firstChild.nodeValue = nextValue;
-  								} else {
-  									domNode.textContent = nextValue;
-  								}
+  							if (firstChild) {
+  								domNode.firstChild.nodeValue = nextValue;
+  							} else {
+  								domNode.textContent = nextValue;
   							}
+  						}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2322,7 +2373,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2332,7 +2383,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;

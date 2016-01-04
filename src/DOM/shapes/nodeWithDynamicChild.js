@@ -51,7 +51,32 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if ( nextValue !== lastValue ) {
+			if ( lastValue && isVoid( nextValue ) ) {
+
+				if ( isArray( lastValue ) ) {
+
+					for ( let i = 0; i < lastValue.length; i++ ) {
+
+						if ( !isVoid( domNode.childNodes[i] ) ) {
+							domNode.removeChild( domNode.childNodes[i] );
+						} else {
+
+							const firstChild = domNode.firstChild;
+
+							if ( firstChild ) {
+								domNode.removeChild( domNode.firstChild );
+							}
+						}
+					}
+				} else {
+
+					const firstChild = domNode.firstChild;
+
+					if ( firstChild ) {
+						domNode.removeChild( domNode.firstChild );
+					}
+				}
+			} else if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
 
 					const firstChild = domNode.firstChild;
@@ -70,14 +95,15 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					// if we update from undefined, we will have an array with zero length.
 					// If we check if it's an array, it will throw 'x' is undefined.
 				} else if ( nextValue.length !== 0 && isArray( nextValue ) ) {
-					if ( isArray( lastValue ) ) {
+					if (lastValue && isArray(lastValue)) {
 						if ( keyedChildren ) {
 							updateKeyed( nextValue, lastValue, domNode, null, treeLifecycle, context );
 						} else {
 							updateNonKeyed( nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context );
 						}
 					} else {
-						// debugger;
+						// lastValue is undefined, so set it to an empty array and update
+						updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
 					}
 				} else if ( typeof nextValue === 'object' ) {
 
@@ -87,8 +113,8 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 
 					if ( !isVoid( tree ) ) {
 
-					// If we update from 'null', there will be no 'tree', and the code will throw.
-					const tree = lastValue && lastValue.tree;
+						// If we update from 'null', there will be no 'tree', and the code will throw.
+						const tree = lastValue && lastValue.tree;
 
 						if ( !isVoid ( tree ) ) {
 							tree.dom.update( lastValue, nextValue, treeLifecycle, context );
