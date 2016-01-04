@@ -1,7 +1,7 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
 
-import recreateRootNode from '../recreateRootNode';
+import recreateNode from '../recreateNode';
 
 import isStringOrNumber from '../../util/isStringOrNumber';
 
@@ -71,7 +71,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						}
 					}
 				} else if ( typeof nextValue === 'object' ) {
-					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+					recreateNode( lastItem, nextItem, node, treeLifecycle, context );
 				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
 					domNode.appendChild( document.createTextNode( nextValue ) );
 				} else {
