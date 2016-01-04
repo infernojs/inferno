@@ -84,7 +84,7 @@ describe( 'Text', () => {
 		expected: '   a'
 	}
 	];
-/*
+
 	emptyDefinitions.forEach((arg) => {
 
 		[{
@@ -158,7 +158,7 @@ describe( 'Text', () => {
 			});
 		});
 	});
- */
+
 		emptyDefinitions.forEach((arg) => {
 
 		[{
@@ -168,7 +168,7 @@ describe( 'Text', () => {
 			})
 		}].forEach((test) => {
 
-		/*	it(test.description, () => {
+		it(test.description, () => {
 
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(3);
@@ -181,29 +181,30 @@ describe( 'Text', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(''), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal('');
+				expect(
+					() => render(createTemplate(test.template)(''), container)
+				).to.throw;
 
-				render(createTemplate(test.template)(null), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal('');
+				expect(
+					() => render(createTemplate(test.template)(null), container)
+				).to.throw;
+
 			});
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(null), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal('');
+				expect(
+					() => render(createTemplate(test.template)(null), container)
+				).to.throw;
 
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(3);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
-		 */
+
 		});
 	});
-/*
+
 	emptyDefinitions.forEach((arg) => {
 
 		[{
@@ -410,14 +411,14 @@ describe( 'Text', () => {
 		});
 	});
 
- */
+
 
 	const multiArray = [{
 		name: 'multiple text',
 		value: ['Hello', ' World'],
 		expected: 'Hello World',
 		children: 2
-	}/*, {
+	}, {
 		name: 'multiple numbers ( cast to string)',
 		value: ['12', '3'],
 		expected: '123',
@@ -487,7 +488,7 @@ describe( 'Text', () => {
 		value: [12 - 3, 3 * 4 - 1],
 		expected: '911',
 		children: 2
-	}*/
+	}
 	];
 
 	multiArray.forEach((arg) => {
@@ -515,51 +516,6 @@ describe( 'Text', () => {
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
 			});
-			/*
-			it(test.description, () => {
-
-				render(createTemplate(test.template)(null), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(arg.children);
-				expect(container.firstChild.textContent).to.equal('');
-
-
-
-			});
-
-			it(test.description, () => {
-
-				render(createTemplate(test.template)(arg.value), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(arg.children);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
-
-				render(createTemplate(test.template)(null), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(arg.children);
-				expect(container.firstChild.textContent).to.equal('');
-
-			});
-
-			it(test.description, () => {
-
-				render(createTemplate(test.template)(null), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(0);
-				expect(container.firstChild.textContent).to.equal('');
-
-				render(createTemplate(test.template)(null), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(0);
-				expect(container.firstChild.textContent).to.equal('');
-
-			});*/
-
 		});
 	});
 });

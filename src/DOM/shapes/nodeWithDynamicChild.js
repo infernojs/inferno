@@ -1,6 +1,10 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
+
+import recreateNode from '../recreateNode';
+
 import isStringOrNumber from '../../util/isStringOrNumber';
+
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
@@ -56,7 +60,24 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if ( lastValue && isVoid( nextValue ) ) {
+			if ( nextValue && isVoid( lastValue ) ) {
+
+				if ( isArray( nextValue ) ) {
+					for ( let i = 0; i < nextValue.length; i++ ) {
+						if ( typeof nextValue[i] === 'string' || typeof nextValue[i] === 'number' ) {
+							domNode.appendChild( document.createTextNode( nextValue[i] ) );
+						} else {
+							// TODO implement
+						}
+					}
+				} else if ( typeof nextValue === 'object' ) {
+					// TODO implement
+				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
+					domNode.appendChild( document.createTextNode( nextValue ) );
+				} else {
+				// TODO implement
+				}
+			} else 	if ( lastValue && isVoid( nextValue ) ) {
 
 				if ( isArray( lastValue ) ) {
 

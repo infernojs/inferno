@@ -80,7 +80,25 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if ( lastValue && isVoid( nextValue ) ) {
+			if ( nextValue && isVoid( lastValue ) ) {
+
+				if ( isArray( nextValue ) ) {
+					for ( let i = 0; i < nextValue.length; i++ ) {
+						if ( typeof nextValue[i] === 'string' || typeof nextValue[i] === 'number' ) {
+							domNode.appendChild( document.createTextNode( nextValue[i] ) );
+						} else { // undef
+							// TODO implement
+						}
+					}
+				} else if ( typeof nextValue === 'object' ) {
+					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
+					domNode.appendChild( document.createTextNode( nextValue ) );
+				} else {
+				// TODO implement
+				}
+
+			} else if ( lastValue && isVoid( nextValue ) ) {
 
 				if ( isArray( lastValue ) ) {
 
