@@ -1049,4 +1049,78 @@ describe( 'Components', () => {
 
 	});
 
+
+
+	it('should render a Havunen component', () => {
+
+
+		var BaseView = createTemplate(function (v0, v1) {
+			return {
+				tag: 'div',
+				attrs: {
+					class: 'login-view bg-visma'
+				},
+				children: [{
+					tag: 'button',
+					attrs: {
+						onClick: v0
+					},
+					children: 'TOGGLE'
+				}, {
+					tag: 'br'
+				}, v1]
+			};
+		});
+
+		var ThisIsCool = createTemplate(function () {
+			return {
+				tag: 'h1',
+				children: 'This is cool!'
+			};
+		});
+
+		var NotSoCool = createTemplate(function () {
+			return {
+				tag: 'h1',
+				children: 'Not so cool'
+			};
+		});
+
+		var starter = createTemplate(function (v0) {
+			return {
+				tag: v0
+			}
+		});
+
+		var SomeError = function() {
+			this.state = {
+				show: false
+			};
+
+			this.toggle = function() {
+				this.setState({
+					show: !this.state.show
+				});
+			}.bind(this);
+
+			this.render = function() {
+				return BaseView(this.toggle, (function () {
+					console.log(this.state)
+					if (this.state.show === true) {
+						return ThisIsCool(null);
+					} else {
+						return NotSoCool(null);
+					}
+				}).call(this));
+			};
+		};
+		SomeError.prototype = new Component(null);
+		SomeError.constructor = SomeError;
+
+		render(starter(SomeError), container);
+
+
+
+	})
+
 } );
