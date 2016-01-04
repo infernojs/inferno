@@ -1102,30 +1102,6 @@ describe( 'Update', () => {
 		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
 	});
 
-	it('should update an node with dynamic child', () => {
-		const template = createTemplate((child) => ({
-			tag: 'div',
-			children: {
-				tag: 'div',
-				children: child
-			}
-		}));
-
-		const span = createTemplate(function() {
-			return {
-				tag: 'span',
-				children: ['Hello ', 'World']
-			};
-		});
-
-		render(template(null), container);
-		expect(container.firstChild.innerHTML).to.equal('<div></div>' );
-		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
-		//render(template(null), container);
-		////expect(container.firstChild.innerHTML).to.equal('<div></div>' );
-	});
-
 	it('should inject dynamic text various places', () => {
 
 		const div = createTemplate((text) => ({

@@ -44,7 +44,7 @@
   	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
   }
 
-  var recyclingEnabled$9 = true;
+  var recyclingEnabled$8 = true;
 
   function pool(item) {
   	var key = item.key;
@@ -81,7 +81,7 @@
   }
 
   function isRecyclingEnabled() {
-  	return recyclingEnabled$9;
+  	return recyclingEnabled$8;
   }
 
   var isArray = (function (x) {
@@ -1565,7 +1565,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1575,7 +1575,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1690,7 +1690,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1700,7 +1700,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1754,7 +1754,7 @@
   	return node;
   }
 
-  var recyclingEnabled$8 = isRecyclingEnabled();
+  var recyclingEnabled$9 = isRecyclingEnabled();
   var infernoBadTemplate$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -1769,7 +1769,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$8) {
+  		if (recyclingEnabled$9) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -1985,7 +1985,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled$8) {
+  		if (recyclingEnabled$9) {
   			pool(item);
   		}
   	}
@@ -2057,7 +2057,7 @@
   	}
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2069,7 +2069,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2260,13 +2260,6 @@
   	return node;
   }
 
-  function recreateRootNode$1(lastDomNode, nextItem, node, treeLifecycle, context) {
-  	var domNode = node.create(nextItem, treeLifecycle, context);
-
-  	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
-  	// TODO recycle old node
-  }
-
   function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var domNode = undefined;
   	var keyedChildren = true;
@@ -2329,12 +2322,12 @@
   						}
   					}
   				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-  						// TODO implement
+  						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   					} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
-  							domNode.appendChild(document.createTextNode(nextValue));
-  						} else {
-  							// TODO implement
-  						}
+  						domNode.appendChild(document.createTextNode(nextValue));
+  					} else {
+  						// TODO implement
+  					}
   			} else if (lastValue && isVoid(nextValue)) {
 
   					if (isArray(lastValue)) {
@@ -2519,6 +2512,13 @@
   	};
 
   	return node;
+  }
+
+  function recreateRootNode$1(lastDomNode, nextItem, node, treeLifecycle, context) {
+  	var domNode = node.create(nextItem, treeLifecycle, context);
+
+  	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
+  	// TODO recycle old node
   }
 
   function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
