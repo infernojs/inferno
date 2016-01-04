@@ -64,7 +64,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 
 				if ( isArray( nextValue ) ) {
 					for ( let i = 0; i < nextValue.length; i++ ) {
-						if ( typeof nextValue[i] === 'string' || typeof nextValue[i] === 'number' ) {
+						if ( isStringOrNumber ( nextValue[i] ) ) {
 							domNode.appendChild( document.createTextNode( nextValue[i] ) );
 						} else {
 							// TODO implement
