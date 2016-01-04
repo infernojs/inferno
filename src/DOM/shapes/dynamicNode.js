@@ -18,8 +18,10 @@ export default function createDynamicNode( valueIndex ) {
 
 			switch ( type ) {
 				case ValueTypes.TEXT:
-					// TODO check if string is empty?
-					if ( isVoid( value ) ) {
+					// Testing the length property are actually faster than testing the
+					// string against '', because the interpreter won't have to create a String
+					// object from the string literal.
+					if ( isVoid( value ) || value.length === 0 ) {
 						value = '';
 					}
 					domNode = document.createTextNode( value );
@@ -64,8 +66,10 @@ export default function createDynamicNode( valueIndex ) {
 
 				switch ( nextType ) {
 					case ValueTypes.TEXT:
-						// TODO check if string is empty?
-						if ( isVoid( nextValue ) ) {
+						// Testing the length property are actually faster than testing the
+						// string against '', because the interpreter won't have to create a String
+						// object from the string literal.
+						if ( isVoid( nextValue ) || nextValue.length === 0 ) {
 							nextValue = '';
 						}
 						domNode.nodeValue = nextValue;
