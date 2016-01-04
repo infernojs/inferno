@@ -111,6 +111,13 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 							}
 						} else {
 							const childNode = tree.create( nextValue, treeLifecycle, context );
+							const replaceNode = domNode.firstChild;
+
+							if (replaceNode) {
+								domNode.replaceChild(childNode, domNode.firstChild);
+							} else {
+								domNode.appendChild(childNode);
+							}
 
 							domNode.replaceChild( childNode, domNode.firstChild );
 						}
