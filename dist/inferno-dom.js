@@ -44,7 +44,7 @@
   	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
   }
 
-  var recyclingEnabled$8 = true;
+  var recyclingEnabled$9 = true;
 
   function pool(item) {
   	var key = item.key;
@@ -81,7 +81,7 @@
   }
 
   function isRecyclingEnabled() {
-  	return recyclingEnabled$8;
+  	return recyclingEnabled$9;
   }
 
   var isArray = (function (x) {
@@ -1565,7 +1565,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1575,7 +1575,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1690,7 +1690,7 @@
   	return node;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1700,7 +1700,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1754,7 +1754,7 @@
   	return node;
   }
 
-  var recyclingEnabled$9 = isRecyclingEnabled();
+  var recyclingEnabled$8 = isRecyclingEnabled();
   var infernoBadTemplate$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -1769,7 +1769,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$9) {
+  		if (recyclingEnabled$8) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -1985,7 +1985,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled$9) {
+  		if (recyclingEnabled$8) {
   			pool(item);
   		}
   	}
@@ -2260,6 +2260,13 @@
   	return node;
   }
 
+  function recreateRootNode$1(lastDomNode, nextItem, node, treeLifecycle, context) {
+  	var domNode = node.create(nextItem, treeLifecycle, context);
+
+  	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
+  	// TODO recycle old node
+  }
+
   function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var domNode = undefined;
   	var keyedChildren = true;
@@ -2315,14 +2322,14 @@
 
   				if (isArray(nextValue)) {
   					for (var i = 0; i < nextValue.length; i++) {
-  						if (typeof nextValue[i] === 'string' || typeof nextValue[i] === 'number') {
+  						if (isStringOrNumber(nextValue[i])) {
   							domNode.appendChild(document.createTextNode(nextValue[i]));
   						} else {
   							// TODO implement
   						}
   					}
   				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-  						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  						recreateRootNode$1(lastItem, nextItem, node, treeLifecycle, context);
   					} else if (typeof nextValue === 'string' || typeof nextValue === 'number') {
   						domNode.appendChild(document.createTextNode(nextValue));
   					} else {
@@ -2434,7 +2441,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2444,7 +2451,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2512,13 +2519,6 @@
   	};
 
   	return node;
-  }
-
-  function recreateRootNode$1(lastDomNode, nextItem, node, treeLifecycle, context) {
-  	var domNode = node.create(nextItem, treeLifecycle, context);
-
-  	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
-  	// TODO recycle old node
   }
 
   function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
@@ -2595,7 +2595,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2608,7 +2608,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2683,6 +2683,12 @@
   						break;
   					case ValueTypes.ARRAY:
   						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
+  						break;
+  					case ValueTypes.TREE:
+  						// TODO
+  						break;
+  					case ValueTypes.FRAGMENT:
+  						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
   						break;
   					default:
   						break;
@@ -2773,7 +2779,10 @@
   						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
   						break;
   					case ValueTypes.TREE:
-  						// debugger;
+  						// TODO
+  						break;
+  					case ValueTypes.FRAGMENT:
+  						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
   						break;
   					default:
   						break;
@@ -2792,7 +2801,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$7 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2802,7 +2811,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$7) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2884,7 +2893,7 @@
   	}
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootNodeWithComponent(componentIndex, props) {
   	var currentItem = undefined;
@@ -2902,7 +2911,7 @@
   			if (node.overrideItem !== null) {
   				toUseItem = node.overrideItem;
   			}
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -3163,7 +3172,7 @@
   	return node;
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
+  var recyclingEnabled$6 = isRecyclingEnabled();
 
   function createRootDynamicTextNode(templateNode, valueIndex) {
   	var node = {
@@ -3173,7 +3182,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled$6) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
