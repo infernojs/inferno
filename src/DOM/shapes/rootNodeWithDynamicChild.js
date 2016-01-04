@@ -77,7 +77,12 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 
 			if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
-					domNode.firstChild.nodeValue = nextValue;
+					const firstChild = domNode.firstChild;
+					if (firstChild) {
+						domNode.firstChild.nodeValue = nextValue;
+					} else {
+						domNode.textContent = nextValue;
+					}
 				} else if ( isVoid( nextValue ) ) {
 					if ( domNode !== null ) {
 						const childNode = document.createTextNode( '' );
@@ -89,7 +94,9 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 							domNode.appendChild( childNode );
 						}
 					}
-				} else if ( isArray( nextValue ) ) {
+					// if we update from undefined, we will have an array with zero length.
+					// If we check if it's an array, it will throw 'x' is undefined.
+				} else if ( nextValue.length !== 0 && isArray( nextValue ) ) {
 					if ( isArray( lastValue ) ) {
 						if ( keyedChildren ) {
 							updateKeyed( nextValue, lastValue, domNode, null, context );
@@ -100,17 +107,22 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						// do nothing for now!
 					}
 				} else if ( typeof nextValue === 'object' ) {
-					const tree = nextValue.tree.dom;
+					// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
+					// throw ': nextValue.tree is undefined'.
+					const tree = nextValue && nextValue.tree;
 					if ( !isVoid( tree ) ) {
 						if ( !isVoid( lastValue ) ) {
-							if ( !isVoid( lastValue.tree.dom ) ) {
-								tree.update( lastValue, nextValue, treeLifecycle, context );
+							// If we update from 'null', there will be no 'tree', and the code will throw.
+							const tree = lastValue && lastValue.tree;
+
+							if ( !isVoid ( tree ) ) {
+								tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 							} else {
 								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 								return;
 							}
 						} else {
-							const childNode = tree.create( nextValue, treeLifecycle, context );
+							const childNode = tree.dom.create( nextValue, treeLifecycle, context );
 							const replaceNode = domNode.firstChild;
 
 							if (replaceNode) {
@@ -118,12 +130,15 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 							} else {
 								domNode.appendChild(childNode);
 							}
-
-							domNode.replaceChild( childNode, domNode.firstChild );
 						}
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {
-					domNode.firstChild.nodeValue = nextValue;
+					const firstChild = domNode.firstChild;
+					if (firstChild) {
+						domNode.firstChild.nodeValue = nextValue;
+					} else {
+						domNode.textContent = nextValue;
+					}
 				}
 			}
 			if ( dynamicAttrs ) {

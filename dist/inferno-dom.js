@@ -64,7 +64,7 @@
   	// TODO use depth as key
   	var key = item.key;
   	var recyclableItem = undefined;
-  	//console.log(tree)
+
   	// TODO faster to check pool size first?
   	if (key !== null) {
 
@@ -1554,8 +1554,6 @@
 
   	lastTree.remove(lastItem);
 
-  	console.log(node);
-
   	var domNode = node.create(nextItem, treeLifecycle, context);
 
   	var parentNode = lastDomNode.parentNode;
@@ -1567,7 +1565,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1577,7 +1575,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1692,7 +1690,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1702,7 +1700,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2129,7 +2127,12 @@
 
   			if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
-  					domNode.firstChild.nodeValue = nextValue;
+  					var firstChild = domNode.firstChild;
+  					if (firstChild) {
+  						domNode.firstChild.nodeValue = nextValue;
+  					} else {
+  						domNode.textContent = nextValue;
+  					}
   				} else if (isVoid(nextValue)) {
   					if (domNode !== null) {
   						var childNode = document.createTextNode('');
@@ -2141,42 +2144,52 @@
   							domNode.appendChild(childNode);
   						}
   					}
-  				} else if (isArray(nextValue)) {
-  					if (isArray(lastValue)) {
-  						if (keyedChildren) {
-  							updateKeyed(nextValue, lastValue, domNode, null, context);
-  						} else {
-  							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
-  						}
-  					} else {
-  						// do nothing for now!
-  					}
-  				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-  						var tree = nextValue.tree.dom;
-  						if (!isVoid(tree)) {
-  							if (!isVoid(lastValue)) {
-  								if (!isVoid(lastValue.tree.dom)) {
-  									tree.update(lastValue, nextValue, treeLifecycle, context);
-  								} else {
-  									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  									return;
-  								}
+  					// if we update from undefined, we will have an array with zero length.
+  					// If we check if it's an array, it will throw 'x' is undefined.
+  				} else if (nextValue.length !== 0 && isArray(nextValue)) {
+  						if (isArray(lastValue)) {
+  							if (keyedChildren) {
+  								updateKeyed(nextValue, lastValue, domNode, null, context);
   							} else {
-  								var childNode = tree.create(nextValue, treeLifecycle, context);
-  								var replaceNode = domNode.firstChild;
+  								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
+  							}
+  						} else {
+  							// do nothing for now!
+  						}
+  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
+  							// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
+  							// throw ': nextValue.tree is undefined'.
+  							var tree = nextValue && nextValue.tree;
+  							if (!isVoid(tree)) {
+  								if (!isVoid(lastValue)) {
+  									// If we update from 'null', there will be no 'tree', and the code will throw.
+  									var _tree = lastValue && lastValue.tree;
 
-  								if (replaceNode) {
-  									domNode.replaceChild(childNode, domNode.firstChild);
+  									if (!isVoid(_tree)) {
+  										_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+  									} else {
+  										recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  										return;
+  									}
   								} else {
-  									domNode.appendChild(childNode);
-  								}
+  									var childNode = tree.dom.create(nextValue, treeLifecycle, context);
+  									var replaceNode = domNode.firstChild;
 
-  								domNode.replaceChild(childNode, domNode.firstChild);
+  									if (replaceNode) {
+  										domNode.replaceChild(childNode, domNode.firstChild);
+  									} else {
+  										domNode.appendChild(childNode);
+  									}
+  								}
+  							}
+  						} else if (isStringOrNumber(nextValue)) {
+  							var firstChild = domNode.firstChild;
+  							if (firstChild) {
+  								domNode.firstChild.nodeValue = nextValue;
+  							} else {
+  								domNode.textContent = nextValue;
   							}
   						}
-  					} else if (isStringOrNumber(nextValue)) {
-  						domNode.firstChild.nodeValue = nextValue;
-  					}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2240,36 +2253,60 @@
 
   			if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
-  					domNode.firstChild.nodeValue = nextValue;
+
+  					var firstChild = domNode.firstChild;
+
+  					if (firstChild) {
+  						domNode.firstChild.nodeValue = nextValue;
+  					} else {
+  						domNode.textContent = nextValue;
+  					}
   				} else if (isVoid(nextValue)) {
   					var firstChild = domNode.firstChild;
 
   					if (firstChild) {
   						domNode.removeChild(domNode.firstChild);
   					}
-  				} else if (isArray(nextValue)) {
-  					if (isArray(lastValue)) {
-  						if (keyedChildren) {
-  							updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-  						} else {
-  							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
-  						}
-  					} else {
-  						// debugger;
-  					}
-  				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-  						var tree = nextValue.tree.dom;
-
-  						if (!isVoid(tree)) {
-  							if (lastValue.tree.dom !== null) {
-  								tree.update(lastValue, nextValue, treeLifecycle, context);
+  					// if we update from undefined, we will have an array with zero length.
+  					// If we check if it's an array, it will throw 'x' is undefined.
+  				} else if (nextValue.length !== 0 && isArray(nextValue)) {
+  						if (isArray(lastValue)) {
+  							if (keyedChildren) {
+  								updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
   							} else {
-  								// TODO implement
+  								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
   							}
+  						} else {
+  							// debugger;
   						}
-  					} else if (isStringOrNumber(nextValue)) {
-  							domNode.firstChild.nodeValue = nextValue;
-  						}
+  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
+
+  							// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
+  							// throw ': nextValue.tree is undefined'.
+  							var tree = nextValue && nextValue.tree;
+
+  							if (!isVoid(tree)) {
+
+  								// If we update from 'null', there will be no 'tree', and the code will throw.
+  								var _tree = lastValue && lastValue.tree;
+
+  								if (!isVoid(_tree)) {
+  									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+  								} else {
+  									// TODO implement
+  									// NOTE There will be no 'tree' if we update from a null value
+  								}
+  							}
+  						} else if (isStringOrNumber(nextValue)) {
+
+  								var firstChild = domNode.firstChild;
+
+  								if (firstChild) {
+  									domNode.firstChild.nodeValue = nextValue;
+  								} else {
+  									domNode.textContent = nextValue;
+  								}
+  							}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2506,7 +2543,7 @@
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			if (node !== lastItem.tree.dom) {
-  				console.log(node);
+
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   				return;
   			}
@@ -2518,14 +2555,12 @@
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-  			console.log('dd');
-
   			if (nextValue !== lastValue) {
   				var nextType = getTypeFromValue(nextValue);
   				var lastType = getTypeFromValue(lastValue);
 
   				if (lastType !== nextType) {
-  					console.log(node);
+
   					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   					return;
   				}
@@ -3045,8 +3080,6 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-
-  			//			console.log(node)
 
   			if (node !== lastItem.tree.dom) {
 

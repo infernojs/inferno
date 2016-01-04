@@ -53,14 +53,23 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 
 			if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
-					domNode.firstChild.nodeValue = nextValue;
+
+					const firstChild = domNode.firstChild;
+
+					if ( firstChild ) {
+						domNode.firstChild.nodeValue = nextValue;
+					} else {
+						domNode.textContent = nextValue;
+					}
 				} else if ( isVoid( nextValue ) ) {
 					const firstChild = domNode.firstChild;
 
 					if ( firstChild ) {
 						domNode.removeChild( domNode.firstChild );
 					}
-				} else if ( isArray( nextValue ) ) {
+					// if we update from undefined, we will have an array with zero length.
+					// If we check if it's an array, it will throw 'x' is undefined.
+				} else if ( nextValue.length !== 0 && isArray( nextValue ) ) {
 					if ( isArray( lastValue ) ) {
 						if ( keyedChildren ) {
 							updateKeyed( nextValue, lastValue, domNode, null, treeLifecycle, context );
@@ -71,17 +80,32 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						// debugger;
 					}
 				} else if ( typeof nextValue === 'object' ) {
-					const tree = nextValue.tree.dom;
+
+					// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
+					// throw ': nextValue.tree is undefined'.
+					const tree = nextValue && nextValue.tree;
 
 					if ( !isVoid( tree ) ) {
-						if ( lastValue.tree.dom !== null ) {
-							tree.update( lastValue, nextValue, treeLifecycle, context );
+
+					// If we update from 'null', there will be no 'tree', and the code will throw.
+					const tree = lastValue && lastValue.tree;
+
+						if ( !isVoid ( tree ) ) {
+							tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 						} else {
 							// TODO implement
+							// NOTE There will be no 'tree' if we update from a null value
 						}
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {
-					domNode.firstChild.nodeValue = nextValue;
+
+					const firstChild = domNode.firstChild;
+
+					if ( firstChild ) {
+						domNode.firstChild.nodeValue = nextValue;
+					} else {
+						domNode.textContent = nextValue;
+					}
 				}
 			}
 			if ( dynamicAttrs ) {

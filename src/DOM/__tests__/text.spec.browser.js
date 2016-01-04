@@ -15,7 +15,7 @@ describe( 'Text', () => {
 	});
 
 	afterEach(() => {
-		container.innerHTML = '';
+		render(null, container);
 	});
 
 	const emptyDefinitions = [{
@@ -84,7 +84,7 @@ describe( 'Text', () => {
 		expected: '   a'
 	}
 	];
-
+/*
 	emptyDefinitions.forEach((arg) => {
 
 		[{
@@ -158,7 +158,7 @@ describe( 'Text', () => {
 			});
 		});
 	});
-
+ */
 		emptyDefinitions.forEach((arg) => {
 
 		[{
@@ -168,7 +168,7 @@ describe( 'Text', () => {
 			})
 		}].forEach((test) => {
 
-			it(test.description, () => {
+		/*	it(test.description, () => {
 
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(3);
@@ -200,9 +200,10 @@ describe( 'Text', () => {
 				expect(container.firstChild.nodeType).to.equal(3);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
+		 */
 		});
 	});
-
+/*
 	emptyDefinitions.forEach((arg) => {
 
 		[{
@@ -409,6 +410,7 @@ describe( 'Text', () => {
 		});
 	});
 
+ */
 
 	const multiArray = [{
 		name: 'multiple text',
@@ -521,14 +523,10 @@ describe( 'Text', () => {
 				expect(container.firstChild.childNodes.length).to.equal(0);
 				expect(container.firstChild.textContent).to.equal('');
 
-				render(createTemplate(test.template)(arg.value), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(arg.children);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
+
 
 			});
-
+			/*
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(arg.value), container);
@@ -559,7 +557,7 @@ describe( 'Text', () => {
 				expect(container.firstChild.childNodes.length).to.equal(0);
 				expect(container.firstChild.textContent).to.equal('');
 
-			});
+			});*/
 
 		});
 	});

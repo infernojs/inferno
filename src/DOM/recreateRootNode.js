@@ -6,8 +6,6 @@ export default function recreateRootNode( lastItem, nextItem, node, treeLifecycl
 	lastTree.remove( lastItem );
 
 
-	console.log(node);
-
 	const domNode = node.create( nextItem, treeLifecycle, context );
 
 	const parentNode = lastDomNode.parentNode;

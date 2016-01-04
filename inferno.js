@@ -2422,7 +2422,18 @@ console.log(node)
 
 				if (nextValue !== lastValue) {
 					if (typeof nextValue === 'string') {
-						domNode.firstChild.nodeValue = nextValue;
+
+						const firstChild = domNode.firstChild;
+
+						if ( !firstChild ) {
+							domNode.firstChild.nodeValue = nextValue;
+						} else {
+							domNode.textContent = nextValue;
+						}
+
+
+
+
 					} else if (isVoid(nextValue)) {
 						var firstChild = domNode.firstChild;
 

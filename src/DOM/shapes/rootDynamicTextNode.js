@@ -33,8 +33,6 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 		},
 		update( lastItem, nextItem, treeLifecycle ) {
 
-//			console.log(node)
-
 			if ( node !== lastItem.tree.dom ) {
 
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle );

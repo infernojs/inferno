@@ -18,7 +18,7 @@ export function recycle( tree, item, treeLifecycle, context ) {
 	// TODO use depth as key
 	const key = item.key;
 	let recyclableItem;
-	//console.log(tree)
+
 	// TODO faster to check pool size first?
 	if ( key !== null ) {
 

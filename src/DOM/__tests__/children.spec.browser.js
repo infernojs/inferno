@@ -47,22 +47,6 @@ describe( 'Children - (non-JSX)', () => {
 		value: 'string',
 		expected: 'string'
 	}, {
-		name: 'text, children property array',
-		value: ['Hello!'],
-		expected: 'Hello!'
-	}, {
-		name: 'text, children property array multiple',
-		value: ['Hello,', ' World!'],
-		expected: 'Hello, World!'
-	}, {
-		name: 'text, children property array multiple and empty string',
-		value: ['Hello,', ' World!', ''],
-		expected: 'Hello, World!'
-	}, {
-		name: 'text, children property array multiple and empty string and undefined',
-		value: ['Hello,', undefined, ' World!', ''],
-		expected: 'Hello, World!'
-	}, {
 		name: '0',
 		value: 0,
 		expected: '0'
@@ -86,7 +70,7 @@ describe( 'Children - (non-JSX)', () => {
 		name: 'empty array',
 		value: [],
 		expected: ''
-	}, {
+	}/*, {
 		name: 'simple math',
 		value: 123 - 33,
 		expected: '90'
@@ -148,7 +132,7 @@ describe( 'Children - (non-JSX)', () => {
 		value: ['', '', ''],
 		expected: ''
 		}
-	];
+	 */];
 
 
 	preDefined.forEach((arg) => {
@@ -266,7 +250,7 @@ describe( 'Children - (non-JSX)', () => {
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
 			});
-
+			/*
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(), container);
@@ -318,7 +302,7 @@ describe( 'Children - (non-JSX)', () => {
 				expect(container.firstChild.textContent).to.equal('');
 
 			});
-
+*/
 
 		});
 	});
