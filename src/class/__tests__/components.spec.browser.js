@@ -19,7 +19,7 @@ describe( 'Components', () => {
 	});
 
 	afterEach(() => {
-		render(null, container);
+	render(null, container);
 	});
 
 	class BasicComponent1 extends Component {
@@ -470,7 +470,7 @@ describe( 'Components', () => {
 		let template = createTemplate((Component, props) =>
 			createElement(Component, props)
 		);
-		render(template(null, null, false), container);
+//		render(template(null, null, false), container);
 
 		render(template(BasicComponent3, {
 			title: "styled!",
@@ -485,7 +485,7 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
-		render(template(BasicComponent3, {
+			render(template(BasicComponent3, {
 			title: "styled!",
 			styles: {
 				color: "red",
@@ -499,7 +499,7 @@ describe( 'Components', () => {
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
 
-		render(template(), container);
+//		render(template(), container);
 
 		render(template(BasicComponent3, {
 			title: "styled (again)!",
@@ -633,20 +633,20 @@ describe( 'Components', () => {
 		expect(
 			componentWillMountCount
 		).to.equal(
-			6
+			5
 		);
 
 		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
 		expect(
 			componentWillMountCount
 		).to.equal(
-			8
+			6
 		);
 		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
 		expect(
 			componentWillMountCount
 		).to.equal(
-			10
+			7
 		);
 	});
 

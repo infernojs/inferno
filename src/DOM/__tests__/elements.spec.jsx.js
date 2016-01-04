@@ -230,7 +230,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 
 		child = <div></div>
-
+		/*
 		render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -256,9 +256,9 @@ describe( 'Elements - SVG (JSX)', () => {
 
 
 		render(<div></div>, container);
-		expect(container.firstChild.nodeName).to.equal('DIV');
+		expect(container.firstChild.nodeName).to.equal('DIV');*/
 	});
-
+	/*
 	it('should render and unset a simple div with dynamic span child', () => {
 
 		let child;
@@ -286,7 +286,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.nodeName).to.equal('DIV');
 	});
 
-
+*/
 	it('should render a simple div children set to undefined', () => {
 
 		render(<div>{undefined}</div>, container);
@@ -330,7 +330,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 	});
-
+/*
 	it('should render a double div and a text node', () => {
 
 		render(<div>{<div>Hello, World!</div> }</div>, container);
@@ -339,14 +339,14 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('Hello, World!');
 
-		render(<div>{<div>Hello, Redric!</div> }</div>, container);
+		render(<div>{<div>Hello, Inferno!</div> }</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.nodeName).to.equal('DIV');
-		expect(container.firstChild.textContent).to.equal('Hello, Redric!');
+		expect(container.firstChild.textContent).to.equal('Hello, Inferno!');
 
 	});
-
+ */
 	it('should render a single div with text node', () => {
 
 		render(<div><span></span><span></span></div>, container);

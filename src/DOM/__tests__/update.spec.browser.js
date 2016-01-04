@@ -1159,33 +1159,6 @@ describe( 'Update', () => {
 		expect(container.firstChild.innerHTML).to.equal('<div></div>' );
 	});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	it('should inject dynamic text various places', () => {
 
 		const div = createTemplate((text) => ({

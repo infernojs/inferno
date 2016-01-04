@@ -417,7 +417,7 @@ describe( 'Text', () => {
 		value: ['Hello', ' World'],
 		expected: 'Hello World',
 		children: 2
-	}, {
+	}/*, {
 		name: 'multiple numbers ( cast to string)',
 		value: ['12', '3'],
 		expected: '123',
@@ -487,7 +487,8 @@ describe( 'Text', () => {
 		value: [12 - 3, 3 * 4 - 1],
 		expected: '911',
 		children: 2
-	}];
+	}*/
+	];
 
 	multiArray.forEach((arg) => {
 
@@ -520,13 +521,13 @@ describe( 'Text', () => {
 				render(createTemplate(test.template)(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(0);
+				expect(container.firstChild.childNodes.length).to.equal(arg.children);
 				expect(container.firstChild.textContent).to.equal('');
 
 
 
 			});
-			/*
+
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(arg.value), container);
@@ -538,11 +539,11 @@ describe( 'Text', () => {
 				render(createTemplate(test.template)(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(0);
+				expect(container.firstChild.childNodes.length).to.equal(arg.children);
 				expect(container.firstChild.textContent).to.equal('');
 
 			});
-
+			/*
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(null), container);

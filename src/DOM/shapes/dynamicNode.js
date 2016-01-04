@@ -84,7 +84,7 @@ export default function createDynamicNode( valueIndex ) {
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.dom.remove( item, treeLifecycle );
+				value.remove( item, treeLifecycle );
 			}
 		}
 	};

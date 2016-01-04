@@ -1565,7 +1565,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled = isRecyclingEnabled();
 
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
   	var node = {
@@ -1575,7 +1575,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1690,7 +1690,7 @@
   	return node;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1700,7 +1700,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2672,7 +2672,7 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (getTypeFromValue(value) === ValueTypes.TREE) {
-  				value.dom.remove(item, treeLifecycle);
+  				value.remove(item, treeLifecycle);
   			}
   		}
   	};
