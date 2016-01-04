@@ -31,13 +31,13 @@ export function removeRootFragment( rootFragment ) {
 export function render( nextItem, parentNode ) {
 	const rootFragment = getRootFragmentAtNode( parentNode );
 
-	if ( rootFragment === null ) {
+	if ( rootFragment == null ) {
 		const fragment = createDOMFragment( parentNode );
 
 		fragment.render( nextItem );
 		rootFragments.push( fragment );
 	} else {
-		if ( nextItem === null ) {
+		if ( nextItem == null ) {
 			rootFragment.remove();
 			removeRootFragment( rootFragment );
 		} else {

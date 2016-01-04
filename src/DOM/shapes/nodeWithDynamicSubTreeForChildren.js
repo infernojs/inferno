@@ -30,7 +30,7 @@ export default function createNodeWithDynamicSubTreeForChildren( templateNode, s
 		update( lastItem, nextItem, treeLifecycle, context ) {
 			const domNode = domNodeMap[lastItem.id];
 
-			if ( node !== lastItem.tree ) {
+			if ( node !== lastItem.tree.dom ) {
 				recreateNode( domNode, nextItem, node, treeLifecycle,context );
 				return domNode;
 			}

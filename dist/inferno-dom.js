@@ -64,7 +64,7 @@
   	// TODO use depth as key
   	var key = item.key;
   	var recyclableItem = undefined;
-
+  	//console.log(tree)
   	// TODO faster to check pool size first?
   	if (key !== null) {
 
@@ -1549,10 +1549,15 @@
 
   function recreateRootNode(lastItem, nextItem, node, treeLifecycle, context) {
   	var lastDomNode = lastItem.rootNode;
-  	var lastTree = lastItem.tree;
 
-  	lastTree.dom.remove(lastItem);
+  	var lastTree = lastItem.tree.dom;
+
+  	lastTree.remove(lastItem);
+
+  	console.log(node);
+
   	var domNode = node.create(nextItem, treeLifecycle, context);
+
   	var parentNode = lastDomNode.parentNode;
 
   	if (parentNode) {
@@ -1594,7 +1599,7 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-  			if (node !== lastItem.tree) {
+  			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
   				return;
   			}
@@ -1711,7 +1716,7 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-  			if (node !== lastItem.tree) {
+  			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
   				return;
   			}
@@ -1830,7 +1835,7 @@
   		}
   		while (startItem.key === oldEndItem.key) {
   			nextNode = oldItems[oldStartIndex].rootNode;
-  			startItem.tree.update(oldEndItem, startItem, treeLifecycle, context);
+  			startItem.tree.dom.update(oldEndItem, startItem, treeLifecycle, context);
   			insertOrAppend(parentNode, startItem.rootNode, nextNode);
   			startIndex++;
   			oldEndIndex--;
@@ -1878,7 +1883,7 @@
   				oldItemsMap[key] = null;
   				oldNextItem = oldItem.nextItem;
 
-  				item.tree.update(oldItem, item, treeLifecycle, context);
+  				item.tree.dom.update(oldItem, item, treeLifecycle, context);
 
   				/* eslint eqeqeq:0 */
   				// TODO optimise
@@ -1888,7 +1893,6 @@
   				}
   			} else {
   				nextNode = nextItem && nextItem.rootNode || parentNextNode;
-  				console.log(tree);
   				insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
   			}
   			nextItem = item;
@@ -1933,7 +1937,7 @@
   						}
   					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers_typeof(item)) === 'object') {
 
-  						item.tree.update(oldItem, item, treeLifecycle, context);
+  						item.tree.dom.update(oldItem, item, treeLifecycle, context);
   					}
   				} else {
   					if (isStringOrNumber(item)) {
@@ -2110,7 +2114,8 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
-  			if (node !== lastItem.tree) {
+
+  			if (node !== lastItem.tree.dom) {
   				childNodeList = [];
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   				return;
@@ -2147,17 +2152,17 @@
   						// do nothing for now!
   					}
   				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-  						var tree = nextValue.tree;
+  						var tree = nextValue.tree.dom;
   						if (!isVoid(tree)) {
   							if (!isVoid(lastValue)) {
-  								if (!isVoid(lastValue.tree)) {
+  								if (!isVoid(lastValue.tree.dom)) {
   									tree.update(lastValue, nextValue, treeLifecycle, context);
   								} else {
   									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   									return;
   								}
   							} else {
-  								var childNode = tree.dom.create(nextValue, treeLifecycle, context);
+  								var childNode = tree.create(nextValue, treeLifecycle, context);
 
   								domNode.replaceChild(childNode, domNode.firstChild);
   							}
@@ -2246,11 +2251,11 @@
   						// debugger;
   					}
   				} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-  						var tree = nextValue.tree;
+  						var tree = nextValue.tree.dom;
 
   						if (!isVoid(tree)) {
-  							if (lastValue.tree !== null) {
-  								tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+  							if (lastValue.tree.dom !== null) {
+  								tree.update(lastValue, nextValue, treeLifecycle, context);
   							} else {
   								// TODO implement
   							}
@@ -2311,7 +2316,7 @@
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			nextItem.id = lastItem.id;
 
-  			if (node !== lastItem.tree) {
+  			if (node !== lastItem.tree.dom) {
   				var newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 
   				nextItem.rootNode = newDomNode;
@@ -2353,7 +2358,7 @@
   	return node;
   }
 
-  function recreateNode(lastDomNode, nextItem, node, treeLifecycle, context) {
+  function recreateRootNode$1(lastDomNode, nextItem, node, treeLifecycle, context) {
   	var domNode = node.create(nextItem, treeLifecycle, context);
 
   	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
@@ -2387,8 +2392,8 @@
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			var domNode = domNodeMap[lastItem.id];
 
-  			if (node !== lastItem.tree) {
-  				recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  			if (node !== lastItem.tree.dom) {
+  				recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
   				return domNode;
   			}
   			if (!isVoid(subTreeForChildren)) {
@@ -2434,7 +2439,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2447,7 +2452,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2493,7 +2498,8 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
-  			if (node !== lastItem.tree) {
+  			if (node !== lastItem.tree.dom) {
+  				console.log(node);
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   				return;
   			}
@@ -2505,11 +2511,14 @@
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
+  			console.log('dd');
+
   			if (nextValue !== lastValue) {
   				var nextType = getTypeFromValue(nextValue);
   				var lastType = getTypeFromValue(lastValue);
 
   				if (lastType !== nextType) {
+  					console.log(node);
   					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   					return;
   				}
@@ -2530,7 +2539,7 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (getTypeFromValue(value) === ValueTypes.TREE) {
-  				value.dom.remove(item, treeLifecycle);
+  				value.remove(item, treeLifecycle);
   			}
   		}
   	};
@@ -2594,7 +2603,7 @@
   				var lastType = getTypeFromValue(lastValue);
 
   				if (lastType !== nextType) {
-  					recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  					recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
   					return;
   				}
 
@@ -2621,7 +2630,7 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (getTypeFromValue(value) === ValueTypes.TREE) {
-  				value.remove(item, treeLifecycle);
+  				value.dom.remove(item, treeLifecycle);
   			}
   		}
   	};
@@ -2629,7 +2638,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2639,7 +2648,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2653,7 +2662,7 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-  			if (node !== lastItem.tree) {
+  			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
@@ -2837,7 +2846,8 @@
 
   					statelessRender = nextRender;
   				} else {
-  					if (!instance || node !== lastItem.tree || Component !== instance.constructor) {
+
+  					if (!instance || node !== lastItem.tree.dom || Component !== instance.constructor) {
   						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   						return;
   					}
@@ -2949,7 +2959,7 @@
 
   			currentItem = nextItem;
   			if (!Component) {
-  				recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  				recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
   				if (instance) {
   					instance._lastRender.rootNode = domNode;
   				}
@@ -2973,7 +2983,7 @@
   					}
   				} else {
   					if (!instance || Component !== instance.constructor) {
-  						recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  						recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
   						return domNode;
   					}
   					var prevProps = instance.props;
@@ -3028,7 +3038,11 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-  			if (node !== lastItem.tree) {
+
+  			//			console.log(node)
+
+  			if (node !== lastItem.tree.dom) {
+
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
   				return;
   			}
@@ -3455,14 +3469,14 @@
   		parentNode: parentNode,
   		render: function render(nextItem) {
   			if (nextItem) {
-  				var tree = nextItem.tree;
+  				var tree = nextItem.tree.dom;
 
   				if (tree) {
   					if (lastItem) {
-  						tree.dom.update(lastItem, nextItem, treeLifecycle, context);
+  						tree.update(lastItem, nextItem, treeLifecycle, context);
   					} else {
-  						if (tree.dom) {
-  							var dom = tree.dom.create(nextItem, treeLifecycle, context);
+  						if (tree) {
+  							var dom = tree.create(nextItem, treeLifecycle, context);
 
   							if (nextNode) {
   								parentNode.insertBefore(dom, nextNode);
@@ -3482,10 +3496,10 @@
   		},
   		remove: function remove$$() {
   			if (lastItem) {
-  				var tree = lastItem.tree;
+  				var tree = lastItem.tree.dom;
 
   				if (lastItem) {
-  					tree.dom.remove(lastItem, treeLifecycle);
+  					tree.remove(lastItem, treeLifecycle);
   				}
   				remove(lastItem, parentNode);
   			}
@@ -3525,13 +3539,13 @@
   function render(nextItem, parentNode) {
   	var rootFragment = getRootFragmentAtNode(parentNode);
 
-  	if (rootFragment === null) {
+  	if (rootFragment == null) {
   		var fragment = createDOMFragment(parentNode);
 
   		fragment.render(nextItem);
   		rootFragments.push(fragment);
   	} else {
-  		if (nextItem === null) {
+  		if (nextItem == null) {
   			rootFragment.remove();
   			removeRootFragment(rootFragment);
   		} else {

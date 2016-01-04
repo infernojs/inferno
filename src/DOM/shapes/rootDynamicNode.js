@@ -62,7 +62,8 @@ export default function createRootDynamicNode( valueIndex ) {
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
-			if ( node !== lastItem.tree ) {
+			if ( node !== lastItem.tree.dom ) {
+				console.log(node)
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 				return;
 			}
@@ -74,11 +75,14 @@ export default function createRootDynamicNode( valueIndex ) {
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
+			console.log('dd')
+
 			if ( nextValue !== lastValue ) {
 				const nextType = getTypeFromValue( nextValue );
 				const lastType = getTypeFromValue( lastValue );
 
 				if ( lastType !== nextType ) {
+					console.log(node)
 					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 					return;
 				}
@@ -98,7 +102,7 @@ export default function createRootDynamicNode( valueIndex ) {
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.dom.remove( item, treeLifecycle );
+				value.remove( item, treeLifecycle );
 			}
 		}
 	};

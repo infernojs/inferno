@@ -71,11 +71,11 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						// debugger;
 					}
 				} else if ( typeof nextValue === 'object' ) {
-					const tree = nextValue.tree;
+					const tree = nextValue.tree.dom;
 
 					if ( !isVoid( tree ) ) {
-						if ( lastValue.tree !== null ) {
-							tree.dom.update( lastValue, nextValue, treeLifecycle, context );
+						if ( lastValue.tree.dom !== null ) {
+							tree.update( lastValue, nextValue, treeLifecycle, context );
 						} else {
 							// TODO implement
 						}

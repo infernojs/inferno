@@ -83,7 +83,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 		}
 		while ( startItem.key === oldEndItem.key ) {
 			nextNode = oldItems[oldStartIndex].rootNode;
-			startItem.tree.update( oldEndItem, startItem, treeLifecycle, context );
+			startItem.tree.dom.update( oldEndItem, startItem, treeLifecycle, context );
 			insertOrAppend( parentNode, startItem.rootNode, nextNode );
 			startIndex++;
 			oldEndIndex--;
@@ -131,7 +131,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
 
-				item.tree.update( oldItem, item, treeLifecycle, context );
+				item.tree.dom.update( oldItem, item, treeLifecycle, context );
 
 				/* eslint eqeqeq:0 */
 				// TODO optimise
@@ -141,7 +141,6 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 				}
 			} else {
 				nextNode = ( nextItem && nextItem.rootNode ) || parentNextNode;
-				console.log(tree)
 				insertOrAppend( parentNode, item.tree.dom.create( item, treeLifecycle, context ), nextNode );
 			}
 			nextItem = item;
@@ -187,7 +186,7 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 
 					} else if ( typeof item === 'object' ) {
 
-						item.tree.update( oldItem, item, treeLifecycle, context );
+						item.tree.dom.update( oldItem, item, treeLifecycle, context );
 					}
 				} else {
 					if ( isStringOrNumber( item ) ) {

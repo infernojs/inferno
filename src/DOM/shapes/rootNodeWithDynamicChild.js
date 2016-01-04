@@ -62,7 +62,8 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
-			if ( node !== lastItem.tree ) {
+
+			if ( node !== lastItem.tree.dom ) {
 				childNodeList = [];
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 				return;
@@ -99,17 +100,17 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						// do nothing for now!
 					}
 				} else if ( typeof nextValue === 'object' ) {
-					const tree = nextValue.tree;
+					const tree = nextValue.tree.dom;
 					if ( !isVoid( tree ) ) {
 						if ( !isVoid( lastValue ) ) {
-							if ( !isVoid( lastValue.tree ) ) {
+							if ( !isVoid( lastValue.tree.dom ) ) {
 								tree.update( lastValue, nextValue, treeLifecycle, context );
 							} else {
 								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 								return;
 							}
 						} else {
-							const childNode = tree.dom.create( nextValue, treeLifecycle, context );
+							const childNode = tree.create( nextValue, treeLifecycle, context );
 
 							domNode.replaceChild( childNode, domNode.firstChild );
 						}

@@ -311,25 +311,7 @@
   	}
   }
 
-  function createChildren(children) {
-  	var childrenArray = [];
-
-  	if (isArray(children)) {
-  		for (var i = 0; i < children.length; i++) {
-  			var childItem = children[i];
-
-  			childrenArray.push(childItem);
-  		}
-  	}
-  	return childrenArray;
-  }
-
   function createElement(tag, attrs) {
-
-  	if (isVoid(tag)) {
-  		return;
-  	}
-
   	if (tag) {
   		var vNode = {
   			tag: tag
@@ -347,13 +329,10 @@
   			children[_key - 2] = arguments[_key];
   		}
 
-  		if (children) {
-  			if (children.length) {
-  				vNode.children = createChildren(children);
-  			} else {
-  				vNode.children = children[0];
-  			}
+  		if (children.length) {
+  			vNode.children = children;
   		}
+
   		return vNode;
   	} else {
   		return {

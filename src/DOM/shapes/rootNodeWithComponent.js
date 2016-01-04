@@ -119,7 +119,8 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 
 					statelessRender = nextRender;
 				} else {
-					if ( !instance || node !== lastItem.tree || Component !== instance.constructor ) {
+
+					if ( !instance || node !== lastItem.tree.dom || Component !== instance.constructor ) {
 						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 						return;
 					}
