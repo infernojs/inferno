@@ -37,7 +37,12 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						}
 					}
 				} else if ( typeof value === 'object' ) {
-					domNode.appendChild( value.tree.dom.create( value, treeLifecycle, context ) );
+
+					const tree = value && value.tree;
+
+					if ( tree ) {
+						domNode.appendChild( value.tree.dom.create( value, treeLifecycle, context ) );
+					}
 				} else if ( isStringOrNumber( value ) ) {
 					domNode.textContent = value;
 				}
@@ -121,6 +126,15 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						} else {
 							// TODO implement
 							// NOTE There will be no 'tree' if we update from a null value
+						}
+					} else {
+						// Edge case! If we update from e.g object literal - {} - from a existing value, the
+						// value will not be unset
+
+						const firstChild = domNode.firstChild;
+
+						if ( firstChild ) {
+							domNode.removeChild( domNode.firstChild );
 						}
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {

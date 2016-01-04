@@ -1690,7 +1690,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1700,7 +1700,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2100,7 +2100,11 @@
   						}
   					}
   				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
-  					domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
+  					var tree = value && value.tree;
+
+  					if (tree) {
+  						domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
+  					}
   				} else if (isStringOrNumber(value)) {
   					domNode.textContent = value;
   				}
@@ -2135,25 +2139,25 @@
   							domNode.removeChild(domNode.childNodes[i]);
   						} else {
 
-  							var firstChild = domNode.firstChild;
+  							var _firstChild = domNode.firstChild;
 
-  							if (firstChild) {
+  							if (_firstChild) {
   								domNode.removeChild(domNode.firstChild);
   							}
   						}
   					}
   				} else {
 
-  					var firstChild = domNode.firstChild;
+  					var _firstChild2 = domNode.firstChild;
 
-  					if (firstChild) {
+  					if (_firstChild2) {
   						domNode.removeChild(domNode.firstChild);
   					}
   				}
   			} else if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
-  					var firstChild = domNode.firstChild;
-  					if (firstChild) {
+  					var _firstChild3 = domNode.firstChild;
+  					if (_firstChild3) {
   						domNode.firstChild.nodeValue = nextValue;
   					} else {
   						domNode.textContent = nextValue;
@@ -2206,10 +2210,19 @@
   									domNode.appendChild(childNode);
   								}
   							}
+  						} else {
+  							// Edge case! If we update from e.g object literal - {} - from a existing value, the
+  							// value will not be unset
+
+  							var firstChild = domNode.firstChild;
+
+  							if (firstChild) {
+  								domNode.removeChild(domNode.firstChild);
+  							}
   						}
   					} else if (isStringOrNumber(nextValue)) {
-  						var firstChild = domNode.firstChild;
-  						if (firstChild) {
+  						var _firstChild4 = domNode.firstChild;
+  						if (_firstChild4) {
   							domNode.firstChild.nodeValue = nextValue;
   						} else {
   							domNode.textContent = nextValue;
@@ -2262,7 +2275,12 @@
   						}
   					}
   				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
-  					domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
+
+  					var tree = value && value.tree;
+
+  					if (tree) {
+  						domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
+  					}
   				} else if (isStringOrNumber(value)) {
   					domNode.textContent = value;
   				}
@@ -2347,17 +2365,26 @@
   								// TODO implement
   								// NOTE There will be no 'tree' if we update from a null value
   							}
-  						}
+  						} else {
+  								// Edge case! If we update from e.g object literal - {} - from a existing value, the
+  								// value will not be unset
+
+  								var firstChild = domNode.firstChild;
+
+  								if (firstChild) {
+  									domNode.removeChild(domNode.firstChild);
+  								}
+  							}
   					} else if (isStringOrNumber(nextValue)) {
 
-  							var firstChild = domNode.firstChild;
+  						var firstChild = domNode.firstChild;
 
-  							if (firstChild) {
-  								domNode.firstChild.nodeValue = nextValue;
-  							} else {
-  								domNode.textContent = nextValue;
-  							}
+  						if (firstChild) {
+  							domNode.firstChild.nodeValue = nextValue;
+  						} else {
+  							domNode.textContent = nextValue;
   						}
+  					}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2373,7 +2400,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2383,7 +2410,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2534,7 +2561,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2547,7 +2574,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
