@@ -241,58 +241,6 @@ describe( 'Components (JSX)', () => {
 		);
 	});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	class BasicComponent2 extends Component {
 		render() {
 			return (
@@ -672,9 +620,8 @@ describe( 'Components (JSX)', () => {
 				'<div><div class="my-component"><h1>Saab 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 0</h1><button type="button">Increment</button></div></div>'
 			);
 		});
-// Waits fuck this up
-	/*	it('Second render (update)', (done) => {
 
+		it('Second render (update)', (done) => {
 			render(<Wrapper/>, container);
 
 			waits(30, () => {
@@ -685,8 +632,65 @@ describe( 'Components (JSX)', () => {
 				);
 				done();
 			});
-		});*/
+		});
 	});
 
+	describe('should render a component with a conditional state item', () => {
+		class SomeError extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					show: false
+				};
+				this.toggle = this.toggle.bind( this );
+				setTimeout(() => {
+					this.toggle();
+				}, 10);
+			}
 
+			toggle() {
+				this.setState({
+					show: !this.state.show
+				});
+			}
+
+			render() {
+				return (
+					<div class="login-view bg-visma">
+						<button onClick={this.toggle}>TOGGLE</button>
+						<br />
+						{function(){
+							if (this.state.show === true) {
+								return <h1>This is cool!</h1>
+							} else {
+								return <h1>Not so cool</h1>
+							}
+						}.call(this)}
+					</div>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			render( <SomeError/>, container );
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>Not so cool</h1></div>'
+			);
+		});
+
+		it('Second render (update with state change)', (done) => {
+			render( <SomeError/>, container );
+			waits(30, () => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					'<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>'
+				);
+				done();
+			})
+		});
+	});
 } );

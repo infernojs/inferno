@@ -74,7 +74,10 @@ export default function createDynamicNode( valueIndex ) {
 						updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context );
 						break;
 					case ValueTypes.TREE:
-						// debugger;
+						// TODO
+						break;
+					case ValueTypes.FRAGMENT:
+						nextValue.tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 						break;
 					default: break;
 				}
