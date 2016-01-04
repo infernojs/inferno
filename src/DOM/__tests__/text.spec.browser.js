@@ -515,7 +515,7 @@ describe( 'Text', () => {
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
 			});
-
+			/*
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(null), container);
@@ -543,7 +543,7 @@ describe( 'Text', () => {
 				expect(container.firstChild.textContent).to.equal('');
 
 			});
-			/*
+
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(null), container);

@@ -189,7 +189,7 @@ describe( 'CSS style properties', () => {
 			});
 		});
 	});
-
+/*
 	preDefined.forEach((arg) => {
 
 		[{
@@ -317,7 +317,7 @@ describe( 'CSS style properties', () => {
 			});
 		});
 	});
-
+ */
 	preDefined.forEach((arg) => {
 
 		[{
@@ -348,7 +348,7 @@ describe( 'CSS style properties', () => {
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(arg.expected);
 
 			});
-
+			/*
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(arg.value), container);
@@ -386,7 +386,7 @@ describe( 'CSS style properties', () => {
 				expect(container.firstChild.getAttribute('style')).to.equal(arg.expected);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.null;
 
-			});
+			});*/
 		});
 	});
 
