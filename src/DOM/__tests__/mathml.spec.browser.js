@@ -6,7 +6,7 @@ import { addTreeConstructor } from '../../core/createTemplate';
 
 addTreeConstructor( 'dom', createDOMTree );
 
-describe( 'createTree - mathML', () => {
+describe( 'mathML namespace', () => {
 
 	let container;
 
@@ -29,9 +29,27 @@ describe( 'createTree - mathML', () => {
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/1998/Math/MathML");
+	});
+
+	it('should render MathML element with children', () => {
+
+		let template = createTemplate(() => ({
+			tag: 'math',
+			children: {
+				tag: 'mrow',
+				children: [
+					{ tag: 'mi', children: 'a'},
+					{ tag: 'mn', children: '2'}
+				]
+			}
+		}));
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/1998/Math/MathML");
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+		expect(container.firstChild.innerHTML).to.equal('<mrow><mi>a</mi><mn>2</mn></mrow>');
+		render(template(), container);
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
+		expect(container.firstChild.innerHTML).to.equal('<mrow><mi>a</mi><mn>2</mn></mrow>');
 	});
 
 	it('should solve mathML edge when wrapped inside a non-namespace element ( static )', () => {
@@ -49,7 +67,7 @@ describe( 'createTree - mathML', () => {
 		render(template(), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
-	})
+	});
 
 	it('should solve mathML edge when wrapped inside a non-namespace element ( dynamic )', () => {
 
@@ -68,7 +86,7 @@ describe( 'createTree - mathML', () => {
 		render(template(child()), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 		render(template(null), container);
-	})
+	});
 
 	/**
 	 * This is an edge case, and will turn out wrong for the end-dev because of stupidity, but at

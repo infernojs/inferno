@@ -1097,7 +1097,7 @@ describe( 'Components', () => {
 
 			this.render = function() {
 				return BaseView(this.toggle, (function () {
-					
+
 					if (this.state.show === true) {
 						return ThisIsCool(null);
 					} else {

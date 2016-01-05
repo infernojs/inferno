@@ -25,30 +25,17 @@ describe( 'createTree - SVG', () => {
 		const template = createTemplate((val1) =>
 			createElement('svg', {height: val1})
 		);
+		render(template(null), container);
 		render(template(200), container);
 		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
 		expect(container.firstChild.getAttribute('height')).to.eql('200');
 		render(template(null), container);
-	});
+		render(template(200), container);
+		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
+		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('height')).to.eql('200');
 
-	describe('should set "class" attribute', () => {
-
-		it('Second render (update)', () => {
-			const template = createTemplate((val1) =>
-				createElement('svg', {height: val1})
-			);
-			render(template(null), container);
-			render(template(200), container);
-			expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-			expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-			expect(container.firstChild.getAttribute('height')).to.eql('200');
-			render(template(undefined), container);
-			render(template(200), container);
-			expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-			expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-			expect(container.firstChild.getAttribute('height')).to.eql('200');
-		});
 	});
 
 	it('should respect SVG namespace and render SVG attributes', () => {
@@ -65,10 +52,7 @@ describe( 'createTree - SVG', () => {
 			}, null)
 		);
 
-		render(template(null), container);
-		render(template(null), container);
 		render(template(200), container);
-
 		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
 		expect(container.firstChild.getAttribute('xmlns')).to.eql('http://www.w3.org/2000/svg');
@@ -106,13 +90,23 @@ describe( 'createTree - SVG', () => {
 
 	it('should set SVG as default namespace for <svg>', () => {
 
-		let template = createTemplate(() => ({
+		let template;
+
+		template = createTemplate(() => ({
 			tag: 'svg'
 		}));
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/2000/svg");
 		render(template(null), container);
+
+		template = createTemplate(() => ({
+			tag: 'svg',
+			children: {
+				tag: 'path'
+			}
+		}));
+
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/2000/svg");
 	});
@@ -197,7 +191,6 @@ describe( 'createTree - SVG', () => {
 			}
 		}));
 
-
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
@@ -211,9 +204,7 @@ describe( 'createTree - SVG', () => {
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
 
-
-
-	it('should fuck the world with the edge case ( static)', () => {
+	it('should handle SVG edge case ( static)', () => {
 
 		let template = createTemplate((child) => ({
 			tag: 'div',
@@ -224,15 +215,13 @@ describe( 'createTree - SVG', () => {
 		}));
 
 		render(template(), container);
-
-		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		render(template(), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
+	});
 
-	})
-
-
-	it('should fuck the world with the edge case ( dynamic )', () => {
+	it('should handle SVG edge case ( dynamic )', () => {
 
 		let child = createTemplate(() => ({
 			tag: 'circle',
@@ -244,12 +233,10 @@ describe( 'createTree - SVG', () => {
 		}));
 
 		render(template(child()), container);
-
-		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-
-
-	})
+		render(template(child()), container);
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+	});
 
 
 	it('should keep parent namespace ( dynamic)', () => {
@@ -346,6 +333,8 @@ describe( 'createTree - SVG', () => {
 		render(template(child()), container);
 		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		render(template(null), container);
+		render(template(child()), container);
+		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	})
 
 	it('should set class attribute', () => {
@@ -363,6 +352,17 @@ describe( 'createTree - SVG', () => {
 
 		render(template('bar'), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('bar');
+
+		render(template(['bar']), container);
+		expect(container.firstChild.getAttribute('class')).to.equal('bar');
+
+		render(template(['bar', 'zoo']), container);
+		expect(container.firstChild.getAttribute('class')).to.equal('bar,zoo');
+
+		// TODO! Fix this
+		//render(template(['bar', null, 'zoo']), container);
+		//expect(container.firstChild.getAttribute('class')).to.equal('bar,zoo');
+
 	});
 
 	it('should respect SVG namespace and render SVG attributes', () => {
@@ -440,8 +440,7 @@ describe( 'createTree - SVG', () => {
 		//expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-	})
-
+	});
 
 	it('should solve SVG edge case with XMLNS attribute when wrapped inside a non-namespace element ( static)', () => {
 

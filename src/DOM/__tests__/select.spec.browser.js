@@ -19,8 +19,6 @@ describe( 'Select / select multiple', () => {
 		container.innerHTML = '';
 	});
 
-
-
 	it('should render "select" boolean on select options with numbers', () => {
 
 		const template = createTemplate((val) => {

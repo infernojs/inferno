@@ -79,6 +79,17 @@ describe( 'CSS style properties (JSX)', () => {
 		expect(stubStyle.color).to.equal('red');
 	});
 
+	it('should support different unit types - em and mm', () => {
+		const styles = {height: '200em', width:'20mm'};
+		render(<div style={styles} />, container);
+		render(<div />, container);
+		render(<div style={styles} />, container);
+
+		const stubStyle = container.firstChild.style;
+		expect(stubStyle.height).to.equal('200em');
+		expect(stubStyle.width).to.equal('20mm');
+	});
+
 	it('should clear all the styles when removing `style`', () => {
 		const styles = {display: 'none', color: 'red'};
 		render(<div style={styles} />, container);

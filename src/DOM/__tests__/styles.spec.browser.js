@@ -97,13 +97,7 @@ describe( 'CSS style properties', () => {
 		},
 		expected: null
 	},
-		{
-			name: 'automatically append `px` to relevant styles',
-			value: {
-				'zIndex': 33
-			},
-			expected: 'z-index: 33;'
-		}, {
+	 {
 			name: 'support transform',
 			value: {
 				transform: 'rotate(245deg)'
@@ -114,20 +108,31 @@ describe( 'CSS style properties', () => {
 			value: {
 				left: 0,
 				opacity: 0.5,
+				zIndex: 33,
+				height: 200
 			},
-			expected: 'left: 0px; opacity: 0.5;'
+			expected: 'left: 0px; opacity: 0.5; z-index: 33; height: 200px;'
 		}, {
 			name: 'support number values',
 			value: {
-				width: 7
+				width: 7,
+				height: 3
 			},
-			expected: 'width: 7px;'
+			expected: 'width: 7px; height: 3px;'
 		}, {
 			name: 'handle hypenhated markup correctly',
 			value: {
 				fontFamily: 'Inferno'
 			},
 			expected: 'font-family: Inferno;'
+		}, {
+			name: 'handle different units - em, cm, mm etc',
+			value: {
+				height:'200em',
+				width:'200cm',
+				marginLeft:'200mm'
+			},
+			expected: 'height: 200em; width: 200cm; margin-left: 200mm;'
 		}]
 
 	preDefined.forEach((arg) => {
@@ -144,6 +149,9 @@ describe( 'CSS style properties', () => {
 
 			it(test.description, () => {
 
+				render(createTemplate(test.template)(), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
 				render(createTemplate(test.template)(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
