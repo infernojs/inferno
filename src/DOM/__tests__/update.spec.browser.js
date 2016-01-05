@@ -694,16 +694,15 @@ describe( 'Update', () => {
 		render(template([], [], 123, [], null, null), container);
 
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
-		/*
+
 		expect(
 			() => render(template([], [],  [], [], '',  []), container)
-		).to.throw;*/
+		).to.throw;
 	});
-
 
 	it('should render a basic example #7', () => {
 
