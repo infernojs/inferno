@@ -29,7 +29,10 @@ describe( 'createRef()', () => {
 			}
 		}));
 
+		render(template(), container);
+
 		render(template(divRef), container);
+
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.innerHTML).to.equal('');
 		expect(

@@ -1,7 +1,7 @@
-import createTemplate from '../createTemplate';
+import createTemplate, { addTreeConstructor  } from '../createTemplate';
 import { render, renderToString } from '../../DOM/rendering';
 
-describe('createTemplate  ( UT tests)', () => {
+describe('Inferno.createTemplate()', () => {
 
 	let container;
 
@@ -13,8 +13,16 @@ describe('createTemplate  ( UT tests)', () => {
 		render(null, container);
 	});
 
-	it('should be a function', () => {
+	it('should be a function ( createTemplate )', () => {
 		expect(createTemplate).to.be.a.function;
+	});
+
+	it('should be a function ( addTreeConstructor )', () => {
+		expect(addTreeConstructor).to.be.a.function;
+	});
+
+	it('should set default tree constructor', () => {
+		addTreeConstructor('foo', () => {});
 	});
 
 	it('should be equal to itself', () => {

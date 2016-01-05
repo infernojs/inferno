@@ -41,10 +41,10 @@ export default function createTemplate( callback ) {
 				callbackArguments[i] = createVariable( i );
 			}
 			const schema = callback( ...callbackArguments );
-			const dynamicNodeMap = new Storage();
+			const dynamicNodeMap = new Map() || new Storage();
 
 			scanTreeForDynamicNodes( schema, dynamicNodeMap );
-			const tree = applyTreeConstructors(schema, dynamicNodeMap);
+			const tree = applyTreeConstructors( schema, dynamicNodeMap );
 			const key = schema.key;
 			const keyIndex = key ? key.index : -1;
 
