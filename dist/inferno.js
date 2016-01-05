@@ -244,7 +244,7 @@
   					callbackArguments[i] = createVariable(i);
   				}
   				var schema = callback.apply(undefined, callbackArguments);
-  				var dynamicNodeMap = new Storage();
+  				var dynamicNodeMap = new Map() || new Storage();
 
   				scanTreeForDynamicNodes(schema, dynamicNodeMap);
   				var tree = applyTreeConstructors(schema, dynamicNodeMap);
