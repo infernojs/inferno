@@ -1,5 +1,6 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
+import updateAndAppendDynamicChildren from '../../shared/updateAndAppendDynamicChildren';
 import appendText from '../../util/appendText';
 import recreateNode from '../recreateNode';
 import isStringOrNumber from '../../util/isStringOrNumber';
@@ -67,13 +68,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 
 				if ( typeof nextValue === 'object' ) {
 					if ( isArray( nextValue ) ) {
-						for ( let i = 0; i < nextValue.length; i++ ) {
-							if ( isStringOrNumber( nextValue[i] ) ) {
-								domNode.appendChild( document.createTextNode( nextValue[i] ) );
-							} else {
-								// Do nothing for now
-							}
-						}
+						updateAndAppendDynamicChildren( domNode, nextValue );
 					} else {
 						recreateNode( lastItem, nextItem, node, treeLifecycle, context );
 					}
