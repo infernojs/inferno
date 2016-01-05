@@ -1,5 +1,5 @@
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
-import Storage from '../util/Storage';
+import Storage from '../util/storage';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 import isVoid from '../util/isVoid';
