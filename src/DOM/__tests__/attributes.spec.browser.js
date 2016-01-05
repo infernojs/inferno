@@ -80,42 +80,34 @@ describe('Attribute / properties', () => {
 
 		template.setProperty(null, container, 'scoped', true);
 		expect( container.getAttribute('scoped')).to.equal('scoped');
+	});
 
-		it('should set numeric properties', () => {
-
-			template.setProperty(null, container, 'start', 123, false);
-			expect( container.getAttribute('start')).to.equal('123');
-
-			template.setProperty(null, container, 'start', 0, false);
-			expect( container.getAttribute('start')).to.equal('0');
-
-			// custom
-			template.setProperty(null, container, 'foobar', 123, false);
-			expect( container.getAttribute('foobar')).to.equal('123');
-		});
-
-		it('should set className property', true, () => {
-			template.setProperty(null, container, 'className', selected);
-			expect( container.className).to.equal('selected');
-			// className should be '', not 'null' or null (which becomes 'null' in
-			// some browsers)
-			template.setProperty(null, container, 'className', null);
-			expect( container.className).to.equal('');
-
-		});
-
-		it('should set truthy boolean properties', true, () => {
-			template.setProperty(null, container, 'allowFullScreen', true);
-			expect( container.allowFullScreen).to.equal('simple');
-			expect( container.getAttribute('allowFullScreen')).to.equal('simple');
-		});
-
-
-		it('should remove falsey boolean properties', true, () => {
-			template.setProperty(null, container, 'allowFullScreen', false);
-			expect( container.allowFullScreen).to.be.null;
-			expect( container.getAttribute('allowFullScreen')).to.be.null;
-		});
+	it('should set numeric properties', () => {
+		template.setProperty(null, container, 'start', 123, false);
+		expect( container.getAttribute('start')).to.equal('123');
+		template.setProperty(null, container, 'start', 0, false);
+		expect( container.getAttribute('start')).to.equal('0');
+		// custom
+		template.setProperty(null, container, 'foobar', 123, false);
+		expect( container.getAttribute('foobar')).to.equal('123');
+	});
+	it('should set className property', () => {
+		template.setProperty(null, container, 'className', selected);
+		expect( container.className).to.equal('selected');
+		// className should be '', not 'null' or null (which becomes 'null' in
+		// some browsers)
+		template.setProperty(null, container, 'className', null);
+		expect( container.className).to.equal('');
+	});
+	it('should set truthy boolean properties', () => {
+		template.setProperty(null, container, 'allowFullScreen', true);
+		expect( container.allowFullScreen).to.equal('simple');
+		expect( container.getAttribute('allowFullScreen')).to.equal('simple');
+	});
+	it('should remove falsey boolean properties', () => {
+		template.setProperty(null, container, 'allowFullScreen', false);
+		expect( container.allowFullScreen).to.be.null;
+		expect( container.getAttribute('allowFullScreen')).to.be.null;
 	});
 
 
