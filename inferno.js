@@ -3751,7 +3751,7 @@ console.log(node)
 						callbackArguments[i] = createVariable(i);
 					}
 					var schema = callback.apply(undefined, callbackArguments);
-					var dynamicNodeMap = new Map();
+					var dynamicNodeMap = new Storage();
 
 					scanTreeForDynamicNodes(schema, dynamicNodeMap);
 					var domTree = createDOMTree(schema, true, dynamicNodeMap);

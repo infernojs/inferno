@@ -4,6 +4,7 @@ import { render } from '../../DOM/rendering';
 import createTree from '../../DOM/createTree';
 import Component from '../Component';
 import waits from '../../../tools/waits';
+import innerHTML from '../../../tools/innerHTML';
 
 const { createElement } = TemplateFactory;
 
@@ -32,6 +33,8 @@ describe( 'Components (JSX)', () => {
 		renderedName = null;
 
 		container = document.createElement('div');
+        container.style.display = 'none';
+        document.body.appendChild(container);
 
 		Inner = class extends Component {
 			getName() {
@@ -46,6 +49,7 @@ describe( 'Components (JSX)', () => {
 	});
 
 	afterEach(() => {
+        document.body.removeChild(container);
 		render(null, container);
 	});
 
@@ -68,7 +72,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+			innerHTML( '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>' )
 		);
 
 		render((
@@ -78,7 +82,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+			innerHTML( '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>' )
 		);
 	});
 
@@ -113,7 +117,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><label><input>The title is abc</label></div></div>'
+			innerHTML( '<div><div class="basic"><label><input>The title is abc</label></div></div>' )
 		);
 		expect(
 			container.querySelector("input").checked
@@ -129,7 +133,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><label><input>The title is 123</label></div></div>'
+			innerHTML( '<div><div class="basic"><label><input>The title is 123</label></div></div>' )
 		);
 		expect(
 			container.querySelector("input").checked
@@ -162,7 +166,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+			innerHTML( '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>' )
 		);
 
 		render((
@@ -176,7 +180,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is Hello, World!</span></div></div>'
+			innerHTML( '<div><div class="basic"><span class="basic-render">The title is Hello, World!</span></div></div>' )
 		);
 
 		render((
@@ -617,7 +621,7 @@ describe( 'Components (JSX)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div><div class="my-component"><h1>Saab 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 0</h1><button type="button">Increment</button></div></div>'
+				innerHTML( '<div><div class="my-component"><h1>Saab 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 0</h1><button type="button">Increment</button></div></div>' )
 			);
 		});
 
@@ -628,7 +632,7 @@ describe( 'Components (JSX)', () => {
 				expect(
 					container.innerHTML
 				).to.equal(
-					'<div><div class="my-component"><h1>Saab 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 1</h1><button type="button">Increment</button></div></div>'
+					innerHTML( '<div><div class="my-component"><h1>Saab 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 1</h1><button type="button">Increment</button></div></div>' )
 				);
 				done();
 			});
@@ -677,7 +681,7 @@ describe( 'Components (JSX)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>Not so cool</h1></div>'
+				innerHTML( '<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>Not so cool</h1></div>' )
 			);
 		});
 
@@ -687,7 +691,7 @@ describe( 'Components (JSX)', () => {
 				expect(
 					container.innerHTML
 				).to.equal(
-					'<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>'
+					innerHTML( '<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>' )
 				);
 				done();
 			})
