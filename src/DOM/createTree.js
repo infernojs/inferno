@@ -10,12 +10,10 @@ import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createNodeWithDynamicChild from './shapes/nodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createNodeWithDynamicSubTreeForChildren from './shapes/nodeWithDynamicSubTreeForChildren';
- // import createRootStaticNode from './shapes/rootStaticNode';
- // import createStaticNode from './shapes/staticNode';
 import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
-import createRootVoidNode from './shapes/rootVoidNode';
-import createVoidNode from './shapes/voidNode';
+import createRootStaticVoidNode from './shapes/rootStaticVoidNode';
+import createStaticVoidNode from './shapes/staticVoidNode';
 import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
 import createNodeWithComponent from './shapes/nodeWithComponent';
 import createRootDynamicTextNode from './shapes/rootDynamicTextNode';
@@ -188,9 +186,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 		}
 
 		if ( isRoot ) {
-			node = createRootVoidNode( templateNode );
+			node = createRootStaticVoidNode( templateNode );
 		} else {
-			node = createVoidNode( templateNode );
+			node = createStaticVoidNode( templateNode );
 		}
 	} else {
 		if ( dynamicFlags.NODE === true ) {
@@ -355,9 +353,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					} else {
 						if ( isRoot ) {
-							node = createRootVoidNode( templateNode, dynamicAttrs );
+							node = createRootStaticVoidNode( templateNode, dynamicAttrs );
 						} else {
-							node = createVoidNode( templateNode, dynamicAttrs );
+							node = createStaticVoidNode( templateNode, dynamicAttrs );
 						}
 					}
 				}

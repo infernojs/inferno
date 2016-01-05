@@ -50,7 +50,6 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			if ( nextValue !== lastValue ) {
 				if ( isVoid( nextValue ) ) {
 					if ( isVoid( lastValue ) ) {
-						domNode.textContent = ' ';
 						domNode.firstChild.nodeValue = '';
 					} else {
 						domNode.textContent = '';

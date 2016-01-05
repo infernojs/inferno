@@ -1,9 +1,13 @@
 import isVoid from '../../util/isVoid';
+import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
 export default function createNodeWithDynamicText( templateNode, valueIndex, dynamicAttrs ) {
+
 	let domNode;
+
+	const errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
 	const node = {
 		overrideItem: null,
@@ -12,8 +16,8 @@ export default function createNodeWithDynamicText( templateNode, valueIndex, dyn
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
-				if ( typeof value !== 'string' && typeof value !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+				if ( !isStringOrNumber( value ) ) {
+					throw Error( errorMsg );
 				}
 				domNode.textContent = value;
 			}
@@ -29,14 +33,13 @@ export default function createNodeWithDynamicText( templateNode, valueIndex, dyn
 			if ( nextValue !== lastValue ) {
 				if ( isVoid( nextValue ) ) {
 					if ( isVoid( lastValue ) ) {
-						domNode.textContent = ' ';
 						domNode.firstChild.nodeValue = '';
 					} else {
 						domNode.textContent = '';
 					}
 				} else {
-					if ( typeof nextValue !== 'string' && typeof nextValue !== 'number' ) {
-						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+					if ( !isStringOrNumber( nextValue ) ) {
+						throw Error( errorMsg );
 					}
 					if ( isVoid( lastValue ) ) {
 						domNode.textContent = nextValue;
