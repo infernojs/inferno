@@ -23,6 +23,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 			currentItem = item;
 			if ( isVoid( Component ) ) {
 				domNode = document.createTextNode( '' );
+				node.instance = null;
 				return domNode;
 			} else if ( typeof Component === 'function' ) {
 				// stateless component
@@ -137,6 +138,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 
 				instance._lastRender.tree.dom.remove( instance._lastRender, treeLifecycle );
 				instance.componentWillUnmount();
+				node.instance = null;
 			}
 		}
 	};
