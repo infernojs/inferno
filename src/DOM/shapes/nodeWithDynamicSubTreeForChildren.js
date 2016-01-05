@@ -1,6 +1,7 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
 import addShapeChildren from '../../shared/addShapeChildren';
+import updateShapeChildren from '../../shared/updateShapeChildren';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateNode from '../recreateNode';
 
@@ -26,27 +27,7 @@ export default function createNodeWithDynamicSubTreeForChildren( templateNode, s
 				recreateNode( domNode, nextItem, node, treeLifecycle,context );
 				return domNode;
 			}
-			if ( !isVoid( subTreeForChildren ) ) {
-				if ( isArray( subTreeForChildren ) ) {
-					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
-						const subTree = subTreeForChildren[i];
-
-						subTree.update( lastItem, nextItem, treeLifecycle, context );
-					}
-				} else if ( typeof subTreeForChildren === 'object' ) {
-					const newDomNode = subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
-
-					if ( newDomNode ) {
-						const replaceNode = domNode.firstChild;
-
-						if ( replaceNode ) {
-							domNode.replaceChild( newDomNode, replaceNode );
-						} else {
-							domNode.appendChild( newDomNode );
-						}
-					}
-				}
-			}
+			updateShapeChildren(domNode, subTreeForChildren, lastItem, nextItem, treeLifecycle, context );
 			if ( dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
