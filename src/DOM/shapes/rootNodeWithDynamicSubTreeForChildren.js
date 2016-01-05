@@ -4,7 +4,6 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 import addShapeChildren from '../../shared/addShapeChildren';
-import updateShapeChildren from '../../shared/updateShapeChildren';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -44,9 +43,17 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
+			if ( !isVoid( subTreeForChildren ) ) {
+				if ( isArray( subTreeForChildren ) ) {
+					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
+						const subTree = subTreeForChildren[i];
 
-			updateShapeChildren(domNode, subTreeForChildren, lastItem, nextItem, treeLifecycle, context );
-
+						subTree.update( lastItem, nextItem, treeLifecycle, context );
+					}
+				} else if ( typeof subTreeForChildren === 'object' ) {
+					subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
+				}
+			}
 			if ( dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
