@@ -16,17 +16,3 @@ export default function addShapeChildren(domNode, subTreeForChildren, item, tree
 		}
 	}
 }
-/*if ( !isVoid( subTreeForChildren ) ) {
-	if ( isArray( subTreeForChildren ) ) {
-		for ( let i = 0; i < subTreeForChildren.length; i++ ) {
-			const subTree = subTreeForChildren[i];
-
-			domNode.appendChild( subTree.create( item, treeLifecycle, context ) );
-		}
-	} else if ( typeof subTreeForChildren === 'object' ) {
-		domNode.appendChild( subTreeForChildren.create( item, treeLifecycle, context ) );
-	}
-}
- */
-
-
