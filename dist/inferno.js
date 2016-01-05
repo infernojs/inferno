@@ -6,8 +6,10 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Inferno = factory());
+  global.Inferno = factory();
 }(this, function () { 'use strict';
+
+  var babelHelpers = {};
 
   function babelHelpers_typeof (obj) {
     return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
@@ -37,20 +39,6 @@
     };
   })();
 
-  var babelHelpers_extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
   var canUseDOM = !!(typeof window !== 'undefined' &&
   // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
   // As a workaround, check if document is undefined
@@ -64,19 +52,6 @@
   	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
   };
 
-  function doesItExist(value) {
-
-  	var i = undefined;
-
-  	if (value != value || value === 0) {
-
-  		for (i = this.length; i-- && !is(this[i], value);) {}
-  	} else {
-  		i = [].indexOf.call(this, value);
-  	}
-  	return i;
-  }
-
   function Storage(iterable) {
   	var _items = [];
   	var _keys = [];
@@ -86,14 +61,15 @@
 
   		get: {
   			value: function value(key) {
-  				var index = doesItExist.call(_keys, key);
-  				return index > -1 ? _values[index] : undefined;
+  				var index = [].indexOf.call(_keys, key);
+  				return _values[index] || undefined;
   			}
   		},
   		set: {
   			value: function value(key, _value) {
   				// check if key exists and overwrite
-  				var index = doesItExist.call(_keys, key);
+
+  				var index = [].indexOf.call(_keys, key);
   				if (index > -1) {
   					_items[index][1] = _value;
   					_values[index] = _value;
@@ -244,7 +220,7 @@
 
   function createTemplate(callback) {
 
-  	if (callback != null && typeof callback === 'function') {
+  	if (typeof callback === 'function') {
   		var construct = callback.construct || null;
 
   		if (isVoid(construct)) {

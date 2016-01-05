@@ -6,8 +6,10 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.InfernoDOM = factory());
+  global.InfernoDOM = factory();
 }(this, function () { 'use strict';
+
+  var babelHelpers = {};
 
   function babelHelpers_typeof (obj) {
     return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
@@ -1575,6 +1577,8 @@
   		create: function create(item) {
   			var domNode = undefined;
 
+  			var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
+
   			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
@@ -1585,8 +1589,8 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
-  				if (typeof value !== 'string' && typeof value !== 'number') {
-  					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  				if (!isStringOrNumber(value)) {
+  					throw Error(errorMsg);
   				}
   				domNode.textContent = value;
   			}
@@ -1616,8 +1620,8 @@
   						domNode.textContent = '';
   					}
   				} else {
-  					if (typeof nextValue !== 'string' && typeof nextValue !== 'number') {
-  						throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  					if (!isStringOrNumber(nextValue)) {
+  						throw Error(errorMsg);
   					}
   					if (isVoid(lastValue)) {
   						domNode.textContent = nextValue;
@@ -1691,7 +1695,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1701,7 +1705,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1758,7 +1762,7 @@
   function appendText(domNode, value) {
   	var firstChild = domNode.firstChild;
   	if (firstChild) {
-  		domNode.firstChild.nodeValue = value;
+  		firstChild.nodeValue = value;
   	} else {
   		domNode.textContent = value;
   	}
@@ -2067,7 +2071,7 @@
   	}
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2079,7 +2083,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2582,7 +2586,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2595,7 +2599,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2792,7 +2796,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2802,7 +2806,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;

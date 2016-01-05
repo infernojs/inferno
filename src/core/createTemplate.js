@@ -30,7 +30,7 @@ function applyTreeConstructors( schema, dynamicNodeMap ) {
 
 export default function createTemplate( callback ) {
 
-	if ( callback != null && typeof callback === 'function' ) {
+	if ( typeof callback === 'function' ) {
 		let construct = callback.construct || null;
 
 		if ( isVoid( construct ) ) {
