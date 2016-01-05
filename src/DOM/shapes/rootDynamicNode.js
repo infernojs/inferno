@@ -3,7 +3,7 @@ import { recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
-
+import removeDynamicShapes from '../../shared/removeDynamicShapes';
 export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 	let nextDomNode;
 	let childNodeList = [];
@@ -108,13 +108,7 @@ export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 				}
 			}
 		},
-		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
-
-			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.remove( item, treeLifecycle );
-			}
-		}
+		remove: removeDynamicShapes( valueIndex )
 	};
 
 	return node;

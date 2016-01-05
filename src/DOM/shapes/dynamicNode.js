@@ -2,6 +2,7 @@ import isVoid from '../../util/isVoid';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateNode from '../recreateNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
+import removeDynamicShapes from '../../shared/removeDynamicShapes';
 
 export default function createDynamicNode( valueIndex ) {
 	let domNode;
@@ -93,13 +94,7 @@ export default function createDynamicNode( valueIndex ) {
 				}
 			}
 		},
-		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
-
-			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.remove( item, treeLifecycle );
-			}
-		}
+		remove: removeDynamicShapes( valueIndex )
 	};
 
 	return node;
