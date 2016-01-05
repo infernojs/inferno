@@ -939,11 +939,11 @@ describe( 'Components', () => {
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
-			/*render(tpl1546018623(null), container);
+			//render(tpl1546018623(null), container);
 			render(tpl1546018623(valueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
-			);*/
+			);
 		});
 	});
 
