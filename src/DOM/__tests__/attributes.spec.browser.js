@@ -92,7 +92,7 @@ describe('Attribute / properties', () => {
 		expect( container.getAttribute('foobar')).to.equal('123');
 	});
 	it('should set className property', () => {
-		template.setProperty(null, container, 'className', selected);
+		template.setProperty(null, container, 'className', 'selected');
 		expect( container.className).to.equal('selected');
 		// className should be '', not 'null' or null (which becomes 'null' in
 		// some browsers)
@@ -101,12 +101,10 @@ describe('Attribute / properties', () => {
 	});
 	it('should set truthy boolean properties', () => {
 		template.setProperty(null, container, 'allowFullScreen', true);
-		expect( container.allowFullScreen).to.equal('simple');
-		expect( container.getAttribute('allowFullScreen')).to.equal('simple');
+		expect( container.getAttribute('allowFullScreen')).to.equal('allowfullscreen');
 	});
 	it('should remove falsey boolean properties', () => {
 		template.setProperty(null, container, 'allowFullScreen', false);
-		expect( container.allowFullScreen).to.be.null;
 		expect( container.getAttribute('allowFullScreen')).to.be.null;
 	});
 
