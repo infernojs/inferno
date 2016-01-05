@@ -4,6 +4,7 @@ import { render } from '../../DOM/rendering';
 import createTree from '../../DOM/createTree';
 import Component from '../Component';
 import waits from '../../../tools/waits';
+import innerHTML from '../../../tools/innerHTML';
 
 const { createElement } = TemplateFactory;
 
@@ -235,7 +236,7 @@ describe( 'Components', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>'
+			innerHTML( '<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>' )
 		);
 		expect(
 			container.querySelector("input").disabled

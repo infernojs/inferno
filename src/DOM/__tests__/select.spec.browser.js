@@ -3,6 +3,7 @@ import createDOMTree from '../createTree';
 import { render } from '../rendering';
 import createTemplate from '../../core/createTemplate';
 import { addTreeConstructor } from '../../core/createTemplate';
+import innerHTML from '../../../tools/innerHTML';
 
 addTreeConstructor( 'dom', createDOMTree );
 
@@ -52,7 +53,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>' )
 		);
 
 		render(template(1), container);
@@ -62,7 +63,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>' )
 		);
 
 		render(template('foo'), container);
@@ -72,7 +73,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="1">1</option><option value="2">2</option></select>' )
 		);
 	});
 
@@ -107,7 +108,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' )
 		);
 
 		render(template(null), container);
@@ -116,7 +117,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' )
 		);
 
 		render(template('bar'), container);
@@ -125,7 +126,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' )
 		);
 	});
 
@@ -160,7 +161,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' // Missing selected markup
+			innerHTML( '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' )// Missing selected markup
 		);
 	});
 
@@ -272,7 +273,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' )
 		);
 
 		render(template(), container);
@@ -282,7 +283,7 @@ describe( 'Select / select multiple', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>'
+			innerHTML( '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' )
 		);
 
 	});

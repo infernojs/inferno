@@ -4,6 +4,7 @@ import { render } from '../rendering';
 import createTemplate from '../../core/createTemplate';
 import TemplateFactory from '../../core/TemplateFactory';
 import { addTreeConstructor } from '../../core/createTemplate';
+import innerHTML from '../../../tools/innerHTML';
 
 addTreeConstructor( 'dom', createDOMTree );
 
@@ -155,55 +156,55 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world - Inferno Owns</div>'
+			innerHTML( '<div>Hello world - Inferno Owns</div>' )
 		);
 		render(template('Inferno', 'Owns'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world - Inferno Owns</div>'
+			innerHTML( '<div>Hello world - Inferno Owns</div>' )
 		);
 
 		render(template('Inferno', null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world - Inferno </div>'
+			innerHTML( '<div>Hello world - Inferno </div>')
 		);
 
 		render(template(null, 'Owns'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world -  Owns</div>'
+			innerHTML( '<div>Hello world -  Owns</div>')
 		);
 
 		render(template(null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world -  </div>'
+			innerHTML( '<div>Hello world -  </div>')
 		);
 
 		render(template(undefined), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world -  </div>'
+			innerHTML( '<div>Hello world -  </div>')
 		);
 
 		render(template(null, 'Owns'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world -  Owns</div>'
+			innerHTML( '<div>Hello world -  Owns</div>')
 		);
 
 		render(template('Test', 'Works!'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world - Test Works!</div>'
+			innerHTML( '<div>Hello world - Test Works!</div>')
 		);
 	});
 
@@ -223,28 +224,28 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div> foo</div>'
+			innerHTML( '<div> foo</div>')
 		);
 
 		render(template('Hello', 'Bar'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello fooBar</div>'
+			innerHTML( '<div>Hello fooBar</div>')
 		);
 
 		render(template(undefined), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div> foo</div>'
+			innerHTML( '<div> foo</div>')
 		);
 
 		render(template('The', ' is dead!'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>The foo is dead!</div>'
+			innerHTML( '<div>The foo is dead!</div>')
 		);
 	});
 
@@ -263,49 +264,49 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div> foo</div>'
+			innerHTML( '<div> foo</div>')
 		);
 
 		render(template(undefined), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div> foo</div>'
+			innerHTML( '<div> foo</div>')
 		);
 
 		render(template('Hello', 'Bar'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello fooBar</div>'
+			innerHTML( '<div>Hello fooBar</div>')
 		);
 
 		render(template('Hello', null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello foo</div>'
+			innerHTML( '<div>Hello foo</div>')
 		);
 
 		render(template(null, 'Bar'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div> fooBar</div>'
+			innerHTML( '<div> fooBar</div>')
 		);
 
 		render(template(undefined), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div> foo</div>'
+			innerHTML( '<div> foo</div>')
 		);
 
 		render(template('The', ' is dead!'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>The foo is dead!</div>'
+			innerHTML( '<div>The foo is dead!</div>')
 		);
 	});
 
@@ -324,28 +325,28 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world! and Bar</div>'
+			innerHTML( '<div>Hello world! and Bar</div>')
 		);
 
 		render(template(null, null, null, null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div></div>'
+			innerHTML( '<div></div>')
 		);
 
 		render(template(), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div></div>'
+			innerHTML( '<div></div>')
 		);
 
 		render(template('Hello', ' world!', ' and ', 'Zoo'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world! and Zoo</div>'
+			innerHTML( '<div>Hello world! and Zoo</div>')
 		);
 
 		expect(
@@ -356,7 +357,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello and Zoo</div>'
+			innerHTML( '<div>Hello and Zoo</div>')
 		);
 
 		expect(
@@ -367,21 +368,21 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello poz and Zoo</div>'
+			innerHTML( '<div>Hello poz and Zoo</div>')
 		);
 
 		render(template('The ', 'bar', ' is', ' is dead!'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>The bar is is dead!</div>'
+			innerHTML( '<div>The bar is is dead!</div>')
 		);
 
 		render(template('Hello', ' world!', null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world!</div>'
+			innerHTML( '<div>Hello world!</div>')
 		);
 	});
 
@@ -399,49 +400,49 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="Hello">Hello, World</div>'
+			innerHTML( '<div id="Hello">Hello, World</div>')
 		);
 
 		render(template('Bar'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="Bar">Hello, World</div>'
+			innerHTML( '<div id="Bar">Hello, World</div>')
 		);
 
 		render(template(), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 
 		render(template(), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 
 		render(template(null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 
 		render(template(null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 
 		render(template('foo'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="foo">Hello, World</div>'
+			innerHTML( '<div id="foo">Hello, World</div>')
 		);
 	});
 
@@ -462,28 +463,28 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="Hello">Hello, World</div>'
+			innerHTML( '<div id="Hello">Hello, World</div>')
 		);
 
 		render(template('Hello'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="Hello">Hello, World</div>'
+			innerHTML( '<div id="Hello">Hello, World</div>')
 		);
 
 		render(template(null), container); // should unset
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 
 		render(template('foo'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="foo">Hello, World</div>'
+			innerHTML( '<div id="foo">Hello, World</div>')
 		);
 	});
 
@@ -503,35 +504,35 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 
 		render(template('Hello'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="Hello">Hello, World</div>'
+			innerHTML( '<div id="Hello">Hello, World</div>')
 		);
 
 		render(template(undefined), container); // should unset
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 
 		render(template('foo'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div id="foo">Hello, World</div>'
+			innerHTML( '<div id="foo">Hello, World</div>')
 		);
 
 		render(template(), container); // should unset
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello, World</div>'
+			innerHTML( '<div>Hello, World</div>')
 		);
 	});
 
@@ -717,7 +718,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello world!</div>'
+			innerHTML( '<div>Hello world!</div>')
 		);
 
 		const span2 = createTemplate((child) => ({
@@ -737,7 +738,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><b>Im updated!</b></div>'
+			innerHTML( '<div><b>Im updated!</b></div>')
 		);
 
 		render(div(span2()), container);
@@ -745,7 +746,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><span>Im updated!</span></div>'
+			innerHTML( '<div><span>Im updated!</span></div>')
 		);
 
 		render(div(), container);
@@ -753,7 +754,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div></div>'
+			innerHTML( '<div></div>')
 		);*/
 	});
 
@@ -767,14 +768,14 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div></div>'
+			innerHTML( '<div></div>')
 		);
 
 		render(template(null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div></div>'
+			innerHTML( '<div></div>')
 		);
 
 		const span = createTemplate(() => ({
@@ -785,7 +786,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div>Hello</div></div>'
+			innerHTML( '<div><div>Hello</div></div>')
 		);
 	});
 
@@ -802,7 +803,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>Hello</div>'
+			innerHTML( '<div>Hello</div>')
 		);
 	});
 
@@ -821,7 +822,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><span>Good bye!</span></div>'
+			innerHTML( '<div><span>Good bye!</span></div>')
 		);
 
 
@@ -829,7 +830,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div></div>'
+			innerHTML( '<div></div>')
 		);
 	});
 
@@ -1124,35 +1125,35 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>There is no spoon!</div>'
+			innerHTML( '<div>There is no spoon!</div>')
 		);
 
 		render(div('one'), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>There is one spoon!</div>'
+			innerHTML( '<div>There is one spoon!</div>')
 		);
 
 		render(div(), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>There is  spoon!</div>'
+			innerHTML( '<div>There is  spoon!</div>')
 		);
 
 		render(div(null), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>There is  spoon!</div>'
+			innerHTML( '<div>There is  spoon!</div>')
 		);
 
 		render(div(undefined), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div>There is  spoon!</div>'
+			innerHTML( '<div>There is  spoon!</div>')
 		);
 	});
 
@@ -1174,7 +1175,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div style="color: red; padding-left: 10px;"></div>'
+			innerHTML( '<div style="color: red; padding-left: 10px;"></div>')
 		);
 
 		render(template(null), container);
@@ -1182,7 +1183,7 @@ describe( 'Update', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div></div>'
+			innerHTML( '<div></div>')
 		);
 	});
 
@@ -1211,7 +1212,7 @@ describe( 'Update', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>'
+				innerHTML( '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>')
 			);
 			render(template({
 				color: "red",
@@ -1221,7 +1222,7 @@ describe( 'Update', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>'
+				innerHTML( '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>')
 			);
 
 		});
@@ -1232,7 +1233,7 @@ describe( 'Update', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>'
+				innerHTML( '<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>')
 			);
 		});
 
@@ -1245,7 +1246,7 @@ describe( 'Update', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				'<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>'
+				innerHTML( '<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>')
 			);
 		});
 	});

@@ -194,7 +194,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span>The title is 123</span></div></div>'
+			innerHTML('<div><div class="basic"><span>The title is 123</span></div></div>')
 		);
 
 		render((
@@ -206,7 +206,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span>The title is abc</span></div></div>'
+			innerHTML('<div><div class="basic"><span>The title is abc</span></div></div>')
 		);
 
 
@@ -218,7 +218,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
+			innerHTML('<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>')
 		);
 	});
 
@@ -242,7 +242,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div class="basic"><span class="basic-update">The title is 123</span></div>'
+			innerHTML('<div class="basic"><span class="basic-update">The title is 123</span></div>')
 		);
 	});
 
@@ -270,7 +270,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>Im a child</span></div></div>'
+			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span><span>Im a child</span></div></div>')
 		);
 
 		render((
@@ -283,7 +283,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-update">The title is 123</span><span>Im a child</span></div></div>'
+			innerHTML('<div><div class="basic"><span class="basic-update">The title is 123</span><span>Im a child</span></div></div>')
 		);
 	});
 
@@ -311,8 +311,8 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>'
-			+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
+			innerHTML('<div><div class="basic"><span class="basic-render">The title is component 1</span></div>'
+			+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>')
 		);
 
 		render((
@@ -323,7 +323,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>'
+			innerHTML('<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>')
 		);
 	});
 
@@ -347,7 +347,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
+			innerHTML('<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>')
 		);
 
 		render((
@@ -357,7 +357,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div style="color: blue; margin-bottom: 20px;"><span style="color: blue; margin-bottom: 20px;">The title is styled (again)!</span></div>'
+			innerHTML('<div style="color: blue; margin-bottom: 20px;"><span style="color: blue; margin-bottom: 20px;">The title is styled (again)!</span></div>')
 		);
 	});
 
@@ -370,7 +370,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div style="color: red; padding-top: 20px;"><span style="color: red; padding-top: 20px;">The title is styled!</span></div>'
+			innerHTML('<div style="color: red; padding-top: 20px;"><span style="color: red; padding-top: 20px;">The title is styled!</span></div>')
 		);
 
 		render((
@@ -379,7 +379,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><span>The title is styles are removed!</span></div>'
+			innerHTML('<div><span>The title is styles are removed!</span></div>')
 		);
 	});
 
@@ -402,7 +402,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>'
+			innerHTML('<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>')
 		);
 
 		// unset
@@ -419,7 +419,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>'
+			innerHTML('<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>')
 		);
 	});
 /*

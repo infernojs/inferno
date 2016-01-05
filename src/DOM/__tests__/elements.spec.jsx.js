@@ -4,6 +4,7 @@ import createTemplate from '../../core/createTemplate';
 import Component from '../../class/Component';
 import { addTreeConstructor } from '../../core/createTemplate';
 import TemplateFactory from '../../core/TemplateFactory';
+import innerHTML from '../../../tools/innerHTML';
 
 addTreeConstructor( 'dom', createDOMTree );
 
@@ -413,7 +414,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div class="Dominic rocks!"></div>'
+			innerHTML( '<div class="Dominic rocks!"></div>' )
 		);
 
 		render(<div className='' />, container);
@@ -430,7 +431,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div class="Inferno rocks!"></div>'
+			innerHTML( '<div class="Inferno rocks!"></div>' )
 		);
 	});
 
@@ -442,7 +443,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<input>'
+			innerHTML( '<input>' )
 		);
 
 		render(<input values={ undefined } />, container);
@@ -451,7 +452,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<input>'
+			innerHTML( '<input>' )
 		);
 
 		// unset
@@ -469,7 +470,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<input title="Tip!">'
+			innerHTML( '<input title="Tip!">' )
 		);
 
 		render(<input title='Tip!' />, container);
@@ -478,7 +479,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<input title="Tip!">'
+			innerHTML( '<input title="Tip!">' )
 		);
 	});
 
