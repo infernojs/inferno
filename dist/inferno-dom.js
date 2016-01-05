@@ -2465,7 +2465,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2475,7 +2475,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2619,7 +2619,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2632,7 +2632,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3169,17 +3169,19 @@
 
   					nextRender.parent = currentItem;
 
-				   // Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
-			if ( !isVoid(node.instance) ) {
-  					var newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
-			} else {
-				//
-				// TODO Create the stateless component
-			}
+  					var newDomNode = undefined;
 
+  					// Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
+  					// E.g. start with 'render(template(null), container); ' will cause this.
+  					if (!isVoid(node.instance)) {
+  						newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
+  					} else {
+  						// newDomNode =
+  						// TODO Create the stateless component
+  					}
 
   					statelessRender = nextRender;
-  					if (newDomNode) {
+  					if (!isVoid(newDomNode)) {
   						if (domNode.parentNode) {
   							domNode.parentNode.replaceChild(newDomNode, domNode);
   						}
