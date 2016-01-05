@@ -1,12 +1,10 @@
 import isVoid from '../../util/isVoid';
 import isStringOrNumber from '../../util/isStringOrNumber';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootDynamicTextNode( templateNode, valueIndex ) {
+export default function createRootDynamicTextNode( templateNode, valueIndex, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],

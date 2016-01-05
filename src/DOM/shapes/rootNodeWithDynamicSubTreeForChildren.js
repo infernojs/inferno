@@ -1,6 +1,6 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 import addShapeChildren from '../../shared/addShapeChildren';

@@ -3,7 +3,7 @@ import isVoid from '../../util/isVoid';
 import updateAndAppendDynamicChildren from '../../shared/updateAndAppendDynamicChildren';
 import appendText from '../../util/appendText';
 import isStringOrNumber from '../../util/isStringOrNumber';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';

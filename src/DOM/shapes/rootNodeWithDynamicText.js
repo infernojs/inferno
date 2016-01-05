@@ -1,6 +1,6 @@
 import isVoid from '../../util/isVoid';
 import isStringOrNumber from '../../util/isStringOrNumber';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';

@@ -21,6 +21,7 @@ import createDynamicTextNode from './shapes/dynamicTextNode';
 import { ObjectTypes } 	from '../core/variables';
 import isArray from '../util/isArray';
 import { addDOMStaticAttributes } from './addAttributes';
+import { isRecyclingEnabled } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
 const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';

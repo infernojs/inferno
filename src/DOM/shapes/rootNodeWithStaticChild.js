@@ -1,4 +1,4 @@
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 

@@ -1,12 +1,10 @@
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootDynamicNode( valueIndex ) {
+export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 	let nextDomNode;
 	let childNodeList = [];
 	let keyedChildren = true;

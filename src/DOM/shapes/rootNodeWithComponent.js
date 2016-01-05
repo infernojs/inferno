@@ -1,6 +1,6 @@
 /* eslint new-cap:0 */
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 import updateComponent from '../../core/updateComponent';
