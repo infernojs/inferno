@@ -5,6 +5,7 @@ import createTree from '../../DOM/createTree';
 import Component from '../Component';
 import waits from '../../../tools/waits';
 import innerHTML from '../../../tools/innerHTML';
+import { requestAnimationFrame } from '../../util/requestAnimationFrame';
 
 const { createElement } = TemplateFactory;
 
@@ -583,7 +584,6 @@ describe( 'Components (JSX)', () => {
 					count: 0
 				};
 				this.incrementCount = this.incrementCount.bind(this);
-				setTimeout(this.incrementCount, 10);
 			}
 			incrementCount(){
 				this.setState({
@@ -627,8 +627,12 @@ describe( 'Components (JSX)', () => {
 
 		it('Second render (update)', (done) => {
 			render(<Wrapper/>, container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
 
-			waits(30, () => {
+			// requestAnimationFrame is needed here because
+			// setState fires after a requestAnimationFrame
+			requestAnimationFrame( () => {
 				expect(
 					container.innerHTML
 				).to.equal(
@@ -647,9 +651,6 @@ describe( 'Components (JSX)', () => {
 					show: false
 				};
 				this.toggle = this.toggle.bind( this );
-				setTimeout(() => {
-					this.toggle();
-				}, 10);
 			}
 
 			toggle() {
@@ -687,7 +688,10 @@ describe( 'Components (JSX)', () => {
 
 		it('Second render (update with state change)', (done) => {
 			render( <SomeError/>, container );
-			waits(30, () => {
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame( () => {
 				expect(
 					container.innerHTML
 				).to.equal(
