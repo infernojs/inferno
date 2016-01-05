@@ -33,8 +33,8 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				if ( isArray( value ) ) {
 					for ( let i = 0; i < value.length; i++ ) {
 						const childItem = value[i];
-
-						if ( typeof childItem === 'object' ) {
+						// catches edge case where we e.g. have [null, null, null] as a starting point
+						if ( !isVoid( childItem ) && typeof childItem === 'object' ) {
 							const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context );
 
 							if ( childItem.key === undefined ) {
@@ -169,7 +169,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 							const childNode = tree.dom.create( nextValue, treeLifecycle, context );
 							const replaceNode = domNode.firstChild;
 
-							if (replaceNode) {
+							if ( replaceNode ) {
 								domNode.replaceChild(childNode, domNode.firstChild);
 							} else {
 								domNode.appendChild(childNode);

@@ -2285,10 +2285,15 @@
   					for (var i = 0; i < value.length; i++) {
   						var childItem = value[i];
 
-  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
-  							var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
+  						if ( !isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
 
-  							if (childItem.key === undefined) {
+  						var childNode = childItem && childItem.tree;
+
+						if ( !isVoid(tree)) {
+						    tree.dom.create(childItem, treeLifecycle, context);
+						}
+
+  							if (childItem && childItem.key === undefined) {
   								keyedChildren = false;
   							}
   							childNodeList.push(childNode);

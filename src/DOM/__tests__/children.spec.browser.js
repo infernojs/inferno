@@ -120,6 +120,10 @@ describe( 'Children - (non-JSX)', () => {
 		value: [undefined, undefined, undefined],
 			expected: ''
 	}, {
+		name: 'triple null in an array',
+		value: [null, null, null],
+		expected: ''
+	}, {
 		name: 'single empty string in an array',
 		value: [1, 2, ''],
 		expected: '12'

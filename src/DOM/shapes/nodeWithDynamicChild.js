@@ -21,8 +21,8 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 				if ( isArray( value ) ) {
 					for ( let i = 0; i < value.length; i++ ) {
 						const childItem = value[i];
-
-						if ( typeof childItem === 'object' ) {
+						// catches edge case where we e.g. have [null, null, null] as a starting point
+						if ( !isVoid( childItem ) && typeof childItem === 'object' ) {
 							const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context );
 
 							if ( childItem.key === undefined ) {

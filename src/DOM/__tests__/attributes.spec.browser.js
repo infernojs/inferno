@@ -492,11 +492,11 @@ describe('Attribute / properties', () => {
 		 * Numeric properties
 		 */
 
-		const numericPropDefinitions = [/*{
+		const numericPropDefinitions = [{
 			name: 'positive numbers',
 			value: 123,
 			expected: '123'
-		}, {
+			}, {
 			name: 'negative numbers',
 			value: -123,
 			expected: '-123'
@@ -533,9 +533,9 @@ describe('Attribute / properties', () => {
 			name: 'craziness',
 			value: '-423424e4',
 			expected: '-423424e4'
-		}*/];
+		}];
 
-		const numericProps = ['playbackRate', 'tabindex', 'sizes', 'start'];
+		const numericProps = ['sizes', 'start'];
 
 		numericPropDefinitions.forEach((def) => {
 
