@@ -3168,7 +3168,15 @@
   					var nextRender = Component(getValueForProps(props, nextItem), context);
 
   					nextRender.parent = currentItem;
+
+				   // Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
+			if ( !isVoid(node.instance) ) {
   					var newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
+			} else {
+				//
+				// TODO Create the stateless component
+			}
+
 
   					statelessRender = nextRender;
   					if (newDomNode) {
