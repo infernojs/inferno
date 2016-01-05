@@ -167,6 +167,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 }
 
 export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamespace ) {
+
 	if ( isVoid( schema ) ) {
 		throw Error( invalidTemplateError );
 	}

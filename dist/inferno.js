@@ -64,6 +64,49 @@
   	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
   };
 
+  function doesItExist(value) {
+
+  	var i = undefined;
+
+  	if (value != value || value === 0) {
+
+  		for (i = this.length; i-- && !is(this[i], value);) {}
+  	} else {
+  		i = [].indexOf.call(this, value);
+  	}
+  	return i;
+  }
+
+  function Storage(iterable) {
+  	var _items = [];
+  	var _keys = [];
+  	var _values = [];
+
+  	return Object.create(Storage.prototype, {
+
+  		get: {
+  			value: function value(key) {
+  				var index = doesItExist.call(_keys, key);
+  				return index > -1 ? _values[index] : undefined;
+  			}
+  		},
+  		set: {
+  			value: function value(key, _value) {
+  				// check if key exists and overwrite
+  				var index = doesItExist.call(_keys, key);
+  				if (index > -1) {
+  					_items[index][1] = _value;
+  					_values[index] = _value;
+  				} else {
+  					_items.push([key, _value]);
+  					_keys.push(key);
+  					_values.push(_value);
+  				}
+  			}
+  		}
+  	});
+  }
+
   var isArray = (function (x) {
     return x.constructor === Array;
   })
@@ -213,7 +256,7 @@
   					callbackArguments[i] = createVariable(i);
   				}
   				var schema = callback.apply(undefined, callbackArguments);
-  				var dynamicNodeMap = new Map();
+  				var dynamicNodeMap = new Storage();
 
   				scanTreeForDynamicNodes(schema, dynamicNodeMap);
   				var tree = applyTreeConstructors(schema, dynamicNodeMap);
