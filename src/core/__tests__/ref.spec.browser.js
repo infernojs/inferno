@@ -15,7 +15,7 @@ describe( 'createRef()', () => {
 	});
 
 	afterEach(() => {
-		container.innerHTML = '';
+		render(null, container);
 	});
 
 	it('should support ref', () => {
