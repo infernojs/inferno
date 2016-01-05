@@ -5,8 +5,6 @@ import { getValueWithIndex } from '../../core/variables';
 export default function createDynamicTextNode( templateNode, valueIndex ) {
 	let domNode;
 
-	const errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
-
 	const node = {
 		overrideItem: null,
 		create( item ) {
@@ -14,10 +12,9 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
-				if ( !isStringOrNumber( value ) ) {
-					throw Error( errorMsg );
+				if ( isStringOrNumber( value ) ) {
+					domNode.nodeValue = value;
 				}
-				domNode.nodeValue = value;
 			}
 			return domNode;
 		},
@@ -26,10 +23,10 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 
 			if ( nextValue !== getValueWithIndex( lastItem, valueIndex ) ) {
-				if ( !isStringOrNumber( value ) ) {
-					throw Error( errorMsg );
+				if ( isStringOrNumber( nextValue ) ) {
+					domNode.nodeValue = nextValue;
 				}
-				domNode.nodeValue = nextValue;
+
 			}
 		},
 		remove( /* lastItem */ ) {

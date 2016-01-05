@@ -1102,6 +1102,15 @@ describe( 'Update', () => {
 		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
 	});
 
+	it('should silently ignore and do nothing if no valid text', () => {
+		const template = createTemplate((text) => ({
+			text
+		}));
+
+		render(template({text: 'Hello, World!'}), container);
+		expect(container.firstChild.innerHTML).to.be.undefined;
+	});
+
 	it('should inject dynamic text various places', () => {
 
 		const div = createTemplate((text) => ({

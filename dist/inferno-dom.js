@@ -3183,10 +3183,9 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
-  				if (typeof value !== 'string' && typeof value !== 'number') {
-  					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  				if (isStringOrNumber(value)) {
+  					domNode.nodeValue = value;
   				}
-  				domNode.nodeValue = value;
   			}
   			item.rootNode = domNode;
   			return domNode;
@@ -3205,10 +3204,9 @@
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
 
   			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-  				if (typeof nextValue !== 'string' && typeof nextValue !== 'number') {
-  					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  				if (isStringOrNumber(nextValue)) {
+  					domNode.nodeValue = nextValue;
   				}
-  				domNode.nodeValue = nextValue;
   			}
   		},
   		remove: function remove() /* lastItem */{}
@@ -3220,8 +3218,6 @@
   function createDynamicTextNode(templateNode, valueIndex) {
   	var domNode = undefined;
 
-  	var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
-
   	var node = {
   		overrideItem: null,
   		create: function create(item) {
@@ -3229,10 +3225,9 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
-  				if (!isStringOrNumber(value)) {
-  					throw Error(errorMsg);
+  				if (isStringOrNumber(value)) {
+  					domNode.nodeValue = value;
   				}
-  				domNode.nodeValue = value;
   			}
   			return domNode;
   		},
@@ -3241,10 +3236,9 @@
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
 
   			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-  				if (!isStringOrNumber(value)) {
-  					throw Error(errorMsg);
+  				if (isStringOrNumber(nextValue)) {
+  					domNode.nodeValue = nextValue;
   				}
-  				domNode.nodeValue = nextValue;
   			}
   		},
   		remove: function remove() /* lastItem */{}

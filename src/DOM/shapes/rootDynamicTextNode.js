@@ -1,4 +1,5 @@
 import isVoid from '../../util/isVoid';
+import isStringOrNumber from '../../util/isStringOrNumber';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
@@ -23,10 +24,9 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
-				if ( typeof value !== 'string' && typeof value !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+				if ( isStringOrNumber( value ) ) {
+					domNode.nodeValue = value;
 				}
-				domNode.nodeValue = value;
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -45,10 +45,9 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 
 			if ( nextValue !== getValueWithIndex( lastItem, valueIndex ) ) {
-				if ( typeof nextValue !== 'string' && typeof nextValue !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+				if ( isStringOrNumber( nextValue ) ) {
+					domNode.nodeValue = nextValue;
 				}
-				domNode.nodeValue = nextValue;
 			}
 		},
 		remove( /* lastItem */ ) {
