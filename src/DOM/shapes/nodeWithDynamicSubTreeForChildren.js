@@ -1,5 +1,6 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
+import addShapeChildren from '../../shared/addShapeChildren';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateNode from '../recreateNode';
 
@@ -10,17 +11,8 @@ export default function createNodeWithDynamicSubTreeForChildren( templateNode, s
 		create( item, treeLifecycle, context ) {
 			const domNode = templateNode.cloneNode( false );
 
-			if ( !isVoid( subTreeForChildren ) ) {
-				if ( isArray( subTreeForChildren ) ) {
-					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
-						const subTree = subTreeForChildren[i];
+			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context );
 
-						domNode.appendChild( subTree.create( item, treeLifecycle, context ) );
-					}
-				} else if ( typeof subTreeForChildren === 'object' ) {
-					domNode.appendChild( subTreeForChildren.create( item, treeLifecycle, context ) );
-				}
-			}
 			if ( dynamicAttrs ) {
 				addDOMDynamicAttributes( item, domNode, dynamicAttrs, null );
 			}
