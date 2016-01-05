@@ -153,7 +153,7 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 
 			} else if ( lastAttrVal !== nextAttrVal ) {
 
-				if ( fastPropSet( domNode, attrName, nextAttrVal ) === false ) {
+				if ( fastPropSet( attrName, nextAttrVal, domNode ) === false ) {
 					if ( eventMapping[attrName] ) {
 						addListener( nextItem, domNode, eventMapping[attrName], nextAttrVal ); // TODO! Write tests for this!
 					} else {
@@ -166,7 +166,7 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 				styleUpdates = nextAttrVal;
 			} else {
 
-				if ( fastPropSet( domNode, attrName, nextAttrVal ) === false ) {
+				if ( fastPropSet( attrName, nextAttrVal, domNode ) === false ) {
 					if ( eventMapping[attrName] ) {
 						addListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
 					} else {
