@@ -62,9 +62,14 @@ export const cssToJSName = cssName =>
 // Don't execute this in nodejS
 if ( ExecutionEnvironment.canUseDOM ) {
 	// get browser supported CSS properties
-	const computed = window.getComputedStyle( document.documentElement );
+	const documentElement = document.documentElement;
+	const computed = window.getComputedStyle( documentElement );
 	const props = Array.prototype.slice.call( computed, 0 );
-
+	for ( let key in documentElement.style ) {
+		if ( !computed[key] ) {
+			props.push( key );
+		}
+	}
 	props.forEach( function ( propName ) {
 		let prefix = propName[0] === '-'
 			? propName.substr( 1, propName.indexOf( '-', 1 ) - 1 )
