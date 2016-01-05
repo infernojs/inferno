@@ -1,5 +1,6 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
+import appendText from '../../util/appendText';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
@@ -82,23 +83,23 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 
 			if ( nextValue && isVoid( lastValue ) ) {
 
-				if ( isArray( nextValue ) ) {
-					for ( let i = 0; i < nextValue.length; i++ ) {
-						if ( typeof nextValue[i] === 'string' || typeof nextValue[i] === 'number' ) {
-							domNode.appendChild( document.createTextNode( nextValue[i] ) );
-						} else { // undef
-							// TODO implement
+				if ( typeof nextValue === 'object' ) {
+					if ( isArray( nextValue ) ) {
+						for ( let i = 0; i < nextValue.length; i++ ) {
+							if ( isStringOrNumber( nextValue[i] ) ) {
+								domNode.appendChild( document.createTextNode( nextValue[i] ) );
+							} else {
+								// Do nothing for now
+							}
 						}
+					} else {
+						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 					}
-				} else if ( typeof nextValue === 'object' ) {
-					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
-				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
-					domNode.appendChild( document.createTextNode( nextValue ) );
-				} else {
-				// TODO implement
-				}
 
-			} else if ( lastValue && isVoid( nextValue ) ) {
+				} else {
+					domNode.appendChild( document.createTextNode( nextValue ) );
+				}
+			} else 	if ( lastValue && isVoid( nextValue ) ) {
 
 				if ( isArray( lastValue ) ) {
 
@@ -125,12 +126,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				}
 			} else if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
-					const firstChild = domNode.firstChild;
-					if ( firstChild ) {
-						domNode.firstChild.nodeValue = nextValue;
-					} else {
-						domNode.textContent = nextValue;
-					}
+					appendText( domNode, nextValue );
 				} else if ( isVoid( nextValue ) ) {
 					if ( domNode !== null ) {
 						const childNode = document.createTextNode( '' );
@@ -183,19 +179,15 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						// Edge case! If we update from e.g object literal - {} - from a existing value, the
 						// value will not be unset
 
-						var firstChild = domNode.firstChild;
+						const firstChild = domNode.firstChild;
 
-						if (firstChild) {
-							domNode.removeChild(domNode.firstChild);
+						if ( firstChild ) {
+							domNode.removeChild( domNode.firstChild );
 						}
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {
 					const firstChild = domNode.firstChild;
-					if (firstChild) {
-						domNode.firstChild.nodeValue = nextValue;
-					} else {
-						domNode.textContent = nextValue;
-					}
+					appendText( domNode, nextValue );
 				}
 			}
 			if ( dynamicAttrs ) {
