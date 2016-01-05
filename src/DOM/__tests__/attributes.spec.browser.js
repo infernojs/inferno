@@ -492,7 +492,7 @@ describe('Attribute / properties', () => {
 		 * Numeric properties
 		 */
 
-		const numericPropDefinitions = [{
+		const numericPropDefinitions = [/*{
 			name: 'positive numbers',
 			value: 123,
 			expected: '123'
@@ -504,7 +504,7 @@ describe('Attribute / properties', () => {
 			name: 'special number combination',
 			value: -2354e4,
 			expected: '-23540000'
-		}/*,
+		},
 		{
 			name: 'undefined',
 			value: undefined,
@@ -516,6 +516,10 @@ describe('Attribute / properties', () => {
 		}, {
 			name: 'false',
 			value: false,
+			expected: null
+		}, {
+			name: 'empty string',
+			value: '',
 			expected: null
 		}, {
 			name: 'false',
