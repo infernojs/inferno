@@ -120,9 +120,29 @@ describe( 'Children - (non-JSX)', () => {
 		value: [undefined, undefined, undefined],
 			expected: ''
 	}, {
+		name: 'triple empty string in an array',
+		value: ['', '', ''],
+		expected: ''
+	}, {
 		name: 'triple null in an array',
 		value: [null, null, null],
 		expected: ''
+	}, {
+		name: 'single null in an array',
+		value: [null],
+		expected: ''
+	}, {
+		name: 'mix of null and undefined in an array',
+		value: [null, undefined],
+		expected: ''
+	}, {
+		name: 'mix of null, undefined and empty string in an array',
+		value: [null, undefined, ''],
+		expected: ''
+	}, {
+		name: 'mix of null, undefined and a number in an array',
+		value: [null, undefined, 123],
+		expected: '123'
 	}, {
 		name: 'single empty string in an array',
 		value: [1, 2, ''],
@@ -135,9 +155,16 @@ describe( 'Children - (non-JSX)', () => {
 		name: 'triple empty string in an array',
 		value: ['', '', ''],
 		expected: ''
-		}
+	}, {
+		name: 'cast to strng value, + single number in an array',
+		value: ['1', 2, 3],
+		expected: '123'
+	}, {
+		name: 'cast to strng value, + single number + a letter in an array',
+		value: ['1', 2, 'a'],
+		expected: '12a'
+	}
 	 ];
-
 
 	preDefined.forEach((arg) => {
 

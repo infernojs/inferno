@@ -20,7 +20,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 
 	let startItem = itemsLength > 0 && items[startIndex];
 
-	// Edge case! In cases where someone tried to update from [null] to [null], 'startitem' will be null.
+	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
 	// We solve that with avoiding going into the iteration loop.
 	if ( isVoid( startItem ) ) {
 		return;
