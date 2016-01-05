@@ -2,6 +2,7 @@ import createTemplate from '../createTemplate';
 import { addTreeConstructor } from '../createTemplate';
 import { render, renderToString } from '../../DOM/rendering';
 import createDOMTree from '../../DOM/createTree';
+import innerHTML from '../../../tools/innerHTML';
 
 addTreeConstructor( 'dom', createDOMTree );
 
@@ -45,10 +46,10 @@ describe('rendering ( UT tests)', () => {
 
 			render(template(), container);
 
-			expect(container.innerHTML).to.equal('<div></div>');
+			expect(container.innerHTML).to.equal( innerHTML('<div></div>') );
 		});
 	})
-	/*
+
 	definitions = [
 		{
 			name: 'div with span (direct)',
@@ -58,12 +59,12 @@ describe('rendering ( UT tests)', () => {
 		{
 			name: 'div with span (array)',
 			template: {tag: 'div', children: [{tag: 'span'}]},
-			expected:  '<div><span></span></div>'
+			expected: '<div><span></span></div>'
 		},
 		{
 			name: 'div with multiple spans',
 			template: {tag: 'div', children: [{tag: 'span'}, {tag: 'span'}]},
-			expected:   '<div><span></span><span></span></div>'
+			expected: '<div><span></span><span></span></div>'
 		}
 	];
 
@@ -75,7 +76,7 @@ describe('rendering ( UT tests)', () => {
 
 			render(template(), container);
 
-			expect(container.innerHTML).to.equal(def.expected);
+			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
 		});
 
 	})
@@ -106,7 +107,7 @@ describe('rendering ( UT tests)', () => {
 
 			render(template(), container);
 
-			expect(container.innerHTML).to.equal(def.expected);
+			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
 		});
 	})
 
@@ -117,7 +118,7 @@ describe('rendering ( UT tests)', () => {
 		{name: 'null', value: null, expected: '<div></div>'}, // TODO or 'null'
 		{name: 'empty string', value: '', expected: '<div></div>'},
 		{name: 'string', value: 'string', expected: '<div>string</div>'},
-//		{name: 'true', value: true, expected: 'true'},
+		//{name: 'true', value: true, expected: 'true'},
 		//{name: 'false', value: false, expected: 'false'},
 		{name: '0', value: 0, expected: '<div>0</div>'},
 		{name: '1', value: 1, expected: '<div>1</div>'},
@@ -132,7 +133,7 @@ describe('rendering ( UT tests)', () => {
 
 			render(template(), container);
 
-			expect(container.innerHTML).to.equal(def.expected);
+			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
 		});
 	})
 
@@ -203,6 +204,5 @@ describe('rendering ( UT tests)', () => {
 			expect(throwed).to.equal(true);
 		});
 	})
- */
 
 });
