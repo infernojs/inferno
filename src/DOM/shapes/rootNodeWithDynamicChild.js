@@ -35,13 +35,18 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						const childItem = value[i];
 						// catches edge case where we e.g. have [null, null, null] as a starting point
 						if ( !isVoid( childItem ) && typeof childItem === 'object' ) {
-							const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context );
 
-							if ( childItem.key === undefined ) {
-								keyedChildren = false;
+							const tree = childItem && childItem.tree;
+
+							if ( tree ) {
+								const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context);
+
+								if ( childItem.key === undefined ) {
+									keyedChildren = false;
+								}
+								childNodeList.push( childNode );
+								domNode.appendChild( childNode );
 							}
-							childNodeList.push( childNode );
-							domNode.appendChild( childNode );
 						} else if ( isStringOrNumber( childItem ) ) {
 							const textNode = document.createTextNode( childItem );
 
@@ -170,9 +175,9 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 							const replaceNode = domNode.firstChild;
 
 							if ( replaceNode ) {
-								domNode.replaceChild(childNode, domNode.firstChild);
+								domNode.replaceChild( childNode, domNode.firstChild );
 							} else {
-								domNode.appendChild(childNode);
+								domNode.appendChild( childNode );
 							}
 						}
 					} else {

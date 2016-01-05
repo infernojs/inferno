@@ -23,13 +23,18 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						const childItem = value[i];
 						// catches edge case where we e.g. have [null, null, null] as a starting point
 						if ( !isVoid( childItem ) && typeof childItem === 'object' ) {
-							const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context );
 
-							if ( childItem.key === undefined ) {
-								keyedChildren = false;
+							const tree = childItem && childItem.tree;
+
+							if ( tree ) {
+								const childNode = childItem.tree.dom.create( childItem, treeLifecycle, context );
+
+								if ( childItem.key === undefined ) {
+									keyedChildren = false;
+								}
+								childNodeList.push( childNode );
+								domNode.appendChild( childNode );
 							}
-							childNodeList.push( childNode );
-							domNode.appendChild( childNode );
 						} else if ( isStringOrNumber( childItem ) ) {
 							const textNode = document.createTextNode( childItem );
 

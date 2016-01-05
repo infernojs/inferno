@@ -1698,7 +1698,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1708,7 +1708,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1787,9 +1787,10 @@
 
   	var startItem = itemsLength > 0 && items[startIndex];
 
-  	// Edge case! In cases where someone tried to update from [null] to [null], 'startitem' will be null.
+  	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
+  	// Also in cases where someone try to update from [{}] to [{}] ( empty object to empty object)
   	// We solve that with avoiding going into the iteration loop.
-  	if (isVoid(startItem)) {
+  	if (isVoid(startItem) || isVoid(startItem.tree)) {
   		return;
   	}
 
@@ -2082,7 +2083,7 @@
   	}
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2094,7 +2095,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2109,13 +2110,18 @@
   						var childItem = value[i];
   						// catches edge case where we e.g. have [null, null, null] as a starting point
   						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
-  							var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
 
-  							if (childItem.key === undefined) {
-  								keyedChildren = false;
+  							var tree = childItem && childItem.tree;
+
+  							if (tree) {
+  								var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
+
+  								if (childItem.key === undefined) {
+  									keyedChildren = false;
+  								}
+  								childNodeList.push(childNode);
+  								domNode.appendChild(childNode);
   							}
-  							childNodeList.push(childNode);
-  							domNode.appendChild(childNode);
   						} else if (isStringOrNumber(childItem)) {
   							var textNode = document.createTextNode(childItem);
 
@@ -2299,13 +2305,18 @@
   						var childItem = value[i];
   						// catches edge case where we e.g. have [null, null, null] as a starting point
   						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
-  							var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
 
-  							if (childItem.key === undefined) {
-  								keyedChildren = false;
+  							var tree = childItem && childItem.tree;
+
+  							if (tree) {
+  								var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
+
+  								if (childItem.key === undefined) {
+  									keyedChildren = false;
+  								}
+  								childNodeList.push(childNode);
+  								domNode.appendChild(childNode);
   							}
-  							childNodeList.push(childNode);
-  							domNode.appendChild(childNode);
   						} else if (isStringOrNumber(childItem)) {
   							var textNode = document.createTextNode(childItem);
 
@@ -2443,7 +2454,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2453,7 +2464,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2597,7 +2608,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2610,7 +2621,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
