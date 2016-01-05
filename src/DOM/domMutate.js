@@ -14,8 +14,17 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
+
 	const itemsLength = items.length;
 	const oldItemsLength = oldItems.length;
+
+	let startItem = itemsLength > 0 && items[startIndex];
+
+	// Edge case! In cases where someone tried to update from [null] to [null], 'startitem' will be null.
+	// We solve that with avoiding going into the iteration loop.
+	if ( isVoid( startItem ) ) {
+		return;
+	}
 
 	// TODO only if there are no other children
 	if ( itemsLength === 0 && oldItemsLength >= 5 ) {
@@ -30,7 +39,6 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 
 	let endIndex = itemsLength - 1;
 	let oldEndIndex = oldItemsLength - 1;
-	let startItem = itemsLength > 0 && items[startIndex];
 	let oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
 	let endItem;
 	let oldEndItem;

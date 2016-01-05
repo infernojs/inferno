@@ -6,7 +6,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  global.InfernoDOM = factory();
+  (global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
   function babelHelpers_typeof (obj) {
@@ -269,9 +269,14 @@
   if (ExecutionEnvironment.canUseDOM) {
   	(function () {
   		// get browser supported CSS properties
-  		var computed = window.getComputedStyle(document.documentElement);
+  		var documentElement = document.documentElement;
+  		var computed = window.getComputedStyle(documentElement);
   		var props = Array.prototype.slice.call(computed, 0);
-
+  		for (var key in documentElement.style) {
+  			if (!computed[key]) {
+  				props.push(key);
+  			}
+  		}
   		props.forEach(function (propName) {
   			var prefix = propName[0] === '-' ? propName.substr(1, propName.indexOf('-', 1) - 1) : null;
   			var stylePropName = cssToJSName(propName);
@@ -1693,7 +1698,7 @@
   	return node;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1703,7 +1708,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1776,8 +1781,17 @@
   	var stop = false;
   	var startIndex = 0;
   	var oldStartIndex = 0;
+
   	var itemsLength = items.length;
   	var oldItemsLength = oldItems.length;
+
+  	var startItem = itemsLength > 0 && items[startIndex];
+
+  	// Edge case! In cases where someone tried to update from [null] to [null], 'startitem' will be null.
+  	// We solve that with avoiding going into the iteration loop.
+  	if (isVoid(startItem)) {
+  		return;
+  	}
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
@@ -1792,7 +1806,6 @@
 
   	var endIndex = itemsLength - 1;
   	var oldEndIndex = oldItemsLength - 1;
-  	var startItem = itemsLength > 0 && items[startIndex];
   	var oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
   	var endItem = undefined;
   	var oldEndItem = undefined;
@@ -2069,7 +2082,7 @@
   	}
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2081,7 +2094,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2094,8 +2107,8 @@
   				if (isArray(value)) {
   					for (var i = 0; i < value.length; i++) {
   						var childItem = value[i];
-
-  						if ((typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
+  						// catches edge case where we e.g. have [null, null, null] as a starting point
+  						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
   							var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
 
   							if (childItem.key === undefined) {
@@ -2284,16 +2297,11 @@
   				if (isArray(value)) {
   					for (var i = 0; i < value.length; i++) {
   						var childItem = value[i];
+  						// catches edge case where we e.g. have [null, null, null] as a starting point
+  						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
+  							var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
 
-  						if ( !isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
-
-  						var childNode = childItem && childItem.tree;
-
-						if ( !isVoid(tree)) {
-						    tree.dom.create(childItem, treeLifecycle, context);
-						}
-
-  							if (childItem && childItem.key === undefined) {
+  							if (childItem.key === undefined) {
   								keyedChildren = false;
   							}
   							childNodeList.push(childNode);
@@ -2589,7 +2597,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2602,7 +2610,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2799,7 +2807,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2809,7 +2817,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
