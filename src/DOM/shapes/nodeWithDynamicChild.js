@@ -1,10 +1,8 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
-
+import appendText from '../../util/appendText';
 import recreateNode from '../recreateNode';
-
 import isStringOrNumber from '../../util/isStringOrNumber';
-
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
@@ -62,20 +60,21 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 
 			if ( nextValue && isVoid( lastValue ) ) {
 
-				if ( isArray( nextValue ) ) {
-					for ( let i = 0; i < nextValue.length; i++ ) {
-						if ( isStringOrNumber ( nextValue[i] ) ) {
-							domNode.appendChild( document.createTextNode( nextValue[i] ) );
-						} else {
-							// TODO implement
+				if ( typeof nextValue === 'object' ) {
+					if ( isArray( nextValue ) ) {
+						for ( let i = 0; i < nextValue.length; i++ ) {
+							if ( isStringOrNumber( nextValue[i] ) ) {
+								domNode.appendChild( document.createTextNode( nextValue[i] ) );
+							} else {
+								// Do nothing for now
+							}
 						}
+					} else {
+						recreateNode( lastItem, nextItem, node, treeLifecycle, context );
 					}
-				} else if ( typeof nextValue === 'object' ) {
-					recreateNode( lastItem, nextItem, node, treeLifecycle, context );
-				} else if ( typeof nextValue === 'string' || typeof nextValue === 'number' ) {
-					domNode.appendChild( document.createTextNode( nextValue ) );
+
 				} else {
-				// TODO implement
+					domNode.appendChild( document.createTextNode( nextValue ) );
 				}
 			} else 	if ( lastValue && isVoid( nextValue ) ) {
 
@@ -104,14 +103,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 				}
 			} else if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
-
-					const firstChild = domNode.firstChild;
-
-					if ( firstChild ) {
-						domNode.firstChild.nodeValue = nextValue;
-					} else {
-						domNode.textContent = nextValue;
-					}
+					appendText( domNode, nextValue );
 				} else if ( isVoid( nextValue ) ) {
 					const firstChild = domNode.firstChild;
 
@@ -121,7 +113,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					// if we update from undefined, we will have an array with zero length.
 					// If we check if it's an array, it will throw 'x' is undefined.
 				} else if ( nextValue.length !== 0 && isArray( nextValue ) ) {
-					if (lastValue && isArray(lastValue)) {
+					if ( lastValue && isArray( lastValue ) ) {
 						if ( keyedChildren ) {
 							updateKeyed( nextValue, lastValue, domNode, null, treeLifecycle, context );
 						} else {
@@ -129,7 +121,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						}
 					} else {
 						// lastValue is undefined, so set it to an empty array and update
-						updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
+						updateNonKeyed( nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
 					}
 				} else if ( typeof nextValue === 'object' ) {
 
@@ -142,7 +134,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						// If we update from 'null', there will be no 'tree', and the code will throw.
 						const tree = lastValue && lastValue.tree;
 
-						if ( !isVoid ( tree ) ) {
+						if ( !isVoid( tree ) ) {
 							tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 						} else {
 							// TODO implement
@@ -159,14 +151,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						}
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {
-
-					const firstChild = domNode.firstChild;
-
-					if ( firstChild ) {
-						domNode.firstChild.nodeValue = nextValue;
-					} else {
-						domNode.textContent = nextValue;
-					}
+					appendText( domNode, nextValue );
 				}
 			}
 			if ( dynamicAttrs ) {
