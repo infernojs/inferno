@@ -65,6 +65,16 @@ describe('rendering ( UT tests)', () => {
 			name: 'div with multiple spans',
 			template: {tag: 'div', children: [{tag: 'span'}, {tag: 'span'}]},
 			expected: '<div><span></span><span></span></div>'
+		},
+		{
+			name: 'custom-tag with multiple spans',
+			template: {tag: 'div-hello', children: [{tag: 'span'}, {tag: 'span'}]},
+			expected: '<div-hello><span></span><span></span></div-hello>'
+		},
+		{
+			name: 'custom-tag with one custom-tag child',
+			template: {tag: 'div-hello', children: { tag:'hello-crazy-world' }},
+			expected: '<div-hello><hello-crazy-world></hello-crazy-world></div-hello>'
 		}
 	];
 
@@ -74,12 +84,14 @@ describe('rendering ( UT tests)', () => {
 
 			let template = createTemplate(() => (def.template));
 
+			render(template(null), container);
 			render(template(), container);
-
+			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
+			render(template(null), container);
+			render(template(), container);
 			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
 		});
-
-	})
+	});
 
 	definitions = [
 		{
@@ -106,10 +118,11 @@ describe('rendering ( UT tests)', () => {
 			let template = createTemplate(() => ({tag: 'div', children: def.template}));
 
 			render(template(), container);
-
+			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
+			render(template(), container);
 			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
 		});
-	})
+	});
 
 	const objToString = {toString: () =>'toString'};
 
@@ -132,10 +145,11 @@ describe('rendering ( UT tests)', () => {
 			let template = createTemplate(() => ({tag: 'div', text: def.value}));
 
 			render(template(), container);
-
+			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
+			render(template(), container);
 			expect(container.innerHTML).to.equal( innerHTML(def.expected) );
 		});
-	})
+	});
 
 	it('should throw', () => {
 
