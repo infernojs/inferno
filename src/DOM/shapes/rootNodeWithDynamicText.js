@@ -15,8 +15,6 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 		create( item ) {
 			let domNode;
 
-			const errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
-
 			if ( recyclingEnabled ) {
 				domNode = recycle( node, item );
 				if ( domNode ) {
@@ -27,8 +25,12 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
+
+				if ( process.env.NODE_ENV !== 'production' ) {
 				if ( !isStringOrNumber( value ) ) {
-					throw Error( errorMsg );
+						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+					}
+
 				}
 				domNode.textContent = value;
 			}
@@ -58,9 +60,12 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 						domNode.textContent = '';
 					}
 				} else {
-					if ( !isStringOrNumber( nextValue ) ) {
-						throw Error( errorMsg );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						if ( !isStringOrNumber( nextValue ) ) {
+							throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+						}
 					}
+
 					if ( isVoid( lastValue ) ) {
 						domNode.textContent = nextValue;
 					} else {

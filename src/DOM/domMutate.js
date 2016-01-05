@@ -276,8 +276,12 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 				keyedChildren = false;
 				childDomNode = childNode.create( item, treeLifecycle, context );
 				childNodeList.push( childDomNode );
-				if ( childDomNode === undefined ) {
-					throw Error( 'Inferno Error: Children must be provided as templates.' );
+
+				if ( process.env.NODE_ENV !== 'production' ) {
+					if ( childDomNode === undefined ) {
+						throw Error( 'Inferno Error: Children must be provided as templates.' );
+					}
+
 				}
 				domNode.appendChild( childDomNode );
 				break;
@@ -290,12 +294,23 @@ export function createVirtualList( value, item, childNodeList, treeLifecycle, co
 				domNode.appendChild( childDomNode );
 				break;
 			case ValueTypes.EMPTY_OBJECT:
-				throw Error( infernoBadTemplate );
+				if ( process.env.NODE_ENV !== 'production' ) {
+					throw Error( infernoBadTemplate );
+				} else {
+					return;
+				}
 			case ValueTypes.FUNCTION:
-				throw Error( infernoBadTemplate );
+				if ( process.env.NODE_ENV !== 'production' ) {
+					throw Error( infernoBadTemplate );
+				} else {
+					return;
+				}
 			case ValueTypes.ARRAY:
-				throw Error( 'Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].' );
-			default: break;
+				if ( process.env.NODE_ENV !== 'production' ) {
+					throw Error( 'Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].' );
+				} else {
+					return;
+				}
 		}
 	}
 	return { domNode, keyedChildren };

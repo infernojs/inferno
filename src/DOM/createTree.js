@@ -18,16 +18,9 @@ import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
 import createNodeWithComponent from './shapes/nodeWithComponent';
 import createRootDynamicTextNode from './shapes/rootDynamicTextNode';
 import createDynamicTextNode from './shapes/dynamicTextNode';
-
-import {
-	ObjectTypes
-}
-	from '../core/variables';
+import { ObjectTypes } 	from '../core/variables';
 import isArray from '../util/isArray';
-import {
-	addDOMStaticAttributes
-}
-	from './addAttributes';
+import { addDOMStaticAttributes } from './addAttributes';
 
 const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
@@ -139,11 +132,16 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 			const children = node.children;
 
 			if ( !isVoid( text ) ) {
-				if ( !isVoid( children ) ) {
-					throw Error( invalidTemplateError );
-				}
-				if ( !isStringOrNumber( text ) ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+
+				if ( process.env.NODE_ENV !== 'production' ) {
+
+					if ( !isVoid( children ) ) {
+						throw Error( invalidTemplateError );
+					}
+
+					if ( !isStringOrNumber( text ) ) {
+						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+					}
 				}
 				staticNode.textContent = text;
 			} else {
@@ -156,9 +154,12 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 			staticNode = document.createTextNode( node.text );
 		}
 	}
-	if ( staticNode === undefined ) {
-		throw Error( invalidTemplateError );
+	if ( process.env.NODE_ENV !== 'production' ) {
+		if ( staticNode === undefined ) {
+			throw Error( invalidTemplateError );
+		}
 	}
+
 	if ( parentNode === null ) {
 		return staticNode;
 	} else {
@@ -168,13 +169,16 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamespace ) {
 
-	if ( isVoid( schema ) ) {
-		throw Error( invalidTemplateError );
-	}
-	if ( isArray( schema ) ) {
-		throw Error( invalidTemplateError );
-	}
+	if ( process.env.NODE_ENV !== 'production' ) {
 
+
+		if ( isVoid( schema ) ) {
+			throw Error( invalidTemplateError );
+		}
+		if ( isArray( schema ) ) {
+			throw Error( invalidTemplateError );
+		}
+	}
 	const dynamicFlags = dynamicNodeMap.get( schema );
 	let node;
 	let templateNode;
@@ -182,8 +186,10 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 	if ( !dynamicFlags ) {
 		templateNode = createStaticTreeNode( schema, null, domNamespace, schema );
 
-		if ( !templateNode ) {
-			throw Error( invalidTemplateError );
+		if ( process.env.NODE_ENV !== 'production' ) {
+			if ( !templateNode ) {
+				throw Error( invalidTemplateError );
+			}
 		}
 
 		if ( isRoot ) {
@@ -279,8 +285,11 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				const children = schema.children;
 
 				if ( !isVoid( text ) ) {
-					if ( !isVoid( children ) ) {
-						throw Error( 'Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.' );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						if ( !isVoid( children ) ) {
+							throw Error( 'Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.' );
+						}
+
 					}
 					if ( dynamicFlags.TEXT === true ) {
 						if ( isRoot ) {
@@ -292,7 +301,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						if ( isStringOrNumber( text ) ) {
 							templateNode.textContent = text;
 						} else {
-							throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+							if ( process.env.NODE_ENV !== 'production' ) {
+								throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+							}
 						}
 						if ( isRoot ) {
 							node = createRootNodeWithStaticChild( templateNode, dynamicAttrs );
@@ -327,10 +338,10 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicSubTreeForChildren(
-								templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
+									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
 							} else {
 								node = createNodeWithDynamicSubTreeForChildren(
-								templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
+									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
 							}
 						} else if ( isStringOrNumber( children ) ) {
 							templateNode.textContent = children;

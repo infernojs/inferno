@@ -3,8 +3,6 @@ import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/vari
 import recreateNode from '../recreateNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
-const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
-
 export default function createDynamicNode( valueIndex ) {
 	let domNode;
 	let childNodeList = [];
@@ -40,9 +38,17 @@ export default function createDynamicNode( valueIndex ) {
 					domNode = value.create( item, treeLifecycle, context );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					throw Error( infernoBadTemplate );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					} else {
+						return;
+					}
 				case ValueTypes.FUNCTION:
-					throw Error( infernoBadTemplate );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					} else {
+						return;
+					}
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create( value, treeLifecycle, context );
 					break;

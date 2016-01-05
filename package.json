@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "babel-core": "^6.3.26",
-    "babel-plugin-inferno": "^0.2.4",
+    "babel-plugin-inferno": "^0.2.9",
     "babel-plugin-syntax-jsx": "^6.3.13",
     "babel-plugin-syntax-object-rest-spread": "^6.3.13",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",

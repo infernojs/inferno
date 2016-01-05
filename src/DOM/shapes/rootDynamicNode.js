@@ -49,9 +49,17 @@ export default function createRootDynamicNode( valueIndex ) {
 					domNode = value.dom.create( item, treeLifecycle, context );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					} else {
+						return;
+					}
 				case ValueTypes.FUNCTION:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					} else {
+						return;
+					}
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create( value, treeLifecycle, context );
 					break;

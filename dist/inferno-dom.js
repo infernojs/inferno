@@ -47,6 +47,7 @@
   var recyclingEnabled$9 = true;
 
   function pool(item) {
+
   	var key = item.key;
   	var tree = item.tree;
 
@@ -54,19 +55,18 @@
   		tree.dom.pool.push(item);
   	} else {
 
-  		var keyedPool = tree.dom.keyedPool; // TODO rename
+  		var keyedPool = tree.dom.keyedPool;
 
   		(keyedPool[key] || (keyedPool[key] = [])).push(item);
   	}
   }
 
   function recycle(tree, item, treeLifecycle, context) {
-  	// TODO use depth as key
+
   	var key = item.key;
   	var recyclableItem = undefined;
 
-  	// TODO faster to check pool size first?
-  	if (key !== null) {
+  	if (tree.keyPool && key !== null) {
 
   		var keyPool = tree.keyedPool[key];
 
@@ -74,6 +74,7 @@
   	} else {
   		recyclableItem = tree.pool.pop();
   	}
+
   	if (recyclableItem) {
   		tree.update(recyclableItem, item, treeLifecycle, context);
   		return item.rootNode;
@@ -1554,7 +1555,6 @@
 
   function recreateRootNode(lastItem, nextItem, node, treeLifecycle, context) {
   	var lastDomNode = lastItem.rootNode;
-
   	var lastTree = lastItem.tree.dom;
 
   	lastTree.remove(lastItem);
@@ -1580,8 +1580,6 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
-
   			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
@@ -1592,8 +1590,11 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
-  				if (!isStringOrNumber(value)) {
-  					throw Error(errorMsg);
+
+  				if ("development" !== 'production') {
+  					if (!isStringOrNumber(value)) {
+  						throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  					}
   				}
   				domNode.textContent = value;
   			}
@@ -1623,9 +1624,12 @@
   						domNode.textContent = '';
   					}
   				} else {
-  					if (!isStringOrNumber(nextValue)) {
-  						throw Error(errorMsg);
+  					if ("development" !== 'production') {
+  						if (!isStringOrNumber(nextValue)) {
+  							throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  						}
   					}
+
   					if (isVoid(lastValue)) {
   						domNode.textContent = nextValue;
   					} else {
@@ -1698,7 +1702,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$1 = isRecyclingEnabled();
 
   function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var node = {
@@ -1708,7 +1712,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled$1) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1772,7 +1776,7 @@
   }
 
   var recyclingEnabled$8 = isRecyclingEnabled();
-  var infernoBadTemplate$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+  var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
 
@@ -2041,8 +2045,11 @@
   				keyedChildren = false;
   				childDomNode = childNode.create(item, treeLifecycle, context);
   				childNodeList.push(childDomNode);
-  				if (childDomNode === undefined) {
-  					throw Error('Inferno Error: Children must be provided as templates.');
+
+  				if ("development" !== 'production') {
+  					if (childDomNode === undefined) {
+  						throw Error('Inferno Error: Children must be provided as templates.');
+  					}
   				}
   				domNode.appendChild(childDomNode);
   				break;
@@ -2055,13 +2062,17 @@
   				domNode.appendChild(childDomNode);
   				break;
   			case ValueTypes.EMPTY_OBJECT:
-  				throw Error(infernoBadTemplate$1);
+  				if ("development" !== 'production') {
+  					throw Error(infernoBadTemplate);
+  				} else {}
   			case ValueTypes.FUNCTION:
-  				throw Error(infernoBadTemplate$1);
+  				if ("development" !== 'production') {
+  					throw Error(infernoBadTemplate);
+  				} else {}
   			case ValueTypes.ARRAY:
-  				throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
-  			default:
-  				break;
+  				if ("development" !== 'production') {
+  					throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
+  				} else {}
   		}
   	}
   	return { domNode: domNode, keyedChildren: keyedChildren };
@@ -2083,7 +2094,7 @@
   	}
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
   	var keyedChildren = true;
@@ -2095,7 +2106,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled$2) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2653,9 +2664,13 @@
   					domNode = value.dom.create(item, treeLifecycle, context);
   					break;
   				case ValueTypes.EMPTY_OBJECT:
-  					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+  					if ("development" !== 'production') {
+  						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+  					} else {}
   				case ValueTypes.FUNCTION:
-  					throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+  					if ("development" !== 'production') {
+  						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+  					} else {}
   				case ValueTypes.FRAGMENT:
   					domNode = value.tree.dom.create(value, treeLifecycle, context);
   					break;
@@ -2720,8 +2735,6 @@
   	return node;
   }
 
-  var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
-
   function createDynamicNode(valueIndex) {
   	var domNode = undefined;
   	var childNodeList = [];
@@ -2757,9 +2770,13 @@
   					domNode = value.create(item, treeLifecycle, context);
   					break;
   				case ValueTypes.EMPTY_OBJECT:
-  					throw Error(infernoBadTemplate);
+  					if ("development" !== 'production') {
+  						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+  					} else {}
   				case ValueTypes.FUNCTION:
-  					throw Error(infernoBadTemplate);
+  					if ("development" !== 'production') {
+  						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+  					} else {}
   				case ValueTypes.FRAGMENT:
   					domNode = value.tree.dom.create(value, treeLifecycle, context);
   					break;
@@ -3386,11 +3403,16 @@
   			var children = node.children;
 
   			if (!isVoid(text)) {
-  				if (!isVoid(children)) {
-  					throw Error(invalidTemplateError);
-  				}
-  				if (!isStringOrNumber(text)) {
-  					throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+
+  				if ("development" !== 'production') {
+
+  					if (!isVoid(children)) {
+  						throw Error(invalidTemplateError);
+  					}
+
+  					if (!isStringOrNumber(text)) {
+  						throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  					}
   				}
   				staticNode.textContent = text;
   			} else {
@@ -3403,9 +3425,12 @@
   			staticNode = document.createTextNode(node.text);
   		}
   	}
-  	if (staticNode === undefined) {
-  		throw Error(invalidTemplateError);
+  	if ("development" !== 'production') {
+  		if (staticNode === undefined) {
+  			throw Error(invalidTemplateError);
+  		}
   	}
+
   	if (parentNode === null) {
   		return staticNode;
   	} else {
@@ -3415,13 +3440,15 @@
 
   function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 
-  	if (isVoid(schema)) {
-  		throw Error(invalidTemplateError);
-  	}
-  	if (isArray(schema)) {
-  		throw Error(invalidTemplateError);
-  	}
+  	if ("development" !== 'production') {
 
+  		if (isVoid(schema)) {
+  			throw Error(invalidTemplateError);
+  		}
+  		if (isArray(schema)) {
+  			throw Error(invalidTemplateError);
+  		}
+  	}
   	var dynamicFlags = dynamicNodeMap.get(schema);
   	var node = undefined;
   	var templateNode = undefined;
@@ -3429,8 +3456,10 @@
   	if (!dynamicFlags) {
   		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
 
-  		if (!templateNode) {
-  			throw Error(invalidTemplateError);
+  		if ("development" !== 'production') {
+  			if (!templateNode) {
+  				throw Error(invalidTemplateError);
+  			}
   		}
 
   		if (isRoot) {
@@ -3526,8 +3555,10 @@
   				var children = schema.children;
 
   				if (!isVoid(text)) {
-  					if (!isVoid(children)) {
-  						throw Error('Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.');
+  					if ("development" !== 'production') {
+  						if (!isVoid(children)) {
+  							throw Error('Inferno Error: Template nodes cannot contain both TEXT and a CHILDREN properties, they must only use one or the other.');
+  						}
   					}
   					if (dynamicFlags.TEXT === true) {
   						if (isRoot) {
@@ -3539,7 +3570,9 @@
   						if (isStringOrNumber(text)) {
   							templateNode.textContent = text;
   						} else {
-  							throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  							if ("development" !== 'production') {
+  								throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  							}
   						}
   						if (isRoot) {
   							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
