@@ -23,7 +23,7 @@ export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLi
 	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
 	// Also in cases where someone try to update from [{}] to [{}] ( empty object to empty object)
 	// We solve that with avoiding going into the iteration loop.
-	if ( isVoid( startItem ) || isVoid( startItem.tree ) ) {
+	if ( isVoid( startItem ) && ( isVoid( startItem.tree ) ) ) {
 		return;
 	}
 

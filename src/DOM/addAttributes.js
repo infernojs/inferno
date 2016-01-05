@@ -125,8 +125,7 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 			if ( isVoid( nextAttrVal ) ) {
 				if ( attrName === 'style' ) {
 					for ( styleName in lastAttrVal ) {
-						if ( lastAttrVal[styleName] &&
-							( !nextAttrVal || !nextAttrVal[styleName] ) ) {
+						if ( !nextAttrVal || !nextAttrVal[styleName] ) {
 							styleUpdates[styleName] = '';
 						}
 					}

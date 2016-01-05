@@ -1498,7 +1498,7 @@
   			if (isVoid(nextAttrVal)) {
   				if (attrName === 'style') {
   					for (styleName in lastAttrVal) {
-  						if (lastAttrVal[styleName] && (!nextAttrVal || !nextAttrVal[styleName])) {
+  						if (!nextAttrVal || !nextAttrVal[styleName]) {
   							styleUpdates[styleName] = '';
   						}
   					}
@@ -1790,7 +1790,7 @@
   	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
   	// Also in cases where someone try to update from [{}] to [{}] ( empty object to empty object)
   	// We solve that with avoiding going into the iteration loop.
-  	if (isVoid(startItem) || isVoid(startItem.tree)) {
+  	if (isVoid(startItem) && isVoid(startItem.tree)) {
   		return;
   	}
 
@@ -2454,7 +2454,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
+  var recyclingEnabled$3 = isRecyclingEnabled();
 
   function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
   	var node = {
@@ -2464,7 +2464,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled$3) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2608,7 +2608,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
 
   function createRootDynamicNode(valueIndex) {
   	var nextDomNode = undefined;
@@ -2621,7 +2621,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled$4) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2818,7 +2818,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$5 = isRecyclingEnabled();
 
   function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
@@ -2828,7 +2828,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled$5) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;

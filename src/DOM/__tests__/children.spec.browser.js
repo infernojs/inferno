@@ -334,7 +334,6 @@ describe( 'Children - (non-JSX)', () => {
 
 			});
 
-
 		});
 	});
 

@@ -113,9 +113,7 @@ describe( 'CSS style properties', () => {
 			name: 'automatically append `px` to relevant styles',
 			value: {
 				left: 0,
-				// margin: 16,
 				opacity: 0.5,
-				//padding: '4px',
 			},
 			expected: 'left: 0px; opacity: 0.5;'
 		}, {
@@ -190,7 +188,7 @@ describe( 'CSS style properties', () => {
 			});
 		});
 	});
-/*
+
 	preDefined.forEach((arg) => {
 
 		[{
@@ -256,7 +254,7 @@ describe( 'CSS style properties', () => {
 				render(createTemplate(test.template)(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.null;
-			});
+			})
 		});
 	});
 
@@ -318,7 +316,7 @@ describe( 'CSS style properties', () => {
 			});
 		});
 	});
- */
+
 	preDefined.forEach((arg) => {
 
 		[{
@@ -349,7 +347,7 @@ describe( 'CSS style properties', () => {
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
 
 			});
-			/*
+
 			it(test.description, () => {
 
 				render(createTemplate(test.template)(arg.value), container);
@@ -387,7 +385,7 @@ describe( 'CSS style properties', () => {
 				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.null;
 
-			});*/
+			});
 		});
 	});
 
