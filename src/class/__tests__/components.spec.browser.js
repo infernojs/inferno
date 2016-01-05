@@ -310,7 +310,6 @@ describe( 'Components', () => {
 		render(template(null, null, false), container);
 	});
 
-
 	it('should render a basic root component', () => {
 
 		let template = createTemplate((Component, title, name) =>
@@ -471,7 +470,8 @@ describe( 'Components', () => {
 		let template = createTemplate((Component, props) =>
 			createElement(Component, props)
 		);
-//		render(template(null, null, false), container);
+
+		render(template(null, null, false), container);
 
 		render(template(BasicComponent3, {
 			title: "styled!",
@@ -591,9 +591,6 @@ describe( 'Components', () => {
 		);
 	});
 
-
-
-
 	it('should render a basic component and correctly mount', () => {
 		let template;
 		let componentWillMountCount;
@@ -621,7 +618,6 @@ describe( 'Components', () => {
 				)
 			)
 		);
-
 
 		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
 		expect(
@@ -651,11 +647,6 @@ describe( 'Components', () => {
 		);
 	});
 
-
-
-
-
-
 	it('should render multiple components', () => {
 
 		let template = createTemplate((Component, title1, name1, Component2, title2, name2) =>
@@ -670,7 +661,6 @@ describe( 'Components', () => {
 				})
 			)
 		);
-
 
 		render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 
@@ -966,6 +956,7 @@ describe( 'Components', () => {
 	}
 
 	it('should render a stateless component', () => {
+
 		let template = createTemplate((Component, title) =>
 			createElement('div', null,
 				createElement(Component, {
