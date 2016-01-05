@@ -22,6 +22,7 @@ import { ObjectTypes } 	from '../core/variables';
 import isArray from '../util/isArray';
 import { addDOMStaticAttributes } from './addAttributes';
 
+const recyclingEnabled = isRecyclingEnabled();
 const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 function createStaticAttributes( node, domNode, excludeAttrs ) {
@@ -193,14 +194,14 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 		}
 
 		if ( isRoot ) {
-			node = createRootStaticVoidNode( templateNode );
+			node = createRootStaticVoidNode( templateNode, recyclingEnabled );
 		} else {
 			node = createStaticVoidNode( templateNode );
 		}
 	} else {
 		if ( dynamicFlags.NODE === true ) {
 			if ( isRoot ) {
-				node = createRootDynamicNode( schema.index, domNamespace );
+				node = createRootDynamicNode( schema.index, domNamespace, recyclingEnabled );
 			} else {
 				node = createDynamicNode( schema.index, domNamespace );
 			}
@@ -232,7 +233,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					}
 					if ( isRoot ) {
-						return createRootNodeWithComponent( tag.index, attrs, children, domNamespace );
+						return createRootNodeWithComponent( tag.index, attrs, children, domNamespace, recyclingEnabled );
 					} else {
 						return createNodeWithComponent( tag.index, attrs, children, domNamespace );
 					}
@@ -293,7 +294,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 					}
 					if ( dynamicFlags.TEXT === true ) {
 						if ( isRoot ) {
-							node = createRootNodeWithDynamicText( templateNode, text.index, dynamicAttrs );
+							node = createRootNodeWithDynamicText( templateNode, text.index, dynamicAttrs, recyclingEnabled );
 						} else {
 							node = createNodeWithDynamicText( templateNode, text.index, dynamicAttrs );
 						}
@@ -306,7 +307,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 							}
 						}
 						if ( isRoot ) {
-							node = createRootNodeWithStaticChild( templateNode, dynamicAttrs );
+							node = createRootNodeWithStaticChild( templateNode, dynamicAttrs, recyclingEnabled );
 						} else {
 							node = createNodeWithStaticChild( templateNode, dynamicAttrs );
 						}
@@ -316,7 +317,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						if ( children.type === ObjectTypes.VARIABLE ) {
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicChild(
-									templateNode, children.index, dynamicAttrs, domNamespace );
+									templateNode, children.index, dynamicAttrs, domNamespace, recyclingEnabled );
 							} else {
 								node = createNodeWithDynamicChild(
 									templateNode, children.index, dynamicAttrs, domNamespace );
@@ -338,7 +339,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 
 							if ( isRoot ) {
 								node = createRootNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
+									templateNode, subTreeForChildren, dynamicAttrs, domNamespace, recyclingEnabled );
 							} else {
 								node = createNodeWithDynamicSubTreeForChildren(
 									templateNode, subTreeForChildren, dynamicAttrs, domNamespace );
@@ -346,7 +347,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						} else if ( isStringOrNumber( children ) ) {
 							templateNode.textContent = children;
 							if ( isRoot ) {
-								node = createRootNodeWithStaticChild( templateNode, dynamicAttrs );
+								node = createRootNodeWithStaticChild( templateNode, dynamicAttrs, recyclingEnabled );
 							} else {
 								node = createNodeWithStaticChild( templateNode, dynamicAttrs );
 							}
@@ -357,7 +358,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 								createStaticTreeChildren( children, templateNode, domNamespace );
 
 								if ( isRoot ) {
-									node = createRootNodeWithStaticChild( templateNode, dynamicAttrs );
+									node = createRootNodeWithStaticChild( templateNode, dynamicAttrs, recyclingEnabled );
 								} else {
 									node = createNodeWithStaticChild( templateNode, dynamicAttrs );
 								}
@@ -365,7 +366,7 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					} else {
 						if ( isRoot ) {
-							node = createRootStaticVoidNode( templateNode, dynamicAttrs );
+							node = createRootStaticVoidNode( templateNode, dynamicAttrs, recyclingEnabled );
 						} else {
 							node = createStaticVoidNode( templateNode, dynamicAttrs );
 						}

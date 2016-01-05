@@ -5,9 +5,7 @@ import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 import updateComponent from '../../core/updateComponent';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootNodeWithComponent( componentIndex, props ) {
+export default function createRootNodeWithComponent( componentIndex, props, recyclingEnabled ) {
 	let currentItem;
 	let statelessRender;
 	const node = {

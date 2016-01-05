@@ -9,9 +9,7 @@ import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs ) {
+export default function createRootNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs, recyclingEnabled ) {
 	let keyedChildren = true;
 	let childNodeList = [];
 	const node = {

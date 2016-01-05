@@ -5,9 +5,7 @@ import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootNodeWithDynamicText( templateNode, valueIndex, dynamicAttrs ) {
+export default function createRootNodeWithDynamicText( templateNode, valueIndex, dynamicAttrs, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],

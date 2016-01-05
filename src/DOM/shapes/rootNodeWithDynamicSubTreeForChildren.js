@@ -5,9 +5,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttri
 import recreateRootNode from '../recreateRootNode';
 import addShapeChildren from '../../shared/addShapeChildren';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootNodeWithDynamicSubTreeForChildren( templateNode, subTreeForChildren, dynamicAttrs ) {
+export default function createRootNodeWithDynamicSubTreeForChildren( templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],

@@ -2,9 +2,7 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootVoidNode( templateNode, dynamicAttrs ) {
+export default function createRootVoidNode( templateNode, dynamicAttrs, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
