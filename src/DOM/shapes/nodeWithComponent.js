@@ -96,18 +96,16 @@ export default function createNodeWithComponent( componentIndex, props ) {
 				// stateless component
 				if ( !Component.prototype.render ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
-
-					nextRender.parent = currentItem;
-
 					let newDomNode;
 
+					nextRender.parent = currentItem;
 					// Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
 					// E.g. start with 'render(template(null), container); ' will cause this.
-					if ( !isVoid( node.instance ) ) {
+					if ( !isVoid( statelessRender ) ) {
 						newDomNode = nextRender.tree.dom.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
 					} else {
-						// newDomNode =
-						// TODO Create the stateless component
+						recreateNode( domNode, nextItem, node, treeLifecycle, context );
+						return;
 					}
 
 					statelessRender = nextRender;

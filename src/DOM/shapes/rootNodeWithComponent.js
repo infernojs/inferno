@@ -104,17 +104,22 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
 
 					nextRender.parent = currentItem;
-					const newDomNode = nextRender.tree.dom.update( statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context );
+					if ( !isVoid( statelessRender ) ) {
+						const newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
 
-					if ( newDomNode ) {
-						if ( nextRender.rootNode.parentNode ) {
-							nextRender.rootNode.parentNode.replaceChild( newDomNode, nextRender.rootNode );
+						if ( newDomNode ) {
+							if ( nextRender.rootNode.parentNode ) {
+								nextRender.rootNode.parentNode.replaceChild(newDomNode, nextRender.rootNode);
+							} else {
+								lastItem.rootNode.parentNode.replaceChild(newDomNode, lastItem.rootNode);
+							}
+							currentItem.rootNode = newDomNode;
 						} else {
-							lastItem.rootNode.parentNode.replaceChild( newDomNode, lastItem.rootNode );
+							currentItem.rootNode = nextRender.rootNode;
 						}
-						currentItem.rootNode = newDomNode;
 					} else {
-						currentItem.rootNode = nextRender.rootNode;
+						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+						return;
 					}
 
 					statelessRender = nextRender;

@@ -1038,14 +1038,9 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
-
 	});
 
-
-
 	it('should render a Havunen component', () => {
-
-
 		var BaseView = createTemplate(function (v0, v1) {
 			return {
 				tag: 'div',
@@ -1110,9 +1105,5 @@ describe( 'Components', () => {
 		SomeError.constructor = SomeError;
 
 		render(starter(SomeError), container);
-
-
-
 	})
-
 } );
