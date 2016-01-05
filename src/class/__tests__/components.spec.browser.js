@@ -49,7 +49,6 @@ describe( 'Components', () => {
 			)
 		);
 
-
 		render(template(BasicComponent1, 'abc'), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -187,6 +186,8 @@ describe( 'Components', () => {
 			)
 		);
 
+		render(template(null, 'abc', true), container);
+
 		render(template(BasicComponent1c, 'abc', true), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -264,6 +265,9 @@ describe( 'Components', () => {
 				createElement(Component, {title, name})
 			)
 		);
+
+		render(template(null, 'abc', 'basic-render'), container);
+
 		render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
 		expect(
@@ -290,8 +294,6 @@ describe( 'Components', () => {
 
 		render(template(null, null, false), container);
 
-		render(template(null, null, false), container);
-
 		render(template(BasicComponent1, 'abc', null), container);
 
 		expect(
@@ -299,6 +301,8 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div><div class="basic"><span>The title is abc</span></div></div>'
 		);
+
+		render(template(null, null, false), container);
 
 		render(template(BasicComponent1, '123', 'basic-update'), container);
 		expect(
@@ -422,8 +426,6 @@ describe( 'Components', () => {
 
 		render(template(), container);
 	});
-
-
 
 	class BasicComponent2b extends Component {
 		render() {
@@ -930,7 +932,7 @@ describe( 'Components', () => {
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
-			//render(tpl1546018623(null), container);
+			render(tpl1546018623(null), container);
 			render(tpl1546018623(valueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
@@ -966,7 +968,7 @@ describe( 'Components', () => {
 			)
 		);
 
-	//	render(template(null), container);
+		render(template(), container);
 
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -1005,6 +1007,8 @@ describe( 'Components', () => {
 			() => render(template(BasicStatelessComponent1, text1), container)
 		).to.throw;
 
+		render(template(null), container);
+
 		render(template(BasicStatelessComponent1), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -1040,70 +1044,4 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
 	});
 
-	it('should render a Havunen component', () => {
-		var BaseView = createTemplate(function (v0, v1) {
-			return {
-				tag: 'div',
-				attrs: {
-					class: 'login-view bg-visma'
-				},
-				children: [{
-					tag: 'button',
-					attrs: {
-						onClick: v0
-					},
-					children: 'TOGGLE'
-				}, {
-					tag: 'br'
-				}, v1]
-			};
-		});
-
-		var ThisIsCool = createTemplate(function () {
-			return {
-				tag: 'h1',
-				children: 'This is cool!'
-			};
-		});
-
-		var NotSoCool = createTemplate(function () {
-			return {
-				tag: 'h1',
-				children: 'Not so cool'
-			};
-		});
-
-		var starter = createTemplate(function (v0) {
-			return {
-				tag: v0
-			}
-		});
-
-		var SomeError = function() {
-			this.state = {
-				show: false
-			};
-
-			this.toggle = function() {
-				this.setState({
-					show: !this.state.show
-				});
-			}.bind(this);
-
-			this.render = function() {
-				return BaseView(this.toggle, (function () {
-
-					if (this.state.show === true) {
-						return ThisIsCool(null);
-					} else {
-						return NotSoCool(null);
-					}
-				}).call(this));
-			};
-		};
-		SomeError.prototype = new Component(null);
-		SomeError.constructor = SomeError;
-
-		render(starter(SomeError), container);
-	})
 } );
