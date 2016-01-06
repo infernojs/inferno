@@ -22,7 +22,7 @@ export default function createRootStaticNode( templateNode ) {
 			return domNode;
 		},
 		update( lastItem, nextItem ) {
-			if ( node !== lastItem.tree.dom ) {
+			if ( node !== lastItem.domTree ) {
 				recreateRootNode( lastItem, nextItem, node );
 				return;
 			}

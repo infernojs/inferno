@@ -2306,7 +2306,7 @@
   	return node;
   }
 
-  function recreateRootNode$1(lastDomNode, nextItem, node, treeLifecycle, context) {
+  function recreateNode(lastDomNode, nextItem, node, treeLifecycle, context) {
   	var domNode = node.create(nextItem, treeLifecycle, context);
 
   	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
@@ -2375,7 +2375,7 @@
   					if (isArray(nextValue)) {
   						updateAndAppendDynamicChildren(domNode, nextValue);
   					} else {
-  						recreateRootNode$1(lastItem, nextItem, node, treeLifecycle, context);
+  						recreateNode(lastItem, nextItem, node, treeLifecycle, context);
   					}
   				} else {
   					domNode.appendChild(document.createTextNode(nextValue));
@@ -2552,7 +2552,7 @@
   			var domNode = domNodeMap[lastItem.id];
 
   			if (node !== lastItem.tree.dom) {
-  				recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
+  				recreateNode(domNode, nextItem, node, treeLifecycle, context);
   				return domNode;
   			}
   			if (!isVoid(subTreeForChildren)) {
@@ -2764,7 +2764,7 @@
   				var lastType = getTypeFromValue(lastValue);
 
   				if (lastType !== nextType) {
-  					recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
+  					recreateNode(domNode, nextItem, node, treeLifecycle, context);
   					return;
   				}
 
@@ -3077,7 +3077,7 @@
 
   			currentItem = nextItem;
   			if (!Component) {
-  				recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
+  				recreateNode(domNode, nextItem, node, treeLifecycle, context);
   				if (instance) {
   					instance._lastRender.rootNode = domNode;
   				}
@@ -3095,7 +3095,7 @@
   					if (!isVoid(statelessRender)) {
   						newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
   					} else {
-  						recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
+  						recreateNode(domNode, nextItem, node, treeLifecycle, context);
   						return;
   					}
   					statelessRender = nextRender;
@@ -3109,7 +3109,7 @@
   					}
   				} else {
   					if (!instance || Component !== instance.constructor) {
-  						recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
+  						recreateNode(domNode, nextItem, node, treeLifecycle, context);
   						return domNode;
   					}
   					var prevProps = instance.props;
@@ -3240,7 +3240,9 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-  			if (node !== lastItem.tree.dom) {
+		    console.log(node)
+  			if (node !== lastItem.tree) {
+
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
@@ -3301,7 +3303,11 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
+		    console.log(node)
+console.log( lastItem.tree.dom )
+
   			if (node !== lastItem.tree.dom) {
+
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
