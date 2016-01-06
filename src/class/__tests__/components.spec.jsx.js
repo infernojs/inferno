@@ -650,7 +650,7 @@ describe( 'Components (JSX)', () => {
 				this.state = {
 					show: false
 				};
-				this.toggle = this.toggle.bind( this );
+				this.toggle = this.toggle.bind(this);
 			}
 
 			toggle() {

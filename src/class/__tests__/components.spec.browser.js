@@ -958,7 +958,6 @@ describe( 'Components', () => {
 	}
 
 	it('should render a stateless component', () => {
-
 		let template = createTemplate((Component, title) =>
 			createElement('div', null,
 				createElement(Component, {
@@ -1044,4 +1043,88 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
 	});
 
-} );
+	describe('should render a component with a conditional state item', () => {
+		const tpl3578458729 = createTemplate(function (v0) {
+			return {
+				tag: 'div',
+				attrs: {
+					className: 'login-view bg-visma'
+				},
+				children: v0
+			};
+		});
+		const tpl188998005 = createTemplate(function () {
+			return {
+				tag: 'div',
+				children: 'VISIBLE'
+			};
+		});
+		const tpl3754840163 = createTemplate(function (v0) {
+			return {
+				tag: 'div',
+				children: {
+					tag: 'button',
+					attrs: {
+						onClick: v0
+					},
+					children: 'Make visible'
+				}
+			};
+		});
+		const TEST = function() {
+			this.state = {
+				show: false
+			};
+
+			this.makeVisible = function() {
+				this.setState({
+					show: true
+				});
+			}.bind(this);
+
+			this.render = function() {
+				return tpl3578458729((function () {
+					if (this.state.show === true) {
+						return tpl188998005(null);
+					} else {
+						return tpl3754840163(this.makeVisible);
+					}
+				}).call(this));
+			};
+		};
+		TEST.prototype = new Component(null);
+		TEST.constructor = TEST;
+
+		const tpl79713834 = createTemplate(function (v0) {
+			return {
+				tag: v0
+			};
+		});
+
+		it('Initial render (creation)', () => {
+			render(tpl79713834(TEST), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div class="login-view bg-visma"><div><button>Make visible</button></div></div>')
+			);
+		});
+
+		it('Second render (update with state change)', (done) => {
+			debugger;
+			render(tpl79713834(TEST), container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame( () => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div class="login-view bg-visma"><div>VISIBLE</div>')
+				);
+				done();
+			});
+		});
+	});
+});
