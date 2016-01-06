@@ -8,7 +8,7 @@ addTreeConstructor( 'dom', createDOMTree );
 
 const { createElement } = TemplateFactory;
 
-describe( 'createTree - SVG', () => {
+describe( 'createTree', () => {
 
 	let container;
 
@@ -70,22 +70,12 @@ describe( 'createTree - SVG', () => {
 		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
 		expect(container.firstChild.getAttribute('width')).to.eql('200');
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<svg width="200"></svg>'
-		);
 
 		render(template(), container);
 
 		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
 		expect(container.firstChild.getAttribute('width')).to.eql('200');
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<svg width="200"></svg>'
-		);
 	});
 
 	it('should set SVG as default namespace for <svg>', () => {
@@ -126,7 +116,7 @@ describe( 'createTree - SVG', () => {
 		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.equal("test.jpg");
 
 		render(template(null), container);
-		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.false;
 	});
 
 	it('should unset a namespaced attributes', () => {
@@ -140,10 +130,10 @@ describe( 'createTree - SVG', () => {
 		}));
 
 		render(template(null), container);
-		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.false;
 
 		render(template(null), container);
-		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.false;
 	});
 
 	it('should unset a namespaced attributes', () => {
@@ -157,7 +147,7 @@ describe( 'createTree - SVG', () => {
 		}));
 
 		render(template(null), container);
-		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.null;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', "href")).to.be.false;
 
 		render(template("test.jpg"), container);
 		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', "href")).to.equal("test.jpg");

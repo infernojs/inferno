@@ -46,10 +46,8 @@ describe( 'mathML namespace', () => {
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
-		expect(container.firstChild.innerHTML).to.equal('<mrow><mi>a</mi><mn>2</mn></mrow>');
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
-		expect(container.firstChild.innerHTML).to.equal('<mrow><mi>a</mi><mn>2</mn></mrow>');
 	});
 
 	it('should solve mathML edge when wrapped inside a non-namespace element ( static )', () => {
@@ -111,9 +109,9 @@ describe( 'mathML namespace', () => {
 
 		render(template(child()), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.firstChild.tagName).to.equal('math');
+		expect(container.firstChild.firstChild.tagName.toLowerCase()).to.equal('math');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('span');
-		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('mo');
+		expect(container.firstChild.firstChild.firstChild.firstChild.tagName.toLowerCase()).to.equal('mo');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
@@ -123,9 +121,9 @@ describe( 'mathML namespace', () => {
 		render(template('123'), container);
 		render(template(child()), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.firstChild.tagName).to.equal('math');
+		expect(container.firstChild.firstChild.tagName.toLowerCase()).to.equal('math');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('span');
-		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('mo');
+		expect(container.firstChild.firstChild.firstChild.firstChild.tagName.toLowerCase()).to.equal('mo');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');

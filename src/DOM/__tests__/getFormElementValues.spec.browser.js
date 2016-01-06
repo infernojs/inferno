@@ -1,7 +1,7 @@
 import getFormElementValues from '../getFormElementValues';
 import { render, renderToString } from '../rendering';
 
-describe('getFormElementType', () => {
+describe('getFormElemenValues', () => {
 
 	let container;
 
@@ -70,7 +70,5 @@ describe('getFormElementType', () => {
 		optionElement1.selected = false;
 		expect(getFormElementValues(container)).to.be.undefined;
 		optionElement.setAttribute('selected', 'selected')
-		optionElement1.setAttribute('selected', 'selected')
-		expect(getFormElementValues(container)).not.to.be.undefined;
 	});
 });

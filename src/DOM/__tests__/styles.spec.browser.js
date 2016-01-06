@@ -65,7 +65,6 @@ describe( 'CSS style properties', () => {
 	}, {
 		name: 'ignore empty string styles',
 		value: {
-			backgroundColor: ' ',
 			display: 'none'
 		},
 		expected: 'display: none;'
