@@ -2,7 +2,7 @@ import createDOMTree from '../createTree';
 import { render } from '../rendering';
 import createTemplate from '../../core/createTemplate';
 import { addTreeConstructor } from '../../core/createTemplate';
-import { shortCuts, cssToJSName } from '../../dom/styleAccessors';
+import { shortCuts, cssToJSName } from '../../util/styleAccessor';
 
 addTreeConstructor( 'dom', createDOMTree );
 
