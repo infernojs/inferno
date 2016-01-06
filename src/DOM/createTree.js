@@ -23,6 +23,12 @@ import isArray from '../util/isArray';
 import { addDOMStaticAttributes } from './addAttributes';
 import { isRecyclingEnabled } from './recycling';
 
+import createRootVoidNode from './shapes/rootVoidNode';
+import createVoidNode from './shapes/voidNode';
+import createRootStaticNode from './shapes/rootStaticNode';
+import createStaticNode from './shapes/staticNode';
+
+
 const recyclingEnabled = isRecyclingEnabled();
 const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
@@ -195,9 +201,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 		}
 
 		if ( isRoot ) {
-			node = createRootStaticVoidNode( templateNode, recyclingEnabled );
+			node = createRootStaticNode( templateNode, recyclingEnabled );
 		} else {
-			node = createStaticVoidNode( templateNode );
+			node = createStaticNode( templateNode );
 		}
 	} else {
 		if ( dynamicFlags.NODE === true ) {
@@ -367,9 +373,9 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 						}
 					} else {
 						if ( isRoot ) {
-							node = createRootStaticVoidNode( templateNode, dynamicAttrs, recyclingEnabled );
+							node = createRootVoidNode( templateNode, dynamicAttrs, recyclingEnabled );
 						} else {
-							node = createStaticVoidNode( templateNode, dynamicAttrs );
+							node = createVoidNode( templateNode, dynamicAttrs );
 						}
 					}
 				}
