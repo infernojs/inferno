@@ -46,7 +46,8 @@
     "sinon-chai": "^2.8.0",
     "uglify-js": "^2.6.1",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.14.0",
+    "socket.io": "1.3.7"
   },
   "dependencies": {
     "babel-core": "^6.3.26",
