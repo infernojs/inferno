@@ -3218,7 +3218,7 @@
 
   var recyclingEnabled$2 = isRecyclingEnabled();
 
-  function createRootVoidNode$1(templateNode, dynamicAttrs) {
+  function createRootVoidNode(templateNode, dynamicAttrs) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -3240,7 +3240,7 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-  			if (node !== lastItem.domTree) {
+  			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
@@ -3258,7 +3258,7 @@
   	return node;
   }
 
-  function createVoidNode$1(templateNode, dynamicAttrs) {
+  function createVoidNode(templateNode, dynamicAttrs) {
   	var domNode = undefined;
   	var node = {
   		overrideItem: null,
@@ -3301,7 +3301,7 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-  			if (node !== lastItem.domTree) {
+  			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
@@ -3669,9 +3669,9 @@
   						}
   					} else {
   						if (isRoot) {
-  							node = createRootVoidNode$1(templateNode, dynamicAttrs, recyclingEnabled);
+  							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled);
   						} else {
-  							node = createVoidNode$1(templateNode, dynamicAttrs);
+  							node = createVoidNode(templateNode, dynamicAttrs);
   						}
   					}
   				}
