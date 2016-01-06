@@ -26,6 +26,7 @@ To be more technically correct, Inferno is a "virtual fragment" framework, which
 
 ```sh
 npm install --save inferno
+npm install --save inferno-dom
 ```
 
 ## Testing
