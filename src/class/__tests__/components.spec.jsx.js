@@ -701,7 +701,7 @@ describe( 'Components (JSX)', () => {
 			});
 		});
 	});
-
+/*
 	describe('should render a stateless component with a conditional state item', () => {
 		const StatelessComponent = (props) => <p>{props.name}</p>;
 
@@ -767,5 +767,5 @@ describe( 'Components (JSX)', () => {
 				done();
 			});
 		});
-	});
+	}); */
 });

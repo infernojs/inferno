@@ -12,8 +12,6 @@ import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDy
 import createNodeWithDynamicSubTreeForChildren from './shapes/nodeWithDynamicSubTreeForChildren';
 import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
-import createRootStaticVoidNode from './shapes/rootStaticVoidNode';
-import createStaticVoidNode from './shapes/staticVoidNode';
 import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
 import createNodeWithComponent from './shapes/nodeWithComponent';
 import createRootDynamicTextNode from './shapes/rootDynamicTextNode';
