@@ -40,7 +40,12 @@
 
   		var keyedPool = tree.dom.keyedPool;
 
-  		(keyedPool[key] || (keyedPool[key] = [])).push(item);
+  		if (keyedPool[key]) {
+  			keyedPool[key].push(item);
+  		} else {
+  			keyedPool[key] = [];
+  			keyedPool[key].push(item);
+  		}
   	}
   }
 
@@ -1226,7 +1231,11 @@
   }
 
   function addRootListener(e, type) {
-  	type || (type = e.type);
+
+  	if (!type) {
+  		type = e.type;
+  	}
+
   	var registry = EventRegistry[type];
 
   	// Support: Safari 6-8+
@@ -1254,7 +1263,10 @@
   	while (target !== null && listenersCount > 0 && target !== document.parentNode) {
   		if (nodeID = infernoNodeID(target, true)) {
   			listeners = listenersStorage[nodeID];
-  			if (listeners && listeners[type] && (listener = listeners[type])) {
+  			if (listeners && listeners[type]) {
+
+  				listener = listeners[type];
+
   				// lazily instantiate additional arguments in the case
   				// where an event handler takes more than one argument
   				// listener is a function, and length is the number of
@@ -1315,8 +1327,15 @@
   			}
   			registry._enabled = true;
   		}
-  		var nodeID = infernoNodeID(domNode),
-  		    listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
+  		var nodeID = infernoNodeID(domNode);
+  		var listeners = undefined;
+
+  		if (listenersStorage[nodeID]) {
+  			listeners = listenersStorage[nodeID];
+  		} else {
+  			listenersStorage[nodeID] = {};
+  			listeners = listenersStorage[nodeID];
+  		}
 
   		if (listeners[type]) {
   			if (listeners[type].destroy) {
@@ -1807,7 +1826,7 @@
   	}
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
+  var recyclingEnabled$4 = isRecyclingEnabled();
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -1832,7 +1851,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$2) {
+  		if (recyclingEnabled$4) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -2047,7 +2066,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled$2) {
+  		if (recyclingEnabled$4) {
   			pool(item);
   		}
   	}
@@ -2785,69 +2804,6 @@
   	return node;
   }
 
-  function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
-  	var node = {
-  		pool: [],
-  		keyedPool: [],
-  		overrideItem: null,
-  		create: function create(item) {
-  			var domNode = undefined;
-
-  			if (recyclingEnabled) {
-  				domNode = recycle(node, item);
-  				if (domNode) {
-  					return domNode;
-  				}
-  			}
-  			domNode = templateNode.cloneNode(true);
-  			item.rootNode = domNode;
-  			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
-  			}
-  			return domNode;
-  		},
-  		update: function update(lastItem, nextItem) {
-  			if (node !== lastItem.tree.dom) {
-  				recreateRootNode(lastItem, nextItem, node);
-  				return;
-  			}
-  			var domNode = lastItem.rootNode;
-
-  			nextItem.rootNode = domNode;
-  			nextItem.id = lastItem.id;
-  			nextItem.rootNode = lastItem.rootNode;
-  			if (dynamicAttrs) {
-  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-  			}
-  		},
-  		remove: function remove() /* lastItem */{}
-  	};
-
-  	return node;
-  }
-
-  function createVoidNode(templateNode, dynamicAttrs) {
-  	var domNode = undefined;
-  	var node = {
-  		overrideItem: null,
-  		create: function create(item) {
-  			domNode = templateNode.cloneNode(true);
-  			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
-  			}
-  			return domNode;
-  		},
-  		update: function update(lastItem, nextItem) {
-  			if (dynamicAttrs) {
-  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-  			}
-  		},
-  		remove: function remove() /* lastItem */{}
-  	};
-
-  	return node;
-  }
-
   function updateComponent(component, prevState, nextState, prevProps, nextProps, renderCallback) {
   	if (!nextProps.children) {
   		nextProps.children = prevProps.children;
@@ -3260,6 +3216,118 @@
   	return node;
   }
 
+  var recyclingEnabled$2 = isRecyclingEnabled();
+
+  function createRootVoidNode$1(templateNode, dynamicAttrs) {
+  	var node = {
+  		pool: [],
+  		keyedPool: [],
+  		overrideItem: null,
+  		create: function create(item) {
+  			var domNode = undefined;
+
+  			if (recyclingEnabled$2) {
+  				domNode = recycle(node, item);
+  				if (domNode) {
+  					return domNode;
+  				}
+  			}
+  			domNode = templateNode.cloneNode(true);
+  			item.rootNode = domNode;
+  			if (dynamicAttrs) {
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
+  			}
+  			return domNode;
+  		},
+  		update: function update(lastItem, nextItem) {
+  			if (node !== lastItem.domTree) {
+  				recreateRootNode(lastItem, nextItem, node);
+  				return;
+  			}
+  			var domNode = lastItem.rootNode;
+
+  			nextItem.rootNode = domNode;
+  			nextItem.rootNode = lastItem.rootNode;
+  			if (dynamicAttrs) {
+  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+  			}
+  		},
+  		remove: function remove() /* lastItem */{}
+  	};
+
+  	return node;
+  }
+
+  function createVoidNode$1(templateNode, dynamicAttrs) {
+  	var domNode = undefined;
+  	var node = {
+  		overrideItem: null,
+  		create: function create(item) {
+  			domNode = templateNode.cloneNode(true);
+  			if (dynamicAttrs) {
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
+  			}
+  			return domNode;
+  		},
+  		update: function update(lastItem, nextItem) {
+  			if (dynamicAttrs) {
+  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+  			}
+  		},
+  		remove: function remove() /* lastItem */{}
+  	};
+
+  	return node;
+  }
+
+  var recyclingEnabled$3 = isRecyclingEnabled();
+
+  function createRootStaticNode(templateNode) {
+  	var node = {
+  		pool: [],
+  		keyedPool: [],
+  		overrideItem: null,
+  		create: function create(item) {
+  			var domNode = undefined;
+
+  			if (recyclingEnabled$3) {
+  				domNode = recycle(node, item);
+  				if (domNode) {
+  					return domNode;
+  				}
+  			}
+  			domNode = templateNode.cloneNode(true);
+  			item.rootNode = domNode;
+  			return domNode;
+  		},
+  		update: function update(lastItem, nextItem) {
+  			if (node !== lastItem.domTree) {
+  				recreateRootNode(lastItem, nextItem, node);
+  				return;
+  			}
+  			nextItem.rootNode = lastItem.rootNode;
+  		},
+  		remove: function remove() /* lastItem */{}
+  	};
+
+  	return node;
+  }
+
+  function createStaticNode(templateNode) {
+  	var domNode = undefined;
+  	var node = {
+  		overrideItem: null,
+  		create: function create() {
+  			domNode = templateNode.cloneNode(true);
+  			return domNode;
+  		},
+  		update: function update() {},
+  		remove: function remove() /* lastItem */{}
+  	};
+
+  	return node;
+  }
+
   var recyclingEnabled = isRecyclingEnabled();
   var invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
@@ -3434,9 +3502,9 @@
   		}
 
   		if (isRoot) {
-  			node = createRootVoidNode(templateNode, recyclingEnabled);
+  			node = createRootStaticNode(templateNode, recyclingEnabled);
   		} else {
-  			node = createVoidNode(templateNode);
+  			node = createStaticNode(templateNode);
   		}
   	} else {
   		if (dynamicFlags.NODE === true) {
@@ -3601,9 +3669,9 @@
   						}
   					} else {
   						if (isRoot) {
-  							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled);
+  							node = createRootVoidNode$1(templateNode, dynamicAttrs, recyclingEnabled);
   						} else {
-  							node = createVoidNode(templateNode, dynamicAttrs);
+  							node = createVoidNode$1(templateNode, dynamicAttrs);
   						}
   					}
   				}
