@@ -27,24 +27,7 @@
     return target;
   };
 
-  var isVoid = (function (x) {
-    return x === null || x === undefined;
-  })
-
-  var isStringOrNumber = (function (x) {
-    return typeof x === 'string' || typeof x === 'number';
-  })
-
-  // To be compat with React, we support at least the same SVG elements
-  function isSVGElement(nodeName) {
-  	return nodeName === 'svg' || nodeName === 'clipPath' || nodeName === 'circle' || nodeName === 'defs' || nodeName === 'desc' || nodeName === 'ellipse' || nodeName === 'filter' || nodeName === 'g' || nodeName === 'line' || nodeName === 'linearGradient' || nodeName === 'mask' || nodeName === 'marker' || nodeName === 'metadata' || nodeName === 'mpath' || nodeName === 'path' || nodeName === 'pattern' || nodeName === 'polygon' || nodeName === 'polyline' || nodeName === 'pattern' || nodeName === 'radialGradient' || nodeName === 'rect' || nodeName === 'set' || nodeName === 'stop' || nodeName === 'symbol' || nodeName === 'switch' || nodeName === 'text' || nodeName === 'tspan' || nodeName === 'use' || nodeName === 'view';
-  }
-
-  function isMathMLElement(nodeName) {
-  	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
-  }
-
-  var recyclingEnabled$9 = true;
+  var recyclingEnabled$1 = true;
 
   function pool(item) {
 
@@ -82,7 +65,24 @@
   }
 
   function isRecyclingEnabled() {
-  	return recyclingEnabled$9;
+  	return recyclingEnabled$1;
+  }
+
+  var isVoid = (function (x) {
+    return x === null || x === undefined;
+  })
+
+  var isStringOrNumber = (function (x) {
+    return typeof x === 'string' || typeof x === 'number';
+  })
+
+  // To be compat with React, we support at least the same SVG elements
+  function isSVGElement(nodeName) {
+  	return nodeName === 'svg' || nodeName === 'clipPath' || nodeName === 'circle' || nodeName === 'defs' || nodeName === 'desc' || nodeName === 'ellipse' || nodeName === 'filter' || nodeName === 'g' || nodeName === 'line' || nodeName === 'linearGradient' || nodeName === 'mask' || nodeName === 'marker' || nodeName === 'metadata' || nodeName === 'mpath' || nodeName === 'path' || nodeName === 'pattern' || nodeName === 'polygon' || nodeName === 'polyline' || nodeName === 'pattern' || nodeName === 'radialGradient' || nodeName === 'rect' || nodeName === 'set' || nodeName === 'stop' || nodeName === 'symbol' || nodeName === 'switch' || nodeName === 'text' || nodeName === 'tspan' || nodeName === 'use' || nodeName === 'view';
+  }
+
+  function isMathMLElement(nodeName) {
+  	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
   }
 
   var isArray = (function (x) {
@@ -1569,9 +1569,7 @@
   	return domNode;
   }
 
-  var recyclingEnabled$1 = isRecyclingEnabled();
-
-  function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
+  function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -1579,7 +1577,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$1) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -1701,9 +1699,7 @@
   	return node;
   }
 
-  var recyclingEnabled = isRecyclingEnabled();
-
-  function createRootNodeWithStaticChild(templateNode, dynamicAttrs) {
+  function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -1785,7 +1781,14 @@
   	}
   }
 
-  var recyclingEnabled$8 = isRecyclingEnabled();
+  function removeChild(domNode) {
+  	var firstChild = domNode.firstChild;
+  	if (firstChild) {
+  		domNode.removeChild(firstChild);
+  	}
+  }
+
+  var recyclingEnabled$2 = isRecyclingEnabled();
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -1810,7 +1813,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$8) {
+  		if (recyclingEnabled$2) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -2025,7 +2028,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled$8) {
+  		if (recyclingEnabled$2) {
   			pool(item);
   		}
   	}
@@ -2104,9 +2107,7 @@
   	}
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
-
-  function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
+  function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
   	var keyedChildren = true;
   	var childNodeList = [];
   	var node = {
@@ -2116,7 +2117,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2201,21 +2202,11 @@
   						if (!isVoid(domNode.childNodes[i])) {
   							domNode.removeChild(domNode.childNodes[i]);
   						} else {
-
-  							var firstChild = domNode.firstChild;
-
-  							if (firstChild) {
-  								domNode.removeChild(domNode.firstChild);
-  							}
+  							removeChild(domNode);
   						}
   					}
   				} else {
-
-  					var firstChild = domNode.firstChild;
-
-  					if (firstChild) {
-  						domNode.removeChild(domNode.firstChild);
-  					}
+  					removeChild(domNode);
   				}
   			} else if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
@@ -2271,15 +2262,9 @@
   						} else {
   							// Edge case! If we update from e.g object literal - {} - from a existing value, the
   							// value will not be unset
-
-  							var firstChild = domNode.firstChild;
-
-  							if (firstChild) {
-  								domNode.removeChild(domNode.firstChild);
-  							}
+  							removeChild(domNode);
   						}
   					} else if (isStringOrNumber(nextValue)) {
-  						var firstChild = domNode.firstChild;
   						appendText(domNode, nextValue);
   					}
   			}
@@ -2380,31 +2365,17 @@
   						if (!isVoid(domNode.childNodes[i])) {
   							domNode.removeChild(domNode.childNodes[i]);
   						} else {
-
-  							var firstChild = domNode.firstChild;
-
-  							if (firstChild) {
-  								domNode.removeChild(domNode.firstChild);
-  							}
+  							removeChild(domNode);
   						}
   					}
   				} else {
-
-  					var firstChild = domNode.firstChild;
-
-  					if (firstChild) {
-  						domNode.removeChild(domNode.firstChild);
-  					}
+  					removeChild(domNode);
   				}
   			} else if (nextValue !== lastValue) {
   				if (typeof nextValue === 'string') {
   					appendText(domNode, nextValue);
   				} else if (isVoid(nextValue)) {
-  					var firstChild = domNode.firstChild;
-
-  					if (firstChild) {
-  						domNode.removeChild(domNode.firstChild);
-  					}
+  					removeChild(domNode);
   					// if we update from undefined, we will have an array with zero length.
   					// If we check if it's an array, it will throw 'x' is undefined.
   				} else if (nextValue.length !== 0 && isArray(nextValue)) {
@@ -2438,12 +2409,7 @@
   						} else {
   								// Edge case! If we update from e.g object literal - {} - from a existing value, the
   								// value will not be unset
-
-  								var firstChild = domNode.firstChild;
-
-  								if (firstChild) {
-  									domNode.removeChild(domNode.firstChild);
-  								}
+  								removeChild(domNode);
   							}
   					} else if (isStringOrNumber(nextValue)) {
   						appendText(domNode, nextValue);
@@ -2479,9 +2445,7 @@
   	}
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
-
-  function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
+  function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -2489,7 +2453,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -2615,9 +2579,7 @@
   	return node;
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
-
-  function createRootDynamicNode(valueIndex) {
+  function createRootDynamicNode(valueIndex, recyclingEnabled) {
   	var nextDomNode = undefined;
   	var childNodeList = [];
   	var keyedChildren = true;
@@ -2628,7 +2590,7 @@
   		create: function create(item, treeLifecycle, context) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$4) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2831,9 +2793,7 @@
   	return node;
   }
 
-  var recyclingEnabled$7 = isRecyclingEnabled();
-
-  function createRootVoidNode(templateNode, dynamicAttrs) {
+  function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -2841,7 +2801,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$7) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -2923,9 +2883,7 @@
   	}
   }
 
-  var recyclingEnabled$6 = isRecyclingEnabled();
-
-  function createRootNodeWithComponent(componentIndex, props) {
+  function createRootNodeWithComponent(componentIndex, props, recyclingEnabled) {
   	var currentItem = undefined;
   	var statelessRender = undefined;
   	var node = {
@@ -2941,7 +2899,7 @@
   			if (node.overrideItem !== null) {
   				toUseItem = node.overrideItem;
   			}
-  			if (recyclingEnabled$6) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item, treeLifecycle, context);
   				if (domNode) {
   					return domNode;
@@ -3219,9 +3177,7 @@
   	return node;
   }
 
-  var recyclingEnabled$5 = isRecyclingEnabled();
-
-  function createRootDynamicTextNode(templateNode, valueIndex) {
+  function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -3229,7 +3185,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$5) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3303,6 +3259,7 @@
   	return node;
   }
 
+  var recyclingEnabled = isRecyclingEnabled();
   var invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function createStaticAttributes(node, domNode, excludeAttrs) {
@@ -3476,14 +3433,14 @@
   		}
 
   		if (isRoot) {
-  			node = createRootVoidNode(templateNode);
+  			node = createRootVoidNode(templateNode, recyclingEnabled);
   		} else {
   			node = createVoidNode(templateNode);
   		}
   	} else {
   		if (dynamicFlags.NODE === true) {
   			if (isRoot) {
-  				node = createRootDynamicNode(schema.index, domNamespace);
+  				node = createRootDynamicNode(schema.index, domNamespace, recyclingEnabled);
   			} else {
   				node = createDynamicNode(schema.index, domNamespace);
   			}
@@ -3515,7 +3472,7 @@
   						}
   					}
   					if (isRoot) {
-  						return createRootNodeWithComponent(tag.index, _attrs, _children, domNamespace);
+  						return createRootNodeWithComponent(tag.index, _attrs, _children, domNamespace, recyclingEnabled);
   					} else {
   						return createNodeWithComponent(tag.index, _attrs, _children, domNamespace);
   					}
@@ -3575,7 +3532,7 @@
   					}
   					if (dynamicFlags.TEXT === true) {
   						if (isRoot) {
-  							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
+  							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled);
   						} else {
   							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
   						}
@@ -3588,7 +3545,7 @@
   							}
   						}
   						if (isRoot) {
-  							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
+  							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
   						} else {
   							node = createNodeWithStaticChild(templateNode, dynamicAttrs);
   						}
@@ -3597,7 +3554,7 @@
   					if (!isVoid(children)) {
   						if (children.type === ObjectTypes.VARIABLE) {
   							if (isRoot) {
-  								node = createRootNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, domNamespace);
+  								node = createRootNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, domNamespace, recyclingEnabled);
   							} else {
   								node = createNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, domNamespace);
   							}
@@ -3617,14 +3574,14 @@
   							}
 
   							if (isRoot) {
-  								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace);
+  								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace, recyclingEnabled);
   							} else {
   								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace);
   							}
   						} else if (isStringOrNumber(children)) {
   							templateNode.textContent = children;
   							if (isRoot) {
-  								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
+  								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
   							} else {
   								node = createNodeWithStaticChild(templateNode, dynamicAttrs);
   							}
@@ -3635,7 +3592,7 @@
   								createStaticTreeChildren(children, templateNode, domNamespace);
 
   								if (isRoot) {
-  									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs);
+  									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
   								} else {
   									node = createNodeWithStaticChild(templateNode, dynamicAttrs);
   								}
@@ -3643,7 +3600,7 @@
   						}
   					} else {
   						if (isRoot) {
-  							node = createRootVoidNode(templateNode, dynamicAttrs);
+  							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled);
   						} else {
   							node = createVoidNode(templateNode, dynamicAttrs);
   						}

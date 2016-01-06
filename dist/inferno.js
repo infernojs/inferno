@@ -463,10 +463,22 @@
   	}
   }
 
+  /** Base Component class, for he ES6 Class method of creating Components
+   *	@public
+   *
+   *	@example
+   *	class MyFoo extends Component {
+   *		render(props, state) {
+   *			return <div />;
+   *		}
+   *	}
+   */
+
   var Component = (function () {
   	function Component(props /* , context */) {
   		babelHelpers_classCallCheck(this, Component);
 
+  		/** @type {object} */
   		this.props = props || {};
   		this._blockRender = false;
   		this._blockSetState = false;
@@ -474,6 +486,7 @@
   		this._pendingSetState = false;
   		this._pendingState = {};
   		this._lastRender = null;
+  		/** @type {object} */
   		this.state = {};
   		this.context = {};
   	}

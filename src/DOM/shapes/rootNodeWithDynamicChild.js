@@ -2,6 +2,7 @@ import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
 import updateAndAppendDynamicChildren from '../../shared/updateAndAppendDynamicChildren';
 import appendText from '../../util/appendText';
+import removeChild from '../../core/removeChild';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
@@ -106,21 +107,11 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						if ( !isVoid( domNode.childNodes[i] ) ) {
 							domNode.removeChild( domNode.childNodes[i] )
 						} else {
-
-							const firstChild = domNode.firstChild;
-
-							if ( firstChild ) {
-								domNode.removeChild( domNode.firstChild );
-							}
+							removeChild(domNode);
 						}
 					}
 				} else {
-
-					const firstChild = domNode.firstChild;
-
-					if ( firstChild ) {
-						domNode.removeChild(domNode.firstChild);
-					}
+					removeChild(domNode);
 				}
 			} else if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
@@ -176,15 +167,9 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 					} else {
 						// Edge case! If we update from e.g object literal - {} - from a existing value, the
 						// value will not be unset
-
-						const firstChild = domNode.firstChild;
-
-						if ( firstChild ) {
-							domNode.removeChild( domNode.firstChild );
-						}
+						removeChild(domNode);
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {
-					const firstChild = domNode.firstChild;
 					appendText( domNode, nextValue );
 				}
 			}

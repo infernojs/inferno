@@ -5,6 +5,7 @@ import appendText from '../../util/appendText';
 import recreateNode from '../recreateNode';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
+import removeChild from '../../core/removeChild';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 
@@ -85,31 +86,17 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						if ( !isVoid( domNode.childNodes[i] ) ) {
 							domNode.removeChild( domNode.childNodes[i] );
 						} else {
-
-							const firstChild = domNode.firstChild;
-
-							if ( firstChild ) {
-								domNode.removeChild( domNode.firstChild );
-							}
+							removeChild(domNode)
 						}
 					}
 				} else {
-
-					const firstChild = domNode.firstChild;
-
-					if ( firstChild ) {
-						domNode.removeChild( domNode.firstChild );
-					}
-				}
+					removeChild(domNode)
+			}
 			} else if ( nextValue !== lastValue ) {
 				if ( typeof nextValue === 'string' ) {
 					appendText( domNode, nextValue );
 				} else if ( isVoid( nextValue ) ) {
-					const firstChild = domNode.firstChild;
-
-					if ( firstChild ) {
-						domNode.removeChild( domNode.firstChild );
-					}
+					removeChild(domNode)
 					// if we update from undefined, we will have an array with zero length.
 					// If we check if it's an array, it will throw 'x' is undefined.
 				} else if ( nextValue.length !== 0 && isArray( nextValue ) ) {
@@ -143,12 +130,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					} else {
 						// Edge case! If we update from e.g object literal - {} - from a existing value, the
 						// value will not be unset
-
-						const firstChild = domNode.firstChild;
-
-						if ( firstChild ) {
-							domNode.removeChild( domNode.firstChild );
-						}
+						removeChild(domNode)
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {
 					appendText( domNode, nextValue );

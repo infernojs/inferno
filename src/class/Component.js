@@ -1,7 +1,18 @@
 import queueStateChanges from '../core/queueStateChanges';
 
+/** Base Component class, for he ES6 Class method of creating Components
+ *	@public
+ *
+ *	@example
+ *	class MyFoo extends Component {
+ *		render(props, state) {
+ *			return <div />;
+ *		}
+ *	}
+ */
 class Component {
 	constructor( props/* , context */ ) {
+		/** @type {object} */
 		this.props = props || {};
 		this._blockRender = false;
 		this._blockSetState = false;
@@ -9,7 +20,8 @@ class Component {
 		this._pendingSetState = false;
 		this._pendingState = {};
 		this._lastRender = null;
-		this.state = {};
+		/** @type {object} */
+			this.state = {};
 		this.context = {};
 	}
 	render() {}

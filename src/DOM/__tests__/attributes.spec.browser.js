@@ -108,7 +108,6 @@ describe('Attribute / properties', () => {
 		expect( container.getAttribute('allowFullScreen')).to.be.null;
 	});
 
-
 	const emptyDefinitions = [{
 		name: 'undefined',
 		value: undefined,
