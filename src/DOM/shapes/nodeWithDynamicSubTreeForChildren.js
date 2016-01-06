@@ -1,6 +1,7 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
 import addShapeChildren from '../../shared/addShapeChildren';
+import replaceChild from '../../core/replaceChild';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
 import recreateNode from '../recreateNode';
 
@@ -37,13 +38,7 @@ export default function createNodeWithDynamicSubTreeForChildren( templateNode, s
 					const newDomNode = subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
 
 					if ( newDomNode ) {
-						const replaceNode = domNode.firstChild;
-
-						if ( replaceNode ) {
-							domNode.replaceChild( newDomNode, replaceNode );
-						} else {
-							domNode.appendChild( newDomNode );
-						}
+						replaceChild( domNode, newDomNode );
 					}
 				}
 			}

@@ -1788,6 +1788,17 @@
   	}
   }
 
+  function replaceChild(domNode, childNode) {
+
+  	var replaceNode = domNode.firstChild;
+
+  	if (replaceNode) {
+  		domNode.replaceChild(childNode, domNode.firstChild);
+  	} else {
+  		domNode.appendChild(childNode);
+  	}
+  }
+
   var recyclingEnabled$2 = isRecyclingEnabled();
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
@@ -2185,6 +2196,7 @@
   			if (nextValue && isVoid(lastValue)) {
 
   				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
+
   					if (isArray(nextValue)) {
   						updateAndAppendDynamicChildren(domNode, nextValue);
   					} else {
@@ -2213,14 +2225,7 @@
   					appendText(domNode, nextValue);
   				} else if (isVoid(nextValue)) {
   					if (domNode !== null) {
-  						var childNode = document.createTextNode('');
-  						var replaceNode = domNode.firstChild;
-
-  						if (replaceNode) {
-  							domNode.replaceChild(childNode, domNode.firstChild);
-  						} else {
-  							domNode.appendChild(childNode);
-  						}
+  						replaceChild(domNode, document.createTextNode(''));
   					}
   					// if we update from undefined, we will have an array with zero length.
   					// If we check if it's an array, it will throw 'x' is undefined.
@@ -2247,17 +2252,9 @@
   									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
   								} else {
   									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  									return;
   								}
   							} else {
-  								var childNode = tree.dom.create(nextValue, treeLifecycle, context);
-  								var replaceNode = domNode.firstChild;
-
-  								if (replaceNode) {
-  									domNode.replaceChild(childNode, domNode.firstChild);
-  								} else {
-  									domNode.appendChild(childNode);
-  								}
+  								replaceChild(domNode, tree.dom.create(nextValue, treeLifecycle, context));
   							}
   						} else {
   							// Edge case! If we update from e.g object literal - {} - from a existing value, the
@@ -2547,13 +2544,7 @@
   					var newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
 
   					if (newDomNode) {
-  						var replaceNode = domNode.firstChild;
-
-  						if (replaceNode) {
-  							domNode.replaceChild(newDomNode, replaceNode);
-  						} else {
-  							domNode.appendChild(newDomNode);
-  						}
+  						replaceChild(domNode, newDomNode);
   					}
   				}
   			}

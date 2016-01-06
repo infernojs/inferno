@@ -3,6 +3,7 @@ import isVoid from '../../util/isVoid';
 import updateAndAppendDynamicChildren from '../../shared/updateAndAppendDynamicChildren';
 import appendText from '../../util/appendText';
 import removeChild from '../../core/removeChild';
+import replaceChild from '../../core/replaceChild';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
@@ -89,6 +90,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			if ( nextValue && isVoid( lastValue ) ) {
 
 				if ( typeof nextValue === 'object' ) {
+
 					if ( isArray( nextValue ) ) {
 						updateAndAppendDynamicChildren( domNode, nextValue );
 					} else {
@@ -118,14 +120,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 					appendText( domNode, nextValue );
 				} else if ( isVoid( nextValue ) ) {
 					if ( domNode !== null ) {
-						const childNode = document.createTextNode( '' );
-						const replaceNode = domNode.firstChild;
-
-						if ( replaceNode ) {
-							domNode.replaceChild( childNode, domNode.firstChild );
-						} else {
-							domNode.appendChild( childNode );
-						}
+					replaceChild( domNode, document.createTextNode( '' ) );
 					}
 					// if we update from undefined, we will have an array with zero length.
 					// If we check if it's an array, it will throw 'x' is undefined.
@@ -152,22 +147,14 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 								tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 							} else {
 								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
-								return;
 							}
 						} else {
-							const childNode = tree.dom.create( nextValue, treeLifecycle, context );
-							const replaceNode = domNode.firstChild;
-
-							if ( replaceNode ) {
-								domNode.replaceChild( childNode, domNode.firstChild );
-							} else {
-								domNode.appendChild( childNode );
-							}
+							replaceChild( domNode, tree.dom.create( nextValue, treeLifecycle, context ) );
 						}
 					} else {
 						// Edge case! If we update from e.g object literal - {} - from a existing value, the
 						// value will not be unset
-						removeChild(domNode);
+						removeChild( domNode );
 					}
 				} else if ( isStringOrNumber( nextValue ) ) {
 					appendText( domNode, nextValue );
