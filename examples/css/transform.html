@@ -5,6 +5,7 @@
 	</head>
 	<body>
 		<script src="../../../dist/inferno.min.js"></script>
+        <script src="../../../dist/inferno-dom.min.js"></script>
 		<script>
             const transform = Inferno.createTemplate((val) => {
                         return {
@@ -47,7 +48,7 @@
                         };
             }),
 				parentNode = document.getElementsByTagName('body')[0];
-			Inferno.render(transform(), parentNode);
+			InfernoDOM.render(transform(), parentNode);
 		</script>
 	</body>
 </html>
