@@ -1,9 +1,7 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootStaticNode( templateNode ) {
+export default function createRootStaticNode( templateNode, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -22,6 +20,7 @@ export default function createRootStaticNode( templateNode ) {
 			return domNode;
 		},
 		update( lastItem, nextItem ) {
+			// wrong tree and it toggle
 			if ( node !== lastItem.domTree ) {
 				recreateRootNode( lastItem, nextItem, node );
 				return;
