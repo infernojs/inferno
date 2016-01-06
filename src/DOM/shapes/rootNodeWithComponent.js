@@ -108,13 +108,24 @@ export default function createRootNodeWithComponent( componentIndex, props, recy
 
 						if ( newDomNode ) {
 							if ( nextRender.rootNode.parentNode ) {
-								nextRender.rootNode.parentNode.replaceChild(newDomNode, nextRender.rootNode);
+								nextRender.rootNode.parentNode.replaceChild( newDomNode, nextRender.rootNode );
 							} else {
-								lastItem.rootNode.parentNode.replaceChild(newDomNode, lastItem.rootNode);
+								lastItem.rootNode.parentNode.replaceChild( newDomNode, lastItem.rootNode );
 							}
 							currentItem.rootNode = newDomNode;
 						} else {
-							currentItem.rootNode = nextRender.rootNode;
+							const newDomNode = nextRender.tree.dom.create( statelessRender, treeLifecycle, context );
+
+							if ( newDomNode ) {
+								if ( nextRender.rootNode.parentNode ) {
+									nextRender.rootNode.parentNode.replaceChild(newDomNode, nextRender.rootNode );
+								} else {
+									lastItem.rootNode.parentNode.replaceChild(newDomNode, lastItem.rootNode );
+								}
+								currentItem.rootNode = newDomNode;
+							} else {
+								currentItem.rootNode = nextRender.rootNode;
+							}
 						}
 					} else {
 						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );

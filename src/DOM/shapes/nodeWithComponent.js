@@ -108,8 +108,8 @@ export default function createNodeWithComponent( componentIndex, props ) {
 						recreateNode( domNode, nextItem, node, treeLifecycle, context );
 						return;
 					}
-
 					statelessRender = nextRender;
+
 					if ( !isVoid ( newDomNode ) ) {
 						if ( domNode.parentNode ) {
 							domNode.parentNode.replaceChild( newDomNode, domNode );

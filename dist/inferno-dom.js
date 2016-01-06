@@ -2986,7 +2986,18 @@
   							}
   							currentItem.rootNode = newDomNode;
   						} else {
-  							currentItem.rootNode = nextRender.rootNode;
+  							var _newDomNode = nextRender.tree.dom.create(statelessRender, treeLifecycle, context);
+
+  							if (_newDomNode) {
+  								if (nextRender.rootNode.parentNode) {
+  									nextRender.rootNode.parentNode.replaceChild(_newDomNode, nextRender.rootNode);
+  								} else {
+  									lastItem.rootNode.parentNode.replaceChild(_newDomNode, lastItem.rootNode);
+  								}
+  								currentItem.rootNode = _newDomNode;
+  							} else {
+  								currentItem.rootNode = nextRender.rootNode;
+  							}
   						}
   					} else {
   						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
@@ -3131,8 +3142,8 @@
   						recreateRootNode$1(domNode, nextItem, node, treeLifecycle, context);
   						return;
   					}
-
   					statelessRender = nextRender;
+
   					if (!isVoid(newDomNode)) {
   						if (domNode.parentNode) {
   							domNode.parentNode.replaceChild(newDomNode, domNode);
