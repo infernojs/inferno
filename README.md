@@ -60,7 +60,7 @@ In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github
 ```js
 const message = "Hello world";
 
-Inferno.render(
+InfernoDOM.render(
   <MyComponent message={ message } />,
   document.getElementById("app")
 )
@@ -85,7 +85,7 @@ class Component extends Inferno.Component {
   }
 }
 
-Inferno.render(<Component />, document.body);
+InfernoDOM.render(<Component />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
@@ -134,10 +134,10 @@ const MyComponent => ({ name, age }) =>
 
 Stateless components are first-class functions where their only argument is the `props` passed through from their parent.
 
-### Inferno.render
+### InfernoDOM.render
 
 ```javascript
-Inferno.render(<div />, document.body);
+InfernoDOM.render(<div />, document.body);
 ```
 
 Render a fragment into the DOM in the supplied container and return a reference to the component. If the fragment was previously rendered into container, this will
@@ -164,7 +164,7 @@ const template = Inferno.createTemplate(() => ({
   ]
 }));
 
-Inferno.render(template(), document.body);
+InfernoDOM.render(template(), document.body);
 ```
 ### Inferno.TemplateFactory
 
@@ -196,7 +196,7 @@ const template = Inferno.createTemplate((Component, title) =>
     )
 );
 
-Inferno.render(template(BasicComponent, 'abc'), container);
+InfernoDOM.render(template(BasicComponent, 'abc'), container);
 ```
 `Inferno.TemplateFactory` provides a factory `createElement()` function that can be used to build up virtual DOM structures in a similar sense to how `React.creactElement()` works. It's first argument is the node, second argument is the attributes and all remaining arguments are it's children.
 
@@ -205,7 +205,7 @@ Inferno.render(template(BasicComponent, 'abc'), container);
 ```js
 const divRef = Inferno.createRef();
 
-Inferno.render(<div ref={ divRef } />, document.body);
+InfernoDOM.render(<div ref={ divRef } />, document.body);
 divRef.element.textContent = 'Modifying the DOM node directly!';
 ```
 
