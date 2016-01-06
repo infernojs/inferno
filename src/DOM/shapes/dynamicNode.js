@@ -37,7 +37,7 @@ export default function createDynamicNode( valueIndex ) {
 					domNode = value.create( item, treeLifecycle, context );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					if ( process.env.NODE_ENV !== 'production' ) {
+					if (process.env.NODE_ENV !== 'production') {
 						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
 					}
 					break;

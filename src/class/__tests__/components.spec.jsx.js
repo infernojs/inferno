@@ -682,7 +682,7 @@ describe( 'Components (JSX)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				innerHTML( '<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>Not so cool</h1></div>' )
+				innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>Not so cool</h1></div>')
 			);
 		});
 
@@ -695,10 +695,77 @@ describe( 'Components (JSX)', () => {
 				expect(
 					container.innerHTML
 				).to.equal(
-					innerHTML( '<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>' )
+					innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>')
 				);
 				done();
-			})
+			});
 		});
 	});
-} );
+
+	describe('should render a stateless component with a conditional state item', () => {
+		const StatelessComponent = (props) => <p>{props.name}</p>;
+
+		class Testing extends Component {
+			constructor(props) {
+				super(props);
+				this.name = "Kalle";
+
+				this.state = {
+					show: false
+				};
+
+				this.toggle = this.toggle.bind(this);
+			}
+
+			toggle() {
+				this.setState({
+					show: !this.state.show
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						{function(){
+							if (this.state.show === true) {
+								return (
+									<StatelessComponent name={this.name} />
+								);
+							} else {
+								return (
+									<h1>Hello guys</h1>
+								);
+							}
+						}.call(this)}
+						<button onClick={this.toggle}>toggle</button>
+					</div>
+				)
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			render( <Testing/>, container );
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><h1>Hello guys</h1><button>toggle</button></div>')
+			);
+		});
+
+		it('Second render (update with state change)', (done) => {
+			render( <Testing/>, container );
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><p>Kalle</p><button>toggle</button></div>')
+				);
+				done();
+			});
+		});
+	});
+});
