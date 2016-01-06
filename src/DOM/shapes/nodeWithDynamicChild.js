@@ -86,17 +86,17 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						if ( !isVoid( domNode.childNodes[i] ) ) {
 							domNode.removeChild( domNode.childNodes[i] );
 						} else {
-							removeChild(domNode)
+							removeChild( domNode );
 						}
 					}
 				} else {
-					removeChild(domNode)
-			}
+					removeChild( domNode );
+				}
 			} else if ( nextValue !== lastValue ) {
-				if ( typeof nextValue === 'string' ) {
+				if ( isStringOrNumber( nextValue ) ) {
 					appendText( domNode, nextValue );
 				} else if ( isVoid( nextValue ) ) {
-					removeChild(domNode)
+					removeChild( domNode );
 					// if we update from undefined, we will have an array with zero length.
 					// If we check if it's an array, it will throw 'x' is undefined.
 				} else if ( nextValue.length !== 0 && isArray( nextValue ) ) {
@@ -111,7 +111,6 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 						updateNonKeyed( nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
 					}
 				} else if ( typeof nextValue === 'object' ) {
-
 					// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
 					// throw ': nextValue.tree is undefined'.
 					const tree = nextValue && nextValue.tree;
@@ -130,10 +129,8 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					} else {
 						// Edge case! If we update from e.g object literal - {} - from a existing value, the
 						// value will not be unset
-						removeChild(domNode)
+						removeChild( domNode );
 					}
-				} else if ( isStringOrNumber( nextValue ) ) {
-					appendText( domNode, nextValue );
 				}
 			}
 			if ( dynamicAttrs ) {
@@ -141,9 +138,7 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 			}
 		},
 		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
-
-			removeValueTree( value, treeLifecycle );
+			removeValueTree( getValueWithIndex( item, valueIndex ), treeLifecycle );
 		}
 	};
 

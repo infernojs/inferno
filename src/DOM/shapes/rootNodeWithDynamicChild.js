@@ -19,6 +19,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 		keyedPool: [],
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
+
 			let domNode;
 
 			if ( recyclingEnabled ) {
@@ -27,7 +28,9 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 					return domNode;
 				}
 			}
+
 			domNode = templateNode.cloneNode( false );
+
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
@@ -107,20 +110,21 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 					for ( let i = 0; i < lastValue.length; i++ ) {
 
 						if ( !isVoid( domNode.childNodes[i] ) ) {
-							domNode.removeChild( domNode.childNodes[i] )
+							domNode.removeChild( domNode.childNodes[i] );
 						} else {
-							removeChild(domNode);
+							removeChild( domNode );
 						}
 					}
 				} else {
-					removeChild(domNode);
+					removeChild( domNode );
 				}
 			} else if ( nextValue !== lastValue ) {
-				if ( typeof nextValue === 'string' ) {
+				if ( isStringOrNumber( nextValue ) ) {
 					appendText( domNode, nextValue );
 				} else if ( isVoid( nextValue ) ) {
 					if ( domNode !== null ) {
-					replaceChild( domNode, document.createTextNode( '' ) );
+
+						replaceChild( domNode, document.createTextNode( '' ) );
 					}
 					// if we update from undefined, we will have an array with zero length.
 					// If we check if it's an array, it will throw 'x' is undefined.
@@ -156,8 +160,6 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						// value will not be unset
 						removeChild( domNode );
 					}
-				} else if ( isStringOrNumber( nextValue ) ) {
-					appendText( domNode, nextValue );
 				}
 			}
 			if ( dynamicAttrs ) {
@@ -165,9 +167,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			}
 		},
 		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
-
-			removeValueTree( value, treeLifecycle );
+			removeValueTree( getValueWithIndex( item, valueIndex ), treeLifecycle );
 		}
 	};
 

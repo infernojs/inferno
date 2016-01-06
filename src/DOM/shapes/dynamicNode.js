@@ -26,7 +26,6 @@ export default function createDynamicNode( valueIndex ) {
 					break;
 				case ValueTypes.ARRAY:
 					const virtualList = createVirtualList( value, item, childNodeList, treeLifecycle, context );
-
 					domNode = virtualList.domNode;
 					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener( () => {
@@ -40,21 +39,17 @@ export default function createDynamicNode( valueIndex ) {
 				case ValueTypes.EMPTY_OBJECT:
 					if ( process.env.NODE_ENV !== 'production' ) {
 						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
-					} else {
-						return;
 					}
+					break;
 				case ValueTypes.FUNCTION:
 					if ( process.env.NODE_ENV !== 'production' ) {
 						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
-					} else {
-						return;
 					}
+					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create( value, treeLifecycle, context );
 					break;
-				default: break;
 			}
-
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
@@ -75,7 +70,8 @@ export default function createDynamicNode( valueIndex ) {
 						// Testing the length property are actually faster than testing the
 						// string against '', because the interpreter won't have to create a String
 						// object from the string literal.
-						if ( isVoid( nextValue ) || nextValue.length === 0 ) {
+						if ( isVoid( nextValue ) ||
+							nextValue.length === 0 ) {
 							nextValue = '';
 						}
 						domNode.nodeValue = nextValue;

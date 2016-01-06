@@ -25,10 +25,9 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			if ( !isVoid( value ) ) {
 
 				if ( process.env.NODE_ENV !== 'production' ) {
-				if ( !isStringOrNumber( value ) ) {
+					if ( !isStringOrNumber( value ) ) {
 						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 					}
-
 				}
 				domNode.textContent = value;
 			}
@@ -39,44 +38,45 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle ) {
+
 			if ( node !== lastItem.tree.dom ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
-				return;
-			}
-			const domNode = lastItem.rootNode;
+			} else {
+				const domNode = lastItem.rootNode;
 
-			nextItem.id = lastItem.id;
-			nextItem.rootNode = domNode;
-			const nextValue = getValueWithIndex( nextItem, valueIndex );
-			const lastValue = getValueWithIndex( lastItem, valueIndex );
+				nextItem.id = lastItem.id;
+				nextItem.rootNode = domNode;
+				const nextValue = getValueWithIndex( nextItem, valueIndex );
+				const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if ( nextValue !== lastValue ) {
-				if ( isVoid( nextValue ) ) {
-					if ( isVoid( lastValue ) ) {
-						domNode.firstChild.nodeValue = '';
+				if ( nextValue !== lastValue ) {
+					if ( isVoid( nextValue ) ) {
+						if ( isVoid( lastValue ) ) {
+							domNode.firstChild.nodeValue = '';
+						} else {
+							domNode.textContent = '';
+						}
 					} else {
-						domNode.textContent = '';
-					}
-				} else {
-					if ( process.env.NODE_ENV !== 'production' ) {
-						if ( !isStringOrNumber( nextValue ) ) {
-							throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+						if ( process.env.NODE_ENV !== 'production' ) {
+							if ( !isStringOrNumber( nextValue ) ) {
+								throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+							}
+						}
+
+						if ( isVoid( lastValue ) ) {
+							domNode.textContent = nextValue;
+						} else {
+							domNode.firstChild.nodeValue = nextValue;
 						}
 					}
-
-					if ( isVoid( lastValue ) ) {
-						domNode.textContent = nextValue;
-					} else {
-						domNode.firstChild.nodeValue = nextValue;
-					}
 				}
-			}
-			if ( dynamicAttrs ) {
-				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
+
+				if ( !isVoid( dynamicAttrs ) ) {
+					updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
+				}
 			}
 		},
 		remove( /* lastItem */ ) {
-
 		}
 	};
 

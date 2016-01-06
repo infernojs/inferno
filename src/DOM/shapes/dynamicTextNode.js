@@ -11,10 +11,8 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 			domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( !isVoid( value ) ) {
-				if ( isStringOrNumber( value ) ) {
-					domNode.nodeValue = value;
-				}
+			if ( !isVoid( value ) && isStringOrNumber( value ) ) {
+				domNode.nodeValue = value;
 			}
 			return domNode;
 		},
@@ -26,11 +24,9 @@ export default function createDynamicTextNode( templateNode, valueIndex ) {
 				if ( isStringOrNumber( nextValue ) ) {
 					domNode.nodeValue = nextValue;
 				}
-
 			}
 		},
 		remove( /* lastItem */ ) {
-
 		}
 	};
 

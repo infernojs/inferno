@@ -1602,40 +1602,42 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
+
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-  				return;
-  			}
-  			var domNode = lastItem.rootNode;
+  			} else {
+  				var domNode = lastItem.rootNode;
 
-  			nextItem.id = lastItem.id;
-  			nextItem.rootNode = domNode;
-  			var nextValue = getValueWithIndex(nextItem, valueIndex);
-  			var lastValue = getValueWithIndex(lastItem, valueIndex);
+  				nextItem.id = lastItem.id;
+  				nextItem.rootNode = domNode;
+  				var nextValue = getValueWithIndex(nextItem, valueIndex);
+  				var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-  			if (nextValue !== lastValue) {
-  				if (isVoid(nextValue)) {
-  					if (isVoid(lastValue)) {
-  						domNode.firstChild.nodeValue = '';
+  				if (nextValue !== lastValue) {
+  					if (isVoid(nextValue)) {
+  						if (isVoid(lastValue)) {
+  							domNode.firstChild.nodeValue = '';
+  						} else {
+  							domNode.textContent = '';
+  						}
   					} else {
-  						domNode.textContent = '';
-  					}
-  				} else {
-  					if ("development" !== 'production') {
-  						if (!isStringOrNumber(nextValue)) {
-  							throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  						if ("development" !== 'production') {
+  							if (!isStringOrNumber(nextValue)) {
+  								throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  							}
+  						}
+
+  						if (isVoid(lastValue)) {
+  							domNode.textContent = nextValue;
+  						} else {
+  							domNode.firstChild.nodeValue = nextValue;
   						}
   					}
-
-  					if (isVoid(lastValue)) {
-  						domNode.textContent = nextValue;
-  					} else {
-  						domNode.firstChild.nodeValue = nextValue;
-  					}
   				}
-  			}
-  			if (dynamicAttrs) {
-  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+
+  				if (!isVoid(dynamicAttrs)) {
+  					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+  				}
   			}
   		},
   		remove: function remove() /* lastItem */{}
@@ -1657,9 +1659,13 @@
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
-  				if (!isStringOrNumber(value)) {
-  					throw Error(errorMsg);
+
+  				if ("development" !== 'production') {
+  					if (!isStringOrNumber(value)) {
+  						throw Error(errorMsg);
+  					}
   				}
+
   				domNode.textContent = value;
   			}
   			if (dynamicAttrs) {
@@ -1679,8 +1685,10 @@
   						domNode.textContent = '';
   					}
   				} else {
-  					if (!isStringOrNumber(nextValue)) {
-  						throw Error(errorMsg);
+  					if ("development" !== 'production') {
+  						if (!isStringOrNumber(nextValue)) {
+  							throw Error(errorMsg);
+  						}
   					}
   					if (isVoid(lastValue)) {
   						domNode.textContent = nextValue;
@@ -2126,6 +2134,7 @@
   		keyedPool: [],
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
+
   			var domNode = undefined;
 
   			if (recyclingEnabled) {
@@ -2134,7 +2143,9 @@
   					return domNode;
   				}
   			}
+
   			domNode = templateNode.cloneNode(false);
+
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
@@ -2221,10 +2232,11 @@
   					removeChild(domNode);
   				}
   			} else if (nextValue !== lastValue) {
-  				if (typeof nextValue === 'string') {
+  				if (isStringOrNumber(nextValue)) {
   					appendText(domNode, nextValue);
   				} else if (isVoid(nextValue)) {
   					if (domNode !== null) {
+
   						replaceChild(domNode, document.createTextNode(''));
   					}
   					// if we update from undefined, we will have an array with zero length.
@@ -2261,8 +2273,6 @@
   							// value will not be unset
   							removeChild(domNode);
   						}
-  					} else if (isStringOrNumber(nextValue)) {
-  						appendText(domNode, nextValue);
   					}
   			}
   			if (dynamicAttrs) {
@@ -2270,9 +2280,7 @@
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
-  			var value = getValueWithIndex(item, valueIndex);
-
-  			removeValueTree(value, treeLifecycle);
+  			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
   		}
   	};
 
@@ -2369,7 +2377,7 @@
   					removeChild(domNode);
   				}
   			} else if (nextValue !== lastValue) {
-  				if (typeof nextValue === 'string') {
+  				if (isStringOrNumber(nextValue)) {
   					appendText(domNode, nextValue);
   				} else if (isVoid(nextValue)) {
   					removeChild(domNode);
@@ -2387,7 +2395,6 @@
   							updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
   						}
   					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-
   						// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
   						// throw ': nextValue.tree is undefined'.
   						var tree = nextValue && nextValue.tree;
@@ -2408,8 +2415,6 @@
   								// value will not be unset
   								removeChild(domNode);
   							}
-  					} else if (isStringOrNumber(nextValue)) {
-  						appendText(domNode, nextValue);
   					}
   			}
   			if (dynamicAttrs) {
@@ -2417,9 +2422,7 @@
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
-  			var value = getValueWithIndex(item, valueIndex);
-
-  			removeValueTree(value, treeLifecycle);
+  			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
   		}
   	};
 
@@ -2707,7 +2710,6 @@
   					break;
   				case ValueTypes.ARRAY:
   					var virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
-
   					domNode = virtualList.domNode;
   					keyedChildren = virtualList.keyedChildren;
   					treeLifecycle.addTreeSuccessListener(function () {
@@ -2721,18 +2723,17 @@
   				case ValueTypes.EMPTY_OBJECT:
   					if ("development" !== 'production') {
   						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
-  					} else {}
+  					}
+  					break;
   				case ValueTypes.FUNCTION:
   					if ("development" !== 'production') {
   						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
-  					} else {}
+  					}
+  					break;
   				case ValueTypes.FRAGMENT:
   					domNode = value.tree.dom.create(value, treeLifecycle, context);
   					break;
-  				default:
-  					break;
   			}
-
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
@@ -3227,10 +3228,8 @@
   			domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
 
-  			if (!isVoid(value)) {
-  				if (isStringOrNumber(value)) {
-  					domNode.nodeValue = value;
-  				}
+  			if (!isVoid(value) && isStringOrNumber(value)) {
+  				domNode.nodeValue = value;
   			}
   			return domNode;
   		},

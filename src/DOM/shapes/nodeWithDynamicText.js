@@ -16,9 +16,13 @@ export default function createNodeWithDynamicText( templateNode, valueIndex, dyn
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
-				if ( !isStringOrNumber( value ) ) {
-					throw Error( errorMsg );
+
+				if ( process.env.NODE_ENV !== 'production' ) {
+					if ( !isStringOrNumber( value ) ) {
+						throw Error( errorMsg );
+					}
 				}
+
 				domNode.textContent = value;
 			}
 			if ( dynamicAttrs ) {
@@ -38,8 +42,10 @@ export default function createNodeWithDynamicText( templateNode, valueIndex, dyn
 						domNode.textContent = '';
 					}
 				} else {
-					if ( !isStringOrNumber( nextValue ) ) {
-						throw Error( errorMsg );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						if ( !isStringOrNumber( nextValue ) ) {
+							throw Error( errorMsg );
+						}
 					}
 					if ( isVoid( lastValue ) ) {
 						domNode.textContent = nextValue;
