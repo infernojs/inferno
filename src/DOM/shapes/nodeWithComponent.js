@@ -110,7 +110,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 					}
 					statelessRender = nextRender;
 
-					if ( !isVoid ( newDomNode ) ) {
+					if ( !isVoid( newDomNode ) ) {
 						if ( domNode.parentNode ) {
 							domNode.parentNode.replaceChild( newDomNode, domNode );
 						}

@@ -5,12 +5,16 @@ import eventInterface from './eventInterface';
 import createListenerArguments from './createListenerArguments';
 
 export default function addRootListener( e, type ) {
-	type || ( type = e.type );
+
+	if (!type) {
+		type = e.type;
+	}
+
 	const registry = EventRegistry[type];
 
 	// Support: Safari 6-8+
 	// Target should not be a text node
-	if ( e.target.nodeType === 3 ) {
+	if (e.target.nodeType === 3) {
 		e.target = e.target.parentNode;
 	}
 
