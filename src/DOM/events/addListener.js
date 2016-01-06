@@ -24,8 +24,15 @@ export default function addListener(vNode, domNode, type, listener) {
 			}
 			registry._enabled = true;
 		}
-		const nodeID = infernoNodeID(domNode),
-			listeners = listenersStorage[nodeID] || (listenersStorage[nodeID] = {});
+		const nodeID = infernoNodeID(domNode);
+		let	listeners;
+
+		if (listenersStorage[nodeID]) {
+			listeners = listenersStorage[nodeID];
+		} else {
+			listenersStorage[nodeID] = {};
+			listeners = listenersStorage[nodeID];
+		}
 
 		if (listeners[type]) {
 			if (listeners[type].destroy) {

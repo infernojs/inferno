@@ -11,7 +11,12 @@ export function pool( item ) {
 
 		const keyedPool = tree.dom.keyedPool;
 
-		( keyedPool[key] || ( keyedPool[key] = [] ) ).push( item );
+		if (keyedPool[key]) {
+			keyedPool[key].push(item);
+		} else {
+			keyedPool[key] = [];
+			keyedPool[key].push(item);
+		}
 	}
 }
 
