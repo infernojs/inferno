@@ -1,7 +1,7 @@
 import isVoid from '../util/isVoid';
 import isArray from '../util/isArray';
 import inArray from '../util/inArray';
-import styleAccessor from '../util/styleAccessor';
+import styleAccessor from './styleAccessors';
 import isValidAttribute from '../util/isValidAttribute';
 import DOMRegistry from './DOMRegistry';
 

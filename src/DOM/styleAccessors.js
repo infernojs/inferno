@@ -1,5 +1,5 @@
-import ExecutionEnvironment from './ExecutionEnvironment';
-import noop from './noop';
+import ExecutionEnvironment from '../util/ExecutionEnvironment';
+import noop from '../util/noop';
 
 const HOOK = {};
 const reDash = /\-./g;
