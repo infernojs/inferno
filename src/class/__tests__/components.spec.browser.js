@@ -1130,4 +1130,68 @@ describe( 'Components', () => {
 			});
 		});
 	});
+
+	describe('should render a component with a list of divs', () => {
+		const BaseView = createTemplate(function (v0, v1) {
+			return {
+				tag: 'div',
+				attrs: {
+					class: 'login-view'
+				},
+				children: [{
+					tag: 'button',
+					attrs: {
+						onClick: v0
+					},
+					children: 'ADD'
+				}, {
+					tag: 'br'
+				}, v1]
+			};
+		});
+
+		const Looper = createTemplate(function (v0) {
+			return {
+				tag: 'div',
+				children: [
+					{
+						tag: 'h1',
+						children: v0
+					}
+				]
+			};
+		});
+
+		const starter = createTemplate(function (v0) {
+			return {
+				tag: v0
+			}
+		});
+
+		var SomeError = function() {
+			this.state = {
+				list: ['SS', 'SS1']
+			};
+
+			this.render = function() {
+				return BaseView(this.toggle, (function () {
+					return this.state.list.map(function(result){
+						return Looper(result);
+					});
+				}).call(this));
+			};
+		};
+		SomeError.prototype = new Component(null);
+		SomeError.constructor = SomeError;
+
+		it('Initial render (creation)', () => {
+			render(starter(SomeError), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
+			);
+		});
+	});
 });
