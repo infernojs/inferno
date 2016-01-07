@@ -108,11 +108,14 @@ export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 				}
 			}
 		},
-		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
+		remove(item, treeLifecycle) {
+			const value = getValueWithIndex(item, valueIndex);
+			const type = getTypeFromValue(value);
 
-			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.remove( item, treeLifecycle );
+			if (type === ValueTypes.TREE) {
+				value.remove(item, treeLifecycle);
+			} else if (type === ValueTypes.FRAGMENT) {
+				value.tree.dom.remove(value, treeLifecycle);
 			}
 		}
 	};

@@ -18,7 +18,6 @@ addTreeConstructor( 'dom', createTree );
 const Inferno = { createTemplate };
 
 describe( 'Components (JSX)', () => {
-
 	let container;
 	let freeze = function(expectation) {
 		Object.freeze(expectation);

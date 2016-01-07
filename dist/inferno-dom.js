@@ -1621,7 +1621,6 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
   			} else {
@@ -1767,17 +1766,21 @@
   }
 
   function createNodeWithStaticChild(templateNode, dynamicAttrs) {
-  	var domNode = undefined;
+  	var domNodeMap = {};
   	var node = {
+  		name: 'createNodeWithStaticChild',
   		overrideItem: null,
   		create: function create(item) {
-  			domNode = templateNode.cloneNode(true);
+  			var domNode = templateNode.cloneNode(true);
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
+  			domNodeMap[item.id] = domNode;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
+  			var domNode = domNodeMap[lastItem.id];
+
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
@@ -1826,7 +1829,7 @@
   	}
   }
 
-  var recyclingEnabled$4 = isRecyclingEnabled();
+  var recyclingEnabled$2 = isRecyclingEnabled();
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
@@ -1851,7 +1854,7 @@
 
   	// TODO only if there are no other children
   	if (itemsLength === 0 && oldItemsLength >= 5) {
-  		if (recyclingEnabled$4) {
+  		if (recyclingEnabled$2) {
   			for (var i = 0; i < oldItemsLength; i++) {
   				pool(oldItems[i]);
   			}
@@ -2066,7 +2069,7 @@
   		parentNode.innerHTML = '';
   	} else {
   		parentNode.removeChild(item.rootNode);
-  		if (recyclingEnabled$4) {
+  		if (recyclingEnabled$2) {
   			pool(item);
   		}
   	}
@@ -2153,7 +2156,6 @@
   		keyedPool: [],
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
-
   			var domNode = undefined;
 
   			if (recyclingEnabled) {
@@ -2210,7 +2212,6 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
-
   			if (node !== lastItem.tree.dom) {
   				childNodeList = [];
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
@@ -2224,9 +2225,7 @@
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
   			if (nextValue && isVoid(lastValue)) {
-
   				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
-
   					if (isArray(nextValue)) {
   						updateAndAppendDynamicChildren(domNode, nextValue);
   					} else {
@@ -2236,11 +2235,8 @@
   					domNode.appendChild(document.createTextNode(nextValue));
   				}
   			} else if (lastValue && isVoid(nextValue)) {
-
   				if (isArray(lastValue)) {
-
   					for (var i = 0; i < lastValue.length; i++) {
-
   						if (!isVoid(domNode.childNodes[i])) {
   							domNode.removeChild(domNode.childNodes[i]);
   						} else {
@@ -2277,10 +2273,10 @@
   						if (!isVoid(tree)) {
   							if (!isVoid(lastValue)) {
   								// If we update from 'null', there will be no 'tree', and the code will throw.
-  								var _tree = lastValue && lastValue.tree;
+  								var oldTree = lastValue && lastValue.tree;
 
-  								if (!isVoid(_tree)) {
-  									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+  								if (!isVoid(oldTree)) {
+  									tree.dom.update(lastValue, nextValue, treeLifecycle, context);
   								} else {
   									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   								}
@@ -3216,9 +3212,7 @@
   	return node;
   }
 
-  var recyclingEnabled$2 = isRecyclingEnabled();
-
-  function createRootVoidNode(templateNode, dynamicAttrs) {
+  function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -3226,7 +3220,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$2) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3240,9 +3234,7 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-		    console.log(node)
-  			if (node !== lastItem.tree) {
-
+  			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
@@ -3282,9 +3274,7 @@
   	return node;
   }
 
-  var recyclingEnabled$3 = isRecyclingEnabled();
-
-  function createRootStaticNode(templateNode) {
+  function createRootStaticNode(templateNode, recyclingEnabled) {
   	var node = {
   		pool: [],
   		keyedPool: [],
@@ -3292,7 +3282,7 @@
   		create: function create(item) {
   			var domNode = undefined;
 
-  			if (recyclingEnabled$3) {
+  			if (recyclingEnabled) {
   				domNode = recycle(node, item);
   				if (domNode) {
   					return domNode;
@@ -3303,11 +3293,8 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-		    console.log(node)
-console.log( lastItem.tree.dom )
-
-  			if (node !== lastItem.tree.dom) {
-
+  			// wrong tree and it toggle
+  			if (node !== lastItem.domTree) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}

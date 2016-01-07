@@ -2,7 +2,7 @@ import isVoid from '../../util/isVoid';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 export default function createRootNodeWithDynamicText( templateNode, valueIndex, dynamicAttrs, recyclingEnabled ) {
@@ -38,7 +38,6 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle ) {
-
 			if ( node !== lastItem.tree.dom ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
 			} else {
@@ -76,7 +75,10 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 				}
 			}
 		},
-		remove( /* lastItem */ ) {
+		remove(item) {
+			if (dynamicAttrs) {
+				clearListeners(item, item.rootNode, dynamicAttrs);
+			}
 		}
 	};
 

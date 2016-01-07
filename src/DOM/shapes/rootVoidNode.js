@@ -1,5 +1,5 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 export default function createRootVoidNode( templateNode, dynamicAttrs, recyclingEnabled ) {
@@ -36,8 +36,10 @@ export default function createRootVoidNode( templateNode, dynamicAttrs, recyclin
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-		remove( /* lastItem */ ) {
-
+		remove(item) {
+			if (dynamicAttrs) {
+				clearListeners(item, item.rootNode, dynamicAttrs);
+			}
 		}
 	};
 

@@ -8,7 +8,7 @@ import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 export default function createRootNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs, recyclingEnabled ) {
@@ -19,7 +19,6 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 		keyedPool: [],
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
-
 			let domNode;
 
 			if ( recyclingEnabled ) {
@@ -77,7 +76,6 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
-
 			if ( node !== lastItem.tree.dom ) {
 				childNodeList = [];
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
@@ -91,9 +89,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
 			if ( nextValue && isVoid( lastValue ) ) {
-
 				if ( typeof nextValue === 'object' ) {
-
 					if ( isArray( nextValue ) ) {
 						updateAndAppendDynamicChildren( domNode, nextValue );
 					} else {
@@ -104,11 +100,8 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 					domNode.appendChild( document.createTextNode( nextValue ) );
 				}
 			} else 	if ( lastValue && isVoid( nextValue ) ) {
-
 				if ( isArray( lastValue ) ) {
-
 					for ( let i = 0; i < lastValue.length; i++ ) {
-
 						if ( !isVoid( domNode.childNodes[i] ) ) {
 							domNode.removeChild( domNode.childNodes[i] );
 						} else {
@@ -145,9 +138,9 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 					if ( !isVoid( tree ) ) {
 						if ( !isVoid( lastValue ) ) {
 							// If we update from 'null', there will be no 'tree', and the code will throw.
-							const tree = lastValue && lastValue.tree;
+							const oldTree = lastValue && lastValue.tree;
 
-							if ( !isVoid( tree ) ) {
+							if ( !isVoid( oldTree ) ) {
 								tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 							} else {
 								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
@@ -166,8 +159,11 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-		remove( item, treeLifecycle ) {
-			removeValueTree( getValueWithIndex( item, valueIndex ), treeLifecycle );
+		remove(item, treeLifecycle) {
+			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
+			if (dynamicAttrs) {
+				clearListeners(item, item.rootNode, dynamicAttrs);
+			}
 		}
 	};
 

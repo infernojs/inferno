@@ -4,6 +4,7 @@ import { render } from '../../DOM/rendering';
 import createTree from '../../DOM/createTree';
 import Component from '../Component';
 import waits from '../../../tools/waits';
+import triggerEvent from '../../../tools/triggerEvent';
 import innerHTML from '../../../tools/innerHTML';
 
 const { createElement } = TemplateFactory;
@@ -12,15 +13,17 @@ const { createElement } = TemplateFactory;
 addTreeConstructor( 'dom', createTree );
 
 describe( 'Components', () => {
-
 	let container;
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		container.style.display = 'none';
+		document.body.appendChild(container);
 	});
 
 	afterEach(() => {
-	render(null, container);
+		document.body.removeChild(container);
+		render(null, container);
 	});
 
 	class BasicComponent1 extends Component {
@@ -1112,9 +1115,9 @@ describe( 'Components', () => {
 		});
 
 		it('Second render (update with state change)', (done) => {
-			debugger;
 			render(tpl79713834(TEST), container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+
 			buttons.forEach(button => button.click());
 
 			requestAnimationFrame( () => {

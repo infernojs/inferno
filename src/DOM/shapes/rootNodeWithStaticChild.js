@@ -1,43 +1,45 @@
 import { recycle } from '../recycling';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
-export default function createRootNodeWithStaticChild( templateNode, dynamicAttrs, recyclingEnabled ) {
+export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled) {
 	const node = {
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
-		create( item ) {
+		create(item) {
 			let domNode;
 
-			if ( recyclingEnabled ) {
-				domNode = recycle( node, item );
-				if ( domNode ) {
+			if (recyclingEnabled) {
+				domNode = recycle(node, item);
+				if (domNode) {
 					return domNode;
 				}
 			}
-			domNode = templateNode.cloneNode( true );
-			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );
+			domNode = templateNode.cloneNode(true);
+			if (dynamicAttrs) {
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem, treeLifecycle ) {
-			if ( node !== lastItem.tree.dom ) {
-				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
+		update(lastItem, nextItem, treeLifecycle) {
+			if (node !== lastItem.tree.dom) {
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
 			nextItem.id = lastItem.id;
-			if ( dynamicAttrs ) {
-				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
 		},
-		remove( /* lastItem */ ) {
-
+		remove(item) {
+			if (dynamicAttrs) {
+				clearListeners(item, item.rootNode, dynamicAttrs);
+			}
 		}
 	};
 

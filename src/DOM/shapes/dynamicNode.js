@@ -3,8 +3,8 @@ import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/vari
 import recreateNode from '../recreateNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
-export default function createDynamicNode( valueIndex ) {
-	let domNode;
+export default function createDynamicNode(valueIndex) {
+	const domNodeMap = {};
 	let childNodeList = [];
 	let keyedChildren = true;
 	let nextDomNode;
@@ -12,6 +12,7 @@ export default function createDynamicNode( valueIndex ) {
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			let value = getValueWithIndex( item, valueIndex );
+			let domNode;
 			const type = getTypeFromValue( value );
 
 			switch ( type ) {
@@ -50,9 +51,11 @@ export default function createDynamicNode( valueIndex ) {
 					domNode = value.tree.dom.create( value, treeLifecycle, context );
 					break;
 			}
+			domNodeMap[item.id] = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem, treeLifecycle, context ) {
+		update(lastItem, nextItem, treeLifecycle, context) {
+			let domNode = domNodeMap[lastItem.id];
 			let nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
@@ -64,7 +67,6 @@ export default function createDynamicNode( valueIndex ) {
 					recreateNode( domNode, nextItem, node, treeLifecycle, context );
 					return;
 				}
-
 				switch ( nextType ) {
 					case ValueTypes.TEXT:
 						// Testing the length property are actually faster than testing the
@@ -89,11 +91,14 @@ export default function createDynamicNode( valueIndex ) {
 				}
 			}
 		},
-		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
+		remove(item, treeLifecycle) {
+			const value = getValueWithIndex(item, valueIndex);
+			const type = getTypeFromValue(value);
 
-			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.remove( item, treeLifecycle );
+			if (type === ValueTypes.TREE) {
+				value.remove(item, treeLifecycle);
+			} else if (type === ValueTypes.FRAGMENT) {
+				value.tree.dom.remove(value, treeLifecycle);
 			}
 		}
 	};

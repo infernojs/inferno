@@ -7,16 +7,16 @@ import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import removeChild from '../../core/removeChild';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 
-export default function createNodeWithDynamicChild( templateNode, valueIndex, dynamicAttrs ) {
-	let domNode;
+export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 	let keyedChildren = true;
+	const domNodeMap = {};
 	const childNodeList = [];
 	const node = {
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
-			domNode = templateNode.cloneNode( false );
+			const domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
@@ -56,12 +56,14 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					domNode.textContent = value;
 				}
 			}
-			if ( dynamicAttrs ) {
-				addDOMDynamicAttributes( item, domNode, dynamicAttrs, null );
+			if (dynamicAttrs) {
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
 			}
+			domNodeMap[item.id] = domNode;
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
+			const domNode = domNodeMap[lastItem.id];
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
@@ -133,12 +135,17 @@ export default function createNodeWithDynamicChild( templateNode, valueIndex, dy
 					}
 				}
 			}
-			if ( dynamicAttrs ) {
-				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
 		},
-		remove( item, treeLifecycle ) {
-			removeValueTree( getValueWithIndex( item, valueIndex ), treeLifecycle );
+		remove(item, treeLifecycle) {
+			const domNode = domNodeMap[item.id];
+
+			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
+			if (dynamicAttrs) {
+				clearListeners(item, domNode, dynamicAttrs);
+			}
 		}
 	};
 

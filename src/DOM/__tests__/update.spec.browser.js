@@ -57,7 +57,7 @@ describe( 'Update', () => {
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
-		expect(container.firstChild.textContent).to.equal('hello to');
+		expect(container.firstChild.textContent).to.equal('');
 
 	});
 
