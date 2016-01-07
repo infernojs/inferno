@@ -1482,6 +1482,16 @@
   	}
   }
 
+  function clearListeners(item, domNode, dynamicAttrs) {
+  	for (var attrName in dynamicAttrs) {
+  		var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+
+  		if (attrVal !== undefined && propertyToEventType[attrName]) {
+  			removeListener(item, domNode, propertyToEventType[attrName], attrVal);
+  		}
+  	}
+  }
+
   /**
    * NOTE!! This function is probably the single most
    * critical path for performance optimization.
@@ -1658,22 +1668,24 @@
   				}
   			}
   		},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove(item) {
+  			if (dynamicAttrs) {
+  				clearListeners(item, item.rootNode, dynamicAttrs);
+  			}
+  		}
   	};
 
   	return node;
   }
 
+  var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
+
   function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
-
-  	var domNode = undefined;
-
-  	var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
-
+  	var domNodeMap = {};
   	var node = {
   		overrideItem: null,
   		create: function create(item) {
-  			domNode = templateNode.cloneNode(false);
+  			var domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
@@ -1689,9 +1701,11 @@
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
+  			domNodeMap[item.id] = domNode;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
+  			var domNode = domNodeMap[lastItem.id];
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -1719,7 +1733,13 @@
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
   		},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove(item) {
+  			var domNode = domNodeMap[item.id];
+
+  			if (dynamicAttrs) {
+  				clearListeners(item, domNode, dynamicAttrs);
+  			}
+  		}
   	};
 
   	return node;
@@ -1759,7 +1779,11 @@
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
   		},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove(item) {
+  			if (dynamicAttrs) {
+  				clearListeners(item, item.rootNode, dynamicAttrs);
+  			}
+  		}
   	};
 
   	return node;
@@ -1768,10 +1792,10 @@
   function createNodeWithStaticChild(templateNode, dynamicAttrs) {
   	var domNodeMap = {};
   	var node = {
-  		name: 'createNodeWithStaticChild',
   		overrideItem: null,
   		create: function create(item) {
   			var domNode = templateNode.cloneNode(true);
+
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
@@ -1785,7 +1809,13 @@
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
   		},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove(item) {
+  			var domNode = domNodeMap[item.id];
+
+  			if (dynamicAttrs) {
+  				clearListeners(item, domNode, dynamicAttrs);
+  			}
+  		}
   	};
 
   	return node;
@@ -2296,6 +2326,9 @@
   		},
   		remove: function remove(item, treeLifecycle) {
   			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
+  			if (dynamicAttrs) {
+  				clearListeners(item, item.rootNode, dynamicAttrs);
+  			}
   		}
   	};
 
@@ -2310,13 +2343,13 @@
   }
 
   function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
-  	var domNode = undefined;
   	var keyedChildren = true;
+  	var domNodeMap = {};
   	var childNodeList = [];
   	var node = {
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
-  			domNode = templateNode.cloneNode(false);
+  			var domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value)) {
@@ -2359,9 +2392,11 @@
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
+  			domNodeMap[item.id] = domNode;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
+  			var domNode = domNodeMap[lastItem.id];
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -2437,7 +2472,12 @@
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
+  			var domNode = domNodeMap[item.id];
+
   			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
+  			if (dynamicAttrs) {
+  				clearListeners(item, domNode, dynamicAttrs);
+  			}
   		}
   	};
 
@@ -2523,6 +2563,9 @@
   					subTreeForChildren.remove(item, treeLifecycle);
   				}
   			}
+  			if (dynamicAttrs) {
+  				clearListeners(item, item.rootNode, dynamicAttrs);
+  			}
   		}
   	};
 
@@ -2537,7 +2580,6 @@
   			var domNode = templateNode.cloneNode(false);
 
   			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
-
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
@@ -2571,6 +2613,8 @@
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
+  			var domNode = domNodeMap[item.id];
+
   			if (!isVoid(subTreeForChildren)) {
   				if (isArray(subTreeForChildren)) {
   					for (var i = 0; i < subTreeForChildren.length; i++) {
@@ -2582,9 +2626,11 @@
   					subTreeForChildren.remove(item, treeLifecycle);
   				}
   			}
+  			if (dynamicAttrs) {
+  				clearListeners(item, domNode, dynamicAttrs);
+  			}
   		}
   	};
-
   	return node;
   }
 
@@ -2692,9 +2738,12 @@
   		},
   		remove: function remove(item, treeLifecycle) {
   			var value = getValueWithIndex(item, valueIndex);
+  			var type = getTypeFromValue(value);
 
-  			if (getTypeFromValue(value) === ValueTypes.TREE) {
+  			if (type === ValueTypes.TREE) {
   				value.remove(item, treeLifecycle);
+  			} else if (type === ValueTypes.FRAGMENT) {
+  				value.tree.dom.remove(value, treeLifecycle);
   			}
   		}
   	};
@@ -2703,7 +2752,7 @@
   }
 
   function createDynamicNode(valueIndex) {
-  	var domNode = undefined;
+  	var domNodeMap = {};
   	var childNodeList = [];
   	var keyedChildren = true;
   	var nextDomNode = undefined;
@@ -2711,6 +2760,7 @@
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var value = getValueWithIndex(item, valueIndex);
+  			var domNode = undefined;
   			var type = getTypeFromValue(value);
 
   			switch (type) {
@@ -2749,9 +2799,11 @@
   					domNode = value.tree.dom.create(value, treeLifecycle, context);
   					break;
   			}
+  			domNodeMap[item.id] = domNode;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
+  			var domNode = domNodeMap[lastItem.id];
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -2763,7 +2815,6 @@
   					recreateNode(domNode, nextItem, node, treeLifecycle, context);
   					return;
   				}
-
   				switch (nextType) {
   					case ValueTypes.TEXT:
   						// Testing the length property are actually faster than testing the
@@ -2790,9 +2841,12 @@
   		},
   		remove: function remove(item, treeLifecycle) {
   			var value = getValueWithIndex(item, valueIndex);
+  			var type = getTypeFromValue(value);
 
-  			if (getTypeFromValue(value) === ValueTypes.TREE) {
+  			if (type === ValueTypes.TREE) {
   				value.remove(item, treeLifecycle);
+  			} else if (type === ValueTypes.FRAGMENT) {
+  				value.tree.dom.remove(value, treeLifecycle);
   			}
   		}
   	};
@@ -3183,21 +3237,21 @@
   }
 
   function createDynamicTextNode(templateNode, valueIndex) {
-  	var domNode = undefined;
-
+  	var domNodeMap = {};
   	var node = {
   		overrideItem: null,
   		create: function create(item) {
-  			domNode = templateNode.cloneNode(false);
+  			var domNode = templateNode.cloneNode(false);
   			var value = getValueWithIndex(item, valueIndex);
 
   			if (!isVoid(value) && isStringOrNumber(value)) {
   				domNode.nodeValue = value;
   			}
+  			domNodeMap[item.id] = domNode;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-
+  			var domNode = domNodeMap[lastItem.id];
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
 
   			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
@@ -3246,29 +3300,43 @@
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
   		},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove(item) {
+  			if (dynamicAttrs) {
+  				clearListeners(item, item.rootNode, dynamicAttrs);
+  			}
+  		}
   	};
 
   	return node;
   }
 
   function createVoidNode(templateNode, dynamicAttrs) {
-  	var domNode = undefined;
+  	var domNodeMap = {};
   	var node = {
   		overrideItem: null,
   		create: function create(item) {
-  			domNode = templateNode.cloneNode(true);
+  			var domNode = templateNode.cloneNode(true);
+
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
   			}
+  			domNodeMap[item.id] = domNode;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
+  			var domNode = domNodeMap[lastItem.id];
+
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
   			}
   		},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove(item) {
+  			var domNode = domNodeMap[item.id];
+
+  			if (dynamicAttrs) {
+  				clearListeners(item, domNode, dynamicAttrs);
+  			}
+  		}
   	};
 
   	return node;
@@ -3307,12 +3375,10 @@
   }
 
   function createStaticNode(templateNode) {
-  	var domNode = undefined;
   	var node = {
   		overrideItem: null,
   		create: function create() {
-  			domNode = templateNode.cloneNode(true);
-  			return domNode;
+  			return templateNode.cloneNode(true);
   		},
   		update: function update() {},
   		remove: function remove() /* lastItem */{}
