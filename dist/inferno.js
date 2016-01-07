@@ -6,20 +6,22 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Inferno = factory());
+  global.Inferno = factory();
 }(this, function () { 'use strict';
 
-  function babelHelpers_typeof (obj) {
+  var babelHelpers = {};
+
+  babelHelpers.typeof = function (obj) {
     return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  function babelHelpers_classCallCheck (instance, Constructor) {
+  babelHelpers.classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  var babelHelpers_createClass = (function () {
+  babelHelpers.createClass = (function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -37,7 +39,7 @@
     };
   })();
 
-  var babelHelpers_extends = Object.assign || function (target) {
+  babelHelpers.extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -51,6 +53,7 @@
     return target;
   };
 
+  babelHelpers;
   var canUseDOM = !!(typeof window !== 'undefined' &&
   // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
   // As a workaround, check if document is undefined
@@ -182,7 +185,7 @@
   								dynamicFlags.CHILDREN = true;
   							}
   						}
-  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers_typeof(node)) === 'object') {
+  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers.typeof(node)) === 'object') {
   						var result = scanTreeForDynamicNodes(node.children, nodeMap);
 
   						if (result === true) {
@@ -442,7 +445,7 @@
   			component._pendingSetState = false;
   			var pendingState = component._pendingState;
   			var oldState = component.state;
-  			var nextState = babelHelpers_extends({}, oldState, pendingState);
+  			var nextState = babelHelpers.extends({}, oldState, pendingState);
 
   			component._pendingState = {};
   			component._pendingSetState = false;
@@ -476,7 +479,7 @@
 
   var Component = (function () {
   	function Component(props /* , context */) {
-  		babelHelpers_classCallCheck(this, Component);
+  		babelHelpers.classCallCheck(this, Component);
 
   		/** @type {object} */
   		this.props = props || {};
@@ -491,7 +494,7 @@
   		this.context = {};
   	}
 
-  	babelHelpers_createClass(Component, [{
+  	babelHelpers.createClass(Component, [{
   		key: 'render',
   		value: function render() {}
   	}, {

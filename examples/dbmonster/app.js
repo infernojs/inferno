@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 	var I = 0;
-	var N = 100;
+	var N = 50;
 	var elem = document.getElementById('app');
 
 	function getCountClassName(db) {
