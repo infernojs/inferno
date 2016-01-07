@@ -1,48 +1,8 @@
 (function() {
 	"use strict";
-	var I = 0;
-	var N = 50;
 	var elem = document.getElementById('app');
 
-	function getCountClassName(db) {
-		var count = db.queries.length;
-		var className = 'label';
-		if (count >= 20) {
-			className += ' label-important';
-		} else if (count >= 10) {
-			className += ' label-warning';
-		} else {
-			className += ' label-success';
-		}
-		return className;
-	}
-
-	function elapsedClassName(elapsed) {
-		var className = 'Query elapsed';
-		if (elapsed >= 10.0) {
-			className += ' warn_long';
-		} else if (elapsed >= 1.0) {
-			className += ' warn';
-		} else {
-			className += ' short';
-		}
-		return className;
-	}
-
-	function formatElapsed(value) {
-		if (!value) return '';
-		var str = parseFloat(value).toFixed(2);
-		if (value > 60) {
-			var minutes = Math.floor(value / 60);
-			var comps = (value % 60).toFixed(2).split('.');
-			var seconds = comps[0].lpad('0', 2);
-			var ms = comps[1];
-			str = minutes + ":" + seconds + "." + ms;
-		}
-		return str;
-	}
-
-	var query = Inferno.createTemplate(function(elapsedClassName, formatElapsed, query) {
+	var queryTemplate = Inferno.createTemplate(function(elapsedClassName, formatElapsed, query) {
 		return {
 			tag: 'td',
 			attrs: { className: elapsedClassName },
@@ -70,7 +30,7 @@
 			]
 		};
 	});
-	var database = Inferno.createTemplate(function(name, queriesCount, className, queries) {
+	var databaseTemplate = Inferno.createTemplate(function(name, queriesCount, className, queries) {
 		return {
 			key: name,
 			tag: 'tr',
@@ -93,7 +53,7 @@
 			]
 		};
 	});
-	var dbmon = Inferno.createTemplate(function(databases) {
+	var appTemplate = Inferno.createTemplate(function(databases) {
 		return {
 			tag: 'div',
 			children: {
@@ -109,32 +69,30 @@
 		};
 	});
 
-	function createDatabase(db) {
-		var queries = [];
-		var topFiveQueries = db.getTopFiveQueries();
-
-		for (var i = 0; i < topFiveQueries.length; i++) {
-			var topFiveQuery = topFiveQueries[i];
-
-			queries.push(
-				query('Query ' + elapsedClassName(topFiveQuery.elapsed), formatElapsed(topFiveQuery.elapsed), topFiveQuery.query)
-			);
+	//allows support in < IE9
+	function map(func, array) {
+		var newArray = new Array(array.length);
+		for (var i = 0; i < array.length; i++) {
+			newArray[i] = func(array[i]);
 		}
+		return newArray;
+	}
 
-		return database(db.name, db.queries.length, getCountClassName(db), queries);
+	function createQuery(query) {
+		return queryTemplate('Query ' + query.elapsedClassName, query.formatElapsed, query.query);
+	}
+
+	function createDatabase(db) {
+		return databaseTemplate(db.dbname, db.lastSample.nbQueries, db.lastSample.countClassName, map(createQuery, db.lastSample.topFiveQueries));
 	}
 
 	function render() {
-		var databases = [];
+		var dbs = ENV.generateData().toArray();
 
-		for (var i = 0; i < N; i++) {
-			databases.push(createDatabase(new Database('cluster' + i)));
-			databases.push(createDatabase(new Database('cluster' + i + 'slave')));
-		}
+		InfernoDOM.render(appTemplate(map(createDatabase, dbs)), elem);
 
-		InfernoDOM.render(dbmon(databases), elem);
 		Monitoring.renderRate.ping();
-		setTimeout(render, 0);
+		setTimeout(render, ENV.timeout);
 	}
 	render();
 })();
