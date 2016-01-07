@@ -7,7 +7,7 @@
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 
-Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. Unlike typical virtual DOM libraries like React, Mitrhil, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
+Inferno is a lightweight isomorphic framework for building highly performant user interfaces. Unlike typical virtual DOM libraries like React, Mitrhil, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
 
 In addition to this, we've painstakingly optimized the code to make sure that there is as little overhead as possible. We believe that Inferno is currently the fastest vDOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
@@ -24,33 +24,40 @@ To be more technically correct, Inferno is a "virtual fragment" framework, which
 
 ## Install
 
+Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM.
+
+NPM:
+
 ```sh
 npm install --save inferno
 npm install --save inferno-dom
+```
+
+Pre-bundled files:
+ 
+```
+http://infernojs.org/releases/inferno.min-0.5.0.js
+http://infernojs.org/releases/inferno-dom.min-0.5.0.js
 ```
 
 ## Testing
 
 ```sh
 npm run test:browser // browser tests
-
 npm run test:server // node tests
-
 npm run test // browser and node tests
-
+npm run browser // hot-loaded browser tests
 ```
 
 ## Building
 
 ```sh
 npm run build
-
 ```
 ## Linting
 
 ```sh
 npm run lint:source // lint the source
-
 ```
 
 ## Overview
@@ -59,6 +66,9 @@ Let's start with some code. As you can see, Inferno intentionally keeps the same
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a very easy way to express virtual fragments.
 
 ```js
+import Inferno from 'inferno';
+import InfernoDOM from 'inferno-dom';
+
 const message = "Hello world";
 
 InfernoDOM.render(
@@ -101,8 +111,7 @@ This is essential for low-power devices such as tablets and phones, where users 
 ## Benchmarks
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster (ES6 classes)](http://infernojs.org/benchmarks/dbmonster/)
-- [dbmonster (no ES6 classes)](http://infernojs.org/benchmarks/dbmonster/inferno-dbmonster-raw-es5.html)
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Inferno Top-Level API
