@@ -1696,7 +1696,11 @@
   					}
   				}
 
-  				domNode.textContent = value;
+				if (value === '') {
+					domNode.appendChild(document.createTextNode(''));
+				} else {
+					domNode.textContent = value;
+				}
   			}
   			if (dynamicAttrs) {
   				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
@@ -2589,10 +2593,6 @@
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			var domNode = domNodeMap[lastItem.id];
 
-  			if (node !== lastItem.tree.dom) {
-  				recreateNode(domNode, nextItem, node, treeLifecycle, context);
-  				return domNode;
-  			}
   			if (!isVoid(subTreeForChildren)) {
   				if (isArray(subTreeForChildren)) {
   					for (var i = 0; i < subTreeForChildren.length; i++) {
@@ -3288,7 +3288,7 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-  			if (node !== lastItem.domTree) {
+  			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
@@ -3362,7 +3362,7 @@
   		},
   		update: function update(lastItem, nextItem) {
   			// wrong tree and it toggle
-  			if (node !== lastItem.domTree) {
+  			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}

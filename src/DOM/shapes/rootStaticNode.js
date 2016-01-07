@@ -21,7 +21,7 @@ export default function createRootStaticNode( templateNode, recyclingEnabled ) {
 		},
 		update( lastItem, nextItem ) {
 			// wrong tree and it toggle
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree.dom ) {
 				recreateRootNode( lastItem, nextItem, node );
 				return;
 			}

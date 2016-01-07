@@ -22,10 +22,6 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const domNode = domNodeMap[lastItem.id];
 
-			if (node !== lastItem.tree.dom) {
-				recreateNode(domNode, nextItem, node, treeLifecycle,context);
-				return domNode;
-			}
 			if (!isVoid( subTreeForChildren)) {
 				if (isArray( subTreeForChildren))  {
 					for (let i = 0; i < subTreeForChildren.length; i++) {

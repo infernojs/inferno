@@ -23,13 +23,16 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
-
 				if ( process.env.NODE_ENV !== 'production' ) {
 					if ( !isStringOrNumber( value ) ) {
 						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
 					}
 				}
-				domNode.textContent = value;
+				if (value === '') {
+					domNode.appendChild(document.createTextNode(''));
+				} else {
+					domNode.textContent = value;
+				}
 			}
 			if ( dynamicAttrs ) {
 				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );

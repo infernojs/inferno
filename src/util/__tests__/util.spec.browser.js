@@ -7,7 +7,7 @@ import isVoid from '../isVoid';
 describe( 'Util', () => {
 
 
-	it( 'should be an array (isArray)', () => {
+	it( 'should be an array (isArray)', (done) => {
 
 		expect( isArray([]) ).to.be.true;
 		expect( isArray({}) ).to.be.false;

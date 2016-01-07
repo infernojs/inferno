@@ -13,15 +13,17 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			const domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
-			if ( !isVoid( value ) ) {
-
+			if (!isVoid( value)) {
 				if (process.env.NODE_ENV !== 'production') {
 					if (!isStringOrNumber(value)) {
 						throw Error(errorMsg);
 					}
 				}
-
-				domNode.textContent = value;
+				if (value === '') {
+					domNode.appendChild(document.createTextNode(''));
+				} else {
+					domNode.textContent = value;
+				}
 			}
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
