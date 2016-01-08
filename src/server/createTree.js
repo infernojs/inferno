@@ -16,14 +16,19 @@ function countChildren(children) {
 		return 0;
 	}
 }
+function renderMarkupForAttributes(name, value) {
 
-function createStaticAttributes(node, excludeAttrs) {
-/*
+
+
 	const propertyInfo = DOMRegistry[name] || null;
 
 	if (propertyInfo) {
 
-		if (shouldIgnoreValue(propertyInfo, value)) {
+		if ( isVoid( value ) ||
+			propertyInfo.hasBooleanValue && !value ||
+			propertyInfo.hasNumericValue && ( value !== value ) ||
+			propertyInfo.hasPositiveNumericValue && value < 1 ||
+			value.length === 0 ) {
 			return '';
 		}
 		let attributeName = propertyInfo.attributeName;
@@ -39,7 +44,35 @@ function createStaticAttributes(node, excludeAttrs) {
 		return name + '=' + quoteAttributeValueForBrowser(value);
 
 	}
- */
+}
+function createStaticAttributes(node, excludeAttrs) {
+
+	let HTML = '';
+
+	const props = node.attrs;
+
+	for (let propKey in props) {
+
+		var propValue = props[propKey];
+		if (propValue == null) {
+			continue;
+		}
+		if (propKey === 'style') {
+			// TODO Finish this!
+		}
+
+		let markup = null;
+
+		markup =  renderMarkupForAttributes(propKey, propValue );
+
+		if (markup) {
+			HTML += ' ' + markup;
+		}
+
+	}
+	return HTML;
+
+	console.log(HTML)
  // TODO
 	return Object.keys(node.attrs).map(attr => {
 		if (attr === 'inferno') {
