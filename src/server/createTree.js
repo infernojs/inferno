@@ -2,6 +2,8 @@ import createStaticNode from './shapes/staticNode';
 import isArray from '../util/isArray';
 import isStringOrNumber from '../util/isStringOrNumber';
 import isVoid from '../util/isVoid';
+import DOMRegistry from '../DOM/DOMRegistry';
+import quoteAttributeValueForBrowser from './quoteAttributeValueForBrowser';
 
 function countChildren(children) {
 	if (!isVoid(children)) {
@@ -16,6 +18,28 @@ function countChildren(children) {
 }
 
 function createStaticAttributes(node, excludeAttrs) {
+/*
+	const propertyInfo = DOMRegistry[name] || null;
+
+	if (propertyInfo) {
+
+		if (shouldIgnoreValue(propertyInfo, value)) {
+			return '';
+		}
+		let attributeName = propertyInfo.attributeName;
+		if (propertyInfo.hasBooleanValue) {
+			return attributeName + '=""';
+		}
+		return attributeName + '=' + quoteAttributeValueForBrowser(value);
+	} else {
+
+		if (value == null) {
+			return '';
+		}
+		return name + '=' + quoteAttributeValueForBrowser(value);
+
+	}
+ */
  // TODO
 	return Object.keys(node.attrs).map(attr => `${ attr }="${ node.attrs[attr] }"`).join(' ');
 }
