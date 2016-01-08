@@ -17,7 +17,12 @@ function countChildren(children) {
 
 function createStaticAttributes(node, excludeAttrs) {
  // TODO
-	return Object.keys(node.attrs).map(attr => `${ attr }="${ node.attrs[attr] }"`).join(' ');
+	return Object.keys(node.attrs).map(attr => {
+		if (attr === 'inferno') {
+			return `${ attr }`;
+		}
+		return `${ attr }="${ node.attrs[attr] }"`;
+	}).join(' ');
 }
 
 function createStaticTreeChildren(children) {
@@ -51,6 +56,12 @@ function createStaticTreeNode(isRoot, node) {
 
 	if (isVoid(node)) {
 		return '';
+	}
+	if (isRoot) {
+		if (!node.attrs) {
+			node.attrs = {};
+		}
+		node.attrs.inferno = true;
 	}
 
 	if (node.tag) {

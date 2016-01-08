@@ -1,19 +1,20 @@
 import { remove } from './domMutate';
+import { canHydrate } from './hydration';
 
-export default function createDOMFragment( parentNode, nextNode ) {
+export default function createDOMFragment(parentNode, nextNode) {
 	let lastItem;
 	let treeSuccessListeners = [];
 	const context = {};
 	const treeLifecycle = {
-		addTreeSuccessListener( listener ) {
-			treeSuccessListeners.push( listener );
+		addTreeSuccessListener(listener) {
+			treeSuccessListeners.push(listener);
 		},
-		removeTreeSuccessListener( listener ) {
-			for ( let i = 0; i < treeSuccessListeners.length; i++ ) {
+		removeTreeSuccessListener(listener) {
+			for (let i = 0; i < treeSuccessListeners.length; i++) {
 				const treeSuccessListener = treeSuccessListeners[i];
 
 				if ( treeSuccessListener === listener ) {
-					treeSuccessListeners.splice( i, 1 );
+					treeSuccessListeners.splice(i, 1);
 					return;
 				}
 			}
@@ -27,17 +28,22 @@ export default function createDOMFragment( parentNode, nextNode ) {
 
 				if (tree) {
 					let activeNode = document.activeElement;
+					const canHydrate = canHydrate();
 
 					if (lastItem) {
 						tree.update(lastItem, nextItem, treeLifecycle, context);
 					} else {
 						if (tree) {
-							const dom = tree.create(nextItem, treeLifecycle, context);
+							if (canHydrate(parentNode)) {
+								debugger;
+							} else {
+								const dom = tree.create(nextItem, treeLifecycle, context);
 
-							if ( nextNode ) {
-								parentNode.insertBefore( dom, nextNode );
-							} else if ( parentNode ) {
-								parentNode.appendChild( dom );
+								if (nextNode) {
+									parentNode.insertBefore(dom, nextNode);
+								} else if (parentNode) {
+									parentNode.appendChild(dom);
+								}
 							}
 						}
 					}
@@ -54,13 +60,13 @@ export default function createDOMFragment( parentNode, nextNode ) {
 			}
 		},
 		remove() {
-			if ( lastItem ) {
+			if (lastItem) {
 				const tree = lastItem.tree.dom;
 
-				if ( lastItem ) {
-					tree.remove( lastItem, treeLifecycle );
+				if (lastItem) {
+					tree.remove(lastItem, treeLifecycle);
 				}
-				remove( lastItem, parentNode );
+				remove(lastItem, parentNode);
 			}
 			treeSuccessListeners = [];
 		}

@@ -2,26 +2,26 @@ import createDOMFragment from '../DOM/createFragment';
 
 const rootFragments = [];
 
-export function getRootFragmentAtNode( node ) {
+export function getRootFragmentAtNode(node) {
 	const rootFragmentsLength = rootFragments.length;
 
-	if ( rootFragmentsLength === 0 ) {
+	if (rootFragmentsLength === 0) {
 		return null;
 	}
-	for ( let i = 0; i < rootFragmentsLength; i++ ) {
+	for (let i = 0; i < rootFragmentsLength; i++) {
 		const rootFragment = rootFragments[i];
 
-		if ( rootFragment.parentNode === node ) {
+		if (rootFragment.parentNode === node) {
 			return rootFragment;
 		}
 	}
 	return null;
 }
 
-export function removeRootFragment( rootFragment ) {
-	for ( let i = 0; i < rootFragments.length; i++ ) {
-		if ( rootFragments[i] === rootFragment ) {
-			rootFragments.splice( i, 1 );
+export function removeRootFragment(rootFragment) {
+	for (let i = 0; i < rootFragments.length; i++) {
+		if (rootFragments[i] === rootFragment) {
+			rootFragments.splice(i, 1);
 			return true;
 		}
 	}
@@ -29,19 +29,19 @@ export function removeRootFragment( rootFragment ) {
 }
 
 export function render(nextItem, parentNode) {
-	const rootFragment = getRootFragmentAtNode( parentNode );
+	const rootFragment = getRootFragmentAtNode(parentNode);
 
 	if ( rootFragment == null ) {
-		const fragment = createDOMFragment( parentNode );
+		const fragment = createDOMFragment(parentNode);
 
-		fragment.render( nextItem );
-		rootFragments.push( fragment );
+		fragment.render(nextItem);
+		rootFragments.push(fragment);
 	} else {
-		if ( nextItem == null ) {
+		if (nextItem == null) {
 			rootFragment.remove();
-			removeRootFragment( rootFragment );
+			removeRootFragment(rootFragment);
 		} else {
-			rootFragment.render( nextItem );
+			rootFragment.render(nextItem);
 		}
 	}
 }
