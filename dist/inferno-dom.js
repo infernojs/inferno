@@ -6,16 +6,16 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  global.InfernoDOM = factory();
+  (global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
-  var babelHelpers = {};
-
-  babelHelpers.typeof = function (obj) {
-    return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  babelHelpers.extends = Object.assign || function (target) {
+  var babelHelpers_extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -29,49 +29,39 @@
     return target;
   };
 
-  babelHelpers;
   var recyclingEnabled$1 = true;
 
   function pool(item) {
-
   	var key = item.key;
-  	var tree = item.tree;
+  	var tree = item.tree.dom;
 
   	if (key === null) {
-  		tree.dom.pool.push(item);
+  		tree.pool.push(item);
   	} else {
+  		var keyedPool = tree.keyedPool; // TODO rename
 
-  		var keyedPool = tree.dom.keyedPool;
-
-  		if (keyedPool[key]) {
-  			keyedPool[key].push(item);
-  		} else {
-  			keyedPool[key] = [];
-  			keyedPool[key].push(item);
-  		}
+  		(keyedPool[key] || (keyedPool[key] = [])).push(item);
   	}
   }
 
-  function recycle(tree, item, treeLifecycle, context) {
-
+  function recycle(tree, item) {
+  	// TODO use depth as key
   	var key = item.key;
   	var recyclableItem = undefined;
 
-  	if (tree.keyPool && key !== null) {
-
+  	// TODO faster to check pool size first?
+  	if (key !== null) {
   		var keyPool = tree.keyedPool[key];
 
   		recyclableItem = keyPool && keyPool.pop();
   	} else {
   		recyclableItem = tree.pool.pop();
   	}
-
   	if (recyclableItem) {
-  		tree.update(recyclableItem, item, treeLifecycle, context);
+  		tree.update(recyclableItem, item);
   		return item.rootNode;
   	}
   }
-
   function isRecyclingEnabled() {
   	return recyclingEnabled$1;
   }
@@ -120,12 +110,12 @@
   		return ValueTypes.TEXT;
   	} else if (isArray(value)) {
   		return ValueTypes.ARRAY;
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && value.create) {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.create) {
   		return ValueTypes.TREE;
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && value.tree.dom) {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.tree.dom) {
   		// Dominic!? What do we do here? I guess this also should be checked for server / SSR ???
   		return ValueTypes.FRAGMENT;
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && Object.keys(value).length === 0) {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && Object.keys(value).length === 0) {
   		return ValueTypes.EMPTY_OBJECT;
   	} else if (typeof value === 'function') {
   		return ValueTypes.FUNCTION;
@@ -164,7 +154,7 @@
 
   			removeValueTree(child, treeLifecycle);
   		}
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
   		var tree = value.tree;
 
   		tree.dom.remove(value, treeLifecycle);
@@ -323,7 +313,7 @@
   				unPrefixed: propName,
   				unitless: false,
   				shorthand: function shorthand(value, style) {
-  					var type = typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value);
+  					var type = typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value);
 
   					if (type === 'number') {
   						value += 'px';
@@ -2055,7 +2045,7 @@
   						if (domNode) {
   							domNode.nodeValue = item;
   						}
-  					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+  					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers_typeof(item)) === 'object') {
 
   						item.tree.dom.update(oldItem, item, treeLifecycle, context);
   					}
@@ -2212,7 +2202,7 @@
   					for (var i = 0; i < value.length; i++) {
   						var childItem = value[i];
   						// catches edge case where we e.g. have [null, null, null] as a starting point
-  						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
+  						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
 
   							var tree = childItem && childItem.tree;
 
@@ -2233,7 +2223,7 @@
   							keyedChildren = false;
   						}
   					}
-  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
   					var tree = value && value.tree;
 
   					if (tree) {
@@ -2263,7 +2253,7 @@
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
   			if (nextValue && isVoid(lastValue)) {
-  				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
   					if (isArray(nextValue)) {
   						updateAndAppendDynamicChildren(domNode, nextValue);
   					} else {
@@ -2304,7 +2294,7 @@
   						} else {
   							updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
   						}
-  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
   						// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
   						// throw ': nextValue.tree is undefined'.
   						var tree = nextValue && nextValue.tree;
@@ -2365,7 +2355,7 @@
   					for (var i = 0; i < value.length; i++) {
   						var childItem = value[i];
   						// catches edge case where we e.g. have [null, null, null] as a starting point
-  						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
+  						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
 
   							var tree = childItem && childItem.tree;
 
@@ -2386,7 +2376,7 @@
   							keyedChildren = false;
   						}
   					}
-  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+  				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object') {
 
   					var tree = value && value.tree;
 
@@ -2410,7 +2400,7 @@
 
   			if (nextValue && isVoid(lastValue)) {
 
-  				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
   					if (isArray(nextValue)) {
   						updateAndAppendDynamicChildren(domNode, nextValue);
   					} else {
@@ -2452,7 +2442,7 @@
   							// lastValue is undefined, so set it to an empty array and update
   							updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
   						}
-  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers_typeof(nextValue)) === 'object') {
   						// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
   						// throw ': nextValue.tree is undefined'.
   						var tree = nextValue && nextValue.tree;
@@ -2502,7 +2492,7 @@
 
   				domNode.appendChild(childNode);
   			}
-  		} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  		} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   			domNode.appendChild(subTreeForChildren.create(item, treeLifecycle, context));
   		}
   	}
@@ -2551,7 +2541,7 @@
 
   						subTree.update(lastItem, nextItem, treeLifecycle, context);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
   				}
   			}
@@ -2567,7 +2557,7 @@
 
   						subTree.remove(item, treeLifecycle);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.remove(item, treeLifecycle);
   				}
   			}
@@ -2604,7 +2594,7 @@
 
   						subTree.update(lastItem, nextItem, treeLifecycle, context);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					var newDomNode = subTreeForChildren.update(lastItem, nextItem, treeLifecycle, context);
 
   					if (newDomNode) {
@@ -2626,7 +2616,7 @@
 
   						subTree.remove(item, treeLifecycle);
   					}
-  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
+  				} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers_typeof(subTreeForChildren)) === 'object') {
   					subTreeForChildren.remove(item, treeLifecycle);
   				}
   			}
@@ -2935,7 +2925,7 @@
   						var fragmentFirstChild = undefined;
 
   						if (childContext) {
-  							context = babelHelpers.extends({}, context, childContext);
+  							context = babelHelpers_extends({}, context, childContext);
   						}
   						nextRender.parent = item;
   						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
@@ -2958,7 +2948,7 @@
   							var childContext = instance.getChildContext();
 
   							if (childContext) {
-  								context = babelHelpers.extends({}, context, childContext);
+  								context = babelHelpers_extends({}, context, childContext);
   							}
   							nextRender.parent = currentItem;
   							nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
@@ -3085,7 +3075,7 @@
   						var fragmentFirstChild = undefined;
 
   						if (childContext) {
-  							context = babelHelpers.extends({}, context, childContext);
+  							context = babelHelpers_extends({}, context, childContext);
   						}
   						nextRender.parent = item;
   						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
@@ -3100,13 +3090,13 @@
   							}
   							instance.componentDidMount();
   						});
-  						instance.forceUpdate = (function () {
+  						instance.forceUpdate = function () {
   							instance.context = context;
   							var nextRender = instance.render.call(instance);
   							var childContext = instance.getChildContext();
 
   							if (childContext) {
-  								context = babelHelpers.extends({}, context, childContext);
+  								context = babelHelpers_extends({}, context, childContext);
   							}
   							nextRender.parent = currentItem;
   							var newDomNode = nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
@@ -3119,7 +3109,7 @@
   							} else {
   								instance._lastRender = nextRender;
   							}
-  						}).bind(instance);
+  						}.bind(instance);
   					})();
   				}
   			}
@@ -3399,7 +3389,7 @@
 
   	if (!isVoid(attrs)) {
   		if (excludeAttrs) {
-  			var newAttrs = babelHelpers.extends({}, attrs);
+  			var newAttrs = babelHelpers_extends({}, attrs);
 
   			for (var attr in excludeAttrs) {
   				if (newAttrs[attr]) {
@@ -3584,7 +3574,7 @@
 
   				if (tag.type === ObjectTypes.VARIABLE) {
   					var lastAttrs = schema.attrs;
-  					var _attrs = babelHelpers.extends({}, lastAttrs);
+  					var _attrs = babelHelpers_extends({}, lastAttrs);
   					var _children = null;
 
   					if (schema.children) {
@@ -3686,29 +3676,29 @@
   					if (!isVoid(children)) {
   						if (children.type === ObjectTypes.VARIABLE) {
   							if (isRoot) {
-  								node = createRootNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, domNamespace, recyclingEnabled);
+  								node = createRootNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, recyclingEnabled);
   							} else {
-  								node = createNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, domNamespace);
+  								node = createNodeWithDynamicChild(templateNode, children.index, dynamicAttrs);
   							}
   						} else if (dynamicFlags.CHILDREN === true) {
   							var subTreeForChildren = [];
 
-  							if ((typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
+  							if ((typeof children === 'undefined' ? 'undefined' : babelHelpers_typeof(children)) === 'object') {
   								if (isArray(children)) {
   									for (var i = 0; i < children.length; i++) {
   										var childItem = children[i];
 
-  										subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap, domNamespace));
+  										subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap));
   									}
   								} else {
-  									subTreeForChildren = createDOMTree(children, false, dynamicNodeMap, domNamespace);
+  									subTreeForChildren = createDOMTree(children, false, dynamicNodeMap);
   								}
   							}
 
   							if (isRoot) {
-  								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace, recyclingEnabled);
+  								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled);
   							} else {
-  								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, domNamespace);
+  								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs);
   							}
   						} else if (isStringOrNumber(children)) {
   							templateNode.textContent = children;
@@ -3721,7 +3711,7 @@
   							var childNodeDynamicFlags = dynamicNodeMap.get(children);
 
   							if (childNodeDynamicFlags === undefined) {
-  								createStaticTreeChildren(children, templateNode, domNamespace);
+  								createStaticTreeChildren(children, templateNode);
 
   								if (isRoot) {
   									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);

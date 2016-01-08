@@ -6,22 +6,22 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  global.Inferno = factory();
+  (global.Inferno = factory());
 }(this, function () { 'use strict';
 
-  var babelHelpers = {};
-
-  babelHelpers.typeof = function (obj) {
-    return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  babelHelpers.classCallCheck = function (instance, Constructor) {
+  function babelHelpers_classCallCheck (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  babelHelpers.createClass = (function () {
+  function babelHelpers_createClass () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -37,9 +37,9 @@
       if (staticProps) defineProperties(Constructor, staticProps);
       return Constructor;
     };
-  })();
+  }();
 
-  babelHelpers.extends = Object.assign || function (target) {
+  var babelHelpers_extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -53,7 +53,6 @@
     return target;
   };
 
-  babelHelpers;
   var canUseDOM = !!(typeof window !== 'undefined' &&
   // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
   // As a workaround, check if document is undefined
@@ -185,7 +184,7 @@
   								dynamicFlags.CHILDREN = true;
   							}
   						}
-  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers.typeof(node)) === 'object') {
+  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers_typeof(node)) === 'object') {
   						var result = scanTreeForDynamicNodes(node.children, nodeMap);
 
   						if (result === true) {
@@ -256,7 +255,7 @@
 
   				switch (callbackLength) {
   					case 0:
-  						construct = function () {
+  						construct = function construct() {
   							return {
   								parent: null,
   								tree: tree,
@@ -268,7 +267,7 @@
   						};
   						break;
   					case 1:
-  						construct = function (v0) {
+  						construct = function construct(v0) {
   							var key = undefined;
 
   							if (keyIndex === 0) {
@@ -286,7 +285,7 @@
   						};
   						break;
   					case 2:
-  						construct = function (v0, v1) {
+  						construct = function construct(v0, v1) {
   							var key = undefined;
 
   							if (keyIndex === 0) {
@@ -307,7 +306,7 @@
   						};
   						break;
   					default:
-  						construct = function (v0, v1) {
+  						construct = function construct(v0, v1) {
   							for (var _len = arguments.length, values = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
   								values[_key - 2] = arguments[_key];
   							}
@@ -445,7 +444,7 @@
   			component._pendingSetState = false;
   			var pendingState = component._pendingState;
   			var oldState = component.state;
-  			var nextState = babelHelpers.extends({}, oldState, pendingState);
+  			var nextState = babelHelpers_extends({}, oldState, pendingState);
 
   			component._pendingState = {};
   			component._pendingSetState = false;
@@ -477,9 +476,9 @@
    *	}
    */
 
-  var Component = (function () {
+  var Component = function () {
   	function Component(props /* , context */) {
-  		babelHelpers.classCallCheck(this, Component);
+  		babelHelpers_classCallCheck(this, Component);
 
   		/** @type {object} */
   		this.props = props || {};
@@ -494,7 +493,7 @@
   		this.context = {};
   	}
 
-  	babelHelpers.createClass(Component, [{
+  	babelHelpers_createClass(Component, [{
   		key: 'render',
   		value: function render() {}
   	}, {
@@ -538,7 +537,7 @@
   		value: function getChildContext() {}
   	}]);
   	return Component;
-  })();
+  }();
 
   var index = {
   	Component: Component,
