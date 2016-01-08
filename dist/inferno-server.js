@@ -1,12 +1,12 @@
 /*!
- * inferno v0.4.5
+ * inferno-server v0.4.5
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Inferno = factory());
+  (global.InfernoServer = factory());
 }(this, function () { 'use strict';
 
   var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -3762,4 +3762,4 @@
   return index;
 
 }));
-//# sourceMappingURL=inferno.js.map
+//# sourceMappingURL=inferno-server.js.map
