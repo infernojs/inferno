@@ -28,7 +28,7 @@ export function removeRootFragment( rootFragment ) {
 	return false;
 }
 
-export function render( nextItem, parentNode ) {
+export function render(nextItem, parentNode) {
 	const rootFragment = getRootFragmentAtNode( parentNode );
 
 	if ( rootFragment == null ) {
