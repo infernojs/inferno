@@ -31,13 +31,12 @@ function renderMarkupForStyles(styles, component) {
 
 		let styleValue = styles[styleName];
 
-		if (styleValue != null) {
+		if (styleValue !== null) {
 			serialized += styleName + ':';
 			serialized += styleValue + ';';
 		}
 	}
 	return serialized || null;
-
 }
 
 function renderMarkupForAttributes(name, value) {
@@ -46,25 +45,26 @@ function renderMarkupForAttributes(name, value) {
 
 	if (propertyInfo) {
 
-		if ( isVoid( value ) ||
+		if (isVoid(value) ||
 			propertyInfo.hasBooleanValue && !value ||
-			propertyInfo.hasNumericValue && ( value !== value ) ||
+			propertyInfo.hasNumericValue && (value !== value) ||
 			propertyInfo.hasPositiveNumericValue && value < 1 ||
-			value.length === 0 ) {
+			value.length === 0) {
 			return '';
 		}
 		let attributeName = propertyInfo.attributeName;
 		if (propertyInfo.hasBooleanValue) {
 			return attributeName + '=""';
 		}
-		return attributeName + '=' + quoteAttributeValueForBrowser(value);
+		return `${ attributeName }=${ quoteAttributeValueForBrowser(value) }`;
 	} else {
 
-		if (value == null) {
+		if (isVoid(value)) {
 			return '';
 		}
-		return name + '=' + quoteAttributeValueForBrowser(value);
 
+		// custom attributes
+		return `${ name }=${ quoteAttributeValueForBrowser(value) }`;
 	}
 }
 function createStaticAttributes(node, excludeAttrs) {
@@ -94,7 +94,6 @@ function createStaticAttributes(node, excludeAttrs) {
 
 	}
 	return HTML;
-
 
  // TODO
 	return Object.keys(node.attrs).map(attr => {
