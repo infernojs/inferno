@@ -9,10 +9,8 @@
   (global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
-  var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  function babelHelpers_typeof (obj) {
+    return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
   var babelHelpers_extends = Object.assign || function (target) {
@@ -3090,7 +3088,7 @@
   							}
   							instance.componentDidMount();
   						});
-  						instance.forceUpdate = function () {
+  						instance.forceUpdate = (function () {
   							instance.context = context;
   							var nextRender = instance.render.call(instance);
   							var childContext = instance.getChildContext();
@@ -3109,7 +3107,7 @@
   							} else {
   								instance._lastRender = nextRender;
   							}
-  						}.bind(instance);
+  						}).bind(instance);
   					})();
   				}
   			}
