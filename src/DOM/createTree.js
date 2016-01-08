@@ -173,11 +173,8 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 	}
 }
 
-export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamespace ) {
-
+export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 	if ( process.env.NODE_ENV !== 'production' ) {
-
-
 		if ( isVoid( schema ) ) {
 			throw Error( invalidTemplateError );
 		}
@@ -185,19 +182,18 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 			throw Error( invalidTemplateError );
 		}
 	}
+
 	const dynamicFlags = dynamicNodeMap.get( schema );
 	let node;
 	let templateNode;
 
 	if ( !dynamicFlags ) {
 		templateNode = createStaticTreeNode( schema, null, domNamespace, schema );
-
 		if ( process.env.NODE_ENV !== 'production' ) {
 			if ( !templateNode ) {
 				throw Error( invalidTemplateError );
 			}
 		}
-
 		if ( isRoot ) {
 			node = createRootStaticNode( templateNode, recyclingEnabled );
 		} else {
@@ -215,7 +211,6 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 			const text = schema.text;
 
 			if ( tag ) {
-
 				if ( tag.type === ObjectTypes.VARIABLE ) {
 					const lastAttrs = schema.attrs;
 					const attrs = { ...lastAttrs };
@@ -248,7 +243,6 @@ export default function createDOMTree( schema, isRoot, dynamicNodeMap, domNamesp
 				const is = schema.attrs && schema.attrs.is;
 
 				if ( domNamespace === undefined ) {
-
 					if ( schema.attrs && schema.attrs.xmlns ) {
 						domNamespace = schema.attrs.xmlns;
 					} else {

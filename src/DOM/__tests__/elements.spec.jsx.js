@@ -1,5 +1,5 @@
 import createDOMTree from '../createTree';
-import { render, renderToString } from '../rendering';
+import { render } from '../rendering';
 import createTemplate from '../../core/createTemplate';
 import Component from '../../component/Component';
 import { addTreeConstructor } from '../../core/createTemplate';
