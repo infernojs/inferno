@@ -1,7 +1,7 @@
 import createDOMTree from '../createTree';
 import { render, renderToString } from '../rendering';
 import createTemplate from '../../core/createTemplate';
-import Component from '../../class/Component';
+import Component from '../../component/Component';
 import { addTreeConstructor } from '../../core/createTemplate';
 import TemplateFactory from '../../core/TemplateFactory';
 import innerHTML from '../../../tools/innerHTML';
