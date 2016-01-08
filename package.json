@@ -71,7 +71,13 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "html",
+    "renderToString",
+    "server",
+    "dom",
+    "browser",
+    "rollup"
   ],
   "main": "./dist/inferno.min.js",
   "repository": {
