@@ -16,9 +16,31 @@ function countChildren(children) {
 		return 0;
 	}
 }
+
+/**
+ *  WORK IN PROGRESS
+ *
+ *  Need to run tests for this one!!
+ *
+ * */
+function renderMarkupForStyles(styles, component) {
+
+	let serialized = '';
+
+	for (let styleName in styles) {
+
+		let styleValue = styles[styleName];
+
+		if (styleValue != null) {
+			serialized += styleName + ':';
+			serialized += styleValue + ';';
+		}
+	}
+	return serialized || null;
+
+}
+
 function renderMarkupForAttributes(name, value) {
-
-
 
 	const propertyInfo = DOMRegistry[name] || null;
 
@@ -57,8 +79,9 @@ function createStaticAttributes(node, excludeAttrs) {
 		if (propValue == null) {
 			continue;
 		}
+		renderMarkupForStyles
 		if (propKey === 'style') {
-			// TODO Finish this!
+			propValue = renderMarkupForStyles(propKey, propValue );
 		}
 
 		let markup = null;
@@ -72,7 +95,7 @@ function createStaticAttributes(node, excludeAttrs) {
 	}
 	return HTML;
 
-	console.log(HTML)
+
  // TODO
 	return Object.keys(node.attrs).map(attr => {
 		if (attr === 'data-inferno') {
