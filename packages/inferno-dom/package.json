@@ -46,5 +46,8 @@
     "rollup-plugin-babel": "^2.3.8",
     "rollup-plugin-npm": "^1.2.1",
     "rollup-plugin-replace": "^1.1.0"
+  },
+  "peerDependencies": {
+    "inferno": "^0.5.0"
   }
 }

@@ -18,7 +18,13 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "html",
+    "renderToString",
+    "server",
+    "dom",
+    "browser",
+    "rollup"
   ],
   "dependencies": {
     "babel-core": "^6.4.0",
@@ -46,5 +52,8 @@
     "rollup-plugin-babel": "^2.3.8",
     "rollup-plugin-npm": "^1.2.1",
     "rollup-plugin-replace": "^1.1.0"
-  }
+  },
+  "peerDependencies": {
+    "inferno": "^0.5.0"
+}
 }

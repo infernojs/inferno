@@ -3515,9 +3515,7 @@
   }
 
   function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
-
   	if ("development" !== 'production') {
-
   		if (isVoid(schema)) {
   			throw Error(invalidTemplateError);
   		}
@@ -3525,19 +3523,18 @@
   			throw Error(invalidTemplateError);
   		}
   	}
+
   	var dynamicFlags = dynamicNodeMap.get(schema);
   	var node = undefined;
   	var templateNode = undefined;
 
   	if (!dynamicFlags) {
   		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
-
   		if ("development" !== 'production') {
   			if (!templateNode) {
   				throw Error(invalidTemplateError);
   			}
   		}
-
   		if (isRoot) {
   			node = createRootStaticNode(templateNode, recyclingEnabled);
   		} else {
@@ -3555,7 +3552,6 @@
   			var text = schema.text;
 
   			if (tag) {
-
   				if (tag.type === ObjectTypes.VARIABLE) {
   					var lastAttrs = schema.attrs;
   					var _attrs = babelHelpers_extends({}, lastAttrs);
@@ -3588,7 +3584,6 @@
   				var is = schema.attrs && schema.attrs.is;
 
   				if (domNamespace === undefined) {
-
   					if (schema.attrs && schema.attrs.xmlns) {
   						domNamespace = schema.attrs.xmlns;
   					} else {

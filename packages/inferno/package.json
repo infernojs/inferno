@@ -18,7 +18,13 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "html",
+    "renderToString",
+    "server",
+    "dom",
+    "browser",
+    "rollup"
   ],
   "dependencies": {
     "babel-core": "^6.3.26",

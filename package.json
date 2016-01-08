@@ -71,7 +71,13 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "html",
+    "renderToString",
+    "server",
+    "dom",
+    "browser",
+    "rollup"
   ],
   "main": "./dist/inferno.min.js",
   "repository": {
@@ -84,7 +90,7 @@
     "build:inferno-dom:prod": "node config/rollup.config.js prod dist packages/inferno-dom/src inferno-dom InfernoDOM",
     "build:inferno-server:dev": "node config/rollup.config.js dev dist packages/inferno-server/src inferno-server InfernoServer",
     "build:inferno-server:prod": "node config/rollup.config.js prod dist packages/inferno-server/src inferno-server InfernoServer",
-    "build:inferno:dev": "node config/rollup.config.js dev dist packages/inferno-server/src inferno Inferno",
+    "build:inferno:dev": "node config/rollup.config.js dev dist packages/inferno/src inferno Inferno",
     "build:inferno:prod": "node config/rollup.config.js prod dist packages/inferno/src inferno Inferno",
     "build": "npm run build:inferno-dom:dev && npm run build:inferno-dom:prod && npm run build:inferno:dev && npm run build:inferno:prod && npm run build:inferno-server:dev && npm run build:inferno-server:prod",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
