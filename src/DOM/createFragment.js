@@ -21,16 +21,18 @@ export default function createDOMFragment( parentNode, nextNode ) {
 	};
 	return {
 		parentNode,
-		render( nextItem ) {
-			if ( nextItem ) {
+		render(nextItem) {
+			if (nextItem) {
 				const tree = nextItem.tree.dom;
 
-				if ( tree ) {
-					if ( lastItem ) {
-						tree.update( lastItem, nextItem, treeLifecycle, context );
+				if (tree) {
+					let activeNode = document.activeElement;
+
+					if (lastItem) {
+						tree.update(lastItem, nextItem, treeLifecycle, context);
 					} else {
-						if ( tree ) {
-							const dom = tree.create( nextItem, treeLifecycle, context );
+						if (tree) {
+							const dom = tree.create(nextItem, treeLifecycle, context);
 
 							if ( nextNode ) {
 								parentNode.insertBefore( dom, nextNode );
@@ -39,12 +41,15 @@ export default function createDOMFragment( parentNode, nextNode ) {
 							}
 						}
 					}
-					if ( treeSuccessListeners.length > 0 ) {
-						for ( let i = 0; i < treeSuccessListeners.length; i++ ) {
+					if (treeSuccessListeners.length > 0) {
+						for (let i = 0; i < treeSuccessListeners.length; i++) {
 							treeSuccessListeners[i]();
 						}
 					}
 					lastItem = nextItem;
+					if (activeNode !== document.body && document.activeElement !== activeNode) {
+						activeNode.focus();
+					}
 				}
 			}
 		},

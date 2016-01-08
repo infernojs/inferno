@@ -7,10 +7,6 @@ import isVoid from '../util/isVoid';
 let uniqueId = Date.now();
 const treeConstructors = {};
 
-function createId() {
-	return uniqueId++;
-}
-
 export function addTreeConstructor(name, treeConstructor) {
 	treeConstructors[ name ] = treeConstructor;
 }
@@ -49,7 +45,7 @@ export default function createTemplate( callback ) {
 					construct = () => ( {
 						parent: null,
 						tree,
-						id: createId(),
+						id: uniqueId++,
 						key: null,
 						nextItem: null,
 						rootNode: null
@@ -65,7 +61,7 @@ export default function createTemplate( callback ) {
 						return {
 							parent: null,
 							tree,
-							id: createId(),
+							id: uniqueId++,
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -85,7 +81,7 @@ export default function createTemplate( callback ) {
 						return {
 							parent: null,
 							tree,
-							id: createId(),
+							id: uniqueId++,
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -108,7 +104,7 @@ export default function createTemplate( callback ) {
 						return {
 							parent: null,
 							tree,
-							id: createId(),
+							id: uniqueId++,
 							key,
 							nextItem: null,
 							rootNode: null,

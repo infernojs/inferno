@@ -27,7 +27,6 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 					return domNode;
 				}
 			}
-
 			domNode = templateNode.cloneNode( false );
 
 			const value = getValueWithIndex( item, valueIndex );
@@ -38,7 +37,6 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 						const childItem = value[i];
 						// catches edge case where we e.g. have [null, null, null] as a starting point
 						if ( !isVoid( childItem ) && typeof childItem === 'object' ) {
-
 							const tree = childItem && childItem.tree;
 
 							if ( tree ) {
@@ -123,7 +121,7 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				} else if (isArray( nextValue)) {
 					if (isArray( lastValue)) {
 						if ( keyedChildren ) {
-							updateKeyed( nextValue, lastValue, domNode, null, context );
+							updateKeyed( nextValue, lastValue, domNode, null, treeLifecycle, context );
 						} else {
 							updateNonKeyed( nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context );
 						}
@@ -145,12 +143,12 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 								recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 							}
 						} else {
-							replaceChild( domNode, tree.dom.create( nextValue, treeLifecycle, context ) );
+							replaceChild(domNode, tree.dom.create( nextValue, treeLifecycle, context));
 						}
 					} else {
 						// Edge case! If we update from e.g object literal - {} - from a existing value, the
 						// value will not be unset
-						removeChild( domNode );
+						removeChild(domNode);
 					}
 				}
 			}

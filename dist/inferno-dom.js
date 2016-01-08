@@ -1577,7 +1577,7 @@
   	var lastDomNode = lastItem.rootNode;
   	var lastTree = lastItem.tree.dom;
 
-  	lastTree.remove(lastItem);
+  	lastTree.remove(lastItem, treeLifecycle);
 
   	var domNode = node.create(nextItem, treeLifecycle, context);
   	var parentNode = lastDomNode.parentNode;
@@ -1859,9 +1859,6 @@
   var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
   function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
-
-  	// This is all internals so no validation needed
-
   	var stop = false;
   	var startIndex = 0;
   	var oldStartIndex = 0;
@@ -2067,30 +2064,19 @@
   }
 
   function insertOrAppend(parentNode, newNode, nextNode) {
-
-  	var activeNode = document.activeElement;
-
   	if (nextNode) {
   		parentNode.insertBefore(newNode, nextNode);
   	} else {
   		parentNode.appendChild(newNode);
-  	}
-
-  	if (activeNode !== document.body && document.activeElement !== activeNode) {
-  		activeNode.focus();
   	}
   }
 
   function remove(item, parentNode) {
   	var rootNode = item.rootNode;
 
-  	// This shit will throw if empty, or empty array or empty object literal
-  	// TODO! Find a beter solution. I think this solution is slooow !!??
-
   	if (isVoid(rootNode) || !rootNode.nodeType) {
   		return null;
   	}
-
   	if (rootNode === parentNode) {
   		parentNode.innerHTML = '';
   	} else {
@@ -2190,7 +2176,6 @@
   					return domNode;
   				}
   			}
-
   			domNode = templateNode.cloneNode(false);
 
   			var value = getValueWithIndex(item, valueIndex);
@@ -2201,7 +2186,6 @@
   						var childItem = value[i];
   						// catches edge case where we e.g. have [null, null, null] as a starting point
   						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers_typeof(childItem)) === 'object') {
-
   							var tree = childItem && childItem.tree;
 
   							if (tree) {
@@ -2284,7 +2268,7 @@
   				} else if (isArray(nextValue)) {
   						if (isArray(lastValue)) {
   							if (keyedChildren) {
-  								updateKeyed(nextValue, lastValue, domNode, null, context);
+  								updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
   							} else {
   								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
   							}
@@ -3771,6 +3755,8 @@
   				var tree = nextItem.tree.dom;
 
   				if (tree) {
+  					var activeNode = document.activeElement;
+
   					if (lastItem) {
   						tree.update(lastItem, nextItem, treeLifecycle, context);
   					} else {
@@ -3790,6 +3776,9 @@
   						}
   					}
   					lastItem = nextItem;
+  					if (activeNode !== document.body && document.activeElement !== activeNode) {
+  						activeNode.focus();
+  					}
   				}
   			}
   		},

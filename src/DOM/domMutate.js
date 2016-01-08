@@ -7,10 +7,7 @@ import { isRecyclingEnabled, pool } from './recycling';
 const recyclingEnabled = isRecyclingEnabled();
 const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
-export function updateKeyed( items, oldItems, parentNode, parentNextNode, treeLifecycle, context ) {
-
-	// This is all internals so no validation needed
-
+export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
@@ -216,38 +213,27 @@ export function updateNonKeyed( items, oldItems, domNodeList, parentNode, parent
 	}
 }
 
-export function insertOrAppend( parentNode, newNode, nextNode ) {
-
-	let activeNode = document.activeElement;
-
-	if ( nextNode ) {
-		parentNode.insertBefore( newNode, nextNode );
+export function insertOrAppend(parentNode, newNode, nextNode) {
+	if (nextNode) {
+		parentNode.insertBefore(newNode, nextNode);
 	} else {
-		parentNode.appendChild( newNode );
-	}
-
-	if ( activeNode !== document.body && document.activeElement !== activeNode ) {
-		activeNode.focus();
+		parentNode.appendChild(newNode);
 	}
 }
 
-export function remove( item, parentNode ) {
+export function remove(item, parentNode) {
 	const rootNode = item.rootNode;
 
-	// This shit will throw if empty, or empty array or empty object literal
-	// TODO! Find a beter solution. I think this solution is slooow !!??
-
-	if ( isVoid( rootNode ) ||
-		!( rootNode.nodeType ) ) {
+	if (isVoid( rootNode ) ||
+		!( rootNode.nodeType)) {
 		return null;
 	}
-
-	if ( rootNode === parentNode ) {
+	if (rootNode === parentNode) {
 		parentNode.innerHTML = '';
 	} else {
-		parentNode.removeChild( item.rootNode );
-		if ( recyclingEnabled ) {
-			pool( item );
+		parentNode.removeChild(item.rootNode);
+		if (recyclingEnabled) {
+			pool(item);
 		}
 	}
 }

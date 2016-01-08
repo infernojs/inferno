@@ -209,10 +209,6 @@
   var uniqueId = Date.now();
   var treeConstructors = {};
 
-  function createId() {
-  	return uniqueId++;
-  }
-
   function addTreeConstructor(name, treeConstructor) {
   	treeConstructors[name] = treeConstructor;
   }
@@ -253,7 +249,7 @@
   							return {
   								parent: null,
   								tree: tree,
-  								id: createId(),
+  								id: uniqueId++,
   								key: null,
   								nextItem: null,
   								rootNode: null
@@ -270,7 +266,7 @@
   							return {
   								parent: null,
   								tree: tree,
-  								id: createId(),
+  								id: uniqueId++,
   								key: key,
   								nextItem: null,
   								rootNode: null,
@@ -290,7 +286,7 @@
   							return {
   								parent: null,
   								tree: tree,
-  								id: createId(),
+  								id: uniqueId++,
   								key: key,
   								nextItem: null,
   								rootNode: null,
@@ -317,7 +313,7 @@
   							return {
   								parent: null,
   								tree: tree,
-  								id: createId(),
+  								id: uniqueId++,
   								key: key,
   								nextItem: null,
   								rootNode: null,
@@ -435,6 +431,12 @@
 
   	requestAnimationFrame(function () {
   		if (component._deferSetState === false) {
+  			var activeNode = undefined;
+
+  			if (ExecutionEnvironment.canUseDOM) {
+  				activeNode = document.activeElement;
+  			}
+
   			component._pendingSetState = false;
   			var pendingState = component._pendingState;
   			var oldState = component.state;
@@ -443,6 +445,10 @@
   			component._pendingState = {};
   			component._pendingSetState = false;
   			updateComponent(component, oldState, nextState, component.props, component.props, component.forceUpdate, blockRender);
+
+  			if (ExecutionEnvironment.canUseDOM && activeNode !== document.body && document.activeElement !== activeNode) {
+  				activeNode.focus();
+  			}
   		} else {
   			applyState(component);
   		}
