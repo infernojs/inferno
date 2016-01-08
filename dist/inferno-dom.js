@@ -42,7 +42,7 @@
   	}
   }
 
-  function recycle(tree, item) {
+  function recycle(tree, item, treeLifecycle, context) {
   	// TODO use depth as key
   	var key = item.key;
   	var recyclableItem = undefined;
@@ -56,7 +56,7 @@
   		recyclableItem = tree.pool.pop();
   	}
   	if (recyclableItem) {
-  		tree.update(recyclableItem, item);
+  		tree.update(recyclableItem, item, treeLifecycle, context);
   		return item.rootNode;
   	}
   }
@@ -2277,13 +2277,12 @@
   					appendText(domNode, nextValue);
   				} else if (isVoid(nextValue)) {
   					if (domNode !== null) {
-
   						replaceChild(domNode, document.createTextNode(''));
   					}
   					// if we update from undefined, we will have an array with zero length.
   					// If we check if it's an array, it will throw 'x' is undefined.
-  				} else if (nextValue.length !== 0 && isArray(nextValue)) {
-  						if (lastValue && isArray(lastValue)) {
+  				} else if (isArray(nextValue)) {
+  						if (isArray(lastValue)) {
   							if (keyedChildren) {
   								updateKeyed(nextValue, lastValue, domNode, null, context);
   							} else {
@@ -3043,6 +3042,7 @@
   		instance: null,
   		create: function create(item, treeLifecycle, context) {
   			var toUseItem = item;
+  			var nextRender = undefined;
   			var instance = node.instance;
 
   			if (node.overrideItem !== null) {
@@ -3058,7 +3058,7 @@
   			} else if (typeof Component === 'function') {
   				// stateless component
   				if (!Component.prototype.render) {
-  					var nextRender = Component(getValueForProps(props, toUseItem), context);
+  					nextRender = Component(getValueForProps(props, toUseItem), context);
 
   					nextRender.parent = item;
   					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
@@ -3068,7 +3068,7 @@
   						instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
-  						var nextRender = instance.render();
+  						nextRender = instance.render();
   						var childContext = instance.getChildContext();
   						var fragmentFirstChild = undefined;
 
@@ -3088,7 +3088,7 @@
   							}
   							instance.componentDidMount();
   						});
-  						instance.forceUpdate = (function () {
+  						instance.forceUpdate = function () {
   							instance.context = context;
   							var nextRender = instance.render.call(instance);
   							var childContext = instance.getChildContext();
@@ -3107,7 +3107,7 @@
   							} else {
   								instance._lastRender = nextRender;
   							}
-  						}).bind(instance);
+  						};
   					})();
   				}
   			}

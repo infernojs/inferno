@@ -15,7 +15,7 @@ module.exports = {
 		filename: '[name].js',
 		publicPath: 'http://localhost:8080/'
 	},
-	devtool: 'source-map',
+	//devtool: 'source-map',
 	module: {
 		loaders: [{
 			test: /\.js$/,

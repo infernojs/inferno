@@ -13,6 +13,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 		instance: null,
 		create( item, treeLifecycle, context ) {
 			let toUseItem = item;
+			let nextRender;
 			let instance = node.instance;
 
 			if ( node.overrideItem !== null ) {
@@ -28,7 +29,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 			} else if ( typeof Component === 'function' ) {
 				// stateless component
 				if ( !Component.prototype.render ) {
-					const nextRender = Component( getValueForProps( props, toUseItem ), context );
+					nextRender = Component( getValueForProps( props, toUseItem ), context );
 
 					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create( nextRender, treeLifecycle, context );
@@ -37,7 +38,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 					instance = new Component( getValueForProps( props, toUseItem ) );
 					instance.context = context;
 					instance.componentWillMount();
-					const nextRender = instance.render();
+					nextRender = instance.render();
 					const childContext = instance.getChildContext();
 					let fragmentFirstChild;
 
@@ -57,7 +58,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 						}
 						instance.componentDidMount();
 					} );
-					instance.forceUpdate = function () {
+					instance.forceUpdate = () => {
 						instance.context = context;
 						const nextRender = instance.render.call( instance );
 						const childContext = instance.getChildContext();
@@ -76,7 +77,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 						} else {
 							instance._lastRender = nextRender;
 						}
-					}.bind( instance );
+					};
 				}
 			}
 			return domNode;
@@ -93,7 +94,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 				}
 				return domNode;
 			}
-			if ( typeof Component === 'function' ) {
+			if (typeof Component === 'function') {
 				// stateless component
 				if ( !Component.prototype.render ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
@@ -118,7 +119,7 @@ export default function createNodeWithComponent( componentIndex, props ) {
 						return domNode;
 					}
 				} else {
-					if ( !instance || Component !== instance.constructor ) {
+					if (!instance || Component !== instance.constructor) {
 						recreateNode( domNode, nextItem, node, treeLifecycle, context );
 						return domNode;
 					}

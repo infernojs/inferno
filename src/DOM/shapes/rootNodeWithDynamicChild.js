@@ -88,19 +88,19 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if ( nextValue && isVoid( lastValue ) ) {
-				if ( typeof nextValue === 'object' ) {
-					if ( isArray( nextValue ) ) {
-						updateAndAppendDynamicChildren( domNode, nextValue );
+			if (nextValue && isVoid( lastValue)) {
+				if (typeof nextValue === 'object') {
+					if (isArray(nextValue )) {
+						updateAndAppendDynamicChildren(domNode, nextValue);
 					} else {
-						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 					}
 
 				} else {
-					domNode.appendChild( document.createTextNode( nextValue ) );
+					domNode.appendChild(document.createTextNode(nextValue));
 				}
-			} else 	if ( lastValue && isVoid( nextValue ) ) {
-				if ( isArray( lastValue ) ) {
+			} else if (lastValue && isVoid(nextValue)) {
+				if (isArray(lastValue)) {
 					for ( let i = 0; i < lastValue.length; i++ ) {
 						if ( !isVoid( domNode.childNodes[i] ) ) {
 							domNode.removeChild( domNode.childNodes[i] );
@@ -111,18 +111,17 @@ export default function createRootNodeWithDynamicChild( templateNode, valueIndex
 				} else {
 					removeChild( domNode );
 				}
-			} else if ( nextValue !== lastValue ) {
-				if ( isStringOrNumber( nextValue ) ) {
-					appendText( domNode, nextValue );
-				} else if ( isVoid( nextValue ) ) {
-					if ( domNode !== null ) {
-
+			} else if (nextValue !== lastValue) {
+				if (isStringOrNumber( nextValue)) {
+					appendText(domNode, nextValue);
+				} else if (isVoid( nextValue)) {
+					if (domNode !== null) {
 						replaceChild( domNode, document.createTextNode( '' ) );
 					}
 					// if we update from undefined, we will have an array with zero length.
 					// If we check if it's an array, it will throw 'x' is undefined.
-				} else if ( nextValue.length !== 0 && isArray( nextValue ) ) {
-					if ( lastValue && isArray( lastValue ) ) {
+				} else if (isArray( nextValue)) {
+					if (isArray( lastValue)) {
 						if ( keyedChildren ) {
 							updateKeyed( nextValue, lastValue, domNode, null, context );
 						} else {

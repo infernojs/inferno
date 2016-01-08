@@ -8,11 +8,7 @@ let uniqueId = Date.now();
 const treeConstructors = {};
 
 function createId() {
-	if ( ExecutionEnvironment.canUseSymbol ) {
-		return Symbol();
-	} else {
-		return uniqueId++;
-	}
+	return uniqueId++;
 }
 
 export function addTreeConstructor(name, treeConstructor) {

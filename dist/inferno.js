@@ -210,11 +210,7 @@
   var treeConstructors = {};
 
   function createId() {
-  	if (ExecutionEnvironment.canUseSymbol) {
-  		return Symbol();
-  	} else {
-  		return uniqueId++;
-  	}
+  	return uniqueId++;
   }
 
   function addTreeConstructor(name, treeConstructor) {
