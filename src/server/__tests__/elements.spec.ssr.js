@@ -17,7 +17,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<div inferno></div>'
+			'<div data-inferno></div>'
 		);
 
 		template = createTemplate(() => ({
@@ -27,7 +27,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span inferno>Hello world!</span>'
+			'<span data-inferno>Hello world!</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -39,7 +39,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span inferno>1<!---->2<!---->3</span>'
+			'<span data-inferno>1<!---->2<!---->3</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -51,7 +51,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span inferno>Hello<!----> <!---->world!</span>'
+			'<span data-inferno>Hello<!----> <!---->world!</span>'
 		);
 	});
 
@@ -65,7 +65,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<div class="foo" inferno></div>'
+			'<div class="foo" data-inferno></div>'
 		);
 
 		template = createTemplate(() => ({
@@ -78,7 +78,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span class="foo" inferno>Hello world!</span>'
+			'<span class="foo" data-inferno>Hello world!</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -93,7 +93,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span class="foo" inferno>1<!---->2<!---->3</span>'
+			'<span class="foo" data-inferno>1<!---->2<!---->3</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -108,7 +108,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span class="foo" inferno>Hello<!----> <!---->world!</span>'
+			'<span class="foo" data-inferno>Hello<!----> <!---->world!</span>'
 		);
 	});
 });

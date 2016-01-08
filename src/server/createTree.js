@@ -42,7 +42,7 @@ function createStaticAttributes(node, excludeAttrs) {
  */
  // TODO
 	return Object.keys(node.attrs).map(attr => {
-		if (attr === 'inferno') {
+		if (attr === 'data-inferno') {
 			return `${ attr }`;
 		}
 		return `${ attr }="${ node.attrs[attr] }"`;
@@ -86,7 +86,7 @@ function createStaticTreeNode(isRoot, node) {
 			if (!node.attrs) {
 				node.attrs = {};
 			}
-			node.attrs.inferno = true;
+			node.attrs['data-inferno'] = true;
 		}
 		staticNode = `<${ node.tag }`;
 		if (node.attrs) {
