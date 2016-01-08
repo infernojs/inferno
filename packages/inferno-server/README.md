@@ -1,29 +1,27 @@
-# Inferno-dom
-> Inferno package for working with the DOM
+# Inferno-server
+> Inferno package for working with the server
 
-This package serves as the entry point of the DOM-related rendering paths. It is intended to be paired with the isomorphic Inferno, which will be shipped as inferno to npm.
+This package serves as the entry point of the Server-related rendering paths. It is intended to be paired with the isomorphic Inferno, which will be shipped as inferno to npm.
 
 ## Install
 
 ```
-npm install inferno inferno-dom
+npm install inferno inferno-server
 
 ```
 
 ## Contents
 
-* createRef
-* render
+* ...
 
 ## Usage
 
 ```
-const template = Inferno.createTemplate(() => ({
+const template = InfernoServer.renderToString(() => ({
 	tag: 'div'
 }));
 
 
-InfernoDOM.render(template(), container);
 ```
 
 
