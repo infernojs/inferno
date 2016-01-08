@@ -17,7 +17,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<div data-ssr="!0"></div>'
+			'<div></div>'
 		);
 
 		template = createTemplate(() => ({
@@ -27,7 +27,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span data-ssr="!1">Hello world!</span>'
+			'<span>Hello world!</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -39,7 +39,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span data-ssr="!3">123</span>'
+			'<span>1<!---->2<!---->3</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -51,7 +51,7 @@ describe('SSR Elements', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span data-ssr="!3">Hello world!</span>'
+			'<span>Hello<!----> <!---->world!</span>'
 		);
 	});
 
@@ -59,26 +59,26 @@ describe('SSR Elements', () => {
 		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: {
-				className: 'foo'
+				class: 'foo'
 			}
 		}));
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<div class="foo" data-ssr="!0"></div>'
+			'<div class="foo"></div>'
 		);
 
 		template = createTemplate(() => ({
 			tag: 'span',
 			text: 'Hello world!',
 			attrs: {
-				className: 'foo'
+				class: 'foo'
 			}
 		}));
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span class="foo" data-ssr="!1">Hello world!</span>'
+			'<span class="foo">Hello world!</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -87,13 +87,13 @@ describe('SSR Elements', () => {
 				1, 2, 3
 			],
 			attrs: {
-				className: 'foo'
+				class: 'foo'
 			}
 		}));
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span class="foo" data-ssr="!3">123</span>'
+			'<span class="foo">1<!---->2<!---->3</span>'
 		);
 
 		template = createTemplate(() => ({
@@ -102,13 +102,13 @@ describe('SSR Elements', () => {
 				'Hello', ' ', 'world!'
 			],
 			attrs: {
-				className: 'foo'
+				class: 'foo'
 			}
 		}));
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<span class="foo" data-ssr="!3">Hello world!</span>'
+			'<span class="foo">Hello<!----> <!---->world!</span>'
 		);
 	});
 });

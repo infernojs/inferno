@@ -15,23 +15,28 @@ function countChildren(children) {
 	}
 }
 
-function addMeta(isRoot, node) {
-	//! = root, . = non-root, needs to state how many children it has too
-	if (isRoot) {
-		return `data-ssr="!${ countChildren(node.children || node.text) }"`;
-	} else {
-		return `data-ssr=".${ countChildren(node.children || node.text) }"`;
-	}
-}
-
 function createStaticAttributes(node, excludeAttrs) {
  // TODO
 	return Object.keys(node.attrs).map(attr => `${ attr }="${ node.attrs[attr] }"`).join(' ');
 }
 
 function createStaticTreeChildren(children) {
+	let isLastChildNode = false;
+
 	if (isArray(children)) {
-		return children.map(child => isStringOrNumber(child) ? child : createStaticTreeNode(false, child)).join('');
+		return children.map((child, i) => {
+			if (isStringOrNumber(child)) {
+				if (isLastChildNode) {
+					isLastChildNode = true;
+					return '<!---->' + child;
+				} else {
+					isLastChildNode = true;
+					return child;
+				}
+			}
+			isLastChildNode = false;
+			return createStaticTreeNode(false, child);
+		}).join('');
 	} else {
 		if (isStringOrNumber(children)) {
 			return children;
@@ -44,13 +49,16 @@ function createStaticTreeChildren(children) {
 function createStaticTreeNode(isRoot, node) {
 	let staticNode;
 
+	if (isVoid(node)) {
+		return '';
+	}
+
 	if (node.tag) {
-		staticNode = `<${ node.tag } `;
+		staticNode = `<${ node.tag }`;
 		if (node.attrs) {
-			staticNode += createStaticAttributes(node, null) + ' ';
+			staticNode += ' ' + createStaticAttributes(node, null);
 		}
-		//add the relevant meta data
-		staticNode += `${ addMeta(isRoot, node) }>`;
+		staticNode += `>`;
 		if (!isVoid(node.children)) {
 			staticNode += createStaticTreeChildren(node.children);
 		} else if (!isVoid(node.text)) {
