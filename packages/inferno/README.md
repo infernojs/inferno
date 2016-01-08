@@ -5,7 +5,6 @@
 
 ```
 npm install inferno
-
 ```
 
 ## Contents
@@ -20,7 +19,6 @@ npm install inferno
 const template = Inferno.createTemplate(() => ({
 	tag: 'div'
 }));
-
 ```
 
 

@@ -7,7 +7,6 @@ This package serves as the entry point of the DOM-related rendering paths. It is
 
 ```
 npm install inferno inferno-dom
-
 ```
 
 ## Contents
@@ -21,7 +20,6 @@ npm install inferno inferno-dom
 const template = Inferno.createTemplate(() => ({
 	tag: 'div'
 }));
-
 
 InfernoDOM.render(template(), container);
 ```

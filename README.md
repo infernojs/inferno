@@ -153,16 +153,6 @@ InfernoDOM.render(<div />, document.body);
 Render a fragment into the DOM in the supplied container and return a reference to the component. If the fragment was previously rendered into container, this will
 perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno component.
 
-### Inferno.renderToString
-
-```js
-Inferno.renderToString(<MyComponent />);
-```
-
-[Note: currently in development]
-
-Render a fragment to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
-
 ### Inferno.createTemplate
 
 ```js
@@ -213,7 +203,7 @@ InfernoDOM.render(template(BasicComponent, 'abc'), container);
 ### Inferno.createRef
 
 ```js
-const divRef = Inferno.createRef();
+const divRef = InfernoDOM.createRef();
 
 InfernoDOM.render(<div ref={ divRef } />, document.body);
 divRef.element.textContent = 'Modifying the DOM node directly!';

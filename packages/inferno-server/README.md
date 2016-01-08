@@ -7,22 +7,19 @@ This package serves as the entry point of the Server-related rendering paths. It
 
 ```
 npm install inferno inferno-server
-
 ```
 
 ## Contents
 
-* ...
+* renderToString
 
 ## Usage
 
 ```
-const template = InfernoServer.renderToString(() => ({
+const template = Inferno.createTemplate(() => ({
 	tag: 'div'
 }));
 
-
+InfernoServer.renderToString(template());
 ```
-
-
 
