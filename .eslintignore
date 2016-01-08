@@ -1,4 +1,7 @@
 dist/*
+examples/*
+packages/*
+tools/*
 node_modules/*
 **/node_modules/*
 config/**
