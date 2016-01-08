@@ -9,17 +9,19 @@
   (global.Inferno = factory());
 }(this, function () { 'use strict';
 
-  function babelHelpers_typeof (obj) {
-    return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  function babelHelpers_classCallCheck (instance, Constructor) {
+  var babelHelpers_classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  var babelHelpers_createClass = (function () {
+  var babelHelpers_createClass = function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -35,7 +37,7 @@
       if (staticProps) defineProperties(Constructor, staticProps);
       return Constructor;
     };
-  })();
+  }();
 
   var babelHelpers_extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -245,7 +247,7 @@
 
   				switch (callbackLength) {
   					case 0:
-  						construct = function () {
+  						construct = function construct() {
   							return {
   								parent: null,
   								tree: tree,
@@ -257,7 +259,7 @@
   						};
   						break;
   					case 1:
-  						construct = function (v0) {
+  						construct = function construct(v0) {
   							var key = undefined;
 
   							if (keyIndex === 0) {
@@ -275,7 +277,7 @@
   						};
   						break;
   					case 2:
-  						construct = function (v0, v1) {
+  						construct = function construct(v0, v1) {
   							var key = undefined;
 
   							if (keyIndex === 0) {
@@ -296,7 +298,7 @@
   						};
   						break;
   					default:
-  						construct = function (v0, v1) {
+  						construct = function construct(v0, v1) {
   							for (var _len = arguments.length, values = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
   								values[_key - 2] = arguments[_key];
   							}
@@ -476,7 +478,7 @@
    *	}
    */
 
-  var Component = (function () {
+  var Component = function () {
   	function Component(props /* , context */) {
   		babelHelpers_classCallCheck(this, Component);
 
@@ -537,7 +539,7 @@
   		value: function getChildContext() {}
   	}]);
   	return Component;
-  })();
+  }();
 
   var index = {
   	Component: Component,

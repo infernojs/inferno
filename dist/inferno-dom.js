@@ -9,8 +9,10 @@
   (global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
-  function babelHelpers_typeof (obj) {
-    return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
   var babelHelpers_extends = Object.assign || function (target) {
