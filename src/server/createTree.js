@@ -81,14 +81,13 @@ function createStaticTreeNode(isRoot, node) {
 	if (isVoid(node)) {
 		return '';
 	}
-	if (isRoot) {
-		if (!node.attrs) {
-			node.attrs = {};
-		}
-		node.attrs.inferno = true;
-	}
-
 	if (node.tag) {
+		if (isRoot) {
+			if (!node.attrs) {
+				node.attrs = {};
+			}
+			node.attrs.inferno = true;
+		}
 		staticNode = `<${ node.tag }`;
 		if (node.attrs) {
 			staticNode += ' ' + createStaticAttributes(node, null);
