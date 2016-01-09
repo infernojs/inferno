@@ -113,7 +113,6 @@
   	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.create) {
   		return ValueTypes.TREE;
   	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.tree.dom) {
-  		// Dominic!? What do we do here? I guess this also should be checked for server / SSR ???
   		return ValueTypes.FRAGMENT;
   	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && Object.keys(value).length === 0) {
   		return ValueTypes.EMPTY_OBJECT;
@@ -358,6 +357,10 @@
   	return false;
   }
 
+  /**
+   *  DOM registry
+   * */
+
   var PROPERTY = 0x1;
   var BOOLEAN = 0x2;
   var NUMERIC_VALUE = 0x4;
@@ -429,12 +432,7 @@
   var DOMPropertyNames = {
   	autoComplete: 'autocomplete',
   	autoFocus: 'autofocus',
-  	autoPlay: 'autoplay',
-  	autoSave: 'autosave',
-  	hrefLang: 'hreflang',
-  	radioGroup: 'radiogroup',
-  	srcDoc: 'srcdoc',
-  	srcSet: 'srcset'
+  	autoSave: 'autosave'
   };
 
   // This 'whitelist' contains edge cases such as attributes
@@ -444,10 +442,10 @@
   	allowFullScreen: BOOLEAN,
   	async: BOOLEAN,
   	autoFocus: BOOLEAN,
-  	autoPlay: null,
+  	autoPlay: BOOLEAN,
   	capture: BOOLEAN,
   	checked: PROPERTY | BOOLEAN,
-  	controls: PROPERTY | BOOLEAN,
+  	controls: BOOLEAN,
   	currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
   	default: BOOLEAN,
   	defaultChecked: BOOLEAN,
@@ -483,7 +481,7 @@
   	scoped: PROPERTY | BOOLEAN,
   	visible: BOOLEAN,
   	trueSpeed: BOOLEAN,
-  	sandbox: PROPERTY,
+  	sandbox: null,
   	sortable: BOOLEAN,
   	inert: BOOLEAN,
   	indeterminate: BOOLEAN,
@@ -587,8 +585,9 @@
 
   	// Force 'autocorrect' and 'autoCapitalize' to be set as an attribute
   	// to fix issues with Mobile Safari on iOS devices
-  	autocorrect: BOOLEAN,
-
+  	autocorrect: null,
+  	// autoCapitalize and autoCorrect are supported in Mobile Safari for
+  	// keyboard hints.
   	autoCapitalize: null,
 
   	// Some version of IE ( like IE9 ) actually throw an exception
@@ -635,9 +634,15 @@
   	/**
     * Others
     */
-
   	srcSet: null,
   	scrolling: null,
+  	about: null,
+  	inlist: null,
+  	prefix: null,
+  	resource: null,
+  	typeof: null,
+  	vocab: null,
+  	poster: null,
   	nonce: null,
   	method: null,
   	minLength: null,
@@ -651,12 +656,17 @@
   	width: null,
   	dateTime: null,
   	contenteditable: null, // 3.2.5 - Global attributes
+  	content: null,
   	contextMenu: null,
   	classID: null,
+  	security: null,
   	cellPadding: null,
   	cellSpacing: null,
+  	challenge: null,
   	charSet: null,
   	allowTransparency: null,
+  	wrap: null,
+  	wmode: null,
   	spellcheck: null, // 3.2.5 - Global attributes
   	srcDoc: PROPERTY
   };
@@ -694,64 +704,61 @@
     */
 
   	setProperty: function setProperty(vNode, domNode, name, value, useProperties) {
+
   		var propertyInfo = HTMLPropsContainer[name] || null;
 
   		if (propertyInfo) {
   			if (isVoid(value) || propertyInfo.hasBooleanValue && !value || propertyInfo.hasNumericValue && value !== value || propertyInfo.hasPositiveNumericValue && value < 1 || value.length === 0) {
   				template.removeProperty(vNode, domNode, name, useProperties);
-  			} else {
+  			} else if (propertyInfo.mustUseProperty) {
+
   				var propName = propertyInfo.propertyName;
 
-  				if (propertyInfo.mustUseProperty) {
-  					if (propName === 'value' && (!isVoid(vNode) && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
-  						template.setSelectValueForProperty(vNode, domNode, value, useProperties);
-  					} else {
-  						if (useProperties) {
-  							if ('' + domNode[propName] !== '' + value) {
-  								domNode[propName] = value;
-  							}
-  						} else {
-  							if (propertyInfo.hasBooleanValue && (value === true || value === 'true')) {
-  								value = propName;
-  							}
-  							domNode.setAttribute(propName, value);
-  						}
+  				if (propName === 'value' && (!isVoid(vNode) && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
+  					template.setSelectValueForProperty(vNode, domNode, value, useProperties);
+  				} else if (useProperties) {
+
+  					if ('' + domNode[propName] !== '' + value) {
+  						domNode[propName] = value;
   					}
   				} else {
-  					var attributeName = propertyInfo.attributeName;
-  					var namespace = propertyInfo.attributeNamespace;
+  					if (propertyInfo.hasBooleanValue && (value === true || value === 'true')) {
+  						value = propName;
+  					}
+  					domNode.setAttribute(propName, value);
+  				}
+  			} else {
 
-  					if (namespace) {
-  						domNode.setAttributeNS(namespace, attributeName, value);
-  					} else {
-  						// if 'truthy' value, and boolean, it will be 'propName=propName'
-  						if (propertyInfo.hasBooleanValue && value === true) {
-  							value = attributeName;
-  						}
-  						domNode.setAttribute(attributeName, value);
+  				var attributeName = propertyInfo.attributeName;
+  				var namespace = propertyInfo.attributeNamespace;
+
+  				if (namespace) {
+  					domNode.setAttributeNS(namespace, attributeName, '' + value);
+  				} else {
+
+  					// if 'truthy' value, and boolean, it will be 'propName=propName'
+  					if (propertyInfo.hasBooleanValue && value === true) {
+  						value = attributeName;
   					}
+  					domNode.setAttribute(attributeName, '' + value);
   				}
   			}
-  			// HTML attributes and custom attributes
   		} else {
-  				// Regarding the specs each attribute name should be lowercases.
-  				// However. Use of 'toLowerCase()' is slow, so we simply avoid setting the
-  				// attribute if the first letter is capitalized - e.g. 'Knockle'
-  				if (isValidAttribute(name)) {
-  					if (isVoid(value)) {
-  						domNode.removeAttribute(name);
-  					} else if (name) {
-  						domNode.setAttribute(name, value);
-  					}
+  			if (isValidAttribute(name)) {
+  				if (isVoid(value)) {
+  					domNode.removeAttribute(name);
+  				} else if (name) {
+  					domNode.setAttribute(name, value);
   				}
   			}
+  		}
   	},
 
   	/**
     * Sets the value for multiple styles on a node.	If a value is specified as
     * '' ( empty string ), the corresponding style property will be unset.
     *
-     * @param {vNode} virtual node
+    * @param {vNode} virtual node
     * @param {DOMElement} node
     * @param {object} styles
     */
@@ -800,18 +807,14 @@
   		if (propertyInfo) {
   			if (propertyInfo.mustUseProperty) {
   				var propName = propertyInfo.propertyName;
-
+  				// Make sure we remove select / select multiiple properly
   				if (name === 'value' && (vNode !== null && vNode.tag === 'select' || domNode.tagName === 'SELECT')) {
   					template.removeSelectValueForProperty(vNode, domNode);
-  				} else if (propertyInfo.hasBooleanValue) {
-  					if (useProperties) {
-  						domNode[propName] = false;
-  					} else {
-  						domNode.removeAttribute(propName);
-  					}
   				} else {
   					if (useProperties) {
-  						if ('' + domNode[propName] !== '') {
+  						if (propertyInfo.hasBooleanValue) {
+  							domNode[propName] = false;
+  						} else if ('' + domNode[propName] !== '') {
   							domNode[propName] = '';
   						}
   					} else {
@@ -1847,7 +1850,6 @@
   }
 
   function replaceChild(domNode, childNode) {
-
   	var replaceNode = domNode.firstChild;
 
   	if (replaceNode) {
@@ -2718,7 +2720,6 @@
   	if (!nextProps.children) {
   		nextProps.children = prevProps.children;
   	}
-
   	if (prevProps !== nextProps || prevState !== nextState) {
   		if (prevProps !== nextProps) {
   			component._blockRender = true;
@@ -3314,7 +3315,6 @@
   	var staticNode = undefined;
 
   	if (!isVoid(node)) {
-
   		if (isStringOrNumber(node)) {
   			staticNode = document.createTextNode(node);
   		} else {
@@ -3688,7 +3688,6 @@
   	// nodeJS
   	// TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
   } else if (global && !global.Inferno) {
-
   		var Inferno = undefined;
 
   		// TODO! Avoid try / catch
@@ -3701,7 +3700,7 @@
 
   		if (Inferno != null) {
   			if (typeof Inferno.addTreeConstructor !== 'function') {
-  				throw 'OLD PACKAGE DETECTED!! Upgrade to newest Inferno version before you can use the InfernoDOM package.';
+  				throw 'Your package is out-of-date! Upgrade to latest Inferno in order to use the InfernoDOM package.';
   			} else {
   				Inferno.addTreeConstructor('dom', createDOMTree);
   			}

@@ -130,7 +130,6 @@
   	if (isVoid(node)) {
   		return false;
   	}
-
   	if (node.type === ObjectTypes.VARIABLE) {
   		nodeIsDynamic = true;
   		dynamicFlags.NODE = true;
@@ -154,7 +153,6 @@
   					dynamicFlags.ATTRS = true;
   				} else {
   					for (var attr in node.attrs) {
-
   						var attrVal = node.attrs[attr];
 
   						if (!isVoid(attrVal) && attrVal.type === ObjectTypes.VARIABLE) {
@@ -231,17 +229,8 @@
    let uniqueId = UUID.generate();
    */
   var treeConstructors = {};
-  var validTreeNames = {
-  	dom: true,
-  	html: true
-  };
-
   function addTreeConstructor(name, treeConstructor) {
-  	// If we don't validate, we can end up with 'foo', 'bar' as well
-  	if (validTreeNames[name] && treeConstructors[name] == null) {
-  		// Only add once
-  		treeConstructors[name] = treeConstructor;
-  	}
+  	treeConstructors[name] = treeConstructor;
   }
 
   function applyTreeConstructors(schema, dynamicNodeMap) {
@@ -254,7 +243,6 @@
   }
 
   function createTemplate(callback) {
-
   	if (typeof callback === 'function') {
   		var construct = callback.construct || null;
 
@@ -386,7 +374,6 @@
   		if (children.length) {
   			vNode.children = children;
   		}
-
   		return vNode;
   	} else {
   		return {
@@ -434,7 +421,6 @@
   	if (!nextProps.children) {
   		nextProps.children = prevProps.children;
   	}
-
   	if (prevProps !== nextProps || prevState !== nextState) {
   		if (prevProps !== nextProps) {
   			component._blockRender = true;
