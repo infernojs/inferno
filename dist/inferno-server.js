@@ -1594,6 +1594,19 @@
   	return domNode;
   }
 
+  function recreateRootNodeFromHydration(hydrateNode, nextItem, node, treeLifecycle, context) {
+  	var lastDomNode = hydrateNode;
+
+  	var domNode = node.create(nextItem, treeLifecycle, context);
+  	var parentNode = lastDomNode.parentNode;
+
+  	if (parentNode) {
+  		parentNode.replaceChild(domNode, lastDomNode);
+  	}
+  	nextItem.rootNode = domNode;
+  	return domNode;
+  }
+
   function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		pool: [],
@@ -3037,7 +3050,6 @@
   			var instance = node.instance;
 
   			if (instance) {
-
   				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
   				instance.componentWillUnmount();
   				node.instance = null;
@@ -3174,6 +3186,55 @@
   	return node;
   }
 
+  function purgeCommentNodes(domNode, parentDom) {
+  	var nextSibling = domNode.nextSibling;
+
+  	if (nextSibling && nextSibling.nodeType === 8) {
+  		nextSibling = purgeCommentNodes(nextSibling, parentDom);
+  		parentDom.removeChild(nextSibling);
+  	}
+
+  	return nextSibling;
+  }
+
+  function validateHydrateNodeChildren(hydrateNode, templateNode) {
+  	var templateNodeChild = templateNode.firstChild;
+  	var hydrateNodeChild = hydrateNode.firstChild;
+
+  	while (templateNodeChild) {
+  		var result = validateHydrateNode(hydrateNodeChild, templateNodeChild);
+  		if (!result) {
+  			return false;
+  		}
+  		templateNodeChild = templateNodeChild.nextSibling;
+  		// check when we reach a comment and remove it, as they are used to break up text nodes
+  		hydrateNodeChild = purgeCommentNodes(hydrateNodeChild, hydrateNode);
+  	}
+  	return true;
+  }
+
+  function validateHydrateNode(hydrateNode, templateNode, item, dynamicAttrs) {
+  	// check nodeNames, return false if not same
+  	if (hydrateNode.nodeName !== templateNode.nodeName) {
+  		return false;
+  	}
+  	if (hydrateNode.nodeType === 1) {
+  		// check hydrateNode has all the same attrs as templateNode (as these will be static)
+  		// return false if not same
+  		// TODO
+
+  		// check hydrateNode has all the same attrs as dynamicAttrs+item (as these will be dyanmic),
+  		// passively update here and do not return false (as state could have changed) if not same
+  		if (dynamicAttrs && item) {}
+  		// TODO
+
+  		// check through children
+  		return validateHydrateNodeChildren(hydrateNode, templateNode);
+  	} else if (hydrateNode.nodeType === 3) {
+  		return hydrateNode.nodeValue === templateNode.nodeValue;
+  	}
+  }
+
   function createRootStaticNode(templateNode, recyclingEnabled) {
   	var node = {
   		pool: [],
@@ -3200,7 +3261,14 @@
   			}
   			nextItem.rootNode = lastItem.rootNode;
   		},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove() {},
+  		hydrate: function hydrate(hydrateNode, item) {
+  			if (!validateHydrateNode(hydrateNode, templateNode, item)) {
+  				recreateRootNodeFromHydration(hydrateNode, item, node);
+  				return;
+  			}
+  			item.rootNode = hydrateNode;
+  		}
   	};
 
   	return node;
@@ -3213,14 +3281,14 @@
   			return templateNode.cloneNode(true);
   		},
   		update: function update() {},
-  		remove: function remove() /* lastItem */{}
+  		remove: function remove() {},
+  		hydrate: function hydrate() {}
   	};
 
   	return node;
   }
 
   function createElement(schema, domNamespace, parentNode) {
-
   	var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
   	var SVGNamespace = 'http://www.w3.org/2000/svg';
   	var nodeName = schema.tag.toLowerCase();
@@ -3258,7 +3326,6 @@
   			}
   		}
   	}
-
   	templateNode = domNamespace ? is ? document.createElementNS(domNamespace, nodeName, is) : document.createElementNS(domNamespace, nodeName) : is ? document.createElement(nodeName, is) : document.createElement(nodeName);
 
   	return {
@@ -3321,22 +3388,18 @@
   			var tag = node.tag;
 
   			if (tag) {
-
   				var Element = createElement(node, domNamespace, parentNode);
+
   				staticNode = Element.node;
   				domNamespace = Element.namespace;
-
   				var text = node.text;
   				var children = node.children;
 
   				if (!isVoid(text)) {
-
   					if ("development" !== 'production') {
-
   						if (!isVoid(children)) {
   							throw Error(invalidTemplateError);
   						}
-
   						if (!isStringOrNumber(text)) {
   							throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
   						}
@@ -3357,7 +3420,6 @@
   				throw Error(invalidTemplateError);
   			}
   		}
-
   		if (parentNode === null) {
   			return staticNode;
   		} else {
@@ -3410,7 +3472,6 @@
   					var _children = schema.children;
 
   					if (_children) {
-
   						if (isArray(_children)) {
   							if (_children.length > 1) {
   								_attrs.children = [];
@@ -3498,7 +3559,6 @@
   									subTreeForChildren = createDOMTree(children, false, dynamicNodeMap);
   								}
   							}
-
   							if (isRoot) {
   								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled);
   							} else {
@@ -3534,9 +3594,9 @@
   				}
   			} else if (text) {
   				templateNode = document.createTextNode('');
-  				//if ( isRoot ) {
+  				// if ( isRoot ) {
   				node = createRootDynamicTextNode(templateNode, text.index);
-  				//} //else {
+  				// } //else {
   				//					node = createDynamicTextNode( templateNode, text.index );
   				//				}
   			}
