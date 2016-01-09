@@ -20,14 +20,12 @@ import { ObjectTypes } 	from '../core/variables';
 import isArray from '../util/isArray';
 import { addDOMStaticAttributes } from './addAttributes';
 import { isRecyclingEnabled } from './recycling';
-
 import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
 import createRootStaticNode from './shapes/rootStaticNode';
 import createStaticNode from './shapes/staticNode';
 
-
-function createElement(schema, domNamespace, parentNode, dominic) {
+function createElement(schema, domNamespace, parentNode) {
 
 	const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 	const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -36,11 +34,11 @@ function createElement(schema, domNamespace, parentNode, dominic) {
 
 	let templateNode;
 
-	if ( domNamespace === undefined ) {
-		if ( schema.attrs && schema.attrs.xmlns ) {
+	if (domNamespace === undefined) {
+		if (schema.attrs && schema.attrs.xmlns) {
 			domNamespace = schema.attrs.xmlns;
 		} else {
-			switch ( nodeName ) {
+			switch (nodeName) {
 				case 'svg':
 					domNamespace = 'http://www.w3.org/2000/svg';
 					break;
@@ -48,37 +46,35 @@ function createElement(schema, domNamespace, parentNode, dominic) {
 					domNamespace = 'http://www.w3.org/1998/Math/MathML';
 					break;
 				default:
-					if ( dominic === 'static') {
-						// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
-						// E.g. <div><svg><svg></div> - will not work
-						if ( parentNode !== null ) { // only used by static children
-							// check only for top-level element for both mathML and SVG
-							if ( nodeName === 'svg' && parentNode.namespaceURI !== SVGNamespace ) {
-								domNamespace = SVGNamespace;
-							} else if ( nodeName === 'math' && parentNode.namespaceURI !== MathNamespace ) {
-								domNamespace = MathNamespace;
-							}
-						} else if ( isSVGElement( nodeName ) ) { // only used by dynamic children
+					// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
+					// E.g. <div><svg><svg></div> - will not work
+					if (parentNode) { // only used by static children
+						// check only for top-level element for both mathML and SVG
+						if (nodeName === 'svg' && (parentNode.namespaceURI !== SVGNamespace)) {
 							domNamespace = SVGNamespace;
-						} else if ( isMathMLElement( nodeName ) ) { // only used by dynamic children
+						} else if (nodeName === 'math' && (parentNode.namespaceURI !== MathNamespace)) {
 							domNamespace = MathNamespace;
 						}
+					} else if (isSVGElement(nodeName)) { // only used by dynamic children
+						domNamespace = SVGNamespace;
+					} else if (isMathMLElement(nodeName)) { // only used by dynamic children
+						domNamespace = MathNamespace;
 					}
 			}
 		}
 	}
 
-	if ( domNamespace ) {
-		if ( is ) {
-			templateNode = document.createElementNS( domNamespace, nodeName, is );
+	if (domNamespace) {
+		if (is) {
+			templateNode = document.createElementNS(domNamespace, nodeName, is);
 		} else {
-			templateNode = document.createElementNS( domNamespace, nodeName );
+			templateNode = document.createElementNS(domNamespace, nodeName);
 		}
 	} else {
-		if ( is ) {
-			templateNode = document.createElement( nodeName, is );
+		if (is) {
+			templateNode = document.createElement(nodeName, is);
 		} else {
-			templateNode = document.createElement( nodeName );
+			templateNode = document.createElement(nodeName);
 		}
 	}
 
@@ -91,10 +87,10 @@ function createElement(schema, domNamespace, parentNode, dominic) {
 const recyclingEnabled = isRecyclingEnabled();
 const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
-function createStaticAttributes( node, domNode, excludeAttrs ) {
+function createStaticAttributes(node, domNode, excludeAttrs) {
 	const attrs = node.attrs;
 
-	if ( !isVoid( attrs ) ) {
+	if (!isVoid(attrs)) {
 		if ( excludeAttrs ) {
 			const newAttrs = { ...attrs };
 
@@ -145,7 +141,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 		if ( tag ) {
 
-			const Element = createElement(node, domNamespace, parentNode, 'static')
+			const Element = createElement(node, domNamespace, parentNode)
 			staticNode = Element.node;
 			domNamespace = Element.namespace;
 
@@ -256,7 +252,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					}
 				}
 
-				templateNode = createElement(schema, domNamespace, null, 'dynamic').node
+				templateNode = createElement(schema, domNamespace, null).node
 
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
