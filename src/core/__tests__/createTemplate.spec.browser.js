@@ -1,5 +1,5 @@
 import createTemplate, { addTreeConstructor  } from '../createTemplate';
-import { render, renderToString } from '../../DOM/rendering';
+import { render } from '../../DOM/rendering';
 
 describe('Inferno.createTemplate()', () => {
 

@@ -1,4 +1,4 @@
-import queueStateChanges from '../core/queueStateChanges';
+import queueStateChanges from './queueStateChanges';
 
 /** Base Component class, for he ES6 Class method of creating Components
  *	@public

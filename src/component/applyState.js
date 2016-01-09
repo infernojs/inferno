@@ -31,7 +31,7 @@ function applyState(component) {
 				activeNode.focus();
 			}
 		} else {
-			applyState( component );
+			applyState(component);
 		}
 	});
 }

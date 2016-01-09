@@ -34,7 +34,6 @@ function renderMarkupForSelect(node) {
 			values[value] = value;
 		}
 		populateOptions(node, values);
-
 		if (node.attrs && node.attrs.value) {
 			delete node.attrs.value;
 		}
@@ -48,7 +47,6 @@ function renderMarkupForSelect(node) {
  * @param  Object values    The selected values to populate.
  */
 function populateOptions(node, values) {
-
 	if (node.tag !== 'option') {
 		for (let i = 0, len = node.children.length; i < len ; i++) {
 			populateOptions(node.children[i], values);
@@ -71,17 +69,13 @@ function populateOptions(node, values) {
  *
  * */
 function renderMarkupForStyles(styles, component) {
-
 	let serialized = '';
 
 	for (let styleName in styles) {
-
 		if (isValidAttribute(styleName)) {
-
 			let styleValue = styles[styleName];
 
 			if (!isVoid(styleValue)) {
-
 				if (!unitlessProperties[styleName]) {
 					if (typeof styleValue !== 'string') {
 						styleValue = styleValue + 'px';
@@ -96,15 +90,12 @@ function renderMarkupForStyles(styles, component) {
 }
 
 function renderMarkupForAttributes(name, value) {
-
 	if (name === 'data-inferno') {
 		return `${ name }`;
 	}
-
 	const propertyInfo = DOMRegistry[name] || null;
 
 	if (propertyInfo) {
-
 		if (isVoid(value) ||
 			propertyInfo.hasBooleanValue && !value ||
 			propertyInfo.hasNumericValue && (value !== value) ||
@@ -113,7 +104,6 @@ function renderMarkupForAttributes(name, value) {
 			value.length === 0) {
 			return '';
 		}
-
 		let attributeName = propertyInfo.attributeName;
 
 		return `${ attributeName }=${ quoteAttributeValueForBrowser(value) }`;
@@ -121,14 +111,12 @@ function renderMarkupForAttributes(name, value) {
 		if (isVoid(value) || !isValidAttribute(name)) {
 			return '';
 		}
-
 		// custom attributes
 		return `${ DOMAttributeNames[name] || name.toLowerCase() }=${ quoteAttributeValueForBrowser(value) }`;
 	}
 }
 function createStaticAttributes(props, excludeAttrs) {
 	let HTML = '';
-	debugger;
 
 	for (let propKey in props) {
 		let propValue = props[propKey];
@@ -140,7 +128,6 @@ function createStaticAttributes(props, excludeAttrs) {
 			let markup = null;
 
 			markup = renderMarkupForAttributes(propKey, propValue);
-
 			if (markup) {
 				HTML += ' ' + markup;
 			}
@@ -199,7 +186,6 @@ function createStaticTreeNode(isRoot, node) {
 			attributes[key] = attrs[key];
 		}
 		if (isRoot) {
-
 			attributes['data-inferno'] = true;
 		}
 		staticNode = `<${ tag }`;
@@ -221,7 +207,6 @@ function createStaticTreeNode(isRoot, node) {
 			} else if (!isVoid(node.text)) {
 				staticNode += node.text;
 			}
-
 			staticNode += `</${ tag }>`;
 		}
 	}
@@ -231,9 +216,7 @@ function createStaticTreeNode(isRoot, node) {
 
 export default function createHTMLTree(schema, isRoot, dynamicNodeMap) {
 	const dynamicFlags = dynamicNodeMap.get(schema);
-
 	let node;
-
 	// static html
 	if (!dynamicFlags) {
 		return createStaticNode(createStaticTreeNode(isRoot, schema));

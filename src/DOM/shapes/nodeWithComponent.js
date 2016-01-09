@@ -2,7 +2,7 @@
 import isVoid from '../../util/isVoid';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateNode from '../recreateNode';
-import updateComponent from '../../core/updateComponent';
+import updateComponent from '../../component/updateComponent';
 
 export default function createNodeWithComponent( componentIndex, props ) {
 	let domNode;

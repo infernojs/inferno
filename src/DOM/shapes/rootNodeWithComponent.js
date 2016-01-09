@@ -3,7 +3,7 @@ import isVoid from '../../util/isVoid';
 import { recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
-import updateComponent from '../../core/updateComponent';
+import updateComponent from '../../component/updateComponent';
 
 export default function createRootNodeWithComponent( componentIndex, props, recyclingEnabled ) {
 	let currentItem;

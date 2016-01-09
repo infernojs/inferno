@@ -1,8 +1,8 @@
-import createTemplate from '../createTemplate';
-import { addTreeConstructor } from '../createTemplate';
-import { render, renderToString } from '../../DOM/rendering';
+import createTemplate from '../../core/createTemplate';
+import { addTreeConstructor } from '../../core/createTemplate';
+import { render } from '../../DOM/rendering';
 import createDOMTree from '../../DOM/createTree';
-import createRef from '../createRef';
+import createRef from '../../DOM/createRef';
 
 addTreeConstructor( 'dom', createDOMTree );
 
