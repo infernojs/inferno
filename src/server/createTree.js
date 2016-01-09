@@ -78,6 +78,8 @@ function renderMarkupForAttributes(name, value) {
 		return `${ name }`;
 	}
 
+
+
 	const propertyInfo = DOMRegistry[name] || null;
 
 	if (propertyInfo) {
@@ -86,9 +88,11 @@ function renderMarkupForAttributes(name, value) {
 			propertyInfo.hasBooleanValue && !value ||
 			propertyInfo.hasNumericValue && (value !== value) ||
 			propertyInfo.hasPositiveNumericValue && value < 1 ||
+			value === 'false' ||
 			value.length === 0) {
 			return '';
 		}
+
 		let attributeName = propertyInfo.attributeName;
 		if (propertyInfo.hasBooleanValue) {
 			return attributeName + '=""';
@@ -156,8 +160,7 @@ function createStaticTreeChildren(children) {
 }
 
 function createStaticTreeNode(isRoot, node) {
-
-	let staticNode;
+let staticNode;
 
 	if (isVoid(node)) {
 		return '';
