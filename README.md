@@ -28,16 +28,25 @@ Very much like React, Inferno requires the `inferno` and the `inferno-dom` packa
 
 NPM:
 
+Core package:
 ```sh
 npm install --save inferno
-npm install --save inferno-dom
+ ```
+Browser DOM rendering package:
+ ```sh
+npm install --save inferno-dom 
+```
+Server-side rendering package:
+```sh
+npm install --save inferno-server 
 ```
 
-Pre-bundled files:
+Pre-bundled files for browser consumption:
  
 ```
 http://infernojs.org/releases/inferno.min-0.5.0.js
 http://infernojs.org/releases/inferno-dom.min-0.5.0.js
+http://infernojs.org/releases/inferno-server.min-0.5.0.js
 ```
 
 ## Testing
@@ -144,15 +153,6 @@ const MyComponent => ({ name, age }) =>
 
 Stateless components are first-class functions where their only argument is the `props` passed through from their parent.
 
-### InfernoDOM.render
-
-```javascript
-InfernoDOM.render(<div />, document.body);
-```
-
-Render a fragment into the DOM in the supplied container and return a reference to the component. If the fragment was previously rendered into container, this will
-perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno component.
-
 ### Inferno.createTemplate
 
 ```js
@@ -200,9 +200,11 @@ InfernoDOM.render(template(BasicComponent, 'abc'), container);
 ```
 `Inferno.TemplateFactory` provides a factory `createElement()` function that can be used to build up virtual DOM structures in a similar sense to how `React.creactElement()` works. It's first argument is the node, second argument is the attributes and all remaining arguments are it's children.
 
-### Inferno.createRef
+### InfernoDOM.createRef
 
 ```js
+import InfernoDOM from 'inferno-dom';
+
 const divRef = InfernoDOM.createRef();
 
 InfernoDOM.render(<div ref={ divRef } />, document.body);
@@ -210,6 +212,27 @@ divRef.element.textContent = 'Modifying the DOM node directly!';
 ```
 
 Creates a mutable object that links an Inferno rendered template node to its real DOM node upon being mounted to the DOM.
+
+### InfernoDOM.render
+
+```javascript
+import InfernoDOM from 'inferno-dom';
+
+InfernoDOM.render(<div />, document.body);
+```
+
+Render a fragment into the DOM in the supplied container given the supplied template. If the fragment was previously rendered into container, this will
+perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno fragment.
+
+### InfernoServer.renderToString
+
+```javascript
+import InfernoServer from 'inferno-server';
+
+InfernoServer.renderToString(<div />, document.body);
+```
+
+Render a fragment into the HTML string given the supplied template.
 
 ## Performance
 
