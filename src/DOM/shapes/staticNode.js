@@ -6,9 +6,8 @@ export default function createStaticNode(templateNode) {
 			return templateNode.cloneNode(true);
 		},
 		update() {},
-		remove( /* lastItem */ ) {
-
-		}
+		remove() {},
+		hydrate() {}
 	};
 
 	return node;

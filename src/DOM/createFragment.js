@@ -27,14 +27,16 @@ export default function createDOMFragment(parentNode, nextNode) {
 				const tree = nextItem.tree.dom;
 
 				if (tree) {
-					let activeNode = document.activeElement;
+					const activeNode = document.activeElement;
 
 					if (lastItem) {
 						tree.update(lastItem, nextItem, treeLifecycle, context);
 					} else {
 						if (tree) {
-							if (canHydrate(parentNode)) {
-								debugger;
+							const hydrateNode = parentNode.firstChild;
+
+							if (canHydrate(parentNode, hydrateNode)) {
+								tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
 							} else {
 								const dom = tree.create(nextItem, treeLifecycle, context);
 

@@ -10,9 +10,7 @@ addTreeConstructor( 'html', createHTMLTree );
 describe('SSR Attributes', () => {
 	let template;
 
-
 	it('should create markup for simple properties', () => {
-
 		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: { name: 'simple' }
@@ -43,9 +41,7 @@ describe('SSR Attributes', () => {
 		);
 	});
 
-
 	it('should work with the id attribute', () => {
-
 		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: { id: 'simple' }
@@ -58,7 +54,6 @@ describe('SSR Attributes', () => {
 	});
 
 	it('should create markup for boolean properties', () => {
-
 		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: { checked: 'simple' }
@@ -71,7 +66,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { checked: true}
+			attrs: { checked: true }
 		}));
 		expect(
 			renderToString(template())

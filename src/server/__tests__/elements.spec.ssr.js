@@ -11,7 +11,6 @@ describe('SSR Elements', () => {
 	let template;
 
 	it('should not stringify end tags for void elements', () => {
-
 		template = createTemplate(() => ({
 			tag: 'input'
 		}));
@@ -22,7 +21,7 @@ describe('SSR Elements', () => {
 		);
 	});
 
-	it('Very basic examples', () => {
+	it('very basic examples', () => {
 		template = createTemplate(() => ({
 			tag: 'div'
 		}));
@@ -67,7 +66,7 @@ describe('SSR Elements', () => {
 		);
 	});
 
-	it('Very basic examples with attributes', () => {
+	it('very basic examples with attributes', () => {
 		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: {

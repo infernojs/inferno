@@ -1,17 +1,18 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
-import recreateRootNode from '../recreateRootNode';
+import recreateRootNode, { recreateRootNodeFromHydration } from '../recreateRootNode';
+import { validateHydrateNode } from '../hydration';
 
-export default function createRootStaticNode( templateNode, recyclingEnabled ) {
+export default function createRootStaticNode(templateNode, recyclingEnabled) {
 	const node = {
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
-		create( item ) {
+		create(item) {
 			let domNode;
 
-			if ( recyclingEnabled ) {
-				domNode = recycle( node, item );
-				if ( domNode ) {
+			if (recyclingEnabled) {
+				domNode = recycle(node, item);
+				if (domNode) {
 					return domNode;
 				}
 			}
@@ -19,16 +20,21 @@ export default function createRootStaticNode( templateNode, recyclingEnabled ) {
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem ) {
+		update(lastItem, nextItem) {
 			// wrong tree and it toggle
-			if ( node !== lastItem.tree.dom ) {
-				recreateRootNode( lastItem, nextItem, node );
+			if (node !== lastItem.tree.dom) {
+				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
 			nextItem.rootNode = lastItem.rootNode;
 		},
-		remove( /* lastItem */ ) {
-
+		remove() {},
+		hydrate(hydrateNode, item) {
+			if (!validateHydrateNode(hydrateNode, templateNode, item)) {
+				recreateRootNodeFromHydration(hydrateNode, item, node);
+				return;
+			}
+			item.rootNode = hydrateNode;
 		}
 	};
 
