@@ -3720,7 +3720,9 @@
   	return node;
   }
 
-  function renderToString(item) {}
+  function renderToString(item) {
+  	return item.tree.html.create(item);
+  }
 
   var global = global || (typeof window !== 'undefined' ? window : null);
 

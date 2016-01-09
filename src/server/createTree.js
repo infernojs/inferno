@@ -38,6 +38,61 @@ const selfClosingTags = {
 	polygon: true
 };
 
+function selectValue(node) {
+	if (node.tag !== "select") {
+		return;
+	}
+
+	let value = node.attrs && node.attrs.value;
+	value = value || node.props && node.props.value;
+
+	if (value == null) {
+		return;
+	}
+
+	let values = {};
+	if (!isArray(value)) {
+		values[value] = value;
+	} else {
+		for (let i = 0, len = value.length; i < len ; i++) {
+			values[value[i]] = value[i];
+		}
+	}
+	populateOptions(node, values);
+	if (node.attrs && node.attrs.hasOwnProperty("value")) {
+		delete node.attrs.value;
+	}
+	if (node.props && node.props.hasOwnProperty("value")) {
+		delete node.props.value;
+	}
+}
+
+/**
+ * Populates values to options node.
+ *
+ * @param  Object node      A starting node (generaly a select node).
+ * @param  Object values    The selected values to populate.
+ */
+function populateOptions(node, values) {
+	if (node.tag !== "option") {
+		for (let i = 0, len = node.children.length; i < len ; i++) {
+			populateOptions(node.children[i], values);
+		}
+		return;
+	}
+	let value = node.attrs && node.attrs.value;
+	value = value || node.props && node.props.value;
+
+	if (!values.hasOwnProperty(value)) {
+		return;
+	}
+	node.attrs = node.attrs || {};
+	node.attrs.selected = "selected";
+	node.props = node.props || {};
+	node.props.selected = true;
+}
+
+
 function countChildren(children) {
 	if (!isVoid(children)) {
 		if (isArray(children)) {
@@ -94,9 +149,7 @@ function renderMarkupForAttributes(name, value) {
 		}
 
 		let attributeName = propertyInfo.attributeName;
-		if (propertyInfo.hasBooleanValue) {
-			return attributeName + '=""';
-		}
+
 		return `${ attributeName }=${ quoteAttributeValueForBrowser(value) }`;
 	} else {
 
@@ -160,7 +213,8 @@ function createStaticTreeChildren(children) {
 }
 
 function createStaticTreeNode(isRoot, node) {
-let staticNode;
+
+	let staticNode;
 
 	if (isVoid(node)) {
 		return '';
@@ -175,7 +229,7 @@ let staticNode;
 
 			if (key === 'value') {
 				if (tag === 'select') {
-					// TODO! Finish this
+					selectValue(node);
 					continue;
 				} else if (tag === 'textarea' || attrs.contenteditable) {
 					node.text = attrs[key];
@@ -193,21 +247,26 @@ let staticNode;
 
 		// In React they can add innerHTML like this, just workaround it
 		if (attributes.innerHTML) {
-			node.text = innerHTML;
+			node.text = attributes.innerHTML;
 		} else {
 			staticNode += createStaticAttributes(attributes, null);
 		}
 
-		staticNode += `>`;
+		if (selfClosingTags[tag]) {
+			staticNode += ` />`;
+		} else {
 
-		if (!selfClosingTags[tag]) {
+			staticNode += `>`;
+
 			if (!isVoid(node.children)) {
 				staticNode += createStaticTreeChildren(node.children);
 			} else if (!isVoid(node.text)) {
 				staticNode += node.text;
 			}
+
+			staticNode += `</${ tag }>`;
 		}
-		staticNode += `</${ tag }>`;
+
 	}
 
 	return staticNode;

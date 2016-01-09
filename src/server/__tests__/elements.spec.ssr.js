@@ -10,6 +10,18 @@ addTreeConstructor( 'html', createHTMLTree );
 describe('SSR Elements', () => {
 	let template;
 
+	it('should not stringify end tags for void elements', () => {
+
+		template = createTemplate(() => ({
+			tag: 'input'
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<input data-inferno />'
+		);
+	});
+
 	it('Very basic examples', () => {
 		template = createTemplate(() => ({
 			tag: 'div'

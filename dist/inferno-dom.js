@@ -3726,6 +3726,18 @@
   	};
   }
 
+  function canHydrate(domNode) {
+  	if (domNode.firstChild) {
+  		debugger;
+  		if (domNode.hasAttribute('inferno')) {
+  			return true;
+  		} else {
+  			// otherwise clear the DOM node
+  			domNode.innerHTML = '';
+  		}
+  	}
+  }
+
   function createDOMFragment(parentNode, nextNode) {
   	var lastItem = undefined;
   	var treeSuccessListeners = [];
@@ -3758,12 +3770,16 @@
   						tree.update(lastItem, nextItem, treeLifecycle, context);
   					} else {
   						if (tree) {
-  							var dom = tree.create(nextItem, treeLifecycle, context);
+  							if (canHydrate(parentNode)) {
+  								debugger;
+  							} else {
+  								var dom = tree.create(nextItem, treeLifecycle, context);
 
-  							if (nextNode) {
-  								parentNode.insertBefore(dom, nextNode);
-  							} else if (parentNode) {
-  								parentNode.appendChild(dom);
+  								if (nextNode) {
+  									parentNode.insertBefore(dom, nextNode);
+  								} else if (parentNode) {
+  									parentNode.appendChild(dom);
+  								}
   							}
   						}
   					}
