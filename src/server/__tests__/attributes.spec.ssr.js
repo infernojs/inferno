@@ -202,6 +202,7 @@ describe('SSR Attributes', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
+
 			'<select multiple="true" data-inferno><option value="1" selected="selected">1</option><option value="2" selected="selected">2</option></select>'
 		);
 	});
@@ -277,7 +278,7 @@ describe('SSR Attributes', () => {
 		expect(
 			renderToString(template())
 		).to.equal(
-			'<form class="login" acceptCharset="ISO-8859-1" accessKey="h" data-inferno></form>'
+			'<form class="login" accept-charset="ISO-8859-1" accesskey="h" data-inferno></form>'
 		);
 	});
 

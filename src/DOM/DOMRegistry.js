@@ -28,7 +28,7 @@ const DOMAttributeNamespaces = {
 	xlinkType: xlink
 };
 
-const DOMAttributeNames = {
+export const DOMAttributeNames = {
 
 	acceptCharset: 'accept-charset',
 	className: 'class',

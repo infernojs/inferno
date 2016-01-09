@@ -1,97 +1,13 @@
 import createStaticNode from './shapes/staticNode';
 import isArray from '../util/isArray';
 import isStringOrNumber from '../util/isStringOrNumber';
+import { unitlessProperties } from '../util/styleAccessor';
+import { DOMAttributeNames } from '../DOM/DOMRegistry';
 import isVoid from '../util/isVoid';
+import isValidAttribute from '../util/isValidAttribute';
 import DOMRegistry from '../DOM/DOMRegistry';
 import quoteAttributeValueForBrowser from './quoteAttributeValueForBrowser';
-
-const selfClosingTags = {
-	area: true,
-	base: true,
-	basefont: true,
-	br: true,
-	col: true,
-	command: true,
-	embed: true,
-	frame: true,
-	hr: true,
-	img: true,
-	input: true,
-	isindex: true,
-	keygen: true,
-	link: true,
-	meta: true,
-	param: true,
-	source: true,
-	track: true,
-	wbr: true,
-
-	//common self closing svg elements
-	path: true,
-	circle: true,
-	ellipse: true,
-	line: true,
-	rect: true,
-	use: true,
-	stop: true,
-	polyline: true,
-	polygon: true
-};
-
-function selectValue(node) {
-	if (node.tag !== "select") {
-		return;
-	}
-
-	let value = node.attrs && node.attrs.value;
-	value = value || node.props && node.props.value;
-
-	if (value == null) {
-		return;
-	}
-
-	let values = {};
-	if (!isArray(value)) {
-		values[value] = value;
-	} else {
-		for (let i = 0, len = value.length; i < len ; i++) {
-			values[value[i]] = value[i];
-		}
-	}
-	populateOptions(node, values);
-	if (node.attrs && node.attrs.hasOwnProperty("value")) {
-		delete node.attrs.value;
-	}
-	if (node.props && node.props.hasOwnProperty("value")) {
-		delete node.props.value;
-	}
-}
-
-/**
- * Populates values to options node.
- *
- * @param  Object node      A starting node (generaly a select node).
- * @param  Object values    The selected values to populate.
- */
-function populateOptions(node, values) {
-	if (node.tag !== "option") {
-		for (let i = 0, len = node.children.length; i < len ; i++) {
-			populateOptions(node.children[i], values);
-		}
-		return;
-	}
-	let value = node.attrs && node.attrs.value;
-	value = value || node.props && node.props.value;
-
-	if (!values.hasOwnProperty(value)) {
-		return;
-	}
-	node.attrs = node.attrs || {};
-	node.attrs.selected = "selected";
-	node.props = node.props || {};
-	node.props.selected = true;
-}
-
+import selfClosingTags from './selfClosingTags';
 
 function countChildren(children) {
 	if (!isVoid(children)) {
@@ -103,6 +19,50 @@ function countChildren(children) {
 	} else {
 		return 0;
 	}
+}
+
+function renderMarkupForSelect(node) {
+
+	let value = node.attrs && node.attrs.value;
+
+	if (!isVoid(value)) {
+		let values = {};
+		if (isArray(value)) {
+			for (let i = 0, len = value.length; i < len ; i++) {
+				values[value[i]] = value[i];
+			}
+		} else {
+			values[value] = value;
+		}
+		populateOptions(node, values);
+
+		if (node.attrs && node.attrs.value) {
+			delete node.attrs.value;
+		}
+	}
+}
+
+/**
+ * Populates values to options node.
+ *
+ * @param  Object node      A starting node (generaly a select node).
+ * @param  Object values    The selected values to populate.
+ */
+function populateOptions(node, values) {
+
+	if (node.tag !== 'option') {
+		for (let i = 0, len = node.children.length; i < len ; i++) {
+			populateOptions(node.children[i], values);
+		}
+		return;
+	}
+	let value = node.attrs && node.attrs.value;
+
+	if (!values[value]) {
+		return;
+	}
+	node.attrs = node.attrs || {};
+	node.attrs.selected = "selected";
 }
 
 /**
@@ -121,7 +81,7 @@ function renderMarkupForStyles(styles, component) {
 
 		if (styleValue !== null) {
 			serialized += styleName + ':';
-			serialized += styleValue + ';';
+			serialized += styleValue + unitlessProperties[styleName] ? styleValue + 'px' : stylevalue + ';';
 		}
 	}
 	return serialized || null;
@@ -132,8 +92,6 @@ function renderMarkupForAttributes(name, value) {
 	if (name === 'data-inferno') {
 		return `${ name }`;
 	}
-
-
 
 	const propertyInfo = DOMRegistry[name] || null;
 
@@ -152,13 +110,12 @@ function renderMarkupForAttributes(name, value) {
 
 		return `${ attributeName }=${ quoteAttributeValueForBrowser(value) }`;
 	} else {
-
-		if (isVoid(value)) {
+		if (isVoid(value) || !isValidAttribute(name)) {
 			return '';
 		}
 
 		// custom attributes
-		return `${ name }=${ quoteAttributeValueForBrowser(value) }`;
+		return `${ DOMAttributeNames[name] || name.toLowerCase() }=${ quoteAttributeValueForBrowser(value) }`;
 	}
 }
 function createStaticAttributes(props, excludeAttrs) {
@@ -229,7 +186,7 @@ function createStaticTreeNode(isRoot, node) {
 
 			if (key === 'value') {
 				if (tag === 'select') {
-					selectValue(node);
+					renderMarkupForSelect(node);
 					continue;
 				} else if (tag === 'textarea' || attrs.contenteditable) {
 					node.text = attrs[key];
@@ -266,7 +223,6 @@ function createStaticTreeNode(isRoot, node) {
 
 			staticNode += `</${ tag }>`;
 		}
-
 	}
 
 	return staticNode;

@@ -5,7 +5,7 @@ const HOOK = {};
 const reDash = /\-./g;
 
 /* eslint-disable quote-props */
-const unitlessProperties = {
+export const unitlessProperties = {
 	'animation-iteration-count': true,
 	'box-flex': true,
 	'box-flex-group': true,
