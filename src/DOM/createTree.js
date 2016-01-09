@@ -55,28 +55,22 @@ function createElement(schema, domNamespace, parentNode) {
 						} else if (nodeName === 'math' && (parentNode.namespaceURI !== MathNamespace)) {
 							domNamespace = MathNamespace;
 						}
-					} else if (isSVGElement(nodeName)) { // only used by dynamic children
+					} else if (isSVGElement(nodeName)) {
 						domNamespace = SVGNamespace;
-					} else if (isMathMLElement(nodeName)) { // only used by dynamic children
+					} else if (isMathMLElement(nodeName)) {
 						domNamespace = MathNamespace;
 					}
 			}
 		}
 	}
 
-	if (domNamespace) {
-		if (is) {
-			templateNode = document.createElementNS(domNamespace, nodeName, is);
-		} else {
-			templateNode = document.createElementNS(domNamespace, nodeName);
-		}
-	} else {
-		if (is) {
-			templateNode = document.createElement(nodeName, is);
-		} else {
-			templateNode = document.createElement(nodeName);
-		}
-	}
+	templateNode = domNamespace ?
+		is ?
+			document.createElementNS(domNamespace, nodeName, is) :
+			document.createElementNS(domNamespace, nodeName) :
+		is ?
+			document.createElement(nodeName, is) :
+			document.createElement(nodeName);
 
 	return {
 		namespace: domNamespace,
@@ -131,9 +125,9 @@ function createStaticTreeChildren( children, parentNode, domNamespace ) {
 function createStaticTreeNode( node, parentNode, domNamespace ) {
 	let staticNode;
 
-	if ( isVoid( node ) ) {
-		return null;
-	}
+	if ( !isVoid( node ) ) {
+
+
 	if ( isStringOrNumber( node ) ) {
 		staticNode = document.createTextNode( node );
 	} else {
@@ -182,6 +176,7 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 		return staticNode;
 	} else {
 		parentNode.appendChild( staticNode );
+	}
 	}
 }
 
