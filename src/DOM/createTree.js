@@ -27,6 +27,67 @@ import createRootStaticNode from './shapes/rootStaticNode';
 import createStaticNode from './shapes/staticNode';
 
 
+function createElement(schema, domNamespace, parentNode, dominic) {
+
+	const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
+	const SVGNamespace = 'http://www.w3.org/2000/svg';
+	const nodeName = schema.tag.toLowerCase();
+	const is = schema.attrs && schema.attrs.is;
+
+	let templateNode;
+
+	if ( domNamespace === undefined ) {
+		if ( schema.attrs && schema.attrs.xmlns ) {
+			domNamespace = schema.attrs.xmlns;
+		} else {
+			switch ( nodeName ) {
+				case 'svg':
+					domNamespace = 'http://www.w3.org/2000/svg';
+					break;
+				case 'math':
+					domNamespace = 'http://www.w3.org/1998/Math/MathML';
+					break;
+				default:
+					if ( dominic === 'static') {
+						// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
+						// E.g. <div><svg><svg></div> - will not work
+						if ( parentNode !== null ) { // only used by static children
+							// check only for top-level element for both mathML and SVG
+							if ( nodeName === 'svg' && parentNode.namespaceURI !== SVGNamespace ) {
+								domNamespace = SVGNamespace;
+							} else if ( nodeName === 'math' && parentNode.namespaceURI !== MathNamespace ) {
+								domNamespace = MathNamespace;
+							}
+						} else if ( isSVGElement( nodeName ) ) { // only used by dynamic children
+							domNamespace = SVGNamespace;
+						} else if ( isMathMLElement( nodeName ) ) { // only used by dynamic children
+							domNamespace = MathNamespace;
+						}
+					}
+			}
+		}
+	}
+
+	if ( domNamespace ) {
+		if ( is ) {
+			templateNode = document.createElementNS( domNamespace, nodeName, is );
+		} else {
+			templateNode = document.createElementNS( domNamespace, nodeName );
+		}
+	} else {
+		if ( is ) {
+			templateNode = document.createElement( nodeName, is );
+		} else {
+			templateNode = document.createElement( nodeName );
+		}
+	}
+
+	return {
+		namespace: domNamespace,
+		node: templateNode
+	};
+}
+
 const recyclingEnabled = isRecyclingEnabled();
 const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
@@ -89,51 +150,11 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 			const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 			const SVGNamespace = 'http://www.w3.org/2000/svg';
 
-			// https://jsperf.com/type-of-undefined-vs-undefined/76
-			if ( domNamespace === undefined ) {
+			const Element = createElement(node, domNamespace, parentNode, 'static')
+			staticNode = Element.node;
+			domNamespace = Element.namespace;
 
-				if ( node.attrs && node.attrs.xmlns ) {
-					domNamespace = node.attrs.xmlns;
-				} else {
-					switch ( nodeName ) {
-						case 'svg':
-							domNamespace = SVGNamespace;
-							break;
-						case 'math':
-							domNamespace = MathNamespace;
-							break;
-						default:
-							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
-							// E.g. <div><svg><svg></div> - will not work
-							if ( parentNode !== null ) { // only used by static children
-								// check only for top-level element for both mathML and SVG
-								if ( nodeName === 'svg' && parentNode.namespaceURI !== SVGNamespace ) {
-									domNamespace = SVGNamespace;
-								} else if ( nodeName === 'math' && parentNode.namespaceURI !== MathNamespace ) {
-									domNamespace = MathNamespace;
-								}
-							} else if ( isSVGElement( nodeName ) ) { // only used by dynamic children
-								domNamespace = SVGNamespace;
-							} else if ( isMathMLElement( nodeName ) ) { // only used by dynamic children
-								domNamespace = MathNamespace;
-							}
-					}
-				}
-			}
 
-			if ( domNamespace ) {
-				if ( is ) {
-					staticNode = document.createElementNS( domNamespace, nodeName, is );
-				} else {
-					staticNode = document.createElementNS( domNamespace, nodeName );
-				}
-			} else {
-				if ( is ) {
-					staticNode = document.createElement( nodeName, is );
-				} else {
-					staticNode = document.createElement( nodeName );
-				}
-			}
 			const text = node.text;
 			const children = node.children;
 
@@ -202,7 +223,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 	} else {
 		if ( dynamicFlags.NODE === true ) {
 			if ( isRoot ) {
-		//		node = createRootDynamicNode( schema.index, domNamespace, recyclingEnabled );
+				//		node = createRootDynamicNode( schema.index, domNamespace, recyclingEnabled );
 			} else {
 				node = createDynamicNode( schema.index, domNamespace );
 			}
@@ -240,35 +261,8 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					}
 				}
 
-				const is = schema.attrs && schema.attrs.is;
+				templateNode = createElement(schema, domNamespace, null, 'dynamic').node
 
-				if ( domNamespace === undefined ) {
-					if ( schema.attrs && schema.attrs.xmlns ) {
-						domNamespace = schema.attrs.xmlns;
-					} else {
-						switch ( tag ) {
-							case 'svg':
-								domNamespace = 'http://www.w3.org/2000/svg';
-								break;
-							case 'math':
-								domNamespace = 'http://www.w3.org/1998/Math/MathML';
-								break;
-						}
-					}
-				}
-				if ( domNamespace ) {
-					if ( is ) {
-						templateNode = document.createElementNS( domNamespace, tag, is );
-					} else {
-						templateNode = document.createElementNS( domNamespace, tag );
-					}
-				} else {
-					if ( is ) {
-						templateNode = document.createElement( tag, is );
-					} else {
-						templateNode = document.createElement( tag );
-					}
-				}
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
 
@@ -374,7 +368,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 			} else if ( text ) {
 				templateNode = document.createTextNode( '' );
 				//if ( isRoot ) {
-					node = createRootDynamicTextNode( templateNode, text.index );
+				node = createRootDynamicTextNode( templateNode, text.index );
 				//} //else {
 //					node = createDynamicTextNode( templateNode, text.index );
 //				}
