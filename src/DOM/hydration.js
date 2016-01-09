@@ -10,12 +10,14 @@ export function canHydrate(domNode, nextDomNode) {
 }
 
 function purgeCommentNodes(domNode, parentDom) {
-	const nextSibling = domNode.nextSibling;
+	let nextSibling = domNode.nextSibling;
 
 	if (nextSibling && nextSibling.nodeType === 8) {
-		purgeCommentNodes(nextSibling, parentDom);
+		nextSibling = purgeCommentNodes(nextSibling, parentDom);
 		parentDom.removeChild(nextSibling);
 	}
+
+	return nextSibling;
 }
 
 function validateHydrateNodeChildren(hydrateNode, templateNode) {
@@ -27,8 +29,8 @@ function validateHydrateNodeChildren(hydrateNode, templateNode) {
 		if (!result) {
 			return false;
 		}
-		// check when we reach a comment and remove it, as they are used to break up text nodes
 		templateNodeChild = templateNodeChild.nextSibling;
+		// check when we reach a comment and remove it, as they are used to break up text nodes
 		hydrateNodeChild = purgeCommentNodes(hydrateNodeChild, hydrateNode);
 	}
 	return true;
