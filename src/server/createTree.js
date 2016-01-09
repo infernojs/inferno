@@ -215,6 +215,7 @@ let staticNode;
 
 export default function createHTMLTree(schema, isRoot, dynamicNodeMap) {
 	const dynamicFlags = dynamicNodeMap.get(schema);
+
 	let node;
 
 	// static html

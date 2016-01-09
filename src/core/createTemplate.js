@@ -28,16 +28,29 @@ let UUID = (function() {
  let uniqueId = UUID.generate();
 */
 const treeConstructors = {};
+const validTreeNames = {
+	dom: true,
+	html: true
+
+};
 
 export function addTreeConstructor(name, treeConstructor) {
-	treeConstructors[ name ] = treeConstructor;
+	// If we don't validate, we can end up with 'foo', 'bar' as well
+	if (validTreeNames[name] && treeConstructors[ name ] == null) {
+		// Only add once
+		treeConstructors[ name ] = treeConstructor;
+	}
 }
 
 function applyTreeConstructors( schema, dynamicNodeMap ) {
 	const tree = {};
 
 	for ( let treeConstructor in treeConstructors ) {
-		tree[ treeConstructor ] = treeConstructors[ treeConstructor ]( schema, true, dynamicNodeMap );
+
+		if(treeConstructor === 'html') {
+		}else{
+			tree[ treeConstructor ] = treeConstructors[ treeConstructor ]( schema, true, dynamicNodeMap );
+		}
 	}
 	return tree;
 }
