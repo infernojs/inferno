@@ -24,7 +24,8 @@ To be more technically correct, Inferno is a "virtual fragment" framework, which
 
 ## Install
 
-Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM.
+Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM. Inferno also has the `inferno-server` package for
+server-side rendering of fragments to HTML strings (differing from React's route of using `react-dom/server` for server-side rendering).
 
 NPM:
 
@@ -47,26 +48,6 @@ Pre-bundled files for browser consumption:
 http://infernojs.org/releases/inferno.min-0.5.0.js
 http://infernojs.org/releases/inferno-dom.min-0.5.0.js
 http://infernojs.org/releases/inferno-server.min-0.5.0.js
-```
-
-## Testing
-
-```sh
-npm run test:browser // browser tests
-npm run test:server // node tests
-npm run test // browser and node tests
-npm run browser // hot-loaded browser tests
-```
-
-## Building
-
-```sh
-npm run build
-```
-## Linting
-
-```sh
-npm run lint:source // lint the source
 ```
 
 ## Overview
@@ -257,6 +238,28 @@ Inferno is still under development, and there are some missing features and opti
 - implement isomorphism/universal server side rendering
 - add API docs
 - add examples repo
+
+## Contributing
+
+### Testing
+
+```sh
+npm run test:browser // browser tests
+npm run test:server // node tests
+npm run test // browser and node tests
+npm run browser // hot-loaded browser tests
+```
+
+### Building
+
+```sh
+npm run build
+```
+### Linting
+
+```sh
+npm run lint:source // lint the source
+```
 
 ### Inferno is supported by BrowserStack
 
