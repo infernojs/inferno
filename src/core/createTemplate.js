@@ -33,24 +33,19 @@ const validTreeNames = {
 };
 
 export function addTreeConstructor(name, treeConstructor) {
-	// If we don't validate, we can end up with 'foo', 'bar' as well
-	if (validTreeNames[name] && treeConstructors[ name ] == null) {
-		// Only add once
-		treeConstructors[ name ] = treeConstructor;
-	}
+	treeConstructors[name] = treeConstructor;
 }
 
-function applyTreeConstructors( schema, dynamicNodeMap ) {
+function applyTreeConstructors(schema, dynamicNodeMap) {
 	const tree = {};
 
-	for ( let treeConstructor in treeConstructors ) {
-		tree[ treeConstructor ] = treeConstructors[ treeConstructor ]( schema, true, dynamicNodeMap );
+	for (let treeConstructor in treeConstructors) {
+		tree[treeConstructor] = treeConstructors[treeConstructor](schema, true, dynamicNodeMap);
 	}
 	return tree;
 }
 
 export default function createTemplate( callback ) {
-
 	if ( typeof callback === 'function' ) {
 		let construct = callback.construct || null;
 

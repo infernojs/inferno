@@ -5,7 +5,7 @@ import Component from '../../component/Component';
 import { addTreeConstructor } from '../../core/createTemplate';
 import TemplateFactory from '../../core/TemplateFactory';
 
-addTreeConstructor( 'html', createHTMLTree );
+addTreeConstructor('html', createHTMLTree);
 
 describe('SSR Elements', () => {
 	let template;

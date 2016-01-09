@@ -126,8 +126,6 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 	let staticNode;
 
 	if ( !isVoid( node ) ) {
-
-
 		if ( isStringOrNumber( node ) ) {
 			staticNode = document.createTextNode( node );
 		} else {

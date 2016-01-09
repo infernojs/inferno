@@ -22,7 +22,6 @@ function countChildren(children) {
 }
 
 function renderMarkupForSelect(node) {
-
 	let value = node.attrs && node.attrs.value;
 
 	if (!isVoid(value)) {
@@ -128,18 +127,16 @@ function renderMarkupForAttributes(name, value) {
 	}
 }
 function createStaticAttributes(props, excludeAttrs) {
-
 	let HTML = '';
+	debugger;
 
 	for (let propKey in props) {
-
 		let propValue = props[propKey];
 
 		if (!isVoid(propValue)) {
 			if (propKey === 'style') {
 				propValue = renderMarkupForStyles(propValue);
 			}
-
 			let markup = null;
 
 			markup = renderMarkupForAttributes(propKey, propValue);
@@ -179,20 +176,17 @@ function createStaticTreeChildren(children) {
 }
 
 function createStaticTreeNode(isRoot, node) {
-
 	let staticNode;
 
 	if (isVoid(node)) {
 		return '';
 	}
 	if (node.tag) {
-
 		let tag = node.tag.toLowerCase();
 		let attrs = node.attrs;
 		let attributes = {};
 
 		for (let key in node.attrs) {
-
 			if (key === 'value') {
 				if (tag === 'select') {
 					renderMarkupForSelect(node);
@@ -204,7 +198,6 @@ function createStaticTreeNode(isRoot, node) {
 			}
 			attributes[key] = attrs[key];
 		}
-
 		if (isRoot) {
 
 			attributes['data-inferno'] = true;
@@ -221,7 +214,6 @@ function createStaticTreeNode(isRoot, node) {
 		if (selfClosingTags[tag]) {
 			staticNode += ` />`;
 		} else {
-
 			staticNode += `>`;
 
 			if (!isVoid(node.children)) {
