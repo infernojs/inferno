@@ -5,6 +5,39 @@ import isVoid from '../util/isVoid';
 import DOMRegistry from '../DOM/DOMRegistry';
 import quoteAttributeValueForBrowser from './quoteAttributeValueForBrowser';
 
+const selfClosingTags = {
+	area: true,
+	base: true,
+	basefont: true,
+	br: true,
+	col: true,
+	command: true,
+	embed: true,
+	frame: true,
+	hr: true,
+	img: true,
+	input: true,
+	isindex: true,
+	keygen: true,
+	link: true,
+	meta: true,
+	param: true,
+	source: true,
+	track: true,
+	wbr: true,
+
+	//common self closing svg elements
+	path: true,
+	circle: true,
+	ellipse: true,
+	line: true,
+	rect: true,
+	use: true,
+	stop: true,
+	polyline: true,
+	polygon: true
+};
+
 function countChildren(children) {
 	if (!isVoid(children)) {
 		if (isArray(children)) {
@@ -79,34 +112,23 @@ function createStaticAttributes(node, excludeAttrs) {
 
 	for (let propKey in props) {
 
-		var propValue = props[propKey];
+		let propValue = props[propKey];
 
-		if (propValue == null) {
-			continue;
+		if (!isVoid(propValue)) {
+			if (propKey === 'style') {
+				propValue = renderMarkupForStyles(propKey, propValue);
+			}
+
+			let markup = null;
+
+			markup = renderMarkupForAttributes(propKey, propValue);
+
+			if (markup) {
+				HTML += ' ' + markup;
+			}
 		}
-
-		if (propKey === 'style') {
-			propValue = renderMarkupForStyles(propKey, propValue );
-		}
-
-		let markup = null;
-
-		markup =  renderMarkupForAttributes(propKey, propValue );
-
-		if (markup) {
-			HTML += ' ' + markup;
-		}
-
 	}
 	return HTML;
-
- // TODO
-	return Object.keys(node.attrs).map(attr => {
-		if (attr === 'data-inferno') {
-			return `${ attr }`;
-		}
-		return `${ attr }="${ node.attrs[attr] }"`;
-	}).join(' ');
 }
 
 function createStaticTreeChildren(children) {
@@ -149,16 +171,31 @@ function createStaticTreeNode(isRoot, node) {
 			node.attrs['data-inferno'] = true;
 		}
 		staticNode = `<${ node.tag }`;
+
+		// In React they can add innerHTML like this, just avoid it
 		if (node.attrs) {
-			staticNode += createStaticAttributes(node, null);
+
+			if ( node.attrs.innerHTML) {
+				node.text = innerHTML;
+			} else {
+				staticNode += createStaticAttributes(node, null);
+			}
 		}
+
 		staticNode += `>`;
-		if (!isVoid(node.children)) {
-			staticNode += createStaticTreeChildren(node.children);
-		} else if (!isVoid(node.text)) {
-			staticNode += node.text;
+
+		if (selfClosingTags[node.tag]) {
+
+		} else {
+
+			if (!isVoid(node.children)) {
+				staticNode += createStaticTreeChildren(node.children);
+			} else if (!isVoid(node.text)) {
+				staticNode += node.text;
+			} else if (!isVoid(node.text)) {
+				staticNode += node.text;
+			}
 		}
-		// check if node is self closing?
 		staticNode += `</${ node.tag }>`;
 	}
 
