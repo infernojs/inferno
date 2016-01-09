@@ -30,14 +30,17 @@ server-side rendering of fragments to HTML strings (differing from React's route
 NPM:
 
 Core package:
+
 ```sh
 npm install --save inferno
  ```
 Browser DOM rendering package:
+
  ```sh
 npm install --save inferno-dom 
 ```
 Server-side rendering package:
+
 ```sh
 npm install --save inferno-server 
 ```
