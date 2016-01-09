@@ -11,7 +11,7 @@ if (global && global.InfernoComponent) {
 	updateComponent = global.InfernoComponent.updateComponent;
 } else if (global && !global.InfernoComponent) {
 	try {
-		updateComponent = require('inferno').updateComponent;
+		updateComponent = require('inferno-component').updateComponent;
 	} catch (e) {
 		// do nothing, this is fine, the person might be using stateless components
 	}
