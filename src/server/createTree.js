@@ -41,6 +41,10 @@ function renderMarkupForStyles(styles, component) {
 
 function renderMarkupForAttributes(name, value) {
 
+	if (name === 'data-inferno') {
+		return `${ name }`;
+	}
+
 	const propertyInfo = DOMRegistry[name] || null;
 
 	if (propertyInfo) {
@@ -76,10 +80,11 @@ function createStaticAttributes(node, excludeAttrs) {
 	for (let propKey in props) {
 
 		var propValue = props[propKey];
+
 		if (propValue == null) {
 			continue;
 		}
-		renderMarkupForStyles
+
 		if (propKey === 'style') {
 			propValue = renderMarkupForStyles(propKey, propValue );
 		}
@@ -145,7 +150,7 @@ function createStaticTreeNode(isRoot, node) {
 		}
 		staticNode = `<${ node.tag }`;
 		if (node.attrs) {
-			staticNode += ' ' + createStaticAttributes(node, null);
+			staticNode += createStaticAttributes(node, null);
 		}
 		staticNode += `>`;
 		if (!isVoid(node.children)) {
