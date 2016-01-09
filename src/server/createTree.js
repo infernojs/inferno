@@ -156,6 +156,7 @@ function createStaticTreeChildren(children) {
 }
 
 function createStaticTreeNode(isRoot, node) {
+
 	let staticNode;
 
 	if (isVoid(node)) {
@@ -163,54 +164,47 @@ function createStaticTreeNode(isRoot, node) {
 	}
 	if (node.tag) {
 
+		let tag = node.tag.toLowerCase();
+		let attrs = node.attrs;
 		let attributes = {};
 
 		for (let key in node.attrs) {
 
 			if (key === 'value') {
-				if (node.tag === 'select') {
+				if (tag === 'select') {
 					// TODO! Finish this
 					continue;
-				} else if (node.tag === 'textarea' || node.attrs.contenteditable) {
-					node.text = node.attrs[key];
+				} else if (tag === 'textarea' || attrs.contenteditable) {
+					node.text = attrs[key];
 					continue;
 				}
 			}
-			attributes[key] = node.attrs[key];
+			attributes[key] = attrs[key];
 		}
 
 		if (isRoot) {
-		//	if (!attributes) {
-			//			attributes = {};
-			//}
+
 			attributes['data-inferno'] = true;
 		}
-		staticNode = `<${ node.tag }`;
+		staticNode = `<${ tag }`;
 
-		if (attributes) {
-			// In React they can add innerHTML like this, just workaround it
-			if (attributes.innerHTML) {
-				node.text = innerHTML;
-			} else {
-				staticNode += createStaticAttributes(attributes, null);
-			}
+		// In React they can add innerHTML like this, just workaround it
+		if (attributes.innerHTML) {
+			node.text = innerHTML;
+		} else {
+			staticNode += createStaticAttributes(attributes, null);
 		}
 
 		staticNode += `>`;
 
-		if (selfClosingTags[node.tag]) {
-
-		} else {
-
+		if (!selfClosingTags[tag]) {
 			if (!isVoid(node.children)) {
 				staticNode += createStaticTreeChildren(node.children);
 			} else if (!isVoid(node.text)) {
 				staticNode += node.text;
-			} else if (!isVoid(node.text)) {
-				staticNode += node.text;
 			}
 		}
-		staticNode += `</${ node.tag }>`;
+		staticNode += `</${ tag }>`;
 	}
 
 	return staticNode;
