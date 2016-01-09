@@ -1,3 +1,7 @@
+/**
+ *  DOM registry
+ * */
+
 const PROPERTY = 0x1;
 const BOOLEAN = 0x2;
 const NUMERIC_VALUE = 0x4;
@@ -69,12 +73,7 @@ export const DOMAttributeNames = {
 const DOMPropertyNames = {
 	autoComplete: 'autocomplete',
 	autoFocus: 'autofocus',
-	autoPlay: 'autoplay',
 	autoSave: 'autosave',
-	hrefLang: 'hreflang',
-	radioGroup: 'radiogroup',
-	srcDoc: 'srcdoc',
-	srcSet: 'srcset'
 };
 
 // This 'whitelist' contains edge cases such as attributes
@@ -84,10 +83,10 @@ const Whitelist = {
 	allowFullScreen: BOOLEAN,
 	async: BOOLEAN,
 	autoFocus: BOOLEAN,
-	autoPlay: null,
+	autoPlay: BOOLEAN,
 	capture: BOOLEAN,
 	checked: PROPERTY | BOOLEAN,
-	controls: PROPERTY | BOOLEAN,
+	controls: BOOLEAN,
 	currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
 	default: BOOLEAN,
 	defaultChecked: BOOLEAN,
@@ -123,7 +122,7 @@ const Whitelist = {
 	scoped: PROPERTY | BOOLEAN,
 	visible: BOOLEAN,
 	trueSpeed: BOOLEAN,
-	sandbox: PROPERTY,
+	sandbox: null,
 	sortable: BOOLEAN,
 	inert: BOOLEAN,
 	indeterminate: BOOLEAN,
@@ -227,8 +226,9 @@ const Whitelist = {
 
 	// Force 'autocorrect' and 'autoCapitalize' to be set as an attribute
 	// to fix issues with Mobile Safari on iOS devices
-	autocorrect: BOOLEAN,
-
+	autocorrect: null,
+	// autoCapitalize and autoCorrect are supported in Mobile Safari for
+	// keyboard hints.
 	autoCapitalize: null,
 
 	// Some version of IE ( like IE9 ) actually throw an exception
@@ -275,9 +275,15 @@ const Whitelist = {
 	/**
 	 * Others
 	 */
-
 	srcSet: null,
 	scrolling: null,
+	about: null,
+	inlist: null,
+	prefix: null,
+	resource: null,
+	typeof: null,
+	vocab: null,
+	poster:null,
 	nonce: null,
 	method: null,
 	minLength: null,
@@ -291,12 +297,17 @@ const Whitelist = {
 	width: null,
 	dateTime: null,
 	contenteditable: null, // 3.2.5 - Global attributes
+	content:null,
 	contextMenu: null,
 	classID: null,
+	security:null,
 	cellPadding: null,
 	cellSpacing: null,
+	challenge: null,
 	charSet: null,
 	allowTransparency: null,
+	wrap: null,
+	wmode: null,
 	spellcheck: null, // 3.2.5 - Global attributes
 	srcDoc: PROPERTY
 };

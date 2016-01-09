@@ -14,59 +14,56 @@ const template = {
 	 * @param {string} name
 	 * @param {*} value
 	 */
-	setProperty( vNode, domNode, name, value, useProperties ) {
+	setProperty(vNode, domNode, name, value, useProperties ) {
+
 		const propertyInfo = DOMRegistry[name] || null;
 
-		if ( propertyInfo ) {
-			if ( isVoid( value ) ||
+		if (propertyInfo) {
+			if (isVoid(value) ||
 				propertyInfo.hasBooleanValue && !value ||
-				propertyInfo.hasNumericValue && ( value !== value ) ||
+				propertyInfo.hasNumericValue && (value !== value) ||
 				propertyInfo.hasPositiveNumericValue && value < 1 ||
-				value.length === 0 ) {
-				template.removeProperty( vNode, domNode, name, useProperties );
-			} else {
+				value.length === 0) {
+				template.removeProperty(vNode, domNode, name, useProperties);
+			} else if (propertyInfo.mustUseProperty) {
+
 				const propName = propertyInfo.propertyName;
 
-				if ( propertyInfo.mustUseProperty ) {
-					if ( propName === 'value' && ( ( !isVoid( vNode ) && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
-						template.setSelectValueForProperty( vNode, domNode, value, useProperties );
-					} else {
-						if ( useProperties ) {
-							if ( '' + domNode[propName] !== '' + value ) {
-								domNode[propName] = value;
-							}
-						} else {
-							if ( propertyInfo.hasBooleanValue && ( value === true || value === 'true' ) ) {
-								value = propName;
-							}
-							domNode.setAttribute( propName, value );
-						}
+				if ( propName === 'value' && ((!isVoid(vNode) && vNode.tag === 'select') || (domNode.tagName === 'SELECT'))) {
+					template.setSelectValueForProperty(vNode, domNode, value, useProperties);
+				} else if (useProperties) {
+
+					if (('' + domNode[propName]) !== ('' + value)) {
+						domNode[propName] = value;
 					}
 				} else {
-					const attributeName = propertyInfo.attributeName;
-					const namespace = propertyInfo.attributeNamespace;
-
-					if ( namespace ) {
-						domNode.setAttributeNS( namespace, attributeName, value );
-					} else {
-						// if 'truthy' value, and boolean, it will be 'propName=propName'
-						if ( propertyInfo.hasBooleanValue && value === true ) {
-							value = attributeName;
-						}
-						domNode.setAttribute( attributeName, value );
+					if (propertyInfo.hasBooleanValue && (value === true || value === 'true')) {
+						value = propName;
 					}
+					domNode.setAttribute(propName, value);
+				}
+			} else {
+
+				const attributeName = propertyInfo.attributeName;
+				const namespace = propertyInfo.attributeNamespace;
+
+				if (namespace) {
+					domNode.setAttributeNS(namespace, attributeName, '' + value);
+				} else {
+
+					// if 'truthy' value, and boolean, it will be 'propName=propName'
+					if (propertyInfo.hasBooleanValue && value === true) {
+						value = attributeName;
+					}
+					domNode.setAttribute(attributeName, '' + value);
 				}
 			}
-        // HTML attributes and custom attributes
 		} else {
-			// Regarding the specs each attribute name should be lowercases.
-			// However. Use of 'toLowerCase()' is slow, so we simply avoid setting the
-			// attribute if the first letter is capitalized - e.g. 'Knockle'
-			if ( isValidAttribute( name ) ) {
-				if ( isVoid( value ) ) {
-					domNode.removeAttribute( name );
-				} else if ( name ) {
-					domNode.setAttribute( name, value );
+			if (isValidAttribute(name)) {
+				if (isVoid(value)){
+					domNode.removeAttribute(name);
+				} else if (name) {
+					domNode.setAttribute(name, value);
 				}
 			}
 		}
@@ -76,7 +73,7 @@ const template = {
 	 * Sets the value for multiple styles on a node.	If a value is specified as
 	 * '' ( empty string ), the corresponding style property will be unset.
 	 *
-   * @param {vNode} virtual node
+	 * @param {vNode} virtual node
 	 * @param {DOMElement} node
 	 * @param {object} styles
 	 */
@@ -119,45 +116,41 @@ const template = {
 	 * @param {DOMElement} node
 	 * @param {string} name
 	 */
-	removeProperty( vNode, domNode, name, useProperties ) {
+	removeProperty(vNode, domNode, name, useProperties) {
 		const propertyInfo = DOMRegistry[name];
 
-		if ( propertyInfo ) {
-			if ( propertyInfo.mustUseProperty ) {
+		if (propertyInfo) {
+			if (propertyInfo.mustUseProperty) {
 				const propName = propertyInfo.propertyName;
-
-				if ( name === 'value' && ( ( vNode !== null && vNode.tag === 'select' ) || ( domNode.tagName === 'SELECT' ) ) ) {
-					template.removeSelectValueForProperty( vNode, domNode );
-				} else if ( propertyInfo.hasBooleanValue ) {
-					if ( useProperties ) {
-						domNode[propName] = false;
-					} else {
-						domNode.removeAttribute( propName );
-					}
+				// Make sure we remove select / select multiiple properly
+				if (name === 'value' && ((vNode !== null && vNode.tag === 'select') || (domNode.tagName === 'SELECT'))) {
+					template.removeSelectValueForProperty(vNode, domNode);
 				} else {
-					if ( useProperties ) {
-						if ( '' + domNode[propName] !== '' ) {
+					if (useProperties) {
+						if (propertyInfo.hasBooleanValue) {
+							domNode[propName] = false;
+						} else if ('' + domNode[propName] !== '') {
 							domNode[propName] = '';
 						}
 					} else {
-						domNode.removeAttribute( propName );
+						domNode.removeAttribute(propName);
 					}
 				}
 			} else {
-				domNode.removeAttribute( propertyInfo.attributeName );
+				domNode.removeAttribute(propertyInfo.attributeName);
 			}
 		} else {
 			// HTML attributes and custom attributes
-			domNode.removeAttribute( name );
+			domNode.removeAttribute(name);
 		}
 	},
 
-  /**
-   * Set the value for a select / select multiple on a node.
-   *
-   * @param {DOMElement} node
-   * @param {string} name
-   */
+	/**
+	 * Set the value for a select / select multiple on a node.
+	 *
+	 * @param {DOMElement} node
+	 * @param {string} name
+	 */
 	setSelectValueForProperty( vNode, domNode, value, useProperties ) {
 		const isMultiple = isArray( value );
 		const options = domNode.options;
