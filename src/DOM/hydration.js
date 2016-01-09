@@ -13,7 +13,7 @@ function purgeCommentNodes(domNode, parentDom) {
 	const nextSibling = domNode.nextSibling;
 
 	if (nextSibling && nextSibling.nodeType === 8) {
-		sanitizeComments(nextSibling, parentDom);
+		purgeCommentNodes(nextSibling, parentDom);
 		parentDom.removeChild(nextSibling);
 	}
 }
