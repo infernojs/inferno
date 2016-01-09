@@ -2729,29 +2729,17 @@
   	return node;
   }
 
-  function updateComponent(component, prevState, nextState, prevProps, nextProps, renderCallback) {
-  	if (!nextProps.children) {
-  		nextProps.children = prevProps.children;
-  	}
-  	if (prevProps !== nextProps || prevState !== nextState) {
-  		if (prevProps !== nextProps) {
-  			component._blockRender = true;
-  			component.componentWillReceiveProps(nextProps);
-  			component._blockRender = false;
-  		}
-  		var shouldUpdate = component.shouldComponentUpdate(nextProps, nextState);
+  var updateComponent = undefined;
 
-  		if (shouldUpdate) {
-  			component._blockSetState = true;
-  			component.componentWillUpdate(nextProps, nextState);
-  			component._blockSetState = false;
-  			component.props = nextProps;
-  			component.state = nextState;
-  			var newDomNode = renderCallback();
+  var global$1 = global$1 || (typeof window !== 'undefined' ? window : null);
 
-  			component.componentDidUpdate(prevProps, prevState);
-  			return newDomNode;
-  		}
+  if (global$1 && global$1.InfernoComponent) {
+  	updateComponent = global$1.InfernoComponent.updateComponent;
+  } else if (global$1 && !global$1.InfernoComponent) {
+  	try {
+  		updateComponent = require('inferno').updateComponent;
+  	} catch (e) {
+  		// do nothing, this is fine, the person might be using stateless components
   	}
   }
 
@@ -2916,6 +2904,20 @@
   	return node;
   }
 
+  var updateComponent$1 = undefined;
+
+  var global$2 = global$2 || (typeof window !== 'undefined' ? window : null);
+
+  if (global$2 && global$2.InfernoComponent) {
+  	updateComponent$1 = global$2.InfernoComponent.updateComponent;
+  } else if (global$2 && !global$2.InfernoComponent) {
+  	try {
+  		updateComponent$1 = require('inferno').updateComponent;
+  	} catch (e) {
+  		// do nothing, this is fine, the person might be using stateless components
+  	}
+  }
+
   function createNodeWithComponent(componentIndex, props) {
   	var domNode = undefined;
   	var currentItem = undefined;
@@ -3042,7 +3044,7 @@
   					var nextState = instance.state;
   					var nextProps = getValueForProps(props, nextItem);
 
-  					return updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+  					return updateComponent$1(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
   				}
   			}
   		},
