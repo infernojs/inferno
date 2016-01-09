@@ -145,11 +145,6 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 
 		if ( tag ) {
 
-			const nodeName = tag.toLowerCase();
-			const is = node.attrs && node.attrs.is;
-			const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
-			const SVGNamespace = 'http://www.w3.org/2000/svg';
-
 			const Element = createElement(node, domNamespace, parentNode, 'static')
 			staticNode = Element.node;
 			domNamespace = Element.namespace;
