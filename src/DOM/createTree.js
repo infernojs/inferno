@@ -214,39 +214,39 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 				if ( tag.type === ObjectTypes.VARIABLE ) {
 					const lastAttrs = schema.attrs;
 					const attrs = { ...lastAttrs };
-					const children = null;
+					const children = schema.children;
 
-					if ( schema.children ) {
-						if ( isArray( schema.children ) && schema.children.length > 1 ) {
-							attrs.children = [];
-							for ( let i = 0; i < schema.children.length; i++ ) {
-								const childNode = schema.children[i];
+					if (children) {
 
-								attrs.children.push( createDOMTree( childNode, false, dynamicNodeMap, domNamespace ) );
+						if (isArray(children)) {
+							if (children.length > 1) {
+								attrs.children = [];
+								for (let i = 0; i < children.length; i++) {
+									const childNode = children[i];
+
+									attrs.children.push( createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
+								}
+							} else if (children.length === 1) {
+								attrs.children = createDOMTree(children[0], false, dynamicNodeMap, domNamespace);
 							}
 						} else {
-							if ( isArray( schema.children ) && schema.children.length === 1 ) {
-								attrs.children = createDOMTree( schema.children[0], false, dynamicNodeMap, domNamespace );
-							} else {
-								attrs.children = createDOMTree( schema.children, false, dynamicNodeMap, domNamespace );
-							}
+							attrs.children = createDOMTree(children, false, dynamicNodeMap, domNamespace);
 						}
 					}
-					if ( isRoot ) {
-						return createRootNodeWithComponent( tag.index, attrs, children, domNamespace, recyclingEnabled );
+					if (isRoot) {
+						return createRootNodeWithComponent(tag.index, attrs, children, domNamespace, recyclingEnabled);
 					} else {
-						return createNodeWithComponent( tag.index, attrs, children, domNamespace );
+						return createNodeWithComponent(tag.index, attrs, children, domNamespace);
 					}
 				}
 
-				const nodeName = tag.toLowerCase();
 				const is = schema.attrs && schema.attrs.is;
 
 				if ( domNamespace === undefined ) {
 					if ( schema.attrs && schema.attrs.xmlns ) {
 						domNamespace = schema.attrs.xmlns;
 					} else {
-						switch ( nodeName ) {
+						switch ( tag ) {
 							case 'svg':
 								domNamespace = 'http://www.w3.org/2000/svg';
 								break;
@@ -258,15 +258,15 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 				}
 				if ( domNamespace ) {
 					if ( is ) {
-						templateNode = document.createElementNS( domNamespace, nodeName, is );
+						templateNode = document.createElementNS( domNamespace, tag, is );
 					} else {
-						templateNode = document.createElementNS( domNamespace, nodeName );
+						templateNode = document.createElementNS( domNamespace, tag );
 					}
 				} else {
 					if ( is ) {
-						templateNode = document.createElement( nodeName, is );
+						templateNode = document.createElement( tag, is );
 					} else {
-						templateNode = document.createElement( nodeName );
+						templateNode = document.createElement( tag );
 					}
 				}
 				const attrs = schema.attrs;
