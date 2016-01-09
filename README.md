@@ -1,5 +1,7 @@
 # InfernoJS
 
+[![Join the chat at https://gitter.im/trueadm/inferno](https://badges.gitter.im/trueadm/inferno.svg)](https://gitter.im/trueadm/inferno?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=master)](https://travis-ci.org/trueadm/inferno)
 [![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=master&service=github)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependency Status](https://david-dm.org/trueadm/inferno.svg)](https://david-dm.org/trueadm/inferno)
