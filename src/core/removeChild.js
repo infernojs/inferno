@@ -1,6 +1,6 @@
-export default function removeChild( domNode ) {
+export default function removeChild(domNode) {
 	const firstChild = domNode.firstChild;
-	if ( firstChild ) {
-		domNode.removeChild( firstChild );
+	if (firstChild) {
+		domNode.removeChild(firstChild);
 	}
 }
