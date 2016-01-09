@@ -2611,123 +2611,6 @@
   	return node;
   }
 
-  function createRootDynamicNode(valueIndex, recyclingEnabled) {
-  	var nextDomNode = undefined;
-  	var childNodeList = [];
-  	var keyedChildren = true;
-  	var node = {
-  		pool: [],
-  		keyedPool: [],
-  		overrideItem: null,
-  		create: function create(item, treeLifecycle, context) {
-  			var domNode = undefined;
-
-  			if (recyclingEnabled) {
-  				domNode = recycle(node, item);
-  				if (domNode) {
-  					return domNode;
-  				}
-  			}
-  			var value = getValueWithIndex(item, valueIndex);
-  			var type = getTypeFromValue(value);
-
-  			switch (type) {
-  				case ValueTypes.TEXT:
-  					// TODO check if string is empty?
-  					if (isVoid(value)) {
-  						value = '';
-  					}
-  					domNode = document.createTextNode(value);
-  					break;
-  				case ValueTypes.ARRAY:
-  					var virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
-
-  					domNode = virtualList.domNode;
-  					keyedChildren = virtualList.keyedChildren;
-  					treeLifecycle.addTreeSuccessListener(function () {
-  						nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
-  						domNode = childNodeList[0].parentNode;
-  						item.rootNode = domNode;
-  					});
-  					break;
-  				case ValueTypes.TREE:
-  					domNode = value.dom.create(item, treeLifecycle, context);
-  					break;
-  				case ValueTypes.EMPTY_OBJECT:
-  					if ("development" !== 'production') {
-  						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
-  					} else {}
-  				case ValueTypes.FUNCTION:
-  					if ("development" !== 'production') {
-  						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
-  					} else {}
-  				case ValueTypes.FRAGMENT:
-  					domNode = value.tree.dom.create(value, treeLifecycle, context);
-  					break;
-  				default:
-  					break;
-  			}
-
-  			item.rootNode = domNode;
-  			return domNode;
-  		},
-  		update: function update(lastItem, nextItem, treeLifecycle, context) {
-  			if (node !== lastItem.tree.dom) {
-
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  				return;
-  			}
-  			var domNode = lastItem.rootNode;
-
-  			nextItem.rootNode = domNode;
-  			nextItem.id = lastItem.id;
-
-  			var nextValue = getValueWithIndex(nextItem, valueIndex);
-  			var lastValue = getValueWithIndex(lastItem, valueIndex);
-
-  			if (nextValue !== lastValue) {
-  				var nextType = getTypeFromValue(nextValue);
-  				var lastType = getTypeFromValue(lastValue);
-
-  				if (lastType !== nextType) {
-
-  					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  					return;
-  				}
-  				switch (nextType) {
-  					case ValueTypes.TEXT:
-  						// TODO check if string is empty?
-  						domNode.nodeValue = nextValue;
-  						break;
-  					case ValueTypes.ARRAY:
-  						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
-  						break;
-  					case ValueTypes.TREE:
-  						// TODO
-  						break;
-  					case ValueTypes.FRAGMENT:
-  						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-  						break;
-  					default:
-  						break;
-  				}
-  			}
-  		},
-  		remove: function remove(item, treeLifecycle) {
-  			var value = getValueWithIndex(item, valueIndex);
-  			var type = getTypeFromValue(value);
-
-  			if (type === ValueTypes.TREE) {
-  				value.remove(item, treeLifecycle);
-  			} else if (type === ValueTypes.FRAGMENT) {
-  				value.tree.dom.remove(value, treeLifecycle);
-  			}
-  		}
-  	};
-
-  	return node;
-  }
-
   function createDynamicNode(valueIndex) {
   	var domNodeMap = {};
   	var childNodeList = [];
@@ -3214,36 +3097,6 @@
   	return node;
   }
 
-  function createDynamicTextNode(templateNode, valueIndex) {
-  	var domNodeMap = {};
-  	var node = {
-  		overrideItem: null,
-  		create: function create(item) {
-  			var domNode = templateNode.cloneNode(false);
-  			var value = getValueWithIndex(item, valueIndex);
-
-  			if (!isVoid(value) && isStringOrNumber(value)) {
-  				domNode.nodeValue = value;
-  			}
-  			domNodeMap[item.id] = domNode;
-  			return domNode;
-  		},
-  		update: function update(lastItem, nextItem) {
-  			var domNode = domNodeMap[lastItem.id];
-  			var nextValue = getValueWithIndex(nextItem, valueIndex);
-
-  			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-  				if (isStringOrNumber(nextValue)) {
-  					domNode.nodeValue = nextValue;
-  				}
-  			}
-  		},
-  		remove: function remove() /* lastItem */{}
-  	};
-
-  	return node;
-  }
-
   function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		pool: [],
@@ -3365,6 +3218,54 @@
   	return node;
   }
 
+  function createElement(schema, domNamespace, parentNode) {
+
+  	var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
+  	var SVGNamespace = 'http://www.w3.org/2000/svg';
+  	var nodeName = schema.tag.toLowerCase();
+  	var is = schema.attrs && schema.attrs.is;
+
+  	var templateNode = undefined;
+
+  	if (domNamespace === undefined) {
+  		if (schema.attrs && schema.attrs.xmlns) {
+  			domNamespace = schema.attrs.xmlns;
+  		} else {
+  			switch (nodeName) {
+  				case 'svg':
+  					domNamespace = SVGNamespace;
+  					break;
+  				case 'math':
+  					domNamespace = MathNamespace;
+  					break;
+  				default:
+  					// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
+  					// E.g. <div><svg><svg></div> - will not work
+  					if (parentNode) {
+  						// only used by static children
+  						// check only for top-level element for both mathML and SVG
+  						if (nodeName === 'svg' && parentNode.namespaceURI !== SVGNamespace) {
+  							domNamespace = SVGNamespace;
+  						} else if (nodeName === 'math' && parentNode.namespaceURI !== MathNamespace) {
+  							domNamespace = MathNamespace;
+  						}
+  					} else if (isSVGElement(nodeName)) {
+  						domNamespace = SVGNamespace;
+  					} else if (isMathMLElement(nodeName)) {
+  						domNamespace = MathNamespace;
+  					}
+  			}
+  		}
+  	}
+
+  	templateNode = domNamespace ? is ? document.createElementNS(domNamespace, nodeName, is) : document.createElementNS(domNamespace, nodeName) : is ? document.createElement(nodeName, is) : document.createElement(nodeName);
+
+  	return {
+  		namespace: domNamespace,
+  		node: templateNode
+  	};
+  }
+
   var recyclingEnabled = isRecyclingEnabled();
   var invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
@@ -3412,105 +3313,56 @@
   function createStaticTreeNode(node, parentNode, domNamespace) {
   	var staticNode = undefined;
 
-  	if (isVoid(node)) {
-  		return null;
-  	}
-  	if (isStringOrNumber(node)) {
-  		staticNode = document.createTextNode(node);
-  	} else {
-  		var tag = node.tag;
+  	if (!isVoid(node)) {
 
-  		if (tag) {
+  		if (isStringOrNumber(node)) {
+  			staticNode = document.createTextNode(node);
+  		} else {
+  			var tag = node.tag;
 
-  			var nodeName = tag.toLowerCase();
-  			var is = node.attrs && node.attrs.is;
-  			var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
-  			var SVGNamespace = 'http://www.w3.org/2000/svg';
+  			if (tag) {
 
-  			// https://jsperf.com/type-of-undefined-vs-undefined/76
-  			if (domNamespace === undefined) {
+  				var Element = createElement(node, domNamespace, parentNode);
+  				staticNode = Element.node;
+  				domNamespace = Element.namespace;
 
-  				if (node.attrs && node.attrs.xmlns) {
-  					domNamespace = node.attrs.xmlns;
-  				} else {
-  					switch (nodeName) {
-  						case 'svg':
-  							domNamespace = SVGNamespace;
-  							break;
-  						case 'math':
-  							domNamespace = MathNamespace;
-  							break;
-  						default:
-  							// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
-  							// E.g. <div><svg><svg></div> - will not work
-  							if (parentNode !== null) {
-  								// only used by static children
-  								// check only for top-level element for both mathML and SVG
-  								if (nodeName === 'svg' && parentNode.namespaceURI !== SVGNamespace) {
-  									domNamespace = SVGNamespace;
-  								} else if (nodeName === 'math' && parentNode.namespaceURI !== MathNamespace) {
-  									domNamespace = MathNamespace;
-  								}
-  							} else if (isSVGElement(nodeName)) {
-  								// only used by dynamic children
-  								domNamespace = SVGNamespace;
-  							} else if (isMathMLElement(nodeName)) {
-  								// only used by dynamic children
-  								domNamespace = MathNamespace;
-  							}
+  				var text = node.text;
+  				var children = node.children;
+
+  				if (!isVoid(text)) {
+
+  					if ("development" !== 'production') {
+
+  						if (!isVoid(children)) {
+  							throw Error(invalidTemplateError);
+  						}
+
+  						if (!isStringOrNumber(text)) {
+  							throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  						}
   					}
-  				}
-  			}
-
-  			if (domNamespace) {
-  				if (is) {
-  					staticNode = document.createElementNS(domNamespace, nodeName, is);
+  					staticNode.textContent = text;
   				} else {
-  					staticNode = document.createElementNS(domNamespace, nodeName);
-  				}
-  			} else {
-  				if (is) {
-  					staticNode = document.createElement(nodeName, is);
-  				} else {
-  					staticNode = document.createElement(nodeName);
-  				}
-  			}
-  			var text = node.text;
-  			var children = node.children;
-
-  			if (!isVoid(text)) {
-
-  				if ("development" !== 'production') {
-
   					if (!isVoid(children)) {
-  						throw Error(invalidTemplateError);
-  					}
-
-  					if (!isStringOrNumber(text)) {
-  						throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
+  						createStaticTreeChildren(children, staticNode, domNamespace);
   					}
   				}
-  				staticNode.textContent = text;
-  			} else {
-  				if (!isVoid(children)) {
-  					createStaticTreeChildren(children, staticNode, domNamespace);
-  				}
+  				createStaticAttributes(node, staticNode);
+  			} else if (node.text) {
+  				staticNode = document.createTextNode(node.text);
   			}
-  			createStaticAttributes(node, staticNode);
-  		} else if (node.text) {
-  			staticNode = document.createTextNode(node.text);
   		}
-  	}
-  	if ("development" !== 'production') {
-  		if (staticNode === undefined) {
-  			throw Error(invalidTemplateError);
+  		if ("development" !== 'production') {
+  			if (staticNode === undefined) {
+  				throw Error(invalidTemplateError);
+  			}
   		}
-  	}
 
-  	if (parentNode === null) {
-  		return staticNode;
-  	} else {
-  		parentNode.appendChild(staticNode);
+  		if (parentNode === null) {
+  			return staticNode;
+  		} else {
+  			parentNode.appendChild(staticNode);
+  		}
   	}
   }
 
@@ -3543,10 +3395,10 @@
   	} else {
   		if (dynamicFlags.NODE === true) {
   			if (isRoot) {
-  				node = createRootDynamicNode(schema.index, domNamespace, recyclingEnabled);
+  				//		node = createRootDynamicNode( schema.index, domNamespace, recyclingEnabled );
   			} else {
-  				node = createDynamicNode(schema.index, domNamespace);
-  			}
+  					node = createDynamicNode(schema.index, domNamespace);
+  				}
   		} else {
   			var tag = schema.tag;
   			var text = schema.text;
@@ -3555,22 +3407,23 @@
   				if (tag.type === ObjectTypes.VARIABLE) {
   					var lastAttrs = schema.attrs;
   					var _attrs = babelHelpers_extends({}, lastAttrs);
-  					var _children = null;
+  					var _children = schema.children;
 
-  					if (schema.children) {
-  						if (isArray(schema.children) && schema.children.length > 1) {
-  							_attrs.children = [];
-  							for (var i = 0; i < schema.children.length; i++) {
-  								var childNode = schema.children[i];
+  					if (_children) {
 
-  								_attrs.children.push(createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
+  						if (isArray(_children)) {
+  							if (_children.length > 1) {
+  								_attrs.children = [];
+  								for (var i = 0; i < _children.length; i++) {
+  									var childNode = _children[i];
+
+  									_attrs.children.push(createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
+  								}
+  							} else if (_children.length === 1) {
+  								_attrs.children = createDOMTree(_children[0], false, dynamicNodeMap, domNamespace);
   							}
   						} else {
-  							if (isArray(schema.children) && schema.children.length === 1) {
-  								_attrs.children = createDOMTree(schema.children[0], false, dynamicNodeMap, domNamespace);
-  							} else {
-  								_attrs.children = createDOMTree(schema.children, false, dynamicNodeMap, domNamespace);
-  							}
+  							_attrs.children = createDOMTree(_children, false, dynamicNodeMap, domNamespace);
   						}
   					}
   					if (isRoot) {
@@ -3580,36 +3433,8 @@
   					}
   				}
 
-  				var nodeName = tag.toLowerCase();
-  				var is = schema.attrs && schema.attrs.is;
+  				templateNode = createElement(schema, domNamespace, null).node;
 
-  				if (domNamespace === undefined) {
-  					if (schema.attrs && schema.attrs.xmlns) {
-  						domNamespace = schema.attrs.xmlns;
-  					} else {
-  						switch (nodeName) {
-  							case 'svg':
-  								domNamespace = 'http://www.w3.org/2000/svg';
-  								break;
-  							case 'math':
-  								domNamespace = 'http://www.w3.org/1998/Math/MathML';
-  								break;
-  						}
-  					}
-  				}
-  				if (domNamespace) {
-  					if (is) {
-  						templateNode = document.createElementNS(domNamespace, nodeName, is);
-  					} else {
-  						templateNode = document.createElementNS(domNamespace, nodeName);
-  					}
-  				} else {
-  					if (is) {
-  						templateNode = document.createElement(nodeName, is);
-  					} else {
-  						templateNode = document.createElement(nodeName);
-  					}
-  				}
   				var attrs = schema.attrs;
   				var dynamicAttrs = null;
 
@@ -3709,11 +3534,11 @@
   				}
   			} else if (text) {
   				templateNode = document.createTextNode('');
-  				if (isRoot) {
-  					node = createRootDynamicTextNode(templateNode, text.index);
-  				} else {
-  					node = createDynamicTextNode(templateNode, text.index);
-  				}
+  				//if ( isRoot ) {
+  				node = createRootDynamicTextNode(templateNode, text.index);
+  				//} //else {
+  				//					node = createDynamicTextNode( templateNode, text.index );
+  				//				}
   			}
   		}
   	}

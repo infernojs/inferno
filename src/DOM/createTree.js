@@ -40,10 +40,10 @@ function createElement(schema, domNamespace, parentNode) {
 		} else {
 			switch (nodeName) {
 				case 'svg':
-					domNamespace = 'http://www.w3.org/2000/svg';
+					domNamespace = SVGNamespace;
 					break;
 				case 'math':
-					domNamespace = 'http://www.w3.org/1998/Math/MathML';
+					domNamespace = MathNamespace;
 					break;
 				default:
 					// Edge case. In case a namespace element are wrapped inside a non-namespace element, it will inherit wrong namespace.
@@ -128,55 +128,55 @@ function createStaticTreeNode( node, parentNode, domNamespace ) {
 	if ( !isVoid( node ) ) {
 
 
-	if ( isStringOrNumber( node ) ) {
-		staticNode = document.createTextNode( node );
-	} else {
-		const tag = node.tag;
+		if ( isStringOrNumber( node ) ) {
+			staticNode = document.createTextNode( node );
+		} else {
+			const tag = node.tag;
 
-		if ( tag ) {
+			if ( tag ) {
 
-			const Element = createElement(node, domNamespace, parentNode)
-			staticNode = Element.node;
-			domNamespace = Element.namespace;
+				const Element = createElement(node, domNamespace, parentNode)
+				staticNode = Element.node;
+				domNamespace = Element.namespace;
 
 
-			const text = node.text;
-			const children = node.children;
+				const text = node.text;
+				const children = node.children;
 
-			if ( !isVoid( text ) ) {
+				if ( !isVoid( text ) ) {
 
-				if ( process.env.NODE_ENV !== 'production' ) {
+					if ( process.env.NODE_ENV !== 'production' ) {
 
+						if ( !isVoid( children ) ) {
+							throw Error( invalidTemplateError );
+						}
+
+						if ( !isStringOrNumber( text ) ) {
+							throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+						}
+					}
+					staticNode.textContent = text;
+				} else {
 					if ( !isVoid( children ) ) {
-						throw Error( invalidTemplateError );
-					}
-
-					if ( !isStringOrNumber( text ) ) {
-						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+						createStaticTreeChildren( children, staticNode, domNamespace );
 					}
 				}
-				staticNode.textContent = text;
-			} else {
-				if ( !isVoid( children ) ) {
-					createStaticTreeChildren( children, staticNode, domNamespace );
-				}
+				createStaticAttributes( node, staticNode );
+			} else if ( node.text ) {
+				staticNode = document.createTextNode( node.text );
 			}
-			createStaticAttributes( node, staticNode );
-		} else if ( node.text ) {
-			staticNode = document.createTextNode( node.text );
 		}
-	}
-	if ( process.env.NODE_ENV !== 'production' ) {
-		if ( staticNode === undefined ) {
-			throw Error( invalidTemplateError );
+		if ( process.env.NODE_ENV !== 'production' ) {
+			if ( staticNode === undefined ) {
+				throw Error( invalidTemplateError );
+			}
 		}
-	}
 
-	if ( parentNode === null ) {
-		return staticNode;
-	} else {
-		parentNode.appendChild( staticNode );
-	}
+		if ( parentNode === null ) {
+			return staticNode;
+		} else {
+			parentNode.appendChild( staticNode );
+		}
 	}
 }
 
