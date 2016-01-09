@@ -104,11 +104,9 @@ function renderMarkupForAttributes(name, value) {
 		return `${ name }=${ quoteAttributeValueForBrowser(value) }`;
 	}
 }
-function createStaticAttributes(node, excludeAttrs) {
+function createStaticAttributes(props, excludeAttrs) {
 
 	let HTML = '';
-
-	const props = node.attrs;
 
 	for (let propKey in props) {
 
@@ -164,21 +162,37 @@ function createStaticTreeNode(isRoot, node) {
 		return '';
 	}
 	if (node.tag) {
-		if (isRoot) {
-			if (!node.attrs) {
-				node.attrs = {};
+
+		let attributes = {};
+
+		for (let key in node.attrs) {
+
+			if (key === 'value') {
+				if (node.tag === 'select') {
+					// TODO! Finish this
+					continue;
+				} else if (node.tag === 'textarea' || node.attrs.contenteditable) {
+					node.text = node.attrs[key];
+					continue;
+				}
 			}
-			node.attrs['data-inferno'] = true;
+			attributes[key] = node.attrs[key];
+		}
+
+		if (isRoot) {
+		//	if (!attributes) {
+			//			attributes = {};
+			//}
+			attributes['data-inferno'] = true;
 		}
 		staticNode = `<${ node.tag }`;
 
-		// In React they can add innerHTML like this, just avoid it
-		if (node.attrs) {
-
-			if ( node.attrs.innerHTML) {
+		if (attributes) {
+			// In React they can add innerHTML like this, just workaround it
+			if (attributes.innerHTML) {
 				node.text = innerHTML;
 			} else {
-				staticNode += createStaticAttributes(node, null);
+				staticNode += createStaticAttributes(attributes, null);
 			}
 		}
 
