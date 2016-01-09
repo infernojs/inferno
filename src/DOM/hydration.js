@@ -28,7 +28,7 @@ function validateHydrateNodeChildren(hydrateNode, templateNode) {
 			return false;
 		}
 		// check when we reach a comment and remove it, as they are used to break up text nodes
-		templateNodeChild = purgeCommentNodes(templateNodeChild, templateNode);
+		templateNodeChild = templateNodeChild.nextSibling;
 		hydrateNodeChild = purgeCommentNodes(hydrateNodeChild, hydrateNode);
 	}
 	return true;
