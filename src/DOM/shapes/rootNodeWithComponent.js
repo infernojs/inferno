@@ -3,7 +3,20 @@ import isVoid from '../../util/isVoid';
 import { recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
-import updateComponent from '../../component/updateComponent';
+
+let updateComponent;
+
+const global = global || (typeof window !== 'undefined' ? window : null);
+
+if (global && global.InfernoComponent) {
+	updateComponent = global.InfernoComponent.updateComponent;
+} else if (global && !global.InfernoComponent) {
+	try {
+		updateComponent = require('inferno').updateComponent;
+	} catch (e) {
+		// do nothing, this is fine, the person might be using stateless components
+	}
+}
 
 export default function createRootNodeWithComponent( componentIndex, props, recyclingEnabled ) {
 	let currentItem;
