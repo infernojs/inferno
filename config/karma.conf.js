@@ -16,6 +16,7 @@ module.exports = function(config) {
 		files: [
 			'src/**/*__tests__*/**/*spec.browser.js',
 			'src/**/*__tests__*/**/*spec.jsx.js',
+			'src/**/*__tests__*/**/*spec.ssr.js',
 //			'src/**/*__tests__*/**/*spec.server.js',
 		],
 		// list of files to exclude
@@ -25,6 +26,7 @@ module.exports = function(config) {
 		preprocessors: {
 			'src/**/*__tests__*/**/*spec.browser.js': ['webpack'],
 			'src/**/*__tests__*/**/*spec.jsx.js': ['webpack'],
+			'src/**/*__tests__*/**/*spec.ssr.js': ['webpack'],
 //			'src/**/*__tests__*/**/*spec.server.js': ['webpack'],
 		},
 		webpack: {
