@@ -77,11 +77,20 @@ function renderMarkupForStyles(styles, component) {
 
 	for (let styleName in styles) {
 
-		let styleValue = styles[styleName];
+		if (isValidAttribute(styleName)) {
 
-		if (styleValue !== null) {
-			serialized += styleName + ':';
-			serialized += styleValue + unitlessProperties[styleName] ? styleValue + 'px' : stylevalue + ';';
+			let styleValue = styles[styleName];
+
+			if (!isVoid(styleValue)) {
+
+				if (!unitlessProperties[styleName]) {
+					if (typeof styleValue !== 'string') {
+						styleValue = styleValue + 'px';
+					}
+				}
+				serialized += styleName + ':';
+				serialized += styleValue + ';';
+			}
 		}
 	}
 	return serialized || null;
@@ -128,7 +137,7 @@ function createStaticAttributes(props, excludeAttrs) {
 
 		if (!isVoid(propValue)) {
 			if (propKey === 'style') {
-				propValue = renderMarkupForStyles(propKey, propValue);
+				propValue = renderMarkupForStyles(propValue);
 			}
 
 			let markup = null;

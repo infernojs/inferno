@@ -13,8 +13,6 @@ describe('SSR Attributes', () => {
 
 	it('should create markup for simple properties', () => {
 
-		let template;
-
 		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: { name: 'simple' }
@@ -48,7 +46,7 @@ describe('SSR Attributes', () => {
 
 	it('should work with the id attribute', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: { id: 'simple' }
 		}));
@@ -60,8 +58,6 @@ describe('SSR Attributes', () => {
 	});
 
 	it('should create markup for boolean properties', () => {
-
-		let template;
 
 		template = createTemplate(() => ({
 			tag: 'div',
@@ -105,8 +101,6 @@ describe('SSR Attributes', () => {
 	});
 
 	it('should create markup for booleanish properties', () => {
-
-		let template;
 
 		template = createTemplate(() => ({
 			tag: 'div',
@@ -191,7 +185,7 @@ describe('SSR Attributes', () => {
 
 	it('should work with select multiple ( numbers)', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'select',
 			attrs: { multiple: true, value: [1, 2] },
 			children: [
@@ -209,7 +203,7 @@ describe('SSR Attributes', () => {
 
 	it('should work with select multiple ( letters)', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'select',
 			attrs: { multiple: true, value: ['a', 'b'] },
 			children: [
@@ -227,7 +221,7 @@ describe('SSR Attributes', () => {
 
 	it('should stringify a select multiple tag using groups and children', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'select',
 			attrs: { multiple: true, value: ["foo", "bar"]  },
 			children: [
@@ -245,7 +239,7 @@ describe('SSR Attributes', () => {
 
 	it('should ignore textarea value attribute', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'textarea',
 			attrs: { value: 'Hello, World' },
 		}));
@@ -258,7 +252,7 @@ describe('SSR Attributes', () => {
 
 	it('should ignore contenteditable value attribute', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'div',
 			attrs: { contenteditable: '"true', value: 'blablabla'  },
 		}));
@@ -271,7 +265,7 @@ describe('SSR Attributes', () => {
 
 	it('should convert properties to attributes', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'form',
 			attrs: { className: 'login',  acceptCharset: 'ISO-8859-1', accessKey: 'h' },
 		}));
@@ -284,7 +278,7 @@ describe('SSR Attributes', () => {
 
 	it('should not stringify null properties', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'web-component',
 			attrs: { className: null, id: null },
 		}));
@@ -297,7 +291,7 @@ describe('SSR Attributes', () => {
 
 	it('should not stringify `innerHTML` for attributes', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'web-component',
 			attrs: { innerHTML: '<span>hello, terrible world!!</span>' },
 		}));
@@ -310,7 +304,7 @@ describe('SSR Attributes', () => {
 
 	it('should render input value', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'input',
 			attrs: { type: "submit", value: "add" },
 		}));
@@ -323,7 +317,7 @@ describe('SSR Attributes', () => {
 
 	it('should render namespace attributes', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'image',
 			attrs: { xmlns: "http://www.w3.org/2000/svg", "xlink:href": "test.jpg"},
 		}));
@@ -336,7 +330,7 @@ describe('SSR Attributes', () => {
 
 	it('should render svg with attributes in non-default namespace', () => {
 
-		let template = createTemplate(() => ({
+		template = createTemplate(() => ({
 			tag: 'use',
 			attrs: { "xlink:href": "/abc.jpg" }
 		}));
@@ -344,6 +338,111 @@ describe('SSR Attributes', () => {
 			renderToString(template())
 		).to.equal(
 			'<use xlink:href="/abc.jpg" data-inferno />'
+		);
+	});
+
+	it('should stringify css style as a string value', () => {
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: { width:200 } }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div style="width:200px;" data-inferno></div>'
+		);
+	});
+
+	it('should create markup for simple styles', () => {
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: { backgroundColor: '#3b5998', display: 'none'} }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div style="backgroundColor:#3b5998;display:none;" data-inferno></div>'
+		);
+	});
+
+	it('should ignore undefined styles', () => {
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: { backgroundColor: undefined, display: 'none'} }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div style="display:none;" data-inferno></div>'
+		);
+	});
+
+	it('should ignore null styles', () => {
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: { backgroundColor: null, display: 'none'} }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div style="display:none;" data-inferno></div>'
+		);
+	});
+
+	it('should do nothing for null styles', () => {
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: { backgroundColor: null, display: null} }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div data-inferno></div>'
+		);
+	});
+
+	it('should do nothing for non-valid styleNames', () => {
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: { '123backgroundColor': null, display: 'none'} }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div style="display:none;" data-inferno></div>'
+		);
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: { BaackgroundColor: null, display: 'none'} }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div style="display:none;" data-inferno></div>'
+		);
+
+	});
+
+	it('should automatically append `px` to relevant styles', () => {
+
+		template = createTemplate(() => ({
+			tag: 'div',
+			attrs: { style: {  left: 0,
+				margin: 16,
+				opacity: 0.5,
+				padding: '4px'} }
+		}));
+		expect(
+			renderToString(template())
+		).to.equal(
+			'<div style="left:0px;margin:16px;opacity:0.5;padding:4px;" data-inferno></div>'
 		);
 	});
 
