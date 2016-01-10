@@ -1,5 +1,5 @@
 import renderToString from '../../../src/server/renderToString';
-import createHTMLTree from '../../../src/DOM/createTree';
+import createHTMLTree from '../../../src/server/createTree';
 
 const global = global || (typeof window !== 'undefined' ? window : null);
 

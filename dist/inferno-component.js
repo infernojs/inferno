@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.4.5
+ * inferno-component vundefined
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */

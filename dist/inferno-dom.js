@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.4.5
+ * inferno-dom vundefined
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -2737,7 +2737,7 @@
   	updateComponent = global$1.InfernoComponent.updateComponent;
   } else if (global$1 && !global$1.InfernoComponent) {
   	try {
-  		updateComponent = require('inferno').updateComponent;
+  		updateComponent = require('inferno-component').updateComponent;
   	} catch (e) {
   		// do nothing, this is fine, the person might be using stateless components
   	}
@@ -2912,7 +2912,7 @@
   	updateComponent$1 = global$2.InfernoComponent.updateComponent;
   } else if (global$2 && !global$2.InfernoComponent) {
   	try {
-  		updateComponent$1 = require('inferno').updateComponent;
+  		updateComponent$1 = require('inferno-component').updateComponent;
   	} catch (e) {
   		// do nothing, this is fine, the person might be using stateless components
   	}
