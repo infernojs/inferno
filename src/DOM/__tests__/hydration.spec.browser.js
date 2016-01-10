@@ -1,6 +1,6 @@
-import createHTMLTree from '../createTree';
-import renderToString from '../renderToString';
-import { render } from '../../DOM/rendering';
+import createHTMLTree from '../../server/createTree';
+import renderToString from '../../server/renderToString';
+import { render } from '../rendering';
 import createTemplate from '../../core/createTemplate';
 import Component from '../../component/Component';
 import { addTreeConstructor } from '../../core/createTemplate';
