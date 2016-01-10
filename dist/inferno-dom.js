@@ -562,14 +562,8 @@
   	/**
     * 3.2.5 - Global attributes
     */
-  	itemprop: true,
-  	itemref: true,
-  	itemscope: true,
-  	itemtype: true,
   	id: null,
-  	class: null,
   	dir: null,
-  	lang: null,
   	title: null,
 
   	/**
@@ -618,33 +612,10 @@
   	continuous: BOOLEAN,
 
   	/**
-    * Safari
-    */
-
-  	// color is for Safari mask-icon link
-  	color: null,
-
-  	/**
-    * RDFa Properties
-    */
-  	datatype: null,
-  	// property is also supported for OpenGraph in meta tags.
-  	property: null,
-
-  	/**
     * Others
     */
   	srcSet: null,
-  	scrolling: null,
-  	about: null,
   	inlist: null,
-  	prefix: null,
-  	resource: null,
-  	typeof: null,
-  	vocab: null,
-  	poster: null,
-  	nonce: null,
-  	method: null,
   	minLength: null,
   	marginWidth: null,
   	marginHeight: null,
@@ -656,17 +627,12 @@
   	width: null,
   	dateTime: null,
   	contenteditable: null, // 3.2.5 - Global attributes
-  	content: null,
   	contextMenu: null,
   	classID: null,
-  	security: null,
   	cellPadding: null,
   	cellSpacing: null,
-  	challenge: null,
   	charSet: null,
   	allowTransparency: null,
-  	wrap: null,
-  	wmode: null,
   	spellcheck: null, // 3.2.5 - Global attributes
   	srcDoc: PROPERTY
   };
