@@ -49,11 +49,12 @@
     "babel-plugin-syntax-jsx": "^6.3.13",
     "babel-plugin-syntax-object-rest-spread": "^6.3.13",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
+    "inferno-component": "^0.5.1",
     "karma-chrome-launcher": "^0.2.2",
-    "pre-commit": "^1.1.2",
     "mkdirp": "^0.5.1",
-    "rimraf": "^2.5.0",
-    "npm-check-updates": "^2.5.6"
+    "npm-check-updates": "^2.5.6",
+    "pre-commit": "^1.1.2",
+    "rimraf": "^2.5.0"
   },
   "files": [
     "dist",

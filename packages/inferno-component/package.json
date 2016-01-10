@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "0.5.1",
+  "version": "0.5.3",
   "license": "MPL-2.0",
   "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
   "author": {
@@ -31,11 +31,8 @@
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.0"
   },
-  "main": "../../dist/inferno.min.js",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/trueadm/inferno.git"
-  },
+  "main": "../../dist/inferno-component.min.js",
+  "repository": "https://github.com/trueadm/inferno/tree/dev/packages/inferno-component",
   "scripts": {
     "clean": "rimraf ../../coverage/ ../../dist/",
     "build:prod": "node ../../config/rollup.config.js prod ../../dist src inferno-component InfernoComponent",
