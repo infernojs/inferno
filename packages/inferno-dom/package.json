@@ -1,6 +1,6 @@
 {
   "name": "inferno-dom",
-  "version": "0.5.1",
+  "version": "0.5.5",
   "license": "MPL-2.0",
   "description": "Provides methods to render DOM nodes from Inferno fragments",
   "author": {
@@ -28,7 +28,7 @@
   "main": "../../dist/inferno.min.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/trueadm/inferno.git"
+    "url": "https://github.com/trueadm/inferno/tree/master/packages/inferno-dom"
   },
   "scripts": {
     "clean": "rimraf ../../coverage/ ../../dist/",

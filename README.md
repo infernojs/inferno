@@ -25,7 +25,8 @@ To be more technically correct, Inferno is a "virtual fragment" framework, which
 ## Install
 
 Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM. Inferno also has the `inferno-server` package for
-server-side rendering of fragments to HTML strings (differing from React's route of using `react-dom/server` for server-side rendering).
+server-side rendering of fragments to HTML strings (differing from React's route of using `react-dom/server` for server-side rendering). Furthermore, rather than include the
+ES2015 component with class syntax in core (like React), it's in a separate package `inferno-component` to allow for better modularity.
 
 NPM:
 
@@ -34,11 +35,19 @@ Core package:
 ```sh
 npm install --save inferno
  ```
+ 
+ ES2015 stateful component (with life-cycles) package:
+ 
+  ```sh
+ npm install --save inferno-component 
+ ```
+ 
 Browser DOM rendering package:
 
  ```sh
 npm install --save inferno-dom 
 ```
+
 Server-side rendering package:
 
 ```sh
@@ -48,9 +57,10 @@ npm install --save inferno-server
 Pre-bundled files for browser consumption:
  
 ```
-http://infernojs.org/releases/inferno.min-0.5.0.js
-http://infernojs.org/releases/inferno-dom.min-0.5.0.js
-http://infernojs.org/releases/inferno-server.min-0.5.0.js
+http://infernojs.org/releases/inferno.min-0.5.5.js
+http://infernojs.org/releases/inferno-component.min-0.5.5.js
+http://infernojs.org/releases/inferno-dom.min-0.5.5.js
+http://infernojs.org/releases/inferno-server.min-0.5.5.js
 ```
 
 ## Overview
@@ -109,34 +119,6 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ## Inferno Top-Level API
 
-```js
-// TODO
-```
-
-### Inferno.Component
-
-**Stateful component:**
-
-```js
-class MyComponent extends Component {
-  render() {
-    ...
-  }
-}
-```
-
-This is the base class for Inferno Components when they're defined using ES6 classes.
-
-**Stateless component:**
-
-```js
-const MyComponent => ({ name, age }) => 
-  <span>My name is: { name } and my age is: {age}</span>  
-);
-```
-
-Stateless components are first-class functions where their only argument is the `props` passed through from their parent.
-
 ### Inferno.createTemplate
 
 ```js
@@ -153,10 +135,11 @@ InfernoDOM.render(template(), document.body);
 ### Inferno.TemplateFactory
 
 ```js
+import { Component } from 'inferno-component';
 
 const { createElement } = Inferno.TemplateFactory;
 
-class BasicComponent extends Inferno.Component {
+class BasicComponent extends Component {
     render() {
         const template = Inferno.createTemplate((name, title) =>
             createElement('div', {
@@ -183,6 +166,32 @@ const template = Inferno.createTemplate((Component, title) =>
 InfernoDOM.render(template(BasicComponent, 'abc'), container);
 ```
 `Inferno.TemplateFactory` provides a factory `createElement()` function that can be used to build up virtual DOM structures in a similar sense to how `React.creactElement()` works. It's first argument is the node, second argument is the attributes and all remaining arguments are it's children.
+
+### InfernoComponent.Component
+
+**Stateful component:**
+
+```js
+import { Component } from 'inferno-component';
+
+class MyComponent extends Component {
+  render() {
+    ...
+  }
+}
+```
+
+This is the base class for Inferno Components when they're defined using ES6 classes.
+
+**Stateless component:**
+
+```js
+const MyComponent => ({ name, age }) => 
+  <span>My name is: { name } and my age is: {age}</span>  
+);
+```
+
+Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
 
 ### InfernoDOM.createRef
 
