@@ -57,10 +57,10 @@ npm install --save inferno-server
 Pre-bundled files for browser consumption:
  
 ```
-http://infernojs.org/releases/inferno.min-0.5.5.js
-http://infernojs.org/releases/inferno-component.min-0.5.5.js
-http://infernojs.org/releases/inferno-dom.min-0.5.5.js
-http://infernojs.org/releases/inferno-server.min-0.5.5.js
+http://infernojs.org/releases/0.5.5/inferno.min.js
+http://infernojs.org/releases/0.5.5/inferno-component.min.js
+http://infernojs.org/releases/0.5.5/inferno-dom.min.js
+http://infernojs.org/releases/0.5.5/inferno-server.min.js
 ```
 
 ## Overview
