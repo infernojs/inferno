@@ -1,11 +1,10 @@
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import isStringOrNumber from '../../util/isStringOrNumber';
+import { recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootDynamicTextNode( templateNode, valueIndex ) {
+export default function createRootDynamicTextNode( templateNode, valueIndex, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -23,29 +22,30 @@ export default function createRootDynamicTextNode( templateNode, valueIndex ) {
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
-				if ( typeof value !== 'string' && typeof value !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+				if ( isStringOrNumber( value ) ) {
+					domNode.nodeValue = value;
 				}
-				domNode.nodeValue = value;
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle ) {
-			if ( node !== lastItem.domTree ) {
+
+			if ( node !== lastItem.tree.dom ) {
+
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
 				return;
 			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
+			nextItem.id = lastItem.id;
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 
 			if ( nextValue !== getValueWithIndex( lastItem, valueIndex ) ) {
-				if ( typeof nextValue !== 'string' && typeof nextValue !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+				if ( isStringOrNumber( nextValue ) ) {
+					domNode.nodeValue = nextValue;
 				}
-				domNode.nodeValue = nextValue;
 			}
 		},
 		remove( /* lastItem */ ) {

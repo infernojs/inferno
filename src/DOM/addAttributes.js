@@ -44,49 +44,66 @@ function fastPropSet( attrName, attrVal, domNode ) {
 		}
 		return true;
 	} else if ( attrName === 'ref' ) {
+
+		if ( process.env.NODE_ENV === 'development' ) {
+			if ( isVoid( attrVal ) ) {
+				throw ( 'Inferno Error: Inferno.createRef() can not be null or undefined' );
+			}
+		}
+
 		attrVal.element = domNode;
 		return true;
 	}
 	return false;
 }
 
-export function addDOMDynamicAttributes( item, domNode, dynamicAttrs, node ) {
+export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
 	let styleUpdates;
 
-	if ( dynamicAttrs.index !== undefined ) {
-		dynamicAttrs = getValueWithIndex( item, dynamicAttrs.index );
-		addDOMStaticAttributes( item, domNode, dynamicAttrs );
+	if (dynamicAttrs.index !== undefined) {
+		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
+		addDOMStaticAttributes(item, domNode, dynamicAttrs);
 		return;
 	}
-	for ( const attrName in dynamicAttrs ) {
-		if ( !isVoid( attrName ) ) {
-			const attrVal = getValueWithIndex( item, dynamicAttrs[attrName] );
+	for (const attrName in dynamicAttrs) {
+		if (!isVoid( attrName)) {
+			const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
-			if ( attrVal !== undefined ) {
-				if ( attrName === 'style' ) {
+			if (attrVal !== undefined) {
+				if (attrName === 'style') {
 					styleUpdates = attrVal;
 				} else {
-					if ( fastPropSet( attrName, attrVal, domNode ) === false ) {
-						if ( eventMapping[attrName] ) {
-							addListener( item, domNode, eventMapping[attrName], attrVal );
+					if (fastPropSet(attrName, attrVal, domNode) === false) {
+						if (eventMapping[attrName]) {
+							addListener(item, domNode, eventMapping[attrName], attrVal);
 						} else {
-							template.setProperty( null, domNode, attrName, attrVal, true );
+							template.setProperty(null, domNode, attrName, attrVal, true);
 						}
 					}
 				}
 			}
 		}
 	}
-	if ( styleUpdates ) {
-		template.setCSS( item, domNode, styleUpdates );
+	if (styleUpdates) {
+		template.setCSS(item, domNode, styleUpdates);
+	}
+}
+
+export function clearListeners (item, domNode, dynamicAttrs) {
+	for (const attrName in dynamicAttrs) {
+		const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+
+		if (attrVal !== undefined && eventMapping[attrName]) {
+			removeListener(item, domNode, eventMapping[attrName], attrVal);
+		}
 	}
 }
 
 /**
-   * NOTE!! This function is probably the single most
-   * critical path for performance optimization.
-   */
-export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs ) {
+ * NOTE!! This function is probably the single most
+ * critical path for performance optimization.
+ */
+export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
 	if ( dynamicAttrs.index !== undefined ) {
 		const nextDynamicAttrs = getValueWithIndex( nextItem, dynamicAttrs.index );
 
@@ -102,9 +119,9 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 		return;
 	}
 
- /**
-   * TODO: Benchmark areas that can be improved with caching.
-   */
+	/**
+	 * TODO: Benchmark areas that can be improved with caching.
+	 */
 	let styleUpdates = {};
 	let styleName;
 
@@ -118,8 +135,7 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 			if ( isVoid( nextAttrVal ) ) {
 				if ( attrName === 'style' ) {
 					for ( styleName in lastAttrVal ) {
-						if ( lastAttrVal[styleName] &&
-							( !nextAttrVal || !nextAttrVal[styleName] ) ) {
+						if ( !nextAttrVal || !nextAttrVal[styleName] ) {
 							styleUpdates[styleName] = '';
 						}
 					}
@@ -140,14 +156,14 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 				}
 				// Update styles that changed since `lastAttrVal`.
 				for ( styleName in nextAttrVal ) {
-					if ( nextAttrVal[styleName] && ( lastAttrVal[styleName] !== nextAttrVal[styleName] ) ) {
+					if ( !nextAttrVal[styleName] || lastAttrVal[styleName] !== nextAttrVal[ styleName ] ) {
 						styleUpdates[styleName] = nextAttrVal[styleName];
 					}
 				}
 
 			} else if ( lastAttrVal !== nextAttrVal ) {
 
-				if ( fastPropSet( domNode, attrName, nextAttrVal ) === false ) {
+				if ( fastPropSet( attrName, nextAttrVal, domNode ) === false ) {
 					if ( eventMapping[attrName] ) {
 						addListener( nextItem, domNode, eventMapping[attrName], nextAttrVal ); // TODO! Write tests for this!
 					} else {
@@ -160,7 +176,7 @@ export function updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamic
 				styleUpdates = nextAttrVal;
 			} else {
 
-				if ( fastPropSet( domNode, attrName, nextAttrVal ) === false ) {
+				if ( fastPropSet( attrName, nextAttrVal, domNode ) === false ) {
 					if ( eventMapping[attrName] ) {
 						addListener( nextItem, domNode, eventMapping[attrName], nextAttrVal );
 					} else {

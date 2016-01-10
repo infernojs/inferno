@@ -3,10 +3,8 @@ import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/vari
 import recreateNode from '../recreateNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
-const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
-
-export default function createDynamicNode( valueIndex ) {
-	let domNode;
+export default function createDynamicNode(valueIndex) {
+	const domNodeMap = {};
 	let childNodeList = [];
 	let keyedChildren = true;
 	let nextDomNode;
@@ -14,19 +12,21 @@ export default function createDynamicNode( valueIndex ) {
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
 			let value = getValueWithIndex( item, valueIndex );
+			let domNode;
 			const type = getTypeFromValue( value );
 
 			switch ( type ) {
 				case ValueTypes.TEXT:
-					// TODO check if string is empty?
-					if ( isVoid( value ) ) {
+					// Testing the length property are actually faster than testing the
+					// string against '', because the interpreter won't have to create a String
+					// object from the string literal.
+					if ( isVoid( value ) || value.length === 0 ) {
 						value = '';
 					}
 					domNode = document.createTextNode( value );
 					break;
 				case ValueTypes.ARRAY:
 					const virtualList = createVirtualList( value, item, childNodeList, treeLifecycle, context );
-
 					domNode = virtualList.domNode;
 					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener( () => {
@@ -38,18 +38,24 @@ export default function createDynamicNode( valueIndex ) {
 					domNode = value.create( item, treeLifecycle, context );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					throw Error( infernoBadTemplate );
-				case ValueTypes.FUNCTION:
-					throw Error( infernoBadTemplate );
-				case ValueTypes.FRAGMENT:
-					domNode = value.domTree.create( value, treeLifecycle, context );
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					}
 					break;
-				default: break;
+				case ValueTypes.FUNCTION:
+					if ( process.env.NODE_ENV !== 'production' ) {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					}
+					break;
+				case ValueTypes.FRAGMENT:
+					domNode = value.tree.dom.create( value, treeLifecycle, context );
+					break;
 			}
-
+			domNodeMap[item.id] = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem, treeLifecycle, context ) {
+		update(lastItem, nextItem, treeLifecycle, context) {
+			let domNode = domNodeMap[lastItem.id];
 			let nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
 
@@ -61,11 +67,13 @@ export default function createDynamicNode( valueIndex ) {
 					recreateNode( domNode, nextItem, node, treeLifecycle, context );
 					return;
 				}
-
 				switch ( nextType ) {
 					case ValueTypes.TEXT:
-						// TODO check if string is empty?
-						if ( isVoid( nextValue ) ) {
+						// Testing the length property are actually faster than testing the
+						// string against '', because the interpreter won't have to create a String
+						// object from the string literal.
+						if ( isVoid( nextValue ) ||
+							nextValue.length === 0 ) {
 							nextValue = '';
 						}
 						domNode.nodeValue = nextValue;
@@ -74,17 +82,23 @@ export default function createDynamicNode( valueIndex ) {
 						updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context );
 						break;
 					case ValueTypes.TREE:
-						// debugger;
+						// TODO
+						break;
+					case ValueTypes.FRAGMENT:
+						nextValue.tree.dom.update( lastValue, nextValue, treeLifecycle, context );
 						break;
 					default: break;
 				}
 			}
 		},
-		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
+		remove(item, treeLifecycle) {
+			const value = getValueWithIndex(item, valueIndex);
+			const type = getTypeFromValue(value);
 
-			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.remove( item, treeLifecycle );
+			if (type === ValueTypes.TREE) {
+				value.remove(item, treeLifecycle);
+			} else if (type === ValueTypes.FRAGMENT) {
+				value.tree.dom.remove(value, treeLifecycle);
 			}
 		}
 	};

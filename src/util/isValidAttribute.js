@@ -1,12 +1,13 @@
-export default function isValidAttribute(strings){
+/* eslint eqeqeq:0 */
+export default function isValidAttribute( strings ){
 	let i = 0;
 	let character;
 
 	while ( i <= strings.length ) {
 		character = strings[ i ];
-		if ( !isNaN(character * 1 ) ) {
+		if ( !isNaN( character * 1 ) ) {
 			return false;
-		}else {
+		} else {
 			if ( character == character.toUpperCase() ) {
 				return false;
 			}

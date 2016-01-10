@@ -1,3 +1,7 @@
+/**
+ *  DOM registry
+ * */
+
 const PROPERTY = 0x1;
 const BOOLEAN = 0x2;
 const NUMERIC_VALUE = 0x4;
@@ -28,7 +32,7 @@ const DOMAttributeNamespaces = {
 	xlinkType: xlink
 };
 
-const DOMAttributeNames = {
+export const DOMAttributeNames = {
 
 	acceptCharset: 'accept-charset',
 	className: 'class',
@@ -69,12 +73,7 @@ const DOMAttributeNames = {
 const DOMPropertyNames = {
 	autoComplete: 'autocomplete',
 	autoFocus: 'autofocus',
-	autoPlay: 'autoplay',
 	autoSave: 'autosave',
-	hrefLang: 'hreflang',
-	radioGroup: 'radiogroup',
-	srcDoc: 'srcdoc',
-	srcSet: 'srcset'
 };
 
 // This 'whitelist' contains edge cases such as attributes
@@ -84,10 +83,10 @@ const Whitelist = {
 	allowFullScreen: BOOLEAN,
 	async: BOOLEAN,
 	autoFocus: BOOLEAN,
-	autoPlay: null,
+	autoPlay: BOOLEAN,
 	capture: BOOLEAN,
 	checked: PROPERTY | BOOLEAN,
-	controls: PROPERTY | BOOLEAN,
+	controls: BOOLEAN,
 	currentTime: PROPERTY | POSITIVE_NUMERIC_VALUE,
 	default: BOOLEAN,
 	defaultChecked: BOOLEAN,
@@ -123,7 +122,7 @@ const Whitelist = {
 	scoped: PROPERTY | BOOLEAN,
 	visible: BOOLEAN,
 	trueSpeed: BOOLEAN,
-	sandbox: PROPERTY,
+	sandbox: null,
 	sortable: BOOLEAN,
 	inert: BOOLEAN,
 	indeterminate: BOOLEAN,
@@ -204,14 +203,8 @@ const Whitelist = {
 	/**
 	 * 3.2.5 - Global attributes
 	 */
-	itemprop: true,
-	itemref: true,
-	itemscope: true,
-	itemtype: true,
 	id: null,
-	class: null,
 	dir: null,
-	lang: null,
 	title: null,
 
 	/**
@@ -227,8 +220,9 @@ const Whitelist = {
 
 	// Force 'autocorrect' and 'autoCapitalize' to be set as an attribute
 	// to fix issues with Mobile Safari on iOS devices
-	autocorrect: BOOLEAN,
-
+	autocorrect: null,
+	// autoCapitalize and autoCorrect are supported in Mobile Safari for
+	// keyboard hints.
 	autoCapitalize: null,
 
 	// Some version of IE ( like IE9 ) actually throw an exception
@@ -259,27 +253,10 @@ const Whitelist = {
 	continuous: BOOLEAN,
 
 	/**
-	 * Safari
-	 */
-
-	// color is for Safari mask-icon link
-	color: null,
-
-	/**
-	 * RDFa Properties
-	 */
-	datatype: null,
-	// property is also supported for OpenGraph in meta tags.
-	property: null,
-
-	/**
 	 * Others
 	 */
-
 	srcSet: null,
-	scrolling: null,
-	nonce: null,
-	method: null,
+	inlist: null,
 	minLength: null,
 	marginWidth: null,
 	marginHeight: null,

@@ -1,16 +1,13 @@
 
-export default function createStaticNode( templateNode ) {
-	let domNode;
+export default function createStaticNode(templateNode) {
 	const node = {
 		overrideItem: null,
 		create() {
-			domNode = templateNode.cloneNode( true );
-			return domNode;
+			return templateNode.cloneNode(true);
 		},
 		update() {},
-		remove( /* lastItem */ ) {
-
-		}
+		remove() {},
+		hydrate() {}
 	};
 
 	return node;

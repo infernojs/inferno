@@ -1,12 +1,13 @@
 # InfernoJS
 
-[![Build Status](https://travis-ci.org/trueadm/inferno.svg?branch=master)](https://travis-ci.org/trueadm/inferno)
-[![Coverage Status](https://coveralls.io/repos/trueadm/inferno/badge.svg?branch=master&service=github)](https://coveralls.io/github/trueadm/inferno?branch=master)
-[![Dependency Status](https://david-dm.org/trueadm/inferno.svg)](https://david-dm.org/trueadm/inferno)
-[![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
-[![npm version](https://badge.fury.io/js/inferno.svg)](https://badge.fury.io/js/inferno)
+[![Build Status](https://img.shields.io/travis/trueadm/inferno/dev.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
+[![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/dev.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=dev)
+[![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
+[![Dev Dependencies](https://img.shields.io/david/dev/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno#info=devDependencies)
+[![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
+[![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 
-Inferno is a lightweight isomorphic framework for building shockingly performant user interfaces. Unlike typical virtual DOM libraries like React, Mitrhil, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
+Inferno is a lightweight isomorphic framework for building highly performant user interfaces. Unlike typical virtual DOM libraries like React, Mitrhil, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
 
 In addition to this, we've painstakingly optimized the code to make sure that there is as little overhead as possible. We believe that Inferno is currently the fastest vDOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
@@ -23,32 +24,43 @@ To be more technically correct, Inferno is a "virtual fragment" framework, which
 
 ## Install
 
+Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM. Inferno also has the `inferno-server` package for
+server-side rendering of fragments to HTML strings (differing from React's route of using `react-dom/server` for server-side rendering). Furthermore, rather than include the
+ES2015 component with class syntax in core (like React), it's in a separate package `inferno-component` to allow for better modularity.
+
+NPM:
+
+Core package:
+
 ```sh
 npm install --save inferno
+ ```
+ 
+ ES2015 stateful component (with life-cycles) package:
+ 
+  ```sh
+ npm install --save inferno-component 
+ ```
+ 
+Browser DOM rendering package:
+
+ ```sh
+npm install --save inferno-dom 
 ```
 
-## Testing
+Server-side rendering package:
 
 ```sh
-npm run test:browser // browser tests
-
-npm run test:server // node tests
-
-npm run test // browser and node tests
-
+npm install --save inferno-server 
 ```
 
-## Building
-
-```sh
-npm run build
-
+Pre-bundled files for browser consumption:
+ 
 ```
-## Linting
-
-```sh
-npm run lint:source // lint the source
-
+http://infernojs.org/releases/inferno.min-0.5.5.js
+http://infernojs.org/releases/inferno-component.min-0.5.5.js
+http://infernojs.org/releases/inferno-dom.min-0.5.5.js
+http://infernojs.org/releases/inferno-server.min-0.5.5.js
 ```
 
 ## Overview
@@ -57,9 +69,12 @@ Let's start with some code. As you can see, Inferno intentionally keeps the same
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a very easy way to express virtual fragments.
 
 ```js
+import Inferno from 'inferno';
+import InfernoDOM from 'inferno-dom';
+
 const message = "Hello world";
 
-Inferno.render(
+InfernoDOM.render(
   <MyComponent message={ message } />,
   document.getElementById("app")
 )
@@ -84,7 +99,7 @@ class Component extends Inferno.Component {
   }
 }
 
-Inferno.render(<Component />, document.body);
+InfernoDOM.render(<Component />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
@@ -99,54 +114,10 @@ This is essential for low-power devices such as tablets and phones, where users 
 ## Benchmarks
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster (ES6 classes)](http://infernojs.org/benchmarks/dbmonster/)
-- [dbmonster (no ES6 classes)](http://infernojs.org/benchmarks/dbmonster/inferno-dbmonster-raw-es5.html)
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Inferno Top-Level API
-
-### Inferno.Component
-
-**Stateful component:**
-
-```js
-class MyComponent extends Component {
-  render() {
-    ...
-  }
-}
-```
-
-This is the base class for Inferno Components when they're defined using ES6 classes.
-
-**Stateless component:**
-
-```js
-const MyComponent => ({ name, age }) => 
-  <span>My name is: { name } and my age is: {age}</span>  
-);
-```
-
-Stateless components are first-class functions where their only argument is the `props` passed through from their parent.
-
-### Inferno.render
-
-```javascript
-Inferno.render(<div />, document.body);
-```
-
-Render a fragment into the DOM in the supplied container and return a reference to the component. If the fragment was previously rendered into container, this will
-perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno component.
-
-### Inferno.renderToString
-
-```js
-Inferno.renderToString(<MyComponent />);
-```
-
-[Note: currently in development]
-
-Render a fragment to its initial HTML. This should only be used on the server. Inferno will return an HTML string.
 
 ### Inferno.createTemplate
 
@@ -159,15 +130,16 @@ const template = Inferno.createTemplate(() => ({
   ]
 }));
 
-Inferno.render(template(), document.body);
+InfernoDOM.render(template(), document.body);
 ```
 ### Inferno.TemplateFactory
 
 ```js
+import { Component } from 'inferno-component';
 
 const { createElement } = Inferno.TemplateFactory;
 
-class BasicComponent extends Inferno.Component {
+class BasicComponent extends Component {
     render() {
         const template = Inferno.createTemplate((name, title) =>
             createElement('div', {
@@ -191,20 +163,69 @@ const template = Inferno.createTemplate((Component, title) =>
     )
 );
 
-Inferno.render(template(BasicComponent, 'abc'), container);
+InfernoDOM.render(template(BasicComponent, 'abc'), container);
 ```
 `Inferno.TemplateFactory` provides a factory `createElement()` function that can be used to build up virtual DOM structures in a similar sense to how `React.creactElement()` works. It's first argument is the node, second argument is the attributes and all remaining arguments are it's children.
 
-### Inferno.createRef
+### InfernoComponent.Component
+
+**Stateful component:**
 
 ```js
-const divRef = Inferno.createRef();
+import { Component } from 'inferno-component';
 
-Inferno.render(<div ref={ divRef } />, document.body);
+class MyComponent extends Component {
+  render() {
+    ...
+  }
+}
+```
+
+This is the base class for Inferno Components when they're defined using ES6 classes.
+
+**Stateless component:**
+
+```js
+const MyComponent => ({ name, age }) => 
+  <span>My name is: { name } and my age is: {age}</span>  
+);
+```
+
+Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
+
+### InfernoDOM.createRef
+
+```js
+import InfernoDOM from 'inferno-dom';
+
+const divRef = InfernoDOM.createRef();
+
+InfernoDOM.render(<div ref={ divRef } />, document.body);
 divRef.element.textContent = 'Modifying the DOM node directly!';
 ```
 
 Creates a mutable object that links an Inferno rendered template node to its real DOM node upon being mounted to the DOM.
+
+### InfernoDOM.render
+
+```javascript
+import InfernoDOM from 'inferno-dom';
+
+InfernoDOM.render(<div />, document.body);
+```
+
+Render a fragment into the DOM in the supplied container given the supplied template. If the fragment was previously rendered into container, this will
+perform an update on it and only mutate the DOM as necessary to reflect the latest Inferno fragment.
+
+### InfernoServer.renderToString
+
+```javascript
+import InfernoServer from 'inferno-server';
+
+InfernoServer.renderToString(<div />, document.body);
+```
+
+Render a fragment into the HTML string given the supplied template.
 
 ## Performance
 
@@ -229,6 +250,28 @@ Inferno is still under development, and there are some missing features and opti
 - implement isomorphism/universal server side rendering
 - add API docs
 - add examples repo
+
+## Contributing
+
+### Testing
+
+```sh
+npm run test:browser // browser tests
+npm run test:server // node tests
+npm run test // browser and node tests
+npm run browser // hot-loaded browser tests
+```
+
+### Building
+
+```sh
+npm run build
+```
+### Linting
+
+```sh
+npm run lint:source // lint the source
+```
 
 ### Inferno is supported by BrowserStack
 

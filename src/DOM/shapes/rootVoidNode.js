@@ -1,10 +1,8 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootVoidNode( templateNode, dynamicAttrs ) {
+export default function createRootVoidNode( templateNode, dynamicAttrs, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -26,7 +24,7 @@ export default function createRootVoidNode( templateNode, dynamicAttrs ) {
 			return domNode;
 		},
 		update( lastItem, nextItem ) {
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree.dom ) {
 				recreateRootNode( lastItem, nextItem, node );
 				return;
 			}
@@ -38,8 +36,10 @@ export default function createRootVoidNode( templateNode, dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-		remove( /* lastItem */ ) {
-
+		remove(item) {
+			if (dynamicAttrs) {
+				clearListeners(item, item.rootNode, dynamicAttrs);
+			}
 		}
 	};
 

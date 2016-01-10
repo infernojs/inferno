@@ -1,35 +1,32 @@
 import isVoid from '../../util/isVoid';
+import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex } from '../../core/variables';
 
-export default function createDynamicTextNode( templateNode, valueIndex ) {
-	let domNode;
-
+export default function createDynamicTextNode(templateNode, valueIndex) {
+	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
-		create( item ) {
-			domNode = templateNode.cloneNode( false );
+		create(item) {
+			const domNode = templateNode.cloneNode( false );
 			const value = getValueWithIndex( item, valueIndex );
 
-			if ( !isVoid( value ) ) {
-				if ( typeof value !== 'string' && typeof value !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
-				}
+			if ( !isVoid( value ) && isStringOrNumber( value ) ) {
 				domNode.nodeValue = value;
 			}
+			domNodeMap[item.id] = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem ) {
+		update(lastItem, nextItem) {
+			let domNode = domNodeMap[lastItem.id];
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 
 			if ( nextValue !== getValueWithIndex( lastItem, valueIndex ) ) {
-				if ( typeof nextValue !== 'string' && typeof nextValue !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+				if ( isStringOrNumber( nextValue ) ) {
+					domNode.nodeValue = nextValue;
 				}
-				domNode.nodeValue = nextValue;
 			}
 		},
 		remove( /* lastItem */ ) {
-
 		}
 	};
 

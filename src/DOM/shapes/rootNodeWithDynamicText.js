@@ -1,12 +1,11 @@
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import isStringOrNumber from '../../util/isStringOrNumber';
+import { recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootNodeWithDynamicText( templateNode, valueIndex, dynamicAttrs ) {
+export default function createRootNodeWithDynamicText( templateNode, valueIndex, dynamicAttrs, recyclingEnabled ) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -24,10 +23,16 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			const value = getValueWithIndex( item, valueIndex );
 
 			if ( !isVoid( value ) ) {
-				if ( typeof value !== 'string' && typeof value !== 'number' ) {
-					throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+				if ( process.env.NODE_ENV !== 'production' ) {
+					if ( !isStringOrNumber( value ) ) {
+						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+					}
 				}
-				domNode.textContent = value;
+				if (value === '') {
+					domNode.appendChild(document.createTextNode(''));
+				} else {
+					domNode.textContent = value;
+				}
 			}
 			if ( dynamicAttrs ) {
 				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );
@@ -36,41 +41,47 @@ export default function createRootNodeWithDynamicText( templateNode, valueIndex,
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle ) {
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree.dom ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle );
-				return;
-			}
-			const domNode = lastItem.rootNode;
+			} else {
+				const domNode = lastItem.rootNode;
 
-			nextItem.rootNode = domNode;
-			const nextValue = getValueWithIndex( nextItem, valueIndex );
-			const lastValue = getValueWithIndex( lastItem, valueIndex );
+				nextItem.id = lastItem.id;
+				nextItem.rootNode = domNode;
+				const nextValue = getValueWithIndex( nextItem, valueIndex );
+				const lastValue = getValueWithIndex( lastItem, valueIndex );
 
-			if ( nextValue !== lastValue ) {
-				if ( isVoid( nextValue ) ) {
-					if ( isVoid( lastValue ) ) {
-						domNode.textContent = ' ';
-						domNode.firstChild.nodeValue = '';
+				if ( nextValue !== lastValue ) {
+					if ( isVoid( nextValue ) ) {
+						if ( isVoid( lastValue ) ) {
+							domNode.firstChild.nodeValue = '';
+						} else {
+							domNode.textContent = '';
+						}
 					} else {
-						domNode.textContent = '';
-					}
-				} else {
-					if ( typeof nextValue !== 'string' && typeof nextValue !== 'number' ) {
-						throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
-					}
-					if ( isVoid( lastValue ) ) {
-						domNode.textContent = nextValue;
-					} else {
-						domNode.firstChild.nodeValue = nextValue;
+						if ( process.env.NODE_ENV !== 'production' ) {
+							if ( !isStringOrNumber( nextValue ) ) {
+								throw Error( 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.' );
+							}
+						}
+
+						if ( isVoid( lastValue ) ) {
+							domNode.textContent = nextValue;
+						} else {
+							domNode.firstChild.nodeValue = nextValue;
+						}
 					}
 				}
-			}
-			if ( dynamicAttrs ) {
-				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
+
+				if ( !isVoid( dynamicAttrs ) ) {
+					updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
+				}
 			}
 		},
-		remove( /* lastItem */ ) {
-
+		remove(item) {
+			if (dynamicAttrs) {
+				clearListeners(item, item.rootNode, dynamicAttrs);
+			}
 		}
 	};
 

@@ -1,12 +1,10 @@
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootDynamicNode( valueIndex ) {
+export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 	let nextDomNode;
 	let childNodeList = [];
 	let keyedChildren = true;
@@ -46,14 +44,22 @@ export default function createRootDynamicNode( valueIndex ) {
 					} );
 					break;
 				case ValueTypes.TREE:
-					domNode = value.create( item, treeLifecycle, context );
+					domNode = value.dom.create( item, treeLifecycle, context );
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					} else {
+						return;
+					}
 				case ValueTypes.FUNCTION:
-					throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					if ( process.env.NODE_ENV !== 'production' ) {
+						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
+					} else {
+						return;
+					}
 				case ValueTypes.FRAGMENT:
-					domNode = value.domTree.create( value, treeLifecycle, context );
+					domNode = value.tree.dom.create( value, treeLifecycle, context );
 					break;
 				default: break;
 			}
@@ -62,13 +68,15 @@ export default function createRootDynamicNode( valueIndex ) {
 			return domNode;
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
-			if ( node !== lastItem.domTree ) {
+			if ( node !== lastItem.tree.dom ) {
+
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 				return;
 			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
+			nextItem.id = lastItem.id;
 
 			const nextValue = getValueWithIndex( nextItem, valueIndex );
 			const lastValue = getValueWithIndex( lastItem, valueIndex );
@@ -78,6 +86,7 @@ export default function createRootDynamicNode( valueIndex ) {
 				const lastType = getTypeFromValue( lastValue );
 
 				if ( lastType !== nextType ) {
+
 					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 					return;
 				}
@@ -89,15 +98,24 @@ export default function createRootDynamicNode( valueIndex ) {
 					case ValueTypes.ARRAY:
 						updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context );
 						break;
+					case ValueTypes.TREE:
+						// TODO
+						break;
+					case ValueTypes.FRAGMENT:
+						nextValue.tree.dom.update( lastValue, nextValue, treeLifecycle, context );
+						break;
 					default: break;
 				}
 			}
 		},
-		remove( item, treeLifecycle ) {
-			const value = getValueWithIndex( item, valueIndex );
+		remove(item, treeLifecycle) {
+			const value = getValueWithIndex(item, valueIndex);
+			const type = getTypeFromValue(value);
 
-			if ( getTypeFromValue( value ) === ValueTypes.TREE ) {
-				value.remove( item, treeLifecycle );
+			if (type === ValueTypes.TREE) {
+				value.remove(item, treeLifecycle);
+			} else if (type === ValueTypes.FRAGMENT) {
+				value.tree.dom.remove(value, treeLifecycle);
 			}
 		}
 	};

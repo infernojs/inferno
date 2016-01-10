@@ -1,17 +1,16 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes } from '../addAttributes';
+import { recycle } from '../recycling';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
+import addShapeChildren from '../../shared/addShapeChildren';
 
-const recyclingEnabled = isRecyclingEnabled();
-
-export default function createRootNodeWithDynamicSubTreeForChildren( templateNode, subTreeForChildren, dynamicAttrs ) {
+export default function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled) {
 	const node = {
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
-		create( item, treeLifecycle, context ) {
+		create(item, treeLifecycle, context) {
 			let domNode;
 
 			if ( recyclingEnabled ) {
@@ -21,25 +20,19 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 				}
 			}
 			domNode = templateNode.cloneNode( false );
-			if ( !isVoid( subTreeForChildren ) ) {
-				if ( isArray( subTreeForChildren ) ) {
-					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
-						const subTree = subTreeForChildren[i];
 
-						domNode.appendChild( subTree.create( item, treeLifecycle, context ) );
-					}
-				} else if ( typeof subTreeForChildren === 'object' ) {
-					domNode.appendChild( subTreeForChildren.create( item, treeLifecycle, context ) );
-				}
-			}
+			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context );
+
 			if ( dynamicAttrs ) {
 				addDOMDynamicAttributes( item, domNode, dynamicAttrs, node );
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem, treeLifecycle, context ) {
-			if ( node !== lastItem.domTree ) {
+		update(lastItem, nextItem, treeLifecycle, context) {
+			nextItem.id = lastItem.id;
+
+			if ( node !== lastItem.tree.dom ) {
 				const newDomNode = recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 
 				nextItem.rootNode = newDomNode;
@@ -56,34 +49,27 @@ export default function createRootNodeWithDynamicSubTreeForChildren( templateNod
 						subTree.update( lastItem, nextItem, treeLifecycle, context );
 					}
 				} else if ( typeof subTreeForChildren === 'object' ) {
-					const newDomNode = subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
-
-					if ( newDomNode ) {
-						const replaceNode = domNode.firstChild;
-
-						if ( replaceNode ) {
-							domNode.replaceChild( newDomNode, replaceNode );
-						} else {
-							domNode.appendChild( newDomNode );
-						}
-					}
+					subTreeForChildren.update( lastItem, nextItem, treeLifecycle, context );
 				}
 			}
 			if ( dynamicAttrs ) {
 				updateDOMDynamicAttributes( lastItem, nextItem, domNode, dynamicAttrs );
 			}
 		},
-		remove( item, treeLifecycle ) {
-			if ( !isVoid( subTreeForChildren ) ) {
-				if ( isArray( subTreeForChildren ) ) {
-					for ( let i = 0; i < subTreeForChildren.length; i++ ) {
+		remove(item, treeLifecycle) {
+			if (!isVoid( subTreeForChildren)) {
+				if (isArray( subTreeForChildren)) {
+					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
 
-						subTree.remove( item, treeLifecycle );
+						subTree.remove(item, treeLifecycle);
 					}
-				} else if ( typeof subTreeForChildren === 'object' ) {
-					subTreeForChildren.remove( item, treeLifecycle );
+				} else if (typeof subTreeForChildren === 'object') {
+					subTreeForChildren.remove(item, treeLifecycle);
 				}
+			}
+			if (dynamicAttrs) {
+				clearListeners(item, item.rootNode, dynamicAttrs);
 			}
 		}
 	};

@@ -1,21 +1,33 @@
 /* eslint new-cap:0 */
 import isVoid from '../../util/isVoid';
-import { isRecyclingEnabled, recycle } from '../recycling';
+import { recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
-import updateComponent from '../../core/updateComponent';
 
-const recyclingEnabled = isRecyclingEnabled();
+let updateComponent;
 
-export default function createRootNodeWithComponent( componentIndex, props ) {
-	let instance;
-	let lastRender;
+const global = global || (typeof window !== 'undefined' ? window : null);
+
+if (global && global.InfernoComponent) {
+	updateComponent = global.InfernoComponent.updateComponent;
+} else if (global && !global.InfernoComponent) {
+	try {
+		updateComponent = require('inferno-component').updateComponent;
+	} catch (e) {
+		// do nothing, this is fine, the person might be using stateless components
+	}
+}
+
+export default function createRootNodeWithComponent( componentIndex, props, recyclingEnabled ) {
 	let currentItem;
+	let statelessRender;
 	const node = {
+		instance: null,
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
 		create( item, treeLifecycle, context ) {
+			let instance = node.instance;
 			let domNode;
 			let toUseItem = item;
 
@@ -35,6 +47,7 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 				// bad component, make a text node
 				domNode = document.createTextNode( '' );
 				item.rootNode = domNode;
+				node.instance = null;
 				return domNode;
 			} else if ( typeof Component === 'function' ) {
 				// stateless component
@@ -42,11 +55,11 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, toUseItem ), context );
 
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
-					lastRender = nextRender;
+					domNode = nextRender.tree.dom.create( nextRender, treeLifecycle, context );
+					statelessRender = nextRender;
 					item.rootNode = domNode;
 				} else {
-					instance = new Component( getValueForProps( props, toUseItem ) );
+					instance = node.instance = new Component( getValueForProps( props, toUseItem ) );
 					instance.context = context;
 					instance.componentWillMount();
 					const nextRender = instance.render();
@@ -57,9 +70,9 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 						context = { ...context, ...childContext };
 					}
 					nextRender.parent = item;
-					domNode = nextRender.domTree.create( nextRender, treeLifecycle, context );
+					domNode = nextRender.tree.dom.create( nextRender, treeLifecycle, context );
 					item.rootNode = domNode;
-					lastRender = nextRender;
+					instance._lastRender = nextRender;
 
 					if ( domNode instanceof DocumentFragment ) {
 						fragmentFirstChild = domNode.childNodes[0];
@@ -73,16 +86,16 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					} );
 					instance.forceUpdate = () => {
 						instance.context = context;
-						const nextRender = instance.render();
+						const nextRender = instance.render.call( instance );
 						const childContext = instance.getChildContext();
 
 						if ( childContext ) {
 							context = { ...context, ...childContext };
 						}
 						nextRender.parent = currentItem;
-						nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
+						nextRender.tree.dom.update( instance._lastRender, nextRender, treeLifecycle, context );
 						currentItem.rootNode = nextRender.rootNode;
-						lastRender = nextRender;
+						instance._lastRender = nextRender;
 					};
 				}
 			}
@@ -90,7 +103,9 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 		},
 		update( lastItem, nextItem, treeLifecycle, context ) {
 			const Component = getValueWithIndex( nextItem, componentIndex );
+			let instance = node.instance;
 
+			nextItem.id = lastItem.id;
 			currentItem = nextItem;
 			if ( !Component ) {
 				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
@@ -101,22 +116,39 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 					const nextRender = Component( getValueForProps( props, nextItem ), context );
 
 					nextRender.parent = currentItem;
-					const newDomNode = nextRender.domTree.update( lastRender, nextRender, treeLifecycle, context );
+					if ( !isVoid( statelessRender ) ) {
+						const newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
 
-					if ( newDomNode ) {
-						if ( nextRender.rootNode.parentNode ) {
-							nextRender.rootNode.parentNode.replaceChild( newDomNode, nextRender.rootNode );
+						if ( newDomNode ) {
+							if ( nextRender.rootNode.parentNode ) {
+								nextRender.rootNode.parentNode.replaceChild( newDomNode, nextRender.rootNode );
+							} else {
+								lastItem.rootNode.parentNode.replaceChild( newDomNode, lastItem.rootNode );
+							}
+							currentItem.rootNode = newDomNode;
 						} else {
-							lastItem.rootNode.parentNode.replaceChild( newDomNode, lastItem.rootNode );
+							const newDomNode = nextRender.tree.dom.create( statelessRender, treeLifecycle, context );
+
+							if ( newDomNode ) {
+								if ( nextRender.rootNode.parentNode ) {
+									nextRender.rootNode.parentNode.replaceChild(newDomNode, nextRender.rootNode );
+								} else {
+									lastItem.rootNode.parentNode.replaceChild(newDomNode, lastItem.rootNode );
+								}
+								currentItem.rootNode = newDomNode;
+							} else {
+								currentItem.rootNode = nextRender.rootNode;
+							}
 						}
-						currentItem.rootNode = newDomNode;
 					} else {
-						currentItem.rootNode = nextRender.rootNode;
+						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+						return;
 					}
 
-					lastRender = nextRender;
+					statelessRender = nextRender;
 				} else {
-					if ( !instance || node !== lastItem.domTree || Component !== instance.constructor ) {
+
+					if ( !instance || node !== lastItem.tree.dom || Component !== instance.constructor ) {
 						recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
 						return;
 					}
@@ -132,9 +164,12 @@ export default function createRootNodeWithComponent( componentIndex, props ) {
 			}
 		},
 		remove( item, treeLifecycle ) {
+			let instance = node.instance;
+
 			if ( instance ) {
-				lastRender.domTree.remove( lastRender, treeLifecycle );
+				instance._lastRender.tree.dom.remove( instance._lastRender, treeLifecycle );
 				instance.componentWillUnmount();
+				node.instance = null;
 			}
 		}
 	};
