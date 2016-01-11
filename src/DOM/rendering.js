@@ -1,4 +1,5 @@
 import createDOMFragment from '../DOM/createFragment';
+import isVoid from '../util/isVoid';
 
 const rootFragments = [];
 
@@ -31,13 +32,13 @@ export function removeRootFragment(rootFragment) {
 export function render(nextItem, parentNode) {
 	const rootFragment = getRootFragmentAtNode(parentNode);
 
-	if ( rootFragment == null ) {
+	if (isVoid(rootFragment)) {
 		const fragment = createDOMFragment(parentNode);
 
 		fragment.render(nextItem);
 		rootFragments.push(fragment);
 	} else {
-		if (nextItem == null) {
+		if (isVoid(nextItem)) {
 			rootFragment.remove();
 			removeRootFragment(rootFragment);
 		} else {

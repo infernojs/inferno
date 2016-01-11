@@ -1,5 +1,5 @@
 // To be compat with React, we support at least the same SVG elements
-function isSVGElement( nodeName ) {
+function isSVGElement(nodeName) {
 	return nodeName === 'svg'
 		|| nodeName === 'clipPath'
 		|| nodeName === 'circle'

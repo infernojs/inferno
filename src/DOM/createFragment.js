@@ -13,7 +13,7 @@ export default function createDOMFragment(parentNode, nextNode) {
 			for (let i = 0; i < treeSuccessListeners.length; i++) {
 				const treeSuccessListener = treeSuccessListeners[i];
 
-				if ( treeSuccessListener === listener ) {
+				if (treeSuccessListener === listener) {
 					treeSuccessListeners.splice(i, 1);
 					return;
 				}

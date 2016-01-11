@@ -1,4 +1,4 @@
-function isMathMLElement( nodeName ) {
+function isMathMLElement(nodeName) {
 	return nodeName === 'mo'
 		|| nodeName === 'mover'
 		|| nodeName === 'mn'

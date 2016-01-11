@@ -1,16 +1,16 @@
-export default function getFormElementType( node ) {
+export default function getFormElementType(node) {
 	const name = node.nodeName.toLowerCase();
 
-	if ( name !== 'input' ) {
-		if ( name === 'select' && node.multiple ) {
+	if (name !== 'input') {
+		if (name === 'select' && node.multiple) {
 			return 'select-multiple';
 		}
 		return name;
 	}
 
-	const type = node.getAttribute( 'type' );
+	const type = node.getAttribute('type');
 
-	if ( !type ) {
+	if (!type) {
 		return 'text';
 	}
 

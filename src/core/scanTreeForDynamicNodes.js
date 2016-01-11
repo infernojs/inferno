@@ -78,7 +78,7 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 					}
 				}
 			}
-			if (!isVoid( node.key)) {
+			if (!isVoid(node.key)) {
 				if (node.key.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
 					dynamicFlags.KEY = true;

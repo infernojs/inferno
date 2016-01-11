@@ -27,7 +27,7 @@ function renderMarkupForSelect(node) {
 	if (!isVoid(value)) {
 		let values = {};
 		if (isArray(value)) {
-			for (let i = 0, len = value.length; i < len ; i++) {
+			for (let i = 0, len = value.length; i < len; i++) {
 				values[value[i]] = value[i];
 			}
 		} else {
@@ -48,7 +48,7 @@ function renderMarkupForSelect(node) {
  */
 function populateOptions(node, values) {
 	if (node.tag !== 'option') {
-		for (let i = 0, len = node.children.length; i < len ; i++) {
+		for (let i = 0, len = node.children.length; i < len; i++) {
 			populateOptions(node.children[i], values);
 		}
 		return;
@@ -59,7 +59,7 @@ function populateOptions(node, values) {
 		return;
 	}
 	node.attrs = node.attrs || {};
-	node.attrs.selected = "selected";
+	node.attrs.selected = 'selected';
 }
 
 /**

@@ -26,6 +26,7 @@ describe('SSR Hydration', () => {
 
 	describe('should not change DOM when hydrated content matches container', () => {
 		it('very basic example #1', () => {
+
 			template = createTemplate(() => ({
 				tag: 'div'
 			}));

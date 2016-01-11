@@ -44,6 +44,8 @@ describe( 'Select / select multiple', () => {
 			};
 		});
 
+		render(template(null), container);
+		render(template(), container);
 		render(template(2), container);
 
 		expect(container.firstChild.children[0].selected).to.eql(false);
@@ -100,6 +102,9 @@ describe( 'Select / select multiple', () => {
 			};
 		});
 
+		render(template({}), container);
+		render(template(null), container);
+		render(template(undefined), container);
 		render(template('foo'), container);
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
@@ -108,7 +113,7 @@ describe( 'Select / select multiple', () => {
 		).to.equal(
 			innerHTML( '<select multiple="multiple"><option value="foo">foo</option><option value="bar">bar</option></select>' )
 		);
-
+		render(template(undefined), container);
 		render(template(null), container);
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(false);
@@ -196,7 +201,7 @@ describe( 'Select / select multiple', () => {
 				}]
 			};
 		});
-
+		render(template(undefined), container);
 		render(template(['foo', 'bar']), container);
 
 		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');

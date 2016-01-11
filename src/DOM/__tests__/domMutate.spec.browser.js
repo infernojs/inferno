@@ -96,13 +96,58 @@ describe('domMutate', () => {
 			expect(nodeList[0].innerHTML).to.equal('');
 			expect(nodeList[1].innerHTML).to.equal('');
 
-			updateNonKeyed( undefined, undefined, container)
+			updateNonKeyed( null, 123, container)
+
+			expect(nodeList[0].tagName).to.equal('SPAN');
+			expect(nodeList[1].tagName).to.equal('SPAN');
+
+			expect(nodeList[0].innerHTML).to.equal('');
+			expect(nodeList[1].innerHTML).to.equal('123');
+
+			updateNonKeyed( 123, 123, container)
+
+			expect(nodeList[0].tagName).to.equal('SPAN');
+			expect(nodeList[1].tagName).to.equal('SPAN');
+
+			expect(nodeList[0].innerHTML).to.equal('123');
+			expect(nodeList[1].innerHTML).to.equal('123');
+
+
+			updateNonKeyed( [123], [123], container)
+
+			expect(nodeList[0].tagName).to.equal('SPAN');
+			expect(nodeList[1].tagName).to.equal('SPAN');
+
+			expect(nodeList[0].innerHTML).to.equal('123');
+			expect(nodeList[1].innerHTML).to.equal('123');
+
+			updateNonKeyed( null, null, container)
+
+			updateNonKeyed( null, undefined, container)
+
+			updateNonKeyed( '', '', container)
 
 			expect(nodeList[0].tagName).to.equal('SPAN');
 			expect(nodeList[1].tagName).to.equal('SPAN');
 
 			expect(nodeList[0].innerHTML).to.equal('');
 			expect(nodeList[1].innerHTML).to.equal('');
+
+			updateNonKeyed( [], [], container)
+
+			expect(nodeList[0].tagName).to.equal('SPAN');
+			expect(nodeList[1].tagName).to.equal('SPAN');
+
+			expect(nodeList[0].innerHTML).to.equal('');
+			expect(nodeList[1].innerHTML).to.equal('');
+
+			updateNonKeyed( undefined, ['123', 123], container)
+
+			expect(nodeList[0].tagName).to.equal('SPAN');
+			expect(nodeList[1].tagName).to.equal('SPAN');
+
+			expect(nodeList[0].innerHTML).to.equal('');
+			expect(nodeList[1].innerHTML).to.equal('123');
 		});
 	});
 
@@ -116,7 +161,7 @@ describe('domMutate', () => {
 			createVirtualList(null)
 			createVirtualList()
 			createVirtualList({})
-			// Just dummy - means nothing. Added just to make sure the test runs as planned
+			createVirtualList(undefined)
 			expect(container.innerHTML).to.equal('');
 		});
 	});
@@ -129,13 +174,12 @@ describe('domMutate', () => {
 
 		it ( 'should do nothing if first arg in updateVirtualList has no length', () => {
 			updateVirtualList(null)
-			// Just dummy - means nothing. Added just to make sure the test runs as planned
 			expect(container.innerHTML).to.equal('');
 			updateVirtualList()
-			// Just dummy - means nothing. Added just to make sure the test runs as planned
 			expect(container.innerHTML).to.equal('');
 			updateVirtualList({})
-			// Just dummy - means nothing. Added just to make sure the test runs as planned
+			expect(container.innerHTML).to.equal('');
+			updateVirtualList(undefined)
 			expect(container.innerHTML).to.equal('');
 		});
 	});

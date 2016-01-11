@@ -9,7 +9,7 @@ const canUseDOM = !!(
 export default {
 	canUseDOM: canUseDOM,
 	canUseWorkers: typeof Worker !== 'undefined',
-	canUseEventListeners: canUseDOM && !!( window.addEventListener ),
+	canUseEventListeners: canUseDOM && !!(window.addEventListener),
 	canUseViewport: canUseDOM && !!window.screen,
 	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
 };

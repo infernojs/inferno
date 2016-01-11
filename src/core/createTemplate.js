@@ -45,41 +45,41 @@ function applyTreeConstructors(schema, dynamicNodeMap) {
 	return tree;
 }
 
-export default function createTemplate( callback ) {
-	if ( typeof callback === 'function' ) {
+export default function createTemplate(callback) {
+	if (typeof callback === 'function') {
 		let construct = callback.construct || null;
 
-		if ( isVoid( construct ) ) {
+		if (isVoid(construct)) {
 			const callbackLength = callback.length;
-			const callbackArguments = new Array( callbackLength );
+			const callbackArguments = new Array(callbackLength);
 
-			for ( let i = 0; i < callbackLength; i++ ) {
-				callbackArguments[i] = createVariable( i );
+			for (let i = 0; i < callbackLength; i++) {
+				callbackArguments[i] = createVariable(i);
 			}
-			const schema = callback( ...callbackArguments );
+			const schema = callback(...callbackArguments);
 			const dynamicNodeMap = new Map() || new Storage();
 
-			scanTreeForDynamicNodes( schema, dynamicNodeMap );
-			const tree = applyTreeConstructors( schema, dynamicNodeMap );
+			scanTreeForDynamicNodes(schema, dynamicNodeMap);
+			const tree = applyTreeConstructors(schema, dynamicNodeMap);
 			const key = schema.key;
 			const keyIndex = key ? key.index : -1;
 
-			switch ( callbackLength ) {
+			switch (callbackLength) {
 				case 0:
-					construct = () => ( {
+					construct = () => ({
 						parent: null,
 						tree,
 						id: uniqueId++,
 						key: null,
 						nextItem: null,
 						rootNode: null
-					} );
+					});
 					break;
 				case 1:
-					construct = ( v0 ) => {
+					construct = (v0) => {
 						let key;
 
-						if ( keyIndex === 0 ) {
+						if (keyIndex === 0) {
 							key = v0;
 						}
 						return {
@@ -94,12 +94,12 @@ export default function createTemplate( callback ) {
 					};
 					break;
 				case 2:
-					construct = ( v0, v1 ) => {
+					construct = (v0, v1) => {
 						let key;
 
-						if ( keyIndex === 0 ) {
+						if (keyIndex === 0) {
 							key = v0;
-						} else if ( keyIndex === 1 ) {
+						} else if (keyIndex === 1) {
 							key = v1;
 						}
 						return {
@@ -115,14 +115,14 @@ export default function createTemplate( callback ) {
 					};
 					break;
 				default:
-					construct = ( v0, v1, ...values ) => {
+					construct = (v0, v1, ...values) => {
 						let key;
 
-						if ( keyIndex === 0 ) {
+						if (keyIndex === 0) {
 							key = v0;
-						} else if ( keyIndex === 1 ) {
+						} else if (keyIndex === 1) {
 							key = v1;
-						} else if ( keyIndex > 1 ) {
+						} else if (keyIndex > 1) {
 							key = values[keyIndex];
 						}
 						return {
@@ -139,7 +139,7 @@ export default function createTemplate( callback ) {
 					};
 					break;
 			}
-			if ( !isVoid( construct ) ) {
+			if (!isVoid(construct)) {
 				callback.construct = construct;
 			}
 		}
