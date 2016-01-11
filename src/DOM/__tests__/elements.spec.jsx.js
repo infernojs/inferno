@@ -551,6 +551,9 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('CUSTOM-ELEM');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, world!');
+
+		render([], container);
+
 	});
 
 	it('should properly render "width" and "height" attributes', () => {
@@ -564,7 +567,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.getAttribute('height')).to.equal('42');
 		expect(container.firstChild.getAttribute('width')).to.equal('42');
 
-		render(<img src="" alt="Smiley face" height={42} width={42}></img>, container);
+		render(<img src="" alt="Smiley face" height={42} width={42} fooBar={[]}></img>, container);
 
 		expect(container.firstChild.nodeName).to.equal('IMG');
 		expect(container.childNodes.length).to.equal(1);
@@ -614,6 +617,11 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.hasAttribute('height')).to.be.true;
 		render(<img />, container);
 		expect(container.firstChild.hasAttribute('height')).to.be.false;
+		render(<img height={null} />, container);
+		expect(container.firstChild.hasAttribute('height')).to.be.false;
+		render(<img height={[]} />, container);
+		expect(container.firstChild.hasAttribute('height')).to.be.false;
+
 	});
 
 	it( 'should remove properties', () => {
@@ -631,10 +639,13 @@ describe( 'Elements - SVG (JSX)', () => {
 
 		const node = render(<div />, container);
 
+		render(<div dir={null} />, container);
 		render(<div dir={123} />, container);
 		render(<div dir={null} />, container);
 		render(<div dir={undefined} />, container);
 		render(<div />, container);
 		render(<div dir="ltr" />, container);
+		render(<div dir={[]} />, container);
+
 	});
 });
