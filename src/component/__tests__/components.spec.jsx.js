@@ -195,7 +195,18 @@ describe( 'Components (JSX)', () => {
 		).to.equal(
 			innerHTML('<div><div class="basic"><span>The title is 123</span></div></div>')
 		);
-
+		render((
+				<div>
+					<BasicComponent1 title={[]} name={ null } />
+				</div>
+			),
+			container
+		);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<div><div class="basic"><span>The title is</span></div></div>')
+		);
 		render((
 			<div>
 				<BasicComponent1 title='abc' name={ null } />

@@ -52,6 +52,11 @@ describe( 'Components', () => {
 			)
 		);
 
+
+		render(template(null, 'abc'), container);
+
+		render(template({}, 'abc'), container);
+
 		render(template(BasicComponent1, 'abc'), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -59,6 +64,14 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is abc');
+
+		render(template({}, 'abc'), container);
+
+		render(template(), container);
+
+		render(template(BasicComponent1, {}), container);
+
+		render(template(BasicComponent1, []), container);
 
 		render(template(BasicComponent1, 'abcdef'), container);
 
@@ -83,6 +96,10 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
+
+		render(template({}, {}), container);
+
+		render(template([], []), container);
 
 		// remove the component
 		render(template(null, null), container);
@@ -200,7 +217,8 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 		render(template(null, null, false), container);
-		render(template(BasicComponent1c, 'abc', true), container);
+		render(template(null, null, []), container);
+		render(template(BasicComponent1c, ['abc'], true), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
@@ -270,6 +288,8 @@ describe( 'Components', () => {
 		);
 
 		render(template(null, 'abc', 'basic-render'), container);
+
+		render(template([], {}, 'basic-render'), container);
 
 		render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
@@ -505,7 +525,7 @@ describe( 'Components', () => {
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
 
-//		render(template(), container);
+		render(template(), container);
 
 		render(template(BasicComponent3, {
 			title: "styled (again)!",
@@ -540,7 +560,10 @@ describe( 'Components', () => {
 
 		render(null, container);
 
-		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+		// Why is '123' not vssible?
+		render(template(BasicComponent2b, BasicComponent2b, '123'), container);
+
+		//render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -685,6 +708,9 @@ describe( 'Components', () => {
 		render(template(BasicComponent1, null, 'basic-render'), container);
 		render(template(BasicComponent1, null, null), container);
 		render(template(null, null, null), container);
+		render(template(), container);
+		render(template(BasicComponent1, 'component 1', 'basic-render'), container);
+		render(template(), container);
 		render(template(BasicComponent1, 'component 1', 'basic-render'), container);
 		expect(
 			container.innerHTML
@@ -693,8 +719,6 @@ describe( 'Components', () => {
 		);
 		render(template(), container);
 	});
-
-
 
 	it('should mount and unmount a basic component', () => {
 		let mountCount;
@@ -766,6 +790,9 @@ describe( 'Components', () => {
 		render(template(null), container);
 		expect(unmountCount).to.equal(1);
 
+		render(template(null), container);
+		expect(unmountCount).to.equal(1);
+
 	});
 
 	describe('state changes should trigger all lifecycle events for an update', () => {
@@ -822,7 +849,9 @@ describe( 'Components', () => {
 				createElement(Component)
 			);
 			render(template(ComponentLifecycleCheck), container);
-			waits(30, done)
+			waits(30, done);
+			// There is no update here, so I added that!!!!!!
+			render(template(ComponentLifecycleCheck), container);
 		});
 
 		it("componentWillMountCount to have fired once", () => {
@@ -936,6 +965,12 @@ describe( 'Components', () => {
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
 			render(tpl1546018623(null), container);
+			render(tpl1546018623([]), container);
+			render(tpl1546018623(valueComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
+			render(tpl1546018623(), container);
 			render(tpl1546018623(valueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
@@ -971,7 +1006,7 @@ describe( 'Components', () => {
 		);
 
 		render(template(), container);
-
+		render(template({}), container);
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -979,6 +1014,7 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 		render(template(BasicStatelessComponent1, null), container);
+		render(template({}, 'abc'), container);
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
