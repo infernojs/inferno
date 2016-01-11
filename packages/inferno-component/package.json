@@ -28,7 +28,7 @@
   ],
   "dependencies": {
     "babel-core": "^6.3.26",
-    "inferno": "^0.5.12",
+    "inferno": "^0.5.13",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.0"
   },

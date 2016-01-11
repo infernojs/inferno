@@ -1,6 +1,6 @@
 {
   "name": "inferno-dom",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "license": "MPL-2.0",
   "description": "Provides methods to render DOM nodes from Inferno fragments",
   "author": {
@@ -22,6 +22,7 @@
   ],
   "dependencies": {
     "babel-core": "^6.4.0",
+    "inferno": "^0.5.13",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.0"
   },
