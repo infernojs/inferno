@@ -3156,7 +3156,7 @@
 
   function canHydrate(domNode, nextDomNode) {
   	if (nextDomNode) {
-  		if (nextDomNode.hasAttribute('data-inferno')) {
+  		if (nextDomNode.nodeType === 1 && nextDomNode.hasAttribute('data-inferno')) {
   			return true;
   		} else {
   			// otherwise clear the DOM node

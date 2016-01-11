@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "0.5.5",
+  "version": "0.5.12",
   "license": "MPL-2.0",
   "description": "Provides methods to render HTML strings from Inferno fragments",
   "author": {
@@ -11,7 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "jsnext:main": "src/index.js",
+  "jsnext:main": "inferno-server.js",
   "keywords": [
     "babel",
     "react",
@@ -31,7 +31,7 @@
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.0"
   },
-  "main": "../../dist/inferno-server.min.js",
+  "main": "inferno-server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/trueadm/inferno/tree/master/packages/inferno-server"
