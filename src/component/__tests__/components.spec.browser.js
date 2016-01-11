@@ -563,7 +563,7 @@ describe( 'Components', () => {
 		// Why is '123' not vssible?
 		render(template(BasicComponent2b, BasicComponent2b, '123'), container);
 
-		//render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -647,6 +647,7 @@ describe( 'Components', () => {
 			)
 		);
 
+		render(template(ComponentLifecycleCheck, undefined, ComponentLifecycleCheck), container);
 		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
 		expect(
 			componentWillMountCount
@@ -708,7 +709,7 @@ describe( 'Components', () => {
 		render(template(BasicComponent1, null, 'basic-render'), container);
 		render(template(BasicComponent1, null, null), container);
 		render(template(null, null, null), container);
-		render(template(), container);
+		render(null, container);
 		render(template(BasicComponent1, 'component 1', 'basic-render'), container);
 		render(template(), container);
 		render(template(BasicComponent1, 'component 1', 'basic-render'), container);
@@ -911,10 +912,17 @@ describe( 'Components', () => {
 		}
 
 		it('Initial render (creation)', () => {
+			render(tpl1546018623({}), container);
 			render(tpl1546018623(conditionalComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
 			);
+			render(tpl1546018623(null), container);
+			render(tpl1546018623(conditionalComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<div><h1>BIG</h1><p>test</p></div>'
+			);
+
 		});
 	});
 
@@ -960,6 +968,7 @@ describe( 'Components', () => {
 		}
 
 		it('Initial render (creation)', () => {
+			render(tpl1546018623(), container);
 			render(tpl1546018623(valueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
@@ -1055,6 +1064,9 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
 
 		render(template(undefined), container);
+
+		render(template({}), container);
+
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -1141,6 +1153,9 @@ describe( 'Components', () => {
 		});
 
 		it('Initial render (creation)', () => {
+
+			render(tpl79713834([]), container); // empty array
+			render(tpl79713834({}), container); // empty object
 			render(tpl79713834(TEST), container);
 
 			expect(
@@ -1151,6 +1166,8 @@ describe( 'Components', () => {
 		});
 
 		it('Second render (update with state change)', (done) => {
+			render(tpl79713834([]), container); // empty array
+			render(tpl79713834({}), container); // empty object
 			render(tpl79713834(TEST), container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
@@ -1221,6 +1238,19 @@ describe( 'Components', () => {
 		SomeError.constructor = SomeError;
 
 		it('Initial render (creation)', () => {
+
+			render(starter(null), container);
+
+			render(starter(SomeError), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
+			);
+
+			render(starter({}), container);
+
 			render(starter(SomeError), container);
 
 			expect(

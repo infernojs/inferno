@@ -207,6 +207,19 @@ describe( 'Components (JSX)', () => {
 		).to.equal(
 			innerHTML('<div><div class="basic"><span>The title is</span></div></div>')
 		);
+
+		render((
+			<div>
+				<BasicComponent1 title={ null } name={ null } />
+			</div>
+		), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<div><div class="basic"><span></span></div></div>')
+		);
+
 		render((
 			<div>
 				<BasicComponent1 title='abc' name={ null } />
@@ -432,8 +445,8 @@ describe( 'Components (JSX)', () => {
 			innerHTML('<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>')
 		);
 	});
-/*
-	class Component extends Component {
+
+	class superComponent extends Component {
 		constructor(props) {
 			super(props);
 			this.state = {
@@ -459,7 +472,7 @@ describe( 'Components (JSX)', () => {
 	}
 	it('should render a basic component with a list of values from state', () => {
 
-		render(<Component />, container);
+		render(<superComponent />, container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -491,7 +504,7 @@ describe( 'Components (JSX)', () => {
 
 		render(<Main/>, container);
 
-	});*/
+	});
 
 	function test(element, expectedTag, expectedClassName) {
 
@@ -522,6 +535,7 @@ describe( 'Components (JSX)', () => {
 				return <span className={this.state.bar} />;
 			}
 		}
+		test(<Foo initialValue={null} />, 'SPAN', 'foo');
 		test(<Foo initialValue="foo" />, 'SPAN', 'foo');
 		expect(renderCount).to.equal(1);
 	});
@@ -711,7 +725,7 @@ describe( 'Components (JSX)', () => {
 			});
 		});
 	});
-/*
+
 	describe('should render a stateless component with a conditional state item', () => {
 		const StatelessComponent = (props) => <p>{props.name}</p>;
 
@@ -754,6 +768,9 @@ describe( 'Components (JSX)', () => {
 		}
 
 		it('Initial render (creation)', () => {
+
+			render( {null}, container );
+
 			render( <Testing/>, container );
 
 			expect(
@@ -777,5 +794,5 @@ describe( 'Components (JSX)', () => {
 				done();
 			});
 		});
-	}); */
+	});
 });
