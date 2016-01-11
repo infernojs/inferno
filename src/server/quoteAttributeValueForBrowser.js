@@ -8,6 +8,7 @@ const ESCAPE_LOOKUP = {
 };
 
 const ESCAPE_REGEX = /[&><"'`]/g;
+
 /**
  * Escapes attribute value to prevent scripting attacks.
  *

@@ -9,11 +9,11 @@ import eventHooks from '../../shared/eventHooks';
  * @param {Function} handler
  * @return {Function} wrapped handler
  */
-export default function setHandler( type, handler ) {
+export default function setHandler(type, handler) {
 	const hook = eventHooks[type];
 
-	if ( hook ) {
-		const hooked = hook( handler );
+	if (hook) {
+		const hooked = hook(handler);
 
 		hooked.originalHandler = handler;
 		return hooked;

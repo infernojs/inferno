@@ -19,7 +19,7 @@ export default {
 	track: true,
 	wbr: true,
 
-	//common self closing svg elements
+	// common self closing svg elements
 	path: true,
 	circle: true,
 	ellipse: true,

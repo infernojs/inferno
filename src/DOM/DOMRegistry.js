@@ -67,13 +67,12 @@ export const DOMAttributeNames = {
 	xmlBase: 'xml:base',
 	xmlLang: 'xml:lang',
 	xmlSpace: 'xml:space'
-
 };
 
 const DOMPropertyNames = {
 	autoComplete: 'autocomplete',
 	autoFocus: 'autofocus',
-	autoSave: 'autosave',
+	autoSave: 'autosave'
 };
 
 // This 'whitelist' contains edge cases such as attributes
@@ -225,7 +224,7 @@ const Whitelist = {
 	// keyboard hints.
 	autoCapitalize: null,
 
-	// Some version of IE ( like IE9 ) actually throw an exception
+	// Some version of IE (like IE9) actually throw an exception
 	// if you set input.type = 'something-unknown'
 	type: null,
 
@@ -280,11 +279,11 @@ const Whitelist = {
 
 const HTMLPropsContainer = {};
 
-function checkBitmask( value, bitmask ) {
-	return bitmask !== null && ( ( value & bitmask ) === bitmask );
+function checkBitmask(value, bitmask) {
+	return bitmask !== null && ((value & bitmask) === bitmask);
 }
 
-for ( const propName in Whitelist ) {
+for (const propName in Whitelist) {
 
 	const propConfig = Whitelist[propName];
 
@@ -293,10 +292,10 @@ for ( const propName in Whitelist ) {
 		attributeNamespace: DOMAttributeNamespaces[propName] ? DOMAttributeNamespaces[propName] : null,
 		propertyName: DOMPropertyNames[propName] || propName,
 
-		mustUseProperty: checkBitmask( propConfig, PROPERTY ),
-		hasBooleanValue: checkBitmask( propConfig, BOOLEAN ),
-		hasNumericValue: checkBitmask( propConfig, NUMERIC_VALUE ),
-		hasPositiveNumericValue: checkBitmask( propConfig, POSITIVE_NUMERIC_VALUE )
+		mustUseProperty: checkBitmask(propConfig, PROPERTY),
+		hasBooleanValue: checkBitmask(propConfig, BOOLEAN),
+		hasNumericValue: checkBitmask(propConfig, NUMERIC_VALUE),
+		hasPositiveNumericValue: checkBitmask(propConfig, POSITIVE_NUMERIC_VALUE)
 	};
 }
 

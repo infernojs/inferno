@@ -16,7 +16,7 @@ export default function createRootStaticNode(templateNode, recyclingEnabled) {
 					return domNode;
 				}
 			}
-			domNode = templateNode.cloneNode( true );
+			domNode = templateNode.cloneNode(true);
 			item.rootNode = domNode;
 			return domNode;
 		},

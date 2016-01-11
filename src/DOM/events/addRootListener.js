@@ -4,7 +4,7 @@ import EventRegistry from './EventRegistry';
 import eventInterface from './eventInterface';
 import createListenerArguments from './createListenerArguments';
 
-export default function addRootListener( e, type ) {
+export default function addRootListener(e, type) {
 
 	if (!type) {
 		type = e.type;
@@ -37,7 +37,7 @@ export default function addRootListener( e, type ) {
 	while (target !== null
 	&& listenersCount > 0
 	&& target !== document.parentNode) {
-		if (( nodeID = infernoNodeID(target, true))) {
+		if ((nodeID = infernoNodeID(target, true))) {
 			listeners = listenersStorage[nodeID];
 			if (listeners && listeners[type]) {
 
@@ -50,7 +50,7 @@ export default function addRootListener( e, type ) {
 				const numArgs = listener.originalHandler.length;
 
 				args = defaultArgs;
-				if ( numArgs > 1 ) {
+				if (numArgs > 1) {
 					args = createListenerArguments(target, event);
 				}
 
@@ -59,7 +59,7 @@ export default function addRootListener( e, type ) {
 				// native events, will always refer to the document. Therefore
 				// 'this' is the only supported way of referring to the element
 				// whose listener is handling the current event
-				listener.handler.apply( target, args );
+				listener.handler.apply(target, args);
 
 				// Check if progagation stopped. There is only one listener per
 				// type, so we do not need to check immediate propagation.
