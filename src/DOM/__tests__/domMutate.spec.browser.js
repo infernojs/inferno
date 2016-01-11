@@ -102,15 +102,15 @@ describe('domMutate', () => {
 			expect(nodeList[1].tagName).to.equal('SPAN');
 
 			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('123');
+			expect(nodeList[1].innerHTML).to.equal('');
 
 			updateNonKeyed( 123, 123, container)
 
 			expect(nodeList[0].tagName).to.equal('SPAN');
 			expect(nodeList[1].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('123');
-			expect(nodeList[1].innerHTML).to.equal('123');
+			expect(nodeList[0].innerHTML).to.equal('');
+			expect(nodeList[1].innerHTML).to.equal('');
 
 
 			updateNonKeyed( [123], [123], container)
@@ -118,8 +118,8 @@ describe('domMutate', () => {
 			expect(nodeList[0].tagName).to.equal('SPAN');
 			expect(nodeList[1].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('123');
-			expect(nodeList[1].innerHTML).to.equal('123');
+			expect(nodeList[0].innerHTML).to.equal('');
+			expect(nodeList[1].innerHTML).to.equal('');
 
 			updateNonKeyed( null, null, container)
 
@@ -147,7 +147,7 @@ describe('domMutate', () => {
 			expect(nodeList[1].tagName).to.equal('SPAN');
 
 			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('123');
+			expect(nodeList[1].innerHTML).to.equal('');
 		});
 	});
 

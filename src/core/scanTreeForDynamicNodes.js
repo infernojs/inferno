@@ -22,9 +22,13 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 	} else {
 		if (!isVoid(node)) {
 			if (!isVoid(node.tag)) {
-				if (node.tag.type === ObjectTypes.VARIABLE) {
-					nodeIsDynamic = true;
-					dynamicFlags.COMPONENTS = true;
+				if (typeof node.tag === 'object') {
+					if (node.tag.type === ObjectTypes.VARIABLE) {
+						nodeIsDynamic = true;
+						dynamicFlags.COMPONENTS = true;
+					} else {
+						throw Error(`Inferno Error: Incorrect tag name passed. Tag name must be a reference to a component, function or string.`);
+					}
 				}
 			}
 			if (!isVoid(node.text)) {

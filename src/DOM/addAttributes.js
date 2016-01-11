@@ -51,6 +51,9 @@ function fastPropSet(attrName, attrVal, domNode) {
 			}
 		}
 
+		if (typeof attrVal.element === 'undefined') {
+			throw Error('Inferno Error: Invalid ref object passed, expected InfernoDOM.createRef() object.');
+		}
 		attrVal.element = domNode;
 		return true;
 	}

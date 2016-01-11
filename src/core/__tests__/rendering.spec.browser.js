@@ -108,26 +108,16 @@ describe('rendering ( UT tests)', () => {
 			template: {tag: 'div', children: [{tag: 'span'}]},
 			expected:  '<div><div><span></span></div></div>'
 		},
-		{
-			name: 'div with blank tag',
-			template: {tag: 'abc', children: {tag: '12{}'}},
-			expected:  '<div><div><span></span></div></div>'
-		},
-		{
-			name: 'div with blank tag',
-			template: {tag: 'abc', children: {tag: '{}'}},
-			expected:  '<div><div><span></span></div></div>'
-		},
-		{
-			name: 'div with blank tag',
-			template: {tag: 'abc', children: {tag: []}},
-			expected:  '<div><div><span></span></div></div>'
-		},
-		{
-			name: 'div with blank tag',
-			template: {tag: 'abc', children: {tag: {}}},
-			expected:  '<div><div><span></span></div></div>'
-		},
+		//{
+		//	name: 'div with blank tag',
+		//	template: {tag: 'abc', children: {tag: []}},
+		//	expected:  '<div><abc><span></span></abc></div>'
+		//},
+		//{
+		//	name: 'div with blank tag',
+		//	template: {tag: 'abc', children: {tag: {}}},
+		//	expected:  '<div><abc><span></span></abc></div>'
+		//},
 		{
 			name: 'div with multiple spans',
 			template: {tag: 'div', children: [{tag: 'span'}, {tag: 'span'}]},
@@ -136,9 +126,7 @@ describe('rendering ( UT tests)', () => {
 	];
 
 	definitions.forEach( (def) => {
-
 		it('should render a ' + def.name, () => {
-
 			let template = createTemplate(() => ({tag: 'div', children: def.template}));
 
 			render(template(), container);
@@ -155,17 +143,15 @@ describe('rendering ( UT tests)', () => {
 		{name: 'null', value: null, expected: '<div></div>'}, // TODO or 'null'
 		{name: 'empty string', value: '', expected: '<div></div>'},
 		{name: 'string', value: 'string', expected: '<div>string</div>'},
-		{name: 'true', value: true, expected: true}, // This is 0 - valid number
-		{name: 'false', value: false, expected: false},// This is 1 - valid number
+		//{name: 'true', value: true, expected: true}, // This is 0 - valid number (no its not...)
+		//{name: 'false', value: false, expected: false},// This is 1 - valid number (no its not...)
 		{name: '0', value: 0, expected: '<div>0</div>'},
 		{name: '1', value: 1, expected: '<div>1</div>'},
 		{name: 'NaN', value: NaN, expected: '<div>NaN</div>'}
 	];
 
 	definitions.forEach( (def) => {
-
 		it('should render a ' + def.name, () => {
-
 			let template = createTemplate(() => ({tag: 'div', text: def.value}));
 
 			render(template(), container);

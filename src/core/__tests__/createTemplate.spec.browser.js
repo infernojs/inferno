@@ -37,10 +37,9 @@ describe('Inferno.createTemplate()', () => {
 	});
 
 	it('should be equal to itself', () => {
-		let template = createTemplate(() => ({
+		expect(() => createTemplate(() => ({
 			tag: '123div'
-		}));
-		expect(template).to.equal(template);
+		}))).to.throw;
 	});
 
 	it('should return undefined if the template argument is not a function', () => {
