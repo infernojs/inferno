@@ -5,7 +5,7 @@ import noop from './noop';
 let requestAnimationFrame = noop;
 let cancelAnimationFrame = noop;
 
-if ( ExecutionEnvironment.canUseDOM ) {
+if (ExecutionEnvironment.canUseDOM) {
 
 	let lastTime = 0;
 
@@ -22,20 +22,20 @@ if ( ExecutionEnvironment.canUseDOM ) {
 
 	requestAnimationFrame =
 		nativeRequestAnimationFrame ||
-		function ( callback ) {
+		function (callback) {
 			const currTime = Date.now();
-			const timeDelay = Math.max( 0, 16 - ( currTime - lastTime ) ); // 1000 / 60 = 16.666
+			const timeDelay = Math.max(0, 16 - (currTime - lastTime)); // 1000 / 60 = 16.666
 
 			lastTime = currTime + timeDelay;
-			return window.setTimeout( function () {
-				callback( Date.now() );
-			}, timeDelay );
+			return window.setTimeout(function () {
+				callback(Date.now());
+			}, timeDelay);
 		};
 
 	cancelAnimationFrame =
 		nativeCancelAnimationFrame ||
-		function ( frameId ) {
-			window.clearTimeout( frameId );
+		function (frameId) {
+			window.clearTimeout(frameId);
 		};
 }
 

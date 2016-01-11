@@ -13,7 +13,7 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			const domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid( value)) {
+			if (!isVoid(value)) {
 				if (process.env.NODE_ENV !== 'production') {
 					if (!isStringOrNumber(value)) {
 						throw Error(errorMsg);
@@ -37,16 +37,16 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
-				if (isVoid( nextValue)) {
-					if (isVoid( lastValue)) {
+				if (isVoid(nextValue)) {
+					if (isVoid(lastValue)) {
 						domNode.firstChild.nodeValue = '';
 					} else {
 						domNode.textContent = '';
 					}
 				} else {
 					if (process.env.NODE_ENV !== 'production') {
-						if (!isStringOrNumber( nextValue)) {
-							throw Error( errorMsg );
+						if (!isStringOrNumber(nextValue)) {
+							throw Error(errorMsg);
 						}
 					}
 					if (isVoid(lastValue)) {

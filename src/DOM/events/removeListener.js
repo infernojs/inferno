@@ -7,33 +7,33 @@ import eventListener from '../../shared/eventListener';
 /**
  * Remove event listeners from a node
  */
-export default function removeListener( node, type ) {
+export default function removeListener(node, type) {
 
-	if ( !node ) {
+	if (!node) {
 		return null; // TODO! Should we throw?
 	}
 
-	const nodeID = infernoNodeID( node, true );
+	const nodeID = infernoNodeID(node, true);
 
-	if ( nodeID ) {
+	if (nodeID) {
 		const listeners = listenersStorage[nodeID];
 
-		if ( listeners && listeners[type] ) {
-			if ( listeners[type] && listeners[type].destroy ) {
+		if (listeners && listeners[type]) {
+			if (listeners[type] && listeners[type].destroy) {
 				listeners[type].destroy();
 			}
 			listeners[type] = null;
 
 			const registry = EventRegistry[type];
 
-			if ( registry ) {
-				if ( registry._bubbles ) {
+			if (registry) {
+				if (registry._bubbles) {
 					--registry._counter;
 					// TODO Run tests and check if this works, or code should be removed
-//				} else if ( registry._focusBlur ) {
-//					node.removeEventListener( type, eventListener[focusEvents[type]] );
+//				} else if (registry._focusBlur) {
+//					node.removeEventListener(type, eventListener[focusEvents[type]]);
 				} else {
-					node.removeEventListener( type, eventListener[type] );
+					node.removeEventListener(type, eventListener[type]);
 				}
 			}
 		}

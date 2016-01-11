@@ -1,4 +1,4 @@
-function isFormElement( nodeName ) {
+function isFormElement(nodeName) {
 	return nodeName === 'form'
 		|| nodeName === 'input'
 		|| nodeName === 'textarea'

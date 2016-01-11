@@ -4,7 +4,7 @@ import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/vari
 import recreateRootNode from '../recreateRootNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
-export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
+export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 	let nextDomNode;
 	let childNodeList = [];
 	let keyedChildren = true;
@@ -12,54 +12,52 @@ export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
-		create( item, treeLifecycle, context ) {
+		create(item, treeLifecycle, context) {
 			let domNode;
 
-			if ( recyclingEnabled ) {
-				domNode = recycle( node, item );
-				if ( domNode ) {
+			if (recyclingEnabled) {
+				domNode = recycle(node, item);
+				if (domNode) {
 					return domNode;
 				}
 			}
-			let value = getValueWithIndex( item, valueIndex );
-			const type = getTypeFromValue( value );
+			let value = getValueWithIndex(item, valueIndex);
+			const type = getTypeFromValue(value);
 
-			switch ( type ) {
+			switch (type) {
 				case ValueTypes.TEXT:
 					// TODO check if string is empty?
-					if ( isVoid( value ) ) {
+					if (isVoid(value)) {
 						value = '';
 					}
-					domNode = document.createTextNode( value );
+					domNode = document.createTextNode(value);
 					break;
 				case ValueTypes.ARRAY:
-					const virtualList = createVirtualList( value, item, childNodeList, treeLifecycle, context );
+					const virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
 
 					domNode = virtualList.domNode;
 					keyedChildren = virtualList.keyedChildren;
-					treeLifecycle.addTreeSuccessListener( () => {
+					treeLifecycle.addTreeSuccessListener(() => {
 						nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
 						domNode = childNodeList[0].parentNode;
 						item.rootNode = domNode;
-					} );
+					});
 					break;
 				case ValueTypes.TREE:
-					domNode = value.dom.create( item, treeLifecycle, context );
+					domNode = value.dom.create(item, treeLifecycle, context);
 					break;
 				case ValueTypes.EMPTY_OBJECT:
-					if ( process.env.NODE_ENV !== 'production' ) {
-						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
-					} else {
-						return;
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 					}
+					return;
 				case ValueTypes.FUNCTION:
-					if ( process.env.NODE_ENV !== 'production' ) {
-						throw Error( 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.' );
-					} else {
-						return;
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 					}
+					return;
 				case ValueTypes.FRAGMENT:
-					domNode = value.tree.dom.create( value, treeLifecycle, context );
+					domNode = value.tree.dom.create(value, treeLifecycle, context);
 					break;
 				default: break;
 			}
@@ -67,10 +65,10 @@ export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 			item.rootNode = domNode;
 			return domNode;
 		},
-		update( lastItem, nextItem, treeLifecycle, context ) {
-			if ( node !== lastItem.tree.dom ) {
+		update(lastItem, nextItem, treeLifecycle, context) {
+			if (node !== lastItem.tree.dom) {
 
-				recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}
 			const domNode = lastItem.rootNode;
@@ -78,31 +76,31 @@ export default function createRootDynamicNode( valueIndex, recyclingEnabled ) {
 			nextItem.rootNode = domNode;
 			nextItem.id = lastItem.id;
 
-			const nextValue = getValueWithIndex( nextItem, valueIndex );
-			const lastValue = getValueWithIndex( lastItem, valueIndex );
+			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if ( nextValue !== lastValue ) {
-				const nextType = getTypeFromValue( nextValue );
-				const lastType = getTypeFromValue( lastValue );
+			if (nextValue !== lastValue) {
+				const nextType = getTypeFromValue(nextValue);
+				const lastType = getTypeFromValue(lastValue);
 
-				if ( lastType !== nextType ) {
+				if (lastType !== nextType) {
 
-					recreateRootNode( lastItem, nextItem, node, treeLifecycle, context );
+					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 					return;
 				}
-				switch ( nextType ) {
+				switch (nextType) {
 					case ValueTypes.TEXT:
 						// TODO check if string is empty?
 						domNode.nodeValue = nextValue;
 						break;
 					case ValueTypes.ARRAY:
-						updateVirtualList( lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context );
+						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
 						break;
 					case ValueTypes.TREE:
 						// TODO
 						break;
 					case ValueTypes.FRAGMENT:
-						nextValue.tree.dom.update( lastValue, nextValue, treeLifecycle, context );
+						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 						break;
 					default: break;
 				}

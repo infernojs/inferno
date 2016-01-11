@@ -7,10 +7,10 @@ export default function createDynamicTextNode(templateNode, valueIndex) {
 	const node = {
 		overrideItem: null,
 		create(item) {
-			const domNode = templateNode.cloneNode( false );
-			const value = getValueWithIndex( item, valueIndex );
+			const domNode = templateNode.cloneNode(false);
+			const value = getValueWithIndex(item, valueIndex);
 
-			if ( !isVoid( value ) && isStringOrNumber( value ) ) {
+			if (!isVoid(value) && isStringOrNumber(value)) {
 				domNode.nodeValue = value;
 			}
 			domNodeMap[item.id] = domNode;
@@ -18,15 +18,15 @@ export default function createDynamicTextNode(templateNode, valueIndex) {
 		},
 		update(lastItem, nextItem) {
 			let domNode = domNodeMap[lastItem.id];
-			const nextValue = getValueWithIndex( nextItem, valueIndex );
+			const nextValue = getValueWithIndex(nextItem, valueIndex);
 
-			if ( nextValue !== getValueWithIndex( lastItem, valueIndex ) ) {
-				if ( isStringOrNumber( nextValue ) ) {
+			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
+				if (isStringOrNumber(nextValue)) {
 					domNode.nodeValue = nextValue;
 				}
 			}
 		},
-		remove( /* lastItem */ ) {
+		remove(/* lastItem */) {
 		}
 	};
 

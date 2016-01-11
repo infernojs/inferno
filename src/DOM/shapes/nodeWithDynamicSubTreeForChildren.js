@@ -22,8 +22,8 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const domNode = domNodeMap[lastItem.id];
 
-			if (!isVoid( subTreeForChildren)) {
-				if (isArray( subTreeForChildren))  {
+			if (!isVoid(subTreeForChildren)) {
+				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
 
@@ -44,8 +44,8 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 		remove(item, treeLifecycle) {
 			const domNode = domNodeMap[item.id];
 
-			if (!isVoid( subTreeForChildren)) {
-				if (isArray( subTreeForChildren)) {
+			if (!isVoid(subTreeForChildren)) {
+				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
 						const subTree = subTreeForChildren[i];
 

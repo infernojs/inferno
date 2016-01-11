@@ -40,8 +40,8 @@ export const unitlessProperties = {
 /* eslint-enable quote-props */
 
 export let directions = [ 'Top', 'Right', 'Bottom', 'Left' ];
-export let dirMap = ( prefix, postfix ) =>
-    directions.map( dir => ( prefix || '' ) + dir + ( postfix || '' ) );
+export let dirMap = (prefix, postfix) =>
+    directions.map(dir => (prefix || '') + dir + (postfix || ''));
 export const shortCuts = {
 	// rely on cssText
 	font: [/*
@@ -51,77 +51,77 @@ export const shortCuts = {
 		font-size/line-height
 		font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;
 	*/],
-	padding: dirMap( 'padding' ),
-	margin: dirMap( 'margin' ),
-	'border-width': dirMap( 'border', 'Width' ),
-	'border-style': dirMap( 'border', 'Style' )
+	padding: dirMap('padding'),
+	margin: dirMap('margin'),
+	'border-width': dirMap('border', 'Width'),
+	'border-style': dirMap('border', 'Style')
 };
 export const cssToJSName = cssName =>
-	cssName.replace( reDash, str => str[1].toUpperCase() );
+	cssName.replace(reDash, str => str[1].toUpperCase());
 
 // Don't execute this in nodejS
-if ( ExecutionEnvironment.canUseDOM ) {
+if (ExecutionEnvironment.canUseDOM) {
 	// get browser supported CSS properties
 	const documentElement = document.documentElement;
-	const computed = window.getComputedStyle( documentElement );
-	const props = Array.prototype.slice.call( computed, 0 );
-	for ( let key in documentElement.style ) {
-		if ( !computed[key] ) {
-			props.push( key );
+	const computed = window.getComputedStyle(documentElement);
+	const props = Array.prototype.slice.call(computed, 0);
+	for (let key in documentElement.style) {
+		if (!computed[key]) {
+			props.push(key);
 		}
 	}
-	props.forEach( function ( propName ) {
+	props.forEach(function (propName) {
 		let prefix = propName[0] === '-'
-			? propName.substr( 1, propName.indexOf( '-', 1 ) - 1 )
+			? propName.substr(1, propName.indexOf('-', 1) - 1)
 			: null;
-		let stylePropName = cssToJSName( propName );
+		let stylePropName = cssToJSName(propName);
 
 		HOOK[stylePropName] = {
 			unPrefixed: prefix
-				? propName.substr( prefix.length + 2 )
+				? propName.substr(prefix.length + 2)
 				: propName,
 			unitless: unitlessProperties[propName] ? true : false,
 			shorthand: null
 		};
-	} );
+	});
 
 	const lenMap = {
-		1: ( values, props, style ) => props.forEach( prop => style[prop] = values[0] ),
-		2: ( values, props, style ) => values.forEach( ( value, index ) => {
+		1: (values, props, style) => props.forEach(prop => style[prop] = values[0]),
+		2: (values, props, style) => values.forEach((value, index) => {
 			style[props[index]] = style[props[index + 2]] = value;
-		} ),
-		4: ( values, props, style ) => props.forEach( ( prop, index ) => {
+		}),
+		4: (values, props, style) => props.forEach((prop, index) => {
 			style[prop] = values[index];
-		} )
+		})
 	};
 
 	// normalize property shortcuts
-	Object.keys( shortCuts ).forEach( propName => {
-		let stylePropName = cssToJSName( propName );
+	Object.keys(shortCuts).forEach(propName => {
+		let stylePropName = cssToJSName(propName);
 
 		HOOK[stylePropName] = {
 			unPrefixed: propName,
 			unitless: false,
-			shorthand: ( value, style ) => {
+			shorthand: (value, style) => {
 				let type = typeof value;
 
-				if ( type === 'number' ) {
+				if (type === 'number') {
 					value += 'px';
 				}
-				if ( !value ) {
+				if (!value) {
 					return;
 				}
-				if ( 'cssText' in style ) {
+				if ('cssText' in style) {
 					// normalize setting complex property across browsers
 					style.cssText += ';' + propName + ':' + value;
 				} else {
-					let values = value.split( ' ' );
+					let values = value.split(' ');
 
-					( lenMap[values.length] || noop )( values, shortCuts[propName], style );
+					(lenMap[values.length] || noop)(values, shortCuts[propName], style);
 				}
 			}
 		};
-	} );
+	});
 }
 
 // TODO! Find a way to solve this for SSR

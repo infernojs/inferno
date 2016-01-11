@@ -8,13 +8,13 @@ import DOMRegistry from './DOMRegistry';
 const template = {
 	/**
 	 * Sets the value for a property on a node. If a value is specified as
-	 * '' ( empty string ), the corresponding style property will be unset.
+	 * '' (empty string), the corresponding style property will be unset.
 	 *
 	 * @param {DOMElement} node
 	 * @param {string} name
 	 * @param {*} value
 	 */
-	setProperty(vNode, domNode, name, value, useProperties ) {
+	setProperty(vNode, domNode, name, value, useProperties) {
 
 		const propertyInfo = DOMRegistry[name] || null;
 
@@ -29,7 +29,7 @@ const template = {
 
 				const propName = propertyInfo.propertyName;
 
-				if ( propName === 'value' && ((!isVoid(vNode) && vNode.tag === 'select') || (domNode.tagName === 'SELECT'))) {
+				if (propName === 'value' && ((!isVoid(vNode) && vNode.tag === 'select') || (domNode.tagName === 'SELECT'))) {
 					template.setSelectValueForProperty(vNode, domNode, value, useProperties);
 				} else if (useProperties) {
 
@@ -71,21 +71,21 @@ const template = {
 
 	/**
 	 * Sets the value for multiple styles on a node.	If a value is specified as
-	 * '' ( empty string ), the corresponding style property will be unset.
+	 * '' (empty string), the corresponding style property will be unset.
 	 *
 	 * @param {vNode} virtual node
 	 * @param {DOMElement} node
 	 * @param {object} styles
 	 */
-	setCSS( vNode, domNode, styles ) {
+	setCSS(vNode, domNode, styles) {
 
-		for ( let styleName in styles ) {
+		for (let styleName in styles) {
 			let styleValue = styles[styleName];
 
 			const style = domNode.style;
 
-			if ( isVoid( styleValue ) ||
-				typeof styleValue === 'boolean' ) { // Todo! Should we check for typeof boolean?
+			if (isVoid(styleValue) ||
+				typeof styleValue === 'boolean') { // Todo! Should we check for typeof boolean?
 				style[styleName] = '';
 			} else {
 
@@ -93,13 +93,13 @@ const template = {
 				// No 'custom-css' are allowed or will work.
 				const hook = styleAccessor[styleName];
 
-				if ( hook ) {
-					if ( hook.shorthand ) {
+				if (hook) {
+					if (hook.shorthand) {
 
-						hook.shorthand( styleValue, style );
+						hook.shorthand(styleValue, style);
 					} else {
-						if ( !hook.unitless ) {
-							if ( typeof styleValue !== 'string' ) {
+						if (!hook.unitless) {
+							if (typeof styleValue !== 'string') {
 								styleValue = styleValue + 'px';
 							}
 						}
@@ -151,8 +151,8 @@ const template = {
 	 * @param {DOMElement} node
 	 * @param {string} name
 	 */
-	setSelectValueForProperty( vNode, domNode, value, useProperties ) {
-		const isMultiple = isArray( value );
+	setSelectValueForProperty(vNode, domNode, value, useProperties) {
+		const isMultiple = isArray(value);
 		const options = domNode.options;
 		const len = options.length;
 
@@ -160,27 +160,27 @@ const template = {
 
 		let i = 0, optionNode;
 
-		while ( i < len ) {
+		while (i < len) {
 			optionNode = options[i++];
-			if ( useProperties ) {
-				optionNode.selected = !isVoid( value ) &&
-					( isMultiple ? inArray( value, optionNode.value ) : optionNode.value === value );
+			if (useProperties) {
+				optionNode.selected = !isVoid(value) &&
+					(isMultiple ? inArray(value, optionNode.value) : optionNode.value === value);
 			} else {
-				if ( !isVoid( value ) && ( isMultiple ? inArray( value, optionNode.value ) : optionNode.value === value ) ) {
-					optionNode.setAttribute( 'selected', 'selected' );
+				if (!isVoid(value) && (isMultiple ? inArray(value, optionNode.value) : optionNode.value === value)) {
+					optionNode.setAttribute('selected', 'selected');
 				} else {
-					optionNode.removeAttribute( 'selected' );
+					optionNode.removeAttribute('selected');
 				}
 			}
 		}
 	},
-	removeSelectValueForProperty( vNode, domNode/* , propName */ ) {
+	removeSelectValueForProperty(vNode, domNode/* , propName */) {
 		const options = domNode.options;
 		const len = options.length;
 
 		let i = 0;
 
-		while ( i < len ) {
+		while (i < len) {
 			options[i++].selected = false;
 		}
 	}
