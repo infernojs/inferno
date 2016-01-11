@@ -55,8 +55,8 @@ describe( 'mathML namespace', () => {
 		let template = createTemplate(() => ({
 			tag: 'div',
 			children:{
-				tag: 'math'
-
+				tag: 'math',
+				children: ['{}']
 			}
 		}));
 
@@ -107,6 +107,7 @@ describe( 'mathML namespace', () => {
 			children:child
 		}));
 
+		render(template(null), container);
 		render(template(child()), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.tagName.toLowerCase()).to.equal('math');
@@ -119,6 +120,7 @@ describe( 'mathML namespace', () => {
 		render(template(undefined), container);
 		render(template([]), container);
 		render(template('123'), container);
+		render(null, container);
 		render(template(child()), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.tagName.toLowerCase()).to.equal('math');

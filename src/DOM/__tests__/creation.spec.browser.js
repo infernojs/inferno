@@ -45,6 +45,19 @@ describe( 'Creation - (non-JSX)', () => {
 		children: 1,
 		textContent: ''
 	}, {
+		description: 'should render span with span child',
+		template: () => {
+			return {
+				tag: '123span',
+				children: {
+					tag: 'span'
+				}
+			}
+		},
+		tagName: 'span',
+		children: 1,
+		textContent: ''
+	}, {
 		description: 'should render div with two span children',
 		template: () => {
 			return {
@@ -99,6 +112,23 @@ describe( 'Creation - (non-JSX)', () => {
 				tag: 'div',
 				children: [
 					null,
+					undefined,
+					null, { // NULL shouldn't have any children!!! Create to normal 'span' its a valid child!
+						tag: '1_1span'
+					}
+				]
+			}
+		},
+		tagName: 'div',
+		children: 1, // NULL shouldn't have any children!!!
+		textContent: ''
+	}, {
+		description: 'should render div with three span children and unset first, and middle child',
+		template: () => {
+			return {
+				tag: 'div',
+				children: [
+					null,
 					null,
 					null
 				]
@@ -145,6 +175,7 @@ describe( 'Creation - (non-JSX)', () => {
 				tag: 'div',
 				children: [
 					'Hello, ',
+					null,
 					'World!', {
 						tag: 'span'
 					}
