@@ -28,7 +28,7 @@ import createStaticNode from './shapes/staticNode';
 function createElement(schema, domNamespace, parentNode) {
 	const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 	const SVGNamespace = 'http://www.w3.org/2000/svg';
-	const nodeName = schema.tag.toLowerCase();
+	const nodeName = schema && typeof schema.tag === 'string' && schema.tag.toLowerCase();
 	const is = schema.attrs && schema.attrs.is;
 
 	let templateNode;

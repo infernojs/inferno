@@ -169,7 +169,7 @@ function createStaticTreeNode(isRoot, node) {
 		return '';
 	}
 	if (node.tag) {
-		let tag = node.tag.toLowerCase();
+		let tag = typeof node.tag === 'string' && node.tag.toLowerCase();
 		let attrs = node.attrs;
 		let attributes = {};
 
