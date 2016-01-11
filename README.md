@@ -1,7 +1,7 @@
 # InfernoJS
 
-[![Build Status](https://img.shields.io/travis/trueadm/inferno/dev.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
-[![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/dev.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=dev)
+[![Build Status](https://img.shields.io/travis/trueadm/inferno/master.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
+[![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/master.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=dev)
 [![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
 [![Dev Dependencies](https://img.shields.io/david/dev/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno#info=devDependencies)
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
