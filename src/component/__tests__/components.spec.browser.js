@@ -69,7 +69,7 @@ describe( 'Components', () => {
 
 		render(template(), container);
 
-		render(template(BasicComponent1, {}), container);
+		expect(() => render(template(BasicComponent1, {}), container)).to.throw;
 
 		render(template(BasicComponent1, []), container);
 
@@ -851,8 +851,6 @@ describe( 'Components', () => {
 			);
 			render(template(ComponentLifecycleCheck), container);
 			waits(30, done);
-			// There is no update here, so I added that!!!!!!
-			render(template(ComponentLifecycleCheck), container);
 		});
 
 		it("componentWillMountCount to have fired once", () => {

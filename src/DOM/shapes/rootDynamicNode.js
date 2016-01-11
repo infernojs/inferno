@@ -38,9 +38,11 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 					domNode = virtualList.domNode;
 					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener(() => {
-						nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
-						domNode = childNodeList[0].parentNode;
-						item.rootNode = domNode;
+						if (childNodeList.length > 0) {
+							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+							domNode = childNodeList[0].parentNode;
+							item.rootNode = domNode;
+						}
 					});
 					break;
 				case ValueTypes.TREE:

@@ -24,13 +24,18 @@ export default function createDOMFragment(parentNode, nextNode) {
 		parentNode,
 		render(nextItem) {
 			if (nextItem) {
-				const tree = nextItem.tree.dom;
+				const tree = nextItem.tree && nextItem.tree.dom;
 
 				if (tree) {
 					const activeNode = document.activeElement;
 
 					if (lastItem) {
 						tree.update(lastItem, nextItem, treeLifecycle, context);
+
+						if (!nextItem.rootNode) {
+							lastItem = null;
+							return;
+						}
 					} else {
 						if (tree) {
 							const hydrateNode = parentNode.firstChild;
@@ -40,6 +45,9 @@ export default function createDOMFragment(parentNode, nextNode) {
 							} else {
 								const dom = tree.create(nextItem, treeLifecycle, context);
 
+								if (!dom) {
+									return;
+								}
 								if (nextNode) {
 									parentNode.insertBefore(dom, nextNode);
 								} else if (parentNode) {

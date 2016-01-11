@@ -205,7 +205,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<div><div class="basic"><span>The title is</span></div></div>')
+			innerHTML('<div><div class="basic"><span>The title is </span></div></div>')
 		);
 
 		render((
@@ -217,7 +217,7 @@ describe( 'Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<div><div class="basic"><span></span></div></div>')
+			innerHTML('<div><div class="basic"><span>The title is </span></div></div>')
 		);
 
 		render((
@@ -446,7 +446,7 @@ describe( 'Components (JSX)', () => {
 		);
 	});
 
-	class superComponent extends Component {
+	class SuperComponent extends Component {
 		constructor(props) {
 			super(props);
 			this.state = {
@@ -471,8 +471,7 @@ describe( 'Components (JSX)', () => {
 		}
 	}
 	it('should render a basic component with a list of values from state', () => {
-
-		render(<superComponent />, container);
+		render(<SuperComponent />, container);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -535,9 +534,10 @@ describe( 'Components (JSX)', () => {
 				return <span className={this.state.bar} />;
 			}
 		}
-		test(<Foo initialValue={null} />, 'SPAN', 'foo');
+		test(<Foo initialValue={null} />, 'SPAN', '');
 		test(<Foo initialValue="foo" />, 'SPAN', 'foo');
-		expect(renderCount).to.equal(1);
+		// setState causes a render, so we should expect 2
+		expect(renderCount).to.equal(2);
 	});
 
 	it('should render with null in the initial state property', function() {

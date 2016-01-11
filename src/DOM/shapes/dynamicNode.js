@@ -30,8 +30,10 @@ export default function createDynamicNode(valueIndex) {
 					domNode = virtualList.domNode;
 					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener(() => {
-						nextDomNode = childNodeList[ childNodeList.length - 1 ].nextSibling || null;
-						domNode = childNodeList[0].parentNode;
+						if (childNodeList.length > 0) {
+							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+							domNode = childNodeList[0].parentNode;
+						}
 					});
 					break;
 				case ValueTypes.TREE:

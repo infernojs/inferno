@@ -34,10 +34,10 @@ export function getTypeFromValue(value) {
 		return ValueTypes.ARRAY;
 	} else if (typeof value === 'object' && value.create) {
 		return ValueTypes.TREE;
-	} else if (typeof value === 'object' && value.tree.dom) {
-		return ValueTypes.FRAGMENT;
 	} else if (typeof value === 'object' && Object.keys(value).length === 0) {
 		return ValueTypes.EMPTY_OBJECT;
+	} else if (typeof value === 'object' && value.tree.dom) {
+		return ValueTypes.FRAGMENT;
 	} else if (typeof value === 'function') {
 		return ValueTypes.FUNCTION;
 	}
