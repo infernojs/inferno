@@ -2695,15 +2695,15 @@
   	return node;
   }
 
-  var updateComponent = undefined;
+  var updateComponent$1 = undefined;
 
-  var global$1 = global$1 || (typeof window !== 'undefined' ? window : null);
+  var global$2 = global$2 || (typeof window !== 'undefined' ? window : null);
 
-  if (global$1 && global$1.InfernoComponent) {
-  	updateComponent = global$1.InfernoComponent.updateComponent;
-  } else if (global$1 && !global$1.InfernoComponent) {
+  if (global$2 && global$2.InfernoComponent) {
+  	updateComponent$1 = global$2.InfernoComponent.updateComponent;
+  } else if (global$2 && !global$2.InfernoComponent) {
   	try {
-  		updateComponent = require('inferno-component').updateComponent;
+  		updateComponent$1 = require('inferno-component').updateComponent;
   	} catch (e) {
   		// do nothing, this is fine, the person might be using stateless components
   	}
@@ -2852,7 +2852,7 @@
   					var nextProps = getValueForProps(props, nextItem);
 
   					nextItem.rootNode = domNode;
-  					updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+  					updateComponent$1(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
   				}
   			}
   		},
@@ -2870,15 +2870,15 @@
   	return node;
   }
 
-  var updateComponent$1 = undefined;
+  var updateComponent = undefined;
 
-  var global$2 = global$2 || (typeof window !== 'undefined' ? window : null);
+  var global$1 = global$1 || (typeof window !== 'undefined' ? window : null);
 
-  if (global$2 && global$2.InfernoComponent) {
-  	updateComponent$1 = global$2.InfernoComponent.updateComponent;
-  } else if (global$2 && !global$2.InfernoComponent) {
+  if (global$1 && global$1.InfernoComponent) {
+  	updateComponent = global$1.InfernoComponent.updateComponent;
+  } else if (global$1 && !global$1.InfernoComponent) {
   	try {
-  		updateComponent$1 = require('inferno-component').updateComponent;
+  		updateComponent = require('inferno-component').updateComponent;
   	} catch (e) {
   		// do nothing, this is fine, the person might be using stateless components
   	}
@@ -3010,7 +3010,7 @@
   					var nextState = instance.state;
   					var nextProps = getValueForProps(props, nextItem);
 
-  					return updateComponent$1(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+  					return updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
   				}
   			}
   		},
@@ -3156,7 +3156,7 @@
 
   function canHydrate(domNode, nextDomNode) {
   	if (nextDomNode) {
-  		if (nextDomNode.hasAttribute('data-inferno')) {
+  		if (nextDomNode.nodeType === 1 && nextDomNode.hasAttribute('data-inferno')) {
   			return true;
   		} else {
   			// otherwise clear the DOM node

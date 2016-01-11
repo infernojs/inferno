@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "0.5.7",
+  "version": "0.5.13",
   "license": "MPL-2.0",
   "description": "A framework for building lightning fast user interfaces",
   "author": {
@@ -11,7 +11,11 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "jsnext:main": "src/index.js",
+  "jsnext:main": "inferno.js",
+  "files": [
+    "LICENSE",
+    "dist/"
+  ],
   "keywords": [
     "babel",
     "react",
@@ -31,6 +35,7 @@
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.0"
   },
+<<<<<<< HEAD
   "main": "../../dist/inferno.min.js",
   "repository": "https://github.com/trueadm/inferno/tree/master/packages/inferno",
   "scripts": {
@@ -39,6 +44,10 @@
     "build:dev": "node ../../config/rollup.config.js dev ../../dist src inferno Inferno",
     "build": "npm run build:prod && npm run build:dev"
   },
+=======
+  "main": "inferno.js",
+  "repository": "https://github.com/trueadm/inferno",
+>>>>>>> master
   "devDependencies": {
     "babel-cli": "^6.4.0",
     "babel-preset-es2015": "^6.3.13",

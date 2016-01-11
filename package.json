@@ -46,7 +46,8 @@
     "sinon-chai": "^2.8.0",
     "uglify-js": "^2.6.1",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.14.0",
+    "inferno-component": "^0.5.13"
   },
   "dependencies": {
     "babel-core": "^6.4.0",
@@ -54,7 +55,11 @@
     "babel-plugin-syntax-jsx": "^6.3.13",
     "babel-plugin-syntax-object-rest-spread": "^6.3.13",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
-    "inferno-component": "^0.5.3"
+    "karma-chrome-launcher": "^0.2.2",
+    "mkdirp": "^0.5.1",
+    "npm-check-updates": "^2.5.6",
+    "pre-commit": "^1.1.2",
+    "rimraf": "^2.5.0"
   },
   "files": [
     "dist",
@@ -83,15 +88,16 @@
   },
   "scripts": {
     "clean": "rimraf coverage/ dist/",
-    "build:inferno-dom:dev": "node config/rollup.config.js dev dist packages/inferno-dom/src inferno-dom InfernoDOM",
-    "build:inferno-dom:prod": "node config/rollup.config.js prod dist packages/inferno-dom/src inferno-dom InfernoDOM",
-    "build:inferno-server:dev": "node config/rollup.config.js dev dist packages/inferno-server/src inferno-server InfernoServer",
-    "build:inferno-server:prod": "node config/rollup.config.js prod dist packages/inferno-server/src inferno-server InfernoServer",
-    "build:inferno-component:dev": "node config/rollup.config.js dev dist packages/inferno-component/src inferno-component InfernoComponent",
-    "build:inferno-component:prod": "node config/rollup.config.js prod dist packages/inferno-component/src inferno-component InfernoComponent",
-    "build:inferno:dev": "node config/rollup.config.js dev dist packages/inferno/src inferno Inferno",
-    "build:inferno:prod": "node config/rollup.config.js prod dist packages/inferno/src inferno Inferno",
+    "build:inferno-dom:dev": "node config/rollup.config.js dev packages/inferno/dist packages/inferno-dom/src inferno-dom InfernoDOM",
+    "build:inferno-dom:prod": "node config/rollup.config.js prod packages/inferno/dist packages/inferno-dom/src inferno-dom InfernoDOM",
+    "build:inferno-server:dev": "node config/rollup.config.js dev packages/inferno/dist packages/inferno-server/src inferno-server InfernoServer",
+    "build:inferno-server:prod": "node config/rollup.config.js prod packages/inferno/dist packages/inferno-server/src inferno-server InfernoServer",
+    "build:inferno-component:dev": "node config/rollup.config.js dev packages/inferno/dist packages/inferno-component/src inferno-component InfernoComponent",
+    "build:inferno-component:prod": "node config/rollup.config.js prod packages/inferno/dist packages/inferno-component/src inferno-component InfernoComponent",
+    "build:inferno:dev": "node config/rollup.config.js dev packages/inferno/dist packages/inferno/src inferno Inferno",
+    "build:inferno:prod": "node config/rollup.config.js prod packages/inferno/dist packages/inferno/src inferno Inferno",
     "build": "npm run build:inferno-dom:dev && npm run build:inferno-dom:prod && npm run build:inferno:dev && npm run build:inferno:prod && npm run build:inferno-server:dev && npm run build:inferno-server:prod && npm run build:inferno-component:dev && npm run build:inferno-component:prod",
+    "postinstall": "npm run build",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
     "test:server": "mocha --opts config/mocha.opts",
     "test:browser": "karma start config/karma.conf.js --single-run",
