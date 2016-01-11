@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "license": "MPL-2.0",
   "description": "A framework for building lightning fast user interfaces",
   "author": {
@@ -32,10 +32,7 @@
     "rimraf": "^2.5.0"
   },
   "main": "../../dist/inferno.min.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trueadm/inferno/tree/master/packages/inferno"
-  },
+  "repository": "https://github.com/trueadm/inferno/tree/master/packages/inferno",
   "scripts": {
     "clean": "rimraf ../../coverage/ ../../dist/",
     "build:prod": "node ../../config/rollup.config.js prod ../../dist src inferno Inferno",

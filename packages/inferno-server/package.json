@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "0.5.5",
+  "version": "0.5.7",
   "license": "MPL-2.0",
   "description": "Provides methods to render HTML strings from Inferno fragments",
   "author": {
@@ -32,10 +32,7 @@
     "rimraf": "^2.5.0"
   },
   "main": "../../dist/inferno-server.min.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trueadm/inferno/tree/master/packages/inferno-server"
-  },
+  "repository": "https://github.com/trueadm/inferno/tree/master/packages/inferno-server",
   "scripts": {
     "clean": "rimraf ../../coverage/ ../../dist/",
     "build:prod": "node ../../config/rollup.config.js prod ../../dist src inferno-server InfernoServer",
