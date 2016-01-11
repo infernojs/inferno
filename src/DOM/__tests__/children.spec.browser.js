@@ -132,6 +132,10 @@ describe( 'Children - (non-JSX)', () => {
 		value: [null],
 		expected: ''
 	}, {
+			name: 'single null in an array',
+			value: ['{}'],
+			expected: '{}'
+		}, {
 		name: 'mix of null and undefined in an array',
 		value: [null, undefined],
 		expected: ''
@@ -144,6 +148,10 @@ describe( 'Children - (non-JSX)', () => {
 		value: [null, undefined, 123],
 		expected: '123'
 	}, {
+			name: 'mix of null, undefined and a number in an array',
+			value: [null, undefined, 123, ' ', undefined, null, undefined],
+			expected: '123 '
+		}, {
 		name: 'single empty string in an array',
 		value: [1, 2, ''],
 		expected: '12'
@@ -163,7 +171,19 @@ describe( 'Children - (non-JSX)', () => {
 		name: 'cast to strng value, + single number + a letter in an array',
 		value: ['1', 2, 'a'],
 		expected: '12a'
-	}
+	}, {
+			name: 'cast to strng value, + single number + a letter in an array',
+			value: ['1', null, 'a'],
+			expected: '1a'
+	}, {
+			name: 'cast to strng value, + single number + a letter in an array',
+			value: [undefined, null, 'a'],
+			expected: 'a'
+		}, {
+			name: 'cast to strng value, + single number + a letter in an array',
+			value: [undefined, null, 123, undefined, null],
+			expected: '123'
+		}
 	 ];
 
 	preDefined.forEach((arg) => {

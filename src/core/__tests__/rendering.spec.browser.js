@@ -35,6 +35,10 @@ describe('rendering ( UT tests)', () => {
 		{
 			name: 'children as empty array',
 			template: {tag: 'div', children: []}
+		},
+		{
+			name: 'children as empty string',
+			template: {tag: 'div', children: ''}
 		}
 	];
 
@@ -105,6 +109,26 @@ describe('rendering ( UT tests)', () => {
 			expected:  '<div><div><span></span></div></div>'
 		},
 		{
+			name: 'div with blank tag',
+			template: {tag: 'abc', children: {tag: '12{}'}},
+			expected:  '<div><div><span></span></div></div>'
+		},
+		{
+			name: 'div with blank tag',
+			template: {tag: 'abc', children: {tag: '{}'}},
+			expected:  '<div><div><span></span></div></div>'
+		},
+		{
+			name: 'div with blank tag',
+			template: {tag: 'abc', children: {tag: []}},
+			expected:  '<div><div><span></span></div></div>'
+		},
+		{
+			name: 'div with blank tag',
+			template: {tag: 'abc', children: {tag: {}}},
+			expected:  '<div><div><span></span></div></div>'
+		},
+		{
 			name: 'div with multiple spans',
 			template: {tag: 'div', children: [{tag: 'span'}, {tag: 'span'}]},
 			expected:  '<div><div><span></span><span></span></div></div>'
@@ -131,8 +155,8 @@ describe('rendering ( UT tests)', () => {
 		{name: 'null', value: null, expected: '<div></div>'}, // TODO or 'null'
 		{name: 'empty string', value: '', expected: '<div></div>'},
 		{name: 'string', value: 'string', expected: '<div>string</div>'},
-		//{name: 'true', value: true, expected: 'true'},
-		//{name: 'false', value: false, expected: 'false'},
+		{name: 'true', value: true, expected: true}, // This is 0 - valid number
+		{name: 'false', value: false, expected: false},// This is 1 - valid number
 		{name: '0', value: 0, expected: '<div>0</div>'},
 		{name: '1', value: 1, expected: '<div>1</div>'},
 		{name: 'NaN', value: NaN, expected: '<div>NaN</div>'}

@@ -42,6 +42,10 @@ describe( 'CSS style properties', () => {
 		},
 		expected: null
 	}, {
+		name: 'ignore null styles',
+		value: {},
+		expected: null
+	}, {
 		name: 'ignore undefined styles',
 		value: {
 			backgroundColor: undefined,
