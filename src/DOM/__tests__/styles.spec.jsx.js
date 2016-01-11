@@ -51,6 +51,8 @@ describe( 'CSS style properties (JSX)', () => {
 	it('should update styles if updated to null multiple times', () => {
 		var styles = null;
 
+		render(<div style={undefined} />, container);
+
 		render(<div style={styles} />, container);
 		expect(container.firstChild.style.display).to.equal('');
 
@@ -71,6 +73,7 @@ describe( 'CSS style properties (JSX)', () => {
 
 	it('should update styles when `style` changes from null to object', () => {
 		const styles = {color: 'red'};
+		render(<div style={123} />, container);
 		render(<div style={styles} />, container);
 		render(<div />, container);
 		render(<div style={styles} />, container);

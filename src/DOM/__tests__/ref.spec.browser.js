@@ -31,6 +31,8 @@ describe( 'createRef()', () => {
 
 		render(template(), container);
 
+		render(template(null), container);
+
 		render(template(divRef), container);
 
 		expect(container.firstChild.tagName).to.equal('DIV');
@@ -44,6 +46,10 @@ describe( 'createRef()', () => {
 		expect(
 			() => render(template(null), container)
 		).to.throw;
+
+		render(template('123'), container);
+
+		render(template(123), container);
 
 		render(template(divRef), container);
 		expect(container.firstChild.tagName).to.equal('DIV');
