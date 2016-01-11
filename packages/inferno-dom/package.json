@@ -26,10 +26,7 @@
     "rimraf": "^2.5.0"
   },
   "main": "inferno-dom.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trueadm/inferno/tree/master/packages/inferno-dom"
-  },
+  "repository": "https://github.com/trueadm/inferno",
   "scripts": {
     "clean": "rimraf ../../coverage/ ../../dist/",
     "build:prod": "node ../../config/rollup.config.js prod ../../dist src inferno-dom InfernoDOM",
