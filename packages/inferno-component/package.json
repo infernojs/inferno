@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "0.5.5",
+  "version": "0.5.12",
   "license": "MPL-2.0",
   "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
   "author": {
@@ -11,7 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "jsnext:main": "src/index.js",
+  "jsnext:main": "inferno-component.js",
   "keywords": [
     "babel",
     "react",
@@ -31,7 +31,7 @@
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.0"
   },
-  "main": "../../dist/inferno-component.min.js",
+  "main": "inferno-component.js",
   "repository": "https://github.com/trueadm/inferno/tree/master/packages/inferno-component",
   "scripts": {
     "clean": "rimraf ../../coverage/ ../../dist/",
