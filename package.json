@@ -9,9 +9,14 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "devDependencies": {
+    "babel-core": "^6.4.0",
     "babel-cli": "^6.4.0",
     "babel-eslint": "^5.0.0-beta6",
     "babel-loader": "^6.2.1",
+    "babel-plugin-inferno": "^0.2.9",
+    "babel-plugin-syntax-jsx": "^6.3.13",
+    "babel-plugin-syntax-object-rest-spread": "^6.3.13",
+    "babel-plugin-transform-object-rest-spread": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-es2015-rollup": "^1.0.0",
     "babel-preset-stage-0": "^6.3.13",
@@ -49,18 +54,6 @@
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0",
     "inferno-component": "^0.5.13"
-  },
-  "dependencies": {
-    "babel-core": "^6.4.0",
-    "babel-plugin-inferno": "^0.2.9",
-    "babel-plugin-syntax-jsx": "^6.3.13",
-    "babel-plugin-syntax-object-rest-spread": "^6.3.13",
-    "babel-plugin-transform-object-rest-spread": "^6.3.13",
-    "karma-chrome-launcher": "^0.2.2",
-    "mkdirp": "^0.5.1",
-    "npm-check-updates": "^2.5.6",
-    "pre-commit": "^1.1.2",
-    "rimraf": "^2.5.0"
   },
   "files": [
     "dist",
