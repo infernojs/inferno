@@ -2,7 +2,7 @@ import isVoid from '../../util/isVoid';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
@@ -35,7 +35,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'created');
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -51,6 +51,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				const nextValue = getValueWithIndex(nextItem, valueIndex);
 				const lastValue = getValueWithIndex(lastItem, valueIndex);
 
+				if (dynamicAttrs && dynamicAttrs.hooks) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'beforeUpdate');
+				}
 				if (nextValue !== lastValue) {
 					if (isVoid(nextValue)) {
 						if (isVoid(lastValue)) {
@@ -72,9 +75,11 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 						}
 					}
 				}
-
-				if (!isVoid(dynamicAttrs)) {
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs) {
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
+				}
+				if (dynamicAttrs && dynamicAttrs.hooks) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'afterUpdate');
 				}
 			}
 		},

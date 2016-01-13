@@ -33,7 +33,6 @@ const DOMAttributeNamespaces = {
 };
 
 export const DOMAttributeNames = {
-
 	acceptCharset: 'accept-charset',
 	className: 'class',
 	htmlFor: 'for',

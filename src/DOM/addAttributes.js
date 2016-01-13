@@ -60,7 +60,15 @@ function fastPropSet(attrName, attrVal, domNode) {
 	return false;
 }
 
-export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
+export function handleHooks(item, dynamicAttrs, domNode, hookEvent) {
+	const event = dynamicAttrs.hooks[hookEvent];
+	if (event) {
+		const hookCallback = getValueWithIndex(item, event.index);
+		hookCallback(domNode);
+	}
+}
+
+export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent) {
 	let styleUpdates;
 
 	if (dynamicAttrs.index !== undefined) {
@@ -70,17 +78,21 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
 	}
 	for (const attrName in dynamicAttrs) {
 		if (!isVoid(attrName)) {
-			const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+			if (hookEvent && attrName === 'hooks') {
+				handleHooks(item, dynamicAttrs, domNode, hookEvent);
+			} else {
+				const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
-			if (attrVal !== undefined) {
-				if (attrName === 'style') {
-					styleUpdates = attrVal;
-				} else {
-					if (fastPropSet(attrName, attrVal, domNode) === false) {
-						if (eventMapping[attrName]) {
-							addListener(item, domNode, eventMapping[attrName], attrVal);
-						} else {
-							template.setProperty(null, domNode, attrName, attrVal, true);
+				if (attrVal !== undefined) {
+					if (attrName === 'style') {
+						styleUpdates = attrVal;
+					} else {
+						if (fastPropSet(attrName, attrVal, domNode) === false) {
+							if (eventMapping[attrName]) {
+								addListener(item, domNode, eventMapping[attrName], attrVal);
+							} else {
+								template.setProperty(null, domNode, attrName, attrVal, true);
+							}
 						}
 					}
 				}
@@ -94,10 +106,12 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
 
 export function clearListeners(item, domNode, dynamicAttrs) {
 	for (const attrName in dynamicAttrs) {
-		const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+		if (attrName !== 'hooks') {
+			const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
-		if (attrVal !== undefined && eventMapping[attrName]) {
-			removeListener(item, domNode, eventMapping[attrName], attrVal);
+			if (attrVal !== undefined && eventMapping[attrName]) {
+				removeListener(item, domNode, eventMapping[attrName], attrVal);
+			}
 		}
 	}
 }
@@ -106,7 +120,7 @@ export function clearListeners(item, domNode, dynamicAttrs) {
  * NOTE!! This function is probably the single most
  * critical path for performance optimization.
  */
-export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, hookEvent) {
 	if (dynamicAttrs.index !== undefined) {
 		const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
@@ -114,6 +128,9 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 			const lastDynamicAttrs = getValueWithIndex(lastItem, dynamicAttrs.index);
 
 			for (let attrName in lastDynamicAttrs) {
+				if (hookEvent && attrName === 'hooks') {
+					handleHooks(nextItem, dynamicAttrs, domNode, hookEvent);
+				}
 				template.removeProperty(null, domNode, attrName, true);
 			}
 			return;
