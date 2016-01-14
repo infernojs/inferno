@@ -58,6 +58,7 @@
   },
   "files": [
     "dist",
+    "src",
     "README.md"
   ],
   "homepage": "https://github.com/trueadm/inferno#readme",
