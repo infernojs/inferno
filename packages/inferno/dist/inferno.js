@@ -1,5 +1,5 @@
 /*!
- * inferno vundefined
+ * inferno v0.5.14
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -24,7 +24,7 @@
 
   		get: {
   			value: function value(key) {
-  				var index = [].indexOf.call(_keys, key);
+  				var index = [].indexOf.call(_keys, key); // TODO: is this preferred over: _keys.indexOf(key)
   				return _values[index] || undefined;
   			}
   		},
@@ -32,7 +32,7 @@
   			value: function value(key, _value) {
   				// check if key exists and overwrite
 
-  				var index = [].indexOf.call(_keys, key);
+  				var index = [].indexOf.call(_keys, key); // TODO: is this preferred over: _keys.indexOf(key)
   				if (index > -1) {
   					_items[index][1] = _value;
   					_values[index] = _value;
@@ -85,9 +85,13 @@
   	} else {
   		if (!isVoid(node)) {
   			if (!isVoid(node.tag)) {
-  				if (node.tag.type === ObjectTypes.VARIABLE) {
-  					nodeIsDynamic = true;
-  					dynamicFlags.COMPONENTS = true;
+  				if (babelHelpers_typeof(node.tag) === 'object') {
+  					if (node.tag.type === ObjectTypes.VARIABLE) {
+  						nodeIsDynamic = true;
+  						dynamicFlags.COMPONENTS = true;
+  					} else {
+  						throw Error('Inferno Error: Incorrect tag name passed. Tag name must be a reference to a component, function or string.');
+  					}
   				}
   			}
   			if (!isVoid(node.text)) {
@@ -113,6 +117,12 @@
   							}
   							dynamicFlags.ATTRS[attr] = attrVal.index;
   							nodeIsDynamic = true;
+  						} else if (!isVoid(attrVal) && (typeof attrVal === 'undefined' ? 'undefined' : babelHelpers_typeof(attrVal)) === 'object' && attr === 'hooks') {
+  							if (dynamicFlags.ATTRS === false) {
+  								dynamicFlags.ATTRS = {};
+  							}
+  							nodeIsDynamic = true;
+  							dynamicFlags.ATTRS[attr] = attrVal;
   						}
   					}
   				}

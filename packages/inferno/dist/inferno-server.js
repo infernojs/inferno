@@ -1,5 +1,5 @@
 /*!
- * inferno-server vundefined
+ * inferno-server v0.5.14
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -216,7 +216,6 @@
   };
 
   var DOMAttributeNames = {
-
   	acceptCharset: 'accept-charset',
   	className: 'class',
   	htmlFor: 'for',
@@ -250,7 +249,6 @@
   	xmlBase: 'xml:base',
   	xmlLang: 'xml:lang',
   	xmlSpace: 'xml:space'
-
   };
 
   var DOMPropertyNames = {
@@ -408,7 +406,7 @@
   	// keyboard hints.
   	autoCapitalize: null,
 
-  	// Some version of IE ( like IE9 ) actually throw an exception
+  	// Some version of IE (like IE9) actually throw an exception
   	// if you set input.type = 'something-unknown'
   	type: null,
 
@@ -520,6 +518,7 @@
   };
 
   var ESCAPE_REGEX = /[&><"'`]/g;
+
   /**
    * Escapes attribute value to prevent scripting attacks.
    *
@@ -553,7 +552,7 @@
   	track: true,
   	wbr: true,
 
-  	//common self closing svg elements
+  	// common self closing svg elements
   	path: true,
   	circle: true,
   	ellipse: true,
@@ -603,7 +602,7 @@
   		return;
   	}
   	node.attrs = node.attrs || {};
-  	node.attrs.selected = "selected";
+  	node.attrs.selected = 'selected';
   }
 
   /**
@@ -708,7 +707,7 @@
   		return '';
   	}
   	if (node.tag) {
-  		var tag = node.tag.toLowerCase();
+  		var tag = typeof node.tag === 'string' && node.tag.toLowerCase();
   		var attrs = node.attrs;
   		var attributes = {};
 

@@ -1,5 +1,5 @@
 /*!
- * inferno-component vundefined
+ * inferno-component v0.5.14
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -173,14 +173,16 @@
 
 			/** @type {object} */
 			this.props = props || {};
+
+			/** @type {object} */
+			this.state = {};
+
 			this._blockRender = false;
 			this._blockSetState = false;
 			this._deferSetState = false;
 			this._pendingSetState = false;
 			this._pendingState = {};
 			this._lastRender = null;
-			/** @type {object} */
-			this.state = {};
 			this.context = {};
 		}
 

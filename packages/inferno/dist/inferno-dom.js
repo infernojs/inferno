@@ -1,5 +1,5 @@
 /*!
- * inferno-dom vundefined
+ * inferno-dom v0.5.14
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -112,10 +112,10 @@
   		return ValueTypes.ARRAY;
   	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.create) {
   		return ValueTypes.TREE;
-  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.tree.dom) {
-  		return ValueTypes.FRAGMENT;
   	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && Object.keys(value).length === 0) {
   		return ValueTypes.EMPTY_OBJECT;
+  	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value)) === 'object' && value.tree.dom) {
+  		return ValueTypes.FRAGMENT;
   	} else if (typeof value === 'function') {
   		return ValueTypes.FUNCTION;
   	}
@@ -392,7 +392,6 @@
   };
 
   var DOMAttributeNames = {
-
   	acceptCharset: 'accept-charset',
   	className: 'class',
   	htmlFor: 'for',
@@ -426,7 +425,6 @@
   	xmlBase: 'xml:base',
   	xmlLang: 'xml:lang',
   	xmlSpace: 'xml:space'
-
   };
 
   var DOMPropertyNames = {
@@ -584,7 +582,7 @@
   	// keyboard hints.
   	autoCapitalize: null,
 
-  	// Some version of IE ( like IE9 ) actually throw an exception
+  	// Some version of IE (like IE9) actually throw an exception
   	// if you set input.type = 'something-unknown'
   	type: null,
 
@@ -662,7 +660,7 @@
   var template = {
   	/**
     * Sets the value for a property on a node. If a value is specified as
-    * '' ( empty string ), the corresponding style property will be unset.
+    * '' (empty string), the corresponding style property will be unset.
     *
     * @param {DOMElement} node
     * @param {string} name
@@ -722,7 +720,7 @@
 
   	/**
     * Sets the value for multiple styles on a node.	If a value is specified as
-    * '' ( empty string ), the corresponding style property will be unset.
+    * '' (empty string), the corresponding style property will be unset.
     *
     * @param {vNode} virtual node
     * @param {DOMElement} node
@@ -1352,8 +1350,8 @@
   				if (registry._bubbles) {
   					--registry._counter;
   					// TODO Run tests and check if this works, or code should be removed
-  					//				} else if ( registry._focusBlur ) {
-  					//					node.removeEventListener( type, eventListener[focusEvents[type]] );
+  					//				} else if (registry._focusBlur) {
+  					//					node.removeEventListener(type, eventListener[focusEvents[type]]);
   				} else {
   						node.removeEventListener(type, eventListener[type]);
   					}
@@ -1406,13 +1404,26 @@
   			}
   		}
 
+  		if (typeof attrVal.element === 'undefined') {
+  			throw Error('Inferno Error: Invalid ref object passed, expected InfernoDOM.createRef() object.');
+  		}
   		attrVal.element = domNode;
   		return true;
   	}
   	return false;
   }
 
-  function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node) {
+  function handleHooks(item, dynamicAttrs, domNode, hookEvent) {
+  	var event = dynamicAttrs.hooks[hookEvent];
+  	if (event) {
+  		var hookCallback = getValueWithIndex(item, event.index);
+  		if (hookCallback && typeof hookCallback === 'function') {
+  			hookCallback(domNode);
+  		}
+  	}
+  }
+
+  function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent) {
   	var styleUpdates = undefined;
 
   	if (dynamicAttrs.index !== undefined) {
@@ -1422,17 +1433,21 @@
   	}
   	for (var attrName in dynamicAttrs) {
   		if (!isVoid(attrName)) {
-  			var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+  			if (hookEvent && attrName === 'hooks') {
+  				handleHooks(item, dynamicAttrs, domNode, hookEvent);
+  			} else {
+  				var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
-  			if (attrVal !== undefined) {
-  				if (attrName === 'style') {
-  					styleUpdates = attrVal;
-  				} else {
-  					if (fastPropSet(attrName, attrVal, domNode) === false) {
-  						if (propertyToEventType[attrName]) {
-  							addListener(item, domNode, propertyToEventType[attrName], attrVal);
-  						} else {
-  							template.setProperty(null, domNode, attrName, attrVal, true);
+  				if (attrVal !== undefined) {
+  					if (attrName === 'style') {
+  						styleUpdates = attrVal;
+  					} else {
+  						if (fastPropSet(attrName, attrVal, domNode) === false) {
+  							if (propertyToEventType[attrName]) {
+  								addListener(item, domNode, propertyToEventType[attrName], attrVal);
+  							} else {
+  								template.setProperty(null, domNode, attrName, attrVal, true);
+  							}
   						}
   					}
   				}
@@ -1446,10 +1461,12 @@
 
   function clearListeners(item, domNode, dynamicAttrs) {
   	for (var attrName in dynamicAttrs) {
-  		var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
+  		if (attrName !== 'hooks') {
+  			var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
-  		if (attrVal !== undefined && propertyToEventType[attrName]) {
-  			removeListener(item, domNode, propertyToEventType[attrName], attrVal);
+  			if (attrVal !== undefined && propertyToEventType[attrName]) {
+  				removeListener(item, domNode, propertyToEventType[attrName], attrVal);
+  			}
   		}
   	}
   }
@@ -1458,7 +1475,7 @@
    * NOTE!! This function is probably the single most
    * critical path for performance optimization.
    */
-  function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+  function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, hookEvent) {
   	if (dynamicAttrs.index !== undefined) {
   		var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
@@ -1466,6 +1483,9 @@
   			var lastDynamicAttrs = getValueWithIndex(lastItem, dynamicAttrs.index);
 
   			for (var attrName in lastDynamicAttrs) {
+  				if (hookEvent && attrName === 'hooks') {
+  					handleHooks(nextItem, dynamicAttrs, domNode, hookEvent);
+  				}
   				template.removeProperty(null, domNode, attrName, true);
   			}
   			return;
@@ -1603,7 +1623,7 @@
   				}
   			}
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'created');
   			}
   			item.rootNode = domNode;
   			return domNode;
@@ -1619,6 +1639,9 @@
   				var nextValue = getValueWithIndex(nextItem, valueIndex);
   				var lastValue = getValueWithIndex(lastItem, valueIndex);
 
+  				if (dynamicAttrs && dynamicAttrs.hooks) {
+  					handleHooks(nextItem, dynamicAttrs, domNode, 'beforeUpdate');
+  				}
   				if (nextValue !== lastValue) {
   					if (isVoid(nextValue)) {
   						if (isVoid(lastValue)) {
@@ -1640,15 +1663,22 @@
   						}
   					}
   				}
-
-  				if (!isVoid(dynamicAttrs)) {
-  					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+  				if (dynamicAttrs) {
+  					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
+  				}
+  				if (dynamicAttrs && dynamicAttrs.hooks) {
+  					handleHooks(nextItem, dynamicAttrs, domNode, 'afterUpdate');
   				}
   			}
   		},
   		remove: function remove(item) {
   			if (dynamicAttrs) {
+  				var domNode = item.rootNode;
+
   				clearListeners(item, item.rootNode, dynamicAttrs);
+  				if (dynamicAttrs.hooks) {
+  					handleHooks(item, dynamicAttrs, domNode, 'detached');
+  				}
   			}
   		}
   	};
@@ -1852,7 +1882,7 @@
   	var startItem = itemsLength > 0 && items[startIndex];
 
   	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
-  	// Also in cases where someone try to update from [{}] to [{}] ( empty object to empty object)
+  	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
   	// We solve that with avoiding going into the iteration loop.
   	if (isVoid(startItem) && isVoid(startItem.tree)) {
   		return;
@@ -2113,15 +2143,18 @@
   			case ValueTypes.EMPTY_OBJECT:
   				if ("development" !== 'production') {
   					throw Error(infernoBadTemplate);
-  				} else {}
+  				}
+  				return;
   			case ValueTypes.FUNCTION:
   				if ("development" !== 'production') {
   					throw Error(infernoBadTemplate);
-  				} else {}
+  				}
+  				return;
   			case ValueTypes.ARRAY:
   				if ("development" !== 'production') {
   					throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
-  				} else {}
+  				}
+  				return;
   		}
   	}
   	return { domNode: domNode, keyedChildren: keyedChildren };
@@ -2619,8 +2652,10 @@
   					domNode = virtualList.domNode;
   					keyedChildren = virtualList.keyedChildren;
   					treeLifecycle.addTreeSuccessListener(function () {
-  						nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
-  						domNode = childNodeList[0].parentNode;
+  						if (childNodeList.length > 0) {
+  							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+  							domNode = childNodeList[0].parentNode;
+  						}
   					});
   					break;
   				case ValueTypes.TREE:
@@ -2695,15 +2730,15 @@
   	return node;
   }
 
-  var updateComponent$1 = undefined;
+  var updateComponent = undefined;
 
-  var global$2 = global$2 || (typeof window !== 'undefined' ? window : null);
+  var global$1 = global$1 || (typeof window !== 'undefined' ? window : null);
 
-  if (global$2 && global$2.InfernoComponent) {
-  	updateComponent$1 = global$2.InfernoComponent.updateComponent;
-  } else if (global$2 && !global$2.InfernoComponent) {
+  if (global$1 && global$1.InfernoComponent) {
+  	updateComponent = global$1.InfernoComponent.updateComponent;
+  } else if (global$1 && !global$1.InfernoComponent) {
   	try {
-  		updateComponent$1 = require('inferno-component').updateComponent;
+  		updateComponent = require('inferno-component').updateComponent;
   	} catch (e) {
   		// do nothing, this is fine, the person might be using stateless components
   	}
@@ -2712,13 +2747,13 @@
   function createRootNodeWithComponent(componentIndex, props, recyclingEnabled) {
   	var currentItem = undefined;
   	var statelessRender = undefined;
+  	var instanceMap = {};
   	var node = {
-  		instance: null,
   		pool: [],
   		keyedPool: [],
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
-  			var instance = node.instance;
+  			var instance = undefined;
   			var domNode = undefined;
   			var toUseItem = item;
 
@@ -2738,7 +2773,7 @@
   				// bad component, make a text node
   				domNode = document.createTextNode('');
   				item.rootNode = domNode;
-  				node.instance = null;
+  				instance = null;
   				return domNode;
   			} else if (typeof Component === 'function') {
   				// stateless component
@@ -2751,7 +2786,7 @@
   					item.rootNode = domNode;
   				} else {
   					(function () {
-  						instance = node.instance = new Component(getValueForProps(props, toUseItem));
+  						instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
   						var nextRender = instance.render();
@@ -2792,11 +2827,12 @@
   					})();
   				}
   			}
+  			instanceMap[item.id] = instance;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			var Component = getValueWithIndex(nextItem, componentIndex);
-  			var instance = node.instance;
+  			var instance = instanceMap[lastItem.id];
 
   			nextItem.id = lastItem.id;
   			currentItem = nextItem;
@@ -2810,7 +2846,7 @@
 
   					nextRender.parent = currentItem;
   					if (!isVoid(statelessRender)) {
-  						var newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
+  						var newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 
   						if (newDomNode) {
   							if (nextRender.rootNode.parentNode) {
@@ -2852,17 +2888,17 @@
   					var nextProps = getValueForProps(props, nextItem);
 
   					nextItem.rootNode = domNode;
-  					updateComponent$1(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+  					updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
   				}
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
-  			var instance = node.instance;
+  			var instance = instanceMap[item.id];
 
   			if (instance) {
   				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
   				instance.componentWillUnmount();
-  				node.instance = null;
+  				instanceMap[item.id] = null;
   			}
   		}
   	};
@@ -2870,15 +2906,15 @@
   	return node;
   }
 
-  var updateComponent = undefined;
+  var updateComponent$1 = undefined;
 
-  var global$1 = global$1 || (typeof window !== 'undefined' ? window : null);
+  var global$2 = global$2 || (typeof window !== 'undefined' ? window : null);
 
-  if (global$1 && global$1.InfernoComponent) {
-  	updateComponent = global$1.InfernoComponent.updateComponent;
-  } else if (global$1 && !global$1.InfernoComponent) {
+  if (global$2 && global$2.InfernoComponent) {
+  	updateComponent$1 = global$2.InfernoComponent.updateComponent;
+  } else if (global$2 && !global$2.InfernoComponent) {
   	try {
-  		updateComponent = require('inferno-component').updateComponent;
+  		updateComponent$1 = require('inferno-component').updateComponent;
   	} catch (e) {
   		// do nothing, this is fine, the person might be using stateless components
   	}
@@ -3010,7 +3046,7 @@
   					var nextState = instance.state;
   					var nextProps = getValueForProps(props, nextItem);
 
-  					return updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+  					return updateComponent$1(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
   				}
   			}
   		},
@@ -3083,7 +3119,7 @@
   		pool: [],
   		keyedPool: [],
   		overrideItem: null,
-  		create: function create(item) {
+  		create: function create(item, treeLifecycle) {
   			var domNode = undefined;
 
   			if (recyclingEnabled) {
@@ -3095,7 +3131,12 @@
   			domNode = templateNode.cloneNode(true);
   			item.rootNode = domNode;
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'created');
+  			}
+  			if (dynamicAttrs && dynamicAttrs.hooks) {
+  				treeLifecycle.addTreeSuccessListener(function () {
+  					handleHooks(item, dynamicAttrs, domNode, 'attached');
+  				});
   			}
   			return domNode;
   		},
@@ -3108,13 +3149,24 @@
 
   			nextItem.rootNode = domNode;
   			nextItem.rootNode = lastItem.rootNode;
+  			if (dynamicAttrs && dynamicAttrs.hooks) {
+  				handleHooks(nextItem, dynamicAttrs, domNode, 'beforeUpdate');
+  			}
   			if (dynamicAttrs) {
-  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
+  			}
+  			if (dynamicAttrs && dynamicAttrs.hooks) {
+  				handleHooks(nextItem, dynamicAttrs, domNode, 'afterUpdate');
   			}
   		},
   		remove: function remove(item) {
   			if (dynamicAttrs) {
+  				var domNode = item.rootNode;
+
   				clearListeners(item, item.rootNode, dynamicAttrs);
+  				if (dynamicAttrs.hooks) {
+  					handleHooks(item, dynamicAttrs, domNode, 'detached');
+  				}
   			}
   		}
   	};
@@ -3270,7 +3322,7 @@
   function createElement(schema, domNamespace, parentNode) {
   	var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
   	var SVGNamespace = 'http://www.w3.org/2000/svg';
-  	var nodeName = schema.tag.toLowerCase();
+  	var nodeName = schema && typeof schema.tag === 'string' && schema.tag.toLowerCase();
   	var is = schema.attrs && schema.attrs.is;
 
   	var templateNode = undefined;
@@ -3613,13 +3665,18 @@
   		parentNode: parentNode,
   		render: function render(nextItem) {
   			if (nextItem) {
-  				var tree = nextItem.tree.dom;
+  				var tree = nextItem.tree && nextItem.tree.dom;
 
   				if (tree) {
   					var activeNode = document.activeElement;
 
   					if (lastItem) {
   						tree.update(lastItem, nextItem, treeLifecycle, context);
+
+  						if (!nextItem.rootNode) {
+  							lastItem = null;
+  							return;
+  						}
   					} else {
   						if (tree) {
   							var hydrateNode = parentNode.firstChild;
@@ -3629,6 +3686,9 @@
   							} else {
   								var dom = tree.create(nextItem, treeLifecycle, context);
 
+  								if (!dom) {
+  									return;
+  								}
   								if (nextNode) {
   									parentNode.insertBefore(dom, nextNode);
   								} else if (parentNode) {
@@ -3694,13 +3754,13 @@
   function render(nextItem, parentNode) {
   	var rootFragment = getRootFragmentAtNode(parentNode);
 
-  	if (rootFragment == null) {
+  	if (isVoid(rootFragment)) {
   		var fragment = createDOMFragment(parentNode);
 
   		fragment.render(nextItem);
   		rootFragments.push(fragment);
   	} else {
-  		if (nextItem == null) {
+  		if (isVoid(nextItem)) {
   			rootFragment.remove();
   			removeRootFragment(rootFragment);
   		} else {
