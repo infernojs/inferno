@@ -7,6 +7,21 @@ import removeListener from './events/removeListener';
 
 import { getValueWithIndex } from '../core/variables';
 
+export const hookTypes = {
+	// DOM nodes
+	onCreated: true,
+	onAttached: true,
+	onDetached: true,
+	onWillUpdate: true,
+	onDidUpdate: true,
+	// Components
+	onComponentWillMount: true,
+	onComponentDidMount: true,
+	onComponentWillUnmount: true,
+	onComponentWillUpdate: true,
+	onComponentDidUpdate: true
+};
+
 /**
  * Set HTML attributes on the template
  * @param{ HTMLElement } node
@@ -26,9 +41,8 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 			}
 		}
 	}
-
 	if (styleUpdates) {
-		template.setCSS(vNode, domNode, styleUpdates);
+		template.setCSS(vNode, domNode, styleUpdates, false);
 	}
 }
 
@@ -61,9 +75,9 @@ function fastPropSet(attrName, attrVal, domNode) {
 }
 
 export function handleHooks(item, dynamicAttrs, domNode, hookEvent) {
-	const event = dynamicAttrs.hooks[hookEvent];
-	if (event) {
-		const hookCallback = getValueWithIndex(item, event.index);
+	const event = dynamicAttrs[hookEvent];
+	if (event !== undefined) {
+		const hookCallback = getValueWithIndex(item, event);
 		if (hookCallback && typeof hookCallback === 'function') {
 			hookCallback(domNode);
 		}
@@ -80,7 +94,7 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookE
 	}
 	for (const attrName in dynamicAttrs) {
 		if (!isVoid(attrName)) {
-			if (hookEvent && attrName === 'hooks') {
+			if (hookEvent && hookTypes[attrName]) {
 				handleHooks(item, dynamicAttrs, domNode, hookEvent);
 			} else {
 				const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
@@ -102,13 +116,13 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookE
 		}
 	}
 	if (styleUpdates) {
-		template.setCSS(item, domNode, styleUpdates);
+		template.setCSS(item, domNode, styleUpdates, true);
 	}
 }
 
 export function clearListeners(item, domNode, dynamicAttrs) {
 	for (const attrName in dynamicAttrs) {
-		if (attrName !== 'hooks') {
+		if (!hookTypes[attrName]) {
 			const attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
 			if (attrVal !== undefined && eventMapping[attrName]) {
@@ -130,7 +144,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 			const lastDynamicAttrs = getValueWithIndex(lastItem, dynamicAttrs.index);
 
 			for (let attrName in lastDynamicAttrs) {
-				if (hookEvent && attrName === 'hooks') {
+				if (hookEvent && hookTypes[attrName]) {
 					handleHooks(nextItem, dynamicAttrs, domNode, hookEvent);
 				}
 				template.removeProperty(null, domNode, attrName, true);
@@ -147,8 +161,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 	let styleUpdates = {};
 	let styleName;
 
-	for (const attrName in dynamicAttrs) {
-
+	for (let attrName in dynamicAttrs) {
 		const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
 		const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
@@ -210,6 +223,6 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 	}
 
 	if (styleUpdates) {
-		template.setCSS(domNode, domNode, styleUpdates);
+		template.setCSS(domNode, domNode, styleUpdates, true);
 	}
 }

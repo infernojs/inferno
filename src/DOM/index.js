@@ -15,7 +15,6 @@ const template = {
 	 * @param {*} value
 	 */
 	setProperty(vNode, domNode, name, value, useProperties) {
-
 		const propertyInfo = DOMRegistry[name] || null;
 
 		if (propertyInfo) {
@@ -77,8 +76,7 @@ const template = {
 	 * @param {DOMElement} node
 	 * @param {object} styles
 	 */
-	setCSS(vNode, domNode, styles) {
-
+	setCSS(vNode, domNode, styles, useProperties) {
 		for (let styleName in styles) {
 			let styleValue = styles[styleName];
 

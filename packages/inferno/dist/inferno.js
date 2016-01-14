@@ -117,12 +117,6 @@
   							}
   							dynamicFlags.ATTRS[attr] = attrVal.index;
   							nodeIsDynamic = true;
-  						} else if (!isVoid(attrVal) && (typeof attrVal === 'undefined' ? 'undefined' : babelHelpers_typeof(attrVal)) === 'object' && attr === 'hooks') {
-  							if (dynamicFlags.ATTRS === false) {
-  								dynamicFlags.ATTRS = {};
-  							}
-  							nodeIsDynamic = true;
-  							dynamicFlags.ATTRS[attr] = attrVal;
   						}
   					}
   				}

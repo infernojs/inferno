@@ -20,10 +20,12 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((created, attached, detached) => ({
+			template = createTemplate((onCreated, onAttached, onDetached) => ({
 				tag: 'div',
 				attrs: {
-					hooks: { created, attached, detached }
+					onCreated,
+					onAttached,
+					onDetached
 				}
 			}));
 		});

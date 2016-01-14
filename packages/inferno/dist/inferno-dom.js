@@ -668,7 +668,6 @@
     */
 
   	setProperty: function setProperty(vNode, domNode, name, value, useProperties) {
-
   		var propertyInfo = HTMLPropsContainer[name] || null;
 
   		if (propertyInfo) {
@@ -726,8 +725,7 @@
     * @param {DOMElement} node
     * @param {object} styles
     */
-  	setCSS: function setCSS(vNode, domNode, styles) {
-
+  	setCSS: function setCSS(vNode, domNode, styles, useProperties) {
   		for (var styleName in styles) {
   			var styleValue = styles[styleName];
 
@@ -1360,6 +1358,21 @@
   	}
   }
 
+  var hookTypes = {
+  	// DOM nodes
+  	onCreated: true,
+  	onAttached: true,
+  	onDetached: true,
+  	onWillUpdate: true,
+  	onDidUpdate: true,
+  	// Components
+  	onComponentWillMount: true,
+  	onComponentDidMount: true,
+  	onComponentWillUnmount: true,
+  	onComponentWillUpdate: true,
+  	onComponentDidUpdate: true
+  };
+
   /**
    * Set HTML attributes on the template
    * @param{ HTMLElement } node
@@ -1379,9 +1392,8 @@
   			}
   		}
   	}
-
   	if (styleUpdates) {
-  		template.setCSS(vNode, domNode, styleUpdates);
+  		template.setCSS(vNode, domNode, styleUpdates, false);
   	}
   }
 
@@ -1414,9 +1426,9 @@
   }
 
   function handleHooks(item, dynamicAttrs, domNode, hookEvent) {
-  	var event = dynamicAttrs.hooks[hookEvent];
-  	if (event) {
-  		var hookCallback = getValueWithIndex(item, event.index);
+  	var event = dynamicAttrs[hookEvent];
+  	if (event !== undefined) {
+  		var hookCallback = getValueWithIndex(item, event);
   		if (hookCallback && typeof hookCallback === 'function') {
   			hookCallback(domNode);
   		}
@@ -1433,7 +1445,7 @@
   	}
   	for (var attrName in dynamicAttrs) {
   		if (!isVoid(attrName)) {
-  			if (hookEvent && attrName === 'hooks') {
+  			if (hookEvent && hookTypes[attrName]) {
   				handleHooks(item, dynamicAttrs, domNode, hookEvent);
   			} else {
   				var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
@@ -1455,13 +1467,13 @@
   		}
   	}
   	if (styleUpdates) {
-  		template.setCSS(item, domNode, styleUpdates);
+  		template.setCSS(item, domNode, styleUpdates, true);
   	}
   }
 
   function clearListeners(item, domNode, dynamicAttrs) {
   	for (var attrName in dynamicAttrs) {
-  		if (attrName !== 'hooks') {
+  		if (!hookTypes[attrName]) {
   			var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
   			if (attrVal !== undefined && propertyToEventType[attrName]) {
@@ -1483,7 +1495,7 @@
   			var lastDynamicAttrs = getValueWithIndex(lastItem, dynamicAttrs.index);
 
   			for (var attrName in lastDynamicAttrs) {
-  				if (hookEvent && attrName === 'hooks') {
+  				if (hookEvent && hookTypes[attrName]) {
   					handleHooks(nextItem, dynamicAttrs, domNode, hookEvent);
   				}
   				template.removeProperty(null, domNode, attrName, true);
@@ -1501,7 +1513,6 @@
   	var styleName = undefined;
 
   	for (var attrName in dynamicAttrs) {
-
   		var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
   		var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
@@ -1560,7 +1571,7 @@
   	}
 
   	if (styleUpdates) {
-  		template.setCSS(domNode, domNode, styleUpdates);
+  		template.setCSS(domNode, domNode, styleUpdates, true);
   	}
   }
 
@@ -2924,9 +2935,9 @@
   	var domNode = undefined;
   	var currentItem = undefined;
   	var statelessRender = undefined;
+  	var instanceMap = {};
   	var node = {
   		overrideItem: null,
-  		instance: null,
   		create: function create(item, treeLifecycle, context) {
   			var toUseItem = item;
   			var nextRender = undefined;
@@ -2940,7 +2951,7 @@
   			currentItem = item;
   			if (isVoid(Component)) {
   				domNode = document.createTextNode('');
-  				node.instance = null;
+  				instance = null;
   				return domNode;
   			} else if (typeof Component === 'function') {
   				// stateless component
@@ -2998,11 +3009,12 @@
   					})();
   				}
   			}
+  			instanceMap[item.id] = instance;
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			var Component = getValueWithIndex(nextItem, componentIndex);
-  			var instance = node.instance;
+  			var instance = instanceMap[lastItem.id];
 
   			currentItem = nextItem;
   			if (!Component) {
@@ -3022,7 +3034,7 @@
   					// Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
   					// E.g. start with 'render(template(null), container); ' will cause this.
   					if (!isVoid(statelessRender)) {
-  						newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
+  						newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
   					} else {
   						recreateNode(domNode, nextItem, node, treeLifecycle, context);
   						return;
@@ -3051,12 +3063,12 @@
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
-  			var instance = node.instance;
+  			var instance = instanceMap[item.id];
 
   			if (instance) {
   				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
   				instance.componentWillUnmount();
-  				node.instance = null;
+  				instanceMap[item.id] = null;
   			}
   		}
   	};
@@ -3131,11 +3143,11 @@
   			domNode = templateNode.cloneNode(true);
   			item.rootNode = domNode;
   			if (dynamicAttrs) {
-  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'created');
+  				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
   			}
-  			if (dynamicAttrs && dynamicAttrs.hooks) {
+  			if (dynamicAttrs) {
   				treeLifecycle.addTreeSuccessListener(function () {
-  					handleHooks(item, dynamicAttrs, domNode, 'attached');
+  					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
   				});
   			}
   			return domNode;
@@ -3149,14 +3161,14 @@
 
   			nextItem.rootNode = domNode;
   			nextItem.rootNode = lastItem.rootNode;
-  			if (dynamicAttrs && dynamicAttrs.hooks) {
-  				handleHooks(nextItem, dynamicAttrs, domNode, 'beforeUpdate');
+  			if (dynamicAttrs) {
+  				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
   			}
-  			if (dynamicAttrs && dynamicAttrs.hooks) {
-  				handleHooks(nextItem, dynamicAttrs, domNode, 'afterUpdate');
+  			if (dynamicAttrs) {
+  				handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
   			}
   		},
   		remove: function remove(item) {
@@ -3164,8 +3176,8 @@
   				var domNode = item.rootNode;
 
   				clearListeners(item, item.rootNode, dynamicAttrs);
-  				if (dynamicAttrs.hooks) {
-  					handleHooks(item, dynamicAttrs, domNode, 'detached');
+  				if (dynamicAttrs) {
+  					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
   				}
   			}
   		}
@@ -3716,7 +3728,9 @@
   				if (lastItem) {
   					tree.remove(lastItem, treeLifecycle);
   				}
-  				remove(lastItem, parentNode);
+  				if (lastItem.rootNode.parentNode) {
+  					remove(lastItem, parentNode);
+  				}
   			}
   			treeSuccessListeners = [];
   		}

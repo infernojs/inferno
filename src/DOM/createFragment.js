@@ -75,7 +75,9 @@ export default function createDOMFragment(parentNode, nextNode) {
 				if (lastItem) {
 					tree.remove(lastItem, treeLifecycle);
 				}
-				remove(lastItem, parentNode);
+				if (lastItem.rootNode.parentNode) {
+					remove(lastItem, parentNode);
+				}
 			}
 			treeSuccessListeners = [];
 		}

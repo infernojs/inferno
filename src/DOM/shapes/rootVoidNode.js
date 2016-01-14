@@ -1,5 +1,5 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks, hookTypes } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
@@ -19,13 +19,13 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			domNode = templateNode.cloneNode(true);
 			item.rootNode = domNode;
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'created');
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
 			}
-			if (dynamicAttrs && dynamicAttrs.hooks) {
+			if (dynamicAttrs) {
 				treeLifecycle.addTreeSuccessListener(() => {
-					handleHooks(item, dynamicAttrs, domNode, 'attached');
+					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
 				});
-		}
+			}
 			return domNode;
 		},
 		update(lastItem, nextItem) {
@@ -37,14 +37,14 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 
 			nextItem.rootNode = domNode;
 			nextItem.rootNode = lastItem.rootNode;
-			if (dynamicAttrs && dynamicAttrs.hooks) {
-				handleHooks(nextItem, dynamicAttrs, domNode, 'beforeUpdate');
+			if (dynamicAttrs) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
 			}
-			if (dynamicAttrs && dynamicAttrs.hooks) {
-				handleHooks(nextItem, dynamicAttrs, domNode, 'afterUpdate');
+			if (dynamicAttrs) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 			}
 		},
 		remove(item) {
@@ -52,8 +52,8 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 				const domNode = item.rootNode;
 
 				clearListeners(item, item.rootNode, dynamicAttrs);
-				if (dynamicAttrs.hooks) {
-					handleHooks(item, dynamicAttrs, domNode, 'detached');
+				if (dynamicAttrs) {
+					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
 				}
 			}
 		}
