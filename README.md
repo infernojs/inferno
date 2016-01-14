@@ -227,6 +227,23 @@ InfernoServer.renderToString(<div />, document.body);
 
 Render a fragment into the HTML string given the supplied template.
 
+## InfernoDOM hooks and events
+
+Inferno supports many of the basic events upon DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to inline
+common hooks onto components and nodes without needing to use `inferno-component` and `refs`. For example:
+
+```js
+function createdCallback(element) {
+	// access to the element
+}
+
+InfernoDOM.render(<div onCreated={ createdCallack } />, document.body);
+```js
+
+The above renders a `div` DOM node, but allows for a callback when it's been created. Other DOM node hooks and events include `onAtttached`, `onDetached`, `onWillUpdate`, `onDidUpdate`.
+The component hooks and events include: `onComponentWillMount`, `onComponentDidMount`, `onComponentWillUpdate`, `onComponentDidUpdate`, `onComponentWillUnmount`. This allows you
+to apply lifecycle events inline without needing to use classes.
+
 ## Performance
 
 Inferno tries to address two problems with creating UI components:
