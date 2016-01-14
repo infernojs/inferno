@@ -56,12 +56,7 @@
     "webpack-dev-server": "^1.14.0",
     "inferno-component": "^0.5.13"
   },
-  "files": [
-    "config", 
-    "src", 
-    "tools", 
-    ".babelrc"
-  ],
+  "files": ["src"],
   "homepage": "https://github.com/trueadm/inferno#readme",
   "jsnext:main": "src/index.js",
   "keywords": [
@@ -94,7 +89,6 @@
     "build:inferno:dev": "node config/rollup.config.js dev packages/inferno/dist packages/inferno/src inferno Inferno",
     "build:inferno:prod": "node config/rollup.config.js prod packages/inferno/dist packages/inferno/src inferno Inferno",
     "build": "npm run build:inferno-dom:dev && npm run build:inferno-dom:prod && npm run build:inferno:dev && npm run build:inferno:prod && npm run build:inferno-server:dev && npm run build:inferno-server:prod && npm run build:inferno-component:dev && npm run build:inferno-component:prod",
-    "postinstall-out": "npm run build",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
     "test:server": "mocha --opts config/mocha.opts",
     "test:browser": "karma start config/karma.conf.js --single-run",
