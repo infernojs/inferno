@@ -104,7 +104,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
-			let instance = instanceMap[lastItem.id];
+			const instance = instanceMap[lastItem.id];
 
 			nextItem.id = lastItem.id;
 			currentItem = nextItem;
@@ -165,7 +165,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 			}
 		},
 		remove(item, treeLifecycle) {
-			let instance = instanceMap[item.id];
+			const instance = instanceMap[item.id];
 
 			if (instance) {
 				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
