@@ -21,13 +21,13 @@ if (global && global.InfernoComponent) {
 export default function createRootNodeWithComponent(componentIndex, props, recyclingEnabled) {
 	let currentItem;
 	let statelessRender;
+	const instanceMap = {};
 	const node = {
-		instance: null,
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
 		create(item, treeLifecycle, context) {
-			let instance = node.instance;
+			let instance;
 			let domNode;
 			let toUseItem = item;
 
@@ -47,7 +47,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 				// bad component, make a text node
 				domNode = document.createTextNode('');
 				item.rootNode = domNode;
-				node.instance = null;
+				instance = null;
 				return domNode;
 			} else if (typeof Component === 'function') {
 				// stateless component
@@ -59,7 +59,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					statelessRender = nextRender;
 					item.rootNode = domNode;
 				} else {
-					instance = node.instance = new Component(getValueForProps(props, toUseItem));
+					instance = new Component(getValueForProps(props, toUseItem));
 					instance.context = context;
 					instance.componentWillMount();
 					const nextRender = instance.render();
@@ -99,11 +99,12 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					};
 				}
 			}
+			instanceMap[item.id] = instance;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
-			let instance = node.instance;
+			let instance = instanceMap[lastItem.id];
 
 			nextItem.id = lastItem.id;
 			currentItem = nextItem;
@@ -117,7 +118,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 
 					nextRender.parent = currentItem;
 					if (!isVoid(statelessRender)) {
-						const newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
+						const newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 
 						if (newDomNode) {
 							if (nextRender.rootNode.parentNode) {
@@ -164,12 +165,12 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 			}
 		},
 		remove(item, treeLifecycle) {
-			let instance = node.instance;
+			let instance = instanceMap[item.id];
 
 			if (instance) {
 				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
 				instance.componentWillUnmount();
-				node.instance = null;
+				instanceMap[item.id] = null;
 			}
 		}
 	};

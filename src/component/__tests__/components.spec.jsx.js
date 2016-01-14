@@ -795,4 +795,66 @@ describe( 'Components (JSX)', () => {
 			});
 		});
 	});
+
+	describe('should render a repeating counter component with component children', () => {
+		let id = 0;
+
+		class Value extends Component {
+			constructor(props){
+				super(props);
+				this.id = ++id;
+			}
+			render() {
+				return <div>{this.props.value}</div>
+			}
+		}
+
+		class Repeater extends Component {
+			render() {
+				//this doesn't work - only the last value is updated
+				var children = [];
+				for (var i = 0; i < 3; i++) {
+					children.push(<Value key={i} value={this.props.value}/>);
+				}
+
+				return (<div>
+					{children}
+				</div>);
+
+				//this works - all values are updated
+				//return <div>
+				//    <Value value={this.props.value}/>
+				//    <Value value={this.props.value}/>
+				//    <Value value={this.props.value}/>
+				//</div>
+			}
+		}
+
+		it('should correctly render as values increase', () => {
+			let value = 0;
+
+			render(<Repeater value={ value }/>, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div>0</div><div>0</div><div>0</div></div>')
+			);
+
+			value++;
+			render(<Repeater value={ value }/>, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div>1</div><div>1</div><div>1</div></div>')
+			);
+
+			value++;
+			render(<Repeater value={ value }/>, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div>2</div><div>2</div><div>2</div></div>')
+			);
+		});
+	});
 });

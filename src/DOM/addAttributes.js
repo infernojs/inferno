@@ -64,7 +64,9 @@ export function handleHooks(item, dynamicAttrs, domNode, hookEvent) {
 	const event = dynamicAttrs.hooks[hookEvent];
 	if (event) {
 		const hookCallback = getValueWithIndex(item, event.index);
-		hookCallback(domNode);
+		if (hookCallback && typeof hookCallback === 'function') {
+			hookCallback(domNode);
+		}
 	}
 }
 

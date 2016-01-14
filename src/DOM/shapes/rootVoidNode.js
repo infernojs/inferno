@@ -49,7 +49,12 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 		},
 		remove(item) {
 			if (dynamicAttrs) {
+				const domNode = item.rootNode;
+
 				clearListeners(item, item.rootNode, dynamicAttrs);
+				if (dynamicAttrs.hooks) {
+					handleHooks(item, dynamicAttrs, domNode, 'detached');
+				}
 			}
 		}
 	};
