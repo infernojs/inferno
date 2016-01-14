@@ -56,7 +56,12 @@
     "webpack-dev-server": "^1.14.0",
     "inferno-component": "^0.5.13"
   },
-  "files": ["."],
+  "files": [
+    "config", 
+    "src", 
+    "tools", 
+    ".babelrc"
+  ],
   "homepage": "https://github.com/trueadm/inferno#readme",
   "jsnext:main": "src/index.js",
   "keywords": [
