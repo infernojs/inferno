@@ -243,7 +243,7 @@ Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-
 
 ## Still under development
 
-Inferno is still under development, and there are some missing features and optimizations to be made.The high priority now is the server side rendring (SSR).
+Inferno is still under development, and there are some missing features and optimizations to be made.The high priority now is the server side rendering (SSR).
 
 ## Todo
 
