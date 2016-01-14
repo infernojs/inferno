@@ -21,13 +21,13 @@ if (global && global.InfernoComponent) {
 export default function createRootNodeWithComponent(componentIndex, props, recyclingEnabled) {
 	let currentItem;
 	let statelessRender;
+	const instanceMap = {};
 	const node = {
-		instance: null,
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
 		create(item, treeLifecycle, context) {
-			let instance = node.instance;
+			let instance;
 			let domNode;
 			let toUseItem = item;
 
@@ -99,11 +99,12 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					};
 				}
 			}
+			instanceMap[item.id] = instance;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
-			let instance = node.instance;
+			const instance = instanceMap[lastItem.id];
 
 			nextItem.id = lastItem.id;
 			currentItem = nextItem;
@@ -164,12 +165,12 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 			}
 		},
 		remove(item, treeLifecycle) {
-			let instance = node.instance;
+			const instance = instanceMap[item.id];
 
 			if (instance) {
 				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
 				instance.componentWillUnmount();
-				node.instance = null;
+				instanceMap[item.id] = null;
 			}
 		}
 	};
