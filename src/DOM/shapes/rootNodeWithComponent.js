@@ -47,7 +47,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 				// bad component, make a text node
 				domNode = document.createTextNode('');
 				item.rootNode = domNode;
-				node.instance = null;
+				instance = null;
 				return domNode;
 			} else if (typeof Component === 'function') {
 				// stateless component
@@ -59,7 +59,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					statelessRender = nextRender;
 					item.rootNode = domNode;
 				} else {
-					instance = node.instance = new Component(getValueForProps(props, toUseItem));
+					instance = new Component(getValueForProps(props, toUseItem));
 					instance.context = context;
 					instance.componentWillMount();
 					const nextRender = instance.render();
@@ -118,7 +118,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 
 					nextRender.parent = currentItem;
 					if (!isVoid(statelessRender)) {
-						const newDomNode = nextRender.tree.dom.update(statelessRender || node.instance._lastRender, nextRender, treeLifecycle, context);
+						const newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 
 						if (newDomNode) {
 							if (nextRender.rootNode.parentNode) {
