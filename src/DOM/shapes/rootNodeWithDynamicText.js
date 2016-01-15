@@ -10,7 +10,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
-		create(item) {
+		create(item, treeLifecycle) {
 			let domNode;
 
 			if (recyclingEnabled) {
@@ -35,7 +35,12 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'created');
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+			}
+			if (dynamicAttrs) {
+				treeLifecycle.addTreeSuccessListener(() => {
+					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+				});
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -52,7 +57,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 				if (dynamicAttrs && dynamicAttrs.hooks) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'beforeUpdate');
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
 				if (nextValue !== lastValue) {
 					if (isVoid(nextValue)) {
@@ -79,7 +84,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
 				}
 				if (dynamicAttrs && dynamicAttrs.hooks) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'afterUpdate');
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
 			}
 		},
@@ -89,7 +94,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 
 				clearListeners(item, item.rootNode, dynamicAttrs);
 				if (dynamicAttrs.hooks) {
-					handleHooks(item, dynamicAttrs, domNode, 'detached');
+					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
 				}
 			}
 		}
