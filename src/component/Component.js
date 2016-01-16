@@ -45,6 +45,32 @@ class Component {
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
 	getChildContext() {}
+	_updateComponent(prevState, nextState, prevProps, nextProps) {
+		if (!nextProps.children) {
+			nextProps.children = prevProps.children;
+		}
+		if (prevProps !== nextProps || prevState !== nextState) {
+			if (prevProps !== nextProps) {
+				this._blockRender = true;
+				this.componentWillReceiveProps(nextProps);
+				this._blockRender = false;
+			}
+			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+
+			if (shouldUpdate) {
+				this._blockSetState = true;
+				this.componentWillUpdate(nextProps, nextState);
+				this._blockSetState = false;
+				this.props = nextProps;
+				this.state = nextState;
+				const newDomNode = this.forceUpdate();
+
+				this.componentDidUpdate(prevProps, prevState);
+				return newDomNode;
+			}
+		}
+	}
+
 }
 
 export default Component;

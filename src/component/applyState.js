@@ -1,4 +1,3 @@
-import updateComponent from './updateComponent';
 import { requestAnimationFrame } from './../util/requestAnimationFrame';
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
 
@@ -23,7 +22,7 @@ function applyState(component) {
 
 			component._pendingState = {};
 			component._pendingSetState = false;
-			updateComponent(component, oldState, nextState, component.props, component.props, component.forceUpdate, blockRender);
+			component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
 
 			if (ExecutionEnvironment.canUseDOM &&
 				activeNode !== document.body &&

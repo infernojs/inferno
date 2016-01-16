@@ -3,20 +3,6 @@ import isVoid from '../../util/isVoid';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateNode from '../recreateNode';
 
-let updateComponent;
-
-const global = global || (typeof window !== 'undefined' ? window : null);
-
-if (global && global.InfernoComponent) {
-	updateComponent = global.InfernoComponent.updateComponent;
-} else if (global && !global.InfernoComponent) {
-	try {
-		updateComponent = require('inferno-component').updateComponent;
-	} catch (e) {
-		// do nothing, this is fine, the person might be using stateless components
-	}
-}
-
 export default function createNodeWithComponent(componentIndex, props) {
 	let domNode;
 	let currentItem;
@@ -142,7 +128,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 					const nextState = instance.state;
 					const nextProps = getValueForProps(props, nextItem);
 
-					return updateComponent(instance, prevState, nextState, prevProps, nextProps, instance.forceUpdate);
+					return instance._updateComponent(prevState, nextState, prevProps, nextProps);
 				}
 			}
 		},

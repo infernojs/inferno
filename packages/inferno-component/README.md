@@ -10,7 +10,6 @@ npm install inferno-component
 ## Contents
 
 * Component
-* updateComponent
 
 ## Usage
 
