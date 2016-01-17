@@ -37,7 +37,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
 			}
-			if (dynamicAttrs) {
+			if (dynamicAttrs && dynamicAttrs.onAttached) {
 				treeLifecycle.addTreeSuccessListener(() => {
 					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
 				});
@@ -56,7 +56,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				const nextValue = getValueWithIndex(nextItem, valueIndex);
 				const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-				if (dynamicAttrs && dynamicAttrs.hooks) {
+				if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
 				if (nextValue !== lastValue) {
@@ -81,9 +81,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 					}
 				}
 				if (dynamicAttrs) {
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				}
-				if (dynamicAttrs && dynamicAttrs.hooks) {
+				if (dynamicAttrs && dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
 			}
@@ -92,10 +92,10 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			if (dynamicAttrs) {
 				const domNode = item.rootNode;
 
-				clearListeners(item, item.rootNode, dynamicAttrs);
-				if (dynamicAttrs.hooks) {
+				if (dynamicAttrs.onDetached) {
 					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
 				}
+				clearListeners(item, item.rootNode, dynamicAttrs);
 			}
 		}
 	};

@@ -1,5 +1,5 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks, hookTypes } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
@@ -21,7 +21,7 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
 			}
-			if (dynamicAttrs) {
+			if (dynamicAttrs && dynamicAttrs.onAttached) {
 				treeLifecycle.addTreeSuccessListener(() => {
 					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
 				});
@@ -37,13 +37,13 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 
 			nextItem.rootNode = domNode;
 			nextItem.rootNode = lastItem.rootNode;
-			if (dynamicAttrs) {
+			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, null);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 			}
-			if (dynamicAttrs) {
+			if (dynamicAttrs && dynamicAttrs.onDidUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 			}
 		},
@@ -51,10 +51,10 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			if (dynamicAttrs) {
 				const domNode = item.rootNode;
 
-				clearListeners(item, item.rootNode, dynamicAttrs);
-				if (dynamicAttrs) {
+				if (dynamicAttrs.onDetached) {
 					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
 				}
+				clearListeners(item, item.rootNode, dynamicAttrs);
 			}
 		}
 	};
