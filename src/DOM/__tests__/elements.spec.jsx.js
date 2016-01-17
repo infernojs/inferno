@@ -53,6 +53,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(3);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+		render(undefined, container);
 		render(<div><span></span><b>Hello, World!</b><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -69,6 +70,11 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('id')).to.be.null;
+
+		render(<div class={'hello'}></div>, container);
+		expect(container.firstChild.nodeName).to.equal('DIV');
+		expect(container.firstChild.childNodes.length).to.equal(0);
+		expect(container.firstChild.getAttribute('class')).to.equal('hello'); // 'class¨attribute exist!
 
 		render(<div id='hello'></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -93,6 +99,11 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 
+		render(<div class={'hello'}></div>, container);
+		expect(container.firstChild.nodeName).to.equal('DIV');
+		expect(container.firstChild.childNodes.length).to.equal(0);
+		expect(container.firstChild.getAttribute('class')).to.equal('hello');
+
 		render({}, container);
 		render(null, container);
 		expect(container.nodeName).to.equal('DIV');
@@ -109,6 +120,7 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
+		render(<div>{null}</div>, container);
 		render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -232,6 +244,8 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 
+		render(<div></div>, container);
+
 		child = <div></div>
 
 		render(<div>{child}</div>, container);
@@ -256,7 +270,6 @@ describe( 'Elements - SVG (JSX)', () => {
 
 		render(<div>{null}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
-
 
 		render(<div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -288,7 +301,6 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.nodeName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.firstChild.nodeName).to.equal('DIV');
 	});
-
 
 	it('should render a simple div children set to undefined', () => {
 
@@ -341,6 +353,8 @@ describe( 'Elements - SVG (JSX)', () => {
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.textContent).to.equal('Hello, World!');
+
+		render(<div>{null }</div>, container);
 
 		render(<div>{<div>Hello, Inferno!</div> }</div>, container);
 
@@ -422,6 +436,10 @@ describe( 'Elements - SVG (JSX)', () => {
 		render(<div className='' />, container);
 		expect(container.firstChild.className).to.eql('');
 
+		// NOTE!! This shall not be 'null', but 123
+		render(<div class='123' />, container);
+		expect(container.firstChild.getAttribute('class')).to.eql('123');
+
 		render(<div className={null} />, container);
 		expect(container.firstChild.className).to.eql('');
 
@@ -449,8 +467,11 @@ describe( 'Elements - SVG (JSX)', () => {
 		);
 
 		render(<input values={ undefined } />, container);
-
 		expect( container.value ).to.be.undefined;
+
+		render(<input values={ null } />, container);
+		expect( container.value ).to.be.undefined;
+
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -473,6 +494,15 @@ describe( 'Elements - SVG (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML( '<input title="Tip!">' )
+		);
+
+		render(<input name='Tip!' />, container);
+
+		expect(container.firstChild.getAttribute('name')).to.eql('Tip!');
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML( '<input name="Tip!">' )
 		);
 
 		render(<input title='Tip!' />, container);
