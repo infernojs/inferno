@@ -333,7 +333,7 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
 		);
-
+		render(template('', '123', 'basic-update'), container);
 		render(template(null, null, false), container);
 	});
 
@@ -560,8 +560,14 @@ describe( 'Components', () => {
 
 		render(null, container);
 
-		// Why is '123' not vssible?
+		// Why is '123' not visible?
 		render(template(BasicComponent2b, BasicComponent2b, '123'), container);
+		expect(
+				container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><div><span>component!</span><div><div><span>123</span><div></div></div></div></div></div></div>'
+		);
+
 
 		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 		expect(
@@ -570,15 +576,6 @@ describe( 'Components', () => {
 			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
 		);
 
-		render(null, container);
-
-		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-		);
-
 		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
 		expect(
 			container.innerHTML
@@ -592,12 +589,37 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
-		render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
+
+		// THIS SHOULD SHOW 2 COMPONENTS!!
+		// If last component is nothing, the two others are not rendered
+
+		render(template(BasicComponent2b, BasicComponent2c, ''), container);
 		expect(
 			container.innerHTML
 		).to.equal(
-			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+			'<div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
+
+		// THIS should show 2 components, not 1
+		// If the one ine the middle is nothing, the others are not rendered
+		render(template(BasicComponent2b, null, BasicComponent2c), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+		);
+
+		// THIS SHOULD SHOW 2 COMPONENTS!!
+		// If first component is nothing, the two others are not rendered
+		render(template('', BasicComponent2c, BasicComponent2c), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><span>other component!</span><div></div></div></div></div></div></div>'
+		);
+
+
+
 		render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
 		expect(
 			container.innerHTML
@@ -698,6 +720,8 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 		);
+		render('', container);
+		render(template(''), container);
 		render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 
 		expect(
@@ -814,7 +838,7 @@ describe( 'Components', () => {
 			render() {
 				const template = createTemplate((counter) =>
 					createElement('div', null,
-						createElement('span', null, counter)
+						createElement('span', {}, counter)
 					)
 				);
 				return template(this.state.counter);
@@ -915,7 +939,7 @@ describe( 'Components', () => {
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
 			);
-			render(tpl1546018623(null), container);
+			render(tpl1546018623([[]]), container);
 			render(tpl1546018623(conditionalComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
@@ -950,7 +974,7 @@ describe( 'Components', () => {
 				this.state = {
 					organizations: [
 						{name: 'test1', key: '1'},
-						{name: 'test2', key: '2'},
+						{name: 'test2', key: 2},
 						{name: 'test3', key: '3'},
 						{name: 'test4', key: '4'},
 						{name: 'test5', key: '5'},
@@ -1022,6 +1046,7 @@ describe( 'Components', () => {
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 		render(template(BasicStatelessComponent1, null), container);
 		render(template({}, 'abc'), container);
+		render(template([]), container);
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -1052,7 +1077,7 @@ describe( 'Components', () => {
 			() => render(template(BasicStatelessComponent1, text1), container)
 		).to.throw;
 
-		render(template(null), container);
+		render(template({}), container);
 
 		render(template(BasicStatelessComponent1), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -1084,6 +1109,9 @@ describe( 'Components', () => {
 
 		render(template(null), container);
 
+		render(template(BasicStatelessComponent1), container);
+		render(template(null), container);
+		render(template({}), container);
 		render(template(BasicStatelessComponent1), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -1154,8 +1182,9 @@ describe( 'Components', () => {
 
 			render(tpl79713834([]), container); // empty array
 			render(tpl79713834({}), container); // empty object
+			render(tpl79713834(undefined), container);
+			render(tpl79713834(), container);
 			render(tpl79713834(TEST), container);
-
 			expect(
 				container.innerHTML
 			).to.equal(
@@ -1166,6 +1195,9 @@ describe( 'Components', () => {
 		it('Second render (update with state change)', (done) => {
 			render(tpl79713834([]), container); // empty array
 			render(tpl79713834({}), container); // empty object
+			render(tpl79713834(null), container); // null
+			render(tpl79713834(TEST), container);
+			render(tpl79713834(null), container); // null
 			render(tpl79713834(TEST), container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
@@ -1248,6 +1280,8 @@ describe( 'Components', () => {
 			);
 
 			render(starter({}), container);
+
+			render(starter(null), container);
 
 			render(starter(SomeError), container);
 

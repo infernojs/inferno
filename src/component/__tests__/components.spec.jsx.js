@@ -143,6 +143,16 @@ describe( 'Components (JSX)', () => {
 
 		render((
 			<div>
+				<BasicComponent1b title="123" isChecked={ null } />
+			</div>
+		), container);
+
+		render((
+			<div></div>
+		), container);
+
+		render((
+			<div>
 				<BasicComponent1b title="123" isChecked={ true } />
 			</div>
 		), container);
@@ -169,6 +179,11 @@ describe( 'Components (JSX)', () => {
 			innerHTML( '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>' )
 		);
 
+		render((
+				<div></div>
+			),
+			container
+		);
 		render((
 				<div>
 					<BasicComponent1 title='Hello, World!' name='basic-render' />
@@ -320,6 +335,15 @@ describe( 'Components (JSX)', () => {
 				</BasicComponent2>
 			</div>
 		), container)).to.throw('Inferno Error: Children must be provided as templates.');
+
+		expect(() => render((
+			<div>
+				<BasicComponent2 title="abc" name="basic-render">
+					<span>A child</span>
+					<BasicComponent1c/>
+				</BasicComponent2>
+			</div>
+		), container)).to.throw('Inferno Error: Children must be provided as templates.');
 	});
 
 	it('should render multiple components', () => {
@@ -372,6 +396,10 @@ describe( 'Components (JSX)', () => {
 		).to.equal(
 			innerHTML('<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>')
 		);
+
+		render((
+			<BasicComponent3 />
+		), container);
 
 		render((
 			<BasicComponent3 title="styled (again)!" styles={{ color: "blue", marginBottom: 20 }} />
