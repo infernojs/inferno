@@ -1,17 +1,11 @@
 {
-    "env": {
-        "development": {
-            "presets": [
-                "es2015", "stage-0"
-            ]
-        },
-        "production": {
-            "presets": [
-                "es2015-rollup"
-            ]
-
-        }
-    },
-    /* Add plugins here**/
-    "plugins": ["babel-plugin-syntax-jsx", "babel-plugin-inferno"]
+    "presets": [
+        "es2015",
+        "stage-0"
+    ],
+    "plugins": [
+        "transform-object-rest-spread",
+        "babel-plugin-syntax-jsx",
+        "babel-plugin-inferno"
+    ]
 }
