@@ -1,14 +1,13 @@
 const webpack = require('webpack');
 const glob = require('glob');
 
-const entries = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
+const testFiles  = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
 	.concat(glob.sync('./src/**/*__tests__*/**/*spec.jsx.js'))
 	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.js'))
-	.map(function (file) { return 'mocha!' + file; });
 
 module.exports = {
 	entry: {
-		specs: entries,
+		specs:  ['./config/browser.js'].concat(testFiles),
 		playground: './examples/playground/playground.js'
 	},
 	output: {
@@ -16,7 +15,7 @@ module.exports = {
 		filename: '[name].js',
 		publicPath: 'http://localhost:8080/'
 	},
-	//devtool: 'source-map',
+	//devtool: 'inline-source-map',
 	module: {
 		loaders: [{
 			test: /\.js$/,
@@ -27,7 +26,7 @@ module.exports = {
 	devServer: {
 		contentBase: './',
 		port: 8080,
-		noInfo: true,
+		noInfo: false,
 		hot: true,
 		inline: true,
 		proxy: {
@@ -39,6 +38,9 @@ module.exports = {
 		}
 	},
 	plugins: [
+		// By default, webpack does `n=>n` compilation with entry files. This concatenates
+		// them into a single chunk.
+		new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
 		new webpack.HotModuleReplacementPlugin()
 	]
 };
