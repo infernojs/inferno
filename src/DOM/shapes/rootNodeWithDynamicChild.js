@@ -8,7 +8,7 @@ import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 
 export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
@@ -68,7 +68,12 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -86,6 +91,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
+			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+			}
 			if (nextValue && isVoid(lastValue)) {
 				if (typeof nextValue === 'object') {
 					if (isArray(nextValue)) {
@@ -154,12 +162,20 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				}
 			}
 		},
 		remove(item, treeLifecycle) {
 			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
 			if (dynamicAttrs) {
-				clearListeners(item, item.rootNode, dynamicAttrs);
+				const domNode = item.rootNode;
+
+				if (dynamicAttrs.onDetached) {
+					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				}
+				clearListeners(item, domNode, dynamicAttrs);
 			}
 		}
 	};

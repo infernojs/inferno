@@ -36,11 +36,11 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			}
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-			}
-			if (dynamicAttrs && dynamicAttrs.onAttached) {
-				treeLifecycle.addTreeSuccessListener(() => {
-					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-				});
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -82,9 +82,9 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				}
 				if (dynamicAttrs) {
 					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-				}
-				if (dynamicAttrs && dynamicAttrs.onDidUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+					if (dynamicAttrs.onDidUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+					}
 				}
 			}
 		},
@@ -95,7 +95,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				if (dynamicAttrs.onDetached) {
 					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
 				}
-				clearListeners(item, item.rootNode, dynamicAttrs);
+				clearListeners(item, domNode, dynamicAttrs);
 			}
 		}
 	};

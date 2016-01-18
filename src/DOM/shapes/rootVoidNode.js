@@ -20,11 +20,11 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			item.rootNode = domNode;
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-			}
-			if (dynamicAttrs && dynamicAttrs.onAttached) {
-				treeLifecycle.addTreeSuccessListener(() => {
-					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-				});
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			return domNode;
 		},
@@ -37,14 +37,14 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 
 			nextItem.rootNode = domNode;
 			nextItem.rootNode = lastItem.rootNode;
-			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
-				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-			}
 			if (dynamicAttrs) {
+				if (dynamicAttrs.onWillUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+				}
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-			}
-			if (dynamicAttrs && dynamicAttrs.onDidUpdate) {
-				handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				}
 			}
 		},
 		remove(item) {
@@ -54,7 +54,7 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 				if (dynamicAttrs.onDetached) {
 					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
 				}
-				clearListeners(item, item.rootNode, dynamicAttrs);
+				clearListeners(item, domNode, dynamicAttrs);
 			}
 		}
 	};

@@ -1,14 +1,19 @@
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 
 export default function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
-		create(item) {
+		create(item, treeLifecycle) {
 			const domNode = templateNode.cloneNode(true);
 
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -17,13 +22,22 @@ export default function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 			const domNode = domNodeMap[lastItem.id];
 
 			if (dynamicAttrs) {
+				if (dynamicAttrs.onWillUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+				}
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				}
 			}
 		},
 		remove(item) {
-			const domNode = domNodeMap[item.id];
-
 			if (dynamicAttrs) {
+				const domNode = domNodeMap[item.id];
+
+				if (dynamicAttrs.onDetached) {
+					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				}
 				clearListeners(item, domNode, dynamicAttrs);
 			}
 		}

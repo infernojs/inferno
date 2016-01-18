@@ -27,11 +27,11 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			}
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-			}
-			if (dynamicAttrs && dynamicAttrs.onAttached) {
-				treeLifecycle.addTreeSuccessListener(() => {
-					handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-				});
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -66,15 +66,14 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-			}
-			if (dynamicAttrs && dynamicAttrs.onDidUpdate) {
-				handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				}
 			}
 		},
 		remove(item) {
-			const domNode = domNodeMap[item.id];
-
 			if (dynamicAttrs) {
+				const domNode = domNodeMap[item.id];
 
 				if (dynamicAttrs.onDetached) {
 					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
