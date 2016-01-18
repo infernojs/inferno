@@ -8,11 +8,20 @@ export default function addShapeChildren(domNode, subTreeForChildren, item, tree
 			for (let i = 0; i < subTreeForChildren.length; i++) {
 				const subTree = subTreeForChildren[i];
 				const childNode = subTree.create(item, treeLifecycle, context);
-
-				domNode.appendChild(childNode);
+				if (!isVoid(childNode)) {
+					domNode.appendChild(childNode);
+				}
 			}
 		} else if (typeof subTreeForChildren === 'object') {
-			domNode.appendChild(subTreeForChildren.create(item, treeLifecycle, context));
+
+			const replaceNode = domNode.firstChild;
+			const childNode = subTreeForChildren.create(item, treeLifecycle, context);
+
+			if (replaceNode) {
+				domNode.replaceChild(childNode, domNode.firstChild);
+			} else {
+				domNode.appendChild(childNode);
+			}
 		}
 	}
 }
