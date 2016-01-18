@@ -2,7 +2,7 @@ import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
 import addShapeChildren from '../../shared/addShapeChildren';
 import replaceChild from '../../core/replaceChild';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateNode from '../recreateNode';
 
 export default function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
@@ -14,7 +14,12 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 
 			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, null);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -22,6 +27,9 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const domNode = domNodeMap[lastItem.id];
 
+			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+			}
 			if (!isVoid(subTreeForChildren)) {
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
@@ -39,6 +47,9 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				}
 			}
 		},
 		remove(item, treeLifecycle) {
@@ -57,6 +68,9 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 			}
 			if (dynamicAttrs) {
 				clearListeners(item, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDetached) {
+					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				}
 			}
 		}
 	};

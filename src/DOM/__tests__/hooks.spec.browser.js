@@ -441,4 +441,262 @@ describe('lifecycle hooks', () => {
 			expect(detachedDomNode).to.equal(expectedDomNode);
 		});
 	});
+
+	describe('rootNodeWithDynamicSubTreeForChildren', () => {
+		let template;
+
+		beforeEach(() => {
+			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onDetached, child) => ({
+				tag: 'div',
+				attrs: {
+					onCreated,
+					onAttached,
+					onWillUpdate,
+					onDidUpdate,
+					onDetached
+				},
+				children: [
+					{
+						tag: 'div'
+					},
+					child,
+					{
+						tag: 'div'
+					}
+				]
+			}));
+		});
+
+		it('"onCreated" hook should fire', () => {
+			let createdDomNode;
+			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild;
+			expect(createdDomNode).to.equal(expectedDomNode);
+		});
+		it('"onAttached" hook should fire', () => {
+			let attachedDomNode;
+			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild;
+			expect(attachedDomNode).to.equal(expectedDomNode);
+		});
+		it('"onWillUpdate" hook should fire', () => {
+			let willUpdateDomNode;
+			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild;
+			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
+			expect(willUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onDidUpdate" hook should fire', () => {
+			let didUpdateDomNode;
+			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild;
+			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
+			expect(didUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onDetached" hook should fire', () => {
+			let detachedDomNode;
+			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild;
+			render(null, container);
+			expect(detachedDomNode).to.equal(expectedDomNode);
+		});
+	});
+
+	describe('nodeWithDynamicSubTreeForChildren', () => {
+		let template;
+
+		beforeEach(() => {
+			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onDetached, child) => ({
+				tag: 'div',
+				children: {
+					tag: 'div',
+					attrs: {
+						onCreated,
+						onAttached,
+						onWillUpdate,
+						onDidUpdate,
+						onDetached
+					},
+					children: [
+						{
+							tag: 'div'
+						},
+						child,
+						{
+							tag: 'div'
+						}
+					]
+				}
+			}));
+		});
+
+		it('"onCreated" hook should fire', () => {
+			let createdDomNode;
+			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			expect(createdDomNode).to.equal(expectedDomNode);
+		});
+		it('"onAttached" hook should fire', () => {
+			let attachedDomNode;
+			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			expect(attachedDomNode).to.equal(expectedDomNode);
+		});
+		it('"onWillUpdate" hook should fire', () => {
+			let willUpdateDomNode;
+			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
+			expect(willUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onDidUpdate" hook should fire', () => {
+			let didUpdateDomNode;
+			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
+			expect(didUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onDetached" hook should fire', () => {
+			let detachedDomNode;
+			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			render(null, container);
+			expect(detachedDomNode).to.equal(expectedDomNode);
+		});
+	});
+
+	describe('rootNodeWithComponent - stateless component', () => {
+		let template;
+
+		function StatelessComponent() {
+			const template = createTemplate(() => ({
+				tag: 'div',
+				text: 'Hello world!'
+			}));
+			return template();
+		}
+
+		beforeEach(() => {
+			template = createTemplate((onComponentWillMount, onComponentDidMount, onComponentWillUnmount, onComponentWillUpdate, onComponentDidUpdate, onComponentShouldUpdate, StatelessComponent) => ({
+				tag: StatelessComponent,
+				attrs: {
+					onComponentWillMount,
+					onComponentDidMount,
+					onComponentWillUnmount,
+					onComponentWillUpdate,
+					onComponentDidUpdate,
+					onComponentShouldUpdate
+				}
+			}));
+		});
+
+		it('"onComponentWillMount" hook should fire', () => {
+			let onComponentWillMount;
+			render(template(props => onComponentWillMount = true, null, null, null, null, null, StatelessComponent), container);
+			expect(onComponentWillMount).to.equal(true);
+		});
+		it('"onComponentDidMount" hook should fire', () => {
+			let onComponentDidMountNode;
+			render(template(null, domNode => onComponentDidMountNode = domNode, null, null, null, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild;
+			expect(onComponentDidMountNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentWillUnmount" hook should fire', () => {
+			let onComponentWillUnmountDomNode;
+			render(template(null, null, domNode => onComponentWillUnmountDomNode = domNode, null, null, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild;
+			render(null, container);
+			expect(onComponentWillUnmountDomNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentWillUpdate" hook should fire', () => {
+			let onComponentWillUpdateDomNode;
+			render(template(null, null, null, domNode => onComponentWillUpdateDomNode = domNode, null, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild;
+			render(template(null, null, null, domNode => onComponentWillUpdateDomNode = domNode, null, null, StatelessComponent), container);
+			expect(onComponentWillUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentDidUpdate" hook should fire', () => {
+			let onComponentDidUpdateDomNode;
+			render(template(null, null, null, null, domNode => onComponentDidUpdateDomNode = domNode, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild;
+			render(template(null, null, null, null, domNode => onComponentDidUpdateDomNode = domNode, null, StatelessComponent), container);
+			expect(onComponentDidUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentShouldUpdate" hook should fire', () => {
+			let onComponentShouldUpdateDomNode;
+			render(template(null, null, null, null, null, domNode => onComponentShouldUpdateDomNode = domNode, StatelessComponent), container);
+			const expectedDomNode = container.firstChild;
+			render(template(null, null, null, null, null, domNode => onComponentShouldUpdateDomNode = domNode, StatelessComponent), container);
+			expect(onComponentShouldUpdateDomNode).to.equal(expectedDomNode);
+		});
+	});
+
+	describe('nodeWithComponent - stateless component', () => {
+		let template;
+
+		function StatelessComponent() {
+			const template = createTemplate(() => ({
+				tag: 'div',
+				text: 'Hello world!'
+			}));
+			return template();
+		}
+
+		beforeEach(() => {
+			template = createTemplate((onComponentWillMount, onComponentDidMount, onComponentWillUnmount, onComponentWillUpdate, onComponentDidUpdate, onComponentShouldUpdate, StatelessComponent) => ({
+				tag: 'div',
+				children: {
+					tag: StatelessComponent,
+					attrs: {
+						onComponentWillMount,
+						onComponentDidMount,
+						onComponentWillUnmount,
+						onComponentWillUpdate,
+						onComponentDidUpdate,
+						onComponentShouldUpdate
+					}
+				}
+			}));
+		});
+
+		it('"onComponentWillMount" hook should fire', () => {
+			let onComponentWillMount;
+			render(template(props => onComponentWillMount = true, null, null, null, null, null, StatelessComponent), container);
+			expect(onComponentWillMount).to.equal(true);
+		});
+		it('"onComponentDidMount" hook should fire', () => {
+			let onComponentDidMountNode;
+			render(template(null, domNode => onComponentDidMountNode = domNode, null, null, null, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			expect(onComponentDidMountNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentWillUnmount" hook should fire', () => {
+			let onComponentWillUnmountDomNode;
+			render(template(null, null, domNode => onComponentWillUnmountDomNode = domNode, null, null, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			render(null, container);
+			expect(onComponentWillUnmountDomNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentWillUpdate" hook should fire', () => {
+			let onComponentWillUpdateDomNode;
+			render(template(null, null, null, domNode => onComponentWillUpdateDomNode = domNode, null, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			render(template(null, null, null, domNode => onComponentWillUpdateDomNode = domNode, null, null, StatelessComponent), container);
+			expect(onComponentWillUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentDidUpdate" hook should fire', () => {
+			let onComponentDidUpdateDomNode;
+			render(template(null, null, null, null, domNode => onComponentDidUpdateDomNode = domNode, null, StatelessComponent), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			render(template(null, null, null, null, domNode => onComponentDidUpdateDomNode = domNode, null, StatelessComponent), container);
+			expect(onComponentDidUpdateDomNode).to.equal(expectedDomNode);
+		});
+		it('"onComponentShouldUpdate" hook should fire', () => {
+			let onComponentShouldUpdateDomNode;
+			render(template(null, null, null, null, null, domNode => onComponentShouldUpdateDomNode = domNode, StatelessComponent), container);
+			const expectedDomNode = container.firstChild.firstChild;
+			render(template(null, null, null, null, null, domNode => onComponentShouldUpdateDomNode = domNode, StatelessComponent), container);
+			expect(onComponentShouldUpdateDomNode).to.equal(expectedDomNode);
+		});
+	});
 });

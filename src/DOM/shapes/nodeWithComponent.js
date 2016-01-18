@@ -2,6 +2,7 @@
 import isVoid from '../../util/isVoid';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateNode from '../recreateNode';
+import { handleHooks, hookTypes } from '../addAttributes';
 
 export default function createNodeWithComponent(componentIndex, props) {
 	let domNode;
@@ -28,7 +29,18 @@ export default function createNodeWithComponent(componentIndex, props) {
 			} else if (typeof Component === 'function') {
 				// stateless component
 				if (!Component.prototype.render) {
-					nextRender = Component(getValueForProps(props, toUseItem), context);
+					const nextProps = getValueForProps(props, toUseItem);
+					if (props) {
+						if (props.onComponentWillMount) {
+							handleHooks(item, nextProps, null, 'onComponentWillMount', true);
+						}
+						if (props.onComponentDidMount) {
+							treeLifecycle.addTreeSuccessListener(() => {
+								handleHooks(item, nextProps, domNode, 'onComponentDidMount', true);
+							});
+						}
+					}
+					const nextRender = Component(nextProps, context);
 
 					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
@@ -97,7 +109,20 @@ export default function createNodeWithComponent(componentIndex, props) {
 			if (typeof Component === 'function') {
 				// stateless component
 				if (!Component.prototype.render) {
-					const nextRender = Component(getValueForProps(props, nextItem), context);
+					const lastProps = getValueForProps(props, lastItem);
+					const nextProps = getValueForProps(props, nextItem);
+					let shouldUpdate = true;
+
+					if (nextProps && nextProps.onComponentShouldUpdate) {
+						shouldUpdate = handleHooks(nextItem, lastProps, domNode, 'onComponentShouldUpdate', true, nextProps);
+					}
+					if (!shouldUpdate) {
+						return;
+					}
+					if (nextProps && nextProps.onComponentWillUpdate) {
+						handleHooks(nextItem, lastProps, domNode, 'onComponentWillUpdate', true, nextProps);
+					}
+					const nextRender = Component(nextProps, context);
 					let newDomNode;
 
 					nextRender.parent = currentItem;
@@ -111,11 +136,19 @@ export default function createNodeWithComponent(componentIndex, props) {
 					}
 					statelessRender = nextRender;
 
+					let returnDomNode = false;
+
 					if (!isVoid(newDomNode)) {
 						if (domNode.parentNode) {
 							domNode.parentNode.replaceChild(newDomNode, domNode);
 						}
 						domNode = newDomNode;
+						returnDomNode = true;
+					}
+					if (props && props.onComponentDidUpdate) {
+						handleHooks(nextItem, lastProps, domNode, 'onComponentDidUpdate', true, nextProps);
+					}
+					if (returnDomNode) {
 						return domNode;
 					}
 				} else {
@@ -139,6 +172,11 @@ export default function createNodeWithComponent(componentIndex, props) {
 				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
 				instance.componentWillUnmount();
 				instanceMap[item.id] = null;
+			} else {
+				if (props && props.onComponentWillUnmount) {
+					const lastProps = getValueForProps(props, item);
+					handleHooks(item, lastProps, domNode, 'onComponentWillUnmount', true);
+				}
 			}
 		}
 	};

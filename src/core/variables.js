@@ -52,7 +52,7 @@ export function getValueForProps(props, item) {
 	for (let name in props) {
 		const val = props[name];
 
-		if (val && val.index) {
+		if (val && val.index !== undefined) {
 			newProps[name] = getValueWithIndex(item, val.index);
 		} else {
 			newProps[name] = val;

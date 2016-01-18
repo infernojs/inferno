@@ -3,6 +3,9 @@ import isVoid from '../../util/isVoid';
 import { recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
+import { handleHooks, hookTypes } from '../addAttributes';
+
+const statefulError = 'Inferno Error: Stateful ES2015 components from `inferno-component` cannot use inline lifecycle hooks, apply the lifecycle methods to the class itself.';
 
 export default function createRootNodeWithComponent(componentIndex, props, recyclingEnabled) {
 	let currentItem;
@@ -38,13 +41,29 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 			} else if (typeof Component === 'function') {
 				// stateless component
 				if (!Component.prototype.render) {
-					const nextRender = Component(getValueForProps(props, toUseItem), context);
+					const nextProps = getValueForProps(props, toUseItem);
+					if (props) {
+						if (props.onComponentWillMount) {
+							handleHooks(item, nextProps, null, 'onComponentWillMount', true);
+						}
+						if (props.onComponentDidMount) {
+							treeLifecycle.addTreeSuccessListener(() => {
+								item.rootNode = domNode;
+								handleHooks(item, nextProps, domNode, 'onComponentDidMount', true);
+							});
+						}
+					}
+					const nextRender = Component(nextProps, context);
 
 					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
 					statelessRender = nextRender;
 					item.rootNode = domNode;
 				} else {
+					if (props.onComponentWillMount || props.onComponentDidMount || props.onComponentWillUnmount
+						|| props.onComponentShouldUpdate || props.onComponentWillUpdate || props.onComponentDidUpdate) {
+						throw Error(statefulError);
+					}
 					instance = new Component(getValueForProps(props, toUseItem));
 					instance.context = context;
 					instance.componentWillMount();
@@ -93,6 +112,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 			const instance = instanceMap[lastItem.id];
 
 			nextItem.id = lastItem.id;
+			nextItem.rootNode = lastItem.rootNode;
 			currentItem = nextItem;
 			if (!Component) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
@@ -100,7 +120,20 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 			}
 			if (typeof Component === 'function') {
 				if (!Component.prototype.render) {
-					const nextRender = Component(getValueForProps(props, nextItem), context);
+					const lastProps = getValueForProps(props, lastItem);
+					const nextProps = getValueForProps(props, nextItem);
+					let shouldUpdate = true;
+
+					if (nextProps && nextProps.onComponentShouldUpdate) {
+						shouldUpdate = handleHooks(nextItem, lastProps, lastItem.rootNode, 'onComponentShouldUpdate', true, nextProps);
+					}
+					if (!shouldUpdate) {
+						return;
+					}
+					if (nextProps && nextProps.onComponentWillUpdate) {
+						handleHooks(nextItem, lastProps, lastItem.rootNode, 'onComponentWillUpdate', true, nextProps);
+					}
+					const nextRender = Component(nextProps, context);
 
 					nextRender.parent = currentItem;
 					if (!isVoid(statelessRender)) {
@@ -131,6 +164,9 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 						return;
 					}
+					if (props && props.onComponentDidUpdate) {
+						handleHooks(nextItem, lastProps, lastItem.rootNode, 'onComponentDidUpdate', true, nextProps);
+					}
 
 					statelessRender = nextRender;
 				} else {
@@ -157,6 +193,11 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 				instance._lastRender.tree.dom.remove(instance._lastRender, treeLifecycle);
 				instance.componentWillUnmount();
 				instanceMap[item.id] = null;
+			} else {
+				if (props && props.onComponentWillUnmount) {
+					const lastProps = getValueForProps(props, item);
+					handleHooks(item, lastProps, item.rootNode, 'onComponentWillUnmount', true);
+				}
 			}
 		}
 	};

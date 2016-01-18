@@ -1,7 +1,7 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
 import { recycle } from '../recycling';
-import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners } from '../addAttributes';
+import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 import addShapeChildren from '../../shared/addShapeChildren';
 
@@ -20,11 +20,14 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				}
 			}
 			domNode = templateNode.cloneNode(false);
-
 			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
-
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -41,6 +44,9 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
+			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+			}
 			if (!isVoid(subTreeForChildren)) {
 				if (isArray(subTreeForChildren)) {
 					for (let i = 0; i < subTreeForChildren.length; i++) {
@@ -54,6 +60,9 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				}
 			}
 		},
 		remove(item, treeLifecycle) {
@@ -69,7 +78,12 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				}
 			}
 			if (dynamicAttrs) {
-				clearListeners(item, item.rootNode, dynamicAttrs);
+				const domNode = item.rootNode;
+
+				clearListeners(item, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDetached) {
+					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				}
 			}
 		}
 	};

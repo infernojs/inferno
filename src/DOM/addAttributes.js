@@ -14,10 +14,11 @@ export const hookTypes = {
 	onDetached: true,
 	onWillUpdate: true,
 	onDidUpdate: true,
-	// Components
+	// Stateless components
 	onComponentWillMount: true,
 	onComponentDidMount: true,
 	onComponentWillUnmount: true,
+	onComponentShouldUpdate: true,
 	onComponentWillUpdate: true,
 	onComponentDidUpdate: true
 };
@@ -74,12 +75,16 @@ function fastPropSet(attrName, attrVal, domNode) {
 	return false;
 }
 
-export function handleHooks(item, dynamicAttrs, domNode, hookEvent) {
-	const event = dynamicAttrs[hookEvent];
-	if (event !== undefined) {
-		const hookCallback = getValueWithIndex(item, event);
+export function handleHooks(item, props, domNode, hookEvent, isComponent, nextProps) {
+	const eventOrIndex = props[hookEvent];
+	if (eventOrIndex !== undefined) {
+		const hookCallback = typeof eventOrIndex === 'number' ? getValueWithIndex(item, eventOrIndex) : eventOrIndex;
 		if (hookCallback && typeof hookCallback === 'function') {
-			hookCallback(domNode);
+			if (isComponent) {
+				return hookCallback(domNode, props, nextProps);
+			} else {
+				hookCallback(domNode);
+			}
 		}
 	}
 }
