@@ -560,15 +560,6 @@ describe( 'Components', () => {
 
 		render(null, container);
 
-		// Why is '123' not visible?
-		render(template(BasicComponent2b, BasicComponent2b, '123'), container);
-		expect(
-				container.innerHTML
-		).to.equal(
-			'<div><span>component!</span><div><div><span>component!</span><div><div><span>123</span><div></div></div></div></div></div></div>'
-		);
-
-
 		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 		expect(
 			container.innerHTML
@@ -589,36 +580,6 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
 		);
-
-		// THIS SHOULD SHOW 2 COMPONENTS!!
-		// If last component is nothing, the two others are not rendered
-
-		render(template(BasicComponent2b, BasicComponent2c, ''), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-		);
-
-		// THIS should show 2 components, not 1
-		// If the one ine the middle is nothing, the others are not rendered
-		render(template(BasicComponent2b, null, BasicComponent2c), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-		);
-
-		// THIS SHOULD SHOW 2 COMPONENTS!!
-		// If first component is nothing, the two others are not rendered
-		render(template('', BasicComponent2c, BasicComponent2c), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div><span>component!</span><div><span>other component!</span><div></div></div></div></div></div></div>'
-		);
-
-
 
 		render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
 		expect(

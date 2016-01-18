@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sick!</title>
+</head>
+<body>
+
+<div id="mount-point"><div>Click me!</div></div>
+
+
+
+<script src="./dist/inferno.js"></script>
+<script src="./dist/inferno-component.js"></script>
+<script src="./dist/inferno-dom.js"></script>
+
+
+<script>
+    "use strict";
+
+
+    const createElement = Inferno.TemplateFactory.createElement;
+
+ class BasicComponent1 extends Inferno.Component {
+     render() {
+         const template = Inferno.createTemplate((name, title) =>
+                 createElement("div", {
+                             className: "basic"
+                         },
+                         createElement("span", {
+                             className: name
+                         }, "The title is ", title)
+                 )
+     );
+         return template(this.props.name, this.props.title);
+     }
+ }
+
+
+/*
+ class BasicComponent2 extends Inferno.Component {
+     render() {
+         const template = createTemplate((name, title, children) =>
+                 createElement("div", {
+                             className: "basic"
+                         },
+                         createElement("span", {
+                             className: name
+                         }, "The title is ", title),
+                         children
+                 )
+     );
+         return template(this.props.name, this.props.title, this.props.children);
+     }
+ }
+
+*/
+
+</script>
+</body>
+</html>
