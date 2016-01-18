@@ -4,9 +4,9 @@ import template from './';
 import eventMapping from '../shared/eventMapping';
 import addListener from './events/addListener';
 import removeListener from './events/removeListener';
-
 import { getValueWithIndex } from '../core/variables';
 
+// slow?
 export const hookTypes = {
 	// DOM nodes
 	onCreated: true,
@@ -35,10 +35,12 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 		const attrVal = attrs[attrName];
 
 		if (attrVal) {
-			if (attrName === 'style') {
-				styleUpdates = attrVal;
-			} else if (!hookTypes[attrName]) {
-				template.setProperty(vNode, domNode, attrName, attrVal, false);
+			if (!hookTypes[attrName]) {
+				if (attrName === 'style') {
+					styleUpdates = attrVal;
+				} else {
+					template.setProperty(vNode, domNode, attrName, attrVal, false);
+				}
 			}
 		}
 	}
@@ -202,7 +204,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 
 					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
 						if (eventMapping[attrName]) {
-							addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal); // TODO! Write tests for this!
+							addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
 						} else {
 							template.setProperty(null, domNode, attrName, nextAttrVal, true);
 						}

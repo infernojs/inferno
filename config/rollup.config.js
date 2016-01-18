@@ -7,7 +7,6 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import pack from '../package.json';
 
-
 const development = process.argv[2] === 'dev';
 const production = process.argv[2] === 'prod';
 const dist = process.argv[3];
