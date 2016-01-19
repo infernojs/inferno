@@ -81,8 +81,8 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				const domNode = item.rootNode;
 
 				clearListeners(item, domNode, dynamicAttrs);
-				if (dynamicAttrs.onDetached) {
-					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				if (dynamicAttrs.onWillDetach) {
+					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
 				}
 			}
 		}

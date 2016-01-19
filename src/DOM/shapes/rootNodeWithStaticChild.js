@@ -51,8 +51,8 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 			if (dynamicAttrs) {
 				const domNode = item.rootNode;
 
-				if (dynamicAttrs.onDetached) {
-					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				if (dynamicAttrs.onWillDetach) {
+					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
 				}
 				clearListeners(item, domNode, dynamicAttrs);
 			}

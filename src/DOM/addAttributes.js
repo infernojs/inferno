@@ -11,7 +11,7 @@ export const hookTypes = {
 	// DOM nodes
 	onCreated: true,
 	onAttached: true,
-	onDetached: true,
+	onWillDetach: true,
 	onWillUpdate: true,
 	onDidUpdate: true,
 	// Stateless components

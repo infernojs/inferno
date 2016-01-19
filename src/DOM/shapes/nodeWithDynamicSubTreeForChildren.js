@@ -68,8 +68,8 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 			}
 			if (dynamicAttrs) {
 				clearListeners(item, domNode, dynamicAttrs);
-				if (dynamicAttrs.onDetached) {
-					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				if (dynamicAttrs.onWillDetach) {
+					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
 				}
 			}
 		}

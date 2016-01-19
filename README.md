@@ -240,9 +240,10 @@ function createdCallback(element) {
 InfernoDOM.render(<div onCreated={ createdCallack } />, document.body);
 ```js
 
-The above renders a `div` DOM node, but allows for a callback when it's been created. Other DOM node hooks and events include `onAtttached`, `onDetached`, `onWillUpdate`, `onDidUpdate`.
-The component hooks and events include: `onComponentWillMount`, `onComponentDidMount`, `onComponentWillUpdate`, `onComponentDidUpdate`, `onComponentWillUnmount`. This allows you
-to apply lifecycle events inline without needing to use classes.
+The above renders a `div` DOM node, but allows for a callback when it's been created. Other DOM node hooks and events include
+`onAtttached`, `onWillDetach`, `onWillUpdate`, `onDidUpdate`. There are also hooks available for stateless components, including:
+`onComponentWillMount`, `onComponentDidMount`, `onComponentWillUpdate`, `onComponentShouldUpdate`, `onComponentDidUpdate`, `onComponentWillUnmount`.
+These hooks give stateless components lifecycle events without needing to be ES2015 classes.
 
 ## Performance
 

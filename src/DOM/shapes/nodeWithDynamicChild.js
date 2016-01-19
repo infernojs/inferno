@@ -155,8 +155,8 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 			if (dynamicAttrs) {
 				const domNode = domNodeMap[item.id];
 
-				if (dynamicAttrs.onDetached) {
-					handleHooks(item, dynamicAttrs, domNode, 'onDetached');
+				if (dynamicAttrs.onWillDetach) {
+					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
 				}
 				clearListeners(item, domNode, dynamicAttrs);
 			}
