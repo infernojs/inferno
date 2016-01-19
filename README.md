@@ -246,7 +246,7 @@ common hooks directly onto components and DOM nodes. Below is the table of all p
 | `onComponentWillUpdate`   | a stateless component is about to perform an update            | `domNode, lastProps, nextProps` |
 | `onComponentDidUpdate`    | a stateless component has performed an updated                 | `domNode, props`                |
 
-### Usage
+### Using hooks
 
 It's simple to implicitly assign hooks to both DOM nodes and stateless components.
 Please note, stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
