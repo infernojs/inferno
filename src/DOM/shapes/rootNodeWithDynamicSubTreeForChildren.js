@@ -41,6 +41,12 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				nextItem.rootNode = newDomNode;
 				return newDomNode;
 			}
+			if (nextItem.tree.dom !== lastItem.tree.dom) {
+				const newDomNode = recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
+
+				nextItem.rootNode = newDomNode;
+				return newDomNode;
+			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;

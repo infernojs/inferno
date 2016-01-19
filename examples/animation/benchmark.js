@@ -370,14 +370,16 @@ var N = 200;
 
 	var Box = Vue.extend({
 		template: '#vue-template',
-		className: 'box-view',
-		data: {
-			number: 0,
-			count: 0,
-			top: 0,
-			left: 0,
-			bg: 0,
-			content: ''
+		name: 'Box',
+		data: function () {
+			return {
+				number: 0,
+				count: 0,
+				top: 0,
+				left: 0,
+				bg: 0,
+				content: ''
+			}
 		},
 		methods: {
 			tick: function () {
@@ -390,9 +392,11 @@ var N = 200;
 		},
 		computed: {
 			style: function () {
-				return 'top:' + this.top + 'px;' +
-					'left: ' + this.left + 'px;' +
-					'background-color: rgb(0,0,' + this.bg + ')'
+				return {
+					top: this.top + 'px',
+					left: this.left + 'px',
+					backgroundColor: 'rgb(0,0,' + this.bg + ')'
+				}
 			}
 		}
 	})
@@ -404,9 +408,9 @@ var N = 200;
 			box.$destroy();
 		});
 		boxes = _.map(_.range(N), function(i) {
-			var box = new Box()
-			box.number = i
-			box.$appendTo('#grid')
+			var box = new Box();
+			box.number = i;
+			box.$mount().$appendTo('#grid');
 			return box;
 		});
 	};
