@@ -4,6 +4,7 @@ import { validateHydrateNode } from '../hydration';
 
 export default function createRootStaticNode(templateNode, recyclingEnabled) {
 	const node = {
+		html: templateNode.innerHTML,
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
@@ -21,9 +22,12 @@ export default function createRootStaticNode(templateNode, recyclingEnabled) {
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			// wrong tree and it toggle
 			if (node !== lastItem.tree.dom) {
 				recreateRootNode(lastItem, nextItem, node);
+				return;
+			}
+			if (nextItem.tree.dom !== lastItem.tree.dom) {
+				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
 				return;
 			}
 			nextItem.rootNode = lastItem.rootNode;

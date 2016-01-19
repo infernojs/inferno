@@ -996,4 +996,66 @@ describe( 'Components (JSX)', () => {
 
 		});
 	});
+
+	describe('should render a component with with conditional boolean text nodes', () => {
+		class MyComponent98 extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					isok: false
+				};
+			};
+			componentDidMount() {
+				this.setState({isok: true});
+			};
+			render() {
+				return (
+					<MyComponent99
+						isok={this.state.isok} />
+				)
+			};
+		}
+
+		class MyComponent99 extends Component {
+			constructor(props) {
+				super(props);
+			};
+			render() {
+				console.log("isok="+this.props.isok);
+
+				var z = function(v) {
+					if (v) {
+						return (
+							<span>a</span>
+						);
+					} else {
+						return (
+							<span>b</span>
+						);
+					};
+				};
+
+				return (
+					<div>
+						<div>
+							{z(this.props.isok)}
+						</div>
+					</div>
+				)
+			};
+		}
+
+		it('should correctly render', (done) => {
+			render(<MyComponent98 />, container);
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><div><span>a</span></div></div>')
+				);
+				done();
+			});
+
+		});
+	});
 });

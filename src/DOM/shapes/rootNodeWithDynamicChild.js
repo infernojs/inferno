@@ -85,6 +85,11 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}
+			if (nextItem.tree.dom !== lastItem.tree.dom) {
+				childNodeList = [];
+				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
+				return;
+			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
