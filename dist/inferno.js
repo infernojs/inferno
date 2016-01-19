@@ -1,5 +1,5 @@
 /*!
- * inferno v0.5.16
+ * inferno v0.5.17
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */

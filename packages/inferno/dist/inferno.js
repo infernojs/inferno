@@ -1,5 +1,5 @@
 /*!
- * inferno v0.5.14
+ * inferno v0.5.17
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -9,11 +9,13 @@
   (global.Inferno = factory());
 }(this, function () { 'use strict';
 
-  var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  var babelHelpers = {};
+  babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
+  babelHelpers;
 
   function Storage(iterable) {
   	var _items = [];
@@ -85,7 +87,7 @@
   	} else {
   		if (!isVoid(node)) {
   			if (!isVoid(node.tag)) {
-  				if (babelHelpers_typeof(node.tag) === 'object') {
+  				if (babelHelpers.typeof(node.tag) === 'object') {
   					if (node.tag.type === ObjectTypes.VARIABLE) {
   						nodeIsDynamic = true;
   						dynamicFlags.COMPONENTS = true;
@@ -135,7 +137,7 @@
   								dynamicFlags.CHILDREN = true;
   							}
   						}
-  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers_typeof(node)) === 'object') {
+  					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers.typeof(node)) === 'object') {
   						var result = scanTreeForDynamicNodes(node.children, nodeMap);
 
   						if (result === true) {
