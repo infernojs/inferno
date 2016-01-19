@@ -32,7 +32,7 @@ const copyright =
 
 const entry = p.resolve(src + '/index.js');
 const filename = production ? packageName + '.min.js' : packageName + '.js';
-const dest  = p.resolve(`dist/${production ? packageName + '.min.js' : packageName + '.js'}`);
+const dest  = p.resolve(dist + `/${production ? packageName + '.min.js' : packageName + '.js'}`);
 const bundleConfig = {
 	dest,
 	format: 'umd',
