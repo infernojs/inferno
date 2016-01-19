@@ -33,9 +33,12 @@ describe('lifecycle hooks', () => {
 		});
 
 		it('"onCreated" hook should fire', () => {
-			let createdDomNode;
+			let createdDomNode, expectedDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null), container);
-			const expectedDomNode = container.firstChild;
+			expectedDomNode = container.firstChild;
+			expect(createdDomNode).to.equal(expectedDomNode);
+			render(template(domNode => createdDomNode = domNode, null, null, null, null), container);
+			expectedDomNode = container.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
 		it('"onAttached" hook should fire', () => {
@@ -64,6 +67,11 @@ describe('lifecycle hooks', () => {
 			const expectedDomNode = container.firstChild;
 			render(null, container);
 			expect(detachedDomNode).to.equal(expectedDomNode);
+			render(template(null, null, null, null, domNode => detachedDomNode = domNode), container);
+			const eexpectedDomNode = container.firstChild;
+			render(null, container);
+			expect(detachedDomNode).to.equal(eexpectedDomNode);
+
 		});
 	});
 
@@ -71,16 +79,14 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onDetached) => ({
+			template = createTemplate((onCreated) => ({
 				tag: 'div',
+				attrs: { onCreated
+					},
 				children: {
 					tag: 'div',
 					attrs: {
 						onCreated,
-						onAttached,
-						onWillUpdate,
-						onDidUpdate,
-						onDetached
 					}
 				}
 			}));
@@ -179,6 +185,13 @@ describe('lifecycle hooks', () => {
 		beforeEach(() => {
 			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onDetached, text) => ({
 				tag: 'div',
+				attrs: {
+					onCreated,
+					onAttached,
+					onWillUpdate,
+					onDidUpdate,
+					onDetached
+				},
 				children: {
 					tag: 'div',
 					attrs: {
@@ -286,6 +299,9 @@ describe('lifecycle hooks', () => {
 		beforeEach(() => {
 			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onDetached) => ({
 				tag: 'div',
+				attrs: {
+					onCreated
+				},
 				children: {
 					attrs: {
 						onCreated,
@@ -330,6 +346,8 @@ describe('lifecycle hooks', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode), container);
 			const expectedDomNode = container.firstChild.firstChild;
+			render(null, container);
+			expect(detachedDomNode).to.equal(expectedDomNode);
 			render(null, container);
 			expect(detachedDomNode).to.equal(expectedDomNode);
 		});
@@ -393,6 +411,9 @@ describe('lifecycle hooks', () => {
 		beforeEach(() => {
 			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onDetached, child) => ({
 				tag: 'div',
+				attrs: {
+					onDetached
+				},
 				children: {
 					tag: 'div',
 					attrs: {
@@ -408,15 +429,20 @@ describe('lifecycle hooks', () => {
 		});
 
 		it('"onCreated" hook should fire', () => {
-			let createdDomNode;
+			let createdDomNode, expectedDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
-			const expectedDomNode = container.firstChild.firstChild;
+			expectedDomNode = container.firstChild.firstChild;
+			expect(createdDomNode).to.equal(expectedDomNode);
+			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
+			expectedDomNode = container.firstChild.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
 		it('"onAttached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
+			expect(attachedDomNode).to.equal(expectedDomNode);
+			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
 		it('"onWillUpdate" hook should fire', () => {
@@ -457,11 +483,25 @@ describe('lifecycle hooks', () => {
 				},
 				children: [
 					{
-						tag: 'div'
+						tag: 'div',
+						attrs: {
+							onCreated,
+							onAttached,
+							onWillUpdate,
+							onDidUpdate,
+							onDetached
+						}
 					},
 					child,
 					{
-						tag: 'div'
+						tag: 'div',
+						attrs: {
+							onCreated,
+							onAttached,
+							onWillUpdate,
+							onDidUpdate,
+							onDetached
+						}
 					}
 				]
 			}));
