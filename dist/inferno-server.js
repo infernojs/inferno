@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.5.14
+ * inferno-server v0.5.16
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -9,11 +9,17 @@
   (global.InfernoServer = factory());
 }(this, function () { 'use strict';
 
-  var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  var babelHelpers = {};
+  babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
+  babelHelpers;
+
+  function renderToString(item) {
+  	return item.tree.html.create(item);
+  }
 
   function createStaticNode(html) {
   	return {
@@ -31,8 +37,6 @@
     return typeof x === 'string' || typeof x === 'number';
   })
 
-  var noop = (function () {})
-
   var canUseDOM = !!(typeof window !== 'undefined' &&
   // Nwjs doesn't add document as a global in their node context, but does have it on window.document,
   // As a workaround, check if document is undefined
@@ -45,6 +49,8 @@
   	canUseViewport: canUseDOM && !!window.screen,
   	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
   };
+
+  var noop = (function () {})
 
   var HOOK = {};
   var reDash = /\-./g;
@@ -159,7 +165,7 @@
   				unPrefixed: propName,
   				unitless: false,
   				shorthand: function shorthand(value, style) {
-  					var type = typeof value === 'undefined' ? 'undefined' : babelHelpers_typeof(value);
+  					var type = typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value);
 
   					if (type === 'number') {
   						value += 'px';
@@ -761,10 +767,6 @@
   	}
 
   	return node;
-  }
-
-  function renderToString(item) {
-  	return item.tree.html.create(item);
   }
 
   var global = global || (typeof window !== 'undefined' ? window : null);

@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.5.14
+ * inferno-component v0.5.16
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -9,13 +9,15 @@
 	(global.InfernoComponent = factory());
 }(this, function () { 'use strict';
 
-	var babelHelpers_classCallCheck = function (instance, Constructor) {
+	var babelHelpers = {};
+
+	babelHelpers.classCallCheck = function (instance, Constructor) {
 	  if (!(instance instanceof Constructor)) {
 	    throw new TypeError("Cannot call a class as a function");
 	  }
 	};
 
-	var babelHelpers_createClass = function () {
+	babelHelpers.createClass = function () {
 	  function defineProperties(target, props) {
 	    for (var i = 0; i < props.length; i++) {
 	      var descriptor = props[i];
@@ -33,7 +35,7 @@
 	  };
 	}();
 
-	var babelHelpers_extends = Object.assign || function (target) {
+	babelHelpers.extends = Object.assign || function (target) {
 	  for (var i = 1; i < arguments.length; i++) {
 	    var source = arguments[i];
 
@@ -47,7 +49,7 @@
 	  return target;
 	};
 
-	var noop = (function () {})
+	babelHelpers;
 
 	var canUseDOM = !!(typeof window !== 'undefined' &&
 	// Nwjs doesn't add document as a global in their node context, but does have it on window.document,
@@ -61,6 +63,8 @@
 		canUseViewport: canUseDOM && !!window.screen,
 		canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
 	};
+
+	var noop = (function () {})
 
 	// Server side workaround
 	var requestAnimationFrame = noop;
@@ -105,7 +109,7 @@
 				component._pendingSetState = false;
 				var pendingState = component._pendingState;
 				var oldState = component.state;
-				var nextState = babelHelpers_extends({}, oldState, pendingState);
+				var nextState = babelHelpers.extends({}, oldState, pendingState);
 
 				component._pendingState = {};
 				component._pendingSetState = false;
@@ -143,7 +147,7 @@
 
 	var Component = function () {
 		function Component(props) {
-			babelHelpers_classCallCheck(this, Component);
+			babelHelpers.classCallCheck(this, Component);
 
 			/** @type {object} */
 			this.props = props || {};
@@ -160,7 +164,7 @@
 			this.context = {};
 		}
 
-		babelHelpers_createClass(Component, [{
+		babelHelpers.createClass(Component, [{
 			key: 'render',
 			value: function render() {}
 		}, {
