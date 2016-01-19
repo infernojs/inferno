@@ -163,7 +163,6 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 
 // TODO can we improve performance here?
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-
 	let itemsLength;
 	// We can't calculate length of 0 in the cases either items or oldItems is 0.
 	// In this cases we need workaround
@@ -174,24 +173,19 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 	} else if (oldItems) {
 		itemsLength = oldItems = itemsLength;
 	}
-
 	for (let i = 0; i < itemsLength; i++) {
 		const item = items[i];
 		const oldItem = oldItems[i];
 		if (item !== oldItem) {
 			if (!isVoid(item)) {
-
 				if (!isVoid(oldItem)) {
 					if (isStringOrNumber(item)) {
-
 						let domNode = domNodeList[i];
 
 						if (domNode) {
 							domNode.nodeValue = item;
 						}
-
 					} else if (typeof item === 'object') {
-
 						item.tree.dom.update(oldItem, item, treeLifecycle, context);
 					}
 				} else {
@@ -200,10 +194,14 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 
 						domNodeList[i] = childNode;
 						insertOrAppend(parentNode, childNode, parentNextNode);
+					} else if (typeof item === 'object') {
+						const childNode = item.tree.dom.create(item, treeLifecycle, context);
+
+						domNodeList[i] = childNode;
+						insertOrAppend(parentNode, childNode, parentNextNode);
 					}
 				}
 			} else {
-
 				if (domNodeList[i]) {
 					parentNode.removeChild(domNodeList[i]);
 					domNodeList.splice(i, 1);
