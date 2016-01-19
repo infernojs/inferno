@@ -229,8 +229,8 @@ Render a fragment into the HTML string given the supplied template.
 
 ## InfernoDOM hooks and events
 
-Inferno supports many of the basic events upon DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to inline
-common hooks onto components and nodes without needing to use `inferno-component` and `refs`. For example:
+Inferno supports many of the basic events upon DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to attach
+common hooks directly onto components and DOM nodes. Below is the table of all possible hooks available in `inferno-dom`.
 
 | Name                      | Triggered when                                                 | Arguments to callback           |
 | -----------               | --------------                                                 | -----------------------         |
