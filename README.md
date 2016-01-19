@@ -232,18 +232,40 @@ Render a fragment into the HTML string given the supplied template.
 Inferno supports many of the basic events upon DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to inline
 common hooks onto components and nodes without needing to use `inferno-component` and `refs`. For example:
 
+| Name                      | Triggered when                                                 | Arguments to callback           |
+| -----------               | --------------                                                 | -----------------------         |
+| `onCreated`               | a DOM node has just been created                               | `domNode`                       |
+| `onAttached`              | a DOM node being attached to the document                      | `domNode`                       |
+| `onWillDetach`            | a DOM node is about to be removed from the document            | `domNode`                       |
+| `onWillUpdate`            | a DOM node is about to perform any potential updates           | `domNode`                       |
+| `onDidUpdate`             | a DOM node has performed any potential updates                 | `domNode`                       |
+| `onComponentWillMount`    | a stateless component is about to mount                        | `domNode, props`                |
+| `onComponentDidMount`     | a stateless component has mounted successfully                 | `domNode, props`                |
+| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 | `domNode, props`                |
+| `onComponentShouldUpdate` | a stateless component has been triggered to updated            | `domNode, lastProps, nextProps` |
+| `onComponentWillUpdate`   | a stateless component is about to perform an update            | `domNode, lastProps, nextProps` |
+| `onComponentDidUpdate`    | a stateless component has performed an updated                 | `domNode, props`                |
+
+### Usage
+
+It's simple to implicitly assign hooks to both DOM nodes and stateless components (note: stateful components do not support hooks).
+
 ```js
-function createdCallback(element) {
-	// access to the element
+function createdCallback(domNode, props) {
+    // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
+	// [props] will only be passed for stateless components
 }
 
-InfernoDOM.render(<div onCreated={ createdCallack } />, document.body);
-```js
+InfernoDOM.render(<div onCreated={ createdCallback } />, document.body);
 
-The above renders a `div` DOM node, but allows for a callback when it's been created. Other DOM node hooks and events include
-`onAtttached`, `onWillDetach`, `onWillUpdate`, `onDidUpdate`. There are also hooks available for stateless components, including:
-`onComponentWillMount`, `onComponentDidMount`, `onComponentWillUpdate`, `onComponentShouldUpdate`, `onComponentDidUpdate`, `onComponentWillUnmount`.
-These hooks give stateless components lifecycle events without needing to be ES2015 classes.
+function StatelessComponent({ props }) {
+	return <div>Hello world</div>;
+}
+
+InfernoDOM.render(<StatelessComponent onComponentWillMount={ createdCallback } />, document.body);
+```
+
+Hooks provide powerful lifecycle events to stateless components, allowing you to build components without being forced to use ES2015 classes.
 
 ## Performance
 

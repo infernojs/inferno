@@ -146,7 +146,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 						returnDomNode = true;
 					}
 					if (props && props.onComponentDidUpdate) {
-						handleHooks(nextItem, lastProps, domNode, 'onComponentDidUpdate', true, nextProps);
+						handleHooks(nextItem, nextProps, domNode, 'onComponentDidUpdate', true);
 					}
 					if (returnDomNode) {
 						return domNode;

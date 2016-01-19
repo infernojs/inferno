@@ -165,7 +165,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 						return;
 					}
 					if (props && props.onComponentDidUpdate) {
-						handleHooks(nextItem, lastProps, lastItem.rootNode, 'onComponentDidUpdate', true, nextProps);
+						handleHooks(nextItem, nextProps, lastItem.rootNode, 'onComponentDidUpdate', true);
 					}
 
 					statelessRender = nextRender;
