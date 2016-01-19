@@ -249,7 +249,7 @@ common hooks directly onto components and DOM nodes. Below is the table of all p
 ### Usage
 
 It's simple to implicitly assign hooks to both DOM nodes and stateless components.
-**Note: stateful components (ES2015 classes from `inferno-component` do not support hooks.**
+**Note:** *stateful components (ES2015 classes from `inferno-component` do not support hooks.*
 
 ```js
 function createdCallback(domNode, props) {
