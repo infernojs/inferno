@@ -46,11 +46,12 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						}
 					}
 				} else if (typeof value === 'object') {
-
 					const tree = value && value.tree;
 
 					if (tree) {
 						domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
+					} else if (value.create) {
+						domNode.appendChild(value.create(value, treeLifecycle, context));
 					}
 				} else if (isStringOrNumber(value)) {
 					domNode.textContent = value;
@@ -125,15 +126,15 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 					const tree = nextValue && nextValue.tree;
 
 					if (!isVoid(tree)) {
-
 						// If we update from 'null', there will be no 'tree', and the code will throw.
 						const tree = lastValue && lastValue.tree;
 
 						if (!isVoid(tree)) {
 							tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+						} else if (nextValue.create) {
+							// TODO
 						} else {
-							// TODO implement
-							// NOTE There will be no 'tree' if we update from a null value
+							// TODO
 						}
 					} else {
 						// Edge case! If we update from e.g object literal - {} - from a existing value, the

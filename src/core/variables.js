@@ -78,6 +78,10 @@ export function removeValueTree(value, treeLifecycle) {
 	} else if (typeof value === 'object') {
 		const tree = value.tree;
 
-		tree.dom.remove(value, treeLifecycle);
+		if (tree) {
+			tree.dom.remove(value, treeLifecycle);
+		} else if (value.create) {
+			value.remove(value, treeLifecycle);
+		}
 	}
 }
