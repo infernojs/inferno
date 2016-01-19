@@ -227,7 +227,9 @@ InfernoServer.renderToString(<div />, document.body);
 
 Render a fragment into the HTML string given the supplied template.
 
-## InfernoDOM hooks and events
+## Hooks
+
+Please note: hooks are provided by `inferno-dom`;
 
 Inferno supports many of the basic events upon DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to attach
 common hooks directly onto components and DOM nodes. Below is the table of all possible hooks available in `inferno-dom`.
