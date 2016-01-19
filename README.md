@@ -1,4 +1,4 @@
-# InfernoJS
+# Inferno
 
 [![Build Status](https://img.shields.io/travis/trueadm/inferno/dev.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
 [![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/dev.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=dev)
@@ -13,14 +13,18 @@ In addition to this, we've painstakingly optimized the code to make sure that th
 
 In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
 
-## Algorithm
+## Key Features
 
-1. On startup, templates are generated, identifying static and dynamic nodes
-2. Per update, virtual fragments are created based on each template
-3. Values for dynamic nodes are diffed and updated if necessary
-4. Fragments are recycled for next render
+- one of the fastest front end frameworks for rendering UI in the DOM
+- components have a similar API to React ES2015 components with `inferno-component`
+- stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
+- isomorphic/universal for easy server-side rendering with `inferno-server`
 
-To be more technically correct, Inferno is a "virtual fragment" framework, which provides the same flexibility as a Virtual DOM does, but with a much smaller memory footprint and greater performance.
+## Benchmarks
+
+- [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
+- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Install
 
@@ -36,7 +40,7 @@ Core package:
 npm install --save inferno
  ```
  
- ES2015 stateful component (with life-cycles) package:
+ ES2015 stateful components (with lifecycle events) package:
  
   ```sh
  npm install --save inferno-component 
@@ -103,19 +107,6 @@ InfernoDOM.render(<Component />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
-
-## Key Features
-
-- one of the fastest front end frameworks for rendering UI
-- components have a similar API to React ES6 components
-- components can also be stateless like React components (pure functions)
-- isomorphic/universal for easy server-side rendering
-
-## Benchmarks
-
-- [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
-- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Inferno Top-Level API
 
