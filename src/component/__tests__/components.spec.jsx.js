@@ -886,3 +886,63 @@ describe( 'Components (JSX)', () => {
 		});
 	});
 });
+
+
+describe('should render a repeating counter component with component children', () => {
+ /**
+  * class Jaska extends Component {
+    constructor(props) {
+        super(props);
+    }
+​
+    render() {
+        return (
+            <div>
+                <h1>Okdokfwoe</h1>
+                <p>odkodwq</p>
+            </div>
+        )
+    }
+}
+  ​
+  class Container extends Component {
+    constructor(props) {
+        super(props);
+    }
+​
+    render() {
+        return (
+            <div>
+                {this.props.children}
+            </div>
+        )
+    }
+}
+  ​
+  ​
+  class TestingProps extends Component {
+    constructor(props) {
+        super(props);
+    }
+​
+    render() {
+        return (
+            <div>
+                <Container>
+                    <Jaska />
+                </Container>
+            </div>
+        )
+    }
+}
+  ​
+
+
+​	render(<TestingProps />, document.getElementById('content'));
+	expect(
+		container.innerHTML
+	).to.equal(
+		innerHTML('<div id="content"><div><div></div></div></div>') // MISSING!! h1 and some text
+	);
+  */
+});
