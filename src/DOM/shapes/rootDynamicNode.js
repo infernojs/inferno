@@ -72,10 +72,6 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}
-			if (nextItem.tree.dom !== lastItem.tree.dom) {
-				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
-				return;
-			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;

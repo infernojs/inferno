@@ -83,16 +83,12 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 					} else {
 						recreateNode(lastItem, nextItem, node, treeLifecycle, context);
 					}
-
 				} else {
 					domNode.appendChild(document.createTextNode(nextValue));
 				}
-			} else 	if (lastValue && isVoid(nextValue)) {
-
+			} else if (lastValue && isVoid(nextValue)) {
 				if (isArray(lastValue)) {
-
 					for (let i = 0; i < lastValue.length; i++) {
-
 						if (!isVoid(domNode.childNodes[i])) {
 							domNode.removeChild(domNode.childNodes[i]);
 						} else {
@@ -121,24 +117,17 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
 					}
 				} else if (typeof nextValue === 'object') {
-					// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
-					// throw ': nextValue.tree is undefined'.
 					const tree = nextValue && nextValue.tree;
 
 					if (!isVoid(tree)) {
-						// If we update from 'null', there will be no 'tree', and the code will throw.
-						const tree = lastValue && lastValue.tree;
+						const lastTree = lastValue && lastValue.tree;
 
-						if (!isVoid(tree)) {
+						if (!isVoid(lastTree)) {
 							tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-						} else if (nextValue.create) {
-							// TODO
 						} else {
-							// TODO
+							recreateNode(lastItem, nextItem, node, treeLifecycle, context);
 						}
 					} else {
-						// Edge case! If we update from e.g object literal - {} - from a existing value, the
-						// value will not be unset
 						removeChild(domNode);
 					}
 				}

@@ -85,11 +85,6 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}
-			if (nextItem.tree.dom !== lastItem.tree.dom) {
-				childNodeList = [];
-				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
-				return;
-			}
 			const domNode = lastItem.rootNode;
 
 			nextItem.rootNode = domNode;
@@ -143,12 +138,9 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 						updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
 					}
 				} else if (typeof nextValue === 'object') {
-					// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
-					// throw ': nextValue.tree is undefined'.
 					const tree = nextValue && nextValue.tree;
 					if (!isVoid(tree)) {
 						if (!isVoid(lastValue)) {
-							// If we update from 'null', there will be no 'tree', and the code will throw.
 							const oldTree = lastValue && lastValue.tree;
 
 							if (!isVoid(oldTree)) {
@@ -162,8 +154,6 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 					} else if (nextValue.create) {
 						// TODO
 					} else {
-						// Edge case! If we update from e.g object literal - {} - from a existing value, the
-						// value will not be unset
 						removeChild(domNode);
 					}
 				}

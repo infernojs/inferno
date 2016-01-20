@@ -4,6 +4,7 @@ import { validateHydrateNode } from '../hydration';
 
 export default function createRootStaticNode(templateNode, recyclingEnabled) {
 	const node = {
+		rand: Math.random(),
 		html: templateNode.innerHTML,
 		pool: [],
 		keyedPool: [],
@@ -26,10 +27,6 @@ export default function createRootStaticNode(templateNode, recyclingEnabled) {
 				recreateRootNode(lastItem, nextItem, node);
 				return;
 			}
-			if (nextItem.tree.dom !== lastItem.tree.dom) {
-				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
-				return;
-			}
 			nextItem.rootNode = lastItem.rootNode;
 		},
 		remove() {},
@@ -41,6 +38,5 @@ export default function createRootStaticNode(templateNode, recyclingEnabled) {
 			item.rootNode = hydrateNode;
 		}
 	};
-
 	return node;
 }
