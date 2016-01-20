@@ -5,7 +5,7 @@ function isHook(hook) {
 		|| hook === 'onWillDetach'
 		|| hook === 'onWillUpdate'
 		|| hook === 'onDidUpdate'
-			// Stateless components
+	// Stateless components
 		|| hook === 'onComponentWillMount'
 		|| hook === 'onComponentDidMount'
 		|| hook === 'onComponentWillUnmount'
