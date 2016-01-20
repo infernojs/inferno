@@ -23,6 +23,15 @@ export const hookTypes = {
 	onComponentDidUpdate: true
 };
 
+export function addTransitions(vNode, domNode, settings){
+
+	for (let propName in settings) {
+		if (propName === 'name') {
+			domNode.className = settings[propName] + '-' + propName
+		}
+	}
+}
+
 /**
  * Set HTML attributes on the template
  * @param{ HTMLElement } node
