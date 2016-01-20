@@ -30,9 +30,9 @@ const copyright =
 	' * Released under the ' + pack.license + ' License.\n' +
 	' */';
 
-const entry = p.resolve(src + '/index.js');
+const entry = p.resolve(src, 'index.js');
 const filename = production ? packageName + '.min.js' : packageName + '.js';
-const dest  = p.resolve(dist + `/${production ? packageName + '.min.js' : packageName + '.js'}`);
+const dest  = p.resolve(dist, filename);
 const bundleConfig = {
 	dest,
 	format: 'umd',
