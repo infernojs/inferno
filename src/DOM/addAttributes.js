@@ -62,7 +62,9 @@ function fastPropSet(attrName, attrVal, domNode) {
 }
 
 export function handleHooks(item, props, domNode, hookEvent, isComponent, nextProps) {
+
 	const eventOrIndex = props[hookEvent];
+
 	if (eventOrIndex !== undefined) {
 		const hookCallback = typeof eventOrIndex === 'number' ? getValueWithIndex(item, eventOrIndex) : eventOrIndex;
 		if (hookCallback && typeof hookCallback === 'function') {
