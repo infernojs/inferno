@@ -1,0 +1,28 @@
+{
+  "name": "inferno-test-utils",
+  "version": "0.5.18",
+  "license": "MPL-2.0",
+  "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/trueadm/inferno/issues"
+  },
+  "homepage": "https://github.com/trueadm/inferno#readme",
+  "jsnext:main": "inferno-test-utils.js",
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces"
+  ],
+  "dependencies": {
+    "inferno": "^0.5.18"
+  },
+  "main": "inferno-dom.js",
+  "repository": "https://github.com/trueadm/inferno"
+}

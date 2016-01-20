@@ -275,16 +275,6 @@ time a framework offered more fun without compromising performance.
  
 Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 
-## Still under development
-
-Inferno is still under development, and there are some missing features and optimizations to be made.The high priority now is the server side rendering (SSR).
-
-## Todo
-
-- implement isomorphism/universal server side rendering
-- add API docs
-- add examples repo
-
 ## Contributing
 
 ### Testing
