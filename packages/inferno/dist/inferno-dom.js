@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.5.17
+ * inferno-dom v0.5.18
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -317,7 +317,6 @@
 
   // TODO can we improve performance here?
   function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-
   	var itemsLength = undefined;
   	// We can't calculate length of 0 in the cases either items or oldItems is 0.
   	// In this cases we need workaround
@@ -328,23 +327,19 @@
   	} else if (oldItems) {
   		itemsLength = oldItems = itemsLength;
   	}
-
   	for (var i = 0; i < itemsLength; i++) {
   		var item = items[i];
   		var oldItem = oldItems[i];
   		if (item !== oldItem) {
   			if (!isVoid(item)) {
-
   				if (!isVoid(oldItem)) {
   					if (isStringOrNumber(item)) {
-
   						var domNode = domNodeList[i];
 
   						if (domNode) {
   							domNode.nodeValue = item;
   						}
   					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
-
   						item.tree.dom.update(oldItem, item, treeLifecycle, context);
   					}
   				} else {
@@ -353,10 +348,14 @@
 
   						domNodeList[i] = childNode;
   						insertOrAppend(parentNode, childNode, parentNextNode);
+  					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+  						var childNode = item.tree.dom.create(item, treeLifecycle, context);
+
+  						domNodeList[i] = childNode;
+  						insertOrAppend(parentNode, childNode, parentNextNode);
   					}
   				}
   			} else {
-
   				if (domNodeList[i]) {
   					parentNode.removeChild(domNodeList[i]);
   					domNodeList.splice(i, 1);
@@ -2165,6 +2164,8 @@
   		update: function update(lastItem, nextItem, treeLifecycle) {
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+  			} else if (nextItem.tree.dom !== lastItem.tree.dom) {
+  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   			} else {
   				var domNode = lastItem.rootNode;
 
@@ -2332,6 +2333,10 @@
   		update: function update(lastItem, nextItem, treeLifecycle) {
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+  				return;
+  			}
+  			if (nextItem.tree.dom !== lastItem.tree.dom) {
+  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   				return;
   			}
   			var domNode = lastItem.rootNode;
@@ -2518,6 +2523,11 @@
   			if (node !== lastItem.tree.dom) {
   				childNodeList = [];
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  				return;
+  			}
+  			if (nextItem.tree.dom !== lastItem.tree.dom) {
+  				childNodeList = [];
+  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   				return;
   			}
   			var domNode = lastItem.rootNode;
@@ -2840,6 +2850,12 @@
 
   			if (node !== lastItem.tree.dom) {
   				var newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+
+  				nextItem.rootNode = newDomNode;
+  				return newDomNode;
+  			}
+  			if (nextItem.tree.dom !== lastItem.tree.dom) {
+  				var newDomNode = recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
 
   				nextItem.rootNode = newDomNode;
   				return newDomNode;
@@ -3484,10 +3500,12 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-
   			if (node !== lastItem.tree.dom) {
-
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+  				return;
+  			}
+  			if (nextItem.tree.dom !== lastItem.tree.dom) {
+  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   				return;
   			}
   			var domNode = lastItem.rootNode;
@@ -3537,6 +3555,10 @@
   		update: function update(lastItem, nextItem, treeLifecycle) {
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+  				return;
+  			}
+  			if (nextItem.tree.dom !== lastItem.tree.dom) {
+  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   				return;
   			}
   			var domNode = lastItem.rootNode;
@@ -3616,6 +3638,7 @@
 
   function createRootStaticNode(templateNode, recyclingEnabled) {
   	var node = {
+  		html: templateNode.innerHTML,
   		pool: [],
   		keyedPool: [],
   		overrideItem: null,
@@ -3633,9 +3656,12 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem) {
-  			// wrong tree and it toggle
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node);
+  				return;
+  			}
+  			if (nextItem.tree.dom !== lastItem.tree.dom) {
+  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   				return;
   			}
   			nextItem.rootNode = lastItem.rootNode;
