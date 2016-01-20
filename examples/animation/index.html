@@ -84,7 +84,9 @@
     </script>
 
     <script type="x-template" id="vue-template">
-        <div class="box" v-style="style">{{content}}</div>
+        <div class="box-view">
+            <div class="box" :style="style">{{content}}</div>
+        </div>
     </script>
     <script src="benchmark.js"></script>
 </body>

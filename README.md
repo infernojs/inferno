@@ -1,10 +1,10 @@
-# InfernoJS
+# Inferno
 
 [![Build Status](https://img.shields.io/travis/trueadm/inferno/dev.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
 [![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/dev.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=dev)
 [![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
-[![Dev Dependencies](https://img.shields.io/david/dev/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno#info=devDependencies)
-[![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/dev/LICENSE.md)
+[![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
+[![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 
 Inferno is a lightweight isomorphic framework for building highly performant user interfaces. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
@@ -13,14 +13,18 @@ In addition to this, we've painstakingly optimized the code to make sure that th
 
 In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
 
-## Algorithm
+## Key Features
 
-1. On startup, templates are generated, identifying static and dynamic nodes
-2. Per update, virtual fragments are created based on each template
-3. Values for dynamic nodes are diffed and updated if necessary
-4. Fragments are recycled for next render
+- one of the fastest front end frameworks for rendering UI in the DOM
+- components have a similar API to React ES2015 components with `inferno-component`
+- stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
+- isomorphic/universal for easy server-side rendering with `inferno-server`
 
-To be more technically correct, Inferno is a "virtual fragment" framework, which provides the same flexibility as a Virtual DOM does, but with a much smaller memory footprint and greater performance.
+## Benchmarks
+
+- [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
+- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Install
 
@@ -36,7 +40,7 @@ Core package:
 npm install --save inferno
  ```
  
- ES2015 stateful component (with life-cycles) package:
+ ES2015 stateful components (with lifecycle events) package:
  
   ```sh
  npm install --save inferno-component 
@@ -57,10 +61,10 @@ npm install --save inferno-server
 Pre-bundled files for browser consumption:
  
 ```
-http://infernojs.org/releases/0.5.17/inferno.min.js
-http://infernojs.org/releases/0.5.17/inferno-component.min.js
-http://infernojs.org/releases/0.5.17/inferno-dom.min.js
-http://infernojs.org/releases/0.5.17/inferno-server.min.js
+http://infernojs.org/releases/0.5.18/inferno.min.js
+http://infernojs.org/releases/0.5.18/inferno-component.min.js
+http://infernojs.org/releases/0.5.18/inferno-dom.min.js
+http://infernojs.org/releases/0.5.18/inferno-server.min.js
 ```
 
 ## Overview
@@ -103,19 +107,6 @@ InfernoDOM.render(<Component />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
-
-## Key Features
-
-- one of the fastest front end frameworks for rendering UI
-- components have a similar API to React ES6 components
-- components can also be stateless like React components (pure functions)
-- isomorphic/universal for easy server-side rendering
-
-## Benchmarks
-
-- [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
-- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Inferno Top-Level API
 
