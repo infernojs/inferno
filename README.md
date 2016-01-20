@@ -1,7 +1,7 @@
 # Inferno
 
-[![Build Status](https://img.shields.io/travis/trueadm/inferno/dev.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
-[![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/dev.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=dev)
+[![Build Status](https://img.shields.io/travis/trueadm/inferno/master.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
+[![Coverage Status](https://coveralls.io/repos/github/trueadm/inferno/badge.svg?branch=master)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
 [![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
@@ -86,7 +86,9 @@ InfernoDOM.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```js
-class Component extends Inferno.Component {
+import { Component } from 'inferno-component';
+
+class infernoComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -103,7 +105,7 @@ class Component extends Inferno.Component {
   }
 }
 
-InfernoDOM.render(<Component />, document.body);
+InfernoDOM.render(<infernoComponent />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
