@@ -4,7 +4,6 @@ import { validateHydrateNode } from '../hydration';
 
 export default function createRootStaticNode(templateNode, recyclingEnabled) {
 	const node = {
-		html: templateNode.innerHTML,
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
