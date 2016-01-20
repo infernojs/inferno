@@ -11,6 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
+  "main": "inferno-component.js",
   "jsnext:main": "inferno-component.js",
   "keywords": [
     "babel",
