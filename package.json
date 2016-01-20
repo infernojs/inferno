@@ -10,8 +10,8 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "devDependencies": {
-    "babel-cli": "^6.4.0",
-    "babel-core": "^6.4.0",
+    "babel-cli": "^6.4.5",
+    "babel-core": "^6.4.5",
     "babel-eslint": "^5.0.0-beta6",
     "babel-loader": "^6.2.1",
     "babel-plugin-inferno": "^0.2.10",
@@ -25,7 +25,7 @@
     "chai": "^3.4.1",
     "eslint": "^1.10.3",
     "glob": "^6.0.4",
-    "inferno-component": "^0.5.13",
+    "inferno-component": "^0.5.19",
     "isparta": "^4.0.0",
     "isparta-loader": "^2.0.0",
     "karma": "0.13.19",
