@@ -1058,4 +1058,35 @@ describe( 'Components (JSX)', () => {
 
 		});
 	});
+
+
+	const StatelessComponent = (props) => <div>{props.name}</div>;
+
+	it('should render stateless component', () => {
+
+		render(<StatelessComponent name="A" />, container);
+		expect(container.textContent).to.equal('A');
+	});
+
+	it('should unmount stateless component', function() {
+
+		render(<StatelessComponent name="A" />, container);
+		expect(container.textContent).to.equal('A');
+
+		render(null, container);
+		expect(container.textContent).to.equal('');
+	});
+
+
+	it('should support module pattern components', function() {
+		function Child({test}) {
+			return <div>{test}</div>;
+		}
+
+		render(<Child test="test" />, container);
+
+		expect(container.textContent).to.equal('test');
+	});
+
+
 });

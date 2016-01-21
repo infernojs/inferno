@@ -2,7 +2,7 @@
 import isVoid from '../../util/isVoid';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateNode from '../recreateNode';
-import { handleHooks, hookTypes } from '../addAttributes';
+import { handleHooks } from '../addAttributes';
 
 export default function createNodeWithComponent(componentIndex, props) {
 	let domNode;

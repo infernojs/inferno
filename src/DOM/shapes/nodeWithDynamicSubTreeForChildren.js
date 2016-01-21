@@ -27,7 +27,7 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const domNode = domNodeMap[lastItem.id];
 
-			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
+			if (dynamicAttrs && (dynamicAttrs.onWillUpdate)) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 			}
 			if (!isVoid(subTreeForChildren)) {
