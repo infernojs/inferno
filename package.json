@@ -113,7 +113,7 @@
     "postpublish": "git push origin master --follow-tags"
   },
   "pre-commit": [
-    "lint:source",
+    "lint",
     "test"
   ]
 }

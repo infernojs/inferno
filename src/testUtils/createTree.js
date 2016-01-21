@@ -34,7 +34,7 @@ function constructVirtualNode(node, item) {
 	} else if (node && typeof node.tag === 'string') {
 		vNode = {
 			tag: node.tag,
-			attrs: {},
+			attrs: {}
 		};
 		if (node.attrs) {
 			for (let attr in node.attrs) {
