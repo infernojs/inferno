@@ -1,12 +1,12 @@
 /*!
- * inferno-component v0.5.20
+ * inferno-test-utils v0.5.20
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoComponent = factory());
+	(global.InfernoTestUtils = factory());
 }(this, function () { 'use strict';
 
 	var babelHelpers = {};
