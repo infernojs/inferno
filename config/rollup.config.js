@@ -13,6 +13,7 @@ const dist = process.argv[3];
 const src = process.argv[4];
 const packageName = process.argv[5];
 const moduleName = process.argv[6];
+const es6 = process.argv[7];
 
 if ( development ) {
 	process.env.NODE_ENV = 'development'
@@ -31,11 +32,11 @@ const copyright =
 	' */';
 
 const entry = p.resolve(src, 'index.js');
-const filename = production ? packageName + '.min.js' : packageName + '.js';
+const filename = production ? packageName + '.min.js' : packageName + (es6 ? '.es2015.js' : '.js');
 const dest  = p.resolve(dist, filename);
 const bundleConfig = {
 	dest,
-	format: 'umd',
+	format: es6 ? 'es6' : 'umd',
 	moduleName: moduleName,
 	banner: copyright,
 	sourceMap: false // set to false to generate sourceMap
@@ -60,7 +61,7 @@ const plugins = [
 	}),
 ];
 
-if (production) {
+if (production && !es6) {
 	plugins.push(
 		uglify({
 			warnings: false,

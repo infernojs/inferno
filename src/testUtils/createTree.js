@@ -10,7 +10,7 @@ function constructVirtualChildren(children, item) {
 
 			if (typeof childNode === 'object') {
 				if (childNode.index !== undefined) {
-					vChildren[i] = getValueWithIndex(item, childNode.index);
+					vChildren[i] = constructVirtualNode(getValueWithIndex(item, childNode.index), item);
 				}
 			} else {
 				vChildren[i] = constructVirtualNode(childNode, item);
@@ -19,7 +19,7 @@ function constructVirtualChildren(children, item) {
 		return vChildren;
 	} else if (typeof children === 'object') {
 		if (children.index !== undefined) {
-			return getValueWithIndex(item, children.index);
+			return constructVirtualNode(getValueWithIndex(item, children.index), item);
 		} else {
 			return constructVirtualNode(children, item);
 		}
@@ -33,8 +33,20 @@ function constructVirtualNode(node, item) {
 		return node;
 	} else if (node && typeof node.tag === 'string') {
 		vNode = {
-			tag: node.tag
+			tag: node.tag,
+			attrs: {},
 		};
+		if (node.attrs) {
+			for (let attr in node.attrs) {
+				const value = node.attrs[attr];
+
+				if (value.index !== undefined) {
+					vNode.attrs[attr] = getValueWithIndex(item, value.index);
+				} else {
+					vNode.attrs[attr] = value;
+				}
+			}
+		}
 		if (node.children) {
 			vNode.children = constructVirtualChildren(node.children, item);
 		}
