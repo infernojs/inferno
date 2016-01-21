@@ -61,6 +61,7 @@ const plugins = [
 	}),
 ];
 
+
 if (production && !es6) {
 	plugins.push(
 		uglify({
