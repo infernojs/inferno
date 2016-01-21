@@ -693,6 +693,13 @@
 
   var isSVG$1 = isSVG;
 
+  function isHook(hook) {
+  	// DOM nodes
+  	return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate'
+  	// Stateless components
+  	 || hook === 'onComponentWillMount' || hook === 'onComponentDidMount' || hook === 'onComponentWillUnmount' || hook === 'onComponentShouldUpdate' || hook === 'onComponentWillUpdate' || hook === 'onComponentDidUpdate';
+  }
+
   function inArray(arr, item) {
   	var len = arr.length;
   	var i = 0;
@@ -1867,23 +1874,6 @@
   	}
   }
 
-  // slow?
-  var hookTypes = {
-  	// DOM nodes
-  	onCreated: true,
-  	onAttached: true,
-  	onWillDetach: true,
-  	onWillUpdate: true,
-  	onDidUpdate: true,
-  	// Stateless components
-  	onComponentWillMount: true,
-  	onComponentDidMount: true,
-  	onComponentWillUnmount: true,
-  	onComponentShouldUpdate: true,
-  	onComponentWillUpdate: true,
-  	onComponentDidUpdate: true
-  };
-
   /**
    * Set HTML attributes on the template
    * @param{ HTMLElement } node
@@ -1896,7 +1886,7 @@
   		var attrVal = attrs[attrName];
 
   		if (attrVal) {
-  			if (!hookTypes[attrName]) {
+  			if (!isHook(attrName)) {
   				if (attrName === 'style') {
   					styleUpdates = attrVal;
   				} else {
@@ -1939,7 +1929,9 @@
   }
 
   function handleHooks(item, props, domNode, hookEvent, isComponent, nextProps) {
+
   	var eventOrIndex = props[hookEvent];
+
   	if (eventOrIndex !== undefined) {
   		var hookCallback = typeof eventOrIndex === 'number' ? getValueWithIndex(item, eventOrIndex) : eventOrIndex;
   		if (hookCallback && typeof hookCallback === 'function') {
@@ -1962,7 +1954,7 @@
   	}
   	for (var attrName in dynamicAttrs) {
   		if (!isVoid(attrName)) {
-  			if (hookEvent && hookTypes[attrName]) {
+  			if (hookEvent && isHook(attrName)) {
   				handleHooks(item, dynamicAttrs, domNode, hookEvent);
   			} else {
   				var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
@@ -1990,7 +1982,7 @@
 
   function clearListeners(item, domNode, dynamicAttrs) {
   	for (var attrName in dynamicAttrs) {
-  		if (!hookTypes[attrName]) {
+  		if (!isHook(attrName)) {
   			var attrVal = getValueWithIndex(item, dynamicAttrs[attrName]);
 
   			if (attrVal !== undefined && propertyToEventType[attrName]) {
@@ -2005,20 +1997,23 @@
    * critical path for performance optimization.
    */
   function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+
   	if (dynamicAttrs.index !== undefined) {
   		var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
   		if (isVoid(nextDynamicAttrs)) {
   			var lastDynamicAttrs = getValueWithIndex(lastItem, dynamicAttrs.index);
 
-  			for (var attrName in lastDynamicAttrs) {
-  				if (!hookTypes[attrName]) {
-  					template.removeProperty(null, domNode, attrName, true);
+  			if (lastDynamicAttrs) {
+  				for (var attrName in lastDynamicAttrs) {
+  					if (!isHook(attrName)) {
+  						template.removeProperty(null, domNode, attrName, true);
+  					}
   				}
   			}
-  			return;
+  		} else {
+  			addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
   		}
-  		addDOMStaticAttributes(nextItem, domNode, nextDynamicAttrs);
   		return;
   	}
 
@@ -2029,10 +2024,12 @@
   	var styleName = undefined;
 
   	for (var attrName in dynamicAttrs) {
-  		var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
-  		var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-  		if (!hookTypes[attrName]) {
+  		if (!isHook(attrName)) {
+
+  			var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
+  			var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
+
   			if (!isVoid(lastAttrVal)) {
   				if (isVoid(nextAttrVal)) {
   					if (attrName === 'style') {
@@ -2073,14 +2070,11 @@
   			} else if (!isVoid(nextAttrVal)) {
   				if (attrName === 'style') {
   					styleUpdates = nextAttrVal;
-  				} else {
-
-  					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
-  						if (propertyToEventType[attrName]) {
-  							addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
-  						} else {
-  							template.setProperty(null, domNode, attrName, nextAttrVal, true);
-  						}
+  				} else if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+  					if (propertyToEventType[attrName]) {
+  						addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
+  					} else {
+  						template.setProperty(null, domNode, attrName, nextAttrVal, true);
   					}
   				}
   			}
@@ -2164,8 +2158,6 @@
   		update: function update(lastItem, nextItem, treeLifecycle) {
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-  			} else if (nextItem.tree.dom !== lastItem.tree.dom) {
-  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   			} else {
   				var domNode = lastItem.rootNode;
 
@@ -2333,10 +2325,6 @@
   		update: function update(lastItem, nextItem, treeLifecycle) {
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-  				return;
-  			}
-  			if (nextItem.tree.dom !== lastItem.tree.dom) {
-  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   				return;
   			}
   			var domNode = lastItem.rootNode;
@@ -2525,11 +2513,6 @@
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
   				return;
   			}
-  			if (nextItem.tree.dom !== lastItem.tree.dom) {
-  				childNodeList = [];
-  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
-  				return;
-  			}
   			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
@@ -2582,12 +2565,9 @@
   							updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
   						}
   					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-  						// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
-  						// throw ': nextValue.tree is undefined'.
   						var tree = nextValue && nextValue.tree;
   						if (!isVoid(tree)) {
   							if (!isVoid(lastValue)) {
-  								// If we update from 'null', there will be no 'tree', and the code will throw.
   								var oldTree = lastValue && lastValue.tree;
 
   								if (!isVoid(oldTree)) {
@@ -2601,8 +2581,6 @@
   						} else if (nextValue.create) {
   							// TODO
   						} else {
-  								// Edge case! If we update from e.g object literal - {} - from a existing value, the
-  								// value will not be unset
   								removeChild(domNode);
   							}
   					}
@@ -2715,11 +2693,8 @@
   					domNode.appendChild(document.createTextNode(nextValue));
   				}
   			} else if (lastValue && isVoid(nextValue)) {
-
   				if (isArray(lastValue)) {
-
   					for (var i = 0; i < lastValue.length; i++) {
-
   						if (!isVoid(domNode.childNodes[i])) {
   							domNode.removeChild(domNode.childNodes[i]);
   						} else {
@@ -2748,26 +2723,19 @@
   							updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
   						}
   					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-  						// Sometimes 'nextValue' can be an empty array or nothing at all, then it will
-  						// throw ': nextValue.tree is undefined'.
   						var tree = nextValue && nextValue.tree;
 
   						if (!isVoid(tree)) {
-  							// If we update from 'null', there will be no 'tree', and the code will throw.
-  							var _tree = lastValue && lastValue.tree;
+  							var lastTree = lastValue && lastValue.tree;
 
-  							if (!isVoid(_tree)) {
-  								_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-  							} else if (nextValue.create) {
-  								// TODO
+  							if (!isVoid(lastTree)) {
+  								tree.dom.update(lastValue, nextValue, treeLifecycle, context);
   							} else {
-  									// TODO
-  								}
-  						} else {
-  								// Edge case! If we update from e.g object literal - {} - from a existing value, the
-  								// value will not be unset
-  								removeChild(domNode);
+  								recreateNode(lastItem, nextItem, node, treeLifecycle, context);
   							}
+  						} else {
+  							removeChild(domNode);
+  						}
   					}
   			}
   			if (dynamicAttrs) {
@@ -2847,15 +2815,8 @@
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			nextItem.id = lastItem.id;
-
   			if (node !== lastItem.tree.dom) {
   				var newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-
-  				nextItem.rootNode = newDomNode;
-  				return newDomNode;
-  			}
-  			if (nextItem.tree.dom !== lastItem.tree.dom) {
-  				var newDomNode = recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
 
   				nextItem.rootNode = newDomNode;
   				return newDomNode;
@@ -3504,10 +3465,6 @@
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
   				return;
   			}
-  			if (nextItem.tree.dom !== lastItem.tree.dom) {
-  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
-  				return;
-  			}
   			var domNode = lastItem.rootNode;
 
   			nextItem.rootNode = domNode;
@@ -3555,10 +3512,6 @@
   		update: function update(lastItem, nextItem, treeLifecycle) {
   			if (node !== lastItem.tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-  				return;
-  			}
-  			if (nextItem.tree.dom !== lastItem.tree.dom) {
-  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
   				return;
   			}
   			var domNode = lastItem.rootNode;
@@ -3638,7 +3591,6 @@
 
   function createRootStaticNode(templateNode, recyclingEnabled) {
   	var node = {
-  		html: templateNode.innerHTML,
   		pool: [],
   		keyedPool: [],
   		overrideItem: null,
@@ -3660,10 +3612,6 @@
   				recreateRootNode(lastItem, nextItem, node);
   				return;
   			}
-  			if (nextItem.tree.dom !== lastItem.tree.dom) {
-  				recreateRootNode(lastItem, nextItem, nextItem.tree.dom);
-  				return;
-  			}
   			nextItem.rootNode = lastItem.rootNode;
   		},
   		remove: function remove() {},
@@ -3675,7 +3623,6 @@
   			item.rootNode = hydrateNode;
   		}
   	};
-
   	return node;
   }
 
