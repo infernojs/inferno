@@ -203,15 +203,8 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 					}
 				}
 			}
-		} else {
-			// TODO
 		}
-	} else if (oldItems) {
-
-		for (let i = 0; i < oldItems.length; i++) {
-			// TODO
-		}
-	}
+	} 
 }
 
 export function insertOrAppend(parentNode, newNode, nextNode) {
