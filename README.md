@@ -1,7 +1,7 @@
 # Inferno
 
-[![Build Status](https://img.shields.io/travis/trueadm/inferno/master.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
-[![Coverage Status](https://coveralls.io/repos/github/trueadm/inferno/badge.svg?branch=master)](https://coveralls.io/github/trueadm/inferno?branch=master)
+[![Build Status](https://img.shields.io/travis/trueadm/inferno/dev.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
+[![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/dev.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=dev)
 [![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
 [![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
@@ -15,7 +15,7 @@ In principle, Inferno is compatible with the standard React API, allowing for pa
 
 ## Key Features
 
-- one of the fastest front end frameworks for rendering UI in the DOM
+- one of the fastest front-end frameworks for rendering UI in the DOM
 - components have a similar API to React ES2015 components with `inferno-component`
 - stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
 - isomorphic/universal for easy server-side rendering with `inferno-server`
@@ -72,7 +72,7 @@ http://infernojs.org/releases/0.5.18/inferno-server.min.js
 Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a very easy way to express virtual fragments.
 
-```js
+```jsx
 import Inferno from 'inferno';
 import InfernoDOM from 'inferno-dom';
 
@@ -85,10 +85,8 @@ InfernoDOM.render(
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
-```js
-import { Component } from 'inferno-component';
-
-class infernoComponent extends Component {
+```jsx
+class Component extends Inferno.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -105,7 +103,7 @@ class infernoComponent extends Component {
   }
 }
 
-InfernoDOM.render(<infernoComponent />, document.body);
+InfernoDOM.render(<Component />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
@@ -114,7 +112,7 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ### Inferno.createTemplate
 
-```js
+```jsx
 const template = Inferno.createTemplate(() => ({
   tag: 'div',
   attrs: { className: 'test'},
@@ -127,7 +125,7 @@ InfernoDOM.render(template(), document.body);
 ```
 ### Inferno.TemplateFactory
 
-```js
+```jsx
 import { Component } from 'inferno-component';
 
 const { createElement } = Inferno.TemplateFactory;
@@ -164,7 +162,7 @@ InfernoDOM.render(template(BasicComponent, 'abc'), container);
 
 **Stateful component:**
 
-```js
+```jsx
 import { Component } from 'inferno-component';
 
 class MyComponent extends Component {
@@ -178,7 +176,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 
 **Stateless component:**
 
-```js
+```jsx
 const MyComponent => ({ name, age }) => 
   <span>My name is: { name } and my age is: {age}</span>  
 );
@@ -188,7 +186,7 @@ Stateless components are first-class functions where their first argument is the
 
 ### InfernoDOM.createRef
 
-```js
+```jsx
 import InfernoDOM from 'inferno-dom';
 
 const divRef = InfernoDOM.createRef();
@@ -201,7 +199,7 @@ Creates a mutable object that links an Inferno rendered template node to its rea
 
 ### InfernoDOM.render
 
-```javascript
+```jsx
 import InfernoDOM from 'inferno-dom';
 
 InfernoDOM.render(<div />, document.body);
@@ -246,7 +244,7 @@ common hooks directly onto components and DOM nodes. Below is the table of all p
 It's simple to implicitly assign hooks to both DOM nodes and stateless components.
 Please note: stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
 
-```js
+```jsx
 function createdCallback(domNode, props) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 	// [props] will only be passed for stateless components
