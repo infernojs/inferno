@@ -57,7 +57,8 @@
     "src"
   ],
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "jsnext:main": "src/index.js",
+  "main": "packages/inferno/dist/inferno.js",
+  "jsnext:main": "packages/inferno/dist/inferno.es2015.js",
   "keywords": [
     "babel",
     "react",
@@ -72,8 +73,7 @@
     "browser",
     "rollup"
   ],
-  "main": "./dist/inferno.min.js",
-  "repository": {
+   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/trueadm/inferno.git"
   },

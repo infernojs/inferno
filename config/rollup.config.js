@@ -32,7 +32,7 @@ const copyright =
 	' */';
 
 const entry = p.resolve(src, 'index.js');
-const filename = production ? packageName + '.min.js' : packageName + (es6 ? '.es6.js' : '.js');
+const filename = production ? packageName + '.min.js' : packageName + (es6 ? '.es2015.js' : '.js');
 const dest  = p.resolve(dist, filename);
 const bundleConfig = {
 	dest,
