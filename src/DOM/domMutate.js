@@ -9,19 +9,6 @@ const infernoBadTemplate = 'Inferno Error: A valid template node must be returne
 
 export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
 
-
-
-	//if (items != null && items.length > 0) {
-
-	//for (let i = 0; i < items.length; i++) {
-			//insertOrAppend(parentNode, items[i].rootNode, nextNode);
-			//	}
-	//} else {
-
-		// TODO! Move the code below inside this 'if'
-
-	//}
-
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
