@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "0.5.18",
+  "version": "0.5.20",
   "license": "MPL-2.0",
   "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
   "author": {
@@ -22,8 +22,9 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.5.18"
+    "inferno": "^0.5.20"
   },
-  "main": "inferno-dom.js",
+  "main": "inferno-test-utils.js",
+  "jsnext:main": "dist/inferno-test-utils.es2015.js",
   "repository": "https://github.com/trueadm/inferno"
 }
