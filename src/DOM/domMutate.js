@@ -8,6 +8,20 @@ const recyclingEnabled = isRecyclingEnabled();
 const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
+
+
+
+	//if (items != null && items.length > 0) {
+
+	//for (let i = 0; i < items.length; i++) {
+			//insertOrAppend(parentNode, items[i].rootNode, nextNode);
+			//	}
+	//} else {
+
+		// TODO! Move the code below inside this 'if'
+
+	//}
+
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
@@ -22,7 +36,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	// We solve that with avoiding going into the iteration loop.
 	if (!isVoid(startItem) && (!isVoid(startItem.tree))) {
 
-		if (itemsLength === 0 && oldItemsLength >= 5) {
+		if (items == null ||itemsLength === 0 && oldItemsLength >= 5) {
 			if (recyclingEnabled) {
 				for (let i = 0; i < oldItemsLength; i++) {
 					pool(oldItems[i]);
