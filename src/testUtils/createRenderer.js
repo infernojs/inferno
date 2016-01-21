@@ -10,7 +10,7 @@ function renderer() {
 		getRenderOutput() {
 			return output;
 		}
-	}
+	};
 }
 
 export default function createRenderer() {

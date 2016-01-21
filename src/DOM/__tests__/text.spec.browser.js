@@ -1,12 +1,12 @@
-import {  updateKeyed } from '../domMutate';
+import { updateKeyed } from '../domMutate';
 import createDOMTree from '../createTree';
 import { render } from '../rendering';
 import createTemplate from '../../core/createTemplate';
 import { addTreeConstructor } from '../../core/createTemplate';
 
-addTreeConstructor( 'dom', createDOMTree );
+addTreeConstructor('dom', createDOMTree);
 
-describe( 'Text', () => {
+describe('Text', () => {
 
 	let container;
 
@@ -23,11 +23,11 @@ describe( 'Text', () => {
 		value: 'Hello, World!',
 		expected: 'Hello, World!'
 	}, {
-		name: 'number value ( cast to string)',
+		name: 'number value (cast to string)',
 		value: 123,
 		expected: '123'
 	}, {
-		name: 'number value ( Addition)',
+		name: 'number value (Addition)',
 		value: 123 + 123,
 		expected: '246'
 	}, {
@@ -48,7 +48,7 @@ describe( 'Text', () => {
 		expected: '123'
 	}, {
 		name: 'math',
-		value: 44 - 44 * 3 -333,
+		value: 44 - 44 * 3 - 333,
 		expected: '-421'
 	}, {
 		name: 'chinese',
@@ -159,7 +159,7 @@ describe( 'Text', () => {
 		});
 	});
 
-		emptyDefinitions.forEach((arg) => {
+	emptyDefinitions.forEach((arg) => {
 
 		[{
 			description: 'should create a dynamic text node on a root node with ' + arg.name,
@@ -168,7 +168,7 @@ describe( 'Text', () => {
 			})
 		}].forEach((test) => {
 
-		it(test.description, () => {
+			it(test.description, () => {
 
 				render(createTemplate(test.template)(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(3);
@@ -411,21 +411,19 @@ describe( 'Text', () => {
 		});
 	});
 
-
-
 	const multiArray = [{
 		name: 'multiple text',
-		value: ['Hello', ' World'],
+		value: [ 'Hello', ' World' ],
 		expected: 'Hello World',
 		children: 2
 	}, {
-		name: 'multiple numbers ( cast to string)',
-		value: ['12', '3'],
+		name: 'multiple numbers (cast to string)',
+		value: [ '12', '3' ],
 		expected: '123',
 		children: 2
 	}, {
 		name: 'multiple numbers',
-		value: [12, 3],
+		value: [ 12, 3 ],
 		expected: '123',
 		children: 2
 	}, {
@@ -470,12 +468,12 @@ describe( 'Text', () => {
 		children: 1
 	}, {
 		name: 'multiple numbers (Addition)',
-		value: [12 + 3, 3],
+		value: [ 12 + 3, 3 ],
 		expected: '153',
 		children: 2
 	}, {
 		name: 'multiple numbers (subtraction)',
-		value: [12 - 3, 3],
+		value: [ 12 - 3, 3 ],
 		expected: '93',
 		children: 2
 	}, {
@@ -485,7 +483,7 @@ describe( 'Text', () => {
 		children: 1
 	}, {
 		name: 'multiple numbers (mixed math)',
-		value: [12 - 3, 3 * 4 - 1],
+		value: [ 12 - 3, 3 * 4 - 1 ],
 		expected: '911',
 		children: 2
 	}

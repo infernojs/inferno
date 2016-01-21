@@ -30,16 +30,16 @@ describe('Template', () => {
 		let throwed;
 
 		try {
-			addListener(null, container, 'cdlick', () => {})
+			addListener(null, container, 'cdlick', () => {});
 			throwed = false;
-		} catch(e){
+		} catch (e){
 			throwed = true;
 		}
 		expect(throwed).to.equal(true);
 	});
 
 	it('should set a listener, but do nothing if node is null', () => {
-		addListener(null, null, 'click', function() {});
+		addListener(null, null, 'click', function () {});
 		expect(container.innerHTML).to.equal('');
 	});
 
@@ -76,7 +76,7 @@ describe('Template', () => {
 		try {
 			addRootListener({}, 'click');
 			throwed = false;
-		} catch(e){
+		} catch (e){
 			throwed = true;
 		}
 		expect(throwed).to.equal(true);

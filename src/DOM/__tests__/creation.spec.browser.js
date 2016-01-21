@@ -4,17 +4,17 @@ import createTemplate from '../../core/createTemplate';
 import createDOMTree from '../createTree';
 import { addTreeConstructor } from '../../core/createTemplate';
 
-addTreeConstructor( 'dom', createDOMTree );
+addTreeConstructor('dom', createDOMTree);
 
-describe( 'Creation - (non-JSX)', () => {
+describe('Creation - (non-JSX)', () => {
 
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		container.innerHTML = '';
 	});
 
@@ -26,7 +26,7 @@ describe( 'Creation - (non-JSX)', () => {
 				children: {
 					tag: 'span'
 				}
-			}
+			};
 		},
 		tagName: 'div',
 		children: 1,
@@ -39,7 +39,7 @@ describe( 'Creation - (non-JSX)', () => {
 				children: {
 					tag: 'span'
 				}
-			}
+			};
 		},
 		tagName: 'span',
 		children: 1,
@@ -54,7 +54,7 @@ describe( 'Creation - (non-JSX)', () => {
 				}, {
 					tag: 'span'
 				}]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 2,
@@ -71,7 +71,7 @@ describe( 'Creation - (non-JSX)', () => {
 						tag: 'span'
 					}
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 2,
@@ -84,15 +84,15 @@ describe( 'Creation - (non-JSX)', () => {
 				children: [
 					null,
 					null, {
-					tag: 'span'
+						tag: 'span'
 					}
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 1,
 		textContent: ''
-	},  {
+	}, {
 		description: 'should render div with three span children and unset first, and middle child',
 		template: () => {
 			return {
@@ -102,7 +102,7 @@ describe( 'Creation - (non-JSX)', () => {
 					null,
 					null
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 0,
@@ -117,7 +117,7 @@ describe( 'Creation - (non-JSX)', () => {
 					'Baboy',
 					null
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 1,
@@ -133,7 +133,7 @@ describe( 'Creation - (non-JSX)', () => {
 						tag: 'span'
 					}
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 2,
@@ -150,7 +150,7 @@ describe( 'Creation - (non-JSX)', () => {
 						tag: 'span'
 					}
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 3,
@@ -168,7 +168,7 @@ describe( 'Creation - (non-JSX)', () => {
 						tag: 'span'
 					}
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 4,
@@ -187,7 +187,7 @@ describe( 'Creation - (non-JSX)', () => {
 						children: 'World!'
 					}
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 4,
@@ -202,7 +202,7 @@ describe( 'Creation - (non-JSX)', () => {
 					null,
 					null
 				]
-			}
+			};
 		},
 		tagName: 'div',
 		children: 0,
@@ -215,13 +215,13 @@ describe( 'Creation - (non-JSX)', () => {
 				children: {
 					tag: 'b',
 					children:
-						[
-							null,
-							null,
-							null
-						]
+					[
+						null,
+						null,
+						null
+					]
 				}
-			}
+			};
 		},
 		tagName: 'div',
 		children: 1,
@@ -234,13 +234,13 @@ describe( 'Creation - (non-JSX)', () => {
 				children: {
 					tag: 'b',
 					children:
-						[
-							null,
-							123,
-							null
-						]
+					[
+						null,
+						123,
+						null
+					]
 				}
-			}
+			};
 		},
 		tagName: 'div',
 		children: 1,

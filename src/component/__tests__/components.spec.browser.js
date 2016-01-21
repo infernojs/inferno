@@ -10,9 +10,9 @@ import innerHTML from '../../../tools/innerHTML';
 const { createElement } = TemplateFactory;
 
 // set the constructor to 'dom'
-addTreeConstructor( 'dom', createTree );
+addTreeConstructor('dom', createTree);
 
-describe( 'Components', () => {
+describe('Components', () => {
 	let container;
 
 	beforeEach(() => {
@@ -29,12 +29,12 @@ describe( 'Components', () => {
 	class BasicComponent1 extends Component {
 		render() {
 			const template = createTemplate((name, title) =>
-				createElement("div", {
-						className: "basic"
-					},
-					createElement("span", {
+				createElement('div', {
+					className: 'basic'
+				},
+					createElement('span', {
 						className: name
-					}, "The title is ", title)
+					}, 'The title is ', title)
 				)
 			);
 			return template(this.props.name, this.props.title);
@@ -47,11 +47,10 @@ describe( 'Components', () => {
 			createElement('div', null,
 				createElement(Component, {
 					title: title,
-					name: "basic-render"
+					name: 'basic-render'
 				})
 			)
 		);
-
 
 		render(template(null, 'abc'), container);
 
@@ -124,15 +123,15 @@ describe( 'Components', () => {
 	class BasicComponent1b extends Component {
 		render() {
 			const template = createTemplate((isChecked, title) =>
-				createElement("div", {
-						className: "basic"
-					},
+				createElement('div', {
+					className: 'basic'
+				},
 					createElement('label', {},
-						createElement("input", {
+						createElement('input', {
 							type: 'checkbox',
 							checked: isChecked
 						}),
-						"The title is ",
+						'The title is ',
 						title
 					)
 				)
@@ -154,38 +153,38 @@ describe( 'Components', () => {
 
 		render(template(null, null, false), container);
 
-		render(template(BasicComponent1b, "abc", true), container);
+		render(template(BasicComponent1b, 'abc', true), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
-		expect( container.querySelector("input").checked ).to.equal( true);
+		expect(container.querySelector('input').checked).to.equal(true);
 
 		render(template(null, null, false), container);
 		render(template(null, null, false), container);
 
-		render(template(BasicComponent1b, "abc", null), container);
+		render(template(BasicComponent1b, 'abc', null), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
-		expect(container.querySelector("input").checked).to.equal(false);
+		expect(container.querySelector('input').checked).to.equal(false);
 	});
 
 	class BasicComponent1c extends Component {
 		render() {
 			const template = createTemplate((isEnabled, title, type) =>
-				createElement("div", {
-						className: "basic"
-					},
+				createElement('div', {
+					className: 'basic'
+				},
 					createElement('label', {},
-						createElement("input", {
+						createElement('input', {
 							type,
 							enabled: isEnabled
 						}),
-						"The title is ",
+						'The title is ',
 						title
 					)
 				)
@@ -231,10 +230,10 @@ describe( 'Components', () => {
 	class BasicComponent1d extends Component {
 		render() {
 			const template = createTemplate((isDisabled, title) =>
-				createElement("div", {className: "basic"},
+				createElement('div', { className: 'basic' },
 					createElement('label', {},
-						createElement("input", {type: 'password', disabled: isDisabled}),
-						"The title is ",
+						createElement('input', { type: 'password', disabled: isDisabled }),
+						'The title is ',
 						title
 					)
 				)
@@ -247,7 +246,7 @@ describe( 'Components', () => {
 
 		let template = createTemplate((Component, title, isDisabled) =>
 			createElement('div', null,
-				createElement(Component, {title, isDisabled})
+				createElement(Component, { title, isDisabled })
 			)
 		);
 
@@ -258,10 +257,10 @@ describe( 'Components', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML( '<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>' )
+			innerHTML('<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>')
 		);
 		expect(
-			container.querySelector("input").disabled
+			container.querySelector('input').disabled
 		).to.equal(
 			true
 		);
@@ -273,7 +272,7 @@ describe( 'Components', () => {
 			'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
 		);
 		expect(
-			container.querySelector("input").disabled
+			container.querySelector('input').disabled
 		).to.equal(
 			false
 		);
@@ -281,9 +280,9 @@ describe( 'Components', () => {
 
 	it('should render a basic component and remove property if null #1', () => {
 
-		let template  = createTemplate((Component, title, name) =>
+		let template = createTemplate((Component, title, name) =>
 			createElement('div', null,
-				createElement(Component, {title, name})
+				createElement(Component, { title, name })
 			)
 		);
 
@@ -311,7 +310,7 @@ describe( 'Components', () => {
 
 		let template = createTemplate((Component, title, name) =>
 			createElement('div', null,
-				createElement(Component, {title, name})
+				createElement(Component, { title, name })
 			)
 		);
 
@@ -340,7 +339,7 @@ describe( 'Components', () => {
 	it('should render a basic root component', () => {
 
 		let template = createTemplate((Component, title, name) =>
-			createElement(Component, {title, name})
+			createElement(Component, { title, name })
 		);
 
 		render(template(null, null, false), container);
@@ -388,12 +387,12 @@ describe( 'Components', () => {
 	class BasicComponent2 extends Component {
 		render() {
 			const template = createTemplate((name, title, children) =>
-				createElement("div", {
-						className: "basic"
-					},
-					createElement("span", {
+				createElement('div', {
+					className: 'basic'
+				},
+					createElement('span', {
 						className: name
-					}, "The title is ", title),
+					}, 'The title is ', title),
 					children
 				)
 			);
@@ -405,22 +404,22 @@ describe( 'Components', () => {
 		let template = createTemplate((Component, title, name) =>
 			createElement('div', null,
 				createElement(Component, {
-						title,
-						name
-					},
+					title,
+					name
+				},
 					createElement('span', null, 'I\'m a child')
 				)
 			)
 		);
 
-		render(template(BasicComponent2, "abc", "basic-render"), container);
+		render(template(BasicComponent2, 'abc', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
 		);
-		render(template(BasicComponent2, "abc", "basic-render"), container);
+		render(template(BasicComponent2, 'abc', 'basic-render'), container);
 
 		expect(
 			container.innerHTML
@@ -429,7 +428,7 @@ describe( 'Components', () => {
 		);
 
 		render(
-			template(BasicComponent2, "123", "basic-update"), container
+			template(BasicComponent2, '123', 'basic-update'), container
 
 		);
 		expect(
@@ -438,7 +437,7 @@ describe( 'Components', () => {
 			'<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
 		);
 		render(
-			template(BasicComponent2, "1234", "basic-update"), container
+			template(BasicComponent2, '1234', 'basic-update'), container
 
 		);
 		expect(
@@ -477,12 +476,12 @@ describe( 'Components', () => {
 	class BasicComponent3 extends Component {
 		render() {
 			const template = createTemplate((styles, title) =>
-				createElement("div", {
+				createElement('div', {
+					style: styles
+				},
+					createElement('span', {
 						style: styles
-					},
-					createElement("span", {
-						style: styles
-					}, "The title is ", title)
+					}, 'The title is ', title)
 				)
 			);
 
@@ -499,9 +498,9 @@ describe( 'Components', () => {
 		render(template(null, null, false), container);
 
 		render(template(BasicComponent3, {
-			title: "styled!",
+			title: 'styled!',
 			styles: {
-				color: "red",
+				color: 'red',
 				paddingLeft: 10
 			}
 		}), container);
@@ -511,10 +510,10 @@ describe( 'Components', () => {
 		).to.equal(
 			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
 		);
-			render(template(BasicComponent3, {
-			title: "styled!",
+		render(template(BasicComponent3, {
+			title: 'styled!',
 			styles: {
-				color: "red",
+				color: 'red',
 				paddingLeft: 10
 			}
 		}), container);
@@ -528,9 +527,9 @@ describe( 'Components', () => {
 		render(template(), container);
 
 		render(template(BasicComponent3, {
-			title: "styled (again)!",
+			title: 'styled (again)!',
 			styles: {
-				color: "blue",
+				color: 'blue',
 				paddingRight: 20
 			}
 		}), container);
@@ -838,37 +837,36 @@ describe( 'Components', () => {
 			waits(30, done);
 		});
 
-		it("componentWillMountCount to have fired once", () => {
+		it('componentWillMountCount to have fired once', () => {
 			expect(componentWillMountCount).to.equal(1);
 		});
-		it("shouldComponentUpdateCount to have fired once", () => {
+		it('shouldComponentUpdateCount to have fired once', () => {
 			expect(shouldComponentUpdateCount).to.equal(1);
 		});
-		it("componentWillUpdateCount to have fired once", () => {
+		it('componentWillUpdateCount to have fired once', () => {
 			expect(componentWillUpdateCount).to.equal(1);
 		});
-		it("componentDidUpdateCount to have fired once", () => {
+		it('componentDidUpdateCount to have fired once', () => {
 			expect(componentDidUpdateCount).to.equal(1);
 		});
-		it("componentWillReceivePropsCount not to have fired", () => {
+		it('componentWillReceivePropsCount not to have fired', () => {
 			expect(componentWillReceivePropsCount).to.equal(0);
 		});
-		it("the element in the component should show the new state", () => {
+		it('the element in the component should show the new state', () => {
 			expect(container.innerHTML).to.equal(
 				'<div><span>1</span></div>'
 			);
 		});
 	});
 
-
 	describe('should render a basic component with conditional fragment', () => {
 		const tpl4282471407 = createTemplate(function (v0) {
 			return {
 				tag: 'div',
-				children: ['', v0, '', {
+				children: [ '', v0, '', {
 					tag: 'p',
 					children: 'test'
-				}, '']
+				}, '' ]
 			};
 		});
 		const tpl3625453295 = createTemplate(function () {
@@ -884,7 +882,7 @@ describe( 'Components', () => {
 			};
 		});
 		const tpl1546018623 = createTemplate(function (v0) {
-			return {tag: v0};
+			return { tag: v0 };
 		});
 
 		class conditionalComponent extends Component {
@@ -916,7 +914,7 @@ describe( 'Components', () => {
 				attrs: {
 					class: 'login-organizationlist'
 				},
-				children: ['', v0, '']
+				children: [ '', v0, '' ]
 			};
 		});
 		const tpl3192647933 = createTemplate(function (v0) {
@@ -926,7 +924,7 @@ describe( 'Components', () => {
 			};
 		});
 		const tpl1546018623 = createTemplate(function (v0) {
-			return {tag: v0};
+			return { tag: v0 };
 		});
 
 		class valueComponent extends Component {
@@ -934,12 +932,12 @@ describe( 'Components', () => {
 				super(props);
 				this.state = {
 					organizations: [
-						{name: 'test1', key: '1'},
-						{name: 'test2', key: 2},
-						{name: 'test3', key: '3'},
-						{name: 'test4', key: '4'},
-						{name: 'test5', key: '5'},
-						{name: 'test6', key: '6'}
+						{ name: 'test1', key: '1' },
+						{ name: 'test2', key: 2 },
+						{ name: 'test3', key: '3' },
+						{ name: 'test4', key: '4' },
+						{ name: 'test5', key: '5' },
+						{ name: 'test6', key: '6' }
 					]
 				};
 			}
@@ -977,8 +975,8 @@ describe( 'Components', () => {
 
 		const template = createTemplate((name, title) =>
 			createElement('div', {
-					className: 'basic'
-				},
+				className: 'basic'
+			},
 				createElement('span', {
 					className: name
 				}, 'The title is ', title)
@@ -1019,7 +1017,7 @@ describe( 'Components', () => {
 		const text = createTemplate(() => {
 			return {
 				text: '123abc'
-			}
+			};
 		});
 
 		const text1 = createTemplate(() => {
@@ -1028,7 +1026,7 @@ describe( 'Components', () => {
 				children: {
 					text: '123abc'
 				}
-			}
+			};
 		});
 
 		expect(
@@ -1064,7 +1062,7 @@ describe( 'Components', () => {
 					children: {
 						text: null
 					}
-				}
+				};
 			})
 		).to.throw;
 
@@ -1109,18 +1107,18 @@ describe( 'Components', () => {
 				}
 			};
 		});
-		const TEST = function() {
+		function TEST() {
 			this.state = {
 				show: false
 			};
 
-			this.makeVisible = function() {
+			this.makeVisible = function () {
 				this.setState({
 					show: true
 				});
 			}.bind(this);
 
-			this.render = function() {
+			this.render = function () {
 				return tpl3578458729((function () {
 					if (this.state.show === true) {
 						return tpl188998005(null);
@@ -1129,7 +1127,7 @@ describe( 'Components', () => {
 					}
 				}).call(this));
 			};
-		};
+		}
 		TEST.prototype = new Component(null);
 		TEST.constructor = TEST;
 
@@ -1164,7 +1162,7 @@ describe( 'Components', () => {
 
 			buttons.forEach(button => button.click());
 
-			requestAnimationFrame( () => {
+			requestAnimationFrame(() => {
 				expect(
 					container.innerHTML
 				).to.equal(
@@ -1190,7 +1188,7 @@ describe( 'Components', () => {
 					children: 'ADD'
 				}, {
 					tag: 'br'
-				}, v1]
+				}, v1 ]
 			};
 		});
 
@@ -1209,22 +1207,23 @@ describe( 'Components', () => {
 		const starter = createTemplate(function (v0) {
 			return {
 				tag: v0
-			}
+			};
 		});
 
-		var SomeError = function() {
+		function SomeError() {
 			this.state = {
-				list: ['SS', 'SS1']
+				list: [ 'SS', 'SS1' ]
 			};
 
-			this.render = function() {
+			this.render = function () {
+				/* eslint new-cap:0 */
 				return BaseView(this.toggle, (function () {
-					return this.state.list.map(function(result){
+					return this.state.list.map(function (result){
 						return Looper(result);
 					});
 				}).call(this));
 			};
-		};
+		}
 		SomeError.prototype = new Component(null);
 		SomeError.constructor = SomeError;
 

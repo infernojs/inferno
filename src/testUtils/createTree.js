@@ -53,5 +53,5 @@ export default function createTree(schema, isRoot, dynamicNodeMap) {
 		remove() {
 
 		}
-	}
+	};
 }

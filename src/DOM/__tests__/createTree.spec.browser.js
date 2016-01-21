@@ -10,7 +10,7 @@ describe('createTree', () => {
 		try {
 			createTree();
 			throws = true;
-		}catch(e){
+		} catch (e){
 			throws = true;
 		}
 
@@ -19,7 +19,7 @@ describe('createTree', () => {
 		try {
 			createTree([]);
 			throws = true;
-		}catch(e){
+		} catch (e){
 			throws = true;
 		}
 

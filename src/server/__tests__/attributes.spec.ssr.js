@@ -5,7 +5,7 @@ import Component from '../../component/Component';
 import { addTreeConstructor } from '../../core/createTemplate';
 import TemplateFactory from '../../core/TemplateFactory';
 
-addTreeConstructor( 'html', createHTMLTree );
+addTreeConstructor('html', createHTMLTree);
 
 describe('SSR Attributes', () => {
 	let template;
@@ -76,7 +76,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { checked: false}
+			attrs: { checked: false }
 		}));
 		expect(
 			renderToString(template())
@@ -86,7 +86,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { scoped: true}
+			attrs: { scoped: true }
 		}));
 		expect(
 			renderToString(template())
@@ -109,7 +109,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { download: true}
+			attrs: { download: true }
 		}));
 		expect(
 			renderToString(template())
@@ -119,7 +119,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { download: 'true'}
+			attrs: { download: 'true' }
 		}));
 		expect(
 			renderToString(template())
@@ -129,7 +129,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { download: false}
+			attrs: { download: false }
 		}));
 		expect(
 			renderToString(template())
@@ -139,7 +139,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { download: 'false'}
+			attrs: { download: 'false' }
 		}));
 		expect(
 			renderToString(template())
@@ -149,7 +149,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { download: undefined}
+			attrs: { download: undefined }
 		}));
 		expect(
 			renderToString(template())
@@ -178,14 +178,14 @@ describe('SSR Attributes', () => {
 		);
 	});
 
-	it('should work with select multiple ( numbers)', () => {
+	it('should work with select multiple (numbers)', () => {
 
 		template = createTemplate(() => ({
 			tag: 'select',
-			attrs: { multiple: true, value: [1, 2] },
+			attrs: { multiple: true, value: [ 1, 2 ] },
 			children: [
-				{tag: 'option', attrs: {value:1}, text:'1'},
-				{tag: 'option', attrs: {value:2}, text:'2'}
+				{ tag: 'option', attrs: { value: 1 }, text: '1' },
+				{ tag: 'option', attrs: { value: 2 }, text: '2' }
 			]
 		}));
 		expect(
@@ -196,14 +196,14 @@ describe('SSR Attributes', () => {
 		);
 	});
 
-	it('should work with select multiple ( letters)', () => {
+	it('should work with select multiple (letters)', () => {
 
 		template = createTemplate(() => ({
 			tag: 'select',
-			attrs: { multiple: true, value: ['a', 'b'] },
+			attrs: { multiple: true, value: [ 'a', 'b' ] },
 			children: [
-				{tag: 'option', attrs: {value:'a'}, text:'a'},
-				{tag: 'option', attrs: {value:'b'}, text:'b'}
+				{ tag: 'option', attrs: { value: 'a' }, text: 'a' },
+				{ tag: 'option', attrs: { value: 'b' }, text: 'b' }
 			]
 		}));
 		expect(
@@ -213,16 +213,15 @@ describe('SSR Attributes', () => {
 		);
 	});
 
-
 	it('should stringify a select multiple tag using groups and children', () => {
 
 		template = createTemplate(() => ({
 			tag: 'select',
-			attrs: { multiple: true, value: ["foo", "bar"]  },
+			attrs: { multiple: true, value: [ 'foo', 'bar' ]	},
 			children: [
 
-				{tag: 'optgroup', attrs: { label: 'foo-group' }, children: {tag: 'option', attrs: {value:'foo'}, text:'foo'}},
-				{tag: 'optgroup', attrs: { label: 'bar-group' }, children: {tag: 'option', attrs: {value:'bar'}, text:'bar'}},
+				{ tag: 'optgroup', attrs: { label: 'foo-group' }, children: { tag: 'option', attrs: { value: 'foo' }, text: 'foo' } },
+				{ tag: 'optgroup', attrs: { label: 'bar-group' }, children: { tag: 'option', attrs: { value: 'bar' }, text: 'bar' } }
 			]
 		}));
 		expect(
@@ -236,7 +235,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'textarea',
-			attrs: { value: 'Hello, World' },
+			attrs: { value: 'Hello, World' }
 		}));
 		expect(
 			renderToString(template())
@@ -249,7 +248,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { contenteditable: '"true', value: 'blablabla'  },
+			attrs: { contenteditable: '"true', value: 'blablabla'	}
 		}));
 		expect(
 			renderToString(template())
@@ -262,7 +261,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'form',
-			attrs: { className: 'login',  acceptCharset: 'ISO-8859-1', accessKey: 'h' },
+			attrs: { className: 'login',	acceptCharset: 'ISO-8859-1', accessKey: 'h' }
 		}));
 		expect(
 			renderToString(template())
@@ -275,7 +274,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'web-component',
-			attrs: { className: null, id: null },
+			attrs: { className: null, id: null }
 		}));
 		expect(
 			renderToString(template())
@@ -288,7 +287,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'web-component',
-			attrs: { innerHTML: '<span>hello, terrible world!!</span>' },
+			attrs: { innerHTML: '<span>hello, terrible world!!</span>' }
 		}));
 		expect(
 			renderToString(template())
@@ -301,7 +300,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'input',
-			attrs: { type: "submit", value: "add" },
+			attrs: { type: 'submit', value: 'add' }
 		}));
 		expect(
 			renderToString(template())
@@ -314,7 +313,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'image',
-			attrs: { xmlns: "http://www.w3.org/2000/svg", "xlink:href": "test.jpg"},
+			attrs: { xmlns: 'http://www.w3.org/2000/svg', 'xlink:href': 'test.jpg' }
 		}));
 		expect(
 			renderToString(template())
@@ -327,7 +326,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'use',
-			attrs: { "xlink:href": "/abc.jpg" }
+			attrs: { 'xlink:href': '/abc.jpg' }
 		}));
 		expect(
 			renderToString(template())
@@ -340,7 +339,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: { width:200 } }
+			attrs: { style: { width: 200 } }
 		}));
 		expect(
 			renderToString(template())
@@ -353,7 +352,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: { backgroundColor: '#3b5998', display: 'none'} }
+			attrs: { style: { backgroundColor: '#3b5998', display: 'none' } }
 		}));
 		expect(
 			renderToString(template())
@@ -366,7 +365,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: { backgroundColor: undefined, display: 'none'} }
+			attrs: { style: { backgroundColor: undefined, display: 'none' } }
 		}));
 		expect(
 			renderToString(template())
@@ -379,7 +378,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: { backgroundColor: null, display: 'none'} }
+			attrs: { style: { backgroundColor: null, display: 'none' } }
 		}));
 		expect(
 			renderToString(template())
@@ -392,7 +391,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: { backgroundColor: null, display: null} }
+			attrs: { style: { backgroundColor: null, display: null } }
 		}));
 		expect(
 			renderToString(template())
@@ -405,7 +404,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: { '123backgroundColor': null, display: 'none'} }
+			attrs: { style: { '123backgroundColor': null, display: 'none' } }
 		}));
 		expect(
 			renderToString(template())
@@ -415,7 +414,7 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: { BaackgroundColor: null, display: 'none'} }
+			attrs: { style: { BaackgroundColor: null, display: 'none' } }
 		}));
 		expect(
 			renderToString(template())
@@ -429,10 +428,14 @@ describe('SSR Attributes', () => {
 
 		template = createTemplate(() => ({
 			tag: 'div',
-			attrs: { style: {  left: 0,
-				margin: 16,
-				opacity: 0.5,
-				padding: '4px'} }
+			attrs: {
+				style: {
+					left: 0,
+					margin: 16,
+					opacity: 0.5,
+					padding: '4px'
+				}
+			}
 		}));
 		expect(
 			renderToString(template())

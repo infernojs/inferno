@@ -5,9 +5,9 @@ import { addTreeConstructor } from '../../core/createTemplate';
 import { shortCuts, cssToJSName } from '../../util/styleAccessor';
 import style from '../../../tools/style';
 
-addTreeConstructor( 'dom', createDOMTree );
+addTreeConstructor('dom', createDOMTree);
 
-describe( 'CSS style properties', () => {
+describe('CSS style properties', () => {
 
 	let container;
 
@@ -18,7 +18,6 @@ describe( 'CSS style properties', () => {
 	afterEach(() => {
 		container.innerHTML = '';
 	});
-
 
 	const preDefined = [{
 		name: 'set width and height',
@@ -89,54 +88,53 @@ describe( 'CSS style properties', () => {
 		name: 'not add px suffix to some css properties',
 		value: {
 			widows: 5,
-			zIndex:5,
+			zIndex: 5,
 			lineHeight: 5
 		},
 		expected: 'widows: 5; z-index: 5; line-height: 5;'
 	}, {
 		name: 'not set non-browser supported style properties',
 		value: {
-			'someProp': 5
+			someProp: 5
 		},
 		expected: null
-	},
-	 {
-			name: 'support transform',
-			value: {
-				transform: 'rotate(245deg)'
-			},
-			expected: 'transform: rotate(245deg);'
-		}, {
-			name: 'automatically append `px` to relevant styles',
-			value: {
-				left: 0,
-				opacity: 0.5,
-				zIndex: 33,
-				height: 200
-			},
-			expected: 'left: 0px; opacity: 0.5; z-index: 33; height: 200px;'
-		}, {
-			name: 'support number values',
-			value: {
-				width: 7,
-				height: 3
-			},
-			expected: 'width: 7px; height: 3px;'
-		}, {
-			name: 'handle hypenhated markup correctly',
-			value: {
-				fontFamily: 'Inferno'
-			},
-			expected: 'font-family: Inferno;'
-		}, {
-			name: 'handle different units - em, cm, mm etc',
-			value: {
-				height:'200em',
-				width:'200cm',
-				marginLeft:'200mm'
-			},
-			expected: 'height: 200em; width: 200cm; margin-left: 200mm;'
-		}]
+	}, {
+		name: 'support transform',
+		value: {
+			transform: 'rotate(245deg)'
+		},
+		expected: 'transform: rotate(245deg);'
+	}, {
+		name: 'automatically append `px` to relevant styles',
+		value: {
+			left: 0,
+			opacity: 0.5,
+			zIndex: 33,
+			height: 200
+		},
+		expected: 'left: 0px; opacity: 0.5; z-index: 33; height: 200px;'
+	}, {
+		name: 'support number values',
+		value: {
+			width: 7,
+			height: 3
+		},
+		expected: 'width: 7px; height: 3px;'
+	}, {
+		name: 'handle hypenhated markup correctly',
+		value: {
+			fontFamily: 'Inferno'
+		},
+		expected: 'font-family: Inferno;'
+	}, {
+		name: 'handle different units - em, cm, mm etc',
+		value: {
+			height: '200em',
+			width: '200cm',
+			marginLeft: '200mm'
+		},
+		expected: 'height: 200em; width: 200cm; margin-left: 200mm;'
+	}];
 
 	preDefined.forEach((arg) => {
 
@@ -170,7 +168,7 @@ describe( 'CSS style properties', () => {
 			template: () => ({
 				tag: 'div',
 				children: {
-					tag:'div',
+					tag: 'div',
 					attrs: {
 						style: arg.value
 					}
@@ -265,7 +263,7 @@ describe( 'CSS style properties', () => {
 				render(createTemplate(test.template)(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.null;
-			})
+			});
 		});
 	});
 
@@ -276,7 +274,7 @@ describe( 'CSS style properties', () => {
 			template: (value) => ({
 				tag: 'div',
 				children: {
-					tag:'div',
+					tag: 'div',
 					attrs: {
 						style: value
 					}
@@ -348,7 +346,7 @@ describe( 'CSS style properties', () => {
 					style: arg.value
 				},
 				children: {
-					tag:'div',
+					tag: 'div',
 					attrs: {
 						style: value
 					}
@@ -412,18 +410,18 @@ describe( 'CSS style properties', () => {
 		});
 	});
 
-	describe( 'Shorthand CSS Styles', () => {
-		Object.keys( shortCuts ).forEach( shortCut => {
-			let stylePropName = cssToJSName( shortCut );
-			let shorthands = shortCuts[shortCut];
-			let mustBeString = ( /style/ig ).test( shortCut );
+	describe('Shorthand CSS Styles', () => {
+		Object.keys(shortCuts).forEach(shortCut => {
+			let stylePropName = cssToJSName(shortCut);
+			let shorthands = shortCuts[ shortCut ];
+			let mustBeString = (/style/ig).test(shortCut);
 
-			if ( shorthands.length ) {
+			if (shorthands.length) {
 				let val = mustBeString ? 'dotted' : 1;
-				let style = { [stylePropName]: val };
+				let style = { [ stylePropName ]: val };
 				let comparator = mustBeString ? val : val + 'px';
 
-				describe( `Set ${shortCut} CSS properties from shorthand: ${JSON.stringify( style ) }`, () => {
+				describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
 
 					beforeEach(() => {
 						let template = createTemplate(() => {
@@ -432,33 +430,33 @@ describe( 'CSS style properties', () => {
 								attrs: {
 									style: style
 								}
-							}
+							};
 						});
 						render(template(), container);
 					});
 
-					shorthands.forEach( cssProperty => {
-						it( `should set ${cssProperty} to ${style[stylePropName]}px`, () => {
-							expect( container.firstChild.style[cssProperty] ).to.equal( comparator );
-						} );
-					} );
-				} );
+					shorthands.forEach(cssProperty => {
+						it(`should set ${ cssProperty } to ${ style[ stylePropName ] }px`, () => {
+							expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+						});
+					});
+				});
 			}
 
-			if ( shorthands.length ) {
+			if (shorthands.length) {
 				[{
 					numbers: [ 1, 2 ],
 					strings: [ 'dotted', 'solid' ]
 				}, {
 					numbers: [ 1, 2, 3, 4 ],
 					strings: [ 'dotted', 'solid', 'dashed', 'double' ]
-				}].forEach( vals => {
+				}].forEach(vals => {
 
-					let values = mustBeString ? vals.strings : vals.numbers.map( x => x + 'px' );
-					let val = values.join( ' ' );
-					let style = { [stylePropName]: val };
+					let values = mustBeString ? vals.strings : vals.numbers.map(x => x + 'px');
+					let val = values.join(' ');
+					let style = { [ stylePropName ]: val };
 
-					describe( `Set ${shortCut} CSS properties from shorthand: ${JSON.stringify( style ) }`, () => {
+					describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
 
 						beforeEach(() => {
 							let template = createTemplate(() => {
@@ -467,21 +465,21 @@ describe( 'CSS style properties', () => {
 									attrs: {
 										style: style
 									}
-								}
+								};
 							});
 							render(template(), container);
 							render(template(), container);
 						});
-						shorthands.forEach( ( cssProperty, index ) => {
-							let comparator = values[index % values.length];
+						shorthands.forEach((cssProperty, index) => {
+							let comparator = values[ index % values.length ];
 
-							it( `should set ${cssProperty} to ${comparator}`, () => {
-								expect( container.firstChild.style[cssProperty] ).to.equal( comparator );
-							} );
-						} );
-					} );
-				} );
+							it(`should set ${ cssProperty } to ${ comparator }`, () => {
+								expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+							});
+						});
+					});
+				});
 			}
-		} );
-	} );
+		});
+	});
 });

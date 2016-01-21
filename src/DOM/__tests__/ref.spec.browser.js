@@ -4,9 +4,9 @@ import { render } from '../../DOM/rendering';
 import createDOMTree from '../../DOM/createTree';
 import createRef from '../../DOM/createRef';
 
-addTreeConstructor( 'dom', createDOMTree );
+addTreeConstructor('dom', createDOMTree);
 
-describe( 'createRef()', () => {
+describe('createRef()', () => {
 
 	let container;
 

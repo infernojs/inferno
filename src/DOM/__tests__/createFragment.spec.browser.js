@@ -9,11 +9,11 @@ describe('createFragment', () => {
 		expect(newFragment.render).to.be.a.function;
 		expect(newFragment.remove).to.be.a.function;
 		newFragment = createFragment(null, {});
-		newFragment = createFragment(document.createElement('div'), { domTree: {}});
+		newFragment = createFragment(document.createElement('div'), { domTree: {} });
 		expect(newFragment).to.be.a.object;
 		expect(newFragment.render).to.be.a.function;
 		expect(newFragment.remove).to.be.a.function;
-		newFragment = createFragment(document.createElement('div'), { domTree: []});
+		newFragment = createFragment(document.createElement('div'), { domTree: [] });
 		expect(newFragment).to.be.a.object;
 
 	});

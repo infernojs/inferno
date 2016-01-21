@@ -9,7 +9,7 @@ describe('getFormElemenValues', () => {
 		expect(getFormElementValues()).to.be.null;
 	});
 
-		it('should get form values for radio button and checkboxes (property)', () => {
+	it('should get form values for radio button and checkboxes (property)', () => {
 		container = document.createElement('input');
 		container.checked = true;
 		// type is missing, return nothing
@@ -29,7 +29,7 @@ describe('getFormElemenValues', () => {
 		expect(getFormElementValues(container)).to.equal(true);
 	});
 
-	it('should get form values for radio button and checkboxes ( attribute)', () => {
+	it('should get form values for radio button and checkboxes (attribute)', () => {
 		container = document.createElement('input');
 		container.checked = true;
 		container.type = 'checkbox';
@@ -54,13 +54,13 @@ describe('getFormElemenValues', () => {
 		optionElement.value = 1;
 		const optionElement1 = document.createElement('option');
 		optionElement1.value = 2;
-		container.appendChild(optionElement )
-		container.appendChild(optionElement1 )
+		container.appendChild(optionElement);
+		container.appendChild(optionElement1);
 		expect(getFormElementValues(container)).to.equal('1');
 		container.multiple = true;
-		container.value = [1,2];
+		container.value = [ 1,2 ];
 		container.multiple = true;
-		container.setAttribute('value', [1,2]);
+		container.setAttribute('value', [ 1,2 ]);
 		optionElement1.selected = true;
 		expect(getFormElementValues(container)).to.equal('2');
 		optionElement.selected = true;
@@ -69,6 +69,6 @@ describe('getFormElemenValues', () => {
 		optionElement.selected = false;
 		optionElement1.selected = false;
 		expect(getFormElementValues(container)).to.be.undefined;
-		optionElement.setAttribute('selected', 'selected')
+		optionElement.setAttribute('selected', 'selected');
 	});
 });

@@ -38,7 +38,7 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 			nextItem.rootNode = domNode;
 			nextItem.id = lastItem.id;
 			if (dynamicAttrs) {
-				if(dynamicAttrs.onWillUpdate) {
+				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);

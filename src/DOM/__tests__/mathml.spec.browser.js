@@ -1,12 +1,12 @@
-import {  updateKeyed } from '../domMutate';
+import { updateKeyed } from '../domMutate';
 import createDOMTree from '../createTree';
 import { render, renderToString } from '../rendering';
 import createTemplate from '../../core/createTemplate';
 import { addTreeConstructor } from '../../core/createTemplate';
 
-addTreeConstructor( 'dom', createDOMTree );
+addTreeConstructor('dom', createDOMTree);
 
-describe( 'mathML namespace', () => {
+describe('mathML namespace', () => {
 
 	let container;
 
@@ -25,10 +25,10 @@ describe( 'mathML namespace', () => {
 		}));
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/1998/Math/MathML");
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal("http://www.w3.org/1998/Math/MathML");
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 	});
 
 	it('should render MathML element with children', () => {
@@ -38,8 +38,8 @@ describe( 'mathML namespace', () => {
 			children: {
 				tag: 'mrow',
 				children: [
-					{ tag: 'mi', children: 'a'},
-					{ tag: 'mn', children: '2'}
+					{ tag: 'mi', children: 'a' },
+					{ tag: 'mn', children: '2' }
 				]
 			}
 		}));
@@ -50,11 +50,11 @@ describe( 'mathML namespace', () => {
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/1998/Math/MathML');
 	});
 
-	it('should solve mathML edge when wrapped inside a non-namespace element ( static )', () => {
+	it('should solve mathML edge when wrapped inside a non-namespace element (static)', () => {
 
 		let template = createTemplate(() => ({
 			tag: 'div',
-			children:{
+			children: {
 				tag: 'math',
 				children: ['{}']
 			}
@@ -67,15 +67,15 @@ describe( 'mathML namespace', () => {
 
 	});
 
-	it('should solve mathML edge when wrapped inside a non-namespace element ( dynamic )', () => {
+	it('should solve mathML edge when wrapped inside a non-namespace element (dynamic)', () => {
 
 		let child = createTemplate(() => ({
-			tag: 'math',
+			tag: 'math'
 		}));
 
 		let template = createTemplate((child) => ({
 			tag: 'div',
-			children:child
+			children: child
 		}));
 
 		render(template(child()), container);
@@ -90,7 +90,7 @@ describe( 'mathML namespace', () => {
 	 * This is an edge case, and will turn out wrong for the end-dev because of stupidity, but at
 	 * least the correct namespace is kept all the way down to the last element.
 	 * */
-	it('should solve mathML edge when wrapped inside multiple non-namespace element children ( dynamic )', () => {
+	it('should solve mathML edge when wrapped inside multiple non-namespace element children (dynamic)', () => {
 
 		let child = createTemplate(() => ({
 			tag: 'math',
@@ -104,7 +104,7 @@ describe( 'mathML namespace', () => {
 
 		let template = createTemplate((child) => ({
 			tag: 'div',
-			children:child
+			children: child
 		}));
 
 		render(template(null), container);

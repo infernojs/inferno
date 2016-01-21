@@ -1,4 +1,4 @@
-import createTemplate, { addTreeConstructor  } from '../createTemplate';
+import createTemplate, { addTreeConstructor } from '../createTemplate';
 import { render } from '../../DOM/rendering';
 
 describe('Inferno.createTemplate()', () => {
@@ -7,21 +7,21 @@ describe('Inferno.createTemplate()', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
-	})
+	});
 
 	afterEach(() => {
 		render(null, container);
 	});
 
-	it('should be a function ( createTemplate )', () => {
+	it('should be a function (createTemplate)', () => {
 		expect(createTemplate).to.be.a.function;
 	});
 
-	it('should be a function ( createTemplate )', () => {
+	it('should be a function (createTemplate)', () => {
 		expect(createTemplate({})).to.be.a.function;
 	});
 
-	it('should be a function ( addTreeConstructor )', () => {
+	it('should be a function (addTreeConstructor)', () => {
 		expect(addTreeConstructor).to.be.a.function;
 	});
 
@@ -43,7 +43,7 @@ describe('Inferno.createTemplate()', () => {
 	});
 
 	it('should return undefined if the template argument is not a function', () => {
-		const invalidTemplates = [null, undefined, 0, 1, '', 'string',[], {} ];
+		const invalidTemplates = [ null, undefined, 0, 1, '', 'string',[], {}];
 		invalidTemplates.forEach(function (invalidTemplate) {
 			expect(createTemplate(invalidTemplate)).to.be.undefined;
 		});

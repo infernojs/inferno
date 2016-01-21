@@ -5,7 +5,7 @@ import createDOMTree from '../createTree';
 import createTemplate from '../../core/createTemplate';
 import { addTreeConstructor } from '../../core/createTemplate';
 
-addTreeConstructor( 'dom', createDOMTree );
+addTreeConstructor('dom', createDOMTree);
 
 describe('domMutate', () => {
 
@@ -13,7 +13,7 @@ describe('domMutate', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
-	})
+	});
 
 	afterEach(() => {
 		render(null, container);
@@ -21,198 +21,195 @@ describe('domMutate', () => {
 
 	describe('insertOrAppend()', () => {
 
-		it ( 'should set id as attribute when not allowed to set as property', () => {
+		it('should set id as attribute when not allowed to set as property', () => {
 			const newNode = document.createElement('span');
 			insertOrAppend(container, newNode, false);
-			expect(container.childNodes[0].tagName).to.equal('SPAN');
+			expect(container.childNodes[ 0 ].tagName).to.equal('SPAN');
 			expect(container.childNodes.length).to.equal(1);
 		});
 	});
 
 	describe('updateKeyed()', () => {
 
-		it ( 'should be a function', () => {
+		it('should be a function', () => {
 			expect(updateKeyed).to.be.a.function;
 		});
 	});
 
 	describe('updateNonKeyed()', () => {
-		it ( 'should be a function', () => {
+		it('should be a function', () => {
 			expect(updateNonKeyed).to.be.a.function;
 		});
 
-		it ( 'should be a function', () => {
+		it('should be a function', () => {
 
-			let oldItem = [1,2, 'Hello'];
-			let newItem = [1, 2, 'Hello'];
+			let oldItem = [ 1,2, 'Hello' ];
+			let newItem = [ 1, 2, 'Hello' ];
 			const nodeList = [
 				document.createElement('span'),
 				document.createElement('span')
-			]
+			];
 
 			// The items are equal, do nothing
-			updateNonKeyed( oldItem, newItem, container)
+			updateNonKeyed(oldItem, newItem, container);
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
-			oldItem = [1, 2, 'Hello'];
-			newItem = [1, 3, 'Hello'];
+			oldItem = [ 1, 2, 'Hello' ];
+			newItem = [ 1, 3, 'Hello' ];
 
 			// In this case, the nodeList elements are not attached to DOM, do nothing
-			updateNonKeyed( oldItem, newItem, container)
+			updateNonKeyed(oldItem, newItem, container);
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
-			oldItem = [1, 2, 'Hello'];
-			newItem = [1, 3, 'Hello'];
+			oldItem = [ 1, 2, 'Hello' ];
+			newItem = [ 1, 3, 'Hello' ];
 
 			// This should remove the nodes, but in this case, the
 			// nodeList elements are not attached to DOM, do nothing
-			updateNonKeyed( null, oldItem, container)
+			updateNonKeyed(null, oldItem, container);
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
 			/*
 			* Various combos so we know this is not breaking
 			**/
 
-			updateNonKeyed( null, null, container)
+			updateNonKeyed(null, null, container);
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
-			updateNonKeyed( null, 123, container)
+			updateNonKeyed(null, 123, container);
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
-			updateNonKeyed( 123, 123, container)
+			updateNonKeyed(123, 123, container);
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
+			updateNonKeyed([123], [123], container);
 
-			updateNonKeyed( [123], [123], container)
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			updateNonKeyed(null, null, container);
 
-			updateNonKeyed( null, null, container)
+			updateNonKeyed(null, undefined, container);
 
-			updateNonKeyed( null, undefined, container)
+			updateNonKeyed('', '', container);
 
-			updateNonKeyed( '', '', container)
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			updateNonKeyed([], [], container);
 
-			updateNonKeyed( [], [], container)
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			updateNonKeyed(undefined, [ '123', 123 ], container);
 
-			updateNonKeyed( undefined, ['123', 123], container)
+			expect(nodeList[ 0 ].tagName).to.equal('SPAN');
+			expect(nodeList[ 1 ].tagName).to.equal('SPAN');
 
-			expect(nodeList[0].tagName).to.equal('SPAN');
-			expect(nodeList[1].tagName).to.equal('SPAN');
-
-			expect(nodeList[0].innerHTML).to.equal('');
-			expect(nodeList[1].innerHTML).to.equal('');
+			expect(nodeList[ 0 ].innerHTML).to.equal('');
+			expect(nodeList[ 1 ].innerHTML).to.equal('');
 		});
 	});
 
 	describe('createVirtualList()', () => {
 
-		it ( 'should be a function', () => {
+		it('should be a function', () => {
 			expect(createVirtualList).to.be.a.function;
 		});
 
-		it ( 'should do nothing if first arg in createVirtualList has no length', () => {
-			createVirtualList(null)
-			createVirtualList()
-			createVirtualList({})
-			createVirtualList(undefined)
+		it('should do nothing if first arg in createVirtualList has no length', () => {
+			createVirtualList(null);
+			createVirtualList();
+			createVirtualList({});
+			createVirtualList(undefined);
 			expect(container.innerHTML).to.equal('');
 		});
 	});
 
 	describe('updateVirtualList()', () => {
 
-		it ( 'should be a function', () => {
+		it('should be a function', () => {
 			expect(updateVirtualList).to.be.a.function;
 		});
 
-		it ( 'should do nothing if first arg in updateVirtualList has no length', () => {
-			updateVirtualList(null)
+		it('should do nothing if first arg in updateVirtualList has no length', () => {
+			updateVirtualList(null);
 			expect(container.innerHTML).to.equal('');
-			updateVirtualList()
+			updateVirtualList();
 			expect(container.innerHTML).to.equal('');
-			updateVirtualList({})
+			updateVirtualList({});
 			expect(container.innerHTML).to.equal('');
-			updateVirtualList(undefined)
+			updateVirtualList(undefined);
 			expect(container.innerHTML).to.equal('');
 		});
 	});
 
 	describe('remove()', () => {
 
-		it ( 'should force innerHTML if node equal to rootNode', () => {
+		it('should force innerHTML if node equal to rootNode', () => {
 
 			container.innerHTML = 'Hello';
 
 			const item = {
 				rootNode: container,
 				keyedPool: null
-
-			}
-			remove(item, container)
+			};
+			remove(item, container);
 			expect(container.innerHTML).to.equal('');
 		});
 
-		it ( 'should force innerHTML if node equal to rootNode', () => {
+		it('should force innerHTML if node equal to rootNode', () => {
 
 			container.innerHTML = 'Hello';
 
 			const item = {
 				rootNode: container,
 				keyedPool: null
-
-			}
-			remove(item, container)
+			};
+			remove(item, container);
 			expect(container.innerHTML).to.equal('');
 		});
 
-		it ( 'should not remove the node if rootNode is not valid', () => {
+		it('should not remove the node if rootNode is not valid', () => {
 
 			container.innerHTML = 'Hello, World!';
 
@@ -221,32 +218,32 @@ describe('domMutate', () => {
 				keyedPool: null
 			};
 
-			remove(item, container)
+			remove(item, container);
 			expect(container.innerHTML).to.equal('Hello, World!');
 
 			item.rootNode = undefined;
 
-			remove(item, container)
+			remove(item, container);
 			expect(container.innerHTML).to.equal('Hello, World!');
 
 			item.rootNode = 123;
 
-			remove(item, container)
+			remove(item, container);
 			expect(container.innerHTML).to.equal('Hello, World!');
 
 			item.rootNode = {};
 
-			remove(item, container)
+			remove(item, container);
 			expect(container.innerHTML).to.equal('Hello, World!');
 
 			item.rootNode = [];
 
-			remove(item, container)
+			remove(item, container);
 			expect(container.innerHTML).to.equal('Hello, World!');
 
 			item.rootNode = container;
 			// valid.
-			remove(item, container)
+			remove(item, container);
 			expect(container.innerHTML).to.equal('');
 		});
 	});
@@ -262,13 +259,12 @@ function createDataModels() {
 	dataModels.push(addGroupSingleChild(300));
 	dataModels.push(addGroupSingleChild(0));
 
-
 	return dataModels;
 }
 
 function addGroupSingleChild(count) {
 	let dataModel = [];
-	for(let i = 0; i < count; i++) {
+	for (let i = 0; i < count; i++) {
 		dataModel.push({
 			key: i,
 			children: null
@@ -278,29 +274,25 @@ function addGroupSingleChild(count) {
 }
 
 function shuffle(dataModel) {
-	for (var e, t, n = dataModel.length; 0 !== n; ) {
+	for (let e, t, n = dataModel.length; n !== 0;) {
 		e = Math.floor(Math.random() * n--);
-		t = dataModel[n];
-		dataModel[n] = dataModel[e];
-		dataModel[e] = t;
+		t = dataModel[ n ];
+		dataModel[ n ] = dataModel[ e ];
+		dataModel[ e ] = t;
 	}
 }
 
 function createExpectedChildren(nodes) {
-	var children = [];
-	var j;
-	var c;
-	var i;
-	var e;
-	var n;
+	const children = [];
+	let j, c, i, e, n;
 
 	for (i = 0; i < nodes.length; i++) {
-		n = nodes[i];
+		n = nodes[ i ];
 		if (n.children !== null) {
 			e = document.createElement('div');
 			c = render(n.children);
 			for (j = 0; j < c.length; j++) {
-				e.appendChild(c[j]);
+				e.appendChild(c[ j ]);
 			}
 			children.push(e);
 		} else {
@@ -314,16 +306,15 @@ function createExpectedChildren(nodes) {
 }
 
 function createExpected(nodes) {
-	var c = document.createElement('div');
-	var e = document.createElement('div');
-	var children = createExpectedChildren(nodes);
-	for (var i = 0; i < children.length; i++) {
-		e.appendChild(children[i]);
+	let c = document.createElement('div');
+	let e = document.createElement('div');
+	let children = createExpectedChildren(nodes);
+	for (let i = 0; i < children.length; i++) {
+		e.appendChild(children[ i ]);
 	}
 	c.appendChild(e);
 	return c.innerHTML;
 }
-
 
 let container = document.createElement('div');
 let dataModels = null;
@@ -341,7 +332,7 @@ const t1 = createTemplate((key, children) => {
 		tag: 'div',
 		key: key,
 		children: children
-	}
+	};
 });
 
 const t2 = createTemplate((key) => {
@@ -349,7 +340,7 @@ const t2 = createTemplate((key) => {
 		tag: 'span',
 		key: key,
 		text: key
-	}
+	};
 });
 
 const t3 = createTemplate((key, children) => {
@@ -357,7 +348,7 @@ const t3 = createTemplate((key, children) => {
 		tag: 'div',
 		key: key,
 		children: children
-	}
+	};
 });
 
 const t4 = createTemplate((key) => {
@@ -365,36 +356,34 @@ const t4 = createTemplate((key) => {
 		tag: 'span',
 		key: key,
 		children: key
-	}
+	};
 });
 
 function renderTree(nodes) {
-	var children = new Array(nodes.length);
-	var i;
-	var n;
+	const children = new Array(nodes.length);
+	let i, n;
 
 	for (i = 0; i < nodes.length; i++) {
-		n = nodes[i];
+		n = nodes[ i ];
 		if (n.children !== null) {
-			children[i] = t1(n.key, renderTree(n.children));
+			children[ i ] = t1(n.key, renderTree(n.children));
 		} else {
-			children[i] = t2(n.key);
+			children[ i ] = t2(n.key);
 		}
 	}
 	return children;
 }
 
 function renderTree1(nodes) {
-	var children = new Array(nodes.length);
-	var i;
-	var n;
+	const children = new Array(nodes.length);
+	let i, n;
 
 	for (i = 0; i < nodes.length; i++) {
-		n = nodes[i];
+		n = nodes[ i ];
 		if (n.children !== null) {
-			children[i] = t3(n.key, renderTree1(n.children));
+			children[ i ] = t3(n.key, renderTree1(n.children));
 		} else {
-			children[i] = t4(n.key);
+			children[ i ] = t4(n.key);
 		}
 	}
 	return children;
@@ -410,7 +399,7 @@ function second_render(dataModel) {
 
 it('should render various combinations', () => {
 
-	let dataModel = dataModels[0];
+	let dataModel = dataModels[ 0 ];
 
 	renderr(dataModel);
 
@@ -418,7 +407,7 @@ it('should render various combinations', () => {
 		createExpected(dataModel)
 	);
 
-	dataModel = dataModels[0];
+	dataModel = dataModels[ 0 ];
 
 	renderr(dataModel);
 
@@ -426,7 +415,7 @@ it('should render various combinations', () => {
 		createExpected(dataModel)
 	);
 
-	dataModel = dataModels[3];
+	dataModel = dataModels[ 3 ];
 	dataModel.reverse();
 
 	renderr(dataModel);
@@ -437,7 +426,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[0];
+	dataModel = dataModels[ 0 ];
 	dataModel.reverse();
 
 	second_render(dataModel);
@@ -448,7 +437,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[0];
+	dataModel = dataModels[ 0 ];
 	dataModel.reverse();
 
 	renderr(dataModel);
@@ -459,7 +448,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[1];
+	dataModel = dataModels[ 1 ];
 	dataModel.reverse();
 
 	renderr(dataModel);
@@ -470,8 +459,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-
-	dataModel = dataModels[3];
+	dataModel = dataModels[ 3 ];
 	dataModel;
 
 	renderr(dataModel);
@@ -482,7 +470,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[1];
+	dataModel = dataModels[ 1 ];
 
 	second_render(dataModel);
 
@@ -492,18 +480,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-
-	dataModel = dataModels[1];
-
-	renderr(dataModel);
-
-	expect(container.innerHTML).to.equal(
-		createExpected(dataModel)
-	);
-
-	render(null, container);
-
-	dataModel = dataModels[4];
+	dataModel = dataModels[ 1 ];
 
 	renderr(dataModel);
 
@@ -513,8 +490,18 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[2];
-	dataModel.reverse()
+	dataModel = dataModels[ 4 ];
+
+	renderr(dataModel);
+
+	expect(container.innerHTML).to.equal(
+		createExpected(dataModel)
+	);
+
+	render(null, container);
+
+	dataModel = dataModels[ 2 ];
+	dataModel.reverse();
 
 	second_render(dataModel);
 
@@ -524,8 +511,8 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[2];
-	dataModel.reverse()
+	dataModel = dataModels[ 2 ];
+	dataModel.reverse();
 
 	renderr(dataModel);
 
@@ -535,8 +522,8 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[3];
-	dataModel.reverse()
+	dataModel = dataModels[ 3 ];
+	dataModel.reverse();
 
 	second_render(dataModel);
 
@@ -546,8 +533,8 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[3];
-	dataModel.reverse()
+	dataModel = dataModels[ 3 ];
+	dataModel.reverse();
 
 	renderr(dataModel);
 
@@ -557,7 +544,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[1];
+	dataModel = dataModels[ 1 ];
 	shuffle(dataModel);
 
 	second_render(dataModel);
@@ -568,7 +555,7 @@ it('should render various combinations', () => {
 
 	render(null, container);
 
-	dataModel = dataModels[1];
+	dataModel = dataModels[ 1 ];
 	shuffle(dataModel);
 
 	renderr(dataModel);
