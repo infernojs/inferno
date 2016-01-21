@@ -1080,11 +1080,7 @@ describe( 'Components (JSX)', () => {
 
 	it('should support module pattern components', function() {
 		function Child({test}) {
-			return {
-				render() {
-					return <div>{test}</div>;
-				}
-			};
+			return <div>{test}</div>;
 		}
 
 		render(<Child test="test" />, container);
