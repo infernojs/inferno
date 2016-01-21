@@ -20,140 +20,150 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
 	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
 	// We solve that with avoiding going into the iteration loop.
-	if (isVoid(startItem) && (isVoid(startItem.tree))) {
-		return;
-	}
+	if (!isVoid(startItem) && (!isVoid(startItem.tree))) {
 
-	// TODO only if there are no other children
-	if (itemsLength === 0 && oldItemsLength >= 5) {
-		if (recyclingEnabled) {
-			for (let i = 0; i < oldItemsLength; i++) {
-				pool(oldItems[i]);
-			}
-		}
-		parentNode.textContent = '';
-		return;
-	}
-
-	let endIndex = itemsLength - 1;
-	let oldEndIndex = oldItemsLength - 1;
-	let oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
-	let endItem;
-	let oldEndItem;
-	let nextNode;
-	let oldItem;
-	let item;
-
-	// TODO don't read key too often
-	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
-		stop = true;
-		while (startItem.key === oldStartItem.key) {
-			startItem.tree.dom.update(oldStartItem, startItem, treeLifecycle, context);
-			startIndex++;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				startItem = items[startIndex];
-				oldStartItem = oldItems[oldStartIndex];
-				stop = false;
-			}
-		}
-		endItem = items[endIndex];
-		oldEndItem = oldItems[oldEndIndex];
-		while (endItem.key === oldEndItem.key) {
-			endItem.tree.dom.update(oldEndItem, endItem, treeLifecycle, context);
-			endIndex--;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				endItem = items[endIndex];
-				oldEndItem = oldItems[oldEndIndex];
-				stop = false;
-			}
-		}
-		while (endItem.key === oldStartItem.key) {
-			nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
-			endItem.tree.dom.update(oldStartItem, endItem, treeLifecycle, context);
-			insertOrAppend(parentNode, endItem.rootNode, nextNode);
-			endIndex--;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				endItem = items[endIndex];
-				oldStartItem = oldItems[oldStartIndex];
-				stop = false;
-			}
-		}
-		while (startItem.key === oldEndItem.key) {
-			nextNode = oldItems[oldStartIndex].rootNode;
-			startItem.tree.dom.update(oldEndItem, startItem, treeLifecycle, context);
-			insertOrAppend(parentNode, startItem.rootNode, nextNode);
-			startIndex++;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				startItem = items[startIndex];
-				oldEndItem = oldItems[oldEndIndex];
-				stop = false;
-			}
-		}
-	}
-
-	if (oldStartIndex > oldEndIndex) {
-		if (startIndex <= endIndex) {
-			nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
-			for (; startIndex <= endIndex; startIndex++) {
-				item = items[startIndex];
-				insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
-			}
-		}
-	} else if (startIndex > endIndex) {
-		for (; oldStartIndex <= oldEndIndex; oldStartIndex++) {
-			oldItem = oldItems[oldStartIndex];
-			remove(oldItem, parentNode);
-		}
-	} else {
-		const oldItemsMap = {};
-		let oldNextItem = (oldEndIndex + 1 < oldItemsLength) ? oldItems[oldEndIndex + 1] : null;
-
-		for (let i = oldEndIndex; i >= oldStartIndex; i--) {
-			oldItem = oldItems[i];
-			oldItem.nextItem = oldNextItem;
-			oldItemsMap[oldItem.key] = oldItem;
-			oldNextItem = oldItem;
-		}
-		let nextItem = (endIndex + 1 < itemsLength) ? items[endIndex + 1] : null;
-
-		for (let i = endIndex; i >= startIndex; i--) {
-			item = items[i];
-			const key = item.key;
-
-			oldItem = oldItemsMap[key];
-			if (oldItem) {
-				oldItemsMap[key] = null;
-				oldNextItem = oldItem.nextItem;
-
-				item.tree.dom.update(oldItem, item, treeLifecycle, context);
-
-				if (item.rootNode.nextSibling !== (nextItem && nextItem.rootNode)) {
-					nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
-					insertOrAppend(parentNode, item.rootNode, nextNode);
+		if (itemsLength === 0 && oldItemsLength >= 5) {
+			if (recyclingEnabled) {
+				for (let i = 0; i < oldItemsLength; i++) {
+					pool(oldItems[i]);
 				}
-			} else {
-				nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
-				insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
 			}
-			nextItem = item;
+			parentNode.textContent = '';
+			return;
 		}
-		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
-			oldItem = oldItems[i];
-			if (oldItemsMap[oldItem.key] !== null) {
+
+		let endIndex = itemsLength - 1;
+		let oldEndIndex = oldItemsLength - 1;
+		let oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
+		let endItem;
+		let oldEndItem;
+		let nextNode;
+		let oldItem;
+		let item;
+		let endItemKey;
+		let oldEndItemKey;
+		let oldStartItemKey;
+		let startItemKey;
+		let updateTree = function(item, oldItem, startItem, treeLifecycle, context) {
+			item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
+		};
+
+		outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
+
+			oldStartItemKey = oldStartItem.key;
+			startItemKey = startItem.key;
+
+			stop = true;
+			while (startItemKey === oldStartItemKey) {
+				updateTree(startItem, oldStartItem, startItem);
+				startIndex++;
+				oldStartIndex++;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					startItem = items[startIndex];
+					oldStartItem = oldItems[oldStartIndex];
+					stop = false;
+				}
+			}
+			endItem = items[endIndex];
+			oldEndItem = oldItems[oldEndIndex];
+			oldEndItemKey = oldEndItem.key;
+			endItemKey = endItem.key;
+
+			while (endItemKey === oldEndItemKey) {
+				updateTree(endItem, oldEndItem, endItem);
+				endIndex--;
+				oldEndIndex--;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					endItem = items[endIndex];
+					oldEndItem = oldItems[oldEndIndex];
+					stop = false;
+				}
+			}
+			while (endItemKey === oldStartItemKey) {
+				nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
+				updateTree(endItem, oldStartItem, endItem);
+				insertOrAppend(parentNode, endItem.rootNode, nextNode);
+				endIndex--;
+				oldStartIndex++;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					endItem = items[endIndex];
+					oldStartItem = oldItems[oldStartIndex];
+					stop = false;
+				}
+			}
+			while (startItemKey === oldEndItemKey) {
+				nextNode = oldItems[oldStartIndex].rootNode;
+				updateTree(startItem, oldEndItem, startItem);
+				insertOrAppend(parentNode, startItem.rootNode, nextNode);
+				startIndex++;
+				oldEndIndex--;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					startItem = items[startIndex];
+					oldEndItem = oldItems[oldEndIndex];
+					stop = false;
+				}
+			}
+		}
+
+		if (oldStartIndex > oldEndIndex) {
+			if (startIndex <= endIndex) {
+				nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
+				for (; startIndex <= endIndex; startIndex++) {
+					item = items[startIndex];
+					insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
+				}
+			}
+		} else if (startIndex > endIndex) {
+			for (; oldStartIndex <= oldEndIndex; oldStartIndex++) {
 				oldItem = oldItems[oldStartIndex];
-				remove(item, parentNode);
+				remove(oldItem, parentNode);
+			}
+		} else {
+			const oldItemsMap = {};
+			let oldNextItem = (oldEndIndex + 1 < oldItemsLength) ? oldItems[oldEndIndex + 1] : null;
+
+			for (let i = oldEndIndex; i >= oldStartIndex; i--) {
+				oldItem = oldItems[i];
+				oldItem.nextItem = oldNextItem;
+				oldItemsMap[oldItem.key] = oldItem;
+				oldNextItem = oldItem;
+			}
+			let nextItem = (endIndex + 1 < itemsLength) ? items[endIndex + 1] : null;
+
+			for (let i = endIndex; i >= startIndex; i--) {
+				item = items[i];
+				const key = item.key;
+
+				oldItem = oldItemsMap[key];
+				if (oldItem) {
+					oldItemsMap[key] = null;
+					oldNextItem = oldItem.nextItem;
+					updateTree(item, oldItem, item);
+
+					if (item.rootNode.nextSibling !== (nextItem && nextItem.rootNode)) {
+						nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
+						insertOrAppend(parentNode, item.rootNode, nextNode);
+					}
+				} else {
+					nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
+					insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
+				}
+				nextItem = item;
+			}
+			for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+				oldItem = oldItems[i];
+				if (oldItemsMap[oldItem.key] !== null) {
+					oldItem = oldItems[oldStartIndex];
+					remove(item, parentNode);
+				}
 			}
 		}
 	}
@@ -204,7 +214,7 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 				}
 			}
 		}
-	} 
+	}
 }
 
 export function insertOrAppend(parentNode, newNode, nextNode) {
