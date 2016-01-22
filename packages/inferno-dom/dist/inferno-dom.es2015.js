@@ -2214,7 +2214,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 	return node;
 }
 
-var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
+var errorMsg$1 = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
 function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 	var domNodeMap = {};
@@ -2227,7 +2227,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 			if (!isVoid(value)) {
 				if ("development" !== 'production') {
 					if (!isStringOrNumber(value)) {
-						throw Error(errorMsg);
+						throw Error(errorMsg$1);
 					}
 				}
 				if (value === '') {
@@ -2265,7 +2265,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 				} else {
 					if ("development" !== 'production') {
 						if (!isStringOrNumber(nextValue)) {
-							throw Error(errorMsg);
+							throw Error(errorMsg$1);
 						}
 					}
 					if (isVoid(lastValue)) {
@@ -2982,12 +2982,12 @@ function createDynamicNode(valueIndex) {
 					break;
 				case ValueTypes.EMPTY_OBJECT:
 					if ("development" !== 'production') {
-						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+						throw Error(errorMsg);
 					}
 					break;
 				case ValueTypes.FUNCTION:
 					if ("development" !== 'production') {
-						throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+						throw Error(errorMsg);
 					}
 					break;
 				case ValueTypes.FRAGMENT:
@@ -3028,8 +3028,6 @@ function createDynamicNode(valueIndex) {
 						break;
 					case ValueTypes.FRAGMENT:
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-						break;
-					default:
 						break;
 				}
 			}
