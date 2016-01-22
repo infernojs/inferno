@@ -1,5 +1,5 @@
 /*!
- * inferno-test-utils v0.5.20
+ * inferno-test-utils v0.5.21
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */

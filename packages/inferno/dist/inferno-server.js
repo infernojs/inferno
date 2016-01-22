@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.5.20
+ * inferno-server v0.5.21
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -769,7 +769,7 @@
   	return node;
   }
 
-  var GLOBAL = global || (typeof window !== 'undefined' ? window : null);
+  var GLOBAL = typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : null;
 
   // browser
   if (GLOBAL && GLOBAL.Inferno) {
