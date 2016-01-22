@@ -2,6 +2,7 @@ import { isRecyclingEnabled, recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode, { recreateRootNodeFromHydration } from '../recreateRootNode';
 import { validateHydrateNode } from '../hydration';
+import addShapeAttributes from '../addShapeAttributes';
 
 export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
 	const node = {
@@ -25,12 +26,7 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			}
 
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(() => {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			return domNode;
 		},

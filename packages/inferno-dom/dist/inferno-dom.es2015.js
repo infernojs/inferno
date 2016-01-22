@@ -2116,6 +2116,15 @@ function recreateRootNodeFromHydration(hydrateNode, nextItem, node, treeLifecycl
 	return domNode;
 }
 
+function addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle) {
+	addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+	if (dynamicAttrs.onAttached) {
+		treeLifecycle.addTreeSuccessListener(function () {
+			handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+		});
+	}
+}
+
 function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
 	var node = {
 		pool: [],
@@ -2146,12 +2155,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -2237,12 +2241,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -2313,12 +2312,7 @@ function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnab
 			}
 			domNode = templateNode.cloneNode(true);
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -2365,12 +2359,7 @@ function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 			var domNode = templateNode.cloneNode(true);
 
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -2498,12 +2487,7 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -2665,12 +2649,7 @@ function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -2880,6 +2859,7 @@ function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildre
 			var domNode = templateNode.cloneNode(false);
 
 			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
+
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
 				if (dynamicAttrs.onAttached) {
@@ -3485,7 +3465,7 @@ function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
 	return node;
 }
 
-function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
+function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
 	var node = {
 		pool: [],
 		keyedPool: [],
@@ -3501,13 +3481,13 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
 			}
 			domNode = templateNode.cloneNode(true);
 			item.rootNode = domNode;
+
+			if (staticNode) {
+				return domNode;
+			}
+
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			return domNode;
 		},
@@ -3516,107 +3496,38 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
-			var domNode = lastItem.rootNode;
 
-			nextItem.rootNode = domNode;
-			nextItem.rootNode = lastItem.rootNode;
-			if (dynamicAttrs) {
-				if (dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-				if (dynamicAttrs.onDidUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-				}
-			}
-		},
-		remove: function remove(item) {
-			if (dynamicAttrs) {
-				var domNode = item.rootNode;
+			if (staticNode) {
+				nextItem.rootNode = lastItem.rootNode;
+			} else {
+				var domNode = lastItem.rootNode;
 
-				if (dynamicAttrs.onWillDetach) {
-					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
-				}
-				clearListeners(item, domNode, dynamicAttrs);
-			}
-		}
-	};
+				nextItem.rootNode = domNode;
+				nextItem.rootNode = lastItem.rootNode;
 
-	return node;
-}
-
-function createVoidNode(templateNode, dynamicAttrs) {
-	var domNodeMap = {};
-	var node = {
-		overrideItem: null,
-		create: function create(item, treeLifecycle) {
-			var domNode = templateNode.cloneNode(true);
-
-			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(function () {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
-			}
-			domNodeMap[item.id] = domNode;
-			return domNode;
-		},
-		update: function update(lastItem, nextItem) {
-			var domNode = domNodeMap[lastItem.id];
-
-			if (dynamicAttrs) {
-				if (dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-				if (dynamicAttrs.onDidUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				if (dynamicAttrs) {
+					if (dynamicAttrs.onWillUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+					}
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+					if (dynamicAttrs.onDidUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+					}
 				}
 			}
 		},
 		remove: function remove(item) {
-			var domNode = domNodeMap[item.id];
+			if (!staticNode) {
+				if (dynamicAttrs) {
+					var domNode = item.rootNode;
 
-			if (dynamicAttrs) {
-				if (dynamicAttrs.onWillDetach) {
-					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
-				}
-				clearListeners(item, domNode, dynamicAttrs);
-			}
-		}
-	};
-
-	return node;
-}
-
-function createRootStaticNode(templateNode, recyclingEnabled) {
-	var node = {
-		pool: [],
-		keyedPool: [],
-		overrideItem: null,
-		create: function create(item) {
-			var domNode = undefined;
-
-			if (recyclingEnabled) {
-				domNode = recycle(node, item);
-				if (domNode) {
-					return domNode;
+					if (dynamicAttrs.onWillDetach) {
+						handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
+					}
+					clearListeners(item, domNode, dynamicAttrs);
 				}
 			}
-			domNode = templateNode.cloneNode(true);
-			item.rootNode = domNode;
-			return domNode;
 		},
-		update: function update(lastItem, nextItem) {
-			if (node !== lastItem.tree.dom) {
-				recreateRootNode(lastItem, nextItem, node);
-				return;
-			}
-			nextItem.rootNode = lastItem.rootNode;
-		},
-		remove: function remove() {},
 		hydrate: function hydrate(hydrateNode, item) {
 			if (!validateHydrateNode(hydrateNode, templateNode, item)) {
 				recreateRootNodeFromHydration(hydrateNode, item, node);
@@ -3625,17 +3536,53 @@ function createRootStaticNode(templateNode, recyclingEnabled) {
 			item.rootNode = hydrateNode;
 		}
 	};
+
 	return node;
 }
 
-function createStaticNode(templateNode) {
+function createVoidNode(templateNode, dynamicAttrs, staticNode) {
+	var domNodeMap = {};
 	var node = {
 		overrideItem: null,
-		create: function create() {
-			return templateNode.cloneNode(true);
+		create: function create(item, treeLifecycle) {
+			var domNode = templateNode.cloneNode(true);
+
+			if (staticNode) {
+				return domNode;
+			}
+
+			if (dynamicAttrs) {
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+			}
+			domNodeMap[item.id] = domNode;
+			return domNode;
 		},
-		update: function update() {},
-		remove: function remove() {},
+		update: function update(lastItem, nextItem) {
+			if (!staticNode) {
+				var domNode = domNodeMap[lastItem.id];
+				if (dynamicAttrs) {
+					if (dynamicAttrs.onWillUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+					}
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+					if (dynamicAttrs.onDidUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+					}
+				}
+			}
+		},
+		remove: function remove(item) {
+			if (!staticNode) {
+				var domNode = domNodeMap[item.id];
+
+				if (dynamicAttrs) {
+					if (dynamicAttrs.onWillDetach) {
+						handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
+					}
+					clearListeners(item, domNode, dynamicAttrs);
+				}
+			}
+		},
 		hydrate: function hydrate() {}
 	};
 
@@ -3802,9 +3749,9 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 			}
 		}
 		if (isRoot) {
-			node = createRootStaticNode(templateNode, recyclingEnabled);
+			node = createRootVoidNode(templateNode, null, recyclingEnabled, true);
 		} else {
-			node = createStaticNode(templateNode);
+			node = createVoidNode(templateNode, true);
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
@@ -3937,9 +3884,9 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 						}
 					} else {
 						if (isRoot) {
-							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled);
+							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false);
 						} else {
-							node = createVoidNode(templateNode, dynamicAttrs);
+							node = createVoidNode(templateNode, dynamicAttrs, false);
 						}
 					}
 				}

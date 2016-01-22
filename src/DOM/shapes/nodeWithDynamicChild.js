@@ -8,6 +8,7 @@ import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import removeChild from '../../core/removeChild';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
+import addShapeAttributes from '../addShapeAttributes';
 
 export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 	let keyedChildren = true;
@@ -58,12 +59,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(() => {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;

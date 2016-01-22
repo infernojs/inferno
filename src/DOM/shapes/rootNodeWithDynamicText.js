@@ -4,6 +4,7 @@ import { recycle } from '../recycling';
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
+import addShapeAttributes from '../addShapeAttributes';
 
 export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
 	const node = {
@@ -35,12 +36,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(() => {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			item.rootNode = domNode;
 			return domNode;

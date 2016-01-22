@@ -10,6 +10,7 @@ import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import { updateKeyed, updateNonKeyed } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
+import addShapeAttributes from '../addShapeAttributes';
 
 export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
 	let keyedChildren = true;
@@ -69,12 +70,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
-				if (dynamicAttrs.onAttached) {
-					treeLifecycle.addTreeSuccessListener(() => {
-						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
-					});
-				}
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			item.rootNode = domNode;
 			return domNode;
