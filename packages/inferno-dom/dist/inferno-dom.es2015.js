@@ -156,6 +156,7 @@ var recyclingEnabled$2 = isRecyclingEnabled();
 var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
+
 	var stop = false;
 	var startIndex = 0;
 	var oldStartIndex = 0;
@@ -168,191 +169,197 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
 	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
 	// We solve that with avoiding going into the iteration loop.
-	if (isVoid(startItem) && isVoid(startItem.tree)) {
-		return;
-	}
+	if (!isVoid(startItem) && !isVoid(startItem.tree)) {
 
-	// TODO only if there are no other children
-	if (itemsLength === 0 && oldItemsLength >= 5) {
-		if (recyclingEnabled$2) {
-			for (var i = 0; i < oldItemsLength; i++) {
-				pool(oldItems[i]);
-			}
-		}
-		parentNode.textContent = '';
-		return;
-	}
-
-	var endIndex = itemsLength - 1;
-	var oldEndIndex = oldItemsLength - 1;
-	var oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
-	var endItem = undefined;
-	var oldEndItem = undefined;
-	var nextNode = undefined;
-	var oldItem = undefined;
-	var item = undefined;
-
-	// TODO don't read key too often
-	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
-		stop = true;
-		while (startItem.key === oldStartItem.key) {
-			startItem.tree.dom.update(oldStartItem, startItem, treeLifecycle, context);
-			startIndex++;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				startItem = items[startIndex];
-				oldStartItem = oldItems[oldStartIndex];
-				stop = false;
-			}
-		}
-		endItem = items[endIndex];
-		oldEndItem = oldItems[oldEndIndex];
-		while (endItem.key === oldEndItem.key) {
-			endItem.tree.dom.update(oldEndItem, endItem, treeLifecycle, context);
-			endIndex--;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				endItem = items[endIndex];
-				oldEndItem = oldItems[oldEndIndex];
-				stop = false;
-			}
-		}
-		while (endItem.key === oldStartItem.key) {
-			nextNode = endIndex + 1 < itemsLength ? items[endIndex + 1].rootNode : parentNextNode;
-			endItem.tree.dom.update(oldStartItem, endItem, treeLifecycle, context);
-			insertOrAppend(parentNode, endItem.rootNode, nextNode);
-			endIndex--;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				endItem = items[endIndex];
-				oldStartItem = oldItems[oldStartIndex];
-				stop = false;
-			}
-		}
-		while (startItem.key === oldEndItem.key) {
-			nextNode = oldItems[oldStartIndex].rootNode;
-			startItem.tree.dom.update(oldEndItem, startItem, treeLifecycle, context);
-			insertOrAppend(parentNode, startItem.rootNode, nextNode);
-			startIndex++;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
-				break outer;
-			} else {
-				startItem = items[startIndex];
-				oldEndItem = oldItems[oldEndIndex];
-				stop = false;
-			}
-		}
-	}
-
-	if (oldStartIndex > oldEndIndex) {
-		if (startIndex <= endIndex) {
-			nextNode = endIndex + 1 < itemsLength ? items[endIndex + 1].rootNode : parentNextNode;
-			for (; startIndex <= endIndex; startIndex++) {
-				item = items[startIndex];
-				insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
-			}
-		}
-	} else if (startIndex > endIndex) {
-		for (; oldStartIndex <= oldEndIndex; oldStartIndex++) {
-			oldItem = oldItems[oldStartIndex];
-			remove(oldItem, parentNode);
-		}
-	} else {
-		var oldItemsMap = {};
-		var oldNextItem = oldEndIndex + 1 < oldItemsLength ? oldItems[oldEndIndex + 1] : null;
-
-		for (var i = oldEndIndex; i >= oldStartIndex; i--) {
-			oldItem = oldItems[i];
-			oldItem.nextItem = oldNextItem;
-			oldItemsMap[oldItem.key] = oldItem;
-			oldNextItem = oldItem;
-		}
-		var nextItem = endIndex + 1 < itemsLength ? items[endIndex + 1] : null;
-
-		for (var i = endIndex; i >= startIndex; i--) {
-			item = items[i];
-			var key = item.key;
-
-			oldItem = oldItemsMap[key];
-			if (oldItem) {
-				oldItemsMap[key] = null;
-				oldNextItem = oldItem.nextItem;
-
-				item.tree.dom.update(oldItem, item, treeLifecycle, context);
-
-				/* eslint eqeqeq:0 */
-				// TODO optimise
-				if (item.rootNode.nextSibling != (nextItem && nextItem.rootNode)) {
-					nextNode = nextItem && nextItem.rootNode || parentNextNode;
-					insertOrAppend(parentNode, item.rootNode, nextNode);
+		if (items == null || itemsLength === 0 && oldItemsLength >= 5) {
+			if (recyclingEnabled$2) {
+				for (var i = 0; i < oldItemsLength; i++) {
+					pool(oldItems[i]);
 				}
-			} else {
-				nextNode = nextItem && nextItem.rootNode || parentNextNode;
-				insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
 			}
-			nextItem = item;
+			parentNode.textContent = '';
+			return;
 		}
-		for (var i = oldStartIndex; i <= oldEndIndex; i++) {
-			oldItem = oldItems[i];
-			if (oldItemsMap[oldItem.key] !== null) {
+
+		var endIndex = itemsLength - 1;
+		var oldEndIndex = oldItemsLength - 1;
+		var oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
+		var endItem = undefined;
+		var oldEndItem = undefined;
+		var nextNode = undefined;
+		var oldItem = undefined;
+		var item = undefined;
+		var endItemKey = undefined;
+		var oldEndItemKey = undefined;
+		var oldStartItemKey = undefined;
+		var startItemKey = undefined;
+		var updateTree = function updateTree(item, oldItem, startItem, treeLifecycle, context) {
+			item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
+		};
+
+		outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
+
+			oldStartItemKey = oldStartItem.key;
+			startItemKey = startItem.key;
+
+			stop = true;
+			while (startItemKey === oldStartItemKey) {
+				updateTree(startItem, oldStartItem, startItem);
+				startIndex++;
+				oldStartIndex++;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					startItem = items[startIndex];
+					oldStartItem = oldItems[oldStartIndex];
+					stop = false;
+				}
+			}
+			endItem = items[endIndex];
+			oldEndItem = oldItems[oldEndIndex];
+			oldEndItemKey = oldEndItem.key;
+			endItemKey = endItem.key;
+
+			while (endItemKey === oldEndItemKey) {
+				updateTree(endItem, oldEndItem, endItem);
+				endIndex--;
+				oldEndIndex--;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					endItem = items[endIndex];
+					oldEndItem = oldItems[oldEndIndex];
+					stop = false;
+				}
+			}
+			while (endItemKey === oldStartItemKey) {
+				nextNode = endIndex + 1 < itemsLength ? items[endIndex + 1].rootNode : parentNextNode;
+				updateTree(endItem, oldStartItem, endItem);
+				insertOrAppend(parentNode, endItem.rootNode, nextNode);
+				endIndex--;
+				oldStartIndex++;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					endItem = items[endIndex];
+					oldStartItem = oldItems[oldStartIndex];
+					stop = false;
+				}
+			}
+			while (startItemKey === oldEndItemKey) {
+				nextNode = oldItems[oldStartIndex].rootNode;
+				updateTree(startItem, oldEndItem, startItem);
+				insertOrAppend(parentNode, startItem.rootNode, nextNode);
+				startIndex++;
+				oldEndIndex--;
+				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+					break outer;
+				} else {
+					startItem = items[startIndex];
+					oldEndItem = oldItems[oldEndIndex];
+					stop = false;
+				}
+			}
+		}
+
+		if (oldStartIndex > oldEndIndex) {
+			if (startIndex <= endIndex) {
+				nextNode = endIndex + 1 < itemsLength ? items[endIndex + 1].rootNode : parentNextNode;
+				for (; startIndex <= endIndex; startIndex++) {
+					item = items[startIndex];
+					insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
+				}
+			}
+		} else if (startIndex > endIndex) {
+			for (; oldStartIndex <= oldEndIndex; oldStartIndex++) {
 				oldItem = oldItems[oldStartIndex];
-				remove(item, parentNode);
+				remove(oldItem, parentNode);
+			}
+		} else {
+			var oldItemsMap = {};
+			var oldNextItem = oldEndIndex + 1 < oldItemsLength ? oldItems[oldEndIndex + 1] : null;
+
+			for (var i = oldEndIndex; i >= oldStartIndex; i--) {
+				oldItem = oldItems[i];
+				oldItem.nextItem = oldNextItem;
+				oldItemsMap[oldItem.key] = oldItem;
+				oldNextItem = oldItem;
+			}
+			var nextItem = endIndex + 1 < itemsLength ? items[endIndex + 1] : null;
+
+			for (var i = endIndex; i >= startIndex; i--) {
+				item = items[i];
+				var key = item.key;
+
+				oldItem = oldItemsMap[key];
+				if (oldItem) {
+					oldItemsMap[key] = null;
+					oldNextItem = oldItem.nextItem;
+					updateTree(item, oldItem, item);
+
+					if (item.rootNode.nextSibling !== (nextItem && nextItem.rootNode)) {
+						nextNode = nextItem && nextItem.rootNode || parentNextNode;
+						insertOrAppend(parentNode, item.rootNode, nextNode);
+					}
+				} else {
+					nextNode = nextItem && nextItem.rootNode || parentNextNode;
+					insertOrAppend(parentNode, item.tree.dom.create(item, treeLifecycle, context), nextNode);
+				}
+				nextItem = item;
+			}
+			for (var i = oldStartIndex; i <= oldEndIndex; i++) {
+				oldItem = oldItems[i];
+				if (oldItemsMap[oldItem.key] !== null) {
+					oldItem = oldItems[oldStartIndex];
+					remove(item, parentNode);
+				}
 			}
 		}
 	}
 }
 
-// TODO can we improve performance here?
 function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
 	var itemsLength = undefined;
-	// We can't calculate length of 0 in the cases either items or oldItems is 0.
-	// In this cases we need workaround
-	if (items && oldItems) {
-		itemsLength = Math.max(items.length, oldItems.length);
-	} else if (items) {
-		itemsLength = items = itemsLength;
-	} else if (oldItems) {
-		itemsLength = oldItems = itemsLength;
-	}
-	for (var i = 0; i < itemsLength; i++) {
-		var item = items[i];
-		var oldItem = oldItems[i];
-		if (item !== oldItem) {
-			if (!isVoid(item)) {
-				if (!isVoid(oldItem)) {
-					if (isStringOrNumber(item)) {
-						var domNode = domNodeList[i];
 
-						if (domNode) {
-							domNode.nodeValue = item;
+	if (items) {
+		if (!isVoid(oldItems)) {
+			itemsLength = Math.max(items.length, oldItems.length);
+
+			for (var i = 0; i < itemsLength; i++) {
+				var item = items[i];
+				var oldItem = oldItems[i];
+
+				if (!isVoid(item)) {
+
+					if (!isVoid(oldItem)) {
+						if (isStringOrNumber(item)) {
+							var domNode = domNodeList[i];
+
+							if (domNode) {
+								domNode.nodeValue = item;
+							}
+						} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+							item.tree.dom.update(oldItem, item, treeLifecycle, context);
 						}
-					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
-						item.tree.dom.update(oldItem, item, treeLifecycle, context);
+					} else {
+						if (isStringOrNumber(item)) {
+							var childNode = document.createTextNode(item);
+
+							domNodeList[i] = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
+						} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+							var childNode = item.tree.dom.create(item, treeLifecycle, context);
+
+							domNodeList[i] = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
+						}
 					}
 				} else {
-					if (isStringOrNumber(item)) {
-						var childNode = document.createTextNode(item);
 
-						domNodeList[i] = childNode;
-						insertOrAppend(parentNode, childNode, parentNextNode);
-					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
-						var childNode = item.tree.dom.create(item, treeLifecycle, context);
-
-						domNodeList[i] = childNode;
-						insertOrAppend(parentNode, childNode, parentNextNode);
+					if (domNodeList[i]) {
+						parentNode.removeChild(domNodeList[i]);
+						domNodeList.splice(i, 1);
 					}
-				}
-			} else {
-				if (domNodeList[i]) {
-					parentNode.removeChild(domNodeList[i]);
-					domNodeList.splice(i, 1);
 				}
 			}
 		}
@@ -384,63 +391,63 @@ function remove(item, parentNode) {
 }
 
 function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
-	var domNode = document.createDocumentFragment();
-	var keyedChildren = true;
 
-	if (isVoid(value)) {
-		return;
-	}
+	if (!isVoid(value)) {
 
-	for (var i = 0; i < value.length; i++) {
-		var childNode = value[i];
-		var childType = getTypeFromValue(childNode);
-		var childDomNode = undefined;
+		var domNode = document.createDocumentFragment();
+		var keyedChildren = true;
 
-		switch (childType) {
-			case ValueTypes.TEXT:
-				childDomNode = document.createTextNode(childNode);
-				childNodeList.push(childDomNode);
-				domNode.appendChild(childDomNode);
-				keyedChildren = false;
-				break;
-			case ValueTypes.TREE:
-				keyedChildren = false;
-				childDomNode = childNode.create(item, treeLifecycle, context);
-				childNodeList.push(childDomNode);
+		for (var i = 0; i < value.length; i++) {
+			var childNode = value[i];
+			var childType = getTypeFromValue(childNode);
+			var childDomNode = undefined;
 
-				if ("development" !== 'production') {
-					if (childDomNode === undefined) {
-						throw Error('Inferno Error: Children must be provided as templates.');
-					}
-				}
-				domNode.appendChild(childDomNode);
-				break;
-			case ValueTypes.FRAGMENT:
-				if (childNode.key === undefined) {
+			switch (childType) {
+				case ValueTypes.TEXT:
+					childDomNode = document.createTextNode(childNode);
+					childNodeList.push(childDomNode);
+					domNode.appendChild(childDomNode);
 					keyedChildren = false;
-				}
-				childDomNode = childNode.tree.dom.create(childNode, treeLifecycle, context);
-				childNodeList.push(childDomNode);
-				domNode.appendChild(childDomNode);
-				break;
-			case ValueTypes.EMPTY_OBJECT:
-				if ("development" !== 'production') {
-					throw Error(infernoBadTemplate);
-				}
-				return;
-			case ValueTypes.FUNCTION:
-				if ("development" !== 'production') {
-					throw Error(infernoBadTemplate);
-				}
-				return;
-			case ValueTypes.ARRAY:
-				if ("development" !== 'production') {
-					throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
-				}
-				return;
+					break;
+				case ValueTypes.TREE:
+					keyedChildren = false;
+					childDomNode = childNode.create(item, treeLifecycle, context);
+					childNodeList.push(childDomNode);
+
+					if ("development" !== 'production') {
+						if (childDomNode === undefined) {
+							throw Error('Inferno Error: Children must be provided as templates.');
+						}
+					}
+					domNode.appendChild(childDomNode);
+					break;
+				case ValueTypes.FRAGMENT:
+					if (childNode.key === undefined) {
+						keyedChildren = false;
+					}
+					childDomNode = childNode.tree.dom.create(childNode, treeLifecycle, context);
+					childNodeList.push(childDomNode);
+					domNode.appendChild(childDomNode);
+					break;
+				case ValueTypes.EMPTY_OBJECT:
+					if ("development" !== 'production') {
+						throw Error(infernoBadTemplate);
+					}
+					return;
+				case ValueTypes.FUNCTION:
+					if ("development" !== 'production') {
+						throw Error(infernoBadTemplate);
+					}
+					return;
+				case ValueTypes.ARRAY:
+					if ("development" !== 'production') {
+						throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
+					}
+					return;
+			}
 		}
+		return { domNode: domNode, keyedChildren: keyedChildren };
 	}
-	return { domNode: domNode, keyedChildren: keyedChildren };
 }
 
 function updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context) {
