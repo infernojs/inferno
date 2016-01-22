@@ -123,15 +123,14 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						} else {
 						// FIX THIS!!
 							if(lastItem.tree !== undefined){
+								if ( lastItem.tree.dom ){
+									lastItem.tree.dom.update(lastItem, nextValue, treeLifecycle, context);
+								} else {
 
-								nextItem.tree.dom.update(lastItem, nextValue, treeLifecycle, context);
-
+								}
 							} else {
 								recreateNode(lastItem, nextItem, node, treeLifecycle, context);
 							}
-
-
-
 						}
 					} else {
 						removeChild(domNode);
