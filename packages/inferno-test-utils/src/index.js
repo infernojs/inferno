@@ -34,6 +34,6 @@ if (GLOBAL && GLOBAL.Inferno) {
 export default {
 	shallowRender,
 	deepRender,
-	renderIntoDocument,
-	Simulate
+	renderIntoDocument
+	//Simulate
 };

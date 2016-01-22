@@ -8,7 +8,7 @@ const Inferno = { createTemplate };
 
 addTreeConstructor('test', createTestTree);
 
-describe('Shallow Rendering', () => {
+describe('TestUtils - Shallow Rendering', () => {
 	it('Basic example should render of elements', () => {
 		const output = shallowRender(<div />);
 		expect(output.tag).to.equal('div');
