@@ -1,4 +1,5 @@
 import isVoid from '../../util/isVoid';
+import isVoidValue from '../../util/isVoidValue';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateNode from '../recreateNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
@@ -21,11 +22,8 @@ export default function createDynamicNode(valueIndex) {
 
 			switch (type) {
 				case ValueTypes.TEXT:
-					// Testing the length property are actually faster than testing the
-					// string against '', because the interpreter won't have to create a String
-					// object from the string literal.
-					if (isVoid(value) || value.length === 0) {
-						value = '';
+					if(isVoidValue(value)) {
+					value = '';
 					}
 					domNode = document.createTextNode(value);
 					break;
@@ -61,11 +59,13 @@ export default function createDynamicNode(valueIndex) {
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
-			let domNode = domNodeMap[lastItem.id];
+
 			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
+
+				const domNode = domNodeMap[lastItem.id];
 				const nextType = getTypeFromValue(nextValue);
 				const lastType = getTypeFromValue(lastValue);
 
@@ -75,24 +75,20 @@ export default function createDynamicNode(valueIndex) {
 				}
 				switch (nextType) {
 					case ValueTypes.TEXT:
-						// Testing the length property are actually faster than testing the
-						// string against '', because the interpreter won't have to create a String
-						// object from the string literal.
-						if (isVoid(nextValue) ||
-							nextValue.length === 0) {
+						if (isVoidValue(nextValue)) {
 							nextValue = '';
 						}
 						domNode.nodeValue = nextValue;
-						break;
+						return;
 					case ValueTypes.ARRAY:
 						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
-						break;
+						return;
 					case ValueTypes.TREE:
 						// TODO
 						break;
 					case ValueTypes.FRAGMENT:
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-						break;
+						return;
 				}
 			}
 		},

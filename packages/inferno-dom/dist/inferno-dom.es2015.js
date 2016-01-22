@@ -2944,6 +2944,13 @@ function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildre
 	return node;
 }
 
+// Testing the length property are actually faster than testing the
+// string against '', because the interpreter won't have to create a String
+// object from the string literal.
+var isVoidValue = (function (x) {
+  return x === null || x === undefined || x.length === 0;
+})
+
 function createDynamicNode(valueIndex) {
 	var domNodeMap = {};
 	var childNodeList = [];
@@ -2958,10 +2965,7 @@ function createDynamicNode(valueIndex) {
 
 			switch (type) {
 				case ValueTypes.TEXT:
-					// Testing the length property are actually faster than testing the
-					// string against '', because the interpreter won't have to create a String
-					// object from the string literal.
-					if (isVoid(value) || value.length === 0) {
+					if (isVoidValue(value)) {
 						value = '';
 					}
 					domNode = document.createTextNode(value);
@@ -2998,11 +3002,13 @@ function createDynamicNode(valueIndex) {
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle, context) {
-			var domNode = domNodeMap[lastItem.id];
+
 			var nextValue = getValueWithIndex(nextItem, valueIndex);
 			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
+
+				var domNode = domNodeMap[lastItem.id];
 				var nextType = getTypeFromValue(nextValue);
 				var lastType = getTypeFromValue(lastValue);
 
@@ -3012,23 +3018,20 @@ function createDynamicNode(valueIndex) {
 				}
 				switch (nextType) {
 					case ValueTypes.TEXT:
-						// Testing the length property are actually faster than testing the
-						// string against '', because the interpreter won't have to create a String
-						// object from the string literal.
-						if (isVoid(nextValue) || nextValue.length === 0) {
+						if (isVoidValue(nextValue)) {
 							nextValue = '';
 						}
 						domNode.nodeValue = nextValue;
-						break;
+						return;
 					case ValueTypes.ARRAY:
 						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
-						break;
+						return;
 					case ValueTypes.TREE:
 						// TODO
 						break;
 					case ValueTypes.FRAGMENT:
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-						break;
+						return;
 				}
 			}
 		},

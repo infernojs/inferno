@@ -1,4 +1,5 @@
 import isVoid from '../../util/isVoid';
+import isVoidValue from '../../util/isVoidValue';
 import { recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
@@ -30,8 +31,7 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 
 			switch (type) {
 				case ValueTypes.TEXT:
-					// TODO check if string is empty?
-					if (isVoid(value)) {
+					if (isVoidValue(value)) {
 						value = '';
 					}
 					domNode = document.createTextNode(value);
@@ -56,12 +56,12 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 					if (process.env.NODE_ENV !== 'production') {
 						throw Error(errorMsg);
 					}
-					return;
+					break;
 				case ValueTypes.FUNCTION:
 					if (process.env.NODE_ENV !== 'production') {
 						throw Error(errorMsg);
 					}
-					return;
+					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create(value, treeLifecycle, context);
 					break;
@@ -80,7 +80,7 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 			nextItem.rootNode = domNode;
 			nextItem.id = lastItem.id;
 
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
@@ -94,19 +94,20 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 				}
 				switch (nextType) {
 					case ValueTypes.TEXT:
-						// TODO check if string is empty?
+						if (isVoidValue(nextValue)) {
+							nextValue = '';
+						}
 						domNode.nodeValue = nextValue;
-						break;
+						return;
 					case ValueTypes.ARRAY:
 						updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context);
-						break;
+						return;
 					case ValueTypes.TREE:
 						// TODO
-						break;
+						return;
 					case ValueTypes.FRAGMENT:
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-						break;
-					default: break;
+						return;
 				}
 			}
 		},
