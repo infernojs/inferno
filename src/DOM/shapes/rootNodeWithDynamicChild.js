@@ -131,7 +131,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
 						}
 					} else {
-						updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
+						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 					}
 				} else if (typeof nextValue === 'object') {
 					const tree = nextValue && nextValue.tree;
