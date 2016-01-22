@@ -31,14 +31,18 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			const tree = lastItem && lastItem.tree;
+
+			if (tree && (node !== tree.dom)) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 
 			if (staticNode){
 				nextItem.rootNode = lastItem.rootNode;
-			} else {
+				return;
+			}
 				const domNode = lastItem.rootNode;
 
 				nextItem.rootNode = domNode;
@@ -53,7 +57,6 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 					}
 				}
-			}
 		},
 		remove(item) {
 			if (!staticNode){
