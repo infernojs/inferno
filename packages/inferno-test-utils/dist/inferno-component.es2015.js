@@ -132,14 +132,14 @@ var Simulate = {
 	Click: false
 };
 
-var global = global || (typeof window !== 'undefined' ? window : null);
+var GLOBAL = global || (typeof window !== 'undefined' ? window : null);
 
 // browser
-if (global && global.Inferno) {
-	global.Inferno.addTreeConstructor('test', createTree);
+if (GLOBAL && GLOBAL.Inferno) {
+	GLOBAL.Inferno.addTreeConstructor('test', createTree);
 	// nodeJS
 	// TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
-} else if (global && !global.Inferno) {
+} else if (GLOBAL && !GLOBAL.Inferno) {
 		var Inferno = undefined;
 
 		// TODO! Avoid try / catch

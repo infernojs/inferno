@@ -10,12 +10,10 @@ import createRootNodeWithDynamicChild from './shapes/rootNodeWithDynamicChild';
 import createNodeWithDynamicChild from './shapes/nodeWithDynamicChild';
 import createRootNodeWithDynamicSubTreeForChildren from './shapes/rootNodeWithDynamicSubTreeForChildren';
 import createNodeWithDynamicSubTreeForChildren from './shapes/nodeWithDynamicSubTreeForChildren';
-// import createRootDynamicNode from './shapes/rootDynamicNode';
 import createDynamicNode from './shapes/dynamicNode';
 import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
 import createNodeWithComponent from './shapes/nodeWithComponent';
 import createRootDynamicTextNode from './shapes/rootDynamicTextNode';
-// import createDynamicTextNode from './shapes/dynamicTextNode';
 import { ObjectTypes } 	from '../core/variables';
 import isArray from '../util/isArray';
 import { addDOMStaticAttributes } from './addAttributes';
@@ -77,7 +75,10 @@ function createElement(schema, domNamespace, parentNode) {
 }
 
 const recyclingEnabled = isRecyclingEnabled();
-const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+if (process.env.NODE_ENV !== 'production') {
+	const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+}
+
 
 function createStaticAttributes(node, domNode, excludeAttrs) {
 	const attrs = node.attrs;
@@ -235,7 +236,6 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						return createNodeWithComponent(tag.index, attrs, children, domNamespace);
 					}
 				}
-
 				templateNode = createElement(schema, domNamespace, null).node;
 
 				const attrs = schema.attrs;
@@ -343,12 +343,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					}
 				}
 			} else if (text) {
-				templateNode = document.createTextNode('');
-				// if ( isRoot ) {
-				node = createRootDynamicTextNode(templateNode, text.index);
-				// } //else {
-//					node = createDynamicTextNode( templateNode, text.index );
-//				}
+				node = createRootDynamicTextNode(document.createTextNode(''), text.index);
 			}
 		}
 	}

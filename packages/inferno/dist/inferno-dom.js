@@ -3695,8 +3695,6 @@
   }
 
   var recyclingEnabled = isRecyclingEnabled();
-  var invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
-
   function createStaticAttributes(node, domNode, excludeAttrs) {
   	var attrs = node.attrs;
 
@@ -3853,7 +3851,6 @@
   						return createNodeWithComponent(tag.index, _attrs, _children, domNamespace);
   					}
   				}
-
   				templateNode = createElement(schema, domNamespace, null).node;
 
   				var attrs = schema.attrs;
@@ -3953,26 +3950,21 @@
   					}
   				}
   			} else if (text) {
-  				templateNode = document.createTextNode('');
-  				// if ( isRoot ) {
-  				node = createRootDynamicTextNode(templateNode, text.index);
-  				// } //else {
-  				//					node = createDynamicTextNode( templateNode, text.index );
-  				//				}
+  				node = createRootDynamicTextNode(document.createTextNode(''), text.index);
   			}
   		}
   	}
   	return node;
   }
 
-  var global = global || (typeof window !== 'undefined' ? window : null);
+  var GLOBAL = global || (typeof window !== 'undefined' ? window : null);
 
   // browser
-  if (global && global.Inferno) {
-  	global.Inferno.addTreeConstructor('dom', createDOMTree);
+  if (GLOBAL && GLOBAL.Inferno) {
+  	GLOBAL.Inferno.addTreeConstructor('dom', createDOMTree);
   	// nodeJS
   	// TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
-  } else if (global && !global.Inferno) {
+  } else if (GLOBAL && !GLOBAL.Inferno) {
   		var Inferno = undefined;
 
   		// TODO! Avoid try / catch
