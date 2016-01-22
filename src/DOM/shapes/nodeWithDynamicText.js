@@ -1,8 +1,8 @@
 import isVoid from '../../util/isVoid';
+import appendText from '../../util/appendText';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
-import addShapeAttributes from '../addShapeAttributes';
 
 const errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
@@ -27,7 +27,12 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 				}
 			}
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				if (dynamicAttrs.onAttached) {
+					treeLifecycle.addTreeSuccessListener(() => {
+						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
+					});
+				}
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -40,25 +45,13 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 			}
-			if (nextValue !== lastValue) {
-				if (isVoid(nextValue)) {
-					if (isVoid(lastValue)) {
-						domNode.firstChild.nodeValue = '';
-					} else {
-						domNode.textContent = '';
-					}
-				} else {
-					if (process.env.NODE_ENV !== 'production') {
-						if (!isStringOrNumber(nextValue)) {
-							throw Error(errorMsg);
-						}
-					}
-					if (isVoid(lastValue)) {
-						domNode.textContent = nextValue;
-					} else {
-						domNode.firstChild.nodeValue = nextValue;
-					}
-				}
+
+			if (isVoid(nextValue)) {
+				appendText(domNode, '');
+			} else	if (isVoid(lastValue)) {
+				appendText(domNode, nextValue);
+			} else	if (nextValue !== lastValue) {
+				domNode.firstChild.nodeValue = nextValue;
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
