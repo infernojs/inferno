@@ -20,8 +20,6 @@ import { addDOMStaticAttributes } from './addAttributes';
 import { isRecyclingEnabled } from './recycling';
 import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
-import createRootStaticNode from './shapes/rootStaticNode';
-import createStaticNode from './shapes/staticNode';
 
 function createElement(schema, domNamespace, parentNode) {
 	const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
@@ -193,9 +191,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 			}
 		}
 		if (isRoot) {
-			node = createRootStaticNode(templateNode, recyclingEnabled);
+			node = createRootVoidNode(templateNode, null, recyclingEnabled, true);
 		} else {
-			node = createStaticNode(templateNode);
+			node = createVoidNode(templateNode, true);
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
@@ -336,9 +334,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 						}
 					} else {
 						if (isRoot) {
-							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled);
+							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false);
 						} else {
-							node = createVoidNode(templateNode, dynamicAttrs);
+							node = createVoidNode(templateNode, dynamicAttrs, false);
 						}
 					}
 				}

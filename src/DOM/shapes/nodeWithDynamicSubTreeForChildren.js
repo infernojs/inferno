@@ -13,6 +13,7 @@ export default function createNodeWithDynamicSubTreeForChildren(templateNode, su
 			const domNode = templateNode.cloneNode(false);
 
 			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
+
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
 				if (dynamicAttrs.onAttached) {

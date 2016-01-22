@@ -1,11 +1,15 @@
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 
-export default function createVoidNode(templateNode, dynamicAttrs) {
+export default function createVoidNode(templateNode, dynamicAttrs, staticNode) {
 	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
 		create(item, treeLifecycle) {
 			const domNode = templateNode.cloneNode(true);
+
+			if (staticNode) {
+				return domNode;
+			}
 
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
@@ -19,28 +23,32 @@ export default function createVoidNode(templateNode, dynamicAttrs) {
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			const domNode = domNodeMap[lastItem.id];
-
-			if (dynamicAttrs) {
-				if (dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-				if (dynamicAttrs.onDidUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+			if ( !staticNode) {
+				const domNode = domNodeMap[lastItem.id];
+				if (dynamicAttrs) {
+					if (dynamicAttrs.onWillUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+					}
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+					if (dynamicAttrs.onDidUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+					}
 				}
 			}
 		},
 		remove(item) {
-			const domNode = domNodeMap[item.id];
+			if (!staticNode) {
+				const domNode = domNodeMap[item.id];
 
-			if (dynamicAttrs) {
-				if (dynamicAttrs.onWillDetach) {
-					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
+				if (dynamicAttrs) {
+					if (dynamicAttrs.onWillDetach) {
+						handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
+					}
+					clearListeners(item, domNode, dynamicAttrs);
 				}
-				clearListeners(item, domNode, dynamicAttrs);
 			}
-		}
+		},
+		hydrate() {}
 	};
 
 	return node;

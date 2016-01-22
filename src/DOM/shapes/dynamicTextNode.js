@@ -4,7 +4,7 @@ import { getValueWithIndex } from '../../core/variables';
 
 export default function createDynamicTextNode(templateNode, valueIndex) {
 	const domNodeMap = {};
-	const node = {
+	return {
 		overrideItem: null,
 		create(item) {
 			const domNode = templateNode.cloneNode(false);
@@ -19,16 +19,12 @@ export default function createDynamicTextNode(templateNode, valueIndex) {
 		update(lastItem, nextItem) {
 			let domNode = domNodeMap[lastItem.id];
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				if (isStringOrNumber(nextValue)) {
-					domNode.nodeValue = nextValue;
-				}
+			if (nextValue !== lastValue && (isStringOrNumber(nextValue))) {
+				domNode.nodeValue = nextValue;
 			}
 		},
-		remove(/* lastItem */) {
-		}
+		remove() {}
 	};
-
-	return node;
 }

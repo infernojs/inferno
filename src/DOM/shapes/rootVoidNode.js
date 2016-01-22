@@ -1,8 +1,9 @@
 import { isRecyclingEnabled, recycle } from '../recycling';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
-import recreateRootNode from '../recreateRootNode';
+import recreateRootNode, { recreateRootNodeFromHydration } from '../recreateRootNode';
+import { validateHydrateNode } from '../hydration';
 
-export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled) {
+export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -18,6 +19,11 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			}
 			domNode = templateNode.cloneNode(true);
 			item.rootNode = domNode;
+
+			if (staticNode){
+				return domNode;
+			}
+
 			if (dynamicAttrs) {
 				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
 				if (dynamicAttrs.onAttached) {
@@ -33,29 +39,44 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
-			const domNode = lastItem.rootNode;
 
-			nextItem.rootNode = domNode;
-			nextItem.rootNode = lastItem.rootNode;
-			if (dynamicAttrs) {
-				if (dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-				if (dynamicAttrs.onDidUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+			if (staticNode){
+				nextItem.rootNode = lastItem.rootNode;
+			} else {
+				const domNode = lastItem.rootNode;
+
+				nextItem.rootNode = domNode;
+				nextItem.rootNode = lastItem.rootNode;
+
+				if (dynamicAttrs) {
+					if (dynamicAttrs.onWillUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+					}
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+					if (dynamicAttrs.onDidUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+					}
 				}
 			}
 		},
 		remove(item) {
-			if (dynamicAttrs) {
-				const domNode = item.rootNode;
+			if (!staticNode){
+				if (dynamicAttrs) {
+					const domNode = item.rootNode;
 
-				if (dynamicAttrs.onWillDetach) {
-					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
+					if (dynamicAttrs.onWillDetach) {
+						handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
+					}
+					clearListeners(item, domNode, dynamicAttrs);
 				}
-				clearListeners(item, domNode, dynamicAttrs);
 			}
+		},
+		hydrate(hydrateNode, item) {
+			if (!validateHydrateNode(hydrateNode, templateNode, item)) {
+				recreateRootNodeFromHydration(hydrateNode, item, node);
+				return;
+			}
+			item.rootNode = hydrateNode;
 		}
 	};
 
