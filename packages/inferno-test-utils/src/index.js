@@ -4,14 +4,14 @@ import createTestTree from '../../../src/testUtils/createTree';
 import renderIntoDocument from '../../../src/testUtils/renderIntoDocument';
 import Simulate from '../../../src/testUtils/Simulate';
 
-const global = global || (typeof window !== 'undefined' ? window : null);
+const GLOBAL = global || (typeof window !== 'undefined' ? window : null);
 
 // browser
-if (global && global.Inferno) {
-	global.Inferno.addTreeConstructor('test', createTestTree);
+if (GLOBAL && GLOBAL.Inferno) {
+	GLOBAL.Inferno.addTreeConstructor('test', createTestTree);
 // nodeJS
 // TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
-} else if (global && !global.Inferno) {
+} else if (GLOBAL && !GLOBAL.Inferno) {
 	let Inferno;
 
 	// TODO! Avoid try / catch
