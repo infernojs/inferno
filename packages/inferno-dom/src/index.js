@@ -2,7 +2,7 @@ import { render } from '../../../src/DOM/rendering';
 import createRef from '../../../src/DOM/createRef';
 import createDOMTree from '../../../src/DOM/createTree';
 
-const GLOBAL = global || (typeof window !== 'undefined' ? window : null);
+const GLOBAL = typeof global !== 'undefined' ? global : (typeof window !== 'undefined' ? window : null);
 
 // browser
 if (GLOBAL && GLOBAL.Inferno) {

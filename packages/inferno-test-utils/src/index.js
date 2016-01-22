@@ -4,7 +4,7 @@ import createTestTree from '../../../src/testUtils/createTree';
 import renderIntoDocument from '../../../src/testUtils/renderIntoDocument';
 import Simulate from '../../../src/testUtils/Simulate';
 
-const GLOBAL = global || (typeof window !== 'undefined' ? window : null);
+const GLOBAL = typeof global !== 'undefined' ? global : (typeof window !== 'undefined' ? window : null);
 
 // browser
 if (GLOBAL && GLOBAL.Inferno) {

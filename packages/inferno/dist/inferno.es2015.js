@@ -11,37 +11,6 @@ babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator ===
 };
 babelHelpers;
 
-function Storage(iterable) {
-	var _items = [];
-	var _keys = [];
-	var _values = [];
-
-	return Object.create(Storage.prototype, {
-
-		get: {
-			value: function value(key) {
-				var index = [].indexOf.call(_keys, key); // TODO: is this preferred over: _keys.indexOf(key)
-				return _values[index] || undefined;
-			}
-		},
-		set: {
-			value: function value(key, _value) {
-				// check if key exists and overwrite
-
-				var index = [].indexOf.call(_keys, key); // TODO: is this preferred over: _keys.indexOf(key)
-				if (index > -1) {
-					_items[index][1] = _value;
-					_values[index] = _value;
-				} else {
-					_items.push([key, _value]);
-					_keys.push(key);
-					_values.push(_value);
-				}
-			}
-		}
-	});
-}
-
 var isArray = (function (x) {
   return x.constructor === Array;
 })
@@ -204,7 +173,7 @@ function createTemplate(callback) {
 					callbackArguments[i] = createVariable(i);
 				}
 				var schema = callback.apply(undefined, callbackArguments);
-				var dynamicNodeMap = new Map() || new Storage();
+				var dynamicNodeMap = new Map();
 
 				scanTreeForDynamicNodes(schema, dynamicNodeMap);
 				var tree = applyTreeConstructors(schema, dynamicNodeMap);
