@@ -23,6 +23,10 @@ var isArray = (function (x) {
   return x.constructor === Array;
 })
 
+var isVoid = (function (x) {
+  return x === null || x === undefined;
+})
+
 var isStringOrNumber = (function (x) {
   return typeof x === 'string' || typeof x === 'number';
 })
@@ -122,15 +126,188 @@ function createTree(schema, isRoot, dynamicNodeMap) {
 	};
 }
 
-function renderIntoDocument() {
-	// TODO
+var recyclingEnabled$1 = true;
+
+function pool(item) {
+	var key = item.key;
+	var tree = item.tree.dom;
+
+	if (key === null) {
+		tree.pool.push(item);
+	} else {
+		var keyedPool = tree.keyedPool; // TODO rename
+
+		(keyedPool[key] || (keyedPool[key] = [])).push(item);
+	}
 }
 
-// TODO
+function isRecyclingEnabled() {
+	return recyclingEnabled$1;
+}
 
-var Simulate = {
-	Click: false
-};
+var recyclingEnabled = isRecyclingEnabled();
+function remove(item, parentNode) {
+	var rootNode = item.rootNode;
+
+	if (isVoid(rootNode) || !rootNode.nodeType) {
+		return null;
+	}
+	if (rootNode === parentNode) {
+		parentNode.innerHTML = '';
+	} else {
+		parentNode.removeChild(item.rootNode);
+		if (recyclingEnabled) {
+			pool(item);
+		}
+	}
+}
+
+function canHydrate(domNode, nextDomNode) {
+	if (nextDomNode) {
+		if (nextDomNode.nodeType === 1 && nextDomNode.hasAttribute('data-inferno')) {
+			return true;
+		} else {
+			// otherwise clear the DOM node
+			domNode.innerHTML = '';
+		}
+	}
+}
+
+function createDOMFragment(parentNode, nextNode) {
+	var lastItem = undefined;
+	var treeSuccessListeners = [];
+	var context = {};
+	var treeLifecycle = {
+		addTreeSuccessListener: function addTreeSuccessListener(listener) {
+			treeSuccessListeners.push(listener);
+		},
+		removeTreeSuccessListener: function removeTreeSuccessListener(listener) {
+			for (var i = 0; i < treeSuccessListeners.length; i++) {
+				var treeSuccessListener = treeSuccessListeners[i];
+
+				if (treeSuccessListener === listener) {
+					treeSuccessListeners.splice(i, 1);
+					return;
+				}
+			}
+		}
+	};
+	return {
+		parentNode: parentNode,
+		render: function render(nextItem) {
+			if (nextItem) {
+				var tree = nextItem.tree && nextItem.tree.dom;
+
+				if (tree) {
+					var activeNode = document.activeElement;
+
+					if (lastItem) {
+						tree.update(lastItem, nextItem, treeLifecycle, context);
+
+						if (!nextItem.rootNode) {
+							lastItem = null;
+							return;
+						}
+					} else {
+						if (tree) {
+							var hydrateNode = parentNode.firstChild;
+
+							if (canHydrate(parentNode, hydrateNode)) {
+								tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
+							} else {
+								var dom = tree.create(nextItem, treeLifecycle, context);
+
+								if (!dom) {
+									return;
+								}
+								if (nextNode) {
+									parentNode.insertBefore(dom, nextNode);
+								} else if (parentNode) {
+									parentNode.appendChild(dom);
+								}
+							}
+						}
+					}
+					if (treeSuccessListeners.length > 0) {
+						for (var i = 0; i < treeSuccessListeners.length; i++) {
+							treeSuccessListeners[i]();
+						}
+					}
+					lastItem = nextItem;
+					if (activeNode !== document.body && document.activeElement !== activeNode) {
+						activeNode.focus();
+					}
+				}
+			}
+		},
+		remove: function remove$$() {
+			if (lastItem) {
+				var tree = lastItem.tree.dom;
+
+				if (lastItem) {
+					tree.remove(lastItem, treeLifecycle);
+				}
+				if (lastItem.rootNode.parentNode) {
+					remove(lastItem, parentNode);
+				}
+			}
+			treeSuccessListeners = [];
+		}
+	};
+}
+
+var rootFragments = [];
+
+function getRootFragmentAtNode(node) {
+	var rootFragmentsLength = rootFragments.length;
+
+	if (rootFragmentsLength === 0) {
+		return null;
+	}
+	for (var i = 0; i < rootFragmentsLength; i++) {
+		var rootFragment = rootFragments[i];
+
+		if (rootFragment.parentNode === node) {
+			return rootFragment;
+		}
+	}
+	return null;
+}
+
+function removeRootFragment(rootFragment) {
+	for (var i = 0; i < rootFragments.length; i++) {
+		if (rootFragments[i] === rootFragment) {
+			rootFragments.splice(i, 1);
+			return true;
+		}
+	}
+	return false;
+}
+
+function render(nextItem, parentNode) {
+	var rootFragment = getRootFragmentAtNode(parentNode);
+
+	if (isVoid(rootFragment)) {
+		var fragment = createDOMFragment(parentNode);
+
+		fragment.render(nextItem);
+		rootFragments.push(fragment);
+	} else {
+		if (isVoid(nextItem)) {
+			rootFragment.remove();
+			removeRootFragment(rootFragment);
+		} else {
+			rootFragment.render(nextItem);
+		}
+	}
+}
+
+function renderIntoDocument(nextItem) {
+	var parentNode = document.createElement('div');
+
+	render(nextItem, parentNode);
+	return parentNode.firstChild;
+}
 
 var GLOBAL = global || (typeof window !== 'undefined' ? window : null);
 
@@ -162,8 +339,8 @@ if (GLOBAL && GLOBAL.Inferno) {
 var index = {
 	shallowRender: shallowRender,
 	deepRender: deepRender,
-	renderIntoDocument: renderIntoDocument,
-	Simulate: Simulate
+	renderIntoDocument: renderIntoDocument
+	//Simulate
 };
 
 export default index;
