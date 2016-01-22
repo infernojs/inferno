@@ -88,7 +88,7 @@ Furthermore, Inferno also uses ES6 components like React:
 ```jsx
 import { Component } from `inferno-component`;
 
-class Component extends Component {
+class MyComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -105,7 +105,7 @@ class Component extends Component {
   }
 }
 
-InfernoDOM.render(<Component />, document.body);
+InfernoDOM.render(<MyComponent />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
 This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
