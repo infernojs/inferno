@@ -77,7 +77,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 					if (isArray(nextValue)) {
 						updateAndAppendDynamicChildren(domNode, nextValue);
 					} else {
-						recreateNode(lastItem, nextItem, node, treeLifecycle, context);
+						recreateNode(domNode, nextItem, node, treeLifecycle, context);
 					}
 				} else {
 					domNode.appendChild(document.createTextNode(nextValue));
@@ -110,7 +110,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 						}
 					} else {
 						// lastValue is undefined, so set it to an empty array and update
-						updateNonKeyed(nextValue, [], childNodeList, domNode, null, treeLifecycle, context);
+						recreateNode(domNode, nextItem, node, treeLifecycle, context);
 					}
 				} else if (typeof nextValue === 'object') {
 					const tree = nextValue && nextValue.tree;
@@ -122,14 +122,14 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 							tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 						} else {
 						// FIX THIS!!
-							if(lastItem.tree !== undefined){
-								if ( lastItem.tree.dom ){
+							if(lastItem.tree !== undefined) {
+								if (lastItem.tree.dom) {
 									lastItem.tree.dom.update(lastItem, nextValue, treeLifecycle, context);
 								} else {
 
 								}
 							} else {
-								recreateNode(lastItem, nextItem, node, treeLifecycle, context);
+								recreateNode(domNode, nextItem, node, treeLifecycle, context);
 							}
 						}
 					} else {
