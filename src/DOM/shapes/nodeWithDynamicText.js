@@ -48,11 +48,12 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 
 			if (isVoid(nextValue)) {
 				appendText(domNode, '');
-			} else	if (isVoid(lastValue)) {
+			} else if (isVoid(lastValue)) {
 				appendText(domNode, nextValue);
 			} else	if (nextValue !== lastValue) {
-				domNode.firstChild.nodeValue = nextValue;
+				appendText(domNode, nextValue);
 			}
+
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				if (dynamicAttrs.onDidUpdate) {

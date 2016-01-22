@@ -5,7 +5,7 @@ import { getValueWithIndex } from '../../core/variables';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
-
+import appendText from '../../util/appendText';
 export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
 	const node = {
 		pool: [],
@@ -55,27 +55,15 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				if (nextValue !== lastValue) {
-					if (isVoid(nextValue)) {
-						if (isVoid(lastValue)) {
-							domNode.firstChild.nodeValue = '';
-						} else {
-							domNode.textContent = '';
-						}
-					} else {
-						if (process.env.NODE_ENV !== 'production') {
-							if (!isStringOrNumber(nextValue)) {
-								throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
-							}
-						}
 
-						if (isVoid(lastValue)) {
-							domNode.textContent = nextValue;
-						} else {
-							domNode.firstChild.nodeValue = nextValue;
-						}
-					}
+				if (isVoid(nextValue)) {
+					appendText(domNode, '');
+				} else if (isVoid(lastValue)) {
+					appendText(domNode, nextValue);
+				} else	if (nextValue !== lastValue) {
+					appendText(domNode, nextValue);
 				}
+
 				if (dynamicAttrs) {
 					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 					if (dynamicAttrs.onDidUpdate) {

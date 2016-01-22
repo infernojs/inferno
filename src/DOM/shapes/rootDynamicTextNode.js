@@ -21,16 +21,18 @@ export default function createRootDynamicTextNode(templateNode, valueIndex, recy
 			domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value)) {
-				if (isStringOrNumber(value)) {
+			if (!isVoid(value) && isStringOrNumber(value)) {
 					domNode.nodeValue = value;
-				}
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			const tree = lastItem && lastItem.tree;
+
+			// TODO! Is this code ever executed??
+			if (tree && (node !== tree)) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
@@ -40,15 +42,11 @@ export default function createRootDynamicTextNode(templateNode, valueIndex, recy
 			nextItem.id = lastItem.id;
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				if (isStringOrNumber(nextValue)) {
-					domNode.nodeValue = nextValue;
-				}
+			if (nextValue !== getValueWithIndex(lastItem, valueIndex) && (isStringOrNumber(nextValue))) {
+				domNode.nodeValue = nextValue;
 			}
 		},
-		remove(/* lastItem */) {
-
-		}
+		remove() {}
 	};
 
 	return node;
