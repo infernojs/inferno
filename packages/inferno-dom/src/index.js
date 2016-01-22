@@ -2,14 +2,14 @@ import { render } from '../../../src/DOM/rendering';
 import createRef from '../../../src/DOM/createRef';
 import createDOMTree from '../../../src/DOM/createTree';
 
-const global = global || (typeof window !== 'undefined' ? window : null);
+const GLOBAL = global || (typeof window !== 'undefined' ? window : null);
 
 // browser
-if (global && global.Inferno) {
-	global.Inferno.addTreeConstructor('dom', createDOMTree);
+if (GLOBAL && GLOBAL.Inferno) {
+	GLOBAL.Inferno.addTreeConstructor('dom', createDOMTree);
 // nodeJS
 // TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
-} else if ( global && !global.Inferno ) {
+} else if ( GLOBAL && !GLOBAL.Inferno ) {
 	let Inferno;
 
 	// TODO! Avoid try / catch
