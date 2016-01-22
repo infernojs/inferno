@@ -70,6 +70,7 @@ export default function createDynamicNode(valueIndex) {
 				const lastType = getTypeFromValue(lastValue);
 
 				if (lastType !== nextType) {
+
 					recreateNode(domNode, nextItem, node, treeLifecycle, context);
 					return;
 				}

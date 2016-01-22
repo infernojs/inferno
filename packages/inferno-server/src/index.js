@@ -1,7 +1,7 @@
 import renderToString from '../../../src/server/renderToString';
 import createHTMLTree from '../../../src/server/createTree';
 
-const GLOBAL = global || (typeof window !== 'undefined' ? window : null);
+const GLOBAL = typeof global !== 'undefined' ? global : (typeof window !== 'undefined' ? window : null);
 
 // browser
 if (GLOBAL && GLOBAL.Inferno) {

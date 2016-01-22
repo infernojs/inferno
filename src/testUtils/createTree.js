@@ -3,6 +3,10 @@ import isArray from '../util/isArray';
 import isStringOrNumber from '../util/isStringOrNumber';
 
 function constructVirtualChildren(children, item, depth, maxDepth) {
+
+	if (!children) {
+		return;
+	}
 	if (isArray(children)) {
 		let vChildren = new Array(children.length);
 		for (let i = 0; i < children.length; i++) {
@@ -69,6 +73,7 @@ function constructVirtualNode(node, item, depth, maxDepth) {
 					}
 				}
 			}
+			// stateless
 			if (!Component.prototype.render) {
 				return Component(props).tree.test.create(item, depth + 1, maxDepth);
 			} else {

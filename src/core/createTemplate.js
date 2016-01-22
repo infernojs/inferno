@@ -1,5 +1,4 @@
 import ExecutionEnvironment from '../util/ExecutionEnvironment';
-import Storage from '../util/storage';
 import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 import isVoid from '../util/isVoid';
@@ -57,7 +56,7 @@ export default function createTemplate(callback) {
 				callbackArguments[i] = createVariable(i);
 			}
 			const schema = callback(...callbackArguments);
-			const dynamicNodeMap = new Map() || new Storage();
+			const dynamicNodeMap = new Map();
 
 			scanTreeForDynamicNodes(schema, dynamicNodeMap);
 			const tree = applyTreeConstructors(schema, dynamicNodeMap);

@@ -7,7 +7,7 @@
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 
-Inferno is an isomorphic library for building highly performant user interfaces. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
+Inferno is an isomorphic library for building user interfaces with high performance (crucial when targeting mobile devices). Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
 
 In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
@@ -61,10 +61,10 @@ npm install --save inferno-server
 Pre-bundled files for browser consumption:
  
 ```
-http://infernojs.org/releases/0.5.20/inferno.min.js
-http://infernojs.org/releases/0.5.20/inferno-component.min.js
-http://infernojs.org/releases/0.5.20/inferno-dom.min.js
-http://infernojs.org/releases/0.5.20/inferno-server.min.js
+http://infernojs.org/releases/0.5.21/inferno.min.js
+http://infernojs.org/releases/0.5.21/inferno-component.min.js
+http://infernojs.org/releases/0.5.21/inferno-dom.min.js
+http://infernojs.org/releases/0.5.21/inferno-server.min.js
 ```
 
 ## Overview

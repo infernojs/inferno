@@ -1083,4 +1083,66 @@ describe('Components (JSX)', () => {
 		expect(container.textContent).to.equal('test');
 	});
 
+	describe('should render a component with with a conditional list that changes upon toggle', () => {
+		class BuggyRender extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					empty: true
+				};
+
+				this.toggle = this.toggle.bind(this);
+			}
+
+			toggle() {
+				this.setState({
+					empty: !this.state.empty
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<button onClick={this.toggle}>Empty</button>
+						<ul>
+							{(() => {
+								if (this.state.empty === true) {
+									return <li>No cars!</li>
+								} else {
+									return ['BMW', 'Volvo', 'Saab'].map(function(car) {
+										return <li>{car}</li>;
+									});
+								}
+							})()}
+						</ul>
+					</div>
+				);
+			}
+		}
+
+		it('should correctly render', () => {
+			render(<BuggyRender />, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><button>Empty</button><ul><li>No cars!</li></ul></div>')
+			);
+		});
+
+		it('should handle update upon click', (done) => {
+			render(<BuggyRender />, container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+
+			buttons.forEach(button => button.click());
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><button>Empty</button><ul><li>BMW</li><li>Volvo</li><li>Saab</li></ul></div>')
+				);
+				done();
+			});
+		});
+	});
 });

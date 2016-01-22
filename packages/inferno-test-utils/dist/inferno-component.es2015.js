@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.5.20
+ * inferno-component v0.5.21
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -36,6 +36,10 @@ function getValueWithIndex(item, index) {
 }
 
 function constructVirtualChildren(children, item, depth, maxDepth) {
+
+	if (!children) {
+		return;
+	}
 	if (isArray(children)) {
 		var vChildren = new Array(children.length);
 		for (var i = 0; i < children.length; i++) {
@@ -102,6 +106,7 @@ function constructVirtualNode(node, item, depth, maxDepth) {
 					}
 				}
 			}
+			// stateless
 			if (!Component.prototype.render) {
 				return Component(props).tree.test.create(item, depth + 1, maxDepth);
 			} else {
@@ -309,7 +314,7 @@ function renderIntoDocument(nextItem) {
 	return parentNode.firstChild;
 }
 
-var GLOBAL = global || (typeof window !== 'undefined' ? window : null);
+var GLOBAL = typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : null;
 
 // browser
 if (GLOBAL && GLOBAL.Inferno) {
