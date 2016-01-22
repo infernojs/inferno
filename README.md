@@ -86,7 +86,9 @@ InfernoDOM.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```jsx
-class Component extends Inferno.Component {
+import { Component } from `inferno-component`;
+
+class Component extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -112,7 +114,7 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ### Inferno.createTemplate
 
-```jsx
+```js
 const template = Inferno.createTemplate(() => ({
   tag: 'div',
   attrs: { className: 'test'},
