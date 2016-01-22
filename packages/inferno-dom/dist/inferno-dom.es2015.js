@@ -2125,6 +2125,15 @@ function addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle) {
 	}
 }
 
+function appendText(domNode, value) {
+	var firstChild = domNode.firstChild;
+	if (firstChild) {
+		firstChild.nodeValue = value;
+	} else {
+		domNode.textContent = value;
+	}
+}
+
 function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
 	var node = {
 		pool: [],
@@ -2161,45 +2170,37 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-			} else {
-				var domNode = lastItem.rootNode;
+				return;
+			}
+			var domNode = lastItem.rootNode;
 
-				nextItem.id = lastItem.id;
-				nextItem.rootNode = domNode;
-				var nextValue = getValueWithIndex(nextItem, valueIndex);
-				var lastValue = getValueWithIndex(lastItem, valueIndex);
+			nextItem.id = lastItem.id;
+			nextItem.rootNode = domNode;
 
-				if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
-				if (nextValue !== lastValue) {
-					if (isVoid(nextValue)) {
-						if (isVoid(lastValue)) {
-							domNode.firstChild.nodeValue = '';
-						} else {
-							domNode.textContent = '';
-						}
-					} else {
-						if ("development" !== 'production') {
-							if (!isStringOrNumber(nextValue)) {
-								throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
-							}
-						}
+			var nextValue = getValueWithIndex(nextItem, valueIndex);
+			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-						if (isVoid(lastValue)) {
-							domNode.textContent = nextValue;
-						} else {
-							domNode.firstChild.nodeValue = nextValue;
-						}
-					}
-				}
-				if (dynamicAttrs) {
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-					if (dynamicAttrs.onDidUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-					}
+			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+			}
+
+			if (isVoid(nextValue)) {
+				appendText(domNode, '');
+			} else if (isVoid(lastValue)) {
+				appendText(domNode, nextValue);
+			} else if (nextValue !== lastValue) {
+				appendText(domNode, nextValue);
+			}
+
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
 			}
 		},
@@ -2216,15 +2217,6 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 	};
 
 	return node;
-}
-
-function appendText(domNode, value) {
-	var firstChild = domNode.firstChild;
-	if (firstChild) {
-		firstChild.nodeValue = value;
-	} else {
-		domNode.textContent = value;
-	}
 }
 
 var errorMsg$1 = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
@@ -2274,8 +2266,9 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 			} else if (isVoid(lastValue)) {
 				appendText(domNode, nextValue);
 			} else if (nextValue !== lastValue) {
-				domNode.firstChild.nodeValue = nextValue;
+				appendText(domNode, nextValue);
 			}
+
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				if (dynamicAttrs.onDidUpdate) {
@@ -2486,7 +2479,10 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle, context) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				childNodeList = [];
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
@@ -2543,18 +2539,18 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 							recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 						}
 					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-						var tree = nextValue && nextValue.tree;
-						if (!isVoid(tree)) {
+						var _tree = nextValue && nextValue.tree;
+						if (!isVoid(_tree)) {
 							if (!isVoid(lastValue)) {
 								var oldTree = lastValue && lastValue.tree;
 
 								if (!isVoid(oldTree)) {
-									tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 								} else {
 									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 								}
 							} else {
-								replaceChild(domNode, tree.dom.create(nextValue, treeLifecycle, context));
+								replaceChild(domNode, _tree.dom.create(nextValue, treeLifecycle, context));
 							}
 						} else if (nextValue.create) {
 							// TODO
@@ -3435,32 +3431,31 @@ function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
 			domNode = templateNode.cloneNode(false);
 			var value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value)) {
-				if (isStringOrNumber(value)) {
-					domNode.nodeValue = value;
-				}
+			if (!isVoid(value) && isStringOrNumber(value)) {
+				domNode.nodeValue = value;
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			// TODO! Is this code ever executed??
+			if (tree && node !== tree.dom) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
+
 			var domNode = lastItem.rootNode;
-
-			nextItem.rootNode = domNode;
-			nextItem.id = lastItem.id;
 			var nextValue = getValueWithIndex(nextItem, valueIndex);
+			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				if (isStringOrNumber(nextValue)) {
-					domNode.nodeValue = nextValue;
-				}
+			if (nextValue !== lastValue && isStringOrNumber(nextValue)) {
+				domNode.nodeValue = nextValue;
 			}
 		},
-		remove: function remove() /* lastItem */{}
+		remove: function remove() {}
 	};
 
 	return node;
@@ -3493,27 +3488,30 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, static
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 
 			if (staticNode) {
 				nextItem.rootNode = lastItem.rootNode;
-			} else {
-				var domNode = lastItem.rootNode;
+				return;
+			}
+			var domNode = lastItem.rootNode;
 
-				nextItem.rootNode = domNode;
-				nextItem.rootNode = lastItem.rootNode;
+			nextItem.rootNode = domNode;
+			nextItem.rootNode = lastItem.rootNode;
 
-				if (dynamicAttrs) {
-					if (dynamicAttrs.onWillUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-					}
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-					if (dynamicAttrs.onDidUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-					}
+			if (dynamicAttrs) {
+				if (dynamicAttrs.onWillUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+				}
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
 			}
 		},
