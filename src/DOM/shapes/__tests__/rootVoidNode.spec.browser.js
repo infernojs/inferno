@@ -19,7 +19,7 @@ describe('rootVoidNode', () => {
 		render(null, container);
 	});
 
-	it('rootVoidNode', () => {
+	it('should render a void div node', () => {
 
 		const template = createTemplate(() => ({
 			tag: 'div'
@@ -27,4 +27,24 @@ describe('rootVoidNode', () => {
 		render(template(), container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 	});
+
+	it('should render a void span node', () => {
+
+		const template = createTemplate(() => ({
+			tag: 'span'
+		}));
+		render(template(), container);
+		expect(container.firstChild.nodeName).to.equal('SPAN');
+	});
+
+	it('should render a void custom node', () => {
+
+		const template = createTemplate(() => ({
+			tag: 'inferno'
+		}));
+		render(template(), container);
+		expect(container.firstChild.nodeName).to.equal('INFERNO');
+	});
+
+
 });
