@@ -34,7 +34,7 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 }
 
 // A fast className setter as its the most common property to regularly change
-function fastPropSet(attrName, attrVal, domNode) {
+function fastPropSet(attrName, attrVal, domNode, isSVG) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
 			// TODO lets fix this?
@@ -78,7 +78,7 @@ export function handleHooks(item, props, domNode, hookEvent, isComponent, nextPr
 	}
 }
 
-export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent) {
+export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent, isSVG) {
 	let styleUpdates;
 
 	if (dynamicAttrs.index !== undefined) {
@@ -97,7 +97,7 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookE
 					if (attrName === 'style') {
 						styleUpdates = attrVal;
 					} else {
-						if (fastPropSet(attrName, attrVal, domNode) === false) {
+						if (fastPropSet(attrName, attrVal, domNode, isSVG) === false) {
 							if (eventMapping[attrName]) {
 								addListener(item, domNode, eventMapping[attrName], attrVal);
 							} else {
@@ -193,7 +193,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 						}
 					} else {
 
-						if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+						if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
 							if (eventMapping[attrName]) {
 								addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
 							} else {
@@ -204,7 +204,7 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 				} else if (!isVoid(nextAttrVal)) {
 					if (attrName === 'style') {
 						styleUpdates = nextAttrVal;
-					} else if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+					} else if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
 						if (eventMapping[attrName]) {
 							addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
 						} else {
