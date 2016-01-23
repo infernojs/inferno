@@ -26,7 +26,6 @@ function createElement(schema, domNamespace, parentNode) {
 	const SVGNamespace = 'http://www.w3.org/2000/svg';
 	const nodeName = schema && typeof schema.tag === 'string' && schema.tag.toLowerCase();
 	const is = schema.attrs && schema.attrs.is;
-
 	let templateNode;
 
 	if (domNamespace === undefined) {
@@ -241,14 +240,10 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 				}
 				const element = createElement(schema, domNamespace, null);
 				const isSVG = element.isSVG;
-
-				templateNode = element.node;
-				if (templateNode.namespaceURI === 'http://www.w3.org/2000/svg') {
-					isSVG = true;
-				}
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
 
+				templateNode = element.node
 				if (!isVoid(attrs)) {
 					if (dynamicFlags.ATTRS === true) {
 						dynamicAttrs = attrs;
@@ -269,7 +264,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 					}
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
-								node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
+							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
 						} else {
 							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs, isSVG);
 						}
