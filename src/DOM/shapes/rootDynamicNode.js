@@ -29,6 +29,12 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 			let value = getValueWithIndex(item, valueIndex);
 			const type = getTypeFromValue(value);
 
+			if (process.env.NODE_ENV !== 'production') {
+				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
+					throw Error(errorMsg);
+				}
+			}
+
 			switch (type) {
 				case ValueTypes.TEXT:
 					if (isVoidValue(value)) {
@@ -52,16 +58,6 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 				case ValueTypes.TREE:
 					domNode = value.dom.create(item, treeLifecycle, context);
 					break;
-				case ValueTypes.EMPTY_OBJECT:
-					if (process.env.NODE_ENV !== 'production') {
-						throw Error(errorMsg);
-					}
-					break;
-				case ValueTypes.FUNCTION:
-					if (process.env.NODE_ENV !== 'production') {
-						throw Error(errorMsg);
-					}
-					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create(value, treeLifecycle, context);
 					break;
@@ -71,7 +67,9 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
-			if (node !== lastItem.tree.dom) {
+			const tree = lastItem && lastItem.tree;
+
+			if (tree && (node !== tree.dom)) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}

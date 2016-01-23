@@ -159,7 +159,6 @@ function isRecyclingEnabled() {
 }
 
 var recyclingEnabled$2 = isRecyclingEnabled();
-var infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
 
@@ -350,12 +349,10 @@ function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode
 					} else {
 						if (isStringOrNumber(item)) {
 							var childNode = document.createTextNode(item);
-
 							domNodeList[i] = childNode;
 							insertOrAppend(parentNode, childNode, parentNextNode);
 						} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
 							var childNode = item.tree.dom.create(item, treeLifecycle, context);
-
 							domNodeList[i] = childNode;
 							insertOrAppend(parentNode, childNode, parentNextNode);
 						}
@@ -398,62 +395,55 @@ function remove(item, parentNode) {
 
 function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
 
-	if (!isVoid(value)) {
+	if (isVoid(value)) {
+		return null;
+	}
 
-		var domNode = document.createDocumentFragment();
-		var keyedChildren = true;
+	var domNode = document.createDocumentFragment();
 
-		for (var i = 0; i < value.length; i++) {
-			var childNode = value[i];
-			var childType = getTypeFromValue(childNode);
-			var childDomNode = undefined;
+	var keyedChildren = true;
 
-			switch (childType) {
-				case ValueTypes.TEXT:
-					childDomNode = document.createTextNode(childNode);
-					childNodeList.push(childDomNode);
-					domNode.appendChild(childDomNode);
-					keyedChildren = false;
-					break;
-				case ValueTypes.TREE:
-					keyedChildren = false;
-					childDomNode = childNode.create(item, treeLifecycle, context);
-					childNodeList.push(childDomNode);
+	for (var i = 0; i < value.length; i++) {
+		var childNode = value[i];
+		var childType = getTypeFromValue(childNode);
+		var childDomNode = undefined;
 
-					if ("development" !== 'production') {
-						if (childDomNode === undefined) {
-							throw Error('Inferno Error: Children must be provided as templates.');
-						}
-					}
-					domNode.appendChild(childDomNode);
-					break;
-				case ValueTypes.FRAGMENT:
-					if (childNode.key === undefined) {
-						keyedChildren = false;
-					}
-					childDomNode = childNode.tree.dom.create(childNode, treeLifecycle, context);
-					childNodeList.push(childDomNode);
-					domNode.appendChild(childDomNode);
-					break;
-				case ValueTypes.EMPTY_OBJECT:
-					if ("development" !== 'production') {
-						throw Error(infernoBadTemplate);
-					}
-					return;
-				case ValueTypes.FUNCTION:
-					if ("development" !== 'production') {
-						throw Error(infernoBadTemplate);
-					}
-					return;
-				case ValueTypes.ARRAY:
-					if ("development" !== 'production') {
-						throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
-					}
-					return;
+		if ("development" !== 'production') {
+			if (childType === ValueTypes.EMPTY_OBJECT || childType === ValueTypes.FUNCTION || childType === ValueTypes.ARRAY) {
+				throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 			}
 		}
-		return { domNode: domNode, keyedChildren: keyedChildren };
+
+		switch (childType) {
+			case ValueTypes.TEXT:
+				childDomNode = document.createTextNode(childNode);
+				childNodeList.push(childDomNode);
+				domNode.appendChild(childDomNode);
+				keyedChildren = false;
+				break;
+			case ValueTypes.TREE:
+				keyedChildren = false;
+				childDomNode = childNode.create(item, treeLifecycle, context);
+				childNodeList.push(childDomNode);
+
+				if ("development" !== 'production') {
+					if (childDomNode === undefined) {
+						throw Error('Inferno Error: Children must be provided as templates.');
+					}
+				}
+				domNode.appendChild(childDomNode);
+				break;
+			case ValueTypes.FRAGMENT:
+				if (childNode.key === undefined) {
+					keyedChildren = false;
+				}
+				childDomNode = childNode.tree.dom.create(childNode, treeLifecycle, context);
+				childNodeList.push(childDomNode);
+				domNode.appendChild(childDomNode);
+				break;
+		}
 	}
+	return { domNode: domNode, keyedChildren: keyedChildren };
 }
 
 function updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context) {
@@ -2950,6 +2940,12 @@ function createDynamicNode(valueIndex) {
 			var domNode = undefined;
 			var type = getTypeFromValue(value);
 
+			if ("development" !== 'production') {
+				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
+					throw Error(errorMsg);
+				}
+			}
+
 			switch (type) {
 				case ValueTypes.TEXT:
 					if (isVoidValue(value)) {
@@ -2970,16 +2966,6 @@ function createDynamicNode(valueIndex) {
 					break;
 				case ValueTypes.TREE:
 					domNode = value.create(item, treeLifecycle, context);
-					break;
-				case ValueTypes.EMPTY_OBJECT:
-					if ("development" !== 'production') {
-						throw Error(errorMsg);
-					}
-					break;
-				case ValueTypes.FUNCTION:
-					if ("development" !== 'production') {
-						throw Error(errorMsg);
-					}
 					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create(value, treeLifecycle, context);

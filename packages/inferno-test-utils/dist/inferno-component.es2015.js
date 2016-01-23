@@ -151,6 +151,7 @@ function isRecyclingEnabled() {
 }
 
 var recyclingEnabled = isRecyclingEnabled();
+
 function remove(item, parentNode) {
 	var rootNode = item.rootNode;
 
