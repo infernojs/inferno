@@ -3,12 +3,11 @@ import getFormElementValues from '../getFormElementValues';
 import setupHooks from '../../shared/setupHooks';
 
 export default function createListenerArguments(target, event) {
-	const type = event.type;
 	const nodeName = target.nodeName.toLowerCase();
 
 	let tagHooks;
 
-	if ((tagHooks = setupHooks[type])) {
+	if ((tagHooks = setupHooks[event.type])) {
 		const hook = tagHooks[nodeName];
 
 		if (hook) {

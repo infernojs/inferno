@@ -6,6 +6,7 @@ import setHandler from './setHandler';
 import createEventListener from './createEventListener';
 
 export default function addListener(vNode, domNode, type, listener) {
+
 	if (!domNode) {
 		return null; // TODO! Should we throw?
 	}
@@ -18,9 +19,7 @@ export default function addListener(vNode, domNode, type, listener) {
 			if (registry._focusBlur) {
 				registry._focusBlur();
 			} else if (registry._bubbles) {
-				const handler = setHandler(type, addRootListener).handler;
-
-				document.addEventListener(type, handler, false);
+				document.addEventListener(type, setHandler(type, addRootListener).handler, false);
 			}
 			registry._enabled = true;
 		}
@@ -34,23 +33,25 @@ export default function addListener(vNode, domNode, type, listener) {
 			listeners = listenersStorage[nodeID];
 		}
 
-		if (listeners[type]) {
-			if (listeners[type].destroy) {
-				listeners[type].destroy();
-			}
+		let listenerType =  listeners[type];
+
+		if (listenerType && listenerType.destroy) {
+			listenerType.destroy();
 		}
+
 		if (registry._bubbles) {
-			if (!listeners[type]) {
+			if (!listenerType) {
 				++registry._counter;
 			}
-			listeners[type] = {
+			// Fix me! What we do with this?
+			listenerType = {
 				handler: listener,
 				originalHandler: listener
 			};
 		} else {
-			listeners[type] = setHandler(type, createEventListener(type));
-			listeners[type].originalHandler = listener;
-			domNode.addEventListener(type, listeners[type].handler, false);
+			listenerType = setHandler(type, createEventListener(type));
+			listenerType.originalHandler = listener;
+			domNode.addEventListener(type, listenerType.handler, false);
 		}
 	} else {
 		throw Error('Inferno Error: ' + type + ' has not been registered, and therefor not supported.');
