@@ -21,6 +21,7 @@ import { isRecyclingEnabled } from './recycling';
 import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
 
+let isSVG;
 function createElement(schema, domNamespace, parentNode) {
 	const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 	const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -135,6 +136,7 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 
 				staticNode = Element.node;
 				domNamespace = Element.namespace;
+				const isSVG = Element.isSVG;
 				const text = node.text;
 				const children = node.children;
 
@@ -186,7 +188,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 	let templateNode;
 
 	if (!dynamicFlags) {
-		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
+		templateNode = createStaticTreeNode(schema, null, domNamespace, schema, isSVG);
 		if (process.env.NODE_ENV !== 'production') {
 			if (!templateNode) {
 				throw Error(invalidTemplateError);
@@ -257,9 +259,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 					}
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
-							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled);
+							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
 						} else {
-							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
+							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs, isSVG);
 						}
 					} else {
 						if (isStringOrNumber(text)) {
@@ -270,9 +272,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 							}
 						}
 						if (isRoot) {
-							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
+							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG);
 						} else {
-							node = createNodeWithStaticChild(templateNode, dynamicAttrs);
+							node = createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG);
 						}
 					}
 				} else {
@@ -303,19 +305,19 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 							}
 							if (isRoot) {
 								node = createRootNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled
+									templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled, isSVG
 								);
 							} else {
 								node = createNodeWithDynamicSubTreeForChildren(
-									templateNode, subTreeForChildren, dynamicAttrs
+									templateNode, subTreeForChildren, dynamicAttrs, isSVG
 								);
 							}
 						} else if (isStringOrNumber(children)) {
 							templateNode.textContent = children;
 							if (isRoot) {
-								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
+								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG);
 							} else {
-								node = createNodeWithStaticChild(templateNode, dynamicAttrs);
+								node = createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG);
 							}
 						} else {
 							const childNodeDynamicFlags = getDynamicNode(dynamicNodes, children);
@@ -324,22 +326,22 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 								createStaticTreeChildren(children, templateNode);
 
 								if (isRoot) {
-									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
+									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG);
 								} else {
-									node = createNodeWithStaticChild(templateNode, dynamicAttrs);
+									node = createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG);
 								}
 							}
 						}
 					} else {
 						if (isRoot) {
-							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false);
+							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false, isSVG);
 						} else {
-							node = createVoidNode(templateNode, dynamicAttrs, false);
+							node = createVoidNode(templateNode, dynamicAttrs, false, isSVG);
 						}
 					}
 				}
 			} else if (text) {
-				node = createRootDynamicTextNode(document.createTextNode(''), text.index);
+				node = createRootDynamicTextNode(document.createTextNode(''), text.index, isSVG);
 			}
 		}
 	}

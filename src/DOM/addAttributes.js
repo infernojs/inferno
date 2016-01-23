@@ -1,5 +1,4 @@
 import isVoid from '../util/isVoid';
-import isSVGElement from '../util/isSVGElement';
 import isHook from '../util/isHook';
 import template from './';
 import eventMapping from '../shared/eventMapping';
@@ -38,11 +37,11 @@ function fastPropSet(attrName, attrVal, domNode, isSVG) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
 			// TODO lets fix this?
-			//if (isSVGElement(domNode.nodeName)) {
-			//	domNode.setAttribute('class', attrVal);
-			//} else {
-			//	domNode.className = attrVal;
-			//}
+			if (isSVG) {
+				domNode.setAttribute('class', attrVal);
+			} else {
+				domNode.className = attrVal;
+			}
 			domNode.className = attrVal;
 		}
 		return true;
@@ -130,7 +129,7 @@ export function clearListeners(item, domNode, dynamicAttrs) {
  * NOTE!! This function is probably the single most
  * critical path for performance optimization.
  */
-export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys) {
+export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG) {
 	if (dynamicAttrs.index !== undefined) {
 		const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
