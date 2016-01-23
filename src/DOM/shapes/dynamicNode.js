@@ -55,19 +55,16 @@ export default function createDynamicNode(valueIndex) {
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
-
 			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
-
 				const domNode = domNodeMap[lastItem.id];
 				const nextType = getTypeFromValue(nextValue);
 				const lastType = getTypeFromValue(lastValue);
 
 				if (lastType !== nextType) {
-
-					recreateNode(domNode, nextItem, node, treeLifecycle, context);
+					recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 					return;
 				}
 				switch (nextType) {

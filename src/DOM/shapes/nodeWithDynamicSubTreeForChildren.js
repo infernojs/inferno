@@ -3,7 +3,6 @@ import isVoid from '../../util/isVoid';
 import addShapeChildren from '../../shared/addShapeChildren';
 import replaceChild from '../../core/replaceChild';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
-import recreateNode from '../recreateNode';
 
 export default function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
 	const domNodeMap = {};

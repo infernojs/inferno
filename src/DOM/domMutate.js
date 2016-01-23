@@ -3,6 +3,10 @@ import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../core/variabl
 import isArray from '../util/isArray';
 import isStringOrNumber from '../util/isStringOrNumber';
 import { isRecyclingEnabled, pool } from './recycling';
+import replaceChild from '../core/replaceChild';
+import appendText from '../util/appendText';
+import removeChild from '../core/removeChild';
+import updateAndAppendDynamicChildren from '../shared/updateAndAppendDynamicChildren';
 
 const recyclingEnabled = isRecyclingEnabled();
 
@@ -336,6 +340,70 @@ export function createDynamicChild(value, domNode, node, treeLifecycle, context)
 			}
 		} else if (isStringOrNumber(value)) {
 			domNode.textContent = value;
+		}
+	}
+}
+
+export function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreate) {
+	if (nextValue !== lastValue) {
+		if (nextValue && isVoid(lastValue)) {
+			if (typeof nextValue === 'object') {
+				if (isArray(nextValue)) {
+					updateAndAppendDynamicChildren(domNode, nextValue);
+				} else {
+					recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
+				}
+
+			} else {
+				domNode.appendChild(document.createTextNode(nextValue));
+			}
+		} else if (lastValue && isVoid(nextValue)) {
+			if (isArray(lastValue)) {
+				for (let i = 0; i < lastValue.length; i++) {
+					if (!isVoid(domNode.childNodes[i])) {
+						domNode.removeChild(domNode.childNodes[i]);
+					} else {
+						removeChild(domNode);
+					}
+				}
+			} else {
+				removeChild(domNode);
+			}
+		} else if (isStringOrNumber(nextValue)) {
+			appendText(domNode, nextValue);
+		} else if (isVoid(nextValue)) {
+			if (domNode !== null) {
+				replaceChild(domNode, document.createTextNode(''));
+			}
+		} else if (isArray(nextValue)) {
+			if (isArray(lastValue)) {
+				if (node.keyedChildren) {
+					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
+				} else {
+					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
+				}
+			} else {
+				recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
+			}
+		} else if (typeof nextValue === 'object') {
+			const tree = nextValue && nextValue.tree;
+			if (!isVoid(tree)) {
+				if (!isVoid(lastValue)) {
+					const oldTree = lastValue && lastValue.tree;
+
+					if (!isVoid(oldTree)) {
+						tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+					} else {
+						recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
+					}
+				} else {
+					replaceChild(domNode, tree.dom.create(nextValue, treeLifecycle, context));
+				}
+			} else if (nextValue.create) {
+				// TODO
+			} else {
+				removeChild(domNode);
+			}
 		}
 	}
 }

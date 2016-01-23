@@ -179,25 +179,40 @@ function canHydrate(domNode, nextDomNode) {
 	}
 }
 
-function createDOMFragment(parentNode, nextNode) {
-	var lastItem = undefined;
-	var treeSuccessListeners = [];
-	var context = {};
+function createTreeLifecycle() {
 	var treeLifecycle = {
+		treeSuccessListeners: [],
 		addTreeSuccessListener: function addTreeSuccessListener(listener) {
-			treeSuccessListeners.push(listener);
+			treeLifecycle.treeSuccessListeners.push(listener);
 		},
 		removeTreeSuccessListener: function removeTreeSuccessListener(listener) {
-			for (var i = 0; i < treeSuccessListeners.length; i++) {
-				var treeSuccessListener = treeSuccessListeners[i];
+			for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
+				var treeSuccessListener = treeLifecycle.treeSuccessListeners[i];
 
 				if (treeSuccessListener === listener) {
-					treeSuccessListeners.splice(i, 1);
+					treeLifecycle.treeSuccessListeners.splice(i, 1);
 					return;
+				}
+			}
+		},
+		reset: function reset() {
+			treeLifecycle.treeSuccessListeners = [];
+		},
+		trigger: function trigger() {
+			if (treeLifecycle.treeSuccessListeners.length > 0) {
+				for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
+					treeLifecycle.treeSuccessListeners[i]();
 				}
 			}
 		}
 	};
+	return treeLifecycle;
+}
+
+function createDOMFragment(parentNode, nextNode) {
+	var lastItem = undefined;
+	var context = {};
+	var treeLifecycle = createTreeLifecycle();
 	return {
 		parentNode: parentNode,
 		render: function render(nextItem) {
@@ -234,11 +249,7 @@ function createDOMFragment(parentNode, nextNode) {
 							}
 						}
 					}
-					if (treeSuccessListeners.length > 0) {
-						for (var i = 0; i < treeSuccessListeners.length; i++) {
-							treeSuccessListeners[i]();
-						}
-					}
+					treeLifecycle.trigger();
 					lastItem = nextItem;
 					if (activeNode !== document.body && document.activeElement !== activeNode) {
 						activeNode.focus();
@@ -257,7 +268,7 @@ function createDOMFragment(parentNode, nextNode) {
 					remove(lastItem, parentNode);
 				}
 			}
-			treeSuccessListeners = [];
+			treeLifecycle.treeSuccessListeners = [];
 		}
 	};
 }

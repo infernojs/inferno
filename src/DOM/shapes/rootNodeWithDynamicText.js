@@ -44,16 +44,14 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 		},
 		update(lastItem, nextItem, treeLifecycle) {
 			const tree = lastItem && lastItem.tree;
-
-			if (tree && (node !== tree.dom)) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-				return;
-			}
 			const domNode = lastItem.rootNode;
 
+			if (tree && (node !== tree.dom)) {
+				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
+				return;
+			}
 			nextItem.id = lastItem.id;
 			nextItem.rootNode = domNode;
-
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 

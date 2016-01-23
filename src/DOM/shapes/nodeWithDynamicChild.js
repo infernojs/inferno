@@ -1,12 +1,9 @@
 import isArray from '../../util/isArray';
 import isVoid from '../../util/isVoid';
-import updateAndAppendDynamicChildren from '../../shared/updateAndAppendDynamicChildren';
-import appendText from '../../util/appendText';
 import recreateNode from '../recreateNode';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
-import removeChild from '../../core/removeChild';
-import { updateKeyed, updateNonKeyed, createDynamicChild } from '../domMutate';
+import { updateKeyed, updateNonKeyed, createDynamicChild, updateDynamicChild } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import addShapeAttributes from '../addShapeAttributes';
 
@@ -41,70 +38,14 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 			}
-			if (nextValue && isVoid(lastValue)) {
-				if (typeof nextValue === 'object') {
-					if (isArray(nextValue)) {
-						updateAndAppendDynamicChildren(domNode, nextValue);
-					} else {
-						recreateNode(domNode, nextItem, node, treeLifecycle, context);
-					}
-				} else {
-					domNode.appendChild(document.createTextNode(nextValue));
-				}
-			} else if (lastValue && isVoid(nextValue)) {
-				if (isArray(lastValue)) {
-					for (let i = 0; i < lastValue.length; i++) {
-						if (!isVoid(domNode.childNodes[i])) {
-							domNode.removeChild(domNode.childNodes[i]);
-						} else {
-							removeChild(domNode);
-						}
-					}
-				} else {
-					removeChild(domNode);
-				}
-			} else if (nextValue !== lastValue) {
-				if (isStringOrNumber(nextValue)) {
-					appendText(domNode, nextValue);
-				} else if (isVoid(nextValue)) {
-					removeChild(domNode);
-					// if we update from undefined, we will have an array with zero length.
-					// If we check if it's an array, it will throw 'x' is undefined.
-				} else if (nextValue.length !== 0 && isArray(nextValue)) {
-					if (lastValue && isArray(lastValue)) {
-						if (node.keyedChildren) {
-							updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-						} else {
-							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
-						}
-					} else {
-						// lastValue is undefined, so set it to an empty array and update
-						recreateNode(domNode, nextItem, node, treeLifecycle, context);
-					}
-				} else if (typeof nextValue === 'object') {
-					const tree = nextValue && nextValue.tree;
-
-					if (!isVoid(tree)) {
-						const lastTree = lastValue && lastValue.tree;
-
-						if (!isVoid(lastTree)) {
-							tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-						} else {
-						// FIX THIS!!
-							if(lastItem.tree !== undefined) {
-								if (lastItem.tree.dom) {
-									lastItem.tree.dom.update(lastItem, nextValue, treeLifecycle, context);
-								} else {
-
-								}
-							} else {
-								recreateNode(domNode, nextItem, node, treeLifecycle, context);
-							}
-						}
-					} else {
-						removeChild(domNode);
-					}
-				}
+			if (nextValue instanceof Promise) {
+				nextValue.then(asyncValue => {
+					treeLifecycle.reset();
+					updateDynamicChild(lastItem, nextItem, lastValue, asyncValue, domNode, node, treeLifecycle, context, recreateNode);
+					treeLifecycle.trigger();
+				});
+			} else {
+				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateNode);
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);

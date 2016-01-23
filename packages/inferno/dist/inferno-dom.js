@@ -166,6 +166,43 @@
   	return recyclingEnabled$1;
   }
 
+  function replaceChild(domNode, childNode) {
+  	var replaceNode = domNode.firstChild;
+
+  	if (replaceNode) {
+  		domNode.replaceChild(childNode, domNode.firstChild);
+  	} else {
+  		domNode.appendChild(childNode);
+  	}
+  }
+
+  function appendText(domNode, value) {
+  	var firstChild = domNode.firstChild;
+  	if (firstChild) {
+  		firstChild.nodeValue = value;
+  	} else {
+  		domNode.textContent = value;
+  	}
+  }
+
+  function removeChild(domNode) {
+  	var firstChild = domNode.firstChild;
+  	if (firstChild) {
+  		domNode.removeChild(firstChild);
+  	}
+  }
+
+  function updateAndAppendDynamicChildren(domNode, nextValue) {
+
+  	for (var i = 0; i < nextValue.length; i++) {
+  		if (isStringOrNumber(nextValue[i])) {
+  			domNode.appendChild(document.createTextNode(nextValue[i]));
+  		} else {
+  			// Do nothing for now
+  		}
+  	}
+  }
+
   var recyclingEnabled$2 = isRecyclingEnabled();
 
   function updateTree(item, oldItem, startItem, treeLifecycle, context) {
@@ -500,6 +537,69 @@
   	}
   }
 
+  function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreate) {
+  	if (nextValue !== lastValue) {
+  		if (nextValue && isVoid(lastValue)) {
+  			if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  				if (isArray(nextValue)) {
+  					updateAndAppendDynamicChildren(domNode, nextValue);
+  				} else {
+  					recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
+  				}
+  			} else {
+  				domNode.appendChild(document.createTextNode(nextValue));
+  			}
+  		} else if (lastValue && isVoid(nextValue)) {
+  			if (isArray(lastValue)) {
+  				for (var i = 0; i < lastValue.length; i++) {
+  					if (!isVoid(domNode.childNodes[i])) {
+  						domNode.removeChild(domNode.childNodes[i]);
+  					} else {
+  						removeChild(domNode);
+  					}
+  				}
+  			} else {
+  				removeChild(domNode);
+  			}
+  		} else if (isStringOrNumber(nextValue)) {
+  			appendText(domNode, nextValue);
+  		} else if (isVoid(nextValue)) {
+  			if (domNode !== null) {
+  				replaceChild(domNode, document.createTextNode(''));
+  			}
+  		} else if (isArray(nextValue)) {
+  			if (isArray(lastValue)) {
+  				if (node.keyedChildren) {
+  					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
+  				} else {
+  					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
+  				}
+  			} else {
+  				recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
+  			}
+  		} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
+  			var tree = nextValue && nextValue.tree;
+  			if (!isVoid(tree)) {
+  				if (!isVoid(lastValue)) {
+  					var oldTree = lastValue && lastValue.tree;
+
+  					if (!isVoid(oldTree)) {
+  						tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+  					} else {
+  						recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
+  					}
+  				} else {
+  					replaceChild(domNode, tree.dom.create(nextValue, treeLifecycle, context));
+  				}
+  			} else if (nextValue.create) {
+  				// TODO
+  			} else {
+  					removeChild(domNode);
+  				}
+  		}
+  	}
+  }
+
   function canHydrate(domNode, nextDomNode) {
   	if (nextDomNode) {
   		if (nextDomNode.nodeType === 1 && nextDomNode.hasAttribute('data-inferno')) {
@@ -560,25 +660,40 @@
   	}
   }
 
-  function createDOMFragment(parentNode, nextNode) {
-  	var lastItem = undefined;
-  	var treeSuccessListeners = [];
-  	var context = {};
+  function createTreeLifecycle() {
   	var treeLifecycle = {
+  		treeSuccessListeners: [],
   		addTreeSuccessListener: function addTreeSuccessListener(listener) {
-  			treeSuccessListeners.push(listener);
+  			treeLifecycle.treeSuccessListeners.push(listener);
   		},
   		removeTreeSuccessListener: function removeTreeSuccessListener(listener) {
-  			for (var i = 0; i < treeSuccessListeners.length; i++) {
-  				var treeSuccessListener = treeSuccessListeners[i];
+  			for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
+  				var treeSuccessListener = treeLifecycle.treeSuccessListeners[i];
 
   				if (treeSuccessListener === listener) {
-  					treeSuccessListeners.splice(i, 1);
+  					treeLifecycle.treeSuccessListeners.splice(i, 1);
   					return;
+  				}
+  			}
+  		},
+  		reset: function reset() {
+  			treeLifecycle.treeSuccessListeners = [];
+  		},
+  		trigger: function trigger() {
+  			if (treeLifecycle.treeSuccessListeners.length > 0) {
+  				for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
+  					treeLifecycle.treeSuccessListeners[i]();
   				}
   			}
   		}
   	};
+  	return treeLifecycle;
+  }
+
+  function createDOMFragment(parentNode, nextNode) {
+  	var lastItem = undefined;
+  	var context = {};
+  	var treeLifecycle = createTreeLifecycle();
   	return {
   		parentNode: parentNode,
   		render: function render(nextItem) {
@@ -615,11 +730,7 @@
   							}
   						}
   					}
-  					if (treeSuccessListeners.length > 0) {
-  						for (var i = 0; i < treeSuccessListeners.length; i++) {
-  							treeSuccessListeners[i]();
-  						}
-  					}
+  					treeLifecycle.trigger();
   					lastItem = nextItem;
   					if (activeNode !== document.body && document.activeElement !== activeNode) {
   						activeNode.focus();
@@ -638,7 +749,7 @@
   					remove(lastItem, parentNode);
   				}
   			}
-  			treeSuccessListeners = [];
+  			treeLifecycle.treeSuccessListeners = [];
   		}
   	};
   }
@@ -2121,13 +2232,13 @@
   	}
   }
 
-  function recreateRootNode(lastItem, nextItem, node, treeLifecycle, context) {
+  function recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle, context) {
   	var lastDomNode = lastItem.rootNode;
   	var lastTree = lastItem.tree.dom;
 
   	lastTree.remove(lastItem, treeLifecycle);
 
-  	var domNode = node.create(nextItem, treeLifecycle, context);
+  	domNode = node.create(nextItem, treeLifecycle, context);
   	var parentNode = lastDomNode.parentNode;
 
   	if (parentNode) {
@@ -2156,15 +2267,6 @@
   		treeLifecycle.addTreeSuccessListener(function () {
   			handleHooks(item, dynamicAttrs, domNode, 'onAttached');
   		});
-  	}
-  }
-
-  function appendText(domNode, value) {
-  	var firstChild = domNode.firstChild;
-  	if (firstChild) {
-  		firstChild.nodeValue = value;
-  	} else {
-  		domNode.textContent = value;
   	}
   }
 
@@ -2204,18 +2306,15 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-
   			var tree = lastItem && lastItem.tree;
-
-  			if (tree && node !== tree.dom) {
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-  				return;
-  			}
   			var domNode = lastItem.rootNode;
 
+  			if (tree && node !== tree.dom) {
+  				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
+  				return;
+  			}
   			nextItem.id = lastItem.id;
   			nextItem.rootNode = domNode;
-
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -2230,10 +2329,10 @@
   				appendText(domNode, nextValue);
   			}
   			if (dynamicAttrs) {
-  				//updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-  				//if (dynamicAttrs.onDidUpdate) {
-  				//	handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-  				//}
+  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+  				if (dynamicAttrs.onDidUpdate) {
+  					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+  				}
   			}
   		},
   		remove: function remove(item) {
@@ -2346,13 +2445,12 @@
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
   			var tree = lastItem && lastItem.tree;
-
-  			if (tree && node !== tree.dom) {
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-  				return;
-  			}
   			var domNode = lastItem.rootNode;
 
+  			if (tree && node !== tree.dom) {
+  				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
+  				return;
+  			}
   			nextItem.rootNode = domNode;
   			nextItem.id = lastItem.id;
   			if (dynamicAttrs) {
@@ -2421,97 +2519,6 @@
   	return node;
   }
 
-  function updateAndAppendDynamicChildren(domNode, nextValue) {
-
-  	for (var i = 0; i < nextValue.length; i++) {
-  		if (isStringOrNumber(nextValue[i])) {
-  			domNode.appendChild(document.createTextNode(nextValue[i]));
-  		} else {
-  			// Do nothing for now
-  		}
-  	}
-  }
-
-  function removeChild(domNode) {
-  	var firstChild = domNode.firstChild;
-  	if (firstChild) {
-  		domNode.removeChild(firstChild);
-  	}
-  }
-
-  function replaceChild(domNode, childNode) {
-  	var replaceNode = domNode.firstChild;
-
-  	if (replaceNode) {
-  		domNode.replaceChild(childNode, domNode.firstChild);
-  	} else {
-  		domNode.appendChild(childNode);
-  	}
-  }
-
-  function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context) {
-  	if (nextValue !== lastValue) {
-  		if (nextValue && isVoid(lastValue)) {
-  			if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-  				if (isArray(nextValue)) {
-  					updateAndAppendDynamicChildren(domNode, nextValue);
-  				} else {
-  					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  				}
-  			} else {
-  				domNode.appendChild(document.createTextNode(nextValue));
-  			}
-  		} else if (lastValue && isVoid(nextValue)) {
-  			if (isArray(lastValue)) {
-  				for (var i = 0; i < lastValue.length; i++) {
-  					if (!isVoid(domNode.childNodes[i])) {
-  						domNode.removeChild(domNode.childNodes[i]);
-  					} else {
-  						removeChild(domNode);
-  					}
-  				}
-  			} else {
-  				removeChild(domNode);
-  			}
-  		} else if (isStringOrNumber(nextValue)) {
-  			appendText(domNode, nextValue);
-  		} else if (isVoid(nextValue)) {
-  			if (domNode !== null) {
-  				replaceChild(domNode, document.createTextNode(''));
-  			}
-  		} else if (isArray(nextValue)) {
-  			if (isArray(lastValue)) {
-  				if (node.keyedChildren) {
-  					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-  				} else {
-  					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
-  				}
-  			} else {
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  			}
-  		} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-  			var tree = nextValue && nextValue.tree;
-  			if (!isVoid(tree)) {
-  				if (!isVoid(lastValue)) {
-  					var oldTree = lastValue && lastValue.tree;
-
-  					if (!isVoid(oldTree)) {
-  						tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-  					} else {
-  						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-  					}
-  				} else {
-  					replaceChild(domNode, tree.dom.create(nextValue, treeLifecycle, context));
-  				}
-  			} else if (nextValue.create) {
-  				// TODO
-  			} else {
-  					removeChild(domNode);
-  				}
-  		}
-  	}
-  }
-
   function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
   	var node = {
   		keyedChildren: true,
@@ -2533,7 +2540,9 @@
 
   			if (value instanceof Promise) {
   				value.then(function (asyncValue) {
+  					treeLifecycle.reset();
   					createDynamicChild(asyncValue, domNode, node, treeLifecycle, context);
+  					treeLifecycle.trigger();
   				});
   			} else {
   				createDynamicChild(value, domNode, node, treeLifecycle, context);
@@ -2546,34 +2555,35 @@
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			var tree = lastItem && lastItem.tree;
+  			var domNode = lastItem.rootNode;
 
   			if (tree && node !== tree.dom) {
   				node.childNodeList = [];
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
   				return;
   			}
-  			var domNode = lastItem.rootNode;
-
-  			nextItem.rootNode = domNode;
-  			nextItem.id = lastItem.id;
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
+  			nextItem.rootNode = domNode;
+  			nextItem.id = lastItem.id;
   			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
   				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
   			}
   			if (nextValue instanceof Promise) {
   				nextValue.then(function (asyncValue) {
-  					updateDynamicChild(lastItem, nextItem, lastValue, asyncValue, domNode, node, treeLifecycle, context);
+  					treeLifecycle.reset();
+  					updateDynamicChild(lastItem, nextItem, lastValue, asyncValue, domNode, node, treeLifecycle, context, recreateRootNode);
+  					treeLifecycle.trigger();
   				});
   			} else {
-  				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context);
+  				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateRootNode);
   			}
   			if (dynamicAttrs) {
-  				//updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-  				//if (dynamicAttrs.onDidUpdate) {
-  				//	handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-  				//}
+  				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+  				if (dynamicAttrs.onDidUpdate) {
+  					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+  				}
   			}
   		},
   		remove: function remove(item, treeLifecycle) {
@@ -2591,7 +2601,7 @@
   	return node;
   }
 
-  function recreateNode(lastDomNode, nextItem, node, treeLifecycle, context) {
+  function recreateNode(lastDomNode, lastItem, nextItem, node, treeLifecycle, context) {
   	var domNode = node.create(nextItem, treeLifecycle, context);
 
   	lastDomNode.parentNode.replaceChild(domNode, lastDomNode);
@@ -2629,68 +2639,14 @@
   			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
   				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
   			}
-  			if (nextValue && isVoid(lastValue)) {
-  				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-  					if (isArray(nextValue)) {
-  						updateAndAppendDynamicChildren(domNode, nextValue);
-  					} else {
-  						recreateNode(domNode, nextItem, node, treeLifecycle, context);
-  					}
-  				} else {
-  					domNode.appendChild(document.createTextNode(nextValue));
-  				}
-  			} else if (lastValue && isVoid(nextValue)) {
-  				if (isArray(lastValue)) {
-  					for (var i = 0; i < lastValue.length; i++) {
-  						if (!isVoid(domNode.childNodes[i])) {
-  							domNode.removeChild(domNode.childNodes[i]);
-  						} else {
-  							removeChild(domNode);
-  						}
-  					}
-  				} else {
-  					removeChild(domNode);
-  				}
-  			} else if (nextValue !== lastValue) {
-  				if (isStringOrNumber(nextValue)) {
-  					appendText(domNode, nextValue);
-  				} else if (isVoid(nextValue)) {
-  					removeChild(domNode);
-  					// if we update from undefined, we will have an array with zero length.
-  					// If we check if it's an array, it will throw 'x' is undefined.
-  				} else if (nextValue.length !== 0 && isArray(nextValue)) {
-  						if (lastValue && isArray(lastValue)) {
-  							if (node.keyedChildren) {
-  								updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-  							} else {
-  								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
-  							}
-  						} else {
-  							// lastValue is undefined, so set it to an empty array and update
-  							recreateNode(domNode, nextItem, node, treeLifecycle, context);
-  						}
-  					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-  						var tree = nextValue && nextValue.tree;
-
-  						if (!isVoid(tree)) {
-  							var lastTree = lastValue && lastValue.tree;
-
-  							if (!isVoid(lastTree)) {
-  								tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-  							} else {
-  								// FIX THIS!!
-  								if (lastItem.tree !== undefined) {
-  									if (lastItem.tree.dom) {
-  										lastItem.tree.dom.update(lastItem, nextValue, treeLifecycle, context);
-  									} else {}
-  								} else {
-  									recreateNode(domNode, nextItem, node, treeLifecycle, context);
-  								}
-  							}
-  						} else {
-  							removeChild(domNode);
-  						}
-  					}
+  			if (nextValue instanceof Promise) {
+  				nextValue.then(function (asyncValue) {
+  					treeLifecycle.reset();
+  					updateDynamicChild(lastItem, nextItem, lastValue, asyncValue, domNode, node, treeLifecycle, context, recreateNode);
+  					treeLifecycle.trigger();
+  				});
+  			} else {
+  				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateNode);
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2768,18 +2724,16 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
-  			nextItem.id = lastItem.id;
-
   			var tree = lastItem && lastItem.tree;
+  			var domNode = lastItem.rootNode;
 
+  			nextItem.id = lastItem.id;
   			if (tree && node !== tree.dom) {
-  				var newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  				var newDomNode = recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 
   				nextItem.rootNode = newDomNode;
   				return newDomNode;
   			}
-  			var domNode = lastItem.rootNode;
-
   			nextItem.rootNode = domNode;
   			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
   				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
@@ -2955,19 +2909,16 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
-
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
   			if (nextValue !== lastValue) {
-
   				var domNode = domNodeMap[lastItem.id];
   				var nextType = getTypeFromValue(nextValue);
   				var lastType = getTypeFromValue(lastValue);
 
   				if (lastType !== nextType) {
-
-  					recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  					recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
   					return;
   				}
   				switch (nextType) {
@@ -3090,6 +3041,7 @@
   						});
   						instance.forceUpdate = function () {
   							instance.context = context;
+  							treeLifecycle.reset();
   							var nextRender = instance.render.call(instance);
   							var childContext = instance.getChildContext();
 
@@ -3099,6 +3051,7 @@
   							nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
   							currentItem.rootNode = nextRender.rootNode;
   							instance._lastRender = nextRender;
+  							treeLifecycle.trigger();
   						};
   					})();
   				}
@@ -3114,7 +3067,7 @@
   			nextItem.rootNode = lastItem.rootNode;
   			currentItem = nextItem;
   			if (!Component) {
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  				recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
   				return;
   			}
   			if (typeof Component === 'function') {
@@ -3159,7 +3112,7 @@
   							}
   						}
   					} else {
-  						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  						recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
   						return;
   					}
   					if (props && props.onComponentDidUpdate) {
@@ -3170,7 +3123,7 @@
   				} else {
 
   					if (!instance || node !== lastItem.tree.dom || Component !== instance.constructor) {
-  						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+  						recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
   						return;
   					}
   					var domNode = lastItem.rootNode;
@@ -3271,6 +3224,7 @@
   						});
   						instance.forceUpdate = function () {
   							instance.context = context;
+  							treeLifecycle.reset();
   							var nextRender = instance.render.call(instance);
   							var childContext = instance.getChildContext();
 
@@ -3287,6 +3241,7 @@
   							} else {
   								instance._lastRender = nextRender;
   							}
+  							treeLifecycle.trigger();
   						};
   					})();
   				}
@@ -3300,7 +3255,7 @@
 
   			currentItem = nextItem;
   			if (!Component) {
-  				recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  				recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
   				if (instance) {
   					instance._lastRender.rootNode = domNode;
   				}
@@ -3330,7 +3285,7 @@
   					if (!isVoid(statelessRender)) {
   						newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
   					} else {
-  						recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  						recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
   						return;
   					}
   					statelessRender = nextRender;
@@ -3352,7 +3307,7 @@
   					}
   				} else {
   					if (!instance || Component !== instance.constructor) {
-  						recreateNode(domNode, nextItem, node, treeLifecycle, context);
+  						recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
   						return domNode;
   					}
   					var prevProps = instance.props;
@@ -3407,16 +3362,13 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-
+  			var domNode = lastItem.rootNode;
   			var tree = lastItem && lastItem.tree;
 
-  			// TODO! Is this code ever executed??
   			if (tree && node !== tree.dom) {
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+  				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
   				return;
   			}
-
-  			var domNode = lastItem.rootNode;
   			var nextValue = getValueWithIndex(nextItem, valueIndex);
   			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -3457,20 +3409,17 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-
+  			var domNode = lastItem.rootNode;
   			var tree = lastItem && lastItem.tree;
 
   			if (tree && node !== tree.dom) {
-  				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+  				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
   				return;
   			}
-
   			if (staticNode) {
   				nextItem.rootNode = lastItem.rootNode;
   				return;
   			}
-  			var domNode = lastItem.rootNode;
-
   			nextItem.rootNode = domNode;
   			nextItem.rootNode = lastItem.rootNode;
 

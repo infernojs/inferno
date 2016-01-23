@@ -69,6 +69,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 					});
 					instance.forceUpdate = () => {
 						instance.context = context;
+						treeLifecycle.reset();
 						const nextRender = instance.render.call(instance);
 						const childContext = instance.getChildContext();
 
@@ -85,6 +86,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 						} else {
 							instance._lastRender = nextRender;
 						}
+						treeLifecycle.trigger();
 					};
 				}
 			}
@@ -97,7 +99,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 
 			currentItem = nextItem;
 			if (!Component) {
-				recreateNode(domNode, nextItem, node, treeLifecycle, context);
+				recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 				if (instance) {
 					instance._lastRender.rootNode = domNode;
 				}
@@ -127,7 +129,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 					if (!isVoid(statelessRender)) {
 						newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 					} else {
-						recreateNode(domNode, nextItem, node, treeLifecycle, context);
+						recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 						return;
 					}
 					statelessRender = nextRender;
@@ -149,7 +151,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 					}
 				} else {
 					if (!instance || Component !== instance.constructor) {
-						recreateNode(domNode, nextItem, node, treeLifecycle, context);
+						recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 						return domNode;
 					}
 					const prevProps = instance.props;

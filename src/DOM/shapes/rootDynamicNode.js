@@ -68,16 +68,14 @@ export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
 			const tree = lastItem && lastItem.tree;
-
-			if (tree && (node !== tree.dom)) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-				return;
-			}
 			const domNode = lastItem.rootNode;
 
+			if (tree && (node !== tree.dom)) {
+				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
+				return;
+			}
 			nextItem.rootNode = domNode;
 			nextItem.id = lastItem.id;
-
 			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 

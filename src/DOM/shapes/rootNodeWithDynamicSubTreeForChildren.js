@@ -33,18 +33,16 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
-			nextItem.id = lastItem.id;
-
 			const tree = lastItem && lastItem.tree;
+			const domNode = lastItem.rootNode;
 
+			nextItem.id = lastItem.id;
 			if (tree && (node !== tree.dom)) {
-				const newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+				const newDomNode = recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 
 				nextItem.rootNode = newDomNode;
 				return newDomNode;
 			}
-			const domNode = lastItem.rootNode;
-
 			nextItem.rootNode = domNode;
 			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');

@@ -31,20 +31,17 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-
+			const domNode = lastItem.rootNode;
 			const tree = lastItem && lastItem.tree;
 
 			if (tree && (node !== tree.dom)) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
-
 			if (staticNode){
 				nextItem.rootNode = lastItem.rootNode;
 				return;
 			}
-				const domNode = lastItem.rootNode;
-
 				nextItem.rootNode = domNode;
 				nextItem.rootNode = lastItem.rootNode;
 
