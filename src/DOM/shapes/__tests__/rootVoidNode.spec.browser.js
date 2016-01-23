@@ -7,7 +7,7 @@ import { addTreeConstructor } from '../../../core/createTemplate';
 
 addTreeConstructor('dom', createDOMTree);
 
-describe('dynamicNode', () => {
+describe('rootVoidNode', () => {
 
 	let container;
 
@@ -19,4 +19,12 @@ describe('dynamicNode', () => {
 		render(null, container);
 	});
 
+	it('rootVoidNode', () => {
+
+		const template = createTemplate(() => ({
+			tag: 'div'
+		}));
+		render(template(), container);
+		expect(container.firstChild.nodeName).to.equal('DIV');
+	});
 });

@@ -4,10 +4,9 @@ import createTemplate from '../../../core/createTemplate';
 import createDOMTree from '../../createTree';
 import { addTreeConstructor } from '../../../core/createTemplate';
 
-
 addTreeConstructor('dom', createDOMTree);
 
-describe('rootVoidNode', () => {
+describe('nodeWithComponent', () => {
 
 	let container;
 
