@@ -20,10 +20,16 @@ export default function createDynamicNode(valueIndex) {
 			let domNode;
 			const type = getTypeFromValue(value);
 
+			if (process.env.NODE_ENV !== 'production') {
+				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
+					throw Error(errorMsg);
+				}
+			}
+
 			switch (type) {
 				case ValueTypes.TEXT:
-					if(isVoidValue(value)) {
-					value = '';
+					if (isVoidValue(value)) {
+						value = '';
 					}
 					domNode = document.createTextNode(value);
 					break;
@@ -40,16 +46,6 @@ export default function createDynamicNode(valueIndex) {
 					break;
 				case ValueTypes.TREE:
 					domNode = value.create(item, treeLifecycle, context);
-					break;
-				case ValueTypes.EMPTY_OBJECT:
-					if (process.env.NODE_ENV !== 'production') {
-						throw Error(errorMsg);
-					}
-					break;
-				case ValueTypes.FUNCTION:
-					if (process.env.NODE_ENV !== 'production') {
-						throw Error(errorMsg);
-					}
 					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create(value, treeLifecycle, context);
