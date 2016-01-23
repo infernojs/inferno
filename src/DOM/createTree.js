@@ -66,7 +66,10 @@ function createElement(schema, domNamespace, parentNode) {
 			document.createElement(nodeName, is) :
 			document.createElement(nodeName);
 
+	const isSVG = domNamespace === SVGNamespace;
+
 	return {
+		isSVG: isSVG,
 		namespace: domNamespace,
 		node: templateNode
 	};
