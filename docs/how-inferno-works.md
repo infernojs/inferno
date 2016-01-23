@@ -1,5 +1,5 @@
 # How Inferno Works
-To achieve it's performance advantages, Inferno builds the DOM differently than other JavaScript frameworks. Unlike many other frameworks, Inferno does not build and compare virtual DOMs.
+To achieve it's performance advantages, Inferno builds the DOM differently than other JavaScript libraries. Unlike many other libraries, Inferno does not build and compare virtual DOMs.
 
 ## Schemas
 
@@ -33,11 +33,11 @@ const template = Inferno.createTemplate(() => {
 });
 ```
 
-Within the `createTemplate` function a DOM fragment is created, and a function is returned that has access to this fragment to clone later while rendering.
+Within the `createTemplate` function a "virtual fragment" is created, and a function is returned that has access to this virtual fragment to clone the vitual fragments root node later while rendering.
 
 ### Dynamic Templates
 
-As you are not always going to be saying hello to the entire world, so the arguments of the  `createTemplate` callback method gives you Variables.
+As you are not always going to be saying hello to the entire world, so the arguments of the `createTemplate` callback method gives you Variables.
 
 ```javascript
 const template = Inferno.createTemplate((name) => {
@@ -51,8 +51,7 @@ A Variable is an object that makes the spot in a template where dynamic data sho
 
 ```javascript
 {
-  index: 0,
-  type: ObjectTypes.VARIABLE
+  index: 0
 }
 ```
 
