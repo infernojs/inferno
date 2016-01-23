@@ -14,8 +14,7 @@ module.exports = function(config) {
 		files: [
 			'src/**/*__tests__*/**/*spec.browser.js',
 			'src/**/*__tests__*/**/*spec.jsx.js',
-			'src/**/*__tests__*/**/*spec.ssr.js',
-//			'src/**/*__tests__*/**/*spec.server.js',
+			'src/**/*__tests__*/**/*spec.ssr.js'
 		],
 		// list of files to exclude
 		exclude: [],
@@ -24,14 +23,13 @@ module.exports = function(config) {
 		preprocessors: {
 			'src/**/*__tests__*/**/*spec.browser.js': ['webpack'],
 			'src/**/*__tests__*/**/*spec.jsx.js': ['webpack'],
-			'src/**/*__tests__*/**/*spec.ssr.js': ['webpack'],
-//			'src/**/*__tests__*/**/*spec.server.js': ['webpack'],
+			'src/**/*__tests__*/**/*spec.ssr.js': ['webpack']
 		},
 		webpack: {
 			module: {
 				postLoaders: [{
 					test: /\.js$/,
-					exclude: /.git|packages|node_modules\/dist/,
+					exclude: /(src\/dist|packages|.git|node_modules)/,
 					loader: 'isparta',
 					include: path.join(__dirname, '../src')
 				}],
