@@ -316,7 +316,7 @@ export function createDynamicChild(value, domNode, node, treeLifecycle, context)
 					if (tree) {
 						const childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
 
-						if (childNode.key === undefined) {
+						if (childItem.key === undefined) {
 							node.keyedChildren = false;
 						}
 						node.childNodeList.push(childNode);

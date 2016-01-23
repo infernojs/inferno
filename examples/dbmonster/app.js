@@ -32,7 +32,6 @@
 	});
 	var databaseTemplate = Inferno.createTemplate(function(name, queriesCount, className, queries) {
 		return {
-			key: name,
 			tag: 'tr',
 			children: [
 				{

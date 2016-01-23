@@ -36,13 +36,11 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 function fastPropSet(attrName, attrVal, domNode, isSVG) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
-			// TODO lets fix this?
 			if (isSVG) {
 				domNode.setAttribute('class', attrVal);
 			} else {
 				domNode.className = attrVal;
 			}
-			domNode.className = attrVal;
 		}
 		return true;
 	} else if (attrName === 'ref') {

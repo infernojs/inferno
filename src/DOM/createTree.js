@@ -21,7 +21,6 @@ import { isRecyclingEnabled } from './recycling';
 import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
 
-let isSVG;
 function createElement(schema, domNamespace, parentNode) {
 	const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 	const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -67,16 +66,15 @@ function createElement(schema, domNamespace, parentNode) {
 			document.createElement(nodeName, is) :
 			document.createElement(nodeName);
 
-	const isSVG = domNamespace === SVGNamespace;
-
 	return {
-		isSVG: isSVG,
+		isSVG: domNamespace === SVGNamespace,
 		namespace: domNamespace,
 		node: templateNode
 	};
 }
 
 const recyclingEnabled = isRecyclingEnabled();
+
 if (process.env.NODE_ENV !== 'production') {
 	const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 }
@@ -124,6 +122,7 @@ function createStaticTreeChildren(children, parentNode, domNamespace) {
 
 function createStaticTreeNode(node, parentNode, domNamespace) {
 	let staticNode;
+	let isSVG = false;
 
 	if (!isVoid(node)) {
 		if (isStringOrNumber(node)) {
@@ -135,8 +134,8 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 				const Element = createElement(node, domNamespace, parentNode);
 
 				staticNode = Element.node;
+				isSVG = Element.isSVG;
 				domNamespace = Element.namespace;
-				const isSVG = Element.isSVG;
 				const text = node.text;
 				const children = node.children;
 
@@ -166,7 +165,10 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 			}
 		}
 		if (parentNode === null) {
-			return staticNode;
+			return {
+				node: staticNode,
+				isSVG
+			};
 		} else {
 			parentNode.appendChild(staticNode);
 		}
@@ -188,16 +190,19 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 	let templateNode;
 
 	if (!dynamicFlags) {
-		templateNode = createStaticTreeNode(schema, null, domNamespace, schema, isSVG);
+		const element = createStaticTreeNode(schema, null, domNamespace);
+		const isSVG = element.isSVG;
+		templateNode = element.node;
+
 		if (process.env.NODE_ENV !== 'production') {
 			if (!templateNode) {
 				throw Error(invalidTemplateError);
 			}
 		}
 		if (isRoot) {
-			node = createRootVoidNode(templateNode, null, recyclingEnabled, true);
+			node = createRootVoidNode(templateNode, null, recyclingEnabled, true, isSVG);
 		} else {
-			node = createVoidNode(templateNode, true);
+			node = createVoidNode(templateNode, true, isSVG);
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
@@ -234,7 +239,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 						return createNodeWithComponent(tag.index, attrs, children, domNamespace);
 					}
 				}
-				templateNode = createElement(schema, domNamespace, null).node;
+				const element = createElement(schema, domNamespace, null);
+				const isSVG = element.isSVG;
+				templateNode = element.node;
 
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
@@ -341,7 +348,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 					}
 				}
 			} else if (text) {
-				node = createRootDynamicTextNode(document.createTextNode(''), text.index, isSVG);
+				node = createRootDynamicTextNode(document.createTextNode(''), text.index, false);
 			}
 		}
 	}
