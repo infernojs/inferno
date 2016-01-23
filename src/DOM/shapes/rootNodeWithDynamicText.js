@@ -43,7 +43,6 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-
 			const tree = lastItem && lastItem.tree;
 
 			if (tree && (node !== tree.dom)) {
@@ -61,7 +60,6 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 			}
-
 			if (isVoid(nextValue)) {
 				appendText(domNode, '');
 			} else if (isVoid(lastValue)) {
@@ -69,7 +67,6 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			} else	if (nextValue !== lastValue) {
 				appendText(domNode, nextValue);
 			}
-
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				if (dynamicAttrs.onDidUpdate) {

@@ -72,7 +72,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 					// If we check if it's an array, it will throw 'x' is undefined.
 				} else if (nextValue.length !== 0 && isArray(nextValue)) {
 					if (lastValue && isArray(lastValue)) {
-						if (keyedChildren) {
+						if (node.keyedChildren) {
 							updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
 						} else {
 							updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);

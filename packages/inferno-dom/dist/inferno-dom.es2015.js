@@ -3,6 +3,8 @@
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
+import Inferno from 'inferno';
+
 var babelHelpers = {};
 babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -394,13 +396,10 @@ function remove(item, parentNode) {
 }
 
 function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
-
 	if (isVoid(value)) {
 		return null;
 	}
-
 	var domNode = document.createDocumentFragment();
-
 	var keyedChildren = true;
 
 	for (var i = 0; i < value.length; i++) {
@@ -413,7 +412,6 @@ function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
 				throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
 			}
 		}
-
 		switch (childType) {
 			case ValueTypes.TEXT:
 				childDomNode = document.createTextNode(childNode);
@@ -459,6 +457,46 @@ function updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDom
 		}
 	} else {
 		// TODO
+	}
+}
+
+function createDynamicChild(value, domNode, node, treeLifecycle, context) {
+	if (!isVoid(value)) {
+		if (isArray(value)) {
+			for (var i = 0; i < value.length; i++) {
+				var childItem = value[i];
+
+				if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
+					var tree = childItem && childItem.tree;
+
+					if (tree) {
+						var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
+
+						if (childItem.key === undefined) {
+							node.keyedChildren = false;
+						}
+						node.childNodeList.push(childNode);
+						domNode.appendChild(childNode);
+					}
+				} else if (isStringOrNumber(childItem)) {
+					var textNode = document.createTextNode(childItem);
+
+					domNode.appendChild(textNode);
+					node.childNodeList.push(textNode);
+					node.keyedChildren = false;
+				}
+			}
+		} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
+			var tree = value && value.tree;
+
+			if (tree) {
+				domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
+			} else if (value.create) {
+				domNode.appendChild(value.create(value, treeLifecycle, context));
+			}
+		} else if (isStringOrNumber(value)) {
+			domNode.textContent = value;
+		}
 	}
 }
 
@@ -2413,10 +2451,15 @@ function replaceChild(domNode, childNode) {
 	}
 }
 
+function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context) {
+
+	updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
+}
+
 function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
-	var keyedChildren = true;
-	var childNodeList = [];
 	var node = {
+		keyedChildren: true,
+		childNodeList: [],
 		pool: [],
 		keyedPool: [],
 		overrideItem: null,
@@ -2430,45 +2473,14 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 				}
 			}
 			domNode = templateNode.cloneNode(false);
-
 			var value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value)) {
-				if (isArray(value)) {
-					for (var i = 0; i < value.length; i++) {
-						var childItem = value[i];
-						// catches edge case where we e.g. have [null, null, null] as a starting point
-						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
-							var tree = childItem && childItem.tree;
-
-							if (tree) {
-								var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
-
-								if (childItem.key === undefined) {
-									keyedChildren = false;
-								}
-								childNodeList.push(childNode);
-								domNode.appendChild(childNode);
-							}
-						} else if (isStringOrNumber(childItem)) {
-							var textNode = document.createTextNode(childItem);
-
-							domNode.appendChild(textNode);
-							childNodeList.push(textNode);
-							keyedChildren = false;
-						}
-					}
-				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
-					var tree = value && value.tree;
-
-					if (tree) {
-						domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
-					} else if (value.create) {
-						domNode.appendChild(value.create(value, treeLifecycle, context));
-					}
-				} else if (isStringOrNumber(value)) {
-					domNode.textContent = value;
-				}
+			if (value instanceof Promise) {
+				value.then(function (asyncValue) {
+					createDynamicChild(asyncValue, domNode, node, treeLifecycle, context);
+				});
+			} else {
+				createDynamicChild(value, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
 				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
@@ -2477,11 +2489,10 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle, context) {
-
 			var tree = lastItem && lastItem.tree;
 
 			if (tree && node !== tree.dom) {
-				childNodeList = [];
+				node.childNodeList = [];
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}
@@ -2495,67 +2506,12 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 			}
-			if (nextValue && isVoid(lastValue)) {
-				if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-					if (isArray(nextValue)) {
-						updateAndAppendDynamicChildren(domNode, nextValue);
-					} else {
-						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-					}
-				} else {
-					domNode.appendChild(document.createTextNode(nextValue));
-				}
-			} else if (lastValue && isVoid(nextValue)) {
-				if (isArray(lastValue)) {
-					for (var i = 0; i < lastValue.length; i++) {
-						if (!isVoid(domNode.childNodes[i])) {
-							domNode.removeChild(domNode.childNodes[i]);
-						} else {
-							removeChild(domNode);
-						}
-					}
-				} else {
-					removeChild(domNode);
-				}
-			} else if (nextValue !== lastValue) {
-				if (isStringOrNumber(nextValue)) {
-					appendText(domNode, nextValue);
-				} else if (isVoid(nextValue)) {
-					if (domNode !== null) {
-						replaceChild(domNode, document.createTextNode(''));
-					}
-					// if we update from undefined, we will have an array with zero length.
-					// If we check if it's an array, it will throw 'x' is undefined.
-				} else if (isArray(nextValue)) {
-						if (isArray(lastValue)) {
-							if (keyedChildren) {
-								updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-							} else {
-								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
-							}
-						} else {
-							recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-						}
-					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-						var _tree = nextValue && nextValue.tree;
-						if (!isVoid(_tree)) {
-							if (!isVoid(lastValue)) {
-								var oldTree = lastValue && lastValue.tree;
-
-								if (!isVoid(oldTree)) {
-									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-								} else {
-									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-								}
-							} else {
-								replaceChild(domNode, _tree.dom.create(nextValue, treeLifecycle, context));
-							}
-						} else if (nextValue.create) {
-							// TODO
-						} else {
-								removeChild(domNode);
-							}
-					}
+			if (nextValue instanceof Promise) {
+				nextValue.then(function (asyncValue) {
+					updateDynamicChild(lastItem, nextItem, lastValue, asyncValue, domNode, node, treeLifecycle, context);
+				});
+			} else {
+				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
@@ -2576,7 +2532,6 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 			}
 		}
 	};
-
 	return node;
 }
 
@@ -2588,61 +2543,30 @@ function recreateNode(lastDomNode, nextItem, node, treeLifecycle, context) {
 }
 
 function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
-	var keyedChildren = true;
-	var domNodeMap = {};
-	var childNodeList = [];
 	var node = {
+		keyedChildren: true,
+		domNodeMap: {},
+		childNodeList: [],
 		overrideItem: null,
 		create: function create(item, treeLifecycle, context) {
 			var domNode = templateNode.cloneNode(false);
 			var value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value)) {
-				if (isArray(value)) {
-					for (var i = 0; i < value.length; i++) {
-						var childItem = value[i];
-						// catches edge case where we e.g. have [null, null, null] as a starting point
-						if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
-
-							var tree = childItem && childItem.tree;
-
-							if (tree) {
-								var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
-
-								if (childItem.key === undefined) {
-									keyedChildren = false;
-								}
-								childNodeList.push(childNode);
-								domNode.appendChild(childNode);
-							}
-						} else if (isStringOrNumber(childItem)) {
-							var textNode = document.createTextNode(childItem);
-
-							domNode.appendChild(textNode);
-							childNodeList.push(textNode);
-							keyedChildren = false;
-						}
-					}
-				} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object') {
-					var tree = value && value.tree;
-
-					if (tree) {
-						domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
-					} else if (value.create) {
-						domNode.appendChild(value.create(value, treeLifecycle, context));
-					}
-				} else if (isStringOrNumber(value)) {
-					domNode.textContent = value;
-				}
+			if (value instanceof Promise) {
+				value.then(function (asyncValue) {
+					createDynamicChild(asyncValue, domNode, node, treeLifecycle, context);
+				});
+			} else {
+				createDynamicChild(value, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
 				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
-			domNodeMap[item.id] = domNode;
+			node.domNodeMap[item.id] = domNode;
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle, context) {
-			var domNode = domNodeMap[lastItem.id];
+			var domNode = node.domNodeMap[lastItem.id];
 			var nextValue = getValueWithIndex(nextItem, valueIndex);
 			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -2680,7 +2604,7 @@ function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 					// If we check if it's an array, it will throw 'x' is undefined.
 				} else if (nextValue.length !== 0 && isArray(nextValue)) {
 						if (lastValue && isArray(lastValue)) {
-							if (keyedChildren) {
+							if (node.keyedChildren) {
 								updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
 							} else {
 								updateNonKeyed(nextValue, lastValue, childNodeList, domNode, null, treeLifecycle, context);
@@ -2722,7 +2646,7 @@ function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 		remove: function remove(item, treeLifecycle) {
 			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
 			if (dynamicAttrs) {
-				var domNode = domNodeMap[item.id];
+				var domNode = node.domNodeMap[item.id];
 
 				if (dynamicAttrs.onWillDetach) {
 					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');
@@ -3886,32 +3810,13 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 	return node;
 }
 
-var GLOBAL = typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : null;
-
-// browser
-if (GLOBAL && GLOBAL.Inferno) {
-	GLOBAL.Inferno.addTreeConstructor('dom', createDOMTree);
-	// nodeJS
-	// TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
-} else if (GLOBAL && !GLOBAL.Inferno) {
-		var Inferno = undefined;
-
-		// TODO! Avoid try / catch
-		try {
-			Inferno = require('inferno');
-		} catch (e) {
-			Inferno = null;
-			// TODO Should we throw a warning and inform that the Inferno package is not installed?
-		}
-
-		if (Inferno != null) {
-			if (typeof Inferno.addTreeConstructor !== 'function') {
-				throw 'Your package is out-of-date! Upgrade to latest Inferno in order to use the InfernoDOM package.';
-			} else {
-				Inferno.addTreeConstructor('dom', createDOMTree);
-			}
-		}
+if (Inferno) {
+	if (typeof Inferno.addTreeConstructor !== 'function') {
+		throw 'Your package is out-of-date! Upgrade to latest Inferno in order to use the InfernoDOM package.';
+	} else {
+		Inferno.addTreeConstructor('dom', createDOMTree);
 	}
+}
 
 var index = {
 	render: render,

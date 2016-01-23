@@ -13,31 +13,31 @@ import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 
 function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context) {
-	if (nextValue && isVoid(lastValue)) {
-		if (typeof nextValue === 'object') {
-			if (isArray(nextValue)) {
-				updateAndAppendDynamicChildren(domNode, nextValue);
-			} else {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
-			}
-
-		} else {
-			domNode.appendChild(document.createTextNode(nextValue));
-		}
-	} else if (lastValue && isVoid(nextValue)) {
-		if (isArray(lastValue)) {
-			for (let i = 0; i < lastValue.length; i++) {
-				if (!isVoid(domNode.childNodes[i])) {
-					domNode.removeChild(domNode.childNodes[i]);
+	if (nextValue !== lastValue) {
+		if (nextValue && isVoid(lastValue)) {
+			if (typeof nextValue === 'object') {
+				if (isArray(nextValue)) {
+					updateAndAppendDynamicChildren(domNode, nextValue);
 				} else {
-					removeChild(domNode);
+					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				}
+
+			} else {
+				domNode.appendChild(document.createTextNode(nextValue));
 			}
-		} else {
-			removeChild(domNode);
-		}
-	} else if (nextValue !== lastValue) {
-		if (isStringOrNumber(nextValue)) {
+		} else if (lastValue && isVoid(nextValue)) {
+			if (isArray(lastValue)) {
+				for (let i = 0; i < lastValue.length; i++) {
+					if (!isVoid(domNode.childNodes[i])) {
+						domNode.removeChild(domNode.childNodes[i]);
+					} else {
+						removeChild(domNode);
+					}
+				}
+			} else {
+				removeChild(domNode);
+			}
+		} else if (isStringOrNumber(nextValue)) {
 			appendText(domNode, nextValue);
 		} else if (isVoid(nextValue)) {
 			if (domNode !== null) {
@@ -53,8 +53,6 @@ function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, n
 			} else {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 			}
-		} else if (nextValue instanceof Promise) {
-			debugger;
 		} else if (typeof nextValue === 'object') {
 			const tree = nextValue && nextValue.tree;
 			if (!isVoid(tree)) {

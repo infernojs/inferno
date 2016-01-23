@@ -6,22 +6,22 @@ import { isRecyclingEnabled, pool } from './recycling';
 
 const recyclingEnabled = isRecyclingEnabled();
 
-export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
+function updateTree(item, oldItem, startItem, treeLifecycle, context) {
+	item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
+}
 
+export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
-
 	const itemsLength = items.length;
 	const oldItemsLength = oldItems.length;
-
 	let startItem = itemsLength > 0 && items[startIndex];
 
 	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
 	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
 	// We solve that with avoiding going into the iteration loop.
 	if (!isVoid(startItem) && (!isVoid(startItem.tree))) {
-
 		if (items == null ||itemsLength === 0 && oldItemsLength >= 5) {
 			if (recyclingEnabled) {
 				for (let i = 0; i < oldItemsLength; i++) {
@@ -31,7 +31,6 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 			parentNode.textContent = '';
 			return;
 		}
-
 		let endIndex = itemsLength - 1;
 		let oldEndIndex = oldItemsLength - 1;
 		let oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
@@ -44,15 +43,10 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 		let oldEndItemKey;
 		let oldStartItemKey;
 		let startItemKey;
-		let updateTree = function(item, oldItem, startItem, treeLifecycle, context) {
-			item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
-		};
 
 		outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
-
 			oldStartItemKey = oldStartItem.key;
 			startItemKey = startItem.key;
-
 			stop = true;
 			while (startItemKey === oldStartItemKey) {
 				updateTree(startItem, oldStartItem, startItem);
