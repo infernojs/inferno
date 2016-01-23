@@ -196,11 +196,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
-			if (isRoot) {
-				//		node = createRootDynamicNode( schema.index, domNamespace, recyclingEnabled );
-			} else {
-				node = createDynamicNode(schema.index, domNamespace);
-			}
+			node = createDynamicNode(schema.index, domNamespace);
 		} else {
 			const tag = schema.tag;
 			const text = schema.text;

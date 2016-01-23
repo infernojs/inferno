@@ -7,6 +7,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 const errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
 export default function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
@@ -55,7 +56,7 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			}
 
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

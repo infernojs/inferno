@@ -5,6 +5,7 @@ import { validateHydrateNode } from '../hydration';
 import addShapeAttributes from '../addShapeAttributes';
 
 export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -42,18 +43,18 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 				nextItem.rootNode = lastItem.rootNode;
 				return;
 			}
-				nextItem.rootNode = domNode;
-				nextItem.rootNode = lastItem.rootNode;
+			nextItem.rootNode = domNode;
+			nextItem.rootNode = lastItem.rootNode;
 
-				if (dynamicAttrs) {
-					if (dynamicAttrs.onWillUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-					}
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-					if (dynamicAttrs.onDidUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-					}
+			if (dynamicAttrs) {
+				if (dynamicAttrs.onWillUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				}
+			}
 		},
 		remove(item) {
 			if (!staticNode){

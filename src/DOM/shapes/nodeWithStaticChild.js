@@ -2,6 +2,7 @@ import { updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addA
 import addShapeAttributes from '../addShapeAttributes';
 
 export default function createNodeWithStaticChild(templateNode, dynamicAttrs) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
@@ -21,7 +22,7 @@ export default function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

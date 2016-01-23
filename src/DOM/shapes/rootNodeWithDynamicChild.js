@@ -9,6 +9,7 @@ import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 
 export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		keyedChildren: true,
 		childNodeList: [],
@@ -69,7 +70,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateRootNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

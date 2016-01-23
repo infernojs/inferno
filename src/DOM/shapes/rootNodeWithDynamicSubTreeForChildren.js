@@ -6,6 +6,7 @@ import recreateRootNode from '../recreateRootNode';
 import addShapeChildren from '../../shared/addShapeChildren';
 
 export default function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -59,7 +60,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				}
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

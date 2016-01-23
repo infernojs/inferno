@@ -4,6 +4,7 @@ import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 
 export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -38,7 +39,7 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

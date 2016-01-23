@@ -8,6 +8,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 import addShapeAttributes from '../addShapeAttributes';
 
 export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		keyedChildren: true,
 		domNodeMap: {},
@@ -48,7 +49,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

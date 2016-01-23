@@ -8,6 +8,7 @@ import addShapeAttributes from '../addShapeAttributes';
 import appendText from '../../util/appendText';
 
 export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -66,7 +67,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				appendText(domNode, nextValue);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

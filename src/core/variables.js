@@ -8,7 +8,8 @@ export const ValueTypes = {
 	TREE: 2,
 	EMPTY_OBJECT: 3,
 	FUNCTION: 4,
-	FRAGMENT: 5
+	FRAGMENT: 5,
+	PROMISE: 6
 };
 
 export function createVariable(index) {
@@ -27,6 +28,8 @@ export function getTypeFromValue(value) {
 		return ValueTypes.TEXT;
 	} else if (isArray(value)) {
 		return ValueTypes.ARRAY;
+	} else if (value instanceof Promise) {
+		return ValueTypes.PROMISE;
 	} else if (typeof value === 'object' && value.create) {
 		return ValueTypes.TREE;
 	} else if (typeof value === 'object' && Object.keys(value).length === 0) {

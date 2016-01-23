@@ -44,7 +44,6 @@ describe('Async rendering (JSX)', () => {
 				done();
 			});
 		});
-
 		it('createRootNodeWithDynamicChild - update()', (done) => {
 			function getValue() {
 				return new Promise((resolve, reject) => {
@@ -61,7 +60,6 @@ describe('Async rendering (JSX)', () => {
 				done();
 			});
 		});
-
 		it('nodeWithDynamicChild - create()', (done) => {
 			function getValue() {
 				return new Promise((resolve, reject) => {
@@ -77,7 +75,6 @@ describe('Async rendering (JSX)', () => {
 				done();
 			});
 		});
-
 		it('createRootNodeWithDynamicChild - update()', (done) => {
 			function getValue() {
 				return new Promise((resolve, reject) => {
@@ -91,6 +88,19 @@ describe('Async rendering (JSX)', () => {
 				expect(container.firstChild.tagName).to.equal('DIV');
 				expect(container.firstChild.firstChild.tagName).to.equal('SPAN');
 				expect(container.firstChild.firstChild.textContent).to.equal('Hello world!');
+				done();
+			});
+		});
+		it('dynamicNode - create()', (done) => {
+			function getValue() {
+				return new Promise((resolve, reject) => {
+					resolve(<span>Hello world!</span>);
+				});
+			}
+			render(<div><div>{ getValue() } test</div></div>, container);
+
+			requestAnimationFrame(() => {
+				debugger;
 				done();
 			});
 		});

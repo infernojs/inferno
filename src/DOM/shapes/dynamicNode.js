@@ -4,8 +4,10 @@ import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/vari
 import recreateNode from '../recreateNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
+let errorMsg;
+
 if (process.env.NODE_ENV !== 'production') {
-	const errorMsg = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+	errorMsg = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 }
 
 export default function createDynamicNode(valueIndex) {
@@ -25,7 +27,6 @@ export default function createDynamicNode(valueIndex) {
 					throw Error(errorMsg);
 				}
 			}
-
 			switch (type) {
 				case ValueTypes.TEXT:
 					if (isVoidValue(value)) {

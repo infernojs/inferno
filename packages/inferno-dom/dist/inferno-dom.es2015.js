@@ -46,7 +46,8 @@ var ValueTypes = {
 	TREE: 2,
 	EMPTY_OBJECT: 3,
 	FUNCTION: 4,
-	FRAGMENT: 5
+	FRAGMENT: 5,
+	PROMISE: 6
 };
 
 function getValueWithIndex(item, index) {
@@ -59,6 +60,8 @@ function getTypeFromValue(value) {
 		return ValueTypes.TEXT;
 	} else if (isArray(value)) {
 		return ValueTypes.ARRAY;
+	} else if (value instanceof Promise) {
+		return ValueTypes.PROMISE;
 	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && value.create) {
 		return ValueTypes.TREE;
 	} else if ((typeof value === 'undefined' ? 'undefined' : babelHelpers.typeof(value)) === 'object' && Object.keys(value).length === 0) {
@@ -830,8 +833,6 @@ if (ExecutionEnvironment.canUseDOM) {
 
 	isSVG = implementation && implementation.hasFeature && implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#BasicStructure', '1.1');
 }
-
-var isSVG$1 = isSVG;
 
 function isHook(hook) {
 	// DOM nodes
@@ -2044,11 +2045,13 @@ function addDOMStaticAttributes(vNode, domNode, attrs) {
 function fastPropSet(attrName, attrVal, domNode) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
-			if (isSVG$1) {
-				domNode.setAttribute('class', attrVal);
-			} else {
-				domNode.className = attrVal;
-			}
+			// TODO lets fix this?
+			//if (isSVG) {
+			//	domNode.setAttribute('class', attrVal);
+			//} else {
+			//	domNode.className = attrVal;
+			//}
+			domNode.className = attrVal;
 		}
 		return true;
 	} else if (attrName === 'ref') {
@@ -2069,7 +2072,6 @@ function fastPropSet(attrName, attrVal, domNode) {
 }
 
 function handleHooks(item, props, domNode, hookEvent, isComponent, nextProps) {
-
 	var eventOrIndex = props[hookEvent];
 
 	if (eventOrIndex !== undefined) {
@@ -2136,8 +2138,7 @@ function clearListeners(item, domNode, dynamicAttrs) {
  * NOTE!! This function is probably the single most
  * critical path for performance optimization.
  */
-function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
-
+function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys) {
 	if (dynamicAttrs.index !== undefined) {
 		var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
@@ -2163,58 +2164,59 @@ function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
 	var styleUpdates = {};
 	var styleName = undefined;
 
-	for (var attrName in dynamicAttrs) {
+	for (var i = 0; i < dynamicAttrKeys.length; i++) {
+		var attrName = dynamicAttrKeys[i];
 
 		if (!isHook(attrName)) {
-
 			var lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
 			var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-			if (!isVoid(lastAttrVal)) {
-				if (isVoid(nextAttrVal)) {
-					if (attrName === 'style') {
+			if (lastAttrVal !== nextAttrVal) {
+				if (!isVoid(lastAttrVal)) {
+					if (isVoid(nextAttrVal)) {
+						if (attrName === 'style') {
+							for (styleName in lastAttrVal) {
+								if (!nextAttrVal || !nextAttrVal[styleName]) {
+									styleUpdates[styleName] = '';
+								}
+							}
+						} else if (propertyToEventType[attrName]) {
+							removeListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
+						} else {
+							template.removeProperty(null, domNode, attrName, true);
+						}
+					} else if (attrName === 'style') {
+						// Unset styles on `lastAttrVal` but not on `nextAttrVal`.
 						for (styleName in lastAttrVal) {
-							if (!nextAttrVal || !nextAttrVal[styleName]) {
+							if (lastAttrVal[styleName] && (!nextAttrVal || !nextAttrVal[styleName])) {
 								styleUpdates[styleName] = '';
 							}
 						}
-					} else if (propertyToEventType[attrName]) {
-						removeListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
+						// Update styles that changed since `lastAttrVal`.
+						for (styleName in nextAttrVal) {
+							if (!nextAttrVal[styleName] || lastAttrVal[styleName] !== nextAttrVal[styleName]) {
+								styleUpdates[styleName] = nextAttrVal[styleName];
+							}
+						}
 					} else {
-						template.removeProperty(null, domNode, attrName, true);
-					}
-				} else if (attrName === 'style') {
 
-					// Unset styles on `lastAttrVal` but not on `nextAttrVal`.
-					for (styleName in lastAttrVal) {
-						if (lastAttrVal[styleName] && (!nextAttrVal || !nextAttrVal[styleName])) {
-							styleUpdates[styleName] = '';
+						if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+							if (propertyToEventType[attrName]) {
+								addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
+							} else {
+								template.setProperty(null, domNode, attrName, nextAttrVal, true);
+							}
 						}
 					}
-					// Update styles that changed since `lastAttrVal`.
-					for (styleName in nextAttrVal) {
-						if (!nextAttrVal[styleName] || lastAttrVal[styleName] !== nextAttrVal[styleName]) {
-							styleUpdates[styleName] = nextAttrVal[styleName];
-						}
-					}
-				} else if (lastAttrVal !== nextAttrVal) {
-
-					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+				} else if (!isVoid(nextAttrVal)) {
+					if (attrName === 'style') {
+						styleUpdates = nextAttrVal;
+					} else if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
 						if (propertyToEventType[attrName]) {
 							addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
 						} else {
 							template.setProperty(null, domNode, attrName, nextAttrVal, true);
 						}
-					}
-				}
-			} else if (!isVoid(nextAttrVal)) {
-				if (attrName === 'style') {
-					styleUpdates = nextAttrVal;
-				} else if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
-					if (propertyToEventType[attrName]) {
-						addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
-					} else {
-						template.setProperty(null, domNode, attrName, nextAttrVal, true);
 					}
 				}
 			}
@@ -2265,6 +2267,7 @@ function addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle) {
 }
 
 function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
 		keyedPool: [],
@@ -2323,7 +2326,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 				appendText(domNode, nextValue);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2344,9 +2347,10 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 	return node;
 }
 
-var errorMsg$1 = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
+var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
 function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
 		overrideItem: null,
@@ -2357,7 +2361,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 			if (!isVoid(value)) {
 				if ("development" !== 'production') {
 					if (!isStringOrNumber(value)) {
-						throw Error(errorMsg$1);
+						throw Error(errorMsg);
 					}
 				}
 				if (value === '') {
@@ -2395,7 +2399,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 			}
 
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2417,6 +2421,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 }
 
 function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
 		keyedPool: [],
@@ -2451,7 +2456,7 @@ function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnab
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2473,6 +2478,7 @@ function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnab
 }
 
 function createNodeWithStaticChild(templateNode, dynamicAttrs) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
 		overrideItem: null,
@@ -2492,7 +2498,7 @@ function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2514,6 +2520,7 @@ function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 }
 
 function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		keyedChildren: true,
 		childNodeList: [],
@@ -2574,7 +2581,7 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateRootNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2603,6 +2610,7 @@ function recreateNode(lastDomNode, lastItem, nextItem, node, treeLifecycle, cont
 }
 
 function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		keyedChildren: true,
 		domNodeMap: {},
@@ -2643,7 +2651,7 @@ function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2691,6 +2699,7 @@ function addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, cont
 }
 
 function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
 		keyedPool: [],
@@ -2744,7 +2753,7 @@ function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChi
 				}
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2777,6 +2786,7 @@ function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChi
 }
 
 function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
 		overrideItem: null,
@@ -2818,7 +2828,7 @@ function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildre
 				}
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2856,6 +2866,12 @@ var isVoidValue = (function (x) {
   return x === null || x === undefined || x.length === 0;
 })
 
+var errorMsg$1 = undefined;
+
+if ("development" !== 'production') {
+	errorMsg$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+}
+
 function createDynamicNode(valueIndex) {
 	var domNodeMap = {};
 	var childNodeList = [];
@@ -2870,10 +2886,9 @@ function createDynamicNode(valueIndex) {
 
 			if ("development" !== 'production') {
 				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
-					throw Error(errorMsg);
+					throw Error(errorMsg$1);
 				}
 			}
-
 			switch (type) {
 				case ValueTypes.TEXT:
 					if (isVoidValue(value)) {
@@ -3377,6 +3392,7 @@ function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
 }
 
 function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
 		keyedPool: [],
@@ -3421,7 +3437,7 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, static
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -3452,6 +3468,7 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, static
 }
 
 function createVoidNode(templateNode, dynamicAttrs, staticNode) {
+	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
 		overrideItem: null,
@@ -3475,7 +3492,7 @@ function createVoidNode(templateNode, dynamicAttrs, staticNode) {
 					if (dynamicAttrs.onWillUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 					}
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 					if (dynamicAttrs.onDidUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 					}
@@ -3666,11 +3683,7 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
-			if (isRoot) {
-				//		node = createRootDynamicNode( schema.index, domNamespace, recyclingEnabled );
-			} else {
-					node = createDynamicNode(schema.index, domNamespace);
-				}
+			node = createDynamicNode(schema.index, domNamespace);
 		} else {
 			var tag = schema.tag;
 			var text = schema.text;

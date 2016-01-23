@@ -2,6 +2,7 @@ import { updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addA
 import addShapeAttributes from '../addShapeAttributes';
 
 export default function createVoidNode(templateNode, dynamicAttrs, staticNode) {
+	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
@@ -25,7 +26,7 @@ export default function createVoidNode(templateNode, dynamicAttrs, staticNode) {
 					if (dynamicAttrs.onWillUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 					}
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
 					if (dynamicAttrs.onDidUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 					}
