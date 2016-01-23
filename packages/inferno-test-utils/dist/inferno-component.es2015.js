@@ -123,7 +123,7 @@ function constructVirtualNode(node, item, depth, maxDepth) {
 	return vNode;
 }
 
-function createTree(schema, isRoot, dynamicNodeMap) {
+function createTree(schema, isRoot, dynamicNodes) {
 	return {
 		create: function create(item, maxDepth) {
 			return constructVirtualNode(schema, item, 0, maxDepth);

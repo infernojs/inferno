@@ -38,10 +38,6 @@ var isStringOrNumber = (function (x) {
   return typeof x === 'string' || typeof x === 'number';
 })
 
-var ObjectTypes = {
-	VARIABLE: 1
-};
-
 var ValueTypes = {
 	TEXT: 0,
 	ARRAY: 1,
@@ -111,6 +107,16 @@ function removeValueTree(value, treeLifecycle) {
 			tree.dom.remove(value, treeLifecycle);
 		} else if (value.create) {
 			value.remove(value, treeLifecycle);
+		}
+	}
+}
+
+function getDynamicNode(dynamicNodes, schema) {
+	for (var i = 0; i < dynamicNodes.length; i++) {
+		var dynamicNode = dynamicNodes[i];
+
+		if (dynamicNode.node === schema) {
+			return dynamicNode.dynamicFlags;
 		}
 	}
 }
@@ -2170,33 +2176,37 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-			} else {
-				var domNode = lastItem.rootNode;
+				return;
+			}
+			var domNode = lastItem.rootNode;
 
-				nextItem.id = lastItem.id;
-				nextItem.rootNode = domNode;
-				var nextValue = getValueWithIndex(nextItem, valueIndex);
-				var lastValue = getValueWithIndex(lastItem, valueIndex);
+			nextItem.id = lastItem.id;
+			nextItem.rootNode = domNode;
 
-				if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
+			var nextValue = getValueWithIndex(nextItem, valueIndex);
+			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-				if (isVoid(nextValue)) {
-					appendText(domNode, '');
-				} else if (isVoid(lastValue)) {
-					appendText(domNode, nextValue);
-				} else if (nextValue !== lastValue) {
-					appendText(domNode, nextValue);
-				}
+			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+			}
 
-				if (dynamicAttrs) {
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-					if (dynamicAttrs.onDidUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-					}
+			if (isVoid(nextValue)) {
+				appendText(domNode, '');
+			} else if (isVoid(lastValue)) {
+				appendText(domNode, nextValue);
+			} else if (nextValue !== lastValue) {
+				appendText(domNode, nextValue);
+			}
+
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
 			}
 		},
@@ -2475,7 +2485,10 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle, context) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				childNodeList = [];
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 				return;
@@ -2532,18 +2545,18 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 							recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 						}
 					} else if ((typeof nextValue === 'undefined' ? 'undefined' : babelHelpers.typeof(nextValue)) === 'object') {
-						var tree = nextValue && nextValue.tree;
-						if (!isVoid(tree)) {
+						var _tree = nextValue && nextValue.tree;
+						if (!isVoid(_tree)) {
 							if (!isVoid(lastValue)) {
 								var oldTree = lastValue && lastValue.tree;
 
 								if (!isVoid(oldTree)) {
-									tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+									_tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 								} else {
 									recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 								}
 							} else {
-								replaceChild(domNode, tree.dom.create(nextValue, treeLifecycle, context));
+								replaceChild(domNode, _tree.dom.create(nextValue, treeLifecycle, context));
 							}
 						} else if (nextValue.create) {
 							// TODO
@@ -3435,17 +3448,16 @@ function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
 			var tree = lastItem && lastItem.tree;
 
 			// TODO! Is this code ever executed??
-			if (tree && node !== tree) {
+			if (tree && node !== tree.dom) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
+
 			var domNode = lastItem.rootNode;
-
-			nextItem.rootNode = domNode;
-			nextItem.id = lastItem.id;
 			var nextValue = getValueWithIndex(nextItem, valueIndex);
+			var lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex) && isStringOrNumber(nextValue)) {
+			if (nextValue !== lastValue && isStringOrNumber(nextValue)) {
 				domNode.nodeValue = nextValue;
 			}
 		},
@@ -3482,27 +3494,30 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, static
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
 
 			if (staticNode) {
 				nextItem.rootNode = lastItem.rootNode;
-			} else {
-				var domNode = lastItem.rootNode;
+				return;
+			}
+			var domNode = lastItem.rootNode;
 
-				nextItem.rootNode = domNode;
-				nextItem.rootNode = lastItem.rootNode;
+			nextItem.rootNode = domNode;
+			nextItem.rootNode = lastItem.rootNode;
 
-				if (dynamicAttrs) {
-					if (dynamicAttrs.onWillUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-					}
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-					if (dynamicAttrs.onDidUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-					}
+			if (dynamicAttrs) {
+				if (dynamicAttrs.onWillUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+				}
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
 			}
 		},
@@ -3717,7 +3732,7 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 	}
 }
 
-function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
+function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 	if ("development" !== 'production') {
 		if (isVoid(schema)) {
 			throw Error(invalidTemplateError);
@@ -3727,7 +3742,7 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 		}
 	}
 
-	var dynamicFlags = dynamicNodeMap.get(schema);
+	var dynamicFlags = getDynamicNode(dynamicNodes, schema);
 	var node = undefined;
 	var templateNode = undefined;
 
@@ -3755,7 +3770,7 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 			var text = schema.text;
 
 			if (tag) {
-				if (tag.type === ObjectTypes.VARIABLE) {
+				if (tag.index !== undefined) {
 					var lastAttrs = schema.attrs;
 					var _attrs = babelHelpers.extends({}, lastAttrs);
 					var _children = schema.children;
@@ -3767,13 +3782,13 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 								for (var i = 0; i < _children.length; i++) {
 									var childNode = _children[i];
 
-									_attrs.children.push(createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
+									_attrs.children.push(createDOMTree(childNode, false, dynamicNodes, domNamespace));
 								}
 							} else if (_children.length === 1) {
-								_attrs.children = createDOMTree(_children[0], false, dynamicNodeMap, domNamespace);
+								_attrs.children = createDOMTree(_children[0], false, dynamicNodes, domNamespace);
 							}
 						} else {
-							_attrs.children = createDOMTree(_children, false, dynamicNodeMap, domNamespace);
+							_attrs.children = createDOMTree(_children, false, dynamicNodes, domNamespace);
 						}
 					}
 					if (isRoot) {
@@ -3827,7 +3842,7 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 					}
 				} else {
 					if (!isVoid(children)) {
-						if (children.type === ObjectTypes.VARIABLE) {
+						if (children.index !== undefined) {
 							if (isRoot) {
 								node = createRootNodeWithDynamicChild(templateNode, children.index, dynamicAttrs, recyclingEnabled);
 							} else {
@@ -3841,10 +3856,10 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 									for (var i = 0; i < children.length; i++) {
 										var childItem = children[i];
 
-										subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap));
+										subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodes));
 									}
 								} else {
-									subTreeForChildren = createDOMTree(children, false, dynamicNodeMap);
+									subTreeForChildren = createDOMTree(children, false, dynamicNodes);
 								}
 							}
 							if (isRoot) {
@@ -3860,7 +3875,7 @@ function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
 								node = createNodeWithStaticChild(templateNode, dynamicAttrs);
 							}
 						} else {
-							var childNodeDynamicFlags = dynamicNodeMap.get(children);
+							var childNodeDynamicFlags = getDynamicNode(dynamicNodes, children);
 
 							if (childNodeDynamicFlags === undefined) {
 								createStaticTreeChildren(children, templateNode);

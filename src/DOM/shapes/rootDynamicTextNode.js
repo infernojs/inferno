@@ -32,17 +32,16 @@ export default function createRootDynamicTextNode(templateNode, valueIndex, recy
 			const tree = lastItem && lastItem.tree;
 
 			// TODO! Is this code ever executed??
-			if (tree && (node !== tree)) {
+			if (tree && (node !== tree.dom)) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
+
 			const domNode = lastItem.rootNode;
-
-			nextItem.rootNode = domNode;
-			nextItem.id = lastItem.id;
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex) && (isStringOrNumber(nextValue))) {
+			if (nextValue !== lastValue && (isStringOrNumber(nextValue))) {
 				domNode.nodeValue = nextValue;
 			}
 		},

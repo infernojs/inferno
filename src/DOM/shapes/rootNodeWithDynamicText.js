@@ -6,6 +6,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 import appendText from '../../util/appendText';
+
 export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
 	const node = {
 		pool: [],
@@ -42,33 +43,37 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			const tree = lastItem && lastItem.tree;
+
+			if (tree && (node !== tree.dom)) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
-			} else {
-				const domNode = lastItem.rootNode;
+				return;
+			}
+			const domNode = lastItem.rootNode;
 
-				nextItem.id = lastItem.id;
-				nextItem.rootNode = domNode;
-				const nextValue = getValueWithIndex(nextItem, valueIndex);
-				const lastValue = getValueWithIndex(lastItem, valueIndex);
+			nextItem.id = lastItem.id;
+			nextItem.rootNode = domNode;
 
-				if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
+			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-				if (isVoid(nextValue)) {
-					appendText(domNode, '');
-				} else if (isVoid(lastValue)) {
-					appendText(domNode, nextValue);
-				} else	if (nextValue !== lastValue) {
-					appendText(domNode, nextValue);
-				}
+			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
+				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+			}
 
-				if (dynamicAttrs) {
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
-					if (dynamicAttrs.onDidUpdate) {
-						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
-					}
+			if (isVoid(nextValue)) {
+				appendText(domNode, '');
+			} else if (isVoid(lastValue)) {
+				appendText(domNode, nextValue);
+			} else	if (nextValue !== lastValue) {
+				appendText(domNode, nextValue);
+			}
+
+			if (dynamicAttrs) {
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+				if (dynamicAttrs.onDidUpdate) {
+					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
 			}
 		},
