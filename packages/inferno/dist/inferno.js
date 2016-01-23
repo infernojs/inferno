@@ -185,7 +185,6 @@
   					case 0:
   						construct = function construct() {
   							return {
-  								parent: null,
   								tree: tree,
   								id: uniqueId++,
   								key: null,
@@ -202,7 +201,6 @@
   								key = v0;
   							}
   							return {
-  								parent: null,
   								tree: tree,
   								id: uniqueId++,
   								key: key,
@@ -222,7 +220,6 @@
   								key = v1;
   							}
   							return {
-  								parent: null,
   								tree: tree,
   								id: uniqueId++,
   								key: key,
@@ -249,7 +246,6 @@
   								key = values[keyIndex];
   							}
   							return {
-  								parent: null,
   								tree: tree,
   								id: uniqueId++,
   								key: key,

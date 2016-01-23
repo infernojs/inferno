@@ -3090,7 +3090,6 @@
   						}
   						var nextRender = Component(nextProps, context);
 
-  						nextRender.parent = item;
   						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
   						statelessRender = nextRender;
   						item.rootNode = domNode;
@@ -3110,7 +3109,6 @@
   						if (childContext) {
   							context = babelHelpers.extends({}, context, childContext);
   						}
-  						nextRender.parent = item;
   						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
   						item.rootNode = domNode;
   						instance._lastRender = nextRender;
@@ -3133,7 +3131,6 @@
   							if (childContext) {
   								context = babelHelpers.extends({}, context, childContext);
   							}
-  							nextRender.parent = currentItem;
   							nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
   							currentItem.rootNode = nextRender.rootNode;
   							instance._lastRender = nextRender;
@@ -3172,7 +3169,6 @@
   					}
   					var nextRender = Component(nextProps, context);
 
-  					nextRender.parent = currentItem;
   					if (!isVoid(statelessRender)) {
   						var newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 
@@ -3281,7 +3277,6 @@
   						}
   						var nextRender = Component(nextProps, context);
 
-  						nextRender.parent = item;
   						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
   						statelessRender = nextRender;
   					})();
@@ -3297,7 +3292,6 @@
   						if (childContext) {
   							context = babelHelpers.extends({}, context, childContext);
   						}
-  						nextRender.parent = item;
   						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
   						instance._lastRender = nextRender;
 
@@ -3318,7 +3312,6 @@
   							if (childContext) {
   								context = babelHelpers.extends({}, context, childContext);
   							}
-  							nextRender.parent = currentItem;
   							var newDomNode = nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
 
   							if (newDomNode) {
@@ -3367,7 +3360,6 @@
   					var nextRender = Component(nextProps, context);
   					var newDomNode = undefined;
 
-  					nextRender.parent = currentItem;
   					// Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
   					// E.g. start with 'render(template(null), container); ' will cause this.
   					if (!isVoid(statelessRender)) {

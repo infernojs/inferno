@@ -55,7 +55,6 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					}
 					const nextRender = Component(nextProps, context);
 
-					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
 					statelessRender = nextRender;
 					item.rootNode = domNode;
@@ -74,7 +73,6 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					if (childContext) {
 						context = { ...context, ...childContext };
 					}
-					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
 					item.rootNode = domNode;
 					instance._lastRender = nextRender;
@@ -97,7 +95,6 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 						if (childContext) {
 							context = { ...context, ...childContext };
 						}
-						nextRender.parent = currentItem;
 						nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
 						currentItem.rootNode = nextRender.rootNode;
 						instance._lastRender = nextRender;
@@ -135,7 +132,6 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					}
 					const nextRender = Component(nextProps, context);
 
-					nextRender.parent = currentItem;
 					if (!isVoid(statelessRender)) {
 						const newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 

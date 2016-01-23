@@ -42,7 +42,6 @@ export default function createNodeWithComponent(componentIndex, props) {
 					}
 					const nextRender = Component(nextProps, context);
 
-					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
 					statelessRender = nextRender;
 				} else {
@@ -56,7 +55,6 @@ export default function createNodeWithComponent(componentIndex, props) {
 					if (childContext) {
 						context = { ...context, ...childContext };
 					}
-					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
 					instance._lastRender = nextRender;
 
@@ -77,7 +75,6 @@ export default function createNodeWithComponent(componentIndex, props) {
 						if (childContext) {
 							context = { ...context, ...childContext };
 						}
-						nextRender.parent = currentItem;
 						const newDomNode = nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
 
 						if (newDomNode) {
@@ -125,7 +122,6 @@ export default function createNodeWithComponent(componentIndex, props) {
 					const nextRender = Component(nextProps, context);
 					let newDomNode;
 
-					nextRender.parent = currentItem;
 					// Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
 					// E.g. start with 'render(template(null), container); ' will cause this.
 					if (!isVoid(statelessRender)) {

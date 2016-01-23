@@ -179,7 +179,6 @@ function createTemplate(callback) {
 					case 0:
 						construct = function construct() {
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: null,
@@ -196,7 +195,6 @@ function createTemplate(callback) {
 								key = v0;
 							}
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,
@@ -216,7 +214,6 @@ function createTemplate(callback) {
 								key = v1;
 							}
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,
@@ -243,7 +240,6 @@ function createTemplate(callback) {
 								key = values[keyIndex];
 							}
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,
