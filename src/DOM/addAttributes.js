@@ -1,5 +1,5 @@
 import isVoid from '../util/isVoid';
-import isSVG from '../util/isSVG';
+import isSVGElement from '../util/isSVGElement';
 import isHook from '../util/isHook';
 import template from './';
 import eventMapping from '../shared/eventMapping';
@@ -38,7 +38,7 @@ function fastPropSet(attrName, attrVal, domNode) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
 			// TODO lets fix this?
-			//if (isSVG) {
+			//if (isSVGElement(domNode.nodeName)) {
 			//	domNode.setAttribute('class', attrVal);
 			//} else {
 			//	domNode.className = attrVal;
