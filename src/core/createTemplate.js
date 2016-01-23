@@ -56,7 +56,7 @@ export default function createTemplate(callback) {
 				callbackArguments[i] = createVariable(i);
 			}
 			const schema = callback(...callbackArguments);
-			const dynamicNodeMap = new Map();
+			const dynamicNodeMap = [];
 
 			scanTreeForDynamicNodes(schema, dynamicNodeMap);
 			const tree = applyTreeConstructors(schema, dynamicNodeMap);

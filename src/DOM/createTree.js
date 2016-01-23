@@ -14,7 +14,7 @@ import createDynamicNode from './shapes/dynamicNode';
 import createRootNodeWithComponent from './shapes/rootNodeWithComponent';
 import createNodeWithComponent from './shapes/nodeWithComponent';
 import createRootDynamicTextNode from './shapes/rootDynamicTextNode';
-import { ObjectTypes } 	from '../core/variables';
+import { ObjectTypes, getDynamicNode } 	from '../core/variables';
 import isArray from '../util/isArray';
 import { addDOMStaticAttributes } from './addAttributes';
 import { isRecyclingEnabled } from './recycling';
@@ -76,7 +76,6 @@ const recyclingEnabled = isRecyclingEnabled();
 if (process.env.NODE_ENV !== 'production') {
 	const invalidTemplateError = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 }
-
 
 function createStaticAttributes(node, domNode, excludeAttrs) {
 	const attrs = node.attrs;
@@ -169,7 +168,7 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 	}
 }
 
-export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespace) {
+export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 	if (process.env.NODE_ENV !== 'production') {
 		if (isVoid(schema)) {
 			throw Error(invalidTemplateError);
@@ -179,7 +178,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 		}
 	}
 
-	const dynamicFlags = dynamicNodeMap.get(schema);
+	const dynamicFlags = getDynamicNode(dynamicNodes, schema);
 	let node;
 	let templateNode;
 
@@ -207,7 +206,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 			const text = schema.text;
 
 			if (tag) {
-				if (tag.type === ObjectTypes.VARIABLE) {
+				if (tag.index !== undefined) {
 					const lastAttrs = schema.attrs;
 					const attrs = { ...lastAttrs };
 					const children = schema.children;
@@ -219,13 +218,13 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 								for (let i = 0; i < children.length; i++) {
 									const childNode = children[i];
 
-									attrs.children.push(createDOMTree(childNode, false, dynamicNodeMap, domNamespace));
+									attrs.children.push(createDOMTree(childNode, false, dynamicNodes, domNamespace));
 								}
 							} else if (children.length === 1) {
-								attrs.children = createDOMTree(children[0], false, dynamicNodeMap, domNamespace);
+								attrs.children = createDOMTree(children[0], false, dynamicNodes, domNamespace);
 							}
 						} else {
-							attrs.children = createDOMTree(children, false, dynamicNodeMap, domNamespace);
+							attrs.children = createDOMTree(children, false, dynamicNodes, domNamespace);
 						}
 					}
 					if (isRoot) {
@@ -279,7 +278,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 					}
 				} else {
 					if (!isVoid(children)) {
-						if (children.type === ObjectTypes.VARIABLE) {
+						if (children.index !== undefined) {
 							if (isRoot) {
 								node = createRootNodeWithDynamicChild(
 									templateNode, children.index, dynamicAttrs, recyclingEnabled
@@ -297,10 +296,10 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 									for (let i = 0; i < children.length; i++) {
 										const childItem = children[i];
 
-										subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodeMap));
+										subTreeForChildren.push(createDOMTree(childItem, false, dynamicNodes));
 									}
 								} else {
-									subTreeForChildren = createDOMTree(children, false, dynamicNodeMap);
+									subTreeForChildren = createDOMTree(children, false, dynamicNodes);
 								}
 							}
 							if (isRoot) {
@@ -320,7 +319,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodeMap, domNamespa
 								node = createNodeWithStaticChild(templateNode, dynamicAttrs);
 							}
 						} else {
-							const childNodeDynamicFlags = dynamicNodeMap.get(children);
+							const childNodeDynamicFlags = getDynamicNode(dynamicNodes, children);
 
 							if (childNodeDynamicFlags === undefined) {
 								createStaticTreeChildren(children, templateNode);

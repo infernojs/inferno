@@ -2125,6 +2125,15 @@ function addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle) {
 	}
 }
 
+function appendText(domNode, value) {
+	var firstChild = domNode.firstChild;
+	if (firstChild) {
+		firstChild.nodeValue = value;
+	} else {
+		domNode.textContent = value;
+	}
+}
+
 function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
 	var node = {
 		pool: [],
@@ -2174,27 +2183,15 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 				if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				if (nextValue !== lastValue) {
-					if (isVoid(nextValue)) {
-						if (isVoid(lastValue)) {
-							domNode.firstChild.nodeValue = '';
-						} else {
-							domNode.textContent = '';
-						}
-					} else {
-						if ("development" !== 'production') {
-							if (!isStringOrNumber(nextValue)) {
-								throw Error('Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.');
-							}
-						}
 
-						if (isVoid(lastValue)) {
-							domNode.textContent = nextValue;
-						} else {
-							domNode.firstChild.nodeValue = nextValue;
-						}
-					}
+				if (isVoid(nextValue)) {
+					appendText(domNode, '');
+				} else if (isVoid(lastValue)) {
+					appendText(domNode, nextValue);
+				} else if (nextValue !== lastValue) {
+					appendText(domNode, nextValue);
 				}
+
 				if (dynamicAttrs) {
 					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 					if (dynamicAttrs.onDidUpdate) {
@@ -2216,15 +2213,6 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 	};
 
 	return node;
-}
-
-function appendText(domNode, value) {
-	var firstChild = domNode.firstChild;
-	if (firstChild) {
-		firstChild.nodeValue = value;
-	} else {
-		domNode.textContent = value;
-	}
 }
 
 var errorMsg$1 = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
@@ -2274,8 +2262,9 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 			} else if (isVoid(lastValue)) {
 				appendText(domNode, nextValue);
 			} else if (nextValue !== lastValue) {
-				domNode.firstChild.nodeValue = nextValue;
+				appendText(domNode, nextValue);
 			}
+
 			if (dynamicAttrs) {
 				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				if (dynamicAttrs.onDidUpdate) {
@@ -3435,16 +3424,18 @@ function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
 			domNode = templateNode.cloneNode(false);
 			var value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value)) {
-				if (isStringOrNumber(value)) {
-					domNode.nodeValue = value;
-				}
+			if (!isVoid(value) && isStringOrNumber(value)) {
+				domNode.nodeValue = value;
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			// TODO! Is this code ever executed??
+			if (tree && node !== tree) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
@@ -3454,13 +3445,11 @@ function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
 			nextItem.id = lastItem.id;
 			var nextValue = getValueWithIndex(nextItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				if (isStringOrNumber(nextValue)) {
-					domNode.nodeValue = nextValue;
-				}
+			if (nextValue !== getValueWithIndex(lastItem, valueIndex) && isStringOrNumber(nextValue)) {
+				domNode.nodeValue = nextValue;
 			}
 		},
-		remove: function remove() /* lastItem */{}
+		remove: function remove() {}
 	};
 
 	return node;

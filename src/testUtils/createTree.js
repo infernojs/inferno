@@ -90,7 +90,7 @@ function constructVirtualNode(node, item, depth, maxDepth) {
 	return vNode;
 }
 
-export default function createTree(schema, isRoot, dynamicNodeMap) {
+export default function createTree(schema, isRoot, dynamicNodes) {
 	return {
 		create(item, maxDepth) {
 			return constructVirtualNode(schema, item, 0, maxDepth);

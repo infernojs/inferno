@@ -2,7 +2,7 @@ import { ObjectTypes } from './variables';
 import isArray from '../util/isArray';
 import isVoid from '../util/isVoid';
 
-export default function scanTreeForDynamicNodes(node, nodeMap) {
+export default function scanTreeForDynamicNodes(node, nodes) {
 	let nodeIsDynamic = false;
 	const dynamicFlags = {
 		NODE: false,
@@ -16,14 +16,14 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 	if (isVoid(node)) {
 		return false;
 	}
-	if (node.type === ObjectTypes.VARIABLE) {
+	if (node.index !== undefined) {
 		nodeIsDynamic = true;
 		dynamicFlags.NODE = true;
 	} else {
 		if (!isVoid(node)) {
 			if (!isVoid(node.tag)) {
 				if (typeof node.tag === 'object') {
-					if (node.tag.type === ObjectTypes.VARIABLE) {
+					if (node.tag.index !== undefined) {
 						nodeIsDynamic = true;
 						dynamicFlags.COMPONENTS = true;
 					} else {
@@ -32,20 +32,20 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 				}
 			}
 			if (!isVoid(node.text)) {
-				if (node.text.type === ObjectTypes.VARIABLE) {
+				if (node.text.index !== undefined) {
 					nodeIsDynamic = true;
 					dynamicFlags.TEXT = true;
 				}
 			}
 			if (!isVoid(node.attrs)) {
-				if (node.attrs.type === ObjectTypes.VARIABLE) {
+				if (node.attrs.index !== undefined) {
 					nodeIsDynamic = true;
 					dynamicFlags.ATTRS = true;
 				} else {
 					for (let attr in node.attrs) {
 						const attrVal = node.attrs[attr];
 
-						if (!isVoid(attrVal) && attrVal.type === ObjectTypes.VARIABLE) {
+						if (!isVoid(attrVal) && attrVal.index !== undefined) {
 							if (attr === 'xmlns') {
 								throw Error(`Inferno Error: The 'xmlns' attribute cannot be dynamic. Please use static value for 'xmlns' attribute instead.`);
 							}
@@ -59,13 +59,13 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 				}
 			}
 			if (!isVoid(node.children)) {
-				if (node.children.type === ObjectTypes.VARIABLE) {
+				if (node.children.index !== undefined) {
 					nodeIsDynamic = true;
 				} else {
 					if (isArray(node.children)) {
 						for (let i = 0; i < node.children.length; i++) {
 							const childItem = node.children[i];
-							const result = scanTreeForDynamicNodes(childItem, nodeMap);
+							const result = scanTreeForDynamicNodes(childItem, nodes);
 
 							if (result === true) {
 								nodeIsDynamic = true;
@@ -73,7 +73,7 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 							}
 						}
 					} else if (typeof node === 'object') {
-						const result = scanTreeForDynamicNodes(node.children, nodeMap);
+						const result = scanTreeForDynamicNodes(node.children, nodes);
 
 						if (result === true) {
 							nodeIsDynamic = true;
@@ -83,7 +83,7 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 				}
 			}
 			if (!isVoid(node.key)) {
-				if (node.key.type === ObjectTypes.VARIABLE) {
+				if (node.key.index !== undefined) {
 					nodeIsDynamic = true;
 					dynamicFlags.KEY = true;
 				}
@@ -91,7 +91,7 @@ export default function scanTreeForDynamicNodes(node, nodeMap) {
 		}
 	}
 	if (nodeIsDynamic === true) {
-		nodeMap.set(node, dynamicFlags);
+		nodes.push({node, dynamicFlags});
 	}
 	return nodeIsDynamic;
 }
