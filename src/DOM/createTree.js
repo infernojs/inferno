@@ -21,7 +21,6 @@ import { isRecyclingEnabled } from './recycling';
 import createRootVoidNode from './shapes/rootVoidNode';
 import createVoidNode from './shapes/voidNode';
 
-let isSVG;
 function createElement(schema, domNamespace, parentNode) {
 	const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 	const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -67,10 +66,7 @@ function createElement(schema, domNamespace, parentNode) {
 			document.createElement(nodeName, is) :
 			document.createElement(nodeName);
 
-	const isSVG = domNamespace === SVGNamespace;
-
 	return {
-		isSVG: isSVG,
 		namespace: domNamespace,
 		node: templateNode
 	};
@@ -136,7 +132,6 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 
 				staticNode = Element.node;
 				domNamespace = Element.namespace;
-				const isSVG = Element.isSVG;
 				const text = node.text;
 				const children = node.children;
 
@@ -186,9 +181,14 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 	const dynamicFlags = getDynamicNode(dynamicNodes, schema);
 	let node;
 	let templateNode;
+	let isSVG;
 
 	if (!dynamicFlags) {
 		templateNode = createStaticTreeNode(schema, null, domNamespace, schema, isSVG);
+		if (templateNode.namespaceURI === 'http://www.w3.org/2000/svg') {
+			isSVG = true;
+		}
+
 		if (process.env.NODE_ENV !== 'production') {
 			if (!templateNode) {
 				throw Error(invalidTemplateError);
@@ -201,7 +201,8 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
-			node = createDynamicNode(schema.index, domNamespace);
+			node = createDynamicNode(schema.index, domNamespace, isSVG);
+			
 		} else {
 			const tag = schema.tag;
 			const text = schema.text;
@@ -236,6 +237,9 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 				}
 				templateNode = createElement(schema, domNamespace, null).node;
 
+				if (templateNode.namespaceURI === 'http://www.w3.org/2000/svg') {
+					isSVG = true;
+				}
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
 
@@ -259,7 +263,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 					}
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
-							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
+								node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
 						} else {
 							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs, isSVG);
 						}
