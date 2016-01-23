@@ -2325,7 +2325,9 @@
   			return domNode;
   		},
   		update: function update(lastItem, nextItem, treeLifecycle) {
-  			if (node !== lastItem.tree.dom) {
+  			var tree = lastItem && lastItem.tree;
+
+  			if (tree && node !== tree.dom) {
   				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
   				return;
   			}
@@ -2803,7 +2805,10 @@
   		},
   		update: function update(lastItem, nextItem, treeLifecycle, context) {
   			nextItem.id = lastItem.id;
-  			if (node !== lastItem.tree.dom) {
+
+  			var tree = lastItem && lastItem.tree;
+
+  			if (tree && node !== tree.dom) {
   				var newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 
   				nextItem.rootNode = newDomNode;

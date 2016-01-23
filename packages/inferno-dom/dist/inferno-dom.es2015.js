@@ -2319,7 +2319,9 @@ function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnab
 			return domNode;
 		},
 		update: function update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
@@ -2797,7 +2799,10 @@ function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChi
 		},
 		update: function update(lastItem, nextItem, treeLifecycle, context) {
 			nextItem.id = lastItem.id;
-			if (node !== lastItem.tree.dom) {
+
+			var tree = lastItem && lastItem.tree;
+
+			if (tree && node !== tree.dom) {
 				var newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 
 				nextItem.rootNode = newDomNode;
