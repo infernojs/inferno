@@ -4,10 +4,12 @@
  * Released under the MPL-2.0 License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.InfernoDOM = factory());
-}(this, function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('inferno')) :
+  typeof define === 'function' && define.amd ? define(['inferno'], factory) :
+  (global.InfernoDOM = factory(global.Inferno));
+}(this, function (Inferno) { 'use strict';
+
+  Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
   var babelHelpers = {};
   babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -3892,32 +3894,33 @@
   	return node;
   }
 
-  var GLOBAL = typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : null;
-
-  // browser
-  if (GLOBAL && GLOBAL.Inferno) {
-  	GLOBAL.Inferno.addTreeConstructor('dom', createDOMTree);
-  	// nodeJS
-  	// TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
-  } else if (GLOBAL && !GLOBAL.Inferno) {
-  		var Inferno = undefined;
-
-  		// TODO! Avoid try / catch
-  		try {
-  			Inferno = require('inferno');
-  		} catch (e) {
-  			Inferno = null;
-  			// TODO Should we throw a warning and inform that the Inferno package is not installed?
-  		}
-
-  		if (Inferno != null) {
-  			if (typeof Inferno.addTreeConstructor !== 'function') {
-  				throw 'Your package is out-of-date! Upgrade to latest Inferno in order to use the InfernoDOM package.';
-  			} else {
-  				Inferno.addTreeConstructor('dom', createDOMTree);
-  			}
-  		}
+  if (Inferno) {
+  	if (typeof Inferno.addTreeConstructor !== 'function') {
+  		throw 'Your package is out-of-date! Upgrade to latest Inferno in order to use the InfernoDOM package.';
+  	} else {
+  		Inferno.addTreeConstructor('dom', createDOMTree);
   	}
+  }
+
+  // const GLOBAL = typeof global !== 'undefined' ? global : (typeof window !== 'undefined' ? window : null);
+
+  // // browser
+  // if (GLOBAL && GLOBAL.Inferno) {
+  // 	GLOBAL.Inferno.addTreeConstructor('dom', createDOMTree);
+  // // nodeJS
+  // // TODO! Find a better way to detect if we are running in Node, and test if this actually works!!!
+  // } else if ( GLOBAL && !GLOBAL.Inferno ) {
+  // 	let Inferno;
+
+  // 	// TODO! Avoid try / catch
+  // 	try {
+  // 		Inferno = require('inferno');
+  // 	} catch (e) {
+  // 		Inferno = null;
+  // 		// TODO Should we throw a warning and inform that the Inferno package is not installed?
+  // 	}
+
+  // }
 
   var index = {
   	render: render,
