@@ -7,50 +7,10 @@ import replaceChild from '../../core/replaceChild';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
-import { updateKeyed, updateNonKeyed } from '../domMutate';
+import { updateKeyed, updateNonKeyed, createDynamicChild } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
-
-function createDynamicChild(value, domNode, node, treeLifecycle, context) {
-	if (!isVoid(value)) {
-		if (isArray(value)) {
-			for (let i = 0; i < value.length; i++) {
-				const childItem = value[i];
-
-				if (!isVoid(childItem) && typeof childItem === 'object') {
-					const tree = childItem && childItem.tree;
-
-					if (tree) {
-						const childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
-
-						if (childItem.key === undefined) {
-							node.keyedChildren = false;
-						}
-						node.childNodeList.push(childNode);
-						domNode.appendChild(childNode);
-					}
-				} else if (isStringOrNumber(childItem)) {
-					const textNode = document.createTextNode(childItem);
-
-					domNode.appendChild(textNode);
-					node.childNodeList.push(textNode);
-					node.keyedChildren = false;
-				}
-			}
-		} else if (typeof value === 'object') {
-			const tree = value && value.tree;
-
-			if (tree) {
-				domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
-			} else if (value.create) {
-				domNode.appendChild(value.create(value, treeLifecycle, context));
-			}
-		} else if (isStringOrNumber(value)) {
-			domNode.textContent = value;
-		}
-	}
-}
 
 function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context) {
 	if (nextValue && isVoid(lastValue)) {

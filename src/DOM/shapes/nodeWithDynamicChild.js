@@ -6,66 +6,35 @@ import recreateNode from '../recreateNode';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
 import removeChild from '../../core/removeChild';
-import { updateKeyed, updateNonKeyed } from '../domMutate';
+import { updateKeyed, updateNonKeyed, createDynamicChild } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import addShapeAttributes from '../addShapeAttributes';
 
 export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
-	let keyedChildren = true;
-	const domNodeMap = {};
-	const childNodeList = [];
 	const node = {
+		keyedChildren: true,
+		domNodeMap: {},
+		childNodeList: [],
 		overrideItem: null,
 		create(item, treeLifecycle, context) {
 			const domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value)) {
-				if (isArray(value)) {
-					for (let i = 0; i < value.length; i++) {
-						const childItem = value[i];
-						// catches edge case where we e.g. have [null, null, null] as a starting point
-						if (!isVoid(childItem) && typeof childItem === 'object') {
-
-							const tree = childItem && childItem.tree;
-
-							if (tree) {
-								const childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
-
-								if (childItem.key === undefined) {
-									keyedChildren = false;
-								}
-								childNodeList.push(childNode);
-								domNode.appendChild(childNode);
-							}
-						} else if (isStringOrNumber(childItem)) {
-							const textNode = document.createTextNode(childItem);
-
-							domNode.appendChild(textNode);
-							childNodeList.push(textNode);
-							keyedChildren = false;
-						}
-					}
-				} else if (typeof value === 'object') {
-					const tree = value && value.tree;
-
-					if (tree) {
-						domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
-					} else if (value.create) {
-						domNode.appendChild(value.create(value, treeLifecycle, context));
-					}
-				} else if (isStringOrNumber(value)) {
-					domNode.textContent = value;
-				}
+			if (value instanceof Promise) {
+				value.then(asyncValue => {
+					createDynamicChild(asyncValue, domNode, node, treeLifecycle, context);
+				});
+			} else {
+				createDynamicChild(value, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
 				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
-			domNodeMap[item.id] = domNode;
+			node.domNodeMap[item.id] = domNode;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
-			const domNode = domNodeMap[lastItem.id];
+			const domNode = node.domNodeMap[lastItem.id];
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
@@ -147,7 +116,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 		remove(item, treeLifecycle) {
 			removeValueTree(getValueWithIndex(item, valueIndex), treeLifecycle);
 			if (dynamicAttrs) {
-				const domNode = domNodeMap[item.id];
+				const domNode = node.domNodeMap[item.id];
 
 				if (dynamicAttrs.onWillDetach) {
 					handleHooks(item, dynamicAttrs, domNode, 'onWillDetach');

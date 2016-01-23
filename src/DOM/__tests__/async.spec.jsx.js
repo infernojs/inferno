@@ -29,7 +29,7 @@ describe('Async rendering (JSX)', () => {
 	});
 
 	describe('When handling functions that return a promise', () => {
-		it("createRootNodeWithDynamicChild - create()", (done) => {
+		it("rootNodeWithDynamicChild - create()", (done) => {
 			function getValue() {
 				return new Promise((resolve, reject) => {
 					resolve(<span>Hello world!</span>);
@@ -61,5 +61,38 @@ describe('Async rendering (JSX)', () => {
 				done();
 			});
 		});
+
+		it("nodeWithDynamicChild - create()", (done) => {
+			function getValue() {
+				return new Promise((resolve, reject) => {
+					resolve(<span>Hello world!</span>);
+				});
+			}
+			render(<div><div>{ getValue() }</div></div>, container);
+
+			requestAnimationFrame(() => {
+				expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+				expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+				expect(container.firstChild.firstChild.firstChild.textContent).to.equal('Hello world!');
+				done();
+			});
+		});
+
+		//it("createRootNodeWithDynamicChild - update()", (done) => {
+		//	function getValue() {
+		//		return new Promise((resolve, reject) => {
+		//			resolve(<span>Hello world!</span>);
+		//		});
+		//	}
+		//	render(<div><span></span></div>, container);
+		//	render(<div>{ getValue() }</div>, container);
+		//
+		//	requestAnimationFrame(() => {
+		//		expect(container.firstChild.tagName).to.equal('DIV');
+		//		expect(container.firstChild.firstChild.tagName).to.equal('SPAN');
+		//		expect(container.firstChild.firstChild.textContent).to.equal('Hello world!');
+		//		done();
+		//	});
+		//});
 	});
 });
