@@ -1,7 +1,7 @@
 import { updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createVoidNode(templateNode, dynamicAttrs, staticNode) {
+export default function createVoidNode(templateNode, dynamicAttrs, staticNode, isSVG) {
 	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const domNodeMap = {};
 	const node = {
@@ -14,7 +14,7 @@ export default function createVoidNode(templateNode, dynamicAttrs, staticNode) {
 			}
 
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -26,7 +26,7 @@ export default function createVoidNode(templateNode, dynamicAttrs, staticNode) {
 					if (dynamicAttrs.onWillUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 					}
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 					if (dynamicAttrs.onDidUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 					}

@@ -4,7 +4,7 @@ import recreateRootNode, { recreateRootNodeFromHydration } from '../recreateRoot
 import { validateHydrateNode } from '../hydration';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
+export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode, isSVG) {
 	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		pool: [],
@@ -27,7 +27,7 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			}
 
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			return domNode;
 		},
@@ -50,7 +50,7 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

@@ -7,7 +7,7 @@ import { updateKeyed, updateNonKeyed, createDynamicChild, updateDynamicChild } f
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
+export default function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, isSVG) {
 	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		keyedChildren: true,
@@ -26,7 +26,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				createDynamicChild(value, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			node.domNodeMap[item.id] = domNode;
 			return domNode;
@@ -49,7 +49,7 @@ export default function createNodeWithDynamicChild(templateNode, valueIndex, dyn
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

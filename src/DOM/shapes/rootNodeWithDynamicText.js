@@ -7,7 +7,7 @@ import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 import appendText from '../../util/appendText';
 
-export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+export default function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled, isSVG) {
 	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		pool: [],
@@ -38,7 +38,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				}
 			}
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -67,7 +67,7 @@ export default function createRootNodeWithDynamicText(templateNode, valueIndex, 
 				appendText(domNode, nextValue);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

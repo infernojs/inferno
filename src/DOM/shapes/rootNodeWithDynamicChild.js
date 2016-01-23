@@ -8,7 +8,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+export default function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled, isSVG) {
 	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		keyedChildren: true,
@@ -38,7 +38,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				createDynamicChild(value, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -70,7 +70,7 @@ export default function createRootNodeWithDynamicChild(templateNode, valueIndex,
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateRootNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

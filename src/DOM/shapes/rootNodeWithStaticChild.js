@@ -3,7 +3,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled) {
+export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG) {
 	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const node = {
 		pool: [],
@@ -20,7 +20,7 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 			}
 			domNode = templateNode.cloneNode(true);
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -39,7 +39,7 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

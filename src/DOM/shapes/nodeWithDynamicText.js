@@ -6,7 +6,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 
 const errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
-export default function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
+export default function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, isSVG) {
 	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	const domNodeMap = {};
 	const node = {
@@ -28,7 +28,7 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated', isSVG);
 				if (dynamicAttrs.onAttached) {
 					treeLifecycle.addTreeSuccessListener(() => {
 						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
@@ -56,7 +56,7 @@ export default function createNodeWithDynamicText(templateNode, valueIndex, dyna
 			}
 
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
