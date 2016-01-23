@@ -184,10 +184,10 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 			throw Error(invalidTemplateError);
 		}
 	}
-
 	const dynamicFlags = getDynamicNode(dynamicNodes, schema);
 	let node;
 	let templateNode;
+	let isSVG;
 
 	if (!dynamicFlags) {
 		const element = createStaticTreeNode(schema, null, domNamespace);
@@ -206,7 +206,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
-			node = createDynamicNode(schema.index, domNamespace);
+			node = createDynamicNode(schema.index, domNamespace, isSVG);
 		} else {
 			const tag = schema.tag;
 			const text = schema.text;
@@ -241,8 +241,11 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 				}
 				const element = createElement(schema, domNamespace, null);
 				const isSVG = element.isSVG;
-				templateNode = element.node;
 
+				templateNode = element.node;
+				if (templateNode.namespaceURI === 'http://www.w3.org/2000/svg') {
+					isSVG = true;
+				}
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
 
@@ -266,7 +269,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 					}
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
-							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
+								node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
 						} else {
 							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs, isSVG);
 						}

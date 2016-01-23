@@ -77,7 +77,6 @@ export function handleHooks(item, props, domNode, hookEvent, isComponent, nextPr
 
 export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent, isSVG) {
 	let styleUpdates;
-
 	if (dynamicAttrs.index !== undefined) {
 		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
 		addDOMStaticAttributes(item, domNode, dynamicAttrs);
