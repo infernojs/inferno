@@ -167,62 +167,50 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	}
 }
 
-// Performs 39% better then Math.max()
-function infernoMax(){
-	let i = 1, max = 0, len = arguments.length;
-	for (; i < len; i++){
-		if (arguments[max] < arguments[i]) {
-			max = i;
-		}
-	}
-	return arguments[max];
-}
-function traverseNonKeyed(item, oldItem, domNode, parentNode, parentNextNode, treeLifecycle, context, domNodeList, index) {
-
-	if (!isVoid(item)) {
-
-		if (!isVoid(oldItem)) {
-			if (isStringOrNumber(item)) {
-
-				if (domNode) {
-					domNode.nodeValue = item;
-				}
-			} else if (typeof item === 'object') {
-				item.tree.dom.update(oldItem, item, treeLifecycle, context);
-			}
-		} else {
-			if (isStringOrNumber(item)) {
-				const childNode = document.createTextNode(item);
-				domNode = childNode;
-				insertOrAppend(parentNode, childNode, parentNextNode);
-			} else if (typeof item === 'object') {
-				const childNode = item.tree.dom.create(item, treeLifecycle, context);
-				domNode = childNode;
-				insertOrAppend(parentNode, childNode, parentNextNode);
-			}
-		}
-	} else {
-
-		if (domNodeList[0]) {
-			parentNode.removeChild(domNodeList[0]);
-			domNodeList.splice(0, 1);
-		}
-	}
-}
-
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
 
 	if (isVoid(items)) {
 		return;
 	}
 
-	const itemsLength = (oldItems.length === items.length) ? items.length : infernoMax(oldItems.length, items.length);
+	const itemsLength = (oldItems.length === items.length) ? items.length : Math.max(oldItems.length, items.length);
 
-	if (itemsLength === 1) {
-		traverseNonKeyed(items[0], oldItems[0], domNodeList[0], parentNode, parentNextNode, treeLifecycle, context,  domNodeList, 0);
-	} else if (itemsLength > 1) {
+	if (itemsLength) {
+
 		for (let i = 0; i < itemsLength; i++) {
-			traverseNonKeyed(items[i], oldItems[i], domNodeList[i], parentNode, parentNextNode, treeLifecycle, context,  domNodeList, i);
+
+			let item = items[i];
+			let oldItem = oldItems[i];
+			let domNode = domNodeList[i];
+
+			if (oldItem !== item) {
+
+				if (item == null && domNodeList.length) {
+					parentNode.removeChild(domNode);
+					domNodeList.splice(0, 1);
+
+				} else if (domNode) {
+
+					if (oldItem == null) {
+
+						if (typeof item === 'object') {
+							const childNode = item.tree.dom.create(item, treeLifecycle, context);
+							domNode = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
+						} else {
+							const childNode = document.createTextNode(item);
+							domNode = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
+						}
+					} else {
+						if (typeof item === 'object') {
+							item.tree.dom.update(oldItem, item, treeLifecycle, context);
+						} else {
+							domNode.nodeValue = item;
+						}
+					}
+				}
+			}
 		}
 	}
 }
