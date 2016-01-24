@@ -177,59 +177,52 @@ function infernoMax(){
 	}
 	return arguments[max];
 }
+function traverseNonKeyed(item, oldItem, domNode, parentNode, parentNextNode, treeLifecycle, context, domNodeList, index) {
+
+	if (!isVoid(item)) {
+
+		if (!isVoid(oldItem)) {
+			if (isStringOrNumber(item)) {
+
+				if (domNode) {
+					domNode.nodeValue = item;
+				}
+			} else if (typeof item === 'object') {
+				item.tree.dom.update(oldItem, item, treeLifecycle, context);
+			}
+		} else {
+			if (isStringOrNumber(item)) {
+				const childNode = document.createTextNode(item);
+				domNode = childNode;
+				insertOrAppend(parentNode, childNode, parentNextNode);
+			} else if (typeof item === 'object') {
+				const childNode = item.tree.dom.create(item, treeLifecycle, context);
+				domNode = childNode;
+				insertOrAppend(parentNode, childNode, parentNextNode);
+			}
+		}
+	} else {
+
+		if (domNodeList[0]) {
+			parentNode.removeChild(domNodeList[0]);
+			domNodeList.splice(0, 1);
+		}
+	}
+}
 
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-	let itemsLength;
 
-	if (!items) {
+	if (isVoid(items)) {
 		return;
 	}
-	if (!isVoid(oldItems)) {
 
-		const oLength = oldItems.length;
-		const iLength = items.length;
+	const itemsLength = (oldItems.length === items.length) ? items.length : infernoMax(oldItems.length, items.length);
 
-		if (oLength === iLength) {
-			itemsLength = iLength;
-		} else {
-			itemsLength = infernoMax(oldItems.length, items.length);
-		}
-
+	if (itemsLength === 1) {
+		traverseNonKeyed(items[0], oldItems[0], domNodeList[0], parentNode, parentNextNode, treeLifecycle, context,  domNodeList, 0);
+	} else if (itemsLength > 1) {
 		for (let i = 0; i < itemsLength; i++) {
-			const item = items[i];
-			const oldItem = oldItems[i];
-
-			if (!isVoid(item)) {
-
-				if (!isVoid(oldItem)) {
-					if (isStringOrNumber(item)) {
-						let domNode = domNodeList[i];
-
-						if (domNode) {
-							domNode.nodeValue = item;
-						}
-					} else if (typeof item === 'object') {
-						item.tree.dom.update(oldItem, item, treeLifecycle, context);
-					}
-				} else {
-					if (isStringOrNumber(item)) {
-						const childNode = document.createTextNode(item);
-						domNodeList[i] = childNode;
-						insertOrAppend(parentNode, childNode, parentNextNode);
-					} else if (typeof item === 'object') {
-						const childNode = item.tree.dom.create(item, treeLifecycle, context);
-						domNodeList[i] = childNode;
-						insertOrAppend(parentNode, childNode, parentNextNode);
-					}
-				}
-			} else {
-
-				if (domNodeList[i]) {
-					parentNode.removeChild(domNodeList[i]);
-					domNodeList.splice(i, 1);
-				}
-			}
-
+			traverseNonKeyed(items[i], oldItems[i], domNodeList[i], parentNode, parentNextNode, treeLifecycle, context,  domNodeList, i);
 		}
 	}
 }

@@ -377,58 +377,52 @@
   	}
   	return arguments[max];
   }
+  function traverseNonKeyed(item, oldItem, domNode, parentNode, parentNextNode, treeLifecycle, context, domNodeList, index) {
+
+  	if (!isVoid(item)) {
+
+  		if (!isVoid(oldItem)) {
+  			if (isStringOrNumber(item)) {
+
+  				if (domNode) {
+  					domNode.nodeValue = item;
+  				}
+  			} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+  				item.tree.dom.update(oldItem, item, treeLifecycle, context);
+  			}
+  		} else {
+  			if (isStringOrNumber(item)) {
+  				var childNode = document.createTextNode(item);
+  				domNode = childNode;
+  				insertOrAppend(parentNode, childNode, parentNextNode);
+  			} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+  				var childNode = item.tree.dom.create(item, treeLifecycle, context);
+  				domNode = childNode;
+  				insertOrAppend(parentNode, childNode, parentNextNode);
+  			}
+  		}
+  	} else {
+
+  		if (domNodeList[0]) {
+  			parentNode.removeChild(domNodeList[0]);
+  			domNodeList.splice(0, 1);
+  		}
+  	}
+  }
 
   function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-  	var itemsLength = undefined;
 
-  	if (!items) {
+  	if (isVoid(items)) {
   		return;
   	}
-  	if (!isVoid(oldItems)) {
 
-  		var oLength = oldItems.length;
-  		var iLength = items.length;
+  	var itemsLength = oldItems.length === items.length ? items.length : infernoMax(oldItems.length, items.length);
+  	if (itemsLength === 1) {
 
-  		if (oLength === iLength) {
-  			itemsLength = iLength;
-  		} else {
-  			itemsLength = infernoMax(oldItems.length, items.length);
-  		}
-
+  		traverseNonKeyed(items[0], oldItems[0], domNodeList[0], parentNode, parentNextNode, treeLifecycle, context, domNodeList, 0);
+  	} else if (itemsLength > 1) {
   		for (var i = 0; i < itemsLength; i++) {
-  			var item = items[i];
-  			var oldItem = oldItems[i];
-
-  			if (!isVoid(item)) {
-
-  				if (!isVoid(oldItem)) {
-  					if (isStringOrNumber(item)) {
-  						var domNode = domNodeList[i];
-
-  						if (domNode) {
-  							domNode.nodeValue = item;
-  						}
-  					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
-  						item.tree.dom.update(oldItem, item, treeLifecycle, context);
-  					}
-  				} else {
-  					if (isStringOrNumber(item)) {
-  						var childNode = document.createTextNode(item);
-  						domNodeList[i] = childNode;
-  						insertOrAppend(parentNode, childNode, parentNextNode);
-  					} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
-  						var childNode = item.tree.dom.create(item, treeLifecycle, context);
-  						domNodeList[i] = childNode;
-  						insertOrAppend(parentNode, childNode, parentNextNode);
-  					}
-  				}
-  			} else {
-
-  				if (domNodeList[i]) {
-  					parentNode.removeChild(domNodeList[i]);
-  					domNodeList.splice(i, 1);
-  				}
-  			}
+  			traverseNonKeyed(items[i], oldItems[i], domNodeList[i], parentNode, parentNextNode, treeLifecycle, context, domNodeList, i);
   		}
   	}
   }
