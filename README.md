@@ -23,7 +23,7 @@ In principle, Inferno is compatible with the standard React API, allowing for pa
 ## Benchmarks
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/) (for comparison: [React](http://mathieuancelin.github.io/js-repaint-perfs/react/), [Angular 2](http://mathieuancelin.github.io/js-repaint-perfs/angular2/opt.html) and [Mithril](http://mathieuancelin.github.io/js-repaint-perfs/mithril/))
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Install
