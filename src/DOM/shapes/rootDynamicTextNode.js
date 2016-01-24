@@ -21,34 +21,28 @@ export default function createRootDynamicTextNode(templateNode, valueIndex, recy
 			domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value)) {
-				if (isStringOrNumber(value)) {
-					domNode.nodeValue = value;
-				}
+			if (!isVoid(value) && isStringOrNumber(value)) {
+				domNode.nodeValue = value;
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-			if (node !== lastItem.tree.dom) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
+			const domNode = lastItem.rootNode;
+			const tree = lastItem && lastItem.tree;
+
+			if (tree && (node !== tree.dom)) {
+				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
-			const domNode = lastItem.rootNode;
-
-			nextItem.rootNode = domNode;
-			nextItem.id = lastItem.id;
 			const nextValue = getValueWithIndex(nextItem, valueIndex);
+			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
-			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
-				if (isStringOrNumber(nextValue)) {
-					domNode.nodeValue = nextValue;
-				}
+			if (nextValue !== lastValue && (isStringOrNumber(nextValue))) {
+				domNode.nodeValue = nextValue;
 			}
 		},
-		remove(/* lastItem */) {
-
-		}
+		remove() {}
 	};
 
 	return node;

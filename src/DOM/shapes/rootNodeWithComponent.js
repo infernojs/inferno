@@ -55,7 +55,6 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					}
 					const nextRender = Component(nextProps, context);
 
-					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
 					statelessRender = nextRender;
 					item.rootNode = domNode;
@@ -74,7 +73,6 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					if (childContext) {
 						context = { ...context, ...childContext };
 					}
-					nextRender.parent = item;
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
 					item.rootNode = domNode;
 					instance._lastRender = nextRender;
@@ -91,16 +89,17 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					});
 					instance.forceUpdate = () => {
 						instance.context = context;
+						treeLifecycle.reset();
 						const nextRender = instance.render.call(instance);
 						const childContext = instance.getChildContext();
 
 						if (childContext) {
 							context = { ...context, ...childContext };
 						}
-						nextRender.parent = currentItem;
 						nextRender.tree.dom.update(instance._lastRender, nextRender, treeLifecycle, context);
 						currentItem.rootNode = nextRender.rootNode;
 						instance._lastRender = nextRender;
+						treeLifecycle.trigger();
 					};
 				}
 			}
@@ -115,7 +114,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 			nextItem.rootNode = lastItem.rootNode;
 			currentItem = nextItem;
 			if (!Component) {
-				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+				recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
 				return;
 			}
 			if (typeof Component === 'function') {
@@ -135,7 +134,6 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 					}
 					const nextRender = Component(nextProps, context);
 
-					nextRender.parent = currentItem;
 					if (!isVoid(statelessRender)) {
 						const newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 
@@ -161,7 +159,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 							}
 						}
 					} else {
-						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+						recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
 						return;
 					}
 					if (props && props.onComponentDidUpdate) {
@@ -172,7 +170,7 @@ export default function createRootNodeWithComponent(componentIndex, props, recyc
 				} else {
 
 					if (!instance || node !== lastItem.tree.dom || Component !== instance.constructor) {
-						recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+						recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
 						return;
 					}
 					const domNode = lastItem.rootNode;

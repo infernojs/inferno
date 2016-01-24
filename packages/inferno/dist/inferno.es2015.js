@@ -19,18 +19,13 @@ var isVoid = (function (x) {
   return x === null || x === undefined;
 })
 
-var ObjectTypes = {
-	VARIABLE: 1
-};
-
 function createVariable(index) {
 	return {
-		index: index,
-		type: ObjectTypes.VARIABLE
+		index: index
 	};
 }
 
-function scanTreeForDynamicNodes(node, nodeMap) {
+function scanTreeForDynamicNodes(node, nodes) {
 	var nodeIsDynamic = false;
 	var dynamicFlags = {
 		NODE: false,
@@ -44,14 +39,14 @@ function scanTreeForDynamicNodes(node, nodeMap) {
 	if (isVoid(node)) {
 		return false;
 	}
-	if (node.type === ObjectTypes.VARIABLE) {
+	if (node.index !== undefined) {
 		nodeIsDynamic = true;
 		dynamicFlags.NODE = true;
 	} else {
 		if (!isVoid(node)) {
 			if (!isVoid(node.tag)) {
 				if (babelHelpers.typeof(node.tag) === 'object') {
-					if (node.tag.type === ObjectTypes.VARIABLE) {
+					if (node.tag.index !== undefined) {
 						nodeIsDynamic = true;
 						dynamicFlags.COMPONENTS = true;
 					} else {
@@ -60,20 +55,20 @@ function scanTreeForDynamicNodes(node, nodeMap) {
 				}
 			}
 			if (!isVoid(node.text)) {
-				if (node.text.type === ObjectTypes.VARIABLE) {
+				if (node.text.index !== undefined) {
 					nodeIsDynamic = true;
 					dynamicFlags.TEXT = true;
 				}
 			}
 			if (!isVoid(node.attrs)) {
-				if (node.attrs.type === ObjectTypes.VARIABLE) {
+				if (node.attrs.index !== undefined) {
 					nodeIsDynamic = true;
 					dynamicFlags.ATTRS = true;
 				} else {
 					for (var attr in node.attrs) {
 						var attrVal = node.attrs[attr];
 
-						if (!isVoid(attrVal) && attrVal.type === ObjectTypes.VARIABLE) {
+						if (!isVoid(attrVal) && attrVal.index !== undefined) {
 							if (attr === 'xmlns') {
 								throw Error('Inferno Error: The \'xmlns\' attribute cannot be dynamic. Please use static value for \'xmlns\' attribute instead.');
 							}
@@ -87,13 +82,13 @@ function scanTreeForDynamicNodes(node, nodeMap) {
 				}
 			}
 			if (!isVoid(node.children)) {
-				if (node.children.type === ObjectTypes.VARIABLE) {
+				if (node.children.index !== undefined) {
 					nodeIsDynamic = true;
 				} else {
 					if (isArray(node.children)) {
 						for (var i = 0; i < node.children.length; i++) {
 							var childItem = node.children[i];
-							var result = scanTreeForDynamicNodes(childItem, nodeMap);
+							var result = scanTreeForDynamicNodes(childItem, nodes);
 
 							if (result === true) {
 								nodeIsDynamic = true;
@@ -101,7 +96,7 @@ function scanTreeForDynamicNodes(node, nodeMap) {
 							}
 						}
 					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers.typeof(node)) === 'object') {
-						var result = scanTreeForDynamicNodes(node.children, nodeMap);
+						var result = scanTreeForDynamicNodes(node.children, nodes);
 
 						if (result === true) {
 							nodeIsDynamic = true;
@@ -111,7 +106,7 @@ function scanTreeForDynamicNodes(node, nodeMap) {
 				}
 			}
 			if (!isVoid(node.key)) {
-				if (node.key.type === ObjectTypes.VARIABLE) {
+				if (node.key.index !== undefined) {
 					nodeIsDynamic = true;
 					dynamicFlags.KEY = true;
 				}
@@ -119,7 +114,7 @@ function scanTreeForDynamicNodes(node, nodeMap) {
 		}
 	}
 	if (nodeIsDynamic === true) {
-		nodeMap.set(node, dynamicFlags);
+		nodes.push({ node: node, dynamicFlags: dynamicFlags });
 	}
 	return nodeIsDynamic;
 }
@@ -173,7 +168,7 @@ function createTemplate(callback) {
 					callbackArguments[i] = createVariable(i);
 				}
 				var schema = callback.apply(undefined, callbackArguments);
-				var dynamicNodeMap = new Map();
+				var dynamicNodeMap = [];
 
 				scanTreeForDynamicNodes(schema, dynamicNodeMap);
 				var tree = applyTreeConstructors(schema, dynamicNodeMap);
@@ -184,7 +179,6 @@ function createTemplate(callback) {
 					case 0:
 						construct = function construct() {
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: null,
@@ -201,7 +195,6 @@ function createTemplate(callback) {
 								key = v0;
 							}
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,
@@ -221,7 +214,6 @@ function createTemplate(callback) {
 								key = v1;
 							}
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,
@@ -248,7 +240,6 @@ function createTemplate(callback) {
 								key = values[keyIndex];
 							}
 							return {
-								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,

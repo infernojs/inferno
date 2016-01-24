@@ -56,7 +56,7 @@ export default function createTemplate(callback) {
 				callbackArguments[i] = createVariable(i);
 			}
 			const schema = callback(...callbackArguments);
-			const dynamicNodeMap = new Map();
+			const dynamicNodeMap = [];
 
 			scanTreeForDynamicNodes(schema, dynamicNodeMap);
 			const tree = applyTreeConstructors(schema, dynamicNodeMap);
@@ -66,7 +66,6 @@ export default function createTemplate(callback) {
 			switch (callbackLength) {
 				case 0:
 					construct = () => ({
-						parent: null,
 						tree,
 						id: uniqueId++,
 						key: null,
@@ -82,7 +81,6 @@ export default function createTemplate(callback) {
 							key = v0;
 						}
 						return {
-							parent: null,
 							tree,
 							id: uniqueId++,
 							key,
@@ -102,7 +100,6 @@ export default function createTemplate(callback) {
 							key = v1;
 						}
 						return {
-							parent: null,
 							tree,
 							id: uniqueId++,
 							key,
@@ -125,7 +122,6 @@ export default function createTemplate(callback) {
 							key = values[keyIndex];
 						}
 						return {
-							parent: null,
 							tree,
 							id: uniqueId++,
 							key,
