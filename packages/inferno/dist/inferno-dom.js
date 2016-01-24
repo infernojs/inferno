@@ -223,7 +223,9 @@
   	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
   	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
   	// We solve that with avoiding going into the iteration loop.
-  	//if (!isVoid(startItem) && (!isVoid(startItem.tree))) {
+  	if (isVoid(startItem) && isVoid(startItem.tree)) {
+  		return;
+  	}
   	if (items == null || itemsLength === 0 && oldItemsLength >= 5) {
   		if (recyclingEnabled$2) {
   			for (var i = 0; i < oldItemsLength; i++) {
@@ -362,7 +364,6 @@
   			}
   		}
   	}
-  	//}
   }
 
   function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
