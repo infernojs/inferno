@@ -15,7 +15,7 @@ In principle, Inferno is compatible with the standard React API, allowing for pa
 
 ## Key Features
 
-- one of the fastest front-end frameworks for rendering UI in the DOM
+- one of the fastest front-end libraries for rendering UI in the DOM
 - components have a similar API to React ES2015 components with `inferno-component`
 - stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
 - isomorphic/universal for easy server-side rendering with `inferno-server`
@@ -270,35 +270,11 @@ Inferno tries to address two problems with creating UI components:
 - Writing complex applications generally gives poor performance on mobile/tablet/older machines – it shouldn't.
 - Writing intensive modern UIs that require many updates/animations falls apart and becomes overly complicated - it shouldn't be.
 
-Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
-time a framework offered more fun without compromising performance.
+Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about time a library offered more fun without compromising performance.
 
 ## JSX
  
 Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
-
-## Contributing
-
-### Testing
-
-```sh
-npm run test:browser // browser tests
-npm run test:server // node tests
-npm run test // browser and node tests
-npm run browser // hot-loaded browser tests
-```
-
-### Building
-
-```sh
-npm run build
-```
-### Linting
-
-```sh
-npm run lint:source // lint the source
-```
-
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
