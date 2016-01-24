@@ -2312,12 +2312,14 @@
   			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
   				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
   			}
-  			if (isVoid(nextValue)) {
-  				appendText(domNode, '');
-  			} else if (isVoid(lastValue)) {
-  				appendText(domNode, nextValue);
-  			} else if (nextValue !== lastValue) {
-  				appendText(domNode, nextValue);
+  			if (nextValue !== lastValue) {
+  				if (isVoid(nextValue)) {
+  					appendText(domNode, '');
+  				} else if (isVoid(lastValue)) {
+  					appendText(domNode, nextValue);
+  				} else {
+  					appendText(domNode, nextValue);
+  				}
   			}
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
@@ -2383,15 +2385,15 @@
   			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
   				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
   			}
-
-  			if (isVoid(nextValue)) {
-  				appendText(domNode, '');
-  			} else if (isVoid(lastValue)) {
-  				appendText(domNode, nextValue);
-  			} else if (nextValue !== lastValue) {
-  				appendText(domNode, nextValue);
+  			if (nextValue !== lastValue) {
+  				if (isVoid(nextValue)) {
+  					appendText(domNode, '');
+  				} else if (isVoid(lastValue)) {
+  					appendText(domNode, nextValue);
+  				} else {
+  					appendText(domNode, nextValue);
+  				}
   			}
-
   			if (dynamicAttrs) {
   				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
   				if (dynamicAttrs.onDidUpdate) {
