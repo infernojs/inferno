@@ -304,8 +304,8 @@ export function updateVirtualList(lastValue, nextValue, childNodeList, domNode, 
 	if (isArray(lastValue)) {
 		if (keyedChildren) {
 			updateKeyed(nextValue, lastValue, domNode, nextDomNode, treeLifecycle, context);
-		} else {
-			updateNonKeyed(nextValue, lastValue, childNodeList, domNode, nextDomNode, treeLifecycle, context);
+		} else if(nextValue !== lastValue) {
+				updateNonKeyed(nextValue, lastValue, childNodeList, domNode, nextDomNode, treeLifecycle, context);
 		}
 	} else {
 		// TODO
@@ -387,8 +387,8 @@ export function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, dom
 			if (isArray(lastValue)) {
 				if (node.keyedChildren) {
 					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-				} else {
-					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
+				} else 	if (lastValue !== nextValue) {
+						updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
 				}
 			} else {
 				recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);

@@ -499,7 +499,7 @@
   	if (isArray(lastValue)) {
   		if (keyedChildren) {
   			updateKeyed(nextValue, lastValue, domNode, nextDomNode, treeLifecycle, context);
-  		} else {
+  		} else if (nextValue !== lastValue) {
   			updateNonKeyed(nextValue, lastValue, childNodeList, domNode, nextDomNode, treeLifecycle, context);
   		}
   	} else {
@@ -581,7 +581,7 @@
   			if (isArray(lastValue)) {
   				if (node.keyedChildren) {
   					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-  				} else {
+  				} else if (lastValue !== nextValue) {
   					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
   				}
   			} else {
