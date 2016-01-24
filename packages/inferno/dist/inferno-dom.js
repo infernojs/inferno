@@ -581,7 +581,7 @@
   			if (isArray(lastValue)) {
   				if (node.keyedChildren) {
   					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-  				} else if (lastValue !== nextValue) {
+  				} else {
   					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
   				}
   			} else {

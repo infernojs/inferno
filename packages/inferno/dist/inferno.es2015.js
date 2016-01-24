@@ -142,6 +142,7 @@ var uniqueId = Date.now();
  let uniqueId = UUID.generate();
  */
 var treeConstructors = {};
+
 function addTreeConstructor(name, treeConstructor) {
 	treeConstructors[name] = treeConstructor;
 }
