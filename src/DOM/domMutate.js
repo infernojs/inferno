@@ -222,13 +222,7 @@ export function insertOrAppend(parentNode, newNode, nextNode) {
 }
 
 export function remove(item, parentNode) {
-	const parent = item.rootNode.parentNode;
-
-	if (parent === parentNode) {
-		parentNode.removeChild(item.rootNode);
-	} else {
-		parentNode.removeChild(item.rootNode.parentNode);
-	}
+	const rootNode = item.rootNode;
 
 	if (isVoid(rootNode) || !(rootNode.nodeType)) {
 		return null;
@@ -236,13 +230,7 @@ export function remove(item, parentNode) {
 	if (rootNode === parentNode) {
 		parentNode.innerHTML = '';
 	} else {
-		const parent = item.rootNode.parentNode;
-
-		if (parent === parentNode) {
-			parentNode.removeChild(item.rootNode);
-		} else {
-			parentNode.removeChild(item.rootNode.parentNode);
-		}
+		parentNode.removeChild(item.rootNode);
 		if (recyclingEnabled) {
 			pool(item);
 		}
