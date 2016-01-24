@@ -994,7 +994,7 @@ describe('Components (JSX)', () => {
 		});
 	});
 
-	describe('should render a component with with conditional boolean text nodes', () => {
+	describe('should render a component with conditional boolean text nodes', () => {
 		class MyComponent98 extends Component {
 			constructor(props) {
 				super(props);
@@ -1083,7 +1083,7 @@ describe('Components (JSX)', () => {
 		expect(container.textContent).to.equal('test');
 	});
 
-	describe('should render a component with with a conditional list that changes upon toggle', () => {
+	describe('should render a component with a conditional list that changes upon toggle', () => {
 		class BuggyRender extends Component {
 			constructor(props) {
 				super(props);
@@ -1145,4 +1145,61 @@ describe('Components (JSX)', () => {
 			});
 		});
 	});
+
+	describe('should render a component with a list that insantly changes', () => {
+		class ChangeChildrenCount extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					list: ['1', '2', '3', '4']
+				};
+
+				// Bindings
+				this.handleClick = this.handleClick.bind(this);
+			}
+
+			handleClick() {
+				this.setState({
+					list: ['1']
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<button onClick={this.handleClick}>1</button>
+						{this.state.list.map(function (x, i) {
+							return <div>{i}</div>
+						})}
+					</div>
+				);
+			}
+		}
+
+		it('should correctly render', () => {
+			render(<ChangeChildrenCount />, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><button>1</button><div>0</div><div>1</div><div>2</div><div>3</div></div>')
+			);
+		});
+
+		it('should handle update upon click', (done) => {
+			render(<ChangeChildrenCount />, container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+
+			buttons.forEach(button => button.click());
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><button>1</button><div>0</div></div>')
+				);
+				done();
+			});
+		});
+	});
+
 });

@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export default function createDynamicNode(valueIndex) {
 	const domNodeMap = {};
-	let childNodeList = [];
+	const childNodeListMap = {};
 	let keyedChildren = true;
 	let nextDomNode;
 	const node = {
@@ -21,6 +21,7 @@ export default function createDynamicNode(valueIndex) {
 			let value = getValueWithIndex(item, valueIndex);
 			let domNode;
 			const type = getTypeFromValue(value);
+			const childNodeList = childNodeListMap[item.id] = [];
 
 			if (process.env.NODE_ENV !== 'production') {
 				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
@@ -42,6 +43,7 @@ export default function createDynamicNode(valueIndex) {
 						if (childNodeList.length > 0) {
 							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
 							domNode = childNodeList[0].parentNode;
+							domNodeMap[item.id] = domNode;
 						}
 					});
 					break;
@@ -74,6 +76,7 @@ export default function createDynamicNode(valueIndex) {
 				const domNode = domNodeMap[lastItem.id];
 				const nextType = getTypeFromValue(nextValue);
 				const lastType = getTypeFromValue(lastValue);
+				const childNodeList = childNodeListMap[lastItem.id]
 
 				if (lastType !== nextType) {
 					recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);

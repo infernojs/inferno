@@ -168,31 +168,23 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 }
 
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-
 	if (isVoid(items)) {
 		return;
 	}
-
 	const itemsLength = (oldItems.length === items.length) ? items.length : Math.max(oldItems.length, items.length);
 
 	if (itemsLength) {
-
-		for (let i = 0; i < itemsLength; i++) {
-
+		for (let i = itemsLength; i > -1; i--) {
 			let item = items[i];
 			let oldItem = oldItems[i];
 			let domNode = domNodeList[i];
 
 			if (oldItem !== item) {
-
-				if (item == null && domNodeList.length) {
+				if (item === undefined && domNodeList.length) {
 					parentNode.removeChild(domNode);
-					domNodeList.splice(0, 1);
-
+					domNodeList.splice(i, 1);
 				} else if (domNode) {
-
 					if (oldItem == null) {
-
 						if (typeof item === 'object') {
 							const childNode = item.tree.dom.create(item, treeLifecycle, context);
 							domNode = childNode;

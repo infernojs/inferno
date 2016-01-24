@@ -43,7 +43,7 @@ export default function createTemplate(callback) {
 				case 0:
 					construct = () => ({
 						tree,
-						id: (uniqueId++).toString(),
+						id: '' + uniqueId++,
 						key: null,
 						nextItem: null,
 						rootNode: null
@@ -58,7 +58,7 @@ export default function createTemplate(callback) {
 						}
 						return {
 							tree,
-							id: (uniqueId++).toString(),
+							id: '' + uniqueId++,
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -77,7 +77,7 @@ export default function createTemplate(callback) {
 						}
 						return {
 							tree,
-							id: (uniqueId++).toString(),
+							id: '' + uniqueId++,
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -99,7 +99,7 @@ export default function createTemplate(callback) {
 						}
 						return {
 							tree,
-							id: (uniqueId++).toString(),
+							id: '' + uniqueId++,
 							key,
 							nextItem: null,
 							rootNode: null,
