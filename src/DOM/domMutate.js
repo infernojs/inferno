@@ -25,7 +25,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
 	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
 	// We solve that with avoiding going into the iteration loop.
-	if (!isVoid(startItem) && (!isVoid(startItem.tree))) {
+	//if (!isVoid(startItem) && (!isVoid(startItem.tree))) {
 		if (items == null ||itemsLength === 0 && oldItemsLength >= 5) {
 			if (recyclingEnabled) {
 				for (let i = 0; i < oldItemsLength; i++) {
@@ -53,7 +53,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 			startItemKey = startItem.key;
 			stop = true;
 			while (startItemKey === oldStartItemKey) {
-				updateTree(startItem, oldStartItem, startItem);
+				updateTree(startItem, oldStartItem, startItem, treeLifecycle, context);
 				startIndex++;
 				oldStartIndex++;
 				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -70,7 +70,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 			endItemKey = endItem.key;
 
 			while (endItemKey === oldEndItemKey) {
-				updateTree(endItem, oldEndItem, endItem);
+				updateTree(endItem, oldEndItem, endItem, treeLifecycle, context);
 				endIndex--;
 				oldEndIndex--;
 				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -83,7 +83,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 			}
 			while (endItemKey === oldStartItemKey) {
 				nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
-				updateTree(endItem, oldStartItem, endItem);
+				updateTree(endItem, oldStartItem, endItem, treeLifecycle, context);
 				insertOrAppend(parentNode, endItem.rootNode, nextNode);
 				endIndex--;
 				oldStartIndex++;
@@ -97,7 +97,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 			}
 			while (startItemKey === oldEndItemKey) {
 				nextNode = oldItems[oldStartIndex].rootNode;
-				updateTree(startItem, oldEndItem, startItem);
+				updateTree(startItem, oldEndItem, startItem, treeLifecycle, context);
 				insertOrAppend(parentNode, startItem.rootNode, nextNode);
 				startIndex++;
 				oldEndIndex--;
@@ -144,7 +144,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 				if (oldItem) {
 					oldItemsMap[key] = null;
 					oldNextItem = oldItem.nextItem;
-					updateTree(item, oldItem, item);
+					updateTree(item, oldItem, item, treeLifecycle, context);
 
 					if (item.rootNode.nextSibling !== (nextItem && nextItem.rootNode)) {
 						nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
@@ -164,7 +164,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 				}
 			}
 		}
-	}
+	//}
 }
 
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
