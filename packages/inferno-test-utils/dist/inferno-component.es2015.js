@@ -45,7 +45,6 @@ function isRecyclingEnabled() {
 }
 
 var recyclingEnabled = isRecyclingEnabled();
-
 function remove(item, parentNode) {
 	var rootNode = item.rootNode;
 
@@ -79,40 +78,25 @@ function canHydrate(domNode, nextDomNode) {
 	}
 }
 
-function createTreeLifecycle() {
+function createDOMFragment(parentNode, nextNode) {
+	var lastItem = undefined;
+	var treeSuccessListeners = [];
+	var context = {};
 	var treeLifecycle = {
-		treeSuccessListeners: [],
 		addTreeSuccessListener: function addTreeSuccessListener(listener) {
-			treeLifecycle.treeSuccessListeners.push(listener);
+			treeSuccessListeners.push(listener);
 		},
 		removeTreeSuccessListener: function removeTreeSuccessListener(listener) {
-			for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
-				var treeSuccessListener = treeLifecycle.treeSuccessListeners[i];
+			for (var i = 0; i < treeSuccessListeners.length; i++) {
+				var treeSuccessListener = treeSuccessListeners[i];
 
 				if (treeSuccessListener === listener) {
-					treeLifecycle.treeSuccessListeners.splice(i, 1);
+					treeSuccessListeners.splice(i, 1);
 					return;
-				}
-			}
-		},
-		reset: function reset() {
-			treeLifecycle.treeSuccessListeners = [];
-		},
-		trigger: function trigger() {
-			if (treeLifecycle.treeSuccessListeners.length > 0) {
-				for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
-					treeLifecycle.treeSuccessListeners[i]();
 				}
 			}
 		}
 	};
-	return treeLifecycle;
-}
-
-function createDOMFragment(parentNode, nextNode) {
-	var lastItem = undefined;
-	var context = {};
-	var treeLifecycle = createTreeLifecycle();
 	return {
 		parentNode: parentNode,
 		render: function render(nextItem) {
@@ -149,7 +133,11 @@ function createDOMFragment(parentNode, nextNode) {
 							}
 						}
 					}
-					treeLifecycle.trigger();
+					if (treeSuccessListeners.length > 0) {
+						for (var i = 0; i < treeSuccessListeners.length; i++) {
+							treeSuccessListeners[i]();
+						}
+					}
 					lastItem = nextItem;
 					if (activeNode !== document.body && document.activeElement !== activeNode) {
 						activeNode.focus();
@@ -168,7 +156,7 @@ function createDOMFragment(parentNode, nextNode) {
 					remove(lastItem, parentNode);
 				}
 			}
-			treeLifecycle.treeSuccessListeners = [];
+			treeSuccessListeners = [];
 		}
 	};
 }

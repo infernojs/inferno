@@ -19,13 +19,18 @@ var isVoid = (function (x) {
   return x === null || x === undefined;
 })
 
+var ObjectTypes = {
+	VARIABLE: 1
+};
+
 function createVariable(index) {
 	return {
-		index: index
+		index: index,
+		type: ObjectTypes.VARIABLE
 	};
 }
 
-function scanTreeForDynamicNodes(node, nodes) {
+function scanTreeForDynamicNodes(node, nodeMap) {
 	var nodeIsDynamic = false;
 	var dynamicFlags = {
 		NODE: false,
@@ -39,14 +44,14 @@ function scanTreeForDynamicNodes(node, nodes) {
 	if (isVoid(node)) {
 		return false;
 	}
-	if (node.index !== undefined) {
+	if (node.type === ObjectTypes.VARIABLE) {
 		nodeIsDynamic = true;
 		dynamicFlags.NODE = true;
 	} else {
 		if (!isVoid(node)) {
 			if (!isVoid(node.tag)) {
 				if (babelHelpers.typeof(node.tag) === 'object') {
-					if (node.tag.index !== undefined) {
+					if (node.tag.type === ObjectTypes.VARIABLE) {
 						nodeIsDynamic = true;
 						dynamicFlags.COMPONENTS = true;
 					} else {
@@ -55,20 +60,20 @@ function scanTreeForDynamicNodes(node, nodes) {
 				}
 			}
 			if (!isVoid(node.text)) {
-				if (node.text.index !== undefined) {
+				if (node.text.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
 					dynamicFlags.TEXT = true;
 				}
 			}
 			if (!isVoid(node.attrs)) {
-				if (node.attrs.index !== undefined) {
+				if (node.attrs.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
 					dynamicFlags.ATTRS = true;
 				} else {
 					for (var attr in node.attrs) {
 						var attrVal = node.attrs[attr];
 
-						if (!isVoid(attrVal) && attrVal.index !== undefined) {
+						if (!isVoid(attrVal) && attrVal.type === ObjectTypes.VARIABLE) {
 							if (attr === 'xmlns') {
 								throw Error('Inferno Error: The \'xmlns\' attribute cannot be dynamic. Please use static value for \'xmlns\' attribute instead.');
 							}
@@ -82,13 +87,13 @@ function scanTreeForDynamicNodes(node, nodes) {
 				}
 			}
 			if (!isVoid(node.children)) {
-				if (node.children.index !== undefined) {
+				if (node.children.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
 				} else {
 					if (isArray(node.children)) {
 						for (var i = 0; i < node.children.length; i++) {
 							var childItem = node.children[i];
-							var result = scanTreeForDynamicNodes(childItem, nodes);
+							var result = scanTreeForDynamicNodes(childItem, nodeMap);
 
 							if (result === true) {
 								nodeIsDynamic = true;
@@ -96,7 +101,7 @@ function scanTreeForDynamicNodes(node, nodes) {
 							}
 						}
 					} else if ((typeof node === 'undefined' ? 'undefined' : babelHelpers.typeof(node)) === 'object') {
-						var result = scanTreeForDynamicNodes(node.children, nodes);
+						var result = scanTreeForDynamicNodes(node.children, nodeMap);
 
 						if (result === true) {
 							nodeIsDynamic = true;
@@ -106,7 +111,7 @@ function scanTreeForDynamicNodes(node, nodes) {
 				}
 			}
 			if (!isVoid(node.key)) {
-				if (node.key.index !== undefined) {
+				if (node.key.type === ObjectTypes.VARIABLE) {
 					nodeIsDynamic = true;
 					dynamicFlags.KEY = true;
 				}
@@ -114,17 +119,33 @@ function scanTreeForDynamicNodes(node, nodes) {
 		}
 	}
 	if (nodeIsDynamic === true) {
-		nodes.push({ node: node, dynamicFlags: dynamicFlags });
+		nodeMap.set(node, dynamicFlags);
 	}
 	return nodeIsDynamic;
 }
 
-var id = 1;
-var uniqueId = function () {
-	id = id + 1;
-	return id * 2 / 2.4;
-}();
+// Date.now() is the slowest thing on earth
+// http://jsperf.com/math-random-vs-date-now-vs-new-date/4
+var uniqueId = Date.now();
 
+/*
+ let UUID = (function() {
+ var self = {};
+ var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
+ self.generate = function() {
+ var d0 = Math.random()*0xffffffff|0;
+ var d1 = Math.random()*0xffffffff|0;
+ var d2 = Math.random()*0xffffffff|0;
+ var d3 = Math.random()*0xffffffff|0;
+ return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
+ lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
+ lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
+ lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
+ }
+ return self;
+ })();
+ let uniqueId = UUID.generate();
+ */
 var treeConstructors = {};
 function addTreeConstructor(name, treeConstructor) {
 	treeConstructors[name] = treeConstructor;
@@ -152,7 +173,7 @@ function createTemplate(callback) {
 					callbackArguments[i] = createVariable(i);
 				}
 				var schema = callback.apply(undefined, callbackArguments);
-				var dynamicNodeMap = [];
+				var dynamicNodeMap = new Map();
 
 				scanTreeForDynamicNodes(schema, dynamicNodeMap);
 				var tree = applyTreeConstructors(schema, dynamicNodeMap);
@@ -163,6 +184,7 @@ function createTemplate(callback) {
 					case 0:
 						construct = function construct() {
 							return {
+								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: null,
@@ -179,6 +201,7 @@ function createTemplate(callback) {
 								key = v0;
 							}
 							return {
+								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,
@@ -198,6 +221,7 @@ function createTemplate(callback) {
 								key = v1;
 							}
 							return {
+								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,
@@ -224,6 +248,7 @@ function createTemplate(callback) {
 								key = values[keyIndex];
 							}
 							return {
+								parent: null,
 								tree: tree,
 								id: uniqueId++,
 								key: key,

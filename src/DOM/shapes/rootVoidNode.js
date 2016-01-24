@@ -4,8 +4,7 @@ import recreateRootNode, { recreateRootNodeFromHydration } from '../recreateRoot
 import { validateHydrateNode } from '../hydration';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode, isSVG) {
-	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
+export default function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -27,32 +26,32 @@ export default function createRootVoidNode(templateNode, dynamicAttrs, recycling
 			}
 
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-			const domNode = lastItem.rootNode;
-			const tree = lastItem && lastItem.tree;
-
-			if (tree && (node !== tree.dom)) {
-				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
+			if (node !== lastItem.tree.dom) {
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
+
 			if (staticNode){
 				nextItem.rootNode = lastItem.rootNode;
-				return;
-			}
-			nextItem.rootNode = domNode;
-			nextItem.rootNode = lastItem.rootNode;
+			} else {
+				const domNode = lastItem.rootNode;
 
-			if (dynamicAttrs) {
-				if (dynamicAttrs.onWillUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
-				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
-				if (dynamicAttrs.onDidUpdate) {
-					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+				nextItem.rootNode = domNode;
+				nextItem.rootNode = lastItem.rootNode;
+
+				if (dynamicAttrs) {
+					if (dynamicAttrs.onWillUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
+					}
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
+					if (dynamicAttrs.onDidUpdate) {
+						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
+					}
 				}
 			}
 		},

@@ -21,28 +21,34 @@ export default function createRootDynamicTextNode(templateNode, valueIndex, recy
 			domNode = templateNode.cloneNode(false);
 			const value = getValueWithIndex(item, valueIndex);
 
-			if (!isVoid(value) && isStringOrNumber(value)) {
-				domNode.nodeValue = value;
+			if (!isVoid(value)) {
+				if (isStringOrNumber(value)) {
+					domNode.nodeValue = value;
+				}
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-			const domNode = lastItem.rootNode;
-			const tree = lastItem && lastItem.tree;
-
-			if (tree && (node !== tree.dom)) {
-				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
+			if (node !== lastItem.tree.dom) {
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
-			const nextValue = getValueWithIndex(nextItem, valueIndex);
-			const lastValue = getValueWithIndex(lastItem, valueIndex);
+			const domNode = lastItem.rootNode;
 
-			if (nextValue !== lastValue && (isStringOrNumber(nextValue))) {
-				domNode.nodeValue = nextValue;
+			nextItem.rootNode = domNode;
+			nextItem.id = lastItem.id;
+			const nextValue = getValueWithIndex(nextItem, valueIndex);
+
+			if (nextValue !== getValueWithIndex(lastItem, valueIndex)) {
+				if (isStringOrNumber(nextValue)) {
+					domNode.nodeValue = nextValue;
+				}
 			}
 		},
-		remove() {}
+		remove(/* lastItem */) {
+
+		}
 	};
 
 	return node;

@@ -1,32 +1,34 @@
 import isVoid from '../../util/isVoid';
 import isVoidValue from '../../util/isVoidValue';
+import { recycle } from '../recycling';
 import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../../core/variables';
-import recreateNode from '../recreateNode';
+import recreateRootNode from '../recreateRootNode';
 import { createVirtualList, updateVirtualList } from '../domMutate';
 
-let errorMsg;
-
 if (process.env.NODE_ENV !== 'production') {
-	errorMsg = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+	const errorMsg = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 }
 
-export default function createDynamicNode(valueIndex) {
-	const domNodeMap = {};
+export default function createRootDynamicNode(valueIndex, recyclingEnabled) {
+	let nextDomNode;
 	let childNodeList = [];
 	let keyedChildren = true;
-	let nextDomNode;
 	const node = {
+		pool: [],
+		keyedPool: [],
 		overrideItem: null,
 		create(item, treeLifecycle, context) {
-			let value = getValueWithIndex(item, valueIndex);
 			let domNode;
-			const type = getTypeFromValue(value);
 
-			if (process.env.NODE_ENV !== 'production') {
-				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
-					throw Error(errorMsg);
+			if (recyclingEnabled) {
+				domNode = recycle(node, item);
+				if (domNode) {
+					return domNode;
 				}
 			}
+			let value = getValueWithIndex(item, valueIndex);
+			const type = getTypeFromValue(value);
+
 			switch (type) {
 				case ValueTypes.TEXT:
 					if (isVoidValue(value)) {
@@ -36,45 +38,58 @@ export default function createDynamicNode(valueIndex) {
 					break;
 				case ValueTypes.ARRAY:
 					const virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
+
 					domNode = virtualList.domNode;
 					keyedChildren = virtualList.keyedChildren;
 					treeLifecycle.addTreeSuccessListener(() => {
 						if (childNodeList.length > 0) {
 							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
 							domNode = childNodeList[0].parentNode;
+							item.rootNode = domNode;
 						}
 					});
 					break;
 				case ValueTypes.TREE:
-					domNode = value.create(item, treeLifecycle, context);
+					domNode = value.dom.create(item, treeLifecycle, context);
+					break;
+				case ValueTypes.EMPTY_OBJECT:
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error(errorMsg);
+					}
+					break;
+				case ValueTypes.FUNCTION:
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error(errorMsg);
+					}
 					break;
 				case ValueTypes.FRAGMENT:
 					domNode = value.tree.dom.create(value, treeLifecycle, context);
 					break;
-				case ValueTypes.PROMISE:
-										value.then(asyncValue => {
-													const newDomNode = asyncValue.tree.dom.create(item, treeLifecycle, context);
-													domNode.parentNode.replaceChild(newDomNode, domNode);
-												domNode = newDomNode;
-													domNodeMap[item.id] = domNode;
-												});
-											domNode = document.createTextNode('');
-											break;
 			}
-			domNodeMap[item.id] = domNode;
+
+			item.rootNode = domNode;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
+			if (node !== lastItem.tree.dom) {
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
+				return;
+			}
+			const domNode = lastItem.rootNode;
+
+			nextItem.rootNode = domNode;
+			nextItem.id = lastItem.id;
+
 			let nextValue = getValueWithIndex(nextItem, valueIndex);
 			const lastValue = getValueWithIndex(lastItem, valueIndex);
 
 			if (nextValue !== lastValue) {
-				const domNode = domNodeMap[lastItem.id];
 				const nextType = getTypeFromValue(nextValue);
 				const lastType = getTypeFromValue(lastValue);
 
 				if (lastType !== nextType) {
-					recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
+
+					recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 					return;
 				}
 				switch (nextType) {
@@ -89,13 +104,10 @@ export default function createDynamicNode(valueIndex) {
 						return;
 					case ValueTypes.TREE:
 						// TODO
-						break;
+						return;
 					case ValueTypes.FRAGMENT:
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 						return;
-					case ValueTypes.PROMISE:
-												debugger;
-												return;
 				}
 			}
 		},

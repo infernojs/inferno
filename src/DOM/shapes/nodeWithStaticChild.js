@@ -1,8 +1,7 @@
 import { updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG) {
-	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
+export default function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 	const domNodeMap = {};
 	const node = {
 		overrideItem: null,
@@ -10,7 +9,7 @@ export default function createNodeWithStaticChild(templateNode, dynamicAttrs, is
 			const domNode = templateNode.cloneNode(true);
 
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -22,7 +21,7 @@ export default function createNodeWithStaticChild(templateNode, dynamicAttrs, is
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

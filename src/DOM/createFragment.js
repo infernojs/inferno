@@ -1,40 +1,25 @@
 import { remove } from './domMutate';
 import { canHydrate } from './hydration';
 
-function createTreeLifecycle() {
+export default function createDOMFragment(parentNode, nextNode) {
+	let lastItem;
+	let treeSuccessListeners = [];
+	const context = {};
 	const treeLifecycle = {
-		treeSuccessListeners: [],
 		addTreeSuccessListener(listener) {
-			treeLifecycle.treeSuccessListeners.push(listener);
+			treeSuccessListeners.push(listener);
 		},
 		removeTreeSuccessListener(listener) {
-			for (let i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
-				const treeSuccessListener = treeLifecycle.treeSuccessListeners[i];
+			for (let i = 0; i < treeSuccessListeners.length; i++) {
+				const treeSuccessListener = treeSuccessListeners[i];
 
 				if (treeSuccessListener === listener) {
-					treeLifecycle.treeSuccessListeners.splice(i, 1);
+					treeSuccessListeners.splice(i, 1);
 					return;
-				}
-			}
-		},
-		reset() {
-			treeLifecycle.treeSuccessListeners = [];
-		},
-		trigger() {
-			if (treeLifecycle.treeSuccessListeners.length > 0) {
-				for (let i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
-					treeLifecycle.treeSuccessListeners[i]();
 				}
 			}
 		}
 	};
-	return treeLifecycle;
-}
-
-export default function createDOMFragment(parentNode, nextNode) {
-	let lastItem;
-	const context = {};
-	const treeLifecycle = createTreeLifecycle();
 	return {
 		parentNode,
 		render(nextItem) {
@@ -71,7 +56,11 @@ export default function createDOMFragment(parentNode, nextNode) {
 							}
 						}
 					}
-					treeLifecycle.trigger();
+					if (treeSuccessListeners.length > 0) {
+						for (let i = 0; i < treeSuccessListeners.length; i++) {
+							treeSuccessListeners[i]();
+						}
+					}
 					lastItem = nextItem;
 					if (activeNode !== document.body && document.activeElement !== activeNode) {
 						activeNode.focus();
@@ -90,7 +79,7 @@ export default function createDOMFragment(parentNode, nextNode) {
 					remove(lastItem, parentNode);
 				}
 			}
-			treeLifecycle.treeSuccessListeners = [];
+			treeSuccessListeners = [];
 		}
 	};
 }

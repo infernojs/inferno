@@ -5,7 +5,6 @@ import { unitlessProperties } from '../util/styleAccessor';
 import { DOMAttributeNames } from '../DOM/DOMRegistry';
 import isVoid from '../util/isVoid';
 import isValidAttribute from '../util/isValidAttribute';
-import { getDynamicNode } 	from '../core/variables';
 import DOMRegistry from '../DOM/DOMRegistry';
 import quoteAttributeValueForBrowser from './quoteAttributeValueForBrowser';
 import selfClosingTags from './selfClosingTags';
@@ -215,8 +214,8 @@ function createStaticTreeNode(isRoot, node) {
 	return staticNode;
 }
 
-export default function createHTMLTree(schema, isRoot, dynamicNodes) {
-	const dynamicFlags = getDynamicNode(dynamicNodes, schema);
+export default function createHTMLTree(schema, isRoot, dynamicNodeMap) {
+	const dynamicFlags = dynamicNodeMap.get(schema);
 	let node;
 	// static html
 	if (!dynamicFlags) {

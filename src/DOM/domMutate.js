@@ -3,29 +3,26 @@ import { getValueWithIndex, getTypeFromValue, ValueTypes } from '../core/variabl
 import isArray from '../util/isArray';
 import isStringOrNumber from '../util/isStringOrNumber';
 import { isRecyclingEnabled, pool } from './recycling';
-import replaceChild from '../core/replaceChild';
-import appendText from '../util/appendText';
-import removeChild from '../core/removeChild';
-import updateAndAppendDynamicChildren from '../shared/updateAndAppendDynamicChildren';
 
 const recyclingEnabled = isRecyclingEnabled();
-
-function updateTree(item, oldItem, startItem, treeLifecycle, context) {
-	item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
-}
+const infernoBadTemplate = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 
 export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
+
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
+
 	const itemsLength = items.length;
 	const oldItemsLength = oldItems.length;
+
 	let startItem = itemsLength > 0 && items[startIndex];
 
 	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
 	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
 	// We solve that with avoiding going into the iteration loop.
 	if (!isVoid(startItem) && (!isVoid(startItem.tree))) {
+
 		if (items == null ||itemsLength === 0 && oldItemsLength >= 5) {
 			if (recyclingEnabled) {
 				for (let i = 0; i < oldItemsLength; i++) {
@@ -35,6 +32,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 			parentNode.textContent = '';
 			return;
 		}
+
 		let endIndex = itemsLength - 1;
 		let oldEndIndex = oldItemsLength - 1;
 		let oldStartItem = oldItemsLength > 0 && oldItems[oldStartIndex];
@@ -47,10 +45,15 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 		let oldEndItemKey;
 		let oldStartItemKey;
 		let startItemKey;
+		let updateTree = function(item, oldItem, startItem, treeLifecycle, context) {
+			item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
+		};
 
 		outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
+
 			oldStartItemKey = oldStartItem.key;
 			startItemKey = startItem.key;
+
 			stop = true;
 			while (startItemKey === oldStartItemKey) {
 				updateTree(startItem, oldStartItem, startItem);
@@ -167,35 +170,12 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	}
 }
 
-// Performs 39% better then Math.max()
-function infernoMax(){
-	let i = 1, max = 0, len = arguments.length;
-	for (; i < len; i++){
-		if (arguments[max] < arguments[i]) {
-			max = i;
-		}
-	}
-	return arguments[max];
-}
-
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
 	let itemsLength;
 
 	if (items) {
 		if (!isVoid(oldItems)) {
-
-			const oLength = oldItems.length;
-			const iLength = items.length;
-
-			if (oLength === iLength) {
-				itemsLength = iLength;
-			} else 	if (items.length === 0) {
-				itemsLength = oLength;
-			} else if (oLength.length === 0) {
-				itemsLength = iLength;
-			} else {
-				itemsLength = infernoMax(oldItems.length, items.length);
-			}
+			itemsLength = Math.max(items.length, oldItems.length);
 
 			for (let i = 0; i < itemsLength; i++) {
 				const item = items[i];
@@ -216,10 +196,12 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 					} else {
 						if (isStringOrNumber(item)) {
 							const childNode = document.createTextNode(item);
+
 							domNodeList[i] = childNode;
 							insertOrAppend(parentNode, childNode, parentNextNode);
 						} else if (typeof item === 'object') {
 							const childNode = item.tree.dom.create(item, treeLifecycle, context);
+
 							domNodeList[i] = childNode;
 							insertOrAppend(parentNode, childNode, parentNextNode);
 						}
@@ -255,11 +237,11 @@ export function remove(item, parentNode) {
 	} else {
 		const parent = item.rootNode.parentNode;
 
-		if (parent === parentNode) {
-			parentNode.removeChild(item.rootNode);
-		} else {
-			parentNode.removeChild(item.rootNode.parentNode);
-		}
+					if (parent === parentNode) {
+						parentNode.removeChild(item.rootNode);
+					} else {
+						parentNode.removeChild(item.rootNode.parentNode);
+					}
 		if (recyclingEnabled) {
 			pool(item);
 		}
@@ -267,54 +249,63 @@ export function remove(item, parentNode) {
 }
 
 export function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
-	if (isVoid(value)) {
-		return null;
-	}
-	const domNode = document.createDocumentFragment();
-	let keyedChildren = true;
 
-	for (let i = 0; i < value.length; i++) {
-		const childNode = value[i];
-		const childType = getTypeFromValue(childNode);
-		let childDomNode;
+	if (!isVoid(value)) {
 
-		if (process.env.NODE_ENV !== 'production') {
-			if (childType === ValueTypes.EMPTY_OBJECT ||
-				childType === ValueTypes.FUNCTION ||
-				childType === ValueTypes.ARRAY) {
-				throw Error('Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.');
+		const domNode = document.createDocumentFragment();
+		let keyedChildren = true;
+
+		for (let i = 0; i < value.length; i++) {
+			const childNode = value[i];
+			const childType = getTypeFromValue(childNode);
+			let childDomNode;
+
+			switch (childType) {
+				case ValueTypes.TEXT:
+					childDomNode = document.createTextNode(childNode);
+					childNodeList.push(childDomNode);
+					domNode.appendChild(childDomNode);
+					keyedChildren = false;
+					break;
+				case ValueTypes.TREE:
+					keyedChildren = false;
+					childDomNode = childNode.create(item, treeLifecycle, context);
+					childNodeList.push(childDomNode);
+
+					if (process.env.NODE_ENV !== 'production') {
+						if (childDomNode === undefined) {
+							throw Error('Inferno Error: Children must be provided as templates.');
+						}
+					}
+					domNode.appendChild(childDomNode);
+					break;
+				case ValueTypes.FRAGMENT:
+					if (childNode.key === undefined) {
+						keyedChildren = false;
+					}
+					childDomNode = childNode.tree.dom.create(childNode, treeLifecycle, context);
+					childNodeList.push(childDomNode);
+					domNode.appendChild(childDomNode);
+					break;
+				case ValueTypes.EMPTY_OBJECT:
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error(infernoBadTemplate);
+					}
+					return;
+				case ValueTypes.FUNCTION:
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error(infernoBadTemplate);
+					}
+					return;
+				case ValueTypes.ARRAY:
+					if (process.env.NODE_ENV !== 'production') {
+						throw Error('Inferno Error: Deep nested arrays are not supported as a valid template values - e.g. [[[1, 2, 3]]]. Only shallow nested arrays are supported - e.g. [[1, 2, 3]].');
+					}
+					return;
 			}
 		}
-		switch (childType) {
-			case ValueTypes.TEXT:
-				childDomNode = document.createTextNode(childNode);
-				childNodeList.push(childDomNode);
-				domNode.appendChild(childDomNode);
-				keyedChildren = false;
-				break;
-			case ValueTypes.TREE:
-				keyedChildren = false;
-				childDomNode = childNode.create(item, treeLifecycle, context);
-				childNodeList.push(childDomNode);
-
-				if (process.env.NODE_ENV !== 'production') {
-					if (childDomNode === undefined) {
-						throw Error('Inferno Error: Children must be provided as templates.');
-					}
-				}
-				domNode.appendChild(childDomNode);
-				break;
-			case ValueTypes.FRAGMENT:
-				if (childNode.key === undefined) {
-					keyedChildren = false;
-				}
-				childDomNode = childNode.tree.dom.create(childNode, treeLifecycle, context);
-				childNodeList.push(childDomNode);
-				domNode.appendChild(childDomNode);
-				break;
-		}
+		return { domNode, keyedChildren };
 	}
-	return { domNode, keyedChildren };
 }
 
 export function updateVirtualList(lastValue, nextValue, childNodeList, domNode, nextDomNode, keyedChildren, treeLifecycle, context) {
@@ -330,109 +321,5 @@ export function updateVirtualList(lastValue, nextValue, childNodeList, domNode, 
 		}
 	} else {
 		// TODO
-	}
-}
-
-export function createDynamicChild(value, domNode, node, treeLifecycle, context) {
-	if (!isVoid(value)) {
-		if (isArray(value)) {
-			for (let i = 0; i < value.length; i++) {
-				const childItem = value[i];
-
-				if (!isVoid(childItem) && typeof childItem === 'object') {
-					const tree = childItem && childItem.tree;
-
-					if (tree) {
-						const childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
-
-						if (childItem.key === undefined) {
-							node.keyedChildren = false;
-						}
-						node.childNodeList.push(childNode);
-						domNode.appendChild(childNode);
-					}
-				} else if (isStringOrNumber(childItem)) {
-					const textNode = document.createTextNode(childItem);
-
-					domNode.appendChild(textNode);
-					node.childNodeList.push(textNode);
-					node.keyedChildren = false;
-				}
-			}
-		} else if (typeof value === 'object') {
-			const tree = value && value.tree;
-
-			if (tree) {
-				domNode.appendChild(value.tree.dom.create(value, treeLifecycle, context));
-			} else if (value.create) {
-				domNode.appendChild(value.create(value, treeLifecycle, context));
-			}
-		} else if (isStringOrNumber(value)) {
-			domNode.textContent = value;
-		}
-	}
-}
-
-export function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreate) {
-	if (nextValue !== lastValue) {
-		if (nextValue && isVoid(lastValue)) {
-			if (typeof nextValue === 'object') {
-				if (isArray(nextValue)) {
-					updateAndAppendDynamicChildren(domNode, nextValue);
-				} else {
-					recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
-				}
-
-			} else {
-				domNode.appendChild(document.createTextNode(nextValue));
-			}
-		} else if (lastValue && isVoid(nextValue)) {
-			if (isArray(lastValue)) {
-				for (let i = 0; i < lastValue.length; i++) {
-					if (!isVoid(domNode.childNodes[i])) {
-						domNode.removeChild(domNode.childNodes[i]);
-					} else {
-						removeChild(domNode);
-					}
-				}
-			} else {
-				removeChild(domNode);
-			}
-		} else if (isStringOrNumber(nextValue)) {
-			appendText(domNode, nextValue);
-		} else if (isVoid(nextValue)) {
-			if (domNode !== null) {
-				replaceChild(domNode, document.createTextNode(''));
-			}
-		} else if (isArray(nextValue)) {
-			if (isArray(lastValue)) {
-				if (node.keyedChildren) {
-					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-				} else {
-					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
-				}
-			} else {
-				recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
-			}
-		} else if (typeof nextValue === 'object') {
-			const tree = nextValue && nextValue.tree;
-			if (!isVoid(tree)) {
-				if (!isVoid(lastValue)) {
-					const oldTree = lastValue && lastValue.tree;
-
-					if (!isVoid(oldTree)) {
-						tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-					} else {
-						recreate(domNode, lastItem, nextItem, node, treeLifecycle, context);
-					}
-				} else {
-					replaceChild(domNode, tree.dom.create(nextValue, treeLifecycle, context));
-				}
-			} else if (nextValue.create) {
-				// TODO
-			} else {
-				removeChild(domNode);
-			}
-		}
 	}
 }

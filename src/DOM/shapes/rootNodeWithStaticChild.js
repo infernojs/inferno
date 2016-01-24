@@ -3,8 +3,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
 
-export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG) {
-	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
+export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -20,26 +19,25 @@ export default function createRootNodeWithStaticChild(templateNode, dynamicAttrs
 			}
 			domNode = templateNode.cloneNode(true);
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
 			}
 			item.rootNode = domNode;
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle) {
-			const tree = lastItem && lastItem.tree;
-			const domNode = lastItem.rootNode;
-
-			if (tree && (node !== tree.dom)) {
-				recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle);
+			if (node !== lastItem.tree.dom) {
+				recreateRootNode(lastItem, nextItem, node, treeLifecycle);
 				return;
 			}
+			const domNode = lastItem.rootNode;
+
 			nextItem.rootNode = domNode;
 			nextItem.id = lastItem.id;
 			if (dynamicAttrs) {
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

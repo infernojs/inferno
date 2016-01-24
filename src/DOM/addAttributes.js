@@ -1,4 +1,5 @@
 import isVoid from '../util/isVoid';
+import isSVG from '../util/isSVG';
 import isHook from '../util/isHook';
 import template from './';
 import eventMapping from '../shared/eventMapping';
@@ -33,7 +34,7 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 }
 
 // A fast className setter as its the most common property to regularly change
-function fastPropSet(attrName, attrVal, domNode, isSVG) {
+function fastPropSet(attrName, attrVal, domNode) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
 			if (isSVG) {
@@ -61,6 +62,7 @@ function fastPropSet(attrName, attrVal, domNode, isSVG) {
 }
 
 export function handleHooks(item, props, domNode, hookEvent, isComponent, nextProps) {
+
 	const eventOrIndex = props[hookEvent];
 
 	if (eventOrIndex !== undefined) {
@@ -75,8 +77,9 @@ export function handleHooks(item, props, domNode, hookEvent, isComponent, nextPr
 	}
 }
 
-export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent, isSVG) {
+export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent) {
 	let styleUpdates;
+
 	if (dynamicAttrs.index !== undefined) {
 		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
 		addDOMStaticAttributes(item, domNode, dynamicAttrs);
@@ -93,7 +96,7 @@ export function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookE
 					if (attrName === 'style') {
 						styleUpdates = attrVal;
 					} else {
-						if (fastPropSet(attrName, attrVal, domNode, isSVG) === false) {
+						if (fastPropSet(attrName, attrVal, domNode) === false) {
 							if (eventMapping[attrName]) {
 								addListener(item, domNode, eventMapping[attrName], attrVal);
 							} else {
@@ -126,7 +129,8 @@ export function clearListeners(item, domNode, dynamicAttrs) {
  * NOTE!! This function is probably the single most
  * critical path for performance optimization.
  */
-export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG) {
+export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs) {
+
 	if (dynamicAttrs.index !== undefined) {
 		const nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
@@ -152,60 +156,59 @@ export function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicA
 	let styleUpdates = {};
 	let styleName;
 
-	for (let i = 0; i < dynamicAttrKeys.length; i++) {
-		const attrName = dynamicAttrKeys[i];
+	for (let attrName in dynamicAttrs) {
 
 		if (!isHook(attrName)) {
+
 			const lastAttrVal = getValueWithIndex(lastItem, dynamicAttrs[attrName]);
 			const nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
-			if (lastAttrVal !== nextAttrVal) {
-				if (!isVoid(lastAttrVal)) {
-					if (isVoid(nextAttrVal)) {
-						if (attrName === 'style') {
-							for (styleName in lastAttrVal) {
-								if (!nextAttrVal || !nextAttrVal[styleName]) {
-									styleUpdates[styleName] = '';
-								}
-							}
-						} else if (eventMapping[attrName]) {
-							removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
-						} else {
-							template.removeProperty(null, domNode, attrName, true);
-						}
-					} else if (attrName === 'style') {
-						// Unset styles on `lastAttrVal` but not on `nextAttrVal`.
+			if (!isVoid(lastAttrVal)) {
+				if (isVoid(nextAttrVal)) {
+					if (attrName === 'style') {
 						for (styleName in lastAttrVal) {
-							if (lastAttrVal[styleName] &&
-								(!nextAttrVal || !nextAttrVal[styleName])) {
+							if (!nextAttrVal || !nextAttrVal[styleName]) {
 								styleUpdates[styleName] = '';
 							}
 						}
-						// Update styles that changed since `lastAttrVal`.
-						for (styleName in nextAttrVal) {
-							if (!nextAttrVal[styleName] || lastAttrVal[styleName] !== nextAttrVal[styleName]) {
-								styleUpdates[styleName] = nextAttrVal[styleName];
-							}
-						}
+					} else if (eventMapping[attrName]) {
+						removeListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
 					} else {
+						template.removeProperty(null, domNode, attrName, true);
+					}
+				} else if (attrName === 'style') {
 
-						if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
-							if (eventMapping[attrName]) {
-								addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
-							} else {
-								template.setProperty(null, domNode, attrName, nextAttrVal, true);
-							}
+					// Unset styles on `lastAttrVal` but not on `nextAttrVal`.
+					for (styleName in lastAttrVal) {
+						if (lastAttrVal[styleName] &&
+							(!nextAttrVal || !nextAttrVal[styleName])) {
+							styleUpdates[styleName] = '';
 						}
 					}
-				} else if (!isVoid(nextAttrVal)) {
-					if (attrName === 'style') {
-						styleUpdates = nextAttrVal;
-					} else if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
+					// Update styles that changed since `lastAttrVal`.
+					for (styleName in nextAttrVal) {
+						if (!nextAttrVal[styleName] || lastAttrVal[styleName] !== nextAttrVal[styleName]) {
+							styleUpdates[styleName] = nextAttrVal[styleName];
+						}
+					}
+				} else if (lastAttrVal !== nextAttrVal) {
+
+					if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
 						if (eventMapping[attrName]) {
 							addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
 						} else {
 							template.setProperty(null, domNode, attrName, nextAttrVal, true);
 						}
+					}
+				}
+			} else if (!isVoid(nextAttrVal)) {
+				if (attrName === 'style') {
+					styleUpdates = nextAttrVal;
+				} else 	if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+					if (eventMapping[attrName]) {
+						addListener(nextItem, domNode, eventMapping[attrName], nextAttrVal);
+					} else {
+						template.setProperty(null, domNode, attrName, nextAttrVal, true);
 					}
 				}
 			}

@@ -5,8 +5,7 @@ import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, ha
 import recreateRootNode from '../recreateRootNode';
 import addShapeChildren from '../../shared/addShapeChildren';
 
-export default function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled, isSVG) {
-	const dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
+export default function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled) {
 	const node = {
 		pool: [],
 		keyedPool: [],
@@ -23,7 +22,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			domNode = templateNode.cloneNode(false);
 			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated', isSVG);
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
 				if (dynamicAttrs.onAttached) {
 					treeLifecycle.addTreeSuccessListener(() => {
 						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
@@ -34,16 +33,15 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 			return domNode;
 		},
 		update(lastItem, nextItem, treeLifecycle, context) {
-			const tree = lastItem && lastItem.tree;
-			const domNode = lastItem.rootNode;
-
 			nextItem.id = lastItem.id;
-			if (tree && (node !== tree.dom)) {
-				const newDomNode = recreateRootNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
+			if (node !== lastItem.tree.dom) {
+				const newDomNode = recreateRootNode(lastItem, nextItem, node, treeLifecycle, context);
 
 				nextItem.rootNode = newDomNode;
 				return newDomNode;
 			}
+			const domNode = lastItem.rootNode;
+
 			nextItem.rootNode = domNode;
 			if (dynamicAttrs && dynamicAttrs.onWillUpdate) {
 				handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
@@ -60,7 +58,7 @@ export default function createRootNodeWithDynamicSubTreeForChildren(templateNode
 				}
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}

@@ -510,16 +510,6 @@ function isValidAttribute(strings) {
 	return false;
 }
 
-function getDynamicNode(dynamicNodes, schema) {
-	for (var i = 0; i < dynamicNodes.length; i++) {
-		var dynamicNode = dynamicNodes[i];
-
-		if (dynamicNode.node === schema) {
-			return dynamicNode.dynamicFlags;
-		}
-	}
-}
-
 var ESCAPE_LOOKUP = {
 	'&': '&amp;',
 	'>': '&gt;',
@@ -764,8 +754,8 @@ function createStaticTreeNode(isRoot, node) {
 	return staticNode;
 }
 
-function createHTMLTree(schema, isRoot, dynamicNodes) {
-	var dynamicFlags = getDynamicNode(dynamicNodes, schema);
+function createHTMLTree(schema, isRoot, dynamicNodeMap) {
+	var dynamicFlags = dynamicNodeMap.get(schema);
 	var node = undefined;
 	// static html
 	if (!dynamicFlags) {

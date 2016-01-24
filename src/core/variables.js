@@ -2,19 +2,23 @@ import isArray from '../util/isArray';
 import isVoid from '../util/isVoid';
 import isStringOrNumber from '../util/isStringOrNumber';
 
+export const ObjectTypes = {
+	VARIABLE: 1
+};
+
 export const ValueTypes = {
 	TEXT: 0,
 	ARRAY: 1,
 	TREE: 2,
 	EMPTY_OBJECT: 3,
 	FUNCTION: 4,
-	FRAGMENT: 5,
-	PROMISE: 6
+	FRAGMENT: 5
 };
 
 export function createVariable(index) {
 	return {
-		index
+		index,
+		type: ObjectTypes.VARIABLE
 	};
 }
 
@@ -28,8 +32,6 @@ export function getTypeFromValue(value) {
 		return ValueTypes.TEXT;
 	} else if (isArray(value)) {
 		return ValueTypes.ARRAY;
-	} else if (value instanceof Promise) {
-		return ValueTypes.PROMISE;
 	} else if (typeof value === 'object' && value.create) {
 		return ValueTypes.TREE;
 	} else if (typeof value === 'object' && Object.keys(value).length === 0) {
@@ -80,16 +82,6 @@ export function removeValueTree(value, treeLifecycle) {
 			tree.dom.remove(value, treeLifecycle);
 		} else if (value.create) {
 			value.remove(value, treeLifecycle);
-		}
-	}
-}
-
-export function getDynamicNode(dynamicNodes, schema) {
-	for (let i = 0; i < dynamicNodes.length; i++) {
-		const dynamicNode = dynamicNodes[i];
-
-		if (dynamicNode.node === schema) {
-			return dynamicNode.dynamicFlags;
 		}
 	}
 }
