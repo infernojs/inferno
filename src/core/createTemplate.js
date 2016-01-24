@@ -3,28 +3,8 @@ import { createVariable } from './variables';
 import scanTreeForDynamicNodes from './scanTreeForDynamicNodes';
 import isVoid from '../util/isVoid';
 
-// Date.now() is the slowest thing on earth
-// http://jsperf.com/math-random-vs-date-now-vs-new-date/4
-let uniqueId = Date.now();
+let uniqueId = 1;
 
-/*
- let UUID = (function() {
- var self = {};
- var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
- self.generate = function() {
- var d0 = Math.random()*0xffffffff|0;
- var d1 = Math.random()*0xffffffff|0;
- var d2 = Math.random()*0xffffffff|0;
- var d3 = Math.random()*0xffffffff|0;
- return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
- lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
- lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
- lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
- }
- return self;
- })();
- let uniqueId = UUID.generate();
- */
 const treeConstructors = {};
 
 export function addTreeConstructor(name, treeConstructor) {
@@ -63,7 +43,7 @@ export default function createTemplate(callback) {
 				case 0:
 					construct = () => ({
 						tree,
-						id: uniqueId++,
+						id: (uniqueId++).toString(),
 						key: null,
 						nextItem: null,
 						rootNode: null
@@ -78,7 +58,7 @@ export default function createTemplate(callback) {
 						}
 						return {
 							tree,
-							id: uniqueId++,
+							id: (uniqueId++).toString(),
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -97,7 +77,7 @@ export default function createTemplate(callback) {
 						}
 						return {
 							tree,
-							id: uniqueId++,
+							id: (uniqueId++).toString(),
 							key,
 							nextItem: null,
 							rootNode: null,
@@ -119,7 +99,7 @@ export default function createTemplate(callback) {
 						}
 						return {
 							tree,
-							id: uniqueId++,
+							id: (uniqueId++).toString(),
 							key,
 							nextItem: null,
 							rootNode: null,
