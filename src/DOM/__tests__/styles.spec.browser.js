@@ -482,4 +482,24 @@ describe('CSS style properties', () => {
 			}
 		});
 	});
+
+
+	it('asdfasdfsd', () => {
+
+		let  template = createTemplate(() => ({
+			tag: 'div',
+			attrs:{
+				style: {
+					width:200,
+					height:200,
+					background:'red'
+				}
+			}
+		}));
+
+		render(template(), container)
+		expect(container.innerHTML).to.equal('<div style="width: 200px; height: 200px; background: red;"></div>');
+	});
+
 });
+
