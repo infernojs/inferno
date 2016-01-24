@@ -168,8 +168,9 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 }
 
 // Performs 39% better then Math.max()
-function InfernoMax(){
-	for (let i = 1, max = 0, len = arguments.length; i < len; i++){
+function infernoMax(){
+	let i = 1, max = 0, len = arguments.length;
+	for (; i < len; i++){
 		if (arguments[max] < arguments[i]) {
 			max = i;
 		}
@@ -183,7 +184,18 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 	if (items) {
 		if (!isVoid(oldItems)) {
 
-			itemsLength = InfernoMax(oldItems.length, items.length);
+			const oLength = oldItems.length;
+			const iLength = items.length;
+
+			if (oLength === iLength) {
+				itemsLength = iLength;
+			} else 	if (items.length === 0) {
+				itemsLength = oLength;
+			} else if (oLength.length === 0) {
+				itemsLength = iLength;
+			} else {
+				itemsLength = infernoMax(oldItems.length, items.length);
+			}
 
 			for (let i = 0; i < itemsLength; i++) {
 				const item = items[i];
@@ -241,7 +253,13 @@ export function remove(item, parentNode) {
 	if (rootNode === parentNode) {
 		parentNode.innerHTML = '';
 	} else {
-		parentNode.removeChild(item.rootNode);
+		const parent = item.rootNode.parentNode;
+
+		if (parent === parentNode) {
+			parentNode.removeChild(item.rootNode);
+		} else {
+			parentNode.removeChild(item.rootNode.parentNode);
+		}
 		if (recyclingEnabled) {
 			pool(item);
 		}
