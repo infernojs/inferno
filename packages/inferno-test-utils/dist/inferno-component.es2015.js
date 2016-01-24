@@ -47,13 +47,7 @@ function isRecyclingEnabled() {
 var recyclingEnabled = isRecyclingEnabled();
 
 function remove(item, parentNode) {
-	var parent = item.rootNode.parentNode;
-
-	if (parent === parentNode) {
-		parentNode.removeChild(item.rootNode);
-	} else {
-		parentNode.removeChild(item.rootNode.parentNode);
-	}
+	var rootNode = item.rootNode;
 
 	if (isVoid(rootNode) || !rootNode.nodeType) {
 		return null;
@@ -61,9 +55,9 @@ function remove(item, parentNode) {
 	if (rootNode === parentNode) {
 		parentNode.innerHTML = '';
 	} else {
-		var _parent = item.rootNode.parentNode;
+		var parent = item.rootNode.parentNode;
 
-		if (_parent === parentNode) {
+		if (parent === parentNode) {
 			parentNode.removeChild(item.rootNode);
 		} else {
 			parentNode.removeChild(item.rootNode.parentNode);

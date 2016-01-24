@@ -26,40 +26,31 @@ export default function createDynamicNode(valueIndex) {
 				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
 					throw Error(errorMsg);
 				}
-				switch (type) {
-					case ValueTypes.TEXT:
-						if (isVoidValue(value)) {
-							value = '';
+			}
+			switch (type) {
+				case ValueTypes.TEXT:
+					if (isVoidValue(value)) {
+						value = '';
+					}
+					domNode = document.createTextNode(value);
+					break;
+				case ValueTypes.ARRAY:
+					const virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
+					domNode = virtualList.domNode;
+					keyedChildren = virtualList.keyedChildren;
+					treeLifecycle.addTreeSuccessListener(() => {
+						if (childNodeList.length > 0) {
+							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+							domNode = childNodeList[0].parentNode;
 						}
-						domNode = document.createTextNode(value);
-						break;
-					case ValueTypes.ARRAY:
-						const virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
-						domNode = virtualList.domNode;
-						keyedChildren = virtualList.keyedChildren;
-						treeLifecycle.addTreeSuccessListener(() => {
-							if (childNodeList.length > 0) {
-								nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
-								domNode = childNodeList[0].parentNode;
-							}
-						});
-						break;
-					case ValueTypes.TREE:
-						domNode = value.create(item, treeLifecycle, context);
-						break;
-					case ValueTypes.FRAGMENT:
-						domNode = value.tree.dom.create(value, treeLifecycle, context);
-						break;
-					case ValueTypes.PROMISE:
-						value.then(asyncValue => {
-							const newDomNode = asyncValue.tree.dom.create(item, treeLifecycle, context);
-							domNode.parentNode.replaceChild(newDomNode, domNode);
-							domNode = newDomNode;
-							domNodeMap[item.id] = domNode;
-						});
-						domNode = document.createTextNode('');
-						break;
-				}
+					});
+					break;
+				case ValueTypes.TREE:
+					domNode = value.create(item, treeLifecycle, context);
+					break;
+				case ValueTypes.FRAGMENT:
+					domNode = value.tree.dom.create(value, treeLifecycle, context);
+					break;
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -92,9 +83,6 @@ export default function createDynamicNode(valueIndex) {
 						break;
 					case ValueTypes.FRAGMENT:
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
-						return;
-					case ValueTypes.PROMISE:
-						debugger;
 						return;
 				}
 			}
