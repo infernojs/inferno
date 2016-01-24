@@ -11,7 +11,7 @@ Inferno is an isomorphic library for building user interfaces with high performa
 
 In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
-In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
+In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore, Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
 
 ## Key Features
 
@@ -23,7 +23,7 @@ In principle, Inferno is compatible with the standard React API, allowing for pa
 ## Benchmarks
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/) (for comparison: [React](http://mathieuancelin.github.io/js-repaint-perfs/react/), [Angular 2](http://mathieuancelin.github.io/js-repaint-perfs/angular2/opt.html) and [Mithril](http://tivac.github.io/js-repaint-perfs/mithril/))
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/) (for comparison: [React](http://mathieuancelin.github.io/js-repaint-perfs/react/), [Angular 2](http://mathieuancelin.github.io/js-repaint-perfs/angular2/opt.html), [Riot](http://mathieuancelin.github.io/js-repaint-perfs/riot/) and [Mithril](http://tivac.github.io/js-repaint-perfs/mithril/))
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Install
