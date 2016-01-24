@@ -506,7 +506,7 @@ function createDynamicChild(value, domNode, node, treeLifecycle, context) {
 					if (tree) {
 						var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
 
-						if (childNode.key === undefined) {
+						if (childItem.key === undefined) {
 							node.keyedChildren = false;
 						}
 						node.childNodeList.push(childNode);
@@ -812,28 +812,6 @@ function isMathMLElement(nodeName) {
 	return nodeName === 'mo' || nodeName === 'mover' || nodeName === 'mn' || nodeName === 'maction' || nodeName === 'menclose' || nodeName === 'merror' || nodeName === 'mfrac' || nodeName === 'mi' || nodeName === 'mmultiscripts' || nodeName === 'mpadded' || nodeName === 'mphantom' || nodeName === 'mroot' || nodeName === 'mrow' || nodeName === 'ms' || nodeName === 'mtd' || nodeName === 'mtable' || nodeName === 'munder' || nodeName === 'msub' || nodeName === 'msup' || nodeName === 'msubsup' || nodeName === 'mtr' || nodeName === 'mtext';
 }
 
-var canUseDOM = !!(typeof window !== 'undefined' &&
-// Nwjs doesn't add document as a global in their node context, but does have it on window.document,
-// As a workaround, check if document is undefined
-typeof document !== 'undefined' && window.document.createElement);
-
-var ExecutionEnvironment = {
-	canUseDOM: canUseDOM,
-	canUseWorkers: typeof Worker !== 'undefined',
-	canUseEventListeners: canUseDOM && !!window.addEventListener,
-	canUseViewport: canUseDOM && !!window.screen,
-	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
-};
-
-var isSVG = undefined;
-
-if (ExecutionEnvironment.canUseDOM) {
-	var _document = document;
-	var implementation = _document.implementation;
-
-	isSVG = implementation && implementation.hasFeature && implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#BasicStructure', '1.1');
-}
-
 function isHook(hook) {
 	// DOM nodes
 	return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate'
@@ -853,6 +831,19 @@ function inArray(arr, item) {
 
 	return false;
 }
+
+var canUseDOM = !!(typeof window !== 'undefined' &&
+// Nwjs doesn't add document as a global in their node context, but does have it on window.document,
+// As a workaround, check if document is undefined
+typeof document !== 'undefined' && window.document.createElement);
+
+var ExecutionEnvironment = {
+	canUseDOM: canUseDOM,
+	canUseWorkers: typeof Worker !== 'undefined',
+	canUseEventListeners: canUseDOM && !!window.addEventListener,
+	canUseViewport: canUseDOM && !!window.screen,
+	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
+};
 
 var noop = (function () {})
 
@@ -2042,16 +2033,14 @@ function addDOMStaticAttributes(vNode, domNode, attrs) {
 }
 
 // A fast className setter as its the most common property to regularly change
-function fastPropSet(attrName, attrVal, domNode) {
+function fastPropSet(attrName, attrVal, domNode, isSVG) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
-			// TODO lets fix this?
-			//if (isSVG) {
-			//	domNode.setAttribute('class', attrVal);
-			//} else {
-			//	domNode.className = attrVal;
-			//}
-			domNode.className = attrVal;
+			if (isSVG) {
+				domNode.setAttribute('class', attrVal);
+			} else {
+				domNode.className = attrVal;
+			}
 		}
 		return true;
 	} else if (attrName === 'ref') {
@@ -2086,9 +2075,8 @@ function handleHooks(item, props, domNode, hookEvent, isComponent, nextProps) {
 	}
 }
 
-function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent) {
+function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent, isSVG) {
 	var styleUpdates = undefined;
-
 	if (dynamicAttrs.index !== undefined) {
 		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
 		addDOMStaticAttributes(item, domNode, dynamicAttrs);
@@ -2105,7 +2093,7 @@ function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent) {
 					if (attrName === 'style') {
 						styleUpdates = attrVal;
 					} else {
-						if (fastPropSet(attrName, attrVal, domNode) === false) {
+						if (fastPropSet(attrName, attrVal, domNode, isSVG) === false) {
 							if (propertyToEventType[attrName]) {
 								addListener(item, domNode, propertyToEventType[attrName], attrVal);
 							} else {
@@ -2138,7 +2126,7 @@ function clearListeners(item, domNode, dynamicAttrs) {
  * NOTE!! This function is probably the single most
  * critical path for performance optimization.
  */
-function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys) {
+function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG) {
 	if (dynamicAttrs.index !== undefined) {
 		var nextDynamicAttrs = getValueWithIndex(nextItem, dynamicAttrs.index);
 
@@ -2200,7 +2188,7 @@ function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, d
 						}
 					} else {
 
-						if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+						if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
 							if (propertyToEventType[attrName]) {
 								addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
 							} else {
@@ -2211,7 +2199,7 @@ function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, d
 				} else if (!isVoid(nextAttrVal)) {
 					if (attrName === 'style') {
 						styleUpdates = nextAttrVal;
-					} else if (fastPropSet(attrName, nextAttrVal, domNode) === false) {
+					} else if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
 						if (propertyToEventType[attrName]) {
 							addListener(nextItem, domNode, propertyToEventType[attrName], nextAttrVal);
 						} else {
@@ -2257,8 +2245,8 @@ function recreateRootNodeFromHydration(hydrateNode, nextItem, node, treeLifecycl
 	return domNode;
 }
 
-function addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle) {
-	addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+function addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG) {
+	addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated', isSVG);
 	if (dynamicAttrs.onAttached) {
 		treeLifecycle.addTreeSuccessListener(function () {
 			handleHooks(item, dynamicAttrs, domNode, 'onAttached');
@@ -2266,7 +2254,7 @@ function addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle) {
 	}
 }
 
-function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, recyclingEnabled, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
@@ -2297,7 +2285,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 				}
 			}
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -2326,7 +2314,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 				appendText(domNode, nextValue);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2349,7 +2337,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 
 var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
-function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
+function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
@@ -2371,7 +2359,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 				}
 			}
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated', isSVG);
 				if (dynamicAttrs.onAttached) {
 					treeLifecycle.addTreeSuccessListener(function () {
 						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
@@ -2399,7 +2387,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 			}
 
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2420,7 +2408,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs) {
 	return node;
 }
 
-function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled) {
+function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
@@ -2437,7 +2425,7 @@ function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnab
 			}
 			domNode = templateNode.cloneNode(true);
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -2456,7 +2444,7 @@ function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnab
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2477,7 +2465,7 @@ function createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnab
 	return node;
 }
 
-function createNodeWithStaticChild(templateNode, dynamicAttrs) {
+function createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
@@ -2486,7 +2474,7 @@ function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 			var domNode = templateNode.cloneNode(true);
 
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -2519,7 +2507,7 @@ function createNodeWithStaticChild(templateNode, dynamicAttrs) {
 	return node;
 }
 
-function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled) {
+function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, recyclingEnabled, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		keyedChildren: true,
@@ -2549,7 +2537,7 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 				createDynamicChild(value, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			item.rootNode = domNode;
 			return domNode;
@@ -2581,7 +2569,7 @@ function createRootNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, 
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateRootNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2609,7 +2597,7 @@ function recreateNode(lastDomNode, lastItem, nextItem, node, treeLifecycle, cont
 	// TODO recycle old node
 }
 
-function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
+function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		keyedChildren: true,
@@ -2628,7 +2616,7 @@ function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 				createDynamicChild(value, domNode, node, treeLifecycle, context);
 			}
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			node.domNodeMap[item.id] = domNode;
 			return domNode;
@@ -2651,7 +2639,7 @@ function createNodeWithDynamicChild(templateNode, valueIndex, dynamicAttrs) {
 				updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, node, treeLifecycle, context, recreateNode);
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2698,7 +2686,7 @@ function addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, cont
 	}
 }
 
-function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled) {
+function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
@@ -2716,7 +2704,7 @@ function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChi
 			domNode = templateNode.cloneNode(false);
 			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated', isSVG);
 				if (dynamicAttrs.onAttached) {
 					treeLifecycle.addTreeSuccessListener(function () {
 						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
@@ -2753,7 +2741,7 @@ function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChi
 				}
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -2785,7 +2773,7 @@ function createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChi
 	return node;
 }
 
-function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs) {
+function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
@@ -2796,7 +2784,7 @@ function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildre
 			addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context);
 
 			if (dynamicAttrs) {
-				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated');
+				addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, 'onCreated', isSVG);
 				if (dynamicAttrs.onAttached) {
 					treeLifecycle.addTreeSuccessListener(function () {
 						handleHooks(item, dynamicAttrs, domNode, 'onAttached');
@@ -2828,7 +2816,7 @@ function createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildre
 				}
 			}
 			if (dynamicAttrs) {
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -3391,7 +3379,7 @@ function createRootDynamicTextNode(templateNode, valueIndex, recyclingEnabled) {
 	return node;
 }
 
-function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode) {
+function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, staticNode, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var node = {
 		pool: [],
@@ -3414,7 +3402,7 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, static
 			}
 
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			return domNode;
 		},
@@ -3437,7 +3425,7 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, static
 				if (dynamicAttrs.onWillUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 				}
-				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+				updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 				if (dynamicAttrs.onDidUpdate) {
 					handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 				}
@@ -3467,7 +3455,7 @@ function createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, static
 	return node;
 }
 
-function createVoidNode(templateNode, dynamicAttrs, staticNode) {
+function createVoidNode(templateNode, dynamicAttrs, staticNode, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
 	var domNodeMap = {};
 	var node = {
@@ -3480,7 +3468,7 @@ function createVoidNode(templateNode, dynamicAttrs, staticNode) {
 			}
 
 			if (dynamicAttrs) {
-				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle);
+				addShapeAttributes(domNode, item, dynamicAttrs, node, treeLifecycle, isSVG);
 			}
 			domNodeMap[item.id] = domNode;
 			return domNode;
@@ -3492,7 +3480,7 @@ function createVoidNode(templateNode, dynamicAttrs, staticNode) {
 					if (dynamicAttrs.onWillUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onWillUpdate');
 					}
-					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys);
+					updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, dynamicAttrKeys, isSVG);
 					if (dynamicAttrs.onDidUpdate) {
 						handleHooks(nextItem, dynamicAttrs, domNode, 'onDidUpdate');
 					}
@@ -3522,7 +3510,6 @@ function createElement(schema, domNamespace, parentNode) {
 	var SVGNamespace = 'http://www.w3.org/2000/svg';
 	var nodeName = schema && typeof schema.tag === 'string' && schema.tag.toLowerCase();
 	var is = schema.attrs && schema.attrs.is;
-
 	var templateNode = undefined;
 
 	if (domNamespace === undefined) {
@@ -3558,12 +3545,14 @@ function createElement(schema, domNamespace, parentNode) {
 	templateNode = domNamespace ? is ? document.createElementNS(domNamespace, nodeName, is) : document.createElementNS(domNamespace, nodeName) : is ? document.createElement(nodeName, is) : document.createElement(nodeName);
 
 	return {
+		isSVG: domNamespace === SVGNamespace,
 		namespace: domNamespace,
 		node: templateNode
 	};
 }
 
 var recyclingEnabled = isRecyclingEnabled();
+
 function createStaticAttributes(node, domNode, excludeAttrs) {
 	var attrs = node.attrs;
 
@@ -3607,6 +3596,7 @@ function createStaticTreeChildren(children, parentNode, domNamespace) {
 
 function createStaticTreeNode(node, parentNode, domNamespace) {
 	var staticNode = undefined;
+	var isSVG = false;
 
 	if (!isVoid(node)) {
 		if (isStringOrNumber(node)) {
@@ -3618,6 +3608,7 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 				var Element = createElement(node, domNamespace, parentNode);
 
 				staticNode = Element.node;
+				isSVG = Element.isSVG;
 				domNamespace = Element.namespace;
 				var text = node.text;
 				var children = node.children;
@@ -3648,7 +3639,10 @@ function createStaticTreeNode(node, parentNode, domNamespace) {
 			}
 		}
 		if (parentNode === null) {
-			return staticNode;
+			return {
+				node: staticNode,
+				isSVG: isSVG
+			};
 		} else {
 			parentNode.appendChild(staticNode);
 		}
@@ -3664,26 +3658,29 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 			throw Error(invalidTemplateError);
 		}
 	}
-
 	var dynamicFlags = getDynamicNode(dynamicNodes, schema);
 	var node = undefined;
 	var templateNode = undefined;
+	var isSVG = undefined;
 
 	if (!dynamicFlags) {
-		templateNode = createStaticTreeNode(schema, null, domNamespace, schema);
+		var element = createStaticTreeNode(schema, null, domNamespace);
+		var _isSVG = element.isSVG;
+		templateNode = element.node;
+
 		if ("development" !== 'production') {
 			if (!templateNode) {
 				throw Error(invalidTemplateError);
 			}
 		}
 		if (isRoot) {
-			node = createRootVoidNode(templateNode, null, recyclingEnabled, true);
+			node = createRootVoidNode(templateNode, null, recyclingEnabled, true, _isSVG);
 		} else {
-			node = createVoidNode(templateNode, true);
+			node = createVoidNode(templateNode, true, _isSVG);
 		}
 	} else {
 		if (dynamicFlags.NODE === true) {
-			node = createDynamicNode(schema.index, domNamespace);
+			node = createDynamicNode(schema.index, domNamespace, isSVG);
 		} else {
 			var tag = schema.tag;
 			var text = schema.text;
@@ -3716,11 +3713,12 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 						return createNodeWithComponent(tag.index, _attrs, _children, domNamespace);
 					}
 				}
-				templateNode = createElement(schema, domNamespace, null).node;
-
+				var element = createElement(schema, domNamespace, null);
+				var _isSVG2 = element.isSVG;
 				var attrs = schema.attrs;
 				var dynamicAttrs = null;
 
+				templateNode = element.node;
 				if (!isVoid(attrs)) {
 					if (dynamicFlags.ATTRS === true) {
 						dynamicAttrs = attrs;
@@ -3741,9 +3739,9 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 					}
 					if (dynamicFlags.TEXT === true) {
 						if (isRoot) {
-							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled);
+							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, _isSVG2);
 						} else {
-							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs);
+							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs, _isSVG2);
 						}
 					} else {
 						if (isStringOrNumber(text)) {
@@ -3754,9 +3752,9 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 							}
 						}
 						if (isRoot) {
-							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
+							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, _isSVG2);
 						} else {
-							node = createNodeWithStaticChild(templateNode, dynamicAttrs);
+							node = createNodeWithStaticChild(templateNode, dynamicAttrs, _isSVG2);
 						}
 					}
 				} else {
@@ -3782,16 +3780,16 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 								}
 							}
 							if (isRoot) {
-								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled);
+								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled, _isSVG2);
 							} else {
-								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs);
+								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, _isSVG2);
 							}
 						} else if (isStringOrNumber(children)) {
 							templateNode.textContent = children;
 							if (isRoot) {
-								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
+								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, _isSVG2);
 							} else {
-								node = createNodeWithStaticChild(templateNode, dynamicAttrs);
+								node = createNodeWithStaticChild(templateNode, dynamicAttrs, _isSVG2);
 							}
 						} else {
 							var childNodeDynamicFlags = getDynamicNode(dynamicNodes, children);
@@ -3800,22 +3798,22 @@ function createDOMTree(schema, isRoot, dynamicNodes, domNamespace) {
 								createStaticTreeChildren(children, templateNode);
 
 								if (isRoot) {
-									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled);
+									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, _isSVG2);
 								} else {
-									node = createNodeWithStaticChild(templateNode, dynamicAttrs);
+									node = createNodeWithStaticChild(templateNode, dynamicAttrs, _isSVG2);
 								}
 							}
 						}
 					} else {
 						if (isRoot) {
-							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false);
+							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false, _isSVG2);
 						} else {
-							node = createVoidNode(templateNode, dynamicAttrs, false);
+							node = createVoidNode(templateNode, dynamicAttrs, false, _isSVG2);
 						}
 					}
 				}
 			} else if (text) {
-				node = createRootDynamicTextNode(document.createTextNode(''), text.index);
+				node = createRootDynamicTextNode(document.createTextNode(''), text.index, false);
 			}
 		}
 	}

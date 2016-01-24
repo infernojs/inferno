@@ -2083,7 +2083,6 @@
 
   function addDOMDynamicAttributes(item, domNode, dynamicAttrs, node, hookEvent, isSVG) {
   	var styleUpdates = undefined;
-
   	if (dynamicAttrs.index !== undefined) {
   		dynamicAttrs = getValueWithIndex(item, dynamicAttrs.index);
   		addDOMStaticAttributes(item, domNode, dynamicAttrs);
@@ -3517,7 +3516,6 @@
   	var SVGNamespace = 'http://www.w3.org/2000/svg';
   	var nodeName = schema && typeof schema.tag === 'string' && schema.tag.toLowerCase();
   	var is = schema.attrs && schema.attrs.is;
-
   	var templateNode = undefined;
 
   	if (domNamespace === undefined) {
@@ -3666,14 +3664,14 @@
   			throw Error(invalidTemplateError);
   		}
   	}
-
   	var dynamicFlags = getDynamicNode(dynamicNodes, schema);
   	var node = undefined;
   	var templateNode = undefined;
+  	var isSVG = undefined;
 
   	if (!dynamicFlags) {
   		var element = createStaticTreeNode(schema, null, domNamespace);
-  		var isSVG = element.isSVG;
+  		var _isSVG = element.isSVG;
   		templateNode = element.node;
 
   		if ("development" !== 'production') {
@@ -3682,13 +3680,13 @@
   			}
   		}
   		if (isRoot) {
-  			node = createRootVoidNode(templateNode, null, recyclingEnabled, true, isSVG);
+  			node = createRootVoidNode(templateNode, null, recyclingEnabled, true, _isSVG);
   		} else {
-  			node = createVoidNode(templateNode, true, isSVG);
+  			node = createVoidNode(templateNode, true, _isSVG);
   		}
   	} else {
   		if (dynamicFlags.NODE === true) {
-  			node = createDynamicNode(schema.index, domNamespace);
+  			node = createDynamicNode(schema.index, domNamespace, isSVG);
   		} else {
   			var tag = schema.tag;
   			var text = schema.text;
@@ -3722,12 +3720,11 @@
   					}
   				}
   				var element = createElement(schema, domNamespace, null);
-  				var isSVG = element.isSVG;
-  				templateNode = element.node;
-
+  				var _isSVG2 = element.isSVG;
   				var attrs = schema.attrs;
   				var dynamicAttrs = null;
 
+  				templateNode = element.node;
   				if (!isVoid(attrs)) {
   					if (dynamicFlags.ATTRS === true) {
   						dynamicAttrs = attrs;
@@ -3748,9 +3745,9 @@
   					}
   					if (dynamicFlags.TEXT === true) {
   						if (isRoot) {
-  							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, isSVG);
+  							node = createRootNodeWithDynamicText(templateNode, text.index, dynamicAttrs, recyclingEnabled, _isSVG2);
   						} else {
-  							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs, isSVG);
+  							node = createNodeWithDynamicText(templateNode, text.index, dynamicAttrs, _isSVG2);
   						}
   					} else {
   						if (isStringOrNumber(text)) {
@@ -3761,9 +3758,9 @@
   							}
   						}
   						if (isRoot) {
-  							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG);
+  							node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, _isSVG2);
   						} else {
-  							node = createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG);
+  							node = createNodeWithStaticChild(templateNode, dynamicAttrs, _isSVG2);
   						}
   					}
   				} else {
@@ -3789,16 +3786,16 @@
   								}
   							}
   							if (isRoot) {
-  								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled, isSVG);
+  								node = createRootNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, recyclingEnabled, _isSVG2);
   							} else {
-  								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, isSVG);
+  								node = createNodeWithDynamicSubTreeForChildren(templateNode, subTreeForChildren, dynamicAttrs, _isSVG2);
   							}
   						} else if (isStringOrNumber(children)) {
   							templateNode.textContent = children;
   							if (isRoot) {
-  								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG);
+  								node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, _isSVG2);
   							} else {
-  								node = createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG);
+  								node = createNodeWithStaticChild(templateNode, dynamicAttrs, _isSVG2);
   							}
   						} else {
   							var childNodeDynamicFlags = getDynamicNode(dynamicNodes, children);
@@ -3807,17 +3804,17 @@
   								createStaticTreeChildren(children, templateNode);
 
   								if (isRoot) {
-  									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, isSVG);
+  									node = createRootNodeWithStaticChild(templateNode, dynamicAttrs, recyclingEnabled, _isSVG2);
   								} else {
-  									node = createNodeWithStaticChild(templateNode, dynamicAttrs, isSVG);
+  									node = createNodeWithStaticChild(templateNode, dynamicAttrs, _isSVG2);
   								}
   							}
   						}
   					} else {
   						if (isRoot) {
-  							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false, isSVG);
+  							node = createRootVoidNode(templateNode, dynamicAttrs, recyclingEnabled, false, _isSVG2);
   						} else {
-  							node = createVoidNode(templateNode, dynamicAttrs, false, isSVG);
+  							node = createVoidNode(templateNode, dynamicAttrs, false, _isSVG2);
   						}
   					}
   				}
