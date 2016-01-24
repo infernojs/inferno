@@ -352,7 +352,7 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 				oldItem = oldItems[i];
 				if (oldItemsMap[oldItem.key] !== null) {
 					oldItem = oldItems[oldStartIndex];
-					remove(item, parentNode);
+					remove(oldItem, parentNode);
 				}
 			}
 		}
