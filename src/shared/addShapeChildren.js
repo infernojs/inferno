@@ -2,7 +2,6 @@ import isVoid from '../util/isVoid';
 import isArray from '../util/isArray';
 
 export default function addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context) {
-
 	if (!isVoid(subTreeForChildren)) {
 		if (isArray(subTreeForChildren)) {
 			for (let i = 0; i < subTreeForChildren.length; i++) {
@@ -13,7 +12,6 @@ export default function addShapeChildren(domNode, subTreeForChildren, item, tree
 				}
 			}
 		} else if (typeof subTreeForChildren === 'object') {
-
 			const replaceNode = domNode.firstChild;
 			const childNode = subTreeForChildren.create(item, treeLifecycle, context);
 
