@@ -370,7 +370,18 @@
 
   	if (items) {
   		if (!isVoid(oldItems)) {
-  			itemsLength = Math.max(items.length, oldItems.length);
+  			var oLength = oldItems.length;
+  			var iLength = items.length;
+
+  			if (oLength === iLength) {
+  				itemsLength = iLength;
+  			} else if (items.length === 0) {
+  				itemsLength = oLength;
+  			} else if (oLength.length === 0) {
+  				itemsLength = iLength;
+  			} else {
+  				itemsLength = infernoMax(oldItems.length, items.length);
+  			}
 
   			for (var i = 0; i < itemsLength; i++) {
   				var item = items[i];
@@ -428,7 +439,13 @@
   	if (rootNode === parentNode) {
   		parentNode.innerHTML = '';
   	} else {
-  		parentNode.removeChild(item.rootNode);
+  		var parent = item.rootNode.parentNode;
+
+  		if (parent === parentNode) {
+  			parentNode.removeChild(item.rootNode);
+  		} else {
+  			parentNode.removeChild(item.rootNode.parentNode);
+  		}
   		if (recyclingEnabled$2) {
   			pool(item);
   		}
@@ -2884,31 +2901,40 @@
   				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
   					throw Error(errorMsg$1);
   				}
-  			}
-  			switch (type) {
-  				case ValueTypes.TEXT:
-  					if (isVoidValue(value)) {
-  						value = '';
-  					}
-  					domNode = document.createTextNode(value);
-  					break;
-  				case ValueTypes.ARRAY:
-  					var virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
-  					domNode = virtualList.domNode;
-  					keyedChildren = virtualList.keyedChildren;
-  					treeLifecycle.addTreeSuccessListener(function () {
-  						if (childNodeList.length > 0) {
-  							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
-  							domNode = childNodeList[0].parentNode;
+  				switch (type) {
+  					case ValueTypes.TEXT:
+  						if (isVoidValue(value)) {
+  							value = '';
   						}
-  					});
-  					break;
-  				case ValueTypes.TREE:
-  					domNode = value.create(item, treeLifecycle, context);
-  					break;
-  				case ValueTypes.FRAGMENT:
-  					domNode = value.tree.dom.create(value, treeLifecycle, context);
-  					break;
+  						domNode = document.createTextNode(value);
+  						break;
+  					case ValueTypes.ARRAY:
+  						var virtualList = createVirtualList(value, item, childNodeList, treeLifecycle, context);
+  						domNode = virtualList.domNode;
+  						keyedChildren = virtualList.keyedChildren;
+  						treeLifecycle.addTreeSuccessListener(function () {
+  							if (childNodeList.length > 0) {
+  								nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
+  								domNode = childNodeList[0].parentNode;
+  							}
+  						});
+  						break;
+  					case ValueTypes.TREE:
+  						domNode = value.create(item, treeLifecycle, context);
+  						break;
+  					case ValueTypes.FRAGMENT:
+  						domNode = value.tree.dom.create(value, treeLifecycle, context);
+  						break;
+  					case ValueTypes.PROMISE:
+  						value.then(function (asyncValue) {
+  							var newDomNode = asyncValue.tree.dom.create(item, treeLifecycle, context);
+  							domNode.parentNode.replaceChild(newDomNode, domNode);
+  							domNode = newDomNode;
+  							domNodeMap[item.id] = domNode;
+  						});
+  						domNode = document.createTextNode('');
+  						break;
+  				}
   			}
   			domNodeMap[item.id] = domNode;
   			return domNode;
@@ -2941,6 +2967,9 @@
   						break;
   					case ValueTypes.FRAGMENT:
   						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
+  						return;
+  					case ValueTypes.PROMISE:
+  						debugger;
   						return;
   				}
   			}
