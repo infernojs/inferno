@@ -167,48 +167,69 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	}
 }
 
+// Performs 39% better then Math.max()
+function infernoMax(){
+	let i = 1, max = 0, len = arguments.length;
+	for (; i < len; i++){
+		if (arguments[max] < arguments[i]) {
+			max = i;
+		}
+	}
+	return arguments[max];
+}
+
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
 	let itemsLength;
 
-	if (items) {
-		if (!isVoid(oldItems)) {
-			itemsLength = Math.max(items.length, oldItems.length);
+	if (!items) {
+		return;
+	}
+	if (!isVoid(oldItems)) {
 
-			for (let i = 0; i < itemsLength; i++) {
-				const item = items[i];
-				const oldItem = oldItems[i];
+		const oLength = oldItems.length;
+		const iLength = items.length;
 
-				if (!isVoid(item)) {
+		if (oLength === iLength) {
+			itemsLength = iLength;
+		} else {
+			itemsLength = infernoMax(oldItems.length, items.length);
+		}
 
-					if (!isVoid(oldItem)) {
-						if (isStringOrNumber(item)) {
-							let domNode = domNodeList[i];
+		for (let i = 0; i < itemsLength; i++) {
+			const item = items[i];
+			const oldItem = oldItems[i];
 
-							if (domNode) {
-								domNode.nodeValue = item;
-							}
-						} else if (typeof item === 'object') {
-							item.tree.dom.update(oldItem, item, treeLifecycle, context);
+			if (!isVoid(item)) {
+
+				if (!isVoid(oldItem)) {
+					if (isStringOrNumber(item)) {
+						let domNode = domNodeList[i];
+
+						if (domNode) {
+							domNode.nodeValue = item;
 						}
-					} else {
-						if (isStringOrNumber(item)) {
-							const childNode = document.createTextNode(item);
-							domNodeList[i] = childNode;
-							insertOrAppend(parentNode, childNode, parentNextNode);
-						} else if (typeof item === 'object') {
-							const childNode = item.tree.dom.create(item, treeLifecycle, context);
-							domNodeList[i] = childNode;
-							insertOrAppend(parentNode, childNode, parentNextNode);
-						}
+					} else if (typeof item === 'object') {
+						item.tree.dom.update(oldItem, item, treeLifecycle, context);
 					}
 				} else {
-
-					if (domNodeList[i]) {
-						parentNode.removeChild(domNodeList[i]);
-						domNodeList.splice(i, 1);
+					if (isStringOrNumber(item)) {
+						const childNode = document.createTextNode(item);
+						domNodeList[i] = childNode;
+						insertOrAppend(parentNode, childNode, parentNextNode);
+					} else if (typeof item === 'object') {
+						const childNode = item.tree.dom.create(item, treeLifecycle, context);
+						domNodeList[i] = childNode;
+						insertOrAppend(parentNode, childNode, parentNextNode);
 					}
 				}
+			} else {
+
+				if (domNodeList[i]) {
+					parentNode.removeChild(domNodeList[i]);
+					domNodeList.splice(i, 1);
+				}
 			}
+
 		}
 	}
 }
@@ -232,11 +253,11 @@ export function remove(item, parentNode) {
 	} else {
 		const parent = item.rootNode.parentNode;
 
-					if (parent === parentNode) {
-						parentNode.removeChild(item.rootNode);
-					} else {
-						parentNode.removeChild(item.rootNode.parentNode);
-					}
+		if (parent === parentNode) {
+			parentNode.removeChild(item.rootNode);
+		} else {
+			parentNode.removeChild(item.rootNode.parentNode);
+		}
 		if (recyclingEnabled) {
 			pool(item);
 		}
