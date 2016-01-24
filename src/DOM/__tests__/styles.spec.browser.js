@@ -484,7 +484,7 @@ describe('CSS style properties', () => {
 	});
 
 
-	it('asdfasdfsd', () => {
+	it('should support CSS background property', () => {
 
 		let  template = createTemplate(() => ({
 			tag: 'div',
