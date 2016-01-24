@@ -366,30 +366,23 @@
   }
 
   function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-
   	if (isVoid(items)) {
   		return;
   	}
-
   	var itemsLength = oldItems.length === items.length ? items.length : Math.max(oldItems.length, items.length);
 
   	if (itemsLength) {
-
-  		for (var i = 0; i < itemsLength; i++) {
-
+  		for (var i = itemsLength; i > -1; i--) {
   			var item = items[i];
   			var oldItem = oldItems[i];
   			var domNode = domNodeList[i];
 
   			if (oldItem !== item) {
-
-  				if (item == null && domNodeList.length) {
+  				if (item === undefined && domNodeList.length) {
   					parentNode.removeChild(domNode);
-  					domNodeList.splice(0, 1);
+  					domNodeList.splice(i, 1);
   				} else if (domNode) {
-
   					if (oldItem == null) {
-
   						if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
   							var childNode = item.tree.dom.create(item, treeLifecycle, context);
   							domNode = childNode;
@@ -2874,7 +2867,7 @@
 
   function createDynamicNode(valueIndex) {
   	var domNodeMap = {};
-  	var childNodeList = [];
+  	var childNodeListMap = {};
   	var keyedChildren = true;
   	var nextDomNode = undefined;
   	var node = {
@@ -2883,6 +2876,7 @@
   			var value = getValueWithIndex(item, valueIndex);
   			var domNode = undefined;
   			var type = getTypeFromValue(value);
+  			var childNodeList = childNodeListMap[item.id] = [];
 
   			if ("development" !== 'production') {
   				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
@@ -2904,6 +2898,7 @@
   						if (childNodeList.length > 0) {
   							nextDomNode = childNodeList[childNodeList.length - 1].nextSibling || null;
   							domNode = childNodeList[0].parentNode;
+  							domNodeMap[item.id] = domNode;
   						}
   					});
   					break;
@@ -2936,6 +2931,7 @@
   				var domNode = domNodeMap[lastItem.id];
   				var nextType = getTypeFromValue(nextValue);
   				var lastType = getTypeFromValue(lastValue);
+  				var childNodeList = childNodeListMap[lastItem.id];
 
   				if (lastType !== nextType) {
   					recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);

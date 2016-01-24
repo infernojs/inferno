@@ -161,7 +161,7 @@ function createTemplate(callback) {
 						construct = function construct() {
 							return {
 								tree: tree,
-								id: (uniqueId++).toString(),
+								id: '' + uniqueId++,
 								key: null,
 								nextItem: null,
 								rootNode: null
@@ -177,7 +177,7 @@ function createTemplate(callback) {
 							}
 							return {
 								tree: tree,
-								id: (uniqueId++).toString(),
+								id: '' + uniqueId++,
 								key: key,
 								nextItem: null,
 								rootNode: null,
@@ -196,7 +196,7 @@ function createTemplate(callback) {
 							}
 							return {
 								tree: tree,
-								id: (uniqueId++).toString(),
+								id: '' + uniqueId++,
 								key: key,
 								nextItem: null,
 								rootNode: null,
@@ -222,7 +222,7 @@ function createTemplate(callback) {
 							}
 							return {
 								tree: tree,
-								id: (uniqueId++).toString(),
+								id: '' + uniqueId++,
 								key: key,
 								nextItem: null,
 								rootNode: null,
