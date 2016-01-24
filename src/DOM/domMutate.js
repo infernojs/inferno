@@ -160,7 +160,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 				oldItem = oldItems[i];
 				if (oldItemsMap[oldItem.key] !== null) {
 					oldItem = oldItems[oldStartIndex];
-					remove(item, parentNode);
+					remove(oldItem, parentNode);
 				}
 			}
 		}
