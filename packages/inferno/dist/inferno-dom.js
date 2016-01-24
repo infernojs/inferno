@@ -220,6 +220,8 @@
   	var oldItemsLength = oldItems.length;
   	var startItem = itemsLength > 0 && items[startIndex];
 
+  	debugger;
+
   	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
   	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
   	// We solve that with avoiding going into the iteration loop.
@@ -429,13 +431,7 @@
   	if (rootNode === parentNode) {
   		parentNode.innerHTML = '';
   	} else {
-  		var parent = item.rootNode.parentNode;
-
-  		if (parent === parentNode) {
-  			parentNode.removeChild(item.rootNode);
-  		} else {
-  			parentNode.removeChild(item.rootNode.parentNode);
-  		}
+  		parentNode.removeChild(item.rootNode);
   		if (recyclingEnabled$2) {
   			pool(item);
   		}
@@ -581,7 +577,7 @@
   			if (isArray(lastValue)) {
   				if (node.keyedChildren) {
   					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-  				} else if (lastValue !== nextValue) {
+  				} else {
   					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
   				}
   			} else {

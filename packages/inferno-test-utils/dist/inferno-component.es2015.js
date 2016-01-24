@@ -55,13 +55,7 @@ function remove(item, parentNode) {
 	if (rootNode === parentNode) {
 		parentNode.innerHTML = '';
 	} else {
-		var parent = item.rootNode.parentNode;
-
-		if (parent === parentNode) {
-			parentNode.removeChild(item.rootNode);
-		} else {
-			parentNode.removeChild(item.rootNode.parentNode);
-		}
+		parentNode.removeChild(item.rootNode);
 		if (recyclingEnabled) {
 			pool(item);
 		}

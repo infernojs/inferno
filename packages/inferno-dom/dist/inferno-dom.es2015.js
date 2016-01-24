@@ -423,13 +423,7 @@ function remove(item, parentNode) {
 	if (rootNode === parentNode) {
 		parentNode.innerHTML = '';
 	} else {
-		var parent = item.rootNode.parentNode;
-
-		if (parent === parentNode) {
-			parentNode.removeChild(item.rootNode);
-		} else {
-			parentNode.removeChild(item.rootNode.parentNode);
-		}
+		parentNode.removeChild(item.rootNode);
 		if (recyclingEnabled$2) {
 			pool(item);
 		}
@@ -575,7 +569,7 @@ function updateDynamicChild(lastItem, nextItem, lastValue, nextValue, domNode, n
 			if (isArray(lastValue)) {
 				if (node.keyedChildren) {
 					updateKeyed(nextValue, lastValue, domNode, null, treeLifecycle, context);
-				} else if (lastValue !== nextValue) {
+				} else {
 					updateNonKeyed(nextValue, lastValue, node.childNodeList, domNode, null, treeLifecycle, context);
 				}
 			} else {

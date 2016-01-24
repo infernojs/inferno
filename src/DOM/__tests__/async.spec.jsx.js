@@ -100,7 +100,9 @@ describe('Async rendering (JSX)', () => {
 			render(<div><div>{ getValue() } test</div></div>, container);
 
 			requestAnimationFrame(() => {
-				debugger;
+				expect(container.firstChild.tagName).to.equal('DIV');
+				expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+				expect(container.firstChild.firstChild.firstChild.textContent).to.equal('Hello world!')
 				done();
 			});
 		});
