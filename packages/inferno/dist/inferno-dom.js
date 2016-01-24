@@ -1413,7 +1413,10 @@
   						}
   						style[hook.unPrefixed] = styleValue;
   					}
-  				}
+  					// other css styles that are not directly supported
+  				} else if (styleName === 'background') {
+  						domNode.style.background = styleValue;
+  					}
   			}
   		}
   	},
