@@ -26,10 +26,6 @@ let uniqueId = Date.now();
  let uniqueId = UUID.generate();
  */
 const treeConstructors = {};
-const validTreeNames = {
-	dom: true,
-	html: true
-};
 
 export function addTreeConstructor(name, treeConstructor) {
 	treeConstructors[name] = treeConstructor;

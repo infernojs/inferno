@@ -2909,7 +2909,9 @@ function createDynamicNode(valueIndex) {
 					break;
 				case ValueTypes.PROMISE:
 					value.then(function (asyncValue) {
-						var newDomNode = asyncValue.tree.dom.create(item, treeLifecycle, context);
+						treeLifecycle.reset();
+						var newDomNode = asyncValue.tree.dom.create(asyncValue, treeLifecycle, context);
+						treeLifecycle.trigger();
 						domNode.parentNode.replaceChild(newDomNode, domNode);
 						domNode = newDomNode;
 						domNodeMap[item.id] = domNode;
@@ -2950,7 +2952,7 @@ function createDynamicNode(valueIndex) {
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 						return;
 					case ValueTypes.PROMISE:
-						debugger;
+						//debugger;
 						return;
 				}
 			}

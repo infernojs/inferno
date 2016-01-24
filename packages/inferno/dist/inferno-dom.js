@@ -220,8 +220,6 @@
   	var oldItemsLength = oldItems.length;
   	var startItem = itemsLength > 0 && items[startIndex];
 
-  	debugger;
-
   	// Edge case! In cases where someone try to update from [null] to [null], 'startitem' will be null.
   	// Also in cases where someone try to update from [{}] to [{}] (empty object to empty object)
   	// We solve that with avoiding going into the iteration loop.
@@ -2917,7 +2915,9 @@
   					break;
   				case ValueTypes.PROMISE:
   					value.then(function (asyncValue) {
-  						var newDomNode = asyncValue.tree.dom.create(item, treeLifecycle, context);
+  						treeLifecycle.reset();
+  						var newDomNode = asyncValue.tree.dom.create(asyncValue, treeLifecycle, context);
+  						treeLifecycle.trigger();
   						domNode.parentNode.replaceChild(newDomNode, domNode);
   						domNode = newDomNode;
   						domNodeMap[item.id] = domNode;
@@ -2958,7 +2958,7 @@
   						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
   						return;
   					case ValueTypes.PROMISE:
-  						debugger;
+  						//debugger;
   						return;
   				}
   			}
