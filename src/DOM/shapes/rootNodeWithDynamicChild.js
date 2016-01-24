@@ -3,7 +3,7 @@ import isVoid from '../../util/isVoid';
 import isStringOrNumber from '../../util/isStringOrNumber';
 import { recycle } from '../recycling';
 import { getValueWithIndex, removeValueTree } from '../../core/variables';
-import { updateKeyed, updateNonKeyed, createDynamicChild, updateDynamicChild } from '../domMutate';
+import { createDynamicChild, updateDynamicChild } from '../domMutate';
 import { addDOMDynamicAttributes, updateDOMDynamicAttributes, clearListeners, handleHooks } from '../addAttributes';
 import recreateRootNode from '../recreateRootNode';
 import addShapeAttributes from '../addShapeAttributes';
