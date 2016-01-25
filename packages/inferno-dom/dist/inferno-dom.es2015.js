@@ -202,10 +202,6 @@ function updateAndAppendDynamicChildren(domNode, nextValue) {
 
 var recyclingEnabled$2 = isRecyclingEnabled();
 
-function updateTree(item, oldItem, startItem, treeLifecycle, context) {
-	item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
-}
-
 function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
 	var stop = false;
 	var startIndex = 0;
@@ -237,17 +233,11 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 	var nextNode = undefined;
 	var oldItem = undefined;
 	var item = undefined;
-	var endItemKey = undefined;
-	var oldEndItemKey = undefined;
-	var oldStartItemKey = undefined;
-	var startItemKey = undefined;
 
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
-		oldStartItemKey = oldStartItem.key;
-		startItemKey = startItem.key;
 		stop = true;
-		while (startItemKey === oldStartItemKey) {
-			updateTree(startItem, oldStartItem, startItem, treeLifecycle, context);
+		while (startItem.key === oldStartItem.key) {
+			startItem.tree.dom.update(oldStartItem, startItem, treeLifecycle, context);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -260,11 +250,9 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 		}
 		endItem = items[endIndex];
 		oldEndItem = oldItems[oldEndIndex];
-		oldEndItemKey = oldEndItem.key;
-		endItemKey = endItem.key;
 
-		while (endItemKey === oldEndItemKey) {
-			updateTree(endItem, oldEndItem, endItem, treeLifecycle, context);
+		while (endItem.key === oldEndItem.key) {
+			endItem.tree.dom.update(oldEndItem, endItem, treeLifecycle, context);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -275,9 +263,9 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 				stop = false;
 			}
 		}
-		while (endItemKey === oldStartItemKey) {
+		while (endItem.key === oldStartItem.key) {
 			nextNode = endIndex + 1 < itemsLength ? items[endIndex + 1].rootNode : parentNextNode;
-			updateTree(endItem, oldStartItem, endItem, treeLifecycle, context);
+			endItem.tree.dom.update(oldStartItem, endItem, treeLifecycle, context);
 			insertOrAppend(parentNode, endItem.rootNode, nextNode);
 			endIndex--;
 			oldStartIndex++;
@@ -289,9 +277,9 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 				stop = false;
 			}
 		}
-		while (startItemKey === oldEndItemKey) {
+		while (startItem.key === oldEndItem.key) {
 			nextNode = oldItems[oldStartIndex].rootNode;
-			updateTree(startItem, oldEndItem, startItem, treeLifecycle, context);
+			startItem.tree.dom.update(oldEndItem, startItem, treeLifecycle, context);
 			insertOrAppend(parentNode, startItem.rootNode, nextNode);
 			startIndex++;
 			oldEndIndex--;
@@ -338,8 +326,7 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 			if (oldItem) {
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
-				updateTree(item, oldItem, item, treeLifecycle, context);
-
+				item.tree.dom.update(oldItem, item, treeLifecycle, context);
 				if (item.rootNode.nextSibling !== (nextItem && nextItem.rootNode)) {
 					nextNode = nextItem && nextItem.rootNode || parentNextNode;
 					insertOrAppend(parentNode, item.rootNode, nextNode);
@@ -2335,7 +2322,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 	return node;
 }
 
-var errorMsg$1 = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
+var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
 function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
@@ -2349,7 +2336,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, isSVG
 			if (!isVoid(value)) {
 				if ("development" !== 'production') {
 					if (!isStringOrNumber(value)) {
-						throw Error(errorMsg$1);
+						throw Error(errorMsg);
 					}
 				}
 				if (value === '') {
@@ -2854,10 +2841,10 @@ var isVoidValue = (function (x) {
   return x === null || x === undefined || x.length === 0;
 })
 
-var errorMsg = undefined;
+var errorMsg$1 = undefined;
 
 if ("development" !== 'production') {
-	errorMsg = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+	errorMsg$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 }
 
 function createDynamicNode(valueIndex) {
@@ -2875,7 +2862,7 @@ function createDynamicNode(valueIndex) {
 
 			if ("development" !== 'production') {
 				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
-					throw Error(errorMsg);
+					throw Error(errorMsg$1);
 				}
 			}
 			switch (type) {
