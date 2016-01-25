@@ -161,7 +161,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = oldItems[i];
 			if (oldItemsMap[oldItem.key] !== null) {
-				oldItem = oldItems[oldStartIndex];
+				item = oldItems[oldStartIndex];
 				remove(oldItem, parentNode);
 			}
 		}
