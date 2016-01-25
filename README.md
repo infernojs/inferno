@@ -9,13 +9,13 @@
 
 Inferno is an isomorphic library for building user interfaces with high performance (crucial when targeting mobile devices). Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno does not rely on diffing DOM virtual elements, but instead it differentiates static content from dynamic content and only diffs the values that change within a given fragment of virtual DOM elements (we call them virtual fragments).
 
-In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
+In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React. If you'd like to know more about how Inferno works under-the-hood, check out the [how Inferno works document](https://github.com/trueadm/inferno/blob/master/docs/how-inferno-works.md).
 
-In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
+In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore, Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno templates.
 
 ## Key Features
 
-- one of the fastest front-end frameworks for rendering UI in the DOM
+- one of the fastest front-end libraries for rendering UI in the DOM
 - components have a similar API to React ES2015 components with `inferno-component`
 - stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
 - isomorphic/universal for easy server-side rendering with `inferno-server`
@@ -23,7 +23,7 @@ In principle, Inferno is compatible with the standard React API, allowing for pa
 ## Benchmarks
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
+- [dbmonster](http://infernojs.org/benchmarks/dbmonster/) (for comparison: [React](http://mathieuancelin.github.io/js-repaint-perfs/react/), [Angular 2.0](http://mathieuancelin.github.io/js-repaint-perfs/angular2/opt.html), [Riot](http://mathieuancelin.github.io/js-repaint-perfs/riot/), [Vue](http://mathieuancelin.github.io/js-repaint-perfs/vue/opt.html), [Aurelia](http://jdanyow.github.io/aurelia-dbmonster/), [Ember 2.0](https://dbmonster.firebaseapp.com/), [Ractive](http://mathieuancelin.github.io/js-repaint-perfs/ractive/) and [Mithril](http://tivac.github.io/js-repaint-perfs/mithril/))
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Install
@@ -268,37 +268,13 @@ Hooks provide powerful lifecycle events to stateless components, allowing you to
 Inferno tries to address two problems with creating UI components:
 - Writing large applications in large teams is slow in terms of development and expensive in costs – it shouldn't be.
 - Writing complex applications generally gives poor performance on mobile/tablet/older machines – it shouldn't.
-- Writing intensive modern UIs that require many updates/animations falls apart and becomings overly complicated - it shouldn't be.
+- Writing intensive modern UIs that require many updates/animations falls apart and becomes overly complicated - it shouldn't be.
 
-Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
-time a framework offered more fun without compromising performance.
+Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about time a library offered more fun without compromising performance.
 
 ## JSX
  
 Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
-
-## Contributing
-
-### Testing
-
-```sh
-npm run test:browser // browser tests
-npm run test:server // node tests
-npm run test // browser and node tests
-npm run browser // hot-loaded browser tests
-```
-
-### Building
-
-```sh
-npm run build
-```
-### Linting
-
-```sh
-npm run lint:source // lint the source
-```
-
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
