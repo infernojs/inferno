@@ -486,18 +486,18 @@ describe('CSS style properties', () => {
 
 	it('should support CSS background property', () => {
 
-		let  template = createTemplate(() => ({
+		let template = createTemplate(() => ({
 			tag: 'div',
-			attrs:{
+			attrs: {
 				style: {
-					width:200,
-					height:200,
-					background:'red'
+					width: 200,
+					height: 200,
+					background: 'red'
 				}
 			}
 		}));
 
-		render(template(), container)
+		render(template(), container);
 		expect(container.innerHTML).to.equal('<div style="width: 200px; height: 200px; background: red;"></div>');
 	});
 

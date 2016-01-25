@@ -4,8 +4,6 @@ import createTemplate from '../../../core/createTemplate';
 import createDOMTree from '../../createTree';
 import { addTreeConstructor } from '../../../core/createTemplate';
 
-
-
 addTreeConstructor('dom', createDOMTree);
 
 describe('voidNode', () => {
@@ -24,7 +22,7 @@ describe('voidNode', () => {
 
 		const template = createTemplate(() => ({
 			tag: 'div',
-			children: { tag:'span'}
+			children: { tag: 'span' }
 		}));
 		render(template(), container);
 		expect(container.firstChild.nodeName).to.equal('DIV');

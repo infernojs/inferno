@@ -20,7 +20,7 @@ export default function createVoidNode(templateNode, dynamicAttrs, staticNode, i
 			return domNode;
 		},
 		update(lastItem, nextItem) {
-			if ( !staticNode) {
+			if (!staticNode) {
 				const domNode = domNodeMap[lastItem.id];
 				if (dynamicAttrs) {
 					if (dynamicAttrs.onWillUpdate) {

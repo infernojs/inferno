@@ -1108,9 +1108,9 @@ describe('Components (JSX)', () => {
 						<ul>
 							{(() => {
 								if (this.state.empty === true) {
-									return <li>No cars!</li>
+									return <li>No cars!</li>;
 								} else {
-									return ['BMW', 'Volvo', 'Saab'].map(function(car) {
+									return [ 'BMW', 'Volvo', 'Saab' ].map(function (car) {
 										return <li>{car}</li>;
 									});
 								}
@@ -1152,7 +1152,7 @@ describe('Components (JSX)', () => {
 				super(props);
 
 				this.state = {
-					list: ['1', '2', '3', '4']
+					list: [ '1', '2', '3', '4' ]
 				};
 
 				// Bindings
@@ -1170,7 +1170,7 @@ describe('Components (JSX)', () => {
 					<div>
 						<button onClick={this.handleClick}>1</button>
 						{this.state.list.map(function (x, i) {
-							return <div>{i}</div>
+							return <div>{i}</div>;
 						})}
 					</div>
 				);

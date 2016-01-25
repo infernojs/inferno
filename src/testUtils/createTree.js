@@ -75,6 +75,7 @@ function constructVirtualNode(node, item, depth, maxDepth) {
 			}
 			// stateless
 			if (!Component.prototype.render) {
+        /* eslint new-cap:0 */
 				return Component(props).tree.test.create(item, depth + 1, maxDepth);
 			} else {
 				const instance = new Component(props);
