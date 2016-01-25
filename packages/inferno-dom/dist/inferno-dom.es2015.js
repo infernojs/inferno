@@ -353,7 +353,7 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 		for (var i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = oldItems[i];
 			if (oldItemsMap[oldItem.key] !== null) {
-				oldItem = oldItems[oldStartIndex];
+				item = oldItems[oldStartIndex];
 				remove(oldItem, parentNode);
 			}
 		}
@@ -2335,7 +2335,7 @@ function createRootNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, r
 	return node;
 }
 
-var errorMsg = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
+var errorMsg$1 = 'Inferno Error: Template nodes with TEXT must only have a StringLiteral or NumericLiteral as a value, this is intended for low-level optimisation purposes.';
 
 function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, isSVG) {
 	var dynamicAttrKeys = dynamicAttrs && Object.keys(dynamicAttrs);
@@ -2349,7 +2349,7 @@ function createNodeWithDynamicText(templateNode, valueIndex, dynamicAttrs, isSVG
 			if (!isVoid(value)) {
 				if ("development" !== 'production') {
 					if (!isStringOrNumber(value)) {
-						throw Error(errorMsg);
+						throw Error(errorMsg$1);
 					}
 				}
 				if (value === '') {
@@ -2854,10 +2854,10 @@ var isVoidValue = (function (x) {
   return x === null || x === undefined || x.length === 0;
 })
 
-var errorMsg$1 = undefined;
+var errorMsg = undefined;
 
 if ("development" !== 'production') {
-	errorMsg$1 = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
+	errorMsg = 'Inferno Error: A valid template node must be returned. You may have returned undefined, an array or some other invalid object.';
 }
 
 function createDynamicNode(valueIndex) {
@@ -2875,7 +2875,7 @@ function createDynamicNode(valueIndex) {
 
 			if ("development" !== 'production') {
 				if (type === ValueTypes.EMPTY_OBJECT || type === ValueTypes.FUNCTION) {
-					throw Error(errorMsg$1);
+					throw Error(errorMsg);
 				}
 			}
 			switch (type) {

@@ -10,10 +10,6 @@ import updateAndAppendDynamicChildren from '../shared/updateAndAppendDynamicChil
 
 const recyclingEnabled = isRecyclingEnabled();
 
-function updateTree(item, oldItem, startItem, treeLifecycle, context) {
-	item.tree.dom.update(oldItem, startItem, treeLifecycle, context);
-}
-
 export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle, context) {
 	let stop = false;
 	let startIndex = 0;
@@ -45,17 +41,11 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	let nextNode;
 	let oldItem;
 	let item;
-	let endItemKey;
-	let oldEndItemKey;
-	let oldStartItemKey;
-	let startItemKey;
 
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
-		oldStartItemKey = oldStartItem.key;
-		startItemKey = startItem.key;
 		stop = true;
-		while (startItemKey === oldStartItemKey) {
-			updateTree(startItem, oldStartItem, startItem, treeLifecycle, context);
+		while (startItem.key === oldStartItem.key) {
+			startItem.tree.dom.update(oldStartItem, startItem, treeLifecycle, context);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -68,11 +58,9 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 		}
 		endItem = items[endIndex];
 		oldEndItem = oldItems[oldEndIndex];
-		oldEndItemKey = oldEndItem.key;
-		endItemKey = endItem.key;
 
-		while (endItemKey === oldEndItemKey) {
-			updateTree(endItem, oldEndItem, endItem, treeLifecycle, context);
+		while (endItem.key === oldEndItem.key) {
+			endItem.tree.dom.update(oldEndItem, endItem, treeLifecycle, context);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -83,9 +71,9 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 				stop = false;
 			}
 		}
-		while (endItemKey === oldStartItemKey) {
+		while (endItem.key === oldStartItem.key) {
 			nextNode = (endIndex + 1 < itemsLength) ? items[endIndex + 1].rootNode : parentNextNode;
-			updateTree(endItem, oldStartItem, endItem, treeLifecycle, context);
+			endItem.tree.dom.update(oldStartItem, endItem, treeLifecycle, context);
 			insertOrAppend(parentNode, endItem.rootNode, nextNode);
 			endIndex--;
 			oldStartIndex++;
@@ -97,9 +85,9 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 				stop = false;
 			}
 		}
-		while (startItemKey === oldEndItemKey) {
+		while (startItem.key === oldEndItem.key) {
 			nextNode = oldItems[oldStartIndex].rootNode;
-			updateTree(startItem, oldEndItem, startItem, treeLifecycle, context);
+			startItem.tree.dom.update(oldEndItem, startItem, treeLifecycle, context);
 			insertOrAppend(parentNode, startItem.rootNode, nextNode);
 			startIndex++;
 			oldEndIndex--;
@@ -146,8 +134,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 			if (oldItem) {
 				oldItemsMap[key] = null;
 				oldNextItem = oldItem.nextItem;
-				updateTree(item, oldItem, item, treeLifecycle, context);
-
+				item.tree.dom.update(oldItem, item, treeLifecycle, context);
 				if (item.rootNode.nextSibling !== (nextItem && nextItem.rootNode)) {
 					nextNode = (nextItem && nextItem.rootNode) || parentNextNode;
 					insertOrAppend(parentNode, item.rootNode, nextNode);
