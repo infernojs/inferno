@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "0.5.21",
+  "version": "0.5.22",
   "license": "MPL-2.0",
   "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
   "author": {
