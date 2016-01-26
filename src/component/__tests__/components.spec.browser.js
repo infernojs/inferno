@@ -1285,12 +1285,11 @@ describe('Components', () => {
 		});
 		it('Second render (update)', () => {
 			render(view(true), container);
-			debugger;
 			render(view(false), container);
 			expect(
 				container.innerHTML
 			).to.equal(
-				innerHTML('<div><div>FooQux</div></div>')
+				innerHTML('<div><div>BarQux</div></div>')
 			);
 		});
 	});

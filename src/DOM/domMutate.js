@@ -156,52 +156,43 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 }
 
 export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-	if (isVoid(items)) {
-		return;
-	}
-	const itemsLength = (oldItems.length === items.length) ? items.length : Math.max(oldItems.length, items.length);
+	let itemsLength;
+	let offset = 0;
 
-	if (itemsLength) {
-		for (let i = itemsLength; i > -1; i--) {
-			let item = items[i];
-			let oldItem = oldItems[i];
-			let domNode = domNodeList[i];
-			/*
-			if (oldItem !== item) {
+	if (items) {
+		if (!isVoid(oldItems)) {
+			itemsLength = Math.max(items.length, oldItems.length);
+			for (let i = 0; i < itemsLength; i++) {
+				const item = items[i];
+				const oldItem = oldItems[i];
 
-				if (isArray(items)) {
+				if (!isVoid(item)) {
+					if (!isVoid(oldItem)) {
+						if (isStringOrNumber(item)) {
+							let domNode = domNodeList[i];
 
-					for (let i = 0; i < items.length; i++) {
-
-						if (typeof items[i] === 'string') {
-							// TODO
-						} else {
-							// TODO
-						}
-					}
-				} else if (item === undefined && domNodeList.length) { */
-			debugger;
-			if (oldItem !== item) {
-				if (item === undefined && domNodeList.length) {
-					parentNode.removeChild(domNode);
-					domNodeList.splice(i, 1);
-				} else if (domNode) {
-					if (isVoid(oldItem)) {
-						if (typeof item === 'object') {
-							const childNode = item.tree.dom.create(item, treeLifecycle, context);
-							domNode = childNode;
-							insertOrAppend(parentNode, childNode, parentNextNode);
-						} else {
-							const childNode = document.createTextNode(item);
-							domNode = childNode;
-							insertOrAppend(parentNode, childNode, parentNextNode);
+							if (domNode) {
+								domNode.nodeValue = item;
+							}
+						} else if (typeof item === 'object') {
+							item.tree.dom.update(oldItem, item, treeLifecycle, context);
 						}
 					} else {
-						if (typeof item === 'object') {
-							item.tree.dom.update(oldItem, item, treeLifecycle, context);
-						} else {
-							domNode.nodeValue = item;
+						if (isStringOrNumber(item)) {
+							const childNode = document.createTextNode(item);
+							domNodeList[i] = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
+						} else if (typeof item === 'object') {
+							const childNode = item.tree.dom.create(item, treeLifecycle, context);
+							domNodeList[i] = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
 						}
+					}
+				} else {
+					if (domNodeList[i + offset]) {
+						parentNode.removeChild(domNodeList[i + offset]);
+						domNodeList.splice(i + offset, 1);
+						offset--;
 					}
 				}
 			}
