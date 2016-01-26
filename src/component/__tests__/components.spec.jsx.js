@@ -1146,7 +1146,7 @@ describe('Components (JSX)', () => {
 		});
 	});
 
-	describe('should render a component with a list that insantly changes', () => {
+	describe('should render a component with a list that instantly changes', () => {
 		class ChangeChildrenCount extends Component {
 			constructor(props) {
 				super(props);
@@ -1202,4 +1202,60 @@ describe('Components (JSX)', () => {
 		});
 	});
 
+	describe('should render a conditional stateless component', () => {
+		const StatelessComponent = ({value}) => (
+			<p>{value}</p>
+		);
+
+		class First extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					counter: 0
+				};
+
+				this._onClick = this._onClick.bind(this);
+			}
+
+			_onClick() {
+				this.setState({
+					counter: ++this.state.counter
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<button onClick={this._onClick}>Increase! {this.state.counter}</button>
+						{true ? <StatelessComponent value={this.state.counter} /> : null}
+					</div>
+				)
+			}
+		}
+
+		it('should correctly render', () => {
+			render(<First />, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><button>Increase! 0</button><p>0</p></div>')
+			);
+		});
+
+		it('should handle update upon click', (done) => {
+			render(<First />, container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+
+			buttons.forEach(button => button.click());
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><button>Increase! 1</button><p>1</p></div>')
+				);
+				done();
+			});
+		});
+	});
 });

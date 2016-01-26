@@ -6,7 +6,7 @@ import { handleHooks } from '../addAttributes';
 
 export default function createNodeWithComponent(componentIndex, props) {
 	let domNode;
-	let currentItem;
+	const currentItemMap = {};
 	const instanceMap = {};
 	const statelessRenderMap = {};
 	const node = {
@@ -21,7 +21,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 			}
 			const Component = getValueWithIndex(toUseItem, componentIndex);
 
-			currentItem = item;
+			currentItemMap[item.id] = item;
 			if (isVoid(Component)) {
 				domNode = document.createTextNode('');
 				instance = null;
@@ -97,7 +97,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 			const Component = getValueWithIndex(nextItem, componentIndex);
 			const instance = instanceMap[lastItem.id];
 
-			currentItem = nextItem;
+			currentItemMap[lastItem.id] = nextItem;
 			if (!Component) {
 				recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 				if (instance) {
