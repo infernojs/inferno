@@ -171,7 +171,7 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 
 				if (isArray(items)) {
 
-					for (i = 0; i < items.length; i++) {
+					for (let i = 0; i < items.length; i++) {
 
 						if (typeof items[i] === 'string') {
 							// TODO
