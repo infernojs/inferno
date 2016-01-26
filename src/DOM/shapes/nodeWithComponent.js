@@ -7,8 +7,8 @@ import { handleHooks } from '../addAttributes';
 export default function createNodeWithComponent(componentIndex, props) {
 	let domNode;
 	let currentItem;
-	let statelessRender;
 	const instanceMap = {};
+	const statelessRenderMap = {};
 	const node = {
 		overrideItem: null,
 		create(item, treeLifecycle, context) {
@@ -43,7 +43,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 					const nextRender = Component(nextProps, context);
 
 					domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
-					statelessRender = nextRender;
+					statelessRenderMap[item.id] = nextRender;
 				} else {
 					instance = new Component(getValueForProps(props, toUseItem));
 					instance.context = context;
@@ -126,13 +126,13 @@ export default function createNodeWithComponent(componentIndex, props) {
 
 					// Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
 					// E.g. start with 'render(template(null), container); ' will cause this.
-					if (!isVoid(statelessRender)) {
-						newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
+					if (!isVoid(statelessRenderMap[lastItem.id])) {
+						newDomNode = nextRender.tree.dom.update(statelessRenderMap[lastItem.id] || instance._lastRender, nextRender, treeLifecycle, context);
 					} else {
 						recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 						return;
 					}
-					statelessRender = nextRender;
+					statelessRenderMap[lastItem.id] = nextRender;
 
 					let returnDomNode = false;
 
