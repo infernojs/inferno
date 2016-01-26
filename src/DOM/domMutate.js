@@ -180,7 +180,7 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 						}
 					}
 				} else if (item === undefined && domNodeList.length) { */
-
+			debugger;
 			if (oldItem !== item) {
 				if (item === undefined && domNodeList.length) {
 					parentNode.removeChild(domNode);

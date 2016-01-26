@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "0.5.21",
+  "version": "0.5.23",
   "license": "MPL-2.0",
   "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
   "author": {

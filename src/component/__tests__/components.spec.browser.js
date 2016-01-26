@@ -1228,7 +1228,6 @@ describe('Components', () => {
 		SomeError.constructor = SomeError;
 
 		it('Initial render (creation)', () => {
-
 			render(starter(null), container);
 
 			render(starter(SomeError), container);
@@ -1249,6 +1248,49 @@ describe('Components', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
+			);
+		});
+	});
+
+	describe('should render a component with a list of text nodes', () => {
+		var root = createTemplate(function (children) {
+			return {
+				tag: "div",
+				children: children
+			};
+		});
+
+		var header = createTemplate(function (children) {
+			return {
+				tag: "div",
+				children: children
+			};
+		});
+
+		var view = function (state) {
+			return root([
+				(state
+					? header(["Foo"])
+					: header(["Bar", "Qux"]))
+			]);
+		};
+
+		it('Initial render (creation)', () => {
+			render(view(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div>Foo</div></div>')
+			);
+		});
+		it('Second render (update)', () => {
+			render(view(true), container);
+			debugger;
+			render(view(false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div>FooQux</div></div>')
 			);
 		});
 	});
