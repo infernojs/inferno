@@ -1,14 +1,14 @@
 const path = require('path');
 
 // Karma configuration
-module.exports = function(config) {
+module.exports = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
 		basePath: '../',
 
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-		frameworks: ['mocha', 'sinon-chai'],
+		frameworks: [ 'mocha', 'sinon-chai' ],
 
 		// list of files / patterns to load in the browser
 		files: [
@@ -46,7 +46,7 @@ module.exports = function(config) {
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['mocha', 'coverage'],
+		reporters: [ 'mocha', 'coverage' ],
 		// reporter options
 		mochaReporter: {
 			colors: {
@@ -102,7 +102,7 @@ module.exports = function(config) {
 		// Use Chrome as default browser for Travis CI
 		config.browsers = ['Chrome_for_Travis_CI'];
 		// Used by Travis to push coveralls info corretly to example coveralls.io
-		config.reporters = ['mocha', 'coverage', 'coveralls'];
+		config.reporters = [ 'mocha', 'coverage', 'coveralls' ];
 		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
 		config.browserNoActivityTimeout = 120000;
 	}
