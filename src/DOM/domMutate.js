@@ -166,7 +166,7 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 			let item = items[i];
 			let oldItem = oldItems[i];
 			let domNode = domNodeList[i];
-
+			/*
 			if (oldItem !== item) {
 
 				if (isArray(items)) {
@@ -179,7 +179,11 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 							// TODO
 						}
 					}
-				} else if (item === undefined && domNodeList.length) {
+				} else if (item === undefined && domNodeList.length) { */
+
+				}
+			if (oldItem !== item) {
+				if (item === undefined && domNodeList.length) {
 					parentNode.removeChild(domNode);
 					domNodeList.splice(i, 1);
 				} else if (domNode) {
