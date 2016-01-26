@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sick!</title>
+</head>
+<body>
+
+<div id="mount-point"><div>Click me!</div></div>
+
+
+
+<script src="./packages/inferno/dist/inferno.js"></script>
+<script src="./packages/inferno/dist/inferno-component.js"></script>
+<script src="./packages/inferno/dist/inferno-dom.js"></script>
+<script src="./packages/inferno/dist/inferno-server.js"></script>
+
+
+<script>
+    "use strict";
+
+
+    var root = Inferno.createTemplate(function (children) {
+        return {
+            tag: "div",
+            children: children
+        };
+    });
+
+    var header = Inferno.createTemplate(function (children) {
+        return {
+            tag: "div",
+            children: children
+        };
+    });
+
+    var view = function (state) {
+        return root([
+            (state
+                    ? header(["Foo"])
+                    : header(["Bar", "Qux"]))
+        ]);
+    };
+
+    InfernoDOM.render(view(true), document.body);
+
+    //setTimeout(function () {
+        InfernoDOM.render(view(false), document.body);
+    //}, 3000);
+
+
+
+</script>
+</body>
+</html>

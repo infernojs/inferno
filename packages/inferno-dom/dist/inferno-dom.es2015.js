@@ -2018,6 +2018,17 @@ function addDOMStaticAttributes(vNode, domNode, attrs) {
 }
 
 // A fast className setter as its the most common property to regularly change
+function fastClassSet(attrName, attrVal, domNode, isSVG) {
+	if (!isVoid(attrVal)) {
+		if (isSVG) {
+			domNode.setAttribute('class', attrVal);
+		} else {
+			domNode.className = attrVal;
+		}
+	}
+}
+
+// A fast className setter as its the most common property to regularly change
 function fastPropSet(attrName, attrVal, domNode, isSVG) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
@@ -2145,6 +2156,11 @@ function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, d
 			var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
 			if (lastAttrVal !== nextAttrVal) {
+
+				if (attrName === 'className' || attrName === 'class') {
+					fastClassSet(domNode, attrName);
+				}
+
 				if (!isVoid(lastAttrVal)) {
 					if (isVoid(nextAttrVal)) {
 						if (attrName === 'style') {
@@ -2171,7 +2187,7 @@ function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, d
 								styleUpdates[styleName] = nextAttrVal[styleName];
 							}
 						}
-					} else {
+					} else if (lastAttrVal !== nextAttrVal) {
 
 						if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
 							if (propertyToEventType[attrName]) {

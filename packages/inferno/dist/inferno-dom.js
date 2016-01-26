@@ -354,34 +354,55 @@
   }
 
   function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
+
   	if (isVoid(items)) {
   		return;
   	}
   	var itemsLength = oldItems.length === items.length ? items.length : Math.max(oldItems.length, items.length);
 
   	if (itemsLength) {
-  		for (var i = itemsLength; i > -1; i--) {
+		    for (i = 0; i < itemsLength; i++) {
   			var item = items[i];
   			var oldItem = oldItems[i];
   			var domNode = domNodeList[i];
 
+
   			if (oldItem !== item) {
-  				if (item === undefined && domNodeList.length) {
+
+				if ( isArray(items)) {
+
+						for (i = 0; i < items.length; i++) {
+
+							if (typeof items[i] === 'string' ) {
+								// TODO
+							} else {
+								// TODO
+							}
+						}
+						//item.tree.dom.update(oldItem, item, treeLifecycle, context);
+				} else if (item === undefined && domNodeList.length) {
+
   					parentNode.removeChild(domNode);
   					domNodeList.splice(i, 1);
   				} else if (domNode) {
-  					if (oldItem == null) {
+
+
+
+  					if (oldItem === null) {
   						if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
   							var childNode = item.tree.dom.create(item, treeLifecycle, context);
   							domNode = childNode;
   							insertOrAppend(parentNode, childNode, parentNextNode);
   						} else {
-  							var childNode = document.createTextNode(item);
+
+							//console.log(item)
+  													var childNode = document.createTextNode(item);
   							domNode = childNode;
   							insertOrAppend(parentNode, childNode, parentNextNode);
   						}
   					} else {
-  						if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+
+  								if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
   							item.tree.dom.update(oldItem, item, treeLifecycle, context);
   						} else {
   							domNode.nodeValue = item;
@@ -418,6 +439,7 @@
   }
 
   function createVirtualList(value, item, childNodeList, treeLifecycle, context) {
+
   	if (isVoid(value)) {
   		return null;
   	}
@@ -2024,6 +2046,17 @@
   }
 
   // A fast className setter as its the most common property to regularly change
+  function fastClassSet(attrName, attrVal, domNode, isSVG) {
+  	if (!isVoid(attrVal)) {
+  		if (isSVG) {
+  			domNode.setAttribute('class', attrVal);
+  		} else {
+  			domNode.className = attrVal;
+  		}
+  	}
+  }
+
+  // A fast className setter as its the most common property to regularly change
   function fastPropSet(attrName, attrVal, domNode, isSVG) {
   	if (attrName === 'class' || attrName === 'className') {
   		if (!isVoid(attrVal)) {
@@ -2151,6 +2184,11 @@
   			var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
   			if (lastAttrVal !== nextAttrVal) {
+
+  				if (attrName === 'className' || attrName === 'class') {
+  					fastClassSet(domNode, attrName);
+  				}
+
   				if (!isVoid(lastAttrVal)) {
   					if (isVoid(nextAttrVal)) {
   						if (attrName === 'style') {
@@ -2177,7 +2215,7 @@
   								styleUpdates[styleName] = nextAttrVal[styleName];
   							}
   						}
-  					} else {
+  					} else if (lastAttrVal !== nextAttrVal) {
 
   						if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
   							if (propertyToEventType[attrName]) {
