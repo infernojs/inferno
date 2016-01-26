@@ -4,243 +4,243 @@
  * Released under the MPL-2.0 License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoTestUtils = factory());
-}(this, function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('inferno')) :
+  typeof define === 'function' && define.amd ? define(['inferno'], factory) :
+  (global.InfernoTestUtils = factory(global.Inferno));
+}(this, function (Inferno) { 'use strict';
 
-	var babelHelpers = {};
+  Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
-	babelHelpers.classCallCheck = function (instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	};
+  var babelHelpers = {};
+  babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  };
+  babelHelpers;
 
-	babelHelpers.createClass = function () {
-	  function defineProperties(target, props) {
-	    for (var i = 0; i < props.length; i++) {
-	      var descriptor = props[i];
-	      descriptor.enumerable = descriptor.enumerable || false;
-	      descriptor.configurable = true;
-	      if ("value" in descriptor) descriptor.writable = true;
-	      Object.defineProperty(target, descriptor.key, descriptor);
-	    }
-	  }
+  function shallowRender(item) {
+  	return item.tree.test.create(item, 1);
+  }
 
-	  return function (Constructor, protoProps, staticProps) {
-	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	    if (staticProps) defineProperties(Constructor, staticProps);
-	    return Constructor;
-	  };
-	}();
+  function deepRender(item) {
+  	return item.tree.test.create(item, 99);
+  }
 
-	babelHelpers.extends = Object.assign || function (target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = arguments[i];
+  var isVoid = (function (x) {
+    return x === null || x === undefined;
+  })
 
-	    for (var key in source) {
-	      if (Object.prototype.hasOwnProperty.call(source, key)) {
-	        target[key] = source[key];
-	      }
-	    }
-	  }
+  var recyclingEnabled$1 = true;
 
-	  return target;
-	};
+  function pool(item) {
+  	var key = item.key;
+  	var tree = item.tree.dom;
 
-	babelHelpers;
+  	if (key === null) {
+  		tree.pool.push(item);
+  	} else {
+  		var keyedPool = tree.keyedPool; // TODO rename
 
-	var canUseDOM = !!(typeof window !== 'undefined' &&
-	// Nwjs doesn't add document as a global in their node context, but does have it on window.document,
-	// As a workaround, check if document is undefined
-	typeof document !== 'undefined' && window.document.createElement);
+  		(keyedPool[key] || (keyedPool[key] = [])).push(item);
+  	}
+  }
 
-	var ExecutionEnvironment = {
-		canUseDOM: canUseDOM,
-		canUseWorkers: typeof Worker !== 'undefined',
-		canUseEventListeners: canUseDOM && !!window.addEventListener,
-		canUseViewport: canUseDOM && !!window.screen,
-		canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
-	};
+  function isRecyclingEnabled() {
+  	return recyclingEnabled$1;
+  }
 
-	var noop = (function () {})
+  var recyclingEnabled = isRecyclingEnabled();
 
-	// Server side workaround
-	var requestAnimationFrame = noop;
-	var cancelAnimationFrame = noop;
+  function remove(item, parentNode) {
+  	var rootNode = item.rootNode;
 
-	if (ExecutionEnvironment.canUseDOM) {
-		(function () {
+  	if (isVoid(rootNode) || !rootNode.nodeType) {
+  		return null;
+  	}
+  	if (rootNode === parentNode) {
+  		parentNode.innerHTML = '';
+  	} else {
+  		parentNode.removeChild(item.rootNode);
+  		if (recyclingEnabled) {
+  			pool(item);
+  		}
+  	}
+  }
 
-			var lastTime = 0;
+  function canHydrate(domNode, nextDomNode) {
+  	if (nextDomNode) {
+  		if (nextDomNode.nodeType === 1 && nextDomNode.hasAttribute('data-inferno')) {
+  			return true;
+  		} else {
+  			// otherwise clear the DOM node
+  			domNode.innerHTML = '';
+  		}
+  	}
+  }
 
-			var nativeRequestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
+  function createTreeLifecycle() {
+  	var treeLifecycle = {
+  		treeSuccessListeners: [],
+  		addTreeSuccessListener: function addTreeSuccessListener(listener) {
+  			treeLifecycle.treeSuccessListeners.push(listener);
+  		},
+  		removeTreeSuccessListener: function removeTreeSuccessListener(listener) {
+  			for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
+  				var treeSuccessListener = treeLifecycle.treeSuccessListeners[i];
 
-			var nativeCancelAnimationFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame;
+  				if (treeSuccessListener === listener) {
+  					treeLifecycle.treeSuccessListeners.splice(i, 1);
+  					return;
+  				}
+  			}
+  		},
+  		reset: function reset() {
+  			treeLifecycle.treeSuccessListeners = [];
+  		},
+  		trigger: function trigger() {
+  			if (treeLifecycle.treeSuccessListeners.length > 0) {
+  				for (var i = 0; i < treeLifecycle.treeSuccessListeners.length; i++) {
+  					treeLifecycle.treeSuccessListeners[i]();
+  				}
+  			}
+  		}
+  	};
+  	return treeLifecycle;
+  }
 
-			requestAnimationFrame = nativeRequestAnimationFrame || function (callback) {
-				var currTime = Date.now();
-				var timeDelay = Math.max(0, 16 - (currTime - lastTime)); // 1000 / 60 = 16.666
+  function createDOMFragment(parentNode, nextNode) {
+  	var lastItem = undefined;
+  	var context = {};
+  	var treeLifecycle = createTreeLifecycle();
+  	return {
+  		parentNode: parentNode,
+  		render: function render(nextItem) {
+  			if (nextItem) {
+  				var tree = nextItem.tree && nextItem.tree.dom;
 
-				lastTime = currTime + timeDelay;
-				return window.setTimeout(function () {
-					callback(Date.now());
-				}, timeDelay);
-			};
+  				if (tree) {
+  					var activeNode = document.activeElement;
 
-			cancelAnimationFrame = nativeCancelAnimationFrame || function (frameId) {
-				window.clearTimeout(frameId);
-			};
-		})();
-	}
+  					if (lastItem) {
+  						tree.update(lastItem, nextItem, treeLifecycle, context);
 
-	function applyState(component) {
-		var blockRender = component._blockRender;
+  						if (!nextItem.rootNode) {
+  							lastItem = null;
+  							return;
+  						}
+  					} else {
+  						if (tree) {
+  							var hydrateNode = parentNode.firstChild;
 
-		requestAnimationFrame(function () {
-			if (component._deferSetState === false) {
-				var activeNode = undefined;
+  							if (canHydrate(parentNode, hydrateNode)) {
+  								tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
+  							} else {
+  								var dom = tree.create(nextItem, treeLifecycle, context);
 
-				if (ExecutionEnvironment.canUseDOM) {
-					activeNode = document.activeElement;
-				}
+  								if (!dom) {
+  									return;
+  								}
+  								if (nextNode) {
+  									parentNode.insertBefore(dom, nextNode);
+  								} else if (parentNode) {
+  									parentNode.appendChild(dom);
+  								}
+  							}
+  						}
+  					}
+  					treeLifecycle.trigger();
+  					lastItem = nextItem;
+  					if (activeNode !== document.body && document.activeElement !== activeNode) {
+  						activeNode.focus();
+  					}
+  				}
+  			}
+  		},
+  		remove: function remove$$() {
+  			if (lastItem) {
+  				var tree = lastItem.tree.dom;
 
-				component._pendingSetState = false;
-				var pendingState = component._pendingState;
-				var oldState = component.state;
-				var nextState = babelHelpers.extends({}, oldState, pendingState);
+  				if (lastItem) {
+  					tree.remove(lastItem, treeLifecycle);
+  				}
+  				if (lastItem.rootNode.parentNode) {
+  					remove(lastItem, parentNode);
+  				}
+  			}
+  			treeLifecycle.treeSuccessListeners = [];
+  		}
+  	};
+  }
 
-				component._pendingState = {};
-				component._pendingSetState = false;
-				component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
+  var rootFragments = [];
 
-				if (ExecutionEnvironment.canUseDOM && activeNode !== document.body && document.activeElement !== activeNode) {
-					activeNode.focus();
-				}
-			} else {
-				applyState(component);
-			}
-		});
-	}
+  function getRootFragmentAtNode(node) {
+  	var rootFragmentsLength = rootFragments.length;
 
-	function queueStateChanges(component, newState) {
-		for (var stateKey in newState) {
-			component._pendingState[stateKey] = newState[stateKey];
-		}
-		if (component._pendingSetState === false) {
-			component._pendingSetState = true;
-			applyState(component);
-		}
-	}
+  	if (rootFragmentsLength === 0) {
+  		return null;
+  	}
+  	for (var i = 0; i < rootFragmentsLength; i++) {
+  		var rootFragment = rootFragments[i];
 
-	/** Base Component class, for he ES6 Class method of creating Components
-	 *	@public
-	 *
-	 *	@example
-	 *	class MyFoo extends Component {
-	 *		render(props, state) {
-	 *			return <div />;
-	 *		}
-	 *	}
-	 */
+  		if (rootFragment.parentNode === node) {
+  			return rootFragment;
+  		}
+  	}
+  	return null;
+  }
 
-	var Component = function () {
-		function Component(props) {
-			babelHelpers.classCallCheck(this, Component);
+  function removeRootFragment(rootFragment) {
+  	for (var i = 0; i < rootFragments.length; i++) {
+  		if (rootFragments[i] === rootFragment) {
+  			rootFragments.splice(i, 1);
+  			return true;
+  		}
+  	}
+  	return false;
+  }
 
-			/** @type {object} */
-			this.props = props || {};
+  function render(nextItem, parentNode) {
+  	var rootFragment = getRootFragmentAtNode(parentNode);
 
-			/** @type {object} */
-			this.state = {};
+  	if (isVoid(rootFragment)) {
+  		var fragment = createDOMFragment(parentNode);
 
-			this._blockRender = false;
-			this._blockSetState = false;
-			this._deferSetState = false;
-			this._pendingSetState = false;
-			this._pendingState = {};
-			this._lastRender = null;
-			this.context = {};
-		}
+  		fragment.render(nextItem);
+  		rootFragments.push(fragment);
+  	} else {
+  		if (isVoid(nextItem)) {
+  			rootFragment.remove();
+  			removeRootFragment(rootFragment);
+  		} else {
+  			rootFragment.render(nextItem);
+  		}
+  	}
+  }
 
-		babelHelpers.createClass(Component, [{
-			key: 'render',
-			value: function render() {}
-		}, {
-			key: 'forceUpdate',
-			value: function forceUpdate() {}
-		}, {
-			key: 'setState',
-			value: function setState(newState /* , callback */) {
-				// TODO the callback
-				if (this._blockSetState === false) {
-					queueStateChanges(this, newState);
-				} else {
-					throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
-				}
-			}
-		}, {
-			key: 'componentDidMount',
-			value: function componentDidMount() {}
-		}, {
-			key: 'componentWillMount',
-			value: function componentWillMount() {}
-		}, {
-			key: 'componentWillUnmount',
-			value: function componentWillUnmount() {}
-		}, {
-			key: 'componentDidUpdate',
-			value: function componentDidUpdate() {}
-		}, {
-			key: 'shouldComponentUpdate',
-			value: function shouldComponentUpdate() {
-				return true;
-			}
-		}, {
-			key: 'componentWillReceiveProps',
-			value: function componentWillReceiveProps() {}
-		}, {
-			key: 'componentWillUpdate',
-			value: function componentWillUpdate() {}
-		}, {
-			key: 'getChildContext',
-			value: function getChildContext() {}
-		}, {
-			key: '_updateComponent',
-			value: function _updateComponent(prevState, nextState, prevProps, nextProps) {
-				if (!nextProps.children) {
-					nextProps.children = prevProps.children;
-				}
-				if (prevProps !== nextProps || prevState !== nextState) {
-					if (prevProps !== nextProps) {
-						this._blockRender = true;
-						this.componentWillReceiveProps(nextProps);
-						this._blockRender = false;
-					}
-					var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+  function renderIntoDocument(nextItem) {
+  	var parentNode = document.createElement('div');
 
-					if (shouldUpdate) {
-						this._blockSetState = true;
-						this.componentWillUpdate(nextProps, nextState);
-						this._blockSetState = false;
-						this.props = nextProps;
-						this.state = nextState;
-						var newDomNode = this.forceUpdate();
+  	render(nextItem, parentNode);
+  	return parentNode.firstChild;
+  }
 
-						this.componentDidUpdate(prevProps, prevState);
-						return newDomNode;
-					}
-				}
-			}
-		}]);
-		return Component;
-	}();
+  if (Inferno) {
+  	if (typeof Inferno.addTreeConstructor !== 'function') {
+  		throw 'Your package is out-of-date! Upgrade to latest Inferno in order to use the InfernoDOM package.';
+  	} else {
+  		Inferno.addTreeConstructor('test', createDOMTree);
+  	}
+  }
 
-	var index = {
-		Component: Component
-	};
+  var index = {
+  	shallowRender: shallowRender,
+  	deepRender: deepRender,
+  	renderIntoDocument: renderIntoDocument
+  	// Simulate
+  };
 
-	return index;
+  return index;
 
 }));

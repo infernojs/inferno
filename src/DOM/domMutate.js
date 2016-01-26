@@ -24,7 +24,7 @@ export function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLif
 	if (isVoid(startItem) && (isVoid(startItem.tree))) {
 		return;
 	}
-	if (items == null ||itemsLength === 0 && oldItemsLength >= 5) {
+	if (isVoid(items) || itemsLength === 0 && oldItemsLength >= 5) {
 		if (recyclingEnabled) {
 			for (let i = 0; i < oldItemsLength; i++) {
 				pool(oldItems[i]);
@@ -183,7 +183,7 @@ export function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentN
 					parentNode.removeChild(domNode);
 					domNodeList.splice(i, 1);
 				} else if (domNode) {
-					if (oldItem == null) {
+					if (isVoid(oldItem)) {
 						if (typeof item === 'object') {
 							const childNode = item.tree.dom.create(item, treeLifecycle, context);
 							domNode = childNode;

@@ -17,6 +17,6 @@ export default {
 	shallowRender,
 	deepRender,
 	renderIntoDocument
-	//Simulate
+	// Simulate
 };
 

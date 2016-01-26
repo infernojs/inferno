@@ -102,7 +102,7 @@ describe('Async rendering (JSX)', () => {
 			requestAnimationFrame(() => {
 				expect(container.firstChild.tagName).to.equal('DIV');
 				expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-				expect(container.firstChild.firstChild.firstChild.textContent).to.equal('Hello world!')
+				expect(container.firstChild.firstChild.firstChild.textContent).to.equal('Hello world!');
 				done();
 			});
 		});

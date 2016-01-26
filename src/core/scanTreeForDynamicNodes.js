@@ -91,7 +91,7 @@ export default function scanTreeForDynamicNodes(node, nodes) {
 		}
 	}
 	if (nodeIsDynamic === true) {
-		nodes.push({node, dynamicFlags});
+		nodes.push({ node, dynamicFlags });
 	}
 	return nodeIsDynamic;
 }

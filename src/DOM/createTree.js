@@ -243,7 +243,7 @@ export default function createDOMTree(schema, isRoot, dynamicNodes, domNamespace
 				const attrs = schema.attrs;
 				let dynamicAttrs = null;
 
-				templateNode = element.node
+				templateNode = element.node;
 				if (!isVoid(attrs)) {
 					if (dynamicFlags.ATTRS === true) {
 						dynamicAttrs = attrs;

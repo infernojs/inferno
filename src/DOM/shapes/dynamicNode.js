@@ -76,7 +76,7 @@ export default function createDynamicNode(valueIndex) {
 				const domNode = domNodeMap[lastItem.id];
 				const nextType = getTypeFromValue(nextValue);
 				const lastType = getTypeFromValue(lastValue);
-				const childNodeList = childNodeListMap[lastItem.id]
+				const childNodeList = childNodeListMap[lastItem.id];
 
 				if (lastType !== nextType) {
 					recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
@@ -99,7 +99,7 @@ export default function createDynamicNode(valueIndex) {
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 						return;
 					case ValueTypes.PROMISE:
-						//debugger;
+						// debugger;
 						return;
 				}
 			}
