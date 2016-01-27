@@ -216,7 +216,7 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 	if (isVoid(startItem) && isVoid(startItem.tree)) {
 		return;
 	}
-	if (items == null || itemsLength === 0 && oldItemsLength >= 5) {
+	if (isVoid(items) || itemsLength === 0 && oldItemsLength >= 5) {
 		if (recyclingEnabled$2) {
 			for (var i = 0; i < oldItemsLength; i++) {
 				pool(oldItems[i]);
@@ -348,38 +348,43 @@ function updateKeyed(items, oldItems, parentNode, parentNextNode, treeLifecycle,
 }
 
 function updateNonKeyed(items, oldItems, domNodeList, parentNode, parentNextNode, treeLifecycle, context) {
-	if (isVoid(items)) {
-		return;
-	}
-	var itemsLength = oldItems.length === items.length ? items.length : Math.max(oldItems.length, items.length);
+	var itemsLength = undefined;
+	var offset = 0;
 
-	if (itemsLength) {
-		for (var i = itemsLength; i > -1; i--) {
-			var item = items[i];
-			var oldItem = oldItems[i];
-			var domNode = domNodeList[i];
+	if (items) {
+		if (!isVoid(oldItems)) {
+			itemsLength = Math.max(items.length, oldItems.length);
+			for (var i = 0; i < itemsLength; i++) {
+				var item = items[i];
+				var oldItem = oldItems[i];
 
-			if (oldItem !== item) {
-				if (item === undefined && domNodeList.length) {
-					parentNode.removeChild(domNode);
-					domNodeList.splice(i, 1);
-				} else if (domNode) {
-					if (oldItem == null) {
-						if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
-							var childNode = item.tree.dom.create(item, treeLifecycle, context);
-							domNode = childNode;
-							insertOrAppend(parentNode, childNode, parentNextNode);
-						} else {
-							var childNode = document.createTextNode(item);
-							domNode = childNode;
-							insertOrAppend(parentNode, childNode, parentNextNode);
+				if (!isVoid(item)) {
+					if (!isVoid(oldItem)) {
+						if (isStringOrNumber(item)) {
+							var domNode = domNodeList[i];
+
+							if (domNode) {
+								domNode.nodeValue = item;
+							}
+						} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+							item.tree.dom.update(oldItem, item, treeLifecycle, context);
 						}
 					} else {
-						if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
-							item.tree.dom.update(oldItem, item, treeLifecycle, context);
-						} else {
-							domNode.nodeValue = item;
+						if (isStringOrNumber(item)) {
+							var childNode = document.createTextNode(item);
+							domNodeList[i] = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
+						} else if ((typeof item === 'undefined' ? 'undefined' : babelHelpers.typeof(item)) === 'object') {
+							var childNode = item.tree.dom.create(item, treeLifecycle, context);
+							domNodeList[i] = childNode;
+							insertOrAppend(parentNode, childNode, parentNextNode);
 						}
+					}
+				} else {
+					if (domNodeList[i + offset]) {
+						parentNode.removeChild(domNodeList[i + offset]);
+						domNodeList.splice(i + offset, 1);
+						offset--;
 					}
 				}
 			}
@@ -2018,17 +2023,6 @@ function addDOMStaticAttributes(vNode, domNode, attrs) {
 }
 
 // A fast className setter as its the most common property to regularly change
-function fastClassSet(attrName, attrVal, domNode, isSVG) {
-	if (!isVoid(attrVal)) {
-		if (isSVG) {
-			domNode.setAttribute('class', attrVal);
-		} else {
-			domNode.className = attrVal;
-		}
-	}
-}
-
-// A fast className setter as its the most common property to regularly change
 function fastPropSet(attrName, attrVal, domNode, isSVG) {
 	if (attrName === 'class' || attrName === 'className') {
 		if (!isVoid(attrVal)) {
@@ -2156,11 +2150,6 @@ function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, d
 			var nextAttrVal = getValueWithIndex(nextItem, dynamicAttrs[attrName]);
 
 			if (lastAttrVal !== nextAttrVal) {
-
-				if (attrName === 'className' || attrName === 'class') {
-					fastClassSet(domNode, attrName);
-				}
-
 				if (!isVoid(lastAttrVal)) {
 					if (isVoid(nextAttrVal)) {
 						if (attrName === 'style') {
@@ -2187,7 +2176,7 @@ function updateDOMDynamicAttributes(lastItem, nextItem, domNode, dynamicAttrs, d
 								styleUpdates[styleName] = nextAttrVal[styleName];
 							}
 						}
-					} else if (lastAttrVal !== nextAttrVal) {
+					} else {
 
 						if (fastPropSet(attrName, nextAttrVal, domNode, isSVG) === false) {
 							if (propertyToEventType[attrName]) {
@@ -2952,7 +2941,7 @@ function createDynamicNode(valueIndex) {
 						nextValue.tree.dom.update(lastValue, nextValue, treeLifecycle, context);
 						return;
 					case ValueTypes.PROMISE:
-						//debugger;
+						// debugger;
 						return;
 				}
 			}
@@ -3115,18 +3104,7 @@ function createRootNodeWithComponent(componentIndex, props, recyclingEnabled) {
 							}
 							currentItem.rootNode = newDomNode;
 						} else {
-							var _newDomNode = nextRender.tree.dom.create(statelessRender, treeLifecycle, context);
-
-							if (_newDomNode) {
-								if (nextRender.rootNode.parentNode) {
-									nextRender.rootNode.parentNode.replaceChild(_newDomNode, nextRender.rootNode);
-								} else {
-									lastItem.rootNode.parentNode.replaceChild(_newDomNode, lastItem.rootNode);
-								}
-								currentItem.rootNode = _newDomNode;
-							} else {
-								currentItem.rootNode = nextRender.rootNode;
-							}
+							recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
 						}
 					} else {
 						recreateRootNode(nextItem.rootNode, lastItem, nextItem, node, treeLifecycle, context);
@@ -3175,9 +3153,9 @@ function createRootNodeWithComponent(componentIndex, props, recyclingEnabled) {
 
 function createNodeWithComponent(componentIndex, props) {
 	var domNode = undefined;
-	var currentItem = undefined;
-	var statelessRender = undefined;
+	var currentItemMap = {};
 	var instanceMap = {};
+	var statelessRenderMap = {};
 	var node = {
 		overrideItem: null,
 		create: function create(item, treeLifecycle, context) {
@@ -3190,7 +3168,7 @@ function createNodeWithComponent(componentIndex, props) {
 			}
 			var Component = getValueWithIndex(toUseItem, componentIndex);
 
-			currentItem = item;
+			currentItemMap[item.id] = item;
 			if (isVoid(Component)) {
 				domNode = document.createTextNode('');
 				instance = null;
@@ -3213,7 +3191,7 @@ function createNodeWithComponent(componentIndex, props) {
 						var nextRender = Component(nextProps, context);
 
 						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
-						statelessRender = nextRender;
+						statelessRenderMap[item.id] = nextRender;
 					})();
 				} else {
 					(function () {
@@ -3270,7 +3248,7 @@ function createNodeWithComponent(componentIndex, props) {
 			var Component = getValueWithIndex(nextItem, componentIndex);
 			var instance = instanceMap[lastItem.id];
 
-			currentItem = nextItem;
+			currentItemMap[lastItem.id] = nextItem;
 			if (!Component) {
 				recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 				if (instance) {
@@ -3299,13 +3277,13 @@ function createNodeWithComponent(componentIndex, props) {
 
 					// Edge case. If we update from a stateless component with a null value, we need to re-create it, not update it
 					// E.g. start with 'render(template(null), container); ' will cause this.
-					if (!isVoid(statelessRender)) {
-						newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
+					if (!isVoid(statelessRenderMap[lastItem.id])) {
+						newDomNode = nextRender.tree.dom.update(statelessRenderMap[lastItem.id] || instance._lastRender, nextRender, treeLifecycle, context);
 					} else {
 						recreateNode(domNode, lastItem, nextItem, node, treeLifecycle, context);
 						return;
 					}
-					statelessRender = nextRender;
+					statelessRenderMap[lastItem.id] = nextRender;
 
 					var returnDomNode = false;
 

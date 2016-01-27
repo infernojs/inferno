@@ -232,7 +232,7 @@ var index = {
 	shallowRender: shallowRender,
 	deepRender: deepRender,
 	renderIntoDocument: renderIntoDocument
-	//Simulate
+	// Simulate
 };
 
 export default index;
