@@ -1264,7 +1264,7 @@ describe('Components (JSX)', () => {
 		let firstDiv,
 			secondDiv;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			firstDiv = document.createElement('div');
 			secondDiv = document.createElement('div');
 
