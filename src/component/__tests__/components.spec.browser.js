@@ -1253,25 +1253,25 @@ describe('Components', () => {
 	});
 
 	describe('should render a component with a list of text nodes', () => {
-		var root = createTemplate(function (children) {
+		const root = createTemplate(function (children) {
 			return {
-				tag: "div",
+				tag: 'div',
 				children: children
 			};
 		});
 
-		var header = createTemplate(function (children) {
+		const header = createTemplate(function (children) {
 			return {
-				tag: "div",
+				tag: 'div',
 				children: children
 			};
 		});
 
-		var view = function (state) {
+		const view = function (state) {
 			return root([
 				(state
-					? header(["Foo"])
-					: header(["Bar", "Qux"]))
+					? header(['Foo'])
+					: header([ 'Bar', 'Qux' ]))
 			]);
 		};
 

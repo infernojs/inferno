@@ -1203,7 +1203,7 @@ describe('Components (JSX)', () => {
 	});
 
 	describe('should render a conditional stateless component', () => {
-		const StatelessComponent = ({value}) => (
+		const StatelessComponent = ({ value }) => (
 			<p>{value}</p>
 		);
 
@@ -1215,6 +1215,7 @@ describe('Components (JSX)', () => {
 					counter: 0
 				};
 
+				this.condition = true;
 				this._onClick = this._onClick.bind(this);
 			}
 
@@ -1228,9 +1229,9 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={this._onClick}>Increase! {this.state.counter}</button>
-						{true ? <StatelessComponent value={this.state.counter} /> : null}
+						{this.condition ? <StatelessComponent value={this.state.counter} /> : null}
 					</div>
-				)
+				);
 			}
 		}
 
