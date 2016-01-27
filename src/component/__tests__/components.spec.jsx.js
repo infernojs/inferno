@@ -1259,4 +1259,94 @@ describe('Components (JSX)', () => {
 			});
 		});
 	});
+
+	describe('should render stateless component correctly when changing states', () => {
+		let firstDiv,
+			secondDiv;
+
+		beforeEach(function() {
+			firstDiv = document.createElement('div');
+			secondDiv = document.createElement('div');
+
+			container.appendChild(firstDiv);
+			container.appendChild(secondDiv);
+		});
+
+		const StatelessComponent = ({ value }) => (
+			<p>{value}</p>
+		);
+
+		class First extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					counter: 0
+				};
+
+				this.condition = true;
+				this._onClick = this._onClick.bind(this);
+			}
+
+			_onClick() {
+				this.setState({
+					counter: ++this.state.counter
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<button onClick={this._onClick}>{this.props.name} {this.state.counter}</button>
+						{this.condition ? <StatelessComponent value={this.state.counter} /> : null}
+					</div>
+				);
+			}
+		}
+
+		it('should correctly render', () => {
+			render(<First name="guy1" />, firstDiv);
+			render(<First name="guy2" />, secondDiv);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>')
+			);
+		});
+
+		it('should handle update when changing first component', (done) => {
+			render(<First name="guy1" />, firstDiv);
+			render(<First name="guy2" />, secondDiv);
+
+			const buttons = Array.prototype.slice.call(firstDiv.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><div><button>guy1 1</button><p>1</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>')
+				);
+				done();
+			});
+		});
+
+		it('should handle update when changing second component', (done) => {
+			render(<First name="guy1" />, firstDiv);
+			render(<First name="guy2" />, secondDiv);
+
+			const buttons = Array.prototype.slice.call(secondDiv.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 1</button><p>1</p></div></div>')
+				);
+				done();
+			});
+		});
+	});
 });
