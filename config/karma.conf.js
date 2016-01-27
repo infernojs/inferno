@@ -29,7 +29,7 @@ module.exports = function (config) {
 			module: {
 				postLoaders: [{
 					test: /\.js$/,
-					exclude: /(src\/dist|packages|.git|node_modules)/,
+					exclude: /(src\/dist|packages|.git|node_modules|__tests__)/,
 					loader: 'isparta',
 					include: path.join(__dirname, '../src')
 				}],
