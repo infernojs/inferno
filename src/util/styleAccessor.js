@@ -41,7 +41,7 @@ export const unitlessProperties = {
 
 export let directions = [ 'Top', 'Right', 'Bottom', 'Left' ];
 export let dirMap = (prefix, postfix) =>
-    directions.map(dir => (prefix || '') + dir + (postfix || ''));
+	directions.map(dir => (prefix || '') + dir + (postfix || ''));
 export const shortCuts = {
 	// rely on cssText
 	font: [/*
@@ -64,11 +64,10 @@ if (ExecutionEnvironment.canUseDOM) {
 	// get browser supported CSS properties
 	const documentElement = document.documentElement;
 	const computed = window.getComputedStyle(documentElement);
+	const documentStyle = documentElement.style;
 	const props = Array.prototype.slice.call(computed, 0);
-	for (let key in documentElement.style) {
-		if (!computed[key]) {
-			props.push(key);
-		}
+	for (let key in documentStyle) {
+		props.push(key);
 	}
 	props.forEach(function (propName) {
 		let prefix = propName[0] === '-'
@@ -76,13 +75,15 @@ if (ExecutionEnvironment.canUseDOM) {
 			: null;
 		let stylePropName = cssToJSName(propName);
 
-		HOOK[stylePropName] = {
-			unPrefixed: prefix
-				? propName.substr(prefix.length + 2)
-				: propName,
-			unitless: unitlessProperties[propName] ? true : false,
-			shorthand: null
-		};
+		if (!HOOK[stylePropName]) {
+			HOOK[stylePropName] = {
+				unPrefixed: prefix
+					? propName.substr(prefix.length + 2)
+					: propName,
+				unitless: unitlessProperties[propName] ? true : false,
+				shorthand: null
+			};
+		}
 	});
 
 	const lenMap = {
