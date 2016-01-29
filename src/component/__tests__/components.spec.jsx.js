@@ -1260,10 +1260,10 @@ describe('Components (JSX)', () => {
 		});
 
 		it('should correctly render when there are two instances of the component', () => {
-			var subContainer1 = document.createElement('div');
+			let subContainer1 = document.createElement('div');
 			container.appendChild(subContainer1);
 
-			var subContainer2 = document.createElement('div');
+			let subContainer2 = document.createElement('div');
 			container.appendChild(subContainer2);
 
 			render(<First />, subContainer1);
