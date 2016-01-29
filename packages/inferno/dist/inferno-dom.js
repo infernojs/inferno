@@ -910,21 +910,22 @@
   		// get browser supported CSS properties
   		var documentElement = document.documentElement;
   		var computed = window.getComputedStyle(documentElement);
+  		var documentStyle = documentElement.style;
   		var props = Array.prototype.slice.call(computed, 0);
-  		for (var key in documentElement.style) {
-  			if (!computed[key]) {
-  				props.push(key);
-  			}
+  		for (var key in documentStyle) {
+  			props.push(key);
   		}
   		props.forEach(function (propName) {
   			var prefix = propName[0] === '-' ? propName.substr(1, propName.indexOf('-', 1) - 1) : null;
   			var stylePropName = cssToJSName(propName);
 
-  			HOOK[stylePropName] = {
-  				unPrefixed: prefix ? propName.substr(prefix.length + 2) : propName,
-  				unitless: unitlessProperties[propName] ? true : false,
-  				shorthand: null
-  			};
+  			if (!HOOK[stylePropName]) {
+  				HOOK[stylePropName] = {
+  					unPrefixed: prefix ? propName.substr(prefix.length + 2) : propName,
+  					unitless: unitlessProperties[propName] ? true : false,
+  					shorthand: null
+  				};
+  			}
   		});
 
   		var lenMap = {
