@@ -1,60 +1,17 @@
-class FocusInput extends Inferno.Component {
-	constructor(props) {
-		super(props);
+var root = Inferno.createTemplate(function () {
+  return {
+    tag: "div",
+    attrs: {
+      style: {
+        width: "200px",
+        height: "200px",
+        backgroundColor: "red",
 
-		this.state = {
-			isEditMode: false
-		};
+        border: "5px solid black",
+        borderRadius: "5px"
+      }
+    }
+  };
+});
 
-		this.blur = this.blur.bind(this);
-		this.focus = this.focus.bind(this);
-	}
-
-	blur() {
-		console.log(new Date(), ': BLUR');
-		this.setState({
-			isEditMode: false
-		});
-	}
-
-	focus() {
-		console.log(new Date(), ': FOCUS');
-		this.setState({
-			isEditMode: true
-		});
-	}
-
-	render(props) {
-		return (
-			<div>
-				<div
-					contenteditable="true"
-					class={this.state.isEditMode + ''}
-					onBlur={this.blur}
-					onFocus={this.focus}>
-						{this.state.isEditMode + this.props.value}
-					</div>
-			</div>
-		);
-	}
-}
-
-class Looper extends Inferno.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<div class="loop">
-				{ [ 'Volvo', 'BMW', 'Mercedes' ].map((car) => {
-					return (
-						<FocusInput value={car} />
-					);
-				})}
-			</div>
-		);
-	}
-}
-
-InfernoDOM.render(<Looper />, document.getElementById('app'));
+InfernoDOM.render(root(), document.getElementById('app'));
