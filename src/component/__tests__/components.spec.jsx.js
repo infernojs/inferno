@@ -1221,7 +1221,7 @@ describe('Components (JSX)', () => {
 
 			_onClick() {
 				this.setState({
-					counter: ++this.state.counter
+					counter: 1
 				});
 			}
 
@@ -1258,22 +1258,6 @@ describe('Components (JSX)', () => {
 				done();
 			});
 		});
-
-		it('should correctly render when there are two instances of the component', () => {
-			let subContainer1 = document.createElement('div');
-			container.appendChild(subContainer1);
-
-			let subContainer2 = document.createElement('div');
-			container.appendChild(subContainer2);
-
-			render(<First />, subContainer1);
-			render(<First />, subContainer2);
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div><button>Increase! 0</button><p>0</p></div>')
-			);
-		});
 	});
 
 	describe('should render stateless component correctly when changing states', () => {
@@ -1306,7 +1290,7 @@ describe('Components (JSX)', () => {
 
 			_onClick() {
 				this.setState({
-					counter: ++this.state.counter
+					counter: 1
 				});
 			}
 
