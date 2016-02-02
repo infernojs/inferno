@@ -52,22 +52,20 @@ export default function createDOMFragment(parentNode, nextNode) {
 							return;
 						}
 					} else {
-						if (tree) {
-							const hydrateNode = parentNode.firstChild;
+						const hydrateNode = parentNode.firstChild;
 
-							if (canHydrate(parentNode, hydrateNode)) {
-								tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
-							} else {
-								const dom = tree.create(nextItem, treeLifecycle, context);
+						if (canHydrate(parentNode, hydrateNode)) {
+							tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
+						} else {
+							const dom = tree.create(nextItem, treeLifecycle, context);
 
-								if (!dom) {
-									return;
-								}
-								if (nextNode) {
-									parentNode.insertBefore(dom, nextNode);
-								} else if (parentNode) {
-									parentNode.appendChild(dom);
-								}
+							if (!dom) {
+								return;
+							}
+							if (nextNode) {
+								parentNode.insertBefore(dom, nextNode);
+							} else if (parentNode) {
+								parentNode.appendChild(dom);
 							}
 						}
 					}

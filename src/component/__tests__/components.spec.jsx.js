@@ -1349,4 +1349,43 @@ describe('Components (JSX)', () => {
 			});
 		});
 	});
+
+	describe('Nested Stateless component render', () => {
+
+		const NestedStateless = (props) => (<section>{props.children}</section>);
+
+		it('Should handle a single child', (done) => {
+			const Stateless = (props) => (
+				<div class={props.test}>
+					<NestedStateless>
+						<h1>1</h1>
+					</NestedStateless>
+				</div>
+			);
+
+			render(<Stateless test="joo"></Stateless>, container);
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div class="joo"><section><h1>1</h1></section></div>')
+				);
+				done();
+			});
+		});
+
+		it('Should handle array of childs', (done) => {
+			render(<NestedStateless><h1>1</h1><h2>2</h2></NestedStateless>, container);
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<section><h1>1</h1><h2>2</h2></section>')
+				);
+				done();
+			});
+		});
+	});
 });
