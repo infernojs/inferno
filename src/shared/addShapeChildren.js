@@ -1,5 +1,6 @@
 import isVoid from '../util/isVoid';
 import isArray from '../util/isArray';
+import replaceChild from '../core/replaceChild';
 
 export default function addShapeChildren(domNode, subTreeForChildren, item, treeLifecycle, context) {
 
@@ -13,15 +14,9 @@ export default function addShapeChildren(domNode, subTreeForChildren, item, tree
 				}
 			}
 		} else if (typeof subTreeForChildren === 'object') {
-
-			const replaceNode = domNode.firstChild;
 			const childNode = subTreeForChildren.create(item, treeLifecycle, context);
 
-			if (replaceNode) {
-				domNode.replaceChild(childNode, domNode.firstChild);
-			} else {
-				domNode.appendChild(childNode);
-			}
+			replaceChild(domNode, childNode);
 		}
 	}
 }
