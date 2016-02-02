@@ -13,7 +13,6 @@ export default function createNodeWithComponent(componentIndex, props) {
 		overrideItem: null,
 		create(item, treeLifecycle, context) {
 			let toUseItem = item;
-			let nextRender;
 			let instance = node.instance;
 
 			if (node.overrideItem !== null) {
@@ -48,7 +47,7 @@ export default function createNodeWithComponent(componentIndex, props) {
 					instance = new Component(getValueForProps(props, toUseItem));
 					instance.context = context;
 					instance.componentWillMount();
-					nextRender = instance.render();
+					const nextRender = instance.render();
 					const childContext = instance.getChildContext();
 					let fragmentFirstChild;
 
