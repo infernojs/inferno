@@ -499,7 +499,7 @@ function createDynamicChild(value, domNode, node, treeLifecycle, context) {
 						node.childNodeList.push(childNode);
 						domNode.appendChild(childNode);
 					} else {
-						var childNode = childItem.create(childItem, treeLifecycle, context);
+						var childNode = childItem.create(value.overrideItem || childItem, treeLifecycle, context);
 
 						if (childItem.key === undefined) {
 							node.keyedChildren = false;
