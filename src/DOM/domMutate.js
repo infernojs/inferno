@@ -300,8 +300,16 @@ export function createDynamicChild(value, domNode, node, treeLifecycle, context)
 				if (!isVoid(childItem) && typeof childItem === 'object') {
 					const tree = childItem && childItem.tree;
 
-					if (tree) {
+					if (!isVoid(tree)) {
 						const childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
+
+						if (childItem.key === undefined) {
+							node.keyedChildren = false;
+						}
+						node.childNodeList.push(childNode);
+						domNode.appendChild(childNode);
+					} else {
+						const childNode = childItem.create(value.overrideItem || childItem, treeLifecycle, context);
 
 						if (childItem.key === undefined) {
 							node.keyedChildren = false;

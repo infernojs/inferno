@@ -3,7 +3,7 @@ import isVoid from '../../util/isVoid';
 import { recycle } from '../recycling';
 import { getValueWithIndex, getValueForProps } from '../../core/variables';
 import recreateRootNode from '../recreateRootNode';
-import { handleHooks, hookTypes } from '../addAttributes';
+import { handleHooks } from '../addAttributes';
 
 const statefulError = 'Inferno Error: Stateful ES2015 components from `inferno-component` cannot use inline lifecycle hooks, apply the lifecycle methods to the class itself.';
 

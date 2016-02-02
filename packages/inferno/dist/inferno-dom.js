@@ -173,7 +173,7 @@
   	var replaceNode = domNode.firstChild;
 
   	if (replaceNode) {
-  		domNode.replaceChild(childNode, domNode.firstChild);
+  		domNode.replaceChild(childNode, replaceNode);
   	} else {
   		domNode.appendChild(childNode);
   	}
@@ -496,8 +496,16 @@
   				if (!isVoid(childItem) && (typeof childItem === 'undefined' ? 'undefined' : babelHelpers.typeof(childItem)) === 'object') {
   					var tree = childItem && childItem.tree;
 
-  					if (tree) {
+  					if (!isVoid(tree)) {
   						var childNode = childItem.tree.dom.create(childItem, treeLifecycle, context);
+
+  						if (childItem.key === undefined) {
+  							node.keyedChildren = false;
+  						}
+  						node.childNodeList.push(childNode);
+  						domNode.appendChild(childNode);
+  					} else {
+  						var childNode = childItem.create(value.overrideItem || childItem, treeLifecycle, context);
 
   						if (childItem.key === undefined) {
   							node.keyedChildren = false;
@@ -701,22 +709,20 @@
   							return;
   						}
   					} else {
-  						if (tree) {
-  							var hydrateNode = parentNode.firstChild;
+  						var hydrateNode = parentNode.firstChild;
 
-  							if (canHydrate(parentNode, hydrateNode)) {
-  								tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
-  							} else {
-  								var dom = tree.create(nextItem, treeLifecycle, context);
+  						if (canHydrate(parentNode, hydrateNode)) {
+  							tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
+  						} else {
+  							var dom = tree.create(nextItem, treeLifecycle, context);
 
-  								if (!dom) {
-  									return;
-  								}
-  								if (nextNode) {
-  									parentNode.insertBefore(dom, nextNode);
-  								} else if (parentNode) {
-  									parentNode.appendChild(dom);
-  								}
+  							if (!dom) {
+  								return;
+  							}
+  							if (nextNode) {
+  								parentNode.insertBefore(dom, nextNode);
+  							} else if (parentNode) {
+  								parentNode.appendChild(dom);
   							}
   						}
   					}
@@ -2672,15 +2678,9 @@
   				}
   			}
   		} else if ((typeof subTreeForChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(subTreeForChildren)) === 'object') {
-
-  			var replaceNode = domNode.firstChild;
   			var childNode = subTreeForChildren.create(item, treeLifecycle, context);
 
-  			if (replaceNode) {
-  				domNode.replaceChild(childNode, domNode.firstChild);
-  			} else {
-  				domNode.appendChild(childNode);
-  			}
+  			replaceChild(domNode, childNode);
   		}
   	}
   }
@@ -3018,7 +3018,6 @@
   							}
   						}
   						var nextRender = Component(nextProps, context);
-
   						domNode = nextRender.tree.dom.create(nextRender, treeLifecycle, context);
   						statelessRender = nextRender;
   						item.rootNode = domNode;
@@ -3099,7 +3098,7 @@
   						handleHooks(nextItem, lastProps, lastItem.rootNode, 'onComponentWillUpdate', true, nextProps);
   					}
   					var nextRender = Component(nextProps, context);
-
+  					statelessRender = nextRender;
   					if (!isVoid(statelessRender)) {
   						var newDomNode = nextRender.tree.dom.update(statelessRender || instance._lastRender, nextRender, treeLifecycle, context);
 
@@ -3120,8 +3119,6 @@
   					if (props && props.onComponentDidUpdate) {
   						handleHooks(nextItem, nextProps, lastItem.rootNode, 'onComponentDidUpdate', true);
   					}
-
-  					statelessRender = nextRender;
   				} else {
 
   					if (!instance || node !== lastItem.tree.dom || Component !== instance.constructor) {
@@ -3167,7 +3164,6 @@
   		overrideItem: null,
   		create: function create(item, treeLifecycle, context) {
   			var toUseItem = item;
-  			var nextRender = undefined;
   			var instance = node.instance;
 
   			if (node.overrideItem !== null) {
@@ -3205,7 +3201,7 @@
   						instance = new Component(getValueForProps(props, toUseItem));
   						instance.context = context;
   						instance.componentWillMount();
-  						nextRender = instance.render();
+  						var nextRender = instance.render();
   						var childContext = instance.getChildContext();
   						var fragmentFirstChild = undefined;
 

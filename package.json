@@ -98,7 +98,7 @@
     "build": "npm run build:es6 && npm run build:inferno-test-utils:dev && npm run build:inferno-test-utils:prod && npm run build:inferno-dom:dev && npm run build:inferno-dom:prod && npm run build:inferno:dev && npm run build:inferno:prod && npm run build:inferno-server:dev && npm run build:inferno-server:prod && npm run build:inferno-component:dev && npm run build:inferno-component:prod",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
     "test:server": "mocha --opts config/mocha.opts",
-    "test:browser": "karma start config/karma.conf.js --single-run",
+    "test:browser": "karma start config/karma.conf.js",
     "test": "npm run test:browser && npm run test:server",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ./src/**/*.js",
