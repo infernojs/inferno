@@ -86,7 +86,7 @@ InfernoDOM.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```jsx
-import { Component } from `inferno-component`;
+import { Component } from 'inferno-component';
 
 class MyComponent extends Component {
   constructor(props) {
