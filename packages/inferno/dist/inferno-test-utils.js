@@ -130,22 +130,20 @@
   							return;
   						}
   					} else {
-  						if (tree) {
-  							var hydrateNode = parentNode.firstChild;
+  						var hydrateNode = parentNode.firstChild;
 
-  							if (canHydrate(parentNode, hydrateNode)) {
-  								tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
-  							} else {
-  								var dom = tree.create(nextItem, treeLifecycle, context);
+  						if (canHydrate(parentNode, hydrateNode)) {
+  							tree.hydrate(hydrateNode, nextItem, treeLifecycle, context);
+  						} else {
+  							var dom = tree.create(nextItem, treeLifecycle, context);
 
-  								if (!dom) {
-  									return;
-  								}
-  								if (nextNode) {
-  									parentNode.insertBefore(dom, nextNode);
-  								} else if (parentNode) {
-  									parentNode.appendChild(dom);
-  								}
+  							if (!dom) {
+  								return;
+  							}
+  							if (nextNode) {
+  								parentNode.insertBefore(dom, nextNode);
+  							} else if (parentNode) {
+  								parentNode.appendChild(dom);
   							}
   						}
   					}
