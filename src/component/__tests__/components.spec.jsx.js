@@ -1387,5 +1387,34 @@ describe('Components (JSX)', () => {
 				done();
 			});
 		});
+
+		it('Should handle array of nested childs', (done) => {
+			render(<NestedStateless>
+						<NestedStateless><h1>1</h1></NestedStateless>
+						<NestedStateless><h2>2</h2></NestedStateless>
+					</NestedStateless>, container);
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<section><section><h1>1</h1></section><section><h2>2</h2></section></section>')
+				);
+				done();
+			});
+		});
+
+		it('Should handle nested childs', (done) => {
+			render(<NestedStateless><NestedStateless><NestedStateless><h1>1</h1></NestedStateless></NestedStateless></NestedStateless>, container);
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<section><section><section><h1>1</h1></section></section></section>')
+				);
+				done();
+			});
+		});
 	});
 });
