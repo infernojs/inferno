@@ -1,5 +1,5 @@
 function queueStateChanges(component, newState) {
-	for (var stateKey in newState) {
+	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (component._pendingSetState === false) {
@@ -9,24 +9,24 @@ function queueStateChanges(component, newState) {
 }
 
 function applyState(component) {
-	var blockRender = component._blockRender;
+	const blockRender = component._blockRender;
 
 	requestAnimationFrame(() => {
 		if (component._deferSetState === false) {
-			var activeNode = document.activeElement;
+			const activeNode = document.activeElement;
 
 			component._pendingSetState = false;
-			var pendingState = component._pendingState;
-			var oldState = component.state;
-			var nextState = { ...oldState, ...pendingState };
+			const pendingState = component._pendingState;
+			const oldState = component.state;
+			const nextState = { ...oldState, ...pendingState };
 
 			component._pendingState = {};
 			component._pendingSetState = false;
-			var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
-			var lastNode = component._lastNode;
-			var parentDom = lastNode.dom.parentNode;
+			const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
+			const lastNode = component._lastNode;
+			const parentDom = lastNode.dom.parentNode;
 
-			var subLifecycle = new Lifecycle();
+			const subLifecycle = new Lifecycle();
 			component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
 			subLifecycle.addListener(() => {
 				subLifecycle.trigger();
@@ -45,6 +45,7 @@ export default class Component {
 	constructor(props) {
 		/** @type {object} */
 		this.props = props || {};
+
 		/** @type {object} */
 		this.state = {};
 		this._blockRender = false;
@@ -89,7 +90,7 @@ export default class Component {
 				this.componentWillReceiveProps(nextProps);
 				this._blockRender = false;
 			}
-			var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
 			if (shouldUpdate) {
 				this._blockSetState = true;
@@ -97,7 +98,7 @@ export default class Component {
 				this._blockSetState = false;
 				this.props = nextProps;
 				this.state = nextState;
-				var node = this.render();
+				const node = this.render();
 
 				this.componentDidUpdate(prevProps, prevState);
 				return node;

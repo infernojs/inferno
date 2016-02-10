@@ -21,7 +21,7 @@ export function createAttrsAndEvents(props, tag) {
 
 	if (props) {
 		if (!isArray(props)) {
-			for (var prop in props) {
+			for (let prop in props) {
 				if (isAttrAnEvent(prop)) {
 					if (!events) {
 						events = {};
@@ -32,7 +32,7 @@ export function createAttrsAndEvents(props, tag) {
 					if (!attrs) {
 						attrs = [];
 					}
-					attrs.push({name: prop, value: props[prop]});
+					attrs.push({ name: prop, value: props[prop] });
 				} else {
 					attrs = props;
 				}
@@ -45,14 +45,14 @@ export function createAttrsAndEvents(props, tag) {
 }
 
 function createChild({ tag, attrs, children, text }) {
-	const key = attrs && attrs.key != null ? attrs.key : null;
+	const key = attrs && !isNullOrUndefined(attrs.key) ? attrs.key : null;
 
 	if (key !== null) {
 		delete attrs.key;
 	}
 	const attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-	if (children != null) {
+	if (!isNullOrUndefined(children)) {
 		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 	return {
@@ -74,7 +74,7 @@ export function createChildren(children) {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
-			if (child != null) {
+			if (!isNullOrUndefined(child)) {
 				newChildren.push(createChild(child));
 			} else {
 				newChildren.push(child);
@@ -89,5 +89,5 @@ export function createChildren(children) {
 }
 
 export default function createElement(tag, props, ...children) {
-	return createChild({tag, attrs: props, children});
+	return createChild({ tag, attrs: props, children });
 }

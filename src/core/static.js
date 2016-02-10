@@ -1,26 +1,29 @@
-import { isAttrAnEvent } from './utils';
+import { isAttrAnEvent, isNullOrUndefined } from './utils';
+
+const isBrowser = typeof window !== 'undefined' && window.document;
 
 export function createStaticElement(tag, attrs) {
-	//add in DOM is available check?
-	var dom = document.createElement(tag);
-	if (attrs) {
-		createStaticAttributes(attrs, dom);
+	if (isBrowser) {
+		const dom = document.createElement(tag);
+		if (attrs) {
+			createStaticAttributes(attrs, dom);
+		}
+		return dom;
 	}
-
-	return dom;
+	return null;
 }
 
 function createStaticAttributes(attrs, dom) {
-	var attrKeys = Object.keys(attrs);
+	const attrKeys = Object.keys(attrs);
 
-	for (var i = 0; i < attrKeys.length; i++) {
-		var attr = attrKeys[i];
-		var value = attrs[attr];
+	for (let i = 0; i < attrKeys.length; i++) {
+		const attr = attrKeys[i];
+		const value = attrs[attr];
 
 		if (attr === 'className') {
 			dom.className = value;
 		} else {
-			if (value != null && value !== false && value !== true && !isAttrAnEvent(attr)) {
+			if (!isNullOrUndefined(value) && value !== false && value !== true && !isAttrAnEvent(attr)) {
 				dom.setAttribute(attr, value);
 			} else if (value === true) {
 				dom.setAttribute(attr, attr);

@@ -12,8 +12,8 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, sta
 		}
 		return;
 	}
-	var nextTag = nextNode.tag || (staticCheck ? nextNode.static.tag : null);
-	var lastTag = lastNode.tag || (staticCheck ? lastNode.static.tag : null);
+	const nextTag = nextNode.tag || (staticCheck ? nextNode.static.tag : null);
+	const lastTag = lastNode.tag || (staticCheck ? lastNode.static.tag : null);
 
 	if (lastNode.events && lastNode.events.willUpdate) {
 		lastNode.events.willUpdate(lastNode.dom);
@@ -37,7 +37,7 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, sta
 		updateComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
 		return;
 	}
-	var dom = lastNode.dom;
+	const dom = lastNode.dom;
 
 	nextNode.dom = dom;
 	diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck);
@@ -50,14 +50,14 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, sta
 }
 
 function diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck) {
-	var nextChildren = nextNode.children;
-	var lastChildren = lastNode.children;
+	const nextChildren = nextNode.children;
+	const lastChildren = lastNode.children;
 
 	if (lastChildren !== nextChildren) {
 		if (!isNullOrUndefined(lastChildren) && !isNullOrUndefined(nextChildren)) {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0].key)
+					const isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0].key)
 						|| lastChildren.length && !isNullOrUndefined(lastChildren[0].key);
 
 					if (!isKeyed) {
@@ -84,17 +84,17 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck) 
 }
 
 function diffAttributes(lastNode, nextNode, dom) {
-	var nextAttrs = nextNode.attrs;
-	var lastAttrs = lastNode.attrs;
+	const nextAttrs = nextNode.attrs;
+	const lastAttrs = lastNode.attrs;
 
 	if (nextAttrs) {
-		for (var i = 0; i < nextAttrs.length; i++) {
-			var lastAttr = lastAttrs[i];
-			var nextAttr = nextAttrs[i];
-			var lastAttrName = lastAttr && lastAttr.name;
-			var nextAttrName = nextAttr && nextAttr.name;
-			var lastAttrVal = lastAttr && lastAttr.value;
-			var nextAttrVal = nextAttr && nextAttr.value;
+		for (let i = 0; i < nextAttrs.length; i++) {
+			const lastAttr = lastAttrs[i];
+			const nextAttr = nextAttrs[i];
+			const lastAttrName = lastAttr && lastAttr.name;
+			const nextAttrName = nextAttr && nextAttr.name;
+			const lastAttrVal = lastAttr && lastAttr.value;
+			const nextAttrVal = nextAttr && nextAttr.value;
 
 			if (lastAttrName && lastAttrName === nextAttrName) {
 				patchAttribute(lastAttrName, lastAttrVal, nextAttrVal, dom);

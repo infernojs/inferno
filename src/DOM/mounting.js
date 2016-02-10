@@ -5,8 +5,8 @@ import { patchAttribute } from './patching';
 
 function mountChildren(children, parentDom, lifecycle, context) {
 	if (isArray(children)) {
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
 
 			if (isStringOrNumber(child)) {
 				appendText(child, parentDom, false);
@@ -26,19 +26,19 @@ function mountChildren(children, parentDom, lifecycle, context) {
 function mountComponent(parentNode, Component, props, events, children, parentDom, lifecycle, context) {
 	props = addChildrenToProps(children, props);
 
-	if(isStatefulComponent(Component)) {
-		var instance = new Component(props);
+	if (isStatefulComponent(Component)) {
+		const instance = new Component(props);
 		instance._diffNodes = diffNodes;
 
-		var childContext = instance.getChildContext();
+		const childContext = instance.getChildContext();
 		if (childContext) {
 			context = _extends({}, context, childContext);
 		}
 		instance.context = context;
 
 		instance.componentWillMount();
-		var node = instance.render();
-		var dom;
+		const node = instance.render();
+		let dom;
 
 		if (node) {
 			dom = mountNode(node, null, lifecycle, context);
@@ -53,7 +53,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		parentNode.instance = instance;
 		return dom;
 	} else {
-		var dom;
+		let dom;
 		if (events) {
 			if (events.componentWillMount) {
 				events.componentWillMount(null, props);
@@ -64,7 +64,9 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 				});
 			}
 		}
-		var node = Component(props);
+
+		/* eslint new-cap: 0 */
+		const node = Component(props);
 		dom = mountNode(node, null, lifecycle, context);
 
 		parentNode.instance = node;
@@ -78,12 +80,12 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 }
 
 export function mountNode(node, parentDom, lifecycle, context) {
-	var dom;
+	let dom;
 
 	if (node === null) {
 		return;
 	}
-	if (node == null || isArray(node)) {
+	if (isNullOrUndefined(node) || isArray(node)) {
 		return;
 	}
 	if (isStringOrNumber(node)) {
@@ -106,9 +108,9 @@ export function mountNode(node, parentDom, lifecycle, context) {
 	} else {
 		dom = document.createElement(node.tag);
 	}
-	var children = node.children;
-	var attrs = node.attrs;
-	var events = node.events;
+	const children = node.children;
+	const attrs = node.attrs;
+	const events = node.events;
 
 	if (events) {
 		if (events.click) {
@@ -138,10 +140,10 @@ export function mountNode(node, parentDom, lifecycle, context) {
 }
 
 function mountAttributes(attrs, dom) {
-	for (var i = 0; i < attrs.length; i++) {
-		var attr = attrs[i];
-		var attrName = attr && attr.name;
-		var attrVal = attr && attr.value;
+	for (let i = 0; i < attrs.length; i++) {
+		const attr = attrs[i];
+		const attrName = attr && attr.name;
+		const attrVal = attr && attr.value;
 
 		if (attrName) {
 			patchAttribute(attrName, null, attrVal, dom);

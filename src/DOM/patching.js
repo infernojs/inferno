@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString } from '../core/utils';
 import { diffNodes } from './diffing';
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
@@ -22,17 +22,17 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 		if (attrName === 'className') {
 			dom.className = nextAttrValue;
 		} else if (attrName === 'style') {
-			if(typeof nextAttrValue === 'string') {
+			if (isString(nextAttrValue)) {
 				dom.style.cssText = nextAttrValue;
 			} else {
-				for (var style in nextAttrValue) {
-					var styleVal = nextAttrValue[style];
+				for (let style in nextAttrValue) {
+					const styleVal = nextAttrValue[style];
 					dom.style[style] = styleVal;
 				}
 			}
 		} else {
 			if (!isAttrAnEvent(attrName)) {
-				if (nextAttrValue === false || nextAttrValue == null) {
+				if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 					dom.removeAttribute(attrName);
 				} else if (nextAttrValue === true) {
 					dom.setAttribute(attrName, attrName);
@@ -45,14 +45,14 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 }
 
 export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, nextDom) {
-	var lastChildrenLength = lastChildren.length;
-	var nextChildrenLength = nextChildren.length;
-	var counter = 0;
-	var lastDomNode;
+	let lastChildrenLength = lastChildren.length;
+	let nextChildrenLength = nextChildren.length;
+	let counter = 0;
+	let lastDomNode;
 
 	if (lastChildrenLength > nextChildrenLength) {
 		while (lastChildrenLength !== nextChildrenLength) {
-			var lastChild = lastChildren[lastChildrenLength - 1];
+			const lastChild = lastChildren[lastChildrenLength - 1];
 			dom.removeChild((lastDomNode = lastChild.dom)
 				|| (lastDomNode && (lastDomNode = lastDomNode.previousSibling))
 				|| (lastDomNode = dom.lastChild)
@@ -61,16 +61,16 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 		}
 	} else if (lastChildrenLength < nextChildrenLength) {
 		while (lastChildrenLength !== nextChildrenLength) {
-			var nextChild = nextChildren[lastChildrenLength + counter];
-			var node = mountNode(nextChild, null, lifecycle, context);
+			const nextChild = nextChildren[lastChildrenLength + counter];
+			const node = mountNode(nextChild, null, lifecycle, context);
 			dom.appendChild(node);
 			nextChildrenLength--;
 			counter++;
 		}
 	}
-	for (var i = 0; i < nextChildrenLength; i++) {
-		var lastChild = lastChildren[i];
-		var nextChild = nextChildren[i];
+	for (let i = 0; i < nextChildrenLength; i++) {
+		const lastChild = lastChildren[i];
+		const nextChild = nextChildren[i];
 
 		if (lastChild !== nextChild) {
 			patchNode(lastChild, nextChild, dom, lifecycle, context);
@@ -79,17 +79,17 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 }
 
 export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, nextDom) {
-	var stop = false;
-	var startIndex = 0;
-	var oldStartIndex = 0;
-	var nextChildrenLength = nextChildren.length;
-	var lastChildrenLength = lastChildren.length;
-	var item;
-	var oldItem;
+	let stop = false;
+	let startIndex = 0;
+	let oldStartIndex = 0;
+	let nextChildrenLength = nextChildren.length;
+	let lastChildrenLength = lastChildren.length;
+	let item;
+	let oldItem;
 
 	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
 		if (recyclingEnabled) {
-			for (var i = 0; i < lastChildrenLength; i++) {
+			for (let i = 0; i < lastChildrenLength; i++) {
 				pool(lastChildren[i]);
 			}
 		}
@@ -97,13 +97,13 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		return;
 	}
 
-	var endIndex = nextChildrenLength - 1;
-	var oldEndIndex = lastChildrenLength - 1;
-	var oldStartItem = (lastChildrenLength > 0) ? lastChildren[oldStartIndex] : null;
-	var startItem = (nextChildrenLength > 0) ? nextChildren[startIndex] : null;
-	var endItem;
-	var oldEndItem;
-	var nextNode;
+	let endIndex = nextChildrenLength - 1;
+	let oldEndIndex = lastChildrenLength - 1;
+	let oldStartItem = (lastChildrenLength > 0) ? lastChildren[oldStartIndex] : null;
+	let startItem = (nextChildrenLength > 0) ? nextChildren[startIndex] : null;
+	let endItem;
+	let oldEndItem;
+	let nextNode;
 
 	// TODO don't read key too often
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
@@ -178,17 +178,17 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			remove(oldItem, dom);
 		}
 	} else {
-		var oldItemsMap = {};
+		const oldItemsMap = {};
 
-		for (var i = oldStartIndex; i <= oldEndIndex; i++) {
+		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = lastChildren[i];
 			oldItemsMap[oldItem.key] = oldItem;
 		}
-		var nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1] : null;
+		let nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1] : null;
 
-		for (var i = endIndex; i >= startIndex; i--) {
+		for (let i = endIndex; i >= startIndex; i--) {
 			item = nextChildren[i];
-			var key = item.key;
+			const key = item.key;
 			oldItem = oldItemsMap[key];
 			if (oldItem !== undefined) {
 				oldItemsMap[key] = null;
@@ -205,7 +205,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			}
 			nextNode = item;
 		}
-		for (var i = oldStartIndex; i <= oldEndIndex; i++) {
+		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = lastChildren[i];
 			if (oldItemsMap[oldItem.key] !== null) {
 				remove(oldItem, dom);

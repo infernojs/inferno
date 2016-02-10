@@ -1,14 +1,14 @@
 export const recyclingEnabled = false;
 
 export function recycle(node, lifecycle, context) {
-	var key = node.key;
-	var recycledNode;
+	const key = node.key;
+	let recycledNode;
 
 	if (key !== null) {
-		var keyPool = node.static.static.keyed[key];
+		const keyPool = node.static.static.keyed[key];
 		recycledNode = keyPool && keyPool.pop();
 	} else {
-		var keyPool = node.static.static.nonKeyed;
+		const keyPool = node.static.static.nonKeyed;
 		recycledNode = keyPool && keyPool.pop();
 	}
 	if (recycledNode) {
@@ -18,13 +18,14 @@ export function recycle(node, lifecycle, context) {
 }
 
 export function pool(item) {
-	var key = item.key;
-	var pool = item.static.static;
+	const key = item.key;
+	const staticNode = item.static.static;
+
 	if (key === null) {
-		var pool = pool.nonKeyed;
+		const pool = staticNode.nonKeyed;
 		pool && pool.push(item);
 	} else {
-		var pool = pool.keyed;
+		const pool = staticNode.keyed;
 		(pool[key] || (pool[key] = [])).push(item);
 	}
 }

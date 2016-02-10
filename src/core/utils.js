@@ -36,3 +36,7 @@ export function isFunction(obj) {
 export function isAttrAnEvent(attr) {
 	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
+
+export function isString(obj) {
+	return typeof obj === 'string';
+}
