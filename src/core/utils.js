@@ -1,5 +1,5 @@
 export function addChildrenToProps(children, props) {
-	if (isNullOrUndefined(children)) {
+	if (!isNullOrUndefined(children)) {
 		if ((isArray(children) && children.length > 0) || !isArray(children)) {
 			if (props) {
 				props.children = children;

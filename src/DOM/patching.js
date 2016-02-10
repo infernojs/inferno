@@ -1,5 +1,8 @@
-import { isNullOrUndefined, isAttrAnEvent, isString } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent } from '../core/utils';
 import { diffNodes } from './diffing';
+import { mountNode } from './mounting';
+import { insertOrAppend, remove } from './utils';
+import { recyclingEnabled } from './recycling';
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
 	if (isNullOrUndefined(lastNode)) {
@@ -39,6 +42,49 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 				} else {
 					dom.setAttribute(attrName, nextAttrValue);
 				}
+			}
+		}
+	}
+}
+
+export function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextEvents, nextChildren, parentDom, lifecycle, context) {
+	nextProps = addChildrenToProps(nextChildren, nextProps);
+
+	if (isStatefulComponent(Component)) {
+		var prevProps = instance.props;
+		var prevState = instance.state;
+		var nextState = instance.state;
+
+		var childContext = instance.getChildContext();
+		if (childContext) {
+			context = _extends({}, context, childContext);
+		}
+		instance.context = context;
+		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+		if (nextNode) {
+			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, false);
+			lastNode.dom = nextNode.dom;
+			instance._lastNode = nextNode;
+		}
+	} else {
+		var shouldUpdate = true;
+
+		if (nextEvents && nextEvents.componentShouldUpdate) {
+			shouldUpdate = nextEvents.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
+		}
+		if (shouldUpdate !== false) {
+			if (nextEvents && nextEvents.componentWillUpdate) {
+				nextEvents.componentWillUpdate(lastNode.dom, lastProps, nextProps);
+			}
+			var nextNode = Component(nextProps);
+			var dom = lastNode.dom;
+			nextNode.dom = dom;
+
+			diffNodes(instance, nextNode, dom, lifecycle, context, false);
+			lastNode.instance = nextNode;
+			if (nextEvents && nextEvents.componentDidUpdate) {
+				nextEvents.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
 		}
 	}

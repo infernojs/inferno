@@ -1,7 +1,8 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent } from '../core/utils';
 import { recyclingEnabled } from './recycling';
 import { appendText } from './utils';
 import { patchAttribute } from './patching';
+import { handleEvent } from './events';
 
 function mountChildren(children, parentDom, lifecycle, context) {
 	if (isArray(children)) {

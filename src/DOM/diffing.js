@@ -1,6 +1,6 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent } from '../core/utils';
 import { replaceNode } from './utils';
-import { patchNonKeyedChildren, patchAttribute } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent } from './patching';
 
 export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, staticCheck) {
 	if (nextNode === false || nextNode === null) {
@@ -34,7 +34,7 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, sta
 	if (isFunction(lastTag) && isFunction(nextTag)) {
 		nextNode.instance = lastNode.instance;
 		nextNode.dom = lastNode.dom;
-		updateComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
+		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
 		return;
 	}
 	const dom = lastNode.dom;

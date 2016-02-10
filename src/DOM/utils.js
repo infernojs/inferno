@@ -1,4 +1,6 @@
 import { mountNode } from './mounting';
+import { isStatefulComponent } from '../core/utils';
+import { recyclingEnabled } from './recycling';
 
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (nextNode) {
@@ -28,7 +30,7 @@ export function replaceNode(lastNode, nextNode, parentDom, lifecycle, context) {
 	nextNode.dom = dom;
 }
 
-export function dettachNode(node) {
+export function detachNode(node) {
 	if (isStatefulComponent(node.instance)) {
 		node.instance.componentWillUnmount();
 		node.instance._unmounted = true;
@@ -44,10 +46,10 @@ export function dettachNode(node) {
 	if (children) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
-				dettachNode(children[i]);
+				detachNode(children[i]);
 			}
 		} else {
-			dettachNode(children);
+			detachNode(children);
 		}
 	}
 }
@@ -55,7 +57,7 @@ export function dettachNode(node) {
 export function remove(node, parentDom) {
 	const dom = node.dom;
 
-	dettachNode(node);
+	detachNode(node);
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {
