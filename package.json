@@ -24,7 +24,7 @@
     "babel-register": "^6.4.3",
     "chai": "^3.4.1",
     "eslint": "^1.10.3",
-    "glob": "^6.0.4",
+    "glob": "^7.0.0",
     "inferno-component": "^0.5.19",
     "isparta": "^4.0.0",
     "isparta-loader": "^2.0.0",
