@@ -1,8 +1,9 @@
-import createTemplate, { addTreeConstructor } from '../../../src/core/createTemplate';
-import TemplateFactory from '../../../src/core/TemplateFactory';
+import createElement from '../../../src/core/createElement';
+import { createStaticElement } from '../../../src/core/static';
 
 export default {
-	createTemplate,
-	TemplateFactory,
-	addTreeConstructor
+	createElement,
+	staticCompiler: {
+		createElement: createStaticElement
+	}
 };
