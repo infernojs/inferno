@@ -76,7 +76,7 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck) 
 						dom.firstChild.nodeValue = nextChildren;
 					}
 				} else {
-					diffNodes(lastChildren, nextChildren, dom, lifecycle, context, true);
+					diffNodes(lastChildren, nextChildren, dom, lifecycle, context, staticCheck);
 				}
 			}
 		}

@@ -107,13 +107,6 @@
 		};
 	}
 
-	function click(props) {
-		return function (e) {
-			console.log('Clicked' + props.text);
-			e.stopPropagation();
-		};
-	}
-
 	var tableCell1 = {
 		dom: Inferno.staticCompiler.createElement('td', { className: 'TableCell' }),
 		static: {
@@ -140,7 +133,10 @@
 			tag: null,
 			key: null,
 			attrs: null,
-			events: { click: click(props) },
+			events: { click: (e) => {
+				console.log('Clicked' + props.text);
+				e.stopPropagation();
+			} },
 			children: props.text,
 			nextNode: null,
 			instance: null
@@ -316,7 +312,7 @@
 			nextNode: null,
 			instance: null
 		};
-	}
+	};
 
 	var treeLeaf1 = {
 		dom: Inferno.staticCompiler.createElement('li', { className: 'TreeLeaf' }),
@@ -340,8 +336,10 @@
 			tag: null,
 			key: null,
 			attrs: null,
-			events: null,
-			children: props.data.id,
+			events: {
+				componentShouldUpdate: appUpdateCheck
+			},
+			children: '' + props.data.id,
 			nextNode: null,
 			instance: null
 		};

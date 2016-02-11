@@ -3,21 +3,17 @@ const delegatedEventsRegistry = {};
 export function handleEvent(event, dom, callback) {
 	if (!delegatedEventsRegistry[event]) {
 		document.addEventListener(event, callbackEvent => {
-			const callback = delegatedEventsRegistry[event].get(callbackEvent.target);
+			const delegatedEvents = delegatedEventsRegistry[event];
 
-			if (callback) {
-				callback(callbackEvent);
+			for (let i = delegatedEvents.length - 1; i > -1; i--) {
+				const delegatedEvent = delegatedEvents[i];
+
+				if (delegatedEvent.target === callbackEvent.target) {
+					delegatedEvent.callback(callbackEvent);
+				}
 			}
-
-			//for (let i = 0; i < 1; i++) {
-			//	const delegatedEvent = delegatedEvents[i];
-			//
-			//	if (delegatedEvent.target === callbackEvent.target) {
-			//		delegatedEvent.callback(callbackEvent);
-			//	}
-			//}
 		}, false);
-		delegatedEventsRegistry[event] = new Map();
+		delegatedEventsRegistry[event] = [];
 	} else {
 		const delegatedEvents = delegatedEventsRegistry[event];
 
@@ -29,10 +25,9 @@ export function handleEvent(event, dom, callback) {
 		//		break;
 		//	}
 		//}
-		//delegatedEvents.push({
-		//	callback: callback,
-		//	target: dom
-		//});
-		delegatedEvents.set(dom, callback);
+		delegatedEvents.push({
+			callback: callback,
+			target: dom
+		});
 	}
 }

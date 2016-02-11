@@ -249,7 +249,7 @@
 							dom.firstChild.nodeValue = nextChildren;
 						}
 					} else {
-						diffNodes$1(lastChildren, nextChildren, dom, lifecycle, context, true);
+						diffNodes$1(lastChildren, nextChildren, dom, lifecycle, context, staticCheck);
 					}
 				}
 			}
@@ -536,21 +536,17 @@
 	function handleEvent(event, dom, callback) {
 		if (!delegatedEventsRegistry[event]) {
 			document.addEventListener(event, function (callbackEvent) {
-				var callback = delegatedEventsRegistry[event].get(callbackEvent.target);
+				var delegatedEvents = delegatedEventsRegistry[event];
 
-				if (callback) {
-					callback(callbackEvent);
+				for (var i = delegatedEvents.length - 1; i > -1; i--) {
+					var delegatedEvent = delegatedEvents[i];
+
+					if (delegatedEvent.target === callbackEvent.target) {
+						delegatedEvent.callback(callbackEvent);
+					}
 				}
-
-				//for (let i = 0; i < 1; i++) {
-				//	const delegatedEvent = delegatedEvents[i];
-				//
-				//	if (delegatedEvent.target === callbackEvent.target) {
-				//		delegatedEvent.callback(callbackEvent);
-				//	}
-				//}
 			}, false);
-			delegatedEventsRegistry[event] = new Map();
+			delegatedEventsRegistry[event] = [];
 		} else {
 			var delegatedEvents = delegatedEventsRegistry[event];
 
@@ -562,11 +558,10 @@
 			//		break;
 			//	}
 			//}
-			//delegatedEvents.push({
-			//	callback: callback,
-			//	target: dom
-			//});
-			delegatedEvents.set(dom, callback);
+			delegatedEvents.push({
+				callback: callback,
+				target: dom
+			});
 		}
 	}
 
