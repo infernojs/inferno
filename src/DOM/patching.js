@@ -13,7 +13,7 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
 		remove(lastNode, parentDom);
 		return;
 	}
-	diffNodes(lastNode, nextNode, parentDom, lifecycle, context, lastNode.static !== nextNode.static);
+	diffNodes(lastNode, nextNode, parentDom, lifecycle, context, lastNode.static !== null && nextNode.static !== null);
 }
 
 export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {

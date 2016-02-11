@@ -40,6 +40,20 @@
 	  };
 	}();
 
+	babelHelpers.extends = Object.assign || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];
+
+	    for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }
+
+	  return target;
+	};
+
 	babelHelpers;
 
 	var Lifecycle = function () {
@@ -174,24 +188,6 @@
 		}
 	}
 
-	// Export Object.assign or polyfill
-	var _extends = Object.assign || function (target) {
-		for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-			args[_key - 1] = arguments[_key];
-		}
-
-		var argsLen = args.length;
-		for (var i = 1; i < argsLen; i++) {
-			var source = args[i];
-			for (var key in source) {
-				if (Object.prototype.hasOwnProperty.call(source, key)) {
-					target[key] = source[key];
-				}
-			}
-		}
-		return target;
-	};
-
 	function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
 		if (isNullOrUndefined(lastNode)) {
 			mountNode(nextNode, parentDom, lifecycle);
@@ -201,7 +197,7 @@
 			remove(lastNode, parentDom);
 			return;
 		}
-		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, lastNode.static !== nextNode.static);
+		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, lastNode.static !== null && nextNode.static !== null);
 	}
 
 	function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
@@ -240,7 +236,7 @@
 
 			var childContext = instance.getChildContext();
 			if (childContext) {
-				context = _extends({}, context, childContext);
+				context = babelHelpers.extends({}, context, childContext);
 			}
 			instance.context = context;
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
@@ -479,6 +475,9 @@
 
 		nextNode.dom = dom;
 		diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck);
+		if (lastNode.className !== nextNode.className) {
+			dom.className = nextNode.className;
+		}
 		diffAttributes(lastNode, nextNode, dom);
 		diffEvents(lastNode, nextNode, dom);
 
@@ -636,7 +635,7 @@
 
 			var childContext = instance.getChildContext();
 			if (childContext) {
-				context = _extends({}, context, childContext);
+				context = babelHelpers.extends({}, context, childContext);
 			}
 			instance.context = context;
 
@@ -692,9 +691,6 @@
 	function mountNode(node, parentDom, lifecycle, context) {
 		var dom = undefined;
 
-		if (node === null) {
-			return;
-		}
 		if (isNullOrUndefined(node) || isArray(node)) {
 			return;
 		}
@@ -735,12 +731,14 @@
 				});
 			}
 		}
+		if (!isNullOrUndefined(children)) {
+			mountChildren(children, dom, lifecycle, context);
+		}
 		if (attrs) {
 			mountAttributes(attrs, dom);
 		}
-
-		if (!isNullOrUndefined(children)) {
-			mountChildren(children, dom, lifecycle, context);
+		if (!isNullOrUndefined(node.className)) {
+			dom.className = node.className;
 		}
 		node.dom = dom;
 		if (parentDom !== null) {
