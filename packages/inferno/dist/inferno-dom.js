@@ -272,16 +272,16 @@
 	function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, nextDom) {
 		var lastChildrenLength = lastChildren.length;
 		var nextChildrenLength = nextChildren.length;
-		var counter = 0;
-		var lastDomNode = undefined;
 
 		if (lastChildrenLength > nextChildrenLength) {
+			var lastDomNode = undefined;
 			while (lastChildrenLength !== nextChildrenLength) {
 				var lastChild = lastChildren[lastChildrenLength - 1];
 				dom.removeChild((lastDomNode = lastChild.dom) || lastDomNode && (lastDomNode = lastDomNode.previousSibling) || (lastDomNode = dom.lastChild));
 				lastChildrenLength--;
 			}
 		} else if (lastChildrenLength < nextChildrenLength) {
+			var counter = 0;
 			while (lastChildrenLength !== nextChildrenLength) {
 				var nextChild = nextChildren[lastChildrenLength + counter];
 				var node = mountNode(nextChild, null, lifecycle, context);

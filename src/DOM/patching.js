@@ -88,10 +88,9 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, nextDom) {
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
-	let counter = 0;
-	let lastDomNode;
 
 	if (lastChildrenLength > nextChildrenLength) {
+		let lastDomNode;
 		while (lastChildrenLength !== nextChildrenLength) {
 			const lastChild = lastChildren[lastChildrenLength - 1];
 			dom.removeChild((lastDomNode = lastChild.dom)
@@ -101,6 +100,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 			lastChildrenLength--;
 		}
 	} else if (lastChildrenLength < nextChildrenLength) {
+		let counter = 0;
 		while (lastChildrenLength !== nextChildrenLength) {
 			const nextChild = nextChildren[lastChildrenLength + counter];
 			const node = mountNode(nextChild, null, lifecycle, context);
