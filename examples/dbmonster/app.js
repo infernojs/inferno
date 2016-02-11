@@ -65,7 +65,7 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'span',
+		tag: 'span'
 	};
 
 	var queryTemplate1 = {
@@ -74,7 +74,7 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'td',
+		tag: 'td'
 	};
 
 	var queryTemplate2 = {
