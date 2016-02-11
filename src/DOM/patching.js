@@ -1,8 +1,8 @@
 import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove } from './utils';
-import { recyclingEnabled } from './recycling';
+import { insertOrAppend, remove, _extends } from './utils';
+import { recyclingEnabled, pool } from './recycling';
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
 	if (isNullOrUndefined(lastNode)) {
@@ -13,11 +13,7 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
 		remove(lastNode, parentDom);
 		return;
 	}
-	if (lastNode.static !== nextNode.static) {
-		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, true);
-		return;
-	}
-	diffNodes(lastNode, nextNode, parentDom, lifecycle, context, false);
+	diffNodes(lastNode, nextNode, parentDom, lifecycle, context, lastNode.static !== nextNode.static);
 }
 
 export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
@@ -29,8 +25,7 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 				dom.style.cssText = nextAttrValue;
 			} else {
 				for (let style in nextAttrValue) {
-					const styleVal = nextAttrValue[style];
-					dom.style[style] = styleVal;
+					dom.style[style] = nextAttrValue[style];
 				}
 			}
 		} else {
@@ -51,16 +46,16 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
-		var prevProps = instance.props;
-		var prevState = instance.state;
-		var nextState = instance.state;
+		const prevProps = instance.props;
+		const prevState = instance.state;
+		const nextState = instance.state;
 
-		var childContext = instance.getChildContext();
+		const childContext = instance.getChildContext();
 		if (childContext) {
 			context = _extends({}, context, childContext);
 		}
 		instance.context = context;
-		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (nextNode) {
 			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, false);
@@ -68,7 +63,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 			instance._lastNode = nextNode;
 		}
 	} else {
-		var shouldUpdate = true;
+		let shouldUpdate = true;
 
 		if (nextEvents && nextEvents.componentShouldUpdate) {
 			shouldUpdate = nextEvents.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
@@ -77,8 +72,8 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 			if (nextEvents && nextEvents.componentWillUpdate) {
 				nextEvents.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
-			var nextNode = Component(nextProps);
-			var dom = lastNode.dom;
+			const nextNode = Component(nextProps);
+			const dom = lastNode.dom;
 			nextNode.dom = dom;
 
 			diffNodes(instance, nextNode, dom, lifecycle, context, false);

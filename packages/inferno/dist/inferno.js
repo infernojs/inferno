@@ -21,6 +21,10 @@
 		return obj.constructor === Array;
 	}
 
+	function isNullOrUndefined(obj) {
+		return obj === undefined || obj === null;
+	}
+
 	function isFunction(obj) {
 		return typeof obj === 'function';
 	}
@@ -79,14 +83,14 @@
 		var children = _ref.children;
 		var text = _ref.text;
 
-		var key = attrs && attrs.key != null ? attrs.key : null;
+		var key = attrs && !isNullOrUndefined(attrs.key) ? attrs.key : null;
 
 		if (key !== null) {
 			delete attrs.key;
 		}
 		var attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-		if (children != null) {
+		if (!isNullOrUndefined(children)) {
 			children = isArray$1(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 		}
 		return {
@@ -108,7 +112,7 @@
 
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
-				if (child != null) {
+				if (!isNullOrUndefined(child)) {
 					newChildren.push(createChild(child));
 				} else {
 					newChildren.push(child);
@@ -130,14 +134,17 @@
 		return createChild({ tag: tag, attrs: props, children: children });
 	}
 
-	function createStaticElement(tag, attrs) {
-		//add in DOM is available check?
-		var dom = document.createElement(tag);
-		if (attrs) {
-			createStaticAttributes(attrs, dom);
-		}
+	var isBrowser = typeof window !== 'undefined' && window.document;
 
-		return dom;
+	function createStaticElement(tag, attrs) {
+		if (isBrowser) {
+			var dom = document.createElement(tag);
+			if (attrs) {
+				createStaticAttributes(attrs, dom);
+			}
+			return dom;
+		}
+		return null;
 	}
 
 	function createStaticAttributes(attrs, dom) {
@@ -150,7 +157,7 @@
 			if (attr === 'className') {
 				dom.className = value;
 			} else {
-				if (value != null && value !== false && value !== true && !isAttrAnEvent(attr)) {
+				if (!isNullOrUndefined(value) && value !== false && value !== true && !isAttrAnEvent(attr)) {
 					dom.setAttribute(attr, value);
 				} else if (value === true) {
 					dom.setAttribute(attr, attr);

@@ -17,14 +17,14 @@ export function handleEvent(event, dom, callback) {
 	} else {
 		const delegatedEvents = delegatedEventsRegistry[event];
 
-		//for (let i = 0; i < delegatedEvents.length; i++) {
-		//	const delegatedEvent = delegatedEvents[i];
-		//
-		//	if (delegatedEvent.target === dom) {
-		//		delegatedEvents.splice(i, 1);
-		//		break;
-		//	}
-		//}
+		/* for (let i = 0; i < delegatedEvents.length; i++) {
+			const delegatedEvent = delegatedEvents[i];
+
+			if (delegatedEvent.target === dom) {
+				delegatedEvents.splice(i, 1);
+				break;
+			}
+		} */
 		delegatedEvents.push({
 			callback: callback,
 			target: dom

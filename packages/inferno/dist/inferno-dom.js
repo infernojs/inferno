@@ -67,7 +67,7 @@
 
 	function addChildrenToProps(children, props) {
 		if (!isNullOrUndefined(children)) {
-			if (isArray$1(children) && children.length > 0 || !isArray$1(children)) {
+			if (isArray(children) && children.length > 0 || !isArray(children)) {
 				if (props) {
 					props.children = children;
 				} else {
@@ -80,7 +80,7 @@
 		return props;
 	}
 
-	function isArray$1(obj) {
+	function isArray(obj) {
 		return obj.constructor === Array;
 	}
 
@@ -107,8 +107,6 @@
 	function isString(obj) {
 		return typeof obj === 'string';
 	}
-
-	var recyclingEnabled = false;
 
 	function insertOrAppend(parentDom, newNode, nextNode) {
 		if (nextNode) {
@@ -176,107 +174,23 @@
 		}
 	}
 
-	function diffNodes$1(lastNode, nextNode, parentDom, lifecycle, context, staticCheck) {
-		if (nextNode === false || nextNode === null) {
-			return;
-		}
-		if (isStringOrNumber(lastNode)) {
-			if (isStringOrNumber(nextNode)) {
-				parentDom.firstChild.nodeValue = nextNode;
-			}
-			return;
-		}
-		var nextTag = nextNode.tag || (staticCheck ? nextNode.static.tag : null);
-		var lastTag = lastNode.tag || (staticCheck ? lastNode.static.tag : null);
-
-		if (lastNode.events && lastNode.events.willUpdate) {
-			lastNode.events.willUpdate(lastNode.dom);
+	// Export Object.assign or polyfill
+	var _extends = Object.assign || function (target) {
+		for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+			args[_key - 1] = arguments[_key];
 		}
 
-		if (lastTag !== nextTag) {
-			if (isFunction(lastTag) && !isFunction(nextTag)) {
-				if (isStatefulComponent(lastTag)) {
-					diffNodes$1(lastNode.instance._lastNode, nextNode, parentDom, lifecycle, context, true);
-				} else {
-					diffNodes$1(lastNode.instance, nextNode, parentDom, lifecycle, context, true);
-				}
-			} else {
-				replaceNode(lastNode, nextNode, parentDom, lifecycle, context);
-			}
-			return;
-		}
-		if (isFunction(lastTag) && isFunction(nextTag)) {
-			nextNode.instance = lastNode.instance;
-			nextNode.dom = lastNode.dom;
-			patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
-			return;
-		}
-		var dom = lastNode.dom;
-
-		nextNode.dom = dom;
-		diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck);
-		diffAttributes(lastNode, nextNode, dom);
-		diffEvents(lastNode, nextNode, dom);
-
-		if (nextNode.events && nextNode.events.didUpdate) {
-			nextNode.events.didUpdate(dom);
-		}
-	}
-
-	function diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck) {
-		var nextChildren = nextNode.children;
-		var lastChildren = lastNode.children;
-
-		if (lastChildren !== nextChildren) {
-			if (!isNullOrUndefined(lastChildren) && !isNullOrUndefined(nextChildren)) {
-				if (isArray$1(lastChildren)) {
-					if (isArray$1(nextChildren)) {
-						var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0].key);
-
-						if (!isKeyed) {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
-						} else {
-							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
-						}
-					} else {
-						patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, null);
-					}
-				} else {
-					if (isArray$1(nextChildren)) {
-						patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, null);
-					} else if (isStringOrNumber(lastChildren)) {
-						if (isStringOrNumber(nextChildren)) {
-							dom.firstChild.nodeValue = nextChildren;
-						}
-					} else {
-						diffNodes$1(lastChildren, nextChildren, dom, lifecycle, context, staticCheck);
-					}
+		var argsLen = args.length;
+		for (var i = 1; i < argsLen; i++) {
+			var source = args[i];
+			for (var key in source) {
+				if (Object.prototype.hasOwnProperty.call(source, key)) {
+					target[key] = source[key];
 				}
 			}
 		}
-	}
-
-	function diffAttributes(lastNode, nextNode, dom) {
-		var nextAttrs = nextNode.attrs;
-		var lastAttrs = lastNode.attrs;
-
-		if (nextAttrs) {
-			for (var i = 0; i < nextAttrs.length; i++) {
-				var lastAttr = lastAttrs[i];
-				var nextAttr = nextAttrs[i];
-				var lastAttrName = lastAttr && lastAttr.name;
-				var nextAttrName = nextAttr && nextAttr.name;
-				var lastAttrVal = lastAttr && lastAttr.value;
-				var nextAttrVal = nextAttr && nextAttr.value;
-
-				if (lastAttrName && lastAttrName === nextAttrName) {
-					patchAttribute(lastAttrName, lastAttrVal, nextAttrVal, dom);
-				}
-			}
-		}
-	}
-
-	function diffEvents(lastNode, nextNode, dom) {}
+		return target;
+	};
 
 	function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
 		if (isNullOrUndefined(lastNode)) {
@@ -287,11 +201,7 @@
 			remove(lastNode, parentDom);
 			return;
 		}
-		if (lastNode.static !== nextNode.static) {
-			diffNodes$1(lastNode, nextNode, parentDom, lifecycle, context, true);
-			return;
-		}
-		diffNodes$1(lastNode, nextNode, parentDom, lifecycle, context, false);
+		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, lastNode.static !== nextNode.static);
 	}
 
 	function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
@@ -303,8 +213,7 @@
 					dom.style.cssText = nextAttrValue;
 				} else {
 					for (var style in nextAttrValue) {
-						var styleVal = nextAttrValue[style];
-						dom.style[style] = styleVal;
+						dom.style[style] = nextAttrValue[style];
 					}
 				}
 			} else {
@@ -337,7 +246,7 @@
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 			if (nextNode) {
-				diffNodes$1(lastNode, nextNode, parentDom, lifecycle, context, false);
+				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, false);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
 			}
@@ -355,7 +264,7 @@
 				var dom = lastNode.dom;
 				nextNode.dom = dom;
 
-				diffNodes$1(instance, nextNode, dom, lifecycle, context, false);
+				diffNodes(instance, nextNode, dom, lifecycle, context, false);
 				lastNode.instance = nextNode;
 				if (nextEvents && nextEvents.componentDidUpdate) {
 					nextEvents.componentDidUpdate(lastNode.dom, lastProps, nextProps);
@@ -426,7 +335,7 @@
 		outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
 			stop = true;
 			while (startItem.key === oldStartItem.key) {
-				diffNodes$1(oldStartItem, startItem, dom, lifecycle, context, true);
+				diffNodes(oldStartItem, startItem, dom, lifecycle, context, true);
 				startIndex++;
 				oldStartIndex++;
 				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -440,7 +349,7 @@
 			endItem = nextChildren[endIndex];
 			oldEndItem = lastChildren[oldEndIndex];
 			while (endItem.key === oldEndItem.key) {
-				diffNodes$1(oldEndItem, endItem, dom, lifecycle, context, true);
+				diffNodes(oldEndItem, endItem, dom, lifecycle, context, true);
 				endIndex--;
 				oldEndIndex--;
 				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -453,7 +362,7 @@
 			}
 			while (endItem.key === oldStartItem.key) {
 				nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : nextDom;
-				diffNodes$1(oldStartItem, endItem, dom, lifecycle, context, true);
+				diffNodes(oldStartItem, endItem, dom, lifecycle, context, true);
 				insertOrAppend(dom, endItem.dom, nextNode);
 				endIndex--;
 				oldStartIndex++;
@@ -467,7 +376,7 @@
 			}
 			while (startItem.key === oldEndItem.key) {
 				nextNode = lastChildren[oldStartIndex].dom;
-				diffNodes$1(oldEndItem, startItem, dom, lifecycle, context, true);
+				diffNodes(oldEndItem, startItem, dom, lifecycle, context, true);
 				insertOrAppend(dom, startItem.dom, nextNode);
 				startIndex++;
 				oldEndIndex--;
@@ -509,7 +418,7 @@
 				oldItem = oldItemsMap[key];
 				if (oldItem !== undefined) {
 					oldItemsMap[key] = null;
-					diffNodes$1(oldItem, item, dom, lifecycle, true);
+					diffNodes(oldItem, item, dom, lifecycle, true);
 
 					if (item.dom.nextSibling !== _nextNode) {
 						_nextNode = _nextNode && _nextNode.dom || nextDom;
@@ -528,6 +437,140 @@
 					remove(oldItem, dom);
 				}
 			}
+		}
+	}
+
+	function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, staticCheck) {
+		if (nextNode === false || nextNode === null) {
+			return;
+		}
+		if (isStringOrNumber(lastNode)) {
+			if (isStringOrNumber(nextNode)) {
+				parentDom.firstChild.nodeValue = nextNode;
+			}
+			return;
+		}
+		var nextTag = nextNode.tag || (staticCheck ? nextNode.static.tag : null);
+		var lastTag = lastNode.tag || (staticCheck ? lastNode.static.tag : null);
+
+		if (lastNode.events && lastNode.events.willUpdate) {
+			lastNode.events.willUpdate(lastNode.dom);
+		}
+
+		if (lastTag !== nextTag) {
+			if (isFunction(lastTag) && !isFunction(nextTag)) {
+				if (isStatefulComponent(lastTag)) {
+					diffNodes(lastNode.instance._lastNode, nextNode, parentDom, lifecycle, context, true);
+				} else {
+					diffNodes(lastNode.instance, nextNode, parentDom, lifecycle, context, true);
+				}
+			} else {
+				replaceNode(lastNode, nextNode, parentDom, lifecycle, context);
+			}
+			return;
+		}
+		if (isFunction(lastTag) && isFunction(nextTag)) {
+			nextNode.instance = lastNode.instance;
+			nextNode.dom = lastNode.dom;
+			patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
+			return;
+		}
+		var dom = lastNode.dom;
+
+		nextNode.dom = dom;
+		diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck);
+		diffAttributes(lastNode, nextNode, dom);
+		diffEvents(lastNode, nextNode, dom);
+
+		if (nextNode.events && nextNode.events.didUpdate) {
+			nextNode.events.didUpdate(dom);
+		}
+	}
+
+	function diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck) {
+		var nextChildren = nextNode.children;
+		var lastChildren = lastNode.children;
+
+		if (lastChildren !== nextChildren) {
+			if (!isNullOrUndefined(lastChildren) && !isNullOrUndefined(nextChildren)) {
+				if (isArray(lastChildren)) {
+					if (isArray(nextChildren)) {
+						var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0].key);
+
+						if (!isKeyed) {
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
+						} else {
+							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
+						}
+					} else {
+						patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, null);
+					}
+				} else {
+					if (isArray(nextChildren)) {
+						patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, null);
+					} else if (isStringOrNumber(lastChildren)) {
+						if (isStringOrNumber(nextChildren)) {
+							dom.firstChild.nodeValue = nextChildren;
+						}
+					} else {
+						diffNodes(lastChildren, nextChildren, dom, lifecycle, context, staticCheck);
+					}
+				}
+			}
+		}
+	}
+
+	function diffAttributes(lastNode, nextNode, dom) {
+		var nextAttrs = nextNode.attrs;
+		var lastAttrs = lastNode.attrs;
+
+		if (nextAttrs) {
+			for (var i = 0; i < nextAttrs.length; i++) {
+				var lastAttr = lastAttrs[i];
+				var nextAttr = nextAttrs[i];
+				var lastAttrName = lastAttr && lastAttr.name;
+				var nextAttrName = nextAttr && nextAttr.name;
+				var lastAttrVal = lastAttr && lastAttr.value;
+				var nextAttrVal = nextAttr && nextAttr.value;
+
+				if (lastAttrName && lastAttrName === nextAttrName) {
+					patchAttribute(lastAttrName, lastAttrVal, nextAttrVal, dom);
+				}
+			}
+		}
+	}
+
+	function diffEvents(lastNode, nextNode, dom) {}
+
+	var recyclingEnabled = true;
+
+	function recycle(node, lifecycle, context) {
+		var key = node.key;
+		var recycledNode = undefined;
+
+		if (key !== null) {
+			var keyPool = node.static.static.keyed[key];
+			recycledNode = keyPool && keyPool.pop();
+		} else {
+			var keyPool = node.static.static.nonKeyed;
+			recycledNode = keyPool && keyPool.pop();
+		}
+		if (recycledNode) {
+			diffNodes(recycledNode, node, null, lifecycle, context, null, true);
+			return node.dom;
+		}
+	}
+
+	function pool(item) {
+		var key = item.key;
+		var staticNode = item.static.static;
+
+		if (key === null) {
+			var _pool = staticNode.nonKeyed;
+			_pool && _pool.push(item);
+		} else {
+			var _pool2 = staticNode.keyed;
+			(_pool2[key] || (_pool2[key] = [])).push(item);
 		}
 	}
 
@@ -550,14 +593,13 @@
 		} else {
 			var delegatedEvents = delegatedEventsRegistry[event];
 
-			//for (let i = 0; i < delegatedEvents.length; i++) {
-			//	const delegatedEvent = delegatedEvents[i];
-			//
-			//	if (delegatedEvent.target === dom) {
-			//		delegatedEvents.splice(i, 1);
-			//		break;
-			//	}
-			//}
+			/* for (let i = 0; i < delegatedEvents.length; i++) {
+	  	const delegatedEvent = delegatedEvents[i];
+	  		if (delegatedEvent.target === dom) {
+	  		delegatedEvents.splice(i, 1);
+	  		break;
+	  	}
+	  } */
 			delegatedEvents.push({
 				callback: callback,
 				target: dom
@@ -566,7 +608,7 @@
 	}
 
 	function mountChildren(children, parentDom, lifecycle, context) {
-		if (isArray$1(children)) {
+		if (isArray(children)) {
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 
@@ -653,7 +695,7 @@
 		if (node === null) {
 			return;
 		}
-		if (isNullOrUndefined(node) || isArray$1(node)) {
+		if (isNullOrUndefined(node) || isArray(node)) {
 			return;
 		}
 		if (isStringOrNumber(node)) {
@@ -732,11 +774,11 @@
 		return null;
 	}
 
-	function removeRoot(root) {
+	function removeRoot(rootNode) {
 		for (var i = 0; i < roots.length; i++) {
-			var _root = roots[i];
+			var root = roots[i];
 
-			if (_root === rootNode) {
+			if (root === rootNode) {
 				roots.splice(i, 1);
 				return true;
 			}

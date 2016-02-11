@@ -1,3 +1,5 @@
+import { diffNodes } from './diffing';
+
 export const recyclingEnabled = true;
 
 export function recycle(node, lifecycle, context) {

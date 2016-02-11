@@ -16,7 +16,7 @@ function getRoot(parentDom) {
 	return null;
 }
 
-function removeRoot(root) {
+function removeRoot(rootNode) {
 	for (let i = 0; i < roots.length; i++) {
 		const root = roots[i];
 

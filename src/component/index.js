@@ -1,3 +1,5 @@
+import Lifecycle from './../core/lifecycle';
+
 function queueStateChanges(component, newState) {
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];

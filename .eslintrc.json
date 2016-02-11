@@ -103,7 +103,8 @@
 		"linebreak-style": [0, "unix"],
 		"new-cap": [2, {
 			"newIsCap": true,
-			"capIsNew":true
+			"capIsNew":true,
+			"capIsNewExceptions": ["Component"]
 		}],
 		"new-parens": 2,
 		"newline-after-var": [0, "always"],
