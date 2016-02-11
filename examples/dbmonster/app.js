@@ -20,12 +20,9 @@
 		tag: 'table',
 		key: null,
 		attrs: null,
-		events: null,
-		className: 'table table-striped latest-data',
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: 'table table-striped latest-data'
 	};
 
 	var appTemplate2 = {
@@ -37,12 +34,9 @@
 		tag: 'tbody',
 		key: null,
 		attrs: null,
-		events: null,
-		className: null,
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: null
 	};
 
 	var dbTemplate1 = {
@@ -54,12 +48,9 @@
 		tag: 'tr',
 		key: null,
 		attrs: null,
-		events: null,
-		className: null,
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: null
 	};
 
 	var dbTemplate2 = {
@@ -71,12 +62,9 @@
 		tag: 'td',
 		key: null,
 		attrs: null,
-		events: null,
-		className: 'dbname',
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: 'dbname'
 	};
 
 	var dbTemplate3 = {
@@ -88,12 +76,9 @@
 		tag: 'td',
 		key: null,
 		attrs: null,
-		events: null,
-		className: 'query-count',
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: 'query-count'
 	};
 
 	var dbTemplate4 = {
@@ -105,11 +90,9 @@
 		tag: 'span',
 		key: null,
 		attrs: null,
-		events: null,
-		className: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: null
 	};
 
 	var queryTemplate1 = {
@@ -121,12 +104,9 @@
 		tag: 'td',
 		key: null,
 		attrs: null,
-		events: null,
-		className: null,
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: null
 	};
 
 	var queryTemplate2 = {
@@ -137,13 +117,10 @@
 		},
 		tag: 'span',
 		key: null,
-		attrs: null,
-		events: null,
-		className: 'foo',
-		style: null,
+		attrs: { className: 'foo' },
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: 'foo'
 	};
 
 	var queryTemplate3 = {
@@ -155,12 +132,9 @@
 		tag: 'div',
 		key: null,
 		attrs: null,
-		events: null,
-		className: 'popover left',
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: 'popover left'
 	};
 
 	var queryTemplate4 = {
@@ -172,12 +146,9 @@
 		tag: 'div',
 		key: null,
 		attrs: null,
-		events: null,
-		className: 'popover-content',
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: 'popover-content'
 	};
 
 	var queryTemplate5 = {
@@ -189,12 +160,9 @@
 		tag: 'div',
 		key: null,
 		attrs: null,
-		events: null,
-		className: 'arrow',
-		style: null,
 		children: null,
-		nextNode: null,
-		instance: null
+		nextItem: null,
+		className: 'arrow'
 	};
 
 	function createQuery(query) {
@@ -204,9 +172,6 @@
 			tag: null,
 			key: null,
 			attrs: null,
-			events: null,
-			className: query.elapsedClassName,
-			style: null,
 			children: [
 				{
 					dom: null,
@@ -214,12 +179,9 @@
 					tag: null,
 					key: null,
 					attrs: null,
-					events: null,
-					className: null,
-					style: null,
 					children: query.formatElapsed,
-					nextNode: null,
-					instance: null
+					nextItem: null,
+					className: null
 				},
 				{
 					dom: null,
@@ -227,9 +189,6 @@
 					tag: null,
 					key: null,
 					attrs: null,
-					events: null,
-					className: null,
-					style: null,
 					children: [
 						{
 							dom: null,
@@ -237,12 +196,9 @@
 							tag: null,
 							key: null,
 							attrs: null,
-							events: null,
-							className: null,
-							style: null,
 							children: query.query,
-							nextNode: null,
-							instance: null
+							nextItem: null,
+							className: null
 						},
 						{
 							dom: null,
@@ -250,78 +206,60 @@
 							tag: null,
 							key: null,
 							attrs: null,
-							events: null,
-							className: null,
-							style: null,
 							children: null,
-							nextNode: null,
-							instance: null
+							nextItem: null,
+							className: null
 						}
 					],
-					nextNode: null,
-					instance: null
+					nextItem: null,
+					className: null
 				}
 			],
-			nextNode: null,
-			instance: null
+			nextItem: null,
+			className: 'Query ' + query.elapsedClassName
 		};
 	}
 
 	function createDatabase(db) {
-		var children = new Array(7);
-		children[0] = {
-			dom: null,
-			static: dbTemplate2,
-			tag: null,
-			key: null,
-			attrs: null,
-			events: null,
-			className: null,
-			style: null,
-			children: db.dbname,
-			nextNode: null,
-			instance: null
-		};
-		children[1] = {
-			dom: null,
-			static: dbTemplate3,
-			tag: null,
-			key: null,
-			attrs: null,
-			events: null,
-			className: null,
-			style: null,
-			children: {
-				dom: null,
-				static: dbTemplate4,
-				tag: null,
-				key: null,
-				attrs: null,
-				events: null,
-				className: db.lastSample.countClassName,
-				style: null,
-				children: db.lastSample.nbQueries,
-				nextNode: null,
-				instance: null
-			},
-			nextNode: null,
-			instance: null
-		};
-		for (var i = 0; i < 5; i++) {
-			children[i + 2] = (createQuery(db.lastSample.topFiveQueries[i]));
-		}
 		return {
 			dom: null,
 			static: dbTemplate1,
 			tag: null,
 			key: null,
 			attrs: null,
-			events: null,
-			className: null,
-			style: null,
-			children: children,
-			nextNode: null,
-			instance: null
+			children: [
+				{
+					dom: null,
+					static: dbTemplate2,
+					tag: null,
+					key: null,
+					attrs: null,
+					children: db.dbname,
+					nextItem: null,
+					className: null
+				},
+				{
+					dom: null,
+					static: dbTemplate3,
+					tag: null,
+					key: null,
+					attrs: null,
+					children: {
+						dom: null,
+						static: dbTemplate4,
+						tag: null,
+						key: null,
+						attrs: null,
+						children: db.lastSample.nbQueries,
+						nextItem: null,
+						className: db.lastSample.countClassName
+					},
+					nextItem: null,
+					className: null
+				}
+			].concat(map(createQuery, db.lastSample.topFiveQueries)),
+			nextItem: null,
+			className: null
 		};
 	}
 
@@ -334,24 +272,18 @@
 			tag: null,
 			key: null,
 			attrs: null,
-			events: null,
-			className: null,
-			style: null,
 			children: {
 				dom: null,
 				static: appTemplate2,
 				tag: null,
 				key: null,
 				attrs: null,
-				events: null,
-				className: null,
-				style: null,
 				children: map(createDatabase, dbs),
-				nextNode: null,
-				instance: null
+				nextItem: null,
+				className: null
 			},
-			nextNode: null,
-			instance: null
+			nextItem: null,
+			className: null
 		}, elem);
 		setTimeout(render, ENV.timeout);
 	}
