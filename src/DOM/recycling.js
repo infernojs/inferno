@@ -1,4 +1,4 @@
-export const recyclingEnabled = false;
+export const recyclingEnabled = true;
 
 export function recycle(node, lifecycle, context) {
 	const key = node.key;
