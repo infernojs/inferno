@@ -106,6 +106,7 @@
 		key: null,
 		attrs: null,
 		events: null,
+		className: null,
 		children: null,
 		nextNode: null,
 		instance: null
