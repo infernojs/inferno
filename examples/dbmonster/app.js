@@ -19,8 +19,10 @@
 		},
 		tag: 'table',
 		key: null,
-		attrs: [{ name: 'className', value: 'table table-striped latest-data' }],
+		attrs: null,
 		events: null,
+		className: 'table table-striped latest-data',
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -36,6 +38,8 @@
 		key: null,
 		attrs: null,
 		events: null,
+		className: null,
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -51,6 +55,8 @@
 		key: null,
 		attrs: null,
 		events: null,
+		className: null,
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -64,8 +70,10 @@
 		},
 		tag: 'td',
 		key: null,
-		attrs: [{ name: 'className', value: 'dbname' }],
+		attrs: null,
 		events: null,
+		className: 'dbname',
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -79,8 +87,10 @@
 		},
 		tag: 'td',
 		key: null,
-		attrs: [{ name: 'className', value: 'query-count' }],
+		attrs: null,
 		events: null,
+		className: 'query-count',
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -111,6 +121,8 @@
 		key: null,
 		attrs: null,
 		events: null,
+		className: null,
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -124,8 +136,10 @@
 		},
 		tag: 'span',
 		key: null,
-		attrs: [{ name: 'className', value: 'foo' }],
+		attrs: null,
 		events: null,
+		className: 'foo',
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -139,8 +153,10 @@
 		},
 		tag: 'div',
 		key: null,
-		attrs: [{ name: 'className', value: 'popover left' }],
+		attrs: null,
 		events: null,
+		className: 'popover left',
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -154,8 +170,10 @@
 		},
 		tag: 'div',
 		key: null,
-		attrs: [{ name: 'className', value: 'popover-content' }],
+		attrs: null,
 		events: null,
+		className: 'popover-content',
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -169,8 +187,10 @@
 		},
 		tag: 'div',
 		key: null,
-		attrs: [{ name: 'className', value: 'arrow' }],
+		attrs: null,
 		events: null,
+		className: 'arrow',
+		style: null,
 		children: null,
 		nextNode: null,
 		instance: null
@@ -182,8 +202,10 @@
 			static: queryTemplate1,
 			tag: null,
 			key: null,
-			attrs: [{ name: 'className', value: query.elapsedClassName }],
+			attrs: null,
 			events: null,
+			className: query.elapsedClassName,
+			style: null,
 			children: [
 				{
 					dom: null,
@@ -192,6 +214,8 @@
 					key: null,
 					attrs: null,
 					events: null,
+					className: null,
+					style: null,
 					children: query.formatElapsed,
 					nextNode: null,
 					instance: null
@@ -203,6 +227,8 @@
 					key: null,
 					attrs: null,
 					events: null,
+					className: null,
+					style: null,
 					children: [
 						{
 							dom: null,
@@ -211,6 +237,8 @@
 							key: null,
 							attrs: null,
 							events: null,
+							className: null,
+							style: null,
 							children: query.query,
 							nextNode: null,
 							instance: null
@@ -222,6 +250,8 @@
 							key: null,
 							attrs: null,
 							events: null,
+							className: null,
+							style: null,
 							children: null,
 							nextNode: null,
 							instance: null
@@ -245,6 +275,8 @@
 			key: null,
 			attrs: null,
 			events: null,
+			className: null,
+			style: null,
 			children: db.dbname,
 			nextNode: null,
 			instance: null
@@ -256,13 +288,17 @@
 			key: null,
 			attrs: null,
 			events: null,
+			className: null,
+			style: null,
 			children: {
 				dom: null,
 				static: dbTemplate4,
 				tag: null,
 				key: null,
-				attrs: [{name: 'className', value: db.lastSample.countClassName }],
+				attrs: null,
 				events: null,
+				className: db.lastSample.countClassName,
+				style: null,
 				children: db.lastSample.nbQueries,
 				nextNode: null,
 				instance: null
@@ -280,6 +316,8 @@
 			key: null,
 			attrs: null,
 			events: null,
+			className: null,
+			style: null,
 			children: children,
 			nextNode: null,
 			instance: null
@@ -296,6 +334,8 @@
 			key: null,
 			attrs: null,
 			events: null,
+			className: null,
+			style: null,
 			children: {
 				dom: null,
 				static: appTemplate2,
@@ -303,6 +343,8 @@
 				key: null,
 				attrs: null,
 				events: null,
+				className: null,
+				style: null,
 				children: map(createDatabase, dbs),
 				nextNode: null,
 				instance: null

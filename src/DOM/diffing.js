@@ -41,6 +41,9 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, sta
 
 	nextNode.dom = dom;
 	diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck);
+	if (lastNode.className !== nextNode.className) {
+		dom.className = nextNode.className;
+	}
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);
 

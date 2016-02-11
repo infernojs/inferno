@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove, _extends } from './utils';
+import { insertOrAppend, remove } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context) {
@@ -52,7 +52,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 
 		const childContext = instance.getChildContext();
 		if (childContext) {
-			context = _extends({}, context, childContext);
+			context = { ...context, ...childContext };
 		}
 		instance.context = context;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);

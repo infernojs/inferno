@@ -67,17 +67,3 @@ export function remove(node, parentDom) {
 		}
 	}
 }
-
-// Export Object.assign or polyfill
-export const _extends = Object.assign || function (target, ...args) {
-	const argsLen = args.length;
-	for (let i = 1; i < argsLen; i++) {
-		let source = args[i];
-		for (let key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}
-	return target;
-};

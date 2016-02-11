@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, _extends } from './utils';
+import { appendText } from './utils';
 import { patchAttribute } from './patching';
 import { handleEvent } from './events';
 import { diffNodes } from './diffing';
@@ -34,7 +34,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 
 		const childContext = instance.getChildContext();
 		if (childContext) {
-			context = _extends({}, context, childContext);
+			context = { ...context, ...childContext };
 		}
 		instance.context = context;
 
@@ -84,9 +84,6 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 export function mountNode(node, parentDom, lifecycle, context) {
 	let dom;
 
-	if (node === null) {
-		return;
-	}
 	if (isNullOrUndefined(node) || isArray(node)) {
 		return;
 	}
@@ -127,12 +124,14 @@ export function mountNode(node, parentDom, lifecycle, context) {
 			});
 		}
 	}
+	if (!isNullOrUndefined(children)) {
+		mountChildren(children, dom, lifecycle, context);
+	}
 	if (attrs) {
 		mountAttributes(attrs, dom);
 	}
-
-	if (!isNullOrUndefined(children)) {
-		mountChildren(children, dom, lifecycle, context);
+	if (!isNullOrUndefined(node.className)) {
+		dom.className = node.className;
 	}
 	node.dom = dom;
 	if (parentDom !== null) {
