@@ -28,7 +28,7 @@
     "inferno-component": "^0.5.19",
     "isparta": "^4.0.0",
     "isparta-loader": "^2.0.0",
-    "karma": "0.13.19",
+    "karma": "0.13.20",
     "karma-chrome-launcher": "^0.2.2",
     "karma-coverage": "^0.5.3",
     "karma-coveralls": "^1.1.2",
