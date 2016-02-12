@@ -23,7 +23,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babel-register": "^6.4.3",
     "chai": "^3.4.1",
-    "eslint": "^1.10.3",
+    "eslint": "^2.0.0",
     "glob": "^7.0.0",
     "inferno-component": "^0.5.19",
     "isparta": "^4.0.0",
