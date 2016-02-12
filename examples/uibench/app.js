@@ -10,12 +10,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		key: null,
-		attrs: [{ name: 'className', value: 'AnimBox' }],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		attrs: [{ name: 'className', value: 'AnimBox' }]
 	};
 
 	var AnimBox = function (props) {
@@ -28,16 +23,10 @@
 		return {
 			dom: null,
 			static: animBox1,
-			tag: null,
-			key: null,
 			attrs: [
 				{ name: 'style', value: style },
 				{ name: 'data-id', value: data.id }
-			],
-			events: null,
-			children: null,
-			nextNode: null,
-			instance: null
+			]
 		};
 	}
 
@@ -48,12 +37,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		key: null,
-		attrs: [{ name: 'className', value: 'Anim' }],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		attrs: [{ name: 'className', value: 'Anim' }]
 	};
 
 	var anim2 = {
@@ -61,14 +45,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var Anim = function (props) {
@@ -89,7 +66,6 @@
 				events: {
 					componentShouldUpdate: appUpdateCheck
 				},
-				nextNode: null,
 				instance: null
 			});
 		}
@@ -97,13 +73,7 @@
 		return {
 			dom: null,
 			static: anim1,
-			tag: null,
-			key: null,
-			attrs: null,
-			events: null,
-			children: children,
-			nextNode: null,
-			instance: null
+			children: children
 		};
 	}
 
@@ -114,12 +84,7 @@
 			nonKeyed: []
 		},
 		tag: 'td',
-		key: null,
-		attrs: [{ name: 'className', value: 'TableCell' }],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		attrs: [{ name: 'className', value: 'TableCell' }]
 	};
 
 	function updateTableCell(domNode, lastProps, nextProps) {
@@ -130,16 +95,11 @@
 		return {
 			dom: null,
 			static: tableCell1,
-			tag: null,
-			key: null,
-			attrs: null,
 			events: { click: (e) => {
 				console.log('Clicked' + props.text);
 				e.stopPropagation();
 			} },
-			children: props.text,
-			nextNode: null,
-			instance: null
+			children: props.text
 		};
 	};
 
@@ -149,13 +109,7 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'tr',
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		tag: 'tr'
 	};
 
 	var tableRow2 = {
@@ -163,14 +117,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var TableRow = function (props) {
@@ -190,8 +137,6 @@
 			events: {
 				componentShouldUpdate: updateTableCell
 			},
-			children: null,
-			nextNode: null,
 			instance: null
 		})];
 		for (var i = 0; i < cells.length; i++) {
@@ -204,21 +149,14 @@
 				events: {
 					componentShouldUpdate: updateTableCell
 				},
-				children: null,
-				nextNode: null,
 				instance: null
 			});
 		}
 		return {
 			dom: null,
 			static: tableRow1,
-			tag: null,
-			key: null,
 			attrs: [{ name: 'className', value: classes }, { name: 'data-id', value: data.id }],
-			events: null,
-			children: children,
-			nextNode: null,
-			instance: null
+			children: children
 		};
 	}
 
@@ -229,12 +167,7 @@
 			nonKeyed: []
 		},
 		tag: 'table',
-		key: null,
-		attrs: [{ name: 'className', value: 'Table' }],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		attrs: [{ name: 'className', value: 'Table' }]
 	};
 
 	var table2 = {
@@ -243,13 +176,7 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'tbody',
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		tag: 'tbody'
 	};
 
 	var table3 = {
@@ -257,14 +184,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var Table = function (props) {
@@ -277,7 +197,6 @@
 				dom: null,
 				static: table3,
 				tag: TableRow,
-				key: null,
 				attrs: {
 					key: item.id,
 					data: item
@@ -285,8 +204,6 @@
 				events: {
 					componentShouldUpdate: appUpdateCheck
 				},
-				children: null,
-				nextNode: null,
 				instance: null
 			});
 		}
@@ -294,23 +211,11 @@
 		return {
 			dom: null,
 			static: table1,
-			tag: null,
-			key: null,
-			attrs: null,
-			events: null,
 			children: {
 				dom: null,
 				static: table2,
-				tag: null,
-				key: null,
-				attrs: null,
-				events: null,
-				children: children,
-				nextNode: null,
-				instance: null
-			},
-			nextNode: null,
-			instance: null
+				children: children
+			}
 		};
 	};
 
@@ -321,27 +226,17 @@
 			nonKeyed: []
 		},
 		tag: 'li',
-		key: null,
-		attrs: [{name: 'className', value: 'TreeLeaf' }],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		attrs: [ {name: 'className', value: 'TreeLeaf' } ]
 	};
 
 	var TreeLeaf = function (props) {
 		return {
 			dom: null,
 			static: treeLeaf1,
-			tag: null,
-			key: null,
-			attrs: null,
 			events: {
 				componentShouldUpdate: appUpdateCheck
 			},
 			children: '' + props.data.id,
-			nextNode: null,
-			instance: null
 		};
 	};
 
@@ -352,12 +247,7 @@
 			nonKeyed: []
 		},
 		tag: 'ul',
-		key: null,
 		attrs: [{name: 'className', value: 'TreeNode' }],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
 	};
 
 	var treeNode2 = {
@@ -365,14 +255,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var treeNode3 = {
@@ -380,14 +263,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var TreeNode = function (props) {
@@ -408,8 +284,6 @@
 					events: {
 						componentShouldUpdate: appUpdateCheck
 					},
-					children: null,
-					nextNode: null,
 					instance: null
 				});
 			} else {
@@ -424,8 +298,6 @@
 					events: {
 						componentShouldUpdate: appUpdateCheck
 					},
-					children: null,
-					nextNode: null,
 					instance: null
 				});
 			}
@@ -434,15 +306,9 @@
 		return {
 			dom: null,
 			static: treeNode1,
-			tag: null,
-			key: null,
-			attrs: null,
-			events: null,
-			children: children,
-			nextNode: null,
-			instance: null
+			children: children
 		};
-	}
+	};
 
 	var tree1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className: 'Tree' }),
@@ -451,12 +317,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		key: null,
-		attrs: [{name: 'className', value: 'Tree'}],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		attrs: [{ name: 'className', value: 'Tree' }]
 	};
 
 	var tree2 = {
@@ -464,43 +325,27 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var Tree = function (props) {
 		return {
 			dom: null,
 			static: tree1,
-			tag: null,
-			key: null,
-			attrs: null,
-			events: null,
 			children: {
 				dom: null,
 				static: tree2,
 				tag: TreeNode,
-				key: null,
 				attrs: {
 					data: props.data.root
 				},
 				events: {
 					componentShouldUpdate: appUpdateCheck
 				},
-				children: null,
-				nextNode: null,
 				instance: null
-			},
-			nextNode: null,
-			instance: null
+			}
 		};
-	}
+	};
 
 	var main1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className: 'Main' }),
@@ -509,12 +354,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		key: null,
-		attrs: [{name: 'className', value: 'Main'}],
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		attrs: [{ name: 'className', value: 'Main' }]
 	};
 
 	var main2 = {
@@ -522,14 +362,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var main3 = {
@@ -537,14 +370,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var main4 = {
@@ -552,14 +378,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var Main = function (props) {
@@ -572,15 +391,12 @@
 				dom: null,
 				static: main2,
 				tag: Table,
-				key: null,
 				attrs: {
 					data: data.table
 				},
 				events: {
 					componentShouldUpdate: appUpdateCheck
 				},
-				children: null,
-				nextNode: null,
 				instance: null
 			};
 		} else if (location === 'anim') {
@@ -588,15 +404,12 @@
 				dom: null,
 				static: main3,
 				tag: Anim,
-				key: null,
 				attrs: {
 					data: data.anim
 				},
 				events: {
 					componentShouldUpdate: appUpdateCheck
 				},
-				children: null,
-				nextNode: null,
 				instance: null
 			};
 		} else if (location === 'tree') {
@@ -604,15 +417,12 @@
 				dom: null,
 				static: main4,
 				tag: Tree,
-				key: null,
 				attrs: {
 					data: data.tree
 				},
 				events: {
 					componentShouldUpdate: appUpdateCheck
 				},
-				children: null,
-				nextNode: null,
 				instance: null
 			};
 		}
@@ -620,13 +430,7 @@
 		return {
 			dom: null,
 			static: main1,
-			tag: null,
-			key: null,
-			attrs: null,
-			events: null,
-			children: section,
-			nextNode: null,
-			instance: null
+			children: section
 		};
 	}
 
@@ -635,14 +439,7 @@
 		static: {
 			keyed: [],
 			nonKeyed: []
-		},
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		}
 	};
 
 	var app2 = {
@@ -651,13 +448,7 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'pre',
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
+		tag: 'pre'
 	};
 
 	function appUpdateCheck(domNode, lastProps, nextProps) {
@@ -673,15 +464,12 @@
 					dom: null,
 					static: app1,
 					tag: Main,
-					key: null,
 					attrs: {
 						data: state
 					},
 					events: {
 						componentShouldUpdate: appUpdateCheck
 					},
-					children: null,
-					nextNode: null,
 					instance: null
 				}, container)
 			},
@@ -689,13 +477,7 @@
 				InfernoDOM.render({
 					dom: null,
 					static: app2,
-					tag: null,
-					key: null,
-					attrs: null,
-					events: null,
-					children: JSON.stringify(samples, null, ' '),
-					nextNode: null,
-					instance: null
+					children: JSON.stringify(samples, null, ' ')
 				}, container);
 			}
 		);

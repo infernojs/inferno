@@ -1,6 +1,6 @@
 import { diffNodes } from './diffing';
 
-export const recyclingEnabled = true;
+export const recyclingEnabled = false;
 
 export function recycle(node, lifecycle, context) {
 	const key = node.key;

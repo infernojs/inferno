@@ -180,7 +180,7 @@
 			children: {
 				dom: null,
 				static: appTemplate2,
-				children: map(createDatabase, dbs),
+				children: map(createDatabase, dbs)
 			}
 		}, elem);
 		setTimeout(render, ENV.timeout);
