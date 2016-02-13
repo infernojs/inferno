@@ -11,8 +11,8 @@
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
-    "babel-core": "^6.5.1",
-    "babel-eslint": "^5.0.0-beta9",
+    "babel-core": "^6.5.2",
+    "babel-eslint": "^5.0.0-beta10",
     "babel-loader": "^6.2.2",
     "babel-plugin-inferno": "^0.2.11",
     "babel-plugin-syntax-jsx": "^6.5.0",
@@ -21,14 +21,14 @@
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-es2015-rollup": "^1.1.1",
     "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.5.1",
+    "babel-register": "^6.5.2",
     "chai": "^3.5.0",
     "eslint": "^1.10.3",
     "glob": "^7.0.0",
     "inferno-component": "^0.5.22",
     "isparta": "^4.0.0",
     "isparta-loader": "^2.0.0",
-    "karma": "0.13.19",
+    "karma": "^0.13.21",
     "karma-chrome-launcher": "^0.2.2",
     "karma-coverage": "^0.5.3",
     "karma-coveralls": "^1.1.2",
@@ -42,7 +42,7 @@
     "mocha-lcov-reporter": "^1.0.0",
     "npm-check-updates": "^2.5.8",
     "pre-commit": "^1.1.2",
-    "rimraf": "^2.5.1",
+    "rimraf": "^2.5.2",
     "rollup": "^0.25.3",
     "rollup-plugin-babel": "2.3.9",
     "rollup-plugin-node-resolve": "^1.4.0",
@@ -73,7 +73,7 @@
     "browser",
     "rollup"
   ],
-   "repository": {
+  "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/trueadm/inferno.git"
   },
