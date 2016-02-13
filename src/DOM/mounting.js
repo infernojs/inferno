@@ -5,7 +5,7 @@ import { patchAttribute } from './patching';
 import { handleEvent } from './events';
 import { diffNodes } from './diffing';
 
-function mountChildren(children, parentDom, lifecycle, context) {
+export function mountChildren(children, parentDom, lifecycle, context) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];

@@ -1,10 +1,12 @@
-import template from '../index';
-import { render, renderToString } from '../rendering';
-import createTemplate from '../../core/createTemplate';
-import createDOMTree from '../createTree';
-import { addTreeConstructor } from '../../core/createTemplate';
+import { render } from '../rendering';
 
-addTreeConstructor('dom', createDOMTree);
+var staticNode = {
+	tag: null,
+	static: {
+		keyed: [],
+		nonKeyed: []
+	}
+};
 
 describe('Children - (non-JSX)', () => {
 
@@ -163,7 +165,7 @@ describe('Children - (non-JSX)', () => {
 		value: [ '', '', '' ],
 		expected: ''
 	}, {
-		name: 'cast to strng value, + single number in an array',
+		name: 'cast to string value, + single number in an array',
 		value: [ '1', 2, 3 ],
 		expected: '123'
 	}, {
@@ -190,6 +192,7 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set static children as ' + arg.name,
 			template: () => ({
+				static: staticNode,
 				tag: 'div',
 				children: arg.value
 			})
@@ -197,10 +200,10 @@ describe('Children - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
@@ -212,8 +215,10 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set static deep children as ' + arg.name,
 			template: () => ({
+				static: staticNode,
 				tag: 'div',
 				children: {
+					static: staticNode,
 					tag: 'span',
 					children: arg.value
 				}
@@ -222,12 +227,12 @@ describe('Children - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -242,12 +247,16 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set very deep static children as ' + arg.name,
 			template: () => ({
+				static: staticNode,
 				tag: 'div',
 				children: {
+					static: staticNode,
 					tag: 'span',
 					children: {
+						static: staticNode,
 						tag: 'b',
 						children: {
+							static: staticNode,
 							tag: 'b',
 							children: arg.value
 						}
@@ -258,12 +267,12 @@ describe('Children - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -279,6 +288,7 @@ describe('Children - (non-JSX)', () => {
 			description: 'should set dynamic children as ' + arg.name,
 
 			template: (child) => ({
+				static: staticNode,
 				tag: 'div',
 				children: child
 			})
@@ -286,16 +296,16 @@ describe('Children - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
@@ -303,40 +313,40 @@ describe('Children - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
 			});
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
-				render(createTemplate(test.template)(undefined), container);
+				render(test.template(undefined), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
 
@@ -344,10 +354,10 @@ describe('Children - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
 
@@ -361,8 +371,10 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set deep dynamic children as ' + arg.name,
 			template: (child) => ({
+				static: staticNode,
 				tag: 'div',
 				children: {
+					static: staticNode,
 					tag: 'b',
 					children: child
 				}
@@ -371,19 +383,19 @@ describe('Children - (non-JSX)', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal('');
-				render(createTemplate(test.template)(undefined), container);
+				render(test.template(undefined), container);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal('');
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal('');
 			});

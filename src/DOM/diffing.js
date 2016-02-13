@@ -1,6 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent } from '../core/utils';
 import { replaceNode } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent } from './patching';
+import { mountChildren } from './mounting';
 
 export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, staticCheck) {
 	if (nextNode === false || nextNode === null) {
@@ -57,30 +58,40 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, staticCheck) 
 	const lastChildren = lastNode.children;
 
 	if (lastChildren !== nextChildren) {
-		if (!isNullOrUndefined(lastChildren) && !isNullOrUndefined(nextChildren)) {
-			if (isArray(lastChildren)) {
-				if (isArray(nextChildren)) {
-					const isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0].key)
-						|| lastChildren.length && !isNullOrUndefined(lastChildren[0].key);
+		if (!isNullOrUndefined(lastChildren)) {
+			if (!isNullOrUndefined(nextChildren)) {
+				if (isArray(lastChildren)) {
+					if (isArray(nextChildren)) {
+						const isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key)
+							&& lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
 
-					if (!isKeyed) {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
+						if (!isKeyed) {
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
+						} else {
+							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
+						}
 					} else {
-						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, null);
+						patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, null);
 					}
 				} else {
-					patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, null);
+					if (isArray(nextChildren)) {
+						patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, null);
+					} else if (isStringOrNumber(lastChildren)) {
+						if (isStringOrNumber(nextChildren)) {
+							dom.firstChild.nodeValue = nextChildren;
+						}
+					} else {
+						diffNodes(lastChildren, nextChildren, dom, lifecycle, context, staticCheck);
+					}
 				}
 			} else {
-				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, null);
-				} else if (isStringOrNumber(lastChildren)) {
-					if (isStringOrNumber(nextChildren)) {
-						dom.firstChild.nodeValue = nextChildren;
-					}
-				} else {
-					diffNodes(lastChildren, nextChildren, dom, lifecycle, context, staticCheck);
-				}
+				dom.textContent = '';
+			}
+		} else {
+			if (isStringOrNumber(nextChildren)) {
+				dom.textContent = nextChildren;
+			} else if (nextChildren && isArray(nextChildren)) {
+				mountChildren(nextChildren, dom, lifecycle, context);
 			}
 		}
 	}
