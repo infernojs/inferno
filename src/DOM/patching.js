@@ -24,7 +24,11 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 			if (isString(nextAttrValue)) {
 				dom.style.cssText = nextAttrValue;
 			} else {
-				for (let style in nextAttrValue) {
+				const styleKeys = Object.keys(nextAttrValue);
+
+				for (let i = 0; i < styleKeys.length; i++) {
+					const style = styleKeys[i];
+
 					dom.style[style] = nextAttrValue[style];
 				}
 			}
