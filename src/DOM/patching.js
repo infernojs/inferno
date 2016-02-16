@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppend, remove } from './utils';
@@ -131,7 +131,16 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		const nextChild = nextChildren[i];
 
 		if (lastChild !== nextChild) {
-			patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+			if (isStringOrNumber(lastChild)) {
+				// this is slow and bad, need to improve
+				//if (isStringOrNumber(nextChild)) {
+				//	dom.childNodes[i].nodeValue = nextChild;
+				//} else {
+				//	dom.childNodes[i].nodeValue = '';
+				//}
+			} else {
+				patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+			}
 		}
 	}
 }

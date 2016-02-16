@@ -1,13 +1,7 @@
 import { render } from '../rendering';
 import createElement from '../../core/createElement';
 
-var staticNode = {
-	tag: null,
-	static: {
-		keyed: [],
-		nonKeyed: []
-	}
-};
+var staticNode = null;
 
 describe('SVG (non-jsx)', () => {
 	let container;

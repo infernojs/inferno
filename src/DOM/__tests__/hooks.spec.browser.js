@@ -4,13 +4,7 @@ import { render } from '../../DOM/rendering';
 describe('lifecycle hooks', () => {
 	let container;
 
-	var staticNode = {
-		tag: null,
-		static: {
-			keyed: [],
-			nonKeyed: []
-		}
-	};
+	var staticNode = null;
 
 	beforeEach(() => {
 		container = document.createElement('div');

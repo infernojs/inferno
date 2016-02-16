@@ -1,12 +1,6 @@
 import { render } from '../rendering';
 
-var staticNode = {
-	tag: null,
-	static: {
-		keyed: [],
-		nonKeyed: []
-	}
-};
+var staticNode = null;
 
 describe('Text', () => {
 	let container;
