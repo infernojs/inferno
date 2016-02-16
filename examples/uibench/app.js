@@ -10,7 +10,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		attrs: [{ name: 'className', value: 'AnimBox' }]
+		className: 'AnimBox'
 	};
 
 	var AnimBox = function (props) {
@@ -23,12 +23,9 @@
 		return {
 			dom: null,
 			static: animBox1,
-			attrs: [
-				{ name: 'style', value: style },
-				{ name: 'data-id', value: data.id }
-			]
+			attrs: { style: style, 'data-id': value.id }
 		};
-	}
+	};
 
 	var anim1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className : 'Anim' }),
@@ -37,7 +34,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		attrs: [{ name: 'className', value: 'Anim' }]
+		className: 'Anim'
 	};
 
 	var anim2 = {
@@ -84,7 +81,7 @@
 			nonKeyed: []
 		},
 		tag: 'td',
-		attrs: [{ name: 'className', value: 'TableCell' }]
+		className: 'TableCell'
 	};
 
 	function updateTableCell(domNode, lastProps, nextProps) {
@@ -155,7 +152,8 @@
 		return {
 			dom: null,
 			static: tableRow1,
-			attrs: [{ name: 'className', value: classes }, { name: 'data-id', value: data.id }],
+			attrs: { 'data-id': data.id },
+			className: classes,
 			children: children
 		};
 	}
@@ -167,7 +165,7 @@
 			nonKeyed: []
 		},
 		tag: 'table',
-		attrs: [{ name: 'className', value: 'Table' }]
+		className: 'Table'
 	};
 
 	var table2 = {
@@ -226,7 +224,7 @@
 			nonKeyed: []
 		},
 		tag: 'li',
-		attrs: [ {name: 'className', value: 'TreeLeaf' } ]
+		className: 'TreeLeaf'
 	};
 
 	var TreeLeaf = function (props) {
@@ -236,7 +234,7 @@
 			events: {
 				componentShouldUpdate: appUpdateCheck
 			},
-			children: '' + props.data.id,
+			children: '' + props.data.id
 		};
 	};
 
@@ -247,7 +245,7 @@
 			nonKeyed: []
 		},
 		tag: 'ul',
-		attrs: [{name: 'className', value: 'TreeNode' }],
+		className: 'TreeNode'
 	};
 
 	var treeNode2 = {
@@ -317,7 +315,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		attrs: [{ name: 'className', value: 'Tree' }]
+		className: 'Tree'
 	};
 
 	var tree2 = {
@@ -354,7 +352,7 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		attrs: [{ name: 'className', value: 'Main' }]
+		className: 'Main'
 	};
 
 	var main2 = {
@@ -432,7 +430,7 @@
 			static: main1,
 			children: section
 		};
-	}
+	};
 
 	var app1 = {
 		dom: null,
@@ -471,7 +469,7 @@
 						componentShouldUpdate: appUpdateCheck
 					},
 					instance: null
-				}, container)
+				}, container);
 			},
 			function(samples) {
 				InfernoDOM.render({

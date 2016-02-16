@@ -1,10 +1,11 @@
 import { isAttrAnEvent, isNullOrUndefined } from './utils';
+import { createElement } from '../DOM/utils';
 
 const isBrowser = typeof window !== 'undefined' && window.document;
 
 export function createStaticElement(tag, attrs) {
 	if (isBrowser) {
-		const dom = document.createElement(tag);
+		const dom = createElement(tag);
 		if (attrs) {
 			createStaticAttributes(attrs, dom);
 		}

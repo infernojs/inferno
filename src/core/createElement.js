@@ -4,25 +4,20 @@ const globalNonStatic = {
 	static: {
 		keyed: false,
 		nonKeyed: false
-	},
-	dom: null,
-	tag: null,
-	key: null,
-	attrs: null,
-	events: null,
-	children: null,
-	nextNode: null,
-	instance: null
+	}
 };
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;
 	let attrs = null;
+	let className = null;
 
 	if (props) {
 		if (!isArray(props)) {
 			for (let prop in props) {
-				if (isAttrAnEvent(prop)) {
+				if (prop === 'className') {
+					className = props[prop];
+				} else if (isAttrAnEvent(prop)) {
 					if (!events) {
 						events = {};
 					}
@@ -30,9 +25,9 @@ export function createAttrsAndEvents(props, tag) {
 					delete props[prop];
 				} else if (!isFunction(tag)) {
 					if (!attrs) {
-						attrs = [];
+						attrs = {};
 					}
-					attrs.push({ name: prop, value: props[prop] });
+					attrs[prop] = props[prop];
 				} else {
 					attrs = props;
 				}
@@ -41,7 +36,7 @@ export function createAttrsAndEvents(props, tag) {
 			return props;
 		}
 	}
-	return { attrs, events };
+	return { attrs, events, className };
 }
 
 function createChild({ tag, attrs, children, text }) {
@@ -56,14 +51,14 @@ function createChild({ tag, attrs, children, text }) {
 		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 	return {
-		static: globalNonStatic,
 		dom: null,
+		static: globalNonStatic,
 		tag: tag,
 		key: key,
 		attrs: attrsAndEvents.attrs,
 		events: attrsAndEvents.events,
+		className: attrsAndEvents.className,
 		children: children || text,
-		nextNode: null,
 		instance: null
 	};
 }
@@ -81,7 +76,7 @@ export function createChildren(children) {
 			}
 		}
 		return newChildren;
-	} else if (typeof children === 'object') {
+	} else if (children && typeof children === 'object') {
 		return createChild(children);
 	} else {
 		return children;

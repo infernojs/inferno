@@ -2,11 +2,22 @@ import { mountNode } from './mounting';
 import { isStatefulComponent, isArray } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
+export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
+export const SVGNamespace = 'http://www.w3.org/2000/svg';
+
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (nextNode) {
 		parentDom.insertBefore(newNode, nextNode);
 	} else {
 		parentDom.appendChild(newNode);
+	}
+}
+
+export function createElement(tag, namespace) {
+	if (namespace) {
+		return document.createElementNS(namespace, tag);
+	} else {
+		return document.createElement(tag);
 	}
 }
 
@@ -24,8 +35,8 @@ export function appendText(text, parentDom, singleChild) {
 	}
 }
 
-export function replaceNode(lastNode, nextNode, parentDom, lifecycle, context) {
-	const dom = mountNode(nextNode, null, lifecycle, context);
+export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
+	const dom = mountNode(nextNode, null, namespace, lifecycle, context);
 	parentDom.replaceChild(dom, lastNode.dom);
 	nextNode.dom = dom;
 }

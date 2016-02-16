@@ -1,11 +1,11 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText } from './utils';
+import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
 import { patchAttribute } from './patching';
 import { handleEvent } from './events';
 import { diffNodes } from './diffing';
 
-export function mountChildren(children, parentDom, lifecycle, context) {
+export function mountChildren(children, parentDom, namespace, lifecycle, context) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
@@ -13,14 +13,14 @@ export function mountChildren(children, parentDom, lifecycle, context) {
 			if (isStringOrNumber(child)) {
 				appendText(child, parentDom, false);
 			} else {
-				mountNode(child, parentDom, lifecycle, context);
+				mountNode(child, parentDom, namespace, lifecycle, context);
 			}
 		}
 	} else {
 		if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
 		} else {
-			mountNode(children, parentDom, lifecycle, context);
+			mountNode(children, parentDom, namespace, lifecycle, context);
 		}
 	}
 }
@@ -81,7 +81,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 	}
 }
 
-export function mountNode(node, parentDom, lifecycle, context) {
+export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	let dom;
 
 	if (isNullOrUndefined(node) || isArray(node)) {
@@ -99,13 +99,16 @@ export function mountNode(node, parentDom, lifecycle, context) {
 			return dom;
 		}
 	}
-	if (isFunction(node.tag)) {
-		return mountComponent(node, node.tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
+	const tag = node.tag;
+
+	if (isFunction(tag)) {
+		return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
 	}
+	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 	if (node.static.dom) {
 		dom = node.static.dom.cloneNode(true);
 	} else {
-		dom = document.createElement(node.tag);
+		dom = createElement(tag, namespace);
 	}
 	const children = node.children;
 	const attrs = node.attrs;
@@ -125,7 +128,7 @@ export function mountNode(node, parentDom, lifecycle, context) {
 		}
 	}
 	if (!isNullOrUndefined(children)) {
-		mountChildren(children, dom, lifecycle, context);
+		mountChildren(children, dom, namespace, lifecycle, context);
 	}
 	if (attrs) {
 		mountAttributes(attrs, dom);
@@ -141,13 +144,11 @@ export function mountNode(node, parentDom, lifecycle, context) {
 }
 
 function mountAttributes(attrs, dom) {
-	for (let i = 0; i < attrs.length; i++) {
-		const attr = attrs[i];
-		const attrName = attr && attr.name;
-		const attrVal = attr && attr.value;
+	const attrsKeys = Object.keys(attrs);
 
-		if (attrName) {
-			patchAttribute(attrName, null, attrVal, dom);
-		}
+	for (let i = 0; i < attrsKeys.length; i++) {
+		const attr = attrsKeys[i];
+
+		patchAttribute(attr, null, attrs[attr], dom);
 	}
 }
