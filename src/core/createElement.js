@@ -1,12 +1,5 @@
 import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction } from './utils';
 
-const globalNonStatic = {
-	static: {
-		keyed: false,
-		nonKeyed: false
-	}
-};
-
 export function createAttrsAndEvents(props, tag) {
 	let events = null;
 	let attrs = null;
@@ -52,7 +45,6 @@ function createChild({ tag, attrs, children, text }) {
 	}
 	return {
 		dom: null,
-		static: globalNonStatic,
 		tag: tag,
 		key: key,
 		attrs: attrsAndEvents.attrs,

@@ -13,8 +13,8 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		}
 		return;
 	}
-	const nextTag = nextNode.tag || (staticCheck ? nextNode.static.tag : null);
-	const lastTag = lastNode.tag || (staticCheck ? lastNode.static.tag : null);
+	const nextTag = nextNode.tag || (staticCheck && nextNode.static ? nextNode.static.tag : null);
+	const lastTag = lastNode.tag || (staticCheck && lastNode.static ? lastNode.static.tag : null);
 
 	if (lastNode.events && lastNode.events.willUpdate) {
 		lastNode.events.willUpdate(lastNode.dom);
@@ -64,7 +64,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				if (isArray(lastChildren)) {
 					if (isArray(nextChildren)) {
 						const isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key)
-							&& lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
+							|| lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
 
 						if (!isKeyed) {
 							patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
