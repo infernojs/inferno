@@ -110,18 +110,26 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		let lastDomNode;
 		while (lastChildrenLength !== nextChildrenLength) {
 			const lastChild = lastChildren[lastChildrenLength - 1];
-			dom.removeChild((lastDomNode = lastChild.dom)
-				|| (lastDomNode && (lastDomNode = lastDomNode.previousSibling))
-				|| (lastDomNode = dom.lastChild)
-			);
+				if(lastChild !== null) {
+				dom.removeChild((lastDomNode = lastChild.dom)
+					|| (lastDomNode && (lastDomNode = lastDomNode.previousSibling))
+					|| (lastDomNode = dom.lastChild)
+				);
+			}
+
 			lastChildrenLength--;
 		}
 	} else if (lastChildrenLength < nextChildrenLength) {
 		let counter = 0;
 		while (lastChildrenLength !== nextChildrenLength) {
 			const nextChild = nextChildren[lastChildrenLength + counter];
-			const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
-			dom.appendChild(node);
+
+			if(nextChild === null) {
+				// TODO implement
+			} else {
+				const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+				dom.appendChild(node);
+			}
 			nextChildrenLength--;
 			counter++;
 		}
@@ -131,15 +139,21 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		const nextChild = nextChildren[i];
 
 		if (lastChild !== nextChild) {
-			if (isStringOrNumber(lastChild)) {
-				// this is slow and bad, need to improve
-				//if (isStringOrNumber(nextChild)) {
-				//	dom.childNodes[i].nodeValue = nextChild;
-				//} else {
-				//	dom.childNodes[i].nodeValue = '';
-				//}
+
+			if(nextChild === null) {
+				if(lastChild === null) {
+					// TODO implement
+				} else {
+					// TODO implement remove child
+				}
 			} else {
-				patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+
+				if(lastChild === null) {
+					const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+					dom.appendChild(node);
+				} else {
+					patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+				}
 			}
 		}
 	}
