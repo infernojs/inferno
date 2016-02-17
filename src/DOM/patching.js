@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppend, remove } from './utils';
@@ -22,12 +22,33 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 			if (isString(nextAttrValue)) {
 				dom.style.cssText = nextAttrValue;
 			} else {
-				const styleKeys = Object.keys(nextAttrValue);
+				if (nextAttrValue) {
+					const styleKeys = Object.keys(nextAttrValue);
 
-				for (let i = 0; i < styleKeys.length; i++) {
-					const style = styleKeys[i];
+					for (let i = 0; i < styleKeys.length; i++) {
+						const style = styleKeys[i];
+						let value = nextAttrValue[style];
 
-					dom.style[style] = nextAttrValue[style];
+						if (isNumber(value)) {
+							value = value + 'px';
+						}
+						dom.style[style] = value;
+					}
+					if (lastAttrValue) {
+						const lastStyleKeys = Object.keys(lastAttrValue);
+
+						for (let i = 0; i < lastStyleKeys.length; i++) {
+							const style = lastStyleKeys[i];
+
+							if (!nextAttrValue[style]) {
+								dom.style[style] = '';
+							}
+						}
+					}
+				} else {
+					if (lastAttrValue) {
+						dom.removeAttribute('style');
+					}
 				}
 			}
 		} else {
@@ -110,13 +131,13 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		let lastDomNode;
 		while (lastChildrenLength !== nextChildrenLength) {
 			const lastChild = lastChildren[lastChildrenLength - 1];
-				if(lastChild !== null) {
+
+			if (!isNullOrUndefined(lastChild)) {
 				dom.removeChild((lastDomNode = lastChild.dom)
 					|| (lastDomNode && (lastDomNode = lastDomNode.previousSibling))
 					|| (lastDomNode = dom.lastChild)
 				);
 			}
-
 			lastChildrenLength--;
 		}
 	} else if (lastChildrenLength < nextChildrenLength) {
@@ -124,7 +145,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		while (lastChildrenLength !== nextChildrenLength) {
 			const nextChild = nextChildren[lastChildrenLength + counter];
 
-			if(nextChild === null) {
+			if (isNullOrUndefined(nextChild)) {
+				debugger;
 				// TODO implement
 			} else {
 				const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
@@ -139,20 +161,25 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		const nextChild = nextChildren[i];
 
 		if (lastChild !== nextChild) {
-
-			if(nextChild === null) {
-				if(lastChild === null) {
-					// TODO implement
-				} else {
+			if (isNullOrUndefined(nextChild)) {
+				if (!isNullOrUndefined(lastChild)) {
+					dom.childNodes[i].textContent = '';
 					// TODO implement remove child
 				}
 			} else {
-
-				if(lastChild === null) {
-					const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
-					dom.appendChild(node);
+				if (isNullOrUndefined(lastChild)) {
+					if (isStringOrNumber(nextChild)) {
+						dom.childNodes[i].textContent = nextChild;
+					} else {
+						const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+						dom.replaceChild(node, dom.childNodes[i]);
+					}
 				} else {
-					patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+					if (isStringOrNumber(nextChild)) {
+						dom.childNodes[i].textContent = nextChild;
+					} else {
+						patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+					}
 				}
 			}
 		}

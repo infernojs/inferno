@@ -43,8 +43,14 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 
 	nextNode.dom = dom;
 	diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck);
-	if (lastNode.className !== nextNode.className) {
-		dom.className = nextNode.className;
+	const nextClassName = nextNode.className;
+
+	if (lastNode.className !== nextClassName) {
+		if (isNullOrUndefined(nextClassName)) {
+			dom.removeAttribute('class');
+		} else {
+			dom.className = nextClassName;
+		}
 	}
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);

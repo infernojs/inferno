@@ -369,7 +369,7 @@ describe('Update (non-jsx)', () => {
 
 		const template = (val) => ({
 			tag: 'div',
-			text: 'Hello, World',
+			children: 'Hello, World',
 			attrs: {
 				id: val
 			}
@@ -432,9 +432,7 @@ describe('Update (non-jsx)', () => {
 			attrs: {
 				id: val1
 			},
-			children: {
-				text: 'Hello, World'
-			}
+			children: 'Hello, World'
 		});
 
 		render(template('Hello'), container);
@@ -472,9 +470,7 @@ describe('Update (non-jsx)', () => {
 			attrs: {
 				id: val1
 			},
-			children: {
-				text: 'Hello, World'
-			}
+			children: 'Hello, World'
 		});
 
 		render(template(null), container); // should unset
@@ -556,8 +552,8 @@ describe('Update (non-jsx)', () => {
 		const template = function (val1, val2, val3, val4, val5, val6) {
 			return {
 				tag: 'div',
+				className: val2,
 				attrs: {
-					className: val2,
 					id: val1
 				},
 				children: [{
@@ -567,13 +563,11 @@ describe('Update (non-jsx)', () => {
 					},
 					children: {
 						tag: 'span',
-						text: val6
+						children: val6
 					}
 				}, {
 					tag: 'div',
-					attrs: {
-						className: val4
-					},
+					className: val4,
 					children: val3
 				}]
 
@@ -1021,9 +1015,7 @@ describe('Update (non-jsx)', () => {
 	it('should update multiple changes', () => {
 		const template = (val1, val2) => ({
 			tag: 'div',
-			attrs: {
-				className: val1
-			},
+			className: val1,
 			children: val2
 		});
 
@@ -1073,15 +1065,6 @@ describe('Update (non-jsx)', () => {
 		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
 	});
 
-	it('should silently ignore and do nothing if no valid text', () => {
-		const template = (text) => ({
-			text
-		});
-
-		render(template({ text: 'Hello, World!' }), container);
-		expect(container.firstChild.innerHTML).to.be.undefined;
-	});
-
 	it('should inject dynamic text various places', () => {
 
 		const div = (text) => ({
@@ -1128,13 +1111,12 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should render a div tag and remove styling', () => {
-
 		let template;
 
 		template = (styleRule) =>
 			createElement('div', {
 				style: styleRule
-			});
+			})
 
 		render(template({
 			color: 'red',

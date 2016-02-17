@@ -85,10 +85,20 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	let dom;
 
 	if (isNullOrUndefined(node) || isArray(node)) {
-		return;
+		const dom = document.createTextNode('');
+
+		if (parentDom !== null) {
+			parentDom.appendChild(dom);
+		}
+		return dom;
 	}
 	if (isStringOrNumber(node)) {
-		return document.createTextNode(node);
+		const dom = document.createTextNode(node);
+
+		if (parentDom !== null) {
+			parentDom.appendChild(dom);
+		}
+		return dom;
 	}
 	if (recyclingEnabled) {
 		dom = recycle(node, lifecycle, context);

@@ -40,3 +40,7 @@ export function isAttrAnEvent(attr) {
 export function isString(obj) {
 	return typeof obj === 'string';
 }
+
+export function isNumber(obj) {
+	return typeof obj === 'number';
+}

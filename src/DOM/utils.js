@@ -1,5 +1,5 @@
 import { mountNode } from './mounting';
-import { isStatefulComponent, isArray } from '../core/utils';
+import { isStatefulComponent, isArray, isNullOrUndefined } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
@@ -42,6 +42,9 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 }
 
 export function detachNode(node) {
+	if (isNullOrUndefined(node)) {
+		return;
+	}
 	if (isStatefulComponent(node.instance)) {
 		node.instance.componentWillUnmount();
 		node.instance._unmounted = true;
