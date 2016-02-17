@@ -24,7 +24,37 @@ describe('SSR Creation - (non-JSX)', () => {
 			};
 		},
 		result: '<div>Hello world</div>'
-	}].forEach(test => {
+	}, {
+		description: 'should render div with text children',
+		template: () => {
+			return {
+				dom: null,
+				tag: 'div',
+				children: [ 'Hello', ' world' ]
+			};
+		},
+		result: '<div>Hello world</div>'
+	}, {
+		description: 'should render div with node children',
+		template: () => {
+			return {
+				dom: null,
+				tag: 'div',
+				children: [
+					{
+						tag: 'span',
+						children: 'Hello'
+					},
+					{
+						tag: 'span',
+						children: ' world!'
+					}
+				]
+			};
+		},
+		result: '<div><span>Hello</span><span> world!</span></div>'
+	}
+	].forEach(test => {
 		it(test.description, () => {
 			const output = renderToString(test.template());
 			expect(output).to.equal(test.result);

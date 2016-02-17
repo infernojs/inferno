@@ -2,7 +2,18 @@ import { isArray, isStringOrNumber, isNullOrUndefined } from '../core/utils';
 
 function renderChildren(children) {
 	if (children && isArray(children)) {
+		const childrenResult = [];
 
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
+
+			if (isStringOrNumber(child)) {
+				childrenResult.push(child);
+			} else {
+				childrenResult.push(renderNode(child));
+			}
+		}
+		return childrenResult.join('')
 	} else if (!isNullOrUndefined(children)) {
 		if (isStringOrNumber(children)) {
 			return children;
