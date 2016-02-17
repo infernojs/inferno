@@ -23,7 +23,7 @@
 		return {
 			dom: null,
 			static: animBox1,
-			attrs: { style: style, 'data-id': value.id }
+			attrs: { style: style, 'data-id': data.id }
 		};
 	};
 
