@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.5.21
+ * inferno-component v0.6.0
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -45,78 +45,28 @@ babelHelpers.extends = Object.assign || function (target) {
 
 babelHelpers;
 
-var canUseDOM = !!(typeof window !== 'undefined' &&
-// Nwjs doesn't add document as a global in their node context, but does have it on window.document,
-// As a workaround, check if document is undefined
-typeof document !== 'undefined' && window.document.createElement);
+var Lifecycle = function () {
+	function Lifecycle() {
+		babelHelpers.classCallCheck(this, Lifecycle);
 
-var ExecutionEnvironment = {
-	canUseDOM: canUseDOM,
-	canUseWorkers: typeof Worker !== 'undefined',
-	canUseEventListeners: canUseDOM && !!window.addEventListener,
-	canUseViewport: canUseDOM && !!window.screen,
-	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
-};
+		this._listeners = [];
+	}
 
-var noop = (function () {})
-
-// Server side workaround
-var requestAnimationFrame = noop;
-var cancelAnimationFrame = noop;
-
-if (ExecutionEnvironment.canUseDOM) {
-	(function () {
-
-		var lastTime = 0;
-
-		var nativeRequestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
-
-		var nativeCancelAnimationFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame;
-
-		requestAnimationFrame = nativeRequestAnimationFrame || function (callback) {
-			var currTime = Date.now();
-			var timeDelay = Math.max(0, 16 - (currTime - lastTime)); // 1000 / 60 = 16.666
-
-			lastTime = currTime + timeDelay;
-			return window.setTimeout(function () {
-				callback(Date.now());
-			}, timeDelay);
-		};
-
-		cancelAnimationFrame = nativeCancelAnimationFrame || function (frameId) {
-			window.clearTimeout(frameId);
-		};
-	})();
-}
-
-function applyState(component) {
-	var blockRender = component._blockRender;
-
-	requestAnimationFrame(function () {
-		if (component._deferSetState === false) {
-			var activeNode = undefined;
-
-			if (ExecutionEnvironment.canUseDOM) {
-				activeNode = document.activeElement;
-			}
-
-			component._pendingSetState = false;
-			var pendingState = component._pendingState;
-			var oldState = component.state;
-			var nextState = babelHelpers.extends({}, oldState, pendingState);
-
-			component._pendingState = {};
-			component._pendingSetState = false;
-			component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
-
-			if (ExecutionEnvironment.canUseDOM && activeNode !== document.body && document.activeElement !== activeNode) {
-				activeNode.focus();
-			}
-		} else {
-			applyState(component);
+	babelHelpers.createClass(Lifecycle, [{
+		key: "addListener",
+		value: function addListener(callback) {
+			this._listeners.push(callback);
 		}
-	});
-}
+	}, {
+		key: "trigger",
+		value: function trigger() {
+			for (var i = 0; i < this._listeners.length; i++) {
+				this._listeners[i]();
+			}
+		}
+	}]);
+	return Lifecycle;
+}();
 
 function queueStateChanges(component, newState) {
 	for (var stateKey in newState) {
@@ -128,16 +78,40 @@ function queueStateChanges(component, newState) {
 	}
 }
 
-/** Base Component class, for he ES6 Class method of creating Components
- *	@public
- *
- *	@example
- *	class MyFoo extends Component {
- *		render(props, state) {
- *			return <div />;
- *		}
- *	}
- */
+function applyState(component) {
+	var blockRender = component._blockRender;
+
+	requestAnimationFrame(function () {
+		if (component._deferSetState === false) {
+			(function () {
+				var activeNode = document.activeElement;
+
+				component._pendingSetState = false;
+				var pendingState = component._pendingState;
+				var oldState = component.state;
+				var nextState = babelHelpers.extends({}, oldState, pendingState);
+
+				component._pendingState = {};
+				component._pendingSetState = false;
+				var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
+				var lastNode = component._lastNode;
+				var parentDom = lastNode.dom.parentNode;
+
+				var subLifecycle = new Lifecycle();
+				component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
+				subLifecycle.addListener(function () {
+					subLifecycle.trigger();
+				});
+
+				if (activeNode !== document.body && document.activeElement !== activeNode) {
+					activeNode.focus();
+				}
+			})();
+		} else {
+			applyState(component);
+		}
+	});
+}
 
 var Component = function () {
 	function Component(props) {
@@ -148,14 +122,15 @@ var Component = function () {
 
 		/** @type {object} */
 		this.state = {};
-
 		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
 		this._pendingState = {};
-		this._lastRender = null;
+		this._lastNode = null;
+		this._unmounted = false;
 		this.context = {};
+		this._diffNodes = null;
 	}
 
 	babelHelpers.createClass(Component, [{
@@ -166,7 +141,7 @@ var Component = function () {
 		value: function forceUpdate() {}
 	}, {
 		key: 'setState',
-		value: function setState(newState /* , callback */) {
+		value: function setState(newState) {
 			// TODO the callback
 			if (this._blockSetState === false) {
 				queueStateChanges(this, newState);
@@ -203,7 +178,11 @@ var Component = function () {
 	}, {
 		key: '_updateComponent',
 		value: function _updateComponent(prevState, nextState, prevProps, nextProps) {
-			if (!nextProps.children) {
+			if (this._unmounted === true) {
+				this._unmounted = false;
+				return false;
+			}
+			if (nextProps && !nextProps.children) {
 				nextProps.children = prevProps.children;
 			}
 			if (prevProps !== nextProps || prevState !== nextState) {
@@ -220,10 +199,10 @@ var Component = function () {
 					this._blockSetState = false;
 					this.props = nextProps;
 					this.state = nextState;
-					var newDomNode = this.forceUpdate();
+					var node = this.render();
 
 					this.componentDidUpdate(prevProps, prevState);
-					return newDomNode;
+					return node;
 				}
 			}
 		}

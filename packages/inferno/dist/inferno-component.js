@@ -51,6 +51,29 @@
 
 	babelHelpers;
 
+	var Lifecycle = function () {
+		function Lifecycle() {
+			babelHelpers.classCallCheck(this, Lifecycle);
+
+			this._listeners = [];
+		}
+
+		babelHelpers.createClass(Lifecycle, [{
+			key: "addListener",
+			value: function addListener(callback) {
+				this._listeners.push(callback);
+			}
+		}, {
+			key: "trigger",
+			value: function trigger() {
+				for (var i = 0; i < this._listeners.length; i++) {
+					this._listeners[i]();
+				}
+			}
+		}]);
+		return Lifecycle;
+	}();
+
 	function queueStateChanges(component, newState) {
 		for (var stateKey in newState) {
 			component._pendingState[stateKey] = newState[stateKey];
@@ -66,28 +89,30 @@
 
 		requestAnimationFrame(function () {
 			if (component._deferSetState === false) {
-				var activeNode = document.activeElement;
+				(function () {
+					var activeNode = document.activeElement;
 
-				component._pendingSetState = false;
-				var pendingState = component._pendingState;
-				var oldState = component.state;
-				var nextState = babelHelpers.extends({}, oldState, pendingState);
+					component._pendingSetState = false;
+					var pendingState = component._pendingState;
+					var oldState = component.state;
+					var nextState = babelHelpers.extends({}, oldState, pendingState);
 
-				component._pendingState = {};
-				component._pendingSetState = false;
-				var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
-				var lastNode = component._lastNode;
-				var parentDom = lastNode.dom.parentNode;
+					component._pendingState = {};
+					component._pendingSetState = false;
+					var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
+					var lastNode = component._lastNode;
+					var parentDom = lastNode.dom.parentNode;
 
-				var subLifecycle = new Lifecycle();
-				component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
-				subLifecycle.addListener(function () {
-					subLifecycle.trigger();
-				});
+					var subLifecycle = new Lifecycle();
+					component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
+					subLifecycle.addListener(function () {
+						subLifecycle.trigger();
+					});
 
-				if (activeNode !== document.body && document.activeElement !== activeNode) {
-					activeNode.focus();
-				}
+					if (activeNode !== document.body && document.activeElement !== activeNode) {
+						activeNode.focus();
+					}
+				})();
 			} else {
 				applyState(component);
 			}
@@ -100,6 +125,7 @@
 
 			/** @type {object} */
 			this.props = props || {};
+
 			/** @type {object} */
 			this.state = {};
 			this._blockRender = false;

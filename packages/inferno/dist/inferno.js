@@ -15,6 +15,21 @@
 	} : function (obj) {
 	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
 	};
+
+	babelHelpers.extends = Object.assign || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];
+
+	    for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }
+
+	  return target;
+	};
+
 	babelHelpers;
 
 	function isArray$1(obj) {
@@ -33,29 +48,17 @@
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	var globalNonStatic = {
-		static: {
-			keyed: false,
-			nonKeyed: false
-		},
-		dom: null,
-		tag: null,
-		key: null,
-		attrs: null,
-		events: null,
-		children: null,
-		nextNode: null,
-		instance: null
-	};
-
 	function createAttrsAndEvents(props, tag) {
 		var events = null;
 		var attrs = null;
+		var className = null;
 
 		if (props) {
 			if (!isArray$1(props)) {
 				for (var prop in props) {
-					if (isAttrAnEvent(prop)) {
+					if (prop === 'className') {
+						className = props[prop];
+					} else if (isAttrAnEvent(prop)) {
 						if (!events) {
 							events = {};
 						}
@@ -63,9 +66,9 @@
 						delete props[prop];
 					} else if (!isFunction(tag)) {
 						if (!attrs) {
-							attrs = [];
+							attrs = {};
 						}
-						attrs.push({ name: prop, value: props[prop] });
+						attrs[prop] = props[prop];
 					} else {
 						attrs = props;
 					}
@@ -74,7 +77,7 @@
 				return props;
 			}
 		}
-		return { attrs: attrs, events: events };
+		return { attrs: attrs, events: events, className: className };
 	}
 
 	function createChild(_ref) {
@@ -94,14 +97,13 @@
 			children = isArray$1(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 		}
 		return {
-			static: globalNonStatic,
 			dom: null,
 			tag: tag,
 			key: key,
 			attrs: attrsAndEvents.attrs,
 			events: attrsAndEvents.events,
+			className: attrsAndEvents.className,
 			children: children || text,
-			nextNode: null,
 			instance: null
 		};
 	}
@@ -119,7 +121,7 @@
 				}
 			}
 			return newChildren;
-		} else if ((typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
+		} else if (children && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
 			return createChild(children);
 		} else {
 			return children;
@@ -134,11 +136,19 @@
 		return createChild({ tag: tag, attrs: props, children: children });
 	}
 
+	function createElement$1(tag, namespace) {
+		if (namespace) {
+			return document.createElementNS(namespace, tag);
+		} else {
+			return document.createElement(tag);
+		}
+	}
+
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
 	function createStaticElement(tag, attrs) {
 		if (isBrowser) {
-			var dom = document.createElement(tag);
+			var dom = createElement$1(tag);
 			if (attrs) {
 				createStaticAttributes(attrs, dom);
 			}

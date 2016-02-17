@@ -1,7 +1,6 @@
 import { render } from '../rendering';
 
 describe('Creation - (non-JSX)', () => {
-
 	let container;
 
 	beforeEach(function () {
@@ -12,13 +11,7 @@ describe('Creation - (non-JSX)', () => {
 		container.innerHTML = '';
 	});
 
-	var staticNode = {
-		tag: null,
-		static: {
-			keyed: [],
-			nonKeyed: []
-		}
-	};
+	var staticNode = null;
 
 	[{
 		description: 'should render div with span child',

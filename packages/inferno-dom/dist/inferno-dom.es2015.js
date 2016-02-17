@@ -116,6 +116,10 @@ function isString(obj) {
 	return typeof obj === 'string';
 }
 
+function isNumber(obj) {
+	return typeof obj === 'number';
+}
+
 var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 var SVGNamespace = 'http://www.w3.org/2000/svg';
 
@@ -156,6 +160,9 @@ function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, contex
 }
 
 function detachNode(node) {
+	if (isNullOrUndefined(node)) {
+		return;
+	}
 	if (isStatefulComponent(node.instance)) {
 		node.instance.componentWillUnmount();
 		node.instance._unmounted = true;
@@ -211,12 +218,33 @@ function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 			if (isString(nextAttrValue)) {
 				dom.style.cssText = nextAttrValue;
 			} else {
-				var styleKeys = Object.keys(nextAttrValue);
+				if (nextAttrValue) {
+					var styleKeys = Object.keys(nextAttrValue);
 
-				for (var i = 0; i < styleKeys.length; i++) {
-					var style = styleKeys[i];
+					for (var i = 0; i < styleKeys.length; i++) {
+						var style = styleKeys[i];
+						var value = nextAttrValue[style];
 
-					dom.style[style] = nextAttrValue[style];
+						if (isNumber(value)) {
+							value = value + 'px';
+						}
+						dom.style[style] = value;
+					}
+					if (lastAttrValue) {
+						var lastStyleKeys = Object.keys(lastAttrValue);
+
+						for (var i = 0; i < lastStyleKeys.length; i++) {
+							var style = lastStyleKeys[i];
+
+							if (!nextAttrValue[style]) {
+								dom.style[style] = '';
+							}
+						}
+					}
+				} else {
+					if (lastAttrValue) {
+						dom.removeAttribute('style');
+					}
 				}
 			}
 		} else {
@@ -299,15 +327,24 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 		var lastDomNode = undefined;
 		while (lastChildrenLength !== nextChildrenLength) {
 			var lastChild = lastChildren[lastChildrenLength - 1];
-			dom.removeChild((lastDomNode = lastChild.dom) || lastDomNode && (lastDomNode = lastDomNode.previousSibling) || (lastDomNode = dom.lastChild));
+
+			if (!isNullOrUndefined(lastChild)) {
+				dom.removeChild((lastDomNode = lastChild.dom) || lastDomNode && (lastDomNode = lastDomNode.previousSibling) || (lastDomNode = dom.lastChild));
+			}
 			lastChildrenLength--;
 		}
 	} else if (lastChildrenLength < nextChildrenLength) {
 		var counter = 0;
 		while (lastChildrenLength !== nextChildrenLength) {
 			var nextChild = nextChildren[lastChildrenLength + counter];
-			var node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
-			dom.appendChild(node);
+
+			if (isNullOrUndefined(nextChild)) {
+				debugger;
+				// TODO implement
+			} else {
+					var node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+					dom.appendChild(node);
+				}
 			nextChildrenLength--;
 			counter++;
 		}
@@ -317,15 +354,26 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 		var nextChild = nextChildren[i];
 
 		if (lastChild !== nextChild) {
-			if (isStringOrNumber(lastChild)) {
-				// this is slow and bad, need to improve
-				//if (isStringOrNumber(nextChild)) {
-				//	dom.childNodes[i].nodeValue = nextChild;
-				//} else {
-				//	dom.childNodes[i].nodeValue = '';
-				//}
+			if (isNullOrUndefined(nextChild)) {
+				if (!isNullOrUndefined(lastChild)) {
+					dom.childNodes[i].textContent = '';
+					// TODO implement remove child
+				}
 			} else {
-					patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+					if (isNullOrUndefined(lastChild)) {
+						if (isStringOrNumber(nextChild)) {
+							dom.childNodes[i].textContent = nextChild;
+						} else {
+							var node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+							dom.replaceChild(node, dom.childNodes[i]);
+						}
+					} else {
+						if (isStringOrNumber(nextChild)) {
+							dom.childNodes[i].textContent = nextChild;
+						} else {
+							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
+						}
+					}
 				}
 		}
 	}
@@ -507,8 +555,14 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 
 	nextNode.dom = dom;
 	diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck);
-	if (lastNode.className !== nextNode.className) {
-		dom.className = nextNode.className;
+	var nextClassName = nextNode.className;
+
+	if (lastNode.className !== nextClassName) {
+		if (isNullOrUndefined(nextClassName)) {
+			dom.removeAttribute('class');
+		} else {
+			dom.className = nextClassName;
+		}
 	}
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);
@@ -644,7 +698,7 @@ function handleEvent(event, dom, callback) {
 
 		/* for (let i = 0; i < delegatedEvents.length; i++) {
   	const delegatedEvent = delegatedEvents[i];
-  			if (delegatedEvent.target === dom) {
+  		if (delegatedEvent.target === dom) {
   		delegatedEvents.splice(i, 1);
   		break;
   	}
@@ -742,10 +796,20 @@ function mountNode(node, parentDom, namespace, lifecycle, context) {
 	var dom = undefined;
 
 	if (isNullOrUndefined(node) || isArray(node)) {
-		return;
+		var _dom = document.createTextNode('');
+
+		if (parentDom !== null) {
+			parentDom.appendChild(_dom);
+		}
+		return _dom;
 	}
 	if (isStringOrNumber(node)) {
-		return document.createTextNode(node);
+		var _dom2 = document.createTextNode(node);
+
+		if (parentDom !== null) {
+			parentDom.appendChild(_dom2);
+		}
+		return _dom2;
 	}
 	if (recyclingEnabled) {
 		dom = recycle(node, lifecycle, context);
