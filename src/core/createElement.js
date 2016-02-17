@@ -64,7 +64,7 @@ export function createChildren(children) {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
-			if (!isNullOrUndefined(child)) {
+			if (!isNullOrUndefined(child) && typeof child === 'object') {
 				newChildren.push(createChild(child));
 			} else {
 				newChildren.push(child);
