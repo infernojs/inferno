@@ -5,7 +5,10 @@ export function createAttrsAndEvents(props, tag) {
 	let attrs = null;
 	let className = null;
 
-	if (props) {
+	if (isFunction(tag)) {
+		className = props.className;
+		attrs = props;
+	} else if (props) {
 		if (!isArray(props)) {
 			for (let prop in props) {
 				if (prop === 'className') {
