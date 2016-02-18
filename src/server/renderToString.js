@@ -26,8 +26,13 @@ function renderChildren(children) {
 function renderNode(node) {
 	if (!isNullOrUndefined(node)) {
 		const tag = node.tag;
+		const attrs = [];
 
-		return `<${ tag }>${ renderChildren(node.children) || '' }</${ tag }>`;
+		if (!isNullOrUndefined(node.className)) {
+			attrs.push('class="' + node.className + '"');
+		}
+
+		return `<${ tag }${ attrs.length > 0 ? ' ' + attrs.join(' ') : '' }>${ renderChildren(node.children) || '' }</${ tag }>`;
 	}
 }
 

@@ -15,6 +15,21 @@ describe('SSR Creation - (non-JSX)', () => {
 		},
 		result: '<div><span></span></div>'
 	}, {
+		description: 'should render div with span child (with className)',
+		template: () => {
+			return {
+				dom: null,
+				tag: 'div',
+				className: 'foo',
+				children: {
+					dom: null,
+					className: 'bar',
+					tag: 'span'
+				}
+			};
+		},
+		result: '<div class="foo"><span class="bar"></span></div>'
+	}, {
 		description: 'should render div with text child',
 		template: () => {
 			return {
