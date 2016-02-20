@@ -79,7 +79,7 @@ export function createChildren(children) {
 		}
 		return newChildren;
 	} else if (children && typeof children === 'object') {
-		return createChild(children);
+		return children.dom === undefined? createChild(children): children;
 	} else {
 		return children;
 	}

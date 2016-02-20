@@ -1139,7 +1139,6 @@ describe('Update (non-jsx)', () => {
 	});
 
 	describe('should render styling on root node, and set and remove styling on multiple children', () => {
-
 		let template;
 
 		template = (styleRule) =>

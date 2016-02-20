@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent } from '../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle } from './patching';
 import { mountChildren, mountNode } from './mounting';
 
 export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, staticCheck) {
@@ -44,6 +44,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	nextNode.dom = dom;
 	diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck);
 	const nextClassName = nextNode.className;
+	const nextStyle = nextNode.style;
 
 	if (lastNode.className !== nextClassName) {
 		if (isNullOrUndefined(nextClassName)) {
@@ -51,6 +52,9 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		} else {
 			dom.className = nextClassName;
 		}
+	}
+	if (lastNode.style !== nextStyle) {
+		patchStyle(lastNode.style, nextStyle, dom);
 	}
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);

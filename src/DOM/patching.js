@@ -16,63 +16,63 @@ export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.static !== null && nextNode.static !== null);
 }
 
-export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
-	if (lastAttrValue !== nextAttrValue) {
-		if (attrName === 'style') {
-			if (isString(nextAttrValue)) {
-				dom.style.cssText = nextAttrValue;
-			} else {
-				if (nextAttrValue) {
-					const styleKeys = Object.keys(nextAttrValue);
+export function patchStyle(lastAttrValue, nextAttrValue, dom) {
+	if (isString(nextAttrValue)) {
+		dom.style.cssText = nextAttrValue;
+	} else {
+		if (nextAttrValue) {
+			const styleKeys = Object.keys(nextAttrValue);
 
-					for (let i = 0; i < styleKeys.length; i++) {
-						const style = styleKeys[i];
-						let value = nextAttrValue[style];
+			for (let i = 0; i < styleKeys.length; i++) {
+				const style = styleKeys[i];
+				let value = nextAttrValue[style];
 
-						if (isNumber(value)) {
-							value = value + 'px';
-						}
-						dom.style[style] = value;
-					}
-					if (lastAttrValue) {
-						const lastStyleKeys = Object.keys(lastAttrValue);
+				if (isNumber(value)) {
+					value = value + 'px';
+				}
+				dom.style[style] = value;
+			}
+			if (lastAttrValue) {
+				const lastStyleKeys = Object.keys(lastAttrValue);
 
-						for (let i = 0; i < lastStyleKeys.length; i++) {
-							const style = lastStyleKeys[i];
+				for (let i = 0; i < lastStyleKeys.length; i++) {
+					const style = lastStyleKeys[i];
 
-							if (!nextAttrValue[style]) {
-								dom.style[style] = '';
-							}
-						}
-					}
-				} else {
-					if (lastAttrValue) {
-						dom.removeAttribute('style');
+					if (!nextAttrValue[style]) {
+						dom.style[style] = '';
 					}
 				}
 			}
 		} else {
-			if (!isAttrAnEvent(attrName)) {
-				let ns = null;
+			if (lastAttrValue) {
+				dom.removeAttribute('style');
+			}
+		}
+	}
+}
 
-				if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-					ns = 'http://www.w3.org/1999/xlink';
-				}
-				if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-					dom.removeAttribute(attrName);
-				} else {
-					if (ns) {
-						if (nextAttrValue === true) {
-							dom.setAttributeNS(ns, attrName, attrName);
-						} else {
-							dom.setAttributeNS(ns, attrName, nextAttrValue);
-						}
+export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+	if (lastAttrValue !== nextAttrValue) {
+		if (!isAttrAnEvent(attrName)) {
+			let ns = null;
+
+			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
+				ns = 'http://www.w3.org/1999/xlink';
+			}
+			if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+				dom.removeAttribute(attrName);
+			} else {
+				if (ns) {
+					if (nextAttrValue === true) {
+						dom.setAttributeNS(ns, attrName, attrName);
 					} else {
-						if (nextAttrValue === true) {
-							dom.setAttribute(attrName, attrName);
-						} else {
-							dom.setAttribute(attrName, nextAttrValue);
-						}
+						dom.setAttributeNS(ns, attrName, nextAttrValue);
+					}
+				} else {
+					if (nextAttrValue === true) {
+						dom.setAttribute(attrName, attrName);
+					} else {
+						dom.setAttribute(attrName, nextAttrValue);
 					}
 				}
 			}
@@ -146,7 +146,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 			const nextChild = nextChildren[lastChildrenLength + counter];
 
 			if (isNullOrUndefined(nextChild)) {
-				debugger;
+				//debugger;
 				// TODO implement
 			} else {
 				const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);

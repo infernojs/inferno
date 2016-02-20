@@ -1,7 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
-import { patchAttribute } from './patching';
+import { patchAttribute, patchStyle } from './patching';
 import { handleEvent } from './events';
 import { diffNodes } from './diffing';
 
@@ -131,6 +131,8 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	const children = node.children;
 	const attrs = node.attrs;
 	const events = node.events;
+	const className = node.className;
+	const style = node.style;
 
 	if (events) {
 		const allEvents = Object.keys(events);
@@ -160,8 +162,11 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	if (attrs) {
 		mountAttributes(attrs, dom);
 	}
-	if (!isNullOrUndefined(node.className)) {
-		dom.className = node.className;
+	if (!isNullOrUndefined(className)) {
+		dom.className = className;
+	}
+	if (!isNullOrUndefined(style)) {
+		patchStyle(null, style, dom);
 	}
 	node.dom = dom;
 	if (parentDom !== null) {
