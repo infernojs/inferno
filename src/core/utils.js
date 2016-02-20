@@ -44,3 +44,7 @@ export function isString(obj) {
 export function isNumber(obj) {
 	return typeof obj === 'number';
 }
+
+export function isAttrAComponentEvent(attr) {
+	return attr.substring(0, 11) === 'onComponent'  && attr.length > 12;
+}

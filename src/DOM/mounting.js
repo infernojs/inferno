@@ -81,6 +81,14 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 	}
 }
 
+function mountEvents(events, allEvents, dom) {
+	for (let i = 0; i < allEvents.length; i++) {
+		const event = allEvents[i];
+
+		handleEvent(event, dom, events[event]);
+	}
+}
+
 export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	let dom;
 
@@ -125,16 +133,25 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	const events = node.events;
 
 	if (events) {
+		const allEvents = Object.keys(events);
+		let eventsCount = allEvents.length;
+
 		if (events.click) {
 			handleEvent('click', dom, events.click);
+			eventsCount--;
 		}
 		if (events.created) {
 			events.created(dom);
+			eventsCount--;
 		}
 		if (events.attached) {
 			lifecycle.addListener(() => {
 				events.attached(dom);
 			});
+			eventsCount--;
+		}
+		if (eventsCount > 0) {
+			mountEvents(events, allEvents, dom);
 		}
 	}
 	if (!isNullOrUndefined(children)) {

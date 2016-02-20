@@ -1,23 +1,29 @@
-import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction } from './utils';
+import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isAttrAComponentEvent } from './utils';
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;
 	let attrs = null;
 	let className = null;
+	let style = null;
 
-	if (isFunction(tag)) {
-		className = props.className;
-		attrs = props;
-	} else if (props) {
+	if (props) {
 		if (!isArray(props)) {
 			for (let prop in props) {
 				if (prop === 'className') {
 					className = props[prop];
-				} else if (isAttrAnEvent(prop)) {
+				} else if (prop === 'style') {
+					style = props[prop];
+				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
 					if (!events) {
 						events = {};
 					}
-					events[prop[2].toLowerCase() + prop.substring(3)] = props[prop];
+					events[prop.substring(2).toLowerCase()] = props[prop];
+					delete props[prop];
+				} else if (isAttrAComponentEvent(prop) && isFunction(tag)) {
+					if (!events) {
+						events = {};
+					}
+					events['c' + prop.substring(3)] = props[prop];
 					delete props[prop];
 				} else if (!isFunction(tag)) {
 					if (!attrs) {
@@ -32,7 +38,7 @@ export function createAttrsAndEvents(props, tag) {
 			return props;
 		}
 	}
-	return { attrs, events, className };
+	return { attrs, events, className, style };
 }
 
 function createChild({ tag, attrs, children, text }) {
@@ -53,6 +59,7 @@ function createChild({ tag, attrs, children, text }) {
 		attrs: attrsAndEvents.attrs,
 		events: attrsAndEvents.events,
 		className: attrsAndEvents.className,
+		style: attrsAndEvents.style,
 		children: children || text,
 		instance: null
 	};
