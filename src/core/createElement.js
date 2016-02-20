@@ -5,7 +5,10 @@ export function createAttrsAndEvents(props, tag) {
 	let attrs = null;
 	let className = null;
 
-	if (props) {
+	if (isFunction(tag)) {
+		className = props.className;
+		attrs = props;
+	} else if (props) {
 		if (!isArray(props)) {
 			for (let prop in props) {
 				if (prop === 'className') {
@@ -61,7 +64,7 @@ export function createChildren(children) {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
-			if (!isNullOrUndefined(child)) {
+			if (!isNullOrUndefined(child) && typeof child === 'object') {
 				newChildren.push(createChild(child));
 			} else {
 				newChildren.push(child);
