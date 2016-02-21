@@ -1,125 +1,125 @@
-//import createTemplate, { addTreeConstructor } from '../../core/createTemplate';
-//import TemplateFactory from '../../core/TemplateFactory';
-//import { render } from '../../DOM/rendering';
-//import createTree from '../../DOM/createTree';
-//import Component from '../Component';
-//import waits from '../../../tools/waits';
-//import triggerEvent from '../../../tools/triggerEvent';
-//import innerHTML from '../../../tools/innerHTML';
-//
-//const { createElement } = TemplateFactory;
-//
-//// set the constructor to 'dom'
-//addTreeConstructor('dom', createTree);
-//
-//describe('Components', () => {
-//	let container;
-//
-//	beforeEach(() => {
-//		container = document.createElement('div');
-//		container.style.display = 'none';
-//		document.body.appendChild(container);
-//	});
-//
-//	afterEach(() => {
-//		document.body.removeChild(container);
-//		render(null, container);
-//	});
-//
-//	class BasicComponent1 extends Component {
-//		render() {
-//			const template = createTemplate((name, title) =>
-//				createElement('div', {
-//					className: 'basic'
-//				},
-//					createElement('span', {
-//						className: name
-//					}, 'The title is ', title)
-//				)
-//			);
-//			return template(this.props.name, this.props.title);
-//		}
-//	}
-//
-//	it('should render a basic component', () => {
-//
-//		let template = createTemplate((Component, title) =>
-//			createElement('div', null,
-//				createElement(Component, {
-//					title: title,
-//					name: 'basic-render'
-//				})
-//			)
-//		);
-//
-//		render(template(null, 'abc'), container);
-//
-//		render(template({}, 'abc'), container);
-//
-//		render(template(BasicComponent1, 'abc'), container);
-//
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is abc');
-//
-//		render(template({}, 'abc'), container);
-//
-//		render(template(), container);
-//
-//		expect(() => render(template(BasicComponent1, {}), container)).to.throw;
-//
-//		render(template(BasicComponent1, []), container);
-//
-//		render(template(BasicComponent1, 'abcdef'), container);
-//
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is abcdef');
-//
-//		render(template(BasicComponent1, null), container);
-//
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
-//
-//		render(template(BasicComponent1, undefined), container);
-//
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
-//
-//		render(template({}, {}), container);
-//
-//		render(template([], []), container);
-//
-//		// remove the component
-//		render(template(null, null), container);
-//		expect(container.firstChild.tagName).to.equal('DIV');
-//
-//		render(template(BasicComponent1, '1234'), container);
-//
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is 1234');
-//
-//		// remove the component
-//		render(template(null, '1234'), container);
-//		expect(container.firstChild.tagName).to.equal('DIV');
-//
-//		render(template(null, null), container);
-//		expect(container.firstChild.tagName).to.equal('DIV');
-//	});
-//
+import { render } from '../../DOM/rendering';
+import Component from '../index';
+import createElement from '../../core/createElement';
+
+
+describe('Components', () => {
+	let container;
+
+	beforeEach(() => {
+		container = document.createElement('div');
+		container.style.display = 'none';
+		document.body.appendChild(container);
+	});
+
+	afterEach(() => {
+		document.body.removeChild(container);
+		render(null, container);
+	});
+
+	class BasicComponent1 extends Component {
+		render() {
+			const template = (name, title) =>
+				createElement('div', {
+					className: 'basic'
+				},
+					createElement('span', {
+						className: name
+					}, 'The title is ', title)
+				);
+			return template(this.props.name, this.props.title);
+		}
+	}
+
+	it('should render a basic component', () => {
+		let template = (Component, title) =>
+			createElement('div', null,
+				createElement(Component, {
+					title: title,
+					name: 'basic-render'
+				})
+			);
+
+		render(template(null, 'abc'), container);
+
+		expect(() => {
+			render(template({}, 'abc'), container);
+		}).to.throw();
+
+
+		render(template(BasicComponent1, 'abc'), container);
+
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is abc');
+
+		expect(() => {
+			render(template({}, 'abc'), container);
+		}).to.throw();
+
+
+		expect(() => {
+			render(template(), container);
+		}).to.throw();
+
+		expect(() => render(template(BasicComponent1, {}), container)).to.throw;
+
+		render(template(BasicComponent1, []), container);
+
+		render(template(BasicComponent1, 'abcdef'), container);
+
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is abcdef');
+
+		render(template(BasicComponent1, null), container);
+
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
+
+		render(template(BasicComponent1, undefined), container);
+
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
+
+		expect(() => {
+			render(template({}, {}), container);
+		}).to.throw();
+
+		expect(() => {
+			render(template([], []), container);
+		}).to.throw();
+
+		// remove the component
+		render(template(null, null), container);
+		expect(container.firstChild.tagName).to.equal('DIV');
+
+		render(template(BasicComponent1, '1234'), container);
+
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is 1234');
+
+		// remove the component
+		render(template(null, '1234'), container);
+		expect(container.firstChild.tagName).to.equal('DIV');
+
+		render(template(null, null), container);
+		expect(container.firstChild.tagName).to.equal('DIV');
+	});
+
 //	class BasicComponent1b extends Component {
 //		render() {
 //			const template = createTemplate((isChecked, title) =>
@@ -1293,4 +1293,4 @@
 //			);
 //		});
 //	});
-//});
+});

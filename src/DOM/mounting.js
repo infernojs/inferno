@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
 import { patchAttribute, patchStyle } from './patching';
@@ -43,7 +43,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		let dom;
 
 		if (node) {
-			dom = mountNode(node, null, lifecycle, context);
+			dom = mountNode(node, null, null, lifecycle, context);
 			instance._lastNode = node;
 			if (parentDom) {
 				parentDom.appendChild(dom);
@@ -69,7 +69,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 
 		/* eslint new-cap: 0 */
 		const node = Component(props);
-		dom = mountNode(node, null, lifecycle, context);
+		dom = mountNode(node, null, null, lifecycle, context);
 
 		parentNode.instance = node;
 		if (parentDom) {
@@ -121,6 +121,9 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 
 	if (isFunction(tag)) {
 		return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
+	}
+	if (tag !== null && !isString(tag)) {
+		throw Error('Inferno Error: Expected function or string for element tag type');
 	}
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 	if (node.static && node.static.dom) {
