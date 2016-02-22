@@ -11,7 +11,7 @@ const schema = Inferno.TemplateFactory.createElement('p', {
 }, 'Hello World!');
 
 // schema = {
-//   tag: 'div',
+//   tag: 'p',
 //   attrs: {
 //     className: 'basic'
 //   },
