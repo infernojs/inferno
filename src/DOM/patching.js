@@ -59,32 +59,30 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 }
 
 export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
-	if (lastAttrValue !== nextAttrValue) {
-		if (!isAttrAnEvent(attrName)) {
-			if (booleanProps[attrName]) {
-				dom[attrName] = nextAttrValue;
-				return;
-			}
-			let ns = null;
+	if (!isAttrAnEvent(attrName)) {
+		if (booleanProps[attrName]) {
+			dom[attrName] = nextAttrValue;
+			return;
+		}
+		let ns = null;
 
-			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-				ns = 'http://www.w3.org/1999/xlink';
-			}
-			if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-				dom.removeAttribute(attrName);
-			} else {
-				if (ns) {
-					if (nextAttrValue === true) {
-						dom.setAttributeNS(ns, attrName, attrName);
-					} else {
-						dom.setAttributeNS(ns, attrName, nextAttrValue);
-					}
+		if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
+			ns = 'http://www.w3.org/1999/xlink';
+		}
+		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+			dom.removeAttribute(attrName);
+		} else {
+			if (ns) {
+				if (nextAttrValue === true) {
+					dom.setAttributeNS(ns, attrName, attrName);
 				} else {
-					if (nextAttrValue === true) {
-						dom.setAttribute(attrName, attrName);
-					} else {
-						dom.setAttribute(attrName, nextAttrValue);
-					}
+					dom.setAttributeNS(ns, attrName, nextAttrValue);
+				}
+			} else {
+				if (nextAttrValue === true) {
+					dom.setAttribute(attrName, attrName);
+				} else {
+					dom.setAttribute(attrName, nextAttrValue);
 				}
 			}
 		}

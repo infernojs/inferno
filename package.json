@@ -14,7 +14,7 @@
     "babel-core": "^6.5.2",
     "babel-eslint": "^5.0.0-beta10",
     "babel-loader": "^6.2.2",
-    "babel-plugin-inferno": "^0.2.11",
+    "babel-plugin-inferno": "git://github.com/trueadm/babel-plugin-inferno.git#spike",
     "babel-plugin-syntax-jsx": "^6.5.0",
     "babel-plugin-syntax-object-rest-spread": "^6.5.0",
     "babel-plugin-transform-object-rest-spread": "^6.5.0",

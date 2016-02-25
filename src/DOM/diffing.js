@@ -108,17 +108,32 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 function diffAttributes(lastNode, nextNode, dom) {
 	const nextAttrs = nextNode.attrs;
 	const lastAttrs = lastNode.attrs;
-	const nextAttrsKeys = nextAttrs && Object.keys(nextAttrs);
 
-	// TODO remove attrs we previously had, but no longer have
-	if (nextAttrs && nextAttrsKeys.length !== 0) {
-		for (let i = 0; i < nextAttrsKeys.length; i++) {
-			const attr = nextAttrsKeys[i];
-			const lastAttrVal = lastAttrs[attr];
-			const nextAttrVal = nextAttrs[attr];
+	if (nextAttrs) {
+		const nextAttrsKeys = Object.keys(nextAttrs);
 
-			if (lastAttrVal !== nextAttrVal) {
-				patchAttribute(attr, lastAttrVal, nextAttrVal, dom);
+		if (nextAttrsKeys.length !== 0) {
+			for (let i = 0; i < nextAttrsKeys.length; i++) {
+				const attr = nextAttrsKeys[i];
+				const lastAttrVal = lastAttrs && lastAttrs[attr];
+				const nextAttrVal = nextAttrs[attr];
+
+				if (lastAttrVal !== nextAttrVal) {
+					patchAttribute(attr, lastAttrVal, nextAttrVal, dom);
+				}
+			}
+		}
+	}
+	if (lastAttrs) {
+		const lastAttrsKeys = Object.keys(lastAttrs);
+
+		if (lastAttrsKeys.length !== 0) {
+			for (let i = 0; i < lastAttrsKeys.length; i++) {
+				const attr = lastAttrsKeys[i];
+
+				if (!nextAttrs || isNullOrUndefined(nextAttrs[attr])) {
+					dom.removeAttribute(attr);
+				}
 			}
 		}
 	}
