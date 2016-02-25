@@ -12,6 +12,8 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 
 			if (isStringOrNumber(child)) {
 				appendText(child, parentDom, false);
+			} else if (isArray(child)) {
+				mountChildren(child, parentDom, namespace, lifecycle, context);
 			} else {
 				mountNode(child, parentDom, namespace, lifecycle, context);
 			}

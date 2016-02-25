@@ -16,7 +16,20 @@ function isNullOrUndefined(obj) {
 }
 
 function renderChildren(children) {
-	if (children && isArray(children)) {} else if (!isNullOrUndefined(children)) {
+	if (children && isArray(children)) {
+		var childrenResult = [];
+
+		for (var i = 0; i < children.length; i++) {
+			var child = children[i];
+
+			if (isStringOrNumber(child)) {
+				childrenResult.push(child);
+			} else {
+				childrenResult.push(renderNode(child));
+			}
+		}
+		return childrenResult.join('');
+	} else if (!isNullOrUndefined(children)) {
 		if (isStringOrNumber(children)) {
 			return children;
 		} else {
@@ -28,8 +41,13 @@ function renderChildren(children) {
 function renderNode(node) {
 	if (!isNullOrUndefined(node)) {
 		var tag = node.tag;
+		var attrs = [];
 
-		return '<' + tag + '>' + (renderChildren(node.children) || '') + '</' + tag + '>';
+		if (!isNullOrUndefined(node.className)) {
+			attrs.push('class="' + node.className + '"');
+		}
+
+		return '<' + tag + (attrs.length > 0 ? ' ' + attrs.join(' ') : '') + '>' + (renderChildren(node.children) || '') + '</' + tag + '>';
 	}
 }
 

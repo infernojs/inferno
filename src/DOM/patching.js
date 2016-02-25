@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppend, remove } from './utils';
@@ -132,7 +132,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 	}
 }
 
-export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, nextDom) {
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset) {
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
 
@@ -165,6 +165,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 			counter++;
 		}
 	}
+	let childNodes;
+
 	for (let i = 0; i < nextChildrenLength; i++) {
 		const lastChild = lastChildren[i];
 		const nextChild = nextChildren[i];
@@ -172,20 +174,25 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		if (lastChild !== nextChild) {
 			if (isNullOrUndefined(nextChild)) {
 				if (!isNullOrUndefined(lastChild)) {
-					dom.childNodes[i].textContent = '';
+					childNodes = childNodes || dom.childNodes;
+					childNodes[i + offset].textContent = '';
 					// TODO implement remove child
 				}
 			} else {
 				if (isNullOrUndefined(lastChild)) {
 					if (isStringOrNumber(nextChild)) {
-						dom.childNodes[i].textContent = nextChild;
+						childNodes = childNodes || dom.childNodes;
+						childNodes[i + offset].textContent = nextChild;
 					} else {
 						const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
 						dom.replaceChild(node, dom.childNodes[i]);
 					}
 				} else {
 					if (isStringOrNumber(nextChild)) {
-						dom.childNodes[i].textContent = nextChild;
+						childNodes = childNodes || dom.childNodes;
+						childNodes[i + offset].textContent = nextChild;
+					} else if (isArray(nextChild)) {
+						patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
 					} else {
 						patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
 					}

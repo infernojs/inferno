@@ -47,6 +47,17 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 	});
 
+	it('should render a simple div with multiple children #2', () => {
+		const items = [ 1, 2, 3 ];
+		const header = 'Hello ';
+
+		render(<div>{ header }{ items }</div>, container);
+		expect(container.firstChild.innerHTML).to.equal('Hello 123');
+
+		render(<div>{ header }{ [ 4, 5, 6 ] }</div>, container);
+		expect(container.firstChild.innerHTML).to.equal('Hello 456');
+	});
+
 	it('should render a simple div with span child and dynamic id attribute', () => {
 		render(<div id={ 'hello' }></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
