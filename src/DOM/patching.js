@@ -4,6 +4,13 @@ import { mountNode } from './mounting';
 import { insertOrAppend, remove } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
+const booleanProps = {
+	checked: 1,
+	selected: 1,
+	disabled: 1,
+	value : 1
+};
+
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
 	if (isNullOrUndefined(lastNode)) {
 		mountNode(nextNode, parentDom, namespace, lifecycle);
@@ -54,6 +61,10 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 	if (lastAttrValue !== nextAttrValue) {
 		if (!isAttrAnEvent(attrName)) {
+			if (booleanProps[attrName]) {
+				dom[attrName] = nextAttrValue;
+				return;
+			}
 			let ns = null;
 
 			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {

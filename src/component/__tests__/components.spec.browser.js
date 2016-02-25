@@ -1,7 +1,7 @@
 import { render } from '../../DOM/rendering';
 import Component from '../index';
 import createElement from '../../core/createElement';
-
+import innerHTML from '../../../tools/innerHTML';
 
 describe('Components', () => {
 	let container;
@@ -120,163 +120,149 @@ describe('Components', () => {
 		expect(container.firstChild.tagName).to.equal('DIV');
 	});
 
-//	class BasicComponent1b extends Component {
-//		render() {
-//			const template = createTemplate((isChecked, title) =>
-//				createElement('div', {
-//					className: 'basic'
-//				},
-//					createElement('label', {},
-//						createElement('input', {
-//							type: 'checkbox',
-//							checked: isChecked
-//						}),
-//						'The title is ',
-//						title
-//					)
-//				)
-//			);
-//			return template(this.props.isChecked, this.props.title);
-//		}
-//	}
+	class BasicComponent1b extends Component {
+		render() {
+			const template = (isChecked, title) =>
+				createElement('div', {
+					className: 'basic'
+				},
+					createElement('label', {},
+						createElement('input', {
+							type: 'checkbox',
+							checked: isChecked
+						}),
+						'The title is ',
+						title
+					)
+				);
+			return template(this.props.isChecked, this.props.title);
+		}
+	}
 //
-//	it('should render a basic component with inputs', () => {
-//
-//		let template = createTemplate((Component, title, isChecked) =>
-//			createElement('div', null,
-//				createElement(Component, {
-//					title,
-//					isChecked
-//				})
-//			)
-//		);
-//
-//		render(template(null, null, false), container);
-//
-//		render(template(BasicComponent1b, 'abc', true), container);
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-//		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
-//		expect(container.querySelector('input').checked).to.equal(true);
-//
-//		render(template(null, null, false), container);
-//		render(template(null, null, false), container);
-//
-//		render(template(BasicComponent1b, 'abc', null), container);
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-//		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
-//		expect(container.querySelector('input').checked).to.equal(false);
-//	});
-//
-//	class BasicComponent1c extends Component {
-//		render() {
-//			const template = createTemplate((isEnabled, title, type) =>
-//				createElement('div', {
-//					className: 'basic'
-//				},
-//					createElement('label', {},
-//						createElement('input', {
-//							type,
-//							enabled: isEnabled
-//						}),
-//						'The title is ',
-//						title
-//					)
-//				)
-//			);
-//			return template(this.props.isEnabled, this.props.title, this.props.type);
-//		}
-//	}
-//
-//	it('should render a basic component with input tag and attributes', () => {
-//
-//		let template = createTemplate((Component, title, isEnabled) =>
-//			createElement('div', null,
-//				createElement(Component, {
-//					title,
-//					isEnabled,
-//					type: 'password'
-//				})
-//			)
-//		);
-//
-//		render(template(null, 'abc', true), container);
-//
-//		render(template(BasicComponent1c, 'abc', true), container);
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('INPUT');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
-//		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
-//		render(template(null, null, false), container);
-//		render(template(null, null, []), container);
-//		render(template(BasicComponent1c, ['abc'], true), container);
-//		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('INPUT');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
-//		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
-//		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
-//	});
-//
-//	class BasicComponent1d extends Component {
-//		render() {
-//			const template = createTemplate((isDisabled, title) =>
-//				createElement('div', { className: 'basic' },
-//					createElement('label', {},
-//						createElement('input', { type: 'password', disabled: isDisabled }),
-//						'The title is ',
-//						title
-//					)
-//				)
-//			);
-//			return template(this.props.isDisabled, this.props.title);
-//		}
-//	}
-//
-//	it('should render a basic component with inputs #3', () => {
-//
-//		let template = createTemplate((Component, title, isDisabled) =>
-//			createElement('div', null,
-//				createElement(Component, { title, isDisabled })
-//			)
-//		);
-//
-//		render(template(null, null, false), container);
-//
-//		render(template(BasicComponent1d, 'abc', true), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			innerHTML('<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>')
-//		);
-//		expect(
-//			container.querySelector('input').disabled
-//		).to.equal(
-//			true
-//		);
-//
-//		render(template(BasicComponent1d, '123', false), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
-//		);
-//		expect(
-//			container.querySelector('input').disabled
-//		).to.equal(
-//			false
-//		);
-//	});
+	it('should render a basic component with inputs', () => {
+		let template = (Component, title, isChecked) =>
+			createElement('div', null,
+				createElement(Component, {
+					title,
+					isChecked
+				})
+			);
+
+		render(template(null, null, false), container);
+
+		render(template(BasicComponent1b, 'abc', true), container);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
+		expect(container.querySelector('input').checked).to.equal(true);
+
+		render(template(null, null, false), container);
+		render(template(null, null, false), container);
+
+		render(template(BasicComponent1b, 'abc', null), container);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
+		expect(container.querySelector('input').checked).to.equal(false);
+	});
+
+	class BasicComponent1c extends Component {
+		render() {
+			const template = (isEnabled, title, type) =>
+				createElement('div', {
+					className: 'basic'
+				},
+					createElement('label', {},
+						createElement('input', {
+							type,
+							enabled: isEnabled
+						}),
+						'The title is ',
+						title
+					)
+				);
+			return template(this.props.isEnabled, this.props.title, this.props.type);
+		}
+	}
+
+	it('should render a basic component with input tag and attributes', () => {
+		let template = (Component, title, isEnabled) =>
+			createElement('div', null,
+				createElement(Component, {
+					title,
+					isEnabled,
+					type: 'password'
+				})
+			);
+
+		render(template(null, 'abc', true), container);
+
+		render(template(BasicComponent1c, 'abc', true), container);
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
+		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('INPUT');
+		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
+		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+		render(template(BasicComponent1c, ['abc'], true), container);
+		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
+		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('INPUT');
+		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
+		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+	});
+
+	class BasicComponent1d extends Component {
+		render() {
+			const template = (isDisabled, title) =>
+				createElement('div', { className: 'basic' },
+					createElement('label', {},
+						createElement('input', { type: 'password', disabled: isDisabled }),
+						'The title is ',
+						title
+					)
+				);
+			return template(this.props.isDisabled, this.props.title);
+		}
+	}
+
+	it('should render a basic component with inputs #3', () => {
+		let template = (Component, title, isDisabled) =>
+			createElement('div', null,
+				createElement(Component, { title, isDisabled })
+			);
+		render(template(null, null, false), container);
+		render(template(BasicComponent1d, 'abc', true), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>')
+		);
+		expect(
+			container.querySelector('input').disabled
+		).to.equal(
+			true
+		);
+
+		render(template(BasicComponent1d, '123', false), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
+		);
+		expect(
+			container.querySelector('input').disabled
+		).to.equal(
+			false
+		);
+	});
 //
 //	it('should render a basic component and remove property if null #1', () => {
 //
