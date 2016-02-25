@@ -13,14 +13,14 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		}
 		return;
 	}
-	const nextTag = nextNode.tag || (staticCheck && nextNode.static ? nextNode.static.tag : null);
-	const lastTag = lastNode.tag || (staticCheck && lastNode.static ? lastNode.static.tag : null);
+	const nextTag = nextNode.tag || (staticCheck && nextNode.tpl ? nextNode.tpl.tag : null);
+	const lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
+	const nextEvents = nextNode.events;
 
-	if (lastNode.events && lastNode.events.willUpdate) {
-		lastNode.events.willUpdate(lastNode.dom);
+	if (nextEvents && nextEvents.willUpdate) {
+		nextEvents.willUpdate(lastNode.dom);
 	}
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
-
 	if (lastTag !== nextTag) {
 		if (isFunction(lastTag) && !isFunction(nextTag)) {
 			if (isStatefulComponent(lastTag)) {
@@ -58,9 +58,8 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	}
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);
-
-	if (nextNode.events && nextNode.events.didUpdate) {
-		nextNode.events.didUpdate(dom);
+	if (nextEvents && nextEvents.didUpdate) {
+		nextEvents.didUpdate(dom);
 	}
 }
 
@@ -87,10 +86,6 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				} else {
 					if (isArray(nextChildren)) {
 						patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null);
-					} else if (isStringOrNumber(lastChildren)) {
-						if (isStringOrNumber(nextChildren)) {
-							dom.firstChild.nodeValue = nextChildren;
-						}
 					} else {
 						diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck);
 					}

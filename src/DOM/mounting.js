@@ -122,13 +122,13 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	if (isFunction(tag)) {
 		return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
 	}
-	if (tag !== null && !isString(tag)) {
-		throw Error('Inferno Error: Expected function or string for element tag type');
-	}
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
-	if (node.static && node.static.dom) {
-		dom = node.static.dom.cloneNode(true);
+	if (node.tpl && node.tpl.dom) {
+		dom = node.tpl.dom.cloneNode(true);
 	} else {
+		if (tag !== null && !isString(tag)) {
+			throw Error('Inferno Error: Expected function or string for element tag type');
+		}
 		dom = createElement(tag, namespace);
 	}
 	const children = node.children;
