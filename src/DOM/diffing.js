@@ -32,6 +32,9 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context);
 		}
 		return;
+	} else if (isNullOrUndefined(lastTag)) {
+		nextNode.dom = lastNode.dom;
+		return;
 	}
 	if (isFunction(lastTag) && isFunction(nextTag)) {
 		nextNode.instance = lastNode.instance;
@@ -119,7 +122,7 @@ function diffAttributes(lastNode, nextNode, dom) {
 				const nextAttrVal = nextAttrs[attr];
 
 				if (lastAttrVal !== nextAttrVal) {
-					patchAttribute(attr, lastAttrVal, nextAttrVal, dom);
+					patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag == null);
 				}
 			}
 		}

@@ -58,7 +58,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	}
 }
 
-export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom, ) {
 	if (!isAttrAnEvent(attrName)) {
 		if (booleanProps[attrName]) {
 			dom[attrName] = nextAttrValue;

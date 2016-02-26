@@ -263,113 +263,103 @@ describe('Components', () => {
 			false
 		);
 	});
-//
-//	it('should render a basic component and remove property if null #1', () => {
-//
-//		let template = createTemplate((Component, title, name) =>
-//			createElement('div', null,
-//				createElement(Component, { title, name })
-//			)
-//		);
-//
-//		render(template(null, 'abc', 'basic-render'), container);
-//
-//		render(template([], {}, 'basic-render'), container);
-//
-//		render(template(BasicComponent1, 'abc', 'basic-render'), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
-//		);
-//
-//		render(template(BasicComponent1, '123', null), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span>The title is 123</span></div></div>'
-//		);
-//	});
-//
-//	it('should render a basic component and remove property if null #2', () => {
-//
-//		let template = createTemplate((Component, title, name) =>
-//			createElement('div', null,
-//				createElement(Component, { title, name })
-//			)
-//		);
-//
-//		render(template(null, null, false), container);
-//
-//		render(template(BasicComponent1, 'abc', null), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span>The title is abc</span></div></div>'
-//		);
-//
-//		render(template(null, null, false), container);
-//
-//		render(template(BasicComponent1, '123', 'basic-update'), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
-//		);
-//		render(template('', '123', 'basic-update'), container);
-//		render(template(null, null, false), container);
-//	});
-//
-//	it('should render a basic root component', () => {
-//
-//		let template = createTemplate((Component, title, name) =>
-//			createElement(Component, { title, name })
-//		);
-//
-//		render(template(null, null, false), container);
-//
-//		render(template(BasicComponent1, 'abc', 'basic-render'), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div class="basic"><span class="basic-render">The title is abc</span></div>'
-//		);
-//		render(template(BasicComponent1, 'abc', 'basic-render'), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div class="basic"><span class="basic-render">The title is abc</span></div>'
-//		);
-//
-//		render(template(BasicComponent1, 'abc', {}), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div class="basic"><span class="[object Object]">The title is abc</span></div>'
-//		);
-//
-//		render(template(null, 'abc', 'basic-render'), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			''
-//		);
-//
-//		render(template(null, null, null), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			''
-//		);
-//	});
-//
+
+	it('should render a basic component and remove property if null #1', () => {
+		let template = (Component, title, name) =>
+			createElement('div', null,
+				createElement(Component, { title, name })
+			);
+
+		render(template(null, 'abc', 'basic-render'), container);
+		render(template(BasicComponent1, 'abc', 'basic-render'), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
+		);
+
+		render(template(BasicComponent1, '123', null), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span>The title is 123</span></div></div>'
+		);
+	});
+
+	it('should render a basic component and remove property if null #2', () => {
+
+		let template = (Component, title, name) =>
+			createElement('div', null,
+				createElement(Component, { title, name })
+			);
+
+		render(template(null, null, false), container);
+		render(template(BasicComponent1, 'abc', null), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span>The title is abc</span></div></div>'
+		);
+
+		render(template(null, null, false), container);
+
+		render(template(BasicComponent1, '123', 'basic-update'), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
+		);
+		render(template(null, null, false), container);
+	});
+
+	it('should render a basic root component', () => {
+		let template = (Component, title, name) =>
+			createElement(Component, { title, name });
+
+		render(template(null, null, false), container);
+
+		render(template(BasicComponent1, 'abc', 'basic-render'), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div class="basic"><span class="basic-render">The title is abc</span></div>'
+		);
+		render(template(BasicComponent1, 'abc', 'basic-render'), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div class="basic"><span class="basic-render">The title is abc</span></div>'
+		);
+
+		render(template(BasicComponent1, 'abc', {}), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div class="basic"><span class="[object Object]">The title is abc</span></div>'
+		);
+
+		render(template(null, 'abc', 'basic-render'), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			''
+		);
+
+		render(template(null, null, null), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			''
+		);
+	});
+
 //	class BasicComponent2 extends Component {
 //		render() {
 //			const template = createTemplate((name, title, children) =>

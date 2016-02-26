@@ -91,16 +91,23 @@ function mountEvents(events, allEvents, dom) {
 	}
 }
 
+function placeholder(node, parentDom) {
+	const dom = document.createTextNode('');
+
+	if (parentDom !== null) {
+		parentDom.appendChild(dom);
+	}
+	if (node) {
+		node.dom = dom;
+	}
+	return dom;
+}
+
 export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	let dom;
 
 	if (isInvalidNode(node) || isArray(node)) {
-		const dom = document.createTextNode('');
-
-		if (parentDom !== null) {
-			parentDom.appendChild(dom);
-		}
-		return dom;
+		return placeholder(node, parentDom);
 	}
 	if (isStringOrNumber(node)) {
 		const dom = document.createTextNode(node);
@@ -123,12 +130,14 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 
 	if (isFunction(tag)) {
 		return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
+	} else if (tag === null) {
+		return placeholder(node, parentDom);
 	}
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 	if (node.tpl && node.tpl.dom) {
 		dom = node.tpl.dom.cloneNode(true);
 	} else {
-		if (tag !== null && !isString(tag)) {
+		if (!isString(tag)) {
 			throw Error('Inferno Error: Expected function or string for element tag type');
 		}
 		dom = createElement(tag, namespace);
