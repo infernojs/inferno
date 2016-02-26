@@ -1,4 +1,4 @@
-import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isAttrAComponentEvent } from './utils';
+import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isAttrAComponentEvent, isInvalidNode } from './utils';
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;
@@ -49,7 +49,7 @@ function createChild({ tag, attrs, children, text }) {
 	}
 	const attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-	if (!isNullOrUndefined(children)) {
+	if (!isInvalidNode(children)) {
 		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 	return {

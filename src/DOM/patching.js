@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppend, remove } from './utils';
@@ -12,11 +12,11 @@ const booleanProps = {
 };
 
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
-	if (isNullOrUndefined(lastNode)) {
+	if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, namespace, lifecycle);
 		return;
 	}
-	if (isNullOrUndefined(nextNode)) {
+	if (isInvalidNode(nextNode)) {
 		remove(lastNode, parentDom);
 		return;
 	}
@@ -141,7 +141,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		while (lastChildrenLength !== nextChildrenLength) {
 			const lastChild = lastChildren[lastChildrenLength - 1];
 
-			if (!isNullOrUndefined(lastChild)) {
+			if (!isInvalidNode(lastChild)) {
 				dom.removeChild((lastDomNode = lastChild.dom)
 					|| (lastDomNode && (lastDomNode = lastDomNode.previousSibling))
 					|| (lastDomNode = dom.lastChild)
@@ -154,7 +154,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		while (lastChildrenLength !== nextChildrenLength) {
 			const nextChild = nextChildren[lastChildrenLength + counter];
 
-			if (isNullOrUndefined(nextChild)) {
+			if (isInvalidNode(nextChild)) {
 				//debugger;
 				// TODO implement
 			} else {
@@ -172,14 +172,14 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 		const nextChild = nextChildren[i];
 
 		if (lastChild !== nextChild) {
-			if (isNullOrUndefined(nextChild)) {
-				if (!isNullOrUndefined(lastChild)) {
+			if (isInvalidNode(nextChild)) {
+				if (!isInvalidNode(lastChild)) {
 					childNodes = childNodes || dom.childNodes;
 					childNodes[i + offset].textContent = '';
 					// TODO implement remove child
 				}
 			} else {
-				if (isNullOrUndefined(lastChild)) {
+				if (isInvalidNode(lastChild)) {
 					if (isStringOrNumber(nextChild)) {
 						childNodes = childNodes || dom.childNodes;
 						childNodes[i + offset].textContent = nextChild;
