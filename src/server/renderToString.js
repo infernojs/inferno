@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isNullOrUndefined } from '../core/utils';
+import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode } from '../core/utils';
 
 function renderChildren(children) {
 	if (children && isArray(children)) {
@@ -14,7 +14,7 @@ function renderChildren(children) {
 			}
 		}
 		return childrenResult.join('')
-	} else if (!isNullOrUndefined(children)) {
+	} else if (!isInvalidNode(children)) {
 		if (isStringOrNumber(children)) {
 			return children;
 		} else {
@@ -24,7 +24,7 @@ function renderChildren(children) {
 }
 
 function renderNode(node) {
-	if (!isNullOrUndefined(node)) {
+	if (!isInvalidNode(node)) {
 		const tag = node.tag;
 		const attrs = [];
 

@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode } from '../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle } from './patching';
 import { mountChildren, mountNode } from './mounting';
@@ -68,8 +68,8 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 	const lastChildren = lastNode.children;
 
 	if (lastChildren !== nextChildren) {
-		if (!isNullOrUndefined(lastChildren)) {
-			if (!isNullOrUndefined(nextChildren)) {
+		if (!isInvalidNode(lastChildren)) {
+			if (!isInvalidNode(nextChildren)) {
 				if (isArray(lastChildren)) {
 					if (isArray(nextChildren)) {
 						const isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key)

@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
 import { patchAttribute, patchStyle } from './patching';
@@ -94,7 +94,7 @@ function mountEvents(events, allEvents, dom) {
 export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	let dom;
 
-	if (isNullOrUndefined(node) || isArray(node)) {
+	if (isInvalidNode(node) || isArray(node)) {
 		const dom = document.createTextNode('');
 
 		if (parentDom !== null) {
@@ -161,7 +161,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 			mountEvents(events, allEvents, dom);
 		}
 	}
-	if (!isNullOrUndefined(children)) {
+	if (!isInvalidNode(children)) {
 		mountChildren(children, dom, namespace, lifecycle, context);
 	}
 	if (attrs) {

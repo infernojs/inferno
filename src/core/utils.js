@@ -29,6 +29,10 @@ export function isNullOrUndefined(obj) {
 	return obj === undefined || obj === null;
 }
 
+export function isInvalidNode(obj) {
+	return obj === undefined || obj === null || obj === false;
+}
+
 export function isFunction(obj) {
 	return typeof obj === 'function';
 }
