@@ -13,7 +13,7 @@ function renderChildren(children) {
 				childrenResult.push(renderNode(child));
 			}
 		}
-		return childrenResult.join('')
+		return childrenResult.join('');
 	} else if (!isNullOrUndefined(children)) {
 		if (isStringOrNumber(children)) {
 			return children;
