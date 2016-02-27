@@ -1,7 +1,7 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
-import { patchAttribute } from './patching';
+import { patchAttribute, patchStyle } from './patching';
 import { handleEvent } from './events';
 import { diffNodes } from './diffing';
 
@@ -12,6 +12,8 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 
 			if (isStringOrNumber(child)) {
 				appendText(child, parentDom, false);
+			} else if (child && isArray(child)) {
+				mountChildren(child, parentDom, namespace, lifecycle, context);
 			} else {
 				mountNode(child, parentDom, namespace, lifecycle, context);
 			}
@@ -43,7 +45,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		let dom;
 
 		if (node) {
-			dom = mountNode(node, null, lifecycle, context);
+			dom = mountNode(node, null, null, lifecycle, context);
 			instance._lastNode = node;
 			if (parentDom) {
 				parentDom.appendChild(dom);
@@ -69,7 +71,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 
 		/* eslint new-cap: 0 */
 		const node = Component(props);
-		dom = mountNode(node, null, lifecycle, context);
+		dom = mountNode(node, null, null, lifecycle, context);
 
 		parentNode.instance = node;
 		if (parentDom) {
@@ -81,16 +83,31 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 	}
 }
 
+function mountEvents(events, allEvents, dom) {
+	for (let i = 0; i < allEvents.length; i++) {
+		const event = allEvents[i];
+
+		handleEvent(event, dom, events[event]);
+	}
+}
+
+function placeholder(node, parentDom) {
+	const dom = document.createTextNode('');
+
+	if (parentDom !== null) {
+		parentDom.appendChild(dom);
+	}
+	if (node) {
+		node.dom = dom;
+	}
+	return dom;
+}
+
 export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	let dom;
 
-	if (isNullOrUndefined(node) || isArray(node)) {
-		const dom = document.createTextNode('');
-
-		if (parentDom !== null) {
-			parentDom.appendChild(dom);
-		}
-		return dom;
+	if (isInvalidNode(node) || isArray(node)) {
+		return placeholder(node, parentDom);
 	}
 	if (isStringOrNumber(node)) {
 		const dom = document.createTextNode(node);
@@ -109,42 +126,62 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 			return dom;
 		}
 	}
+	const tpl = node.tpl;
 	const tag = node.tag;
 
 	if (isFunction(tag)) {
 		return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
+	} else if (tag === null) {
+		return placeholder(node, parentDom);
 	}
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
-	if (node.static && node.static.dom) {
-		dom = node.static.dom.cloneNode(true);
+	if (tpl && tpl.dom) {
+		dom = tpl.dom.cloneNode(true);
 	} else {
+		if (!isString(tag)) {
+			throw Error('Inferno Error: Expected function or string for element tag type');
+		}
 		dom = createElement(tag, namespace);
 	}
 	const children = node.children;
 	const attrs = node.attrs;
 	const events = node.events;
+	const className = node.className;
+	const style = node.style;
 
 	if (events) {
+		const allEvents = Object.keys(events);
+		let eventsCount = allEvents.length;
+
 		if (events.click) {
 			handleEvent('click', dom, events.click);
+			eventsCount--;
 		}
 		if (events.created) {
 			events.created(dom);
+			eventsCount--;
 		}
 		if (events.attached) {
 			lifecycle.addListener(() => {
 				events.attached(dom);
 			});
+			eventsCount--;
+		}
+		if (eventsCount > 0) {
+			mountEvents(events, allEvents, dom);
 		}
 	}
-	if (!isNullOrUndefined(children)) {
+	if (!isInvalidNode(children)) {
 		mountChildren(children, dom, namespace, lifecycle, context);
 	}
 	if (attrs) {
 		mountAttributes(attrs, dom);
 	}
-	if (!isNullOrUndefined(node.className)) {
-		dom.className = node.className;
+	if (!isNullOrUndefined(className)) {
+		dom.className = className;
+	}
+	if (!isNullOrUndefined(style)) {
+		patchStyle(null, style, dom);
 	}
 	node.dom = dom;
 	if (parentDom !== null) {

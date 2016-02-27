@@ -34,6 +34,10 @@ function isNullOrUndefined(obj) {
 	return obj === undefined || obj === null;
 }
 
+function isInvalidNode(obj) {
+	return obj === undefined || obj === null || obj === false;
+}
+
 function isFunction(obj) {
 	return typeof obj === 'function';
 }
@@ -42,21 +46,34 @@ function isAttrAnEvent(attr) {
 	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
 
+function isAttrAComponentEvent(attr) {
+	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
+}
+
 function createAttrsAndEvents(props, tag) {
 	var events = null;
 	var attrs = null;
 	var className = null;
+	var style = null;
 
 	if (props) {
 		if (!isArray$1(props)) {
 			for (var prop in props) {
 				if (prop === 'className') {
 					className = props[prop];
-				} else if (isAttrAnEvent(prop)) {
+				} else if (prop === 'style') {
+					style = props[prop];
+				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
 					if (!events) {
 						events = {};
 					}
-					events[prop[2].toLowerCase() + prop.substring(3)] = props[prop];
+					events[prop.substring(2).toLowerCase()] = props[prop];
+					delete props[prop];
+				} else if (isAttrAComponentEvent(prop) && isFunction(tag)) {
+					if (!events) {
+						events = {};
+					}
+					events['c' + prop.substring(3)] = props[prop];
 					delete props[prop];
 				} else if (!isFunction(tag)) {
 					if (!attrs) {
@@ -71,7 +88,7 @@ function createAttrsAndEvents(props, tag) {
 			return props;
 		}
 	}
-	return { attrs: attrs, events: events, className: className };
+	return { attrs: attrs, events: events, className: className, style: style };
 }
 
 function createChild(_ref) {
@@ -87,7 +104,7 @@ function createChild(_ref) {
 	}
 	var attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-	if (!isNullOrUndefined(children)) {
+	if (!isInvalidNode(children)) {
 		children = isArray$1(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 	return {
@@ -97,6 +114,7 @@ function createChild(_ref) {
 		attrs: attrsAndEvents.attrs,
 		events: attrsAndEvents.events,
 		className: attrsAndEvents.className,
+		style: attrsAndEvents.style,
 		children: children || text,
 		instance: null
 	};
@@ -108,7 +126,7 @@ function createChildren(children) {
 
 		for (var i = 0; i < children.length; i++) {
 			var child = children[i];
-			if (!isNullOrUndefined(child)) {
+			if (!isNullOrUndefined(child) && (typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
 				newChildren.push(createChild(child));
 			} else {
 				newChildren.push(child);
@@ -116,7 +134,7 @@ function createChildren(children) {
 		}
 		return newChildren;
 	} else if (children && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
-		return createChild(children);
+		return children.dom === undefined ? createChild(children) : children;
 	} else {
 		return children;
 	}

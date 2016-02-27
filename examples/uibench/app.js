@@ -5,8 +5,8 @@
 
 	var animBox1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className : 'AnimBox' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'div',
@@ -22,15 +22,16 @@
 
 		return {
 			dom: null,
-			static: animBox1,
-			attrs: { style: style, 'data-id': data.id }
+			tpl: animBox1,
+			style: style,
+			attrs: { 'data-id': data.id }
 		};
 	};
 
 	var anim1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className : 'Anim' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'div',
@@ -39,8 +40,8 @@
 
 	var anim2 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
@@ -54,7 +55,7 @@
 			var item = items[i];
 			children.push({
 				dom: null,
-				static: anim2,
+				tpl: anim2,
 				tag: AnimBox,
 				key: item.id,
 				attrs: {
@@ -69,15 +70,15 @@
 
 		return {
 			dom: null,
-			static: anim1,
+			tpl: anim1,
 			children: children
 		};
-	}
+	};
 
 	var tableCell1 = {
 		dom: Inferno.staticCompiler.createElement('td', { className: 'TableCell' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'td',
@@ -91,7 +92,7 @@
 	var TableCell = function (props) {
 		return {
 			dom: null,
-			static: tableCell1,
+			tpl: tableCell1,
 			events: { click: (e) => {
 				console.log('Clicked' + props.text);
 				e.stopPropagation();
@@ -102,8 +103,8 @@
 
 	var tableRow1 = {
 		dom: Inferno.staticCompiler.createElement('tr'),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'tr'
@@ -111,8 +112,8 @@
 
 	var tableRow2 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
@@ -127,7 +128,7 @@
 
 		var children = [({
 			dom: null,
-			static: tableRow2,
+			tpl: tableRow2,
 			tag: TableCell,
 			key: -1,
 			attrs: { text: '#' + data.id },
@@ -139,7 +140,7 @@
 		for (var i = 0; i < cells.length; i++) {
 			children.push({
 				dom: null,
-				static: tableRow2,
+				tpl: tableRow2,
 				tag: TableCell,
 				key: i,
 				attrs: { text: cells[i] },
@@ -151,7 +152,7 @@
 		}
 		return {
 			dom: null,
-			static: tableRow1,
+			tpl: tableRow1,
 			attrs: { 'data-id': data.id },
 			className: classes,
 			children: children
@@ -160,8 +161,8 @@
 
 	var table1 = {
 		dom: Inferno.staticCompiler.createElement('table', { className: 'Table' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'table',
@@ -170,8 +171,8 @@
 
 	var table2 = {
 		dom: Inferno.staticCompiler.createElement('tbody'),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'tbody'
@@ -179,8 +180,8 @@
 
 	var table3 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
@@ -193,10 +194,10 @@
 			var item = items[i];
 			children.push({
 				dom: null,
-				static: table3,
+				tpl: table3,
 				tag: TableRow,
+				key: item.id,
 				attrs: {
-					key: item.id,
 					data: item
 				},
 				events: {
@@ -208,10 +209,10 @@
 
 		return {
 			dom: null,
-			static: table1,
+			tpl: table1,
 			children: {
 				dom: null,
-				static: table2,
+				tpl: table2,
 				children: children
 			}
 		};
@@ -219,8 +220,8 @@
 
 	var treeLeaf1 = {
 		dom: Inferno.staticCompiler.createElement('li', { className: 'TreeLeaf' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'li',
@@ -230,7 +231,7 @@
 	var TreeLeaf = function (props) {
 		return {
 			dom: null,
-			static: treeLeaf1,
+			tpl: treeLeaf1,
 			events: {
 				componentShouldUpdate: appUpdateCheck
 			},
@@ -240,8 +241,8 @@
 
 	var treeNode1 = {
 		dom: Inferno.staticCompiler.createElement('ul', { className: 'TreeNode' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'ul',
@@ -250,16 +251,16 @@
 
 	var treeNode2 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
 
 	var treeNode3 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
@@ -273,7 +274,7 @@
 			if (n.container) {
 				children.push({
 					dom: null,
-					static: treeNode2,
+					tpl: treeNode2,
 					tag: TreeNode,
 					key: n.id,
 					attrs: {
@@ -287,7 +288,7 @@
 			} else {
 				children.push({
 					dom: null,
-					static: treeNode3,
+					tpl: treeNode3,
 					tag: TreeLeaf,
 					key: n.id,
 					attrs: {
@@ -303,15 +304,15 @@
 
 		return {
 			dom: null,
-			static: treeNode1,
+			tpl: treeNode1,
 			children: children
 		};
 	};
 
 	var tree1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className: 'Tree' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'div',
@@ -320,8 +321,8 @@
 
 	var tree2 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
@@ -329,10 +330,10 @@
 	var Tree = function (props) {
 		return {
 			dom: null,
-			static: tree1,
+			tpl: tree1,
 			children: {
 				dom: null,
-				static: tree2,
+				tpl: tree2,
 				tag: TreeNode,
 				attrs: {
 					data: props.data.root
@@ -347,8 +348,8 @@
 
 	var main1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className: 'Main' }),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'div',
@@ -357,24 +358,24 @@
 
 	var main2 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
 
 	var main3 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
 
 	var main4 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
@@ -387,7 +388,7 @@
 		if (location === 'table') {
 			section = {
 				dom: null,
-				static: main2,
+				tpl: main2,
 				tag: Table,
 				attrs: {
 					data: data.table
@@ -400,7 +401,7 @@
 		} else if (location === 'anim') {
 			section = {
 				dom: null,
-				static: main3,
+				tpl: main3,
 				tag: Anim,
 				attrs: {
 					data: data.anim
@@ -413,7 +414,7 @@
 		} else if (location === 'tree') {
 			section = {
 				dom: null,
-				static: main4,
+				tpl: main4,
 				tag: Tree,
 				attrs: {
 					data: data.tree
@@ -427,23 +428,23 @@
 
 		return {
 			dom: null,
-			static: main1,
+			tpl: main1,
 			children: section
 		};
 	};
 
 	var app1 = {
 		dom: null,
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		}
 	};
 
 	var app2 = {
 		dom: Inferno.staticCompiler.createElement('pre'),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'pre'
@@ -460,7 +461,7 @@
 			function(state) {
 				InfernoDOM.render({
 					dom: null,
-					static: app1,
+					tpl: app1,
 					tag: Main,
 					attrs: {
 						data: state
@@ -474,7 +475,7 @@
 			function(samples) {
 				InfernoDOM.render({
 					dom: null,
-					static: app2,
+					tpl: app2,
 					children: JSON.stringify(samples, null, ' ')
 				}, container);
 			}

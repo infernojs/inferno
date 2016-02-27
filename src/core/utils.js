@@ -29,6 +29,10 @@ export function isNullOrUndefined(obj) {
 	return obj === undefined || obj === null;
 }
 
+export function isInvalidNode(obj) {
+	return obj === undefined || obj === null || obj === false;
+}
+
 export function isFunction(obj) {
 	return typeof obj === 'function';
 }
@@ -43,4 +47,8 @@ export function isString(obj) {
 
 export function isNumber(obj) {
 	return typeof obj === 'number';
+}
+
+export function isAttrAComponentEvent(attr) {
+	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
 }

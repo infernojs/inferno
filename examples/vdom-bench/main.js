@@ -8,8 +8,8 @@
 
 	var t1 = {
 		dom: Inferno.staticCompiler.createElement('div'),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'div'
@@ -17,8 +17,8 @@
 
 	var t2 = {
 		dom: Inferno.staticCompiler.createElement('span'),
-		static: {
-			keyed: [],
+		pools: {
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'span'
@@ -33,15 +33,15 @@
 			n = nodes[i];
 			if (n.children !== null) {
 				children[i] = {
+					tpl: t1,
 					dom: null,
-					static: t1,
 					key: n.key,
 					children: renderTree(n.children)
 				};
 			} else {
 				children[i] = {
+					tpl: t2,
 					dom: null,
-					static: t2,
 					key: n.key,
 					children: n.key
 				};
@@ -65,16 +65,16 @@
 
 	BenchmarkImpl.prototype.render = function() {
 		InfernoDOM.render({
+			tpl: t1,
 			dom: null,
-			static: t1,
 			children: renderTree(this.a)
 		}, this.container);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
 		InfernoDOM.render({
+			tpl: t1,
 			dom: null,
-			static: t1,
 			children: renderTree(this.b)
 		}, this.container);
 	};

@@ -1,20 +1,29 @@
-import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction } from './utils';
+import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isAttrAComponentEvent, isInvalidNode } from './utils';
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;
 	let attrs = null;
 	let className = null;
+	let style = null;
 
 	if (props) {
 		if (!isArray(props)) {
 			for (let prop in props) {
 				if (prop === 'className') {
 					className = props[prop];
-				} else if (isAttrAnEvent(prop)) {
+				} else if (prop === 'style') {
+					style = props[prop];
+				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
 					if (!events) {
 						events = {};
 					}
-					events[prop[2].toLowerCase() + prop.substring(3)] = props[prop];
+					events[prop.substring(2).toLowerCase()] = props[prop];
+					delete props[prop];
+				} else if (isAttrAComponentEvent(prop) && isFunction(tag)) {
+					if (!events) {
+						events = {};
+					}
+					events['c' + prop.substring(3)] = props[prop];
 					delete props[prop];
 				} else if (!isFunction(tag)) {
 					if (!attrs) {
@@ -29,7 +38,7 @@ export function createAttrsAndEvents(props, tag) {
 			return props;
 		}
 	}
-	return { attrs, events, className };
+	return { attrs, events, className, style };
 }
 
 function createChild({ tag, attrs, children, text }) {
@@ -40,7 +49,7 @@ function createChild({ tag, attrs, children, text }) {
 	}
 	const attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-	if (!isNullOrUndefined(children)) {
+	if (!isInvalidNode(children)) {
 		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 	return {
@@ -50,6 +59,7 @@ function createChild({ tag, attrs, children, text }) {
 		attrs: attrsAndEvents.attrs,
 		events: attrsAndEvents.events,
 		className: attrsAndEvents.className,
+		style: attrsAndEvents.style,
 		children: children || text,
 		instance: null
 	};
@@ -61,7 +71,7 @@ export function createChildren(children) {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
-			if (!isNullOrUndefined(child)) {
+			if (!isNullOrUndefined(child) && typeof child === 'object') {
 				newChildren.push(createChild(child));
 			} else {
 				newChildren.push(child);
@@ -69,7 +79,7 @@ export function createChildren(children) {
 		}
 		return newChildren;
 	} else if (children && typeof children === 'object') {
-		return createChild(children);
+		return children.dom === undefined ? createChild(children) : children;
 	} else {
 		return children;
 	}
