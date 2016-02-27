@@ -8,7 +8,7 @@ const booleanProps = {
 	checked: 1,
 	selected: 1,
 	disabled: 1,
-	value : 1
+	value: 1
 };
 
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
@@ -58,7 +58,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	}
 }
 
-export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom, ) {
+export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 	if (!isAttrAnEvent(attrName)) {
 		if (booleanProps[attrName]) {
 			dom[attrName] = nextAttrValue;
@@ -155,7 +155,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 			const nextChild = nextChildren[lastChildrenLength + counter];
 
 			if (isInvalidNode(nextChild)) {
-				//debugger;
+				// debugger;
 				// TODO implement
 			} else {
 				const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);

@@ -230,9 +230,7 @@ describe('Elements - SVG (JSX)', () => {
 	});
 
 	it('should render a simple div with dynamic span child and update to div child', () => {
-		let child;
-
-		child = <span></span>;
+		let child = <span></span>;
 
 		render(<div>{ child }</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');

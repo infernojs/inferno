@@ -21,6 +21,10 @@
 		return obj === undefined || obj === null;
 	}
 
+	function isInvalidNode(obj) {
+		return obj === undefined || obj === null || obj === false;
+	}
+
 	function renderChildren(children) {
 		if (children && isArray(children)) {
 			var childrenResult = [];
@@ -35,7 +39,7 @@
 				}
 			}
 			return childrenResult.join('');
-		} else if (!isNullOrUndefined(children)) {
+		} else if (!isInvalidNode(children)) {
 			if (isStringOrNumber(children)) {
 				return children;
 			} else {
@@ -45,7 +49,7 @@
 	}
 
 	function renderNode(node) {
-		if (!isNullOrUndefined(node)) {
+		if (!isInvalidNode(node)) {
 			var tag = node.tag;
 			var attrs = [];
 
