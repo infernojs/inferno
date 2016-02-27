@@ -358,7 +358,7 @@
 				var nextChild = nextChildren[lastChildrenLength + counter];
 
 				if (isInvalidNode(nextChild)) {
-					//debugger;
+					// debugger;
 					// TODO implement
 				} else {
 						var node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
@@ -659,7 +659,7 @@
 					var nextAttrVal = nextAttrs[attr];
 
 					if (lastAttrVal !== nextAttrVal) {
-						patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag == null);
+						patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
 					}
 				}
 			}

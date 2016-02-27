@@ -122,7 +122,7 @@ function diffAttributes(lastNode, nextNode, dom) {
 				const nextAttrVal = nextAttrs[attr];
 
 				if (lastAttrVal !== nextAttrVal) {
-					patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag == null);
+					patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
 				}
 			}
 		}

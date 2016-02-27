@@ -40,6 +40,10 @@
 		return obj === undefined || obj === null;
 	}
 
+	function isInvalidNode(obj) {
+		return obj === undefined || obj === null || obj === false;
+	}
+
 	function isFunction(obj) {
 		return typeof obj === 'function';
 	}
@@ -106,7 +110,7 @@
 		}
 		var attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-		if (!isNullOrUndefined(children)) {
+		if (!isInvalidNode(children)) {
 			children = isArray$1(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 		}
 		return {

@@ -3,7 +3,7 @@ const glob = require('glob');
 
 const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
 	.concat(glob.sync('./src/**/*__tests__*/**/*spec.jsx.js'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.js'))
+	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.js'));
 
 module.exports = {
 	entry: {
@@ -26,16 +26,10 @@ module.exports = {
 	devServer: {
 		contentBase: './',
 		port: 8080,
+		host: '0.0.0.0',
 		noInfo: false,
 		hot: true,
-		inline: true,
-		proxy: {
-			'/': {
-				bypass: function (req, res, proxyOptions) {
-					return '/config/index.html';
-				}
-			}
-		}
+		inline: true
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates
