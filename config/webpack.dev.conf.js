@@ -26,16 +26,10 @@ module.exports = {
 	devServer: {
 		contentBase: './',
 		port: 8080,
+		host: '0.0.0.0',
 		noInfo: false,
 		hot: true,
-		inline: true,
-		proxy: {
-			'/': {
-				bypass: function (req, res, proxyOptions) {
-					return '/config/index.html';
-				}
-			}
-		}
+		inline: true
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates

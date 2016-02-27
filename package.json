@@ -96,7 +96,7 @@
     "build:inferno:es6": "babel-node config/rollup.config.js dev packages/inferno/dist packages/inferno/src inferno Inferno es6",
     "build:es6": "npm run build:inferno-dom:es6 && npm run build:inferno-server:es6 && npm run build:inferno-component:es6 && npm run build:inferno-test-utils:es6 && npm run build:inferno:es6",
     "build": "npm run build:es6 && npm run build:inferno-test-utils:dev && npm run build:inferno-test-utils:prod && npm run build:inferno-dom:dev && npm run build:inferno-dom:prod && npm run build:inferno:dev && npm run build:inferno:prod && npm run build:inferno-server:dev && npm run build:inferno-server:prod && npm run build:inferno-component:dev && npm run build:inferno-component:prod",
-    "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js --host 0.0.0.0",
+    "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js",
     "test:server": "mocha --opts config/mocha.opts",
     "test:browser": "karma start config/karma.conf.js",
     "test": "npm run test:browser && npm run test:server",
