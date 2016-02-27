@@ -311,7 +311,7 @@
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 			if (nextNode) {
-				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, false);
+				diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, true);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
 			}
@@ -329,7 +329,7 @@
 				var dom = lastNode.dom;
 				nextNode.dom = dom;
 
-				diffNodes(instance, nextNode, dom, lifecycle, context, false);
+				diffNodes(instance, nextNode, dom, null, lifecycle, context, true);
 				lastNode.instance = nextNode;
 				if (nextEvents && nextEvents.componentDidUpdate) {
 					nextEvents.componentDidUpdate(lastNode.dom, lastProps, nextProps);
