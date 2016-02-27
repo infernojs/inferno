@@ -10,6 +10,8 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
+		} else {
+			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context);
 		}
 		return;
 	}

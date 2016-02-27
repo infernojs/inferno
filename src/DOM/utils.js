@@ -1,5 +1,5 @@
 import { mountNode } from './mounting';
-import { isStatefulComponent, isArray, isNullOrUndefined, isInvalidNode } from '../core/utils';
+import { isStatefulComponent, isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
@@ -36,16 +36,27 @@ export function appendText(text, parentDom, singleChild) {
 }
 
 export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
-	const dom = mountNode(nextNode, null, namespace, lifecycle, context);
-	parentDom.replaceChild(dom, lastNode.dom);
-	nextNode.dom = dom;
+	let dom;
+
+	if (isStringOrNumber(nextNode)) {
+		dom = document.createTextNode(nextNode);
+		parentDom.replaceChild(dom, dom);
+	} else if (isStringOrNumber(lastNode)) {
+		dom = mountNode(nextNode, null, namespace, lifecycle, context);
+		nextNode.dom = dom;
+		parentDom.replaceChild(dom, parentDom.firstChild);
+	} else {
+		dom = mountNode(nextNode, null, namespace, lifecycle, context);
+		nextNode.dom = dom;
+		parentDom.replaceChild(dom, lastNode.dom);
+	}
 }
 
 export function detachNode(node) {
 	if (isInvalidNode(node)) {
 		return;
 	}
-	if (isStatefulComponent(node.instance)) {
+	if (node.instance && node.instance.render) {
 		node.instance.componentWillUnmount();
 		node.instance._unmounted = true;
 	}

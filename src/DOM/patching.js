@@ -184,7 +184,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 						childNodes = childNodes || dom.childNodes;
 						childNodes[i + offset].textContent = nextChild;
 					} else {
-						const node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+						const node = mountNode(nextChild, null, namespace, lifecycle, context);
 						dom.replaceChild(node, dom.childNodes[i]);
 					}
 				} else {
@@ -192,7 +192,11 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 						childNodes = childNodes || dom.childNodes;
 						childNodes[i + offset].textContent = nextChild;
 					} else if (isArray(nextChild)) {
-						patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
+						if (isArray(lastChild)) {
+							patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
+						} else {
+							patchNonKeyedChildren([lastChild], nextChild, dom, namespace, lifecycle, context, i);
+						}
 					} else {
 						patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
 					}

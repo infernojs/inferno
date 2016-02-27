@@ -41,17 +41,25 @@ export function createAttrsAndEvents(props, tag) {
 	return { attrs, events, className, style };
 }
 
-function createChild({ tag, attrs, children, text }) {
+function createChild({ tag, attrs, children }) {
+	if (tag === undefined && attrs && !attrs.tpl && children && children.length === 0) {
+		return null;
+	}
 	const key = attrs && !isNullOrUndefined(attrs.key) ? attrs.key : null;
+
+	if (children && children.length === 0) {
+		children = null;
+	} else {
+		if (!isInvalidNode(children)) {
+			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
+		}
+	}
 
 	if (key !== null) {
 		delete attrs.key;
 	}
 	const attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-	if (!isInvalidNode(children)) {
-		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
-	}
 	return {
 		dom: null,
 		tag: tag,
@@ -60,7 +68,7 @@ function createChild({ tag, attrs, children, text }) {
 		events: attrsAndEvents.events,
 		className: attrsAndEvents.className,
 		style: attrsAndEvents.style,
-		children: children || text,
+		children: children,
 		instance: null
 	};
 }
@@ -72,7 +80,15 @@ export function createChildren(children) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 			if (!isNullOrUndefined(child) && typeof child === 'object') {
-				newChildren.push(createChild(child));
+				if (isArray(child)) {
+					if (child.length > 0) {
+						newChildren.push(createChildren(child));
+					} else {
+						newChildren.push(null);
+					}
+				} else {
+					newChildren.push(createChild(child));
+				}
 			} else {
 				newChildren.push(child);
 			}
