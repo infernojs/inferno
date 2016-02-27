@@ -101,18 +101,25 @@
 		var tag = _ref.tag;
 		var attrs = _ref.attrs;
 		var children = _ref.children;
-		var text = _ref.text;
 
+		if (tag === undefined && attrs && !attrs.tpl && children && children.length === 0) {
+			return null;
+		}
 		var key = attrs && !isNullOrUndefined(attrs.key) ? attrs.key : null;
+
+		if (children && children.length === 0) {
+			children = null;
+		} else {
+			if (!isInvalidNode(children)) {
+				children = isArray$1(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
+			}
+		}
 
 		if (key !== null) {
 			delete attrs.key;
 		}
 		var attrsAndEvents = createAttrsAndEvents(attrs, tag);
 
-		if (!isInvalidNode(children)) {
-			children = isArray$1(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
-		}
 		return {
 			dom: null,
 			tag: tag,
@@ -121,7 +128,7 @@
 			events: attrsAndEvents.events,
 			className: attrsAndEvents.className,
 			style: attrsAndEvents.style,
-			children: children || text,
+			children: children,
 			instance: null
 		};
 	}
@@ -133,7 +140,15 @@
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 				if (!isNullOrUndefined(child) && (typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
-					newChildren.push(createChild(child));
+					if (isArray$1(child)) {
+						if (child.length > 0) {
+							newChildren.push(createChildren(child));
+						} else {
+							newChildren.push(null);
+						}
+					} else {
+						newChildren.push(createChild(child));
+					}
 				} else {
 					newChildren.push(child);
 				}

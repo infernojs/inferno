@@ -358,223 +358,222 @@ describe('Components', () => {
 		);
 	});
 
-//	class BasicComponent2 extends Component {
-//		render() {
-//			const template = createTemplate((name, title, children) =>
-//				createElement('div', {
-//					className: 'basic'
-//				},
-//					createElement('span', {
-//						className: name
-//					}, 'The title is ', title),
-//					children
-//				)
-//			);
-//			return template(this.props.name, this.props.title, this.props.children);
-//		}
-//	}
-//
-//	it('should render a basic component with children', () => {
-//		let template = createTemplate((Component, title, name) =>
-//			createElement('div', null,
-//				createElement(Component, {
-//					title,
-//					name
-//				},
-//					createElement('span', null, 'I\'m a child')
-//				)
-//			)
-//		);
-//
-//		render(template(BasicComponent2, 'abc', 'basic-render'), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
-//		);
-//		render(template(BasicComponent2, 'abc', 'basic-render'), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
-//		);
-//
-//		render(
-//			template(BasicComponent2, '123', 'basic-update'), container
-//
-//		);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
-//		);
-//		render(
-//			template(BasicComponent2, '1234', 'basic-update'), container
-//
-//		);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><div class="basic"><span class="basic-update">The title is 1234</span><span>I\'m a child</span></div></div>'
-//		);
-//
-//		render(template(), container);
-//	});
-//
-//	class BasicComponent2b extends Component {
-//		render() {
-//			const template = createTemplate((children) =>
-//				createElement('div', null,
-//					createElement('span', null, 'component!'),
-//					createElement('div', null, children)
-//				)
-//			);
-//			return template(this.props.children);
-//		}
-//	}
-//
-//	class BasicComponent2c extends Component {
-//		render() {
-//			const template = createTemplate((children) =>
-//				createElement('div', null,
-//					createElement('span', null, 'other component!'),
-//					createElement('div', null, children)
-//				)
-//			);
-//			return template(this.props.children);
-//		}
-//	}
-//
-//	class BasicComponent3 extends Component {
-//		render() {
-//			const template = createTemplate((styles, title) =>
-//				createElement('div', {
-//					style: styles
-//				},
-//					createElement('span', {
-//						style: styles
-//					}, 'The title is ', title)
-//				)
-//			);
-//
-//			return template(this.props.styles, this.props.title);
-//		}
-//	}
-//
-//	it('should render a basic component with styling', () => {
-//
-//		let template = createTemplate((Component, props) =>
-//			createElement(Component, props)
-//		);
-//
-//		render(template(null, null, false), container);
-//
-//		render(template(BasicComponent3, {
-//			title: 'styled!',
-//			styles: {
-//				color: 'red',
-//				paddingLeft: 10
-//			}
-//		}), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
-//		);
-//		render(template(BasicComponent3, {
-//			title: 'styled!',
-//			styles: {
-//				color: 'red',
-//				paddingLeft: 10
-//			}
-//		}), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
-//		);
-//
-//		render(template(), container);
-//
-//		render(template(BasicComponent3, {
-//			title: 'styled (again)!',
-//			styles: {
-//				color: 'blue',
-//				paddingRight: 20
-//			}
-//		}), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div style="color: blue; padding-right: 20px;"><span style="color: blue; padding-right: 20px;">The title is styled (again)!</span></div>'
-//		);
-//	});
-//
-//	it('should render a basic component with component children', () => {
-//
-//		let template = createTemplate((Component1, Component2, Component3) =>
-//			createElement(Component1, null,
-//				createElement(Component2, null,
-//					createElement(Component3, null)
-//				)
-//			)
-//		);
-//		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
-//		);
-//
-//		render(null, container);
-//
-//		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
-//		);
-//
-//		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-//		);
-//
-//		render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-//		);
-//
-//		render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-//		);
-//
-//		render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-//		);
-//		render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
-//		);
-//	});
-//
+	class BasicComponent2 extends Component {
+		render() {
+			const template = (name, title, children) =>
+				createElement('div', {
+					className: 'basic'
+				},
+					createElement('span', {
+						className: name
+					}, 'The title is ', title),
+					children
+				)
+			;
+			return template(this.props.name, this.props.title, this.props.children);
+		}
+	}
+
+	it('should render a basic component with children', () => {
+		let template = (Component, title, name) =>
+			createElement('div', null,
+				createElement(Component, {
+					title,
+					name
+				},
+					createElement('span', null, 'I\'m a child')
+				)
+
+		);
+
+		render(template(BasicComponent2, 'abc', 'basic-render'), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
+		);
+		render(template(BasicComponent2, 'abc', 'basic-render'), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
+		);
+
+		render(
+			template(BasicComponent2, '123', 'basic-update'), container
+
+		);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
+		);
+		render(
+			template(BasicComponent2, '1234', 'basic-update'), container
+
+		);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><div class="basic"><span class="basic-update">The title is 1234</span><span>I\'m a child</span></div></div>'
+		);
+
+		expect(() => {
+			render(template(), container);
+		}).to.throw();
+	});
+
+	class BasicComponent2b extends Component {
+		render() {
+			const template = (children) =>
+				createElement('div', null,
+					createElement('span', null, 'component!'),
+					createElement('div', null, children)
+				)
+			;
+			return template(this.props.children);
+		}
+	}
+
+	class BasicComponent2c extends Component {
+		render() {
+			const template = (children) =>
+				createElement('div', null,
+					createElement('span', null, 'other component!'),
+					createElement('div', null, children)
+				)
+			;
+			return template(this.props.children);
+		}
+	}
+
+	class BasicComponent3 extends Component {
+		render() {
+			const template = (styles, title) =>
+				createElement('div', {
+					style: styles
+				},
+					createElement('span', {
+						style: styles
+					}, 'The title is ', title)
+				)
+			;
+
+			return template(this.props.styles, this.props.title);
+		}
+	}
+
+	it('should render a basic component with styling', () => {
+
+		let template = (Component, props) =>
+			createElement(Component, props)
+		;
+
+		render(template(null, null, false), container);
+
+		render(template(BasicComponent3, {
+			title: 'styled!',
+			styles: {
+				color: 'red',
+				paddingLeft: 10
+			}
+		}), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
+		);
+		render(template(BasicComponent3, {
+			title: 'styled!',
+			styles: {
+				color: 'red',
+				paddingLeft: 10
+			}
+		}), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
+		);
+
+		render(template(BasicComponent3, {
+			title: 'styled (again)!',
+			styles: {
+				color: 'blue',
+				paddingRight: 20
+			}
+		}), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div style="color: blue; padding-right: 20px;"><span style="color: blue; padding-right: 20px;">The title is styled (again)!</span></div>'
+		);
+	});
+
+	it('should render a basic component with component children', () => {
+
+		let template = (Component1, Component2, Component3) =>
+			createElement(Component1, null,
+				createElement(Component2, null,
+					createElement(Component3, null)
+				)
+		);
+		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+		);
+
+		render(null, container);
+
+		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
+		);
+
+		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2c), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+		);
+
+		render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+		);
+
+		render(template(BasicComponent2b, BasicComponent2c, BasicComponent2c), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+		);
+
+		render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+		);
+		render(template(BasicComponent2c, BasicComponent2c, BasicComponent2c), container);
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
+		);
+	});
+
 	it('should render a basic component and correctly mount', () => {
 		let template;
 		let componentWillMountCount;

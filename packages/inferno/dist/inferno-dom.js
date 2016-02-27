@@ -164,16 +164,27 @@
 	}
 
 	function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
-		var dom = mountNode(nextNode, null, namespace, lifecycle, context);
-		parentDom.replaceChild(dom, lastNode.dom);
-		nextNode.dom = dom;
+		var dom = undefined;
+
+		if (isStringOrNumber(nextNode)) {
+			dom = document.createTextNode(nextNode);
+			parentDom.replaceChild(dom, dom);
+		} else if (isStringOrNumber(lastNode)) {
+			dom = mountNode(nextNode, null, namespace, lifecycle, context);
+			nextNode.dom = dom;
+			parentDom.replaceChild(dom, parentDom.firstChild);
+		} else {
+			dom = mountNode(nextNode, null, namespace, lifecycle, context);
+			nextNode.dom = dom;
+			parentDom.replaceChild(dom, lastNode.dom);
+		}
 	}
 
 	function detachNode(node) {
 		if (isInvalidNode(node)) {
 			return;
 		}
-		if (isStatefulComponent(node.instance)) {
+		if (node.instance && node.instance.render) {
 			node.instance.componentWillUnmount();
 			node.instance._unmounted = true;
 		}
@@ -387,7 +398,7 @@
 								childNodes = childNodes || dom.childNodes;
 								childNodes[i + offset].textContent = nextChild;
 							} else {
-								var node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+								var node = mountNode(nextChild, null, namespace, lifecycle, context);
 								dom.replaceChild(node, dom.childNodes[i]);
 							}
 						} else {
@@ -395,7 +406,11 @@
 								childNodes = childNodes || dom.childNodes;
 								childNodes[i + offset].textContent = nextChild;
 							} else if (isArray(nextChild)) {
-								patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
+								if (isArray(lastChild)) {
+									patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
+								} else {
+									patchNonKeyedChildren([lastChild], nextChild, dom, namespace, lifecycle, context, i);
+								}
 							} else {
 								patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
 							}
@@ -548,6 +563,8 @@
 		if (isStringOrNumber(lastNode)) {
 			if (isStringOrNumber(nextNode)) {
 				parentDom.firstChild.nodeValue = nextNode;
+			} else {
+				replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context);
 			}
 			return;
 		}
@@ -577,7 +594,7 @@
 		if (isFunction(lastTag) && isFunction(nextTag)) {
 			nextNode.instance = lastNode.instance;
 			nextNode.dom = lastNode.dom;
-			patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
+			patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.events, nextNode.children, parentDom, lifecycle, context);
 			return;
 		}
 		var dom = lastNode.dom;
@@ -884,7 +901,7 @@
 		var tag = node.tag;
 
 		if (isFunction(tag)) {
-			return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
+			return mountComponent(node, tag, node.attrs || {}, node.events, node.children, parentDom, lifecycle, context);
 		} else if (tag === null) {
 			return placeholder(node, parentDom);
 		}

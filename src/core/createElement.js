@@ -41,7 +41,7 @@ export function createAttrsAndEvents(props, tag) {
 	return { attrs, events, className, style };
 }
 
-function createChild({ tag, attrs, children }) {
+function createChild({ tag, attrs, children, className, style, events }) {
 	if (tag === undefined && attrs && !attrs.tpl && children && children.length === 0) {
 		return null;
 	}
@@ -65,9 +65,9 @@ function createChild({ tag, attrs, children }) {
 		tag: tag,
 		key: key,
 		attrs: attrsAndEvents.attrs,
-		events: attrsAndEvents.events,
-		className: attrsAndEvents.className,
-		style: attrsAndEvents.style,
+		events: events || attrsAndEvents.events,
+		className: className || attrsAndEvents.className,
+		style: style || attrsAndEvents.style,
 		children: children,
 		instance: null
 	};
