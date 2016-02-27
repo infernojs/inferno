@@ -130,7 +130,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	const tag = node.tag;
 
 	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
+		return mountComponent(node, tag, node.attrs || {}, node.events, node.children, parentDom, lifecycle, context);
 	} else if (tag === null) {
 		return placeholder(node, parentDom);
 	}

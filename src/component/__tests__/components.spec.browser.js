@@ -577,62 +577,60 @@ describe('Components', () => {
 //		);
 //	});
 //
-//	it('should render a basic component and correctly mount', () => {
-//		let template;
-//		let componentWillMountCount;
-//
-//		class ComponentLifecycleCheck extends Component {
-//			render() {
-//				const template = createTemplate((children) =>
-//					createElement('div', null,
-//						createElement('span', null, 'component!'),
-//						createElement('div', null, children)
-//					)
-//				);
-//				return template(this.props.children);
-//			}
-//			componentWillMount() {
-//				componentWillMountCount++;
-//			}
-//		}
-//
-//		componentWillMountCount = 0;
-//		template = createTemplate((Component1, Component2, Component3) =>
-//			createElement(Component1, null,
-//				createElement(Component2, null,
-//					createElement(Component3, null)
-//				)
-//			)
-//		);
-//
-//		render(template(ComponentLifecycleCheck, undefined, ComponentLifecycleCheck), container);
-//		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
-//		expect(
-//			componentWillMountCount
-//		).to.equal(
-//			3
-//		);
-//
-//		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
-//		expect(
-//			componentWillMountCount
-//		).to.equal(
-//			5
-//		);
-//
-//		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
-//		expect(
-//			componentWillMountCount
-//		).to.equal(
-//			6
-//		);
-//		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
-//		expect(
-//			componentWillMountCount
-//		).to.equal(
-//			7
-//		);
-//	});
+	it('should render a basic component and correctly mount', () => {
+		let template;
+		let componentWillMountCount;
+
+		class ComponentLifecycleCheck extends Component {
+			render() {
+				const template = (children) =>
+					createElement('div', null,
+						createElement('span', null, 'component!'),
+						createElement('div', null, children)
+					);
+				return template(this.props.children);
+			}
+			componentWillMount() {
+				componentWillMountCount++;
+			}
+		}
+
+		componentWillMountCount = 0;
+		template = (Component1, Component2, Component3) =>
+			createElement(Component1, null,
+				createElement(Component2, null,
+					createElement(Component3, null)
+				)
+			);
+
+		render(template(ComponentLifecycleCheck, null, ComponentLifecycleCheck), container);
+		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
+		expect(
+			componentWillMountCount
+		).to.equal(
+			3
+		);
+
+		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
+		expect(
+			componentWillMountCount
+		).to.equal(
+			3
+		);
+
+		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
+		expect(
+			componentWillMountCount
+		).to.equal(
+			3
+		);
+		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
+		expect(
+			componentWillMountCount
+		).to.equal(
+			3
+		);
+	});
 //
 //	it('should render multiple components', () => {
 //

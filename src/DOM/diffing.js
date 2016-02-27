@@ -39,7 +39,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (isFunction(lastTag) && isFunction(nextTag)) {
 		nextNode.instance = lastNode.instance;
 		nextNode.dom = lastNode.dom;
-		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
+		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.events, nextNode.children, parentDom, lifecycle, context);
 		return;
 	}
 	const dom = lastNode.dom;
