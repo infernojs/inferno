@@ -9,7 +9,7 @@
 	var t1 = {
 		dom: Inferno.staticCompiler.createElement('div'),
 		pools: {
-			keyed: [],
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'div'
@@ -18,7 +18,7 @@
 	var t2 = {
 		dom: Inferno.staticCompiler.createElement('span'),
 		pools: {
-			keyed: [],
+			keyed: {},
 			nonKeyed: []
 		},
 		tag: 'span'

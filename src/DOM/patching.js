@@ -20,7 +20,7 @@ export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		remove(lastNode, parentDom);
 		return;
 	}
-	diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.static !== null && nextNode.static !== null);
+	diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.tpl !== null && nextNode.tpl !== null);
 }
 
 export function patchStyle(lastAttrValue, nextAttrValue, dom) {
@@ -316,7 +316,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			oldItem = oldItemsMap[key];
 			if (oldItem !== undefined) {
 				oldItemsMap[key] = null;
-				diffNodes(oldItem, item, dom, namespace, lifecycle, true);
+				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true);
 
 				if (item.dom.nextSibling !== nextNode) {
 					nextNode = (nextNode && nextNode.dom) || nextDom;

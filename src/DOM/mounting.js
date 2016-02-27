@@ -126,6 +126,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 			return dom;
 		}
 	}
+	const tpl = node.tpl;
 	const tag = node.tag;
 
 	if (isFunction(tag)) {
@@ -134,8 +135,8 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 		return placeholder(node, parentDom);
 	}
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
-	if (node.tpl && node.tpl.dom) {
-		dom = node.tpl.dom.cloneNode(true);
+	if (tpl && tpl.dom) {
+		dom = tpl.dom.cloneNode(true);
 	} else {
 		if (!isString(tag)) {
 			throw Error('Inferno Error: Expected function or string for element tag type');
