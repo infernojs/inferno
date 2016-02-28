@@ -5,6 +5,7 @@ import { patchAttribute, patchStyle } from './patching';
 import { handleEvent } from './events';
 import { diffNodes } from './diffing';
 
+// TODO!  Need to be re-written to gain bette performance. I can't do it. K.F
 export function mountChildren(children, parentDom, namespace, lifecycle, context) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
@@ -47,7 +48,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		if (node) {
 			dom = mountNode(node, null, null, lifecycle, context);
 			instance._lastNode = node;
-			if (parentDom) {
+			if (parentDom !== null) { // avoid DEOPT
 				parentDom.appendChild(dom);
 			}
 			lifecycle.addListener(instance.componentDidMount);
@@ -58,7 +59,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		return dom;
 	} else {
 		let dom;
-		if (events) {
+		if (!isNullOrUndefined(events)) {
 			if (events.componentWillMount) {
 				events.componentWillMount(null, props);
 			}
@@ -74,20 +75,20 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		dom = mountNode(node, null, null, lifecycle, context);
 
 		parentNode.instance = node;
-		if (parentDom) {
+
+		if (parentDom !== null) { // avoid DEOPT
 			parentDom.appendChild(dom);
 		}
 		parentNode.dom = dom;
-
-		return dom;
 	}
 }
 
 function mountEvents(events, allEvents, dom) {
 	for (let i = 0; i < allEvents.length; i++) {
 		const event = allEvents[i];
-
-		handleEvent(event, dom, events[event]);
+		if(isString(event)) {
+			handleEvent(event, dom, events[event]);
+		}
 	}
 }
 
@@ -129,12 +130,16 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	const tpl = node.tpl;
 	const tag = node.tag;
 
-	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs || {}, node.events, node.children, parentDom, lifecycle, context);
-	} else if (tag === null) {
+	if(tag === null) {
 		return placeholder(node, parentDom);
 	}
+
+	if (isFunction(tag)) {
+		return mountComponent(node, tag, node.attrs || {}, node.events, node.children, parentDom, lifecycle, context);
+	}
+
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
+
 	if (tpl && tpl.dom) {
 		dom = tpl.dom.cloneNode(true);
 	} else {
@@ -149,7 +154,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	const className = node.className;
 	const style = node.style;
 
-	if (events) {
+	if (!isNullOrUndefined(events)) {
 		const allEvents = Object.keys(events);
 		let eventsCount = allEvents.length;
 
@@ -174,7 +179,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	if (!isInvalidNode(children)) {
 		mountChildren(children, dom, namespace, lifecycle, context);
 	}
-	if (attrs) {
+	if (!isNullOrUndefined(attrs)) {
 		mountAttributes(attrs, dom);
 	}
 	if (!isNullOrUndefined(className)) {
@@ -195,7 +200,6 @@ function mountAttributes(attrs, dom) {
 
 	for (let i = 0; i < attrsKeys.length; i++) {
 		const attr = attrsKeys[i];
-
 		patchAttribute(attr, null, attrs[attr], dom);
 	}
 }

@@ -1,3 +1,4 @@
+// TODO! Use object literal or at least protoype?
 export default class Lifecycle {
 	constructor() {
 		this._listeners = [];
