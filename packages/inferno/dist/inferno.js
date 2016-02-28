@@ -101,6 +101,9 @@
 		var tag = _ref.tag;
 		var attrs = _ref.attrs;
 		var children = _ref.children;
+		var className = _ref.className;
+		var style = _ref.style;
+		var events = _ref.events;
 
 		if (tag === undefined && attrs && !attrs.tpl && children && children.length === 0) {
 			return null;
@@ -125,9 +128,9 @@
 			tag: tag,
 			key: key,
 			attrs: attrsAndEvents.attrs,
-			events: attrsAndEvents.events,
-			className: attrsAndEvents.className,
-			style: attrsAndEvents.style,
+			events: events || attrsAndEvents.events,
+			className: className || attrsAndEvents.className,
+			style: style || attrsAndEvents.style,
 			children: children,
 			instance: null
 		};
@@ -177,6 +180,7 @@
 		}
 	}
 
+	// TODO Fix! Performance killer
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
 	function createStaticElement(tag, attrs) {
@@ -197,9 +201,11 @@
 			var attr = attrKeys[i];
 			var value = attrs[attr];
 
+			// TODO! What about SVG?
 			if (attr === 'className') {
 				dom.className = value;
 			} else {
+				// TODO! Better approach. Perf killer
 				if (!isNullOrUndefined(value) && value !== false && value !== true && !isAttrAnEvent(attr)) {
 					dom.setAttribute(attr, value);
 				} else if (value === true) {

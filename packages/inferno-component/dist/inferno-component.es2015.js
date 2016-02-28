@@ -45,6 +45,8 @@ babelHelpers.extends = Object.assign || function (target) {
 
 babelHelpers;
 
+// TODO! Use object literal or at least protoype?
+
 var Lifecycle = function () {
 	function Lifecycle() {
 		babelHelpers.classCallCheck(this, Lifecycle);

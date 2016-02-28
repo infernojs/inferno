@@ -50,6 +50,8 @@ babelHelpers.extends = Object.assign || function (target) {
 
 babelHelpers;
 
+// TODO! Use object literal or at least protoype?
+
 var Lifecycle = function () {
 	function Lifecycle() {
 		babelHelpers.classCallCheck(this, Lifecycle);
@@ -158,16 +160,27 @@ function appendText(text, parentDom, singleChild) {
 }
 
 function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
-	var dom = mountNode(nextNode, null, namespace, lifecycle, context);
-	parentDom.replaceChild(dom, lastNode.dom);
-	nextNode.dom = dom;
+	var dom = undefined;
+
+	if (isStringOrNumber(nextNode)) {
+		dom = document.createTextNode(nextNode);
+		parentDom.replaceChild(dom, dom);
+	} else if (isStringOrNumber(lastNode)) {
+		dom = mountNode(nextNode, null, namespace, lifecycle, context);
+		nextNode.dom = dom;
+		parentDom.replaceChild(dom, parentDom.firstChild);
+	} else {
+		dom = mountNode(nextNode, null, namespace, lifecycle, context);
+		nextNode.dom = dom;
+		parentDom.replaceChild(dom, lastNode.dom);
+	}
 }
 
 function detachNode(node) {
 	if (isInvalidNode(node)) {
 		return;
 	}
-	if (isStatefulComponent(node.instance)) {
+	if (node.instance && node.instance.render) {
 		node.instance.componentWillUnmount();
 		node.instance._unmounted = true;
 	}
@@ -204,12 +217,19 @@ function remove(node, parentDom) {
 	}
 }
 
-var booleanProps = {
-	checked: 1,
-	selected: 1,
-	disabled: 1,
-	value: 1
-};
+// TODO This is for?
+function booleanProps(prop) {
+	switch (prop.length) {
+		case 5:
+			return prop === 'value';
+		case 7:
+			return prop === 'checked';
+		case 8:
+			return prop === 'disabled' || prop === 'selected';
+		default:
+			return false;
+	}
+}
 
 function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
 	if (isInvalidNode(lastNode)) {
@@ -227,7 +247,34 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
 	} else {
-		if (nextAttrValue) {
+		if (!isNullOrUndefined(lastAttrValue)) {
+			if (isNullOrUndefined(nextAttrValue)) {
+				dom.removeAttribute('style');
+			} else {
+				var styleKeys = Object.keys(nextAttrValue);
+
+				for (var i = 0; i < styleKeys.length; i++) {
+					var style = styleKeys[i];
+					var value = nextAttrValue[style];
+
+					if (isNumber(value)) {
+						value = value + 'px';
+					}
+					dom.style[style] = value;
+				}
+				if (lastAttrValue) {
+					var lastStyleKeys = Object.keys(lastAttrValue);
+
+					for (var i = 0; i < lastStyleKeys.length; i++) {
+						var style = lastStyleKeys[i];
+
+						if (!nextAttrValue[style]) {
+							dom.style[style] = '';
+						}
+					}
+				}
+			}
+		} else if (!isNullOrUndefined(nextAttrValue)) {
 			var styleKeys = Object.keys(nextAttrValue);
 
 			for (var i = 0; i < styleKeys.length; i++) {
@@ -239,28 +286,13 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
 				}
 				dom.style[style] = value;
 			}
-			if (lastAttrValue) {
-				var lastStyleKeys = Object.keys(lastAttrValue);
-
-				for (var i = 0; i < lastStyleKeys.length; i++) {
-					var style = lastStyleKeys[i];
-
-					if (!nextAttrValue[style]) {
-						dom.style[style] = '';
-					}
-				}
-			}
-		} else {
-			if (lastAttrValue) {
-				dom.removeAttribute('style');
-			}
 		}
 	}
 }
 
 function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 	if (!isAttrAnEvent(attrName)) {
-		if (booleanProps[attrName]) {
+		if (booleanProps(attrName)) {
 			dom[attrName] = nextAttrValue;
 			return;
 		}
@@ -273,17 +305,9 @@ function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 			dom.removeAttribute(attrName);
 		} else {
 			if (ns) {
-				if (nextAttrValue === true) {
-					dom.setAttributeNS(ns, attrName, attrName);
-				} else {
-					dom.setAttributeNS(ns, attrName, nextAttrValue);
-				}
+				dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			} else {
-				if (nextAttrValue === true) {
-					dom.setAttribute(attrName, attrName);
-				} else {
-					dom.setAttribute(attrName, nextAttrValue);
-				}
+				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			}
 		}
 	}
@@ -299,7 +323,7 @@ function patchComponent(lastNode, Component, instance, lastProps, nextProps, nex
 
 		var childContext = instance.getChildContext();
 		if (childContext) {
-			context = babelHelpers.extends({}, context, childContext);
+			context = babelHelpers.extends({}, context, childContext); // Todo Fix! Too slow!!
 		}
 		instance.context = context;
 		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
@@ -381,18 +405,22 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 							childNodes = childNodes || dom.childNodes;
 							childNodes[i + offset].textContent = nextChild;
 						} else {
-							var node = mountNode(nextChild, null, namespace, namespace, lifecycle, context);
+							var node = mountNode(nextChild, null, namespace, lifecycle, context);
 							dom.replaceChild(node, dom.childNodes[i]);
 						}
-					} else {
-						if (isStringOrNumber(nextChild)) {
-							childNodes = childNodes || dom.childNodes;
-							childNodes[i + offset].textContent = nextChild;
-						} else if (isArray(nextChild)) {
-							patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
+					} else if ((typeof nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChild)) === 'object') {
+						if (isArray(nextChild)) {
+							if (isArray(lastChild)) {
+								patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
+							} else {
+								patchNonKeyedChildren([lastChild], nextChild, dom, namespace, lifecycle, context, i);
+							}
 						} else {
 							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
 						}
+					} else {
+						childNodes = childNodes || dom.childNodes;
+						childNodes[i + offset].textContent = nextChild;
 					}
 				}
 		}
@@ -542,6 +570,8 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
+		} else {
+			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context);
 		}
 		return;
 	}
@@ -571,7 +601,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	if (isFunction(lastTag) && isFunction(nextTag)) {
 		nextNode.instance = lastNode.instance;
 		nextNode.dom = lastNode.dom;
-		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs, nextNode.attrs, nextNode.events, nextNode.children, parentDom, lifecycle, context);
+		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.events, nextNode.children, parentDom, lifecycle, context);
 		return;
 	}
 	var dom = lastNode.dom;
@@ -581,6 +611,10 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	var nextClassName = nextNode.className;
 	var nextStyle = nextNode.style;
 
+	// EPIC FAILURE!!!
+
+	// TODO!! Fix SVG issue, and remove className NOT class !!!
+	// TODO!! Remove of className has to be set to empty string, not a boolean etc.
 	if (lastNode.className !== nextClassName) {
 		if (isNullOrUndefined(nextClassName)) {
 			dom.removeAttribute('class');
@@ -588,9 +622,13 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 			dom.className = nextClassName;
 		}
 	}
+	// TODO Should check for null & undefined BEFORE calling this function?
 	if (lastNode.style !== nextStyle) {
 		patchStyle(lastNode.style, nextStyle, dom);
 	}
+
+	// TODO Take this out!! Split it!
+	// NOTE!! - maybe someone doesnt use events, only attrs, but still they are forced to survive a diff on both attr and events? Perf slow down!
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);
 	if (nextEvents && nextEvents.didUpdate) {
@@ -601,6 +639,9 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck) {
 	var nextChildren = nextNode.children;
 	var lastChildren = lastNode.children;
+
+	// HEEEELP!! Man, this is too deeply nested! Can you simplify this? Break it down? Avoid all this 'if'??
+	// TODO! Do not use ternary!!
 
 	if (lastChildren !== nextChildren) {
 		if (!isInvalidNode(lastChildren)) {
@@ -625,16 +666,22 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 					}
 				}
 			} else {
+				// Remove node, do not use textContent to set to empty node!! See jsPerf for this
 				dom.textContent = '';
 			}
 		} else {
 			if (isStringOrNumber(nextChildren)) {
 				dom.textContent = nextChildren;
-			} else if (nextChildren && isArray(nextChildren)) {
-				mountChildren(nextChildren, dom, namespace, lifecycle, context);
-			} else if (nextChildren && (typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
-				mountNode(nextChildren, dom, namespace, lifecycle, context);
-			}
+				// `TODO Better validation. Can give DEOPT! Better to check if 'nextChildren' === null or undefined
+			} else if (nextChildren) {
+					if ((typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
+						if (isArray(nextChildren)) {
+							mountChildren(nextChildren, dom, namespace, lifecycle, context);
+						} else {
+							mountNode(nextChildren, dom, namespace, lifecycle, context);
+						}
+					}
+				}
 		}
 	}
 }
@@ -673,7 +720,9 @@ function diffAttributes(lastNode, nextNode, dom) {
 	}
 }
 
-function diffEvents(lastNode, nextNode, dom) {}
+function diffEvents(lastNode, nextNode, dom) {
+	// TODO What's this?
+}
 
 var recyclingEnabled = true;
 
@@ -716,6 +765,9 @@ function pool(node) {
 
 var delegatedEventsRegistry = {};
 
+// TODO This will give issues server side ( nodeJS). Need a fix
+// TODO Rewrite - delegated events like this is no good for performance
+
 function handleEvent(event, dom, callback) {
 	if (!delegatedEventsRegistry[event]) {
 		document.addEventListener(event, function (callbackEvent) {
@@ -735,7 +787,7 @@ function handleEvent(event, dom, callback) {
 
 		/* for (let i = 0; i < delegatedEvents.length; i++) {
   	const delegatedEvent = delegatedEvents[i];
-  		if (delegatedEvent.target === dom) {
+  			if (delegatedEvent.target === dom) {
   		delegatedEvents.splice(i, 1);
   		break;
   	}
@@ -747,6 +799,7 @@ function handleEvent(event, dom, callback) {
 	}
 }
 
+// TODO!  Need to be re-written to gain bette performance. I can't do it. K.F
 function mountChildren(children, parentDom, namespace, lifecycle, context) {
 	if (isArray(children)) {
 		for (var i = 0; i < children.length; i++) {
@@ -789,7 +842,8 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		if (node) {
 			dom = mountNode(node, null, null, lifecycle, context);
 			instance._lastNode = node;
-			if (parentDom) {
+			if (parentDom !== null) {
+				// avoid DEOPT
 				parentDom.appendChild(dom);
 			}
 			lifecycle.addListener(instance.componentDidMount);
@@ -799,9 +853,9 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		parentNode.instance = instance;
 		return dom;
 	} else {
-		var _ret = function () {
+		(function () {
 			var dom = undefined;
-			if (events) {
+			if (!isNullOrUndefined(events)) {
 				if (events.componentWillMount) {
 					events.componentWillMount(null, props);
 				}
@@ -817,25 +871,22 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 			dom = mountNode(node, null, null, lifecycle, context);
 
 			parentNode.instance = node;
-			if (parentDom) {
+
+			if (parentDom !== null) {
+				// avoid DEOPT
 				parentDom.appendChild(dom);
 			}
 			parentNode.dom = dom;
-
-			return {
-				v: dom
-			};
-		}();
-
-		if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+		})();
 	}
 }
 
 function mountEvents(events, allEvents, dom) {
 	for (var i = 0; i < allEvents.length; i++) {
 		var event = allEvents[i];
-
-		handleEvent(event, dom, events[event]);
+		if (isString(event)) {
+			handleEvent(event, dom, events[event]);
+		}
 	}
 }
 
@@ -877,12 +928,16 @@ function mountNode(node, parentDom, namespace, lifecycle, context) {
 	var tpl = node.tpl;
 	var tag = node.tag;
 
-	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs, node.events, node.children, parentDom, lifecycle, context);
-	} else if (tag === null) {
+	if (tag === null) {
 		return placeholder(node, parentDom);
 	}
+
+	if (isFunction(tag)) {
+		return mountComponent(node, tag, node.attrs || {}, node.events, node.children, parentDom, lifecycle, context);
+	}
+
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
+
 	if (tpl && tpl.dom) {
 		dom = tpl.dom.cloneNode(true);
 	} else {
@@ -897,7 +952,7 @@ function mountNode(node, parentDom, namespace, lifecycle, context) {
 	var className = node.className;
 	var style = node.style;
 
-	if (events) {
+	if (!isNullOrUndefined(events)) {
 		var allEvents = Object.keys(events);
 		var eventsCount = allEvents.length;
 
@@ -922,7 +977,7 @@ function mountNode(node, parentDom, namespace, lifecycle, context) {
 	if (!isInvalidNode(children)) {
 		mountChildren(children, dom, namespace, lifecycle, context);
 	}
-	if (attrs) {
+	if (!isNullOrUndefined(attrs)) {
 		mountAttributes(attrs, dom);
 	}
 	if (!isNullOrUndefined(className)) {
@@ -943,7 +998,6 @@ function mountAttributes(attrs, dom) {
 
 	for (var i = 0; i < attrsKeys.length; i++) {
 		var attr = attrsKeys[i];
-
 		patchAttribute(attr, null, attrs[attr], dom);
 	}
 }
