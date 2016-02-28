@@ -4,12 +4,15 @@ import { mountNode } from './mounting';
 import { insertOrAppend, remove } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
-const booleanProps = {
-	checked: 1,
-	selected: 1,
-	disabled: 1,
-	value: 1
-};
+// TODO This is for?
+function booleanProps(prop) {
+	switch(prop.length) {
+		case 5: return prop === 'value'
+		case 7: return prop === 'checked'
+		case 8: return prop === 'disabled' || prop === 'selected'
+		default: return false
+	}
+}
 
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
 	if (isInvalidNode(lastNode)) {
@@ -27,7 +30,35 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
 	} else {
-		if (nextAttrValue) {
+		if (!isNullOrUndefined(lastAttrValue)) {
+			if (isNullOrUndefined(nextAttrValue)) {
+				dom.removeAttribute('style');
+			} else {
+				const styleKeys = Object.keys(nextAttrValue);
+
+				for (let i = 0; i < styleKeys.length; i++) {
+					const style = styleKeys[i];
+					let value = nextAttrValue[style];
+
+					if (isNumber(value)) {
+						value = value + 'px';
+					}
+					dom.style[style] = value;
+				}
+				if (lastAttrValue) {
+					const lastStyleKeys = Object.keys(lastAttrValue);
+
+					for (let i = 0; i < lastStyleKeys.length; i++) {
+						const style = lastStyleKeys[i];
+
+						if (!nextAttrValue[style]) {
+							dom.style[style] = '';
+						}
+					}
+				}
+			}
+
+		} else if(!isNullOrUndefined(nextAttrValue)) {
 			const styleKeys = Object.keys(nextAttrValue);
 
 			for (let i = 0; i < styleKeys.length; i++) {
@@ -39,28 +70,13 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 				}
 				dom.style[style] = value;
 			}
-			if (lastAttrValue) {
-				const lastStyleKeys = Object.keys(lastAttrValue);
-
-				for (let i = 0; i < lastStyleKeys.length; i++) {
-					const style = lastStyleKeys[i];
-
-					if (!nextAttrValue[style]) {
-						dom.style[style] = '';
-					}
-				}
-			}
-		} else {
-			if (lastAttrValue) {
-				dom.removeAttribute('style');
-			}
 		}
 	}
 }
 
 export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 	if (!isAttrAnEvent(attrName)) {
-		if (booleanProps[attrName]) {
+		if (booleanProps(attrName)) {
 			dom[attrName] = nextAttrValue;
 			return;
 		}
@@ -73,17 +89,9 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 			dom.removeAttribute(attrName);
 		} else {
 			if (ns) {
-				if (nextAttrValue === true) {
-					dom.setAttributeNS(ns, attrName, attrName);
-				} else {
-					dom.setAttributeNS(ns, attrName, nextAttrValue);
-				}
+				dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			} else {
-				if (nextAttrValue === true) {
-					dom.setAttribute(attrName, attrName);
-				} else {
-					dom.setAttribute(attrName, nextAttrValue);
-				}
+				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			}
 		}
 	}
@@ -99,7 +107,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 
 		const childContext = instance.getChildContext();
 		if (childContext) {
-			context = { ...context, ...childContext };
+			context = { ...context, ...childContext }; // Todo Fix! Too slow!!
 		}
 		instance.context = context;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
@@ -187,11 +195,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 						const node = mountNode(nextChild, null, namespace, lifecycle, context);
 						dom.replaceChild(node, dom.childNodes[i]);
 					}
-				} else {
-					if (isStringOrNumber(nextChild)) {
-						childNodes = childNodes || dom.childNodes;
-						childNodes[i + offset].textContent = nextChild;
-					} else if (isArray(nextChild)) {
+				} else if(typeof nextChild === 'object') {
+					if (isArray(nextChild)) {
 						if (isArray(lastChild)) {
 							patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
 						} else {
@@ -200,6 +205,9 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 					} else {
 						patchNode(lastChild, nextChild, dom, namespace, lifecycle, context);
 					}
+				} else {
+					childNodes = childNodes || dom.childNodes;
+					childNodes[i + offset].textContent = nextChild;
 				}
 			}
 		}

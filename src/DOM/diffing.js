@@ -51,6 +51,10 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	const nextClassName = nextNode.className;
 	const nextStyle = nextNode.style;
 
+	// EPIC FAILURE!!!
+
+	// TODO!! Fix SVG issue, and remove className NOT class !!!
+	// TODO!! Remove of className has to be set to empty string, not a boolean etc.
 	if (lastNode.className !== nextClassName) {
 		if (isNullOrUndefined(nextClassName)) {
 			dom.removeAttribute('class');
@@ -58,9 +62,13 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 			dom.className = nextClassName;
 		}
 	}
+	// TODO Should check for null & undefined BEFORE calling this function?
 	if (lastNode.style !== nextStyle) {
 		patchStyle(lastNode.style, nextStyle, dom);
 	}
+
+	// TODO Take this out!! Split it!
+	// NOTE!! - maybe someone doesnt use events, only attrs, but still they are forced to survive a diff on both attr and events? Perf slow down!
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);
 	if (nextEvents && nextEvents.didUpdate) {
@@ -71,6 +79,9 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
+
+	// HEEEELP!! Man, this is too deeply nested! Can you simplify this? Break it down? Avoid all this 'if'??
+	// TODO! Do not use ternary!!
 
 	if (lastChildren !== nextChildren) {
 		if (!isInvalidNode(lastChildren)) {
@@ -96,15 +107,21 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 					}
 				}
 			} else {
+				// Remove node, do not use textContent to set to empty node!! See jsPerf for this
 				dom.textContent = '';
 			}
 		} else {
 			if (isStringOrNumber(nextChildren)) {
 				dom.textContent = nextChildren;
-			} else if (nextChildren && isArray(nextChildren)) {
-				mountChildren(nextChildren, dom, namespace, lifecycle, context);
-			} else if (nextChildren && typeof nextChildren === 'object') {
-				mountNode(nextChildren, dom, namespace, lifecycle, context);
+				// `TODO Better validation. Can give DEOPT! Better to check if 'nextChildren' === null or undefined
+			} else if(nextChildren) {
+				if (typeof nextChildren === 'object') {
+					if (isArray(nextChildren)) {
+						mountChildren(nextChildren, dom, namespace, lifecycle, context);
+					} else {
+						mountNode(nextChildren, dom, namespace, lifecycle, context);
+					}
+				}
 			}
 		}
 	}
@@ -145,5 +162,5 @@ function diffAttributes(lastNode, nextNode, dom) {
 }
 
 function diffEvents(lastNode, nextNode, dom) {
-
+		// TODO What's this?
 }

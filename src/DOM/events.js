@@ -1,5 +1,8 @@
 const delegatedEventsRegistry = {};
 
+// TODO This will give issues server side ( nodeJS). Need a fix
+// TODO Rewrite - delegated events like this is no good for performance
+
 export function handleEvent(event, dom, callback) {
 	if (!delegatedEventsRegistry[event]) {
 		document.addEventListener(event, callbackEvent => {
