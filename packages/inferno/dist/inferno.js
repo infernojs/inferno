@@ -62,7 +62,7 @@
 		var className = null;
 		var style = null;
 
-		if (props) {
+		if (!isNullOrUndefined(props)) {
 			if (!isArray$1(props)) {
 				for (var prop in props) {
 					if (prop === 'className') {
@@ -180,7 +180,7 @@
 		}
 	}
 
-	// TODO Fix! Performance killer
+	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
 	function createStaticElement(tag, attrs) {
@@ -205,11 +205,10 @@
 			if (attr === 'className') {
 				dom.className = value;
 			} else {
-				// TODO! Better approach. Perf killer
-				if (!isNullOrUndefined(value) && value !== false && value !== true && !isAttrAnEvent(attr)) {
-					dom.setAttribute(attr, value);
-				} else if (value === true) {
+				if (value === true) {
 					dom.setAttribute(attr, attr);
+				} else if (!isNullOrUndefined(value) && value !== false && !isAttrAnEvent(attr)) {
+					dom.setAttribute(attr, value);
 				}
 			}
 		}

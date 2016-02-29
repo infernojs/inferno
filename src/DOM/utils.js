@@ -1,15 +1,15 @@
 import { mountNode } from './mounting';
-import { isStatefulComponent, isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber } from '../core/utils';
+import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
 
 export function insertOrAppend(parentDom, newNode, nextNode) {
-	if (nextNode) {
-		parentDom.insertBefore(newNode, nextNode);
-	} else {
+	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);
+	} else {
+		parentDom.insertBefore(newNode, nextNode);
 	}
 }
 
@@ -56,19 +56,21 @@ export function detachNode(node) {
 	if (isInvalidNode(node)) {
 		return;
 	}
-	if (node.instance && node.instance.render) {
-		node.instance.componentWillUnmount();
-		node.instance._unmounted = true;
+	const instance = node.instance;
+	if (instance && instance.render !== undefined) {
+		instance.componentWillUnmount();
+		instance._unmounted = true;
 	}
-	if (node.events && node.events.willDetach) {
-		node.events.willDetach(node.dom);
+	const events = node.events;
+	if (events && !isNullOrUndefined(events.willDetach)) {
+		events.willDetach(node.dom);
 	}
-	if (node.events && node.events.componentWillUnmount) {
-		node.events.componentWillUnmount(node.dom, node.events);
+	if (events && !isNullOrUndefined(events.componentWillUnmount)) {
+		events.componentWillUnmount(node.dom, events);
 	}
 	const children = node.children;
 
-	if (children) {
+	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				detachNode(children[i]);

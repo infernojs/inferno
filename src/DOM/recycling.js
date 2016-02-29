@@ -1,4 +1,5 @@
 import { diffNodes } from './diffing';
+import { isNullOrUndefined } from './../core/utils';
 
 export const recyclingEnabled = true;
 
@@ -26,7 +27,7 @@ export function pool(node) {
 	const key = node.key;
 	const tpl = node.tpl;
 
-	if (tpl) {
+	if (!isNullOrUndefined(tpl)) {
 		const pools = tpl.pools;
 
 		if (key === null) {

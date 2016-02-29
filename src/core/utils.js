@@ -1,6 +1,7 @@
 export function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
-		if ((isArray(children) && children.length > 0) || !isArray(children)) {
+		const isChildrenArray = isArray(children);
+		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
 			if (props) {
 				props.children = children;
 			} else {
@@ -18,7 +19,7 @@ export function isArray(obj) {
 }
 
 export function isStatefulComponent(obj) {
-	return obj && obj.prototype && obj.prototype.render;
+	return !isNullOrUndefined(obj) && obj.prototype && obj.prototype.render;
 }
 
 export function isStringOrNumber(obj) {

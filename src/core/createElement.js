@@ -6,7 +6,7 @@ export function createAttrsAndEvents(props, tag) {
 	let className = null;
 	let style = null;
 
-	if (props) {
+	if (!isNullOrUndefined(props)) {
 		if (!isArray(props)) {
 			for (let prop in props) {
 				if (prop === 'className') {

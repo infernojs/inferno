@@ -50,7 +50,7 @@ babelHelpers.extends = Object.assign || function (target) {
 
 babelHelpers;
 
-// TODO! Use object literal or at least protoype?
+// TODO! Use object literal or at least prototype? --- class is prototype (jsperf needed for perf verification)
 
 var Lifecycle = function () {
 	function Lifecycle() {
@@ -77,7 +77,8 @@ var Lifecycle = function () {
 
 function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
-		if (isArray(children) && children.length > 0 || !isArray(children)) {
+		var isChildrenArray = isArray(children);
+		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
 			if (props) {
 				props.children = children;
 			} else {
@@ -95,7 +96,7 @@ function isArray(obj) {
 }
 
 function isStatefulComponent(obj) {
-	return obj && obj.prototype && obj.prototype.render;
+	return !isNullOrUndefined(obj) && obj.prototype && obj.prototype.render;
 }
 
 function isStringOrNumber(obj) {
@@ -130,10 +131,10 @@ var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 var SVGNamespace = 'http://www.w3.org/2000/svg';
 
 function insertOrAppend(parentDom, newNode, nextNode) {
-	if (nextNode) {
-		parentDom.insertBefore(newNode, nextNode);
-	} else {
+	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);
+	} else {
+		parentDom.insertBefore(newNode, nextNode);
 	}
 }
 
@@ -180,19 +181,21 @@ function detachNode(node) {
 	if (isInvalidNode(node)) {
 		return;
 	}
-	if (node.instance && node.instance.render) {
-		node.instance.componentWillUnmount();
-		node.instance._unmounted = true;
+	var instance = node.instance;
+	if (instance && instance.render !== undefined) {
+		instance.componentWillUnmount();
+		instance._unmounted = true;
 	}
-	if (node.events && node.events.willDetach) {
-		node.events.willDetach(node.dom);
+	var events = node.events;
+	if (events && !isNullOrUndefined(events.willDetach)) {
+		events.willDetach(node.dom);
 	}
-	if (node.events && node.events.componentWillUnmount) {
-		node.events.componentWillUnmount(node.dom, node.events);
+	if (events && !isNullOrUndefined(events.componentWillUnmount)) {
+		events.componentWillUnmount(node.dom, events);
 	}
 	var children = node.children;
 
-	if (children) {
+	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (var i = 0; i < children.length; i++) {
 				detachNode(children[i]);
@@ -217,7 +220,7 @@ function remove(node, parentDom) {
 	}
 }
 
-// TODO This is for?
+// Checks if property is boolean type
 function booleanProps(prop) {
 	switch (prop.length) {
 		case 5:
@@ -262,15 +265,13 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
 					}
 					dom.style[style] = value;
 				}
-				if (lastAttrValue) {
-					var lastStyleKeys = Object.keys(lastAttrValue);
+				var lastStyleKeys = Object.keys(lastAttrValue);
 
-					for (var i = 0; i < lastStyleKeys.length; i++) {
-						var style = lastStyleKeys[i];
+				for (var i = 0; i < lastStyleKeys.length; i++) {
+					var style = lastStyleKeys[i];
 
-						if (!nextAttrValue[style]) {
-							dom.style[style] = '';
-						}
+					if (!nextAttrValue[style]) {
+						dom.style[style] = '';
 					}
 				}
 			}
@@ -433,7 +434,6 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 	var oldStartIndex = 0;
 	var nextChildrenLength = nextChildren.length;
 	var lastChildrenLength = lastChildren.length;
-	var item = undefined;
 	var oldItem = undefined;
 
 	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
@@ -517,8 +517,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		if (startIndex <= endIndex) {
 			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : nextDom;
 			for (; startIndex <= endIndex; startIndex++) {
-				item = nextChildren[startIndex];
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context), nextNode);
+				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context), nextNode);
 			}
 		}
 	} else if (startIndex > endIndex) {
@@ -533,26 +532,26 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			oldItem = lastChildren[i];
 			oldItemsMap[oldItem.key] = oldItem;
 		}
-		var _nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1] : null;
+		nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1] : null;
 
 		for (var i = endIndex; i >= startIndex; i--) {
-			item = nextChildren[i];
+			var item = nextChildren[i];
 			var key = item.key;
 			oldItem = oldItemsMap[key];
 			if (oldItem !== undefined) {
 				oldItemsMap[key] = null;
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true);
 
-				if (item.dom.nextSibling !== _nextNode) {
-					_nextNode = _nextNode && _nextNode.dom || nextDom;
-					insertOrAppend(dom, item.dom, _nextNode);
+				if (item.dom.nextSibling !== nextNode) {
+					nextNode = nextNode && nextNode.dom || nextDom;
+					insertOrAppend(dom, item.dom, nextNode);
 				}
-				_nextNode = item;
+				nextNode = item;
 			} else {
-				_nextNode = _nextNode && _nextNode.dom || nextDom;
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context), _nextNode);
+				nextNode = nextNode && nextNode.dom || nextDom;
+				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context), nextNode);
 			}
-			_nextNode = item;
+			nextNode = item;
 		}
 		for (var i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = lastChildren[i];
@@ -579,7 +578,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	var lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
 	var nextEvents = nextNode.events;
 
-	if (nextEvents && nextEvents.willUpdate) {
+	if (!isNullOrUndefined(nextEvents) && nextEvents.willUpdate) {
 		nextEvents.willUpdate(lastNode.dom);
 	}
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
@@ -631,7 +630,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	// NOTE!! - maybe someone doesnt use events, only attrs, but still they are forced to survive a diff on both attr and events? Perf slow down!
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);
-	if (nextEvents && nextEvents.didUpdate) {
+	if (!isNullOrUndefined(nextEvents) && nextEvents.didUpdate) {
 		nextEvents.didUpdate(dom);
 	}
 }
@@ -643,45 +642,46 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 	// HEEEELP!! Man, this is too deeply nested! Can you simplify this? Break it down? Avoid all this 'if'??
 	// TODO! Do not use ternary!!
 
-	if (lastChildren !== nextChildren) {
-		if (!isInvalidNode(lastChildren)) {
-			if (!isInvalidNode(nextChildren)) {
-				if (isArray(lastChildren)) {
-					if (isArray(nextChildren)) {
-						var isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
+	if (lastChildren === nextChildren) {
+		return;
+	}
 
-						if (!isKeyed) {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
-						} else {
-							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
-						}
+	if (!isInvalidNode(lastChildren)) {
+		if (!isInvalidNode(nextChildren)) {
+			if (isArray(lastChildren)) {
+				if (isArray(nextChildren)) {
+					var isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
+
+					if (!isKeyed) {
+						patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
 					} else {
-						patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null);
+						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
 					}
 				} else {
-					if (isArray(nextChildren)) {
-						patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null);
-					} else {
-						diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck);
-					}
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null);
 				}
 			} else {
-				// Remove node, do not use textContent to set to empty node!! See jsPerf for this
-				dom.textContent = '';
+				if (isArray(nextChildren)) {
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null);
+				} else {
+					diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck);
+				}
 			}
 		} else {
-			if (isStringOrNumber(nextChildren)) {
-				dom.textContent = nextChildren;
-				// `TODO Better validation. Can give DEOPT! Better to check if 'nextChildren' === null or undefined
-			} else if (nextChildren) {
-					if ((typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
-						if (isArray(nextChildren)) {
-							mountChildren(nextChildren, dom, namespace, lifecycle, context);
-						} else {
-							mountNode(nextChildren, dom, namespace, lifecycle, context);
-						}
-					}
+			// Remove node, do not use textContent to set to empty node!! See jsPerf for this
+			dom.textContent = '';
+		}
+	} else {
+		if (isStringOrNumber(nextChildren)) {
+			dom.textContent = nextChildren;
+		} else if (!isNullOrUndefined(nextChildren)) {
+			if ((typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
+				if (isArray(nextChildren)) {
+					mountChildren(nextChildren, dom, namespace, lifecycle, context);
+				} else {
+					mountNode(nextChildren, dom, namespace, lifecycle, context);
 				}
+			}
 		}
 	}
 }
@@ -690,38 +690,36 @@ function diffAttributes(lastNode, nextNode, dom) {
 	var nextAttrs = nextNode.attrs;
 	var lastAttrs = lastNode.attrs;
 
-	if (nextAttrs) {
+	if (!isNullOrUndefined(nextAttrs)) {
 		var nextAttrsKeys = Object.keys(nextAttrs);
+		var attrKeysLength = nextAttrsKeys.length;
 
-		if (nextAttrsKeys.length !== 0) {
-			for (var i = 0; i < nextAttrsKeys.length; i++) {
-				var attr = nextAttrsKeys[i];
-				var lastAttrVal = lastAttrs && lastAttrs[attr];
-				var nextAttrVal = nextAttrs[attr];
+		for (var i = 0; i < attrKeysLength; i++) {
+			var attr = nextAttrsKeys[i];
+			var lastAttrVal = lastAttrs && lastAttrs[attr];
+			var nextAttrVal = nextAttrs[attr];
 
-				if (lastAttrVal !== nextAttrVal) {
-					patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
-				}
+			if (lastAttrVal !== nextAttrVal) {
+				patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
 			}
 		}
 	}
-	if (lastAttrs) {
+	if (!isNullOrUndefined(lastAttrs)) {
 		var lastAttrsKeys = Object.keys(lastAttrs);
+		var attrKeysLength = lastAttrsKeys.length;
 
-		if (lastAttrsKeys.length !== 0) {
-			for (var i = 0; i < lastAttrsKeys.length; i++) {
-				var attr = lastAttrsKeys[i];
+		for (var i = 0; i < attrKeysLength; i++) {
+			var attr = lastAttrsKeys[i];
 
-				if (!nextAttrs || isNullOrUndefined(nextAttrs[attr])) {
-					dom.removeAttribute(attr);
-				}
+			if (!nextAttrs || isNullOrUndefined(nextAttrs[attr])) {
+				dom.removeAttribute(attr);
 			}
 		}
 	}
 }
 
 function diffEvents(lastNode, nextNode, dom) {
-	// TODO What's this?
+	// TODO Implement updating events
 }
 
 var recyclingEnabled = true;
@@ -750,7 +748,7 @@ function pool(node) {
 	var key = node.key;
 	var tpl = node.tpl;
 
-	if (tpl) {
+	if (!isNullOrUndefined(tpl)) {
 		var pools = tpl.pools;
 
 		if (key === null) {
@@ -766,7 +764,8 @@ function pool(node) {
 var delegatedEventsRegistry = {};
 
 // TODO This will give issues server side ( nodeJS). Need a fix
-// TODO Rewrite - delegated events like this is no good for performance
+// TODO Rewrite - delegated events like this is no good for performance (jsperf?)
+// Mercury also uses DOM delegator to handle events. is there perf comparison somewhere which way is better?
 
 function handleEvent(event, dom, callback) {
 	if (!delegatedEventsRegistry[event]) {
@@ -787,7 +786,7 @@ function handleEvent(event, dom, callback) {
 
 		/* for (let i = 0; i < delegatedEvents.length; i++) {
   	const delegatedEvent = delegatedEvents[i];
-  			if (delegatedEvent.target === dom) {
+  		if (delegatedEvent.target === dom) {
   		delegatedEvents.splice(i, 1);
   		break;
   	}
@@ -825,23 +824,23 @@ function mountChildren(children, parentDom, namespace, lifecycle, context) {
 function mountComponent(parentNode, Component, props, events, children, parentDom, lifecycle, context) {
 	props = addChildrenToProps(children, props);
 
+	var dom = undefined;
 	if (isStatefulComponent(Component)) {
 		var instance = new Component(props);
 		instance._diffNodes = diffNodes;
 
 		var childContext = instance.getChildContext();
-		if (childContext) {
+		if (!isNullOrUndefined(childContext)) {
 			context = babelHelpers.extends({}, context, childContext);
 		}
 		instance.context = context;
 
 		instance.componentWillMount();
-		var node = instance.render();
-		var dom = undefined;
+		var _node = instance.render();
 
-		if (node) {
-			dom = mountNode(node, null, null, lifecycle, context);
-			instance._lastNode = node;
+		if (!isNullOrUndefined(_node)) {
+			dom = mountNode(_node, null, null, lifecycle, context);
+			instance._lastNode = _node;
 			if (parentDom !== null) {
 				// avoid DEOPT
 				parentDom.appendChild(dom);
@@ -852,33 +851,30 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		parentNode.dom = dom;
 		parentNode.instance = instance;
 		return dom;
-	} else {
-		(function () {
-			var dom = undefined;
-			if (!isNullOrUndefined(events)) {
-				if (events.componentWillMount) {
-					events.componentWillMount(null, props);
-				}
-				if (events.componentDidMount) {
-					lifecycle.addListener(function () {
-						events.componentDidMount(dom, props);
-					});
-				}
-			}
-
-			/* eslint new-cap: 0 */
-			var node = Component(props);
-			dom = mountNode(node, null, null, lifecycle, context);
-
-			parentNode.instance = node;
-
-			if (parentDom !== null) {
-				// avoid DEOPT
-				parentDom.appendChild(dom);
-			}
-			parentNode.dom = dom;
-		})();
 	}
+	if (!isNullOrUndefined(events)) {
+		if (events.componentWillMount) {
+			events.componentWillMount(null, props);
+		}
+		if (events.componentDidMount) {
+			lifecycle.addListener(function () {
+				events.componentDidMount(dom, props);
+			});
+		}
+	}
+
+	/* eslint new-cap: 0 */
+	var node = Component(props);
+	dom = mountNode(node, null, null, lifecycle, context);
+
+	parentNode.instance = node;
+
+	if (parentDom !== null) {
+		// avoid DEOPT
+		parentDom.appendChild(dom);
+	}
+	parentNode.dom = dom;
+	return dom;
 }
 
 function mountEvents(events, allEvents, dom) {

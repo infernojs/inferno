@@ -31,21 +31,21 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 function mountComponent(parentNode, Component, props, events, children, parentDom, lifecycle, context) {
 	props = addChildrenToProps(children, props);
 
+	let dom;
 	if (isStatefulComponent(Component)) {
 		const instance = new Component(props);
 		instance._diffNodes = diffNodes;
 
 		const childContext = instance.getChildContext();
-		if (childContext) {
+		if (!isNullOrUndefined(childContext)) {
 			context = { ...context, ...childContext };
 		}
 		instance.context = context;
 
 		instance.componentWillMount();
 		const node = instance.render();
-		let dom;
 
-		if (node) {
+		if (!isNullOrUndefined(node)) {
 			dom = mountNode(node, null, null, lifecycle, context);
 			instance._lastNode = node;
 			if (parentDom !== null) { // avoid DEOPT
@@ -57,36 +57,35 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		parentNode.dom = dom;
 		parentNode.instance = instance;
 		return dom;
-	} else {
-		let dom;
-		if (!isNullOrUndefined(events)) {
-			if (events.componentWillMount) {
-				events.componentWillMount(null, props);
-			}
-			if (events.componentDidMount) {
-				lifecycle.addListener(() => {
-					events.componentDidMount(dom, props);
-				});
-			}
-		}
-
-		/* eslint new-cap: 0 */
-		const node = Component(props);
-		dom = mountNode(node, null, null, lifecycle, context);
-
-		parentNode.instance = node;
-
-		if (parentDom !== null) { // avoid DEOPT
-			parentDom.appendChild(dom);
-		}
-		parentNode.dom = dom;
 	}
+	if (!isNullOrUndefined(events)) {
+		if (events.componentWillMount) {
+			events.componentWillMount(null, props);
+		}
+		if (events.componentDidMount) {
+			lifecycle.addListener(() => {
+				events.componentDidMount(dom, props);
+			});
+		}
+	}
+
+	/* eslint new-cap: 0 */
+	const node = Component(props);
+	dom = mountNode(node, null, null, lifecycle, context);
+
+	parentNode.instance = node;
+
+	if (parentDom !== null) { // avoid DEOPT
+		parentDom.appendChild(dom);
+	}
+	parentNode.dom = dom;
+	return dom;
 }
 
 function mountEvents(events, allEvents, dom) {
 	for (let i = 0; i < allEvents.length; i++) {
 		const event = allEvents[i];
-		if(isString(event)) {
+		if (isString(event)) {
 			handleEvent(event, dom, events[event]);
 		}
 	}
@@ -130,7 +129,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	const tpl = node.tpl;
 	const tag = node.tag;
 
-	if(tag === null) {
+	if (tag === null) {
 		return placeholder(node, parentDom);
 	}
 

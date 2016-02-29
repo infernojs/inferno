@@ -19,7 +19,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	const lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
 	const nextEvents = nextNode.events;
 
-	if (nextEvents && nextEvents.willUpdate) {
+	if (!isNullOrUndefined(nextEvents) && nextEvents.willUpdate) {
 		nextEvents.willUpdate(lastNode.dom);
 	}
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
@@ -71,7 +71,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	// NOTE!! - maybe someone doesnt use events, only attrs, but still they are forced to survive a diff on both attr and events? Perf slow down!
 	diffAttributes(lastNode, nextNode, dom);
 	diffEvents(lastNode, nextNode, dom);
-	if (nextEvents && nextEvents.didUpdate) {
+	if (!isNullOrUndefined(nextEvents) && nextEvents.didUpdate) {
 		nextEvents.didUpdate(dom);
 	}
 }
@@ -83,44 +83,45 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 	// HEEEELP!! Man, this is too deeply nested! Can you simplify this? Break it down? Avoid all this 'if'??
 	// TODO! Do not use ternary!!
 
-	if (lastChildren !== nextChildren) {
-		if (!isInvalidNode(lastChildren)) {
-			if (!isInvalidNode(nextChildren)) {
-				if (isArray(lastChildren)) {
-					if (isArray(nextChildren)) {
-						const isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key)
-							|| lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
+	if (lastChildren === nextChildren) {
+		return;
+	}
 
-						if (!isKeyed) {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
-						} else {
-							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
-						}
+	if (!isInvalidNode(lastChildren)) {
+		if (!isInvalidNode(nextChildren)) {
+			if (isArray(lastChildren)) {
+				if (isArray(nextChildren)) {
+					const isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key)
+						|| lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
+
+					if (!isKeyed) {
+						patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
 					} else {
-						patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null);
+						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null);
 					}
 				} else {
-					if (isArray(nextChildren)) {
-						patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null);
-					} else {
-						diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck);
-					}
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null);
 				}
 			} else {
-				// Remove node, do not use textContent to set to empty node!! See jsPerf for this
-				dom.textContent = '';
+				if (isArray(nextChildren)) {
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null);
+				} else {
+					diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck);
+				}
 			}
 		} else {
-			if (isStringOrNumber(nextChildren)) {
-				dom.textContent = nextChildren;
-				// `TODO Better validation. Can give DEOPT! Better to check if 'nextChildren' === null or undefined
-			} else if(nextChildren) {
-				if (typeof nextChildren === 'object') {
-					if (isArray(nextChildren)) {
-						mountChildren(nextChildren, dom, namespace, lifecycle, context);
-					} else {
-						mountNode(nextChildren, dom, namespace, lifecycle, context);
-					}
+			// Remove node, do not use textContent to set to empty node!! See jsPerf for this
+			dom.textContent = '';
+		}
+	} else {
+		if (isStringOrNumber(nextChildren)) {
+			dom.textContent = nextChildren;
+		} else if (!isNullOrUndefined(nextChildren)) {
+			if (typeof nextChildren === 'object') {
+				if (isArray(nextChildren)) {
+					mountChildren(nextChildren, dom, namespace, lifecycle, context);
+				} else {
+					mountNode(nextChildren, dom, namespace, lifecycle, context);
 				}
 			}
 		}
@@ -131,36 +132,34 @@ function diffAttributes(lastNode, nextNode, dom) {
 	const nextAttrs = nextNode.attrs;
 	const lastAttrs = lastNode.attrs;
 
-	if (nextAttrs) {
+	if (!isNullOrUndefined(nextAttrs)) {
 		const nextAttrsKeys = Object.keys(nextAttrs);
+		const attrKeysLength = nextAttrsKeys.length;
 
-		if (nextAttrsKeys.length !== 0) {
-			for (let i = 0; i < nextAttrsKeys.length; i++) {
-				const attr = nextAttrsKeys[i];
-				const lastAttrVal = lastAttrs && lastAttrs[attr];
-				const nextAttrVal = nextAttrs[attr];
+		for (let i = 0; i < attrKeysLength; i++) {
+			const attr = nextAttrsKeys[i];
+			const lastAttrVal = lastAttrs && lastAttrs[attr];
+			const nextAttrVal = nextAttrs[attr];
 
-				if (lastAttrVal !== nextAttrVal) {
-					patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
-				}
+			if (lastAttrVal !== nextAttrVal) {
+				patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
 			}
 		}
 	}
-	if (lastAttrs) {
+	if (!isNullOrUndefined(lastAttrs)) {
 		const lastAttrsKeys = Object.keys(lastAttrs);
+		const attrKeysLength = lastAttrsKeys.length;
 
-		if (lastAttrsKeys.length !== 0) {
-			for (let i = 0; i < lastAttrsKeys.length; i++) {
-				const attr = lastAttrsKeys[i];
+		for (let i = 0; i < attrKeysLength; i++) {
+			const attr = lastAttrsKeys[i];
 
-				if (!nextAttrs || isNullOrUndefined(nextAttrs[attr])) {
-					dom.removeAttribute(attr);
-				}
+			if (!nextAttrs || isNullOrUndefined(nextAttrs[attr])) {
+				dom.removeAttribute(attr);
 			}
 		}
 	}
 }
 
 function diffEvents(lastNode, nextNode, dom) {
-		// TODO What's this?
+		// TODO Implement updating events
 }

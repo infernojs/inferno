@@ -1,7 +1,7 @@
 import { isAttrAnEvent, isNullOrUndefined } from './utils';
 import { createElement } from '../DOM/utils';
 
-// TODO Fix! Performance killer
+// Runs only once in applications lifetime
 const isBrowser = typeof window !== 'undefined' && window.document;
 
 export function createStaticElement(tag, attrs) {
@@ -26,11 +26,10 @@ function createStaticAttributes(attrs, dom) {
 		if (attr === 'className') {
 			dom.className = value;
 		} else {
-		// TODO! Better approach. Perf killer
-				if (!isNullOrUndefined(value) && value !== false && value !== true && !isAttrAnEvent(attr)) {
-				dom.setAttribute(attr, value);
-			} else if (value === true) {
+			if (value === true) {
 				dom.setAttribute(attr, attr);
+			} else if (!isNullOrUndefined(value) && value !== false && !isAttrAnEvent(attr)) {
+				dom.setAttribute(attr, value);
 			}
 		}
 	}
@@ -39,6 +38,6 @@ function createStaticAttributes(attrs, dom) {
 function createStaticChildren(children, parentDom) {
 	if (isArray(children)) {
 	} else if (isStringOrNumber(children)) {
-			parentDom.textContent = children;
+		parentDom.textContent = children;
 	}
 }

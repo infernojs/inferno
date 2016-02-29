@@ -4,13 +4,13 @@ import { mountNode } from './mounting';
 import { insertOrAppend, remove } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
-// TODO This is for?
+// Checks if property is boolean type
 function booleanProps(prop) {
-	switch(prop.length) {
-		case 5: return prop === 'value'
-		case 7: return prop === 'checked'
-		case 8: return prop === 'disabled' || prop === 'selected'
-		default: return false
+	switch (prop.length) {
+		case 5: return prop === 'value';
+		case 7: return prop === 'checked';
+		case 8: return prop === 'disabled' || prop === 'selected';
+		default: return false;
 	}
 }
 
@@ -45,20 +45,18 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 					}
 					dom.style[style] = value;
 				}
-				if (lastAttrValue) {
-					const lastStyleKeys = Object.keys(lastAttrValue);
+				const lastStyleKeys = Object.keys(lastAttrValue);
 
-					for (let i = 0; i < lastStyleKeys.length; i++) {
-						const style = lastStyleKeys[i];
+				for (let i = 0; i < lastStyleKeys.length; i++) {
+					const style = lastStyleKeys[i];
 
-						if (!nextAttrValue[style]) {
-							dom.style[style] = '';
-						}
+					if (!nextAttrValue[style]) {
+						dom.style[style] = '';
 					}
 				}
 			}
 
-		} else if(!isNullOrUndefined(nextAttrValue)) {
+		} else if (!isNullOrUndefined(nextAttrValue)) {
 			const styleKeys = Object.keys(nextAttrValue);
 
 			for (let i = 0; i < styleKeys.length; i++) {
@@ -195,7 +193,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 						const node = mountNode(nextChild, null, namespace, lifecycle, context);
 						dom.replaceChild(node, dom.childNodes[i]);
 					}
-				} else if(typeof nextChild === 'object') {
+				} else if (typeof nextChild === 'object') {
 					if (isArray(nextChild)) {
 						if (isArray(lastChild)) {
 							patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i);
@@ -220,7 +218,6 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 	let oldStartIndex = 0;
 	let nextChildrenLength = nextChildren.length;
 	let lastChildrenLength = lastChildren.length;
-	let item;
 	let oldItem;
 
 	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
@@ -304,8 +301,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		if (startIndex <= endIndex) {
 			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : nextDom;
 			for (; startIndex <= endIndex; startIndex++) {
-				item = nextChildren[startIndex];
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context), nextNode);
+				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context), nextNode);
 			}
 		}
 	} else if (startIndex > endIndex) {
@@ -320,10 +316,10 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			oldItem = lastChildren[i];
 			oldItemsMap[oldItem.key] = oldItem;
 		}
-		let nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1] : null;
+		nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1] : null;
 
 		for (let i = endIndex; i >= startIndex; i--) {
-			item = nextChildren[i];
+			const item = nextChildren[i];
 			const key = item.key;
 			oldItem = oldItemsMap[key];
 			if (oldItem !== undefined) {

@@ -1,4 +1,4 @@
-// TODO! Use object literal or at least protoype?
+// TODO! Use object literal or at least prototype? --- class is prototype (jsperf needed for perf verification)
 export default class Lifecycle {
 	constructor() {
 		this._listeners = [];

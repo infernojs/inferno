@@ -1,7 +1,8 @@
 const delegatedEventsRegistry = {};
 
 // TODO This will give issues server side ( nodeJS). Need a fix
-// TODO Rewrite - delegated events like this is no good for performance
+// TODO Rewrite - delegated events like this is no good for performance (jsperf?)
+// Mercury also uses DOM delegator to handle events. is there perf comparison somewhere which way is better?
 
 export function handleEvent(event, dom, callback) {
 	if (!delegatedEventsRegistry[event]) {

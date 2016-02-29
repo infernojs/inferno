@@ -51,7 +51,7 @@
 
 	babelHelpers;
 
-	// TODO! Use object literal or at least protoype?
+	// TODO! Use object literal or at least prototype? --- class is prototype (jsperf needed for perf verification)
 
 	var Lifecycle = function () {
 		function Lifecycle() {
