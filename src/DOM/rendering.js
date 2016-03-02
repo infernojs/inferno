@@ -33,11 +33,11 @@ export function render(node, parentDom) {
 	const lifecycle = new Lifecycle();
 
 	if (isNullOrUndefined(root)) {
-		mountNode(node, parentDom, null, lifecycle, {});
+		mountNode(node, parentDom, null, lifecycle, {}, null);
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });
 	} else {
-		patchNode(root.node, node, parentDom, null, lifecycle, {});
+		patchNode(root.node, node, parentDom, null, lifecycle, {}, null);
 		lifecycle.trigger();
 		if (node === null) {
 			removeRoot(root);

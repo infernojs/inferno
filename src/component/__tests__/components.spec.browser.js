@@ -515,7 +515,6 @@ describe('Components', () => {
 	});
 
 	it('should render a basic component with component children', () => {
-
 		let template = (Component1, Component2, Component3) =>
 			createElement(Component1, null,
 				createElement(Component2, null,
@@ -676,6 +675,29 @@ describe('Components', () => {
 		render(template(), container);
 	});
 
+	it('should support a ref string reference in the component', () => {
+		let elementRef = null;
+
+		class ComponentRefCheck extends Component {
+			constructor(props) {
+				super(props);
+				this.componentDidMount = this.componentDidMount.bind(this);
+			}
+			render() {
+				return createElement('div', null,
+					createElement('span', { ref: 'foo' })
+				);
+			}
+			componentDidMount() {
+				elementRef = this.refs.foo;
+			}
+		}
+		render(createElement(ComponentRefCheck), container);
+		const elementValidate = container.firstChild.firstChild;
+
+		expect(elementValidate).to.equal(elementRef);
+	});
+
 	it('should mount and unmount a basic component', () => {
 		let mountCount;
 		let unmountCount;
@@ -686,7 +708,7 @@ describe('Components', () => {
 				const template = () =>
 					createElement('div', null,
 						createElement('span', null)
-				);
+					);
 				return template();
 			}
 			componentDidMount() {
@@ -707,46 +729,37 @@ describe('Components', () => {
 		render(null, container);
 		expect(unmountCount).to.equal(1);
 	});
-//
-//	it('should mount and unmount a basic component #2', () => {
-//		let mountCount;
-//		let unmountCount;
-//		let template;
-//
-//		class ComponentLifecycleCheck extends Component {
-//			render() {
-//				const template = createTemplate(() =>
-//					createElement('div', null,
-//						createElement('span', null)
-//					)
-//				);
-//				return template();
-//			}
-//			componentDidMount() {
-//				mountCount++;
-//			}
-//			componentWillUnmount() {
-//				unmountCount++;
-//			}
-//		}
-//
-//		mountCount = 0;
-//		unmountCount = 0;
-//		template = createTemplate((Component) =>
-//			createElement(Component)
-//		);
-//
-//		render(template(ComponentLifecycleCheck), container);
-//
-//		expect(mountCount).to.equal(1);
-//
-//		render(template(null), container);
-//		expect(unmountCount).to.equal(1);
-//
-//		render(template(null), container);
-//		expect(unmountCount).to.equal(1);
-//
-//	});
+
+	it('should mount and unmount a basic component #2', () => {
+		let mountCount;
+		let unmountCount;
+
+		class ComponentLifecycleCheck extends Component {
+			render() {
+				return createElement('div', null,
+					createElement('span', null)
+				);
+			}
+			componentDidMount() {
+				mountCount++;
+			}
+			componentWillUnmount() {
+				unmountCount++;
+			}
+		}
+
+		mountCount = 0;
+		unmountCount = 0;
+
+		render(createElement(ComponentLifecycleCheck), container);
+		expect(mountCount).to.equal(1);
+		render(null, container);
+		expect(unmountCount).to.equal(1);
+		render(createElement(ComponentLifecycleCheck), container);
+		expect(mountCount).to.equal(2);
+		render(null, container);
+		expect(unmountCount).to.equal(2);
+	});
 //
 //	describe('state changes should trigger all lifecycle events for an update', () => {
 //		let componentWillMountCount;

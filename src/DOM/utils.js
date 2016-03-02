@@ -35,18 +35,18 @@ export function appendText(text, parentDom, singleChild) {
 	}
 }
 
-export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context) {
+export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
 	let dom;
 
 	if (isStringOrNumber(nextNode)) {
 		dom = document.createTextNode(nextNode);
 		parentDom.replaceChild(dom, dom);
 	} else if (isStringOrNumber(lastNode)) {
-		dom = mountNode(nextNode, null, namespace, lifecycle, context);
+		dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, parentDom.firstChild);
 	} else {
-		dom = mountNode(nextNode, null, namespace, lifecycle, context);
+		dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, lastNode.dom);
 	}

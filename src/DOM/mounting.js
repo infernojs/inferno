@@ -6,7 +6,7 @@ import { handleEvent } from './events';
 import { diffNodes } from './diffing';
 
 // TODO!  Need to be re-written to gain bette performance. I can't do it. K.F
-export function mountChildren(children, parentDom, namespace, lifecycle, context) {
+export function mountChildren(children, parentDom, namespace, lifecycle, context, instance) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
@@ -14,17 +14,23 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 			if (isStringOrNumber(child)) {
 				appendText(child, parentDom, false);
 			} else if (child && isArray(child)) {
-				mountChildren(child, parentDom, namespace, lifecycle, context);
+				mountChildren(child, parentDom, namespace, lifecycle, context, instance);
 			} else {
-				mountNode(child, parentDom, namespace, lifecycle, context);
+				mountNode(child, parentDom, namespace, lifecycle, context, instance);
 			}
 		}
 	} else {
 		if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
 		} else {
-			mountNode(children, parentDom, namespace, lifecycle, context);
+			mountNode(children, parentDom, namespace, lifecycle, context, instance);
 		}
+	}
+}
+
+function mountRef(instance, value, dom) {
+	if (instance && isString(value)) {
+		instance.refs[value] = dom;
 	}
 }
 
@@ -46,7 +52,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		const node = instance.render();
 
 		if (!isNullOrUndefined(node)) {
-			dom = mountNode(node, null, null, lifecycle, context);
+			dom = mountNode(node, null, null, lifecycle, context, instance);
 			instance._lastNode = node;
 			if (parentDom !== null) { // avoid DEOPT
 				parentDom.appendChild(dom);
@@ -71,7 +77,7 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 
 	/* eslint new-cap: 0 */
 	const node = Component(props);
-	dom = mountNode(node, null, null, lifecycle, context);
+	dom = mountNode(node, null, null, lifecycle, context, null);
 
 	parentNode.instance = node;
 
@@ -103,7 +109,7 @@ function placeholder(node, parentDom) {
 	return dom;
 }
 
-export function mountNode(node, parentDom, namespace, lifecycle, context) {
+export function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 	let dom;
 
 	if (isInvalidNode(node) || isArray(node)) {
@@ -132,14 +138,12 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	if (tag === null) {
 		return placeholder(node, parentDom);
 	}
-
 	if (isFunction(tag)) {
 		return mountComponent(node, tag, node.attrs || {}, node.events, node.children, parentDom, lifecycle, context);
 	}
-
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 
-	if (tpl && tpl.dom) {
+	if (!isNullOrUndefined(tpl) && tpl.dom) {
 		dom = tpl.dom.cloneNode(true);
 	} else {
 		if (!isString(tag)) {
@@ -176,10 +180,10 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 		}
 	}
 	if (!isInvalidNode(children)) {
-		mountChildren(children, dom, namespace, lifecycle, context);
+		mountChildren(children, dom, namespace, lifecycle, context, instance);
 	}
 	if (!isNullOrUndefined(attrs)) {
-		mountAttributes(attrs, dom);
+		mountAttributes(attrs, dom, instance);
 	}
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
@@ -194,11 +198,16 @@ export function mountNode(node, parentDom, namespace, lifecycle, context) {
 	return dom;
 }
 
-function mountAttributes(attrs, dom) {
+function mountAttributes(attrs, dom, instance) {
 	const attrsKeys = Object.keys(attrs);
 
 	for (let i = 0; i < attrsKeys.length; i++) {
 		const attr = attrsKeys[i];
-		patchAttribute(attr, null, attrs[attr], dom);
+
+		if (attr === 'ref') {
+			mountRef(instance, attrs[attr], dom);
+		} else {
+			patchAttribute(attr, null, attrs[attr], dom);
+		}
 	}
 }
