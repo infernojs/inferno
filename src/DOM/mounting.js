@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
 import { patchAttribute, patchStyle } from './patching';
@@ -15,6 +15,15 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 				appendText(child, parentDom, false);
 			} else if (child && isArray(child)) {
 				mountChildren(child, parentDom, namespace, lifecycle, context, instance);
+			} else if (isPromise(child)) {
+				const placeholder = document.createTextNode('');
+
+				child.then(node => {
+					const dom = mountNode(node, null, namespace, lifecycle, context, instance);
+
+					parentDom.replaceChild(dom, placeholder);
+				});
+				parentDom.appendChild(placeholder);
 			} else {
 				mountNode(child, parentDom, namespace, lifecycle, context, instance);
 			}
@@ -22,6 +31,15 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 	} else {
 		if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
+		} else if (isPromise(children)) {
+			const placeholder = document.createTextNode('');
+
+			children.then(node => {
+				const dom = mountNode(node, null, namespace, lifecycle, context, instance);
+
+				parentDom.replaceChild(dom, placeholder);
+			});
+			parentDom.appendChild(placeholder);
 		} else {
 			mountNode(children, parentDom, namespace, lifecycle, context, instance);
 		}

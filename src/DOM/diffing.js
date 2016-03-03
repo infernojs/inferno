@@ -7,6 +7,12 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (nextNode === false || nextNode === null) {
 		return;
 	}
+	if (nextNode.then) {
+		nextNode.then(node => {
+			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
+		});
+		return;
+	}
 	if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
