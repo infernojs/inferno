@@ -2,6 +2,7 @@ import { render } from '../../DOM/rendering';
 import Component from '../index';
 import createElement from '../../core/createElement';
 import innerHTML from '../../../tools/innerHTML';
+import waits from '../../../tools/waits';
 
 describe('Components', () => {
 	let container;
@@ -760,85 +761,85 @@ describe('Components', () => {
 		render(null, container);
 		expect(unmountCount).to.equal(2);
 	});
-//
-//	describe('state changes should trigger all lifecycle events for an update', () => {
-//		let componentWillMountCount;
-//		let shouldComponentUpdateCount;
-//		let componentDidUpdateCount;
-//		let componentWillUpdateCount;
-//		let componentWillReceivePropsCount;
-//		let template;
-//
-//		class ComponentLifecycleCheck extends Component {
-//			constructor() {
-//				super(null);
-//				this.state = {
-//					counter: 0
-//				};
-//			}
-//			render() {
-//				const template = createTemplate((counter) =>
-//					createElement('div', null,
-//						createElement('span', {}, counter)
-//					)
-//				);
-//				return template(this.state.counter);
-//			}
-//			componentWillMount() {
-//				componentWillMountCount++;
-//				this.setState({
-//					counter: this.state.counter + 1
-//				});
-//			}
-//			shouldComponentUpdate() {
-//				shouldComponentUpdateCount++;
-//				return true;
-//			}
-//			componentDidUpdate() {
-//				componentDidUpdateCount++;
-//			}
-//			componentWillUpdate() {
-//				componentWillUpdateCount++;
-//			}
-//			componentWillReceiveProps() {
-//				componentWillReceivePropsCount++;
-//			}
-//		}
-//
-//		beforeEach((done) => {
-//			componentWillMountCount = 0;
-//			shouldComponentUpdateCount = 0;
-//			componentDidUpdateCount = 0;
-//			componentWillUpdateCount = 0;
-//			componentWillReceivePropsCount = 0;
-//			template = createTemplate((Component) =>
-//				createElement(Component)
-//			);
-//			render(template(ComponentLifecycleCheck), container);
-//			waits(30, done);
-//		});
-//
-//		it('componentWillMountCount to have fired once', () => {
-//			expect(componentWillMountCount).to.equal(1);
-//		});
-//		it('shouldComponentUpdateCount to have fired once', () => {
-//			expect(shouldComponentUpdateCount).to.equal(1);
-//		});
-//		it('componentWillUpdateCount to have fired once', () => {
-//			expect(componentWillUpdateCount).to.equal(1);
-//		});
-//		it('componentDidUpdateCount to have fired once', () => {
-//			expect(componentDidUpdateCount).to.equal(1);
-//		});
-//		it('componentWillReceivePropsCount not to have fired', () => {
-//			expect(componentWillReceivePropsCount).to.equal(0);
-//		});
-//		it('the element in the component should show the new state', () => {
-//			expect(container.innerHTML).to.equal(
-//				'<div><span>1</span></div>'
-//			);
-//		});
-//	});
+
+	describe('state changes should trigger all lifecycle events for an update', () => {
+		let componentWillMountCount;
+		let shouldComponentUpdateCount;
+		let componentDidUpdateCount;
+		let componentWillUpdateCount;
+		let componentWillReceivePropsCount;
+		let template;
+
+		class ComponentLifecycleCheck extends Component {
+			constructor() {
+				super(null);
+				this.state = {
+					counter: 0
+				};
+			}
+			render() {
+				const template = (counter) =>
+					createElement('div', null,
+						createElement('span', {}, counter)
+					)
+				;
+				return template(this.state.counter);
+			}
+			componentWillMount() {
+				componentWillMountCount++;
+				this.setState({
+					counter: this.state.counter + 1
+				});
+			}
+			shouldComponentUpdate() {
+				shouldComponentUpdateCount++;
+				return true;
+			}
+			componentDidUpdate() {
+				componentDidUpdateCount++;
+			}
+			componentWillUpdate() {
+				componentWillUpdateCount++;
+			}
+			componentWillReceiveProps() {
+				componentWillReceivePropsCount++;
+			}
+		}
+
+		beforeEach((done) => {
+			componentWillMountCount = 0;
+			shouldComponentUpdateCount = 0;
+			componentDidUpdateCount = 0;
+			componentWillUpdateCount = 0;
+			componentWillReceivePropsCount = 0;
+			template = (Component) =>
+				createElement(Component)
+			;
+			render(template(ComponentLifecycleCheck), container);
+			waits(30, done);
+		});
+
+		it('componentWillMountCount to have fired once', () => {
+			expect(componentWillMountCount).to.equal(1);
+		});
+		it('shouldComponentUpdateCount to have fired once', () => {
+			expect(shouldComponentUpdateCount).to.equal(1);
+		});
+		it('componentWillUpdateCount to have fired once', () => {
+			expect(componentWillUpdateCount).to.equal(1);
+		});
+		it('componentDidUpdateCount to have fired once', () => {
+			expect(componentDidUpdateCount).to.equal(1);
+		});
+		it('componentWillReceivePropsCount not to have fired', () => {
+			expect(componentWillReceivePropsCount).to.equal(0);
+		});
+		it('the element in the component should show the new state', () => {
+			expect(container.innerHTML).to.equal(
+				'<div><span>1</span></div>'
+			);
+		});
+	});
 //
 //	describe('should render a basic component with conditional fragment', () => {
 //		const tpl4282471407 = createTemplate(function (v0) {
@@ -1059,219 +1060,208 @@ describe('Components', () => {
 //		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 //		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
 //	});
-//
-//	describe('should render a component with a conditional state item', () => {
-//		const tpl3578458729 = createTemplate(function (v0) {
-//			return {
-//				tag: 'div',
-//				attrs: {
-//					className: 'login-view bg-visma'
-//				},
-//				children: v0
-//			};
-//		});
-//		const tpl188998005 = createTemplate(function () {
-//			return {
-//				tag: 'div',
-//				children: 'VISIBLE'
-//			};
-//		});
-//		const tpl3754840163 = createTemplate(function (v0) {
-//			return {
-//				tag: 'div',
-//				children: {
-//					tag: 'button',
-//					attrs: {
-//						onClick: v0
-//					},
-//					children: 'Make visible'
-//				}
-//			};
-//		});
-//		function TEST() {
-//			this.state = {
-//				show: false
-//			};
-//
-//			this.makeVisible = function () {
-//				this.setState({
-//					show: true
-//				});
-//			}.bind(this);
-//
-//			this.render = function () {
-//				return tpl3578458729((function () {
-//					if (this.state.show === true) {
-//						return tpl188998005(null);
-//					} else {
-//						return tpl3754840163(this.makeVisible);
-//					}
-//				}).call(this));
-//			};
-//		}
-//		TEST.prototype = new Component(null);
-//		TEST.constructor = TEST;
-//
-//		const tpl79713834 = createTemplate(function (v0) {
-//			return {
-//				tag: v0
-//			};
-//		});
-//
-//		it('Initial render (creation)', () => {
-//
-//			render(tpl79713834([]), container); // empty array
-//			render(tpl79713834({}), container); // empty object
-//			render(tpl79713834(undefined), container);
-//			render(tpl79713834(), container);
-//			render(tpl79713834(TEST), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				innerHTML('<div class="login-view bg-visma"><div><button>Make visible</button></div></div>')
-//			);
-//		});
-//
-//		it('Second render (update with state change)', (done) => {
-//			render(tpl79713834([]), container); // empty array
-//			render(tpl79713834({}), container); // empty object
-//			render(tpl79713834(null), container); // null
-//			render(tpl79713834(TEST), container);
-//			render(tpl79713834(null), container); // null
-//			render(tpl79713834(TEST), container);
-//			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-//
-//			buttons.forEach(button => button.click());
-//
-//			requestAnimationFrame(() => {
-//				expect(
-//					container.innerHTML
-//				).to.equal(
-//					innerHTML('<div class="login-view bg-visma"><div>VISIBLE</div>')
-//				);
-//				done();
-//			});
-//		});
-//	});
-//
-//	describe('should render a component with a list of divs', () => {
-//		const BaseView = createTemplate(function (v0, v1) {
-//			return {
-//				tag: 'div',
-//				attrs: {
-//					class: 'login-view'
-//				},
-//				children: [{
-//					tag: 'button',
-//					attrs: {
-//						onClick: v0
-//					},
-//					children: 'ADD'
-//				}, {
-//					tag: 'br'
-//				}, v1 ]
-//			};
-//		});
-//
-//		const Looper = createTemplate(function (v0) {
-//			return {
-//				tag: 'div',
-//				children: [
-//					{
-//						tag: 'h1',
-//						children: v0
-//					}
-//				]
-//			};
-//		});
-//
-//		const starter = createTemplate(function (v0) {
-//			return {
-//				tag: v0
-//			};
-//		});
-//
-//		function SomeError() {
-//			this.state = {
-//				list: [ 'SS', 'SS1' ]
-//			};
-//
-//			this.render = function () {
-//				/* eslint new-cap:0 */
-//				return BaseView(this.toggle, (function () {
-//					return this.state.list.map(function (result){
-//						return Looper(result);
-//					});
-//				}).call(this));
-//			};
-//		}
-//		SomeError.prototype = new Component(null);
-//		SomeError.constructor = SomeError;
-//
-//		it('Initial render (creation)', () => {
-//			render(starter(null), container);
-//
-//			render(starter(SomeError), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
-//			);
-//
-//			render(starter({}), container);
-//
-//			render(starter(null), container);
-//
-//			render(starter(SomeError), container);
-//
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
-//			);
-//		});
-//	});
-//
-//	describe('should render a component with a list of text nodes', () => {
-//		const root = createTemplate(function (children) {
-//			return {
-//				tag: 'div',
-//				children: children
-//			};
-//		});
-//
-//		const header = createTemplate(function (children) {
-//			return {
-//				tag: 'div',
-//				children: children
-//			};
-//		});
-//
-//		const view = function (state) {
-//			return root([
-//				(state
-//					? header(['Foo'])
-//					: header([ 'Bar', 'Qux' ]))
-//			]);
-//		};
-//
-//		it('Initial render (creation)', () => {
-//			render(view(true), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				innerHTML('<div><div>Foo</div></div>')
-//			);
-//		});
-//		it('Second render (update)', () => {
-//			render(view(true), container);
-//			render(view(false), container);
-//			expect(
-//				container.innerHTML
-//			).to.equal(
-//				innerHTML('<div><div>BarQux</div></div>')
-//			);
-//		});
-//	});
+
+	describe('should render a component with a conditional state item', () => {
+		const tpl3578458729 = function (v0) {
+			return {
+				tag: 'div',
+				className: 'login-view bg-visma',
+				children: v0
+			};
+		};
+		const tpl188998005 = function () {
+			return {
+				tag: 'div',
+				children: 'VISIBLE'
+			};
+		};
+		const tpl3754840163 = function (v0) {
+			return {
+				tag: 'div',
+				children: {
+					tag: 'button',
+					events: {
+						click: v0
+					},
+					children: 'Make visible'
+				}
+			};
+		};
+		function TEST() {
+			this.state = {
+				show: false
+			};
+
+			this.makeVisible = function () {
+				this.setState({
+					show: true
+				});
+			}.bind(this);
+
+			this.render = function () {
+				return tpl3578458729((function () {
+					if (this.state.show === true) {
+						return tpl188998005(null);
+					} else {
+						return tpl3754840163(this.makeVisible);
+					}
+				}).call(this));
+			};
+		}
+		TEST.prototype = new Component(null);
+		TEST.constructor = TEST;
+
+		const tpl79713834 = function (v0) {
+			return {
+				tag: v0
+			};
+		};
+
+		it('Initial render (creation)', () => {
+			render(tpl79713834(TEST), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div class="login-view bg-visma"><div><button>Make visible</button></div></div>')
+			);
+		});
+
+		it('Second render (update with state change)', (done) => {
+			render(tpl79713834(null), container); // null
+			render(tpl79713834(TEST), container);
+			render(tpl79713834(null), container); // null
+			render(tpl79713834(TEST), container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div class="login-view bg-visma"><div>VISIBLE</div>')
+				);
+				done();
+			});
+		});
+	});
+
+	describe('should render a component with a list of divs', () => {
+		const BaseView = function (v0, v1) {
+			return {
+				tag: 'div',
+				attrs: {
+					class: 'login-view'
+				},
+				children: [{
+					tag: 'button',
+					events: {
+						click: v0
+					},
+					children: 'ADD'
+				}, {
+					tag: 'br'
+				}, v1 ]
+			};
+		};
+
+		const Looper = function (v0) {
+			return {
+				tag: 'div',
+				children: [
+					{
+						tag: 'h1',
+						children: v0
+					}
+				]
+			};
+		};
+
+		const starter = function (v0) {
+			return {
+				tag: v0
+			};
+		};
+
+		function SomeError() {
+			this.state = {
+				list: [ 'SS', 'SS1' ]
+			};
+
+			this.render = function () {
+				/* eslint new-cap:0 */
+				return BaseView(this.toggle, (function () {
+					return this.state.list.map(function (result){
+						return Looper(result);
+					});
+				}).call(this));
+			};
+		}
+		SomeError.prototype = new Component(null);
+		SomeError.constructor = SomeError;
+
+		it('Initial render (creation)', () => {
+			render(starter(null), container);
+
+			render(starter(SomeError), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
+			);
+
+			render(starter(null), container);
+
+			render(starter(SomeError), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
+			);
+		});
+	});
+
+	describe('should render a component with a list of text nodes', () => {
+		const root = function (children) {
+			return {
+				tag: 'div',
+				children: children
+			};
+		};
+
+		const header = function (children) {
+			return {
+				tag: 'div',
+				children: children
+			};
+		};
+
+		const view = function (state) {
+			return root([
+				(state
+					? header(['Foo'])
+					: header([ 'Bar', 'Qux' ]))
+			]);
+		};
+
+		it('Initial render (creation)', () => {
+			render(view(true), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div>Foo</div></div>')
+			);
+		});
+		it('Second render (update)', () => {
+			render(view(true), container);
+			render(view(false), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div>BarQux</div></div>')
+			);
+		});
+	});
 });

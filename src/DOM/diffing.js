@@ -82,9 +82,6 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
 
-	// HEEEELP!! Man, this is too deeply nested! Can you simplify this? Break it down? Avoid all this 'if'??
-	// TODO! Do not use ternary!!
-
 	if (lastChildren === nextChildren) {
 		return;
 	}
@@ -107,6 +104,8 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 			} else {
 				if (isArray(nextChildren)) {
 					patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null, instance);
+				} else if (isStringOrNumber(nextChildren)) {
+					dom.textContent = nextChildren;
 				} else {
 					diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck, instance);
 				}
