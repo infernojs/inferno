@@ -840,226 +840,213 @@ describe('Components', () => {
 			);
 		});
 	});
-//
-//	describe('should render a basic component with conditional fragment', () => {
-//		const tpl4282471407 = createTemplate(function (v0) {
-//			return {
-//				tag: 'div',
-//				children: [ '', v0, '', {
-//					tag: 'p',
-//					children: 'test'
-//				}, '' ]
-//			};
-//		});
-//		const tpl3625453295 = createTemplate(function () {
-//			return {
-//				tag: 'h1',
-//				children: 'BIG'
-//			};
-//		});
-//		const tpl4021787591 = createTemplate(function () {
-//			return {
-//				tag: 'h2',
-//				children: 'small'
-//			};
-//		});
-//		const tpl1546018623 = createTemplate(function (v0) {
-//			return { tag: v0 };
-//		});
-//
-//		class conditionalComponent extends Component {
-//			render() {
-//				let condition = true; // some logic
-//				return tpl4282471407(condition ? tpl3625453295(null) : tpl4021787591(null));
-//			}
-//		}
-//
-//		it('Initial render (creation)', () => {
-//			render(tpl1546018623({}), container);
-//			render(tpl1546018623(conditionalComponent), container);
-//			expect(container.innerHTML).to.equal(
-//				'<div><h1>BIG</h1><p>test</p></div>'
-//			);
-//			render(tpl1546018623([[]]), container);
-//			render(tpl1546018623(conditionalComponent), container);
-//			expect(container.innerHTML).to.equal(
-//				'<div><h1>BIG</h1><p>test</p></div>'
-//			);
-//
-//		});
-//	});
-//
-//	describe('should render a basic component with a list of values from state', () => {
-//		const tpl2026545261 = createTemplate(function (v0) {
-//			return {
-//				tag: 'ul',
-//				attrs: {
-//					class: 'login-organizationlist'
-//				},
-//				children: [ '', v0, '' ]
-//			};
-//		});
-//		const tpl3192647933 = createTemplate(function (v0) {
-//			return {
-//				tag: 'li',
-//				children: v0
-//			};
-//		});
-//		const tpl1546018623 = createTemplate(function (v0) {
-//			return { tag: v0 };
-//		});
-//
-//		class valueComponent extends Component {
-//			constructor(props) {
-//				super(props);
-//				this.state = {
-//					organizations: [
-//						{ name: 'test1', key: '1' },
-//						{ name: 'test2', key: 2 },
-//						{ name: 'test3', key: '3' },
-//						{ name: 'test4', key: '4' },
-//						{ name: 'test5', key: '5' },
-//						{ name: 'test6', key: '6' }
-//					]
-//				};
-//			}
-//			render() {
-//				return tpl2026545261(this.state.organizations.map(function (result) {
-//					return tpl3192647933(result.name);
-//				}));
-//			}
-//		}
-//
-//		it('Initial render (creation)', () => {
-//			render(tpl1546018623(), container);
-//			render(tpl1546018623(valueComponent), container);
-//			expect(container.innerHTML).to.equal(
-//				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
-//			);
-//			render(tpl1546018623(null), container);
-//			render(tpl1546018623([]), container);
-//			render(tpl1546018623(valueComponent), container);
-//			expect(container.innerHTML).to.equal(
-//				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
-//			);
-//			render(tpl1546018623(), container);
-//			render(tpl1546018623(valueComponent), container);
-//			expect(container.innerHTML).to.equal(
-//				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
-//			);
-//		});
-//	});
-//
-//	function BasicStatelessComponent1({
-//		name,
-//		title
-//		}) {
-//
-//		const template = createTemplate((name, title) =>
-//			createElement('div', {
-//				className: 'basic'
-//			},
-//				createElement('span', {
-//					className: name
-//				}, 'The title is ', title)
-//			)
-//		);
-//		return template(name, title);
-//	}
-//
-//	it('should render a stateless component', () => {
-//		let template = createTemplate((Component, title) =>
-//			createElement('div', null,
-//				createElement(Component, {
-//					title: title,
-//					name: 'Hello, World!'
-//				})
-//			)
-//		);
-//
-//		render(template(), container);
-//		render(template({}), container);
-//		render(template(BasicStatelessComponent1, 'abc'), container);
-//		expect(container.firstChild.childNodes.length).to.equal(1);
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
-//		render(template(BasicStatelessComponent1, null), container);
-//		render(template({}, 'abc'), container);
-//		render(template([]), container);
-//		render(template(BasicStatelessComponent1, 'abc'), container);
-//		expect(container.firstChild.childNodes.length).to.equal(1);
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
-//		render(template(null, null), container);
-//
-//		const text = createTemplate(() => {
-//			return {
-//				text: '123abc'
-//			};
-//		});
-//
-//		const text1 = createTemplate(() => {
-//			return {
-//				tag: 'span',
-//				children: {
-//					text: '123abc'
-//				}
-//			};
-//		});
-//
-//		expect(
-//			() => render(template(BasicStatelessComponent1, text), container)
-//		).to.throw;
-//		expect(
-//			() => render(template(BasicStatelessComponent1, text1), container)
-//		).to.throw;
-//
-//		render(template({}), container);
-//
-//		render(template(BasicStatelessComponent1), container);
-//		expect(container.firstChild.childNodes.length).to.equal(1);
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
-//
-//		render(template(undefined), container);
-//
-//		render(template({}), container);
-//
-//		expect(
-//			container.innerHTML
-//		).to.equal(
-//			'<div></div>'
-//		);
-//
-//		expect(
-//			() => createTemplate(() => {
-//				return {
-//					tag: 'span',
-//					children: {
-//						text: null
-//					}
-//				};
-//			})
-//		).to.throw;
-//
-//		render(template(null), container);
-//
-//		render(template(BasicStatelessComponent1), container);
-//		render(template(null), container);
-//		render(template({}), container);
-//		render(template(BasicStatelessComponent1), container);
-//		expect(container.firstChild.childNodes.length).to.equal(1);
-//		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
-//		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
-//		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-//		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
-//	});
+
+	describe('should render a basic component with conditional fragment', () => {
+		const tpl4282471407 = function (v0) {
+			return {
+				tag: 'div',
+				children: [ '', v0, '', {
+					tag: 'p',
+					children: 'test'
+				}, '' ]
+			};
+		};
+		const tpl3625453295 = function () {
+			return {
+				tag: 'h1',
+				children: 'BIG'
+			};
+		};
+		const tpl4021787591 = function () {
+			return {
+				tag: 'h2',
+				children: 'small'
+			};
+		};
+		const tpl1546018623 = function (v0) {
+			return { tag: v0 };
+		};
+
+		class conditionalComponent extends Component {
+			render() {
+				let condition = true; // some logic
+				return tpl4282471407(condition ? tpl3625453295(null) : tpl4021787591(null));
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			render(tpl1546018623(conditionalComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<div><h1>BIG</h1><p>test</p></div>'
+			);
+			render(tpl1546018623(conditionalComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<div><h1>BIG</h1><p>test</p></div>'
+			);
+
+		});
+	});
+
+	describe('should render a basic component with a list of values from state', () => {
+		const tpl2026545261 = function (v0) {
+			return {
+				tag: 'ul',
+				attrs: {
+					class: 'login-organizationlist'
+				},
+				children: [ '', v0, '' ]
+			};
+		};
+		const tpl3192647933 = function (v0) {
+			return {
+				tag: 'li',
+				children: v0
+			};
+		};
+		const tpl1546018623 = function (v0) {
+			return { tag: v0 };
+		};
+
+		class valueComponent extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					organizations: [
+						{ name: 'test1', key: '1' },
+						{ name: 'test2', key: 2 },
+						{ name: 'test3', key: '3' },
+						{ name: 'test4', key: '4' },
+						{ name: 'test5', key: '5' },
+						{ name: 'test6', key: '6' }
+					]
+				};
+			}
+			render() {
+				return tpl2026545261(this.state.organizations.map(function (result) {
+					return tpl3192647933(result.name);
+				}));
+			}
+		}
+
+		it('Initial render (creation)', () => {
+			render(tpl1546018623(valueComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
+			render(tpl1546018623(null), container);
+			render(tpl1546018623(valueComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
+			render(tpl1546018623(valueComponent), container);
+			expect(container.innerHTML).to.equal(
+				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
+			);
+		});
+	});
+
+	function BasicStatelessComponent1({
+		name,
+		title
+		}) {
+
+		const template = (name, title) =>
+			createElement('div', {
+				className: 'basic'
+			},
+				createElement('span', {
+					className: name
+				}, 'The title is ', title)
+			)
+		;
+		return template(name, title);
+	}
+
+	it('should render a stateless component', () => {
+		let template = (Component, title) =>
+			createElement('div', null,
+				createElement(Component, {
+					title: title,
+					name: 'Hello, World!'
+				})
+			)
+		;
+
+		render(template(), container);
+		render(template(BasicStatelessComponent1, 'abc'), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+		render(template(BasicStatelessComponent1, null), container);
+		render(template(BasicStatelessComponent1, 'abc'), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
+		render(template(null, null), container);
+
+		const text = () => {
+			return {
+				text: '123abc'
+			};
+		};
+
+		const text1 = () => {
+			return {
+				tag: 'span',
+				children: {
+					text: '123abc'
+				}
+			};
+		};
+
+		expect(
+			() => render(template(BasicStatelessComponent1, text), container)
+		).to.throw;
+		expect(
+			() => render(template(BasicStatelessComponent1, text1), container)
+		).to.throw;
+
+		render(template(BasicStatelessComponent1), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
+
+		render(template(undefined), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			'<div></div>'
+		);
+
+		expect(
+			() => createTemplate(() => {
+				return {
+					tag: 'span',
+					children: {
+						text: null
+					}
+				};
+			})
+		).to.throw;
+
+		render(template(null), container);
+
+		render(template(BasicStatelessComponent1), container);
+		render(template(null), container);
+		render(template(BasicStatelessComponent1), container);
+		expect(container.firstChild.childNodes.length).to.equal(1);
+		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
+		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
+		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
+	});
 
 	describe('should render a component with a conditional state item', () => {
 		const tpl3578458729 = function (v0) {
