@@ -78,15 +78,15 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 			dom[attrName] = nextAttrValue;
 			return;
 		}
-		let ns = null;
-
-		if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-			ns = 'http://www.w3.org/1999/xlink';
-		}
 		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 			dom.removeAttribute(attrName);
 		} else {
-			if (ns) {
+			let ns = null;
+
+			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
+				ns = 'http://www.w3.org/1999/xlink';
+			}
+			if (ns !== null) {
 				dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			} else {
 				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
@@ -326,10 +326,10 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				oldItemsMap[key] = null;
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
-				if (item.dom.nextSibling !== nextNode) {
-					nextNode = (nextNode && nextNode.dom) || nextDom;
-					insertOrAppend(dom, item.dom, nextNode);
-				}
+				// if (item.dom.nextSibling !== nextNode) {
+				nextNode = (nextNode && nextNode.dom) || nextDom;
+				insertOrAppend(dom, item.dom, nextNode);
+				// }
 				nextNode = item;
 			} else {
 				nextNode = (nextNode && nextNode.dom) || nextDom;

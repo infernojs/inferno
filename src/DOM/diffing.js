@@ -7,7 +7,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (nextNode === false || nextNode === null) {
 		return;
 	}
-	if (nextNode.then) {
+	if (!isNullOrUndefined(nextNode.then)) {
 		nextNode.then(node => {
 			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
 		});
@@ -21,11 +21,11 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		}
 		return;
 	}
-	const nextTag = nextNode.tag || (staticCheck && nextNode.tpl ? nextNode.tpl.tag : null);
-	const lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
+	const nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
+	const lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
 	const nextEvents = nextNode.events;
 
-	if (!isNullOrUndefined(nextEvents) && nextEvents.willUpdate) {
+	if (!isNullOrUndefined(nextEvents) && !isNullOrUndefined(nextEvents.willUpdate)) {
 		nextEvents.willUpdate(lastNode.dom);
 	}
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
@@ -73,7 +73,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	// NOTE!! - maybe someone doesnt use events, only attrs, but still they are forced to survive a diff on both attr and events? Perf slow down!
 	diffAttributes(lastNode, nextNode, dom, instance);
 	diffEvents(lastNode, nextNode, dom);
-	if (!isNullOrUndefined(nextEvents) && nextEvents.didUpdate) {
+	if (!isNullOrUndefined(nextEvents) && !isNullOrUndefined(nextEvents.didUpdate)) {
 		nextEvents.didUpdate(dom);
 	}
 }

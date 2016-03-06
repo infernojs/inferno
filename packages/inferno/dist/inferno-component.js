@@ -130,6 +130,9 @@
 
 			/** @type {object} */
 			this.state = {};
+
+			/** @type {object} */
+			this.refs = {};
 			this._blockRender = false;
 			this._blockSetState = false;
 			this._deferSetState = false;

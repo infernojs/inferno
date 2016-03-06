@@ -63,35 +63,34 @@
 		var style = null;
 
 		if (!isNullOrUndefined(props)) {
-			if (!isArray$1(props)) {
-				for (var prop in props) {
-					if (prop === 'className') {
-						className = props[prop];
-					} else if (prop === 'style') {
-						style = props[prop];
-					} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
-						if (!events) {
-							events = {};
-						}
-						events[prop.substring(2).toLowerCase()] = props[prop];
-						delete props[prop];
-					} else if (isAttrAComponentEvent(prop) && isFunction(tag)) {
-						if (!events) {
-							events = {};
-						}
-						events['c' + prop.substring(3)] = props[prop];
-						delete props[prop];
-					} else if (!isFunction(tag)) {
-						if (!attrs) {
-							attrs = {};
-						}
-						attrs[prop] = props[prop];
-					} else {
-						attrs = props;
-					}
-				}
-			} else {
+			if (isArray$1(props)) {
 				return props;
+			}
+			for (var prop in props) {
+				if (prop === 'className') {
+					className = props[prop];
+				} else if (prop === 'style') {
+					style = props[prop];
+				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
+					if (!events) {
+						events = {};
+					}
+					events[prop.substring(2).toLowerCase()] = props[prop];
+					delete props[prop];
+				} else if (isAttrAComponentEvent(prop) && isFunction(tag)) {
+					if (!events) {
+						events = {};
+					}
+					events['c' + prop.substring(3)] = props[prop];
+					delete props[prop];
+				} else if (!isFunction(tag)) {
+					if (!attrs) {
+						attrs = {};
+					}
+					attrs[prop] = props[prop];
+				} else {
+					attrs = props;
+				}
 			}
 		}
 		return { attrs: attrs, events: events, className: className, style: style };
