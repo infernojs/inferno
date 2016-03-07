@@ -33,7 +33,7 @@
     "karma-coverage": "^0.5.3",
     "karma-coveralls": "^1.1.2",
     "karma-mocha": "^0.2.1",
-    "karma-mocha-reporter": "^1.1.5",
+    "karma-mocha-reporter": "^2.0.0",
     "karma-sinon-chai": "^1.1.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
