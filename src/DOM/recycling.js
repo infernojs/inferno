@@ -4,11 +4,12 @@ import { isNullOrUndefined } from './../core/utils';
 export const recyclingEnabled = true;
 
 export function recycle(node, lifecycle, context) {
-	const key = node.key;
 	const tpl = node.tpl;
-	let recycledNode;
 
-	if (tpl) {
+	if (!isNullOrUndefined(tpl)) {
+		const key = node.key;
+		let recycledNode;
+
 		if (key !== null) {
 			const keyPool = tpl.pools.keyed[key];
 			recycledNode = keyPool && keyPool.pop();

@@ -7,7 +7,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (nextNode === false || nextNode === null) {
 		return;
 	}
-	if (nextNode.then) {
+	if (!isNullOrUndefined(nextNode.then)) {
 		nextNode.then(node => {
 			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
 		});
@@ -21,12 +21,12 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		}
 		return;
 	}
-	const nextTag = nextNode.tag || (staticCheck && nextNode.tpl ? nextNode.tpl.tag : null);
-	const lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
+	const nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
+	const lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
 	const nextEvents = nextNode.events;
 	const nextHooks = nextNode.hooks;
 
-	if (!isNullOrUndefined(nextHooks) && nextHooks.willUpdate) {
+	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.willUpdate)) {
 		nextHooks.willUpdate(lastNode.dom);
 	}
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
@@ -71,7 +71,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	}
 	diffAttributes(lastNode, nextNode, dom, instance);
 	diffEvents(lastNode, nextNode, dom);
-	if (!isNullOrUndefined(nextHooks) && nextHooks.didUpdate) {
+	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
 		nextHooks.didUpdate(dom);
 	}
 }
