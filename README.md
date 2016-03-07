@@ -158,7 +158,7 @@ const template = Inferno.createTemplate((Component, title) =>
 
 InfernoDOM.render(template(BasicComponent, 'abc'), container);
 ```
-`Inferno.TemplateFactory` provides a factory `createElement()` function that can be used to build up virtual DOM structures in a similar sense to how `React.creactElement()` works. It's first argument is the node, second argument is the attributes and all remaining arguments are it's children.
+`Inferno.TemplateFactory` provides a factory `createElement()` function that can be used to build up virtual DOM structures in a similar sense to how `React.creactElement()` works. Its first argument is the node, second argument is the attributes and all remaining arguments are its children.
 
 ### InfernoComponent.Component
 
@@ -274,7 +274,7 @@ Writing code should be fun. Browsers are getting more advanced and the technolog
 
 ## JSX
  
-Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
+Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
