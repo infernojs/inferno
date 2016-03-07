@@ -1,7 +1,8 @@
-import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isAttrAComponentEvent, isInvalidNode } from './utils';
+import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isAttrAComponentEvent, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './utils';
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;
+	let hooks = null;
 	let attrs = null;
 	let className = null;
 	let style = null;
@@ -13,17 +14,23 @@ export function createAttrsAndEvents(props, tag) {
 					className = props[prop];
 				} else if (prop === 'style') {
 					style = props[prop];
+				} else if (isAttrAHook(prop) && !isFunction(tag)) {
+					if (!hooks) {
+						hooks = {};
+					}
+					events[prop.substring(2).toLowerCase()] = props[prop];
+					delete props[prop];
 				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
 					if (!events) {
 						events = {};
 					}
 					events[prop.substring(2).toLowerCase()] = props[prop];
 					delete props[prop];
-				} else if (isAttrAComponentEvent(prop) && isFunction(tag)) {
-					if (!events) {
-						events = {};
+				} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
+					if (!hooks) {
+						hooks = {};
 					}
-					events['c' + prop.substring(3)] = props[prop];
+					hooks['c' + prop.substring(3)] = props[prop];
 					delete props[prop];
 				} else if (!isFunction(tag)) {
 					if (!attrs) {
@@ -38,10 +45,10 @@ export function createAttrsAndEvents(props, tag) {
 			return props;
 		}
 	}
-	return { attrs, events, className, style };
+	return { attrs, events, className, style, hooks };
 }
 
-function createChild({ tag, attrs, children, className, style, events }) {
+function createChild({ tag, attrs, children, className, style, events, hooks }) {
 	if (tag === undefined && attrs && !attrs.tpl && children && children.length === 0) {
 		return null;
 	}
@@ -66,6 +73,7 @@ function createChild({ tag, attrs, children, className, style, events }) {
 		key: key,
 		attrs: attrsAndEvents.attrs,
 		events: events || attrsAndEvents.events,
+		hooks: hooks || attrsAndEvents.hooks,
 		className: className || attrsAndEvents.className,
 		style: style || attrsAndEvents.style,
 		children: children,

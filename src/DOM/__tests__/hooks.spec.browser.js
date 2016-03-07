@@ -4,8 +4,6 @@ import { render } from '../../DOM/rendering';
 describe('lifecycle hooks', () => {
 	let container;
 
-	var staticNode = null;
-
 	beforeEach(() => {
 		container = document.createElement('div');
 	});
@@ -19,9 +17,8 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
-				static: staticNode,
 				tag: 'div',
-				events: {
+				hooks: {
 					created,
 					attached,
 					willUpdate,
@@ -71,12 +68,10 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
-				static: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
 					tag: 'div',
-					events: {
+					hooks: {
 						created,
 						attached,
 						willUpdate,
@@ -127,9 +122,8 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach, children) => ({
-				static: staticNode,
 				tag: 'div',
-				events: {
+				hooks: {
 					created,
 					attached,
 					willUpdate,
@@ -180,12 +174,10 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach, text) => ({
-				static: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
 					tag: 'div',
-					events: {
+					hooks: {
 						created,
 						attached,
 						willUpdate,
@@ -237,9 +229,8 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
-				static: staticNode,
 				tag: 'div',
-				events: {
+				hooks: {
 					created,
 					attached,
 					willUpdate,
@@ -291,10 +282,8 @@ describe('lifecycle hooks', () => {
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
 				tag: 'div',
-				static: staticNode,
 				children: {
-					static: staticNode,
-					events: {
+					hooks: {
 						created,
 						attached,
 						willUpdate,
@@ -347,9 +336,8 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				static: staticNode,
 				tag: 'div',
-				events: {
+				hooks: {
 					created,
 					attached,
 					willUpdate,
@@ -400,12 +388,10 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				static: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
 					tag: 'div',
-					events: {
+					hooks: {
 						created,
 						attached,
 						willUpdate,
@@ -457,9 +443,8 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				static: staticNode,
 				tag: 'div',
-				events: {
+				hooks: {
 					created,
 					attached,
 					willUpdate,
@@ -468,12 +453,10 @@ describe('lifecycle hooks', () => {
 				},
 				children: [
 					{
-						static: staticNode,
 						tag: 'div'
 					},
 					child,
 					{
-						static: staticNode,
 						tag: 'div'
 					}
 				]
@@ -520,12 +503,10 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				static: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
 					tag: 'div',
-					events: {
+					hooks: {
 						created,
 						attached,
 						willUpdate,
@@ -534,12 +515,10 @@ describe('lifecycle hooks', () => {
 					},
 					children: [
 						{
-							static: staticNode,
 							tag: 'div'
 						},
 						child,
 						{
-							static: staticNode,
 							tag: 'div'
 						}
 					]
@@ -587,7 +566,6 @@ describe('lifecycle hooks', () => {
 
 		function StatelessComponent() {
 			const template = () => ({
-				static: staticNode,
 				tag: 'div',
 				text: 'Hello world!'
 			});
@@ -596,9 +574,8 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (componentWillMount, componentDidMount, componentWillUnmount, componentWillUpdate, componentDidUpdate, componentShouldUpdate, StatelessComponent) => ({
-				static: staticNode,
 				tag: StatelessComponent,
-				events: {
+				hooks: {
 					componentWillMount,
 					componentDidMount,
 					componentWillUnmount,
@@ -655,7 +632,6 @@ describe('lifecycle hooks', () => {
 
 		function StatelessComponent() {
 			const template = () => ({
-				static: staticNode,
 				tag: 'div',
 				text: 'Hello world!'
 			});
@@ -664,12 +640,10 @@ describe('lifecycle hooks', () => {
 
 		beforeEach(() => {
 			template = (componentWillMount, componentDidMount, componentWillUnmount, componentWillUpdate, componentDidUpdate, componentShouldUpdate, StatelessComponent) => ({
-				static: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
 					tag: StatelessComponent,
-					events: {
+					hooks: {
 						componentWillMount,
 						componentDidMount,
 						componentWillUnmount,

@@ -24,9 +24,10 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	const nextTag = nextNode.tag || (staticCheck && nextNode.tpl ? nextNode.tpl.tag : null);
 	const lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
 	const nextEvents = nextNode.events;
+	const nextHooks = nextNode.hooks;
 
-	if (!isNullOrUndefined(nextEvents) && nextEvents.willUpdate) {
-		nextEvents.willUpdate(lastNode.dom);
+	if (!isNullOrUndefined(nextHooks) && nextHooks.willUpdate) {
+		nextHooks.willUpdate(lastNode.dom);
 	}
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 	if (lastTag !== nextTag) {
@@ -47,7 +48,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (isFunction(lastTag) && isFunction(nextTag)) {
 		nextNode.instance = lastNode.instance;
 		nextNode.dom = lastNode.dom;
-		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.events, nextNode.children, parentDom, lifecycle, context);
+		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 		return;
 	}
 	const dom = lastNode.dom;
@@ -68,13 +69,10 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (lastNode.style !== nextStyle) {
 		patchStyle(lastNode.style, nextStyle, dom);
 	}
-
-	// TODO Take this out!! Split it!
-	// NOTE!! - maybe someone doesnt use events, only attrs, but still they are forced to survive a diff on both attr and events? Perf slow down!
 	diffAttributes(lastNode, nextNode, dom, instance);
 	diffEvents(lastNode, nextNode, dom);
-	if (!isNullOrUndefined(nextEvents) && nextEvents.didUpdate) {
-		nextEvents.didUpdate(dom);
+	if (!isNullOrUndefined(nextHooks) && nextHooks.didUpdate) {
+		nextHooks.didUpdate(dom);
 	}
 }
 
@@ -181,5 +179,21 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 }
 
 function diffEvents(lastNode, nextNode, dom) {
-		// TODO Implement updating events
+	const lastEvents = lastNode.events;
+	const nextEvents = nextNode.events;
+
+	if (!isNullOrUndefined(lastEvents)) {
+		if (!isNullOrUndefined(nextEvents)) {
+			const lastEventsKeys = Object.keys(lastEvents);
+			const nextEventsKeys = Object.keys(nextEvents);
+
+			for (let i = 0; i < lastEventsKeys.length; i++) {
+				const event = lastEventsKeys[i];
+
+				if (!nextEvents[event]) {
+					// remove event
+				}
+			}
+		}
+	}
 }

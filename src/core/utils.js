@@ -54,6 +54,23 @@ export function isAttrAComponentEvent(attr) {
 	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
 }
 
+export function isAttrAHook(hook) {
+	return hook === 'onCreated'
+		|| hook === 'onAttached'
+		|| hook === 'onWillDetach'
+		|| hook === 'onWillUpdate'
+		|| hook === 'onDidUpdate';
+}
+
+export function isAttrAComponentHook(hook) {
+	return hook === 'onComponentWillMount'
+		|| hook === 'onComponentDidMount'
+		|| hook === 'onComponentWillUnmount'
+		|| hook === 'onComponentShouldUpdate'
+		|| hook === 'onComponentWillUpdate'
+		|| hook === 'onComponentDidUpdate';
+}
+
 export function isPromise(obj) {
 	return obj instanceof Promise;
 }

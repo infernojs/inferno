@@ -26,13 +26,24 @@ function renderChildren(children) {
 function renderNode(node) {
 	if (!isInvalidNode(node)) {
 		const tag = node.tag;
-		const attrs = [];
+		const outputAttrs = [];
 
 		if (!isNullOrUndefined(node.className)) {
-			attrs.push('class="' + node.className + '"');
+			outputAttrs.push('class="' + node.className + '"');
+		}
+		const attrs = node.attrs;
+
+		if (!isNullOrUndefined(attrs)) {
+			const attrsKeys = Object.keys(attrs);
+
+			attrsKeys.forEach((attrsKey, i) => {
+				const attr = attrsKeys[i];
+
+				outputAttrs.push(attr + '="' + attrs[attr] + '"');
+			});
 		}
 
-		return `<${ tag }${ attrs.length > 0 ? ' ' + attrs.join(' ') : '' }>${ renderChildren(node.children) || '' }</${ tag }>`;
+		return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>${ renderChildren(node.children) || '' }</${ tag }>`;
 	}
 }
 

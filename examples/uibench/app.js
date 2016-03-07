@@ -61,7 +61,7 @@
 				attrs: {
 					data: item
 				},
-				events: {
+				hooks: {
 					componentShouldUpdate: appUpdateCheck
 				},
 				instance: null
@@ -132,7 +132,7 @@
 			tag: TableCell,
 			key: -1,
 			attrs: { text: '#' + data.id },
-			events: {
+			hooks: {
 				componentShouldUpdate: updateTableCell
 			},
 			instance: null
@@ -144,7 +144,7 @@
 				tag: TableCell,
 				key: i,
 				attrs: { text: cells[i] },
-				events: {
+				hooks: {
 					componentShouldUpdate: updateTableCell
 				},
 				instance: null
@@ -200,7 +200,7 @@
 				attrs: {
 					data: item
 				},
-				events: {
+				hooks: {
 					componentShouldUpdate: appUpdateCheck
 				},
 				instance: null
@@ -280,7 +280,7 @@
 					attrs: {
 						data: n
 					},
-					events: {
+					hooks: {
 						componentShouldUpdate: appUpdateCheck
 					},
 					instance: null
@@ -294,7 +294,7 @@
 					attrs: {
 						data: n
 					},
-					events: {
+					hooks: {
 						componentShouldUpdate: appUpdateCheck
 					},
 					instance: null
@@ -338,7 +338,7 @@
 				attrs: {
 					data: props.data.root
 				},
-				events: {
+				hooks: {
 					componentShouldUpdate: appUpdateCheck
 				},
 				instance: null
@@ -393,7 +393,7 @@
 				attrs: {
 					data: data.table
 				},
-				events: {
+				hooks: {
 					componentShouldUpdate: appUpdateCheck
 				},
 				instance: null
@@ -406,7 +406,7 @@
 				attrs: {
 					data: data.anim
 				},
-				events: {
+				hooks: {
 					componentShouldUpdate: appUpdateCheck
 				},
 				instance: null
@@ -419,7 +419,7 @@
 				attrs: {
 					data: data.tree
 				},
-				events: {
+				hooks: {
 					componentShouldUpdate: appUpdateCheck
 				},
 				instance: null
@@ -466,7 +466,7 @@
 					attrs: {
 						data: state
 					},
-					events: {
+					hooks: {
 						componentShouldUpdate: appUpdateCheck
 					},
 					instance: null

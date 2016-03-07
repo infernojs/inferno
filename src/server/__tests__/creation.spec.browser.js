@@ -68,6 +68,29 @@ describe('SSR Creation - (non-JSX)', () => {
 			};
 		},
 		result: '<div><span>Hello</span><span> world!</span></div>'
+	}, {
+		description: 'should render div with node children',
+		template: () => {
+			return {
+				dom: null,
+				tag: 'div',
+				children: [
+					{
+						tag: 'span',
+						children: 'Hello',
+						attrs: {
+							id: '123'
+						}
+					},
+					{
+						tag: 'span',
+						children: ' world!',
+						className: 'foo'
+					}
+				]
+			};
+		},
+		result: '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
 	}
 	].forEach(test => {
 		it(test.description, () => {

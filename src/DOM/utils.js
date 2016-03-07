@@ -61,12 +61,12 @@ export function detachNode(node) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
-	const events = node.events;
-	if (events && !isNullOrUndefined(events.willDetach)) {
-		events.willDetach(node.dom);
+	const hooks = node.hooks;
+	if (hooks && !isNullOrUndefined(hooks.willDetach)) {
+		hooks.willDetach(node.dom);
 	}
-	if (events && !isNullOrUndefined(events.componentWillUnmount)) {
-		events.componentWillUnmount(node.dom, events);
+	if (hooks && !isNullOrUndefined(hooks.componentWillUnmount)) {
+		hooks.componentWillUnmount(node.dom, hooks);
 	}
 	const children = node.children;
 

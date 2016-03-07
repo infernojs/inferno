@@ -52,7 +52,7 @@ function mountRef(instance, value, dom) {
 	}
 }
 
-function mountComponent(parentNode, Component, props, events, children, parentDom, lifecycle, context) {
+function mountComponent(parentNode, Component, props, hooks, children, parentDom, lifecycle, context) {
 	props = addChildrenToProps(children, props);
 
 	let dom;
@@ -82,13 +82,13 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 		parentNode.instance = instance;
 		return dom;
 	}
-	if (!isNullOrUndefined(events)) {
-		if (events.componentWillMount) {
-			events.componentWillMount(null, props);
+	if (!isNullOrUndefined(hooks)) {
+		if (hooks.componentWillMount) {
+			hooks.componentWillMount(null, props);
 		}
-		if (events.componentDidMount) {
+		if (hooks.componentDidMount) {
 			lifecycle.addListener(() => {
-				events.componentDidMount(dom, props);
+				hooks.componentDidMount(dom, props);
 			});
 		}
 	}
@@ -106,7 +106,9 @@ function mountComponent(parentNode, Component, props, events, children, parentDo
 	return dom;
 }
 
-function mountEvents(events, allEvents, dom) {
+function mountEvents(events, dom) {
+	const allEvents = Object.keys(events);
+
 	for (let i = 0; i < allEvents.length; i++) {
 		const event = allEvents[i];
 		if (isString(event)) {
@@ -157,7 +159,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 		return placeholder(node, parentDom);
 	}
 	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs || {}, node.events, node.children, parentDom, lifecycle, context);
+		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 	}
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 
@@ -172,30 +174,22 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	const children = node.children;
 	const attrs = node.attrs;
 	const events = node.events;
+	const hooks = node.hooks;
 	const className = node.className;
 	const style = node.style;
 
-	if (!isNullOrUndefined(events)) {
-		const allEvents = Object.keys(events);
-		let eventsCount = allEvents.length;
-
-		if (events.click) {
-			handleEvent('click', dom, events.click);
-			eventsCount--;
+	if (!isNullOrUndefined(hooks)) {
+		if (hooks.created) {
+			hooks.created(dom);
 		}
-		if (events.created) {
-			events.created(dom);
-			eventsCount--;
-		}
-		if (events.attached) {
+		if (hooks.attached) {
 			lifecycle.addListener(() => {
-				events.attached(dom);
+				hooks.attached(dom);
 			});
-			eventsCount--;
 		}
-		if (eventsCount > 0) {
-			mountEvents(events, allEvents, dom);
-		}
+	}
+	if (!isNullOrUndefined(events)) {
+		mountEvents(events, dom);
 	}
 	if (!isInvalidNode(children)) {
 		mountChildren(children, dom, namespace, lifecycle, context, instance);

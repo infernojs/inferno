@@ -95,7 +95,7 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 	}
 }
 
-export function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextEvents, nextChildren, parentDom, lifecycle, context) {
+export function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
@@ -118,12 +118,12 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 	} else {
 		let shouldUpdate = true;
 
-		if (nextEvents && nextEvents.componentShouldUpdate) {
-			shouldUpdate = nextEvents.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
+		if (nextHooks && nextHooks.componentShouldUpdate) {
+			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
 		}
 		if (shouldUpdate !== false) {
-			if (nextEvents && nextEvents.componentWillUpdate) {
-				nextEvents.componentWillUpdate(lastNode.dom, lastProps, nextProps);
+			if (nextHooks && nextHooks.componentWillUpdate) {
+				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
 			const nextNode = Component(nextProps);
 			const dom = lastNode.dom;
@@ -131,8 +131,8 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 
 			diffNodes(instance, nextNode, dom, null, lifecycle, context, true, null);
 			lastNode.instance = nextNode;
-			if (nextEvents && nextEvents.componentDidUpdate) {
-				nextEvents.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+			if (nextHooks && nextHooks.componentDidUpdate) {
+				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
 		}
 	}
