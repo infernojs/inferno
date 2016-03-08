@@ -9,6 +9,14 @@
 	(global.InfernoServer = factory());
 }(this, function () { 'use strict';
 
+	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
+	babelHelpers;
+
 	function isArray(obj) {
 		return obj.constructor === Array;
 	}
@@ -50,14 +58,33 @@
 
 	function renderNode(node) {
 		if (!isInvalidNode(node)) {
-			var tag = node.tag;
-			var attrs = [];
+			var _ret = function () {
+				var tag = node.tag;
+				var outputAttrs = [];
 
-			if (!isNullOrUndefined(node.className)) {
-				attrs.push('class="' + node.className + '"');
-			}
+				if (!isNullOrUndefined(node.className)) {
+					outputAttrs.push('class="' + node.className + '"');
+				}
+				var attrs = node.attrs;
 
-			return '<' + tag + (attrs.length > 0 ? ' ' + attrs.join(' ') : '') + '>' + (renderChildren(node.children) || '') + '</' + tag + '>';
+				if (!isNullOrUndefined(attrs)) {
+					(function () {
+						var attrsKeys = Object.keys(attrs);
+
+						attrsKeys.forEach(function (attrsKey, i) {
+							var attr = attrsKeys[i];
+
+							outputAttrs.push(attr + '="' + attrs[attr] + '"');
+						});
+					})();
+				}
+
+				return {
+					v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + (renderChildren(node.children) || '') + '</' + tag + '>'
+				};
+			}();
+
+			if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
 		}
 	}
 

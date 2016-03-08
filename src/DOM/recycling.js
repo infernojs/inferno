@@ -25,10 +25,10 @@ export function recycle(node, lifecycle, context) {
 }
 
 export function pool(node) {
-	const key = node.key;
 	const tpl = node.tpl;
 
 	if (!isNullOrUndefined(tpl)) {
+		const key = node.key;
 		const pools = tpl.pools;
 
 		if (key === null) {

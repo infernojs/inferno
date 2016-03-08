@@ -52,12 +52,17 @@
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	function isAttrAComponentEvent(attr) {
-		return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
+	function isAttrAHook(hook) {
+		return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate';
+	}
+
+	function isAttrAComponentHook(hook) {
+		return hook === 'onComponentWillMount' || hook === 'onComponentDidMount' || hook === 'onComponentWillUnmount' || hook === 'onComponentShouldUpdate' || hook === 'onComponentWillUpdate' || hook === 'onComponentDidUpdate';
 	}
 
 	function createAttrsAndEvents(props, tag) {
 		var events = null;
+		var hooks = null;
 		var attrs = null;
 		var className = null;
 		var style = null;
@@ -71,17 +76,23 @@
 					className = props[prop];
 				} else if (prop === 'style') {
 					style = props[prop];
+				} else if (isAttrAHook(prop) && !isFunction(tag)) {
+					if (!hooks) {
+						hooks = {};
+					}
+					events[prop.substring(2).toLowerCase()] = props[prop];
+					delete props[prop];
 				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
 					if (!events) {
 						events = {};
 					}
 					events[prop.substring(2).toLowerCase()] = props[prop];
 					delete props[prop];
-				} else if (isAttrAComponentEvent(prop) && isFunction(tag)) {
-					if (!events) {
-						events = {};
+				} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
+					if (!hooks) {
+						hooks = {};
 					}
-					events['c' + prop.substring(3)] = props[prop];
+					hooks['c' + prop.substring(3)] = props[prop];
 					delete props[prop];
 				} else if (!isFunction(tag)) {
 					if (!attrs) {
@@ -93,7 +104,7 @@
 				}
 			}
 		}
-		return { attrs: attrs, events: events, className: className, style: style };
+		return { attrs: attrs, events: events, className: className, style: style, hooks: hooks };
 	}
 
 	function createChild(_ref) {
@@ -103,6 +114,7 @@
 		var className = _ref.className;
 		var style = _ref.style;
 		var events = _ref.events;
+		var hooks = _ref.hooks;
 
 		if (tag === undefined && attrs && !attrs.tpl && children && children.length === 0) {
 			return null;
@@ -128,6 +140,7 @@
 			key: key,
 			attrs: attrsAndEvents.attrs,
 			events: events || attrsAndEvents.events,
+			hooks: hooks || attrsAndEvents.hooks,
 			className: className || attrsAndEvents.className,
 			style: style || attrsAndEvents.style,
 			children: children,

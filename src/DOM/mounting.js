@@ -136,7 +136,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 		return placeholder(node, parentDom);
 	}
 	if (isStringOrNumber(node)) {
-		const dom = document.createTextNode(node);
+		dom = document.createTextNode(node);
 
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);

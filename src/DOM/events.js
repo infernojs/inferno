@@ -5,7 +5,22 @@ const delegatedEventsRegistry = {};
 // Mercury also uses DOM delegator to handle events. is there perf comparison somewhere which way is better?
 
 export function handleEvent(event, dom, callback) {
-	if (!delegatedEventsRegistry[event]) {
+	if (delegatedEventsRegistry[event]) {
+		const delegatedEvents = delegatedEventsRegistry[event];
+
+		/* for (let i = 0; i < delegatedEvents.length; i++) {
+		 const delegatedEvent = delegatedEvents[i];
+
+		 if (delegatedEvent.target === dom) {
+		 delegatedEvents.splice(i, 1);
+		 break;
+		 }
+		 } */
+		delegatedEvents.push({
+			callback: callback,
+			target: dom
+		});
+	} else {
 		document.addEventListener(event, callbackEvent => {
 			const delegatedEvents = delegatedEventsRegistry[event];
 
@@ -18,20 +33,5 @@ export function handleEvent(event, dom, callback) {
 			}
 		}, false);
 		delegatedEventsRegistry[event] = [];
-	} else {
-		const delegatedEvents = delegatedEventsRegistry[event];
-
-		/* for (let i = 0; i < delegatedEvents.length; i++) {
-			const delegatedEvent = delegatedEvents[i];
-
-			if (delegatedEvent.target === dom) {
-				delegatedEvents.splice(i, 1);
-				break;
-			}
-		} */
-		delegatedEvents.push({
-			callback: callback,
-			target: dom
-		});
 	}
 }
