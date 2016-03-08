@@ -18,13 +18,7 @@ const template = {
 		const propertyInfo = DOMRegistry[name] || null;
 
 		if (propertyInfo) {
-			if (isVoid(value) ||
-				propertyInfo.hasBooleanValue && !value ||
-				propertyInfo.hasNumericValue && (value !== value) ||
-				propertyInfo.hasPositiveNumericValue && value < 1 ||
-				value.length === 0) {
-				template.removeProperty(vNode, domNode, name, useProperties);
-			} else if (propertyInfo.mustUseProperty) {
+			if (propertyInfo.mustUseProperty) {
 
 				const propName = propertyInfo.propertyName;
 
@@ -41,6 +35,12 @@ const template = {
 					}
 					domNode.setAttribute(propName, value);
 				}
+			} else if (isVoid(value) ||
+				propertyInfo.hasBooleanValue && !value ||
+				propertyInfo.hasNumericValue && (value !== value) ||
+				propertyInfo.hasPositiveNumericValue && value < 1 ||
+				value.length === 0) {
+				template.removeProperty(vNode, domNode, name, useProperties);
 			} else {
 
 				const attributeName = propertyInfo.attributeName;
