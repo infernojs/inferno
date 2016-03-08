@@ -17,13 +17,11 @@ export function addDOMStaticAttributes(vNode, domNode, attrs) {
 	for (const attrName in attrs) {
 		const attrVal = attrs[attrName];
 
-		if (attrVal) {
-			if (!isHook(attrName)) {
-				if (attrName === 'style') {
-					styleUpdates = attrVal;
-				} else {
-					template.setProperty(vNode, domNode, attrName, attrVal, false);
-				}
+		if (!isHook(attrName)) {
+			if (attrName === 'style') {
+				styleUpdates = attrVal;
+			} else {
+				template.setProperty(vNode, domNode, attrName, attrVal, false);
 			}
 		}
 	}
