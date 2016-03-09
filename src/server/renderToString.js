@@ -3,13 +3,19 @@ import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode } from '../
 function renderChildren(children) {
 	if (children && isArray(children)) {
 		const childrenResult = [];
+		let insertComment = false;
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
 			if (isStringOrNumber(child)) {
+				if (insertComment === true) {
+					childrenResult.push('<!-- -->');
+				}
 				childrenResult.push(child);
+				insertComment = true;
 			} else {
+				insertComment = false;
 				childrenResult.push(renderNode(child));
 			}
 		}

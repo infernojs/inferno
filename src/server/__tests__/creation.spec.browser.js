@@ -48,7 +48,7 @@ describe('SSR Creation - (non-JSX)', () => {
 				children: [ 'Hello', ' world' ]
 			};
 		},
-		result: '<div>Hello world</div>'
+		result: '<div>Hello<!-- --> world</div>'
 	}, {
 		description: 'should render div with node children',
 		template: () => {
@@ -69,7 +69,7 @@ describe('SSR Creation - (non-JSX)', () => {
 		},
 		result: '<div><span>Hello</span><span> world!</span></div>'
 	}, {
-		description: 'should render div with node children',
+		description: 'should render div with node children #2',
 		template: () => {
 			return {
 				dom: null,
