@@ -73,13 +73,13 @@ describe('Attribute / properties', () => {
 		expect(container.getAttribute('checked')).to.equal('simple');
 
 		template.setProperty(null, container, 'checked', true);
-		expect(container.getAttribute('checked')).to.equal('checked');
+		expect(container.getAttribute('checked')).to.equal('');
 
 		template.setProperty(null, container, 'checked', false);
 		expect(container.getAttribute('checked')).to.be.null;
 
 		template.setProperty(null, container, 'scoped', true);
-		expect(container.getAttribute('scoped')).to.equal('scoped');
+		expect(container.getAttribute('scoped')).to.equal('');
 	});
 
 	it('should set numeric properties', () => {
@@ -377,14 +377,14 @@ describe('Attribute / properties', () => {
 
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
-					expect(container.firstChild.getAttribute(attrs)).to.eql(attrs);
+					expect(container.firstChild.getAttribute(attrs)).to.eql('');
 
 					expect(container.firstChild[ attrs ]).to.be.undefined;
 
 					render(template(att), container);
 					expect(container.firstChild.nodeType).to.equal(1);
 					expect(container.firstChild.tagName).to.equal('DIV');
-					expect(container.firstChild.getAttribute(attrs)).to.eql(attrs);
+					expect(container.firstChild.getAttribute(attrs)).to.eql('');
 					expect(container.firstChild[ attrs ]).to.be.undefined;
 				});
 
