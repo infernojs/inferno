@@ -301,7 +301,7 @@
 		}
 	}
 
-	function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+	function patchAttribute(attrName, nextAttrValue, dom) {
 		if (!isAttrAnEvent(attrName)) {
 			if (booleanProps(attrName)) {
 				dom[attrName] = nextAttrValue;
@@ -333,25 +333,26 @@
 			var nextState = instance.state;
 
 			var childContext = instance.getChildContext();
-			if (childContext) {
+			if (!isNullOrUndefined(childContext)) {
 				context = babelHelpers.extends({}, context, childContext);
 			}
 			instance.context = context;
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-			if (nextNode) {
+			if (!isNullOrUndefined(nextNode)) {
 				diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, true, instance);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
 			}
 		} else {
 			var shouldUpdate = true;
+			var nextHooksDefined = !isNullOrUndefined(nextHooks);
 
-			if (nextHooks && nextHooks.componentShouldUpdate) {
+			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
 			}
 			if (shouldUpdate !== false) {
-				if (nextHooks && nextHooks.componentWillUpdate) {
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 				}
 				var _nextNode = Component(nextProps);
@@ -360,7 +361,7 @@
 
 				diffNodes(instance, _nextNode, dom, null, lifecycle, context, true, null);
 				lastNode.instance = _nextNode;
-				if (nextHooks && nextHooks.componentDidUpdate) {
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 				}
 			}
@@ -553,12 +554,12 @@
 					diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
 					// if (item.dom.nextSibling !== nextNode) {
-					nextNode = nextNode && nextNode.dom || nextDom;
+					nextNode = !isNullOrUndefined(nextNode) && nextNode.dom || nextDom;
 					insertOrAppend(dom, item.dom, nextNode);
 					// }
 					nextNode = item;
 				} else {
-					nextNode = nextNode && nextNode.dom || nextDom;
+					nextNode = !isNullOrUndefined(nextNode) && nextNode.dom || nextDom;
 					insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 				}
 				nextNode = item;
@@ -584,7 +585,7 @@
 			if (!isInvalidNode(nextChildren)) {
 				if (isArray(lastChildren)) {
 					if (isArray(nextChildren)) {
-						var isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
+						var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 
 						if (isKeyed) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
@@ -623,11 +624,11 @@
 	}
 
 	function diffRef(instance, lastValue, nextValue, dom) {
-		if (instance) {
+		if (!isNullOrUndefined(instance)) {
 			if (isString(lastValue)) {
 				delete instance.refs[lastValue];
 			}
-			if (instance && isString(nextValue)) {
+			if (isString(nextValue)) {
 				instance.refs[nextValue] = dom;
 			}
 		}
@@ -652,7 +653,7 @@
 					if (attr === 'ref') {
 						diffRef(instance, lastAttrVal, nextAttrVal, dom);
 					} else {
-						patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
+						patchAttribute(attr, nextAttrVal, dom, lastNode.tag === null);
 					}
 				}
 			}
@@ -713,14 +714,13 @@
 			}
 			return;
 		}
-		var nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
-		var lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
-		var nextEvents = nextNode.events;
 		var nextHooks = nextNode.hooks;
-
 		if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
+		var nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
+		var lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
+
 		namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 		if (lastTag !== nextTag) {
 			if (isFunction(lastTag) && !isFunction(nextTag)) {
@@ -768,7 +768,7 @@
 		}
 	}
 
-	var recyclingEnabled = true;
+	var recyclingEnabled = false;
 
 	function recycle(node, lifecycle, context) {
 		var tpl = node.tpl;
@@ -853,7 +853,7 @@
 
 				if (isStringOrNumber(child)) {
 					appendText(child, parentDom, false);
-				} else if (child && isArray(child)) {
+				} else if (!isNullOrUndefined(child) && isArray(child)) {
 					mountChildren(child, parentDom, namespace, lifecycle, context, instance);
 				} else if (isPromise(child)) {
 					(function () {
@@ -891,7 +891,7 @@
 	}
 
 	function mountRef(instance, value, dom) {
-		if (instance && isString$1(value)) {
+		if (!isNullOrUndefined(instance) && isString$1(value)) {
 			instance.refs[value] = dom;
 		}
 	}
@@ -928,10 +928,10 @@
 			return dom;
 		}
 		if (!isNullOrUndefined(hooks)) {
-			if (hooks.componentWillMount) {
+			if (!isNullOrUndefined(hooks.componentWillMount)) {
 				hooks.componentWillMount(null, props);
 			}
-			if (hooks.componentDidMount) {
+			if (!isNullOrUndefined(hooks.componentDidMount)) {
 				lifecycle.addListener(function () {
 					hooks.componentDidMount(dom, props);
 				});
@@ -969,18 +969,18 @@
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);
 		}
-		if (node) {
+		if (!isNullOrUndefined(node)) {
 			node.dom = dom;
 		}
 		return dom;
 	}
 
 	function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
-		var dom = void 0;
-
 		if (isInvalidNode(node) || isArray(node)) {
 			return placeholder(node, parentDom);
 		}
+
+		var dom = void 0;
 		if (isStringOrNumber(node)) {
 			dom = document.createTextNode(node);
 
@@ -998,7 +998,6 @@
 				return dom;
 			}
 		}
-		var tpl = node.tpl;
 		var tag = node.tag;
 
 		if (tag === null) {
@@ -1009,7 +1008,8 @@
 		}
 		namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 
-		if (!isNullOrUndefined(tpl) && tpl.dom) {
+		var tpl = node.tpl;
+		if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
 			dom = tpl.dom.cloneNode(true);
 		} else {
 			if (!isString$1(tag)) {
@@ -1025,10 +1025,10 @@
 		var style = node.style;
 
 		if (!isNullOrUndefined(hooks)) {
-			if (hooks.created) {
+			if (!isNullOrUndefined(hooks.created)) {
 				hooks.created(dom);
 			}
-			if (hooks.attached) {
+			if (!isNullOrUndefined(hooks.attached)) {
 				lifecycle.addListener(function () {
 					hooks.attached(dom);
 				});
@@ -1065,7 +1065,7 @@
 			if (attr === 'ref') {
 				mountRef(instance, attrs[attr], dom);
 			} else {
-				patchAttribute(attr, null, attrs[attr], dom);
+				patchAttribute(attr, attrs[attr], dom);
 			}
 		}
 	}

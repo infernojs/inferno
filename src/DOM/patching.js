@@ -72,7 +72,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	}
 }
 
-export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+export function patchAttribute(attrName, nextAttrValue, dom) {
 	if (!isAttrAnEvent(attrName)) {
 		if (booleanProps(attrName)) {
 			dom[attrName] = nextAttrValue;
@@ -104,25 +104,26 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 		const nextState = instance.state;
 
 		const childContext = instance.getChildContext();
-		if (childContext) {
+		if (!isNullOrUndefined(childContext)) {
 			context = { ...context, ...childContext };
 		}
 		instance.context = context;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-		if (nextNode) {
+		if (!isNullOrUndefined(nextNode)) {
 			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, true, instance);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
 	} else {
 		let shouldUpdate = true;
+		const nextHooksDefined = !isNullOrUndefined(nextHooks);
 
-		if (nextHooks && nextHooks.componentShouldUpdate) {
+		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
 		}
 		if (shouldUpdate !== false) {
-			if (nextHooks && nextHooks.componentWillUpdate) {
+			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
 			const nextNode = Component(nextProps);
@@ -131,7 +132,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 
 			diffNodes(instance, nextNode, dom, null, lifecycle, context, true, null);
 			lastNode.instance = nextNode;
-			if (nextHooks && nextHooks.componentDidUpdate) {
+			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
 		}
@@ -327,12 +328,12 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
 				// if (item.dom.nextSibling !== nextNode) {
-				nextNode = (nextNode && nextNode.dom) || nextDom;
+				nextNode = (!isNullOrUndefined(nextNode) && nextNode.dom) || nextDom;
 				insertOrAppend(dom, item.dom, nextNode);
 				// }
 				nextNode = item;
 			} else {
-				nextNode = (nextNode && nextNode.dom) || nextDom;
+				nextNode = (!isNullOrUndefined(nextNode) && nextNode.dom) || nextDom;
 				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			}
 			nextNode = item;

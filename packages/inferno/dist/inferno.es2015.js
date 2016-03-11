@@ -110,12 +110,12 @@ function createChild(_ref) {
 	var events = _ref.events;
 	var hooks = _ref.hooks;
 
-	if (tag === undefined && attrs && !attrs.tpl && children && children.length === 0) {
+	if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
 		return null;
 	}
-	var key = attrs && !isNullOrUndefined(attrs.key) ? attrs.key : null;
+	var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : null;
 
-	if (children && children.length === 0) {
+	if (!isNullOrUndefined(children) && children.length === 0) {
 		children = null;
 	} else {
 		if (!isInvalidNode(children)) {
@@ -143,7 +143,8 @@ function createChild(_ref) {
 }
 
 function createChildren(children) {
-	if (children && isArray$1(children)) {
+	var childrenDefined = !isNullOrUndefined(children);
+	if (childrenDefined && isArray$1(children)) {
 		var newChildren = [];
 
 		for (var i = 0; i < children.length; i++) {
@@ -163,11 +164,10 @@ function createChildren(children) {
 			}
 		}
 		return newChildren;
-	} else if (children && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
+	} else if (childrenDefined && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
 		return children.dom === undefined ? createChild(children) : children;
-	} else {
-		return children;
 	}
+	return children;
 }
 
 function createElement(tag, props) {

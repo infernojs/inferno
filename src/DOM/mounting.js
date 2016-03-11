@@ -13,7 +13,7 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 
 			if (isStringOrNumber(child)) {
 				appendText(child, parentDom, false);
-			} else if (child && isArray(child)) {
+			} else if (!isNullOrUndefined(child) && isArray(child)) {
 				mountChildren(child, parentDom, namespace, lifecycle, context, instance);
 			} else if (isPromise(child)) {
 				const placeholder = document.createTextNode('');
@@ -47,7 +47,7 @@ export function mountChildren(children, parentDom, namespace, lifecycle, context
 }
 
 function mountRef(instance, value, dom) {
-	if (instance && isString(value)) {
+	if (!isNullOrUndefined(instance) && isString(value)) {
 		instance.refs[value] = dom;
 	}
 }
@@ -83,10 +83,10 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		return dom;
 	}
 	if (!isNullOrUndefined(hooks)) {
-		if (hooks.componentWillMount) {
+		if (!isNullOrUndefined(hooks.componentWillMount)) {
 			hooks.componentWillMount(null, props);
 		}
-		if (hooks.componentDidMount) {
+		if (!isNullOrUndefined(hooks.componentDidMount)) {
 			lifecycle.addListener(() => {
 				hooks.componentDidMount(dom, props);
 			});
@@ -123,18 +123,18 @@ function placeholder(node, parentDom) {
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
 	}
-	if (node) {
+	if (!isNullOrUndefined(node)) {
 		node.dom = dom;
 	}
 	return dom;
 }
 
 export function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
-	let dom;
-
 	if (isInvalidNode(node) || isArray(node)) {
 		return placeholder(node, parentDom);
 	}
+
+	let dom;
 	if (isStringOrNumber(node)) {
 		dom = document.createTextNode(node);
 
@@ -152,7 +152,6 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 			return dom;
 		}
 	}
-	const tpl = node.tpl;
 	const tag = node.tag;
 
 	if (tag === null) {
@@ -163,7 +162,8 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	}
 	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 
-	if (!isNullOrUndefined(tpl) && tpl.dom) {
+	const tpl = node.tpl;
+	if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
 		dom = tpl.dom.cloneNode(true);
 	} else {
 		if (!isString(tag)) {
@@ -179,10 +179,10 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	const style = node.style;
 
 	if (!isNullOrUndefined(hooks)) {
-		if (hooks.created) {
+		if (!isNullOrUndefined(hooks.created)) {
 			hooks.created(dom);
 		}
-		if (hooks.attached) {
+		if (!isNullOrUndefined(hooks.attached)) {
 			lifecycle.addListener(() => {
 				hooks.attached(dom);
 			});
@@ -219,7 +219,7 @@ function mountAttributes(attrs, dom, instance) {
 		if (attr === 'ref') {
 			mountRef(instance, attrs[attr], dom);
 		} else {
-			patchAttribute(attr, null, attrs[attr], dom);
+			patchAttribute(attr, attrs[attr], dom);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 import Lifecycle from './../core/lifecycle';
+import { isNullOrUndefined } from './../core/utils';
 
 function queueStateChanges(component, newState) {
 	for (let stateKey in newState) {
@@ -86,7 +87,7 @@ export default class Component {
 			this._unmounted = false;
 			return false;
 		}
-		if (nextProps && !nextProps.children) {
+		if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
 			nextProps.children = prevProps.children;
 		}
 		if (prevProps !== nextProps || prevState !== nextState) {
@@ -97,7 +98,7 @@ export default class Component {
 			}
 			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-			if (shouldUpdate) {
+			if (shouldUpdate !== false) {
 				this._blockSetState = true;
 				this.componentWillUpdate(nextProps, nextState);
 				this._blockSetState = false;

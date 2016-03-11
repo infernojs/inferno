@@ -21,7 +21,6 @@
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')';
 
 		return {
-			dom: null,
 			tpl: animBox1,
 			style: style,
 			attrs: { 'data-id': data.id }
@@ -39,7 +38,6 @@
 	};
 
 	var anim2 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -54,7 +52,6 @@
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			children.push({
-				dom: null,
 				tpl: anim2,
 				tag: AnimBox,
 				key: item.id,
@@ -63,13 +60,11 @@
 				},
 				hooks: {
 					componentShouldUpdate: appUpdateCheck
-				},
-				instance: null
+				}
 			});
 		}
 
 		return {
-			dom: null,
 			tpl: anim1,
 			children: children
 		};
@@ -91,7 +86,6 @@
 
 	var TableCell = function (props) {
 		return {
-			dom: null,
 			tpl: tableCell1,
 			events: { click: (e) => {
 				console.log('Clicked' + props.text);
@@ -111,7 +105,6 @@
 	};
 
 	var tableRow2 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -127,7 +120,6 @@
 		var cells = data.props;
 
 		var children = [({
-			dom: null,
 			tpl: tableRow2,
 			tag: TableCell,
 			key: -1,
@@ -135,23 +127,19 @@
 			hooks: {
 				componentShouldUpdate: updateTableCell
 			},
-			instance: null
 		})];
 		for (var i = 0; i < cells.length; i++) {
 			children.push({
-				dom: null,
 				tpl: tableRow2,
 				tag: TableCell,
 				key: i,
 				attrs: { text: cells[i] },
 				hooks: {
 					componentShouldUpdate: updateTableCell
-				},
-				instance: null
+				}
 			});
 		}
 		return {
-			dom: null,
 			tpl: tableRow1,
 			attrs: { 'data-id': data.id },
 			className: classes,
@@ -179,7 +167,6 @@
 	};
 
 	var table3 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -193,7 +180,6 @@
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			children.push({
-				dom: null,
 				tpl: table3,
 				tag: TableRow,
 				key: item.id,
@@ -202,16 +188,13 @@
 				},
 				hooks: {
 					componentShouldUpdate: appUpdateCheck
-				},
-				instance: null
+				}
 			});
 		}
 
 		return {
-			dom: null,
 			tpl: table1,
 			children: {
-				dom: null,
 				tpl: table2,
 				children: children
 			}
@@ -230,7 +213,6 @@
 
 	var TreeLeaf = function (props) {
 		return {
-			dom: null,
 			tpl: treeLeaf1,
 			events: {
 				componentShouldUpdate: appUpdateCheck
@@ -250,7 +232,6 @@
 	};
 
 	var treeNode2 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -258,7 +239,6 @@
 	};
 
 	var treeNode3 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -273,7 +253,6 @@
 			var n = data.children[i];
 			if (n.container) {
 				children.push({
-					dom: null,
 					tpl: treeNode2,
 					tag: TreeNode,
 					key: n.id,
@@ -282,12 +261,10 @@
 					},
 					hooks: {
 						componentShouldUpdate: appUpdateCheck
-					},
-					instance: null
+					}
 				});
 			} else {
 				children.push({
-					dom: null,
 					tpl: treeNode3,
 					tag: TreeLeaf,
 					key: n.id,
@@ -296,14 +273,12 @@
 					},
 					hooks: {
 						componentShouldUpdate: appUpdateCheck
-					},
-					instance: null
+					}
 				});
 			}
 		}
 
 		return {
-			dom: null,
 			tpl: treeNode1,
 			children: children
 		};
@@ -320,7 +295,6 @@
 	};
 
 	var tree2 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -329,10 +303,8 @@
 
 	var Tree = function (props) {
 		return {
-			dom: null,
 			tpl: tree1,
 			children: {
-				dom: null,
 				tpl: tree2,
 				tag: TreeNode,
 				attrs: {
@@ -340,8 +312,7 @@
 				},
 				hooks: {
 					componentShouldUpdate: appUpdateCheck
-				},
-				instance: null
+				}
 			}
 		};
 	};
@@ -357,7 +328,6 @@
 	};
 
 	var main2 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -365,7 +335,6 @@
 	};
 
 	var main3 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -373,7 +342,6 @@
 	};
 
 	var main4 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -387,7 +355,6 @@
 		var section;
 		if (location === 'table') {
 			section = {
-				dom: null,
 				tpl: main2,
 				tag: Table,
 				attrs: {
@@ -395,12 +362,10 @@
 				},
 				hooks: {
 					componentShouldUpdate: appUpdateCheck
-				},
-				instance: null
+				}
 			};
 		} else if (location === 'anim') {
 			section = {
-				dom: null,
 				tpl: main3,
 				tag: Anim,
 				attrs: {
@@ -408,12 +373,10 @@
 				},
 				hooks: {
 					componentShouldUpdate: appUpdateCheck
-				},
-				instance: null
+				}
 			};
 		} else if (location === 'tree') {
 			section = {
-				dom: null,
 				tpl: main4,
 				tag: Tree,
 				attrs: {
@@ -421,20 +384,17 @@
 				},
 				hooks: {
 					componentShouldUpdate: appUpdateCheck
-				},
-				instance: null
+				}
 			};
 		}
 
 		return {
-			dom: null,
 			tpl: main1,
 			children: section
 		};
 	};
 
 	var app1 = {
-		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -460,7 +420,6 @@
 		uibench.run(
 			function(state) {
 				InfernoDOM.render({
-					dom: null,
 					tpl: app1,
 					tag: Main,
 					attrs: {
@@ -468,13 +427,11 @@
 					},
 					hooks: {
 						componentShouldUpdate: appUpdateCheck
-					},
-					instance: null
+					}
 				}, container);
 			},
 			function(samples) {
 				InfernoDOM.render({
-					dom: null,
 					tpl: app2,
 					children: JSON.stringify(samples, null, ' ')
 				}, container);

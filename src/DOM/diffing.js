@@ -15,8 +15,8 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		if (!isInvalidNode(nextChildren)) {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					const isKeyed = nextChildren.length && nextChildren[0] && !isNullOrUndefined(nextChildren[0].key)
-						|| lastChildren.length && lastChildren[0] && !isNullOrUndefined(lastChildren[0].key);
+					const isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
+						|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 
 					if (isKeyed) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
@@ -55,11 +55,11 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 }
 
 function diffRef(instance, lastValue, nextValue, dom) {
-	if (instance) {
+	if (!isNullOrUndefined(instance)) {
 		if (isString(lastValue)) {
 			delete instance.refs[lastValue];
 		}
-		if (instance && isString(nextValue)) {
+		if (isString(nextValue)) {
 			instance.refs[nextValue] = dom;
 		}
 	}
@@ -84,7 +84,7 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 				if (attr === 'ref') {
 					diffRef(instance, lastAttrVal, nextAttrVal, dom);
 				} else {
-					patchAttribute(attr, lastAttrVal, nextAttrVal, dom, lastNode.tag === null);
+					patchAttribute(attr, nextAttrVal, dom, lastNode.tag === null);
 				}
 			}
 		}
@@ -145,14 +145,13 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		}
 		return;
 	}
-	const nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
-	const lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
-	const nextEvents = nextNode.events;
 	const nextHooks = nextNode.hooks;
-
 	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.willUpdate)) {
 		nextHooks.willUpdate(lastNode.dom);
 	}
+	const nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
+	const lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
+
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 	if (lastTag !== nextTag) {
 		if (isFunction(lastTag) && !isFunction(nextTag)) {

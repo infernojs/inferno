@@ -76,6 +76,10 @@
 		return Lifecycle;
 	}();
 
+	function isNullOrUndefined(obj) {
+		return obj === undefined || obj === null;
+	}
+
 	function queueStateChanges(component, newState) {
 		for (var stateKey in newState) {
 			component._pendingState[stateKey] = newState[stateKey];
@@ -193,7 +197,7 @@
 					this._unmounted = false;
 					return false;
 				}
-				if (nextProps && !nextProps.children) {
+				if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
 					nextProps.children = prevProps.children;
 				}
 				if (prevProps !== nextProps || prevState !== nextState) {
@@ -204,7 +208,7 @@
 					}
 					var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-					if (shouldUpdate) {
+					if (shouldUpdate !== false) {
 						this._blockSetState = true;
 						this.componentWillUpdate(nextProps, nextState);
 						this._blockSetState = false;

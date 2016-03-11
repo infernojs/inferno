@@ -36,13 +36,19 @@
 	function renderChildren(children) {
 		if (children && isArray(children)) {
 			var childrenResult = [];
+			var insertComment = false;
 
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 
 				if (isStringOrNumber(child)) {
+					if (insertComment === true) {
+						childrenResult.push('<!-- -->');
+					}
 					childrenResult.push(child);
+					insertComment = true;
 				} else {
+					insertComment = false;
 					childrenResult.push(renderNode(child));
 				}
 			}
