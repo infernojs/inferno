@@ -14,10 +14,10 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 }
 
 export function createElement(tag, namespace) {
-	if (namespace) {
-		return document.createElementNS(namespace, tag);
-	} else {
+	if (isNullOrUndefined(namespace)) {
 		return document.createElement(tag);
+	} else {
+		return document.createElementNS(namespace, tag);
 	}
 }
 
@@ -36,17 +36,15 @@ export function appendText(text, parentDom, singleChild) {
 }
 
 export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
-	let dom;
-
 	if (isStringOrNumber(nextNode)) {
-		dom = document.createTextNode(nextNode);
+		const dom = document.createTextNode(nextNode);
 		parentDom.replaceChild(dom, dom);
 	} else if (isStringOrNumber(lastNode)) {
-		dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, parentDom.firstChild);
 	} else {
-		dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, lastNode.dom);
 	}
@@ -82,9 +80,8 @@ export function detachNode(node) {
 }
 
 export function remove(node, parentDom) {
-	const dom = node.dom;
-
 	detachNode(node);
+	const dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {

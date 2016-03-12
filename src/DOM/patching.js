@@ -213,7 +213,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 	}
 }
 
-export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, nextDom, instance) {
+export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
@@ -269,7 +269,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			}
 		}
 		while (endItem.key === oldStartItem.key) {
-			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : nextDom;
+			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
 			diffNodes(oldStartItem, endItem, dom, namespace, lifecycle, context, true, instance);
 			insertOrAppend(dom, endItem.dom, nextNode);
 			endIndex--;
@@ -300,7 +300,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 
 	if (oldStartIndex > oldEndIndex) {
 		if (startIndex <= endIndex) {
-			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : nextDom;
+			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
 			for (; startIndex <= endIndex; startIndex++) {
 				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 			}
@@ -311,7 +311,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			remove(oldItem, dom);
 		}
 	} else {
-		const oldItemsMap = {};
+		const oldItemsMap = [];
 
 		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = lastChildren[i];
@@ -323,17 +323,15 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			const item = nextChildren[i];
 			const key = item.key;
 			oldItem = oldItemsMap[key];
+			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
 			if (oldItem !== undefined) {
 				oldItemsMap[key] = null;
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
-				// if (item.dom.nextSibling !== nextNode) {
-				nextNode = (!isNullOrUndefined(nextNode) && nextNode.dom) || nextDom;
-				insertOrAppend(dom, item.dom, nextNode);
-				// }
-				nextNode = item;
+				if (item.dom.nextSibling !== nextNode) {
+					insertOrAppend(dom, item.dom, nextNode);
+				}
 			} else {
-				nextNode = (!isNullOrUndefined(nextNode) && nextNode.dom) || nextDom;
 				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			}
 			nextNode = item;

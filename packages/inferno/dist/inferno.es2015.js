@@ -179,10 +179,10 @@ function createElement(tag, props) {
 }
 
 function createElement$1(tag, namespace) {
-	if (namespace) {
-		return document.createElementNS(namespace, tag);
-	} else {
+	if (isNullOrUndefined(namespace)) {
 		return document.createElement(tag);
+	} else {
+		return document.createElementNS(namespace, tag);
 	}
 }
 

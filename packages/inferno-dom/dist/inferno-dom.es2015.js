@@ -143,10 +143,10 @@ function insertOrAppend(parentDom, newNode, nextNode) {
 }
 
 function createElement(tag, namespace) {
-	if (namespace) {
-		return document.createElementNS(namespace, tag);
-	} else {
+	if (isNullOrUndefined(namespace)) {
 		return document.createElement(tag);
+	} else {
+		return document.createElementNS(namespace, tag);
 	}
 }
 
@@ -165,19 +165,17 @@ function appendText(text, parentDom, singleChild) {
 }
 
 function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
-	var dom = void 0;
-
 	if (isStringOrNumber(nextNode)) {
-		dom = document.createTextNode(nextNode);
+		var dom = document.createTextNode(nextNode);
 		parentDom.replaceChild(dom, dom);
 	} else if (isStringOrNumber(lastNode)) {
-		dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
-		nextNode.dom = dom;
-		parentDom.replaceChild(dom, parentDom.firstChild);
+		var _dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+		nextNode.dom = _dom;
+		parentDom.replaceChild(_dom, parentDom.firstChild);
 	} else {
-		dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
-		nextNode.dom = dom;
-		parentDom.replaceChild(dom, lastNode.dom);
+		var _dom2 = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+		nextNode.dom = _dom2;
+		parentDom.replaceChild(_dom2, lastNode.dom);
 	}
 }
 
@@ -211,9 +209,8 @@ function detachNode(node) {
 }
 
 function remove(node, parentDom) {
-	var dom = node.dom;
-
 	detachNode(node);
+	var dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {
@@ -433,7 +430,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 	}
 }
 
-function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, nextDom, instance) {
+function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
 	var stop = false;
 	var startIndex = 0;
 	var oldStartIndex = 0;
@@ -489,7 +486,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			}
 		}
 		while (endItem.key === oldStartItem.key) {
-			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : nextDom;
+			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
 			diffNodes(oldStartItem, endItem, dom, namespace, lifecycle, context, true, instance);
 			insertOrAppend(dom, endItem.dom, nextNode);
 			endIndex--;
@@ -520,7 +517,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 
 	if (oldStartIndex > oldEndIndex) {
 		if (startIndex <= endIndex) {
-			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : nextDom;
+			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
 			for (; startIndex <= endIndex; startIndex++) {
 				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 			}
@@ -531,7 +528,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			remove(oldItem, dom);
 		}
 	} else {
-		var oldItemsMap = {};
+		var oldItemsMap = [];
 
 		for (var _i3 = oldStartIndex; _i3 <= oldEndIndex; _i3++) {
 			oldItem = lastChildren[_i3];
@@ -543,17 +540,15 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			var item = nextChildren[_i4];
 			var key = item.key;
 			oldItem = oldItemsMap[key];
+			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
 			if (oldItem !== undefined) {
 				oldItemsMap[key] = null;
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
-				// if (item.dom.nextSibling !== nextNode) {
-				nextNode = !isNullOrUndefined(nextNode) && nextNode.dom || nextDom;
-				insertOrAppend(dom, item.dom, nextNode);
-				// }
-				nextNode = item;
+				if (item.dom.nextSibling !== nextNode) {
+					insertOrAppend(dom, item.dom, nextNode);
+				}
 			} else {
-				nextNode = !isNullOrUndefined(nextNode) && nextNode.dom || nextDom;
 				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			}
 			nextNode = item;
@@ -582,7 +577,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 					var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 
 					if (isKeyed) {
-						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
+						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 					} else {
 						patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
 					}
@@ -762,7 +757,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	}
 }
 
-var recyclingEnabled = false;
+var recyclingEnabled = true;
 
 function recycle(node, lifecycle, context) {
 	var tpl = node.tpl;

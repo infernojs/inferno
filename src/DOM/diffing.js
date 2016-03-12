@@ -19,7 +19,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 						|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 
 					if (isKeyed) {
-						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
+						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 					} else {
 						patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
 					}
