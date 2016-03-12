@@ -642,7 +642,7 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 				if (attr === 'ref') {
 					diffRef(instance, lastAttrVal, nextAttrVal, dom);
 				} else {
-					patchAttribute(attr, nextAttrVal, dom, lastNode.tag === null);
+					patchAttribute(attr, nextAttrVal, dom);
 				}
 			}
 		}
@@ -799,21 +799,10 @@ function pool(node) {
 
 var delegatedEventsRegistry = {};
 
-// TODO This will give issues server side ( nodeJS). Need a fix
-// TODO Rewrite - delegated events like this is no good for performance (jsperf?)
-// Mercury also uses DOM delegator to handle events. is there perf comparison somewhere which way is better?
-
 function handleEvent(event, dom, callback) {
 	if (delegatedEventsRegistry[event]) {
 		var delegatedEvents = delegatedEventsRegistry[event];
 
-		/* for (let i = 0; i < delegatedEvents.length; i++) {
-   const delegatedEvent = delegatedEvents[i];
-  	 if (delegatedEvent.target === dom) {
-   delegatedEvents.splice(i, 1);
-   break;
-   }
-   } */
 		delegatedEvents.push({
 			callback: callback,
 			target: dom
@@ -830,7 +819,10 @@ function handleEvent(event, dom, callback) {
 				}
 			}
 		}, false);
-		delegatedEventsRegistry[event] = [];
+		delegatedEventsRegistry[event] = [{
+			callback: callback,
+			target: dom
+		}];
 	}
 }
 
