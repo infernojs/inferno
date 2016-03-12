@@ -84,7 +84,7 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 				if (attr === 'ref') {
 					diffRef(instance, lastAttrVal, nextAttrVal, dom);
 				} else {
-					patchAttribute(attr, nextAttrVal, dom, lastNode.tag === null);
+					patchAttribute(attr, nextAttrVal, dom);
 				}
 			}
 		}

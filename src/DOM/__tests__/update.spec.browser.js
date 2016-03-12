@@ -16,7 +16,6 @@ describe('Update (non-jsx)', () => {
 	it('should insert an additionnal tag node', () => {
 		const template = (child) => ({
 			tag: 'div',
-
 			children: child
 		});
 
