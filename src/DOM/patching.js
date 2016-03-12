@@ -26,6 +26,38 @@ export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.tpl !== null && nextNode.tpl !== null, instance);
 }
 
+export const canBeUnitlessProperties = {
+	animationIterationCount: true,
+	boxFlex: true,
+	boxFlexGroup: true,
+	columnCount: true,
+	counterIncrement: true,
+	fillOpacity: true,
+	flex: true,
+	flexGrow: true,
+	flexOrder: true,
+	flexPositive: true,
+	flexShrink: true,
+	float: true,
+	fontWeight: true,
+	gridColumn: true,
+	lineHeight: true,
+	lineClamp: true,
+	opacity: true,
+	order: true,
+	orphans: true,
+	stopOpacity: true,
+	strokeDashoffset: true,
+	strokeOpacity: true,
+	strokeWidth: true,
+	tabSize: true,
+	transform: true,
+	transformOrigin: true,
+	widows: true,
+	zIndex: true,
+	zoom: true
+};
+
 export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
@@ -40,7 +72,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 					const style = styleKeys[i];
 					let value = nextAttrValue[style];
 
-					if (isNumber(value)) {
+					if (isNumber(value) && !canBeUnitlessProperties[style]) {
 						value = value + 'px';
 					}
 					dom.style[style] = value;
@@ -49,8 +81,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 				for (let i = 0; i < lastStyleKeys.length; i++) {
 					const style = lastStyleKeys[i];
-
-					if (!nextAttrValue[style]) {
+					if (isNullOrUndefined(nextAttrValue[style])) {
 						dom.style[style] = '';
 					}
 				}
@@ -63,7 +94,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 				const style = styleKeys[i];
 				let value = nextAttrValue[style];
 
-				if (isNumber(value)) {
+				if (isNumber(value) && !canBeUnitlessProperties[style]) {
 					value = value + 'px';
 				}
 				dom.style[style] = value;

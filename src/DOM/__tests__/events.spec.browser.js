@@ -36,7 +36,6 @@ describe('Basic event tests', () => {
 
         document.body.appendChild(container);
 
-        debugger;
         const divs = Array.prototype.slice.call(container.querySelectorAll('div'));
         divs.forEach(div => div.click());
 
