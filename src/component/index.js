@@ -12,7 +12,6 @@ function queueStateChanges(component, newState) {
 }
 
 function applyState(component, force) {
-	const blockRender = component._blockRender;
 	if (component._deferSetState === false || force) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
@@ -20,7 +19,7 @@ function applyState(component, force) {
 		const nextState = { ...oldState, ...pendingState };
 
 		component._pendingState = {};
-		const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender, force);
+		const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
 		const lastNode = component._lastNode;
 		const parentDom = lastNode.dom.parentNode;
 
@@ -42,7 +41,7 @@ export default class Component {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false;
+		this._blockRender = false; // TODO: What is this used for?
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -73,7 +72,7 @@ export default class Component {
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
 	getChildContext() {}
-	_updateComponent(prevState, nextState, prevProps, nextProps, blockRender, force) {
+	_updateComponent(prevState, nextState, prevProps, nextProps, force) {
 		if (this._unmounted === true) {
 			this._unmounted = false;
 			return false;
@@ -82,7 +81,7 @@ export default class Component {
 			nextProps.children = prevProps.children;
 		}
 		if (prevProps !== nextProps || prevState !== nextState || force) {
-			if (prevProps !== nextProps && !blockRender) {
+			if (prevProps !== nextProps) {
 				this._blockRender = true;
 				this.componentWillReceiveProps(nextProps);
 				this._blockRender = false;
@@ -95,10 +94,6 @@ export default class Component {
 				this._blockSetState = false;
 				this.props = nextProps;
 				this.state = nextState;
-				if (blockRender) {
-					this.componentDidUpdate(prevProps, prevState);
-					return this._lastNode;
-				}
 				const node = this.render();
 
 				this.componentDidUpdate(prevProps, prevState);
