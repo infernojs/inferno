@@ -137,6 +137,52 @@
 		return obj instanceof Promise;
 	}
 
+	var delegatedEventsRegistry = {};
+
+	function createEventListener(callbackEvent) {
+		var delegatedEvents = delegatedEventsRegistry[callbackEvent.type];
+
+		for (var i = delegatedEvents.length - 1; i > -1; i--) {
+			var delegatedEvent = delegatedEvents[i];
+
+			if (delegatedEvent.target === callbackEvent.target) {
+				delegatedEvent.callback(callbackEvent);
+			}
+		}
+	}
+
+	function removeEventFromRegistry(event, callback) {
+		if (isNullOrUndefined(callback)) {
+			return;
+		}
+		var delegatedEvents = delegatedEventsRegistry[event];
+		if (!isNullOrUndefined(delegatedEvents)) {
+			for (var i = 0; i < delegatedEvents.length; i++) {
+				var delegatedEvent = delegatedEvents[i];
+				if (delegatedEvent.callback === callback) {
+					delegatedEvents.splice(i, 1);
+					return;
+				}
+			}
+		}
+	}
+
+	function addEventToRegistry(event, dom, callback) {
+		var delegatedEvents = delegatedEventsRegistry[event];
+		if (isNullOrUndefined(delegatedEvents)) {
+			document.addEventListener(event, createEventListener, false);
+			delegatedEventsRegistry[event] = [{
+				callback: callback,
+				target: dom
+			}];
+		} else {
+			delegatedEvents.push({
+				callback: callback,
+				target: dom
+			});
+		}
+	}
+
 	var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 	var SVGNamespace = 'http://www.w3.org/2000/svg';
 
@@ -190,16 +236,25 @@
 			return;
 		}
 		var instance = node.instance;
-		if (instance && instance.render !== undefined) {
+		if (!isNullOrUndefined(instance) && instance.render !== undefined) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 		}
 		var hooks = node.hooks;
-		if (hooks && !isNullOrUndefined(hooks.willDetach)) {
-			hooks.willDetach(node.dom);
+		if (!isNullOrUndefined(hooks)) {
+			if (!isNullOrUndefined(hooks.willDetach)) {
+				hooks.willDetach(node.dom);
+			}
+			if (!isNullOrUndefined(hooks.componentWillUnmount)) {
+				hooks.componentWillUnmount(node.dom, hooks);
+			}
 		}
-		if (hooks && !isNullOrUndefined(hooks.componentWillUnmount)) {
-			hooks.componentWillUnmount(node.dom, hooks);
+		var events = node.events;
+		// Remove all events to free memory
+		if (!isNullOrUndefined(events)) {
+			for (var event in events) {
+				removeEventFromRegistry(event, events[event]);
+			}
 		}
 		var children = node.children;
 
@@ -253,6 +308,38 @@
 		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.tpl !== null && nextNode.tpl !== null, instance);
 	}
 
+	var canBeUnitlessProperties = {
+		animationIterationCount: true,
+		boxFlex: true,
+		boxFlexGroup: true,
+		columnCount: true,
+		counterIncrement: true,
+		fillOpacity: true,
+		flex: true,
+		flexGrow: true,
+		flexOrder: true,
+		flexPositive: true,
+		flexShrink: true,
+		float: true,
+		fontWeight: true,
+		gridColumn: true,
+		lineHeight: true,
+		lineClamp: true,
+		opacity: true,
+		order: true,
+		orphans: true,
+		stopOpacity: true,
+		strokeDashoffset: true,
+		strokeOpacity: true,
+		strokeWidth: true,
+		tabSize: true,
+		transform: true,
+		transformOrigin: true,
+		widows: true,
+		zIndex: true,
+		zoom: true
+	};
+
 	function patchStyle(lastAttrValue, nextAttrValue, dom) {
 		if (isString$1(nextAttrValue)) {
 			dom.style.cssText = nextAttrValue;
@@ -267,7 +354,7 @@
 						var style = styleKeys[i];
 						var value = nextAttrValue[style];
 
-						if (isNumber(value)) {
+						if (isNumber(value) && !canBeUnitlessProperties[style]) {
 							value = value + 'px';
 						}
 						dom.style[style] = value;
@@ -276,8 +363,7 @@
 
 					for (var _i = 0; _i < lastStyleKeys.length; _i++) {
 						var _style = lastStyleKeys[_i];
-
-						if (!nextAttrValue[_style]) {
+						if (isNullOrUndefined(nextAttrValue[_style])) {
 							dom.style[_style] = '';
 						}
 					}
@@ -289,7 +375,7 @@
 					var _style2 = _styleKeys[_i2];
 					var _value = nextAttrValue[_style2];
 
-					if (isNumber(_value)) {
+					if (isNumber(_value) && !canBeUnitlessProperties[_style2]) {
 						_value = _value + 'px';
 					}
 					dom.style[_style2] = _value;
@@ -405,33 +491,45 @@
 				if (isInvalidNode(_nextChild)) {
 					if (!isInvalidNode(_lastChild)) {
 						childNodes = childNodes || dom.childNodes;
-						childNodes[i + offset].textContent = '';
-						// TODO implement remove child
-					}
-				} else {
-						if (isInvalidNode(_lastChild)) {
-							if (isStringOrNumber(_nextChild)) {
-								childNodes = childNodes || dom.childNodes;
-								childNodes[i + offset].textContent = _nextChild;
-							} else {
-								var _node = mountNode(_nextChild, null, namespace, lifecycle, context, instance);
-								dom.replaceChild(_node, dom.childNodes[i]);
-							}
-						} else if ((typeof _nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(_nextChild)) === 'object') {
-							if (isArray(_nextChild)) {
-								if (isArray(_lastChild)) {
-									patchNonKeyedChildren(_lastChild, _nextChild, dom, namespace, lifecycle, context, i, instance);
-								} else {
-									patchNonKeyedChildren([_lastChild], _nextChild, dom, namespace, lifecycle, context, i, instance);
-								}
-							} else {
-								patchNode(_lastChild, _nextChild, dom, namespace, lifecycle, context, instance);
-							}
-						} else {
-							childNodes = childNodes || dom.childNodes;
-							childNodes[i + offset].textContent = _nextChild;
+						var childNode = childNodes[i + offset];
+						if (!isNullOrUndefined(childNode)) {
+							childNodes[i + offset].textContent = '';
 						}
 					}
+				} else {
+					if (isInvalidNode(_lastChild)) {
+						if (isStringOrNumber(_nextChild)) {
+							childNodes = childNodes || dom.childNodes;
+							var _childNode = childNodes[i + offset];
+							if (isNullOrUndefined(_childNode)) {
+								dom.appendChild(document.createTextNode(_nextChild));
+							} else {
+								_childNode.textContent = _nextChild;
+							}
+						} else {
+							var _node = mountNode(_nextChild, null, namespace, lifecycle, context, instance);
+							dom.replaceChild(_node, dom.childNodes[i]);
+						}
+					} else if ((typeof _nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(_nextChild)) === 'object') {
+						if (isArray(_nextChild)) {
+							if (isArray(_lastChild)) {
+								patchNonKeyedChildren(_lastChild, _nextChild, dom, namespace, lifecycle, context, i, instance);
+							} else {
+								patchNonKeyedChildren([_lastChild], _nextChild, dom, namespace, lifecycle, context, i, instance);
+							}
+						} else {
+							patchNode(_lastChild, _nextChild, dom, namespace, lifecycle, context, instance);
+						}
+					} else {
+						childNodes = childNodes || dom.childNodes;
+						var _childNode2 = childNodes[i + offset];
+						if (isNullOrUndefined(_childNode2)) {
+							dom.appendChild(document.createTextNode(_nextChild));
+						} else {
+							_childNode2.textContent = _nextChild;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -600,7 +698,6 @@
 					}
 				}
 			} else {
-				// Remove node, do not use textContent to set to empty node!! See jsPerf for this
 				dom.textContent = '';
 			}
 		} else {
@@ -682,9 +779,16 @@
 
 				for (var i = 0; i < lastEventsKeys.length; i++) {
 					var event = lastEventsKeys[i];
+					var nextEvent = nextEvents[event];
+					var lastEvent = lastEvents[lastEventsKeys];
 
-					if (!nextEvents[event]) {
-						// remove event
+					if (isNullOrUndefined(nextEvent)) {
+						removeEventFromRegistry(event, lastEvent);
+					} else if (nextEvent !== lastEvent) {
+						// TODO: feels lot of looping here, but also this is real edge case
+						// Callback has changed and is not same as before
+						removeEventFromRegistry(event, lastEvent); // remove old
+						addEventToRegistry(event, dom, nextEvent); // add new
 					}
 				}
 			}
@@ -803,35 +907,6 @@
 		}
 	}
 
-	var delegatedEventsRegistry = {};
-
-	function handleEvent(event, dom, callback) {
-		if (delegatedEventsRegistry[event]) {
-			var delegatedEvents = delegatedEventsRegistry[event];
-
-			delegatedEvents.push({
-				callback: callback,
-				target: dom
-			});
-		} else {
-			document.addEventListener(event, function (callbackEvent) {
-				var delegatedEvents = delegatedEventsRegistry[event];
-
-				for (var i = delegatedEvents.length - 1; i > -1; i--) {
-					var delegatedEvent = delegatedEvents[i];
-
-					if (delegatedEvent.target === callbackEvent.target) {
-						delegatedEvent.callback(callbackEvent);
-					}
-				}
-			}, false);
-			delegatedEventsRegistry[event] = [{
-				callback: callback,
-				target: dom
-			}];
-		}
-	}
-
 	// TODO!  Need to be re-written to gain bette performance. I can't do it. K.F
 	function mountChildren(children, parentDom, namespace, lifecycle, context, instance) {
 		if (isArray(children)) {
@@ -897,8 +972,18 @@
 			}
 			instance.context = context;
 
+			// Block setting state - we should render only once, using latest state
+			instance._pendingSetState = true;
 			instance.componentWillMount();
+			var shouldUpdate = instance.shouldComponentUpdate();
+			if (shouldUpdate) {
+				instance.componentWillUpdate();
+				var pendingState = instance._pendingState;
+				var oldState = instance.state;
+				instance.state = babelHelpers.extends({}, oldState, pendingState);
+			}
 			var _node = instance.render();
+			instance._pendingSetState = false;
 
 			if (!isNullOrUndefined(_node)) {
 				dom = mountNode(_node, null, null, lifecycle, context, instance);
@@ -907,7 +992,8 @@
 					// avoid DEOPT
 					parentDom.appendChild(dom);
 				}
-				lifecycle.addListener(instance.componentDidMount);
+				instance.componentDidMount();
+				instance.componentDidUpdate();
 			}
 
 			parentNode.dom = dom;
@@ -945,7 +1031,7 @@
 		for (var i = 0; i < allEvents.length; i++) {
 			var event = allEvents[i];
 			if (isString$1(event)) {
-				handleEvent(event, dom, events[event]);
+				addEventToRegistry(event, dom, events[event]);
 			}
 		}
 	}
@@ -999,7 +1085,7 @@
 		if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
 			dom = tpl.dom.cloneNode(true);
 		} else {
-			if (!isString$1(tag)) {
+			if (!isString$1(tag) || tag === '') {
 				throw Error('Inferno Error: Expected function or string for element tag type');
 			}
 			dom = createElement(tag, namespace);

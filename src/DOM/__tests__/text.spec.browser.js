@@ -86,7 +86,7 @@ describe('Text', () => {
 		[{
 			description: 'should create a static text node with ' + arg.name,
 			template: () => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: arg.value
 			})
@@ -113,7 +113,7 @@ describe('Text', () => {
 		[{
 			description: 'should create a static text node with null',
 			template: () => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: null
 			})
@@ -139,7 +139,7 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - text property',
 			template: (text) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: text
 			})
@@ -178,10 +178,10 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - children node text',
 			template: (text) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
+					tpl: staticNode,
 					tag: 'span',
 					children: text
 				}
@@ -210,7 +210,7 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - single child with text ',
 			template: (text) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: text
 			})
@@ -239,10 +239,10 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - deep child with text property ',
 			template: (text) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
+					tpl: staticNode,
 					tag: 'span',
 					children: text
 				}
@@ -271,13 +271,13 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - deeper child with text property ',
 			template: (text) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
+					tpl: staticNode,
 					tag: 'span',
 					children: {
-						static: staticNode,
+						tpl: staticNode,
 						tag: 'b',
 						children: text
 					}
@@ -432,7 +432,7 @@ describe('Text', () => {
 		[{
 			description: 'should create a children property with ' + arg.name,
 			template: (textVar) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: textVar
 			})

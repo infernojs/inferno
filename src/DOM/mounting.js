@@ -2,7 +2,7 @@ import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenTo
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
 import { patchAttribute, patchStyle } from './patching';
-import { handleEvent } from './events';
+import { addEventToRegistry } from './events';
 import { diffNodes } from './diffing';
 
 // TODO!  Need to be re-written to gain bette performance. I can't do it. K.F
@@ -66,8 +66,18 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		}
 		instance.context = context;
 
+		// Block setting state - we should render only once, using latest state
+		instance._pendingSetState = true;
 		instance.componentWillMount();
+		const shouldUpdate = instance.shouldComponentUpdate();
+		if (shouldUpdate) {
+			instance.componentWillUpdate();
+			const pendingState = instance._pendingState;
+			const oldState = instance.state;
+			instance.state = { ...oldState, ...pendingState };
+		}
 		const node = instance.render();
+		instance._pendingSetState = false;
 
 		if (!isNullOrUndefined(node)) {
 			dom = mountNode(node, null, null, lifecycle, context, instance);
@@ -75,7 +85,8 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 			if (parentDom !== null) { // avoid DEOPT
 				parentDom.appendChild(dom);
 			}
-			lifecycle.addListener(instance.componentDidMount);
+			instance.componentDidMount();
+			instance.componentDidUpdate();
 		}
 
 		parentNode.dom = dom;
@@ -112,7 +123,7 @@ function mountEvents(events, dom) {
 	for (let i = 0; i < allEvents.length; i++) {
 		const event = allEvents[i];
 		if (isString(event)) {
-			handleEvent(event, dom, events[event]);
+			addEventToRegistry(event, dom, events[event]);
 		}
 	}
 }
@@ -166,7 +177,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
 		dom = tpl.dom.cloneNode(true);
 	} else {
-		if (!isString(tag)) {
+		if (!isString(tag) || tag === '') {
 			throw Error('Inferno Error: Expected function or string for element tag type');
 		}
 		dom = createElement(tag, namespace);

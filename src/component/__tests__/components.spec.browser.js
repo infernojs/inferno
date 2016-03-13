@@ -842,15 +842,6 @@ describe('Components', () => {
 	});
 
 	describe('should render a basic component with conditional fragment', () => {
-		const tpl4282471407 = function (v0) {
-			return {
-				tag: 'div',
-				children: [ '', v0, '', {
-					tag: 'p',
-					children: 'test'
-				}, '' ]
-			};
-		};
 		const tpl3625453295 = function () {
 			return {
 				tag: 'h1',
@@ -863,25 +854,27 @@ describe('Components', () => {
 				children: 'small'
 			};
 		};
-		const tpl1546018623 = function (v0) {
-			return { tag: v0 };
-		};
 
 		class conditionalComponent extends Component {
 			render() {
-				let condition = true; // some logic
-				return tpl4282471407(condition ? tpl3625453295(null) : tpl4021787591(null));
+				return {
+					tag: 'div',
+					children: [ this.props.condition ? tpl3625453295() : tpl4021787591(), {
+						tag: 'p',
+						children: 'test'
+					}]
+				};
 			}
 		}
 
 		it('Initial render (creation)', () => {
-			render(tpl1546018623(conditionalComponent), container);
+			render(createElement(conditionalComponent, {condition: true}), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
 			);
-			render(tpl1546018623(conditionalComponent), container);
+			render(createElement(conditionalComponent, {condition: false}), container);
 			expect(container.innerHTML).to.equal(
-				'<div><h1>BIG</h1><p>test</p></div>'
+				'<div><h2>small</h2><p>test</p></div>'
 			);
 
 		});

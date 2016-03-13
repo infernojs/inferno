@@ -11,37 +11,25 @@ function queueStateChanges(component, newState) {
 	}
 }
 
-function applyState(component) {
+function applyState(component, force) {
 	const blockRender = component._blockRender;
+	if (component._deferSetState === false || force) {
+		component._pendingSetState = false;
+		const pendingState = component._pendingState;
+		const oldState = component.state;
+		const nextState = { ...oldState, ...pendingState };
 
-	requestAnimationFrame(() => {
-		if (component._deferSetState === false) {
-			const activeNode = document.activeElement;
+		component._pendingState = {};
+		const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender, force);
+		const lastNode = component._lastNode;
+		const parentDom = lastNode.dom.parentNode;
 
-			component._pendingSetState = false;
-			const pendingState = component._pendingState;
-			const oldState = component.state;
-			const nextState = { ...oldState, ...pendingState };
-
-			component._pendingState = {};
-			component._pendingSetState = false;
-			const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
-			const lastNode = component._lastNode;
-			const parentDom = lastNode.dom.parentNode;
-
-			const subLifecycle = new Lifecycle();
-			component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
-			subLifecycle.addListener(() => {
-				subLifecycle.trigger();
-			});
-
-			if (activeNode !== document.body && document.activeElement !== activeNode) {
-				activeNode.focus();
-			}
-		} else {
-			applyState(component);
-		}
-	});
+		const subLifecycle = new Lifecycle();
+		component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
+		subLifecycle.addListener(() => {
+			subLifecycle.trigger();
+		});
+	}
 }
 
 export default class Component {
@@ -65,7 +53,10 @@ export default class Component {
 		this._diffNodes = null;
 	}
 	render() {}
-	forceUpdate() {}
+	forceUpdate() {
+		// TODO: We might need queue forceUpdate like in react
+		applyState(this, true);
+	}
 	setState(newState) {
 		// TODO the callback
 		if (this._blockSetState === false) {
@@ -82,7 +73,7 @@ export default class Component {
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
 	getChildContext() {}
-	_updateComponent(prevState, nextState, prevProps, nextProps) {
+	_updateComponent(prevState, nextState, prevProps, nextProps, blockRender, force) {
 		if (this._unmounted === true) {
 			this._unmounted = false;
 			return false;
@@ -90,8 +81,8 @@ export default class Component {
 		if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
 			nextProps.children = prevProps.children;
 		}
-		if (prevProps !== nextProps || prevState !== nextState) {
-			if (prevProps !== nextProps) {
+		if (prevProps !== nextProps || prevState !== nextState || force) {
+			if (prevProps !== nextProps && !blockRender) {
 				this._blockRender = true;
 				this.componentWillReceiveProps(nextProps);
 				this._blockRender = false;
@@ -104,6 +95,10 @@ export default class Component {
 				this._blockSetState = false;
 				this.props = nextProps;
 				this.state = nextState;
+				if (blockRender) {
+					this.componentDidUpdate(prevProps, prevState);
+					return this._lastNode;
+				}
 				const node = this.render();
 
 				this.componentDidUpdate(prevProps, prevState);

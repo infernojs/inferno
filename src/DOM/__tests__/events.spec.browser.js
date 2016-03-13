@@ -27,21 +27,45 @@ describe('Basic event tests', () => {
         });
 
 
-        let foo = 'foo';
+        let calledFirstTest = false;
         function test() {
-            foo = 'triggered';
+            calledFirstTest = true;
+        }
+        // different event
+        let calledSecondTest = false;
+        function test2() {
+            calledSecondTest = true;
         }
 
         render(template(test), container);
 
         document.body.appendChild(container);
 
-        const divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+        let divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+        divs.forEach(div => div.click());
+        expect(calledFirstTest).to.equal(true);
+
+        // reset
+        calledFirstTest = false;
+
+        render(template(test2), container);
+        divs = Array.prototype.slice.call(container.querySelectorAll('div'));
         divs.forEach(div => div.click());
 
-        requestAnimationFrame(() => {
-            expect(foo).to.equal('triggered');
-            done();
-        });
+        expect(calledFirstTest).to.equal(false);
+        expect(calledSecondTest).to.equal(true);
+
+        // reset
+        calledFirstTest = false;
+        calledSecondTest = false;
+
+
+        render(null, container);
+        divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+        divs.forEach(div => div.click());
+
+        expect(calledFirstTest).to.equal(false);
+        expect(calledSecondTest).to.equal(false);
+        done();
     });
 });
