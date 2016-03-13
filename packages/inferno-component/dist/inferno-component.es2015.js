@@ -85,7 +85,6 @@ function queueStateChanges(component, newState) {
 }
 
 function applyState(component, force) {
-	var blockRender = component._blockRender;
 	if (component._deferSetState === false || force) {
 		(function () {
 			component._pendingSetState = false;
@@ -94,7 +93,7 @@ function applyState(component, force) {
 			var nextState = babelHelpers.extends({}, oldState, pendingState);
 
 			component._pendingState = {};
-			var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender, force);
+			var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
 			var lastNode = component._lastNode;
 			var parentDom = lastNode.dom.parentNode;
 
@@ -119,7 +118,7 @@ var Component = function () {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false;
+		this._blockRender = false; // TODO: What is this used for?
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -177,7 +176,7 @@ var Component = function () {
 		value: function getChildContext() {}
 	}, {
 		key: '_updateComponent',
-		value: function _updateComponent(prevState, nextState, prevProps, nextProps, blockRender, force) {
+		value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {
 			if (this._unmounted === true) {
 				this._unmounted = false;
 				return false;
@@ -186,7 +185,7 @@ var Component = function () {
 				nextProps.children = prevProps.children;
 			}
 			if (prevProps !== nextProps || prevState !== nextState || force) {
-				if (prevProps !== nextProps && !blockRender) {
+				if (prevProps !== nextProps) {
 					this._blockRender = true;
 					this.componentWillReceiveProps(nextProps);
 					this._blockRender = false;
@@ -199,10 +198,6 @@ var Component = function () {
 					this._blockSetState = false;
 					this.props = nextProps;
 					this.state = nextState;
-					if (blockRender) {
-						this.componentDidUpdate(prevProps, prevState);
-						return this._lastNode;
-					}
 					var node = this.render();
 
 					this.componentDidUpdate(prevProps, prevState);
