@@ -78,12 +78,13 @@
 	};
 
 	var queryTemplate2 = {
-		dom: Inferno.staticCompiler.createElement('span'),
+		dom: Inferno.staticCompiler.createElement('span', {className: 'foo'}),
 		pools: {
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'span'
+		tag: 'span',
+		className: 'foo'
 	};
 
 	var queryTemplate3 = {
