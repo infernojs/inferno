@@ -47,7 +47,7 @@
     "rollup-plugin-babel": "2.4.0",
     "rollup-plugin-npm": "^1.2.1",
     "rollup-plugin-replace": "^1.1.0",
-    "rollup-plugin-uglify": "^0.2.0",
+    "rollup-plugin-uglify": "^0.3.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "webpack": "^2.0.2-beta",
