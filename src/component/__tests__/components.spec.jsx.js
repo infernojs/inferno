@@ -421,7 +421,7 @@ describe('Components (JSX)', () => {
 			render() {
 				return (
 					<svg class="alert-icon">
-						<use xlinkHref="#error"></use>
+						<use xlink:href="#error"></use>
 					</svg>
 				);
 			}

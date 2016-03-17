@@ -13,21 +13,18 @@ describe('createTree - SVG (JSX)', () => {
 		render(null, container);
 	});
 
-	it('should set SVG as default namespace for <svg>', () => {
+	it('should render svg as <svg>', () => {
 		render(null, container);
 		render(<svg></svg>, container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.innerHTML).to.equal('<svg></svg>');
 	});
 
 	it('should use the parent namespace by default', () => {
 		render(null, container);
-		render(<svg><circle/></svg>, container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		render(<svg xmlns="http://www.w3.org/2000/svg"><circle xmlns="http://www.w3.org/2000/svg" /></svg>, container);
+		expect(container.innerHTML).to.equal('<svg xmlns="http://www.w3.org/2000/svg"><circle xmlns="http://www.w3.org/2000/svg"></circle></svg>');
 		render(null, container);
-		render(<svg><circle/></svg>, container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.innerHTML).to.equal('');
 	});
 
 	it('should keep parent namespace', () => {
@@ -84,7 +81,7 @@ describe('createTree - SVG (JSX)', () => {
 
 		let value = 'foo';
 
-		render(<svg className={ value }></svg>, container);
+		render(<svg class={ value }></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
@@ -149,7 +146,7 @@ describe('createTree - SVG (JSX)', () => {
 
 	it('should remove namespaced SVG attributes', () => {
 
-		render(<svg><image xlinkHref="http://i.imgur.com/w7GCRPb.png" /></svg>, container);
+		render(<svg><image xlink:href="http://i.imgur.com/w7GCRPb.png" /></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.firstChild.hasAttributeNS(
@@ -177,7 +174,7 @@ describe('createTree - SVG (JSX)', () => {
 
 	it('should update namespaced SVG attributes', () => {
 
-		render(<svg><image xlinkHref="http://i.imgur.com/w7GCRPb.png" /></svg>, container);
+		render(<svg><image xlink:href="http://i.imgur.com/w7GCRPb.png" /></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.firstChild.hasAttributeNS(
@@ -185,7 +182,7 @@ describe('createTree - SVG (JSX)', () => {
 			'href'
 		)).to.be.true;
 
-		render(<svg><image xlinkHref="http://i.imgur.com/JvqCM2p.png" /></svg>, container);
+		render(<svg><image xlink:href="http://i.imgur.com/JvqCM2p.png" /></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.firstChild.getAttributeNS(
@@ -196,7 +193,7 @@ describe('createTree - SVG (JSX)', () => {
 
 	it('should remove namespaced SVG attributes', () => {
 
-		render(<svg clipPath="0 0 110 110"></svg>, container);
+		render(<svg clip-path="0 0 110 110"></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 
@@ -212,7 +209,7 @@ describe('createTree - SVG (JSX)', () => {
 
 	it('should remove namespaced SVG attributes', () => {
 
-		render(<svg clipPath="0 0 110 110"></svg>, container);
+		render(<svg clip-path="0 0 110 110"></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 
