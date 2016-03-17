@@ -7,18 +7,18 @@
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 
-Inferno is an isomorphic library for building user interfaces with high performance (crucial when targeting mobile devices). Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses intelligent compile-time techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have content that changes.
+Inferno is an isomorphic library for building user interfaces with high performance, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses intelligent compile-time techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
 
-In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation on out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
+In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
-In principle, Inferno is compatible with the standard React API, allowing for painless transition from React to Inferno in most use cases. Furthermore Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno virtual DOM.
+In principle, Inferno is compatible with the standard React API, allowing painless transition from React to Inferno. Furthermore, Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno virtual DOM.
 
 ## Key Features
 
-- one of the fastest front-end frameworks for rendering UI in the DOM
-- components have a similar API to React ES2015 components with `inferno-component`
-- stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
-- isomorphic/universal for easy server-side rendering with `inferno-server`
+- One of the fastest front-end frameworks for rendering UI in the DOM
+- Components have a similar API to React ES2015 components with `inferno-component`
+- Stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
+- Isomorphic/universal for easy server-side rendering with `inferno-server`
 
 ## Benchmarks
 
@@ -69,8 +69,8 @@ http://infernojs.org/releases/0.6.01/inferno-server.min.js
 
 ## Overview
 
-Let's start with some code. As you can see, Inferno intentionally keeps the same good (in our opinion) design ideas regarding components, one-way data passing and separation of concerns.
-In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a very easy way to express Inferno virtual DOM.
+Let's start with some code. As you can see, Inferno intentionally keeps the same good design ideas as React regarding components, one-way data passing and separation of concerns.
+In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.
 
 ```jsx
 import Inferno from 'inferno';
@@ -108,7 +108,7 @@ class MyComponent extends Component {
 InfernoDOM.render(<MyComponent />, document.body);
 ```
 The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
-This is essential for low-power devices such as tablets and phones, where users of those devices are quickly demanding desktop like performance on their slower hardware.
+This is essential for low-power devices such as tablets and phones, where users are quickly demanding desktop like performance on their slower hardware.
 
 ## Inferno Top-Level API
 
@@ -228,14 +228,14 @@ Hooks provide powerful lifecycle events to stateless components, allowing you to
 Inferno tries to address two problems with creating UI components:
 - Writing large applications in large teams is slow in terms of development and expensive in costs – it shouldn't be.
 - Writing complex applications generally gives poor performance on mobile/tablet/older machines – it shouldn't.
-- Writing intensive modern UIs that require many updates/animations falls apart and becomings overly complicated - it shouldn't be.
+- Writing intensive modern UIs that require many updates/animations falls apart and becomes overly complicated - it shouldn't be.
 
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
 time a framework offered more fun without compromising performance.
 
 ## JSX
  
-Inferno has it's own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
+Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 
 ## Contributing
 
