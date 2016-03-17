@@ -213,14 +213,21 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 			if (isInvalidNode(nextChild)) {
 				if (!isInvalidNode(lastChild)) {
 					childNodes = childNodes || dom.childNodes;
-					childNodes[i + offset].textContent = '';
-					// TODO implement remove child
+					const childNode = childNodes[i + offset];
+					if (!isNullOrUndefined(childNode)) {
+						childNodes[i + offset].textContent = '';
+					}
 				}
 			} else {
 				if (isInvalidNode(lastChild)) {
 					if (isStringOrNumber(nextChild)) {
 						childNodes = childNodes || dom.childNodes;
-						childNodes[i + offset].textContent = nextChild;
+						const childNode = childNodes[i + offset];
+						if (isNullOrUndefined(childNode)) {
+							dom.appendChild(document.createTextNode(nextChild));
+						} else {
+							childNode.textContent = nextChild;
+						}
 					} else {
 						const node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 						dom.replaceChild(node, dom.childNodes[i]);
@@ -237,7 +244,12 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 					}
 				} else {
 					childNodes = childNodes || dom.childNodes;
-					childNodes[i + offset].textContent = nextChild;
+					const childNode = childNodes[i + offset];
+					if (isNullOrUndefined(childNode)) {
+						dom.appendChild(document.createTextNode(nextChild));
+					} else {
+						childNode.textContent = nextChild;
+					}
 				}
 			}
 		}

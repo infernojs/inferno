@@ -1,6 +1,7 @@
 import { mountNode } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
+import { removeEventFromRegistry } from './events';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -55,16 +56,25 @@ export function detachNode(node) {
 		return;
 	}
 	const instance = node.instance;
-	if (instance && instance.render !== undefined) {
+	if (!isNullOrUndefined(instance) && instance.render !== undefined) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
 	const hooks = node.hooks;
-	if (hooks && !isNullOrUndefined(hooks.willDetach)) {
-		hooks.willDetach(node.dom);
+	if (!isNullOrUndefined(hooks)) {
+		if (!isNullOrUndefined(hooks.willDetach)) {
+			hooks.willDetach(node.dom);
+		}
+		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
+			hooks.componentWillUnmount(node.dom, hooks);
+		}
 	}
-	if (hooks && !isNullOrUndefined(hooks.componentWillUnmount)) {
-		hooks.componentWillUnmount(node.dom, hooks);
+	const events = node.events;
+	// Remove all events to free memory
+	if (!isNullOrUndefined(events)) {
+		for (let event in events) {
+			removeEventFromRegistry(event, events[event]);
+		}
 	}
 	const children = node.children;
 

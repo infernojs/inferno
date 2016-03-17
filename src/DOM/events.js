@@ -1,28 +1,47 @@
+import { isNullOrUndefined } from './../core/utils';
+
 const delegatedEventsRegistry = {};
 
-export function handleEvent(event, dom, callback) {
-	if (delegatedEventsRegistry[event]) {
-		const delegatedEvents = delegatedEventsRegistry[event];
+function createEventListener(callbackEvent) {
+	const delegatedEvents = delegatedEventsRegistry[callbackEvent.type];
 
-		delegatedEvents.push({
-			callback: callback,
-			target: dom
-		});
-	} else {
-		document.addEventListener(event, callbackEvent => {
-			const delegatedEvents = delegatedEventsRegistry[event];
+	for (let i = delegatedEvents.length - 1; i > -1; i--) {
+		const delegatedEvent = delegatedEvents[i];
 
-			for (let i = delegatedEvents.length - 1; i > -1; i--) {
-				const delegatedEvent = delegatedEvents[i];
+		if (delegatedEvent.target === callbackEvent.target) {
+			delegatedEvent.callback(callbackEvent);
+		}
+	}
+}
 
-				if (delegatedEvent.target === callbackEvent.target) {
-					delegatedEvent.callback(callbackEvent);
-				}
+export function removeEventFromRegistry(event, callback) {
+	if (isNullOrUndefined(callback)) {
+		return;
+	}
+	const delegatedEvents = delegatedEventsRegistry[event];
+	if (!isNullOrUndefined(delegatedEvents)) {
+		for (let i = 0; i < delegatedEvents.length; i++) {
+			const delegatedEvent = delegatedEvents[i];
+			if (delegatedEvent.callback === callback) {
+				delegatedEvents.splice(i, 1);
+				return;
 			}
-		}, false);
+		}
+	}
+}
+
+export function addEventToRegistry(event, dom, callback) {
+	const delegatedEvents = delegatedEventsRegistry[event];
+	if (isNullOrUndefined(delegatedEvents)) {
+		document.addEventListener(event, createEventListener, false);
 		delegatedEventsRegistry[event] = [{
 			callback: callback,
 			target: dom
 		}];
+	} else {
+		delegatedEvents.push({
+			callback: callback,
+			target: dom
+		});
 	}
 }

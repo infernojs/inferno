@@ -2,7 +2,7 @@ import { render } from '../rendering';
 
 var staticNode = {
 	tag: null,
-	static: {
+	pools: {
 		keyed: [],
 		nonKeyed: []
 	}
@@ -192,7 +192,7 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set static children as ' + arg.name,
 			template: () => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: arg.value
 			})
@@ -215,10 +215,10 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set static deep children as ' + arg.name,
 			template: () => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
+					tpl: staticNode,
 					tag: 'span',
 					children: arg.value
 				}
@@ -247,16 +247,16 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set very deep static children as ' + arg.name,
 			template: () => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
+					tpl: staticNode,
 					tag: 'span',
 					children: {
-						static: staticNode,
+						tpl: staticNode,
 						tag: 'b',
 						children: {
-							static: staticNode,
+							tpl: staticNode,
 							tag: 'b',
 							children: arg.value
 						}
@@ -288,7 +288,7 @@ describe('Children - (non-JSX)', () => {
 			description: 'should set dynamic children as ' + arg.name,
 
 			template: (child) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: child
 			})
@@ -371,10 +371,10 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set deep dynamic children as ' + arg.name,
 			template: (child) => ({
-				static: staticNode,
+				tpl: staticNode,
 				tag: 'div',
 				children: {
-					static: staticNode,
+					tpl: staticNode,
 					tag: 'b',
 					children: child
 				}

@@ -74,7 +74,7 @@ function createAttrsAndEvents(props, tag) {
 				if (!hooks) {
 					hooks = {};
 				}
-				events[prop.substring(2).toLowerCase()] = props[prop];
+				hooks[prop.substring(2).toLowerCase()] = props[prop];
 				delete props[prop];
 			} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
 				if (!events) {

@@ -2,6 +2,7 @@ import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulCom
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle } from './patching';
 import { mountChildren, mountNode } from './mounting';
+import { removeEventFromRegistry, addEventToRegistry } from './events';
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
 	const nextChildren = nextNode.children;
@@ -36,7 +37,6 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				}
 			}
 		} else {
-			// Remove node, do not use textContent to set to empty node!! See jsPerf for this
 			dom.textContent = '';
 		}
 	} else {
@@ -118,9 +118,16 @@ function diffEvents(lastNode, nextNode, dom) {
 
 			for (let i = 0; i < lastEventsKeys.length; i++) {
 				const event = lastEventsKeys[i];
+				const nextEvent = nextEvents[event];
+				const lastEvent = lastEvents[lastEventsKeys];
 
-				if (!nextEvents[event]) {
-					// remove event
+				if (isNullOrUndefined(nextEvent)) {
+					removeEventFromRegistry(event, lastEvent);
+				} else if (nextEvent !== lastEvent) {
+					// TODO: feels lot of looping here, but also this is real edge case
+					// Callback has changed and is not same as before
+					removeEventFromRegistry(event, lastEvent); // remove old
+					addEventToRegistry(event, dom, nextEvent); // add new
 				}
 			}
 		}

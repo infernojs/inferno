@@ -84,39 +84,26 @@ function queueStateChanges(component, newState) {
 	}
 }
 
-function applyState(component) {
-	var blockRender = component._blockRender;
+function applyState(component, force) {
+	if (component._deferSetState === false || force) {
+		(function () {
+			component._pendingSetState = false;
+			var pendingState = component._pendingState;
+			var oldState = component.state;
+			var nextState = babelHelpers.extends({}, oldState, pendingState);
 
-	requestAnimationFrame(function () {
-		if (component._deferSetState === false) {
-			(function () {
-				var activeNode = document.activeElement;
+			component._pendingState = {};
+			var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+			var lastNode = component._lastNode;
+			var parentDom = lastNode.dom.parentNode;
 
-				component._pendingSetState = false;
-				var pendingState = component._pendingState;
-				var oldState = component.state;
-				var nextState = babelHelpers.extends({}, oldState, pendingState);
-
-				component._pendingState = {};
-				component._pendingSetState = false;
-				var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
-				var lastNode = component._lastNode;
-				var parentDom = lastNode.dom.parentNode;
-
-				var subLifecycle = new Lifecycle();
-				component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
-				subLifecycle.addListener(function () {
-					subLifecycle.trigger();
-				});
-
-				if (activeNode !== document.body && document.activeElement !== activeNode) {
-					activeNode.focus();
-				}
-			})();
-		} else {
-			applyState(component);
-		}
-	});
+			var subLifecycle = new Lifecycle();
+			component._diffNodes(lastNode, nextNode, parentDom, subLifecycle, false);
+			subLifecycle.addListener(function () {
+				subLifecycle.trigger();
+			});
+		})();
+	}
 }
 
 var Component = function () {
@@ -131,7 +118,7 @@ var Component = function () {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false;
+		this._blockRender = false; // TODO: What is this used for?
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -147,7 +134,10 @@ var Component = function () {
 		value: function render() {}
 	}, {
 		key: 'forceUpdate',
-		value: function forceUpdate() {}
+		value: function forceUpdate() {
+			// TODO: We might need queue forceUpdate like in react
+			applyState(this, true);
+		}
 	}, {
 		key: 'setState',
 		value: function setState(newState) {
@@ -186,7 +176,7 @@ var Component = function () {
 		value: function getChildContext() {}
 	}, {
 		key: '_updateComponent',
-		value: function _updateComponent(prevState, nextState, prevProps, nextProps) {
+		value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {
 			if (this._unmounted === true) {
 				this._unmounted = false;
 				return false;
@@ -194,7 +184,7 @@ var Component = function () {
 			if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
 				nextProps.children = prevProps.children;
 			}
-			if (prevProps !== nextProps || prevState !== nextState) {
+			if (prevProps !== nextProps || prevState !== nextState || force) {
 				if (prevProps !== nextProps) {
 					this._blockRender = true;
 					this.componentWillReceiveProps(nextProps);
