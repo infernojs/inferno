@@ -12,6 +12,8 @@ function queueStateChanges(component, newState) {
 }
 
 function applyState(component, force) {
+	const blockRender = component._blockRender;
+
 	if (component._deferSetState === false || force) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
@@ -20,16 +22,19 @@ function applyState(component, force) {
 
 		component._pendingState = {};
 		const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
-		const lastNode = component._lastNode;
-		const parentDom = lastNode.dom.parentNode;
 
-		const subLifecycle = new Lifecycle();
-		component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
-		lastNode.dom = nextNode.dom;
-		component._lastNode = nextNode;
-		subLifecycle.addListener(() => {
-			subLifecycle.trigger();
-		});
+		if (!blockRender) {
+			const lastNode = component._lastNode;
+			const parentDom = lastNode.dom.parentNode;
+
+			const subLifecycle = new Lifecycle();
+			component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
+			lastNode.dom = nextNode.dom;
+			component._lastNode = nextNode;
+			subLifecycle.addListener(() => {
+				subLifecycle.trigger();
+			});
+		}
 	}
 }
 
@@ -43,7 +48,7 @@ export default class Component {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false; // TODO: What is this used for?
+		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;

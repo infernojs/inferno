@@ -861,7 +861,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	}
 }
 
-var recyclingEnabled = true;
+var recyclingEnabled = false;
 
 function recycle(node, lifecycle, context) {
 	var tpl = node.tpl;
