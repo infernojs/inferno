@@ -55,6 +55,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 	}
 }
 
+
 function diffRef(instance, lastValue, nextValue, dom) {
 	if (!isNullOrUndefined(instance)) {
 		if (isString(lastValue)) {
@@ -115,7 +116,7 @@ function diffEvents(lastNode, nextNode, dom) {
 		const nextEvents = nextNode.events;
 		if (!isNullOrUndefined(nextEvents)) {
 			const lastEventsKeys = Object.keys(lastEvents);
-			const nextEventsKeys = Object.keys(nextEvents);
+			// const nextEventsKeys = Object.keys(nextEvents);
 
 			for (let i = 0; i < lastEventsKeys.length; i++) {
 				const event = lastEventsKeys[i];

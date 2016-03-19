@@ -96,7 +96,7 @@ function isArray(obj) {
 }
 
 function isStatefulComponent(obj) {
-	return !isNullOrUndefined(obj) && obj.prototype && obj.prototype.render;
+	return !isNullOrUndefined(obj) && !isNullOrUndefined(obj.prototype.render);
 }
 
 function isStringOrNumber(obj) {
@@ -250,8 +250,8 @@ function detachNode(node) {
 			removeEventFromRegistry(event, events[event]);
 		}
 	}
-	var children = node.children;
 
+	var children = node.children;
 	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (var i = 0; i < children.length; i++) {
@@ -337,42 +337,40 @@ var canBeUnitlessProperties = {
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
-	} else {
-		if (!isNullOrUndefined(lastAttrValue)) {
-			if (isNullOrUndefined(nextAttrValue)) {
-				dom.removeAttribute('style');
-			} else {
-				var styleKeys = Object.keys(nextAttrValue);
+	} else if (isNullOrUndefined(lastAttrValue)) {
+		if (!isNullOrUndefined(nextAttrValue)) {
+			var styleKeys = Object.keys(nextAttrValue);
 
-				for (var i = 0; i < styleKeys.length; i++) {
-					var style = styleKeys[i];
-					var value = nextAttrValue[style];
+			for (var i = 0; i < styleKeys.length; i++) {
+				var style = styleKeys[i];
+				var value = nextAttrValue[style];
 
-					if (isNumber(value) && !canBeUnitlessProperties[style]) {
-						value = value + 'px';
-					}
-					dom.style[style] = value;
+				if (isNumber(value) && !canBeUnitlessProperties[style]) {
+					value = value + 'px';
 				}
-				var lastStyleKeys = Object.keys(lastAttrValue);
-
-				for (var _i = 0; _i < lastStyleKeys.length; _i++) {
-					var _style = lastStyleKeys[_i];
-					if (isNullOrUndefined(nextAttrValue[_style])) {
-						dom.style[_style] = '';
-					}
-				}
+				dom.style[style] = value;
 			}
-		} else if (!isNullOrUndefined(nextAttrValue)) {
-			var _styleKeys = Object.keys(nextAttrValue);
+		}
+	} else if (isNullOrUndefined(nextAttrValue)) {
+		dom.removeAttribute('style');
+	} else {
+		var _styleKeys = Object.keys(nextAttrValue);
 
-			for (var _i2 = 0; _i2 < _styleKeys.length; _i2++) {
-				var _style2 = _styleKeys[_i2];
-				var _value = nextAttrValue[_style2];
+		for (var _i = 0; _i < _styleKeys.length; _i++) {
+			var _style = _styleKeys[_i];
+			var _value = nextAttrValue[_style];
 
-				if (isNumber(_value) && !canBeUnitlessProperties[_style2]) {
-					_value = _value + 'px';
-				}
-				dom.style[_style2] = _value;
+			if (isNumber(_value) && !canBeUnitlessProperties[_style]) {
+				_value = _value + 'px';
+			}
+			dom.style[_style] = _value;
+		}
+		var lastStyleKeys = Object.keys(lastAttrValue);
+
+		for (var _i2 = 0; _i2 < lastStyleKeys.length; _i2++) {
+			var _style2 = lastStyleKeys[_i2];
+			if (isNullOrUndefined(nextAttrValue[_style2])) {
+				dom.style[_style2] = '';
 			}
 		}
 	}
@@ -528,13 +526,8 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 }
 
 function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance) {
-	var stop = false;
-	var startIndex = 0;
-	var oldStartIndex = 0;
 	var nextChildrenLength = nextChildren.length;
 	var lastChildrenLength = lastChildren.length;
-	var oldItem = void 0;
-
 	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
 		if (recyclingEnabled) {
 			for (var i = 0; i < lastChildrenLength; i++) {
@@ -544,7 +537,10 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		dom.textContent = '';
 		return;
 	}
-
+	var oldItem = void 0;
+	var stop = false;
+	var startIndex = 0;
+	var oldStartIndex = 0;
 	var endIndex = nextChildrenLength - 1;
 	var oldEndIndex = lastChildrenLength - 1;
 	var oldStartItem = lastChildrenLength > 0 ? lastChildren[oldStartIndex] : null;
@@ -618,13 +614,15 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 				nextNode = nextChildren[endIndex + 1].dom;
 			} else {
 				var oldLastItem = lastChildren[oldEndIndex];
-				if (!isNullOrUndefined(oldLastItem)) {
+				if (isNullOrUndefined(oldLastItem)) {
+					if (isNullOrUndefined(offset)) {
+						nextNode = null;
+					} else {
+						nextNode = dom.childNodes[offset];
+					}
+				} else {
 					// ParentDOM can contain more than one list, so get try to get last items nextSibling
 					nextNode = oldLastItem.dom.nextSibling;
-				} else if (!isNullOrUndefined(offset)) {
-					nextNode = dom.childNodes[offset];
-				} else {
-					nextNode = null;
 				}
 			}
 			for (; startIndex <= endIndex; startIndex++) {
@@ -650,15 +648,15 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			var key = item.key;
 			oldItem = oldItemsMap[key];
 			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
-			if (oldItem !== undefined) {
+			if (oldItem === undefined) {
+				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
+			} else {
 				oldItemsMap[key] = null;
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
 				if (item.dom.nextSibling !== nextNode) {
 					insertOrAppend(dom, item.dom, nextNode);
 				}
-			} else {
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			}
 			nextNode = item;
 		}
@@ -792,7 +790,7 @@ function diffEvents(lastNode, nextNode, dom) {
 		var nextEvents = nextNode.events;
 		if (!isNullOrUndefined(nextEvents)) {
 			var lastEventsKeys = Object.keys(lastEvents);
-			var nextEventsKeys = Object.keys(nextEvents);
+			// const nextEventsKeys = Object.keys(nextEvents);
 
 			for (var i = 0; i < lastEventsKeys.length; i++) {
 				var event = lastEventsKeys[i];
@@ -899,7 +897,7 @@ function recycle(node, lifecycle, context) {
 			var _keyPool = tpl.pools.nonKeyed;
 			recycledNode = _keyPool && _keyPool.pop();
 		}
-		if (recycledNode) {
+		if (!isNullOrUndefined(recycledNode)) {
 			diffNodes(recycledNode, node, null, null, lifecycle, context, true);
 			return node.dom;
 		}
@@ -1178,17 +1176,16 @@ function removeRoot(rootNode) {
 
 		if (root === rootNode) {
 			roots.splice(i, 1);
-			return true;
+			return;
 		}
 	}
-	return false;
 }
 
 function render(node, parentDom) {
 	var root = getRoot(parentDom);
 	var lifecycle = new Lifecycle();
 
-	if (isNullOrUndefined(root)) {
+	if (root === null) {
 		mountNode(node, parentDom, null, lifecycle, {}, null);
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });

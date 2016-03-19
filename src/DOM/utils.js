@@ -76,8 +76,8 @@ export function detachNode(node) {
 			removeEventFromRegistry(event, events[event]);
 		}
 	}
-	const children = node.children;
 
+	const children = node.children;
 	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {

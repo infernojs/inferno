@@ -1,7 +1,6 @@
 import Lifecycle from '../core/lifecycle';
 import { mountNode } from './mounting';
 import { patchNode } from './patching';
-import { isNullOrUndefined } from '../core/utils';
 
 const roots = [];
 
@@ -22,17 +21,16 @@ function removeRoot(rootNode) {
 
 		if (root === rootNode) {
 			roots.splice(i, 1);
-			return true;
+			return;
 		}
 	}
-	return false;
 }
 
 export function render(node, parentDom) {
 	const root = getRoot(parentDom);
 	const lifecycle = new Lifecycle();
 
-	if (isNullOrUndefined(root)) {
+	if (root === null) {
 		mountNode(node, parentDom, null, lifecycle, {}, null);
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });

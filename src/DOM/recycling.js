@@ -17,7 +17,7 @@ export function recycle(node, lifecycle, context) {
 			const keyPool = tpl.pools.nonKeyed;
 			recycledNode = keyPool && keyPool.pop();
 		}
-		if (recycledNode) {
+		if (!isNullOrUndefined(recycledNode)) {
 			diffNodes(recycledNode, node, null, null, lifecycle, context, true);
 			return node.dom;
 		}

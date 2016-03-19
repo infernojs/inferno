@@ -61,33 +61,8 @@ export const canBeUnitlessProperties = {
 export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
-	} else {
-		if (!isNullOrUndefined(lastAttrValue)) {
-			if (isNullOrUndefined(nextAttrValue)) {
-				dom.removeAttribute('style');
-			} else {
-				const styleKeys = Object.keys(nextAttrValue);
-
-				for (let i = 0; i < styleKeys.length; i++) {
-					const style = styleKeys[i];
-					let value = nextAttrValue[style];
-
-					if (isNumber(value) && !canBeUnitlessProperties[style]) {
-						value = value + 'px';
-					}
-					dom.style[style] = value;
-				}
-				const lastStyleKeys = Object.keys(lastAttrValue);
-
-				for (let i = 0; i < lastStyleKeys.length; i++) {
-					const style = lastStyleKeys[i];
-					if (isNullOrUndefined(nextAttrValue[style])) {
-						dom.style[style] = '';
-					}
-				}
-			}
-
-		} else if (!isNullOrUndefined(nextAttrValue)) {
+	} else if (isNullOrUndefined(lastAttrValue)) {
+		if (!isNullOrUndefined(nextAttrValue)) {
 			const styleKeys = Object.keys(nextAttrValue);
 
 			for (let i = 0; i < styleKeys.length; i++) {
@@ -98,6 +73,28 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 					value = value + 'px';
 				}
 				dom.style[style] = value;
+			}
+		}
+	} else if (isNullOrUndefined(nextAttrValue)) {
+		dom.removeAttribute('style');
+	} else {
+		const styleKeys = Object.keys(nextAttrValue);
+
+		for (let i = 0; i < styleKeys.length; i++) {
+			const style = styleKeys[i];
+			let value = nextAttrValue[style];
+
+			if (isNumber(value) && !canBeUnitlessProperties[style]) {
+				value = value + 'px';
+			}
+			dom.style[style] = value;
+		}
+		const lastStyleKeys = Object.keys(lastAttrValue);
+
+		for (let i = 0; i < lastStyleKeys.length; i++) {
+			const style = lastStyleKeys[i];
+			if (isNullOrUndefined(nextAttrValue[style])) {
+				dom.style[style] = '';
 			}
 		}
 	}
@@ -256,13 +253,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 }
 
 export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance) {
-	let stop = false;
-	let startIndex = 0;
-	let oldStartIndex = 0;
 	let nextChildrenLength = nextChildren.length;
 	let lastChildrenLength = lastChildren.length;
-	let oldItem;
-
 	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
 		if (recyclingEnabled) {
 			for (let i = 0; i < lastChildrenLength; i++) {
@@ -272,7 +264,10 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		dom.textContent = '';
 		return;
 	}
-
+	let oldItem;
+	let stop = false;
+	let startIndex = 0;
+	let oldStartIndex = 0;
 	let endIndex = nextChildrenLength - 1;
 	let oldEndIndex = lastChildrenLength - 1;
 	let oldStartItem = (lastChildrenLength > 0) ? lastChildren[oldStartIndex] : null;
@@ -346,13 +341,15 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				nextNode = nextChildren[endIndex + 1].dom;
 			} else {
 				const oldLastItem = lastChildren[oldEndIndex];
-				if (!isNullOrUndefined(oldLastItem)) {
+				if (isNullOrUndefined(oldLastItem)) {
+					if (isNullOrUndefined(offset)) {
+						nextNode = null;
+					} else {
+						nextNode = dom.childNodes[offset];
+					}
+				} else {
 					// ParentDOM can contain more than one list, so get try to get last items nextSibling
 					nextNode = oldLastItem.dom.nextSibling;
-				} else if (!isNullOrUndefined(offset)) {
-					nextNode = dom.childNodes[offset];
-				} else {
-					nextNode = null;
 				}
 			}
 			for (; startIndex <= endIndex; startIndex++) {
@@ -378,15 +375,15 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			const key = item.key;
 			oldItem = oldItemsMap[key];
 			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
-			if (oldItem !== undefined) {
+			if (oldItem === undefined) {
+				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
+			} else {
 				oldItemsMap[key] = null;
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
 				if (item.dom.nextSibling !== nextNode) {
 					insertOrAppend(dom, item.dom, nextNode);
 				}
-			} else {
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			}
 			nextNode = item;
 		}
