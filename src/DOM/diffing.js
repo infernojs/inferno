@@ -31,7 +31,11 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				if (isArray(nextChildren)) {
 					patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null, instance);
 				} else if (isStringOrNumber(nextChildren)) {
-					dom.firstChild.nodeValue = nextChildren;
+					if (!isInvalidNode(lastChildren)) {
+						dom.firstChild.nodeValue = nextChildren;
+					} else {
+						dom.textContent = nextChildren;
+					}
 				} else {
 					diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck, instance);
 				}
@@ -41,7 +45,11 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		}
 	} else {
 		if (isStringOrNumber(nextChildren)) {
-			dom.firstChild.nodeValue = nextChildren;
+			if (!isInvalidNode(lastChildren)) {
+				dom.firstChild.nodeValue = nextChildren;
+			} else {
+				dom.textContent = nextChildren;
+			}
 		} else if (!isNullOrUndefined(nextChildren)) {
 			if (typeof nextChildren === 'object') {
 				if (isArray(nextChildren)) {
