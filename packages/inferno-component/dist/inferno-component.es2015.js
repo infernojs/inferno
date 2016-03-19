@@ -147,10 +147,12 @@ var Component = function () {
 		}
 	}, {
 		key: 'setState',
-		value: function setState(newState) {
-			// TODO the callback
+		value: function setState(newState, callback) {
 			if (this._blockSetState === false) {
 				queueStateChanges(this, newState);
+				if (typeof callback === 'function') {
+					callback();
+				}
 			} else {
 				throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
 			}

@@ -660,6 +660,14 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 	}
 }
 
+function updateTextNode(dom, lastChildren, nextChildren) {
+	if (isStringOrNumber(lastChildren)) {
+		dom.firstChild.nodeValue = nextChildren;
+	} else {
+		dom.textContent = nextChildren;
+	}
+}
+
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
 	var nextChildren = nextNode.children;
 	var lastChildren = lastNode.children;
@@ -686,7 +694,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				if (isArray(nextChildren)) {
 					patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null, instance);
 				} else if (isStringOrNumber(nextChildren)) {
-					dom.textContent = nextChildren;
+					updateTextNode(dom, lastChildren, nextChildren);
 				} else {
 					diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck, instance);
 				}
@@ -696,7 +704,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		}
 	} else {
 		if (isStringOrNumber(nextChildren)) {
-			dom.textContent = nextChildren;
+			updateTextNode(dom, lastChildren, nextChildren);
 		} else if (!isNullOrUndefined(nextChildren)) {
 			if ((typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
 				if (isArray(nextChildren)) {
@@ -861,7 +869,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	}
 }
 
-var recyclingEnabled = false;
+var recyclingEnabled = true;
 
 function recycle(node, lifecycle, context) {
 	var tpl = node.tpl;
