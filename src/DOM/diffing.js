@@ -127,7 +127,7 @@ function diffEvents(lastNode, nextNode, dom) {
 			for (let i = 0; i < lastEventsKeys.length; i++) {
 				const event = lastEventsKeys[i];
 				const nextEvent = nextEvents[event];
-				const lastEvent = lastEvents[lastEventsKeys];
+				const lastEvent = lastEvents[event];
 
 				if (isNullOrUndefined(nextEvent)) {
 					removeEventFromRegistry(event, lastEvent);
