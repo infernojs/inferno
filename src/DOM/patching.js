@@ -235,7 +235,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 				} else if (typeof nextChild === 'object') {
 					if (isArray(nextChild)) {
 						if (isArray(lastChild)) {
-							patchNonKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i, instance);
+							patchArrayChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i, instance);
 						} else {
 							patchNonKeyedChildren([lastChild], nextChild, dom, namespace, lifecycle, context, i, instance);
 						}
@@ -343,7 +343,17 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 
 	if (oldStartIndex > oldEndIndex) {
 		if (startIndex <= endIndex) {
-			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
+			if (endIndex + 1 < nextChildrenLength) {
+				nextNode = nextChildren[endIndex + 1].dom;
+			} else {
+				const oldLastItem = lastChildren[oldEndIndex];
+				if (!isNullOrUndefined(oldLastItem)) {
+					// ParentDOM can contain more than one list, so get try to get last items nextSibling
+					nextNode = oldLastItem.dom.nextSibling;
+				} else {
+					nextNode = null;
+				}
+			}
 			for (; startIndex <= endIndex; startIndex++) {
 				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 			}
@@ -385,5 +395,16 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				remove(oldItem, dom);
 			}
 		}
+	}
+}
+
+export function patchArrayChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance) {
+	const isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
+		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+
+	if (isKeyed) {
+		patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+	} else {
+		patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance);
 	}
 }

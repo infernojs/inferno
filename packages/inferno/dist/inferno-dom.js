@@ -125,7 +125,7 @@
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	function isString$1(obj) {
+	function isString(obj) {
 		return typeof obj === 'string';
 	}
 
@@ -341,7 +341,7 @@
 	};
 
 	function patchStyle(lastAttrValue, nextAttrValue, dom) {
-		if (isString$1(nextAttrValue)) {
+		if (isString(nextAttrValue)) {
 			dom.style.cssText = nextAttrValue;
 		} else {
 			if (!isNullOrUndefined(lastAttrValue)) {
@@ -513,7 +513,7 @@
 					} else if ((typeof _nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(_nextChild)) === 'object') {
 						if (isArray(_nextChild)) {
 							if (isArray(_lastChild)) {
-								patchNonKeyedChildren(_lastChild, _nextChild, dom, namespace, lifecycle, context, i, instance);
+								patchArrayChildren(_lastChild, _nextChild, dom, namespace, lifecycle, context, i, instance);
 							} else {
 								patchNonKeyedChildren([_lastChild], _nextChild, dom, namespace, lifecycle, context, i, instance);
 							}
@@ -621,7 +621,17 @@
 
 		if (oldStartIndex > oldEndIndex) {
 			if (startIndex <= endIndex) {
-				nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
+				if (endIndex + 1 < nextChildrenLength) {
+					nextNode = nextChildren[endIndex + 1].dom;
+				} else {
+					var oldLastItem = lastChildren[oldEndIndex];
+					if (!isNullOrUndefined(oldLastItem)) {
+						// ParentDOM can contain more than one list, so get try to get last items nextSibling
+						nextNode = oldLastItem.dom.nextSibling;
+					} else {
+						nextNode = null;
+					}
+				}
 				for (; startIndex <= endIndex; startIndex++) {
 					insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 				}
@@ -666,6 +676,16 @@
 		}
 	}
 
+	function patchArrayChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance) {
+		var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+
+		if (isKeyed) {
+			patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+		} else {
+			patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance);
+		}
+	}
+
 	function updateTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
 			dom.firstChild.nodeValue = nextChildren;
@@ -686,13 +706,7 @@
 			if (!isInvalidNode(nextChildren)) {
 				if (isArray(lastChildren)) {
 					if (isArray(nextChildren)) {
-						var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
-
-						if (isKeyed) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-						} else {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
-						}
+						patchArrayChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
 					} else {
 						patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null, instance);
 					}
@@ -864,7 +878,6 @@
 				dom.className = nextClassName;
 			}
 		}
-		// TODO Should check for null & undefined BEFORE calling this function?
 		if (lastNode.style !== nextStyle) {
 			patchStyle(lastNode.style, nextStyle, dom);
 		}
@@ -961,7 +974,7 @@
 	}
 
 	function mountRef(instance, value, dom) {
-		if (!isNullOrUndefined(instance) && isString$1(value)) {
+		if (!isNullOrUndefined(instance) && isString(value)) {
 			instance.refs[value] = dom;
 		}
 	}
@@ -1038,7 +1051,7 @@
 
 		for (var i = 0; i < allEvents.length; i++) {
 			var event = allEvents[i];
-			if (isString$1(event)) {
+			if (isString(event)) {
 				addEventToRegistry(event, dom, events[event]);
 			}
 		}
@@ -1093,7 +1106,7 @@
 		if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
 			dom = tpl.dom.cloneNode(true);
 		} else {
-			if (!isString$1(tag) || tag === '') {
+			if (!isString(tag) || tag === '') {
 				throw Error('Inferno Error: Expected function or string for element tag type');
 			}
 			dom = createElement(tag, namespace);
