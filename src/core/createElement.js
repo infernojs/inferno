@@ -17,25 +17,25 @@ export function createAttrsAndEvents(props, tag) {
 			} else if (prop === 'style') {
 				style = props[prop];
 			} else if (isAttrAHook(prop) && !isFunction(tag)) {
-				if (!hooks) {
+				if (isNullOrUndefined(hooks)) {
 					hooks = {};
 				}
 				hooks[prop.substring(2).toLowerCase()] = props[prop];
 				delete props[prop];
 			} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
-				if (!events) {
+				if (isNullOrUndefined(events)) {
 					events = {};
 				}
 				events[prop.substring(2).toLowerCase()] = props[prop];
 				delete props[prop];
 			} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
-				if (!hooks) {
+				if (isNullOrUndefined(hooks)) {
 					hooks = {};
 				}
 				hooks['c' + prop.substring(3)] = props[prop];
 				delete props[prop];
 			} else if (!isFunction(tag)) {
-				if (!attrs) {
+				if (isNullOrUndefined(attrs)) {
 					attrs = {};
 				}
 				attrs[prop] = props[prop];
@@ -55,10 +55,8 @@ function createChild({ tag, attrs, children, className, style, events, hooks }) 
 
 	if (!isNullOrUndefined(children) && children.length === 0) {
 		children = null;
-	} else {
-		if (!isInvalidNode(children)) {
-			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
-		}
+	} else if (!isInvalidNode(children)) {
+		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 
 	if (key !== null) {

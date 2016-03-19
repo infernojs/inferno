@@ -96,7 +96,7 @@ function isArray(obj) {
 }
 
 function isStatefulComponent(obj) {
-	return !isNullOrUndefined(obj) && obj.prototype && obj.prototype.render;
+	return !isNullOrUndefined(obj) && !isNullOrUndefined(obj.prototype.render);
 }
 
 function isStringOrNumber(obj) {
@@ -119,7 +119,7 @@ function isAttrAnEvent(attr) {
 	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
 
-function isString$1(obj) {
+function isString(obj) {
 	return typeof obj === 'string';
 }
 
@@ -250,8 +250,8 @@ function detachNode(node) {
 			removeEventFromRegistry(event, events[event]);
 		}
 	}
-	var children = node.children;
 
+	var children = node.children;
 	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (var i = 0; i < children.length; i++) {
@@ -335,44 +335,42 @@ var canBeUnitlessProperties = {
 };
 
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
-	if (isString$1(nextAttrValue)) {
+	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
-	} else {
-		if (!isNullOrUndefined(lastAttrValue)) {
-			if (isNullOrUndefined(nextAttrValue)) {
-				dom.removeAttribute('style');
-			} else {
-				var styleKeys = Object.keys(nextAttrValue);
+	} else if (isNullOrUndefined(lastAttrValue)) {
+		if (!isNullOrUndefined(nextAttrValue)) {
+			var styleKeys = Object.keys(nextAttrValue);
 
-				for (var i = 0; i < styleKeys.length; i++) {
-					var style = styleKeys[i];
-					var value = nextAttrValue[style];
+			for (var i = 0; i < styleKeys.length; i++) {
+				var style = styleKeys[i];
+				var value = nextAttrValue[style];
 
-					if (isNumber(value) && !canBeUnitlessProperties[style]) {
-						value = value + 'px';
-					}
-					dom.style[style] = value;
+				if (isNumber(value) && !canBeUnitlessProperties[style]) {
+					value = value + 'px';
 				}
-				var lastStyleKeys = Object.keys(lastAttrValue);
-
-				for (var _i = 0; _i < lastStyleKeys.length; _i++) {
-					var _style = lastStyleKeys[_i];
-					if (isNullOrUndefined(nextAttrValue[_style])) {
-						dom.style[_style] = '';
-					}
-				}
+				dom.style[style] = value;
 			}
-		} else if (!isNullOrUndefined(nextAttrValue)) {
-			var _styleKeys = Object.keys(nextAttrValue);
+		}
+	} else if (isNullOrUndefined(nextAttrValue)) {
+		dom.removeAttribute('style');
+	} else {
+		var _styleKeys = Object.keys(nextAttrValue);
 
-			for (var _i2 = 0; _i2 < _styleKeys.length; _i2++) {
-				var _style2 = _styleKeys[_i2];
-				var _value = nextAttrValue[_style2];
+		for (var _i = 0; _i < _styleKeys.length; _i++) {
+			var _style = _styleKeys[_i];
+			var _value = nextAttrValue[_style];
 
-				if (isNumber(_value) && !canBeUnitlessProperties[_style2]) {
-					_value = _value + 'px';
-				}
-				dom.style[_style2] = _value;
+			if (isNumber(_value) && !canBeUnitlessProperties[_style]) {
+				_value = _value + 'px';
+			}
+			dom.style[_style] = _value;
+		}
+		var lastStyleKeys = Object.keys(lastAttrValue);
+
+		for (var _i2 = 0; _i2 < lastStyleKeys.length; _i2++) {
+			var _style2 = lastStyleKeys[_i2];
+			if (isNullOrUndefined(nextAttrValue[_style2])) {
+				dom.style[_style2] = '';
 			}
 		}
 	}
@@ -465,7 +463,6 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 			var nextChild = nextChildren[lastChildrenLength + counter];
 
 			if (isInvalidNode(nextChild)) {
-				// debugger;
 				// TODO implement
 			} else {
 					var node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
@@ -507,7 +504,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 				} else if ((typeof _nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(_nextChild)) === 'object') {
 					if (isArray(_nextChild)) {
 						if (isArray(_lastChild)) {
-							patchNonKeyedChildren(_lastChild, _nextChild, dom, namespace, lifecycle, context, i, instance);
+							patchArrayChildren(_lastChild, _nextChild, dom, namespace, lifecycle, context, i, instance);
 						} else {
 							patchNonKeyedChildren([_lastChild], _nextChild, dom, namespace, lifecycle, context, i, instance);
 						}
@@ -528,14 +525,9 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifec
 	}
 }
 
-function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
-	var stop = false;
-	var startIndex = 0;
-	var oldStartIndex = 0;
+function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance) {
 	var nextChildrenLength = nextChildren.length;
 	var lastChildrenLength = lastChildren.length;
-	var oldItem = void 0;
-
 	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
 		if (recyclingEnabled) {
 			for (var i = 0; i < lastChildrenLength; i++) {
@@ -545,7 +537,10 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		dom.textContent = '';
 		return;
 	}
-
+	var oldItem = void 0;
+	var stop = false;
+	var startIndex = 0;
+	var oldStartIndex = 0;
 	var endIndex = nextChildrenLength - 1;
 	var oldEndIndex = lastChildrenLength - 1;
 	var oldStartItem = lastChildrenLength > 0 ? lastChildren[oldStartIndex] : null;
@@ -615,7 +610,21 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 
 	if (oldStartIndex > oldEndIndex) {
 		if (startIndex <= endIndex) {
-			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
+			if (endIndex + 1 < nextChildrenLength) {
+				nextNode = nextChildren[endIndex + 1].dom;
+			} else {
+				var oldLastItem = lastChildren[oldEndIndex];
+				if (isNullOrUndefined(oldLastItem)) {
+					if (isNullOrUndefined(offset)) {
+						nextNode = null;
+					} else {
+						nextNode = dom.childNodes[offset];
+					}
+				} else {
+					// ParentDOM can contain more than one list, so get try to get last items nextSibling
+					nextNode = oldLastItem.dom.nextSibling;
+				}
+			}
 			for (; startIndex <= endIndex; startIndex++) {
 				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 			}
@@ -639,15 +648,15 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			var key = item.key;
 			oldItem = oldItemsMap[key];
 			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
-			if (oldItem !== undefined) {
+			if (oldItem === undefined) {
+				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
+			} else {
 				oldItemsMap[key] = null;
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, true, instance);
 
 				if (item.dom.nextSibling !== nextNode) {
 					insertOrAppend(dom, item.dom, nextNode);
 				}
-			} else {
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			}
 			nextNode = item;
 		}
@@ -657,6 +666,16 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 				remove(oldItem, dom);
 			}
 		}
+	}
+}
+
+function patchArrayChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance) {
+	var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+
+	if (isKeyed) {
+		patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance);
+	} else {
+		patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance);
 	}
 }
 
@@ -680,13 +699,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		if (!isInvalidNode(nextChildren)) {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					var isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
-
-					if (isKeyed) {
-						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-					} else {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
-					}
+					patchArrayChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
 				} else {
 					patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null, instance);
 				}
@@ -777,12 +790,12 @@ function diffEvents(lastNode, nextNode, dom) {
 		var nextEvents = nextNode.events;
 		if (!isNullOrUndefined(nextEvents)) {
 			var lastEventsKeys = Object.keys(lastEvents);
-			var nextEventsKeys = Object.keys(nextEvents);
+			// const nextEventsKeys = Object.keys(nextEvents);
 
 			for (var i = 0; i < lastEventsKeys.length; i++) {
 				var event = lastEventsKeys[i];
 				var nextEvent = nextEvents[event];
-				var lastEvent = lastEvents[lastEventsKeys];
+				var lastEvent = lastEvents[event];
 
 				if (isNullOrUndefined(nextEvent)) {
 					removeEventFromRegistry(event, lastEvent);
@@ -858,7 +871,6 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 			dom.className = nextClassName;
 		}
 	}
-	// TODO Should check for null & undefined BEFORE calling this function?
 	if (lastNode.style !== nextStyle) {
 		patchStyle(lastNode.style, nextStyle, dom);
 	}
@@ -885,7 +897,7 @@ function recycle(node, lifecycle, context) {
 			var _keyPool = tpl.pools.nonKeyed;
 			recycledNode = _keyPool && _keyPool.pop();
 		}
-		if (recycledNode) {
+		if (!isNullOrUndefined(recycledNode)) {
 			diffNodes(recycledNode, node, null, null, lifecycle, context, true);
 			return node.dom;
 		}
@@ -955,7 +967,7 @@ function mountChildren(children, parentDom, namespace, lifecycle, context, insta
 }
 
 function mountRef(instance, value, dom) {
-	if (!isNullOrUndefined(instance) && isString$1(value)) {
+	if (!isNullOrUndefined(instance) && isString(value)) {
 		instance.refs[value] = dom;
 	}
 }
@@ -1032,7 +1044,7 @@ function mountEvents(events, dom) {
 
 	for (var i = 0; i < allEvents.length; i++) {
 		var event = allEvents[i];
-		if (isString$1(event)) {
+		if (isString(event)) {
 			addEventToRegistry(event, dom, events[event]);
 		}
 	}
@@ -1087,7 +1099,7 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 	if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
 		dom = tpl.dom.cloneNode(true);
 	} else {
-		if (!isString$1(tag) || tag === '') {
+		if (!isString(tag) || tag === '') {
 			throw Error('Inferno Error: Expected function or string for element tag type');
 		}
 		dom = createElement(tag, namespace);
@@ -1164,17 +1176,16 @@ function removeRoot(rootNode) {
 
 		if (root === rootNode) {
 			roots.splice(i, 1);
-			return true;
+			return;
 		}
 	}
-	return false;
 }
 
 function render(node, parentDom) {
 	var root = getRoot(parentDom);
 	var lifecycle = new Lifecycle();
 
-	if (isNullOrUndefined(root)) {
+	if (root === null) {
 		mountNode(node, parentDom, null, lifecycle, {}, null);
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });

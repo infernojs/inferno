@@ -1,6 +1,6 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString } from '../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle } from './patching';
+import { patchNonKeyedChildren, patchArrayChildren, patchAttribute, patchComponent, patchStyle } from './patching';
 import { mountChildren, mountNode } from './mounting';
 import { removeEventFromRegistry, addEventToRegistry } from './events';
 
@@ -24,14 +24,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		if (!isInvalidNode(nextChildren)) {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					const isKeyed = nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
-						|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
-
-					if (isKeyed) {
-						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-					} else {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
-					}
+					patchArrayChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
 				} else {
 					patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null, instance);
 				}
@@ -61,6 +54,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		}
 	}
 }
+
 
 function diffRef(instance, lastValue, nextValue, dom) {
 	if (!isNullOrUndefined(instance)) {
@@ -122,7 +116,7 @@ function diffEvents(lastNode, nextNode, dom) {
 		const nextEvents = nextNode.events;
 		if (!isNullOrUndefined(nextEvents)) {
 			const lastEventsKeys = Object.keys(lastEvents);
-			const nextEventsKeys = Object.keys(nextEvents);
+			// const nextEventsKeys = Object.keys(nextEvents);
 
 			for (let i = 0; i < lastEventsKeys.length; i++) {
 				const event = lastEventsKeys[i];
@@ -203,7 +197,6 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 			dom.className = nextClassName;
 		}
 	}
-	// TODO Should check for null & undefined BEFORE calling this function?
 	if (lastNode.style !== nextStyle) {
 		patchStyle(lastNode.style, nextStyle, dom);
 	}
