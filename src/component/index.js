@@ -63,10 +63,12 @@ export default class Component {
 		// TODO: We might need queue forceUpdate like in react
 		applyState(this, true);
 	}
-	setState(newState) {
-		// TODO the callback
+	setState(newState, callback) {
 		if (this._blockSetState === false) {
 			queueStateChanges(this, newState);
+			if (typeof callback === 'function') {
+				callback();
+			}
 		} else {
 			throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
 		}
