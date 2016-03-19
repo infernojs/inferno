@@ -256,7 +256,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 	}
 }
 
-export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
+export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance) {
 	let stop = false;
 	let startIndex = 0;
 	let oldStartIndex = 0;
@@ -350,6 +350,8 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				if (!isNullOrUndefined(oldLastItem)) {
 					// ParentDOM can contain more than one list, so get try to get last items nextSibling
 					nextNode = oldLastItem.dom.nextSibling;
+				} else if (!isNullOrUndefined(offset)) {
+					nextNode = dom.children[offset];
 				} else {
 					nextNode = null;
 				}
@@ -403,7 +405,7 @@ export function patchArrayChildren(lastChildren, nextChildren, dom, namespace, l
 		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 
 	if (isKeyed) {
-		patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+		patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance);
 	} else {
 		patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, offset, instance);
 	}

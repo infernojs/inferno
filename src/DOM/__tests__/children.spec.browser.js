@@ -415,7 +415,7 @@ describe('Children - (non-JSX)', () => {
 			container.innerHTML = '';
 		});
 
-		it('Should unshift to correct location when it keyed list has siblings', function() {
+		it('Should push to correct location when it keyed list has siblings', function() {
 			var tabs = [{title:"Item A"}, {title:"Item B"}];
 			function Tab({title, onSelect, key, id}) {
 				return (
@@ -461,6 +461,146 @@ describe('Children - (non-JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>');
+		});
+
+		it('Should append child node to correct location when its empty at the beginning ', function() {
+			var tabs = [];
+			function Tab({title, onSelect, key, id}) {
+				return (
+					<div
+						id = {id}
+						key = {key}
+						onClick = {onSelect}>
+						{title}
+					</div>
+				)
+			}
+
+			function TabGroup({ tabs }) {
+				function create() {
+					tabs.push({title: "New " + tabs.length});
+					renderIt();
+				}
+				return (
+					<div class="tab-group">{tabs.map((tab, i) => (
+						<Tab
+							key      = { "Item " + i }
+							title    = { tab.title }
+							onSelect = { ()=>undefined }/>
+					))}
+						<Tab onSelect={create} id="add" title="Add"/>
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<TabGroup tabs={tabs}></TabGroup>, container);
+			}
+
+			renderIt();
+
+			debugger;
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
+			const addTab = container.querySelector('#add');
+			addTab.click();
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>');
+			addTab.click();
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>');
+		});
+
+		it('Should append child node to correct location when its empty at the beginning ', function() {
+			var tabs = [];
+			function Tab({title, onSelect, key, id}) {
+				return (
+					<div
+						id = {id}
+						key = {key}
+						onClick = {onSelect}>
+						{title}
+					</div>
+				)
+			}
+
+			function TabGroup({ tabs }) {
+				function create() {
+					tabs.push({title: "New " + tabs.length});
+					renderIt();
+				}
+				return (
+					<div class="tab-group">
+						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
+						<Tab
+							key      = { "Item " + i }
+							title    = { tab.title }
+							onSelect = { ()=>undefined }/>
+					))}
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<TabGroup tabs={tabs}></TabGroup>, container);
+			}
+
+			renderIt();
+
+			debugger;
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
+			const addTab = container.querySelector('#add');
+			addTab.click();
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div><div>New 0</div></div>');
+			addTab.click();
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
+		});
+
+		it('Should append child node to correct location when its empty at the beginning ', function() {
+			var tabs = [];
+			function Tab({title, onSelect, key, id}) {
+				return (
+					<div
+						id = {id}
+						key = {key}
+						onClick = {onSelect}>
+						{title}
+					</div>
+				)
+			}
+
+			function TabGroup({ tabs }) {
+				function create() {
+					tabs.push({title: "New " + tabs.length});
+					renderIt();
+				}
+				return (
+					<div class="tab-group">{tabs.map((tab, i) => (
+						<Tab
+							key      = { "Item " + i }
+							title    = { tab.title }
+							onSelect = { ()=>undefined }/>
+					))}
+						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
+						<Tab
+							key      = { "Item " + i }
+							title    = { tab.title }
+							onSelect = { ()=>undefined }/>
+					))}
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<TabGroup tabs={tabs}></TabGroup>, container);
+			}
+
+			renderIt();
+
+			debugger;
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
+			const addTab = container.querySelector('#add');
+			addTab.click();
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>');
+			addTab.click();
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});
 
 		it('Should appendx3 to correct location when it keyed list has siblings', function() {
