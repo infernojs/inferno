@@ -148,6 +148,8 @@
 	}
 
 	function createDatabase(db) {
+		var lastSample = db.lastSample;
+
 		return {
 			tpl: dbTemplate1,
 			dom: null,
@@ -163,16 +165,16 @@
 					children: {
 						tpl: dbTemplate4,
 						dom: null,
-						children: db.lastSample.nbQueries,
-						className: db.lastSample.countClassName
+						children: lastSample.nbQueries,
+						className: lastSample.countClassName
 					}
 				}
-			].concat(map(createQuery, db.lastSample.topFiveQueries))
+			].concat(map(createQuery, lastSample.topFiveQueries))
 		};
 	}
 
 	function render() {
-		var dbs = ENV.generateData(false).toArray();
+		var dbs = ENV.generateData().toArray();
 		Monitoring.renderRate.ping();
 		InfernoDOM.render({
 			tpl: appTemplate1,
