@@ -65,6 +65,20 @@ describe('Components (JSX)', () => {
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>')
 		);
+
+		const other = { foo: 'bar' }
+		const attrs = { title: 'abc', name: 'basic-render2', ...other };
+
+		// JSX Spread Attribute
+		render((
+			<div><BasicComponent1 { ...attrs } /></div>
+		), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<div><div class="basic"><span class="basic-render2">The title is abc</span></div></div>')
+		);
 	});
 
 	class BasicComponent1b extends Component {
