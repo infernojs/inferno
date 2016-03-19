@@ -193,7 +193,6 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 			const nextChild = nextChildren[lastChildrenLength + counter];
 
 			if (isInvalidNode(nextChild)) {
-				// debugger;
 				// TODO implement
 			} else {
 				const node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
@@ -351,7 +350,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 					// ParentDOM can contain more than one list, so get try to get last items nextSibling
 					nextNode = oldLastItem.dom.nextSibling;
 				} else if (!isNullOrUndefined(offset)) {
-					nextNode = dom.children[offset];
+					nextNode = dom.childNodes[offset];
 				} else {
 					nextNode = null;
 				}

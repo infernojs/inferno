@@ -471,7 +471,6 @@
 				var nextChild = nextChildren[lastChildrenLength + counter];
 
 				if (isInvalidNode(nextChild)) {
-					// debugger;
 					// TODO implement
 				} else {
 						var node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
@@ -629,7 +628,7 @@
 						// ParentDOM can contain more than one list, so get try to get last items nextSibling
 						nextNode = oldLastItem.dom.nextSibling;
 					} else if (!isNullOrUndefined(offset)) {
-						nextNode = dom.children[offset];
+						nextNode = dom.childNodes[offset];
 					} else {
 						nextNode = null;
 					}

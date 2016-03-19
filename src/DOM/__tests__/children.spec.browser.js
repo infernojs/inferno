@@ -498,8 +498,6 @@ describe('Children - (non-JSX)', () => {
 			}
 
 			renderIt();
-
-			debugger;
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
 			const addTab = container.querySelector('#add');
 			addTab.click();
@@ -544,7 +542,6 @@ describe('Children - (non-JSX)', () => {
 
 			renderIt();
 
-			debugger;
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
 			const addTab = container.querySelector('#add');
 			addTab.click();
@@ -594,7 +591,6 @@ describe('Children - (non-JSX)', () => {
 
 			renderIt();
 
-			debugger;
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
 			const addTab = container.querySelector('#add');
 			addTab.click();
@@ -690,5 +686,76 @@ describe('Children - (non-JSX)', () => {
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 4</div><div>New 3</div><div>New 2</div><div>Item A</div><div>Item B</div><div id="add">Add</div></div>');
 		});
+
+		it('Inline text element before array list', function() {
+			var tabs = [];
+			function Tab({title, onSelect, key, id}) {
+				return (
+					<div key = {key}>
+						{title}
+					</div>
+				)
+			}
+
+			function TabGroup({ tabs }) {
+				return (
+					<div class="tab-group">inlineText{tabs.map((tab, i) => (
+						<Tab
+							key      = { "Item " + i }
+							title    = { tab.title } />
+					))}
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<TabGroup tabs={tabs}></TabGroup>, container);
+			}
+
+			renderIt();
+
+			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText</div>');
+
+			tabs.push({title: "New " + tabs.length});
+			renderIt();
+
+			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText<div>New 0</div></div>');
+		});
+
+		it('Inline text element after array list', function() {
+			var tabs = [];
+			function Tab({title, onSelect, key, id}) {
+				return (
+					<div key = {key}>
+						{title}
+					</div>
+				)
+			}
+
+			function TabGroup({ tabs }) {
+				return (
+					<div class="tab-group">{tabs.map((tab, i) => (
+						<Tab
+							key      = { "Item " + i }
+							title    = { tab.title } />
+					))}inlineText
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<TabGroup tabs={tabs}></TabGroup>, container);
+			}
+
+			renderIt();
+
+			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText</div>');
+
+			tabs.push({title: "New " + tabs.length});
+			renderIt();
+
+			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div>inlineText</div>');
+		});
+
 	});
 });
