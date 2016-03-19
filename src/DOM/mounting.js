@@ -117,13 +117,13 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 	return dom;
 }
 
-function mountEvents(events, dom) {
+function mountEvents(events, node) {
 	const allEvents = Object.keys(events);
 
 	for (let i = 0; i < allEvents.length; i++) {
 		const event = allEvents[i];
 		if (isString(event)) {
-			addEventToRegistry(event, dom, events[event]);
+			addEventToRegistry(event, node, events[event]);
 		}
 	}
 }
@@ -200,7 +200,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 		}
 	}
 	if (!isNullOrUndefined(events)) {
-		mountEvents(events, dom);
+		mountEvents(events, node);
 	}
 	if (!isInvalidNode(children)) {
 		mountChildren(children, dom, namespace, lifecycle, context, instance);

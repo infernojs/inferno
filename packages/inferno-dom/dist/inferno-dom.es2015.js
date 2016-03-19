@@ -133,15 +133,47 @@ function isPromise(obj) {
 
 var delegatedEventsRegistry = {};
 
+// The issue with this, is that we can't stop the bubbling as we're traversing down the node tree, rather than up it
+// needs a rethink here
+function scanNodeList(node, target, delegatedEvent, callbackEvent) {
+	if (node.dom === target) {
+		delegatedEvent.callback(callbackEvent);
+		return true;
+	}
+	var children = node.children;
+
+	if (children) {
+		if (isArray(children)) {
+			for (var i = 0; i < children.length; i++) {
+				var child = children[i];
+
+				if ((typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
+					var result = scanNodeList(child, target, delegatedEvent, callbackEvent);
+
+					if (result) {
+						return true;
+					}
+				}
+			}
+		} else if (children.dom) {
+			var _result = scanNodeList(children, target, delegatedEvent, callbackEvent);
+
+			if (_result) {
+				return true;
+			}
+		}
+	}
+}
+
 function createEventListener(callbackEvent) {
 	var delegatedEvents = delegatedEventsRegistry[callbackEvent.type];
 
 	for (var i = delegatedEvents.length - 1; i > -1; i--) {
 		var delegatedEvent = delegatedEvents[i];
+		var node = delegatedEvent.node;
+		var target = callbackEvent.target;
 
-		if (delegatedEvent.target === callbackEvent.target) {
-			delegatedEvent.callback(callbackEvent);
-		}
+		scanNodeList(node, target, delegatedEvent, callbackEvent);
 	}
 }
 
@@ -161,18 +193,18 @@ function removeEventFromRegistry(event, callback) {
 	}
 }
 
-function addEventToRegistry(event, dom, callback) {
+function addEventToRegistry(event, node, callback) {
 	var delegatedEvents = delegatedEventsRegistry[event];
 	if (isNullOrUndefined(delegatedEvents)) {
 		document.addEventListener(event, createEventListener, false);
 		delegatedEventsRegistry[event] = [{
 			callback: callback,
-			target: dom
+			node: node
 		}];
 	} else {
 		delegatedEvents.push({
 			callback: callback,
-			target: dom
+			node: node
 		});
 	}
 }
@@ -803,7 +835,7 @@ function diffEvents(lastNode, nextNode, dom) {
 					// TODO: feels lot of looping here, but also this is real edge case
 					// Callback has changed and is not same as before
 					removeEventFromRegistry(event, lastEvent); // remove old
-					addEventToRegistry(event, dom, nextEvent); // add new
+					addEventToRegistry(event, nextNode, nextEvent); // add new
 				}
 			}
 		}
@@ -1039,13 +1071,13 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 	return dom;
 }
 
-function mountEvents(events, dom) {
+function mountEvents(events, node) {
 	var allEvents = Object.keys(events);
 
 	for (var i = 0; i < allEvents.length; i++) {
 		var event = allEvents[i];
 		if (isString(event)) {
-			addEventToRegistry(event, dom, events[event]);
+			addEventToRegistry(event, node, events[event]);
 		}
 	}
 }
@@ -1122,7 +1154,7 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 		}
 	}
 	if (!isNullOrUndefined(events)) {
-		mountEvents(events, dom);
+		mountEvents(events, node);
 	}
 	if (!isInvalidNode(children)) {
 		mountChildren(children, dom, namespace, lifecycle, context, instance);

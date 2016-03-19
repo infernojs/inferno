@@ -1,16 +1,48 @@
-import { isNullOrUndefined } from './../core/utils';
+import { isNullOrUndefined, isArray } from './../core/utils';
 
 const delegatedEventsRegistry = {};
+
+// The issue with this, is that we can't stop the bubbling as we're traversing down the node tree, rather than up it
+// needs a rethink here
+function scanNodeList(node, target, delegatedEvent, callbackEvent) {
+	if (node.dom === target) {
+		delegatedEvent.callback(callbackEvent);
+		return true;
+	}
+	const children = node.children;
+
+	if (children) {
+		if (isArray(children)) {
+			for (let i = 0; i < children.length; i++) {
+				const child = children[i];
+
+				if (typeof child === 'object') {
+					const result = scanNodeList(child, target, delegatedEvent, callbackEvent);
+
+					if (result) {
+						return true;
+					}
+				}
+			}
+		} else if (children.dom) {
+			const result = scanNodeList(children, target, delegatedEvent, callbackEvent);
+
+			if (result) {
+				return true;
+			}
+		}
+	}
+}
 
 function createEventListener(callbackEvent) {
 	const delegatedEvents = delegatedEventsRegistry[callbackEvent.type];
 
 	for (let i = delegatedEvents.length - 1; i > -1; i--) {
 		const delegatedEvent = delegatedEvents[i];
+		const node = delegatedEvent.node;
+		const target = callbackEvent.target;
 
-		if (delegatedEvent.target === callbackEvent.target) {
-			delegatedEvent.callback(callbackEvent);
-		}
+		scanNodeList(node, target, delegatedEvent, callbackEvent);
 	}
 }
 
@@ -30,18 +62,18 @@ export function removeEventFromRegistry(event, callback) {
 	}
 }
 
-export function addEventToRegistry(event, dom, callback) {
+export function addEventToRegistry(event, node, callback) {
 	const delegatedEvents = delegatedEventsRegistry[event];
 	if (isNullOrUndefined(delegatedEvents)) {
 		document.addEventListener(event, createEventListener, false);
 		delegatedEventsRegistry[event] = [{
 			callback: callback,
-			target: dom
+			node: node
 		}];
 	} else {
 		delegatedEvents.push({
 			callback: callback,
-			target: dom
+			node: node
 		});
 	}
 }

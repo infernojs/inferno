@@ -129,7 +129,7 @@ function diffEvents(lastNode, nextNode, dom) {
 					// TODO: feels lot of looping here, but also this is real edge case
 					// Callback has changed and is not same as before
 					removeEventFromRegistry(event, lastEvent); // remove old
-					addEventToRegistry(event, dom, nextEvent); // add new
+					addEventToRegistry(event, nextNode, nextEvent); // add new
 				}
 			}
 		}
