@@ -219,7 +219,11 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 					childNodes = childNodes || dom.childNodes;
 					const childNode = childNodes[i + offset];
 					if (!isNullOrUndefined(childNode)) {
-						childNodes[i + offset].textContent = '';
+						if (isString(lastChild)) {
+							childNode.textContent = '';
+						} else {
+							remove(lastChild, dom);
+						}
 					}
 				}
 			} else {
@@ -234,7 +238,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 						}
 					} else {
 						const node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
-						dom.replaceChild(node, dom.childNodes[i]);
+						insertOrAppend(dom, node, dom.childNodes[i]);
 					}
 				} else if (typeof nextChild === 'object') {
 					if (isArray(nextChild)) {

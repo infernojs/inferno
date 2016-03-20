@@ -951,7 +951,6 @@ describe('Children - (non-JSX)', () => {
 			const addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>');
-			debugger;
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});
@@ -1112,6 +1111,188 @@ describe('Children - (non-JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div>inlineText</div>');
+		});
+	});
+
+	describe('mixed children edge cases', function () {
+		it('NONKEYED - should remove children from correct location when there is dynamic static item', function() {
+			var items = ['a','b','c'];
+			var emptyArray = [];
+			var items3 = ['v', 'a'];
+			var visible = false;
+
+
+			var activeOne;
+
+			function Loop({text}) {
+				return (
+					<p>
+						{text}
+					</p>
+				)
+			}
+
+			function Looper({collectionOne, visibleStatic}) {
+				return (
+					<div class="c">
+						{visibleStatic ? <Loop text="static"/> : null}
+						{collectionOne.map((text) => (
+							<Loop
+								text={ text }/>
+						))}
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<Looper collectionOne={activeOne} visibleStatic={visible}></Looper>, container);
+			}
+
+			visible = true;
+			activeOne = items;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p></div>');
+
+			visible = false;
+			activeOne = items3;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>v</p><p>a</p></div>');
+
+
+			visible = true;
+			activeOne = items3;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>v</p><p>a</p></div>');
+
+			visible = true;
+			activeOne = emptyArray;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p></div>');
+		});
+
+		it('NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists', function() {
+			var items = ['a','b','c'];
+			var emptyArray = [];
+			var items3 = ['v', 'a'];
+
+
+			var activeOne;
+			var activeTwo;
+			var visibleOne = false;
+			var visibleTwo = false;
+
+			function Loop({text}) {
+				return (
+					<p>
+						{text}
+					</p>
+				)
+			}
+
+			function Looper({collectionOne, visibleStaticOne, collectionTwo, visibleStaticTwo}) {
+				return (
+					<div class="c">
+						{visibleStaticOne ? <Loop text="static"/> : null}
+						{collectionOne.map((text) => (
+							<Loop
+								text={ text }/>
+						))}
+						{visibleStaticTwo ? <Loop text="static"/> : null}
+						{collectionTwo.map((text) => (
+							<Loop
+								text={ text }/>
+						))}
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<Looper collectionOne={activeOne} visibleStaticOne={visibleOne} collectionTwo={activeTwo} visibleStaticTwo={visibleTwo}></Looper>, container);
+			}
+
+			visibleOne = true;
+			activeOne = items;
+			visibleTwo = false;
+			activeTwo = emptyArray;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p></div>');
+
+			visibleOne = true;
+			activeOne = emptyArray;
+			visibleTwo = true;
+			activeTwo = items;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>static</p><p>a</p><p>b</p><p>c</p></div>');
+
+
+			visibleOne = false;
+			activeOne = items3;
+			visibleTwo = false;
+			activeTwo = emptyArray;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>v</p><p>a</p></div>');
+
+			visibleOne = true;
+			activeOne = items;
+			visibleTwo = true;
+			activeTwo = emptyArray;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p><p>static</p>');
+		});
+
+		it('KEYED - should remove children from correct location when there is dynamic static item', function() {
+			var items = ['a','b','c'];
+			var emptyArray = [];
+			var items3 = ['v', 'a'];
+			var visible = false;
+
+
+			var activeOne;
+
+			function Loop({text}) {
+				return (
+					<p>
+						{text}
+					</p>
+				)
+			}
+
+			function Looper({collectionOne, visibleStatic}) {
+				return (
+					<div class="c">
+						{visibleStatic ? <Loop i={-1} text="static"/> : null}
+						{collectionOne.map((text, i) => (
+							<Loop key={i}
+								text={ text }/>
+						))}
+					</div>
+				);
+			}
+
+			function renderIt() {
+				render(<Looper collectionOne={activeOne} visibleStatic={visible}></Looper>, container);
+			}
+
+			visible = true;
+			activeOne = items;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p></div>');
+
+			visible = false;
+			activeOne = items3;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>v</p><p>a</p></div>');
+
+
+			visible = true;
+			activeOne = items3;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>v</p><p>a</p></div>');
+
+			visible = true;
+			activeOne = emptyArray;
+			renderIt();
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p></div>');
 		});
 	});
 });

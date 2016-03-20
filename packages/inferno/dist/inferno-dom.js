@@ -530,7 +530,11 @@
 						childNodes = childNodes || dom.childNodes;
 						var childNode = childNodes[i + offset];
 						if (!isNullOrUndefined(childNode)) {
-							childNodes[i + offset].textContent = '';
+							if (isString(_lastChild)) {
+								childNode.textContent = '';
+							} else {
+								remove(_lastChild, dom);
+							}
 						}
 					}
 				} else {
@@ -545,7 +549,7 @@
 							}
 						} else {
 							var node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
-							dom.replaceChild(node, dom.childNodes[i]);
+							insertOrAppend(dom, node, dom.childNodes[i]);
 						}
 					} else if ((typeof nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChild)) === 'object') {
 						if (isArray(nextChild)) {
