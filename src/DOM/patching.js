@@ -185,18 +185,26 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, namespace
 			lastChildrenLength--;
 		}
 	} else if (lastChildrenLength < nextChildrenLength) {
-		let counter = 0;
-		while (lastChildrenLength !== nextChildrenLength) {
-			const nextChild = nextChildren[lastChildrenLength + counter];
-
-			if (isInvalidNode(nextChild)) {
-				// TODO implement
+		let nextNode;
+		const oldLastItem = lastChildren[lastChildrenLength - 1];
+		if (isNullOrUndefined(oldLastItem)) {
+			if (isNullOrUndefined(offset)) {
+				nextNode = null;
 			} else {
-				const node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
-				dom.appendChild(node);
+				nextNode = dom.childNodes[offset];
 			}
+		} else {
+			// ParentDOM can contain more than one list, so get try to get last items nextSibling
+			if (isNullOrUndefined(oldLastItem.dom)) {
+				nextNode = null;
+			} else {
+				nextNode = oldLastItem.dom.nextSibling;
+			}
+		}
+		for (let counter = 0; lastChildrenLength !== nextChildrenLength; counter++) {
+			const newNode = nextChildren[lastChildrenLength + counter];
+			insertOrAppend(dom, mountNode(newNode, null, namespace, lifecycle, context, instance), nextNode);
 			nextChildrenLength--;
-			counter++;
 		}
 	}
 	let childNodes;

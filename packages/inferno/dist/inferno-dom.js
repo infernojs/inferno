@@ -496,28 +496,36 @@
 				lastChildrenLength--;
 			}
 		} else if (lastChildrenLength < nextChildrenLength) {
-			var counter = 0;
-			while (lastChildrenLength !== nextChildrenLength) {
-				var nextChild = nextChildren[lastChildrenLength + counter];
-
-				if (isInvalidNode(nextChild)) {
-					// TODO implement
+			var nextNode = void 0;
+			var oldLastItem = lastChildren[lastChildrenLength - 1];
+			if (isNullOrUndefined(oldLastItem)) {
+				if (isNullOrUndefined(offset)) {
+					nextNode = null;
 				} else {
-						var node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
-						dom.appendChild(node);
-					}
+					nextNode = dom.childNodes[offset];
+				}
+			} else {
+				// ParentDOM can contain more than one list, so get try to get last items nextSibling
+				if (isNullOrUndefined(oldLastItem.dom)) {
+					nextNode = null;
+				} else {
+					nextNode = oldLastItem.dom.nextSibling;
+				}
+			}
+			for (var counter = 0; lastChildrenLength !== nextChildrenLength; counter++) {
+				var newNode = nextChildren[lastChildrenLength + counter];
+				insertOrAppend(dom, mountNode(newNode, null, namespace, lifecycle, context, instance), nextNode);
 				nextChildrenLength--;
-				counter++;
 			}
 		}
 		var childNodes = void 0;
 
 		for (var i = 0; i < nextChildrenLength; i++) {
 			var _lastChild = lastChildren[i];
-			var _nextChild = nextChildren[i];
+			var nextChild = nextChildren[i];
 
-			if (_lastChild !== _nextChild) {
-				if (isInvalidNode(_nextChild)) {
+			if (_lastChild !== nextChild) {
+				if (isInvalidNode(nextChild)) {
 					if (!isInvalidNode(_lastChild)) {
 						childNodes = childNodes || dom.childNodes;
 						var childNode = childNodes[i + offset];
@@ -527,35 +535,35 @@
 					}
 				} else {
 					if (isInvalidNode(_lastChild)) {
-						if (isStringOrNumber(_nextChild)) {
+						if (isStringOrNumber(nextChild)) {
 							childNodes = childNodes || dom.childNodes;
 							var _childNode = childNodes[i + offset];
 							if (isNullOrUndefined(_childNode)) {
-								dom.appendChild(document.createTextNode(_nextChild));
+								dom.appendChild(document.createTextNode(nextChild));
 							} else {
-								_childNode.textContent = _nextChild;
+								_childNode.textContent = nextChild;
 							}
 						} else {
-							var _node = mountNode(_nextChild, null, namespace, lifecycle, context, instance);
-							dom.replaceChild(_node, dom.childNodes[i]);
+							var node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+							dom.replaceChild(node, dom.childNodes[i]);
 						}
-					} else if ((typeof _nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(_nextChild)) === 'object') {
-						if (isArray(_nextChild)) {
+					} else if ((typeof nextChild === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChild)) === 'object') {
+						if (isArray(nextChild)) {
 							if (isArray(_lastChild)) {
-								patchArrayChildren(_lastChild, _nextChild, dom, namespace, lifecycle, context, i, instance);
+								patchArrayChildren(_lastChild, nextChild, dom, namespace, lifecycle, context, i, instance);
 							} else {
-								patchNonKeyedChildren([_lastChild], _nextChild, dom, namespace, lifecycle, context, i, instance);
+								patchNonKeyedChildren([_lastChild], nextChild, dom, namespace, lifecycle, context, i, instance);
 							}
 						} else {
-							patchNode(_lastChild, _nextChild, dom, namespace, lifecycle, context, instance);
+							patchNode(_lastChild, nextChild, dom, namespace, lifecycle, context, instance);
 						}
 					} else {
 						childNodes = childNodes || dom.childNodes;
 						var _childNode2 = childNodes[i + offset];
 						if (isNullOrUndefined(_childNode2)) {
-							dom.appendChild(document.createTextNode(_nextChild));
+							dom.appendChild(document.createTextNode(nextChild));
 						} else {
-							_childNode2.textContent = _nextChild;
+							_childNode2.textContent = nextChild;
 						}
 					}
 				}
