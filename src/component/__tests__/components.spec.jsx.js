@@ -1353,4 +1353,76 @@ describe('Components (JSX)', () => {
 			});
 		});
 	});
+
+	describe('updating child should not cause rendering parent to fail', () => {
+		it('should render parent correctly after child changes', () => {
+
+			let updateParent,
+				updateChild;
+
+			class Parent extends Component {
+				constructor(props) {
+					super(props);
+					this.state = {x: false};
+
+					updateParent = () => {
+						this.setState({x: true});
+					};
+				}
+
+				render() {
+					return (
+						<div>
+							<p>parent</p>
+							{!this.state.x? <ChildA /> :<ChildB />}
+						</div>
+					);
+				};
+			}
+
+			class ChildB extends Component {
+				constructor(props) {
+					super(props);
+				};
+				render() {
+					return (<div>Y</div>);
+				};
+			}
+
+			class ChildA extends Component {
+				constructor(props) {
+					super(props);
+					this.state = {z: false};
+
+					updateChild = () => {
+						this.setState({z: true});
+					}
+				};
+
+				render() {
+					if (!this.state.z)
+						return (<div>A</div>);
+
+					return (<SubChild />);
+				};
+			}
+
+			class SubChild extends Component {
+				constructor(props) {
+					super(props);
+				};
+
+				render() {
+					return (<div>B</div>);
+				};
+			}
+
+			render(<Parent />, container);
+			expect(container.innerHTML).to.equal('<div><p>parent</p><div>A</div></div>');
+			updateChild();
+			expect(container.innerHTML).to.equal('<div><p>parent</p><div>B</div></div>');
+			updateParent();
+			expect(container.innerHTML).to.equal('<div><p>parent</p><div>Y</div></div>');
+		});
+	})
 });
