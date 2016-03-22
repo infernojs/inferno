@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString } from '../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
-import { patchNonKeyedChildren, patchArrayChildren, patchAttribute, patchComponent, patchStyle } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle } from './patching';
 import { mountChildren, mountNode } from './mounting';
 import { removeEventFromRegistry, addEventToRegistry } from './events';
 
@@ -15,22 +15,29 @@ function updateTextNode(dom, lastChildren, nextChildren) {
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
+	let domChildren = null;
 
 	if (lastChildren === nextChildren) {
 		return;
 	}
-
+	if (!isNullOrUndefined(lastNode.domChildren)) {
+		domChildren = nextNode.domChildren = lastNode.domChildren;
+	}
 	if (!isInvalidNode(lastChildren)) {
 		if (!isInvalidNode(nextChildren)) {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					patchArrayChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, null, instance);
+					if (domChildren === null) {
+						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+					} else {
+						patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance);
+					}
 				} else {
-					patchNonKeyedChildren(lastChildren, [nextChildren], dom, namespace, lifecycle, context, null, instance);
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren, namespace, lifecycle, context, instance);
 				}
 			} else {
 				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, namespace, lifecycle, context, null, instance);
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren, namespace, lifecycle, context, instance);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else {
@@ -46,7 +53,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		} else if (!isNullOrUndefined(nextChildren)) {
 			if (typeof nextChildren === 'object') {
 				if (isArray(nextChildren)) {
-					mountChildren(nextChildren, dom, namespace, lifecycle, context, instance);
+					mountChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
 				} else {
 					mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
 				}
@@ -184,11 +191,13 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		return;
 	}
 	const dom = lastNode.dom;
+	const nextClassName = nextNode.className;
+	const nextStyle = nextNode.style;
 
 	nextNode.dom = dom;
 	diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance);
-	const nextClassName = nextNode.className;
-	const nextStyle = nextNode.style;
+
+	// node.domTextNodes
 
 	if (lastNode.className !== nextClassName) {
 		if (isNullOrUndefined(nextClassName)) {

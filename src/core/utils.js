@@ -50,6 +50,10 @@ export function isNumber(obj) {
 	return typeof obj === 'number';
 }
 
+export function isObject(obj) {
+	return typeof obj === 'object';
+}
+
 export function isAttrAComponentEvent(attr) {
 	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
 }
@@ -73,4 +77,12 @@ export function isAttrAComponentHook(hook) {
 
 export function isPromise(obj) {
 	return obj instanceof Promise;
+}
+
+export function replaceInArray(array, obj, newObj) {
+	array.splice(array.indexOf(obj), 1, newObj);
+}
+
+export function removeInArray(array, obj) {
+	array.splice(array.indexOf(obj), 1);
 }

@@ -640,6 +640,7 @@ describe('Children - (non-JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>');
 			const addTab = container.querySelector('#add');
 			addTab.click();
+			debugger;
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>');
 		});
 

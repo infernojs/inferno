@@ -1,48 +1,68 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, createElement, SVGNamespace, MathNamespace } from './utils';
+import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend } from './utils';
 import { patchAttribute, patchStyle } from './patching';
 import { addEventToRegistry } from './events';
 import { diffNodes } from './diffing';
 
-// TODO!  Need to be re-written to gain bette performance. I can't do it. K.F
-export function mountChildren(children, parentDom, namespace, lifecycle, context, instance) {
+function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
+	const placeholder = document.createTextNode('');
+	domChildren && domChildren.push(placeholder);
+
+	child.then(node => {
+		// TODO check for text nodes and arrays
+		const dom = mountNode(node, null, namespace, lifecycle, context, instance);
+
+		parentDom.replaceChild(dom, placeholder);
+		domChildren && replaceInArray(domChildren, placeholder, dom);
+	});
+	parentDom.appendChild(placeholder);
+}
+
+export function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+	const domChildren = [];
+	let isNonKeyed = false;
+	let hasKeyedAssumption = false;
+
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
 			if (isStringOrNumber(child)) {
-				appendText(child, parentDom, false);
+				isNonKeyed = true;
+				domChildren.push(appendText(child, parentDom, false));
 			} else if (!isNullOrUndefined(child) && isArray(child)) {
-				mountChildren(child, parentDom, namespace, lifecycle, context, instance);
+				const virtualFragment = createVirtualFragment();
+
+				isNonKeyed = true;
+				mountChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
+				insertOrAppend(parentDom, virtualFragment);
+				domChildren.push(virtualFragment);
 			} else if (isPromise(child)) {
-				const placeholder = document.createTextNode('');
-
-				child.then(node => {
-					const dom = mountNode(node, null, namespace, lifecycle, context, instance);
-
-					parentDom.replaceChild(dom, placeholder);
-				});
-				parentDom.appendChild(placeholder);
+				appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);
 			} else {
-				mountNode(child, parentDom, namespace, lifecycle, context, instance);
+				const domNode = mountNode(child, parentDom, namespace, lifecycle, context, instance);
+
+				if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
+					isNonKeyed = true;
+					domChildren.push(domNode);
+				} else if (hasKeyedAssumption === false) {
+					// this will be true if a single node comes back with a key, if it does, we assume the rest have keys for a perf boost
+					hasKeyedAssumption = true;
+				}
 			}
 		}
 	} else {
 		if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
 		} else if (isPromise(children)) {
-			const placeholder = document.createTextNode('');
-
-			children.then(node => {
-				const dom = mountNode(node, null, namespace, lifecycle, context, instance);
-
-				parentDom.replaceChild(dom, placeholder);
-			});
-			parentDom.appendChild(placeholder);
+			appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
 		} else {
 			mountNode(children, parentDom, namespace, lifecycle, context, instance);
 		}
+	}
+	if (domChildren.length > 1 && isNonKeyed === true) {
+		node.domChildren = domChildren;
 	}
 }
 
@@ -203,7 +223,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 		mountEvents(events, node);
 	}
 	if (!isInvalidNode(children)) {
-		mountChildren(children, dom, namespace, lifecycle, context, instance);
+		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 	}
 	if (!isNullOrUndefined(attrs)) {
 		mountAttributes(attrs, dom, instance);

@@ -8,7 +8,11 @@ export const SVGNamespace = 'http://www.w3.org/2000/svg';
 
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
-		parentDom.appendChild(newNode);
+		if (newNode.append) {
+			newNode.append(parentDom);
+		} else {
+			parentDom.appendChild(newNode);
+		}
 	} else {
 		parentDom.insertBefore(newNode, nextNode);
 	}
@@ -27,12 +31,16 @@ export function appendText(text, parentDom, singleChild) {
 		if (text !== '') {
 			parentDom.textContent = text;
 		} else {
-			parentDom.appendChild(document.createTextNode(''));
+			const textNode = document.createTextNode('');
+
+			parentDom.appendChild(textNode);
+			return textNode;
 		}
 	} else {
 		const textNode = document.createTextNode(text);
 
 		parentDom.appendChild(textNode);
+		return textNode;
 	}
 }
 
@@ -100,4 +108,60 @@ export function remove(node, parentDom) {
 			pool(node);
 		}
 	}
+}
+
+export function createVirtualFragment() {
+	const childNodes = [];
+	const dom = document.createTextNode('');
+	let parentNode = null;
+
+	const fragment = {
+		childNodes,
+		appendChild(domNode) {
+			childNodes.push(domNode);
+			if (parentNode) {
+				parentNode.insertBefore(domNode, dom);
+			}
+		},
+		removeChild(domNode) {
+			childNodes.splice(childNodes.indexOf(domNode), 1);
+			if (parentNode) {
+				parentNode.removeChild(domNode);
+			}
+		},
+		insertBefore(domNode, refNode) {
+			childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
+			if (parentNode) {
+				parentNode.insertBefore(domNode, refNode);
+			}
+		},
+		append(parentDom) {
+			parentDom.appendChild(dom);
+			parentNode = parentDom;
+			// we need to append all childNodes now
+			for (let i = 0; i < childNodes.length; i++) {
+				parentNode.insertBefore(childNodes[i], dom);
+			}
+		},
+		remove() {
+			parentNode.removeChild(dom);
+			for (let i = 0; i < childNodes.length; i++) {
+				parentNode.removeChild(childNodes[i]);
+			}
+			parentNode = null;
+		}
+	};
+
+	Object.defineProperty(fragment, 'parentNode', {
+		get() {
+			return parentNode;
+		}
+	});
+	Object.defineProperty(fragment, 'firstChild', {
+		get() {
+			return childNodes[0];
+		}
+	});
+
+	return fragment;
 }
