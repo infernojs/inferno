@@ -266,7 +266,7 @@ function detachNode(node) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
-	var hooks = node.hooks;
+	var hooks = node.hooks || !isNullOrUndefined(instance) && instance.hooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
 			hooks.willDetach(node.dom);

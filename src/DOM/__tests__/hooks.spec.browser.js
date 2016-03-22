@@ -1,4 +1,5 @@
 import { render } from '../../DOM/rendering';
+import createElement from './../../core/createElement';
 
 
 describe('lifecycle hooks', () => {
@@ -695,4 +696,59 @@ describe('lifecycle hooks', () => {
 			expect(onComponentShouldUpdateDomNode).to.equal(expectedDomNode);
 		});
 	});
+
+	describe('github issue with willDetach', () => {
+
+		it('should raise willDetach', () => {
+
+			let didAttach = false,
+				didCreate = false,
+				didDetach = false;
+
+			function addElement() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h1',
+						attrs: {
+							class: 'something'
+						},
+						hooks: {
+							attached: function() {
+								didAttach = true;
+							},
+							created: function() {
+								didCreate = true;
+							},
+							willDetach: function() {
+								didDetach = true;
+							}
+						},
+						children: 'Hi there!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			function removeElement() {
+				render(
+					null,
+					container
+				);
+			}
+
+			debugger;
+			addElement();
+			removeElement();
+
+			expect(didAttach).to.equal(true);
+			expect(didCreate).to.equal(true);
+			expect(didDetach).to.equal(true);
+
+		});
+
+	})
 });
