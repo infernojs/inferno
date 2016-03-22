@@ -253,6 +253,7 @@ function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, contex
 	} else {
 		var _dom2 = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = _dom2;
+		detachNode(lastNode);
 		parentDom.replaceChild(_dom2, lastNode.dom);
 	}
 }
