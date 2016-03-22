@@ -740,7 +740,6 @@ describe('lifecycle hooks', () => {
 				);
 			}
 
-			debugger;
 			addElement();
 			removeElement();
 
@@ -748,7 +747,55 @@ describe('lifecycle hooks', () => {
 			expect(didCreate).to.equal(true);
 			expect(didDetach).to.equal(true);
 
+
 		});
 
-	})
+		it('should raise willDetach', () => {
+
+			let didDetach = false;
+
+			function addElement() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h1',
+						attrs: {
+							class: 'something'
+						},
+						hooks: {
+							willDetach: function() {
+								didDetach = true;
+							}
+						},
+						children: 'Hi there!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			function addElementTwo() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h2',
+						attrs: {
+							class: 'something'
+						},
+						children: 'Another!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			addElement();
+			addElementTwo();
+			expect(didDetach).to.equal(true);
+		});
+	});
 });

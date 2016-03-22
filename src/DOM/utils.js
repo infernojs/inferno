@@ -47,6 +47,7 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 	} else {
 		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
+		detachNode(lastNode);
 		parentDom.replaceChild(dom, lastNode.dom);
 	}
 }
