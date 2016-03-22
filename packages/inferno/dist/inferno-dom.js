@@ -257,9 +257,9 @@
 			nextNode.dom = _dom;
 			parentDom.replaceChild(_dom, parentDom.firstChild);
 		} else {
+			detachNode(lastNode);
 			var _dom2 = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 			nextNode.dom = _dom2;
-			detachNode(lastNode);
 			parentDom.replaceChild(_dom2, lastNode.dom);
 		}
 	}
