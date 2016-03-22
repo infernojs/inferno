@@ -71,6 +71,3 @@ export function isAttrAComponentHook(hook) {
 		|| hook === 'onComponentDidUpdate';
 }
 
-export function isPromise(obj) {
-	return obj instanceof Promise;
-}

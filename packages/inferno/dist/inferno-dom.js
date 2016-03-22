@@ -133,10 +133,6 @@
 		return typeof obj === 'number';
 	}
 
-	function isPromise(obj) {
-		return obj instanceof Promise;
-	}
-
 	var delegatedEventsRegistry = {};
 
 	// The issue with this, is that we can't stop the bubbling as we're traversing down the node tree, rather than up it
@@ -977,12 +973,13 @@
 		if (isArray(children)) {
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
+				var childDefined = !isNullOrUndefined(child);
 
 				if (isStringOrNumber(child)) {
 					appendText(child, parentDom, false);
-				} else if (!isNullOrUndefined(child) && isArray(child)) {
+				} else if (childDefined && isArray(child)) {
 					mountChildren(child, parentDom, namespace, lifecycle, context, instance);
-				} else if (isPromise(child)) {
+				} else if (childDefined && !isNullOrUndefined(child.then)) {
 					(function () {
 						var placeholder = document.createTextNode('');
 
@@ -1000,7 +997,7 @@
 		} else {
 			if (isStringOrNumber(children)) {
 				appendText(children, parentDom, true);
-			} else if (isPromise(children)) {
+			} else if (!isNullOrUndefined(children) && !isNullOrUndefined(children.then)) {
 				(function () {
 					var placeholder = document.createTextNode('');
 
