@@ -38,5 +38,7 @@ export function pool(node) {
 			const pool = pools.keyed;
 			(pool[key] || (pool[key] = [])).push(node);
 		}
+		return true;
 	}
+	return false;
 }

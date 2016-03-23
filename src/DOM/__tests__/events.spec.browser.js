@@ -1,5 +1,6 @@
 import { render } from '../rendering';
 import { delegatedEventsRegistry } from '../events';
+import { assert } from 'chai';
 
 describe('Basic event tests', () => {
 
@@ -129,7 +130,6 @@ describe('Basic event tests', () => {
                 dom: null
             };
         }
-
 
         render(App(), container);
         expect(container.firstChild.innerHTML).to.equal('1');

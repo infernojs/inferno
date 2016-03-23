@@ -59,15 +59,15 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, parentDom.firstChild);
 	} else {
-		detachNode(lastNode);
 		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, lastNode.dom);
+		detachNode(lastNode);
 	}
 }
 
 export function detachNode(node) {
-	if (isInvalidNode(node)) {
+	if (isInvalidNode(node) || isStringOrNumber(node)) {
 		return;
 	}
 	const instance = node.instance;
@@ -75,13 +75,19 @@ export function detachNode(node) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
-	const hooks = node.hooks || !isNullOrUndefined(instance) && instance.hooks;
+	let instanceHooks = false;
+	const hooks = node.hooks || !isNullOrUndefined(instance) && (instanceHooks = true) && instance.hooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
 			hooks.willDetach(node.dom);
 		}
 		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
 			hooks.componentWillUnmount(node.dom, hooks);
+		}
+		if (instanceHooks) {
+			instance.hooks = null;
+		} else {
+			node.hooks = null;
 		}
 	}
 	const events = node.events;
@@ -101,7 +107,13 @@ export function detachNode(node) {
 		} else {
 			detachNode(children);
 		}
+		node.children = null;
+		const domChildren = node.domChildren;
+		if (!isNullOrUndefined(domChildren)) {
+			node.domChildren = null;
+		}
 	}
+	node.dom = null;
 }
 
 export function createEmptyTextNode() {
@@ -110,14 +122,15 @@ export function createEmptyTextNode() {
 
 
 export function remove(node, parentDom) {
-	detachNode(node);
 	const dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {
 		parentDom.removeChild(dom);
 		if (recyclingEnabled) {
-			pool(node);
+			pool(node) || detachNode(node);
+		} else {
+			detachNode(node);
 		}
 	}
 }
