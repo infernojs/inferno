@@ -120,11 +120,10 @@ function diffEvents(lastNode, nextNode, dom) {
 	const lastEvents = lastNode.events;
 
 	if (!isNullOrUndefined(lastEvents)) {
+		const lastEventsKeys = Object.keys(lastEvents);
 		const nextEvents = nextNode.events;
-		if (!isNullOrUndefined(nextEvents)) {
-			const lastEventsKeys = Object.keys(lastEvents);
-			// const nextEventsKeys = Object.keys(nextEvents);
 
+		if (!isNullOrUndefined(nextEvents)) {
 			for (let i = 0; i < lastEventsKeys.length; i++) {
 				const event = lastEventsKeys[i];
 				const nextEvent = nextEvents[event];
@@ -138,6 +137,13 @@ function diffEvents(lastNode, nextNode, dom) {
 					removeEventFromRegistry(event, lastEvent); // remove old
 					addEventToRegistry(event, nextNode, nextEvent); // add new
 				}
+			}
+		} else {
+			for (let i = 0; i < lastEventsKeys.length; i++) {
+				const event = lastEventsKeys[i];
+				const lastEvent = lastEvents[event];
+
+				removeEventFromRegistry(event, lastEvent);
 			}
 		}
 	}

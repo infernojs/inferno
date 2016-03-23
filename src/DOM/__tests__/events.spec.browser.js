@@ -175,7 +175,7 @@ describe('Basic event tests', () => {
                 events: {
                     keydown: eventHandler
                 },
-                children: children,
+                children: children.slice(0), // use slice so we create a new object rather than use the same object or we get oldChildren === newChildren in the diff
                 dom: null
             };
         }
@@ -188,7 +188,7 @@ describe('Basic event tests', () => {
 
         childrenArray.pop();
         render(App(childrenArray), container);
-        expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div>'); // TODO: Is this bug?
+        expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div>');
         assert(delegatedEventsRegistry['blur'].length === 2);
         assert(delegatedEventsRegistry['keydown'].length === 1);
 

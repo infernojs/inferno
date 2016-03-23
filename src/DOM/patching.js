@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject, removeInArray } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove, appendText, createEmptyTextNode } from './utils';
+import { insertOrAppend, remove, appendText, createEmptyTextNode, detachNode } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
 // Checks if property is boolean type
@@ -185,6 +185,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 
 				if (!isInvalidNode(lastChild)) {
 					dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
+					detachNode(lastChild);
 				}
 				lastChildrenLength--;
 			}
