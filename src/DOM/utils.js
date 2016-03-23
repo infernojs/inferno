@@ -62,11 +62,11 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, lastNode.dom);
-		detachNode(lastNode);
+		detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
 	}
 }
 
-export function detachNode(node) {
+export function detachNode(node, recycling) {
 	if (isInvalidNode(node) || isStringOrNumber(node)) {
 		return;
 	}
@@ -84,10 +84,12 @@ export function detachNode(node) {
 		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
 			hooks.componentWillUnmount(node.dom, hooks);
 		}
-		if (instanceHooks) {
-			instance.hooks = null;
-		} else {
-			node.hooks = null;
+		if (recycling === false) {
+			if (instanceHooks) {
+				instance.hooks = null;
+			} else {
+				node.hooks = null;
+			}
 		}
 	}
 	const events = node.events;
@@ -107,13 +109,18 @@ export function detachNode(node) {
 		} else {
 			detachNode(children);
 		}
-		node.children = null;
-		const domChildren = node.domChildren;
-		if (!isNullOrUndefined(domChildren)) {
-			node.domChildren = null;
+		if (recycling === false) {
+			node.children = null;
+
+			const domChildren = node.domChildren;
+			if (!isNullOrUndefined(domChildren)) {
+				node.domChildren = null;
+			}
 		}
 	}
-	node.dom = null;
+	if (recycling === false) {
+		node.dom = null;
+	}
 }
 
 export function createEmptyTextNode() {
@@ -128,9 +135,10 @@ export function remove(node, parentDom) {
 	} else {
 		parentDom.removeChild(dom);
 		if (recyclingEnabled) {
-			pool(node) || detachNode(node);
+			pool(node)
+			detachNode(node, !isNullOrUndefined(node.tpl));
 		} else {
-			detachNode(node);
+			detachNode(node, false);
 		}
 	}
 }
