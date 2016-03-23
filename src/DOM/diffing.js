@@ -170,14 +170,16 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 	if (lastTag !== nextTag) {
+		const lastNodeInstance = lastNode.instance;
+
 		if (isFunction(lastTag) && !isFunction(nextTag)) {
 			if (isStatefulComponent(lastTag)) {
-				diffNodes(lastNode.instance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
 			} else {
-				diffNodes(lastNode.instance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+				diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
 			}
 		} else {
-			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+			replaceNode((lastNodeInstance && lastNodeInstance._lastNode) || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 		}
 		return;
 	} else if (isNullOrUndefined(lastTag)) {
