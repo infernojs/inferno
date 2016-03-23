@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject, removeInArray } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove, appendText } from './utils';
+import { insertOrAppend, remove, appendText, createEmptyTextNode } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
 // Checks if property is boolean type
@@ -172,89 +172,96 @@ function isKeyed(lastChildren, nextChildren) {
 		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 }
 
-export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance) {
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance, domChildrenIndex) {
+	const isVirtualFragment = !isNullOrUndefined(dom.append);
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
+	const sameLength = lastChildrenLength === nextChildrenLength;
 
-	if (lastChildrenLength > nextChildrenLength) {
-		while (lastChildrenLength !== nextChildrenLength) {
-			const lastChild = nextChildren[lastChildrenLength - 1];
+	if (sameLength === false) {
+		if (lastChildrenLength > nextChildrenLength) {
+			while (lastChildrenLength !== nextChildrenLength) {
+				const lastChild = lastChildren[lastChildrenLength - 1];
 
-			if (!isInvalidNode(lastChild)) {
-				dom.removeChild(domChildren[lastChildrenLength]);
+				if (!isInvalidNode(lastChild)) {
+					dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
+				}
+				lastChildrenLength--;
 			}
-			lastChildrenLength--;
-		}
-	} else if (lastChildrenLength < nextChildrenLength) {
-		const oldLastItem = lastChildren[lastChildrenLength - 1];
+		} else if (lastChildrenLength < nextChildrenLength) {
+			while (lastChildrenLength !== nextChildrenLength) {
+				const nextChild = nextChildren[lastChildrenLength];
+				const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 
-		for (let i = 0; lastChildrenLength !== nextChildrenLength; i++) {
-			const newNode = nextChildren[lastChildrenLength + i];
-			let nextNode = null;
-
-			if (oldLastItem && !isNullOrUndefined(oldLastItem.dom)) {
-				nextNode = oldLastItem.dom.nextSibling;
+				insertOrAppend(dom, domNode);
+				!isVirtualFragment && domChildren.push(domNode);
+				lastChildrenLength++;
 			}
-			const domNode = mountNode(newNode, null, namespace, lifecycle, context, instance);
-
-			insertOrAppend(dom, domNode, nextNode);
-			domChildren.push(domNode);
-			nextChildrenLength--;
 		}
 	}
-
 	for (let i = 0; i < nextChildrenLength; i++) {
 		const lastChild = lastChildren[i];
 		const nextChild = nextChildren[i];
+		const index = i + domChildrenIndex;
 
 		if (lastChild !== nextChild) {
 			if (isInvalidNode(nextChild)) {
 				if (!isInvalidNode(lastChild)) {
-					const childNode = domChildren[i];
+					const childNode = domChildren[index];
 
 					if (!isNullOrUndefined(childNode)) {
 						if (isStringOrNumber(lastChild)) {
 							childNode.nodeValue = '';
-						} else {
-							removeInArray(domChildren, childNode);
-							remove(lastChild, dom);
+						} else if (sameLength === true) {
+							const textNode = createEmptyTextNode();
+
+							if (isArray(lastChild) && lastChild.length === 0) {
+								insertOrAppend(dom, textNode);
+								!isVirtualFragment && domChildren.splice(index, 0, textNode);
+							} else {
+								dom.replaceChild(textNode, domChildren[index]);
+								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+							}
 						}
 					}
 				}
 			} else {
 				if (isInvalidNode(lastChild)) {
 					if (isStringOrNumber(nextChild)) {
-						domChildren.splice(i, 0, appendText(nextChild, dom, false));
-					} else {
-						const node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+						const textNode = document.createTextNode(nextChild);
 
-						insertOrAppend(dom, node, domChildren[i]);
+						dom.replaceChild(textNode, domChildren[index]);
+						!isVirtualFragment && domChildren.splice(index, 1, textNode);
+					} else if (sameLength === true) {
+						const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+
+						dom.replaceChild(domNode, domChildren[index]);
+						!isVirtualFragment && domChildren.splice(index, 1, domNode);
 					}
 				} else if (isObject(nextChild)) {
 					if (isArray(nextChild)) {
-						if (isKeyed(lastChildren, nextChildren)) {
-							patchKeyedChildren(lastChild, nextChild, dom, namespace, lifecycle, context, instance);
+						if (isKeyed(lastChild, nextChild)) {
+							patchKeyedChildren(lastChild, nextChild, domChildren[index], namespace, lifecycle, context, instance);
 						} else {
 							if (isArray(lastChild)) {
-								patchNonKeyedChildren(lastChild, nextChild, domChildren[i], domChildren[i].childNodes, namespace, lifecycle, context, instance);
+								patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 							} else {
-								patchNonKeyedChildren([lastChild], nextChild, dom, null, namespace, lifecycle, context, instance);
+								patchNonKeyedChildren([lastChild], nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
 							}
 						}
 					} else {
 						if (isArray(lastChild)) {
-							patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[i].childNodes, namespace, lifecycle, context, instance);
+							patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 						} else {
 							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance);
 						}
 					}
 				} else {
-					const childNode = domChildren[i];
+					const childNode = domChildren[index];
 
 					if (isNullOrUndefined(childNode)) {
 						const textNode = document.createTextNode(nextChild);
 
-						debugger;
 						nextChildren.push(textNode);
 						dom.appendChild(textNode);
 					} else {
@@ -267,53 +274,6 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				}
 			}
 		}
-		//	if (isInvalidNode(nextChild)) {
-		//		if (!isInvalidNode(lastChild)) {
-		//			childNodes = childNodes || dom.childNodes;
-		//			const childNode = childNodes[i + offset];
-		//			if (!isNullOrUndefined(childNode)) {
-		//				if (isString(lastChild)) {
-		//					childNode.textContent = '';
-		//				} else {
-		//					remove(lastChild, dom);
-		//				}
-		//			}
-		//		}
-		//	} else {
-		//		if (isInvalidNode(lastChild)) {
-		//			if (isStringOrNumber(nextChild)) {
-		//				childNodes = childNodes || dom.childNodes;
-		//				const childNode = childNodes[i + offset];
-		//				if (isNullOrUndefined(childNode)) {
-		//					dom.appendChild(document.createTextNode(nextChild));
-		//				} else {
-		//					childNode.textContent = nextChild;
-		//				}
-		//			} else {
-		//				const node = mountNode(nextChild, null, namespace, lifecycle, context, instance);
-		//				insertOrAppend(dom, node, dom.childNodes[i]);
-		//			}
-		//		} else if (typeof nextChild === 'object') {
-		//			if (isArray(nextChild)) {
-		//				if (isArray(lastChild)) {
-		//					patchArrayChildren(lastChild, nextChild, dom, namespace, lifecycle, context, i, instance);
-		//				} else {
-		//					patchNonKeyedChildren([lastChild], nextChild, dom, namespace, lifecycle, context, i, instance);
-		//				}
-		//			} else {
-		//				patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance);
-		//			}
-		//		} else {
-		//			childNodes = childNodes || dom.childNodes;
-		//			const childNode = childNodes[i + offset];
-		//			if (isNullOrUndefined(childNode)) {
-		//				dom.appendChild(document.createTextNode(nextChild));
-		//			} else {
-		//				childNode.textContent = nextChild;
-		//			}
-		//		}
-		//	}
-		//}
 	}
 }
 

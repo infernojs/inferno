@@ -1,12 +1,12 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend } from './utils';
+import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend, createEmptyTextNode } from './utils';
 import { patchAttribute, patchStyle } from './patching';
 import { addEventToRegistry } from './events';
 import { diffNodes } from './diffing';
 
 function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
-	const placeholder = document.createTextNode('');
+	const placeholder = createEmptyTextNode();
 	domChildren && domChildren.push(placeholder);
 
 	child.then(node => {
@@ -44,6 +44,9 @@ export function mountChildren(node, children, parentDom, namespace, lifecycle, c
 				const domNode = mountNode(child, parentDom, namespace, lifecycle, context, instance);
 
 				if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
+					isNonKeyed = true;
+					domChildren.push(domNode);
+				} else if (isInvalidNode(child)) {
 					isNonKeyed = true;
 					domChildren.push(domNode);
 				} else if (hasKeyedAssumption === false) {
@@ -149,7 +152,7 @@ function mountEvents(events, node) {
 }
 
 function placeholder(node, parentDom) {
-	const dom = document.createTextNode('');
+	const dom = createEmptyTextNode();
 
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);

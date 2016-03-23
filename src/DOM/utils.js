@@ -14,7 +14,13 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 			parentDom.appendChild(newNode);
 		}
 	} else {
-		parentDom.insertBefore(newNode, nextNode);
+		if (newNode.insert) {
+			newNode.insert(parentDom, nextNode);
+		} else if (nextNode.insert) {
+			parentDom.insertBefore(newNode, nextNode.childNodes[0]);
+		} else {
+			parentDom.insertBefore(newNode, nextNode);
+		}
 	}
 }
 
@@ -97,6 +103,11 @@ export function detachNode(node) {
 	}
 }
 
+export function createEmptyTextNode() {
+	return document.createTextNode('');
+}
+
+
 export function remove(node, parentDom) {
 	detachNode(node);
 	const dom = node.dom;
@@ -107,6 +118,13 @@ export function remove(node, parentDom) {
 		if (recyclingEnabled) {
 			pool(node);
 		}
+	}
+}
+
+function insertChildren(parentNode, childNodes, dom) {
+	// we need to append all childNodes now
+	for (let i = 0; i < childNodes.length; i++) {
+		parentNode.insertBefore(childNodes[i], dom);
 	}
 }
 
@@ -124,24 +142,26 @@ export function createVirtualFragment() {
 			}
 		},
 		removeChild(domNode) {
-			childNodes.splice(childNodes.indexOf(domNode), 1);
 			if (parentNode) {
 				parentNode.removeChild(domNode);
 			}
+			childNodes.splice(childNodes.indexOf(domNode), 1);
 		},
 		insertBefore(domNode, refNode) {
-			childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
 			if (parentNode) {
 				parentNode.insertBefore(domNode, refNode);
 			}
+			childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
 		},
 		append(parentDom) {
 			parentDom.appendChild(dom);
 			parentNode = parentDom;
-			// we need to append all childNodes now
-			for (let i = 0; i < childNodes.length; i++) {
-				parentNode.insertBefore(childNodes[i], dom);
-			}
+			insertChildren(parentNode, childNodes, dom);
+		},
+		insert(parentDom, refNode) {
+			parentDom.insertBefore(dom, refNode);
+			parentNode = parentDom;
+			insertChildren(parentNode, childNodes, dom);
 		},
 		remove() {
 			parentNode.removeChild(dom);

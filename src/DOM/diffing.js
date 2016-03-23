@@ -30,14 +30,14 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 					if (domChildren === null) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 					} else {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance);
+						patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
 					}
 				} else {
-					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren, namespace, lifecycle, context, instance);
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], namespace, lifecycle, context, instance, 0);
 				}
 			} else {
 				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren, namespace, lifecycle, context, instance);
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else {

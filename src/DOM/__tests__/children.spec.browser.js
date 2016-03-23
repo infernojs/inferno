@@ -640,7 +640,6 @@ describe('Children - (non-JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>');
 			const addTab = container.querySelector('#add');
 			addTab.click();
-			debugger;
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>');
 		});
 
@@ -1238,7 +1237,7 @@ describe('Children - (non-JSX)', () => {
 			visibleTwo = true;
 			activeTwo = emptyArray;
 			renderIt();
-			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p><p>static</p>');
+			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p><p>static</p></div>');
 		});
 
 		it('KEYED - should remove children from correct location when there is dynamic static item', function() {
