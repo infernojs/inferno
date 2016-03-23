@@ -1,6 +1,5 @@
 import { render } from '../rendering';
-import createElement from '../../core/createElement';
-import innerHTML from '../../../tools/innerHTML';
+import { delegatedEventsRegistry } from '../events';
 
 describe('Basic event tests', () => {
 
@@ -108,6 +107,96 @@ describe('Basic event tests', () => {
 		expect(container.firstChild.innerHTML).to.equal('Count 2');
 		expect(data.count).to.equal(2);
 	});
+
+    it('should not leak memory', () => {
+        const eventHandler = function(){};
+
+        function AppTwo() {
+            return {
+                tag: "button",
+                children: ['2'],
+                dom: null
+            };
+        }
+
+        function App() {
+            return {
+                tag: "button",
+                events: {
+                    submit: eventHandler
+                },
+                children: ['1'],
+                dom: null
+            };
+        }
+
+
+        render(App(), container);
+        expect(container.firstChild.innerHTML).to.equal('1');
+        assert(delegatedEventsRegistry['submit'].length === 1, 'There should be one registerd listener');
+
+        render(App(), container);
+        expect(container.firstChild.innerHTML).to.equal('1');
+        assert(delegatedEventsRegistry['submit'].length === 1, 'EventDelegator should not stack listeners but change them');
+
+        render(AppTwo(), container);
+        expect(container.firstChild.innerHTML).to.equal('2');
+        assert(delegatedEventsRegistry['submit'].length === 0, 'There should be no registered event listeners to free memory');
+    });
+
+
+    it('should not leak memory when child changes', () => {
+        const eventHandler = function(){};
+
+        function smallComponent() {
+            return {
+                tag: "div",
+                events: {
+                    blur: eventHandler
+                },
+                children: '2',
+                dom: null
+            }
+        }
+
+        const childrenArray = [smallComponent(), smallComponent(), smallComponent()];
+
+        function AppTwo() {
+            return {
+                tag: "p",
+                children: ['2'],
+                dom: null
+            };
+        }
+
+        function App(children) {
+            return {
+                tag: "p",
+                events: {
+                    keydown: eventHandler
+                },
+                children: children,
+                dom: null
+            };
+        }
+
+
+        render(App(childrenArray), container);
+        expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div><div>2</div>');
+        assert(delegatedEventsRegistry['blur'].length === 3);
+        assert(delegatedEventsRegistry['keydown'].length === 1);
+
+        childrenArray.pop();
+        render(App(childrenArray), container);
+        expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div>'); // TODO: Is this bug?
+        assert(delegatedEventsRegistry['blur'].length === 2);
+        assert(delegatedEventsRegistry['keydown'].length === 1);
+
+        render(AppTwo(), container);
+        expect(container.firstChild.innerHTML).to.equal('2');
+        assert(delegatedEventsRegistry['blur'].length === 0);
+        assert(delegatedEventsRegistry['keydown'].length === 0);
+    });
 });
 
 

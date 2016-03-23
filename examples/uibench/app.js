@@ -214,7 +214,7 @@
 	var TreeLeaf = function (props) {
 		return {
 			tpl: treeLeaf1,
-			events: {
+			hooks: {
 				componentShouldUpdate: appUpdateCheck
 			},
 			children: '' + props.data.id
