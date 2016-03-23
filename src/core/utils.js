@@ -76,7 +76,7 @@ export function isAttrAComponentHook(hook) {
 }
 
 export function isPromise(obj) {
-	return obj instanceof Promise;
+	return obj && obj.then;
 }
 
 export function replaceInArray(array, obj, newObj) {

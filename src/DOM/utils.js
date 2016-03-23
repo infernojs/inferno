@@ -59,6 +59,7 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, parentDom.firstChild);
 	} else {
+		detachNode(lastNode);
 		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, lastNode.dom);
@@ -74,7 +75,7 @@ export function detachNode(node) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
-	const hooks = node.hooks;
+	const hooks = node.hooks || !isNullOrUndefined(instance) && instance.hooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
 			hooks.willDetach(node.dom);

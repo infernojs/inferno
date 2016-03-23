@@ -29,10 +29,12 @@ export function mountChildren(node, children, parentDom, namespace, lifecycle, c
 			const child = children[i];
 
 			if (isStringOrNumber(child)) {
+
 				isNonKeyed = true;
 				domChildren.push(appendText(child, parentDom, false));
 			} else if (!isNullOrUndefined(child) && isArray(child)) {
 				const virtualFragment = createVirtualFragment();
+
 
 				isNonKeyed = true;
 				mountChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
@@ -58,8 +60,10 @@ export function mountChildren(node, children, parentDom, namespace, lifecycle, c
 	} else {
 		if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
+
 		} else if (isPromise(children)) {
 			appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
+
 		} else {
 			mountNode(children, parentDom, namespace, lifecycle, context, instance);
 		}

@@ -1,4 +1,5 @@
 import { render } from '../../DOM/rendering';
+import createElement from './../../core/createElement';
 
 
 describe('lifecycle hooks', () => {
@@ -693,6 +694,108 @@ describe('lifecycle hooks', () => {
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, null, null, null, domNode => onComponentShouldUpdateDomNode = domNode, StatelessComponent), container);
 			expect(onComponentShouldUpdateDomNode).to.equal(expectedDomNode);
+		});
+	});
+
+	describe('github issue with willDetach', () => {
+
+		it('should raise willDetach', () => {
+
+			let didAttach = false,
+				didCreate = false,
+				didDetach = false;
+
+			function addElement() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h1',
+						attrs: {
+							class: 'something'
+						},
+						hooks: {
+							attached: function() {
+								didAttach = true;
+							},
+							created: function() {
+								didCreate = true;
+							},
+							willDetach: function() {
+								didDetach = true;
+							}
+						},
+						children: 'Hi there!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			function removeElement() {
+				render(
+					null,
+					container
+				);
+			}
+
+			addElement();
+			removeElement();
+
+			expect(didAttach).to.equal(true);
+			expect(didCreate).to.equal(true);
+			expect(didDetach).to.equal(true);
+
+
+		});
+
+		it('should raise willDetach', () => {
+
+			let didDetach = false;
+
+			function addElement() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h1',
+						attrs: {
+							class: 'something'
+						},
+						hooks: {
+							willDetach: function() {
+								didDetach = true;
+							}
+						},
+						children: 'Hi there!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			function addElementTwo() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h2',
+						attrs: {
+							class: 'something'
+						},
+						children: 'Another!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			addElement();
+			addElementTwo();
+			expect(didDetach).to.equal(true);
 		});
 	});
 });
