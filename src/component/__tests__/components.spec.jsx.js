@@ -1424,5 +1424,99 @@ describe('Components (JSX)', () => {
 			updateParent();
 			expect(container.innerHTML).to.equal('<div><p>parent</p><div>Y</div></div>');
 		});
-	})
+	});
+
+	describe('recursive component', () => {
+		it('Should be possible to pass props recursively', () => {
+
+			class List extends Component {
+				render() {
+					const children = this.props.data.
+					map((entity) => {
+						const { key, data, ...other } = entity;
+						debugger;
+						const child = Array.isArray(data) ?
+							<List
+								data={data}
+								{...other}
+							/> :
+							<Text
+								data={data}
+								{...other}
+							/>;
+						return <li key={key}>{child}</li>;
+					});
+
+					return <ul>{children}</ul>;
+				}
+			}
+
+			class Text extends Component {
+				render() {
+					return <span>{this.props.data}</span>;
+				}
+			}
+
+			const data = [
+				// Data structure should provide stable keys.
+				{ key: '0', data: 'Foo' },
+				{
+					key: '1',
+					data: [
+						{ key: '1/1', data: 'a' },
+						{ key: '1/2', data: 'b' }
+					]
+				}
+			];
+
+			render(<List data={data} />, container);
+			expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
+		});
+
+		it('Should be possible to pass props recursively AT BEGINNING (JSX plugin change required)', () => {
+
+			class List extends Component {
+				render() {
+					const children = this.props.data.
+					map((entity) => {
+						const { key, data, ...other } = entity;
+						debugger;
+						const child = Array.isArray(data) ?
+							<List
+								{...other}
+								data={data}
+							/> :
+							<Text
+								{...other}
+								data={data}
+							/>;
+						return <li key={key}>{child}</li>;
+					});
+
+					return <ul>{children}</ul>;
+				}
+			}
+
+			class Text extends Component {
+				render() {
+					return <span>{this.props.data}</span>;
+				}
+			}
+
+			const data = [
+				// Data structure should provide stable keys.
+				{ key: '0', data: 'Foo' },
+				{
+					key: '1',
+					data: [
+						{ key: '1/1', data: 'a' },
+						{ key: '1/2', data: 'b' }
+					]
+				}
+			];
+
+			render(<List data={data} />, container);
+			expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
+		});
+	});
 });
