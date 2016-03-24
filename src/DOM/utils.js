@@ -135,7 +135,7 @@ export function remove(node, parentDom) {
 	} else {
 		parentDom.removeChild(dom);
 		if (recyclingEnabled) {
-			pool(node)
+			pool(node);
 			detachNode(node, !isNullOrUndefined(node.tpl));
 		} else {
 			detachNode(node, false);

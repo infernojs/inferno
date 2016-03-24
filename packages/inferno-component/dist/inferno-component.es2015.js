@@ -108,7 +108,6 @@ function applyState(component, force) {
 
 				var subLifecycle = new Lifecycle();
 				component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
-				lastNode.dom = nextNode.dom;
 				component._lastNode = nextNode;
 				subLifecycle.addListener(function () {
 					subLifecycle.trigger();

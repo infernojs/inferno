@@ -274,15 +274,15 @@ function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, contex
 		nextNode.dom = _dom;
 		parentDom.replaceChild(_dom, parentDom.firstChild);
 	} else {
-		detachNode(lastNode);
 		var _dom2 = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = _dom2;
 		parentDom.replaceChild(_dom2, lastNode.dom);
+		detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
 	}
 }
 
-function detachNode(node) {
-	if (isInvalidNode(node)) {
+function detachNode(node, recycling) {
+	if (isInvalidNode(node) || isStringOrNumber(node)) {
 		return;
 	}
 	var instance = node.instance;
@@ -290,13 +290,21 @@ function detachNode(node) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
-	var hooks = node.hooks || !isNullOrUndefined(instance) && instance.hooks;
+	var instanceHooks = false;
+	var hooks = node.hooks || !isNullOrUndefined(instance) && (instanceHooks = true) && instance.hooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
 			hooks.willDetach(node.dom);
 		}
 		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
 			hooks.componentWillUnmount(node.dom, hooks);
+		}
+		if (recycling === false) {
+			if (instanceHooks) {
+				instance.hooks = null;
+			} else {
+				node.hooks = null;
+			}
 		}
 	}
 	var events = node.events;
@@ -316,6 +324,17 @@ function detachNode(node) {
 		} else {
 			detachNode(children);
 		}
+		if (recycling === false) {
+			node.children = null;
+
+			var domChildren = node.domChildren;
+			if (!isNullOrUndefined(domChildren)) {
+				node.domChildren = null;
+			}
+		}
+	}
+	if (recycling === false) {
+		node.dom = null;
 	}
 }
 
@@ -324,7 +343,6 @@ function createEmptyTextNode() {
 }
 
 function remove(node, parentDom) {
-	detachNode(node);
 	var dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
@@ -332,6 +350,9 @@ function remove(node, parentDom) {
 		parentDom.removeChild(dom);
 		if (recyclingEnabled) {
 			pool(node);
+			detachNode(node, !isNullOrUndefined(node.tpl));
+		} else {
+			detachNode(node, false);
 		}
 	}
 }
@@ -585,6 +606,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 
 				if (!isInvalidNode(lastChild)) {
 					dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
+					detachNode(lastChild);
 				}
 				lastChildrenLength--;
 			}
@@ -922,11 +944,10 @@ function diffEvents(lastNode, nextNode, dom) {
 	var lastEvents = lastNode.events;
 
 	if (!isNullOrUndefined(lastEvents)) {
+		var lastEventsKeys = Object.keys(lastEvents);
 		var nextEvents = nextNode.events;
-		if (!isNullOrUndefined(nextEvents)) {
-			var lastEventsKeys = Object.keys(lastEvents);
-			// const nextEventsKeys = Object.keys(nextEvents);
 
+		if (!isNullOrUndefined(nextEvents)) {
 			for (var i = 0; i < lastEventsKeys.length; i++) {
 				var event = lastEventsKeys[i];
 				var nextEvent = nextEvents[event];
@@ -941,7 +962,14 @@ function diffEvents(lastNode, nextNode, dom) {
 					addEventToRegistry(event, nextNode, nextEvent); // add new
 				}
 			}
-		}
+		} else {
+				for (var _i2 = 0; _i2 < lastEventsKeys.length; _i2++) {
+					var _event = lastEventsKeys[_i2];
+					var _lastEvent = lastEvents[_event];
+
+					removeEventFromRegistry(_event, _lastEvent);
+				}
+			}
 	}
 }
 
@@ -972,14 +1000,16 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 
 	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 	if (lastTag !== nextTag) {
+		var lastNodeInstance = lastNode.instance;
+
 		if (isFunction(lastTag) && !isFunction(nextTag)) {
 			if (isStatefulComponent(lastTag)) {
-				diffNodes(lastNode.instance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
 			} else {
-				diffNodes(lastNode.instance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+				diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
 			}
 		} else {
-			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+			replaceNode(lastNodeInstance && lastNodeInstance._lastNode || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 		}
 		return;
 	} else if (isNullOrUndefined(lastTag)) {
@@ -1055,7 +1085,9 @@ function pool(node) {
 			var _pool2 = pools.keyed;
 			(_pool2[key] || (_pool2[key] = [])).push(node);
 		}
+		return true;
 	}
+	return false;
 }
 
 function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
