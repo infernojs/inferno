@@ -1,5 +1,6 @@
 import Lifecycle from './../core/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
+import { getActiveNode, resetActiveNode } from '../dom/utils';
 
 function queueStateChanges(component, newState) {
 	for (let stateKey in newState) {
@@ -27,12 +28,14 @@ function applyState(component, force) {
 			const lastNode = component._lastNode;
 			const parentDom = lastNode.dom.parentNode;
 
+			const activeNode = getActiveNode();
 			const subLifecycle = new Lifecycle();
 			component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
 			component._lastNode = nextNode;
 			subLifecycle.addListener(() => {
 				subLifecycle.trigger();
 			});
+			resetActiveNode(activeNode);
 		}
 	}
 }

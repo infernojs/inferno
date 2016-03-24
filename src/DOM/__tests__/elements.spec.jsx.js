@@ -257,8 +257,8 @@ describe('Elements - SVG (JSX)', () => {
 		render(<div>{ child }</div>, container);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.childNodes.length).to.equal(1);
-		expect(container.firstChild.firstChild.firstChild.nodeName).to.equal('DIV');
-		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('Hello, World!');
+		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
+		expect(container.firstChild.firstChild.innerHTML).to.equal('Hello, World!');
 
 		render(<div>{ null }</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');

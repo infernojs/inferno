@@ -1,5 +1,5 @@
 import { mountNode } from './mounting';
-import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber } from '../core/utils';
+import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 import { removeEventFromRegistry } from './events';
 
@@ -160,6 +160,17 @@ function insertChildren(parentNode, childNodes, dom) {
 	}
 }
 
+// TODO: for node we need to check if document is valid
+export function getActiveNode() {
+	return document.activeElement;
+}
+
+export function resetActiveNode(activeNode) {
+	if (activeNode !== document.body && document.activeElement !== activeNode) {
+		activeNode.focus();
+	}
+}
+
 export function createVirtualFragment() {
 	const childNodes = [];
 	const dom = document.createTextNode('');
@@ -184,6 +195,10 @@ export function createVirtualFragment() {
 				parentNode.insertBefore(domNode, refNode);
 			}
 			childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
+		},
+		replaceChild(domNode, refNode) {
+			parentNode.replaceChild(domNode, refNode);
+			replaceInArray(childNodes, refNode, domNode);
 		},
 		append(parentDom) {
 			parentDom.appendChild(dom);
