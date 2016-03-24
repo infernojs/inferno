@@ -1198,5 +1198,92 @@ describe('Update (non-jsx)', () => {
 			);
 		});
 	});
+	describe('test case for github #142', () => {
 
+		function A() {
+			return {
+				"tag": "div",
+				"children": {
+					"tag": "div",
+					"children": {
+						"tag": "table",
+						"children": [
+							{
+								"tag": "tr",
+								"children": [
+									{
+										"tag": "td",
+										"children": "Text"
+									},
+
+								],
+								"dom": null
+							}
+						]
+					}
+				},
+				"dom": null
+			}
+		}
+
+		function B() {
+			return {
+				"tag": "div",
+				"children": {
+					"tag": "div",
+					"children": {
+						"tag": "table",
+						"children": [
+							{
+								"tag": "tr",
+								"children": [
+									{
+										"tag": "td",
+										"children": [
+											"bar"
+										]
+									},
+								],
+								"dom": null
+							}
+						]
+					}
+				},
+				"dom": null
+			}
+		}
+
+		function C() {
+			return {
+				"tag": "div",
+				"children": {
+					"tag": "div",
+					"children": {
+						"tag": "table",
+						"children": [
+							{
+								"tag": "tr",
+								"children": [
+									{
+										"tag": "td",
+										"children": [
+											"text1"
+										]
+									},
+								],
+								"dom": null
+							}
+						]
+					}
+				},
+				"dom": null
+			}
+		}
+
+		it('should correct render initial and further updates', () => {
+			render(A(), container);
+			render(B(), container);
+			render(C(), container);
+		})
+	});
 });

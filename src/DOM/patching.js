@@ -261,9 +261,9 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					const childNode = domChildren[index];
 
 					if (isNullOrUndefined(childNode)) {
-						const textNode = document.createTextNode(nextChild);
+						const textNode = document.createTextNode('');
 
-						nextChildren.push(textNode);
+						domChildren.push(textNode);
 						dom.appendChild(textNode);
 					} else {
 						if (isStringOrNumber(lastChild)) {
