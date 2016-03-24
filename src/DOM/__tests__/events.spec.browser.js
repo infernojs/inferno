@@ -193,9 +193,9 @@ describe('Basic event tests', () => {
         assert(delegatedEventsRegistry['keydown'].length === 1);
 
         render(AppTwo(), container);
-        expect(container.firstChild.innerHTML).to.equal('2');
-        assert(delegatedEventsRegistry['blur'].length === 0);
-        assert(delegatedEventsRegistry['keydown'].length === 0);
+        expect(container.innerHTML).to.equal('<p><div>2</div></p>');
+        assert(delegatedEventsRegistry['blur'].length === 0, 'children events still leaking memory');
+        assert(delegatedEventsRegistry['keydown'].length === 0, 'parent events still leaking memory');
     });
 });
 
