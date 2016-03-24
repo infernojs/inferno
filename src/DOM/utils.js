@@ -51,6 +51,13 @@ export function appendText(text, parentDom, singleChild) {
 }
 
 export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
+	let lastInstance = null;
+	const instanceLastNode = lastNode._lastNode;
+
+	if (!isNullOrUndefined(instanceLastNode)) {
+		lastInstance = lastNode;
+		lastNode = instanceLastNode;
+	}
 	if (isStringOrNumber(nextNode)) {
 		const dom = document.createTextNode(nextNode);
 		parentDom.replaceChild(dom, dom);
@@ -62,6 +69,9 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = dom;
 		parentDom.replaceChild(dom, lastNode.dom);
+		if (lastInstance !== null) {
+			lastInstance._lastNode = nextNode;
+		}
 		detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
 	}
 }
@@ -119,7 +129,7 @@ export function detachNode(node, recycling) {
 		}
 	}
 	if (recycling === false) {
-		node.dom = null;
+		//node.dom = null;
 	}
 }
 

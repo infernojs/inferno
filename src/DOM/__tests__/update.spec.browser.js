@@ -1282,8 +1282,11 @@ describe('Update (non-jsx)', () => {
 
 		it('should correct render initial and further updates', () => {
 			render(A(), container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>Text</td></tr></table></div></div>');
 			render(B(), container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>bar</td></tr></table></div></div>');
 			render(C(), container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
 		})
 	});
 });

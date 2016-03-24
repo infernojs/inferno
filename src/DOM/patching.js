@@ -257,25 +257,28 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance);
 						}
 					}
-				} else {
-					const childNode = domChildren[index];
+				} else if (isStringOrNumber(nextChild)) {
+					const textNode = document.createTextNode(nextChild);
 
-					if (isNullOrUndefined(childNode)) {
-						const textNode = document.createTextNode('');
-
-						domChildren.push(textNode);
-						dom.appendChild(textNode);
-					} else {
-						if (isStringOrNumber(lastChild)) {
-							childNode.nodeValue = nextChild;
-						} else {
-							childNode.textContent = nextChild;
-						}
-					}
+					dom.replaceChild(textNode, domChildren[index]);
+					!isVirtualFragment && domChildren.splice(index, 1, textNode);
 				}
 			}
 		}
 	}
+	//if (isNullOrUndefined(childNode)) {
+	//	debugger;
+	//	const textNode = document.createTextNode('');
+	//
+	//	dom.appendChild(textNode);
+	//	!isVirtualFragment && domChildren.push(textNode);
+	//} else {
+	//	if (isStringOrNumber(lastChild)) {
+	//		childNode.nodeValue = nextChild;
+	//	} else {
+	//		childNode.textContent = nextChild;
+	//	}
+	//}
 }
 
 export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {

@@ -37,7 +37,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				}
 			} else {
 				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), namespace, lifecycle, context, instance, 0);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else {
@@ -185,7 +185,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
 			}
 		} else {
-			replaceNode((lastNodeInstance && lastNodeInstance._lastNode) || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+			replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 		}
 		return;
 	} else if (isNullOrUndefined(lastTag)) {
