@@ -1590,106 +1590,19 @@ describe('Components (JSX)', () => {
 		function A() {
 			return {
 				"tag": "div",
-				"attrs": {
-					"class": "report"
-				},
 				"children": {
 					"tag": "div",
-					"style": "display:initial;",
-					"attrs": {
-						"id": "contents"
-					},
 					"children": {
 						"tag": "table",
 						"children": [
 							{
 								"tag": "tr",
-								"attrs": {
-									"data-k": "keyundefined"
-								},
 								"children": [
-									[
-										{
-											"tag": "td",
-											"key": "col0",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col1",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col2",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col3",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col4",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										}
-									],
 									{
 										"tag": "td",
-										"key": "date",
-										"attrs": {
-											"class": "date added"
-										},
-										"children": ""
-									},
-									{
-										"tag": "td",
-										"key": "payee",
-										"attrs": {
-											"class": "payee added"
-										}
-									},
-									{
-										"tag": "td",
-										"key": "account",
-										"attrs": {
-											"class": "account added"
-										},
-										"children": "Sum"
-									},
-									{
-										"tag": "td",
-										"key": "amount",
-										"attrs": {
-											"class": "amount added"
-										},
-										"children": ""
-									},
-									{
-										"tag": "td",
-										"key": "sum",
-										"style": "display:table-cell",
-										"attrs": {
-											"class": "sum"
-										},
-										"children": ""
+										"children": "Text"
 									}
+
 								],
 								"dom": null
 							}
@@ -1699,111 +1612,22 @@ describe('Components (JSX)', () => {
 				"dom": null
 			}
 		}
+
 		function B() {
 			return {
 				"tag": "div",
-				"attrs": {
-					"class": "report"
-				},
 				"children": {
 					"tag": "div",
-					"style": "display:initial;",
-					"attrs": {
-						"id": "contents"
-					},
 					"children": {
 						"tag": "table",
 						"children": [
 							{
 								"tag": "tr",
-								"attrs": {
-									"data-k": "keyundefined"
-								},
 								"children": [
-									[
-										{
-											"tag": "td",
-											"key": "col0",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col1",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col2",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col3",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col4",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										}
-									],
 									{
 										"tag": "td",
-										"key": "date",
-										"attrs": {
-											"class": "date added"
-										},
-										"children": ""
-									},
-									{
-										"tag": "td",
-										"key": "payee",
-										"attrs": {
-											"class": "payee added"
-										}
-									},
-									{
-										"tag": "td",
-										"key": "account",
-										"attrs": {
-											"class": "account added"
-										},
-										"children": "Sum"
-									},
-									{
-										"tag": "td",
-										"key": "amount",
-										"attrs": {
-											"class": "amount added"
-										},
 										"children": [
-											"428,981 SEK"
-										]
-									},
-									{
-										"tag": "td",
-										"key": "sum",
-										"style": "display:table-cell",
-										"attrs": {
-											"class": "sum"
-										},
-										"children": [
-											"428,981 SEK"
+											"bar"
 										]
 									}
 								],
@@ -1815,111 +1639,22 @@ describe('Components (JSX)', () => {
 				"dom": null
 			}
 		}
+
 		function C() {
 			return {
 				"tag": "div",
-				"attrs": {
-					"class": "report"
-				},
 				"children": {
 					"tag": "div",
-					"style": "display:initial;",
-					"attrs": {
-						"id": "contents"
-					},
 					"children": {
 						"tag": "table",
 						"children": [
 							{
 								"tag": "tr",
-								"attrs": {
-									"data-k": "keyundefined"
-								},
 								"children": [
-									[
-										{
-											"tag": "td",
-											"key": "col0",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col1",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col2",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col3",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "col4",
-											"attrs": {
-												"class": "grouping"
-											},
-											"dom": null
-										}
-									],
 									{
 										"tag": "td",
-										"key": "date",
-										"attrs": {
-											"class": "date added"
-										},
-										"children": ""
-									},
-									{
-										"tag": "td",
-										"key": "payee",
-										"attrs": {
-											"class": "payee added"
-										}
-									},
-									{
-										"tag": "td",
-										"key": "account",
-										"attrs": {
-											"class": "account added"
-										},
-										"children": "Expenses"
-									},
-									{
-										"tag": "td",
-										"key": "amount",
-										"attrs": {
-											"class": "amount added"
-										},
 										"children": [
-											"6,531.08 SEK"
-										]
-									},
-									{
-										"tag": "td",
-										"key": "sum",
-										"style": "display:table-cell",
-										"attrs": {
-											"class": "sum"
-										},
-										"children": [
-											"6,531.08 SEK"
+											"text1"
 										]
 									}
 								],
@@ -1931,8 +1666,13 @@ describe('Components (JSX)', () => {
 				"dom": null
 			}
 		}
+
+		
 		render(A(), container);
+		expect(container.innerHTML).to.equal('<div><div><table><tr><td>Text</td></tr></table></div></div>');
 		render(B(), container);
+		expect(container.innerHTML).to.equal('<div><div><table><tr><td>Bar</td></tr></table></div></div>');
 		render(C(), container);
+		expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
 	})
 });
