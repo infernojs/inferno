@@ -1,7 +1,5 @@
 import { render } from '../rendering';
-import Component from '../../component';
 import { createStaticElement } from '../../core/static';
-import innerHTML from '../../../tools/innerHTML';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {

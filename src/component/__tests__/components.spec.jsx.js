@@ -66,7 +66,7 @@ describe('Components (JSX)', () => {
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>')
 		);
 
-		const other = { foo: 'bar' }
+		const other = { foo: 'bar' };
 		const attrs = { title: 'abc', name: 'basic-render2', ...other };
 
 		// JSX Spread Attribute
@@ -568,8 +568,8 @@ describe('Components (JSX)', () => {
 
 	it('should render with null in the initial state property', function (done) {
 		class Foo extends Component {
-			constructor() {
-				super();
+			constructor(props) {
+				super(props);
 				this.state = null;
 			}
 			render() {
@@ -1434,7 +1434,6 @@ describe('Components (JSX)', () => {
 					const children = this.props.data.
 					map((entity) => {
 						const { key, data, ...other } = entity;
-						debugger;
 						const child = Array.isArray(data) ?
 							<List
 								data={data}
@@ -1480,7 +1479,6 @@ describe('Components (JSX)', () => {
 					const children = this.props.data.
 					map((entity) => {
 						const { key, data, ...other } = entity;
-						debugger;
 						const child = Array.isArray(data) ?
 							<List
 								{...other}
@@ -1519,4 +1517,422 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
 		});
 	});
+
+	it('Should render (github #117)', (done) => {
+		class MakeX extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {x: false};
+			};
+			componentWillMount() {
+				setTimeout(() => {
+					this.setState({x: true});
+				}, 10);
+			};
+			render() {
+				return (
+					<div>
+						{!this.state.x?<MakeA />:<MakeY />}
+					</div>
+				);
+			};
+		}
+
+		class MakeY extends Component {
+			constructor(props) {
+				super(props);
+			};
+			render() {
+				return (<div>Y</div>);
+			};
+		}
+
+		class MakeA extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {z: false};
+			};
+
+			componentWillMount() {
+				setTimeout(() => {
+					this.setState({z: true});
+				}, 20);
+			};
+
+			render() {
+				if (!this.state.z) {
+					console.log("rendering a");
+					return (<div>A</div>);
+				}
+
+				console.log("making b");
+				return (<MakeB />);
+			};
+		}
+
+		class MakeB extends Component {
+			constructor(props) {
+				super(props);
+			}
+
+			render() {
+				return (<div>B</div>);
+			}
+		}
+
+		render(<MakeX />, container);
+		setTimeout(function() {
+			done();
+		}, 500);
+	});
+
+	it('should render without exception', function() {
+		function A() {
+			return {
+				"tag": "div",
+				"attrs": {
+					"class": "report"
+				},
+				"children": {
+					"tag": "div",
+					"style": "display:initial;",
+					"attrs": {
+						"id": "contents"
+					},
+					"children": {
+						"tag": "table",
+						"children": [
+							{
+								"tag": "tr",
+								"attrs": {
+									"data-k": "keyundefined"
+								},
+								"children": [
+									[
+										{
+											"tag": "td",
+											"key": "col0",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col1",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col2",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col3",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col4",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										}
+									],
+									{
+										"tag": "td",
+										"key": "date",
+										"attrs": {
+											"class": "date added"
+										},
+										"children": ""
+									},
+									{
+										"tag": "td",
+										"key": "payee",
+										"attrs": {
+											"class": "payee added"
+										}
+									},
+									{
+										"tag": "td",
+										"key": "account",
+										"attrs": {
+											"class": "account added"
+										},
+										"children": "Sum"
+									},
+									{
+										"tag": "td",
+										"key": "amount",
+										"attrs": {
+											"class": "amount added"
+										},
+										"children": ""
+									},
+									{
+										"tag": "td",
+										"key": "sum",
+										"style": "display:table-cell",
+										"attrs": {
+											"class": "sum"
+										},
+										"children": ""
+									}
+								],
+								"dom": null
+							}
+						]
+					}
+				},
+				"dom": null
+			}
+		}
+		function B() {
+			return {
+				"tag": "div",
+				"attrs": {
+					"class": "report"
+				},
+				"children": {
+					"tag": "div",
+					"style": "display:initial;",
+					"attrs": {
+						"id": "contents"
+					},
+					"children": {
+						"tag": "table",
+						"children": [
+							{
+								"tag": "tr",
+								"attrs": {
+									"data-k": "keyundefined"
+								},
+								"children": [
+									[
+										{
+											"tag": "td",
+											"key": "col0",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col1",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col2",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col3",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col4",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										}
+									],
+									{
+										"tag": "td",
+										"key": "date",
+										"attrs": {
+											"class": "date added"
+										},
+										"children": ""
+									},
+									{
+										"tag": "td",
+										"key": "payee",
+										"attrs": {
+											"class": "payee added"
+										}
+									},
+									{
+										"tag": "td",
+										"key": "account",
+										"attrs": {
+											"class": "account added"
+										},
+										"children": "Sum"
+									},
+									{
+										"tag": "td",
+										"key": "amount",
+										"attrs": {
+											"class": "amount added"
+										},
+										"children": [
+											"428,981 SEK"
+										]
+									},
+									{
+										"tag": "td",
+										"key": "sum",
+										"style": "display:table-cell",
+										"attrs": {
+											"class": "sum"
+										},
+										"children": [
+											"428,981 SEK"
+										]
+									}
+								],
+								"dom": null
+							}
+						]
+					}
+				},
+				"dom": null
+			}
+		}
+		function C() {
+			return {
+				"tag": "div",
+				"attrs": {
+					"class": "report"
+				},
+				"children": {
+					"tag": "div",
+					"style": "display:initial;",
+					"attrs": {
+						"id": "contents"
+					},
+					"children": {
+						"tag": "table",
+						"children": [
+							{
+								"tag": "tr",
+								"attrs": {
+									"data-k": "keyundefined"
+								},
+								"children": [
+									[
+										{
+											"tag": "td",
+											"key": "col0",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col1",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col2",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col3",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "col4",
+											"attrs": {
+												"class": "grouping"
+											},
+											"dom": null
+										}
+									],
+									{
+										"tag": "td",
+										"key": "date",
+										"attrs": {
+											"class": "date added"
+										},
+										"children": ""
+									},
+									{
+										"tag": "td",
+										"key": "payee",
+										"attrs": {
+											"class": "payee added"
+										}
+									},
+									{
+										"tag": "td",
+										"key": "account",
+										"attrs": {
+											"class": "account added"
+										},
+										"children": "Expenses"
+									},
+									{
+										"tag": "td",
+										"key": "amount",
+										"attrs": {
+											"class": "amount added"
+										},
+										"children": [
+											"6,531.08 SEK"
+										]
+									},
+									{
+										"tag": "td",
+										"key": "sum",
+										"style": "display:table-cell",
+										"attrs": {
+											"class": "sum"
+										},
+										"children": [
+											"6,531.08 SEK"
+										]
+									}
+								],
+								"dom": null
+							}
+						]
+					}
+				},
+				"dom": null
+			}
+		}
+		render(A(), container);
+		render(B(), container);
+		render(C(), container);
+	})
 });

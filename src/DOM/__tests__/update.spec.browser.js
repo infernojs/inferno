@@ -1115,7 +1115,7 @@ describe('Update (non-jsx)', () => {
 		template = (styleRule) =>
 			createElement('div', {
 				style: styleRule
-			})
+			});
 
 		render(template({
 			color: 'red',

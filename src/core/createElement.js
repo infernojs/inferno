@@ -1,4 +1,4 @@
-import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isAttrAComponentEvent, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './utils';
+import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './utils';
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;

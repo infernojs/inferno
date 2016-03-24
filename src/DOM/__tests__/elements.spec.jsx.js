@@ -1,5 +1,4 @@
 import { render } from '../rendering';
-import Component from '../../component';
 import innerHTML from '../../../tools/innerHTML';
 
 describe('Elements - SVG (JSX)', () => {

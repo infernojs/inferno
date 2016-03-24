@@ -1,7 +1,7 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject, removeInArray } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove, appendText, createEmptyTextNode, detachNode } from './utils';
+import { insertOrAppend, remove, createEmptyTextNode, detachNode } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
 // Checks if property is boolean type

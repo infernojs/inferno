@@ -1,5 +1,4 @@
 import { render, renderToString } from '../rendering';
-import Component from '../../component/index';
 
 describe('createTree - SVG (JSX)', () => {
 

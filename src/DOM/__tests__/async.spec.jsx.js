@@ -1,7 +1,4 @@
 import { render } from '../../DOM/rendering';
-import Component from '../../component';
-import waits from '../../../tools/waits';
-import innerHTML from '../../../tools/innerHTML';
 
 describe('Async rendering (JSX)', () => {
 	let container;
