@@ -262,12 +262,10 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 
 
 function mountAttributes(node, attrs, dom, instance) {
-
 	// IMPORTANT! This has to be executed BEFORE 'attrsKeys' are created
 	if (node.tag === 'select') {
-		selectValue(vdomObject);
+		selectValue(node);
 	}
-
 	const attrsKeys = Object.keys(attrs);
 
 	for (let i = 0; i < attrsKeys.length; i++) {
