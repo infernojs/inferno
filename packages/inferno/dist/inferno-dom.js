@@ -1022,11 +1022,9 @@
 	}
 
 	function diffAttributes(lastNode, nextNode, dom, instance) {
-
 		if (lastNode.tag === 'select') {
 			selectValue(nextNode);
 		}
-
 		var nextAttrs = nextNode.attrs;
 		var lastAttrs = lastNode.attrs;
 		var nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
@@ -1486,12 +1484,10 @@
 	}
 
 	function mountAttributes(node, attrs, dom, instance) {
-
 		// IMPORTANT! This has to be executed BEFORE 'attrsKeys' are created
 		if (node.tag === 'select') {
-			selectValue(vdomObject);
+			selectValue(node);
 		}
-
 		var attrsKeys = Object.keys(attrs);
 
 		for (var i = 0; i < attrsKeys.length; i++) {
