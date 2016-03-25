@@ -11,7 +11,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 	let domChildren = null;
 
 	if (lastChildren === nextChildren) {
-		return;
+		return; // Is this ever executed? I couldn't get it working
 	}
 	if (!isNullOrUndefined(lastNode.domChildren)) {
 		domChildren = nextNode.domChildren = lastNode.domChildren;
@@ -38,7 +38,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				}
 			}
 		} else {
-			dom.textContent = '';
+			dom.textContent = ''; // TODO! Why this? Very slow. If the point is to remove the node? dom.removeChild(dom.firstchild);
 		}
 	} else {
 		if (isStringOrNumber(nextChildren)) {
@@ -178,6 +178,9 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		return;
 	}
 	const nextHooks = nextNode.hooks;
+
+	// TODO! It works just fine without the 'isNullOrUndefined' check
+
 	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.willUpdate)) {
 		nextHooks.willUpdate(lastNode.dom);
 	}
