@@ -237,8 +237,6 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 					diffEvents(lastNode, nextNode);
 				}
 
-				// node.domTextNodes
-
 				if (lastNode.className !== nextClassName) {
 					if (isNullOrUndefined(nextClassName)) {
 						dom.removeAttribute('class');

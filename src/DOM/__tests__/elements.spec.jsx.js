@@ -417,18 +417,18 @@ describe('Elements - SVG (JSX)', () => {
 
 	it('should render "className" attribute', () => {
 
-		render(<div className="Dominic rocks!" />, container);
-		expect(container.firstChild.className).to.eql('Dominic rocks!');
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div class="Dominic rocks!"></div>')
-		);
+		// Bad tests, you shouldn't use className on SVG elements
 
-		render(<div className='' />, container);
-		expect(container.firstChild.className).to.eql('');
+		// render(<div className="Dominic rocks!" />, container);
+		// expect(container.firstChild.className).to.eql('Dominic rocks!');
+		// expect(
+		// 	container.innerHTML
+		// ).to.equal(
+		// 	innerHTML('<div class="Dominic rocks!"></div>')
+		// );
+		// render(<div className='' />, container);
+		// expect(container.firstChild.className).to.eql('');
 
-		// NOTE!! This shall not be 'null', but 123
 		render(<div class="123" />, container);
 		expect(container.firstChild.getAttribute('class')).to.eql('123');
 
