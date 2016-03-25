@@ -243,10 +243,10 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 
 							if (isArray(lastChild) && lastChild.length === 0) {
 								insertOrAppend(dom, textNode);
-								!isVirtualFragment && domChildren.splice(index, 0, textNode);
+								!isVirtualFragment && domChildren.splice(index, 0, textNode); // TODO! Splice is slow
 							} else {
 								dom.replaceChild(textNode, domChildren[index]);
-								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+								!isVirtualFragment && domChildren.splice(index, 1, textNode); // TODO! Splice is slow
 								detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
 							}
 						}
@@ -282,6 +282,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							}
 						}
 					} else {
+						// TODO!! Remove this extra 'else' and merge into one. See comment above.
 						if (isArray(lastChild)) { // TODO! See comment above
 							patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 						} else {
@@ -297,12 +298,12 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						dom.nodeValue = textNode.nodeValue;
 					} else {
 						// Next is single string so remove all children
-						if (!isNullOrUndefined(child.append)) { // If previous child is virtual fragment remove all its content and replace with textNode
+						if (child.append !== undefined) { // If previous child is virtual fragment remove all its content and replace with textNode
 							dom.insertBefore(textNode, child.firstChild);
 							child.remove();
-							domChildren.splice(0, domChildren.length, textNode);
+							domChildren.splice(0, domChildren.length, textNode); // TODO! Splice is a perf killer!!
 						} else {
-							!isVirtualFragment && domChildren.splice(index, 1, textNode);
+							!isVirtualFragment && domChildren.splice(index, 1, textNode);  // TODO! Splice is a perf killer!!
 							dom.replaceChild(textNode, child);
 						}
 					}
