@@ -264,24 +264,6 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						dom.replaceChild(domNode, domChildren[index]);
 						!isVirtualFragment && domChildren.splice(index, 1, domNode);
 					}
-				} else if (isObject(nextChild)) {
-					if (isArray(nextChild)) {
-						if (isKeyed(lastChild, nextChild)) {
-							patchKeyedChildren(lastChild, nextChild, domChildren[index], namespace, lifecycle, context, instance);
-						} else {
-							if (isArray(lastChild)) {
-								patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
-							} else {
-								patchNonKeyedChildren([lastChild], nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
-							}
-						}
-					} else {
-						if (isArray(lastChild)) {
-							patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
-						} else {
-							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance, false);
-						}
-					}
 				} else if (isStringOrNumber(nextChild)) {
 					if (lastChildrenLength === 1) {
 						if (isStringOrNumber(lastChild)) {
@@ -312,6 +294,22 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							}
 						}
 						detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
+					}
+				} else if (isArray(nextChild)) {
+					if (isKeyed(lastChild, nextChild)) {
+						patchKeyedChildren(lastChild, nextChild, domChildren[index], namespace, lifecycle, context, instance);
+					} else {
+						if (isArray(lastChild)) {
+							patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+						} else {
+							patchNonKeyedChildren([lastChild], nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
+						}
+					}
+				} else {
+					if (isArray(lastChild)) {
+						patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+					} else {
+						patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance, false);
 					}
 				}
 			}
