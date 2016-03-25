@@ -166,13 +166,14 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (!isNullOrUndefined(nextNode.then)) {
 		nextNode.then(node => {
 			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
-	});
+		}
+	);
 
 	} else if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
 		} else {
-			console.log(lastNode)
+			console.log(lastNode);
 			// TODO! Fix this. URGENT! If you do a console.log you will see two blank line, and a text string.
 			// TODO! Find out why there is two empty blank lines
 			// TODO! Don't replaceNode on a text string
@@ -230,7 +231,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 
 				nextNode.dom = dom;
 
-				if(lastNode !== nextNode) {
+				if (lastNode !== nextNode) {
 					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance);
 					diffAttributes(lastNode, nextNode, dom, instance);
 					diffEvents(lastNode, nextNode);

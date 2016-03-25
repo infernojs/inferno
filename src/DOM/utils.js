@@ -251,14 +251,9 @@ export function createVirtualFragment() {
 	return fragment;
 }
 
-
-
-
-
 function selectOptionValueIfNeeded(vdom, values) {
-
-	if(vdom.tag !== 'option') {
-		for (let i = 0, len = vdom.children.length; i < len ; i++) {
+	if (vdom.tag !== 'option') {
+		for (let i = 0, len = vdom.children.length; i < len; i++) {
 			selectOptionValueIfNeeded(vdom.children[i], values);
 		}
 	// NOTE! Has to be a return here to catch optGroup elements
@@ -274,7 +269,7 @@ function selectOptionValueIfNeeded(vdom, values) {
 }
 
 export function selectValue(vdom) {
-	if (vdom.tagName !== "select") {
+	if (vdom.tagName !== 'select') {
 		return;
 	}
 	let value = vdom.attrs && vdom.attrs.value;
@@ -287,7 +282,7 @@ export function selectValue(vdom) {
 	if (!isArray(value)) {
 		values[value] = value;
 	} else {
-		for (let i = 0, len = value.length; i < len ; i++) {
+		for (let i = 0, len = value.length; i < len; i++) {
 			values[value[i]] = value[i];
 		}
 	}
