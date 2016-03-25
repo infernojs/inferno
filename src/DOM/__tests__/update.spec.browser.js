@@ -1388,7 +1388,7 @@ describe('Update (non-jsx)', () => {
 		});
 	});
 
-	describe('test case for github #142', () => {
+	describe('test case for github #142b', () => {
 		var A = {
 			"tag": "div",
 			"children": {
@@ -1490,6 +1490,113 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
 			render(C, container);
 			expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+		});
+	});
+
+	describe('test case for github #142c', () => {
+		var A = {
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "some-key",
+							"children": [
+								{
+									"tag": "td",
+									"key": "sum",
+									"children": [
+										[
+											"text 1"
+										],
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								}
+							],
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		}
+
+		var B = {
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "some-key",
+							"children": [
+								{
+									"tag": "td",
+									"key": "sum",
+									"children": [
+										"",
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								}
+							],
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		}
+		var C = {
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "some-key",
+							"children": [
+								{
+									"tag": "td",
+									"key": "sum",
+									"children": [
+										[
+											"text 2"
+										],
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								}
+							],
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		}
+
+		it('should correct render initial and further updates', () => {
+			render(A, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+			render(B, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
+			render(C, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
 		});
 	});
 });

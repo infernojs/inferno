@@ -267,6 +267,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				} else if (isStringOrNumber(nextChild)) {
 					const textNode = document.createTextNode(nextChild);
 					const child = domChildren[index];
+
 					if (isNullOrUndefined(child)) {
 						// textNode => textNode
 						dom.nodeValue = textNode.nodeValue;
@@ -275,7 +276,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						if (!isNullOrUndefined(child.append)) { // If previous child is virtual fragment remove all its content and replace with textNode
 							dom.insertBefore(textNode, child.firstChild);
 							child.remove();
-							domChildren = [textNode];
+							domChildren.splice(0, domChildren.length, textNode);
 						} else {
 							!isVirtualFragment && domChildren.splice(index, 1, textNode);
 							dom.replaceChild(textNode, child);

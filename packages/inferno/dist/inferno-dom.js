@@ -511,7 +511,7 @@
 	}
 
 	function selectValue(vdom) {
-		if (vdom.tagName !== 'select') {
+		if (vdom.tag !== 'select') {
 			return;
 		}
 		var value = vdom.attrs && vdom.attrs.value;
@@ -801,6 +801,7 @@
 					} else if (isStringOrNumber(_nextChild)) {
 						var _textNode2 = document.createTextNode(_nextChild);
 						var child = domChildren[index];
+
 						if (isNullOrUndefined(child)) {
 							// textNode => textNode
 							dom.nodeValue = _textNode2.nodeValue;
@@ -810,7 +811,7 @@
 								// If previous child is virtual fragment remove all its content and replace with textNode
 								dom.insertBefore(_textNode2, child.firstChild);
 								child.remove();
-								domChildren = [_textNode2];
+								domChildren.splice(0, domChildren.length, _textNode2);
 							} else {
 								!isVirtualFragment && domChildren.splice(index, 1, _textNode2);
 								dom.replaceChild(_textNode2, child);
