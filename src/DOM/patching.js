@@ -25,13 +25,9 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
 	if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
-		return;
-	}
-	if (isInvalidNode(nextNode)) {
+	} else if (isInvalidNode(nextNode)) {
 		remove(lastNode, parentDom);
-		return;
-	}
-	if (isStringOrNumber(lastNode)) {
+	} else if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
 		} else {
@@ -39,13 +35,13 @@ export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, c
 			nextNode.dom = dom;
 			parentDom.replaceChild(dom, parentDom.firstChild);
 		}
-		return;
 	} else if (isStringOrNumber(nextNode)) {
 		const textNode = document.createTextNode(nextNode);
 		parentDom.replaceChild(textNode, lastNode.dom);
-		return;
+	} else {
+		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.tpl !== null && nextNode.tpl !== null, instance);
 	}
-	diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.tpl !== null && nextNode.tpl !== null, instance);
+
 }
 
 export const canBeUnitlessProperties = {
@@ -125,10 +121,13 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 export function patchAttribute(attrName, nextAttrValue, dom) {
 	if (!isAttrAnEvent(attrName)) {
 		if (booleanProps(attrName)) {
-			dom[attrName] = nextAttrValue;
-			return;
-		}
-		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+			// Boolean properties has to be set to false when unset - boolean equal to true/false
+			if(isNullOrUndefined(nextAttrValue)) {
+				dom[attrName] = false;
+			} else {
+				dom[attrName] = nextAttrValue;
+			}
+		} else if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 			dom.removeAttribute(attrName);
 		} else {
 			let ns = null;
