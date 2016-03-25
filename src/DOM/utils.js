@@ -1,7 +1,7 @@
 import { mountNode } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
-import { removeEventFromRegistry, doesNotBuuble, removeEventFromNode } from './events';
+import { removeEventFromRegistry, doesNotBubble, removeEventFromNode } from './events';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -116,7 +116,7 @@ export function detachNode(node, recycling) {
 	// Remove all events to free memory
 	if (!isNullOrUndefined(events)) {
 		for (let event in events) {
-			if (doesNotBuuble(event)) {
+			if (doesNotBubble(event)) {
 				removeEventFromNode(event, node, events[event]);
 			} else {
 				removeEventFromRegistry(event, events[event]);

@@ -44,7 +44,7 @@ const nonBubbleEvents = {
 	error: true
 };
 
-export function doesNotBuuble(event) {
+export function doesNotBubble(event) {
 	return nonBubbleEvents[event] || false;
 }
 

@@ -186,7 +186,7 @@
 		mouseleave: true
 	};
 
-	function doesNotBuuble(event) {
+	function doesNotBubble(event) {
 		return nonBubbleEvents[event] || false;
 	}
 
@@ -355,7 +355,7 @@
 		// Remove all events to free memory
 		if (!isNullOrUndefined(events)) {
 			for (var event in events) {
-				if (doesNotBuuble(event)) {
+				if (doesNotBubble(event)) {
 					removeEventFromNode(event, node, events[event]);
 				} else {
 					removeEventFromRegistry(event, events[event]);
@@ -1079,13 +1079,13 @@
 					var lastEvent = lastEvents[event];
 
 					if (isNullOrUndefined(nextEvent)) {
-						if (doesNotBuuble(event)) {
+						if (doesNotBubble(event)) {
 							removeEventFromNode(event, lastNode, lastEvent);
 						} else {
 							removeEventFromRegistry(event, lastEvent);
 						}
 					} else if (nextEvent !== lastEvent) {
-						if (doesNotBuuble(event)) {
+						if (doesNotBubble(event)) {
 							removeEventFromNode(event, lastNode, lastEvent);
 							addEventToNode(event, nextNode, nextEvent);
 						} else {
@@ -1099,7 +1099,7 @@
 						var _event = lastEventsKeys[_i2];
 						var _lastEvent = lastEvents[_event];
 
-						if (doesNotBuuble(_event)) {
+						if (doesNotBubble(_event)) {
 							removeEventFromNode(_event, lastNode, _lastEvent);
 						} else {
 							removeEventFromRegistry(_event, _lastEvent);
@@ -1370,7 +1370,7 @@
 		for (var i = 0; i < allEvents.length; i++) {
 			var event = allEvents[i];
 
-			if (doesNotBuuble(event)) {
+			if (doesNotBubble(event)) {
 				addEventToNode(event, node, events[event]);
 			} else if (isString(event)) {
 				addEventToRegistry(event, node, events[event]);
