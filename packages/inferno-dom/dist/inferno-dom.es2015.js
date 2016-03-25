@@ -177,7 +177,10 @@ var nonBubbleEvents = {
 	focus: true,
 	blur: true,
 	mouseenter: true,
-	mouseleave: true
+	mouseleave: true,
+	scroll: true,
+	load: true,
+	error: true
 };
 
 function doesNotBubble(event) {
@@ -957,7 +960,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 	var domChildren = null;
 
 	if (lastChildren === nextChildren) {
-		return;
+		return; // Is this ever executed? I couldn't get it working
 	}
 	if (!isNullOrUndefined(lastNode.domChildren)) {
 		domChildren = nextNode.domChildren = lastNode.domChildren;
@@ -984,21 +987,21 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				}
 			}
 		} else {
-			dom.textContent = '';
+			dom.textContent = ''; // TODO! Why this? Very slow. If the point is to remove the node? dom.removeChild(dom.firstchild);
 		}
 	} else {
-		if (isStringOrNumber(nextChildren)) {
-			updateTextNode(dom, lastChildren, nextChildren);
-		} else if (!isNullOrUndefined(nextChildren)) {
-			if ((typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
-				if (isArray(nextChildren)) {
-					mountChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
-				} else {
-					mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+			if (isStringOrNumber(nextChildren)) {
+				updateTextNode(dom, lastChildren, nextChildren);
+			} else if (!isNullOrUndefined(nextChildren)) {
+				if ((typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
+					if (isArray(nextChildren)) {
+						mountChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
+					} else {
+						mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+					}
 				}
 			}
 		}
-	}
 }
 
 function diffRef(instance, lastValue, nextValue, dom) {
@@ -1122,6 +1125,9 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 		return;
 	}
 	var nextHooks = nextNode.hooks;
+
+	// TODO! It works just fine without the 'isNullOrUndefined' check
+
 	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.willUpdate)) {
 		nextHooks.willUpdate(lastNode.dom);
 	}
@@ -1434,22 +1440,27 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 	var style = node.style;
 
 	node.dom = dom;
+	// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(hooks)) {
+		// TODO! It works just fine without the 'isNullOrUndefined' check
 		if (!isNullOrUndefined(hooks.created)) {
 			hooks.created(dom);
 		}
+		// TODO! It works just fine without the 'isNullOrUndefined' check
 		if (!isNullOrUndefined(hooks.attached)) {
 			lifecycle.addListener(function () {
 				hooks.attached(dom);
 			});
 		}
 	}
+	// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(events)) {
 		mountEvents(events, node);
 	}
 	if (!isInvalidNode(children)) {
 		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 	}
+	// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(attrs)) {
 		mountAttributes(node, attrs, dom, instance);
 	}
@@ -1458,6 +1469,7 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
 	}
+	// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(style)) {
 		patchStyle(null, style, dom);
 	}
