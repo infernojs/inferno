@@ -240,6 +240,8 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	if (!isNullOrUndefined(attrs)) {
 		mountAttributes(node, attrs, dom, instance);
 	}
+	// TODO! Fix this. Svg issue + booleans and empty object etc.
+	// Solution? Dunno, but for empty object cast to string
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
 	}
