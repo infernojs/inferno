@@ -1,6 +1,5 @@
 import { render } from '../rendering';
 import { delegatedEventsRegistry } from '../events';
-import { assert } from 'chai';
 
 describe('Basic event tests', () => {
 
@@ -133,15 +132,15 @@ describe('Basic event tests', () => {
 
         render(App(), container);
         expect(container.firstChild.innerHTML).to.equal('1');
-        assert(delegatedEventsRegistry['submit'].length === 1, 'There should be one registerd listener');
+        expect(delegatedEventsRegistry['submit'].length).to.equal(1); // 'There should be one registerd listener'
 
         render(App(), container);
         expect(container.firstChild.innerHTML).to.equal('1');
-        assert(delegatedEventsRegistry['submit'].length === 1, 'EventDelegator should not stack listeners but change them');
+        expect(delegatedEventsRegistry['submit'].length).to.equal(1); // 'EventDelegator should not stack listeners but change them');
 
         render(AppTwo(), container);
         expect(container.firstChild.innerHTML).to.equal('2');
-        assert(delegatedEventsRegistry['submit'].length === 0, 'There should be no registered event listeners to free memory');
+        expect(delegatedEventsRegistry['submit'].length).to.equal(0); // 'There should be no registered event listeners to free memory');
     });
 
 
@@ -152,7 +151,7 @@ describe('Basic event tests', () => {
             return {
                 tag: "div",
                 events: {
-                    click: eventHandler
+                    keyup: eventHandler
                 },
                 children: '2',
                 dom: null
@@ -182,20 +181,20 @@ describe('Basic event tests', () => {
 
 
         render(App(childrenArray), container);
-        expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div><div>2</div>');
-        assert(delegatedEventsRegistry['click'].length === 3);
-        assert(delegatedEventsRegistry['keydown'].length === 1);
+        expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div><div>2</div></p>');
+        expect(delegatedEventsRegistry['keyup'].length).to.equal(3);
+        expect(delegatedEventsRegistry['keydown'].length).to.equal(1);
 
         childrenArray.pop();
         render(App(childrenArray), container);
-        expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div>');
-        assert(delegatedEventsRegistry['click'].length === 2);
-        assert(delegatedEventsRegistry['keydown'].length === 1);
+        expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div></p>');
+        expect(delegatedEventsRegistry['keyup'].length).to.equal(2);
+        expect(delegatedEventsRegistry['keydown'].length).to.equal(1);
 
         render(AppTwo(), container);
-        expect(container.innerHTML).to.equal('<p><div>2</div></p>');
-        assert(delegatedEventsRegistry['click'].length === 0, 'children events still leaking memory registered count:' + delegatedEventsRegistry['blur'].length);
-        assert(delegatedEventsRegistry['keydown'].length === 0, 'parent events still leaking memory registered count:' + delegatedEventsRegistry['keydown'].length);
+        expect(container.innerHTML).to.equal('<p>2</p>');
+        expect(delegatedEventsRegistry['keyup'].length).to.equal(0);
+        expect(delegatedEventsRegistry['keydown'].length).to.equal(0);
     });
 });
 

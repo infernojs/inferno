@@ -1,6 +1,6 @@
 import Lifecycle from './../core/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
-import { getActiveNode, resetActiveNode } from '../dom/utils';
+import { getActiveNode, resetActiveNode } from './../DOM/utils';
 
 function queueStateChanges(component, newState) {
 	for (let stateKey in newState) {

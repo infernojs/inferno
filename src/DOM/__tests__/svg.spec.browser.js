@@ -114,7 +114,7 @@ describe('SVG (non-jsx)', () => {
 		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.be.false;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
 	});
 
 	it('should unset a namespaced attributes', () => {
@@ -130,10 +130,10 @@ describe('SVG (non-jsx)', () => {
 		});
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.be.false;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.be.false;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
 	});
 
 	it('should unset a namespaced attributes', () => {
@@ -149,7 +149,7 @@ describe('SVG (non-jsx)', () => {
 		});
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.be.false;
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
 
 		render(template('test.jpg'), container);
 		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');

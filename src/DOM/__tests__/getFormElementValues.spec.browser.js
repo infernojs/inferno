@@ -6,7 +6,7 @@
 //	let container;
 //
 //	it('should return null if there is no node as first arg', () => {
-//		expect(getFormElementValues()).to.be.null;
+//		expect(getFormElementValues()).to.equal(null);
 //	});
 //
 //	it('should get form values for radio button and checkboxes (property)', () => {
@@ -68,7 +68,7 @@
 //		expect(getFormElementValues(container)).to.equal('1');
 //		optionElement.selected = false;
 //		optionElement1.selected = false;
-//		expect(getFormElementValues(container)).to.be.undefined;
+//		expect(getFormElementValues(container)).to.equal(undefined);
 //		optionElement.setAttribute('selected', 'selected');
 //	});
 //});

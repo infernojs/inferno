@@ -35,9 +35,11 @@ function createStaticAttributes(attrs, dom) {
 	}
 }
 
+/*
 function createStaticChildren(children, parentDom) {
 	if (isArray(children)) {
 	} else if (isStringOrNumber(children)) {
 		parentDom.textContent = children;
 	}
 }
+*/

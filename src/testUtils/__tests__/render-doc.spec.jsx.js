@@ -53,7 +53,7 @@
 //
 //		if (output !== null){
 //			expect(output.tagName).to.equal('DIV');
-//			expect(output.hasAttribute('class')).to.be.true;
+//			expect(output.hasAttribute('class')).to.equal(true);
 //		}
 //	});
 //
@@ -62,7 +62,7 @@
 //
 //		if (output !== null){
 //			expect(output.tagName).to.equal('DIV');
-//			expect(output.firstChild.hasAttribute('class')).to.be.true;
+//			expect(output.firstChild.hasAttribute('class')).to.equal(true);
 //		}
 //	});
 //
@@ -71,9 +71,9 @@
 //
 //		if (output !== null){
 //			expect(output.tagName).to.equal('DIV');
-//			expect(output.hasAttribute('class')).to.be.true;
+//			expect(output.hasAttribute('class')).to.equal(true);
 //			expect(output.getAttribute('class')).to.equal('foo');
-//			expect(output.firstChild.hasAttribute('class')).to.be.true;
+//			expect(output.firstChild.hasAttribute('class')).to.equal(true);
 //			expect(output.firstChild.getAttribute('class')).to.equal('Hello, World!');
 //		}
 //	});
@@ -84,7 +84,7 @@
 //
 //		if (output !== null){
 //			expect(output.tagName).to.equal('DIV');
-//			expect(output.hasAttribute('class')).to.be.true;
+//			expect(output.hasAttribute('class')).to.equal(true);
 //			expect(output.getAttribute('class')).to.equal(attr);
 //		}
 //	});

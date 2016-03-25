@@ -1,4 +1,4 @@
-import { render, renderToString } from '../rendering';
+import { render } from '../rendering';
 
 describe('createTree - SVG (JSX)', () => {
 
@@ -88,7 +88,7 @@ describe('createTree - SVG (JSX)', () => {
 		render(<svg></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
-		expect(container.firstChild.hasAttribute('class')).to.be.false;
+		expect(container.firstChild.hasAttribute('class')).to.equal(false);
 
 	});
 
@@ -104,7 +104,7 @@ describe('createTree - SVG (JSX)', () => {
 		render(<svg></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
-		expect(container.firstChild.hasAttribute('class')).to.be.false;
+		expect(container.firstChild.hasAttribute('class')).to.equal(false);
 
 	});
 
@@ -126,7 +126,7 @@ describe('createTree - SVG (JSX)', () => {
 		render(<svg></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
-		expect(container.firstChild.hasAttribute('class')).to.be.false;
+		expect(container.firstChild.hasAttribute('class')).to.equal(false);
 
 	});
 
@@ -135,12 +135,12 @@ describe('createTree - SVG (JSX)', () => {
 		render(<svg viewBox="0 0 100 100"></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
-		expect(container.firstChild.hasAttribute('viewBox')).to.be.true;
+		expect(container.firstChild.hasAttribute('viewBox')).to.equal(true);
 
 		render(<svg></svg>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
-		expect(container.firstChild.hasAttribute('viewBox')).to.be.false;
+		expect(container.firstChild.hasAttribute('viewBox')).to.equal(false);
 	});
 
 	it('should remove namespaced SVG attributes', () => {
@@ -151,7 +151,7 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.firstChild.firstChild.hasAttributeNS(
 			'http://www.w3.org/1999/xlink',
 			'href'
-		)).to.be.true;
+		)).to.equal(true);
 
 		render(<svg><image /></svg>, container);
 
@@ -159,16 +159,16 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.firstChild.firstChild.hasAttributeNS(
 			'http://www.w3.org/1999/xlink',
 			'href'
-		)).to.be.false;
+		)).to.equal(false);
 	});
 
 	it('should remove arbitrary SVG camel case attributes', () => {
 
 		render(<svg theWord="theBird" />, container);
 
-		expect(container.firstChild.hasAttribute('theWord')).to.be.true;
+		expect(container.firstChild.hasAttribute('theWord')).to.equal(true);
 		render(<svg />, container);
-		expect(container.firstChild.hasAttribute('theWord')).to.be.false;
+		expect(container.firstChild.hasAttribute('theWord')).to.equal(false);
 	});
 
 	it('should update namespaced SVG attributes', () => {
@@ -179,7 +179,7 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.firstChild.firstChild.hasAttributeNS(
 			'http://www.w3.org/1999/xlink',
 			'href'
-		)).to.be.true;
+		)).to.equal(true);
 
 		render(<svg><image xlink:href="http://i.imgur.com/JvqCM2p.png" /></svg>, container);
 
@@ -196,14 +196,14 @@ describe('createTree - SVG (JSX)', () => {
 
 		expect(container.firstChild.tagName).to.eql('svg');
 
-		expect(container.firstChild.hasAttribute('clip-path')).to.be.true;
+		expect(container.firstChild.hasAttribute('clip-path')).to.equal(true);
 
 		render(<svg><image /></svg>, container);
 
 		expect(container.firstChild.firstChild.hasAttributeNS(
 			'http://www.w3.org/1999/xlink',
 			'href'
-		)).to.be.false;
+		)).to.equal(false);
 	});
 
 	it('should remove namespaced SVG attributes', () => {
@@ -212,14 +212,14 @@ describe('createTree - SVG (JSX)', () => {
 
 		expect(container.firstChild.tagName).to.eql('svg');
 
-		expect(container.firstChild.hasAttribute('clip-path')).to.be.true;
+		expect(container.firstChild.hasAttribute('clip-path')).to.equal(true);
 
 		render(<svg><image /></svg>, container);
 
 		expect(container.firstChild.firstChild.hasAttributeNS(
 			'http://www.w3.org/1999/xlink',
 			'href'
-		)).to.be.false;
+		)).to.equal(false);
 	});
 
 });

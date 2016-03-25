@@ -1,16 +1,8 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString } from '../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode } from './patching';
 import { mountChildren, mountNode } from './mounting';
 import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, isFocusOrBlur } from './events';
-
-function updateTextNode(dom, lastChildren, nextChildren) {
-	if (isStringOrNumber(lastChildren)) {
-		dom.firstChild.nodeValue = nextChildren;
-	} else {
-		dom.textContent = nextChildren;
-	}
-}
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
 	const nextChildren = nextNode.children;

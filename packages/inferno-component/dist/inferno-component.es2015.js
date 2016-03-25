@@ -79,6 +79,17 @@ function isNullOrUndefined(obj) {
 	return obj === undefined || obj === null;
 }
 
+// TODO: for node we need to check if document is valid
+function getActiveNode() {
+	return document.activeElement;
+}
+
+function resetActiveNode(activeNode) {
+	if (activeNode !== document.body && document.activeElement !== activeNode) {
+		activeNode.focus();
+	}
+}
+
 function queueStateChanges(component, newState) {
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
@@ -106,12 +117,14 @@ function applyState(component, force) {
 				var lastNode = component._lastNode;
 				var parentDom = lastNode.dom.parentNode;
 
+				var activeNode = getActiveNode();
 				var subLifecycle = new Lifecycle();
 				component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
 				component._lastNode = nextNode;
 				subLifecycle.addListener(function () {
 					subLifecycle.trigger();
 				});
+				resetActiveNode(activeNode);
 			})();
 		}
 	}
