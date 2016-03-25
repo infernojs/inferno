@@ -68,14 +68,16 @@ function diffRef(instance, lastValue, nextValue, dom) {
 }
 
 function diffAttributes(lastNode, nextNode, dom, instance) {
+
+	if (lastNode.tag === 'select') {
+		selectValue(nextNode);
+	}
+
 	const nextAttrs = nextNode.attrs;
 	const lastAttrs = lastNode.attrs;
 	const nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
 	const lastAttrsIsUndef = isNullOrUndefined(lastAttrs);
 
-	if (lastNode.tag === 'select') {
-		selectValue(nextNode);
-	}
 
 	if (!nextAttrsIsUndef) {
 		const nextAttrsKeys = Object.keys(nextAttrs);

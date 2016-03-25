@@ -255,31 +255,31 @@ export function createVirtualFragment() {
 
 
 
-function populateOptions(node, values) {
+function selectOptionValueIfNeeded(vdom, values) {
 
-	if (node.tag !== 'option') {
-		for (var i = 0, len = node.children.length; i < len ; i++) {
-			populateOptions(node.children[i], values);
+	if(vdom.tag !== 'option') {
+		for (let i = 0, len = vdom.children.length; i < len ; i++) {
+			selectOptionValueIfNeeded(vdom.children[i], values);
 		}
+	// NOTE! Has to be a return here to catch optGroup elements
 		return;
 	}
 
-	const value = node.attrs && node.attrs.value;
+	const value = vdom.attrs && vdom.attrs.value;
 
-	if (!values[value]) {
-		return;
+	if (values[value]) {
+		vdom.attrs = vdom.attrs || {};
+		vdom.attrs.selected = 'selected';
 	}
-	node.attrs = node.attrs || {};
-	node.attrs.selected = 'selected';
 }
 
-export function selectValue(node) {
-	if (node.tagName !== "select") {
+export function selectValue(vdom) {
+	if (vdom.tagName !== "select") {
 		return;
 	}
-	let value = node.attrs && node.attrs.value;
+	let value = vdom.attrs && vdom.attrs.value;
 
-	if (value == null) {
+	if (isNullOrUndefined(value)) {
 		return;
 	}
 
@@ -291,9 +291,9 @@ export function selectValue(node) {
 			values[value[i]] = value[i];
 		}
 	}
-	populateOptions(node, values);
+	selectOptionValueIfNeeded(vdom, values);
 
-	if (node.attrs && node.attrs[value]) {
-		delete node.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+	if (vdom.attrs && vdom.attrs[value]) {
+		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
 }
