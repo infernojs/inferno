@@ -108,7 +108,7 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 	}
 }
 
-function diffEvents(lastNode, nextNode, dom) {
+function diffEvents(lastNode, nextNode) {
 	const lastEvents = lastNode.events;
 
 	if (!isNullOrUndefined(lastEvents)) {
@@ -221,7 +221,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		patchStyle(lastNode.style, nextStyle, dom);
 	}
 	diffAttributes(lastNode, nextNode, dom, instance);
-	diffEvents(lastNode, nextNode, dom);
+	diffEvents(lastNode, nextNode);
 	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
 		nextHooks.didUpdate(dom);
 	}
