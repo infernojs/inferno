@@ -8,12 +8,14 @@ import { selectValue } from './utils';
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
-	let domChildren = null;
 
 	if (lastChildren === nextChildren) {
-		return; // Is this ever executed? I couldn't get it working
+		return;
 	}
-	if (!isNullOrUndefined(lastNode.domChildren)) {
+
+	let domChildren = null;
+
+	if (lastNode.domChildren) {
 		domChildren = nextNode.domChildren = lastNode.domChildren;
 	}
 	if (!isInvalidNode(lastChildren)) {
@@ -57,7 +59,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 
 
 function diffRef(instance, lastValue, nextValue, dom) {
-	if (!isNullOrUndefined(instance)) {
+	if (instance) {
 		if (isString(lastValue)) {
 			delete instance.refs[lastValue];
 		}
