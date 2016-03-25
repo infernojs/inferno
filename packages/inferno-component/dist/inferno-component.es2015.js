@@ -90,17 +90,17 @@ function resetActiveNode(activeNode) {
 	}
 }
 
-function queueStateChanges(component, newState) {
+function queueStateChanges(component, newState, callback) {
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (component._pendingSetState === false) {
 		component._pendingSetState = true;
-		applyState(component);
+		applyState(component, false, callback);
 	}
 }
 
-function applyState(component, force) {
+function applyState(component, force, callback) {
 	var blockRender = component._blockRender;
 
 	if (component._deferSetState === false || force) {
@@ -123,6 +123,7 @@ function applyState(component, force) {
 				component._lastNode = nextNode;
 				subLifecycle.addListener(function () {
 					subLifecycle.trigger();
+					callback && callback();
 				});
 				resetActiveNode(activeNode);
 			})();
@@ -158,18 +159,14 @@ var Component = function () {
 		value: function render() {}
 	}, {
 		key: 'forceUpdate',
-		value: function forceUpdate() {
-			// TODO: We might need queue forceUpdate like in react
-			applyState(this, true);
+		value: function forceUpdate(callback) {
+			applyState(this, true, callback);
 		}
 	}, {
 		key: 'setState',
 		value: function setState(newState, callback) {
 			if (this._blockSetState === false) {
-				queueStateChanges(this, newState);
-				if (typeof callback === 'function') {
-					callback();
-				}
+				queueStateChanges(this, newState, callback);
 			} else {
 				throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
 			}
