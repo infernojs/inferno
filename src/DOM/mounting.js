@@ -238,7 +238,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 	}
 	if (!isNullOrUndefined(attrs)) {
-		mountAttributes(attrs, dom, instance);
+		mountAttributes(node, attrs, dom, instance);
 	}
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
@@ -253,7 +253,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 }
 
 
-function mountAttributes(attrs, dom, instance) {
+function mountAttributes(node, attrs, dom, instance) {
 
 	// TODO! Activate this when vdom object is found!
 
