@@ -255,11 +255,10 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 
 function mountAttributes(node, attrs, dom, instance) {
 
-	// TODO! Activate this when vdom object is found!
-
-//	if (vdomObject.tag === "select") {
-//		selectValue(vdomObject);
-	//}
+	// IMPORTANT! This has to be executed BEFORE 'attrsKeys' are created
+	if (node.tag === 'select') {
+		selectValue(vdomObject);
+	}
 
 	const attrsKeys = Object.keys(attrs);
 

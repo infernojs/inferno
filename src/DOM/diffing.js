@@ -73,10 +73,9 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 	const nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
 	const lastAttrsIsUndef = isNullOrUndefined(lastAttrs);
 
-	// TODO! Activate this soon as vdom object prev and next are located
-	//if (currentVDOMOBJECT.tag === "select") {
-		//	selectValue(nextVDOMOBJECT);
-	//}
+	if (lastNode.tag === 'select') {
+		selectValue(nextNode);
+	}
 
 	if (!nextAttrsIsUndef) {
 		const nextAttrsKeys = Object.keys(nextAttrs);
