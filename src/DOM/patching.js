@@ -14,6 +14,14 @@ function booleanProps(prop) {
 	}
 }
 
+export function updateTextNode(dom, lastChildren, nextChildren) {
+	if (isStringOrNumber(lastChildren)) {
+		dom.firstChild.nodeValue = nextChildren;
+	} else {
+		dom.textContent = nextChildren;
+	}
+}
+
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
 	if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
@@ -259,9 +267,13 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					}
 				} else if (isStringOrNumber(nextChild)) {
 					const textNode = document.createTextNode(nextChild);
-
-					dom.replaceChild(textNode, domChildren[index]);
-					!isVirtualFragment && domChildren.splice(index, 1, textNode);
+					if (isNullOrUndefined(domChildren[index])) {
+						// textNode => textNode
+						dom.nodeValue = textNode.nodeValue;
+					} else {
+						dom.replaceChild(textNode, domChildren[index]);
+						!isVirtualFragment && domChildren.splice(index, 1, textNode);
+					}
 				}
 			}
 		}

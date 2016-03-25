@@ -486,6 +486,14 @@
 		}
 	}
 
+	function updateTextNode(dom, lastChildren, nextChildren) {
+		if (isStringOrNumber(lastChildren)) {
+			dom.firstChild.nodeValue = nextChildren;
+		} else {
+			dom.textContent = nextChildren;
+		}
+	}
+
 	function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
 		if (isInvalidNode(lastNode)) {
 			mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
@@ -730,9 +738,13 @@
 						}
 					} else if (isStringOrNumber(_nextChild)) {
 						var _textNode2 = document.createTextNode(_nextChild);
-
-						dom.replaceChild(_textNode2, domChildren[index]);
-						!isVirtualFragment && domChildren.splice(index, 1, _textNode2);
+						if (isNullOrUndefined(domChildren[index])) {
+							// textNode => textNode
+							dom.nodeValue = _textNode2.nodeValue;
+						} else {
+							dom.replaceChild(_textNode2, domChildren[index]);
+							!isVirtualFragment && domChildren.splice(index, 1, _textNode2);
+						}
 					}
 				}
 			}
@@ -881,14 +893,6 @@
 					remove(oldItem, dom);
 				}
 			}
-		}
-	}
-
-	function updateTextNode(dom, lastChildren, nextChildren) {
-		if (isStringOrNumber(lastChildren)) {
-			dom.firstChild.nodeValue = nextChildren;
-		} else {
-			dom.textContent = nextChildren;
 		}
 	}
 

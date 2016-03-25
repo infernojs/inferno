@@ -1287,6 +1287,105 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div><div><table><tr><td>bar</td></tr></table></div></div>');
 			render(C(), container);
 			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
-		})
+		});
+	});
+
+	describe('test case for github #142', () => {
+
+		const A={
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										"text",
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								}
+							],
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		};
+		const B = {
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										[
+											"text"
+										]
+									],
+									"dom": null
+								},
+							],
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		};
+		const C={
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										[
+											"value"
+										],
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								}
+							],
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		};
+
+		it('should correct render initial and further updates', () => {
+			render(A, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+			render(B, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
+			debugger;
+			render(C, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+		});
 	});
 });
