@@ -266,34 +266,26 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					}
 				} else if (isStringOrNumber(nextChild)) {
 					const textNode = document.createTextNode(nextChild);
-					if (isNullOrUndefined(domChildren[index])) {
+					const child = domChildren[index];
+					if (isNullOrUndefined(child)) {
 						// textNode => textNode
 						dom.nodeValue = textNode.nodeValue;
 					} else {
-						dom.replaceChild(textNode, domChildren[index]);
-						!isVirtualFragment && domChildren.splice(index, 1, textNode);
+						// Next is single string so remove all children
+						if (!isNullOrUndefined(child.append)) { // If previous child is virtual fragment remove all its content and replace with textNode
+							dom.insertBefore(textNode, child.firstChild);
+							child.remove();
+							domChildren = [textNode];
+						} else {
+							!isVirtualFragment && domChildren.splice(index, 1, textNode);
+							dom.replaceChild(textNode, child);
+						}
 					}
 					detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
 				}
 			}
 		}
 	}
-
-	/*
-	if (isNullOrUndefined(childNode)) {
-		debugger;
-		const textNode = document.createTextNode('');
-
-		dom.appendChild(textNode);
-		!isVirtualFragment && domChildren.push(textNode);
-	} else {
-		if (isStringOrNumber(lastChild)) {
-			childNode.nodeValue = nextChild;
-		} else {
-			childNode.textContent = nextChild;
-		}
-	}
-	*/
 }
 
 export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {

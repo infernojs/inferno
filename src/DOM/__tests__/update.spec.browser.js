@@ -1387,4 +1387,109 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
 		});
 	});
+
+	describe('test case for github #142', () => {
+		var A = {
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table"
+				}
+			},
+			"dom": null
+		};
+		const B = {
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"dom": null
+						},
+						{
+							"tag": "tr",
+							"children": [
+
+								{
+									"tag": "td",
+									"children": [
+										[
+											"A"
+										],
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								},
+								{
+									"tag": "td",
+									"children": [
+										[
+											"B"
+										],
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								}
+							],
+							"dom": null
+						},
+						{
+							"tag": "tr",
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		};
+		const C = {
+			"tag": "div",
+			"children": {
+				"tag": "div",
+				"children": {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"dom": null
+						},
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										"",
+										{
+											"tag": "br"
+										}
+									],
+									"dom": null
+								}
+							],
+							"dom": null
+						}
+					]
+				}
+			},
+			"dom": null
+		};
+
+		it('should correct render initial and further updates', () => {
+			render(A, container);
+			expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');
+			render(B, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
+			render(C, container);
+			expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+		});
+	});
 });
