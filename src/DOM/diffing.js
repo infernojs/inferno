@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString } from '../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode } from './patching';
 import { mountChildren, mountNode } from './mounting';
 import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, doesNotBubble } from './events';
 import { selectValue } from './utils';
@@ -36,7 +36,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else {
-					diffNodes(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck, instance);
+					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck, instance);
 				}
 			}
 		} else {
@@ -166,26 +166,10 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (!isNullOrUndefined(nextNode.then)) {
 		nextNode.then(node => {
 			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
-		}
-	);
-
-	} else if (isStringOrNumber(lastNode)) {
-		if (isStringOrNumber(nextNode)) {
-			parentDom.firstChild.nodeValue = nextNode;
-		} else {
-			console.log(lastNode);
-			// TODO! Fix this. URGENT! If you do a console.log you will see two blank line, and a text string.
-			// TODO! Find out why there is two empty blank lines
-			// TODO! Don't replaceNode on a text string
-			// TODO! Avoid breaking components
-			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
-		}
-
+		});
 	} else {
-
 		const nextHooks = nextNode.hooks;
 
-		// No need for extra validation
 		if (nextHooks && nextHooks.willUpdate) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
@@ -211,11 +195,9 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 			} else {
 				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 			}
-
 		} else if (isNullOrUndefined(lastTag)) {
 			nextNode.dom = lastNode.dom;
 		} else {
-
 			if (isFunction(lastTag)) {
 				// Firefox doesn't like && too much
 				if (isFunction(nextTag)) {
@@ -224,9 +206,8 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 					patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
 			} else {
-
 				const dom = lastNode.dom;
-				const nextClassName = nextNode.className; // TODO: Add support into JSX plugin to transform (class from attr into className property)
+				const nextClassName = nextNode.className; // TODO: Add support into JSX plugin to transform (class from attr into className property) -- No, we 100% do not want to do this IMO
 				const nextStyle = nextNode.style;
 
 				nextNode.dom = dom;
@@ -244,11 +225,9 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 						dom.className = nextClassName;
 					}
 				}
-
 				if (lastNode.style !== nextStyle) {
 					patchStyle(lastNode.style, nextStyle, dom);
 				}
-
 				if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}

@@ -58,22 +58,13 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	if (isStringOrNumber(nextNode)) {
-		const dom = document.createTextNode(nextNode);
-		parentDom.replaceChild(dom, dom);
-	} else if (isStringOrNumber(lastNode)) {
-		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
-		nextNode.dom = dom;
-		parentDom.replaceChild(dom, parentDom.firstChild);
-	} else {
-		const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
-		nextNode.dom = dom;
-		parentDom.replaceChild(dom, lastNode.dom);
-		if (lastInstance !== null) {
-			lastInstance._lastNode = nextNode;
-		}
-		detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
+	const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+	nextNode.dom = dom;
+	parentDom.replaceChild(dom, lastNode.dom);
+	if (lastInstance !== null) {
+		lastInstance._lastNode = nextNode;
 	}
+	detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
 }
 
 export function detachNode(node, recycling) {
