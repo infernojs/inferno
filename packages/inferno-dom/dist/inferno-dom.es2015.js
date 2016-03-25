@@ -173,8 +173,15 @@ function scanNodeList(node, target, delegatedEvent, callbackEvent) {
 	}
 }
 
-function isFocusOrBlur(event) {
-	return event === 'focus' || event === 'blur';
+var nonBubbleEvents = {
+	focus: true,
+	blur: true,
+	mouseenter: true,
+	mouseleave: true
+};
+
+function doesNotBuuble(event) {
+	return nonBubbleEvents[event] || false;
 }
 
 function createEventListener(callbackEvent) {
@@ -342,7 +349,7 @@ function detachNode(node, recycling) {
 	// Remove all events to free memory
 	if (!isNullOrUndefined(events)) {
 		for (var event in events) {
-			if (isFocusOrBlur(event)) {
+			if (doesNotBuuble(event)) {
 				removeEventFromNode(event, node, events[event]);
 			} else {
 				removeEventFromRegistry(event, events[event]);
@@ -475,6 +482,49 @@ function createVirtualFragment() {
 	});
 
 	return fragment;
+}
+
+function selectOptionValueIfNeeded(vdom, values) {
+
+	if (vdom.tag !== 'option') {
+		for (var i = 0, len = vdom.children.length; i < len; i++) {
+			selectOptionValueIfNeeded(vdom.children[i], values);
+		}
+		// NOTE! Has to be a return here to catch optGroup elements
+		return;
+	}
+
+	var value = vdom.attrs && vdom.attrs.value;
+
+	if (values[value]) {
+		vdom.attrs = vdom.attrs || {};
+		vdom.attrs.selected = 'selected';
+	}
+}
+
+function selectValue(vdom) {
+	if (vdom.tagName !== "select") {
+		return;
+	}
+	var value = vdom.attrs && vdom.attrs.value;
+
+	if (isNullOrUndefined(value)) {
+		return;
+	}
+
+	var values = {};
+	if (!isArray(value)) {
+		values[value] = value;
+	} else {
+		for (var i = 0, len = value.length; i < len; i++) {
+			values[value[i]] = value[i];
+		}
+	}
+	selectOptionValueIfNeeded(vdom, values);
+
+	if (vdom.attrs && vdom.attrs[value]) {
+		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+	}
 }
 
 // Checks if property is boolean type
@@ -963,6 +1013,11 @@ function diffRef(instance, lastValue, nextValue, dom) {
 }
 
 function diffAttributes(lastNode, nextNode, dom, instance) {
+
+	if (lastNode.tag === 'select') {
+		selectValue(nextNode);
+	}
+
 	var nextAttrs = nextNode.attrs;
 	var lastAttrs = lastNode.attrs;
 	var nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
@@ -1004,7 +1059,7 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 	}
 }
 
-function diffEvents(lastNode, nextNode, dom) {
+function diffEvents(lastNode, nextNode) {
 	var lastEvents = lastNode.events;
 
 	if (!isNullOrUndefined(lastEvents)) {
@@ -1018,13 +1073,13 @@ function diffEvents(lastNode, nextNode, dom) {
 				var lastEvent = lastEvents[event];
 
 				if (isNullOrUndefined(nextEvent)) {
-					if (isFocusOrBlur(event)) {
+					if (doesNotBuuble(event)) {
 						removeEventFromNode(event, lastNode, lastEvent);
 					} else {
 						removeEventFromRegistry(event, lastEvent);
 					}
 				} else if (nextEvent !== lastEvent) {
-					if (isFocusOrBlur(event)) {
+					if (doesNotBuuble(event)) {
 						removeEventFromNode(event, lastNode, lastEvent);
 						addEventToNode(event, nextNode, nextEvent);
 					} else {
@@ -1038,7 +1093,7 @@ function diffEvents(lastNode, nextNode, dom) {
 					var _event = lastEventsKeys[_i2];
 					var _lastEvent = lastEvents[_event];
 
-					if (isFocusOrBlur(_event)) {
+					if (doesNotBuuble(_event)) {
 						removeEventFromNode(_event, lastNode, _lastEvent);
 					} else {
 						removeEventFromRegistry(_event, _lastEvent);
@@ -1117,7 +1172,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 		patchStyle(lastNode.style, nextStyle, dom);
 	}
 	diffAttributes(lastNode, nextNode, dom, instance);
-	diffEvents(lastNode, nextNode, dom);
+	diffEvents(lastNode, nextNode);
 	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
 		nextHooks.didUpdate(dom);
 	}
@@ -1309,7 +1364,7 @@ function mountEvents(events, node) {
 	for (var i = 0; i < allEvents.length; i++) {
 		var event = allEvents[i];
 
-		if (isFocusOrBlur(event)) {
+		if (doesNotBuuble(event)) {
 			addEventToNode(event, node, events[event]);
 		} else if (isString(event)) {
 			addEventToRegistry(event, node, events[event]);
@@ -1396,8 +1451,10 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 	}
 	if (!isNullOrUndefined(attrs)) {
-		mountAttributes(attrs, dom, instance);
+		mountAttributes(node, attrs, dom, instance);
 	}
+	// TODO! Fix this. Svg issue + booleans and empty object etc.
+	// Solution? Dunno, but for empty object cast to string
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
 	}
@@ -1410,7 +1467,13 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 	return dom;
 }
 
-function mountAttributes(attrs, dom, instance) {
+function mountAttributes(node, attrs, dom, instance) {
+
+	// IMPORTANT! This has to be executed BEFORE 'attrsKeys' are created
+	if (node.tag === 'select') {
+		selectValue(vdomObject);
+	}
+
 	var attrsKeys = Object.keys(attrs);
 
 	for (var i = 0; i < attrsKeys.length; i++) {

@@ -34,8 +34,15 @@ function scanNodeList(node, target, delegatedEvent, callbackEvent) {
 	}
 }
 
-export function isFocusOrBlur(event) {
-	return event === 'focus' || event === 'blur';
+const nonBubbleEvents = {
+	focus: true,
+	blur: true,
+	mouseenter: true,
+	mouseleave: true
+};
+
+export function doesNotBuuble(event) {
+	return nonBubbleEvents[event] || false;
 }
 
 function createEventListener(callbackEvent) {

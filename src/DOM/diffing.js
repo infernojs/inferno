@@ -2,7 +2,7 @@ import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulCom
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode } from './patching';
 import { mountChildren, mountNode } from './mounting';
-import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, isFocusOrBlur } from './events';
+import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, doesNotBuuble } from './events';
 import { selectValue } from './utils';
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
@@ -129,13 +129,13 @@ function diffEvents(lastNode, nextNode) {
 				const lastEvent = lastEvents[event];
 
 				if (isNullOrUndefined(nextEvent)) {
-					if (isFocusOrBlur(event)) {
+					if (doesNotBuuble(event)) {
 						removeEventFromNode(event, lastNode, lastEvent);
 					} else {
 						removeEventFromRegistry(event, lastEvent);
 					}
 				} else if (nextEvent !== lastEvent) {
-					if (isFocusOrBlur(event)) {
+					if (doesNotBuuble(event)) {
 						removeEventFromNode(event, lastNode, lastEvent);
 						addEventToNode(event, nextNode, nextEvent);
 					} else {
@@ -149,7 +149,7 @@ function diffEvents(lastNode, nextNode) {
 				const event = lastEventsKeys[i];
 				const lastEvent = lastEvents[event];
 
-				if (isFocusOrBlur(event)) {
+				if (doesNotBuuble(event)) {
 					removeEventFromNode(event, lastNode, lastEvent);
 				} else {
 					removeEventFromRegistry(event, lastEvent);

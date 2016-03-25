@@ -2,7 +2,7 @@ import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenTo
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend, createEmptyTextNode } from './utils';
 import { patchAttribute, patchStyle } from './patching';
-import { addEventToRegistry, addEventToNode, isFocusOrBlur } from './events';
+import { addEventToRegistry, addEventToNode, doesNotBuuble } from './events';
 import { diffNodes } from './diffing';
 import { selectValue } from './utils';
 
@@ -151,7 +151,7 @@ function mountEvents(events, node) {
 	for (let i = 0; i < allEvents.length; i++) {
 		const event = allEvents[i];
 
-		if (isFocusOrBlur(event)) {
+		if (doesNotBuuble(event)) {
 			addEventToNode(event, node, events[event]);
 		} else if (isString(event)) {
 			addEventToRegistry(event, node, events[event]);
