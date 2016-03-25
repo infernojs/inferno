@@ -38,7 +38,10 @@ const nonBubbleEvents = {
 	focus: true,
 	blur: true,
 	mouseenter: true,
-	mouseleave: true
+	mouseleave: true,
+	scroll: true,
+	load: true,
+	error: true
 };
 
 export function doesNotBuuble(event) {
