@@ -2,7 +2,7 @@ import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulCom
 import { replaceNode, SVGNamespace, MathNamespace } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle } from './patching';
 import { mountChildren, mountNode } from './mounting';
-import { removeEventFromRegistry, addEventToRegistry } from './events';
+import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, isFocusOrBlur } from './events';
 
 function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -130,12 +130,19 @@ function diffEvents(lastNode, nextNode, dom) {
 				const lastEvent = lastEvents[event];
 
 				if (isNullOrUndefined(nextEvent)) {
-					removeEventFromRegistry(event, lastEvent);
+					if (isFocusOrBlur(event)) {
+						removeEventFromNode(event, lastNode, lastEvent);
+					} else {
+						removeEventFromRegistry(event, lastEvent);
+					}
 				} else if (nextEvent !== lastEvent) {
-					// TODO: feels lot of looping here, but also this is real edge case
-					// Callback has changed and is not same as before
-					removeEventFromRegistry(event, lastEvent); // remove old
-					addEventToRegistry(event, nextNode, nextEvent); // add new
+					if (isFocusOrBlur(event)) {
+						removeEventFromNode(event, lastNode, lastEvent);
+						addEventToNode(event, nextNode, nextEvent);
+					} else {
+						removeEventFromRegistry(event, lastEvent); // remove old
+						addEventToRegistry(event, nextNode, nextEvent); // add new
+					}
 				}
 			}
 		} else {
@@ -143,7 +150,11 @@ function diffEvents(lastNode, nextNode, dom) {
 				const event = lastEventsKeys[i];
 				const lastEvent = lastEvents[event];
 
-				removeEventFromRegistry(event, lastEvent);
+				if (isFocusOrBlur(event)) {
+					removeEventFromNode(event, lastNode, lastEvent);
+				} else {
+					removeEventFromRegistry(event, lastEvent);
+				}
 			}
 		}
 	}

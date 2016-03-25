@@ -152,7 +152,7 @@ describe('Basic event tests', () => {
             return {
                 tag: "div",
                 events: {
-                    blur: eventHandler
+                    click: eventHandler
                 },
                 children: '2',
                 dom: null
@@ -183,18 +183,18 @@ describe('Basic event tests', () => {
 
         render(App(childrenArray), container);
         expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div><div>2</div>');
-        assert(delegatedEventsRegistry['blur'].length === 3);
+        assert(delegatedEventsRegistry['click'].length === 3);
         assert(delegatedEventsRegistry['keydown'].length === 1);
 
         childrenArray.pop();
         render(App(childrenArray), container);
         expect(container.firstChild.innerHTML).to.equal('<div>2</div><div>2</div>');
-        assert(delegatedEventsRegistry['blur'].length === 2);
+        assert(delegatedEventsRegistry['click'].length === 2);
         assert(delegatedEventsRegistry['keydown'].length === 1);
 
         render(AppTwo(), container);
         expect(container.innerHTML).to.equal('<p><div>2</div></p>');
-        assert(delegatedEventsRegistry['blur'].length === 0, 'children events still leaking memory registered count:' + delegatedEventsRegistry['blur'].length);
+        assert(delegatedEventsRegistry['click'].length === 0, 'children events still leaking memory registered count:' + delegatedEventsRegistry['blur'].length);
         assert(delegatedEventsRegistry['keydown'].length === 0, 'parent events still leaking memory registered count:' + delegatedEventsRegistry['keydown'].length);
     });
 });

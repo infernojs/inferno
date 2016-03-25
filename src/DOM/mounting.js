@@ -2,7 +2,7 @@ import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenTo
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend, createEmptyTextNode } from './utils';
 import { patchAttribute, patchStyle } from './patching';
-import { addEventToRegistry } from './events';
+import { addEventToRegistry, addEventToNode, isFocusOrBlur } from './events';
 import { diffNodes } from './diffing';
 
 function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
@@ -149,7 +149,10 @@ function mountEvents(events, node) {
 
 	for (let i = 0; i < allEvents.length; i++) {
 		const event = allEvents[i];
-		if (isString(event)) {
+
+		if (isFocusOrBlur(event)) {
+			addEventToNode(event, node, events[event]);
+		} else if (isString(event)) {
 			addEventToRegistry(event, node, events[event]);
 		}
 	}
@@ -216,6 +219,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	const className = node.className;
 	const style = node.style;
 
+	node.dom = dom;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.created)) {
 			hooks.created(dom);
@@ -241,7 +245,6 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	if (!isNullOrUndefined(style)) {
 		patchStyle(null, style, dom);
 	}
-	node.dom = dom;
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
 	}

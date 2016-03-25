@@ -35,6 +35,10 @@ function scanNodeList(node, target, delegatedEvent, callbackEvent) {
 	}
 }
 
+export function isFocusOrBlur(event) {
+	return event === 'focus' || event === 'blur';
+}
+
 function createEventListener(callbackEvent) {
 	const delegatedEvents = delegatedEventsRegistry[callbackEvent.type];
 
@@ -61,6 +65,14 @@ export function removeEventFromRegistry(event, callback) {
 			}
 		}
 	}
+}
+
+export function addEventToNode(event, node, callback) {
+	node.dom.addEventListener(event, callback, false);
+}
+
+export function removeEventFromNode(event, node, callback) {
+	node.dom.removeEventListener(event, callback);
 }
 
 export function addEventToRegistry(event, node, callback) {

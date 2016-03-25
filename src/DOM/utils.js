@@ -1,7 +1,7 @@
 import { mountNode } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
-import { removeEventFromRegistry } from './events';
+import { removeEventFromRegistry, isFocusOrBlur } from './events';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -106,7 +106,11 @@ export function detachNode(node, recycling) {
 	// Remove all events to free memory
 	if (!isNullOrUndefined(events)) {
 		for (let event in events) {
-			removeEventFromRegistry(event, events[event]);
+			if (isFocusOrBlur(event)) {
+				removeEventFromNode(event, node, events[event]);
+			} else {
+				removeEventFromRegistry(event, events[event]);
+			}
 		}
 	}
 
@@ -136,7 +140,6 @@ export function detachNode(node, recycling) {
 export function createEmptyTextNode() {
 	return document.createTextNode('');
 }
-
 
 export function remove(node, parentDom) {
 	const dom = node.dom;
