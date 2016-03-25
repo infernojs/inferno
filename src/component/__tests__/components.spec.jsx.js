@@ -1561,11 +1561,9 @@ describe('Components (JSX)', () => {
 
 			render() {
 				if (!this.state.z) {
-					console.log("rendering a");
 					return (<div>A</div>);
 				}
-
-				console.log("making b");
+				
 				return (<MakeB />);
 			};
 		}

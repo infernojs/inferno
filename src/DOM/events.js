@@ -2,7 +2,6 @@ import { isNullOrUndefined, isArray } from './../core/utils';
 
 // Exported only so its easier to verify registered events
 export const delegatedEventsRegistry = {};
-
 // The issue with this, is that we can't stop the bubbling as we're traversing down the node tree, rather than up it
 // needs a rethink here
 function scanNodeList(node, target, delegatedEvent, callbackEvent) {

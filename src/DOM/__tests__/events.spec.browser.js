@@ -190,11 +190,11 @@ describe('Basic event tests', () => {
         expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div></p>');
         expect(delegatedEventsRegistry['keyup'].length).to.equal(2);
         expect(delegatedEventsRegistry['keydown'].length).to.equal(1);
-
+        
         render(AppTwo(), container);
         expect(container.innerHTML).to.equal('<p>2</p>');
-        expect(delegatedEventsRegistry['keyup'].length).to.equal(0);
         expect(delegatedEventsRegistry['keydown'].length).to.equal(0);
+        expect(delegatedEventsRegistry['keyup'].length).to.equal(0);
     });
 });
 

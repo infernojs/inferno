@@ -1383,7 +1383,6 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
 			render(B, container);
 			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
-			debugger;
 			render(C, container);
 			expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
 		});

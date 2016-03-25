@@ -81,12 +81,22 @@ export function detachNode(node, recycling) {
 		return;
 	}
 	const instance = node.instance;
-	if (!isNullOrUndefined(instance) && instance.render !== undefined) {
-		instance.componentWillUnmount();
-		instance._unmounted = true;
+	const instanceDefined = !isNullOrUndefined(instance);
+
+	let instanceHooks = null;
+	let instanceEvents = null;
+	let instanceChildren = null;
+	if (instanceDefined) {
+		instanceHooks = instance.hooks;
+		instanceEvents = instance.events;
+		instanceChildren = instance.children;
+
+		if (instance.render !== undefined) {
+			instance.componentWillUnmount();
+			instance._unmounted = true;
+		}
 	}
-	let instanceHooks;
-	const hooks = node.hooks || !isNullOrUndefined(instance) && (instanceHooks = true) && instance.hooks;
+	const hooks = node.hooks || instanceHooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
 			hooks.willDetach(node.dom);
@@ -95,14 +105,14 @@ export function detachNode(node, recycling) {
 			hooks.componentWillUnmount(node.dom, hooks);
 		}
 		if (recycling === false) {
-			if (instanceHooks) {
+			if (!isNullOrUndefined(instanceHooks)) {
 				instance.hooks = null;
 			} else {
 				node.hooks = null;
 			}
 		}
 	}
-	const events = node.events;
+	const events = node.events || instanceEvents;
 	// Remove all events to free memory
 	if (!isNullOrUndefined(events)) {
 		for (let event in events) {
@@ -113,8 +123,7 @@ export function detachNode(node, recycling) {
 			}
 		}
 	}
-
-	const children = node.children;
+	const children = node.children || instanceChildren;
 	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
@@ -126,18 +135,20 @@ export function detachNode(node, recycling) {
 		if (recycling === false) {
 			node.children = null;
 
+			/*
+			TODO: This might be overkill
+			node.dom = null;
+			if (instanceDefined) {
+				node.instance.dom = null;
+			}
+			*/
+
 			const domChildren = node.domChildren;
 			if (!isNullOrUndefined(domChildren)) {
 				node.domChildren = null;
 			}
 		}
 	}
-
-	/*
-	if (recycling === false) {
-		node.dom = null;
-	}
-	*/
 }
 
 export function createEmptyTextNode() {
@@ -148,6 +159,7 @@ export function remove(node, parentDom) {
 	const dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
+		detachNode(node, recyclingEnabled && !isNullOrUndefined(node.tpl));
 	} else {
 		parentDom.removeChild(dom);
 		if (recyclingEnabled) {

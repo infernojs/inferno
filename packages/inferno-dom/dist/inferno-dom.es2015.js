@@ -141,7 +141,6 @@ function replaceInArray(array, obj, newObj) {
 
 // Exported only so its easier to verify registered events
 var delegatedEventsRegistry = {};
-
 // The issue with this, is that we can't stop the bubbling as we're traversing down the node tree, rather than up it
 // needs a rethink here
 function scanNodeList(node, target, delegatedEvent, callbackEvent) {
@@ -308,12 +307,22 @@ function detachNode(node, recycling) {
 		return;
 	}
 	var instance = node.instance;
-	if (!isNullOrUndefined(instance) && instance.render !== undefined) {
-		instance.componentWillUnmount();
-		instance._unmounted = true;
+	var instanceDefined = !isNullOrUndefined(instance);
+
+	var instanceHooks = null;
+	var instanceEvents = null;
+	var instanceChildren = null;
+	if (instanceDefined) {
+		instanceHooks = instance.hooks;
+		instanceEvents = instance.events;
+		instanceChildren = instance.children;
+
+		if (instance.render !== undefined) {
+			instance.componentWillUnmount();
+			instance._unmounted = true;
+		}
 	}
-	var instanceHooks = void 0;
-	var hooks = node.hooks || !isNullOrUndefined(instance) && (instanceHooks = true) && instance.hooks;
+	var hooks = node.hooks || instanceHooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
 			hooks.willDetach(node.dom);
@@ -322,14 +331,14 @@ function detachNode(node, recycling) {
 			hooks.componentWillUnmount(node.dom, hooks);
 		}
 		if (recycling === false) {
-			if (instanceHooks) {
+			if (!isNullOrUndefined(instanceHooks)) {
 				instance.hooks = null;
 			} else {
 				node.hooks = null;
 			}
 		}
 	}
-	var events = node.events;
+	var events = node.events || instanceEvents;
 	// Remove all events to free memory
 	if (!isNullOrUndefined(events)) {
 		for (var event in events) {
@@ -340,8 +349,7 @@ function detachNode(node, recycling) {
 			}
 		}
 	}
-
-	var children = node.children;
+	var children = node.children || instanceChildren;
 	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (var i = 0; i < children.length; i++) {
@@ -353,18 +361,20 @@ function detachNode(node, recycling) {
 		if (recycling === false) {
 			node.children = null;
 
+			/*
+   TODO: This might be overkill
+   node.dom = null;
+   if (instanceDefined) {
+   	node.instance.dom = null;
+   }
+   */
+
 			var domChildren = node.domChildren;
 			if (!isNullOrUndefined(domChildren)) {
 				node.domChildren = null;
 			}
 		}
 	}
-
-	/*
- if (recycling === false) {
- 	node.dom = null;
- }
- */
 }
 
 function createEmptyTextNode() {
@@ -375,6 +385,7 @@ function remove(node, parentDom) {
 	var dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
+		detachNode(node, recyclingEnabled && !isNullOrUndefined(node.tpl));
 	} else {
 		parentDom.removeChild(dom);
 		if (recyclingEnabled) {
@@ -695,6 +706,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 							} else {
 								dom.replaceChild(textNode, domChildren[index]);
 								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+								detachNode(_lastChild, recyclingEnabled && !isNullOrUndefined(_lastChild.tpl));
 							}
 						}
 					}
@@ -703,12 +715,10 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 				if (isInvalidNode(_lastChild)) {
 					if (isStringOrNumber(_nextChild)) {
 						var _textNode = document.createTextNode(_nextChild);
-
 						dom.replaceChild(_textNode, domChildren[index]);
 						!isVirtualFragment && domChildren.splice(index, 1, _textNode);
 					} else if (sameLength === true) {
 						var _domNode = mountNode(_nextChild, null, namespace, lifecycle, context, instance);
-
 						dom.replaceChild(_domNode, domChildren[index]);
 						!isVirtualFragment && domChildren.splice(index, 1, _domNode);
 					}
@@ -739,6 +749,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 						dom.replaceChild(_textNode2, domChildren[index]);
 						!isVirtualFragment && domChildren.splice(index, 1, _textNode2);
 					}
+					detachNode(_lastChild, recyclingEnabled && !isNullOrUndefined(_lastChild.tpl));
 				}
 			}
 		}

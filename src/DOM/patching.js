@@ -230,6 +230,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							} else {
 								dom.replaceChild(textNode, domChildren[index]);
 								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+								detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
 							}
 						}
 					}
@@ -238,12 +239,10 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				if (isInvalidNode(lastChild)) {
 					if (isStringOrNumber(nextChild)) {
 						const textNode = document.createTextNode(nextChild);
-
 						dom.replaceChild(textNode, domChildren[index]);
 						!isVirtualFragment && domChildren.splice(index, 1, textNode);
 					} else if (sameLength === true) {
 						const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
-
 						dom.replaceChild(domNode, domChildren[index]);
 						!isVirtualFragment && domChildren.splice(index, 1, domNode);
 					}
@@ -274,6 +273,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						dom.replaceChild(textNode, domChildren[index]);
 						!isVirtualFragment && domChildren.splice(index, 1, textNode);
 					}
+					detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
 				}
 			}
 		}
