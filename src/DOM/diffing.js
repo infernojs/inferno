@@ -226,7 +226,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 			} else {
 
 				const dom = lastNode.dom;
-				const nextClassName = nextNode.className;
+				const nextClassName = nextNode.className; // TODO: Add support into JSX plugin to transform (class from attr into className property)
 				const nextStyle = nextNode.style;
 
 				nextNode.dom = dom;
