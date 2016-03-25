@@ -3,6 +3,7 @@ import { replaceNode, SVGNamespace, MathNamespace } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode } from './patching';
 import { mountChildren, mountNode } from './mounting';
 import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, isFocusOrBlur } from './events';
+import { selectValue } from './utils';
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
 	const nextChildren = nextNode.children;
@@ -71,6 +72,11 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 	const lastAttrs = lastNode.attrs;
 	const nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
 	const lastAttrsIsUndef = isNullOrUndefined(lastAttrs);
+
+	// TODO! Activate this soon as vdom object prev and next are located
+	//if (currentVDOMOBJECT.tag === "select") {
+		//	selectValue(nextVDOMOBJECT);
+	//}
 
 	if (!nextAttrsIsUndef) {
 		const nextAttrsKeys = Object.keys(nextAttrs);

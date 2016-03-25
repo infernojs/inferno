@@ -250,3 +250,50 @@ export function createVirtualFragment() {
 
 	return fragment;
 }
+
+
+
+
+
+function populateOptions(node, values) {
+
+	if (node.tag !== 'option') {
+		for (var i = 0, len = node.children.length; i < len ; i++) {
+			populateOptions(node.children[i], values);
+		}
+		return;
+	}
+
+	const value = node.attrs && node.attrs.value;
+
+	if (!values[value]) {
+		return;
+	}
+	node.attrs = node.attrs || {};
+	node.attrs.selected = 'selected';
+}
+
+export function selectValue(node) {
+	if (node.tagName !== "select") {
+		return;
+	}
+	let value = node.attrs && node.attrs.value;
+
+	if (value == null) {
+		return;
+	}
+
+	let values = {};
+	if (!isArray(value)) {
+		values[value] = value;
+	} else {
+		for (let i = 0, len = value.length; i < len ; i++) {
+			values[value[i]] = value[i];
+		}
+	}
+	populateOptions(node, values);
+
+	if (node.attrs && node.attrs[value]) {
+		delete node.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+	}
+}

@@ -4,6 +4,7 @@ import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFr
 import { patchAttribute, patchStyle } from './patching';
 import { addEventToRegistry, addEventToNode, isFocusOrBlur } from './events';
 import { diffNodes } from './diffing';
+import { selectValue } from './utils';
 
 function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
 	const placeholder = createEmptyTextNode();
@@ -251,7 +252,15 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	return dom;
 }
 
+
 function mountAttributes(attrs, dom, instance) {
+
+	// TODO! Activate this when vdom object is found!
+
+//	if (vdomObject.tag === "select") {
+//		selectValue(vdomObject);
+	//}
+
 	const attrsKeys = Object.keys(attrs);
 
 	for (let i = 0; i < attrsKeys.length; i++) {
