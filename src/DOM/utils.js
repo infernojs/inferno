@@ -269,7 +269,7 @@ function selectOptionValueIfNeeded(vdom, values) {
 }
 
 export function selectValue(vdom) {
-	if (vdom.tagName !== 'select') {
+	if (vdom.tag !== 'select') {
 		return;
 	}
 	let value = vdom.attrs && vdom.attrs.value;
