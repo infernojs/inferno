@@ -494,7 +494,6 @@
 	}
 
 	function selectOptionValueIfNeeded(vdom, values) {
-
 		if (vdom.tag !== 'option') {
 			for (var i = 0, len = vdom.children.length; i < len; i++) {
 				selectOptionValueIfNeeded(vdom.children[i], values);
@@ -512,7 +511,7 @@
 	}
 
 	function selectValue(vdom) {
-		if (vdom.tagName !== "select") {
+		if (vdom.tagName !== 'select') {
 			return;
 		}
 		var value = vdom.attrs && vdom.attrs.value;
@@ -801,33 +800,27 @@
 						}
 					} else if (isStringOrNumber(_nextChild)) {
 						var _textNode2 = document.createTextNode(_nextChild);
-						if (isNullOrUndefined(domChildren[index])) {
+						var child = domChildren[index];
+						if (isNullOrUndefined(child)) {
 							// textNode => textNode
 							dom.nodeValue = _textNode2.nodeValue;
 						} else {
-							dom.replaceChild(_textNode2, domChildren[index]);
-							!isVirtualFragment && domChildren.splice(index, 1, _textNode2);
+							// Next is single string so remove all children
+							if (!isNullOrUndefined(child.append)) {
+								// If previous child is virtual fragment remove all its content and replace with textNode
+								dom.insertBefore(_textNode2, child.firstChild);
+								child.remove();
+								domChildren = [_textNode2];
+							} else {
+								!isVirtualFragment && domChildren.splice(index, 1, _textNode2);
+								dom.replaceChild(_textNode2, child);
+							}
 						}
 						detachNode(_lastChild, recyclingEnabled && !isNullOrUndefined(_lastChild.tpl));
 					}
 				}
 			}
 		}
-
-		/*
-	 if (isNullOrUndefined(childNode)) {
-	 	debugger;
-	 	const textNode = document.createTextNode('');
-	 		dom.appendChild(textNode);
-	 	!isVirtualFragment && domChildren.push(textNode);
-	 } else {
-	 	if (isStringOrNumber(lastChild)) {
-	 		childNode.nodeValue = nextChild;
-	 	} else {
-	 		childNode.textContent = nextChild;
-	 	}
-	 }
-	 */
 	}
 
 	function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
@@ -963,12 +956,14 @@
 	function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
 		var nextChildren = nextNode.children;
 		var lastChildren = lastNode.children;
-		var domChildren = null;
 
 		if (lastChildren === nextChildren) {
-			return; // Is this ever executed? I couldn't get it working
+			return;
 		}
-		if (!isNullOrUndefined(lastNode.domChildren)) {
+
+		var domChildren = null;
+
+		if (lastNode.domChildren) {
 			domChildren = nextNode.domChildren = lastNode.domChildren;
 		}
 		if (!isInvalidNode(lastChildren)) {
@@ -1011,7 +1006,7 @@
 	}
 
 	function diffRef(instance, lastValue, nextValue, dom) {
-		if (!isNullOrUndefined(instance)) {
+		if (instance) {
 			if (isString(lastValue)) {
 				delete instance.refs[lastValue];
 			}
@@ -1118,73 +1113,91 @@
 			nextNode.then(function (node) {
 				diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
 			});
-			return;
-		}
-		if (isStringOrNumber(lastNode)) {
+		} else if (isStringOrNumber(lastNode)) {
 			if (isStringOrNumber(nextNode)) {
 				parentDom.firstChild.nodeValue = nextNode;
 			} else {
+				console.log(lastNode);
+				// TODO! Fix this. URGENT! If you do a console.log you will see two blank line, and a text string.
+				// TODO! Find out why there is two empty blank lines
+				// TODO! Don't replaceNode on a text string
+				// TODO! Avoid breaking components
 				replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 			}
-			return;
-		}
-		var nextHooks = nextNode.hooks;
+		} else {
 
-		// TODO! It works just fine without the 'isNullOrUndefined' check
+			var nextHooks = nextNode.hooks;
 
-		if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.willUpdate)) {
-			nextHooks.willUpdate(lastNode.dom);
-		}
-		var nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
-		var lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
+			// No need for extra validation
+			if (nextHooks && nextHooks.willUpdate) {
+				nextHooks.willUpdate(lastNode.dom);
+			}
+			var nextTag = nextNode.tag || (staticCheck && nextNode.tpl ? nextNode.tpl.tag : null);
+			var lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
 
-		namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
-		if (lastTag !== nextTag) {
-			var lastNodeInstance = lastNode.instance;
+			namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 
-			if (isFunction(lastTag) && !isFunction(nextTag)) {
-				if (isStatefulComponent(lastTag)) {
-					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+			if (lastTag !== nextTag) {
+				var lastNodeInstance = lastNode.instance;
+
+				if (isFunction(lastTag)) {
+					// This logic was missing
+					if (isFunction(nextTag)) {
+						replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+					} else {
+						if (isStatefulComponent(lastTag)) {
+							diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+						} else {
+							diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+						}
+					}
 				} else {
-					diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 				}
+			} else if (isNullOrUndefined(lastTag)) {
+				nextNode.dom = lastNode.dom;
 			} else {
-				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+
+				if (isFunction(lastTag)) {
+					// Firefox doesn't like && too much
+					if (isFunction(nextTag)) {
+						nextNode.instance = lastNode.instance;
+						nextNode.dom = lastNode.dom;
+						patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					}
+				} else {
+
+					var dom = lastNode.dom;
+					var nextClassName = nextNode.className; // TODO: Add support into JSX plugin to transform (class from attr into className property)
+					var nextStyle = nextNode.style;
+
+					nextNode.dom = dom;
+
+					if (lastNode !== nextNode) {
+						diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance);
+						diffAttributes(lastNode, nextNode, dom, instance);
+						diffEvents(lastNode, nextNode);
+					}
+
+					// node.domTextNodes
+
+					if (lastNode.className !== nextClassName) {
+						if (isNullOrUndefined(nextClassName)) {
+							dom.removeAttribute('class');
+						} else {
+							dom.className = nextClassName;
+						}
+					}
+
+					if (lastNode.style !== nextStyle) {
+						patchStyle(lastNode.style, nextStyle, dom);
+					}
+
+					if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
+						nextHooks.didUpdate(dom);
+					}
+				}
 			}
-			return;
-		} else if (isNullOrUndefined(lastTag)) {
-			nextNode.dom = lastNode.dom;
-			return;
-		}
-		if (isFunction(lastTag) && isFunction(nextTag)) {
-			nextNode.instance = lastNode.instance;
-			nextNode.dom = lastNode.dom;
-			patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
-			return;
-		}
-		var dom = lastNode.dom;
-		var nextClassName = nextNode.className;
-		var nextStyle = nextNode.style;
-
-		nextNode.dom = dom;
-		diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance);
-
-		// node.domTextNodes
-
-		if (lastNode.className !== nextClassName) {
-			if (isNullOrUndefined(nextClassName)) {
-				dom.removeAttribute('class');
-			} else {
-				dom.className = nextClassName;
-			}
-		}
-		if (lastNode.style !== nextStyle) {
-			patchStyle(lastNode.style, nextStyle, dom);
-		}
-		diffAttributes(lastNode, nextNode, dom, instance);
-		diffEvents(lastNode, nextNode);
-		if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
-			nextHooks.didUpdate(dom);
 		}
 	}
 
