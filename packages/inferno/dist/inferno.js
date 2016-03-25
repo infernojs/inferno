@@ -32,7 +32,7 @@
 
 	babelHelpers;
 
-	function isArray$1(obj) {
+	function isArray(obj) {
 		return obj.constructor === Array;
 	}
 
@@ -68,7 +68,7 @@
 		var style = null;
 
 		if (!isNullOrUndefined(props)) {
-			if (isArray$1(props)) {
+			if (isArray(props)) {
 				return props;
 			}
 			for (var prop in props) {
@@ -124,7 +124,7 @@
 		if (!isNullOrUndefined(children) && children.length === 0) {
 			children = null;
 		} else if (!isInvalidNode(children)) {
-			children = isArray$1(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
+			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 		}
 
 		if (key !== null) {
@@ -148,13 +148,13 @@
 
 	function createChildren(children) {
 		var childrenDefined = !isNullOrUndefined(children);
-		if (childrenDefined && isArray$1(children)) {
+		if (childrenDefined && isArray(children)) {
 			var newChildren = [];
 
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 				if (!isNullOrUndefined(child) && (typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
-					if (isArray$1(child)) {
+					if (isArray(child)) {
 						if (child.length > 0) {
 							newChildren.push(createChildren(child));
 						} else {
@@ -223,6 +223,15 @@
 			}
 		}
 	}
+
+	/*
+	function createStaticChildren(children, parentDom) {
+		if (isArray(children)) {
+		} else if (isStringOrNumber(children)) {
+			parentDom.textContent = children;
+		}
+	}
+	*/
 
 	var index = {
 		createElement: createElement,

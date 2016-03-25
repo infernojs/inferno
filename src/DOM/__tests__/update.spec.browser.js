@@ -576,7 +576,7 @@ describe('Update (non-jsx)', () => {
 		render(template(), container);
 
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
@@ -599,14 +599,14 @@ describe('Update (non-jsx)', () => {
 
 		render(template(null), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
 
 		render(template(undefined), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
@@ -638,7 +638,7 @@ describe('Update (non-jsx)', () => {
 		render(template('yar1', null, 'yar2', 'noo2', 'yar3', null), container);
 
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
@@ -646,7 +646,7 @@ describe('Update (non-jsx)', () => {
 		render(template('yar1', null, null, 'noo2', null, null), container);
 
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
@@ -654,7 +654,7 @@ describe('Update (non-jsx)', () => {
 		render(template([], null, null, [], null, null), container);
 
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('');
@@ -1214,7 +1214,7 @@ describe('Update (non-jsx)', () => {
 									{
 										"tag": "td",
 										"children": "Text"
-									},
+									}
 
 								],
 								"dom": null
@@ -1242,7 +1242,7 @@ describe('Update (non-jsx)', () => {
 										"children": [
 											"bar"
 										]
-									},
+									}
 								],
 								"dom": null
 							}
@@ -1269,7 +1269,7 @@ describe('Update (non-jsx)', () => {
 										"children": [
 											"text1"
 										]
-									},
+									}
 								],
 								"dom": null
 							}

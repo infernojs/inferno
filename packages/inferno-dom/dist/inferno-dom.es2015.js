@@ -174,6 +174,10 @@ function scanNodeList(node, target, delegatedEvent, callbackEvent) {
 	}
 }
 
+function isFocusOrBlur(event) {
+	return event === 'focus' || event === 'blur';
+}
+
 function createEventListener(callbackEvent) {
 	var delegatedEvents = delegatedEventsRegistry[callbackEvent.type];
 
@@ -200,6 +204,14 @@ function removeEventFromRegistry(event, callback) {
 			}
 		}
 	}
+}
+
+function addEventToNode(event, node, callback) {
+	node.dom.addEventListener(event, callback, false);
+}
+
+function removeEventFromNode(event, node, callback) {
+	node.dom.removeEventListener(event, callback);
 }
 
 function addEventToRegistry(event, node, callback) {
@@ -266,6 +278,13 @@ function appendText(text, parentDom, singleChild) {
 }
 
 function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
+	var lastInstance = null;
+	var instanceLastNode = lastNode._lastNode;
+
+	if (!isNullOrUndefined(instanceLastNode)) {
+		lastInstance = lastNode;
+		lastNode = instanceLastNode;
+	}
 	if (isStringOrNumber(nextNode)) {
 		var dom = document.createTextNode(nextNode);
 		parentDom.replaceChild(dom, dom);
@@ -277,6 +296,9 @@ function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, contex
 		var _dom2 = mountNode(nextNode, null, namespace, lifecycle, context, instance);
 		nextNode.dom = _dom2;
 		parentDom.replaceChild(_dom2, lastNode.dom);
+		if (lastInstance !== null) {
+			lastInstance._lastNode = nextNode;
+		}
 		detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
 	}
 }
@@ -290,7 +312,7 @@ function detachNode(node, recycling) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
-	var instanceHooks = false;
+	var instanceHooks = void 0;
 	var hooks = node.hooks || !isNullOrUndefined(instance) && (instanceHooks = true) && instance.hooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
@@ -311,7 +333,11 @@ function detachNode(node, recycling) {
 	// Remove all events to free memory
 	if (!isNullOrUndefined(events)) {
 		for (var event in events) {
-			removeEventFromRegistry(event, events[event]);
+			if (isFocusOrBlur(event)) {
+				removeEventFromNode(event, node, events[event]);
+			} else {
+				removeEventFromRegistry(event, events[event]);
+			}
 		}
 	}
 
@@ -333,9 +359,12 @@ function detachNode(node, recycling) {
 			}
 		}
 	}
-	if (recycling === false) {
-		node.dom = null;
-	}
+
+	/*
+ if (recycling === false) {
+ 	node.dom = null;
+ }
+ */
 }
 
 function createEmptyTextNode() {
@@ -364,6 +393,17 @@ function insertChildren(parentNode, childNodes, dom) {
 	}
 }
 
+// TODO: for node we need to check if document is valid
+function getActiveNode() {
+	return document.activeElement;
+}
+
+function resetActiveNode(activeNode) {
+	if (activeNode !== document.body && document.activeElement !== activeNode) {
+		activeNode.focus();
+	}
+}
+
 function createVirtualFragment() {
 	var childNodes = [];
 	var dom = document.createTextNode('');
@@ -388,6 +428,10 @@ function createVirtualFragment() {
 				parentNode.insertBefore(domNode, refNode);
 			}
 			childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
+		},
+		replaceChild: function replaceChild(domNode, refNode) {
+			parentNode.replaceChild(domNode, refNode);
+			replaceInArray(childNodes, refNode, domNode);
 		},
 		append: function append(parentDom) {
 			parentDom.appendChild(dom);
@@ -678,25 +722,30 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 							patchNode(_lastChild, _nextChild, dom, namespace, lifecycle, context, instance);
 						}
 					}
-				} else {
-					var _childNode = domChildren[index];
+				} else if (isStringOrNumber(_nextChild)) {
+					var _textNode2 = document.createTextNode(_nextChild);
 
-					if (isNullOrUndefined(_childNode)) {
-						var _textNode2 = document.createTextNode(_nextChild);
-
-						nextChildren.push(_textNode2);
-						dom.appendChild(_textNode2);
-					} else {
-						if (isStringOrNumber(_lastChild)) {
-							_childNode.nodeValue = _nextChild;
-						} else {
-							_childNode.textContent = _nextChild;
-						}
-					}
+					dom.replaceChild(_textNode2, domChildren[index]);
+					!isVirtualFragment && domChildren.splice(index, 1, _textNode2);
 				}
 			}
 		}
 	}
+
+	/*
+ if (isNullOrUndefined(childNode)) {
+ 	debugger;
+ 	const textNode = document.createTextNode('');
+ 		dom.appendChild(textNode);
+ 	!isVirtualFragment && domChildren.push(textNode);
+ } else {
+ 	if (isStringOrNumber(lastChild)) {
+ 		childNode.nodeValue = nextChild;
+ 	} else {
+ 		childNode.textContent = nextChild;
+ 	}
+ }
+ */
 }
 
 function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
@@ -862,7 +911,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 				}
 			} else {
 				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), namespace, lifecycle, context, instance, 0);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else {
@@ -954,12 +1003,19 @@ function diffEvents(lastNode, nextNode, dom) {
 				var lastEvent = lastEvents[event];
 
 				if (isNullOrUndefined(nextEvent)) {
-					removeEventFromRegistry(event, lastEvent);
+					if (isFocusOrBlur(event)) {
+						removeEventFromNode(event, lastNode, lastEvent);
+					} else {
+						removeEventFromRegistry(event, lastEvent);
+					}
 				} else if (nextEvent !== lastEvent) {
-					// TODO: feels lot of looping here, but also this is real edge case
-					// Callback has changed and is not same as before
-					removeEventFromRegistry(event, lastEvent); // remove old
-					addEventToRegistry(event, nextNode, nextEvent); // add new
+					if (isFocusOrBlur(event)) {
+						removeEventFromNode(event, lastNode, lastEvent);
+						addEventToNode(event, nextNode, nextEvent);
+					} else {
+						removeEventFromRegistry(event, lastEvent); // remove old
+						addEventToRegistry(event, nextNode, nextEvent); // add new
+					}
 				}
 			}
 		} else {
@@ -967,7 +1023,11 @@ function diffEvents(lastNode, nextNode, dom) {
 					var _event = lastEventsKeys[_i2];
 					var _lastEvent = lastEvents[_event];
 
-					removeEventFromRegistry(_event, _lastEvent);
+					if (isFocusOrBlur(_event)) {
+						removeEventFromNode(_event, lastNode, _lastEvent);
+					} else {
+						removeEventFromRegistry(_event, _lastEvent);
+					}
 				}
 			}
 	}
@@ -1009,7 +1069,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 				diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
 			}
 		} else {
-			replaceNode(lastNodeInstance && lastNodeInstance._lastNode || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+			replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 		}
 		return;
 	} else if (isNullOrUndefined(lastTag)) {
@@ -1233,7 +1293,10 @@ function mountEvents(events, node) {
 
 	for (var i = 0; i < allEvents.length; i++) {
 		var event = allEvents[i];
-		if (isString(event)) {
+
+		if (isFocusOrBlur(event)) {
+			addEventToNode(event, node, events[event]);
+		} else if (isString(event)) {
 			addEventToRegistry(event, node, events[event]);
 		}
 	}
@@ -1300,6 +1363,7 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 	var className = node.className;
 	var style = node.style;
 
+	node.dom = dom;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.created)) {
 			hooks.created(dom);
@@ -1325,7 +1389,6 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 	if (!isNullOrUndefined(style)) {
 		patchStyle(null, style, dom);
 	}
-	node.dom = dom;
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
 	}
@@ -1379,12 +1442,15 @@ function render(node, parentDom) {
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });
 	} else {
+		var activeNode = getActiveNode();
+
 		patchNode(root.node, node, parentDom, null, lifecycle, {}, null);
 		lifecycle.trigger();
 		if (node === null) {
 			removeRoot(root);
 		}
 		root.node = node;
+		resetActiveNode(activeNode);
 	}
 }
 

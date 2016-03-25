@@ -530,7 +530,7 @@ describe('Components (JSX)', () => {
 
 		render(element, container);
         requestAnimationFrame(() => {
-            expect(container.firstChild).not.to.be.null;
+            expect(container.firstChild).not.to.equal(null);
             expect(container.firstChild.tagName).to.equal(expectedTag);
             expect(container.firstChild.className).to.equal(expectedClassName);
             callback();

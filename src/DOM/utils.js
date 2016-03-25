@@ -1,7 +1,7 @@
 import { mountNode } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
-import { removeEventFromRegistry, isFocusOrBlur } from './events';
+import { removeEventFromRegistry, isFocusOrBlur, removeEventFromNode } from './events';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -85,7 +85,7 @@ export function detachNode(node, recycling) {
 		instance.componentWillUnmount();
 		instance._unmounted = true;
 	}
-	let instanceHooks = false;
+	let instanceHooks;
 	const hooks = node.hooks || !isNullOrUndefined(instance) && (instanceHooks = true) && instance.hooks;
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
@@ -132,9 +132,12 @@ export function detachNode(node, recycling) {
 			}
 		}
 	}
+
+	/*
 	if (recycling === false) {
-		//node.dom = null;
+		node.dom = null;
 	}
+	*/
 }
 
 export function createEmptyTextNode() {

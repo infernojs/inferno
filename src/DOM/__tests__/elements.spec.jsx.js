@@ -66,7 +66,7 @@ describe('Elements - SVG (JSX)', () => {
 		render(<div id={ null }></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
-		expect(container.firstChild.getAttribute('id')).to.be.null;
+		expect(container.firstChild.getAttribute('id')).to.equal(null);
 
 		render(<div class={ 'hello' }></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -145,14 +145,14 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
-		expect(container.firstChild.firstChild.getAttribute('id')).to.be.null;
+		expect(container.firstChild.firstChild.getAttribute('id')).to.equal(null);
 
 		attrs = undefined;
 
 		render(<div id={ attrs }></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
-		expect(container.firstChild.getAttribute('id')).to.be.null;
+		expect(container.firstChild.getAttribute('id')).to.equal(null);
 
 		attrs = 'id#4';
 
@@ -451,7 +451,7 @@ describe('Elements - SVG (JSX)', () => {
 
 		render(<input values={ null } />, container);
 
-		expect(container.value).to.be.undefined;
+		expect(container.value).to.equal(undefined);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -459,10 +459,10 @@ describe('Elements - SVG (JSX)', () => {
 		);
 
 		render(<input values={ undefined } />, container);
-		expect(container.value).to.be.undefined;
+		expect(container.value).to.equal(undefined);
 
 		render(<input values={ null } />, container);
-		expect(container.value).to.be.undefined;
+		expect(container.value).to.equal(undefined);
 
 		expect(
 			container.innerHTML
@@ -636,13 +636,13 @@ describe('Elements - SVG (JSX)', () => {
 
 	it('should remove attributes', () => {
 		render(<img height="17" />, container);
-		expect(container.firstChild.hasAttribute('height')).to.be.true;
+		expect(container.firstChild.hasAttribute('height')).to.equal(true);
 		render(<img />, container);
-		expect(container.firstChild.hasAttribute('height')).to.be.false;
+		expect(container.firstChild.hasAttribute('height')).to.equal(false);
 		render(<img height={ null } />, container);
-		expect(container.firstChild.hasAttribute('height')).to.be.false;
+		expect(container.firstChild.hasAttribute('height')).to.equal(false);
 		render(<img height={ false } />, container);
-		expect(container.firstChild.hasAttribute('height')).to.be.false;
+		expect(container.firstChild.hasAttribute('height')).to.equal(false);
 
 	});
 
@@ -654,7 +654,7 @@ describe('Elements - SVG (JSX)', () => {
 		render(<svg class="monkey" />, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('monkey');
 		render(<svg />, container);
-		expect(container.firstChild.getAttribute('class')).to.be.null;
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
 	});
 
 	it('should not update when switching between null/undefined', () => {

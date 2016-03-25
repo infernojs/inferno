@@ -266,19 +266,22 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 			}
 		}
 	}
-	//if (isNullOrUndefined(childNode)) {
-	//	debugger;
-	//	const textNode = document.createTextNode('');
-	//
-	//	dom.appendChild(textNode);
-	//	!isVirtualFragment && domChildren.push(textNode);
-	//} else {
-	//	if (isStringOrNumber(lastChild)) {
-	//		childNode.nodeValue = nextChild;
-	//	} else {
-	//		childNode.textContent = nextChild;
-	//	}
-	//}
+
+	/*
+	if (isNullOrUndefined(childNode)) {
+		debugger;
+		const textNode = document.createTextNode('');
+
+		dom.appendChild(textNode);
+		!isVirtualFragment && domChildren.push(textNode);
+	} else {
+		if (isStringOrNumber(lastChild)) {
+			childNode.nodeValue = nextChild;
+		} else {
+			childNode.textContent = nextChild;
+		}
+	}
+	*/
 }
 
 export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
