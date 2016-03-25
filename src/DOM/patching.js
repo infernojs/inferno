@@ -127,15 +127,15 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 			} else {
 				dom[attrName] = nextAttrValue;
 			}
-		} else if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+		} else if (isNullOrUndefined(nextAttrValue) || nextAttrValue === false) {
 			dom.removeAttribute(attrName);
 		} else {
-			let ns = null;
+			let ns;
 
 			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
 				ns = 'http://www.w3.org/1999/xlink';
 			}
-			if (ns !== null) {
+			if (ns) {
 				dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			} else {
 				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
@@ -148,15 +148,16 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
-		const prevProps = instance.props;
-		const prevState = instance.state;
-		const nextState = instance.state;
 
 		const childContext = instance.getChildContext();
 		if (!isNullOrUndefined(childContext)) {
 			context = { ...context, ...childContext };
 		}
 		instance.context = context;
+
+		const prevProps = instance.props;
+		const prevState = instance.state;
+		const nextState = instance.state;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
@@ -168,7 +169,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 		let shouldUpdate = true;
 		const nextHooksDefined = !isNullOrUndefined(nextHooks);
 
-		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
+		if (nextHooksDefined && nextHooks.componentShouldUpdate) {
 			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
 		}
 		if (shouldUpdate !== false) {
@@ -181,7 +182,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 
 			diffNodes(instance, nextNode, dom, null, lifecycle, context, true, null);
 			lastNode.instance = nextNode;
-			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
+			if (nextHooksDefined && nextHooks.componentDidUpdate) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
 		}
@@ -189,6 +190,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 }
 
 function isKeyed(lastChildren, nextChildren) {
+	// TODO!! This is insane. Why not do a simple check here? Perf killer
 	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
 		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 }
@@ -199,7 +201,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 	let nextChildrenLength = nextChildren.length;
 	const sameLength = lastChildrenLength === nextChildrenLength;
 
-	if (sameLength === false) {
+	if (!sameLength) {
 		if (lastChildrenLength > nextChildrenLength) {
 			while (lastChildrenLength !== nextChildrenLength) {
 				const lastChild = lastChildren[lastChildrenLength - 1];
@@ -216,7 +218,9 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 
 				insertOrAppend(dom, domNode);
-				!isVirtualFragment && domChildren.push(domNode);
+				if(!isVirtualFragment) {
+					domChildren.push(domNode);
+				}
 				lastChildrenLength++;
 			}
 		}
@@ -234,7 +238,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					if (!isNullOrUndefined(childNode)) {
 						if (isStringOrNumber(lastChild)) {
 							childNode.nodeValue = '';
-						} else if (sameLength === true) {
+						} else if (sameLength) {
 							const textNode = createEmptyTextNode();
 
 							if (isArray(lastChild) && lastChild.length === 0) {
@@ -253,13 +257,20 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					if (isStringOrNumber(nextChild)) {
 						const textNode = document.createTextNode(nextChild);
 						dom.replaceChild(textNode, domChildren[index]);
-						!isVirtualFragment && domChildren.splice(index, 1, textNode);
-					} else if (sameLength === true) {
+						!isVirtualFragment && domChildren.splice(index, 1, textNode); // TODO! Splice is slow
+					} else if (sameLength) {
 						const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 						dom.replaceChild(domNode, domChildren[index]);
-						!isVirtualFragment && domChildren.splice(index, 1, domNode);
+						!isVirtualFragment && domChildren.splice(index, 1, domNode); // TODO! Splice is slow
 					}
 				} else if (isObject(nextChild)) {
+
+					/**
+					 * TODO! Why this?  Better is to check if nextChild is an array, then also lastChild is an array.
+					 *  IF both is an array, ok go on and diff the list.
+					 *  In that way you wouldn't need 2x check if lastChild is an array!!
+					 */
+
 					if (isArray(nextChild)) {
 						if (isKeyed(lastChild, nextChild)) {
 							patchKeyedChildren(lastChild, nextChild, domChildren[index], namespace, lifecycle, context, instance);
@@ -271,7 +282,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							}
 						}
 					} else {
-						if (isArray(lastChild)) {
+						if (isArray(lastChild)) { // TODO! See comment above
 							patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 						} else {
 							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance);
