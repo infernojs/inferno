@@ -3,7 +3,7 @@ import { isNullOrUndefined } from './../core/utils';
 
 export const recyclingEnabled = true;
 
-export function recycle(node, lifecycle, context) {
+export function recycle(node, lifecycle, context, instance) {
 	const tpl = node.tpl;
 
 	if (!isNullOrUndefined(tpl)) {
@@ -18,7 +18,7 @@ export function recycle(node, lifecycle, context) {
 			recycledNode = keyPool && keyPool.pop();
 		}
 		if (!isNullOrUndefined(recycledNode)) {
-			diffNodes(recycledNode, node, null, null, lifecycle, context, true);
+			diffNodes(recycledNode, node, null, null, lifecycle, context, instance, true);
 			return node.dom;
 		}
 	}

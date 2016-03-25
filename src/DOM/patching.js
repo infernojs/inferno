@@ -22,30 +22,29 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 	}
 }
 
-export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
-	if (isInvalidNode(lastNode)) {
-		mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
-		return;
-	}
-	if (isInvalidNode(nextNode)) {
-		remove(lastNode, parentDom);
-		return;
-	}
-	if (isStringOrNumber(lastNode)) {
-		if (isStringOrNumber(nextNode)) {
-			parentDom.firstChild.nodeValue = nextNode;
+export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
+	if (staticCheck === true) {
+		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+	} else {
+		if (isInvalidNode(lastNode)) {
+			mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
+		} else if (isInvalidNode(nextNode)) {
+			remove(lastNode, parentDom);
+		} else if (isStringOrNumber(lastNode)) {
+			if (isStringOrNumber(nextNode)) {
+				parentDom.firstChild.nodeValue = nextNode;
+			} else {
+				const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+				nextNode.dom = dom;
+				parentDom.replaceChild(dom, parentDom.firstChild);
+			}
+		} else if (isStringOrNumber(nextNode)) {
+			const textNode = document.createTextNode(nextNode);
+			parentDom.replaceChild(textNode, lastNode.dom);
 		} else {
-			const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
-			nextNode.dom = dom;
-			parentDom.replaceChild(dom, parentDom.firstChild);
+			diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, lastNode.tpl !== null && nextNode.tpl !== null);
 		}
-		return;
-	} else if (isStringOrNumber(nextNode)) {
-		const textNode = document.createTextNode(nextNode);
-		parentDom.replaceChild(textNode, lastNode.dom);
-		return;
 	}
-	diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, lastNode.tpl !== null && nextNode.tpl !== null, instance);
 }
 
 export const canBeUnitlessProperties = {
@@ -217,7 +216,12 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 
 				insertOrAppend(dom, domNode);
-				!isVirtualFragment && domChildren.push(domNode);
+				if (!isVirtualFragment) {
+					if (lastChildrenLength === 1) {
+						domChildren.push(dom.firstChild);
+					}
+					domChildren.push(domNode);
+				}
 				lastChildrenLength++;
 			}
 		}
@@ -275,28 +279,40 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						if (isArray(lastChild)) {
 							patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 						} else {
-							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance);
+							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance, false);
 						}
 					}
 				} else if (isStringOrNumber(nextChild)) {
-					const textNode = document.createTextNode(nextChild);
-					const child = domChildren[index];
-
-					if (isNullOrUndefined(child)) {
-						// textNode => textNode
-						dom.nodeValue = textNode.nodeValue;
-					} else {
-						// Next is single string so remove all children
-						if (!isNullOrUndefined(child.append)) { // If previous child is virtual fragment remove all its content and replace with textNode
-							dom.insertBefore(textNode, child.firstChild);
-							child.remove();
-							domChildren.splice(0, domChildren.length, textNode);
+					if (lastChildrenLength === 1) {
+						if (isStringOrNumber(lastChild)) {
+							if (dom.getElementsByTagName !== undefined) {
+								dom.firstChild.nodeValue = nextChild;
+							} else {
+								dom.nodeValue = nextChild;
+							}
 						} else {
-							!isVirtualFragment && domChildren.splice(index, 1, textNode);
-							dom.replaceChild(textNode, child);
+							detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
+							dom.textContent = nextChild;
 						}
+					} else {
+						const textNode = document.createTextNode(nextChild);
+						const child = domChildren[index];
+
+						if (isNullOrUndefined(child)) {
+							dom.nodeValue = textNode.nodeValue;
+						} else {
+							// Next is single string so remove all children
+							if (!isNullOrUndefined(child.append)) { // If previous child is virtual fragment remove all its content and replace with textNode
+								dom.insertBefore(textNode, child.firstChild);
+								child.remove();
+								domChildren.splice(0, domChildren.length, textNode);
+							} else {
+								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+								dom.replaceChild(textNode, child);
+							}
+						}
+						detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
 					}
-					detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
 				}
 			}
 		}
@@ -312,6 +328,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				pool(lastChildren[i]);
 			}
 		}
+		// TODO can we improve the removal all nodes vs textContent = ''?
 		dom.textContent = '';
 		return;
 	}
@@ -331,7 +348,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
 		stop = true;
 		while (startItem.key === oldStartItem.key) {
-			patchNode(oldStartItem, startItem, dom, namespace, lifecycle, context, true, instance);
+			patchNode(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -345,7 +362,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		endItem = nextChildren[endIndex];
 		oldEndItem = lastChildren[oldEndIndex];
 		while (endItem.key === oldEndItem.key) {
-			patchNode(oldEndItem, endItem, dom, namespace, lifecycle, context, true, instance);
+			patchNode(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -358,7 +375,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		}
 		while (endItem.key === oldStartItem.key) {
 			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
-			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, true, instance);
+			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
 			insertOrAppend(dom, endItem.dom, nextNode);
 			endIndex--;
 			oldStartIndex++;
@@ -372,7 +389,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		}
 		while (startItem.key === oldEndItem.key) {
 			nextNode = lastChildren[oldStartIndex].dom;
-			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, true, instance);
+			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
 			insertOrAppend(dom, startItem.dom, nextNode);
 			startIndex++;
 			oldEndIndex--;
@@ -416,7 +433,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			} else {
 				oldItemsMap[key] = null;
-				patchNode(oldItem, item, dom, namespace, lifecycle, context, true, instance);
+				patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 				if (item.dom.nextSibling !== nextNode) {
 					insertOrAppend(dom, item.dom, nextNode);

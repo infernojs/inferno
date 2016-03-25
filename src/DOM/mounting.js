@@ -30,12 +30,10 @@ export function mountChildren(node, children, parentDom, namespace, lifecycle, c
 			const child = children[i];
 
 			if (isStringOrNumber(child)) {
-
 				isNonKeyed = true;
 				domChildren.push(appendText(child, parentDom, false));
 			} else if (!isNullOrUndefined(child) && isArray(child)) {
 				const virtualFragment = createVirtualFragment();
-
 
 				isNonKeyed = true;
 				mountChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
@@ -186,7 +184,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 		return dom;
 	}
 	if (recyclingEnabled) {
-		dom = recycle(node, lifecycle, context);
+		dom = recycle(node, lifecycle, context, instance);
 		if (dom) {
 			if (parentDom) {
 				parentDom.appendChild(dom);

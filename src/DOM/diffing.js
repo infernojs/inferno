@@ -5,7 +5,7 @@ import { mountChildren, mountNode } from './mounting';
 import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, doesNotBubble } from './events';
 import { selectValue } from './utils';
 
-function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance) {
+function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
 
@@ -22,7 +22,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 		if (!isInvalidNode(nextChildren)) {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					if (domChildren === null) {
+					if (domChildren === null && lastChildren.length > 1) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 					} else {
 						patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
@@ -35,8 +35,10 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, st
 					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), namespace, lifecycle, context, instance, 0);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
+				} else if (isStringOrNumber(lastChildren)) {
+					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, false);
 				} else {
-					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, staticCheck, instance);
+					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
 				}
 			}
 		} else {
@@ -159,10 +161,7 @@ function diffEvents(lastNode, nextNode) {
 	}
 }
 
-export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, staticCheck, instance) {
-	if (nextNode === false || nextNode === null) {
-		return;
-	}
+export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
 	if (!isNullOrUndefined(nextNode.then)) {
 		nextNode.then(node => {
 			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
@@ -213,7 +212,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				nextNode.dom = dom;
 
 				if (lastNode !== nextNode) {
-					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance);
+					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck);
 					diffAttributes(lastNode, nextNode, dom, instance);
 					diffEvents(lastNode, nextNode);
 				}
