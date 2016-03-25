@@ -164,73 +164,94 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	if (!isNullOrUndefined(nextNode.then)) {
 		nextNode.then(node => {
 			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
-		});
-		return;
-	}
-	if (isStringOrNumber(lastNode)) {
+	});
+
+	} else if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
 		} else {
+			console.log(lastNode)
+			// TODO! Fix this. URGENT! If you do a console.log you will see two blank line, and a text string.
+			// TODO! Find out why there is two empty blank lines
+			// TODO! Don't replaceNode on a text string
+			// TODO! Avoid breaking components
 			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 		}
-		return;
-	}
-	const nextHooks = nextNode.hooks;
 
-	// TODO! It works just fine without the 'isNullOrUndefined' check
+	} else {
 
-	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.willUpdate)) {
-		nextHooks.willUpdate(lastNode.dom);
-	}
-	const nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
-	const lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
+		const nextHooks = nextNode.hooks;
 
-	namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
-	if (lastTag !== nextTag) {
-		const lastNodeInstance = lastNode.instance;
+		// No need for extra validation
+		if (nextHooks && nextHooks.willUpdate) {
+			nextHooks.willUpdate(lastNode.dom);
+		}
+		const nextTag = nextNode.tag || ((staticCheck && nextNode.tpl) ? nextNode.tpl.tag : null);
+		const lastTag = lastNode.tag || ((staticCheck && lastNode.tpl) ? lastNode.tpl.tag : null);
 
-		if (isFunction(lastTag) && !isFunction(nextTag)) {
-			if (isStatefulComponent(lastTag)) {
-				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+		namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
+
+		if (lastTag !== nextTag) {
+			const lastNodeInstance = lastNode.instance;
+
+			if (isFunction(lastTag)) {
+				// This logic was missing
+				if (isFunction(nextTag)) {
+					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+				} else {
+					if (isStatefulComponent(lastTag)) {
+						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+					} else {
+						diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+					}
+				}
 			} else {
-				diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 			}
+
+		} else if (isNullOrUndefined(lastTag)) {
+			nextNode.dom = lastNode.dom;
 		} else {
-			replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+
+			if (isFunction(lastTag)) {
+				// Firefox doesn't like && too much
+				if (isFunction(nextTag)) {
+					nextNode.instance = lastNode.instance;
+					nextNode.dom = lastNode.dom;
+					patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				}
+			} else {
+
+				const dom = lastNode.dom;
+				const nextClassName = nextNode.className;
+				const nextStyle = nextNode.style;
+
+				nextNode.dom = dom;
+
+				if(lastNode !== nextNode) {
+					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance);
+					diffAttributes(lastNode, nextNode, dom, instance);
+					diffEvents(lastNode, nextNode);
+				}
+
+				// node.domTextNodes
+
+				if (lastNode.className !== nextClassName) {
+					if (isNullOrUndefined(nextClassName)) {
+						dom.removeAttribute('class');
+					} else {
+						dom.className = nextClassName;
+					}
+				}
+
+				if (lastNode.style !== nextStyle) {
+					patchStyle(lastNode.style, nextStyle, dom);
+				}
+
+				if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
+					nextHooks.didUpdate(dom);
+				}
+			}
 		}
-		return;
-	} else if (isNullOrUndefined(lastTag)) {
-		nextNode.dom = lastNode.dom;
-		return;
-	}
-	if (isFunction(lastTag) && isFunction(nextTag)) {
-		nextNode.instance = lastNode.instance;
-		nextNode.dom = lastNode.dom;
-		patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
-		return;
-	}
-	const dom = lastNode.dom;
-	const nextClassName = nextNode.className;
-	const nextStyle = nextNode.style;
-
-	nextNode.dom = dom;
-	diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, staticCheck, instance);
-
-	// node.domTextNodes
-
-	if (lastNode.className !== nextClassName) {
-		if (isNullOrUndefined(nextClassName)) {
-			dom.removeAttribute('class');
-		} else {
-			dom.className = nextClassName;
-		}
-	}
-	if (lastNode.style !== nextStyle) {
-		patchStyle(lastNode.style, nextStyle, dom);
-	}
-	diffAttributes(lastNode, nextNode, dom, instance);
-	diffEvents(lastNode, nextNode);
-	if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
-		nextHooks.didUpdate(dom);
 	}
 }
