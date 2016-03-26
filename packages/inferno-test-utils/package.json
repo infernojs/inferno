@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "license": "MPL-2.0",
   "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
   "author": {
@@ -22,7 +22,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.6.2"
+    "inferno": "^0.6.3"
   },
   "main": "inferno-test-utils.js",
   "jsnext:main": "dist/inferno-test-utils.es2015.js",
