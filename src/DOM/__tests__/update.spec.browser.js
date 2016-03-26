@@ -1198,269 +1198,401 @@ describe('Update (non-jsx)', () => {
 			);
 		});
 	});
-	describe('test case for github #142', () => {
 
-		function A() {
-			return {
-				"tag": "div",
-				"children": {
-					"tag": "div",
-					"children": {
-						"tag": "table",
-						"children": [
-							{
-								"tag": "tr",
+	describe('Github #142', () => {
+		describe('nonKeyed updates', () => {
+			it('variation-1', () => {
+				function A() {
+					return {
+						"tag": "div",
+						"children": {
+							"tag": "div",
+							"children": {
+								"tag": "table",
 								"children": [
 									{
-										"tag": "td",
-										"children": "Text"
-									}
-
-								],
-								"dom": null
-							}
-						]
-					}
-				},
-				"dom": null
-			}
-		}
-
-		function B() {
-			return {
-				"tag": "div",
-				"children": {
-					"tag": "div",
-					"children": {
-						"tag": "table",
-						"children": [
-							{
-								"tag": "tr",
-								"children": [
-									{
-										"tag": "td",
+										"tag": "tr",
 										"children": [
-											"bar"
-										]
-									}
-								],
-								"dom": null
-							}
-						]
-					}
-				},
-				"dom": null
-			}
-		}
+											{
+												"tag": "td",
+												"children": "Text"
+											}
 
-		function C() {
-			return {
-				"tag": "div",
-				"children": {
-					"tag": "div",
-					"children": {
-						"tag": "table",
-						"children": [
-							{
-								"tag": "tr",
-								"children": [
-									{
-										"tag": "td",
-										"children": [
-											"text1"
-										]
-									}
-								],
-								"dom": null
-							}
-						]
-					}
-				},
-				"dom": null
-			}
-		}
-
-		it('should correct render initial and further updates', () => {
-			render(A(), container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>Text</td></tr></table></div></div>');
-			render(B(), container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>bar</td></tr></table></div></div>');
-			render(C(), container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
-		});
-	});
-
-	describe('test case for github #142', () => {
-
-		const A={
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										"text",
-										{
-											"tag": "br"
-										}
-									],
-									"dom": null
-								}
-							],
-							"dom": null
-						}
-					]
-				}
-			},
-			"dom": null
-		};
-		const B = {
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											"text"
-										]
-									],
-									"dom": null
-								},
-							],
-							"dom": null
-						}
-					]
-				}
-			},
-			"dom": null
-		};
-		const C={
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											"value"
 										],
-										{
-											"tag": "br"
-										}
-									],
-									"dom": null
-								}
-							],
-							"dom": null
-						}
-					]
-				}
-			},
-			"dom": null
-		};
-
-		it('should correct render initial and further updates', () => {
-			render(A, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
-			render(B, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
-			render(C, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
-		});
-	});
-
-	describe('test case for github #142b', () => {
-		var A = {
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
-					"tag": "table"
-				}
-			},
-			"dom": null
-		};
-		const B = {
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"dom": null
+										"dom": null
+									}
+								]
+							}
 						},
-						{
-							"tag": "tr",
-							"children": [
+						"dom": null
+					}
+				}
 
-								{
-									"tag": "td",
-									"children": [
-										[
-											"A"
+				function B() {
+					return {
+						"tag": "div",
+						"children": {
+							"tag": "div",
+							"children": {
+								"tag": "table",
+								"children": [
+									{
+										"tag": "tr",
+										"children": [
+											{
+												"tag": "td",
+												"children": [
+													"bar"
+												]
+											}
 										],
+										"dom": null
+									}
+								]
+							}
+						},
+						"dom": null
+					}
+				}
+
+				function C() {
+					return {
+						"tag": "div",
+						"children": {
+							"tag": "div",
+							"children": {
+								"tag": "table",
+								"children": [
+									{
+										"tag": "tr",
+										"children": [
+											{
+												"tag": "td",
+												"children": [
+													"text1"
+												]
+											}
+										],
+										"dom": null
+									}
+								]
+							}
+						},
+						"dom": null
+					}
+				}
+
+				render(A(), container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>Text</td></tr></table></div></div>');
+				render(B(), container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>bar</td></tr></table></div></div>');
+				render(C(), container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
+			});
+
+			it('variation -2', () => {
+				const A={
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
 										{
-											"tag": "br"
+											"tag": "td",
+											"children": [
+												"text",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
 										}
 									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												[
+													"text"
+												]
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+				const C={
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												[
+													"value"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+			});
+
+			it('variation 3', () => {
+				const A = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table"
+						}
+					},
+					"dom": null
+				};
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
 									"dom": null
 								},
 								{
-									"tag": "td",
+									"tag": "tr",
 									"children": [
-										[
-											"B"
-										],
+
 										{
-											"tag": "br"
+											"tag": "td",
+											"children": [
+												[
+													"A"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"children": [
+												[
+													"B"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								},
+								{
+									"tag": "tr",
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+				const C = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"dom": null
+								},
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												"",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
 										}
 									],
 									"dom": null
 								}
-							],
-							"dom": null
-						},
-						{
-							"tag": "tr",
-							"dom": null
+							]
 						}
-					]
-				}
-			},
-			"dom": null
-		};
-		const C = {
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+			});
+
+			it('variation 4', () => {
+				const A = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												[
+													"text 1"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												"",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const C = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												[
+													"text 2"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+			});
+
+			it('variation 5', () => {
+				const A = [];
+				A[0] =  {
 					"tag": "table",
 					"children": [
-						{
-							"tag": "tr",
-							"dom": null
-						},
 						{
 							"tag": "tr",
 							"children": [
@@ -1471,106 +1603,44 @@ describe('Update (non-jsx)', () => {
 										{
 											"tag": "br"
 										}
-									],
-									"dom": null
+									]
 								}
-							],
-							"dom": null
+							]
 						}
 					]
-				}
-			},
-			"dom": null
-		};
+				};
 
-		it('should correct render initial and further updates', () => {
-			render(A, container);
-			expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');
-			render(B, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
-			render(C, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
-		});
-	});
-
-	describe('test case for github #142c', () => {
-		var A = {
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
+				A[1] =  {
 					"tag": "table",
 					"children": [
 						{
 							"tag": "tr",
-							"key": "some-key",
 							"children": [
 								{
 									"tag": "td",
-									"key": "sum",
 									"children": [
 										[
-											"text 1"
+											"text 1",
+											"text a"
 										],
 										{
 											"tag": "br"
 										}
-									],
-									"dom": null
+									]
 								}
-							],
-							"dom": null
+							]
 						}
 					]
-				}
-			},
-			"dom": null
-		}
+				};
 
-		var B = {
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
+				A[2] =  {
 					"tag": "table",
 					"children": [
 						{
 							"tag": "tr",
-							"key": "some-key",
 							"children": [
 								{
 									"tag": "td",
-									"key": "sum",
-									"children": [
-										"",
-										{
-											"tag": "br"
-										}
-									],
-									"dom": null
-								}
-							],
-							"dom": null
-						}
-					]
-				}
-			},
-			"dom": null
-		}
-		var C = {
-			"tag": "div",
-			"children": {
-				"tag": "div",
-				"children": {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "some-key",
-							"children": [
-								{
-									"tag": "td",
-									"key": "sum",
 									"children": [
 										[
 											"text 2"
@@ -1578,130 +1648,989 @@ describe('Update (non-jsx)', () => {
 										{
 											"tag": "br"
 										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[3] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										[
+											{
+												"tag": "br"
+											},
+											"text 3"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+			});
+
+			it('variation 6', () => {
+				const A = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												[
+													"text 1"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
 									],
 									"dom": null
 								}
-							],
-							"dom": null
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												"",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const C = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"children": [
+										{
+											"tag": "td",
+											"children": [
+												[
+													"text 2"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+			});
+
+			it('variation 7', () => {
+				const A = [];
+				A[0] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										"",
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
 						}
 					]
-				}
-			},
-			"dom": null
-		}
+				};
 
-		it('should correct render initial and further updates', () => {
-			render(A, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
-			render(B, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
-			render(C, container);
-			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+				A[1] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										[
+											"text 1"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[2] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										[
+											"text 2"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[3] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"children": [
+								{
+									"tag": "td",
+									"children": [
+										[
+											{
+												"tag": "br"
+											},
+											"text 3"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+			});
 		});
-	});
 
-	describe('test case for github #142', () => {
-		const A = [];
-		A[0] =  {
-			"tag": "table",
-			"children": [
-				{
-					"tag": "tr",
-					"children": [
-						{
-							"tag": "td",
-							"children": [
-								"",
-								{
-									"tag": "br"
-								}
-							]
-						}
-					]
-				}
-			]
-		};
 
-		A[1] =  {
-			"tag": "table",
-			"children": [
-				{
-					"tag": "tr",
-					"children": [
-						{
-							"tag": "td",
-							"children": [
-								[
-									"text 1",
-									"text a"
-								],
-								{
-									"tag": "br"
-								}
-							]
-						}
-					]
-				}
-			]
-		};
-
-		A[2] =  {
-			"tag": "table",
-			"children": [
-				{
-					"tag": "tr",
-					"children": [
-						{
-							"tag": "td",
-							"children": [
-								[
-									"text 2"
-								],
-								{
-									"tag": "br"
-								}
-							]
-						}
-					]
-				}
-			]
-		};
-
-		A[3] =  {
-			"tag": "table",
-			"children": [
-				{
-					"tag": "tr",
-					"children": [
-						{
-							"tag": "td",
-							"children": [
-								[
+		describe('KEYED updates', () => {
+			it('variation-1', () => {
+				function A() {
+					return {
+						"tag": "div",
+						"children": {
+							"tag": "div",
+							"children": {
+								"tag": "table",
+								"children": [
 									{
-										"tag": "br",
-									},
-									"text 3"
-								],
+										"tag": "tr",
+										"key": "row1",
+										"children": [
+											{
+												"tag": "td",
+												"key": "td1",
+												"children": "Text"
+											}
+
+										],
+										"dom": null
+									}
+								]
+							}
+						},
+						"dom": null
+					}
+				}
+
+				function B() {
+					return {
+						"tag": "div",
+						"children": {
+							"tag": "div",
+							"children": {
+								"tag": "table",
+								"children": [
+									{
+										"tag": "tr",
+										"key": "row1",
+										"children": [
+											{
+												"tag": "td",
+												"key": "td1",
+												"children": [
+													"bar"
+												]
+											}
+										],
+										"dom": null
+									}
+								]
+							}
+						},
+						"dom": null
+					}
+				}
+
+				function C() {
+					return {
+						"tag": "div",
+						"children": {
+							"tag": "div",
+							"children": {
+								"tag": "table",
+								"children": [
+									{
+										"tag": "tr",
+										"key": "row1",
+										"children": [
+											{
+												"tag": "td",
+												"key": "td1",
+												"children": [
+													"text1"
+												]
+											}
+										],
+										"dom": null
+									}
+								]
+							}
+						},
+						"dom": null
+					}
+				}
+
+				render(A(), container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>Text</td></tr></table></div></div>');
+				render(B(), container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>bar</td></tr></table></div></div>');
+				render(C(), container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
+			});
+
+			it('variation -2', () => {
+				const A={
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
 								{
-									"tag": "br"
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1",
+											"children": [
+												"text",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1",
+											"children": [
+												[
+													"text"
+												]
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+				const C={
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1",
+											"children": [
+												[
+													"value"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+			});
+
+			it('variation 3', () => {
+				const A = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table"
+						}
+					},
+					"dom": null
+				};
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"dom": null
+								},
+								{
+									"tag": "tr",
+									"key": "row2",
+									"children": [
+
+										{
+											"tag": "td",
+											"key": "td2-1",
+											"children": [
+												[
+													"A"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										},
+										{
+											"tag": "td",
+											"key": "td2-2",
+											"children": [
+												[
+													"B"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								},
+								{
+									"tag": "tr",
+									"key": "row3",
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+				const C = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"dom": null
+								},
+								{
+									"tag": "tr",
+									"key": "row2",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td2-2",
+											"children": [
+												"",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+			});
+
+			it('variation 4', () => {
+				const A = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1-1",
+											"children": [
+												[
+													"text 1"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1-1",
+											"children": [
+												"",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const C = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1-1",
+											"children": [
+												[
+													"text 2"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+			});
+
+			it('variation 5', () => {
+				const A = [];
+				A[0] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										"",
+										{
+											"tag": "br"
+										}
+									]
 								}
 							]
 						}
 					]
-				}
-			]
-		};
+				};
 
-		it('should correct render initial and further updates', () => {
-			render(A[0], container);
-			expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
-			render(A[1], container);
-			expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
-			render(A[2], container);
-			expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
-			render(A[3], container);
-			expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				A[1] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										[
+											"text 1",
+											"text a"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[2] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										[
+											"text 2"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[3] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										[
+											{
+												"tag": "br"
+											},
+											"text 3"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+			});
+
+			it('variation 6', () => {
+				const A = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1-1",
+											"children": [
+												[
+													"text 1"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const B = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1-1",
+											"children": [
+												"",
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				const C = {
+					"tag": "div",
+					"children": {
+						"tag": "div",
+						"children": {
+							"tag": "table",
+							"children": [
+								{
+									"tag": "tr",
+									"key": "row1",
+									"children": [
+										{
+											"tag": "td",
+											"key": "td1-1",
+											"children": [
+												[
+													"text 2"
+												],
+												{
+													"tag": "br"
+												}
+											],
+											"dom": null
+										}
+									],
+									"dom": null
+								}
+							]
+						}
+					},
+					"dom": null
+				};
+
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+			});
+
+			it('variation 7', () => {
+				const A = [];
+				A[0] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										"",
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[1] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										[
+											"text 1"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[2] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										[
+											"text 2"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				A[3] =  {
+					"tag": "table",
+					"children": [
+						{
+							"tag": "tr",
+							"key": "row1",
+							"children": [
+								{
+									"tag": "td",
+									"key": "td1-1",
+									"children": [
+										[
+											{
+												"tag": "br"
+											},
+											"text 3"
+										],
+										{
+											"tag": "br"
+										}
+									]
+								}
+							]
+						}
+					]
+				};
+
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+			});
 		});
 	});
-
 });
