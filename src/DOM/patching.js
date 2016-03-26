@@ -23,8 +23,8 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 }
 
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
-	if (staticCheck === true) {
-		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+	if (staticCheck !== null) {
+		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck);
 	} else {
 		if (isInvalidNode(lastNode)) {
 			mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
@@ -309,7 +309,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					if (isArray(lastChild)) {
 						patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 					} else {
-						patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance, false);
+						patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance, null);
 					}
 				}
 			}
@@ -346,7 +346,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
 		stop = true;
 		while (startItem.key === oldStartItem.key) {
-			patchNode(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
+			diffNodes(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -360,7 +360,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		endItem = nextChildren[endIndex];
 		oldEndItem = lastChildren[oldEndIndex];
 		while (endItem.key === oldEndItem.key) {
-			patchNode(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
+			diffNodes(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -373,7 +373,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		}
 		while (endItem.key === oldStartItem.key) {
 			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
-			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
+			diffNodes(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
 			insertOrAppend(dom, endItem.dom, nextNode);
 			endIndex--;
 			oldStartIndex++;
@@ -387,7 +387,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		}
 		while (startItem.key === oldEndItem.key) {
 			nextNode = lastChildren[oldStartIndex].dom;
-			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
+			diffNodes(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
 			insertOrAppend(dom, startItem.dom, nextNode);
 			startIndex++;
 			oldEndIndex--;
@@ -431,7 +431,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			} else {
 				oldItemsMap[key] = null;
-				patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
+				diffNodes(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 				if (item.dom.nextSibling !== nextNode) {
 					insertOrAppend(dom, item.dom, nextNode);

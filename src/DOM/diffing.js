@@ -36,7 +36,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else if (isStringOrNumber(lastChildren)) {
-					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, false);
+					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, null);
 				} else {
 					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
 				}
