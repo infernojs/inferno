@@ -426,6 +426,7 @@ function createVirtualFragment() {
 	var fragment = {
 		childNodes: childNodes,
 		appendChild: function appendChild(domNode) {
+			// TODO we need to check if the domNode already has a parentNode of VirtualFragment so we can remove it
 			childNodes.push(domNode);
 			if (parentNode) {
 				parentNode.insertBefore(domNode, dom);
@@ -463,7 +464,10 @@ function createVirtualFragment() {
 				parentNode.removeChild(childNodes[i]);
 			}
 			parentNode = null;
-		}
+		},
+
+		// here to emulate not being a TextNode
+		getElementsByTagName: null
 	};
 
 	Object.defineProperty(fragment, 'parentNode', {
@@ -822,9 +826,32 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 						patchKeyedChildren(_lastChild, _nextChild, domChildren[index], namespace, lifecycle, context, instance);
 					} else {
 						if (isArray(_lastChild)) {
-							patchNonKeyedChildren(_lastChild, _nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+							var domChild = domChildren[index];
+
+							if (!isNullOrUndefined(domChild.append)) {
+								patchNonKeyedChildren(_lastChild, _nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+							} else {
+								if (_nextChild.length > 1 && _lastChild.length === 1) {
+									var virtualFragment = createVirtualFragment();
+
+									virtualFragment.insert(dom, domChild);
+									virtualFragment.appendChild(domChild);
+									!isVirtualFragment && domChildren.splice(index, 1, virtualFragment);
+									patchNonKeyedChildren(_lastChild, _nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, 0);
+								} else {
+									patchNonKeyedChildren(_lastChild, _nextChild, dom, domChildren, namespace, lifecycle, context, instance, 0);
+								}
+							}
 						} else {
-							patchNonKeyedChildren([_lastChild], _nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
+							if (_nextChild.length > 1) {
+								var _virtualFragment = createVirtualFragment();
+								_virtualFragment.appendChild(dom.firstChild);
+								insertOrAppend(dom, _virtualFragment, dom.firstChild);
+								!isVirtualFragment && domChildren.splice(index, 1, _virtualFragment);
+								patchNonKeyedChildren([_lastChild], _nextChild, _virtualFragment, _virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
+							} else {
+								patchNonKeyedChildren([_lastChild], _nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
+							}
 						}
 					}
 				} else {

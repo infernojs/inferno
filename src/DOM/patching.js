@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove, createEmptyTextNode, detachNode } from './utils';
+import { insertOrAppend, remove, createEmptyTextNode, detachNode, createVirtualFragment } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
 // Checks if property is boolean type
@@ -300,9 +300,32 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						patchKeyedChildren(lastChild, nextChild, domChildren[index], namespace, lifecycle, context, instance);
 					} else {
 						if (isArray(lastChild)) {
-							patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+							const domChild = domChildren[index];
+
+							if (!isNullOrUndefined(domChild.append)) {
+								patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+							} else {
+								if (nextChild.length > 1 && lastChild.length === 1) {
+									const virtualFragment = createVirtualFragment();
+
+									virtualFragment.insert(dom, domChild);
+									virtualFragment.appendChild(domChild);
+									!isVirtualFragment && domChildren.splice(index, 1, virtualFragment);
+									patchNonKeyedChildren(lastChild, nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, 0);
+								} else {
+									patchNonKeyedChildren(lastChild, nextChild, dom, domChildren, namespace, lifecycle, context, instance, 0);
+								}
+							}
 						} else {
-							patchNonKeyedChildren([lastChild], nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
+							if (nextChild.length > 1) {
+								const virtualFragment = createVirtualFragment();
+								virtualFragment.appendChild(dom.firstChild);
+								insertOrAppend(dom, virtualFragment, dom.firstChild);
+								!isVirtualFragment && domChildren.splice(index, 1, virtualFragment);
+								patchNonKeyedChildren([lastChild], nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
+							} else {
+								patchNonKeyedChildren([lastChild], nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
+							}
 						}
 					}
 				} else {

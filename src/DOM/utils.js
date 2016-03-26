@@ -188,6 +188,7 @@ export function createVirtualFragment() {
 	const fragment = {
 		childNodes,
 		appendChild(domNode) {
+			// TODO we need to check if the domNode already has a parentNode of VirtualFragment so we can remove it
 			childNodes.push(domNode);
 			if (parentNode) {
 				parentNode.insertBefore(domNode, dom);
@@ -225,7 +226,9 @@ export function createVirtualFragment() {
 				parentNode.removeChild(childNodes[i]);
 			}
 			parentNode = null;
-		}
+		},
+		// here to emulate not being a TextNode
+		getElementsByTagName: null
 	};
 
 	Object.defineProperty(fragment, 'parentNode', {
