@@ -2,72 +2,6 @@
 	"use strict";
 	var elem = document.getElementById('app');
 
-	var queryTemplate = Inferno.createTemplate(function(elapsedClassName, formatElapsed, query) {
-		return {
-			tag: 'td',
-			attrs: { className: elapsedClassName },
-			children: [
-				{
-					tag: 'span',
-					className: 'foo',
-					text: formatElapsed
-				},
-				{
-					tag: 'div',
-					attrs: { className: 'popover left' },
-					children: [
-						{
-							tag: 'div',
-							attrs: { className: 'popover-content' },
-							text: query
-						},
-						{
-							tag: 'div',
-							attrs: { className: 'arrow' }
-						}
-					]
-				}
-			]
-		};
-	});
-	var databaseTemplate = Inferno.createTemplate(function(name, queriesCount, className, queries) {
-		return {
-			tag: 'tr',
-			children: [
-				{
-					tag: 'td',
-					className: 'dbname',
-					text: name
-				},
-				{
-					tag: 'td',
-					className: 'query-count',
-					children: {
-						tag: 'span',
-						attrs: { className: className },
-						text: queriesCount
-					}
-				},
-				queries
-			]
-		};
-	});
-	var appTemplate = Inferno.createTemplate(function(databases) {
-		return {
-			tag: 'div',
-			children: {
-				tag: 'table',
-				attrs: {
-					className: 'table table-striped latest-data'
-				},
-				children: {
-					tag: 'tbody',
-					children: databases
-				}
-			}
-		};
-	});
-
 	//allows support in < IE9
 	function map(func, array) {
 		var newArray = new Array(array.length);
@@ -77,20 +11,180 @@
 		return newArray;
 	}
 
+	var appTemplate1 = {
+		dom: Inferno.staticCompiler.createElement('table', { className: 'table table-striped latest-data' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'table',
+		className: 'table table-striped latest-data'
+	};
+
+	var appTemplate2 = {
+		dom: Inferno.staticCompiler.createElement('tbody'),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'tbody'
+	};
+
+	var dbTemplate1 = {
+		dom: Inferno.staticCompiler.createElement('tr'),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'tr'
+	};
+
+	var dbTemplate2 = {
+		dom: Inferno.staticCompiler.createElement('td', { className: 'dbname' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'td',
+		className: 'dbname'
+	};
+
+	var dbTemplate3 = {
+		dom: Inferno.staticCompiler.createElement('td', { className: 'query-count' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'td',
+		className: 'query-count'
+	};
+
+	var dbTemplate4 = {
+		dom: Inferno.staticCompiler.createElement('span'),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'span'
+	};
+
+	var queryTemplate1 = {
+		dom: Inferno.staticCompiler.createElement('td'),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'td'
+	};
+
+	var queryTemplate2 = {
+		dom: Inferno.staticCompiler.createElement('span', {className: 'foo'}),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'span',
+		className: 'foo'
+	};
+
+	var queryTemplate3 = {
+		dom: Inferno.staticCompiler.createElement('div', { className: 'popover left' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'div',
+		className: 'popover left'
+	};
+
+	var queryTemplate4 = {
+		dom: Inferno.staticCompiler.createElement('div', { className: 'popover-content' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'div',
+		className: 'popover-content'
+	};
+
+	var queryTemplate5 = {
+		dom: Inferno.staticCompiler.createElement('div', { className: 'arrow' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'div',
+		className: 'arrow'
+	};
+
 	function createQuery(query) {
-		return queryTemplate('Query ' + query.elapsedClassName, query.formatElapsed, query.query);
+		return {
+			tpl: queryTemplate1,
+			dom: null,
+			children: [
+				{
+					tpl: queryTemplate2,
+					dom: null,
+					children: query.formatElapsed
+				},
+				{
+					tpl: queryTemplate3,
+					dom: null,
+					children: [
+						{
+							tpl: queryTemplate4,
+							dom: null,
+							children: query.query
+						},
+						{
+							tpl: queryTemplate5,
+							dom: null
+						}
+					]
+				}
+			],
+			className: query.elapsedClassName
+		};
 	}
 
 	function createDatabase(db) {
-		return databaseTemplate(db.dbname, db.lastSample.nbQueries, db.lastSample.countClassName, map(createQuery, db.lastSample.topFiveQueries));
+		var lastSample = db.lastSample;
+
+		return {
+			tpl: dbTemplate1,
+			dom: null,
+			children: [
+				{
+					tpl: dbTemplate2,
+					dom: null,
+					children: db.dbname
+				},
+				{
+					tpl: dbTemplate3,
+					dom: null,
+					children: {
+						tpl: dbTemplate4,
+						dom: null,
+						children: lastSample.nbQueries,
+						className: lastSample.countClassName
+					}
+				}
+			].concat(map(createQuery, lastSample.topFiveQueries))
+		};
 	}
 
 	function render() {
 		var dbs = ENV.generateData().toArray();
-
-		InfernoDOM.render(appTemplate(map(createDatabase, dbs)), elem);
-
 		Monitoring.renderRate.ping();
+		InfernoDOM.render({
+			tpl: appTemplate1,
+			dom: null,
+			children: {
+				tpl: appTemplate2,
+				dom: null,
+				children: map(createDatabase, dbs)
+			}
+		}, elem);
 		setTimeout(render, ENV.timeout);
 	}
 	render();

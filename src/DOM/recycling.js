@@ -1,36 +1,44 @@
-const recyclingEnabled = true;
+import { diffNodes } from './diffing';
+import { isNullOrUndefined } from './../core/utils';
 
-export function pool(item) {
-	const key = item.key;
-	const tree = item.tree.dom;
+export const recyclingEnabled = true;
 
-	if (key === null) {
-		tree.pool.push(item);
-	} else {
-		const keyedPool = tree.keyedPool; // TODO rename
+export function recycle(node, lifecycle, context, instance) {
+	const tpl = node.tpl;
 
-		(keyedPool[key] || (keyedPool[key] = [])).push(item);
+	if (!isNullOrUndefined(tpl)) {
+		const key = node.key;
+		let recycledNode;
+
+		if (key !== null) {
+			const keyPool = tpl.pools.keyed[key];
+			recycledNode = keyPool && keyPool.pop();
+		} else {
+			const keyPool = tpl.pools.nonKeyed;
+			recycledNode = keyPool && keyPool.pop();
+		}
+		if (!isNullOrUndefined(recycledNode)) {
+			diffNodes(recycledNode, node, null, null, lifecycle, context, instance, true);
+			return node.dom;
+		}
 	}
 }
 
-export function recycle(tree, item, treeLifecycle, context) {
-	// TODO use depth as key
-	const key = item.key;
-	let recyclableItem;
+export function pool(node) {
+	const tpl = node.tpl;
 
-	// TODO faster to check pool size first?
-	if (key !== null) {
-		const keyPool = tree.keyedPool[key];
+	if (!isNullOrUndefined(tpl)) {
+		const key = node.key;
+		const pools = tpl.pools;
 
-		recyclableItem = keyPool && keyPool.pop();
-	} else {
-		recyclableItem = tree.pool.pop();
+		if (key === null) {
+			const pool = pools.nonKeyed;
+			pool && pool.push(node);
+		} else {
+			const pool = pools.keyed;
+			(pool[key] || (pool[key] = [])).push(node);
+		}
+		return true;
 	}
-	if (recyclableItem) {
-		tree.update(recyclableItem, item, treeLifecycle, context);
-		return item.rootNode;
-	}
-}
-export function isRecyclingEnabled() {
-	return recyclingEnabled;
+	return false;
 }

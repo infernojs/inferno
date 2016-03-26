@@ -188,54 +188,68 @@ var N = 200;
 
 // The Inferno implementation:
 (function(){
+	var tpl1 = {
+		dom: Inferno.staticCompiler.createElement('div'),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'div'
+	};
 
-	var boxTemplate = Inferno.createTemplate(function(count, text, style) {
-		return {
-			tag: 'div',
-			attrs: {
-				className: 'box-view'
-			},
-			children: {
-				tag: 'div',
-				attrs: {
-					className: 'box',
-					style: style
-				},
-				text: text
-			}
-		}
-	});
+	var tpl2 = {
+		dom: Inferno.staticCompiler.createElement('div', { className: 'box-view' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'div'
+	};
 
-	var boxesTemplate = Inferno.createTemplate(function(boxes) {
-		return {
-			tag: 'div',
-			children: boxes
-		}
-	});
+	var tpl3 = {
+		dom: Inferno.staticCompiler.createElement('div', { className: 'box' }),
+		pools: {
+			keyed: [],
+			nonKeyed: []
+		},
+		tag: 'div'
+	};
+
+	var container = document.getElementById('grid');
 
 	function createBoxes(count) {
 		var boxes = [];
 		for (var i = 0; i < N; i++) {
-			boxes.push(boxTemplate(count, count % 100, {
-				top: Math.sin(count / 10) * 10,
-				left: Math.cos(count / 10) * 10,
-				backgroundColor: 'rgb(0, 0,' + count % 255 + ')'
-			}));
+			var style = 'top:' + Math.sin(count / 10) * 10 + 'px;' +
+					'left:' + Math.cos(count / 10) * 10 + 'px;' +
+					'background-color:' + 'rgb(0, 0,' + count % 255 + ');'
+
+			boxes.push({
+				div: null,
+				tpl: tpl2,
+				children: {
+					div: null,
+					tpl: tpl3,
+					style: style,
+					children: count % 100
+				}
+			});
 		}
 		return boxes;
 	}
+
+	var infernoAnimate = function() {
+		InfernoDOM.render({
+			tpl: tpl1,
+			dom: null,
+			children: createBoxes(counter++)
+		}, container);
+	};
 
 	var counter;
 	var infernoInit = function() {
 		counter = -1;
 		infernoAnimate();
-	};
-
-	var infernoAnimate = function() {
-		InfernoDOM.render(
-			boxesTemplate(createBoxes(counter++)),
-			grid
-		);
 	};
 
 	window.runInferno = function() {

@@ -1,4 +1,4 @@
-import Component from '../../../src/component/Component';
+import Component from '../../../src/component';
 
 export default {
 	Component

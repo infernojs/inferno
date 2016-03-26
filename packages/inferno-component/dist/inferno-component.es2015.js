@@ -1,9 +1,14 @@
 /*!
- * inferno-component v0.5.21
+ * inferno-component v0.6.0
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
 var babelHelpers = {};
+babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+};
 
 babelHelpers.classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -45,99 +50,86 @@ babelHelpers.extends = Object.assign || function (target) {
 
 babelHelpers;
 
-var canUseDOM = !!(typeof window !== 'undefined' &&
-// Nwjs doesn't add document as a global in their node context, but does have it on window.document,
-// As a workaround, check if document is undefined
-typeof document !== 'undefined' && window.document.createElement);
+// TODO! Use object literal or at least prototype? --- class is prototype (jsperf needed for perf verification)
 
-var ExecutionEnvironment = {
-	canUseDOM: canUseDOM,
-	canUseWorkers: typeof Worker !== 'undefined',
-	canUseEventListeners: canUseDOM && !!window.addEventListener,
-	canUseViewport: canUseDOM && !!window.screen,
-	canUseSymbol: typeof Symbol === 'function' && typeof Symbol['for'] === 'function'
-};
+var Lifecycle = function () {
+	function Lifecycle() {
+		babelHelpers.classCallCheck(this, Lifecycle);
 
-var noop = (function () {})
+		this._listeners = [];
+	}
 
-// Server side workaround
-var requestAnimationFrame = noop;
-var cancelAnimationFrame = noop;
-
-if (ExecutionEnvironment.canUseDOM) {
-	(function () {
-
-		var lastTime = 0;
-
-		var nativeRequestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
-
-		var nativeCancelAnimationFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame;
-
-		requestAnimationFrame = nativeRequestAnimationFrame || function (callback) {
-			var currTime = Date.now();
-			var timeDelay = Math.max(0, 16 - (currTime - lastTime)); // 1000 / 60 = 16.666
-
-			lastTime = currTime + timeDelay;
-			return window.setTimeout(function () {
-				callback(Date.now());
-			}, timeDelay);
-		};
-
-		cancelAnimationFrame = nativeCancelAnimationFrame || function (frameId) {
-			window.clearTimeout(frameId);
-		};
-	})();
-}
-
-function applyState(component) {
-	var blockRender = component._blockRender;
-
-	requestAnimationFrame(function () {
-		if (component._deferSetState === false) {
-			var activeNode = undefined;
-
-			if (ExecutionEnvironment.canUseDOM) {
-				activeNode = document.activeElement;
-			}
-
-			component._pendingSetState = false;
-			var pendingState = component._pendingState;
-			var oldState = component.state;
-			var nextState = babelHelpers.extends({}, oldState, pendingState);
-
-			component._pendingState = {};
-			component._pendingSetState = false;
-			component._updateComponent(oldState, nextState, component.props, component.props, blockRender);
-
-			if (ExecutionEnvironment.canUseDOM && activeNode !== document.body && document.activeElement !== activeNode) {
-				activeNode.focus();
-			}
-		} else {
-			applyState(component);
+	babelHelpers.createClass(Lifecycle, [{
+		key: "addListener",
+		value: function addListener(callback) {
+			this._listeners.push(callback);
 		}
-	});
+	}, {
+		key: "trigger",
+		value: function trigger() {
+			for (var i = 0; i < this._listeners.length; i++) {
+				this._listeners[i]();
+			}
+		}
+	}]);
+	return Lifecycle;
+}();
+
+function isNullOrUndefined(obj) {
+	return obj === undefined || obj === null;
 }
 
-function queueStateChanges(component, newState) {
+// TODO: for node we need to check if document is valid
+function getActiveNode() {
+	return document.activeElement;
+}
+
+function resetActiveNode(activeNode) {
+	if (activeNode !== document.body && document.activeElement !== activeNode) {
+		activeNode.focus();
+	}
+}
+
+function queueStateChanges(component, newState, callback) {
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (component._pendingSetState === false) {
 		component._pendingSetState = true;
-		applyState(component);
+		applyState(component, false, callback);
 	}
 }
 
-/** Base Component class, for he ES6 Class method of creating Components
- *	@public
- *
- *	@example
- *	class MyFoo extends Component {
- *		render(props, state) {
- *			return <div />;
- *		}
- *	}
- */
+function applyState(component, force, callback) {
+	var blockRender = component._blockRender;
+
+	if (component._deferSetState === false || force) {
+		component._pendingSetState = false;
+		var pendingState = component._pendingState;
+		var oldState = component.state;
+		var nextState = babelHelpers.extends({}, oldState, pendingState);
+
+		component._pendingState = {};
+		var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+
+		if (!blockRender) {
+			(function () {
+				var lastNode = component._lastNode;
+				var parentDom = lastNode.dom.parentNode;
+
+				var activeNode = getActiveNode();
+				var subLifecycle = new Lifecycle();
+				component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
+				component._lastNode = nextNode;
+				subLifecycle.addListener(function () {
+					subLifecycle.trigger();
+					callback && callback();
+				});
+				resetActiveNode(activeNode);
+			})();
+		}
+	}
+}
 
 var Component = function () {
 	function Component(props) {
@@ -149,13 +141,17 @@ var Component = function () {
 		/** @type {object} */
 		this.state = {};
 
+		/** @type {object} */
+		this.refs = {};
 		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
 		this._pendingState = {};
-		this._lastRender = null;
+		this._lastNode = null;
+		this._unmounted = false;
 		this.context = {};
+		this._diffNodes = null;
 	}
 
 	babelHelpers.createClass(Component, [{
@@ -163,13 +159,14 @@ var Component = function () {
 		value: function render() {}
 	}, {
 		key: 'forceUpdate',
-		value: function forceUpdate() {}
+		value: function forceUpdate(callback) {
+			applyState(this, true, callback);
+		}
 	}, {
 		key: 'setState',
-		value: function setState(newState /* , callback */) {
-			// TODO the callback
+		value: function setState(newState, callback) {
 			if (this._blockSetState === false) {
-				queueStateChanges(this, newState);
+				queueStateChanges(this, newState, callback);
 			} else {
 				throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
 			}
@@ -202,11 +199,15 @@ var Component = function () {
 		value: function getChildContext() {}
 	}, {
 		key: '_updateComponent',
-		value: function _updateComponent(prevState, nextState, prevProps, nextProps) {
-			if (!nextProps.children) {
+		value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {
+			if (this._unmounted === true) {
+				this._unmounted = false;
+				return false;
+			}
+			if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
 				nextProps.children = prevProps.children;
 			}
-			if (prevProps !== nextProps || prevState !== nextState) {
+			if (prevProps !== nextProps || prevState !== nextState || force) {
 				if (prevProps !== nextProps) {
 					this._blockRender = true;
 					this.componentWillReceiveProps(nextProps);
@@ -214,16 +215,16 @@ var Component = function () {
 				}
 				var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-				if (shouldUpdate) {
+				if (shouldUpdate !== false) {
 					this._blockSetState = true;
 					this.componentWillUpdate(nextProps, nextState);
 					this._blockSetState = false;
 					this.props = nextProps;
 					this.state = nextState;
-					var newDomNode = this.forceUpdate();
+					var node = this.render();
 
 					this.componentDidUpdate(prevProps, prevState);
-					return newDomNode;
+					return node;
 				}
 			}
 		}

@@ -1,13 +1,8 @@
-import { updateKeyed } from '../domMutate';
-import createDOMTree from '../createTree';
 import { render } from '../rendering';
-import createTemplate from '../../core/createTemplate';
-import { addTreeConstructor } from '../../core/createTemplate';
 
-addTreeConstructor('dom', createDOMTree);
+var staticNode = null;
 
 describe('Text', () => {
-
 	let container;
 
 	beforeEach(() => {
@@ -85,47 +80,26 @@ describe('Text', () => {
 	}
 	];
 
-	emptyDefinitions.forEach((arg) => {
-
-		[{
-			description: 'should create a static root text node with ' + arg.name,
-			template: () => ({
-				text: arg.value
-			})
-		}].forEach((test) => {
-
-			it(test.description, () => {
-
-				render(createTemplate(test.template)(), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
-
-				render(createTemplate(test.template)(), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
-
-			});
-		});
-	});
 
 	emptyDefinitions.forEach((arg) => {
 
 		[{
 			description: 'should create a static text node with ' + arg.name,
 			template: () => ({
+				tpl: staticNode,
 				tag: 'div',
-				text: arg.value
+				children: arg.value
 			})
 		}].forEach((test) => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
@@ -139,69 +113,24 @@ describe('Text', () => {
 		[{
 			description: 'should create a static text node with null',
 			template: () => ({
+				tpl: staticNode,
 				tag: 'div',
-				text: null
+				children: null
 			})
 		}].forEach((test) => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
 
-				render(createTemplate(test.template)(), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
 			});
-		});
-	});
-
-	emptyDefinitions.forEach((arg) => {
-
-		[{
-			description: 'should create a dynamic text node on a root node with ' + arg.name,
-			template: (text) => ({
-				text: text
-			})
-		}].forEach((test) => {
-
-			it(test.description, () => {
-
-				render(createTemplate(test.template)(arg.value), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
-
-				render(createTemplate(test.template)(arg.value), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
-			});
-
-			it(test.description, () => {
-
-				expect(
-					() => render(createTemplate(test.template)(''), container)
-				).to.throw;
-
-				expect(
-					() => render(createTemplate(test.template)(null), container)
-				).to.throw;
-
-			});
-
-			it(test.description, () => {
-
-				expect(
-					() => render(createTemplate(test.template)(null), container)
-				).to.throw;
-
-				render(createTemplate(test.template)(arg.value), container);
-				expect(container.firstChild.nodeType).to.equal(3);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
-			});
-
 		});
 	});
 
@@ -210,19 +139,20 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - text property',
 			template: (text) => ({
+				tpl: staticNode,
 				tag: 'div',
-				text: text
+				children: text
 			})
 		}].forEach((test) => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
@@ -230,12 +160,12 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
@@ -248,23 +178,25 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - children node text',
 			template: (text) => ({
+				tpl: staticNode,
 				tag: 'div',
 				children: {
+					tpl: staticNode,
 					tag: 'span',
-					text: text
+					children: text
 				}
 			})
 		}].forEach((test) => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -278,6 +210,7 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - single child with text ',
 			template: (text) => ({
+				tpl: staticNode,
 				tag: 'div',
 				children: text
 			})
@@ -285,13 +218,13 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -306,23 +239,25 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - deep child with text property ',
 			template: (text) => ({
+				tpl: staticNode,
 				tag: 'div',
 				children: {
+					tpl: staticNode,
 					tag: 'span',
-					text: text
+					children: text
 				}
 			})
 		}].forEach((test) => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -336,12 +271,15 @@ describe('Text', () => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - deeper child with text property ',
 			template: (text) => ({
+				tpl: staticNode,
 				tag: 'div',
 				children: {
+					tpl: staticNode,
 					tag: 'span',
 					children: {
+						tpl: staticNode,
 						tag: 'b',
-						text: text
+						children: text
 					}
 				}
 			})
@@ -349,28 +287,13 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(arg.value), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(1);
-				expect(container.firstChild.textContent).to.equal(arg.expected);
-			});
-
-			it(test.description, () => {
-
-				render(createTemplate(test.template)(null), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.childNodes.length).to.equal(1);
-				expect(container.firstChild.childNodes.length).to.equal(1);
-				expect(container.firstChild.textContent).to.equal('');
-
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -379,13 +302,28 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal('');
+
+				render(test.template(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+			});
+
+			it(test.description, () => {
+
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -395,13 +333,13 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal('');
 
-				render(createTemplate(test.template)(null), container);
+				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
@@ -440,7 +378,7 @@ describe('Text', () => {
 		name: 'empty string',
 		value: '',
 		expected: '',
-		children: 0
+		children: 1
 	}, {
 		name: 'string with whitespace',
 		value: ' ',
@@ -494,6 +432,7 @@ describe('Text', () => {
 		[{
 			description: 'should create a children property with ' + arg.name,
 			template: (textVar) => ({
+				tpl: staticNode,
 				tag: 'div',
 				children: textVar
 			})
@@ -501,13 +440,13 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(arg.children);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
 
-				render(createTemplate(test.template)(arg.value), container);
+				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(arg.children);

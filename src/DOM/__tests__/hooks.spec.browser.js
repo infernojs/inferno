@@ -1,9 +1,6 @@
-import createTemplate from '../../core/createTemplate';
-import { addTreeConstructor } from '../../core/createTemplate';
 import { render } from '../../DOM/rendering';
-import createDOMTree from '../../DOM/createTree';
+import createElement from './../../core/createElement';
 
-addTreeConstructor('dom', createDOMTree);
 
 describe('lifecycle hooks', () => {
 	let container;
@@ -16,49 +13,49 @@ describe('lifecycle hooks', () => {
 		render(null, container);
 	});
 
-	describe('rootVoidNode', () => {
+	describe('node shape #1', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
 				tag: 'div',
-				attrs: {
-					onCreated,
-					onAttached,
-					onWillUpdate,
-					onDidUpdate,
-					onWillDetach
+				hooks: {
+					created,
+					attached,
+					willUpdate,
+					didUpdate,
+					willDetach
 				}
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null), container);
 			const expectedDomNode = container.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null), container);
 			const expectedDomNode = container.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode), container);
 			const expectedDomNode = container.firstChild;
@@ -67,52 +64,52 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('voidNode', () => {
+	describe('node shape #2', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
 				tag: 'div',
 				children: {
 					tag: 'div',
-					attrs: {
-						onCreated,
-						onAttached,
-						onWillUpdate,
-						onDidUpdate,
-						onWillDetach
+					hooks: {
+						created,
+						attached,
+						willUpdate,
+						didUpdate,
+						willDetach
 					}
 				}
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode), container);
 			const expectedDomNode = container.firstChild.firstChild;
@@ -121,50 +118,50 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('rootNodeWithDynamicText', () => {
+	describe('node shape #3', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, text) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach, children) => ({
 				tag: 'div',
-				attrs: {
-					onCreated,
-					onAttached,
-					onWillUpdate,
-					onDidUpdate,
-					onWillDetach
+				hooks: {
+					created,
+					attached,
+					willUpdate,
+					didUpdate,
+					willDetach
 				},
-				text: text
-			}));
+				children
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
@@ -173,53 +170,53 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('nodeWithDynamicText', () => {
+	describe('node shape #4', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, text) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach, text) => ({
 				tag: 'div',
 				children: {
 					tag: 'div',
-					attrs: {
-						onCreated,
-						onAttached,
-						onWillUpdate,
-						onDidUpdate,
-						onWillDetach
+					hooks: {
+						created,
+						attached,
+						willUpdate,
+						didUpdate,
+						willDetach
 					},
-					text: text
+					children: text
 				}
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
@@ -228,50 +225,50 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('rootNodeWithStaticChild', () => {
+	describe('node shape #5', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
 				tag: 'div',
-				attrs: {
-					onCreated,
-					onAttached,
-					onWillUpdate,
-					onDidUpdate,
-					onWillDetach
+				hooks: {
+					created,
+					attached,
+					willUpdate,
+					didUpdate,
+					willDetach
 				},
 				text: 'Hello world!'
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null), container);
 			const expectedDomNode = container.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null), container);
 			const expectedDomNode = container.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode), container);
 			const expectedDomNode = container.firstChild;
@@ -280,53 +277,53 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('nodeWithStaticChild', () => {
+	describe('node shape #6', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
 				tag: 'div',
 				children: {
-					attrs: {
-						onCreated,
-						onAttached,
-						onWillUpdate,
-						onDidUpdate,
-						onWillDetach
+					hooks: {
+						created,
+						attached,
+						willUpdate,
+						didUpdate,
+						willDetach
 					},
 					tag: 'div',
-					text: 'Hello world!'
+					children: 'Hello world!'
 				}
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode), container);
 			const expectedDomNode = container.firstChild.firstChild;
@@ -335,50 +332,50 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('rootNodeWithDynamicChild', () => {
+	describe('node shape #7', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
 				tag: 'div',
-				attrs: {
-					onCreated,
-					onAttached,
-					onWillUpdate,
-					onDidUpdate,
-					onWillDetach
+				hooks: {
+					created,
+					attached,
+					willUpdate,
+					didUpdate,
+					willDetach
 				},
 				children: child
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
@@ -387,53 +384,53 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('nodeWithDynamicChild', () => {
+	describe('node shape #8', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
 				tag: 'div',
 				children: {
 					tag: 'div',
-					attrs: {
-						onCreated,
-						onAttached,
-						onWillUpdate,
-						onDidUpdate,
-						onWillDetach
+					hooks: {
+						created,
+						attached,
+						willUpdate,
+						didUpdate,
+						willDetach
 					},
 					children: child
 				}
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
@@ -442,18 +439,18 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('rootNodeWithDynamicSubTreeForChildren', () => {
+	describe('node shape #9', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
 				tag: 'div',
-				attrs: {
-					onCreated,
-					onAttached,
-					onWillUpdate,
-					onDidUpdate,
-					onWillDetach
+				hooks: {
+					created,
+					attached,
+					willUpdate,
+					didUpdate,
+					willDetach
 				},
 				children: [
 					{
@@ -464,36 +461,36 @@ describe('lifecycle hooks', () => {
 						tag: 'div'
 					}
 				]
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild;
@@ -502,20 +499,20 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('nodeWithDynamicSubTreeForChildren', () => {
+	describe('node shape #10', () => {
 		let template;
 
 		beforeEach(() => {
-			template = createTemplate((onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => ({
+			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
 				tag: 'div',
 				children: {
 					tag: 'div',
-					attrs: {
-						onCreated,
-						onAttached,
-						onWillUpdate,
-						onDidUpdate,
-						onWillDetach
+					hooks: {
+						created,
+						attached,
+						willUpdate,
+						didUpdate,
+						willDetach
 					},
 					children: [
 						{
@@ -527,36 +524,36 @@ describe('lifecycle hooks', () => {
 						}
 					]
 				}
-			}));
+			});
 		});
 
-		it('"onCreated" hook should fire', () => {
+		it('"created" hook should fire', () => {
 			let createdDomNode;
 			render(template(domNode => createdDomNode = domNode, null, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(createdDomNode).to.equal(expectedDomNode);
 		});
-		it('"onAttached" hook should fire', () => {
+		it('"attached" hook should fire', () => {
 			let attachedDomNode;
 			render(template(null, domNode => attachedDomNode = domNode, null, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			expect(attachedDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillUpdate" hook should fire', () => {
+		it('"willUpdate" hook should fire', () => {
 			let willUpdateDomNode;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, domNode => willUpdateDomNode = domNode, null, null, 'Hello world!'), container);
 			expect(willUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onDidUpdate" hook should fire', () => {
+		it('"didUpdate" hook should fire', () => {
 			let didUpdateDomNode;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, null, domNode => didUpdateDomNode = domNode, null, 'Hello world!'), container);
 			expect(didUpdateDomNode).to.equal(expectedDomNode);
 		});
-		it('"onWillDetach" hook should fire', () => {
+		it('"willDetach" hook should fire', () => {
 			let detachedDomNode;
 			render(template(null, null, null, null, domNode => detachedDomNode = domNode, 'Hello world!'), container);
 			const expectedDomNode = container.firstChild.firstChild;
@@ -565,29 +562,29 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('rootNodeWithComponent - stateless component', () => {
+	describe('node shape #11 - stateless component', () => {
 		let template;
 
 		function StatelessComponent() {
-			const template = createTemplate(() => ({
+			const template = () => ({
 				tag: 'div',
 				text: 'Hello world!'
-			}));
+			});
 			return template();
 		}
 
 		beforeEach(() => {
-			template = createTemplate((onComponentWillMount, onComponentDidMount, onComponentWillUnmount, onComponentWillUpdate, onComponentDidUpdate, onComponentShouldUpdate, StatelessComponent) => ({
+			template = (componentWillMount, componentDidMount, componentWillUnmount, componentWillUpdate, componentDidUpdate, componentShouldUpdate, StatelessComponent) => ({
 				tag: StatelessComponent,
-				attrs: {
-					onComponentWillMount,
-					onComponentDidMount,
-					onComponentWillUnmount,
-					onComponentWillUpdate,
-					onComponentDidUpdate,
-					onComponentShouldUpdate
+				hooks: {
+					componentWillMount,
+					componentDidMount,
+					componentWillUnmount,
+					componentWillUpdate,
+					componentDidUpdate,
+					componentShouldUpdate
 				}
-			}));
+			});
 		});
 
 		it('"onComponentWillMount" hook should fire', () => {
@@ -631,32 +628,32 @@ describe('lifecycle hooks', () => {
 		});
 	});
 
-	describe('nodeWithComponent - stateless component', () => {
+	describe('node shape #12 - stateless component', () => {
 		let template;
 
 		function StatelessComponent() {
-			const template = createTemplate(() => ({
+			const template = () => ({
 				tag: 'div',
 				text: 'Hello world!'
-			}));
+			});
 			return template();
 		}
 
 		beforeEach(() => {
-			template = createTemplate((onComponentWillMount, onComponentDidMount, onComponentWillUnmount, onComponentWillUpdate, onComponentDidUpdate, onComponentShouldUpdate, StatelessComponent) => ({
+			template = (componentWillMount, componentDidMount, componentWillUnmount, componentWillUpdate, componentDidUpdate, componentShouldUpdate, StatelessComponent) => ({
 				tag: 'div',
 				children: {
 					tag: StatelessComponent,
-					attrs: {
-						onComponentWillMount,
-						onComponentDidMount,
-						onComponentWillUnmount,
-						onComponentWillUpdate,
-						onComponentDidUpdate,
-						onComponentShouldUpdate
+					hooks: {
+						componentWillMount,
+						componentDidMount,
+						componentWillUnmount,
+						componentWillUpdate,
+						componentDidUpdate,
+						componentShouldUpdate
 					}
 				}
-			}));
+			});
 		});
 
 		it('"onComponentWillMount" hook should fire', () => {
@@ -697,6 +694,108 @@ describe('lifecycle hooks', () => {
 			const expectedDomNode = container.firstChild.firstChild;
 			render(template(null, null, null, null, null, domNode => onComponentShouldUpdateDomNode = domNode, StatelessComponent), container);
 			expect(onComponentShouldUpdateDomNode).to.equal(expectedDomNode);
+		});
+	});
+
+	describe('github issue with willDetach', () => {
+
+		it('should raise willDetach', () => {
+
+			let didAttach = false,
+				didCreate = false,
+				didDetach = false;
+
+			function addElement() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h1',
+						attrs: {
+							class: 'something'
+						},
+						hooks: {
+							attached: function() {
+								didAttach = true;
+							},
+							created: function() {
+								didCreate = true;
+							},
+							willDetach: function() {
+								didDetach = true;
+							}
+						},
+						children: 'Hi there!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			function removeElement() {
+				render(
+					null,
+					container
+				);
+			}
+
+			addElement();
+			removeElement();
+
+			expect(didAttach).to.equal(true);
+			expect(didCreate).to.equal(true);
+			expect(didDetach).to.equal(true);
+
+
+		});
+
+		it('should raise willDetach', () => {
+
+			let didDetach = false;
+
+			function addElement() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h1',
+						attrs: {
+							class: 'something'
+						},
+						hooks: {
+							willDetach: function() {
+								didDetach = true;
+							}
+						},
+						children: 'Hi there!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			function addElementTwo() {
+				var el = createElement(function(v0, v1, v2) {
+					return {
+						tag: 'h2',
+						attrs: {
+							class: 'something'
+						},
+						children: 'Another!'
+					};
+				});
+
+				render(
+					el,
+					container
+				);
+			}
+
+			addElement();
+			addElementTwo();
+			expect(didDetach).to.equal(true);
 		});
 	});
 });

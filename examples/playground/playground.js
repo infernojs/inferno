@@ -1,60 +1,39 @@
-class FocusInput extends Inferno.Component {
-	constructor(props) {
-		super(props);
 
-		this.state = {
-			isEditMode: false
+
+(function() {
+	var t = Inferno.createElement;
+
+	var template = Inferno.createTemplate(function () {
+		return {
+			tag: "div",
+			attrs: {
+				style: {
+					width: "200px",
+					height: "200px",
+					backgroundColor: "red",
+
+					border: "5px solid black",
+					borderRadius: "5px"
+				}
+			}
 		};
+	});
 
-		this.blur = this.blur.bind(this);
-		this.focus = this.focus.bind(this);
-	}
+	InfernoDOM.render(t('div', null,
+		t('span', { className: 'foo'}, 'This is a span!')
+	), document.getElementById('app'));
 
-	blur() {
-		console.log(new Date(), ': BLUR');
-		this.setState({
-			isEditMode: false
-		});
-	}
+	InfernoDOM.render(t('header', null,
+		t('h1', { className: 'foo'}, 'This is a h1!')
+	), document.getElementById('app'));
 
-	focus() {
-		console.log(new Date(), ': FOCUS');
-		this.setState({
-			isEditMode: true
-		});
-	}
+	InfernoDOM.render(t('header', null,
+		t('span', { className: 'foo'}, 'This is a span again!')
+	), document.getElementById('app'));
 
-	render(props) {
-		return (
-			<div>
-				<div
-					contenteditable="true"
-					class={this.state.isEditMode + ''}
-					onBlur={this.blur}
-					onFocus={this.focus}>
-						{this.state.isEditMode + this.props.value}
-					</div>
-			</div>
-		);
-	}
-}
+	InfernoDOM.render(t('header', null,
+		1, 	t('span', { className: 'foo'}, 'This is a span again!'), 2, 3
+	), document.getElementById('app'));
 
-class Looper extends Inferno.Component {
-	constructor(props) {
-		super(props);
-	}
+})();
 
-	render() {
-		return (
-			<div class="loop">
-				{ [ 'Volvo', 'BMW', 'Mercedes' ].map((car) => {
-					return (
-						<FocusInput value={car} />
-					);
-				})}
-			</div>
-		);
-	}
-}
-
-InfernoDOM.render(<Looper />, document.getElementById('app'));
