@@ -46,6 +46,12 @@ function isAttrAnEvent(attr) {
 	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
 
+/*
+export function isAttrAComponentEvent(attr) {
+	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
+}
+*/
+
 function isAttrAHook(hook) {
 	return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate';
 }
