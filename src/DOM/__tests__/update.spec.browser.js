@@ -1599,4 +1599,109 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
 		});
 	});
+
+	describe('test case for github #142', () => {
+		const A = [];
+		A[0] =  {
+			"tag": "table",
+			"children": [
+				{
+					"tag": "tr",
+					"children": [
+						{
+							"tag": "td",
+							"children": [
+								"",
+								{
+									"tag": "br"
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+
+		A[1] =  {
+			"tag": "table",
+			"children": [
+				{
+					"tag": "tr",
+					"children": [
+						{
+							"tag": "td",
+							"children": [
+								[
+									"text 1",
+									"text a"
+								],
+								{
+									"tag": "br"
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+
+		A[2] =  {
+			"tag": "table",
+			"children": [
+				{
+					"tag": "tr",
+					"children": [
+						{
+							"tag": "td",
+							"children": [
+								[
+									"text 2"
+								],
+								{
+									"tag": "br"
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+
+		A[3] =  {
+			"tag": "table",
+			"children": [
+				{
+					"tag": "tr",
+					"children": [
+						{
+							"tag": "td",
+							"children": [
+								[
+									{
+										"tag": "br",
+									},
+									"text 3"
+								],
+								{
+									"tag": "br"
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+
+		it('should correct render initial and further updates', () => {
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+			render(A[1], container);
+			expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
+			render(A[2], container);
+			expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+			render(A[3], container);
+			expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+		});
+	});
+
 });
