@@ -12,7 +12,7 @@
   "devDependencies": {
     "babel-cli": "^6.4.5",
     "babel-core": "^6.4.5",
-    "babel-eslint": "^5.0.0-beta6",
+    "babel-eslint": "^6.0.0",
     "babel-loader": "^6.2.1",
     "babel-plugin-inferno": "^0.2.11",
     "babel-plugin-syntax-jsx": "^6.3.13",
