@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.6.0
+ * inferno-dom v0.6.2
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -484,6 +484,10 @@ function createVirtualFragment() {
 	return fragment;
 }
 
+function isKeyed(lastChildren, nextChildren) {
+	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+}
+
 function selectOptionValueIfNeeded(vdom, values) {
 	if (vdom.tag !== 'option') {
 		for (var i = 0, len = vdom.children.length; i < len; i++) {
@@ -686,7 +690,7 @@ function patchComponent(lastNode, Component, instance, lastProps, nextProps, nex
 		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, true, instance);
+			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
@@ -705,17 +709,13 @@ function patchComponent(lastNode, Component, instance, lastProps, nextProps, nex
 			var dom = lastNode.dom;
 			_nextNode.dom = dom;
 
-			diffNodes(instance, _nextNode, dom, null, lifecycle, context, true, null);
+			diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
 			lastNode.instance = _nextNode;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
 		}
 	}
-}
-
-function isKeyed(lastChildren, nextChildren) {
-	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 }
 
 function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance, domChildrenIndex) {
@@ -1017,7 +1017,11 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 					if (domChildren === null && lastChildren.length > 1) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 					} else {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+						if (isKeyed(lastChildren, nextChildren)) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+						} else {
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+						}
 					}
 				} else {
 					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], namespace, lifecycle, context, instance, 0);
@@ -1185,6 +1189,7 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
+			debugger;
 			nextNode.dom = lastNode.dom;
 		} else {
 			if (isFunction(lastTag)) {

@@ -160,7 +160,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, true, instance);
+			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
@@ -179,7 +179,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 			const dom = lastNode.dom;
 			nextNode.dom = dom;
 
-			diffNodes(instance, nextNode, dom, null, lifecycle, context, true, null);
+			diffNodes(instance, nextNode, dom, null, lifecycle, context, null, true);
 			lastNode.instance = nextNode;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);

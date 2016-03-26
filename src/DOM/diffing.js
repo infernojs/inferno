@@ -198,6 +198,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
+			debugger;
 			nextNode.dom = lastNode.dom;
 		} else {
 			if (isFunction(lastTag)) {

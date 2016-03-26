@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+	<title>Inferno Form example</title>
+</head>
+<body>
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+	}
+	.form {
+		min-width: 400px;
+		margin: 20px;
+		overflow: hidden;
+		border: 1px solid #999;
+		background: #eee;
+		padding: 20px;
+		font-family: Arial;
+	}
+	.form-group {
+		display: block;
+		overflow: hidden;
+		position: relative;
+	}
+	.form-group label {
+		display: block;
+		font-size: 16px;
+		color: #444;
+		margin-bottom: 5px;
+	}
+	.form-group input {
+		display: block;
+		margin-top: 5px;
+		font-size: 14px;
+		padding: 5px;
+	}
+</style>
+<script src="../../packages/inferno/dist/inferno.min.js"></script>
+<script src="../../packages/inferno/dist/inferno-dom.min.js"></script>
+<script>
+	var parentNode = document.getElementsByTagName('body')[0];
+	InfernoDOM.render({
+		tag: 'form',
+		className: 'form',
+		children: [
+			{
+				tag: 'div',
+				className: 'form-group',
+				children: [
+					{
+						tag: 'label',
+						children: 'Please enter your name:'
+					},
+					{
+						tag: 'input',
+						attrs: {
+							type: 'text',
+							placeholder: 'Joe Bloggs'
+						}
+					}
+				]
+			}
+		]
+	}, parentNode);
+</script>
+</body>
+</html>

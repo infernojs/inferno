@@ -59,10 +59,8 @@ export function mountChildren(node, children, parentDom, namespace, lifecycle, c
 	} else {
 		if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
-
 		} else if (isPromise(children)) {
 			appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
-
 		} else {
 			mountNode(children, parentDom, namespace, lifecycle, context, instance);
 		}
