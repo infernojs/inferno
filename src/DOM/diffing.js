@@ -189,16 +189,15 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 				} else {
 					if (isStatefulComponent(lastTag)) {
-						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
 					} else {
-						diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, true, instance);
+						diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, instance, true);
 					}
 				}
 			} else {
 				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
-			debugger;
 			nextNode.dom = lastNode.dom;
 		} else {
 			if (isFunction(lastTag)) {

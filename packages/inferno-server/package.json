@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "license": "MPL-2.0",
   "description": "Provides methods to render HTML strings from Inferno elements",
   "author": {
@@ -28,7 +28,7 @@
     "rollup"
   ],
   "dependencies": {
-    "inferno": "^0.6.3"
+    "inferno": "^0.6.4"
   },
   "main": "inferno-server.js",
   "repository": "https://github.com/trueadm/inferno"
