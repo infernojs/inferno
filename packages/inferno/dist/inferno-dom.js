@@ -490,6 +490,10 @@
 		return fragment;
 	}
 
+	function isKeyed(lastChildren, nextChildren) {
+		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+	}
+
 	function selectOptionValueIfNeeded(vdom, values) {
 		if (vdom.tag !== 'option') {
 			for (var i = 0, len = vdom.children.length; i < len; i++) {
@@ -718,10 +722,6 @@
 				}
 			}
 		}
-	}
-
-	function isKeyed(lastChildren, nextChildren) {
-		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 	}
 
 	function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance, domChildrenIndex) {
@@ -1023,7 +1023,11 @@
 						if (domChildren === null && lastChildren.length > 1) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 						} else {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+							if (isKeyed(lastChildren, nextChildren)) {
+								patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+							} else {
+								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+							}
 						}
 					} else {
 						patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], namespace, lifecycle, context, instance, 0);
