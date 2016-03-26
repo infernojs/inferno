@@ -1,9 +1,8 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString } from '../core/utils';
-import { replaceNode, SVGNamespace, MathNamespace } from './utils';
+import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode } from './patching';
 import { mountChildren, mountNode } from './mounting';
 import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, doesNotBubble } from './events';
-import { selectValue } from './utils';
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 	const nextChildren = nextNode.children;
@@ -25,7 +24,11 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 					if (domChildren === null && lastChildren.length > 1) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 					} else {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+						if (isKeyed(lastChildren, nextChildren)) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+						} else {
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+						}
 					}
 				} else {
 					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], namespace, lifecycle, context, instance, 0);
@@ -195,6 +198,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
+			debugger;
 			nextNode.dom = lastNode.dom;
 		} else {
 			if (isFunction(lastTag)) {

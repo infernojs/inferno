@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove, createEmptyTextNode, detachNode, createVirtualFragment } from './utils';
+import { insertOrAppend, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
 // Checks if property is boolean type
@@ -160,7 +160,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, true, instance);
+			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
@@ -179,18 +179,13 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 			const dom = lastNode.dom;
 			nextNode.dom = dom;
 
-			diffNodes(instance, nextNode, dom, null, lifecycle, context, true, null);
+			diffNodes(instance, nextNode, dom, null, lifecycle, context, null, true);
 			lastNode.instance = nextNode;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
 		}
 	}
-}
-
-function isKeyed(lastChildren, nextChildren) {
-	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
-		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 }
 
 export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance, domChildrenIndex) {
