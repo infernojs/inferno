@@ -237,6 +237,24 @@ time a framework offered more fun without compromising performance.
  
 Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 
+## Differences from React
+
+Inferno strives to be compatible with much of React's basic API. However, in some places, alternative implementations have been used or
+non-performant features have been removed or replaced where an alternative solution is easy to adopt without too many changes.
+
+### The stateful ES2015 Component is located in its own package
+ 
+React's ES2015 component is references as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
+into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless components with
+Inferno's `hooks` to give similar funcitonality as that provided by ES2015 components.
+
+### Automatic unit insertion on properties and properties
+
+Inferno makes no attempt to add the unit to numerical attributes or properties that React attempts to automatically add. For example: 
+`<div style={ { left: 10 } }/>` will result in `px` being added automatically to the style property in React. To ensure Inferno is kept lean and fast, the 
+code base does not contain these expensive checks and overheads have been removed. It's completely down to the user to specify the property. 
+So with Inferno, you should use the following to achieve the same result `<div style={ { left: '10px' } } />`.
+
 ## Contributing
 
 ### Testing

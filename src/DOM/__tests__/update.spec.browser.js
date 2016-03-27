@@ -1119,7 +1119,7 @@ describe('Update (non-jsx)', () => {
 
 		render(template({
 			color: 'red',
-			paddingLeft: 10
+			paddingLeft: '10px'
 		}), container);
 
 		expect(
@@ -1154,7 +1154,7 @@ describe('Update (non-jsx)', () => {
 		it('Initial render (creation)', () => {
 			render(template({
 				color: 'red',
-				paddingTop: 10
+				paddingTop: '10px'
 			}), container);
 
 			expect(
@@ -1164,7 +1164,7 @@ describe('Update (non-jsx)', () => {
 			);
 			render(template({
 				color: 'red',
-				paddingLeft: 10
+				paddingLeft: '10px'
 			}), container);
 
 			expect(
@@ -1188,7 +1188,7 @@ describe('Update (non-jsx)', () => {
 		it('Third render (update)', () => {
 			render(template({
 				color: 'blue',
-				marginBottom: 20
+				marginBottom: '20px'
 			}), container);
 
 			expect(

@@ -16,8 +16,8 @@ describe('CSS style properties', () => {
 	const preDefined = [{
 		name: 'set width and height',
 		value: {
-			width: 200,
-			height: 200
+			width: "200px",
+			height: "200px"
 		},
 		expected: 'width: 200px; height: 200px;'
 	}, {
@@ -75,7 +75,7 @@ describe('CSS style properties', () => {
 	}, {
 		name: 'correctly set fontSize css property',
 		value: {
-			fontSize: 123
+			fontSize: "123px"
 		},
 		expected: 'font-size: 123px;'
 	}, {
@@ -98,22 +98,6 @@ describe('CSS style properties', () => {
 			transform: 'rotate(245deg)'
 		},
 		expected: 'transform: rotate(245deg);'
-	}, {
-		name: 'automatically append `px` to relevant styles',
-		value: {
-			left: 0,
-			opacity: 0.5,
-			zIndex: 33,
-			height: 200
-		},
-		expected: 'left: 0px; opacity: 0.5; z-index: 33; height: 200px;'
-	}, {
-		name: 'support number values',
-		value: {
-			width: 7,
-			height: 3
-		},
-		expected: 'width: 7px; height: 3px;'
 	}, {
 		name: 'handle hypenhated markup correctly',
 		value: {
@@ -472,8 +456,8 @@ describe('CSS style properties', () => {
 		let template = () => ({
 			tag: 'div',
             style: {
-                width: 200,
-                height: 200,
+                width: '200px',
+                height: '200px',
                 background: 'red'
             }
 		});

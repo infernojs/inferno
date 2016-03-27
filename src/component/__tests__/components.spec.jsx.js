@@ -381,7 +381,7 @@ describe('Components (JSX)', () => {
 	it('should render a basic component with styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingLeft: 10 } } />
+			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingLeft: '10px' } } />
 		), container);
 
 		expect(
@@ -395,7 +395,7 @@ describe('Components (JSX)', () => {
 		), container);
 
 		render((
-			<BasicComponent3 title="styled (again)!" styles={ { color: 'blue', marginBottom: 20 } } />
+			<BasicComponent3 title="styled (again)!" styles={ { color: 'blue', marginBottom: '20px' } } />
 		), container);
 
 		expect(
@@ -408,7 +408,7 @@ describe('Components (JSX)', () => {
 	it('should render a basic component and remove styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingTop: 20 } } />
+			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingTop: '20px' } } />
 		), container);
 
 		expect(

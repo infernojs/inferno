@@ -45,39 +45,6 @@ export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, c
 	}
 }
 
-// TODO: we could just remove this functionality and put same value as users input. (move this responsibility out of library)
-export const canBeUnitlessProperties = {
-	animationIterationCount: true,
-	boxFlex: true,
-	boxFlexGroup: true,
-	columnCount: true,
-	counterIncrement: true,
-	fillOpacity: true,
-	flex: true,
-	flexGrow: true,
-	flexOrder: true,
-	flexPositive: true,
-	flexShrink: true,
-	float: true,
-	fontWeight: true,
-	gridColumn: true,
-	lineHeight: true,
-	lineClamp: true,
-	opacity: true,
-	order: true,
-	orphans: true,
-	stopOpacity: true,
-	strokeDashoffset: true,
-	strokeOpacity: true,
-	strokeWidth: true,
-	tabSize: true,
-	transform: true,
-	transformOrigin: true,
-	widows: true,
-	zIndex: true,
-	zoom: true
-};
-
 export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
@@ -89,9 +56,6 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 				const style = styleKeys[i];
 				let value = nextAttrValue[style];
 
-				if (isNumber(value) && !canBeUnitlessProperties[style]) {
-					value = value + 'px';
-				}
 				dom.style[style] = value;
 			}
 		}
@@ -104,12 +68,8 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 			const style = styleKeys[i];
 			let value = nextAttrValue[style];
 
-			if (isNumber(value) && !canBeUnitlessProperties[style]) {
-				value = value + 'px';
-			}
 			dom.style[style] = value;
 		}
-
 		// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
 		// TODO: needs performance benchmark
 		const lastStyleKeys = Object.keys(lastAttrValue);
@@ -134,6 +94,8 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 		} else {
 			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
 				dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
+				dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			} else {
 				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			}

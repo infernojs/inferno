@@ -4,7 +4,7 @@ import createElement from '../../core/createElement';
 import innerHTML from '../../../tools/innerHTML';
 import waits from '../../../tools/waits';
 
-describe('Components', () => {
+describe('Components (non-JSX)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -478,7 +478,7 @@ describe('Components', () => {
 			title: 'styled!',
 			styles: {
 				color: 'red',
-				paddingLeft: 10
+				paddingLeft: '10px'
 			}
 		}), container);
 
@@ -491,7 +491,7 @@ describe('Components', () => {
 			title: 'styled!',
 			styles: {
 				color: 'red',
-				paddingLeft: 10
+				paddingLeft: '10px'
 			}
 		}), container);
 
@@ -505,7 +505,7 @@ describe('Components', () => {
 			title: 'styled (again)!',
 			styles: {
 				color: 'blue',
-				paddingRight: 20
+				paddingRight: '20px'
 			}
 		}), container);
 		expect(
