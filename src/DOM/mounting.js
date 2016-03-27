@@ -183,8 +183,8 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	}
 	if (recyclingEnabled) {
 		dom = recycle(node, lifecycle, context, instance);
-		if (dom) {
-			if (parentDom) {
+		if (!isNullOrUndefined(dom)) {
+			if (parentDom !== null) {
 				parentDom.appendChild(dom);
 			}
 			return dom;

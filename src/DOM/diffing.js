@@ -31,7 +31,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 		}
 	} else {
 		if (isInvalidNode(nextChildren)) {
-			dom.textContent = ''; // TODO! Why this? Very slow. If the point is to remove the node? dom.removeChild(dom.firstchild);
+			dom.textContent = '';
 		} else {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
@@ -165,7 +165,7 @@ function diffEvents(lastNode, nextNode) {
 }
 
 export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
-	if (!isNullOrUndefined(nextNode.then)) {
+	if (nextNode.then !== undefined) {
 		nextNode.then(node => {
 			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
 		});
@@ -185,15 +185,12 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 			const lastNodeInstance = lastNode.instance;
 
 			if (isFunction(lastTag)) {
-				// This logic was missing
 				if (isFunction(nextTag)) {
 					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+				} else if (isStatefulComponent(lastTag)) {
+					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
 				} else {
-					if (isStatefulComponent(lastTag)) {
-						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
-					} else {
-						diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, instance, true);
-					}
+					diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, instance, true);
 				}
 			} else {
 				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);

@@ -966,23 +966,23 @@
 				remove(oldItem, dom);
 			}
 		} else {
-			var oldItemsMap = [];
+			var oldItemsMap = new Map();
 
 			for (var _i3 = oldStartIndex; _i3 <= oldEndIndex; _i3++) {
 				oldItem = lastChildren[_i3];
-				oldItemsMap[oldItem.key] = oldItem;
+				oldItemsMap.set(oldItem.key, oldItem);
 			}
 			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1] : null;
 
 			for (var _i4 = endIndex; _i4 >= startIndex; _i4--) {
 				var item = nextChildren[_i4];
 				var key = item.key;
-				oldItem = oldItemsMap[key];
+				oldItem = oldItemsMap.get(key);
 				nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
 				if (oldItem === undefined) {
 					insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 				} else {
-					oldItemsMap[key] = null;
+					oldItemsMap.delete(key);
 					diffNodes(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 					if (item.dom.nextSibling !== nextNode) {
@@ -993,7 +993,7 @@
 			}
 			for (var _i5 = oldStartIndex; _i5 <= oldEndIndex; _i5++) {
 				oldItem = lastChildren[_i5];
-				if (oldItemsMap[oldItem.key] !== null) {
+				if (oldItemsMap.has(oldItem.key)) {
 					remove(oldItem, dom);
 				}
 			}
@@ -1027,34 +1027,34 @@
 			}
 		} else {
 			if (isInvalidNode(nextChildren)) {
-				dom.textContent = ''; // TODO! Why this? Very slow. If the point is to remove the node? dom.removeChild(dom.firstchild);
+				dom.textContent = '';
 			} else {
-					if (isArray(lastChildren)) {
-						if (isArray(nextChildren)) {
-							if (domChildren === null && lastChildren.length > 1) {
+				if (isArray(lastChildren)) {
+					if (isArray(nextChildren)) {
+						if (domChildren === null && lastChildren.length > 1) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+						} else {
+							if (isKeyed(lastChildren, nextChildren)) {
 								patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 							} else {
-								if (isKeyed(lastChildren, nextChildren)) {
-									patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-								} else {
-									patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
-								}
+								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
 							}
-						} else {
-							patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], namespace, lifecycle, context, instance, 0);
 						}
 					} else {
-						if (isArray(nextChildren)) {
-							patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), namespace, lifecycle, context, instance, 0);
-						} else if (isStringOrNumber(nextChildren)) {
-							updateTextNode(dom, lastChildren, nextChildren);
-						} else if (isStringOrNumber(lastChildren)) {
-							patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, null);
-						} else {
-							patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
-						}
+						patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+					}
+				} else {
+					if (isArray(nextChildren)) {
+						patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), namespace, lifecycle, context, instance, 0);
+					} else if (isStringOrNumber(nextChildren)) {
+						updateTextNode(dom, lastChildren, nextChildren);
+					} else if (isStringOrNumber(lastChildren)) {
+						patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, null);
+					} else {
+						patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
 					}
 				}
+			}
 		}
 	}
 
@@ -1159,7 +1159,7 @@
 	}
 
 	function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
-		if (!isNullOrUndefined(nextNode.then)) {
+		if (nextNode.then !== undefined) {
 			nextNode.then(function (node) {
 				diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, staticCheck, instance);
 			});
@@ -1179,15 +1179,12 @@
 				var lastNodeInstance = lastNode.instance;
 
 				if (isFunction(lastTag)) {
-					// This logic was missing
 					if (isFunction(nextTag)) {
 						replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+					} else if (isStatefulComponent(lastTag)) {
+						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
 					} else {
-						if (isStatefulComponent(lastTag)) {
-							diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
-						} else {
-							diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, instance, true);
-						}
+						diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, instance, true);
 					}
 				} else {
 					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
@@ -1233,7 +1230,7 @@
 		}
 	}
 
-	var recyclingEnabled = false;
+	var recyclingEnabled = true;
 
 	function recycle(node, lifecycle, context, instance) {
 		var tpl = node.tpl;
@@ -1448,8 +1445,8 @@
 		}
 		if (recyclingEnabled) {
 			dom = recycle(node, lifecycle, context, instance);
-			if (dom) {
-				if (parentDom) {
+			if (!isNullOrUndefined(dom)) {
+				if (parentDom !== null) {
 					parentDom.appendChild(dom);
 				}
 				return dom;

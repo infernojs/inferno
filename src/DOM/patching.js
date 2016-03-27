@@ -429,23 +429,23 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			remove(oldItem, dom);
 		}
 	} else {
-		const oldItemsMap = [];
+		const oldItemsMap = new Map();
 
 		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = lastChildren[i];
-			oldItemsMap[oldItem.key] = oldItem;
+			oldItemsMap.set(oldItem.key, oldItem);
 		}
 		nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1] : null;
 
 		for (let i = endIndex; i >= startIndex; i--) {
 			const item = nextChildren[i];
 			const key = item.key;
-			oldItem = oldItemsMap[key];
+			oldItem = oldItemsMap.get(key);
 			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
 			if (oldItem === undefined) {
 				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			} else {
-				oldItemsMap[key] = null;
+				oldItemsMap.delete(key);
 				diffNodes(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 				if (item.dom.nextSibling !== nextNode) {
@@ -456,7 +456,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		}
 		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
 			oldItem = lastChildren[i];
-			if (oldItemsMap[oldItem.key] !== null) {
+			if (oldItemsMap.has(oldItem.key)) {
 				remove(oldItem, dom);
 			}
 		}

@@ -1,7 +1,7 @@
 import { diffNodes } from './diffing';
 import { isNullOrUndefined } from './../core/utils';
 
-export const recyclingEnabled = false;
+export const recyclingEnabled = true;
 
 export function recycle(node, lifecycle, context, instance) {
 	const tpl = node.tpl;
