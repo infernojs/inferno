@@ -71,7 +71,7 @@ export function mountChildren(node, children, parentDom, namespace, lifecycle, c
 }
 
 function mountRef(instance, value, dom) {
-	if (!isNullOrUndefined(instance) && isString(value)) {
+	if (!isInvalidNode(instance) && isString(value)) {
 		instance.refs[value] = dom;
 	}
 }
@@ -161,7 +161,7 @@ function placeholder(node, parentDom) {
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
 	}
-	if (!isNullOrUndefined(node)) {
+	if (!isInvalidNode(node)) {
 		node.dom = dom;
 	}
 	return dom;
