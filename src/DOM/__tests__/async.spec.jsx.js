@@ -1,18 +1,4 @@
-import createTemplate, { addTreeConstructor } from '../../core/createTemplate';
-import TemplateFactory from '../../core/TemplateFactory';
 import { render } from '../../DOM/rendering';
-import createTree from '../../DOM/createTree';
-import Component from '../../component/Component';
-import waits from '../../../tools/waits';
-import innerHTML from '../../../tools/innerHTML';
-import { requestAnimationFrame } from '../../util/requestAnimationFrame';
-
-const { createElement } = TemplateFactory;
-
-// set the constructor to 'dom'
-addTreeConstructor('dom', createTree);
-
-const Inferno = { createTemplate };
 
 describe('Async rendering (JSX)', () => {
 	let container;
@@ -102,7 +88,7 @@ describe('Async rendering (JSX)', () => {
 			requestAnimationFrame(() => {
 				expect(container.firstChild.tagName).to.equal('DIV');
 				expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
-				expect(container.firstChild.firstChild.firstChild.textContent).to.equal('Hello world!')
+				expect(container.firstChild.firstChild.firstChild.textContent).to.equal('Hello world!');
 				done();
 			});
 		});

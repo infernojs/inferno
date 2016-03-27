@@ -1,15 +1,4 @@
-import createDOMTree from '../createTree';
 import { render } from '../rendering';
-import createTemplate from '../../core/createTemplate';
-import { addTreeConstructor } from '../../core/createTemplate';
-import { shortCuts, cssToJSName } from '../../util/styleAccessor';
-
-addTreeConstructor('dom', createDOMTree);
-
-/**
- * DO NOT MODIFY! We are facking Inferno to get JSX working!
- */
-const Inferno = { createTemplate };
 
 describe('CSS style properties (JSX)', () => {
 
@@ -98,12 +87,14 @@ describe('CSS style properties (JSX)', () => {
 		render(<div style={ styles } />, container);
 
 		const stubStyle = container.firstChild.style;
-
+        expect(stubStyle.display).to.equal('none');
+        expect(stubStyle.color).to.equal('red');
 		render(<div />, container);
-		expect(stubStyle.display).to.equal('none');
-		expect(stubStyle.color).to.equal('red');
+        expect(stubStyle.display).to.equal('');
+        expect(stubStyle.color).to.equal('');
 	});
 
+    /*  TODO: What is this for? Cant we add styles as user puts them in. no shortcuts needed?
 	describe('Shorthand CSS Styles', () => {
 		Object.keys(shortCuts).forEach(shortCut => {
 			let stylePropName = cssToJSName(shortCut);
@@ -155,5 +146,5 @@ describe('CSS style properties (JSX)', () => {
 				});
 			}
 		});
-	});
+	}); */
 });

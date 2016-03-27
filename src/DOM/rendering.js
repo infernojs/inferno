@@ -1,48 +1,49 @@
-import createDOMFragment from '../DOM/createFragment';
-import isVoid from '../util/isVoid';
+import Lifecycle from '../core/lifecycle';
+import { mountNode } from './mounting';
+import { patchNode } from './patching';
+import { getActiveNode, resetActiveNode } from './utils';
 
-const rootFragments = [];
+const roots = [];
 
-export function getRootFragmentAtNode(node) {
-	const rootFragmentsLength = rootFragments.length;
+function getRoot(parentDom) {
+	for (let i = 0; i < roots.length; i++) {
+		const root = roots[i];
 
-	if (rootFragmentsLength === 0) {
-		return null;
-	}
-	for (let i = 0; i < rootFragmentsLength; i++) {
-		const rootFragment = rootFragments[i];
-
-		if (rootFragment.parentNode === node) {
-			return rootFragment;
+		if (root.dom === parentDom) {
+			return root;
 		}
 	}
 	return null;
 }
 
-export function removeRootFragment(rootFragment) {
-	for (let i = 0; i < rootFragments.length; i++) {
-		if (rootFragments[i] === rootFragment) {
-			rootFragments.splice(i, 1);
-			return true;
+function removeRoot(rootNode) {
+	for (let i = 0; i < roots.length; i++) {
+		const root = roots[i];
+
+		if (root === rootNode) {
+			roots.splice(i, 1);
+			return;
 		}
 	}
-	return false;
 }
 
-export function render(nextItem, parentNode) {
-	const rootFragment = getRootFragmentAtNode(parentNode);
+export function render(node, parentDom) {
+	const root = getRoot(parentDom);
+	const lifecycle = new Lifecycle();
 
-	if (isVoid(rootFragment)) {
-		const fragment = createDOMFragment(parentNode);
-
-		fragment.render(nextItem);
-		rootFragments.push(fragment);
+	if (root === null) {
+		mountNode(node, parentDom, null, lifecycle, {}, null);
+		lifecycle.trigger();
+		roots.push({ node: node, dom: parentDom });
 	} else {
-		if (isVoid(nextItem)) {
-			rootFragment.remove();
-			removeRootFragment(rootFragment);
-		} else {
-			rootFragment.render(nextItem);
+		const activeNode = getActiveNode();
+
+		patchNode(root.node, node, parentDom, null, lifecycle, {}, null, null);
+		lifecycle.trigger();
+		if (node === null) {
+			removeRoot(root);
 		}
+		root.node = node;
+		resetActiveNode(activeNode);
 	}
 }

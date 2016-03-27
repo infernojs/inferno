@@ -1,28 +1,9 @@
-import createTemplate, { addTreeConstructor } from '../../core/createTemplate';
-import TemplateFactory from '../../core/TemplateFactory';
 import { render } from '../../DOM/rendering';
-import createTree from '../../DOM/createTree';
-import Component from '../Component';
-import waits from '../../../tools/waits';
+import Component from '../../component/index';
 import innerHTML from '../../../tools/innerHTML';
-import { requestAnimationFrame } from '../../util/requestAnimationFrame';
-
-const { createElement } = TemplateFactory;
-
-// set the constructor to 'dom'
-addTreeConstructor('dom', createTree);
-
-/**
- * DO NOT MODIFY! We are facking Inferno to get JSX working!
- */
-const Inferno = { createTemplate };
 
 describe('Components (JSX)', () => {
 	let container;
-	let freeze = function (expectation) {
-		Object.freeze(expectation);
-		return expectation;
-	};
 	let Inner;
 	let attachedListener = null;
 	let renderedName = null;
@@ -63,7 +44,7 @@ describe('Components (JSX)', () => {
 		}
 	}
 
-	it('should render a basic component', () => {
+	it('should render a basic component jsx', () => {
 
 		render((
 			<div><BasicComponent1 title="abc" name="basic-render" /></div>
@@ -83,6 +64,20 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>')
+		);
+
+		const other = { foo: 'bar' };
+		const attrs = { title: 'abc', name: 'basic-render2', ...other };
+
+		// JSX Spread Attribute
+		render((
+			<div><BasicComponent1 { ...attrs } /></div>
+		), container);
+
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<div><div class="basic"><span class="basic-render2">The title is abc</span></div></div>')
 		);
 	});
 
@@ -323,6 +318,7 @@ describe('Components (JSX)', () => {
 		);
 	});
 
+    /* no more templates
 	it('should throw error when a component is included as a child without a template', () => {
 
 		expect(() => render((
@@ -342,7 +338,7 @@ describe('Components (JSX)', () => {
 				</BasicComponent2>
 			</div>
 		), container)).to.throw('Inferno Error: Children must be provided as templates.');
-	});
+	}); */
 
 	it('should render multiple components', () => {
 
@@ -439,7 +435,7 @@ describe('Components (JSX)', () => {
 			render() {
 				return (
 					<svg class="alert-icon">
-						<use xlinkHref="#error"></use>
+						<use xlink:href="#error"></use>
 					</svg>
 				);
 			}
@@ -530,13 +526,15 @@ describe('Components (JSX)', () => {
 
 	});
 
-	function test(element, expectedTag, expectedClassName) {
+	function test(element, expectedTag, expectedClassName, callback) {
 
-		let instance = render(element, container);
-		expect(container.firstChild).not.to.be.null;
-		expect(container.firstChild.tagName).to.equal(expectedTag);
-		expect(container.firstChild.className).to.equal(expectedClassName);
-		return instance;
+		render(element, container);
+        requestAnimationFrame(() => {
+            expect(container.firstChild).not.to.equal(null);
+            expect(container.firstChild.tagName).to.equal(expectedTag);
+            expect(container.firstChild.className).to.equal(expectedClassName);
+            callback();
+        });
 	}
 
 	it('should preserve the name of the class for use in error messages', function () {
@@ -544,7 +542,7 @@ describe('Components (JSX)', () => {
 		expect(Foo.name).to.equal('Foo');
 	});
 
-	it('should only render once when setting state in componentWillMount', function () {
+	it('should only render once when setting state in componentWillMount', function (done) {
 		let renderCount = 0;
 		class Foo extends Component {
 			constructor(props) {
@@ -559,26 +557,29 @@ describe('Components (JSX)', () => {
 				return <span className={ this.state.bar } />;
 			}
 		}
-		test(<Foo initialValue={ null } />, 'SPAN', '');
-		test(<Foo initialValue="foo" />, 'SPAN', 'foo');
+		test(<Foo initialValue={ null } />, 'SPAN', 'bar', () => {
+            test(<Foo initialValue="foo" />, 'SPAN', 'bar', () => {
+                expect(renderCount).to.equal(2);
+                done();
+            })
+        });
 		// setState causes a render, so we should expect 2
-		expect(renderCount).to.equal(2);
 	});
 
-	it('should render with null in the initial state property', function () {
+	it('should render with null in the initial state property', function (done) {
 		class Foo extends Component {
-			constructor() {
-				super();
+			constructor(props) {
+				super(props);
 				this.state = null;
 			}
 			render() {
 				return <span />;
 			}
 		}
-		test(<Foo />, 'SPAN', '');
+		test(<Foo />, 'SPAN', '', done);
 	});
 
-	it('should setState through an event handler', function () {
+	it('should setState through an event handler', function (done) {
 		class Foo extends Component {
 			constructor(props) {
 				super(props);
@@ -596,12 +597,15 @@ describe('Components (JSX)', () => {
 				);
 			}
 		}
-		test(<Foo initialValue="foo" />, 'DIV', 'foo');
-		attachedListener();
-		expect(renderedName).to.equal('foo');
+		test(<Foo initialValue="foo" />, 'DIV', 'foo', function() {
+            expect(renderedName).to.equal('foo');
+            attachedListener();
+            expect(renderedName).to.equal('bar');
+            done();
+        });
 	});
 
-	it('should render using forceUpdate even when there is no state', function () {
+	it('should render using forceUpdate even when there is no state', function (done) {
 		class Foo extends Component {
 			constructor(props) {
 				super(props);
@@ -620,9 +624,12 @@ describe('Components (JSX)', () => {
 				);
 			}
 		}
-		test(<Foo initialValue="foo" />, 'DIV', 'foo');
-		attachedListener();
-		expect(renderedName).to.equal('bar');
+		test(<Foo initialValue="foo" />, 'DIV', 'foo', function() {
+            attachedListener();
+            expect(renderedName).to.equal('bar');
+            done();
+        });
+
 	});
 
 	describe('should render a component with a list of children that dynamically update via setState', () => {
@@ -794,7 +801,7 @@ describe('Components (JSX)', () => {
 
 		it('Initial render (creation)', () => {
 
-			render({ null }, container);
+			render(null, container);
 
 			render(<Testing/>, container);
 
@@ -963,7 +970,6 @@ describe('Components (JSX)', () => {
 				super(props);
 			}
 			render() {
-				console.log('isok=' + this.props.isok);
 				return (
 					<div>
 						isok={ this.props.isok ? 'true' : 'false' }
@@ -1018,8 +1024,6 @@ describe('Components (JSX)', () => {
 				super(props);
 			}
 			render() {
-				console.log('isok=' + this.props.isok);
-
 				const z = function (v) {
 					if (v) {
 						return (
@@ -1108,9 +1112,9 @@ describe('Components (JSX)', () => {
 						<ul>
 							{(() => {
 								if (this.state.empty === true) {
-									return <li>No cars!</li>
+									return <li>No cars!</li>;
 								} else {
-									return ['BMW', 'Volvo', 'Saab'].map(function(car) {
+									return [ 'BMW', 'Volvo', 'Saab' ].map(function (car) {
 										return <li>{car}</li>;
 									});
 								}
@@ -1146,13 +1150,13 @@ describe('Components (JSX)', () => {
 		});
 	});
 
-	describe('should render a component with a list that insantly changes', () => {
+	describe('should render a component with a list that instantly changes', () => {
 		class ChangeChildrenCount extends Component {
 			constructor(props) {
 				super(props);
 
 				this.state = {
-					list: ['1', '2', '3', '4']
+					list: [ '1', '2', '3', '4' ]
 				};
 
 				// Bindings
@@ -1170,7 +1174,7 @@ describe('Components (JSX)', () => {
 					<div>
 						<button onClick={this.handleClick}>1</button>
 						{this.state.list.map(function (x, i) {
-							return <div>{i}</div>
+							return <div>{i}</div>;
 						})}
 					</div>
 				);
@@ -1202,4 +1206,381 @@ describe('Components (JSX)', () => {
 		});
 	});
 
+	describe('should render a conditional stateless component', () => {
+		const StatelessComponent = ({ value }) => (
+			<p>{value}</p>
+		);
+
+		class First extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					counter: 0
+				};
+
+				this.condition = true;
+				this._onClick = this._onClick.bind(this);
+			}
+
+			_onClick() {
+				this.setState({
+					counter: 1
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<button onClick={this._onClick}>Increase! {this.state.counter}</button>
+						{this.condition ? <StatelessComponent value={this.state.counter} /> : null}
+					</div>
+				);
+			}
+		}
+
+		it('should correctly render', () => {
+			render(<First />, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><button>Increase! 0</button><p>0</p></div>')
+			);
+		});
+
+		it('should handle update upon click', (done) => {
+			render(<First />, container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+
+			buttons.forEach(button => button.click());
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><button>Increase! 1</button><p>1</p></div>')
+				);
+				done();
+			});
+		});
+	});
+
+	describe('should render stateless component correctly when changing states', () => {
+		let firstDiv,
+			secondDiv;
+
+		beforeEach(function () {
+			firstDiv = document.createElement('div');
+			secondDiv = document.createElement('div');
+
+			container.appendChild(firstDiv);
+			container.appendChild(secondDiv);
+		});
+
+		const StatelessComponent = ({ value }) => (
+			<p>{value}</p>
+		);
+
+		class First extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					counter: 0
+				};
+
+				this.condition = true;
+				this._onClick = this._onClick.bind(this);
+			}
+
+			_onClick() {
+				this.setState({
+					counter: 1
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<button onClick={this._onClick}>{this.props.name} {this.state.counter}</button>
+						{this.condition ? <StatelessComponent value={this.state.counter} /> : null}
+					</div>
+				);
+			}
+		}
+
+		it('should correctly render', () => {
+			render(<First name="guy1" />, firstDiv);
+			render(<First name="guy2" />, secondDiv);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>')
+			);
+		});
+
+		it('should handle update when changing first component', (done) => {
+			render(<First name="guy1" />, firstDiv);
+			render(<First name="guy2" />, secondDiv);
+
+			const buttons = Array.prototype.slice.call(firstDiv.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><div><button>guy1 1</button><p>1</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>')
+				);
+				done();
+			});
+		});
+
+		it('should handle update when changing second component', (done) => {
+			render(<First name="guy1" />, firstDiv);
+			render(<First name="guy2" />, secondDiv);
+
+			const buttons = Array.prototype.slice.call(secondDiv.querySelectorAll('button'));
+			buttons.forEach(button => button.click());
+
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 1</button><p>1</p></div></div>')
+				);
+				done();
+			});
+		});
+	});
+
+	describe('updating child should not cause rendering parent to fail', () => {
+		it('should render parent correctly after child changes', () => {
+
+			let updateParent,
+				updateChild;
+
+			class Parent extends Component {
+				constructor(props) {
+					super(props);
+					this.state = {x: false};
+
+					updateParent = () => {
+						this.setState({x: true});
+					};
+				}
+
+				render() {
+					return (
+						<div>
+							<p>parent</p>
+							{!this.state.x? <ChildA /> :<ChildB />}
+						</div>
+					);
+				};
+			}
+
+			class ChildB extends Component {
+				constructor(props) {
+					super(props);
+				};
+				render() {
+					return (<div>Y</div>);
+				};
+			}
+
+			class ChildA extends Component {
+				constructor(props) {
+					super(props);
+					this.state = {z: false};
+
+					updateChild = () => {
+						this.setState({z: true});
+					}
+				};
+
+				render() {
+					if (!this.state.z)
+						return (<div>A</div>);
+
+					return (<SubChild />);
+				};
+			}
+
+			class SubChild extends Component {
+				constructor(props) {
+					super(props);
+				};
+
+				render() {
+					return (<div>B</div>);
+				};
+			}
+
+			render(<Parent />, container);
+			expect(container.innerHTML).to.equal('<div><p>parent</p><div>A</div></div>');
+			updateChild();
+			expect(container.innerHTML).to.equal('<div><p>parent</p><div>B</div></div>');
+			updateParent();
+			expect(container.innerHTML).to.equal('<div><p>parent</p><div>Y</div></div>');
+		});
+	});
+
+	describe('recursive component', () => {
+		it('Should be possible to pass props recursively', () => {
+
+			class List extends Component {
+				render() {
+					const children = this.props.data.
+					map((entity) => {
+						const { key, data, ...other } = entity;
+						const child = Array.isArray(data) ?
+							<List
+								data={data}
+								{...other}
+							/> :
+							<Text
+								data={data}
+								{...other}
+							/>;
+						return <li key={key}>{child}</li>;
+					});
+
+					return <ul>{children}</ul>;
+				}
+			}
+
+			class Text extends Component {
+				render() {
+					return <span>{this.props.data}</span>;
+				}
+			}
+
+			const data = [
+				// Data structure should provide stable keys.
+				{ key: '0', data: 'Foo' },
+				{
+					key: '1',
+					data: [
+						{ key: '1/1', data: 'a' },
+						{ key: '1/2', data: 'b' }
+					]
+				}
+			];
+
+			render(<List data={data} />, container);
+			expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
+		});
+
+		it('Should be possible to pass props recursively AT BEGINNING (JSX plugin change required)', () => {
+
+			class List extends Component {
+				render() {
+					const children = this.props.data.
+					map((entity) => {
+						const { key, data, ...other } = entity;
+						const child = Array.isArray(data) ?
+							<List
+								{...other}
+								data={data}
+							/> :
+							<Text
+								{...other}
+								data={data}
+							/>;
+						return <li key={key}>{child}</li>;
+					});
+
+					return <ul>{children}</ul>;
+				}
+			}
+
+			class Text extends Component {
+				render() {
+					return <span>{this.props.data}</span>;
+				}
+			}
+
+			const data = [
+				// Data structure should provide stable keys.
+				{ key: '0', data: 'Foo' },
+				{
+					key: '1',
+					data: [
+						{ key: '1/1', data: 'a' },
+						{ key: '1/2', data: 'b' }
+					]
+				}
+			];
+
+			render(<List data={data} />, container);
+			expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
+		});
+	});
+
+	it('Should render (github #117)', (done) => {
+		class MakeX extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {x: false};
+			};
+			componentWillMount() {
+				setTimeout(() => {
+					this.setState({x: true});
+				}, 10);
+			};
+			render() {
+				return (
+					<div>
+						{!this.state.x?<MakeA />:<MakeY />}
+					</div>
+				);
+			};
+		}
+
+		class MakeY extends Component {
+			constructor(props) {
+				super(props);
+			};
+			render() {
+				return (<div>Y</div>);
+			};
+		}
+
+		class MakeA extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {z: false};
+			};
+
+			componentWillMount() {
+				setTimeout(() => {
+					this.setState({z: true});
+				}, 20);
+			};
+
+			render() {
+				if (!this.state.z) {
+					return (<div>A</div>);
+				}
+				
+				return (<MakeB />);
+			};
+		}
+
+		class MakeB extends Component {
+			constructor(props) {
+				super(props);
+			}
+
+			render() {
+				return (<div>B</div>);
+			}
+		}
+
+		render(<MakeX />, container);
+		setTimeout(function() {
+			done();
+		}, 50);
+	});
 });
