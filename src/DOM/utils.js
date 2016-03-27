@@ -8,15 +8,15 @@ export const SVGNamespace = 'http://www.w3.org/2000/svg';
 
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
-		if (newNode.append) {
+		if (newNode.append !== undefined) {
 			newNode.append(parentDom);
 		} else {
 			parentDom.appendChild(newNode);
 		}
 	} else {
-		if (newNode.insert) {
+		if (newNode.insert !== undefined) {
 			newNode.insert(parentDom, nextNode);
-		} else if (nextNode.insert) {
+		} else if (nextNode.insert !== undefined) {
 			parentDom.insertBefore(newNode, nextNode.childNodes[0]);
 		} else {
 			parentDom.insertBefore(newNode, nextNode);
@@ -176,7 +176,7 @@ export function getActiveNode() {
 
 export function resetActiveNode(activeNode) {
 	if (activeNode !== document.body && document.activeElement !== activeNode) {
-		activeNode.focus();
+		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 	}
 }
 

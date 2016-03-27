@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.6.3
+ * inferno-component v0.6.4
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -92,7 +92,7 @@
 
 	function resetActiveNode(activeNode) {
 		if (activeNode !== document.body && document.activeElement !== activeNode) {
-			activeNode.focus();
+			activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 		}
 	}
 

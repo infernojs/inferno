@@ -1,25 +1,19 @@
 import { diffNodes } from './diffing';
 import { isNullOrUndefined } from './../core/utils';
 
-export const recyclingEnabled = true;
+export const recyclingEnabled = false;
 
 export function recycle(node, lifecycle, context, instance) {
 	const tpl = node.tpl;
-
 	if (!isNullOrUndefined(tpl)) {
 		const key = node.key;
-		let recycledNode;
-
-		if (key !== null) {
-			const keyPool = tpl.pools.keyed[key];
-			recycledNode = keyPool && keyPool.pop();
-		} else {
-			const keyPool = tpl.pools.nonKeyed;
-			recycledNode = keyPool && keyPool.pop();
-		}
-		if (!isNullOrUndefined(recycledNode)) {
-			diffNodes(recycledNode, node, null, null, lifecycle, context, instance, true);
-			return node.dom;
+		const pool = key === null ? tpl.pools.nonKeyed : tpl.pools.keyed[key];
+		if (!isNullOrUndefined(pool)) {
+			const recycledNode = pool.pop();
+			if (!isNullOrUndefined(recycledNode)) {
+				diffNodes(recycledNode, node, null, null, lifecycle, context, instance, true);
+				return node.dom;
+			}
 		}
 	}
 }
@@ -42,3 +36,4 @@ export function pool(node) {
 	}
 	return false;
 }
+

@@ -25,28 +25,27 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
 	if (staticCheck !== null) {
 		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck);
-	} else {
-		if (isInvalidNode(lastNode)) {
-			mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
-		} else if (isInvalidNode(nextNode)) {
-			remove(lastNode, parentDom);
-		} else if (isStringOrNumber(lastNode)) {
-			if (isStringOrNumber(nextNode)) {
-				parentDom.firstChild.nodeValue = nextNode;
-			} else {
-				const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
-				nextNode.dom = dom;
-				parentDom.replaceChild(dom, parentDom.firstChild);
-			}
-		} else if (isStringOrNumber(nextNode)) {
-			const textNode = document.createTextNode(nextNode);
-			parentDom.replaceChild(textNode, lastNode.dom);
+	} else if (isInvalidNode(lastNode)) {
+		mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
+	} else if (isInvalidNode(nextNode)) {
+		remove(lastNode, parentDom);
+	} else if (isStringOrNumber(lastNode)) {
+		if (isStringOrNumber(nextNode)) {
+			parentDom.firstChild.nodeValue = nextNode;
 		} else {
-			diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, lastNode.tpl !== null && nextNode.tpl !== null);
+			const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+			nextNode.dom = dom;
+			parentDom.replaceChild(dom, parentDom.firstChild);
 		}
+	} else if (isStringOrNumber(nextNode)) {
+		const textNode = document.createTextNode(nextNode);
+		parentDom.replaceChild(textNode, lastNode.dom);
+	} else {
+		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, lastNode.tpl !== null && nextNode.tpl !== null);
 	}
 }
 
+// TODO: we could just remove this functionality and put same value as users input. (move this responsibility out of library)
 export const canBeUnitlessProperties = {
 	animationIterationCount: true,
 	boxFlex: true,
@@ -110,6 +109,9 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 			}
 			dom.style[style] = value;
 		}
+
+		// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
+		// TODO: needs performance benchmark
 		const lastStyleKeys = Object.keys(lastAttrValue);
 
 		for (let i = 0; i < lastStyleKeys.length; i++) {
@@ -130,13 +132,8 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 			dom.removeAttribute(attrName);
 		} else {
-			let ns = null;
-
 			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-				ns = 'http://www.w3.org/1999/xlink';
-			}
-			if (ns !== null) {
-				dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
+				dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			} else {
 				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			}
@@ -279,13 +276,13 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							dom.nodeValue = textNode.nodeValue;
 						} else {
 							// Next is single string so remove all children
-							if (!isNullOrUndefined(child.append)) { // If previous child is virtual fragment remove all its content and replace with textNode
+							if (child.append === undefined) {
+								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+								dom.replaceChild(textNode, child);
+							} else { // If previous child is virtual fragment remove all its content and replace with textNode
 								dom.insertBefore(textNode, child.firstChild);
 								child.remove();
 								domChildren.splice(0, domChildren.length, textNode);
-							} else {
-								!isVirtualFragment && domChildren.splice(index, 1, textNode);
-								dom.replaceChild(textNode, child);
 							}
 						}
 						detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
@@ -297,9 +294,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						if (isArray(lastChild)) {
 							const domChild = domChildren[index];
 
-							if (!isNullOrUndefined(domChild.append)) {
-								patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
-							} else {
+							if (domChild.append === undefined) {
 								if (nextChild.length > 1 && lastChild.length === 1) {
 									const virtualFragment = createVirtualFragment();
 
@@ -310,6 +305,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 								} else {
 									patchNonKeyedChildren(lastChild, nextChild, dom, domChildren, namespace, lifecycle, context, instance, 0);
 								}
+							} else {
+								patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 							}
 						} else {
 							if (nextChild.length > 1) {

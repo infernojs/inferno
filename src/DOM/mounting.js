@@ -217,27 +217,22 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	const style = node.style;
 
 	node.dom = dom;
-// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(hooks)) {
-		// TODO! It works just fine without the 'isNullOrUndefined' check
 		if (!isNullOrUndefined(hooks.created)) {
 			hooks.created(dom);
 		}
-		// TODO! It works just fine without the 'isNullOrUndefined' check
 		if (!isNullOrUndefined(hooks.attached)) {
 			lifecycle.addListener(() => {
 				hooks.attached(dom);
 			});
 		}
 	}
-	// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(events)) {
 		mountEvents(events, node);
 	}
 	if (!isInvalidNode(children)) {
 		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 	}
-	// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(attrs)) {
 		mountAttributes(node, attrs, dom, instance);
 	}
@@ -246,7 +241,6 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
 	}
-	// TODO! It works just fine without the 'isNullOrUndefined' check
 	if (!isNullOrUndefined(style)) {
 		patchStyle(null, style, dom);
 	}

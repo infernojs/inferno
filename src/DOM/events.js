@@ -11,7 +11,7 @@ function scanNodeList(node, target, delegatedEvent, callbackEvent) {
 	}
 	const children = node.children;
 
-	if (children) {
+	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				const child = children[i];
@@ -24,7 +24,7 @@ function scanNodeList(node, target, delegatedEvent, callbackEvent) {
 					}
 				}
 			}
-		} else if (children.dom) {
+		} else if (!isNullOrUndefined(children.dom)) {
 			const result = scanNodeList(children, target, delegatedEvent, callbackEvent);
 
 			if (result) {

@@ -17,8 +17,22 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 	if (lastNode.domChildren) {
 		domChildren = nextNode.domChildren = lastNode.domChildren;
 	}
-	if (!isInvalidNode(lastChildren)) {
-		if (!isInvalidNode(nextChildren)) {
+	if (isInvalidNode(lastChildren)) {
+		if (isStringOrNumber(nextChildren)) {
+			updateTextNode(dom, lastChildren, nextChildren);
+		} else if (!isNullOrUndefined(nextChildren)) {
+			if (typeof nextChildren === 'object') {
+				if (isArray(nextChildren)) {
+					mountChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
+				} else {
+					mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+				}
+			}
+		}
+	} else {
+		if (isInvalidNode(nextChildren)) {
+			dom.textContent = ''; // TODO! Why this? Very slow. If the point is to remove the node? dom.removeChild(dom.firstchild);
+		} else {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
 					if (domChildren === null && lastChildren.length > 1) {
@@ -42,20 +56,6 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, null);
 				} else {
 					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
-				}
-			}
-		} else {
-			dom.textContent = ''; // TODO! Why this? Very slow. If the point is to remove the node? dom.removeChild(dom.firstchild);
-		}
-	} else {
-		if (isStringOrNumber(nextChildren)) {
-			updateTextNode(dom, lastChildren, nextChildren);
-		} else if (!isNullOrUndefined(nextChildren)) {
-			if (typeof nextChildren === 'object') {
-				if (isArray(nextChildren)) {
-					mountChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
-				} else {
-					mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
 				}
 			}
 		}
@@ -127,7 +127,18 @@ function diffEvents(lastNode, nextNode) {
 		const lastEventsKeys = Object.keys(lastEvents);
 		const nextEvents = nextNode.events;
 
-		if (!isNullOrUndefined(nextEvents)) {
+		if (isNullOrUndefined(nextEvents)) {
+			for (let i = 0; i < lastEventsKeys.length; i++) {
+				const event = lastEventsKeys[i];
+				const lastEvent = lastEvents[event];
+
+				if (doesNotBubble(event)) {
+					removeEventFromNode(event, lastNode, lastEvent);
+				} else {
+					removeEventFromRegistry(event, lastEvent);
+				}
+			}
+		} else {
 			for (let i = 0; i < lastEventsKeys.length; i++) {
 				const event = lastEventsKeys[i];
 				const nextEvent = nextEvents[event];
@@ -149,17 +160,6 @@ function diffEvents(lastNode, nextNode) {
 					}
 				}
 			}
-		} else {
-			for (let i = 0; i < lastEventsKeys.length; i++) {
-				const event = lastEventsKeys[i];
-				const lastEvent = lastEvents[event];
-
-				if (doesNotBubble(event)) {
-					removeEventFromNode(event, lastNode, lastEvent);
-				} else {
-					removeEventFromRegistry(event, lastEvent);
-				}
-			}
 		}
 	}
 }
@@ -171,8 +171,9 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		});
 	} else {
 		const nextHooks = nextNode.hooks;
+		const nextHooksDefined = !isNullOrUndefined(nextHooks);
 
-		if (nextHooks && nextHooks.willUpdate) {
+		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
 		const nextTag = nextNode.tag || ((staticCheck && nextNode.tpl) ? nextNode.tpl.tag : null);
@@ -209,7 +210,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				}
 			} else {
 				const dom = lastNode.dom;
-				const nextClassName = nextNode.className; // TODO: Add support into JSX plugin to transform (class from attr into className property) -- No, we 100% do not want to do this IMO
+				const nextClassName = nextNode.className;
 				const nextStyle = nextNode.style;
 
 				nextNode.dom = dom;
@@ -230,7 +231,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				if (lastNode.style !== nextStyle) {
 					patchStyle(lastNode.style, nextStyle, dom);
 				}
-				if (!isNullOrUndefined(nextHooks) && !isNullOrUndefined(nextHooks.didUpdate)) {
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}
 			}
