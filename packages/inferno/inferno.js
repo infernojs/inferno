@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./dist/inferno');
+module.exports = require('inferno/dist/inferno');

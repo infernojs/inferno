@@ -1,7 +1,7 @@
 {
   "name": "inferno-src",
   "license": "MPL-2.0",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -23,7 +23,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "chai": "^3.5.0",
-    "eslint": "^2.5.1",
+    "eslint": "^2.5.3",
     "glob": "^7.0.3",
     "isparta": "^4.0.0",
     "isparta-loader": "^2.0.0",
@@ -43,7 +43,7 @@
     "npm-check-updates": "^2.6.1",
     "pre-commit": "^1.1.2",
     "rimraf": "^2.5.2",
-    "rollup": "^0.25.6",
+    "rollup": "^0.25.7",
     "rollup-plugin-babel": "2.4.0",
     "rollup-plugin-node-resolve": "^1.5.0",
     "rollup-plugin-replace": "^1.1.0",

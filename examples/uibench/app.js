@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	uibench.init('Inferno', '0.6.0');
+	uibench.init('Inferno', '0.6.5');
 
 	var animBox1 = {
 		dom: Inferno.staticCompiler.createElement('div', { className : 'AnimBox' }),

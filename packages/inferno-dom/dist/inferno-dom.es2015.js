@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.6.4
+ * inferno-dom v0.6.5
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -121,10 +121,6 @@ function isAttrAnEvent(attr) {
 
 function isString(obj) {
 	return typeof obj === 'string';
-}
-
-function isNumber(obj) {
-	return typeof obj === 'number';
 }
 
 function isPromise(obj) {
@@ -575,39 +571,6 @@ function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 	}
 }
 
-// TODO: we could just remove this functionality and put same value as users input. (move this responsibility out of library)
-var canBeUnitlessProperties = {
-	animationIterationCount: true,
-	boxFlex: true,
-	boxFlexGroup: true,
-	columnCount: true,
-	counterIncrement: true,
-	fillOpacity: true,
-	flex: true,
-	flexGrow: true,
-	flexOrder: true,
-	flexPositive: true,
-	flexShrink: true,
-	float: true,
-	fontWeight: true,
-	gridColumn: true,
-	lineHeight: true,
-	lineClamp: true,
-	opacity: true,
-	order: true,
-	orphans: true,
-	stopOpacity: true,
-	strokeDashoffset: true,
-	strokeOpacity: true,
-	strokeWidth: true,
-	tabSize: true,
-	transform: true,
-	transformOrigin: true,
-	widows: true,
-	zIndex: true,
-	zoom: true
-};
-
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
@@ -619,9 +582,6 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
 				var style = styleKeys[i];
 				var value = nextAttrValue[style];
 
-				if (isNumber(value) && !canBeUnitlessProperties[style]) {
-					value = value + 'px';
-				}
 				dom.style[style] = value;
 			}
 		}
@@ -634,12 +594,8 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
 			var _style = _styleKeys[_i];
 			var _value = nextAttrValue[_style];
 
-			if (isNumber(_value) && !canBeUnitlessProperties[_style]) {
-				_value = _value + 'px';
-			}
 			dom.style[_style] = _value;
 		}
-
 		// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
 		// TODO: needs performance benchmark
 		var lastStyleKeys = Object.keys(lastAttrValue);
@@ -664,6 +620,8 @@ function patchAttribute(attrName, nextAttrValue, dom) {
 		} else {
 			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
 				dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
+				dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			} else {
 				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 			}
@@ -1325,7 +1283,7 @@ function mountChildren(node, children, parentDom, namespace, lifecycle, context,
 }
 
 function mountRef(instance, value, dom) {
-	if (!isNullOrUndefined(instance) && isString(value)) {
+	if (!isInvalidNode(instance) && isString(value)) {
 		instance.refs[value] = dom;
 	}
 }
@@ -1417,7 +1375,7 @@ function placeholder(node, parentDom) {
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
 	}
-	if (!isNullOrUndefined(node)) {
+	if (!isInvalidNode(node)) {
 		node.dom = dom;
 	}
 	return dom;
