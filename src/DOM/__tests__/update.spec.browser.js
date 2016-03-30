@@ -2633,4 +2633,40 @@ describe('Update (non-jsx)', () => {
 			});
 		});
 	});
+
+	describe('Github #162', () => {
+		it("works", function() {
+			var A = [];
+
+			A[0] =  {
+				"tag": "div",
+				"children": [
+					"text 1"
+				]
+			}
+			A[1] =  {
+				"tag": "div",
+				"children": [
+					"text 2",
+					{
+						"tag": "br"
+					},
+					"text 3"
+				]
+			}
+			A[2] =  {
+				"tag": "div",
+				"children": [
+					"text 4",
+				]
+			}
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1</div>');
+			render(A[1], container);
+			expect(container.innerHTML).to.equal('<div>text 2<br>text 3</div>');
+			render(A[2], container);
+			expect(container.innerHTML).to.equal('<div>text 4</div>');
+		});
+	});
 });
+
