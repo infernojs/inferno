@@ -27,7 +27,7 @@ module.exports = function (config) {
 		},
 		webpack: {
 			module: {
-				postLoaders: [{
+				preLoaders: [{
 					test: /\.js$/,
 					exclude: /(src\/dist|packages|.git|node_modules|__tests__)/,
 					loader: 'isparta',
@@ -60,13 +60,13 @@ module.exports = function (config) {
 		coverageReporter: {
 			reporters: [{
 				type: 'html',
-				dir: '../coverage'
+				dir: './coverage'
 			}, {
 				type: 'text',
-				dir: '../coverage'
+				dir: './coverage'
 			}, {
 				type: 'lcov',
-				dir: '../coverage'
+				dir: './coverage'
 			}]
 		},
 

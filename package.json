@@ -12,7 +12,7 @@
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-core": "^6.7.4",
-    "babel-eslint": "6.0.0",
+    "babel-eslint": "6.0.2",
     "babel-loader": "^6.2.4",
     "babel-plugin-inferno": "^0.6.0",
     "babel-plugin-syntax-jsx": "^6.5.0",
@@ -23,7 +23,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "chai": "^3.5.0",
-    "eslint": "^2.5.3",
+    "eslint": "^2.6.0",
     "glob": "^7.0.3",
     "isparta": "^4.0.0",
     "isparta-loader": "^2.0.0",
