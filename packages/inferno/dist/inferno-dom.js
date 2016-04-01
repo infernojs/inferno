@@ -696,7 +696,7 @@
 					}
 					lastChildrenLength--;
 				}
-			} else if (lastChildrenLength < nextChildrenLength) {
+			} else {
 				while (lastChildrenLength !== nextChildrenLength) {
 					var nextChild = nextChildren[lastChildrenLength];
 					var domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
@@ -706,7 +706,7 @@
 						if (lastChildrenLength === 1) {
 							domChildren.push(dom.firstChild);
 						}
-						domChildren.push(domNode);
+						!isVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
 					}
 					lastChildrenLength++;
 				}
@@ -995,7 +995,7 @@
 							if (isKeyed(lastChildren, nextChildren)) {
 								patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 							} else {
-								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), namespace, lifecycle, context, instance, 0);
 							}
 						}
 					} else {

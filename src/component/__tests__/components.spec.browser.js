@@ -268,7 +268,7 @@ describe('Components (non-JSX)', () => {
 			createElement('div', null,
 				createElement(Component, { title, name })
 			);
-
+		
 		render(template(null, 'abc', 'basic-render'), container);
 		render(template(BasicComponent1, 'abc', 'basic-render'), container);
 

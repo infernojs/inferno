@@ -2636,14 +2636,14 @@ describe('Update (non-jsx)', () => {
 
 	describe('Github #162', () => {
 		it("works", function() {
-			var A = [];
+			const A = [];
 
 			A[0] =  {
 				"tag": "div",
 				"children": [
 					"text 1"
 				]
-			}
+			};
 			A[1] =  {
 				"tag": "div",
 				"children": [
@@ -2653,19 +2653,56 @@ describe('Update (non-jsx)', () => {
 					},
 					"text 3"
 				]
-			}
+			};
 			A[2] =  {
 				"tag": "div",
 				"children": [
-					"text 4",
+					"text 4"
 				]
-			}
+			};
 			render(A[0], container);
 			expect(container.innerHTML).to.equal('<div>text 1</div>');
 			render(A[1], container);
 			expect(container.innerHTML).to.equal('<div>text 2<br>text 3</div>');
 			render(A[2], container);
 			expect(container.innerHTML).to.equal('<div>text 4</div>');
+		});
+	});
+
+	describe('Github #162', () => {
+		it("works", function() {
+			const A = [];
+			A[0] =  {
+				"tag": "div",
+				"children": [
+					"text 1",
+					{
+						"tag": "br"
+					}
+				]
+			};
+
+			A[1] =  {
+				"tag": "div",
+				"children": "text 2"
+			};
+
+			A[2] =  {
+				"tag": "div",
+				"children": [
+					{
+						"tag": "br"
+					},
+					"text 4"
+				]
+			};
+
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1<br></div>');
+			render(A[1], container);
+			expect(container.innerHTML).to.equal('<div>text 2</div>');
+			render(A[2], container);
+			expect(container.innerHTML).to.equal('<div><br>text 4</div>');
 		});
 	});
 });

@@ -164,7 +164,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				}
 				lastChildrenLength--;
 			}
-		} else if (lastChildrenLength < nextChildrenLength) {
+		} else {
 			while (lastChildrenLength !== nextChildrenLength) {
 				const nextChild = nextChildren[lastChildrenLength];
 				const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
@@ -174,7 +174,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					if (lastChildrenLength === 1) {
 						domChildren.push(dom.firstChild);
 					}
-					domChildren.push(domNode);
+					!isVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
 				}
 				lastChildrenLength++;
 			}
