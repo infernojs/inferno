@@ -148,7 +148,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 }
 
 export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, namespace, lifecycle, context, instance, domChildrenIndex) {
-	const isVirtualFragment = !isNullOrUndefined(dom.append);
+	const isNotVirtualFragment = dom.append === undefined;
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
 	const sameLength = lastChildrenLength === nextChildrenLength;
@@ -170,11 +170,11 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 
 				insertOrAppend(dom, domNode);
-				if (!isVirtualFragment) {
+				if (isNotVirtualFragment) {
 					if (lastChildrenLength === 1) {
 						domChildren.push(dom.firstChild);
 					}
-					!isVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
+					isNotVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
 				}
 				lastChildrenLength++;
 			}
@@ -198,10 +198,10 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 
 							if (isArray(lastChild) && lastChild.length === 0) {
 								insertOrAppend(dom, textNode);
-								!isVirtualFragment && domChildren.splice(index, 0, textNode);
+								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 							} else {
 								dom.replaceChild(textNode, domChildren[index]);
-								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+								isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 								detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
 							}
 						}
@@ -212,11 +212,11 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					if (isStringOrNumber(nextChild)) {
 						const textNode = document.createTextNode(nextChild);
 						dom.replaceChild(textNode, domChildren[index]);
-						!isVirtualFragment && domChildren.splice(index, 1, textNode);
+						isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 					} else if (sameLength === true) {
 						const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 						dom.replaceChild(domNode, domChildren[index]);
-						!isVirtualFragment && domChildren.splice(index, 1, domNode);
+						isNotVirtualFragment && domChildren.splice(index, 1, domNode);
 					}
 				} else if (isStringOrNumber(nextChild)) {
 					if (lastChildrenLength === 1) {
@@ -239,7 +239,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						} else {
 							// Next is single string so remove all children
 							if (child.append === undefined) {
-								!isVirtualFragment && domChildren.splice(index, 1, textNode);
+								isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 								dom.replaceChild(textNode, child);
 							} else { // If previous child is virtual fragment remove all its content and replace with textNode
 								dom.insertBefore(textNode, child.firstChild);
@@ -262,7 +262,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 
 									virtualFragment.insert(dom, domChild);
 									virtualFragment.appendChild(domChild);
-									!isVirtualFragment && domChildren.splice(index, 1, virtualFragment);
+									isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
 									patchNonKeyedChildren(lastChild, nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, 0);
 								} else {
 									patchNonKeyedChildren(lastChild, nextChild, dom, domChildren, namespace, lifecycle, context, instance, 0);
@@ -275,7 +275,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 								const virtualFragment = createVirtualFragment();
 								virtualFragment.appendChild(dom.firstChild);
 								insertOrAppend(dom, virtualFragment, dom.firstChild);
-								!isVirtualFragment && domChildren.splice(index, 1, virtualFragment);
+								isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
 								patchNonKeyedChildren([lastChild], nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
 							} else {
 								patchNonKeyedChildren([lastChild], nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
