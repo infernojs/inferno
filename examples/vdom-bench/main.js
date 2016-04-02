@@ -7,7 +7,7 @@
 	var VERSION = '0.6';
 
 	var t1 = {
-		dom: Inferno.staticCompiler.createElement('div'),
+		dom: Inferno.universal.createElement('div'),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -16,7 +16,7 @@
 	};
 
 	var t2 = {
-		dom: Inferno.staticCompiler.createElement('span'),
+		dom: Inferno.universal.createElement('span'),
 		pools: {
 			keyed: {},
 			nonKeyed: []

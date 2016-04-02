@@ -1,9 +1,9 @@
 import createElement from '../../../src/core/createElement';
-import { createStaticElement } from '../../../src/core/static';
+import { createUniversalElement } from '../../../src/core/universal';
 
 export default {
 	createElement,
-	staticCompiler: {
-		createElement: createStaticElement
+	universal: {
+		createElement: createUniversalElement
 	}
 };

@@ -4,7 +4,7 @@ import { createElement } from '../DOM/utils';
 // Runs only once in applications lifetime
 const isBrowser = typeof window !== 'undefined' && window.document;
 
-export function createStaticElement(tag, attrs) {
+export function createUniversalElement(tag, attrs) {
 	if (isBrowser) {
 		const dom = createElement(tag);
 		if (attrs) {
@@ -22,7 +22,6 @@ function createStaticAttributes(attrs, dom) {
 		const attr = attrKeys[i];
 		const value = attrs[attr];
 
-		// TODO! What about SVG?
 		if (attr === 'className') {
 			dom.className = value;
 		} else {
@@ -34,12 +33,3 @@ function createStaticAttributes(attrs, dom) {
 		}
 	}
 }
-
-/*
-function createStaticChildren(children, parentDom) {
-	if (isArray(children)) {
-	} else if (isStringOrNumber(children)) {
-		parentDom.textContent = children;
-	}
-}
-*/

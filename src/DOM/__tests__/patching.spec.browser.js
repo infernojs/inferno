@@ -1,5 +1,5 @@
 import { render } from '../rendering';
-import { createStaticElement } from '../../core/static';
+import { createUniversalElement } from '../../core/universal';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {
@@ -81,7 +81,7 @@ describe('patching keyed lists (non-jsx)', () => {
 	});
 
 	const t1 = {
-		dom: createStaticElement('div'),
+		dom: createUniversalElement('div'),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -90,7 +90,7 @@ describe('patching keyed lists (non-jsx)', () => {
 	};
 
 	const t2 = {
-		dom: createStaticElement('span'),
+		dom: createUniversalElement('span'),
 		pools: {
 			keyed: [],
 			nonKeyed: []

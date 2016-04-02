@@ -12,7 +12,7 @@
 	}
 
 	var appTemplate1 = {
-		dom: Inferno.staticCompiler.createElement('table', { className: 'table table-striped latest-data' }),
+		dom: Inferno.universal.createElement('table', { className: 'table table-striped latest-data' }),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -22,7 +22,7 @@
 	};
 
 	var appTemplate2 = {
-		dom: Inferno.staticCompiler.createElement('tbody'),
+		dom: Inferno.universal.createElement('tbody'),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -31,7 +31,7 @@
 	};
 
 	var dbTemplate1 = {
-		dom: Inferno.staticCompiler.createElement('tr'),
+		dom: Inferno.universal.createElement('tr'),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -40,7 +40,7 @@
 	};
 
 	var dbTemplate2 = {
-		dom: Inferno.staticCompiler.createElement('td', { className: 'dbname' }),
+		dom: Inferno.universal.createElement('td', { className: 'dbname' }),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -50,7 +50,7 @@
 	};
 
 	var dbTemplate3 = {
-		dom: Inferno.staticCompiler.createElement('td', { className: 'query-count' }),
+		dom: Inferno.universal.createElement('td', { className: 'query-count' }),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -60,7 +60,7 @@
 	};
 
 	var dbTemplate4 = {
-		dom: Inferno.staticCompiler.createElement('span'),
+		dom: Inferno.universal.createElement('span'),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -69,7 +69,7 @@
 	};
 
 	var queryTemplate1 = {
-		dom: Inferno.staticCompiler.createElement('td'),
+		dom: Inferno.universal.createElement('td'),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -78,7 +78,7 @@
 	};
 
 	var queryTemplate2 = {
-		dom: Inferno.staticCompiler.createElement('span', {className: 'foo'}),
+		dom: Inferno.universal.createElement('span', {className: 'foo'}),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -88,7 +88,7 @@
 	};
 
 	var queryTemplate3 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'popover left' }),
+		dom: Inferno.universal.createElement('div', { className: 'popover left' }),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -98,7 +98,7 @@
 	};
 
 	var queryTemplate4 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'popover-content' }),
+		dom: Inferno.universal.createElement('div', { className: 'popover-content' }),
 		pools: {
 			keyed: [],
 			nonKeyed: []
@@ -108,7 +108,7 @@
 	};
 
 	var queryTemplate5 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'arrow' }),
+		dom: Inferno.universal.createElement('div', { className: 'arrow' }),
 		pools: {
 			keyed: [],
 			nonKeyed: []

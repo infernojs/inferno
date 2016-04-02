@@ -4,7 +4,7 @@
 	uibench.init('Inferno', '0.6.5');
 
 	var animBox1 = {
-		dom: Inferno.staticCompiler.createElement('div', { className : 'AnimBox' }),
+		dom: Inferno.universal.createElement('div', { className : 'AnimBox' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -28,7 +28,7 @@
 	};
 
 	var anim1 = {
-		dom: Inferno.staticCompiler.createElement('div', { className : 'Anim' }),
+		dom: Inferno.universal.createElement('div', { className : 'Anim' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -71,7 +71,7 @@
 	};
 
 	var tableCell1 = {
-		dom: Inferno.staticCompiler.createElement('td', { className: 'TableCell' }),
+		dom: Inferno.universal.createElement('td', { className: 'TableCell' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -98,7 +98,7 @@
 	};
 
 	var tableRow1 = {
-		dom: Inferno.staticCompiler.createElement('tr'),
+		dom: Inferno.universal.createElement('tr'),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -128,7 +128,7 @@
 			attrs: { text: '#' + data.id },
 			hooks: {
 				componentShouldUpdate: updateTableCell
-			},
+			}
 		})];
 		for (var i = 0; i < cells.length; i++) {
 			children.push({
@@ -150,7 +150,7 @@
 	}
 
 	var table1 = {
-		dom: Inferno.staticCompiler.createElement('table', { className: 'Table' }),
+		dom: Inferno.universal.createElement('table', { className: 'Table' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -160,7 +160,7 @@
 	};
 
 	var table2 = {
-		dom: Inferno.staticCompiler.createElement('tbody'),
+		dom: Inferno.universal.createElement('tbody'),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -204,7 +204,7 @@
 	};
 
 	var treeLeaf1 = {
-		dom: Inferno.staticCompiler.createElement('li', { className: 'TreeLeaf' }),
+		dom: Inferno.universal.createElement('li', { className: 'TreeLeaf' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -224,7 +224,7 @@
 	};
 
 	var treeNode1 = {
-		dom: Inferno.staticCompiler.createElement('ul', { className: 'TreeNode' }),
+		dom: Inferno.universal.createElement('ul', { className: 'TreeNode' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -287,7 +287,7 @@
 	};
 
 	var tree1 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'Tree' }),
+		dom: Inferno.universal.createElement('div', { className: 'Tree' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -320,7 +320,7 @@
 	};
 
 	var main1 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'Main' }),
+		dom: Inferno.universal.createElement('div', { className: 'Main' }),
 		pools: {
 			keyed: {},
 			nonKeyed: []
@@ -404,7 +404,7 @@
 	};
 
 	var app2 = {
-		dom: Inferno.staticCompiler.createElement('pre'),
+		dom: Inferno.universal.createElement('pre'),
 		pools: {
 			keyed: {},
 			nonKeyed: []

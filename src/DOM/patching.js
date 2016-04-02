@@ -84,15 +84,22 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 }
 
 export function patchEvents(lastEvents, nextEvents, dom) {
-	for (let event in nextEvents) {
-		const nextEvent = nextEvents[event];
+	const nextEventKeys = Object.keys(nextEvents);
+
+	for (let i = 0; i < nextEventKeys.length; i++) {
+		const event = nextEventKeys[i];
 		const lastEvent = lastEvents[event];
+		const nextEvent = nextEvents[event];
+
 		if (lastEvent !== nextEvent) {
 			dom[event] = nextEvent;
 		}
 	}
+	const lastEventKeys = Object.keys(lastEvents);
 
-	for (let event in lastEvents) {
+	for (let i = 0; i < lastEventKeys.length; i++) {
+		const event = lastEventKeys[i];
+
 		if (isNullOrUndefined(nextEvents[event])) {
 			dom[event] = null;
 		}

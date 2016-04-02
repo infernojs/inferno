@@ -76,9 +76,13 @@ function mountRef(instance, value, dom) {
 	}
 }
 
-export function mountEvents(nextEvents, dom) {
-	for (let event in nextEvents) {
-		dom[event] = nextEvents[event];
+export function mountEvents(events, dom) {
+	const eventKeys = Object.keys(events);
+
+	for (let i = 0; i < eventKeys.length; i++) {
+		const event = eventKeys[i];
+
+		dom[event] = events[event];
 	}
 }
 
