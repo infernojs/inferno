@@ -1,10 +1,8 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend, createEmptyTextNode } from './utils';
+import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend, createEmptyTextNode, selectValue } from './utils';
 import { patchAttribute, patchStyle } from './patching';
-import { addEventToRegistry, addEventToNode, doesNotBubble } from './events';
 import { diffNodes } from './diffing';
-import { selectValue } from './utils';
 
 function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
 	const placeholder = createEmptyTextNode();
@@ -76,6 +74,12 @@ function mountRef(instance, value, dom) {
 	}
 }
 
+export function mountEvents(nextEvents, dom) {
+	for (let event in nextEvents) {
+		dom[event] = nextEvents[event];
+	}
+}
+
 function mountComponent(parentNode, Component, props, hooks, children, parentDom, lifecycle, context) {
 	props = addChildrenToProps(children, props);
 
@@ -139,20 +143,6 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 	}
 	parentNode.dom = dom;
 	return dom;
-}
-
-function mountEvents(events, node) {
-	const allEvents = Object.keys(events);
-
-	for (let i = 0; i < allEvents.length; i++) {
-		const event = allEvents[i];
-
-		if (doesNotBubble(event)) {
-			addEventToNode(event, node, events[event]);
-		} else if (isString(event)) {
-			addEventToRegistry(event, node, events[event]);
-		}
-	}
 }
 
 function placeholder(node, parentDom) {
@@ -227,9 +217,6 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 			});
 		}
 	}
-	if (!isNullOrUndefined(events)) {
-		mountEvents(events, node);
-	}
 	if (!isInvalidNode(children)) {
 		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 	}
@@ -243,6 +230,9 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	}
 	if (!isNullOrUndefined(style)) {
 		patchStyle(null, style, dom);
+	}
+	if (!isNullOrUndefined(events)) {
+		mountEvents(events, dom);
 	}
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);

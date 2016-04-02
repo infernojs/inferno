@@ -143,106 +143,6 @@
 	}
 	*/
 
-	// Exported only so its easier to verify registered events
-	var delegatedEventsRegistry = {};
-	// The issue with this, is that we can't stop the bubbling as we're traversing down the node tree, rather than up it
-	// needs a rethink here
-	function scanNodeList(node, target, delegatedEvent, callbackEvent) {
-		if (node.dom === target) {
-			delegatedEvent.callback(callbackEvent);
-			return true;
-		}
-		var children = node.children;
-
-		if (!isNullOrUndefined(children)) {
-			if (isArray(children)) {
-				for (var i = 0; i < children.length; i++) {
-					var child = children[i];
-
-					if ((typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
-						var result = scanNodeList(child, target, delegatedEvent, callbackEvent);
-
-						if (result) {
-							return true;
-						}
-					}
-				}
-			} else if (!isNullOrUndefined(children.dom)) {
-				var _result = scanNodeList(children, target, delegatedEvent, callbackEvent);
-
-				if (_result) {
-					return true;
-				}
-			}
-		}
-	}
-
-	var nonBubbleEvents = {
-		focus: true,
-		blur: true,
-		mouseenter: true,
-		mouseleave: true,
-		scroll: true,
-		load: true,
-		error: true
-	};
-
-	function doesNotBubble(event) {
-		return nonBubbleEvents[event] || false;
-	}
-
-	function createEventListener(callbackEvent) {
-		var delegatedEvents = delegatedEventsRegistry[callbackEvent.type];
-
-		for (var i = delegatedEvents.length - 1; i > -1; i--) {
-			var delegatedEvent = delegatedEvents[i];
-			var node = delegatedEvent.node;
-			var target = callbackEvent.target;
-
-			scanNodeList(node, target, delegatedEvent, callbackEvent);
-		}
-	}
-
-	function removeEventFromRegistry(event, callback) {
-		if (isNullOrUndefined(callback)) {
-			return;
-		}
-		var delegatedEvents = delegatedEventsRegistry[event];
-		if (!isNullOrUndefined(delegatedEvents)) {
-			for (var i = 0; i < delegatedEvents.length; i++) {
-				var delegatedEvent = delegatedEvents[i];
-				if (delegatedEvent.callback === callback) {
-					delegatedEvents.splice(i, 1);
-					return;
-				}
-			}
-		}
-	}
-
-	function addEventToNode(event, node, callback) {
-		node.dom.addEventListener(event, callback, false);
-	}
-
-	function removeEventFromNode(event, node, callback) {
-		node.dom.removeEventListener(event, callback);
-	}
-
-	function addEventToRegistry(event, node, callback) {
-		var delegatedEvents = delegatedEventsRegistry[event];
-		if (isNullOrUndefined(delegatedEvents)) {
-			document.addEventListener(event, createEventListener, false);
-			delegatedEventsRegistry[event] = [{
-				callback: callback,
-				node: node
-			}];
-		} else {
-			delegatedEvents.push({
-				callback: callback,
-				node: node
-			});
-		}
-	}
-
 	var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 	var SVGNamespace = 'http://www.w3.org/2000/svg';
 
@@ -304,22 +204,19 @@
 		if (lastInstance !== null) {
 			lastInstance._lastNode = nextNode;
 		}
-		detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
+		detachNode(lastNode);
 	}
 
-	function detachNode(node, recycling) {
+	function detachNode(node) {
 		if (isInvalidNode(node) || isStringOrNumber(node)) {
 			return;
 		}
 		var instance = node.instance;
-		var instanceDefined = !isNullOrUndefined(instance);
 
 		var instanceHooks = null;
-		var instanceEvents = null;
 		var instanceChildren = null;
-		if (instanceDefined) {
+		if (!isNullOrUndefined(instance)) {
 			instanceHooks = instance.hooks;
-			instanceEvents = instance.events;
 			instanceChildren = instance.children;
 
 			if (instance.render !== undefined) {
@@ -335,24 +232,6 @@
 			if (!isNullOrUndefined(hooks.componentWillUnmount)) {
 				hooks.componentWillUnmount(node.dom, hooks);
 			}
-			if (recycling === false) {
-				if (!isNullOrUndefined(instanceHooks)) {
-					instance.hooks = null;
-				} else {
-					node.hooks = null;
-				}
-			}
-		}
-		var events = node.events || instanceEvents;
-		// Remove all events to free memory
-		if (!isNullOrUndefined(events)) {
-			for (var event in events) {
-				if (doesNotBubble(event)) {
-					removeEventFromNode(event, node, events[event]);
-				} else {
-					removeEventFromRegistry(event, events[event]);
-				}
-			}
 		}
 		var children = node.children || instanceChildren;
 		if (!isNullOrUndefined(children)) {
@@ -362,22 +241,6 @@
 				}
 			} else {
 				detachNode(children);
-			}
-			if (recycling === false) {
-				node.children = null;
-
-				/*
-	   TODO: This might be overkill
-	   node.dom = null;
-	   if (instanceDefined) {
-	   	node.instance.dom = null;
-	   }
-	   */
-
-				var domChildren = node.domChildren;
-				if (!isNullOrUndefined(domChildren)) {
-					node.domChildren = null;
-				}
 			}
 		}
 	}
@@ -390,15 +253,18 @@
 		var dom = node.dom;
 		if (dom === parentDom) {
 			dom.innerHTML = '';
-			detachNode(node, recyclingEnabled && !isNullOrUndefined(node.tpl));
 		} else {
 			parentDom.removeChild(dom);
 			if (recyclingEnabled) {
 				pool(node);
-				detachNode(node, !isNullOrUndefined(node.tpl));
-			} else {
-				detachNode(node, false);
 			}
+		}
+		detachNode(node);
+	}
+
+	function removeEvents(lastEvents, dom) {
+		for (var event in lastEvents) {
+			dom[event] = null;
 		}
 	}
 
@@ -615,6 +481,22 @@
 		}
 	}
 
+	function patchEvents(lastEvents, nextEvents, dom) {
+		for (var event in nextEvents) {
+			var nextEvent = nextEvents[event];
+			var lastEvent = lastEvents[event];
+			if (lastEvent !== nextEvent) {
+				dom[event] = nextEvent;
+			}
+		}
+
+		for (var _event in lastEvents) {
+			if (isNullOrUndefined(nextEvents[_event])) {
+				dom[_event] = null;
+			}
+		}
+	}
+
 	function patchAttribute(attrName, nextAttrValue, dom) {
 		if (!isAttrAnEvent(attrName)) {
 			if (booleanProps(attrName)) {
@@ -734,7 +616,7 @@
 								} else {
 									dom.replaceChild(textNode, domChildren[index]);
 									isNotVirtualFragment && domChildren.splice(index, 1, textNode);
-									detachNode(_lastChild, recyclingEnabled && !isNullOrUndefined(_lastChild.tpl));
+									detachNode(_lastChild);
 								}
 							}
 						}
@@ -759,7 +641,7 @@
 									dom.nodeValue = _nextChild;
 								}
 							} else {
-								detachNode(_lastChild, recyclingEnabled && !isNullOrUndefined(_lastChild.tpl));
+								detachNode(_lastChild);
 								dom.textContent = _nextChild;
 							}
 						} else {
@@ -780,7 +662,7 @@
 									domChildren.splice(0, domChildren.length, _textNode2);
 								}
 							}
-							detachNode(_lastChild, recyclingEnabled && !isNullOrUndefined(_lastChild.tpl));
+							detachNode(_lastChild);
 						}
 					} else if (isArray(_nextChild)) {
 						if (isKeyed(_lastChild, _nextChild)) {
@@ -1027,6 +909,23 @@
 		}
 	}
 
+	function diffEvents(lastNode, nextNode, dom) {
+		var nextEvents = nextNode.events;
+		var lastEvents = lastNode.events;
+		var nextEventsDefined = !isNullOrUndefined(nextEvents);
+		var lastEventsDefined = !isNullOrUndefined(lastEvents);
+
+		if (nextEventsDefined) {
+			if (lastEventsDefined) {
+				patchEvents(lastEvents, nextEvents, dom);
+			} else {
+				mountEvents(nextEvents, dom);
+			}
+		} else if (lastEventsDefined) {
+			removeEvents(lastEvents, dom);
+		}
+	}
+
 	function diffAttributes(lastNode, nextNode, dom, instance) {
 		if (lastNode.tag === 'select') {
 			selectValue(nextNode);
@@ -1072,50 +971,6 @@
 		}
 	}
 
-	function diffEvents(lastNode, nextNode) {
-		var lastEvents = lastNode.events;
-
-		if (!isNullOrUndefined(lastEvents)) {
-			var lastEventsKeys = Object.keys(lastEvents);
-			var nextEvents = nextNode.events;
-
-			if (isNullOrUndefined(nextEvents)) {
-				for (var i = 0; i < lastEventsKeys.length; i++) {
-					var event = lastEventsKeys[i];
-					var lastEvent = lastEvents[event];
-
-					if (doesNotBubble(event)) {
-						removeEventFromNode(event, lastNode, lastEvent);
-					} else {
-						removeEventFromRegistry(event, lastEvent);
-					}
-				}
-			} else {
-				for (var _i2 = 0; _i2 < lastEventsKeys.length; _i2++) {
-					var _event = lastEventsKeys[_i2];
-					var nextEvent = nextEvents[_event];
-					var _lastEvent = lastEvents[_event];
-
-					if (isNullOrUndefined(nextEvent)) {
-						if (doesNotBubble(_event)) {
-							removeEventFromNode(_event, lastNode, _lastEvent);
-						} else {
-							removeEventFromRegistry(_event, _lastEvent);
-						}
-					} else if (nextEvent !== _lastEvent) {
-						if (doesNotBubble(_event)) {
-							removeEventFromNode(_event, lastNode, _lastEvent);
-							addEventToNode(_event, nextNode, nextEvent);
-						} else {
-							removeEventFromRegistry(_event, _lastEvent); // remove old
-							addEventToRegistry(_event, nextNode, nextEvent); // add new
-						}
-					}
-				}
-			}
-		}
-	}
-
 	function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
 		if (nextNode.then !== undefined) {
 			nextNode.then(function (node) {
@@ -1128,8 +983,8 @@
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 				nextHooks.willUpdate(lastNode.dom);
 			}
-			var nextTag = nextNode.tag || (staticCheck && nextNode.tpl ? nextNode.tpl.tag : null);
-			var lastTag = lastNode.tag || (staticCheck && lastNode.tpl ? lastNode.tpl.tag : null);
+			var nextTag = nextNode.tag || (staticCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
+			var lastTag = lastNode.tag || (staticCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
 
 			namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 
@@ -1167,7 +1022,7 @@
 					if (lastNode !== nextNode) {
 						diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck);
 						diffAttributes(lastNode, nextNode, dom, instance);
-						diffEvents(lastNode, nextNode);
+						diffEvents(lastNode, nextNode, dom);
 					}
 
 					if (lastNode.className !== nextClassName) {
@@ -1294,6 +1149,12 @@
 		}
 	}
 
+	function mountEvents(nextEvents, dom) {
+		for (var event in nextEvents) {
+			dom[event] = nextEvents[event];
+		}
+	}
+
 	function mountComponent(parentNode, Component, props, hooks, children, parentDom, lifecycle, context) {
 		props = addChildrenToProps(children, props);
 
@@ -1359,20 +1220,6 @@
 		}
 		parentNode.dom = dom;
 		return dom;
-	}
-
-	function mountEvents(events, node) {
-		var allEvents = Object.keys(events);
-
-		for (var i = 0; i < allEvents.length; i++) {
-			var event = allEvents[i];
-
-			if (doesNotBubble(event)) {
-				addEventToNode(event, node, events[event]);
-			} else if (isString(event)) {
-				addEventToRegistry(event, node, events[event]);
-			}
-		}
 	}
 
 	function placeholder(node, parentDom) {
@@ -1447,9 +1294,6 @@
 				});
 			}
 		}
-		if (!isNullOrUndefined(events)) {
-			mountEvents(events, node);
-		}
 		if (!isInvalidNode(children)) {
 			mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 		}
@@ -1463,6 +1307,9 @@
 		}
 		if (!isNullOrUndefined(style)) {
 			patchStyle(null, style, dom);
+		}
+		if (!isNullOrUndefined(events)) {
+			mountEvents(events, dom);
 		}
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);

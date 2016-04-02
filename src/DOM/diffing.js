@@ -1,8 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString } from '../core/utils';
-import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode } from './patching';
-import { mountChildren, mountNode } from './mounting';
-import { removeEventFromRegistry, addEventToRegistry, addEventToNode, removeEventFromNode, doesNotBubble } from './events';
+import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeEvents } from './utils';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
+import { mountChildren, mountNode, mountEvents } from './mounting';
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 	const nextChildren = nextNode.children;
@@ -74,6 +73,23 @@ function diffRef(instance, lastValue, nextValue, dom) {
 	}
 }
 
+export function diffEvents(lastNode, nextNode, dom) {
+	const nextEvents = nextNode.events;
+	const lastEvents = lastNode.events;
+	const nextEventsDefined = !isNullOrUndefined(nextEvents);
+	const lastEventsDefined = !isNullOrUndefined(lastEvents);
+
+	if (nextEventsDefined) {
+		if (lastEventsDefined) {
+			patchEvents(lastEvents, nextEvents, dom);
+		} else {
+			mountEvents(nextEvents, dom);
+		}
+	} else if (lastEventsDefined) {
+		removeEvents(lastEvents, dom);
+	}
+}
+
 function diffAttributes(lastNode, nextNode, dom, instance) {
 	if (lastNode.tag === 'select') {
 		selectValue(nextNode);
@@ -120,50 +136,6 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 	}
 }
 
-function diffEvents(lastNode, nextNode) {
-	const lastEvents = lastNode.events;
-
-	if (!isNullOrUndefined(lastEvents)) {
-		const lastEventsKeys = Object.keys(lastEvents);
-		const nextEvents = nextNode.events;
-
-		if (isNullOrUndefined(nextEvents)) {
-			for (let i = 0; i < lastEventsKeys.length; i++) {
-				const event = lastEventsKeys[i];
-				const lastEvent = lastEvents[event];
-
-				if (doesNotBubble(event)) {
-					removeEventFromNode(event, lastNode, lastEvent);
-				} else {
-					removeEventFromRegistry(event, lastEvent);
-				}
-			}
-		} else {
-			for (let i = 0; i < lastEventsKeys.length; i++) {
-				const event = lastEventsKeys[i];
-				const nextEvent = nextEvents[event];
-				const lastEvent = lastEvents[event];
-
-				if (isNullOrUndefined(nextEvent)) {
-					if (doesNotBubble(event)) {
-						removeEventFromNode(event, lastNode, lastEvent);
-					} else {
-						removeEventFromRegistry(event, lastEvent);
-					}
-				} else if (nextEvent !== lastEvent) {
-					if (doesNotBubble(event)) {
-						removeEventFromNode(event, lastNode, lastEvent);
-						addEventToNode(event, nextNode, nextEvent);
-					} else {
-						removeEventFromRegistry(event, lastEvent); // remove old
-						addEventToRegistry(event, nextNode, nextEvent); // add new
-					}
-				}
-			}
-		}
-	}
-}
-
 export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
 	if (nextNode.then !== undefined) {
 		nextNode.then(node => {
@@ -176,8 +148,8 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
-		const nextTag = nextNode.tag || ((staticCheck && nextNode.tpl) ? nextNode.tpl.tag : null);
-		const lastTag = lastNode.tag || ((staticCheck && lastNode.tpl) ? lastNode.tpl.tag : null);
+		const nextTag = nextNode.tag || ((staticCheck && !isNullOrUndefined(nextNode.tpl)) ? nextNode.tpl.tag : null);
+		const lastTag = lastNode.tag || ((staticCheck && !isNullOrUndefined(lastNode.tpl)) ? lastNode.tpl.tag : null);
 
 		namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
 
@@ -215,7 +187,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				if (lastNode !== nextNode) {
 					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck);
 					diffAttributes(lastNode, nextNode, dom, instance);
-					diffEvents(lastNode, nextNode);
+					diffEvents(lastNode, nextNode, dom);
 				}
 
 				if (lastNode.className !== nextClassName) {

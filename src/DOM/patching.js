@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, isNumber, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from '../core/utils';
 import { diffNodes } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppend, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
@@ -79,6 +79,22 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 			if (isNullOrUndefined(nextAttrValue[style])) {
 				dom.style[style] = '';
 			}
+		}
+	}
+}
+
+export function patchEvents(lastEvents, nextEvents, dom) {
+	for (let event in nextEvents) {
+		const nextEvent = nextEvents[event];
+		const lastEvent = lastEvents[event];
+		if (lastEvent !== nextEvent) {
+			dom[event] = nextEvent;
+		}
+	}
+
+	for (let event in lastEvents) {
+		if (isNullOrUndefined(nextEvents[event])) {
+			dom[event] = null;
 		}
 	}
 }
@@ -202,7 +218,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							} else {
 								dom.replaceChild(textNode, domChildren[index]);
 								isNotVirtualFragment && domChildren.splice(index, 1, textNode);
-								detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
+								detachNode(lastChild);
 							}
 						}
 					}
@@ -227,7 +243,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 								dom.nodeValue = nextChild;
 							}
 						} else {
-							detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
+							detachNode(lastChild);
 							dom.textContent = nextChild;
 						}
 					} else {
@@ -247,7 +263,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 								domChildren.splice(0, domChildren.length, textNode);
 							}
 						}
-						detachNode(lastChild, recyclingEnabled && !isNullOrUndefined(lastChild.tpl));
+						detachNode(lastChild);
 					}
 				} else if (isArray(nextChild)) {
 					if (isKeyed(lastChild, nextChild)) {

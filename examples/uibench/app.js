@@ -87,10 +87,12 @@
 	var TableCell = function (props) {
 		return {
 			tpl: tableCell1,
-			events: { click: (e) => {
-				console.log('Clicked' + props.text);
-				e.stopPropagation();
-			} },
+			events: {
+				onclick: (e) => {
+					console.log('Clicked' + props.text);
+					e.stopPropagation();
+				}
+			},
 			children: props.text
 		};
 	};

@@ -1,7 +1,6 @@
 import { mountNode } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from '../core/utils';
 import { recyclingEnabled, pool } from './recycling';
-import { removeEventFromRegistry, doesNotBubble, removeEventFromNode } from './events';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
@@ -64,22 +63,19 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 	if (lastInstance !== null) {
 		lastInstance._lastNode = nextNode;
 	}
-	detachNode(lastNode, recyclingEnabled && !isNullOrUndefined(lastNode.tpl));
+	detachNode(lastNode);
 }
 
-export function detachNode(node, recycling) {
+export function detachNode(node) {
 	if (isInvalidNode(node) || isStringOrNumber(node)) {
 		return;
 	}
 	const instance = node.instance;
-	const instanceDefined = !isNullOrUndefined(instance);
 
 	let instanceHooks = null;
-	let instanceEvents = null;
 	let instanceChildren = null;
-	if (instanceDefined) {
+	if (!isNullOrUndefined(instance)) {
 		instanceHooks = instance.hooks;
-		instanceEvents = instance.events;
 		instanceChildren = instance.children;
 
 		if (instance.render !== undefined) {
@@ -95,24 +91,6 @@ export function detachNode(node, recycling) {
 		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
 			hooks.componentWillUnmount(node.dom, hooks);
 		}
-		if (recycling === false) {
-			if (!isNullOrUndefined(instanceHooks)) {
-				instance.hooks = null;
-			} else {
-				node.hooks = null;
-			}
-		}
-	}
-	const events = node.events || instanceEvents;
-	// Remove all events to free memory
-	if (!isNullOrUndefined(events)) {
-		for (let event in events) {
-			if (doesNotBubble(event)) {
-				removeEventFromNode(event, node, events[event]);
-			} else {
-				removeEventFromRegistry(event, events[event]);
-			}
-		}
 	}
 	const children = node.children || instanceChildren;
 	if (!isNullOrUndefined(children)) {
@@ -122,22 +100,6 @@ export function detachNode(node, recycling) {
 			}
 		} else {
 			detachNode(children);
-		}
-		if (recycling === false) {
-			node.children = null;
-
-			/*
-			TODO: This might be overkill
-			node.dom = null;
-			if (instanceDefined) {
-				node.instance.dom = null;
-			}
-			*/
-
-			const domChildren = node.domChildren;
-			if (!isNullOrUndefined(domChildren)) {
-				node.domChildren = null;
-			}
 		}
 	}
 }
@@ -150,15 +112,18 @@ export function remove(node, parentDom) {
 	const dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
-		detachNode(node, recyclingEnabled && !isNullOrUndefined(node.tpl));
 	} else {
 		parentDom.removeChild(dom);
 		if (recyclingEnabled) {
 			pool(node);
-			detachNode(node, !isNullOrUndefined(node.tpl));
-		} else {
-			detachNode(node, false);
 		}
+	}
+	detachNode(node);
+}
+
+export function removeEvents(lastEvents, dom) {
+	for (let event in lastEvents) {
+		dom[event] = null;
 	}
 }
 

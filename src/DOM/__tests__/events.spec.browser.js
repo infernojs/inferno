@@ -1,5 +1,4 @@
 import { render } from '../rendering';
-import { delegatedEventsRegistry } from '../events';
 
 describe('Basic event tests', () => {
 
@@ -132,15 +131,12 @@ describe('Basic event tests', () => {
 
         render(App(), container);
         expect(container.firstChild.innerHTML).to.equal('1');
-        expect(delegatedEventsRegistry['submit'].length).to.equal(1); // 'There should be one registerd listener'
 
         render(App(), container);
         expect(container.firstChild.innerHTML).to.equal('1');
-        expect(delegatedEventsRegistry['submit'].length).to.equal(1); // 'EventDelegator should not stack listeners but change them');
 
         render(AppTwo(), container);
         expect(container.firstChild.innerHTML).to.equal('2');
-        expect(delegatedEventsRegistry['submit'].length).to.equal(0); // 'There should be no registered event listeners to free memory');
     });
 
 
@@ -182,19 +178,13 @@ describe('Basic event tests', () => {
 
         render(App(childrenArray), container);
         expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div><div>2</div></p>');
-        expect(delegatedEventsRegistry['keyup'].length).to.equal(3);
-        expect(delegatedEventsRegistry['keydown'].length).to.equal(1);
 
         childrenArray.pop();
         render(App(childrenArray), container);
         expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div></p>');
-        expect(delegatedEventsRegistry['keyup'].length).to.equal(2);
-        expect(delegatedEventsRegistry['keydown'].length).to.equal(1);
-        
+
         render(AppTwo(), container);
         expect(container.innerHTML).to.equal('<p>2</p>');
-        expect(delegatedEventsRegistry['keydown'].length).to.equal(0);
-        expect(delegatedEventsRegistry['keyup'].length).to.equal(0);
     });
 });
 
