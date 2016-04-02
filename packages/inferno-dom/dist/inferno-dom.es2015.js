@@ -4,11 +4,6 @@
  * Released under the MPL-2.0 License.
  */
 var babelHelpers = {};
-babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
 
 babelHelpers.classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -851,12 +846,10 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 		if (isStringOrNumber(nextChildren)) {
 			updateTextNode(dom, lastChildren, nextChildren);
 		} else if (!isNullOrUndefined(nextChildren)) {
-			if ((typeof nextChildren === 'undefined' ? 'undefined' : babelHelpers.typeof(nextChildren)) === 'object') {
-				if (isArray(nextChildren)) {
-					mountChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
-				} else {
-					mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
-				}
+			if (isArray(nextChildren)) {
+				mountArrayChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
+			} else {
+				mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
 			}
 		}
 	} else {
@@ -1087,53 +1080,55 @@ function appendPromise(child, parentDom, domChildren, namespace, lifecycle, cont
 	parentDom.appendChild(placeholder);
 }
 
-function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+function mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
 	var domChildren = [];
 	var isNonKeyed = false;
 	var hasKeyedAssumption = false;
 
-	if (isArray(children)) {
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
+	for (var i = 0; i < children.length; i++) {
+		var child = children[i];
 
-			if (isStringOrNumber(child)) {
-				isNonKeyed = true;
-				domChildren.push(appendText(child, parentDom, false));
-			} else if (!isNullOrUndefined(child) && isArray(child)) {
-				var virtualFragment = createVirtualFragment();
+		if (isStringOrNumber(child)) {
+			isNonKeyed = true;
+			domChildren.push(appendText(child, parentDom, false));
+		} else if (!isNullOrUndefined(child) && isArray(child)) {
+			var virtualFragment = createVirtualFragment();
 
-				isNonKeyed = true;
-				mountChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
-				insertOrAppend(parentDom, virtualFragment);
-				domChildren.push(virtualFragment);
-			} else if (isPromise(child)) {
-				appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);
-			} else {
-				var domNode = mountNode(child, parentDom, namespace, lifecycle, context, instance);
-
-				if (isNonKeyed || !hasKeyedAssumption && child && isNullOrUndefined(child.key)) {
-					isNonKeyed = true;
-					domChildren.push(domNode);
-				} else if (isInvalidNode(child)) {
-					isNonKeyed = true;
-					domChildren.push(domNode);
-				} else if (hasKeyedAssumption === false) {
-					// this will be true if a single node comes back with a key, if it does, we assume the rest have keys for a perf boost
-					hasKeyedAssumption = true;
-				}
-			}
-		}
-	} else {
-		if (isStringOrNumber(children)) {
-			appendText(children, parentDom, true);
-		} else if (isPromise(children)) {
-			appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
+			isNonKeyed = true;
+			mountArrayChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
+			insertOrAppend(parentDom, virtualFragment);
+			domChildren.push(virtualFragment);
+		} else if (isPromise(child)) {
+			appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);
 		} else {
-			mountNode(children, parentDom, namespace, lifecycle, context, instance);
+			var domNode = mountNode(child, parentDom, namespace, lifecycle, context, instance);
+
+			if (isNonKeyed || !hasKeyedAssumption && child && isNullOrUndefined(child.key)) {
+				isNonKeyed = true;
+				domChildren.push(domNode);
+			} else if (isInvalidNode(child)) {
+				isNonKeyed = true;
+				domChildren.push(domNode);
+			} else if (hasKeyedAssumption === false) {
+				// this will be true if a single node comes back with a key, if it does, we assume the rest have keys for a perf boost
+				hasKeyedAssumption = true;
+			}
 		}
 	}
 	if (domChildren.length > 1 && isNonKeyed === true) {
 		node.domChildren = domChildren;
+	}
+}
+
+function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+	if (isArray(children)) {
+		mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance);
+	} else if (isStringOrNumber(children)) {
+		appendText(children, parentDom, true);
+	} else if (isPromise(children)) {
+		appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
+	} else {
+		mountNode(children, parentDom, namespace, lifecycle, context, instance);
 	}
 }
 
@@ -1263,13 +1258,13 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 
 	var tpl = node.tpl;
 	if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
-		dom = tpl.dom.cloneNode(true);
+		dom = tpl.dom.cloneNode(false); // Only one level used in dom
 	} else {
-		if (!isString(tag) || tag === '') {
-			throw Error('Inferno Error: Expected function or string for element tag type');
+			if (!isString(tag) || tag === '') {
+				throw Error('Inferno Error: Expected function or string for element tag type');
+			}
+			dom = createElement(tag, namespace);
 		}
-		dom = createElement(tag, namespace);
-	}
 	var children = node.children;
 	var attrs = node.attrs;
 	var events = node.events;

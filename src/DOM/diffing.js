@@ -1,7 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString } from '../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeEvents } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
-import { mountChildren, mountNode, mountEvents } from './mounting';
+import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 	const nextChildren = nextNode.children;
@@ -20,12 +20,10 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 		if (isStringOrNumber(nextChildren)) {
 			updateTextNode(dom, lastChildren, nextChildren);
 		} else if (!isNullOrUndefined(nextChildren)) {
-			if (typeof nextChildren === 'object') {
-				if (isArray(nextChildren)) {
-					mountChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
-				} else {
-					mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
-				}
+			if (isArray(nextChildren)) {
+				mountArrayChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
+			} else {
+				mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
 			}
 		}
 	} else {

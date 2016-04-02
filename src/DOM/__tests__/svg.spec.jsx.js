@@ -222,4 +222,20 @@ describe('createTree - SVG (JSX)', () => {
 		)).to.equal(false);
 	});
 
+	it('should add / change / remove xlink:href attribute', () => {
+
+		render(<svg><use xlink:href="#test"></use></svg>, container);
+
+		expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#test"></use></svg>'); // Add
+
+		render(<svg><use xlink:href="#changed"></use></svg>, container);
+
+		expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#changed"></use></svg>'); // Change
+
+		render(<svg><use></use></svg>, container);
+
+		expect(container.innerHTML).to.equal('<svg><use></use></svg>'); // Remove
+
+	});
+
 });

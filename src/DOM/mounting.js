@@ -18,53 +18,55 @@ function appendPromise(child, parentDom, domChildren, namespace, lifecycle, cont
 	parentDom.appendChild(placeholder);
 }
 
-export function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+export function mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
 	const domChildren = [];
 	let isNonKeyed = false;
 	let hasKeyedAssumption = false;
 
-	if (isArray(children)) {
-		for (let i = 0; i < children.length; i++) {
-			const child = children[i];
+	for (let i = 0; i < children.length; i++) {
+		const child = children[i];
 
-			if (isStringOrNumber(child)) {
-				isNonKeyed = true;
-				domChildren.push(appendText(child, parentDom, false));
-			} else if (!isNullOrUndefined(child) && isArray(child)) {
-				const virtualFragment = createVirtualFragment();
+		if (isStringOrNumber(child)) {
+			isNonKeyed = true;
+			domChildren.push(appendText(child, parentDom, false));
+		} else if (!isNullOrUndefined(child) && isArray(child)) {
+			const virtualFragment = createVirtualFragment();
 
-				isNonKeyed = true;
-				mountChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
-				insertOrAppend(parentDom, virtualFragment);
-				domChildren.push(virtualFragment);
-			} else if (isPromise(child)) {
-				appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);
-			} else {
-				const domNode = mountNode(child, parentDom, namespace, lifecycle, context, instance);
-
-				if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
-					isNonKeyed = true;
-					domChildren.push(domNode);
-				} else if (isInvalidNode(child)) {
-					isNonKeyed = true;
-					domChildren.push(domNode);
-				} else if (hasKeyedAssumption === false) {
-					// this will be true if a single node comes back with a key, if it does, we assume the rest have keys for a perf boost
-					hasKeyedAssumption = true;
-				}
-			}
-		}
-	} else {
-		if (isStringOrNumber(children)) {
-			appendText(children, parentDom, true);
-		} else if (isPromise(children)) {
-			appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
+			isNonKeyed = true;
+			mountArrayChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
+			insertOrAppend(parentDom, virtualFragment);
+			domChildren.push(virtualFragment);
+		} else if (isPromise(child)) {
+			appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);
 		} else {
-			mountNode(children, parentDom, namespace, lifecycle, context, instance);
+			const domNode = mountNode(child, parentDom, namespace, lifecycle, context, instance);
+
+			if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
+				isNonKeyed = true;
+				domChildren.push(domNode);
+			} else if (isInvalidNode(child)) {
+				isNonKeyed = true;
+				domChildren.push(domNode);
+			} else if (hasKeyedAssumption === false) {
+				// this will be true if a single node comes back with a key, if it does, we assume the rest have keys for a perf boost
+				hasKeyedAssumption = true;
+			}
 		}
 	}
 	if (domChildren.length > 1 && isNonKeyed === true) {
 		node.domChildren = domChildren;
+	}
+}
+
+export function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+	if (isArray(children)) {
+		mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance);
+	} else if (isStringOrNumber(children)) {
+		appendText(children, parentDom, true);
+	} else if (isPromise(children)) {
+		appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
+	} else {
+		mountNode(children, parentDom, namespace, lifecycle, context, instance);
 	}
 }
 
@@ -192,7 +194,7 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 
 	const tpl = node.tpl;
 	if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
-		dom = tpl.dom.cloneNode(true);
+		dom = tpl.dom.cloneNode(false); // Only one level used in dom
 	} else {
 		if (!isString(tag) || tag === '') {
 			throw Error('Inferno Error: Expected function or string for element tag type');
