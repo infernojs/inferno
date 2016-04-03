@@ -201,7 +201,7 @@ function createElement$1(tag, namespace) {
 // Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
 
-function createStaticElement(tag, attrs) {
+function createUniversalElement(tag, attrs) {
 	if (isBrowser) {
 		var dom = createElement$1(tag);
 		if (attrs) {
@@ -219,7 +219,6 @@ function createStaticAttributes(attrs, dom) {
 		var attr = attrKeys[i];
 		var value = attrs[attr];
 
-		// TODO! What about SVG?
 		if (attr === 'className') {
 			dom.className = value;
 		} else {
@@ -232,19 +231,10 @@ function createStaticAttributes(attrs, dom) {
 	}
 }
 
-/*
-function createStaticChildren(children, parentDom) {
-	if (isArray(children)) {
-	} else if (isStringOrNumber(children)) {
-		parentDom.textContent = children;
-	}
-}
-*/
-
 var index = {
 	createElement: createElement,
-	staticCompiler: {
-		createElement: createStaticElement
+	universal: {
+		createElement: createUniversalElement
 	}
 };
 

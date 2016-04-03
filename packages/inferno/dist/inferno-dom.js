@@ -477,15 +477,22 @@
 	}
 
 	function patchEvents(lastEvents, nextEvents, dom) {
-		for (var event in nextEvents) {
-			var nextEvent = nextEvents[event];
+		var nextEventKeys = Object.keys(nextEvents);
+
+		for (var i = 0; i < nextEventKeys.length; i++) {
+			var event = nextEventKeys[i];
 			var lastEvent = lastEvents[event];
+			var nextEvent = nextEvents[event];
+
 			if (lastEvent !== nextEvent) {
 				dom[event] = nextEvent;
 			}
 		}
+		var lastEventKeys = Object.keys(lastEvents);
 
-		for (var _event in lastEvents) {
+		for (var _i3 = 0; _i3 < lastEventKeys.length; _i3++) {
+			var _event = lastEventKeys[_i3];
+
 			if (isNullOrUndefined(nextEvents[_event])) {
 				dom[_event] = null;
 			}
@@ -803,14 +810,14 @@
 		} else {
 			var oldItemsMap = new Map();
 
-			for (var _i3 = oldStartIndex; _i3 <= oldEndIndex; _i3++) {
-				oldItem = lastChildren[_i3];
+			for (var _i4 = oldStartIndex; _i4 <= oldEndIndex; _i4++) {
+				oldItem = lastChildren[_i4];
 				oldItemsMap.set(oldItem.key, oldItem);
 			}
 			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1] : null;
 
-			for (var _i4 = endIndex; _i4 >= startIndex; _i4--) {
-				var item = nextChildren[_i4];
+			for (var _i5 = endIndex; _i5 >= startIndex; _i5--) {
+				var item = nextChildren[_i5];
 				var key = item.key;
 				oldItem = oldItemsMap.get(key);
 				nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
@@ -826,8 +833,8 @@
 				}
 				nextNode = item;
 			}
-			for (var _i5 = oldStartIndex; _i5 <= oldEndIndex; _i5++) {
-				oldItem = lastChildren[_i5];
+			for (var _i6 = oldStartIndex; _i6 <= oldEndIndex; _i6++) {
+				oldItem = lastChildren[_i6];
 				if (oldItemsMap.has(oldItem.key)) {
 					remove(oldItem, dom);
 				}
@@ -1144,9 +1151,13 @@
 		}
 	}
 
-	function mountEvents(nextEvents, dom) {
-		for (var event in nextEvents) {
-			dom[event] = nextEvents[event];
+	function mountEvents(events, dom) {
+		var eventKeys = Object.keys(events);
+
+		for (var i = 0; i < eventKeys.length; i++) {
+			var event = eventKeys[i];
+
+			dom[event] = events[event];
 		}
 	}
 
