@@ -256,3 +256,26 @@ export function selectValue(vdom) {
 		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
 }
+
+export function placeholder(node, parentDom) {
+	const dom = createEmptyTextNode();
+
+	if (parentDom !== null) {
+		parentDom.appendChild(dom);
+	}
+	if (!isInvalidNode(node)) {
+		node.dom = dom;
+	}
+	return dom;
+}
+
+export function handleAttachedHooks(hooks, lifecycle) {
+	if (!isNullOrUndefined(hooks.created)) {
+		hooks.created(dom);
+	}
+	if (!isNullOrUndefined(hooks.attached)) {
+		lifecycle.addListener(() => {
+			hooks.attached(dom);
+		});
+	}
+}
