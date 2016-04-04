@@ -53,7 +53,7 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	// 4: variable children (defaults to no optimisation)
 
 	if (tpl.childrenType > 0) {
-		mountChildrenWithType(node, node.children, node.childrenType, dom, namespace, lifecycle, context, instance);
+		mountChildrenWithType(node, node.children, tpl.childrenType, dom, namespace, lifecycle, context, instance);
 	}
 	if (tpl.hasAttrs === true) {
 		mountAttributes(node, node.attrs, dom, instance);
@@ -176,7 +176,7 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 	}
 }
 
-export function mountChildrenWithType(node, children, childrenType, parentDom, namespace, lifecycle, context, instance) {
+function mountChildrenWithType(node, children, childrenType, parentDom, namespace, lifecycle, context, instance) {
 	switch (childrenType) {
 		case 1:
 			return appendText(children, parentDom, true);
@@ -189,7 +189,7 @@ export function mountChildrenWithType(node, children, childrenType, parentDom, n
 	}
 }
 
-export function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
 	if (isArray(children)) {
 		mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance);
 	} else if (isStringOrNumber(children)) {

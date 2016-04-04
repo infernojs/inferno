@@ -4,7 +4,7 @@
 	var benchmark = require('vdom-benchmark-base');
 
 	var NAME = 'inferno';
-	var VERSION = '0.6';
+	var VERSION = '0.7';
 
 	var t1 = {
 		dom: Inferno.universal.createElement('div'),
@@ -19,7 +19,7 @@
 		hasEvents: false,
 		hasClassName: false,
 		hasStyle: false,
-		childrenType: 2 // single node
+		childrenType: 3 // multiple children
 	};
 
 	var t2 = {
