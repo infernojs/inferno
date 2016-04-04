@@ -11,17 +11,13 @@ describe('Creation - (non-JSX)', () => {
 		container.innerHTML = '';
 	});
 
-	var staticNode = null;
-
 	[{
 		description: 'should render div with span child',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: {
-					tpl: staticNode,
 					dom: null,
 					tag: 'span'
 				}
@@ -34,11 +30,9 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render span with span child',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'span',
 				children: {
-					tpl: staticNode,
 					tag: 'span'
 				}
 			};
@@ -50,14 +44,11 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with two span children',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [{
-					tpl: staticNode,
 					tag: 'span'
 				}, {
-					tpl: staticNode,
 					tag: 'span'
 				}]
 			};
@@ -69,15 +60,12 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with three span children and unset middle child',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [{
-					tpl: staticNode,
 					tag: 'span'
 				},
 					null, {
-						tpl: staticNode,
 						dom: null,
 						tag: 'span'
 					}
@@ -91,13 +79,11 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with three span children and unset first, and middle child',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [
 					null,
 					null, {
-						tpl: staticNode,
 						dom: null,
 						tag: 'span'
 					}
@@ -111,7 +97,6 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with three span children and unset first, and middle child',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [
@@ -128,7 +113,6 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with two null children and one text node',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [
@@ -145,13 +129,11 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with one textNode and a span children',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [
 					'Hello!',
 					null, {
-						tpl: staticNode,
 						dom: null,
 						tag: 'span'
 					}
@@ -165,14 +147,12 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with two textNodes and a span children',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [
 					'Hello, ',
 					null,
 					'World!', {
-						tpl: staticNode,
 						dom: null,
 						tag: 'span'
 					}
@@ -186,17 +166,14 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with two textNodes and a two span children',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [
 					'Hello, ', {
-						tpl: staticNode,
 						dom: null,
 						tag: 'span'
 					},
 					'World!', {
-						tpl: staticNode,
 						dom: null,
 						tag: 'span'
 					}
@@ -210,15 +187,12 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with two textNodes and one span children, and span with textNode',
 		template: () => {
 			return {
-				tpl: staticNode,
 				tag: 'div',
 				children: [
 					'Hello', {
-						tpl: staticNode,
 						tag: 'span'
 					},
 					', ', {
-						tpl: staticNode,
 						tag: 'span',
 						children: 'World!'
 					}
@@ -232,7 +206,6 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with tree null values in an array for children',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: [
@@ -249,11 +222,9 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with b child, and tree null values in an array for children',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: {
-					tpl: staticNode,
 					dom: null,
 					tag: 'b',
 					children:
@@ -272,11 +243,9 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with b child, and number and two null values in an array for children',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div',
 				children: {
-					tpl: staticNode,
 					dom: null,
 					tag: 'b',
 					children:
@@ -295,7 +264,6 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render empty div',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'div'
 			};
@@ -307,7 +275,6 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render empty span',
 		template: () => {
 			return {
-				tpl: staticNode,
 				dom: null,
 				tag: 'span'
 			};

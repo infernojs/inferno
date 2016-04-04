@@ -1,5 +1,5 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from '../core/utils';
-import { diffNodes } from './diffing';
+import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from '../core/utils';
+import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppend, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
 import { recyclingEnabled, pool } from './recycling';
@@ -22,9 +22,16 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 	}
 }
 
-export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
-	if (staticCheck !== null) {
-		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck);
+export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, deepCheck) {
+	if (deepCheck !== null) {
+		const lastTpl = lastNode.tpl;
+		const nextTpl = nextNode.tpl;
+
+		if (lastTpl === undefined) {
+			diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+		} else {
+			diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, true);
+		}
 	} else if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
 	} else if (isInvalidNode(nextNode)) {
@@ -41,7 +48,15 @@ export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		const textNode = document.createTextNode(nextNode);
 		parentDom.replaceChild(textNode, lastNode.dom);
 	} else {
-		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, lastNode.tpl !== null && nextNode.tpl !== null);
+		const lastTpl = lastNode.tpl;
+		const nextTpl = nextNode.tpl;
+		const deepCheck = lastTpl !== nextTpl;
+
+		if (lastTpl === undefined) {
+			diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, deepCheck);
+		} else {
+			diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, deepCheck);
+		}
 	}
 }
 
@@ -190,7 +205,13 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 		} else {
 			while (lastChildrenLength !== nextChildrenLength) {
 				const nextChild = nextChildren[lastChildrenLength];
-				const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+				let domNode;
+
+				if (isStringOrNumber(nextChild)) {
+					domNode = document.createTextNode(nextChild);
+				} else {
+					domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+				}
 
 				insertOrAppend(dom, domNode);
 				if (isNotVirtualFragment) {
@@ -346,7 +367,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
 		stop = true;
 		while (startItem.key === oldStartItem.key) {
-			diffNodes(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
+			patchNode(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -360,7 +381,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		endItem = nextChildren[endIndex];
 		oldEndItem = lastChildren[oldEndIndex];
 		while (endItem.key === oldEndItem.key) {
-			diffNodes(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
+			patchNode(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -373,7 +394,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		}
 		while (endItem.key === oldStartItem.key) {
 			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
-			diffNodes(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
+			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
 			insertOrAppend(dom, endItem.dom, nextNode);
 			endIndex--;
 			oldStartIndex++;
@@ -387,7 +408,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		}
 		while (startItem.key === oldEndItem.key) {
 			nextNode = lastChildren[oldStartIndex].dom;
-			diffNodes(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
+			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
 			insertOrAppend(dom, startItem.dom, nextNode);
 			startIndex++;
 			oldEndIndex--;
@@ -431,7 +452,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			} else {
 				oldItemsMap.delete(key);
-				diffNodes(oldItem, item, dom, namespace, lifecycle, context, instance, true);
+				patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 				if (item.dom.nextSibling !== nextNode) {
 					insertOrAppend(dom, item.dom, nextNode);

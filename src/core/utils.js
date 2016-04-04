@@ -15,7 +15,7 @@ export function addChildrenToProps(children, props) {
 }
 
 export function isArray(obj) {
-	return obj.constructor === Array;
+	return obj instanceof Array;
 }
 
 export function isStatefulComponent(obj) {
@@ -68,7 +68,7 @@ export function isAttrAComponentHook(hook) {
 }
 
 export function isPromise(obj) {
-	return obj && obj.then;
+	return obj instanceof Promise;
 }
 
 export function replaceInArray(array, obj, newObj) {

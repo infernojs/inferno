@@ -62,6 +62,7 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		lastNode = instanceLastNode;
 	}
 	const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+
 	nextNode.dom = dom;
 	parentDom.replaceChild(dom, lastNode.dom);
 	if (lastInstance !== null) {

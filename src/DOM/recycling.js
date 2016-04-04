@@ -1,20 +1,21 @@
-import { diffNodes } from './diffing';
+import { patchNode } from './patching';
 import { isNullOrUndefined } from './../core/utils';
 
 export const recyclingEnabled = true;
 
 export function recycle(node, tpl, lifecycle, context, instance) {
-	if (!isNullOrUndefined(tpl)) {
+	if (tpl !== undefined) {
 		const key = node.key;
 		const pool = key === null ? tpl.pools.nonKeyed : tpl.pools.keyed[key];
 		if (!isNullOrUndefined(pool)) {
 			const recycledNode = pool.pop();
 			if (!isNullOrUndefined(recycledNode)) {
-				diffNodes(recycledNode, node, null, null, lifecycle, context, instance, true);
+				patchNode(recycledNode, node, null, null, lifecycle, context, instance, true);
 				return node.dom;
 			}
 		}
 	}
+	return null;
 }
 
 export function pool(node) {

@@ -5,28 +5,27 @@ import { patchAttribute, patchStyle } from './patching';
 import { diffNodes } from './diffing';
 
 export function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
-	if (isStringOrNumber(node)) {
-		return appendText(node, parentDom, false);
-	} else if (isObject(node)) {
-		const tpl = node.tpl;
-
-		if (recyclingEnabled) {
-			const dom = recycle(node, tpl, lifecycle, context, instance);
-			if (!isNullOrUndefined(dom)) {
-				if (parentDom !== null) {
-					parentDom.appendChild(dom);
-				}
-				return dom;
-			}
-		}
-
-		if (isNullOrUndefined(tpl)) {
-			return appendNode(node, parentDom, namespace, lifecycle, context, instance);
-		} else {
-			return appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance);
-		}
-	} else {
+	if (isInvalidNode(node) || isArray(node)) {
 		return placeholder(node, parentDom);
+	}
+
+	const tpl = node.tpl;
+
+	if (recyclingEnabled) {
+		const dom = recycle(node, tpl, lifecycle, context, instance);
+
+		if (dom !== null) {
+			if (parentDom !== null) {
+				parentDom.appendChild(dom);
+			}
+			return dom;
+		}
+	}
+
+	if (tpl === undefined) {
+		return appendNode(node, parentDom, namespace, lifecycle, context, instance);
+	} else {
+		return appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance);
 	}
 }
 
@@ -52,9 +51,23 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	// 3: multiple children
 	// 4: variable children (defaults to no optimisation)
 
-	if (tpl.childrenType > 0) {
-		mountChildrenWithType(node, node.children, tpl.childrenType, dom, namespace, lifecycle, context, instance);
+	switch (tpl.childrenType) {
+		case 1:
+			appendText(node.children, dom, true);
+			break;
+		case 2:
+			mountNode(node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		case 3:
+			mountArrayChildren(node, node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		case 4:
+			mountChildren(node, node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		default:
+			break;
 	}
+
 	if (tpl.hasAttrs === true) {
 		mountAttributes(node, node.attrs, dom, instance);
 	}
@@ -173,19 +186,6 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 	}
 	if (domChildren !== null && domChildren.length > 1 && isNonKeyed === true) {
 		node.domChildren = domChildren;
-	}
-}
-
-function mountChildrenWithType(node, children, childrenType, parentDom, namespace, lifecycle, context, instance) {
-	switch (childrenType) {
-		case 1:
-			return appendText(children, parentDom, true);
-		case 2:
-			return mountNode(children, parentDom, namespace, lifecycle, context, instance);
-		case 3:
-			return mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance);
-		case 4:
-			return mountChildren(node, children, parentDom, namespace, lifecycle, context, instance);
 	}
 }
 
