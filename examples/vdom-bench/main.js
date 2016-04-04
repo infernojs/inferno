@@ -12,7 +12,14 @@
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'div'
+		tag: 'div',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2 // single node
 	};
 
 	var t2 = {
@@ -21,7 +28,14 @@
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'span'
+		tag: 'span',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1 // text child
 	};
 
 	function renderTree(nodes) {

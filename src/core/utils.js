@@ -46,19 +46,9 @@ export function isString(obj) {
 	return typeof obj === 'string';
 }
 
-/*
-export function isNumber(obj) {
-	return typeof obj === 'number';
-}
-
 export function isObject(obj) {
 	return typeof obj === 'object';
 }
-
-export function isAttrAComponentEvent(attr) {
-	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
-}
-*/
 
 export function isAttrAHook(hook) {
 	return hook === 'onCreated'
