@@ -5,19 +5,20 @@ import { patchAttribute, patchStyle } from './patching';
 import { diffNodes } from './diffing';
 
 export function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
-	if (recyclingEnabled) {
-		const dom = recycle(node, lifecycle, context, instance);
-		if (!isNullOrUndefined(dom)) {
-			if (parentDom !== null) {
-				parentDom.appendChild(dom);
-			}
-			return dom;
-		}
-	}
 	if (isStringOrNumber(node)) {
 		return appendText(node, parentDom, false);
 	} else if (isObject(node)) {
 		const tpl = node.tpl;
+
+		if (recyclingEnabled) {
+			const dom = recycle(node, tpl, lifecycle, context, instance);
+			if (!isNullOrUndefined(dom)) {
+				if (parentDom !== null) {
+					parentDom.appendChild(dom);
+				}
+				return dom;
+			}
+		}
 
 		if (isNullOrUndefined(tpl)) {
 			return appendNode(node, parentDom, namespace, lifecycle, context, instance);
@@ -42,7 +43,7 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 
 	node.dom = dom;
 	if (tpl.hasHooks === true) {
-		handleAttachedHooks(node.hooks, lifecycle);
+		handleAttachedHooks(node.hooks, lifecycle, dom);
 	}
 	// tpl.childrenType:
 	// 0: no children
@@ -95,7 +96,7 @@ function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
 
 	node.dom = dom;
 	if (!isNullOrUndefined(hooks)) {
-		handleAttachedHooks(hooks, lifecycle);
+		handleAttachedHooks(hooks, lifecycle, dom);
 	}
 	if (!isInvalidNode(children)) {
 		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
@@ -281,7 +282,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 	return dom;
 }
 
-function mountAttributes(node, dom, instance) {
+function mountAttributes(node, attrs, dom, instance) {
 	if (node.tag === 'select') {
 		selectValue(node);
 	}

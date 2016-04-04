@@ -47,7 +47,7 @@ export function isString(obj) {
 }
 
 export function isObject(obj) {
-	return typeof obj === 'object';
+	return typeof obj === 'object' && obj !== null;
 }
 
 export function isAttrAHook(hook) {

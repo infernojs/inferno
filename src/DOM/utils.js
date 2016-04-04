@@ -32,20 +32,24 @@ export function createElement(tag, namespace) {
 }
 
 export function appendText(text, parentDom, singleChild) {
-	if (singleChild) {
-		if (text !== '') {
-			parentDom.textContent = text;
+	if (parentDom) {
+		if (singleChild) {
+			if (text !== '') {
+				parentDom.textContent = text;
+			} else {
+				const textNode = document.createTextNode('');
+
+				parentDom.appendChild(textNode);
+				return textNode;
+			}
 		} else {
-			const textNode = document.createTextNode('');
+			const textNode = document.createTextNode(text);
 
 			parentDom.appendChild(textNode);
 			return textNode;
 		}
 	} else {
-		const textNode = document.createTextNode(text);
-
-		parentDom.appendChild(textNode);
-		return textNode;
+		return document.createTextNode(text);
 	}
 }
 
@@ -269,7 +273,7 @@ export function placeholder(node, parentDom) {
 	return dom;
 }
 
-export function handleAttachedHooks(hooks, lifecycle) {
+export function handleAttachedHooks(hooks, lifecycle, dom) {
 	if (!isNullOrUndefined(hooks.created)) {
 		hooks.created(dom);
 	}

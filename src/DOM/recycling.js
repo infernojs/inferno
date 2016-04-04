@@ -3,8 +3,7 @@ import { isNullOrUndefined } from './../core/utils';
 
 export const recyclingEnabled = true;
 
-export function recycle(node, lifecycle, context, instance) {
-	const tpl = node.tpl;
+export function recycle(node, tpl, lifecycle, context, instance) {
 	if (!isNullOrUndefined(tpl)) {
 		const key = node.key;
 		const pool = key === null ? tpl.pools.nonKeyed : tpl.pools.keyed[key];
