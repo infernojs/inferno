@@ -6,8 +6,6 @@ node_js:
 cache:
   directories:
     - node_modules
-     - $HOME/.chrome/chromium
-
 
 before_install:
   - "nvm use $TRAVIS_NODE_VERSION"
@@ -19,7 +17,6 @@ env:
     - CXX=g++-4.8
    # No sandbox mode is needed for Chromium in Travis, it crashes otherwise: https://sites.google.com/a/chromium.org/chromedriver/help/chrome-doesn-t-start
     - KARMA_JS_BROWSERS=ChromeNoSandbox
-
 
 addons:
   apt:

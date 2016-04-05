@@ -36,6 +36,8 @@
     "karma-sinon-chai": "^1.2.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "phantomjs-prebuilt": "^2.1.7",
     "lolex": "^1.4.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",
