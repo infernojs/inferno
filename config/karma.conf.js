@@ -70,7 +70,15 @@ module.exports = function (config) {
 			}]
 		},
 
-		browsers: ['PhantomJS'],
+		browsers: ['Chrome'],
+		// custom launchers
+		customLaunchers: {
+			Chrome_for_Travis_CI: {
+				base: 'Chrome',
+				flags: ['--no-sandbox']
+			}
+		},
+
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
 		// concurrency level how many browser should be started simultaneously
@@ -91,6 +99,8 @@ module.exports = function (config) {
 	});
 
 	if (process.env.TRAVIS) {
+		// Use Chrome as default browser for Travis CI
+		config.browsers = ['Chrome_for_Travis_CI'];
 		// Used by Travis to push coveralls info corretly to example coveralls.io
 		config.reporters = [ 'mocha', 'coverage', 'coveralls' ];
 		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
