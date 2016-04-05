@@ -10,7 +10,14 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		className: 'AnimBox'
+		className: 'AnimBox',
+		isComponent: false,
+		hasAttrs: true,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: true,
+		childrenType: 0
 	};
 
 	var AnimBox = function (props) {
@@ -21,6 +28,7 @@
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')';
 
 		return {
+			dom: null,
 			tpl: animBox1,
 			style: style,
 			attrs: { 'data-id': data.id }
@@ -34,15 +42,44 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		className: 'Anim'
+		className: 'Anim',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var anim2 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
+
+	function createAnimNode(key, data) {
+		return {
+			dom: null,
+			tpl: anim2,
+			tag: AnimBox,
+			key: key,
+			attrs: {
+				data: data
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var Anim = function (props) {
 		var data = props.data;
@@ -51,20 +88,11 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push({
-				tpl: anim2,
-				tag: AnimBox,
-				key: item.id,
-				attrs: {
-					data: item
-				},
-				hooks: {
-					componentShouldUpdate: appUpdateCheck
-				}
-			});
+			children.push(createAnimNode(item.id, item));
 		}
 
 		return {
+			dom: null,
 			tpl: anim1,
 			children: children
 		};
@@ -77,7 +105,14 @@
 			nonKeyed: []
 		},
 		tag: 'td',
-		className: 'TableCell'
+		className: 'TableCell',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: true,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1
 	};
 
 	function updateTableCell(domNode, lastProps, nextProps) {
@@ -86,6 +121,7 @@
 
 	var TableCell = function (props) {
 		return {
+			dom: null,
 			tpl: tableCell1,
 			events: {
 				onclick: (e) => {
@@ -103,15 +139,42 @@
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'tr'
+		tag: 'tr',
+		isComponent: false,
+		hasAttrs: true,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: true,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var tableRow2 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
+
+	function createTableCellNode(key, text) {
+		return {
+			dom: null,
+			tpl: tableRow2,
+			tag: TableCell,
+			key: key,
+			attrs: { text: text },
+			hooks: {
+				componentShouldUpdate: updateTableCell
+			}
+		};
+	}
 
 	var TableRow = function (props) {
 		var data = props.data;
@@ -121,33 +184,21 @@
 		}
 		var cells = data.props;
 
-		var children = [({
-			tpl: tableRow2,
-			tag: TableCell,
-			key: -1,
-			attrs: { text: '#' + data.id },
-			hooks: {
-				componentShouldUpdate: updateTableCell
-			}
-		})];
+		var children = [ createTableCellNode(-1, '#' + data.id) ];
+
 		for (var i = 0; i < cells.length; i++) {
-			children.push({
-				tpl: tableRow2,
-				tag: TableCell,
-				key: i,
-				attrs: { text: cells[i] },
-				hooks: {
-					componentShouldUpdate: updateTableCell
-				}
-			});
+			children.push(
+				createTableCellNode(i, cells[i])
+			);
 		}
 		return {
+			dom: null,
 			tpl: tableRow1,
 			attrs: { 'data-id': data.id },
 			className: classes,
 			children: children
 		};
-	}
+	};
 
 	var table1 = {
 		dom: Inferno.universal.createElement('table', { className: 'Table' }),
@@ -156,7 +207,14 @@
 			nonKeyed: []
 		},
 		tag: 'table',
-		className: 'Table'
+		className: 'Table',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
 	};
 
 	var table2 = {
@@ -165,15 +223,44 @@
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'tbody'
+		tag: 'tbody',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var table3 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
+
+	function createTableRowNode(key, item) {
+		return {
+			dom: null,
+			tpl: table3,
+			tag: TableRow,
+			key: key,
+			attrs: {
+				data: item
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var Table = function (props) {
 		var items = props.data.items;
@@ -181,22 +268,14 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push({
-				tpl: table3,
-				tag: TableRow,
-				key: item.id,
-				attrs: {
-					data: item
-				},
-				hooks: {
-					componentShouldUpdate: appUpdateCheck
-				}
-			});
+			children.push(createTableRowNode(item.id, item));
 		}
 
 		return {
+			dom: null,
 			tpl: table1,
 			children: {
+				dom: null,
 				tpl: table2,
 				children: children
 			}
@@ -210,15 +289,20 @@
 			nonKeyed: []
 		},
 		tag: 'li',
-		className: 'TreeLeaf'
+		className: 'TreeLeaf',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1
 	};
 
 	var TreeLeaf = function (props) {
 		return {
+			dom: null,
 			tpl: treeLeaf1,
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			},
 			children: '' + props.data.id
 		};
 	};
@@ -230,22 +314,58 @@
 			nonKeyed: []
 		},
 		tag: 'ul',
-		className: 'TreeNode'
+		className: 'TreeNode',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var treeNode2 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
 
 	var treeNode3 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
+
+	function createTreeNode(tpl, tag, key, data) {
+		return {
+			dom: null,
+			tpl: tpl,
+			tag: tag,
+			key: key,
+			attrs: {
+				data: data
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var TreeNode = function (props) {
 		var data = props.data;
@@ -254,33 +374,18 @@
 		for (var i = 0; i < data.children.length; i++) {
 			var n = data.children[i];
 			if (n.container) {
-				children.push({
-					tpl: treeNode2,
-					tag: TreeNode,
-					key: n.id,
-					attrs: {
-						data: n
-					},
-					hooks: {
-						componentShouldUpdate: appUpdateCheck
-					}
-				});
+				children.push(
+					createTreeNode(treeNode2, TreeNode, n.id, n)
+				);
 			} else {
-				children.push({
-					tpl: treeNode3,
-					tag: TreeLeaf,
-					key: n.id,
-					attrs: {
-						data: n
-					},
-					hooks: {
-						componentShouldUpdate: appUpdateCheck
-					}
-				});
+				children.push(
+					createTreeNode(treeNode3, TreeLeaf, n.id, n)
+				);
 			}
 		}
 
 		return {
+			dom: null,
 			tpl: treeNode1,
 			children: children
 		};
@@ -293,20 +398,36 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		className: 'Tree'
+		className: 'Tree',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
 	};
 
 	var tree2 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
 
 	var Tree = function (props) {
 		return {
+			dom: null,
 			tpl: tree1,
 			children: {
+				dom: null,
 				tpl: tree2,
 				tag: TreeNode,
 				attrs: {
@@ -326,29 +447,71 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		className: 'Main'
+		className: 'Main',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
 	};
 
 	var main2 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
 
 	var main3 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
 
 	var main4 = {
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
+
+	function createMainNode(tpl, tag, data) {
+		return {
+			dom: null,
+			tpl: tpl,
+			tag: tag,
+			attrs: {
+				data: data
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var Main = function (props) {
 		var data = props.data;
@@ -356,41 +519,15 @@
 
 		var section;
 		if (location === 'table') {
-			section = {
-				tpl: main2,
-				tag: Table,
-				attrs: {
-					data: data.table
-				},
-				hooks: {
-					componentShouldUpdate: appUpdateCheck
-				}
-			};
+			section = createMainNode(main2, Table, data.table);
 		} else if (location === 'anim') {
-			section = {
-				tpl: main3,
-				tag: Anim,
-				attrs: {
-					data: data.anim
-				},
-				hooks: {
-					componentShouldUpdate: appUpdateCheck
-				}
-			};
+			section = createMainNode(main3, Anim, data.anim);
 		} else if (location === 'tree') {
-			section = {
-				tpl: main4,
-				tag: Tree,
-				attrs: {
-					data: data.tree
-				},
-				hooks: {
-					componentShouldUpdate: appUpdateCheck
-				}
-			};
+			section = createMainNode(main4, Tree, data.tree);
 		}
 
 		return {
+			dom: null,
 			tpl: main1,
 			children: section
 		};
@@ -400,7 +537,14 @@
 		pools: {
 			keyed: {},
 			nonKeyed: []
-		}
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
 
 	var app2 = {
@@ -409,7 +553,14 @@
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'pre'
+		tag: 'pre',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 4
 	};
 
 	function appUpdateCheck(domNode, lastProps, nextProps) {
@@ -422,6 +573,7 @@
 		uibench.run(
 			function(state) {
 				InfernoDOM.render({
+					dom: null,
 					tpl: app1,
 					tag: Main,
 					attrs: {
@@ -434,6 +586,7 @@
 			},
 			function(samples) {
 				InfernoDOM.render({
+					dom: null,
 					tpl: app2,
 					children: JSON.stringify(samples, null, ' ')
 				}, container);
