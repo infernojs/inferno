@@ -10,31 +10,13 @@ cache:
 before_install:
   - "nvm use $TRAVIS_NODE_VERSION"
 
-env:
- global:
-    # Use newer verison of GCC to that is required to compile native npm modules for Node v4+ on Ubuntu Precise
-    # more info: https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
-    - CXX=g++-4.8
-   # No sandbox mode is needed for Chromium in Travis, it crashes otherwise: https://sites.google.com/a/chromium.org/chromedriver/help/chrome-doesn-t-start
-    - KARMA_JS_BROWSERS=ChromeNoSandbox
-
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-
-
 install:
   # Install version of npm that we are locked against
-  - npm install -g npm@3.5.3
+  - npm install -g npm@3.8.3
   # - npm config set registry http://23.251.144.68
   # Disable the spinner, it looks bad on Travis
   - npm config set spin false
   - npm --version
-  # Log HTTP requests
-  - npm config set loglevel http
   # Install npm dependencies and ensure that npm cache is not stale
   - npm install
 
