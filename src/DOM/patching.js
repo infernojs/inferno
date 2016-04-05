@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppend, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
 import { recyclingEnabled, pool } from './recycling';
 
 // Checks if property is boolean type
@@ -213,7 +213,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 				}
 
-				insertOrAppend(dom, domNode);
+				insertOrAppendNonKeyed(dom, domNode);
 				if (isNotVirtualFragment) {
 					if (lastChildrenLength === 1) {
 						domChildren.push(dom.firstChild);
@@ -241,7 +241,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							const textNode = createEmptyTextNode();
 
 							if (isArray(lastChild) && lastChild.length === 0) {
-								insertOrAppend(dom, textNode);
+								insertOrAppendNonKeyed(dom, textNode);
 								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 							} else {
 								dom.replaceChild(textNode, domChildren[index]);
@@ -318,7 +318,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							if (nextChild.length > 1) {
 								const virtualFragment = createVirtualFragment();
 								virtualFragment.appendChild(dom.firstChild);
-								insertOrAppend(dom, virtualFragment, dom.firstChild);
+								insertOrAppendNonKeyed(dom, virtualFragment, dom.firstChild);
 								isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
 								patchNonKeyedChildren([lastChild], nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
 							} else {
@@ -395,7 +395,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		while (endItem.key === oldStartItem.key) {
 			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
 			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppend(dom, endItem.dom, nextNode);
+			insertOrAppendKeyed(dom, endItem.dom, nextNode);
 			endIndex--;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -409,7 +409,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		while (startItem.key === oldEndItem.key) {
 			nextNode = lastChildren[oldStartIndex].dom;
 			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppend(dom, startItem.dom, nextNode);
+			insertOrAppendKeyed(dom, startItem.dom, nextNode);
 			startIndex++;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -426,7 +426,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		if (startIndex <= endIndex) {
 			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
 			for (; startIndex <= endIndex; startIndex++) {
-				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
+				insertOrAppendKeyed(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 			}
 		}
 	} else if (startIndex > endIndex) {
@@ -449,13 +449,13 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			oldItem = oldItemsMap.get(key);
 			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
 			if (oldItem === undefined) {
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
+				insertOrAppendKeyed(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			} else {
 				oldItemsMap.delete(key);
 				patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 				if (item.dom.nextSibling !== nextNode) {
-					insertOrAppend(dom, item.dom, nextNode);
+					insertOrAppendKeyed(dom, item.dom, nextNode);
 				}
 			}
 			nextNode = item;

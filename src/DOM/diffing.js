@@ -3,6 +3,25 @@ import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeE
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
+function diffChildrenWithTemplate(lastNode, nextNode, lastChildrenType, nextChildrenType, dom, namespace, lifecycle, context, instance, staticCheck) {
+	const nextChildren = nextNode.children;
+	const lastChildren = lastNode.children;
+
+	if (lastChildrenType === 3) {
+		if (nextChildrenType === 3) {
+			patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+		}
+	} else if (lastChildrenType === 2) {
+		if (nextChildrenType === 2) {
+			patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
+		}
+	} else if (lastChildrenType === 1) {
+		if (nextChildrenType === 1) {
+			updateTextNode(dom, lastChildren, nextChildren);
+		}
+	}
+}
+
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
@@ -171,7 +190,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 			nextNode.dom = dom;
 
 			if (lastTpl.childrenType > 0) {
-				diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+				diffChildrenWithTemplate(lastNode, nextNode, lastTpl.childrenType, nextTpl.childrenType, dom, namespace, lifecycle, context, instance, deepCheck);
 			}
 			if (lastTpl.hasAttrs === true) {
 				diffAttributes(lastNode, nextNode, dom, instance);

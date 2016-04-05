@@ -56,30 +56,39 @@
 
 	babelHelpers;
 
-	// TODO! Use object literal or at least prototype? --- class is prototype (jsperf needed for perf verification)
+	function Lifecycle() {
+		this._listeners = [];
+	}
 
-	var Lifecycle = function () {
-		function Lifecycle() {
-			babelHelpers.classCallCheck(this, Lifecycle);
-
-			this._listeners = [];
+	Lifecycle.prototype = {
+		addListener: function addListener(callback) {
+			this._listeners.push(callback);
+		},
+		trigger: function trigger() {
+			for (var i = 0; i < this._listeners.length; i++) {
+				this._listeners[i]();
+			}
 		}
+	};
 
-		babelHelpers.createClass(Lifecycle, [{
-			key: "addListener",
-			value: function addListener(callback) {
-				this._listeners.push(callback);
+	function diffChildrenWithTemplate(lastNode, nextNode, lastChildrenType, nextChildrenType, dom, namespace, lifecycle, context, instance, staticCheck) {
+		var nextChildren = nextNode.children;
+		var lastChildren = lastNode.children;
+
+		if (lastChildrenType === 3) {
+			if (nextChildrenType === 3) {
+				patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
 			}
-		}, {
-			key: "trigger",
-			value: function trigger() {
-				for (var i = 0; i < this._listeners.length; i++) {
-					this._listeners[i]();
-				}
+		} else if (lastChildrenType === 2) {
+			if (nextChildrenType === 2) {
+				patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
 			}
-		}]);
-		return Lifecycle;
-	}();
+		} else if (lastChildrenType === 1) {
+			if (nextChildrenType === 1) {
+				updateTextNode(dom, lastChildren, nextChildren);
+			}
+		}
+	}
 
 	function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 		var nextChildren = nextNode.children;
@@ -247,7 +256,7 @@
 				nextNode.dom = dom;
 
 				if (lastTpl.childrenType > 0) {
-					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+					diffChildrenWithTemplate(lastNode, nextNode, lastTpl.childrenType, nextTpl.childrenType, dom, namespace, lifecycle, context, instance, deepCheck);
 				}
 				if (lastTpl.hasAttrs === true) {
 					diffAttributes(lastNode, nextNode, dom, instance);
@@ -563,7 +572,7 @@
 						domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 					}
 
-					insertOrAppend(dom, domNode);
+					insertOrAppendNonKeyed(dom, domNode);
 					if (isNotVirtualFragment) {
 						if (lastChildrenLength === 1) {
 							domChildren.push(dom.firstChild);
@@ -591,7 +600,7 @@
 								var textNode = createEmptyTextNode();
 
 								if (isArray(_lastChild) && _lastChild.length === 0) {
-									insertOrAppend(dom, textNode);
+									insertOrAppendNonKeyed(dom, textNode);
 									isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 								} else {
 									dom.replaceChild(textNode, domChildren[index]);
@@ -669,7 +678,7 @@
 								if (_nextChild.length > 1) {
 									var _virtualFragment = createVirtualFragment();
 									_virtualFragment.appendChild(dom.firstChild);
-									insertOrAppend(dom, _virtualFragment, dom.firstChild);
+									insertOrAppendNonKeyed(dom, _virtualFragment, dom.firstChild);
 									isNotVirtualFragment && domChildren.splice(index, 1, _virtualFragment);
 									patchNonKeyedChildren([_lastChild], _nextChild, _virtualFragment, _virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
 								} else {
@@ -746,7 +755,7 @@
 			while (endItem.key === oldStartItem.key) {
 				nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
 				patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
-				insertOrAppend(dom, endItem.dom, nextNode);
+				insertOrAppendKeyed(dom, endItem.dom, nextNode);
 				endIndex--;
 				oldStartIndex++;
 				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -760,7 +769,7 @@
 			while (startItem.key === oldEndItem.key) {
 				nextNode = lastChildren[oldStartIndex].dom;
 				patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
-				insertOrAppend(dom, startItem.dom, nextNode);
+				insertOrAppendKeyed(dom, startItem.dom, nextNode);
 				startIndex++;
 				oldEndIndex--;
 				if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -777,7 +786,7 @@
 			if (startIndex <= endIndex) {
 				nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
 				for (; startIndex <= endIndex; startIndex++) {
-					insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
+					insertOrAppendKeyed(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 				}
 			}
 		} else if (startIndex > endIndex) {
@@ -800,13 +809,13 @@
 				oldItem = oldItemsMap.get(key);
 				nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
 				if (oldItem === undefined) {
-					insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
+					insertOrAppendKeyed(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 				} else {
 					oldItemsMap.delete(key);
 					patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 					if (item.dom.nextSibling !== nextNode) {
-						insertOrAppend(dom, item.dom, nextNode);
+						insertOrAppendKeyed(dom, item.dom, nextNode);
 					}
 				}
 				nextNode = item;
@@ -863,7 +872,7 @@
 		return !isNullOrUndefined(obj.append);
 	}
 
-	function insertOrAppend(parentDom, newNode, nextNode) {
+	function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
 		if (isNullOrUndefined(nextNode)) {
 			if (isVirtualFragment(newNode)) {
 				newNode.append(parentDom);
@@ -878,6 +887,14 @@
 			} else {
 				parentDom.insertBefore(newNode, nextNode);
 			}
+		}
+	}
+
+	function insertOrAppendKeyed(parentDom, newNode, nextNode) {
+		if (isNullOrUndefined(nextNode)) {
+			parentDom.appendChild(newNode);
+		} else {
+			parentDom.insertBefore(newNode, nextNode);
 		}
 	}
 
@@ -1503,7 +1520,7 @@
 
 				isNonKeyed = true;
 				mountArrayChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
-				insertOrAppend(parentDom, virtualFragment);
+				insertOrAppendNonKeyed(parentDom, virtualFragment);
 				domChildren = domChildren || [];
 				domChildren.push(virtualFragment);
 			} else if (isPromise(child)) {

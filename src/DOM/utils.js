@@ -9,7 +9,7 @@ function isVirtualFragment(obj) {
 	return !isNullOrUndefined(obj.append);
 }
 
-export function insertOrAppend(parentDom, newNode, nextNode) {
+export function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
 		if (isVirtualFragment(newNode)) {
 			newNode.append(parentDom);
@@ -24,6 +24,14 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 		} else {
 			parentDom.insertBefore(newNode, nextNode);
 		}
+	}
+}
+
+export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
+	if (isNullOrUndefined(nextNode)) {
+		parentDom.appendChild(newNode);
+	} else {
+		parentDom.insertBefore(newNode, nextNode);
 	}
 }
 

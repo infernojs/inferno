@@ -18,7 +18,14 @@
 			nonKeyed: []
 		},
 		tag: 'table',
-		className: 'table table-striped latest-data'
+		className: 'table table-striped latest-data',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
 	};
 
 	var appTemplate2 = {
@@ -27,7 +34,14 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'tbody'
+		tag: 'tbody',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var dbTemplate1 = {
@@ -36,7 +50,14 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'tr'
+		tag: 'tr',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var dbTemplate2 = {
@@ -46,7 +67,14 @@
 			nonKeyed: []
 		},
 		tag: 'td',
-		className: 'dbname'
+		className: 'dbname',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1
 	};
 
 	var dbTemplate3 = {
@@ -56,7 +84,14 @@
 			nonKeyed: []
 		},
 		tag: 'td',
-		className: 'query-count'
+		className: 'query-count',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
 	};
 
 	var dbTemplate4 = {
@@ -65,7 +100,14 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'span'
+		tag: 'span',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: true,
+		hasStyle: false,
+		childrenType: 1
 	};
 
 	var queryTemplate1 = {
@@ -74,7 +116,14 @@
 			keyed: [],
 			nonKeyed: []
 		},
-		tag: 'td'
+		tag: 'td',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: true,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var queryTemplate2 = {
@@ -84,7 +133,14 @@
 			nonKeyed: []
 		},
 		tag: 'span',
-		className: 'foo'
+		className: 'foo',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1
 	};
 
 	var queryTemplate3 = {
@@ -94,7 +150,14 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		className: 'popover left'
+		className: 'popover left',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 3
 	};
 
 	var queryTemplate4 = {
@@ -104,7 +167,14 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		className: 'popover-content'
+		className: 'popover-content',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1
 	};
 
 	var queryTemplate5 = {
@@ -114,7 +184,14 @@
 			nonKeyed: []
 		},
 		tag: 'div',
-		className: 'arrow'
+		className: 'arrow',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
 	};
 
 	function createQuery(query) {
