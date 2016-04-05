@@ -1,31 +1,46 @@
 language: node_js
-
+sudo: false
 node_js:
   - 'stable'
-
-# Use container-based Travis infrastructure.
-sudo: true
 
 cache:
   directories:
     - node_modules
+     - $HOME/.chrome/chromium
+
 
 before_install:
-  - export CHROME_BIN=/usr/bin/google-chrome
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - sudo apt-get update
-  - sudo apt-get install -y libappindicator1 fonts-liberation
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome*.deb
+  - "nvm use $TRAVIS_NODE_VERSION"
+
+env:
+ global:
+    # Use newer verison of GCC to that is required to compile native npm modules for Node v4+ on Ubuntu Precise
+    # more info: https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
+    - CXX=g++-4.8
+   # No sandbox mode is needed for Chromium in Travis, it crashes otherwise: https://sites.google.com/a/chromium.org/chromedriver/help/chrome-doesn-t-start
+    - KARMA_JS_BROWSERS=ChromeNoSandbox
+
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
 
 install:
+  # Install version of npm that we are locked against
+  - npm install -g npm@3.5.3
+  # - npm config set registry http://23.251.144.68
+  # Disable the spinner, it looks bad on Travis
+  - npm config set spin false
+  - npm --version
   # Log HTTP requests
   - npm config set loglevel http
-  - npm install -g npm@3.5.2
-   # Instal npm dependecies and ensure that npm cache is not stale
+  # Install npm dependencies and ensure that npm cache is not stale
   - npm install
-   
+
 notifications:
   email: true
 
