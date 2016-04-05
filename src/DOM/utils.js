@@ -5,17 +5,21 @@ import { recyclingEnabled, pool } from './recycling';
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
 
+function isVirtualFragment(obj) {
+	return !isNullOrUndefined(obj.append);
+}
+
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
-		if (newNode.append !== undefined) {
+		if (isVirtualFragment(newNode)) {
 			newNode.append(parentDom);
 		} else {
 			parentDom.appendChild(newNode);
 		}
 	} else {
-		if (newNode.insert !== undefined) {
+		if (isVirtualFragment(newNode)) {
 			newNode.insert(parentDom, nextNode);
-		} else if (nextNode.insert !== undefined) {
+		} else if (isVirtualFragment(nextNode)) {
 			parentDom.insertBefore(newNode, nextNode.childNodes[0]);
 		} else {
 			parentDom.insertBefore(newNode, nextNode);

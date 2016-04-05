@@ -104,10 +104,13 @@
 	};
 
 	var anim2 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -176,6 +179,7 @@
 			nonKeyed: []
 		},
 		tag: 'tr',
+		className: null,
 		isComponent: false,
 		hasAttrs: true,
 		hasHooks: false,
@@ -186,10 +190,13 @@
 	};
 
 	var tableRow2 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -247,6 +254,7 @@
 			nonKeyed: []
 		},
 		tag: 'tbody',
+		className: null,
 		isComponent: false,
 		hasAttrs: false,
 		hasHooks: false,
@@ -257,10 +265,13 @@
 	};
 
 	var table3 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -329,10 +340,13 @@
 	};
 
 	var treeNode2 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -343,10 +357,13 @@
 	};
 
 	var treeNode3 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -402,10 +419,13 @@
 	};
 
 	var tree2 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -443,10 +463,13 @@
 	};
 
 	var main2 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -457,10 +480,13 @@
 	};
 
 	var main3 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -471,10 +497,13 @@
 	};
 
 	var main4 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -513,10 +542,13 @@
 	};
 
 	var app1 = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
+		tag: null,
+		className: null,
 		isComponent: true,
 		hasAttrs: false,
 		hasHooks: true,
@@ -533,6 +565,7 @@
 			nonKeyed: []
 		},
 		tag: 'pre',
+		className: null,
 		isComponent: false,
 		hasAttrs: false,
 		hasHooks: false,
