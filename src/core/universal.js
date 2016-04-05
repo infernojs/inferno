@@ -1,5 +1,5 @@
 import { isAttrAnEvent, isNullOrUndefined } from './utils';
-import { createElement } from '../DOM/utils';
+import { createElement } from './../DOM/utils';
 
 // Runs only once in applications lifetime
 const isBrowser = typeof window !== 'undefined' && window.document;

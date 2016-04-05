@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from '../core/utils';
+import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppend, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';

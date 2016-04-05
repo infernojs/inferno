@@ -1,4 +1,4 @@
-import renderToString from '../renderToString';
+import renderToString from './../renderToString';
 
 describe('SSR Creation - (non-JSX)', () => {
 	[{

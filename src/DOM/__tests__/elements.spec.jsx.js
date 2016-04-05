@@ -1,5 +1,5 @@
-import { render } from '../rendering';
-import innerHTML from '../../../tools/innerHTML';
+import { render } from './../rendering';
+import innerHTML from './../../../tools/innerHTML';
 
 describe('Elements - SVG (JSX)', () => {
 	let container;

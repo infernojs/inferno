@@ -1,3 +1,5 @@
+import Component from './../component/index';
+
 export function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
 		const isChildrenArray = isArray(children);
@@ -19,7 +21,7 @@ export function isArray(obj) {
 }
 
 export function isStatefulComponent(obj) {
-	return !isNullOrUndefined(obj) && !isNullOrUndefined(obj.prototype.render);
+	return Component.isPrototypeOf(obj);
 }
 
 export function isStringOrNumber(obj) {

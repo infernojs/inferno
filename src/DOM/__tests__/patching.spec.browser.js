@@ -1,5 +1,5 @@
-import { render } from '../rendering';
-import { createUniversalElement } from '../../core/universal';
+import { render } from './../rendering';
+import { createUniversalElement } from './../../core/universal';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {

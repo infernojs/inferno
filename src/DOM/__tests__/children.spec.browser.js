@@ -1,4 +1,4 @@
-import { render } from '../rendering';
+import { render } from './../rendering';
 
 describe('Children - (non-JSX)', () => {
 
@@ -573,14 +573,11 @@ describe('Children - (non-JSX)', () => {
 
 			renderIt();
 
-			debugger;
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
 			const addTab = container.querySelector('#add');
-			debugger;
 			addTab.click();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>');
-			debugger;
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});

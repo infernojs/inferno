@@ -1,5 +1,5 @@
-import { render } from '../rendering';
-import createElement from '../../core/createElement';
+import { render } from './../rendering';
+import createElement from './../../core/createElement';
 
 describe('SVG (non-jsx)', () => {
 	let container;

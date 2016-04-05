@@ -1,5 +1,5 @@
 import { mountNode } from './mounting';
-import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from '../core/utils';
+import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';

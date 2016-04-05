@@ -1,4 +1,4 @@
-import { render } from '../../DOM/rendering';
+import { render } from './../../DOM/rendering';
 import createElement from './../../core/createElement';
 
 

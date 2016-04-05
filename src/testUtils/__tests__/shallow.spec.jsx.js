@@ -1,8 +1,8 @@
-//import createTestTree from '../createTree';
-//import shallowRender from '../shallowRender';
-//import createTemplate from '../../core/createTemplate';
-//import Component from '../../component/Component';
-//import { addTreeConstructor } from '../../core/createTemplate';
+//import createTestTree from './../createTree';
+//import shallowRender from './../shallowRender';
+//import createTemplate from './../../core/createTemplate';
+//import Component from './../../component/Component';
+//import { addTreeConstructor } from './../../core/createTemplate';
 //
 //const Inferno = { createTemplate };
 //

@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray, isObject } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray, isObject } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
 import { patchAttribute, patchStyle } from './patching';

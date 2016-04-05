@@ -1,5 +1,5 @@
-import { render } from '../rendering';
-import style from '../../../tools/style';
+import { render } from './../rendering';
+import style from './../../../tools/style';
 
 describe('CSS style properties', () => {
 

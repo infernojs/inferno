@@ -1,5 +1,5 @@
-//import getFormElementValues from '../getFormElementValues';
-//import { render, renderToString } from '../rendering';
+//import getFormElementValues from './../getFormElementValues';
+//import { render, renderToString } from './../rendering';
 //
 //describe('getFormElemenValues', () => {
 //

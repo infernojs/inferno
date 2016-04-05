@@ -1,4 +1,4 @@
-import { render } from '../rendering';
+import { render } from './../rendering';
 
 describe('Basic event tests', () => {
 

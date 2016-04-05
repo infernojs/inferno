@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode } from '../core/utils';
+import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode } from './../core/utils';
 
 function renderChildren(children) {
 	if (children && isArray(children)) {
