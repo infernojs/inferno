@@ -32,9 +32,6 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance) {
 	const tag = node.tag;
 
-	if (tag === null) {
-		return placeholder(node, parentDom);
-	}
 	if (tpl.isComponent === true) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 	}

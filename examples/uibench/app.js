@@ -1,7 +1,61 @@
 (function() {
 	"use strict";
 
-	uibench.init('Inferno', '0.6.5');
+	uibench.init('Inferno', '0.7');
+
+	function Node(tpl) {
+		this.tpl = tpl;
+		this.dom = null;
+		this.instance = null;
+		this.tag = null;
+		this.children = null;
+		this.style = null;
+		this.className = null;
+		this.attrs = null;
+		this.events = null;
+		this.hooks = null;
+		this.key = null;
+	}
+
+	Node.prototype.setAttrs = function(attrs) {
+		this.attrs = attrs;
+		return this;
+	};
+
+	Node.prototype.setTag = function(tag) {
+		this.tag = tag;
+		return this;
+	};
+
+	Node.prototype.setStyle = function(style) {
+		this.style = style;
+		return this;
+	};
+
+	Node.prototype.setClassName = function(className) {
+		this.className = className;
+		return this;
+	};
+
+	Node.prototype.setChildren = function(children) {
+		this.children = children;
+		return this;
+	};
+
+	Node.prototype.setHooks = function(hooks) {
+		this.hooks = hooks;
+		return this;
+	};
+
+	Node.prototype.setEvents = function(events) {
+		this.events = events;
+		return this;
+	};
+
+	Node.prototype.setKey = function(key) {
+		this.key = key;
+		return this;
+	};
 
 	var animBox1 = {
 		dom: Inferno.universal.createElement('div', { className : 'AnimBox' }),
@@ -27,12 +81,9 @@
 			'border-radius:' + (time % 10).toString() + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')';
 
-		return {
-			dom: null,
-			tpl: animBox1,
-			style: style,
-			attrs: { 'data-id': data.id }
-		};
+		return new Node(animBox1)
+					.setStyle(style)
+					.setAttrs({ 'data-id': data.id });
 	};
 
 	var anim1 = {
@@ -66,21 +117,6 @@
 		childrenType: 0
 	};
 
-	function createAnimNode(key, data) {
-		return {
-			dom: null,
-			tpl: anim2,
-			tag: AnimBox,
-			key: key,
-			attrs: {
-				data: data
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var Anim = function (props) {
 		var data = props.data;
 		var items = data.items;
@@ -88,14 +124,19 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(createAnimNode(item.id, item));
+			children.push(
+				new Node(anim2)
+					.setTag(AnimBox)
+					.setAttrs({
+						data: item
+					})
+					.setHooks({
+						componentShouldUpdate: appUpdateCheck
+					})
+					.setKey(item.id)
+			)
 		}
-
-		return {
-			dom: null,
-			tpl: anim1,
-			children: children
-		};
+		return new Node(anim1).setChildren(children);
 	};
 
 	var tableCell1 = {
@@ -120,17 +161,12 @@
 	}
 
 	var TableCell = function (props) {
-		return {
-			dom: null,
-			tpl: tableCell1,
-			events: {
-				onclick: (e) => {
-					console.log('Clicked' + props.text);
-					e.stopPropagation();
-				}
-			},
-			children: props.text
-		};
+		return new Node(tableCell1).setChildren(props.text).setEvents({
+			onclick: (e) => {
+				console.log('Clicked' + props.text);
+				e.stopPropagation();
+			}
+		});
 	};
 
 	var tableRow1 = {
@@ -163,19 +199,6 @@
 		childrenType: 0
 	};
 
-	function createTableCellNode(key, text) {
-		return {
-			dom: null,
-			tpl: tableRow2,
-			tag: TableCell,
-			key: key,
-			attrs: { text: text },
-			hooks: {
-				componentShouldUpdate: updateTableCell
-			}
-		};
-	}
-
 	var TableRow = function (props) {
 		var data = props.data;
 		var classes = 'TableRow';
@@ -183,21 +206,21 @@
 			classes = 'TableRow active';
 		}
 		var cells = data.props;
-
-		var children = [ createTableCellNode(-1, '#' + data.id) ];
+		var children = [
+			new Node(tableRow2).setTag(TableCell).setAttrs({ text: '#' + data.id }).setKey(-1).setHooks({
+				componentShouldUpdate: updateTableCell
+			})
+		];
 
 		for (var i = 0; i < cells.length; i++) {
 			children.push(
-				createTableCellNode(i, cells[i])
+				new Node(tableRow2).setTag(TableCell).setAttrs({ text: cells[i] }).setKey(i).setHooks({
+					componentShouldUpdate: updateTableCell
+				})
 			);
 		}
-		return {
-			dom: null,
-			tpl: tableRow1,
-			attrs: { 'data-id': data.id },
-			className: classes,
-			children: children
-		};
+
+		return new Node(tableRow1).setChildren(children).setClassName(classes).setAttrs({ 'data-id': data.id });
 	};
 
 	var table1 = {
@@ -247,39 +270,24 @@
 		childrenType: 0
 	};
 
-	function createTableRowNode(key, item) {
-		return {
-			dom: null,
-			tpl: table3,
-			tag: TableRow,
-			key: key,
-			attrs: {
-				data: item
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var Table = function (props) {
 		var items = props.data.items;
 
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(createTableRowNode(item.id, item));
+			children.push(
+				new Node(table3).setTag(TableRow).setAttrs({
+					data: item
+				}).setHooks({
+					componentShouldUpdate: appUpdateCheck
+				}).setKey(item.id)
+			);
 		}
 
-		return {
-			dom: null,
-			tpl: table1,
-			children: {
-				dom: null,
-				tpl: table2,
-				children: children
-			}
-		};
+		return new Node(table1).setChildren(
+			new Node(table2).setChildren(children)
+		);
 	};
 
 	var treeLeaf1 = {
@@ -300,11 +308,7 @@
 	};
 
 	var TreeLeaf = function (props) {
-		return {
-			dom: null,
-			tpl: treeLeaf1,
-			children: '' + props.data.id
-		};
+		return new Node(treeLeaf1).setChildren(props.data.id);
 	};
 
 	var treeNode1 = {
@@ -352,21 +356,6 @@
 		childrenType: 0
 	};
 
-	function createTreeNode(tpl, tag, key, data) {
-		return {
-			dom: null,
-			tpl: tpl,
-			tag: tag,
-			key: key,
-			attrs: {
-				data: data
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var TreeNode = function (props) {
 		var data = props.data;
 		var children = [];
@@ -375,20 +364,24 @@
 			var n = data.children[i];
 			if (n.container) {
 				children.push(
-					createTreeNode(treeNode2, TreeNode, n.id, n)
+					new Node(treeNode2).setTag(TreeNode).setAttrs({
+						data: n
+					}).setHooks({
+						componentShouldUpdate: appUpdateCheck
+					}).setKey(n.id)
 				);
 			} else {
 				children.push(
-					createTreeNode(treeNode3, TreeLeaf, n.id, n)
+					new Node(treeNode3).setTag(TreeLeaf).setAttrs({
+						data: n
+					}).setHooks({
+						componentShouldUpdate: appUpdateCheck
+					}).setKey(n.id)
 				);
 			}
 		}
 
-		return {
-			dom: null,
-			tpl: treeNode1,
-			children: children
-		};
+		return new Node(treeNode1).setChildren(children);
 	};
 
 	var tree1 = {
@@ -423,21 +416,13 @@
 	};
 
 	var Tree = function (props) {
-		return {
-			dom: null,
-			tpl: tree1,
-			children: {
-				dom: null,
-				tpl: tree2,
-				tag: TreeNode,
-				attrs: {
-					data: props.data.root
-				},
-				hooks: {
-					componentShouldUpdate: appUpdateCheck
-				}
-			}
-		};
+		return new Node(tree1).setChildren(
+			new Node(tree2).setTag(TreeNode).setAttrs({
+				data: props.data.root
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			})
+		);
 	};
 
 	var main1 = {
@@ -499,38 +484,32 @@
 		childrenType: 0
 	};
 
-	function createMainNode(tpl, tag, data) {
-		return {
-			dom: null,
-			tpl: tpl,
-			tag: tag,
-			attrs: {
-				data: data
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var Main = function (props) {
 		var data = props.data;
 		var location = data.location;
 
 		var section;
 		if (location === 'table') {
-			section = createMainNode(main2, Table, data.table);
+			section = new Node(main2).setTag(Table).setAttrs({
+				data: data.table
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			});
 		} else if (location === 'anim') {
-			section = createMainNode(main3, Anim, data.anim);
+			section = new Node(main3).setTag(Anim).setAttrs({
+				data: data.anim
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			});
 		} else if (location === 'tree') {
-			section = createMainNode(main4, Tree, data.tree);
+			section = new Node(main4).setTag(Tree).setAttrs({
+				data: data.tree
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			});
 		}
 
-		return {
-			dom: null,
-			tpl: main1,
-			children: section
-		};
+		return new Node(main1).setChildren(section);
 	};
 
 	var app1 = {
@@ -572,24 +551,18 @@
 
 		uibench.run(
 			function(state) {
-				InfernoDOM.render({
-					dom: null,
-					tpl: app1,
-					tag: Main,
-					attrs: {
+				InfernoDOM.render(
+					new Node(app1).setTag(Main).setAttrs({
 						data: state
-					},
-					hooks: {
+					}).setHooks({
 						componentShouldUpdate: appUpdateCheck
-					}
-				}, container);
+					})
+				, container);
 			},
 			function(samples) {
-				InfernoDOM.render({
-					dom: null,
-					tpl: app2,
-					children: JSON.stringify(samples, null, ' ')
-				}, container);
+				InfernoDOM.render(
+					new Node(app2).setChildren(JSON.stringify(samples, null, ' '))
+				, container);
 			}
 		);
 	});

@@ -184,10 +184,10 @@
 					return textNode;
 				}
 			} else {
-				var _textNode = document.createTextNode(text);
+				var textNode = document.createTextNode(text);
 
-				parentDom.appendChild(_textNode);
-				return _textNode;
+				parentDom.appendChild(textNode);
+				return textNode;
 			}
 		} else {
 			return document.createTextNode(text);
@@ -539,16 +539,16 @@
 		}
 		if (!lastAttrsIsUndef) {
 			var lastAttrsKeys = Object.keys(lastAttrs);
-			var _attrKeysLength = lastAttrsKeys.length;
+			var attrKeysLength = lastAttrsKeys.length;
 
-			for (var _i = 0; _i < _attrKeysLength; _i++) {
-				var _attr = lastAttrsKeys[_i];
+			for (var i = 0; i < attrKeysLength; i++) {
+				var attr = lastAttrsKeys[i];
 
-				if (nextAttrsIsUndef || isNullOrUndefined(nextAttrs[_attr])) {
-					if (_attr === 'ref') {
-						diffRef(instance, lastAttrs[_attr], null, dom);
+				if (nextAttrsIsUndef || isNullOrUndefined(nextAttrs[attr])) {
+					if (attr === 'ref') {
+						diffRef(instance, lastAttrs[attr], null, dom);
 					} else {
-						dom.removeAttribute(_attr);
+						dom.removeAttribute(attr);
 					}
 				}
 			}
@@ -556,7 +556,7 @@
 	}
 
 	function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, deepCheck) {
-		var nextHooks = void 0;
+		var nextHooks = undefined;
 
 		if (nextNode.hasHooks === true && (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate))) {
 			nextHooks.willUpdate(lastNode.dom);
@@ -743,14 +743,14 @@
 			var textNode = document.createTextNode(nextNode);
 			parentDom.replaceChild(textNode, lastNode.dom);
 		} else {
-			var _lastTpl = lastNode.tpl;
-			var _nextTpl = nextNode.tpl;
-			var _deepCheck = _lastTpl !== _nextTpl;
+			var lastTpl = lastNode.tpl;
+			var nextTpl = nextNode.tpl;
+			var _deepCheck = lastTpl !== nextTpl;
 
-			if (_lastTpl === undefined) {
+			if (lastTpl === undefined) {
 				diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, _deepCheck);
 			} else {
-				diffNodesWithTemplate(lastNode, nextNode, _lastTpl, _nextTpl, parentDom, namespace, lifecycle, context, instance, _deepCheck);
+				diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, _deepCheck);
 			}
 		}
 	}
@@ -772,22 +772,22 @@
 		} else if (isNullOrUndefined(nextAttrValue)) {
 			dom.removeAttribute('style');
 		} else {
-			var _styleKeys = Object.keys(nextAttrValue);
+			var styleKeys = Object.keys(nextAttrValue);
 
-			for (var _i = 0; _i < _styleKeys.length; _i++) {
-				var _style = _styleKeys[_i];
-				var _value = nextAttrValue[_style];
+			for (var i = 0; i < styleKeys.length; i++) {
+				var style = styleKeys[i];
+				var value = nextAttrValue[style];
 
-				dom.style[_style] = _value;
+				dom.style[style] = value;
 			}
 			// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
 			// TODO: needs performance benchmark
 			var lastStyleKeys = Object.keys(lastAttrValue);
 
-			for (var _i2 = 0; _i2 < lastStyleKeys.length; _i2++) {
-				var _style2 = lastStyleKeys[_i2];
-				if (isNullOrUndefined(nextAttrValue[_style2])) {
-					dom.style[_style2] = '';
+			for (var i = 0; i < lastStyleKeys.length; i++) {
+				var style = lastStyleKeys[i];
+				if (isNullOrUndefined(nextAttrValue[style])) {
+					dom.style[style] = '';
 				}
 			}
 		}
@@ -807,11 +807,11 @@
 		}
 		var lastEventKeys = Object.keys(lastEvents);
 
-		for (var _i3 = 0; _i3 < lastEventKeys.length; _i3++) {
-			var _event = lastEventKeys[_i3];
+		for (var i = 0; i < lastEventKeys.length; i++) {
+			var event = lastEventKeys[i];
 
-			if (isNullOrUndefined(nextEvents[_event])) {
-				dom[_event] = null;
+			if (isNullOrUndefined(nextEvents[event])) {
+				dom[event] = null;
 			}
 		}
 	}
@@ -867,12 +867,12 @@
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 				}
-				var _nextNode = Component(nextProps);
+				var nextNode = Component(nextProps);
 				var dom = lastNode.dom;
-				_nextNode.dom = dom;
+				nextNode.dom = dom;
 
-				diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
-				lastNode.instance = _nextNode;
+				diffNodes(instance, nextNode, dom, null, lifecycle, context, null, true);
+				lastNode.instance = nextNode;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 				}
@@ -900,7 +900,7 @@
 			} else {
 				while (lastChildrenLength !== nextChildrenLength) {
 					var nextChild = nextChildren[lastChildrenLength];
-					var domNode = void 0;
+					var domNode = undefined;
 
 					if (isStringOrNumber(nextChild)) {
 						domNode = document.createTextNode(nextChild);
@@ -920,113 +920,113 @@
 			}
 		}
 		for (var i = 0; i < nextChildrenLength; i++) {
-			var _lastChild = lastChildren[i];
-			var _nextChild = nextChildren[i];
+			var lastChild = lastChildren[i];
+			var nextChild = nextChildren[i];
 			var index = i + domChildrenIndex;
 
-			if (_lastChild !== _nextChild) {
-				if (isInvalidNode(_nextChild)) {
-					if (!isInvalidNode(_lastChild)) {
+			if (lastChild !== nextChild) {
+				if (isInvalidNode(nextChild)) {
+					if (!isInvalidNode(lastChild)) {
 						var childNode = domChildren[index];
 
 						if (!isNullOrUndefined(childNode)) {
-							if (isStringOrNumber(_lastChild)) {
+							if (isStringOrNumber(lastChild)) {
 								childNode.nodeValue = '';
 							} else if (sameLength === true) {
 								var textNode = createEmptyTextNode();
 
-								if (isArray(_lastChild) && _lastChild.length === 0) {
+								if (isArray(lastChild) && lastChild.length === 0) {
 									insertOrAppend(dom, textNode);
 									isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 								} else {
 									dom.replaceChild(textNode, domChildren[index]);
 									isNotVirtualFragment && domChildren.splice(index, 1, textNode);
-									detachNode(_lastChild);
+									detachNode(lastChild);
 								}
 							}
 						}
 					}
 				} else {
-					if (isInvalidNode(_lastChild)) {
-						if (isStringOrNumber(_nextChild)) {
-							var _textNode = document.createTextNode(_nextChild);
-							dom.replaceChild(_textNode, domChildren[index]);
-							isNotVirtualFragment && domChildren.splice(index, 1, _textNode);
+					if (isInvalidNode(lastChild)) {
+						if (isStringOrNumber(nextChild)) {
+							var textNode = document.createTextNode(nextChild);
+							dom.replaceChild(textNode, domChildren[index]);
+							isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 						} else if (sameLength === true) {
-							var _domNode = mountNode(_nextChild, null, namespace, lifecycle, context, instance);
-							dom.replaceChild(_domNode, domChildren[index]);
-							isNotVirtualFragment && domChildren.splice(index, 1, _domNode);
+							var domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+							dom.replaceChild(domNode, domChildren[index]);
+							isNotVirtualFragment && domChildren.splice(index, 1, domNode);
 						}
-					} else if (isStringOrNumber(_nextChild)) {
+					} else if (isStringOrNumber(nextChild)) {
 						if (lastChildrenLength === 1) {
-							if (isStringOrNumber(_lastChild)) {
+							if (isStringOrNumber(lastChild)) {
 								if (dom.getElementsByTagName !== undefined) {
-									dom.firstChild.nodeValue = _nextChild;
+									dom.firstChild.nodeValue = nextChild;
 								} else {
-									dom.nodeValue = _nextChild;
+									dom.nodeValue = nextChild;
 								}
 							} else {
-								detachNode(_lastChild);
-								dom.textContent = _nextChild;
+								detachNode(lastChild);
+								dom.textContent = nextChild;
 							}
 						} else {
-							var _textNode2 = document.createTextNode(_nextChild);
+							var textNode = document.createTextNode(nextChild);
 							var child = domChildren[index];
 
 							if (isNullOrUndefined(child)) {
-								dom.nodeValue = _textNode2.nodeValue;
+								dom.nodeValue = textNode.nodeValue;
 							} else {
 								// Next is single string so remove all children
 								if (child.append === undefined) {
-									isNotVirtualFragment && domChildren.splice(index, 1, _textNode2);
-									dom.replaceChild(_textNode2, child);
+									isNotVirtualFragment && domChildren.splice(index, 1, textNode);
+									dom.replaceChild(textNode, child);
 								} else {
 									// If previous child is virtual fragment remove all its content and replace with textNode
-									dom.insertBefore(_textNode2, child.firstChild);
+									dom.insertBefore(textNode, child.firstChild);
 									child.remove();
-									domChildren.splice(0, domChildren.length, _textNode2);
+									domChildren.splice(0, domChildren.length, textNode);
 								}
 							}
-							detachNode(_lastChild);
+							detachNode(lastChild);
 						}
-					} else if (isArray(_nextChild)) {
-						if (isKeyed(_lastChild, _nextChild)) {
-							patchKeyedChildren(_lastChild, _nextChild, domChildren[index], namespace, lifecycle, context, instance);
+					} else if (isArray(nextChild)) {
+						if (isKeyed(lastChild, nextChild)) {
+							patchKeyedChildren(lastChild, nextChild, domChildren[index], namespace, lifecycle, context, instance);
 						} else {
-							if (isArray(_lastChild)) {
+							if (isArray(lastChild)) {
 								var domChild = domChildren[index];
 
 								if (domChild.append === undefined) {
-									if (_nextChild.length > 1 && _lastChild.length === 1) {
+									if (nextChild.length > 1 && lastChild.length === 1) {
 										var virtualFragment = createVirtualFragment();
 
 										virtualFragment.insert(dom, domChild);
 										virtualFragment.appendChild(domChild);
 										isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
-										patchNonKeyedChildren(_lastChild, _nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, 0);
+										patchNonKeyedChildren(lastChild, nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, 0);
 									} else {
-										patchNonKeyedChildren(_lastChild, _nextChild, dom, domChildren, namespace, lifecycle, context, instance, 0);
+										patchNonKeyedChildren(lastChild, nextChild, dom, domChildren, namespace, lifecycle, context, instance, 0);
 									}
 								} else {
-									patchNonKeyedChildren(_lastChild, _nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+									patchNonKeyedChildren(lastChild, nextChild, domChildren[index], domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 								}
 							} else {
-								if (_nextChild.length > 1) {
-									var _virtualFragment = createVirtualFragment();
-									_virtualFragment.appendChild(dom.firstChild);
-									insertOrAppend(dom, _virtualFragment, dom.firstChild);
-									isNotVirtualFragment && domChildren.splice(index, 1, _virtualFragment);
-									patchNonKeyedChildren([_lastChild], _nextChild, _virtualFragment, _virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
+								if (nextChild.length > 1) {
+									var virtualFragment = createVirtualFragment();
+									virtualFragment.appendChild(dom.firstChild);
+									insertOrAppend(dom, virtualFragment, dom.firstChild);
+									isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
+									patchNonKeyedChildren([lastChild], nextChild, virtualFragment, virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
 								} else {
-									patchNonKeyedChildren([_lastChild], _nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
+									patchNonKeyedChildren([lastChild], nextChild, dom, domChildren, namespace, lifecycle, context, instance, i);
 								}
 							}
 						}
 					} else {
-						if (isArray(_lastChild)) {
-							patchNonKeyedChildren(_lastChild, [_nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
+						if (isArray(lastChild)) {
+							patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, namespace, lifecycle, context, instance, 0);
 						} else {
-							patchNode(_lastChild, _nextChild, dom, namespace, lifecycle, context, instance, null);
+							patchNode(lastChild, nextChild, dom, namespace, lifecycle, context, instance, null);
 						}
 					}
 				}
@@ -1047,7 +1047,7 @@
 			dom.textContent = '';
 			return;
 		}
-		var oldItem = void 0;
+		var oldItem = undefined;
 		var stop = false;
 		var startIndex = 0;
 		var oldStartIndex = 0;
@@ -1055,9 +1055,9 @@
 		var oldEndIndex = lastChildrenLength - 1;
 		var oldStartItem = lastChildrenLength > 0 ? lastChildren[oldStartIndex] : null;
 		var startItem = nextChildrenLength > 0 ? nextChildren[startIndex] : null;
-		var endItem = void 0;
-		var oldEndItem = void 0;
-		var nextNode = void 0;
+		var endItem = undefined;
+		var oldEndItem = undefined;
+		var nextNode = undefined;
 
 		// TODO don't read key too often
 		outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
@@ -1133,14 +1133,14 @@
 		} else {
 			var oldItemsMap = new Map();
 
-			for (var _i4 = oldStartIndex; _i4 <= oldEndIndex; _i4++) {
-				oldItem = lastChildren[_i4];
+			for (var i = oldStartIndex; i <= oldEndIndex; i++) {
+				oldItem = lastChildren[i];
 				oldItemsMap.set(oldItem.key, oldItem);
 			}
 			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1] : null;
 
-			for (var _i5 = endIndex; _i5 >= startIndex; _i5--) {
-				var item = nextChildren[_i5];
+			for (var i = endIndex; i >= startIndex; i--) {
+				var item = nextChildren[i];
 				var key = item.key;
 				oldItem = oldItemsMap.get(key);
 				nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
@@ -1156,8 +1156,8 @@
 				}
 				nextNode = item;
 			}
-			for (var _i6 = oldStartIndex; _i6 <= oldEndIndex; _i6++) {
-				oldItem = lastChildren[_i6];
+			for (var i = oldStartIndex; i <= oldEndIndex; i++) {
+				oldItem = lastChildren[i];
 				if (oldItemsMap.has(oldItem.key)) {
 					remove(oldItem, dom);
 				}
@@ -1229,9 +1229,6 @@
 	function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance) {
 		var tag = node.tag;
 
-		if (tag === null) {
-			return placeholder(node, parentDom);
-		}
 		if (tpl.isComponent === true) {
 			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 		}
@@ -1417,7 +1414,7 @@
 	function mountComponent(parentNode, Component, props, hooks, children, parentDom, lifecycle, context) {
 		props = addChildrenToProps(children, props);
 
-		var dom = void 0;
+		var dom = undefined;
 		if (isStatefulComponent(Component)) {
 			var instance = new Component(props);
 			instance._diffNodes = diffNodes;
