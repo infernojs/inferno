@@ -1,23 +1,29 @@
 language: node_js
-sudo: false
+
 node_js:
   - 'stable'
+
+# Use container-based Travis infrastructure.
+sudo: true
 
 cache:
   directories:
     - node_modules
 
 before_install:
-  - "nvm use $TRAVIS_NODE_VERSION"
+  - export CHROME_BIN=/usr/bin/google-chrome
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sudo apt-get update
+  - sudo apt-get install -y libappindicator1 fonts-liberation
+  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - sudo dpkg -i google-chrome*.deb
 
 install:
-  # Install version of npm that we are locked against
-  - npm install -g npm@3.8.3
-  # - npm config set registry http://23.251.144.68
-  # Disable the spinner, it looks bad on Travis
-  - npm config set spin false
-  - npm --version
-  # Install npm dependencies and ensure that npm cache is not stale
+  # Log HTTP requests
+  - npm config set loglevel http
+  - npm install -g npm@3.5.2
+   # Instal npm dependecies and ensure that npm cache is not stale
   - npm install
 
 notifications:
