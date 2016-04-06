@@ -1,7 +1,7 @@
 import { patchNode } from './patching';
 import { isNullOrUndefined } from './../core/utils';
 
-export const recyclingEnabled = true;
+export const recyclingEnabled = false;
 
 export function recycle(node, tpl, lifecycle, context, instance) {
 	if (tpl !== undefined) {

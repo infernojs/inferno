@@ -3,7 +3,7 @@
 
 	uibench.init('Inferno', '0.7');
 
-	function Node(tpl) {
+	function InfernoVNode(tpl) {
 		this.tpl = tpl;
 		this.dom = null;
 		this.instance = null;
@@ -17,62 +17,92 @@
 		this.key = null;
 	}
 
-	Node.prototype.setAttrs = function(attrs) {
-		this.attrs = attrs;
-		return this;
-	};
+	function VNode(shape, childrenType) {
+		var tag = shape.tag || null;
+		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
 
-	Node.prototype.setTag = function(tag) {
-		this.tag = tag;
-		return this;
-	};
+		var children = shape.children != null ? shape.children : null;
+		var childrenIsDynamic = children && children.arg !== undefined ? true : false;
 
-	Node.prototype.setStyle = function(style) {
-		this.style = style;
-		return this;
-	};
+		var attrs = shape.attrs || null;
+		var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
 
-	Node.prototype.setClassName = function(className) {
-		this.className = className;
-		return this;
-	};
+		var hooks = shape.hooks || null;
+		var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
 
-	Node.prototype.setChildren = function(children) {
-		this.children = children;
-		return this;
-	};
+		var events = shape.events || null;
+		var eventsIsDynamic = events && events.arg !== undefined ? true : false;
 
-	Node.prototype.setHooks = function(hooks) {
-		this.hooks = hooks;
-		return this;
-	};
+		var key = shape.key != null ? shape.key : null;
+		var keyIsDynamic = key != null && key.arg !== undefined ? true : false;
 
-	Node.prototype.setEvents = function(events) {
-		this.events = events;
-		return this;
-	};
+		var style = shape.style  || null;
+		var styleIsDynamic = style && style.arg !== undefined ? true : false;
 
-	Node.prototype.setKey = function(key) {
-		this.key = key;
-		return this;
-	};
+		var className = shape.className !== undefined ? shape.className : null;
+		var classNameIsDynamic = className && className.arg !== undefined ? true : false;
 
-	var animBox1 = {
-		dom: Inferno.universal.createElement('div', { className : 'AnimBox' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+		var dom = null;
+
+		if (typeof tag === 'string') {
+			var newAttrs = Object.assign({}, className ? {className: className} : {}, shape.attrs || {});
+			dom =  Inferno.universal.createElement(tag, newAttrs)
+		}
+
+		var tpl = {
+			dom: dom,
+			pools: {
+				keyed: {},
+				nonKeyed: []
+			},
+			tag: !tagIsDynamic ? tag : null,
+			isComponent: tagIsDynamic,
+			hasAttrs: attrsIsDynamic,
+			hasHooks: hooksIsDynamic,
+			hasEvents: eventsIsDynamic,
+			hasStyle: styleIsDynamic,
+			hasClassName: classNameIsDynamic,
+			childrenType: childrenType === undefined ? (children ? 4 : 0) : childrenType
+		};
+
+		return function() {
+			var vNode = new InfernoVNode(tpl);
+
+			if (tagIsDynamic === true) {
+				vNode.tag = arguments[tag.arg];
+			}
+			if (childrenIsDynamic === true) {
+				vNode.children = arguments[children.arg];
+			}
+			if (attrsIsDynamic === true) {
+				vNode.attrs = arguments[attrs.arg];
+			}
+			if (hooksIsDynamic === true) {
+				vNode.hooks = arguments[hooks.arg];
+			}
+			if (eventsIsDynamic === true) {
+				vNode.events = arguments[events.arg];
+			}
+			if (keyIsDynamic === true) {
+				vNode.key = arguments[key.arg];
+			}
+			if (styleIsDynamic === true) {
+				vNode.style = arguments[style.arg];
+			}
+			if (classNameIsDynamic === true) {
+				vNode.className = arguments[className.arg];
+			}
+
+			return vNode;
+		};
+	}
+
+	var animBox1 = VNode({
 		tag: 'div',
 		className: 'AnimBox',
-		isComponent: false,
-		hasAttrs: true,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: true,
-		childrenType: 0
-	};
+		attrs: { arg: 0 },
+		style: { arg: 1 }
+	});
 
 	var AnimBox = function (props) {
 		var data = props.data;
@@ -81,44 +111,21 @@
 			'border-radius:' + (time % 10).toString() + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')';
 
-		return new Node(animBox1)
-					.setStyle(style)
-					.setAttrs({ 'data-id': data.id });
+		return animBox1({ 'data-id': data.id }, style)
 	};
 
-	var anim1 = {
-		dom: Inferno.universal.createElement('div', { className : 'Anim' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var anim1 = VNode({
 		tag: 'div',
 		className: 'Anim',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 3
-	};
+		children: { arg: 0 }
+	}, 3);
 
-	var anim2 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var anim2 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 },
+		key: { arg: 3 }
+	});
 
 	var Anim = function (props) {
 		var data = props.data;
@@ -127,44 +134,24 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(
-				new Node(anim2)
-					.setTag(AnimBox)
-					.setAttrs({
-						data: item
-					})
-					.setHooks({
-						componentShouldUpdate: appUpdateCheck
-					})
-					.setKey(item.id)
-			)
+			children.push(anim2(AnimBox, { data: item }, { componentShouldUpdate: appUpdateCheck }, item.id));
 		}
-		return new Node(anim1).setChildren(children);
+		return anim1(children);
 	};
 
-	var tableCell1 = {
-		dom: Inferno.universal.createElement('td', { className: 'TableCell' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var tableCell1 = VNode({
 		tag: 'td',
 		className: 'TableCell',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: true,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 1
-	};
+		children: { arg: 0 },
+		events: { arg: 1 }
+	}, 1);
 
 	function updateTableCell(domNode, lastProps, nextProps) {
 		return lastProps.text !== nextProps.text;
 	}
 
 	var TableCell = function (props) {
-		return new Node(tableCell1).setChildren(props.text).setEvents({
+		return tableCell1(props.text, {
 			onclick: (e) => {
 				console.log('Clicked' + props.text);
 				e.stopPropagation();
@@ -172,39 +159,19 @@
 		});
 	};
 
-	var tableRow1 = {
-		dom: Inferno.universal.createElement('tr'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var tableRow1 = VNode({
 		tag: 'tr',
-		className: null,
-		isComponent: false,
-		hasAttrs: true,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: true,
-		hasStyle: false,
-		childrenType: 3
-	};
+		children: { arg: 0 },
+		className: { arg: 1 },
+		attrs: { arg: 2 }
+	}, 3);
 
-	var tableRow2 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var tableRow2 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 },
+		key: { arg: 3 }
+	});
 
 	var TableRow = function (props) {
 		var data = props.data;
@@ -214,72 +181,39 @@
 		}
 		var cells = data.props;
 		var children = [
-			new Node(tableRow2).setTag(TableCell).setAttrs({ text: '#' + data.id }).setKey(-1).setHooks({
+			tableRow2(TableCell, { text: '#' + data.id }, {
 				componentShouldUpdate: updateTableCell
-			})
+			}, -1)
 		];
 
 		for (var i = 0; i < cells.length; i++) {
 			children.push(
-				new Node(tableRow2).setTag(TableCell).setAttrs({ text: cells[i] }).setKey(i).setHooks({
+				tableRow2(TableCell, { text: cells[i] }, {
 					componentShouldUpdate: updateTableCell
-				})
+				}, i)
 			);
 		}
 
-		return new Node(tableRow1).setChildren(children).setClassName(classes).setAttrs({ 'data-id': data.id });
+		return tableRow1(children, classes, { 'data-id': data.id });
 	};
 
-	var table1 = {
-		dom: Inferno.universal.createElement('table', { className: 'Table' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var table1 = VNode({
 		tag: 'table',
 		className: 'Table',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 2
-	};
+		children: { arg: 0 }
+	}, 2);
 
-	var table2 = {
-		dom: Inferno.universal.createElement('tbody'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var table2 = VNode({
 		tag: 'tbody',
-		className: null,
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 3
-	};
+		children: { arg: 0 }
+	}, 3);
 
-	var table3 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var table3 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 },
+		key: { arg: 3 }
+	});
 
 	var Table = function (props) {
 		var items = props.data.items;
@@ -288,90 +222,42 @@
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			children.push(
-				new Node(table3).setTag(TableRow).setAttrs({
-					data: item
-				}).setHooks({
-					componentShouldUpdate: appUpdateCheck
-				}).setKey(item.id)
+				table3(TableRow, { data: item }, { componentShouldUpdate: appUpdateCheck }, item.id)
 			);
 		}
 
-		return new Node(table1).setChildren(
-			new Node(table2).setChildren(children)
-		);
+		return table1(table2(children));
 	};
 
-	var treeLeaf1 = {
-		dom: Inferno.universal.createElement('li', { className: 'TreeLeaf' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var treeLeaf1 = VNode({
 		tag: 'li',
 		className: 'TreeLeaf',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 1
-	};
+		children: { arg: 0 }
+	}, 1);
 
 	var TreeLeaf = function (props) {
-		return new Node(treeLeaf1).setChildren(props.data.id);
+		return treeLeaf1(props.data.id);
 	};
 
-	var treeNode1 = {
-		dom: Inferno.universal.createElement('ul', { className: 'TreeNode' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var treeNode1 = VNode({
 		tag: 'ul',
 		className: 'TreeNode',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 3
-	};
+		children: { arg: 0 }
+	}, 3);
 
-	var treeNode2 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var treeNode2 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 },
+		key: { arg: 3 }
+	});
 
-	var treeNode3 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var treeNode3 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 },
+		key: { arg: 3 }
+	});
 
 	var TreeNode = function (props) {
 		var data = props.data;
@@ -381,137 +267,71 @@
 			var n = data.children[i];
 			if (n.container) {
 				children.push(
-					new Node(treeNode2).setTag(TreeNode).setAttrs({
+					treeNode2(TreeNode, {
 						data: n
-					}).setHooks({
+					}, {
 						componentShouldUpdate: appUpdateCheck
-					}).setKey(n.id)
+					}, n.id)
 				);
 			} else {
 				children.push(
-					new Node(treeNode3).setTag(TreeLeaf).setAttrs({
+					treeNode3(TreeLeaf, {
 						data: n
-					}).setHooks({
+					}, {
 						componentShouldUpdate: appUpdateCheck
-					}).setKey(n.id)
+					}, n.id)
 				);
 			}
 		}
 
-		return new Node(treeNode1).setChildren(children);
+		return treeNode1(children);
 	};
 
-	var tree1 = {
-		dom: Inferno.universal.createElement('div', { className: 'Tree' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var tree1 = VNode({
 		tag: 'div',
 		className: 'Tree',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 2
-	};
+		children: { arg: 0 }
+	}, 2);
 
-	var tree2 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var tree2 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 }
+	});
 
 	var Tree = function (props) {
-		return new Node(tree1).setChildren(
-			new Node(tree2).setTag(TreeNode).setAttrs({
+		return tree1(
+			tree2(TreeNode, {
 				data: props.data.root
-			}).setHooks({
+			}, {
 				componentShouldUpdate: appUpdateCheck
 			})
 		);
 	};
 
-	var main1 = {
-		dom: Inferno.universal.createElement('div', { className: 'Main' }),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var main1 = VNode({
 		tag: 'div',
 		className: 'Main',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 2
-	};
+		children: { arg: 0 }
+	}, 2);
 
-	var main2 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var main2 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 }
+	});
 
-	var main3 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var main3 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 }
+	});
 
-	var main4 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var main4 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 }
+	});
 
 	var Main = function (props) {
 		var data = props.data;
@@ -519,61 +339,38 @@
 
 		var section;
 		if (location === 'table') {
-			section = new Node(main2).setTag(Table).setAttrs({
+			section = main2(Table, {
 				data: data.table
-			}).setHooks({
+			}, {
 				componentShouldUpdate: appUpdateCheck
 			});
 		} else if (location === 'anim') {
-			section = new Node(main3).setTag(Anim).setAttrs({
+			section = main3(Anim, {
 				data: data.anim
-			}).setHooks({
+			}, {
 				componentShouldUpdate: appUpdateCheck
 			});
 		} else if (location === 'tree') {
-			section = new Node(main4).setTag(Tree).setAttrs({
+			section = main4(Tree, {
 				data: data.tree
-			}).setHooks({
+			}, {
 				componentShouldUpdate: appUpdateCheck
 			});
 		}
 
-		return new Node(main1).setChildren(section);
+		return new main1(section);
 	};
 
-	var app1 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: null,
-		className: null,
-		isComponent: true,
-		hasAttrs: false,
-		hasHooks: true,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+	var app1 = VNode({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 }
+	});
 
-	var app2 = {
-		dom: Inferno.universal.createElement('pre'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var app2 = VNode({
 		tag: 'pre',
-		className: null,
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 4
-	};
+		children: { arg: 0 }
+	}, 4);
 
 	function appUpdateCheck(domNode, lastProps, nextProps) {
 		return lastProps.data !== nextProps.data;
@@ -585,16 +382,16 @@
 		uibench.run(
 			function(state) {
 				InfernoDOM.render(
-					new Node(app1).setTag(Main).setAttrs({
+					app1(Main, {
 						data: state
-					}).setHooks({
+					}, {
 						componentShouldUpdate: appUpdateCheck
 					})
 				, container);
 			},
 			function(samples) {
 				InfernoDOM.render(
-					new Node(app2).setChildren(JSON.stringify(samples, null, ' '))
+					app2(JSON.stringify(samples, null, ' '))
 				, container);
 			}
 		);

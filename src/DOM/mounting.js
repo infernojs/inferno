@@ -35,7 +35,7 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	if (tpl.isComponent === true) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 	}
-	const dom = tpl.dom.cloneNode(true);
+	const dom = tpl.dom.cloneNode(false);
 
 	node.dom = dom;
 	if (tpl.hasHooks === true) {
