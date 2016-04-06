@@ -228,8 +228,8 @@ export function createVirtualFragment() {
 }
 
 export function isKeyed(lastChildren, nextChildren) {
-	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
-		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && nextChildren[0].key !== undefined
+		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && lastChildren[0].key !== undefined;
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
