@@ -51,7 +51,7 @@ function createChild({ tag, attrs, children, className, style, events, hooks }) 
 	if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
 		return null;
 	}
-	const key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : null;
+	const key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : undefined;
 
 	if (!isNullOrUndefined(children) && children.length === 0) {
 		children = null;
@@ -59,7 +59,7 @@ function createChild({ tag, attrs, children, className, style, events, hooks }) 
 		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 
-	if (key !== null) {
+	if (key !== undefined) {
 		delete attrs.key;
 	}
 	const attrsAndEvents = createAttrsAndEvents(attrs, tag);
