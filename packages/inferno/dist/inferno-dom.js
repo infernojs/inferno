@@ -203,8 +203,10 @@
 	function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, deepCheck) {
 		var nextHooks = void 0;
 
-		if (nextNode.hasHooks === true && (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate))) {
-			nextHooks.willUpdate(lastNode.dom);
+		if (nextNode.hasHooks === true) {
+			if (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+				nextHooks.willUpdate(lastNode.dom);
+			}
 		}
 		var nextTag = nextNode.tag || deepCheck && lastTpl.tag;
 		var lastTag = lastNode.tag || deepCheck && nextTpl.tag;
@@ -230,7 +232,7 @@
 				if (nextTpl.isComponent === true) {
 					nextNode.instance = lastNode.instance;
 					nextNode.dom = lastNode.dom;
-					patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					patchComponentWithTemplate(nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
 			} else {
 				var dom = lastNode.dom;
@@ -498,6 +500,55 @@
 		}
 	}
 
+	function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+		nextProps = addChildrenToProps(nextChildren, nextProps);
+
+		if (isStatefulComponent(Component)) {
+			var prevProps = instance.props;
+			var prevState = instance.state;
+			var nextState = instance.state;
+
+			var childContext = instance.getChildContext();
+			if (!isNullOrUndefined(childContext)) {
+				context = babelHelpers.extends({}, context, childContext);
+			}
+			instance.context = context;
+			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+			if (!isNullOrUndefined(nextNode)) {
+				diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+				lastNode.dom = nextNode.dom;
+				instance._lastNode = nextNode;
+			}
+		} else {
+			var shouldUpdate = true;
+
+			if (nextTpl.hasHooks === true) {
+				if (!isNullOrUndefined(nextHooks.componentShouldUpdate)) {
+					shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
+				}
+			}
+			if (shouldUpdate !== false) {
+				if (nextTpl.hasHooks === true) {
+					if (!isNullOrUndefined(nextHooks.componentWillUpdate)) {
+						nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
+					}
+				}
+				var _nextNode = Component(nextProps);
+				var dom = lastNode.dom;
+				_nextNode.dom = dom;
+
+				diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
+				lastNode.instance = _nextNode;
+				if (nextTpl.hasHooks === true) {
+					if (!isNullOrUndefined(nextHooks.componentDidUpdate)) {
+						nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+					}
+				}
+			}
+		}
+	}
+
 	function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 		nextProps = addChildrenToProps(nextChildren, nextProps);
 
@@ -529,12 +580,12 @@
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 				}
-				var _nextNode = Component(nextProps);
+				var _nextNode2 = Component(nextProps);
 				var dom = lastNode.dom;
-				_nextNode.dom = dom;
+				_nextNode2.dom = dom;
 
-				diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
-				lastNode.instance = _nextNode;
+				diffNodes(instance, _nextNode2, dom, null, lifecycle, context, null, true);
+				lastNode.instance = _nextNode2;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 				}
@@ -827,7 +878,7 @@
 		}
 	}
 
-	var recyclingEnabled = false;
+	var recyclingEnabled = true;
 
 	function recycle(node, tpl, lifecycle, context, instance) {
 		if (tpl !== undefined) {

@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeEvents } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchComponentWithTemplate, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
 
@@ -138,8 +138,10 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, deepCheck) {
 	let nextHooks;
 
-	if (nextNode.hasHooks === true && (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate))) {
-		nextHooks.willUpdate(lastNode.dom);
+	if (nextNode.hasHooks === true) {
+		if (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+			nextHooks.willUpdate(lastNode.dom);
+		}
 	}
 	const nextTag = nextNode.tag || (deepCheck && lastTpl.tag);
 	const lastTag = lastNode.tag || (deepCheck && nextTpl.tag);
@@ -165,7 +167,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 			if (nextTpl.isComponent === true) {
 				nextNode.instance = lastNode.instance;
 				nextNode.dom = lastNode.dom;
-				patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				patchComponentWithTemplate(nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 			}
 		} else {
 			const dom = lastNode.dom;

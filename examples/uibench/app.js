@@ -3,101 +3,15 @@
 
 	uibench.init('Inferno', '0.7');
 
-	function InfernoVNode(tpl) {
-		this.tpl = tpl;
-		this.dom = null;
-		this.instance = null;
-		this.tag = null;
-		this.children = null;
-		this.style = null;
-		this.className = null;
-		this.attrs = null;
-		this.events = null;
-		this.hooks = null;
-		this.key = null;
-	}
+	var defaultAppUpdateCheck = {
+		componentShouldUpdate: appUpdateCheck
+	};
 
-	function VNode(shape, childrenType) {
-		var tag = shape.tag || null;
-		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
+	var defaultUpdateTableCell = {
+		componentShouldUpdate: updateTableCell
+	};
 
-		var children = shape.children != null ? shape.children : null;
-		var childrenIsDynamic = children && children.arg !== undefined ? true : false;
-
-		var attrs = shape.attrs || null;
-		var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
-
-		var hooks = shape.hooks || null;
-		var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
-
-		var events = shape.events || null;
-		var eventsIsDynamic = events && events.arg !== undefined ? true : false;
-
-		var key = shape.key != null ? shape.key : null;
-		var keyIsDynamic = key != null && key.arg !== undefined ? true : false;
-
-		var style = shape.style  || null;
-		var styleIsDynamic = style && style.arg !== undefined ? true : false;
-
-		var className = shape.className !== undefined ? shape.className : null;
-		var classNameIsDynamic = className && className.arg !== undefined ? true : false;
-
-		var dom = null;
-
-		if (typeof tag === 'string') {
-			var newAttrs = Object.assign({}, className ? {className: className} : {}, shape.attrs || {});
-			dom =  Inferno.universal.createElement(tag, newAttrs)
-		}
-
-		var tpl = {
-			dom: dom,
-			pools: {
-				keyed: {},
-				nonKeyed: []
-			},
-			tag: !tagIsDynamic ? tag : null,
-			isComponent: tagIsDynamic,
-			hasAttrs: attrsIsDynamic,
-			hasHooks: hooksIsDynamic,
-			hasEvents: eventsIsDynamic,
-			hasStyle: styleIsDynamic,
-			hasClassName: classNameIsDynamic,
-			childrenType: childrenType === undefined ? (children ? 5 : 0) : childrenType
-		};
-
-		return function() {
-			var vNode = new InfernoVNode(tpl);
-
-			if (tagIsDynamic === true) {
-				vNode.tag = arguments[tag.arg];
-			}
-			if (childrenIsDynamic === true) {
-				vNode.children = arguments[children.arg];
-			}
-			if (attrsIsDynamic === true) {
-				vNode.attrs = arguments[attrs.arg];
-			}
-			if (hooksIsDynamic === true) {
-				vNode.hooks = arguments[hooks.arg];
-			}
-			if (eventsIsDynamic === true) {
-				vNode.events = arguments[events.arg];
-			}
-			if (keyIsDynamic === true) {
-				vNode.key = arguments[key.arg];
-			}
-			if (styleIsDynamic === true) {
-				vNode.style = arguments[style.arg];
-			}
-			if (classNameIsDynamic === true) {
-				vNode.className = arguments[className.arg];
-			}
-
-			return vNode;
-		};
-	}
-
-	var animBox1 = VNode({
+	var animBox1 = Inferno.createTemplate({
 		tag: 'div',
 		className: 'AnimBox',
 		attrs: { arg: 0 },
@@ -114,13 +28,13 @@
 		return animBox1({ 'data-id': data.id }, style)
 	};
 
-	var anim1 = VNode({
+	var anim1 = Inferno.createTemplate({
 		tag: 'div',
 		className: 'Anim',
 		children: { arg: 0 }
 	}, 4);
 
-	var anim2 = VNode({
+	var anim2 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -134,12 +48,12 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(anim2(AnimBox, { data: item }, { componentShouldUpdate: appUpdateCheck }, item.id));
+			children.push(anim2(AnimBox, { data: item }, defaultAppUpdateCheck, item.id));
 		}
 		return anim1(children);
 	};
 
-	var tableCell1 = VNode({
+	var tableCell1 = Inferno.createTemplate({
 		tag: 'td',
 		className: 'TableCell',
 		children: { arg: 0 },
@@ -159,14 +73,14 @@
 		});
 	};
 
-	var tableRow1 = VNode({
+	var tableRow1 = Inferno.createTemplate({
 		tag: 'tr',
 		children: { arg: 0 },
 		className: { arg: 1 },
 		attrs: { arg: 2 }
 	}, 4);
 
-	var tableRow2 = VNode({
+	var tableRow2 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -181,34 +95,30 @@
 		}
 		var cells = data.props;
 		var children = [
-			tableRow2(TableCell, { text: '#' + data.id }, {
-				componentShouldUpdate: updateTableCell
-			}, -1)
+			tableRow2(TableCell, { text: '#' + data.id }, defaultUpdateTableCell, -1)
 		];
 
 		for (var i = 0; i < cells.length; i++) {
 			children.push(
-				tableRow2(TableCell, { text: cells[i] }, {
-					componentShouldUpdate: updateTableCell
-				}, i)
+				tableRow2(TableCell, { text: cells[i] }, defaultUpdateTableCell, i)
 			);
 		}
 
 		return tableRow1(children, classes, { 'data-id': data.id });
 	};
 
-	var table1 = VNode({
+	var table1 = Inferno.createTemplate({
 		tag: 'table',
 		className: 'Table',
 		children: { arg: 0 }
 	}, 2);
 
-	var table2 = VNode({
+	var table2 = Inferno.createTemplate({
 		tag: 'tbody',
 		children: { arg: 0 }
 	}, 4);
 
-	var table3 = VNode({
+	var table3 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -222,14 +132,14 @@
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			children.push(
-				table3(TableRow, { data: item }, { componentShouldUpdate: appUpdateCheck }, item.id)
+				table3(TableRow, { data: item }, defaultAppUpdateCheck, item.id)
 			);
 		}
 
 		return table1(table2(children));
 	};
 
-	var treeLeaf1 = VNode({
+	var treeLeaf1 = Inferno.createTemplate({
 		tag: 'li',
 		className: 'TreeLeaf',
 		children: { arg: 0 }
@@ -239,20 +149,20 @@
 		return treeLeaf1(props.data.id);
 	};
 
-	var treeNode1 = VNode({
+	var treeNode1 = Inferno.createTemplate({
 		tag: 'ul',
 		className: 'TreeNode',
 		children: { arg: 0 }
 	}, 4);
 
-	var treeNode2 = VNode({
+	var treeNode2 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
 		key: { arg: 3 }
 	});
 
-	var treeNode3 = VNode({
+	var treeNode3 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -269,17 +179,13 @@
 				children.push(
 					treeNode2(TreeNode, {
 						data: n
-					}, {
-						componentShouldUpdate: appUpdateCheck
-					}, n.id)
+					}, defaultAppUpdateCheck, n.id)
 				);
 			} else {
 				children.push(
 					treeNode3(TreeLeaf, {
 						data: n
-					}, {
-						componentShouldUpdate: appUpdateCheck
-					}, n.id)
+					}, defaultAppUpdateCheck, n.id)
 				);
 			}
 		}
@@ -287,13 +193,13 @@
 		return treeNode1(children);
 	};
 
-	var tree1 = VNode({
+	var tree1 = Inferno.createTemplate({
 		tag: 'div',
 		className: 'Tree',
 		children: { arg: 0 }
 	}, 2);
 
-	var tree2 = VNode({
+	var tree2 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
@@ -303,31 +209,29 @@
 		return tree1(
 			tree2(TreeNode, {
 				data: props.data.root
-			}, {
-				componentShouldUpdate: appUpdateCheck
-			})
+			}, defaultAppUpdateCheck)
 		);
 	};
 
-	var main1 = VNode({
+	var main1 = Inferno.createTemplate({
 		tag: 'div',
 		className: 'Main',
 		children: { arg: 0 }
 	}, 2);
 
-	var main2 = VNode({
+	var main2 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
 	});
 
-	var main3 = VNode({
+	var main3 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
 	});
 
-	var main4 = VNode({
+	var main4 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
@@ -341,33 +245,27 @@
 		if (location === 'table') {
 			section = main2(Table, {
 				data: data.table
-			}, {
-				componentShouldUpdate: appUpdateCheck
-			});
+			}, defaultAppUpdateCheck);
 		} else if (location === 'anim') {
 			section = main3(Anim, {
 				data: data.anim
-			}, {
-				componentShouldUpdate: appUpdateCheck
-			});
+			}, defaultAppUpdateCheck);
 		} else if (location === 'tree') {
 			section = main4(Tree, {
 				data: data.tree
-			}, {
-				componentShouldUpdate: appUpdateCheck
-			});
+			}, defaultAppUpdateCheck);
 		}
 
 		return new main1(section);
 	};
 
-	var app1 = VNode({
+	var app1 = Inferno.createTemplate({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
 	});
 
-	var app2 = VNode({
+	var app2 = Inferno.createTemplate({
 		tag: 'pre',
 		children: { arg: 0 }
 	}, 5);
@@ -384,9 +282,7 @@
 				InfernoDOM.render(
 					app1(Main, {
 						data: state
-					}, {
-						componentShouldUpdate: appUpdateCheck
-					})
+					}, defaultAppUpdateCheck)
 				, container);
 			},
 			function(samples) {
