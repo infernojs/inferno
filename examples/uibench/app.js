@@ -62,7 +62,7 @@
 			hasEvents: eventsIsDynamic,
 			hasStyle: styleIsDynamic,
 			hasClassName: classNameIsDynamic,
-			childrenType: childrenType === undefined ? (children ? 4 : 0) : childrenType
+			childrenType: childrenType === undefined ? (children ? 5 : 0) : childrenType
 		};
 
 		return function() {
@@ -118,7 +118,7 @@
 		tag: 'div',
 		className: 'Anim',
 		children: { arg: 0 }
-	}, 3);
+	}, 4);
 
 	var anim2 = VNode({
 		tag: { arg: 0 },
@@ -164,7 +164,7 @@
 		children: { arg: 0 },
 		className: { arg: 1 },
 		attrs: { arg: 2 }
-	}, 3);
+	}, 4);
 
 	var tableRow2 = VNode({
 		tag: { arg: 0 },
@@ -206,7 +206,7 @@
 	var table2 = VNode({
 		tag: 'tbody',
 		children: { arg: 0 }
-	}, 3);
+	}, 4);
 
 	var table3 = VNode({
 		tag: { arg: 0 },
@@ -243,7 +243,7 @@
 		tag: 'ul',
 		className: 'TreeNode',
 		children: { arg: 0 }
-	}, 3);
+	}, 4);
 
 	var treeNode2 = VNode({
 		tag: { arg: 0 },
@@ -370,7 +370,7 @@
 	var app2 = VNode({
 		tag: 'pre',
 		children: { arg: 0 }
-	}, 4);
+	}, 5);
 
 	function appUpdateCheck(domNode, lastProps, nextProps) {
 		return lastProps.data !== nextProps.data;

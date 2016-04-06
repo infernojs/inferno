@@ -19,7 +19,7 @@
 		hasEvents: false,
 		hasClassName: false,
 		hasStyle: false,
-		childrenType: 3 // multiple children
+		childrenType: 4 // multiple children keyed
 	};
 
 	var t2 = {

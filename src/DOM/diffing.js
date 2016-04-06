@@ -3,24 +3,6 @@ import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeE
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
-function diffChildrenWithTemplate(lastNode, nextNode, lastChildrenType, nextChildrenType, dom, namespace, lifecycle, context, instance, staticCheck) {
-	const nextChildren = nextNode.children;
-	const lastChildren = lastNode.children;
-
-	if (lastChildrenType === 3) {
-		if (nextChildrenType === 3) {
-			patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-		}
-	} else if (lastChildrenType === 2) {
-		if (nextChildrenType === 2) {
-			patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
-		}
-	} else if (lastChildrenType === 1) {
-		if (nextChildrenType === 1) {
-			updateTextNode(dom, lastChildren, nextChildren);
-		}
-	}
-}
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 	const nextChildren = nextNode.children;
@@ -187,10 +169,27 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 			}
 		} else {
 			const dom = lastNode.dom;
+			const lastChildrenType = lastTpl.childrenType;
 			nextNode.dom = dom;
 
-			if (lastTpl.childrenType > 0) {
-				diffChildrenWithTemplate(lastNode, nextNode, lastTpl.childrenType, nextTpl.childrenType, dom, namespace, lifecycle, context, instance, deepCheck);
+			if (lastChildrenType > 0) {
+				const nextChildrenType = nextTpl.childrenType;
+
+				if (lastChildrenType === 4) {
+					if (nextChildrenType === 4) {
+						patchKeyedChildren(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance);
+					}
+				} else if (lastChildrenType === 2) {
+					if (nextChildrenType === 2) {
+						patchNode(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance, staticCheck);
+					}
+				} else if (lastChildrenType === 1) {
+					if (nextChildrenType === 1) {
+						updateTextNode(dom, lastNode.children, nextNode.children);
+					}
+				} else {
+					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck);
+				}
 			}
 			if (lastTpl.hasAttrs === true) {
 				diffAttributes(lastNode, nextNode, dom, instance);

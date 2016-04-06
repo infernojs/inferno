@@ -46,7 +46,8 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	// 1: text node
 	// 2: single child
 	// 3: multiple children
-	// 4: variable children (defaults to no optimisation)
+	// 4: multiple children (keyed)
+	// 5: variable children (defaults to no optimisation)
 
 	switch (tpl.childrenType) {
 		case 1:
@@ -59,6 +60,9 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 			mountArrayChildren(node, node.children, dom, namespace, lifecycle, context, instance);
 			break;
 		case 4:
+			mountArrayChildrenWithKeys(node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		case 5:
 			mountChildren(node, node.children, dom, namespace, lifecycle, context, instance);
 			break;
 		default:
@@ -141,6 +145,12 @@ function appendPromise(child, parentDom, domChildren, namespace, lifecycle, cont
 		domChildren && replaceInArray(domChildren, placeholder, dom);
 	});
 	parentDom.appendChild(placeholder);
+}
+
+export function mountArrayChildrenWithKeys(children, parentDom, namespace, lifecycle, context, instance) {
+	for (let i = 0; i < children.length; i++) {
+		mountNode(children[i], parentDom, namespace, lifecycle, context, instance);
+	}
 }
 
 export function mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
