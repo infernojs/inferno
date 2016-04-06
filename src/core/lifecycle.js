@@ -11,4 +11,4 @@ Lifecycle.prototype = {
 			this._listeners[i]();
 		}
 	}
-}
+};

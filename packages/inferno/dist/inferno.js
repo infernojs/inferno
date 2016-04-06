@@ -56,30 +56,20 @@
 
 	babelHelpers;
 
-	// TODO! Use object literal or at least prototype? --- class is prototype (jsperf needed for perf verification)
+	function Lifecycle() {
+		this._listeners = [];
+	}
 
-	var Lifecycle = function () {
-		function Lifecycle() {
-			babelHelpers.classCallCheck(this, Lifecycle);
-
-			this._listeners = [];
+	Lifecycle.prototype = {
+		addListener: function addListener(callback) {
+			this._listeners.push(callback);
+		},
+		trigger: function trigger() {
+			for (var i = 0; i < this._listeners.length; i++) {
+				this._listeners[i]();
+			}
 		}
-
-		babelHelpers.createClass(Lifecycle, [{
-			key: "addListener",
-			value: function addListener(callback) {
-				this._listeners.push(callback);
-			}
-		}, {
-			key: "trigger",
-			value: function trigger() {
-				for (var i = 0; i < this._listeners.length; i++) {
-					this._listeners[i]();
-				}
-			}
-		}]);
-		return Lifecycle;
-	}();
+	};
 
 	function createElement$1(tag, namespace) {
 		if (isNullOrUndefined(namespace)) {
