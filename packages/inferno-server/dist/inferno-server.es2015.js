@@ -12,7 +12,7 @@ babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator ===
 babelHelpers;
 
 function isArray(obj) {
-	return obj.constructor === Array;
+	return obj instanceof Array;
 }
 
 function isStringOrNumber(obj) {

@@ -268,7 +268,7 @@ describe('Components (non-JSX)', () => {
 			createElement('div', null,
 				createElement(Component, { title, name })
 			);
-		
+
 		render(template(null, 'abc', 'basic-render'), container);
 		render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
@@ -1055,6 +1055,7 @@ describe('Components (non-JSX)', () => {
 				children: 'VISIBLE'
 			};
 		};
+
 		const tpl3754840163 = function (v0) {
 			return {
 				tag: 'div',
@@ -1067,18 +1068,22 @@ describe('Components (non-JSX)', () => {
 				}
 			};
 		};
-		function TEST() {
-			this.state = {
-				show: false
-			};
 
-			this.makeVisible = function () {
-				this.setState({
-					show: true
-				});
-			}.bind(this);
+		class TEST extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					show: false
+				};
 
-			this.render = function () {
+				this.makeVisible = function () {
+					this.setState({
+						show: true
+					});
+				}.bind(this);
+			}
+
+			render() {
 				return tpl3578458729((function () {
 					if (this.state.show === true) {
 						return tpl188998005(null);
@@ -1086,10 +1091,8 @@ describe('Components (non-JSX)', () => {
 						return tpl3754840163(this.makeVisible);
 					}
 				}).call(this));
-			};
+			}
 		}
-		TEST.prototype = new Component(null);
-		TEST.constructor = TEST;
 
 		const tpl79713834 = function (v0) {
 			return {
@@ -1163,12 +1166,15 @@ describe('Components (non-JSX)', () => {
 			};
 		};
 
-		function SomeError() {
-			this.state = {
-				list: [ 'SS', 'SS1' ]
-			};
+		class SomeError extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					list: [ 'SS', 'SS1' ]
+				};
+			}
 
-			this.render = function () {
+			render() {
 				/* eslint new-cap:0 */
 				return BaseView(this.toggle, (function () {
 					return this.state.list.map(function (result){
@@ -1177,8 +1183,6 @@ describe('Components (non-JSX)', () => {
 				}).call(this));
 			};
 		}
-		SomeError.prototype = new Component(null);
-		SomeError.constructor = SomeError;
 
 		it('Initial render (creation)', () => {
 			render(starter(null), container);

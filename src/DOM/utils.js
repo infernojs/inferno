@@ -1,25 +1,37 @@
 import { mountNode } from './mounting';
-import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from '../core/utils';
+import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
 export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 export const SVGNamespace = 'http://www.w3.org/2000/svg';
 
-export function insertOrAppend(parentDom, newNode, nextNode) {
+function isVirtualFragment(obj) {
+	return !isNullOrUndefined(obj.append);
+}
+
+export function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
-		if (newNode.append !== undefined) {
+		if (isVirtualFragment(newNode)) {
 			newNode.append(parentDom);
 		} else {
 			parentDom.appendChild(newNode);
 		}
 	} else {
-		if (newNode.insert !== undefined) {
+		if (isVirtualFragment(newNode)) {
 			newNode.insert(parentDom, nextNode);
-		} else if (nextNode.insert !== undefined) {
+		} else if (isVirtualFragment(nextNode)) {
 			parentDom.insertBefore(newNode, nextNode.childNodes[0]);
 		} else {
 			parentDom.insertBefore(newNode, nextNode);
 		}
+	}
+}
+
+export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
+	if (isNullOrUndefined(nextNode)) {
+		parentDom.appendChild(newNode);
+	} else {
+		parentDom.insertBefore(newNode, nextNode);
 	}
 }
 
@@ -58,6 +70,7 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		lastNode = instanceLastNode;
 	}
 	const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+
 	nextNode.dom = dom;
 	parentDom.replaceChild(dom, lastNode.dom);
 	if (lastInstance !== null) {
@@ -220,7 +233,7 @@ function selectOptionValueIfNeeded(vdom, values) {
 		for (let i = 0, len = vdom.children.length; i < len; i++) {
 			selectOptionValueIfNeeded(vdom.children[i], values);
 		}
-	// NOTE! Has to be a return here to catch optGroup elements
+		// NOTE! Has to be a return here to catch optGroup elements
 		return;
 	}
 

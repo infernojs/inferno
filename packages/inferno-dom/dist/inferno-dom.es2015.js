@@ -70,6 +70,8 @@ var Lifecycle = function () {
 	return Lifecycle;
 }();
 
+// import Component from './../component/index';
+
 function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
 		var isChildrenArray = isArray(children);
@@ -87,11 +89,11 @@ function addChildrenToProps(children, props) {
 }
 
 function isArray(obj) {
-	return obj.constructor === Array;
+	return obj instanceof Array;
 }
 
 function isStatefulComponent(obj) {
-	return !isNullOrUndefined(obj) && !isNullOrUndefined(obj.prototype.render);
+	return obj.prototype.render !== undefined;
 }
 
 function isStringOrNumber(obj) {
@@ -119,7 +121,7 @@ function isString(obj) {
 }
 
 function isPromise(obj) {
-	return obj && obj.then;
+	return obj instanceof Promise;
 }
 
 function replaceInArray(array, obj, newObj) {
@@ -127,29 +129,41 @@ function replaceInArray(array, obj, newObj) {
 }
 
 /*
-export function removeInArray(array, obj) {
-	array.splice(array.indexOf(obj), 1);
-}
-*/
+ export function removeInArray(array, obj) {
+ array.splice(array.indexOf(obj), 1);
+ }
+ */
 
 var MathNamespace = 'http://www.w3.org/1998/Math/MathML';
 var SVGNamespace = 'http://www.w3.org/2000/svg';
 
-function insertOrAppend(parentDom, newNode, nextNode) {
+function isVirtualFragment(obj) {
+	return !isNullOrUndefined(obj.append);
+}
+
+function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
-		if (newNode.append !== undefined) {
+		if (isVirtualFragment(newNode)) {
 			newNode.append(parentDom);
 		} else {
 			parentDom.appendChild(newNode);
 		}
 	} else {
-		if (newNode.insert !== undefined) {
+		if (isVirtualFragment(newNode)) {
 			newNode.insert(parentDom, nextNode);
-		} else if (nextNode.insert !== undefined) {
+		} else if (isVirtualFragment(nextNode)) {
 			parentDom.insertBefore(newNode, nextNode.childNodes[0]);
 		} else {
 			parentDom.insertBefore(newNode, nextNode);
 		}
+	}
+}
+
+function insertOrAppendKeyed(parentDom, newNode, nextNode) {
+	if (isNullOrUndefined(nextNode)) {
+		parentDom.appendChild(newNode);
+	} else {
+		parentDom.insertBefore(newNode, nextNode);
 	}
 }
 
@@ -188,6 +202,7 @@ function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, contex
 		lastNode = instanceLastNode;
 	}
 	var dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+
 	nextNode.dom = dom;
 	parentDom.replaceChild(dom, lastNode.dom);
 	if (lastInstance !== null) {
@@ -529,7 +544,7 @@ function patchComponent(lastNode, Component, instance, lastProps, nextProps, nex
 		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+			patchNode(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
@@ -548,7 +563,7 @@ function patchComponent(lastNode, Component, instance, lastProps, nextProps, nex
 			var dom = lastNode.dom;
 			_nextNode.dom = dom;
 
-			diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
+			patchNode(instance, _nextNode, dom, null, lifecycle, context, null, true);
 			lastNode.instance = _nextNode;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
@@ -579,7 +594,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 				var nextChild = nextChildren[lastChildrenLength];
 				var domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
 
-				insertOrAppend(dom, domNode);
+				insertOrAppendNonKeyed(dom, domNode);
 				if (isNotVirtualFragment) {
 					if (lastChildrenLength === 1) {
 						domChildren.push(dom.firstChild);
@@ -607,7 +622,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 							var textNode = createEmptyTextNode();
 
 							if (isArray(_lastChild) && _lastChild.length === 0) {
-								insertOrAppend(dom, textNode);
+								insertOrAppendNonKeyed(dom, textNode);
 								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 							} else {
 								dom.replaceChild(textNode, domChildren[index]);
@@ -685,7 +700,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 							if (_nextChild.length > 1) {
 								var _virtualFragment = createVirtualFragment();
 								_virtualFragment.appendChild(dom.firstChild);
-								insertOrAppend(dom, _virtualFragment, dom.firstChild);
+								insertOrAppendNonKeyed(dom, _virtualFragment, dom.firstChild);
 								isNotVirtualFragment && domChildren.splice(index, 1, _virtualFragment);
 								patchNonKeyedChildren([_lastChild], _nextChild, _virtualFragment, _virtualFragment.childNodes, namespace, lifecycle, context, instance, i);
 							} else {
@@ -734,7 +749,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
 		stop = true;
 		while (startItem.key === oldStartItem.key) {
-			diffNodes(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
+			patchNode(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
 			startIndex++;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -748,7 +763,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		endItem = nextChildren[endIndex];
 		oldEndItem = lastChildren[oldEndIndex];
 		while (endItem.key === oldEndItem.key) {
-			diffNodes(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
+			patchNode(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
 			endIndex--;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -761,8 +776,8 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		}
 		while (endItem.key === oldStartItem.key) {
 			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
-			diffNodes(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppend(dom, endItem.dom, nextNode);
+			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
+			insertOrAppendKeyed(dom, endItem.dom, nextNode);
 			endIndex--;
 			oldStartIndex++;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -775,8 +790,8 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		}
 		while (startItem.key === oldEndItem.key) {
 			nextNode = lastChildren[oldStartIndex].dom;
-			diffNodes(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppend(dom, startItem.dom, nextNode);
+			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
+			insertOrAppendKeyed(dom, startItem.dom, nextNode);
 			startIndex++;
 			oldEndIndex--;
 			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
@@ -793,7 +808,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		if (startIndex <= endIndex) {
 			nextNode = endIndex + 1 < nextChildrenLength ? nextChildren[endIndex + 1].dom : null;
 			for (; startIndex <= endIndex; startIndex++) {
-				insertOrAppend(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
+				insertOrAppendKeyed(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
 			}
 		}
 	} else if (startIndex > endIndex) {
@@ -816,13 +831,13 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			oldItem = oldItemsMap.get(key);
 			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
 			if (oldItem === undefined) {
-				insertOrAppend(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
+				insertOrAppendKeyed(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
 			} else {
 				oldItemsMap.delete(key);
-				diffNodes(oldItem, item, dom, namespace, lifecycle, context, instance, true);
+				patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
 
 				if (item.dom.nextSibling !== nextNode) {
-					insertOrAppend(dom, item.dom, nextNode);
+					insertOrAppendKeyed(dom, item.dom, nextNode);
 				}
 			}
 			nextNode = item;
@@ -1103,7 +1118,7 @@ function mountArrayChildren(node, children, parentDom, namespace, lifecycle, con
 
 			isNonKeyed = true;
 			mountArrayChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
-			insertOrAppend(parentDom, virtualFragment);
+			insertOrAppendNonKeyed(parentDom, virtualFragment);
 			domChildren.push(virtualFragment);
 		} else if (isPromise(child)) {
 			appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);

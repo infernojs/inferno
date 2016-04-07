@@ -1672,4 +1672,32 @@ describe('Components (JSX)', () => {
 		expect(containerFlag).to.equal(false);
 		done();
 	});
+
+	describe('Inheritance should work', () => {
+		it('Should render div', () => {
+			class A extends Component {
+				constructor(props) {
+					super(props);
+				}
+			}
+
+			class B extends A {
+				constructor(props) {
+					super(props);
+				}
+			}
+
+			class C extends B {
+				constructor(props) {
+					super(props);
+				}
+				render() {
+					return (<div></div>)
+				}
+			}
+
+			render(<C />, container);
+			expect(container.innerHTML).to.equal('<div></div>');
+		});
+	});
 });

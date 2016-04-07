@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from '../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppend, createEmptyTextNode, selectValue } from './utils';
+import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue } from './utils';
 import { patchAttribute, patchStyle } from './patching';
 import { diffNodes } from './diffing';
 
@@ -34,7 +34,7 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 
 			isNonKeyed = true;
 			mountArrayChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
-			insertOrAppend(parentDom, virtualFragment);
+			insertOrAppendNonKeyed(parentDom, virtualFragment);
 			domChildren.push(virtualFragment);
 		} else if (isPromise(child)) {
 			appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);

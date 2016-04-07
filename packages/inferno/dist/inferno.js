@@ -33,7 +33,7 @@
 	babelHelpers;
 
 	function isArray(obj) {
-		return obj.constructor === Array;
+		return obj instanceof Array;
 	}
 
 	function isNullOrUndefined(obj) {
@@ -53,17 +53,10 @@
 	}
 
 	/*
-	export function isNumber(obj) {
-		return typeof obj === 'number';
-	}
-
 	export function isObject(obj) {
-		return typeof obj === 'object';
+		return typeof obj === 'object' && obj !== null;
 	}
 
-	export function isAttrAComponentEvent(attr) {
-		return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
-	}
 	*/
 
 	function isAttrAHook(hook) {

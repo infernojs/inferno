@@ -18,7 +18,7 @@
 	babelHelpers;
 
 	function isArray(obj) {
-		return obj.constructor === Array;
+		return obj instanceof Array;
 	}
 
 	function isStringOrNumber(obj) {

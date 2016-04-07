@@ -1,3 +1,5 @@
+// import Component from './../component/index';
+
 export function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
 		const isChildrenArray = isArray(children);
@@ -15,11 +17,11 @@ export function addChildrenToProps(children, props) {
 }
 
 export function isArray(obj) {
-	return obj.constructor === Array;
+	return obj instanceof Array;
 }
 
 export function isStatefulComponent(obj) {
-	return !isNullOrUndefined(obj) && !isNullOrUndefined(obj.prototype.render);
+	return obj.prototype.render !== undefined;
 }
 
 export function isStringOrNumber(obj) {
@@ -47,17 +49,10 @@ export function isString(obj) {
 }
 
 /*
-export function isNumber(obj) {
-	return typeof obj === 'number';
-}
-
 export function isObject(obj) {
-	return typeof obj === 'object';
+	return typeof obj === 'object' && obj !== null;
 }
 
-export function isAttrAComponentEvent(attr) {
-	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
-}
 */
 
 export function isAttrAHook(hook) {
@@ -78,7 +73,7 @@ export function isAttrAComponentHook(hook) {
 }
 
 export function isPromise(obj) {
-	return obj && obj.then;
+	return obj instanceof Promise;
 }
 
 export function replaceInArray(array, obj, newObj) {
@@ -86,7 +81,7 @@ export function replaceInArray(array, obj, newObj) {
 }
 
 /*
-export function removeInArray(array, obj) {
-	array.splice(array.indexOf(obj), 1);
-}
-*/
+ export function removeInArray(array, obj) {
+ array.splice(array.indexOf(obj), 1);
+ }
+ */
