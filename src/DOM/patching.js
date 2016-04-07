@@ -387,132 +387,251 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 	}
 }
 
-export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
-	let nextChildrenLength = nextChildren.length;
-	let lastChildrenLength = lastChildren.length;
-	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
-		if (recyclingEnabled) {
-			for (let i = 0; i < lastChildrenLength; i++) {
-				pool(lastChildren[i]);
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+function lis_algorithm(a) {
+	const p = a.slice(0);
+	const result = [];
+	result.push(0);
+	let u;
+	let v;
+	let c;
+
+	for (let i = 0, il = a.length; i < il; i++) {
+		if (a[i] === -1) {
+			continue;
+		}
+
+		let j = result[result.length - 1];
+		if (a[j] < a[i]) {
+			p[i] = j;
+			result.push(i);
+			continue;
+		}
+
+		u = 0;
+		v = result.length - 1;
+
+		while (u < v) {
+			c = ((u + v) / 2) | 0;
+			if (a[result[c]] < a[i]) {
+				u = c + 1;
+			} else {
+				v = c;
 			}
 		}
-		// TODO can we improve the removal all nodes vs textContent = ''?
-		dom.textContent = '';
+
+		if (a[i] < a[result[u]]) {
+			if (u > 0) {
+				p[i] = result[u - 1];
+			}
+			result[u] = i;
+		}
+	}
+
+	u = result.length;
+	v = result[u - 1];
+
+	while (u-- > 0) {
+		result[u] = v;
+		v = p[v];
+	}
+
+	return result;
+}
+
+export function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) {
+	let aEnd = a.length - 1;
+	let bEnd = b.length - 1;
+
+	if (aEnd === -1) {
+		for (let i = 0; i <= bEnd; i++) {
+			mountNode(b[i], dom, namespace, lifecycle, context, instance);
+		}
+		return;
+	} else if (bEnd === -1) {
+		for (let i = 0; i <= aEnd; i++) {
+			remove(a[i], dom);
+		}
 		return;
 	}
-	let oldItem;
+
+	let aStart = 0;
+	let bStart = 0;
+	let aStartNode = a[aStart];
+	let bStartNode = b[bStart];
+	let aEndNode = a[aEnd];
+	let bEndNode = b[bEnd];
 	let stop = false;
-	let startIndex = 0;
-	let oldStartIndex = 0;
-	let endIndex = nextChildrenLength - 1;
-	let oldEndIndex = lastChildrenLength - 1;
-	let oldStartItem = (lastChildrenLength > 0) ? lastChildren[oldStartIndex] : null;
-	let startItem = (nextChildrenLength > 0) ? nextChildren[startIndex] : null;
-	let endItem;
-	let oldEndItem;
+	let nextPos;
 	let nextNode;
+	let lastTarget = 0;
+	let pos;
+	let node;
 
-	// TODO don't read key too often
-	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
+	outer: do {
 		stop = true;
-		while (startItem.key === oldStartItem.key) {
-			patchNode(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
-			startIndex++;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (aStartNode.key === bStartNode.key) {
+			patchNode(aStartNode, bStartNode, dom, namespace, lifecycle, context, instance, true);
+			aStart++;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
 				break outer;
-			} else {
-				startItem = nextChildren[startIndex];
-				oldStartItem = lastChildren[oldStartIndex];
-				stop = false;
 			}
+			aStartNode = a[aStart];
+			bStartNode = b[bStart];
+			stop = false;
 		}
-		endItem = nextChildren[endIndex];
-		oldEndItem = lastChildren[oldEndIndex];
-		while (endItem.key === oldEndItem.key) {
-			patchNode(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
-			endIndex--;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (aEndNode.key === bEndNode.key) {
+			patchNode(aEndNode, bEndNode, dom, namespace, lifecycle, context, instance, true);
+			aEnd--;
+			bEnd--;
+			if (aStart > aEnd || bStart > bEnd) {
 				break outer;
-			} else {
-				endItem = nextChildren[endIndex];
-				oldEndItem = lastChildren[oldEndIndex];
-				stop = false;
 			}
+			aEndNode = a[aEnd];
+			bEndNode = b[bEnd];
+			stop = false;
 		}
-		while (endItem.key === oldStartItem.key) {
-			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
-			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppendKeyed(dom, endItem.dom, nextNode);
-			endIndex--;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (aStartNode.key === bEndNode.key) {
+			patchNode(aStartNode, bEndNode, dom, namespace, lifecycle, context, instance, true);
+			nextPos = bEnd + 1;
+			nextNode = nextPos < b.length ? b[nextPos].dom : null;
+			insertOrAppendKeyed(dom, bEndNode.dom, nextNode);
+			aStart++;
+			bEnd--;
+			if (aStart > aEnd || bStart > bEnd) {
 				break outer;
-			} else {
-				endItem = nextChildren[endIndex];
-				oldStartItem = lastChildren[oldStartIndex];
-				stop = false;
 			}
+			aStartNode = a[aStart];
+			bEndNode = b[bEnd];
+			stop = false;
+			continue outer;
 		}
-		while (startItem.key === oldEndItem.key) {
-			nextNode = lastChildren[oldStartIndex].dom;
-			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppendKeyed(dom, startItem.dom, nextNode);
-			startIndex++;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (aEndNode.key === bStartNode.key) {
+			patchNode(aEndNode, bStartNode, dom, namespace, lifecycle, context, instance, true);
+			insertOrAppendKeyed(dom, bStartNode.dom, aStartNode.dom);
+			aEnd--;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
 				break outer;
-			} else {
-				startItem = nextChildren[startIndex];
-				oldEndItem = lastChildren[oldEndIndex];
-				stop = false;
 			}
+			aEndNode = a[aEnd];
+			bStartNode = b[bStart];
+			stop = false;
 		}
-	}
+	} while (!stop && aStart <= aEnd && bStart <= bEnd);
 
-	if (oldStartIndex > oldEndIndex) {
-		if (startIndex <= endIndex) {
-			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
-			for (; startIndex <= endIndex; startIndex++) {
-				insertOrAppendKeyed(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
-			}
+	if (aStart > aEnd) {
+		nextPos = bEnd + 1;
+		nextNode = nextPos < b.length ? b[nextPos].dom : null;
+		while (bStart <= bEnd) {
+			insertOrAppendKeyed(dom, mountNode(b[bStart++], null, namespace, lifecycle, context, instance), nextNode);
 		}
-	} else if (startIndex > endIndex) {
-		for (; oldStartIndex <= oldEndIndex; oldStartIndex++) {
-			oldItem = lastChildren[oldStartIndex];
-			remove(oldItem, dom);
+	} else if (bStart > bEnd) {
+		while (aStart <= aEnd) {
+			remove(a[aStart++], dom);
 		}
 	} else {
-		const oldItemsMap = new Map();
+		// Perform more complex sync algorithm on the remaining nodes.
+		//
+		// We start by marking all nodes from b as inserted, then we try to find all removed nodes and
+		// simultaneously perform syncs on the nodes that exists in both lists and replacing "inserted"
+		// marks with the position of the node from the list b in list a. Then we just need to perform
+		// slightly modified LIS algorithm, that ignores "inserted" marks and find common subsequence and
+		// move all nodes that doesn't belong to this subsequence, or insert if they have "inserted" mark.
+		const aLength = aEnd - aStart + 1;
+		const bLength = bEnd - bStart + 1;
+		const sources = new Array(bLength);
 
-		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
-			oldItem = lastChildren[i];
-			oldItemsMap.set(oldItem.key, oldItem);
+		// Mark all nodes as inserted.
+		for (let i = 0; i < bLength; i++) {
+			sources[i] = -1;
 		}
-		nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1] : null;
 
-		for (let i = endIndex; i >= startIndex; i--) {
-			const item = nextChildren[i];
-			const key = item.key;
-			oldItem = oldItemsMap.get(key);
-			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
-			if (oldItem === undefined) {
-				insertOrAppendKeyed(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
-			} else {
-				oldItemsMap.delete(key);
-				patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
+		let moved = false;
+		let removeOffset = 0;
 
-				if (item.dom.nextSibling !== nextNode) {
-					insertOrAppendKeyed(dom, item.dom, nextNode);
+		// When lists a and b are small, we are using naive O(M*N) algorithm to find removed children.
+		if (aLength * bLength <= 16) {
+			for (let i = aStart; i <= aEnd; i++) {
+				let removed = true;
+				let aNode = a[i];
+				for (let j = bStart; j <= bEnd; j++) {
+					let bNode = b[j];
+					if (aNode.key === bNode.key) {
+						sources[j - bStart] = i;
+
+						if (lastTarget > j) {
+							moved = true;
+						} else {
+							lastTarget = j;
+						}
+						patchNode(aNode, bNode, dom, namespace, lifecycle, context, instance, true);
+						removed = false;
+						break;
+					}
+				}
+				if (removed) {
+					remove(aNode, dom);
+					removeOffset++;
 				}
 			}
-			nextNode = item;
+		} else {
+			const keyIndex = new Map();
+
+			for (let i = bStart; i <= bEnd; i++) {
+				node = b[i];
+				keyIndex.set(node.key, i);
+			}
+			for (let i = aStart; i <= aEnd; i++) {
+				let aNode = a[i];
+				let j = keyIndex.get(aNode.key);
+				if (j !== void 0) {
+					let bNode = b[j];
+					sources[j - bStart] = i;
+					if (lastTarget > j) {
+						moved = true;
+					} else {
+						lastTarget = j;
+					}
+					patchNode(aNode, bNode, dom, namespace, lifecycle, context, instance, true);
+				} else {
+					remove(aNode, dom);
+					removeOffset++;
+				}
+			}
 		}
-		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
-			oldItem = lastChildren[i];
-			if (oldItemsMap.has(oldItem.key)) {
-				remove(oldItem, dom);
+		if (moved) {
+			const seq = lis_algorithm(sources);
+			let j = seq.length - 1;
+			for (let i = bLength - 1; i >= 0; i--) {
+				if (sources[i] === -1) {
+					pos = i + bStart;
+					node = b[pos];
+					nextPos = pos + 1;
+					nextNode = nextPos < bLength ? b[nextPos].dom : null;
+					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
+				} else {
+					if (j < 0 || i !== seq[j]) {
+						pos = i + bStart;
+						node = b[pos];
+						nextPos = pos + 1;
+						nextNode = nextPos < bLength ? b[nextPos].dom : null;
+						insertOrAppendKeyed(dom, node.dom, nextNode);
+					} else {
+						j--;
+					}
+				}
+			}
+		} else if (aLength - removeOffset !== bLength) {
+			for (let i = bLength - 1; i >= 0; i--) {
+				if (sources[i] === -1) {
+					pos = i + bStart;
+					node = b[pos];
+					nextPos = pos + 1;
+					nextNode = nextPos < bLength ? b[nextPos].dom : null;
+					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
+				}
 			}
 		}
 	}
