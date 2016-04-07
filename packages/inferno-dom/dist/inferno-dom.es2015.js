@@ -65,25 +65,6 @@ Lifecycle.prototype = {
 	}
 };
 
-function diffChildrenWithTemplate(lastNode, nextNode, lastChildrenType, nextChildrenType, dom, namespace, lifecycle, context, instance, staticCheck) {
-	var nextChildren = nextNode.children;
-	var lastChildren = lastNode.children;
-
-	if (lastChildrenType === 3) {
-		if (nextChildrenType === 3) {
-			patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-		}
-	} else if (lastChildrenType === 2) {
-		if (nextChildrenType === 2) {
-			patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
-		}
-	} else if (lastChildrenType === 1) {
-		if (nextChildrenType === 1) {
-			updateTextNode(dom, lastChildren, nextChildren);
-		}
-	}
-}
-
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
 	var nextChildren = nextNode.children;
 	var lastChildren = lastNode.children;
@@ -216,8 +197,11 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, deepCheck) {
 	var nextHooks = void 0;
 
-	if (nextNode.hasHooks === true && (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate))) {
-		nextHooks.willUpdate(lastNode.dom);
+	if (nextNode.hasHooks === true) {
+		/* eslint no-cond-assign:0 */
+		if (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+			nextHooks.willUpdate(lastNode.dom);
+		}
 	}
 	var nextTag = nextNode.tag || deepCheck && lastTpl.tag;
 	var lastTag = lastNode.tag || deepCheck && nextTpl.tag;
@@ -243,14 +227,31 @@ function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, 
 			if (nextTpl.isComponent === true) {
 				nextNode.instance = lastNode.instance;
 				nextNode.dom = lastNode.dom;
-				patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				patchComponentWithTemplate(nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 			}
 		} else {
 			var dom = lastNode.dom;
+			var lastChildrenType = lastTpl.childrenType;
 			nextNode.dom = dom;
 
-			if (lastTpl.childrenType > 0) {
-				diffChildrenWithTemplate(lastNode, nextNode, lastTpl.childrenType, nextTpl.childrenType, dom, namespace, lifecycle, context, instance, deepCheck);
+			if (lastChildrenType > 0) {
+				var nextChildrenType = nextTpl.childrenType;
+
+				if (lastChildrenType === 4) {
+					if (nextChildrenType === 4) {
+						patchKeyedChildren(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance);
+					}
+				} else if (lastChildrenType === 2) {
+					if (nextChildrenType === 2) {
+						patchNode(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance, deepCheck);
+					}
+				} else if (lastChildrenType === 1) {
+					if (nextChildrenType === 1) {
+						updateTextNode(dom, lastNode.children, nextNode.children);
+					}
+				} else {
+					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+				}
 			}
 			if (lastTpl.hasAttrs === true) {
 				diffAttributes(lastNode, nextNode, dom, instance);
@@ -494,6 +495,55 @@ function patchAttribute(attrName, nextAttrValue, dom) {
 	}
 }
 
+function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+	nextProps = addChildrenToProps(nextChildren, nextProps);
+
+	if (isStatefulComponent(Component)) {
+		var prevProps = instance.props;
+		var prevState = instance.state;
+		var nextState = instance.state;
+
+		var childContext = instance.getChildContext();
+		if (!isNullOrUndefined(childContext)) {
+			context = babelHelpers.extends({}, context, childContext);
+		}
+		instance.context = context;
+		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+		if (!isNullOrUndefined(nextNode)) {
+			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+			lastNode.dom = nextNode.dom;
+			instance._lastNode = nextNode;
+		}
+	} else {
+		var shouldUpdate = true;
+
+		if (nextTpl.hasHooks === true) {
+			if (!isNullOrUndefined(nextHooks.componentShouldUpdate)) {
+				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
+			}
+		}
+		if (shouldUpdate !== false) {
+			if (nextTpl.hasHooks === true) {
+				if (!isNullOrUndefined(nextHooks.componentWillUpdate)) {
+					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
+				}
+			}
+			var _nextNode = Component(nextProps);
+			var dom = lastNode.dom;
+			_nextNode.dom = dom;
+
+			diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
+			lastNode.instance = _nextNode;
+			if (nextTpl.hasHooks === true) {
+				if (!isNullOrUndefined(nextHooks.componentDidUpdate)) {
+					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+				}
+			}
+		}
+	}
+}
+
 function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
@@ -525,12 +575,12 @@ function patchComponent(lastNode, Component, instance, lastProps, nextProps, nex
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
-			var _nextNode = Component(nextProps);
+			var _nextNode2 = Component(nextProps);
 			var dom = lastNode.dom;
-			_nextNode.dom = dom;
+			_nextNode2.dom = dom;
 
-			diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
-			lastNode.instance = _nextNode;
+			diffNodes(instance, _nextNode2, dom, null, lifecycle, context, null, true);
+			lastNode.instance = _nextNode2;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
@@ -1086,7 +1136,7 @@ function createVirtualFragment() {
 }
 
 function isKeyed(lastChildren, nextChildren) {
-	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && nextChildren[0].key !== undefined || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && lastChildren[0].key !== undefined;
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
@@ -1389,7 +1439,7 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	if (tpl.isComponent === true) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 	}
-	var dom = tpl.dom.cloneNode(true);
+	var dom = tpl.dom.cloneNode(false);
 
 	node.dom = dom;
 	if (tpl.hasHooks === true) {
@@ -1400,7 +1450,8 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	// 1: text node
 	// 2: single child
 	// 3: multiple children
-	// 4: variable children (defaults to no optimisation)
+	// 4: multiple children (keyed)
+	// 5: variable children (defaults to no optimisation)
 
 	switch (tpl.childrenType) {
 		case 1:
@@ -1413,6 +1464,9 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 			mountArrayChildren(node, node.children, dom, namespace, lifecycle, context, instance);
 			break;
 		case 4:
+			mountArrayChildrenWithKeys(node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		case 5:
 			mountChildren(node, node.children, dom, namespace, lifecycle, context, instance);
 			break;
 		default:
@@ -1495,6 +1549,12 @@ function appendPromise(child, parentDom, domChildren, namespace, lifecycle, cont
 		domChildren && replaceInArray(domChildren, placeholder, dom);
 	});
 	parentDom.appendChild(placeholder);
+}
+
+function mountArrayChildrenWithKeys(children, parentDom, namespace, lifecycle, context, instance) {
+	for (var i = 0; i < children.length; i++) {
+		mountNode(children[i], parentDom, namespace, lifecycle, context, instance);
+	}
 }
 
 function mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance) {

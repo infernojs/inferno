@@ -313,7 +313,7 @@ function createChild(_ref) {
 	if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
 		return null;
 	}
-	var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : null;
+	var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : undefined;
 
 	if (!isNullOrUndefined(children) && children.length === 0) {
 		children = null;
@@ -321,7 +321,7 @@ function createChild(_ref) {
 		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 
-	if (key !== null) {
+	if (key !== undefined) {
 		delete attrs.key;
 	}
 	var attrsAndEvents = createAttrsAndEvents(attrs, tag);
@@ -409,8 +409,103 @@ function createStaticAttributes(attrs, dom) {
 	}
 }
 
+function InfernoVNode(tpl) {
+	this.tpl = tpl;
+	this.dom = null;
+	this.instance = null;
+	this.tag = null;
+	this.children = null;
+	this.style = null;
+	this.className = null;
+	this.attrs = null;
+	this.events = null;
+	this.hooks = null;
+	this.key = null;
+}
+
+function createTemplate(shape, childrenType) {
+	var tag = shape.tag || null;
+	var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
+
+	var children = !isNullOrUndefined(shape.children) ? shape.children : null;
+	var childrenIsDynamic = children && children.arg !== undefined ? true : false;
+
+	var attrs = shape.attrs || null;
+	var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
+
+	var hooks = shape.hooks || null;
+	var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
+
+	var events = shape.events || null;
+	var eventsIsDynamic = events && events.arg !== undefined ? true : false;
+
+	var key = shape.key !== undefined ? shape.key : null;
+	var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
+
+	var style = shape.style || null;
+	var styleIsDynamic = style && style.arg !== undefined ? true : false;
+
+	var className = shape.className !== undefined ? shape.className : null;
+	var classNameIsDynamic = className && className.arg !== undefined ? true : false;
+
+	var dom = null;
+
+	if (typeof tag === 'string') {
+		var newAttrs = Object.assign({}, className ? { className: className } : {}, shape.attrs || {});
+		dom = createUniversalElement(tag, newAttrs);
+	}
+
+	var tpl = {
+		dom: dom,
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		tag: !tagIsDynamic ? tag : null,
+		isComponent: tagIsDynamic,
+		hasAttrs: attrsIsDynamic,
+		hasHooks: hooksIsDynamic,
+		hasEvents: eventsIsDynamic,
+		hasStyle: styleIsDynamic,
+		hasClassName: classNameIsDynamic,
+		childrenType: childrenType === undefined ? children ? 5 : 0 : childrenType
+	};
+
+	return function () {
+		var vNode = new InfernoVNode(tpl);
+
+		if (tagIsDynamic === true) {
+			vNode.tag = arguments[tag.arg];
+		}
+		if (childrenIsDynamic === true) {
+			vNode.children = arguments[children.arg];
+		}
+		if (attrsIsDynamic === true) {
+			vNode.attrs = arguments[attrs.arg];
+		}
+		if (hooksIsDynamic === true) {
+			vNode.hooks = arguments[hooks.arg];
+		}
+		if (eventsIsDynamic === true) {
+			vNode.events = arguments[events.arg];
+		}
+		if (keyIsDynamic === true) {
+			vNode.key = arguments[key.arg];
+		}
+		if (styleIsDynamic === true) {
+			vNode.style = arguments[style.arg];
+		}
+		if (classNameIsDynamic === true) {
+			vNode.className = arguments[className.arg];
+		}
+
+		return vNode;
+	};
+}
+
 var index = {
 	createElement: createElement,
+	createTemplate: createTemplate,
 	universal: {
 		createElement: createUniversalElement
 	}

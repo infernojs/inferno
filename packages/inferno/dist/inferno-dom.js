@@ -204,6 +204,7 @@
 		var nextHooks = void 0;
 
 		if (nextNode.hasHooks === true) {
+			/* eslint no-cond-assign:0 */
 			if (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate)) {
 				nextHooks.willUpdate(lastNode.dom);
 			}
@@ -248,14 +249,14 @@
 						}
 					} else if (lastChildrenType === 2) {
 						if (nextChildrenType === 2) {
-							patchNode(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance, staticCheck);
+							patchNode(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance, deepCheck);
 						}
 					} else if (lastChildrenType === 1) {
 						if (nextChildrenType === 1) {
 							updateTextNode(dom, lastNode.children, nextNode.children);
 						}
 					} else {
-						diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck);
+						diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
 					}
 				}
 				if (lastTpl.hasAttrs === true) {
