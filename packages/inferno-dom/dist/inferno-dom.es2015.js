@@ -794,28 +794,28 @@ function lis_algorithm(a) {
 	return result;
 }
 
-function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) {
-	var aEnd = a.length - 1;
-	var bEnd = b.length - 1;
+function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
+	var lastEndIndex = lastChildren.length - 1;
+	var nextEndIndex = nextChildren.length - 1;
 
-	if (aEnd === -1) {
-		for (var i = 0; i <= bEnd; i++) {
-			mountNode(b[i], dom, namespace, lifecycle, context, instance);
+	if (lastEndIndex === -1) {
+		for (var i = 0; i <= nextEndIndex; i++) {
+			mountNode(nextChildren[i], dom, namespace, lifecycle, context, instance);
 		}
 		return;
-	} else if (bEnd === -1) {
-		for (var _i4 = 0; _i4 <= aEnd; _i4++) {
-			remove(a[_i4], dom);
+	} else if (nextEndIndex === -1) {
+		for (var _i4 = 0; _i4 <= lastEndIndex; _i4++) {
+			remove(lastChildren[_i4], dom);
 		}
 		return;
 	}
 
-	var aStart = 0;
-	var bStart = 0;
-	var aStartNode = a[aStart];
-	var bStartNode = b[bStart];
-	var aEndNode = a[aEnd];
-	var bEndNode = b[bEnd];
+	var lastStartIndex = 0;
+	var nextStartIndex = 0;
+	var lastStartNode = lastChildren[lastStartIndex];
+	var nextStartNode = nextChildren[nextStartIndex];
+	var lastEndNode = lastChildren[lastEndIndex];
+	var nextEndNode = nextChildren[nextEndIndex];
 	var stop = false;
 	var nextPos = void 0;
 	var nextNode = void 0;
@@ -825,66 +825,66 @@ function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) 
 
 	outer: do {
 		stop = true;
-		while (aStartNode.key === bStartNode.key) {
-			patchNode(aStartNode, bStartNode, dom, namespace, lifecycle, context, instance, true);
-			aStart++;
-			bStart++;
-			if (aStart > aEnd || bStart > bEnd) {
+		while (lastStartNode.key === nextStartNode.key) {
+			patchNode(lastStartNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+			lastStartIndex++;
+			nextStartIndex++;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
 			}
-			aStartNode = a[aStart];
-			bStartNode = b[bStart];
+			lastStartNode = lastChildren[lastStartIndex];
+			nextStartNode = nextChildren[nextStartIndex];
 			stop = false;
 		}
-		while (aEndNode.key === bEndNode.key) {
-			patchNode(aEndNode, bEndNode, dom, namespace, lifecycle, context, instance, true);
-			aEnd--;
-			bEnd--;
-			if (aStart > aEnd || bStart > bEnd) {
+		while (lastEndNode.key === nextEndNode.key) {
+			patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+			lastEndIndex--;
+			nextEndIndex--;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
 			}
-			aEndNode = a[aEnd];
-			bEndNode = b[bEnd];
+			lastEndNode = lastChildren[lastEndIndex];
+			nextEndNode = nextChildren[nextEndIndex];
 			stop = false;
 		}
-		while (aStartNode.key === bEndNode.key) {
-			patchNode(aStartNode, bEndNode, dom, namespace, lifecycle, context, instance, true);
-			nextPos = bEnd + 1;
-			nextNode = nextPos < b.length ? b[nextPos].dom : null;
-			insertOrAppendKeyed(dom, bEndNode.dom, nextNode);
-			aStart++;
-			bEnd--;
-			if (aStart > aEnd || bStart > bEnd) {
+		while (lastStartNode.key === nextEndNode.key) {
+			patchNode(lastStartNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+			nextPos = nextEndIndex + 1;
+			nextNode = nextPos < nextChildren.length ? nextChildren[nextPos].dom : null;
+			insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
+			lastStartIndex++;
+			nextEndIndex--;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
 			}
-			aStartNode = a[aStart];
-			bEndNode = b[bEnd];
+			lastStartNode = lastChildren[lastStartIndex];
+			nextEndNode = nextChildren[nextEndIndex];
 			stop = false;
 			continue outer;
 		}
-		while (aEndNode.key === bStartNode.key) {
-			patchNode(aEndNode, bStartNode, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppendKeyed(dom, bStartNode.dom, aStartNode.dom);
-			aEnd--;
-			bStart++;
-			if (aStart > aEnd || bStart > bEnd) {
+		while (lastEndNode.key === nextStartNode.key) {
+			patchNode(lastEndNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+			insertOrAppendKeyed(dom, nextStartNode.dom, lastStartNode.dom);
+			lastEndIndex--;
+			nextStartIndex++;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
 			}
-			aEndNode = a[aEnd];
-			bStartNode = b[bStart];
+			lastEndNode = lastChildren[lastEndIndex];
+			nextStartNode = nextChildren[nextStartIndex];
 			stop = false;
 		}
-	} while (!stop && aStart <= aEnd && bStart <= bEnd);
+	} while (!stop && lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex);
 
-	if (aStart > aEnd) {
-		nextPos = bEnd + 1;
-		nextNode = nextPos < b.length ? b[nextPos].dom : null;
-		while (bStart <= bEnd) {
-			insertOrAppendKeyed(dom, mountNode(b[bStart++], null, namespace, lifecycle, context, instance), nextNode);
+	if (lastStartIndex > lastEndIndex) {
+		nextPos = nextEndIndex + 1;
+		nextNode = nextPos < nextChildren.length ? nextChildren[nextPos].dom : null;
+		while (nextStartIndex <= nextEndIndex) {
+			insertOrAppendKeyed(dom, mountNode(nextChildren[nextStartIndex++], null, namespace, lifecycle, context, instance), nextNode);
 		}
-	} else if (bStart > bEnd) {
-		while (aStart <= aEnd) {
-			remove(a[aStart++], dom);
+	} else if (nextStartIndex > nextEndIndex) {
+		while (lastStartIndex <= lastEndIndex) {
+			remove(lastChildren[lastStartIndex++], dom);
 		}
 	} else {
 		// Perform more complex sync algorithm on the remaining nodes.
@@ -894,8 +894,8 @@ function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) 
 		// marks with the position of the node from the list b in list a. Then we just need to perform
 		// slightly modified LIS algorithm, that ignores "inserted" marks and find common subsequence and
 		// move all nodes that doesn't belong to this subsequence, or insert if they have "inserted" mark.
-		var aLength = aEnd - aStart + 1;
-		var bLength = bEnd - bStart + 1;
+		var aLength = lastEndIndex - lastStartIndex + 1;
+		var bLength = nextEndIndex - nextStartIndex + 1;
 		var sources = new Array(bLength);
 
 		// Mark all nodes as inserted.
@@ -908,13 +908,13 @@ function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) 
 
 		// When lists a and b are small, we are using naive O(M*N) algorithm to find removed children.
 		if (aLength * bLength <= 16) {
-			for (var _i6 = aStart; _i6 <= aEnd; _i6++) {
+			for (var _i6 = lastStartIndex; _i6 <= lastEndIndex; _i6++) {
 				var removed = true;
-				var aNode = a[_i6];
-				for (var j = bStart; j <= bEnd; j++) {
-					var bNode = b[j];
+				var aNode = lastChildren[_i6];
+				for (var j = nextStartIndex; j <= nextEndIndex; j++) {
+					var bNode = nextChildren[j];
 					if (aNode.key === bNode.key) {
-						sources[j - bStart] = _i6;
+						sources[j - nextStartIndex] = _i6;
 
 						if (lastTarget > j) {
 							moved = true;
@@ -934,16 +934,16 @@ function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) 
 		} else {
 			var keyIndex = new Map();
 
-			for (var _i7 = bStart; _i7 <= bEnd; _i7++) {
-				node = b[_i7];
+			for (var _i7 = nextStartIndex; _i7 <= nextEndIndex; _i7++) {
+				node = nextChildren[_i7];
 				keyIndex.set(node.key, _i7);
 			}
-			for (var _i8 = aStart; _i8 <= aEnd; _i8++) {
-				var _aNode = a[_i8];
+			for (var _i8 = lastStartIndex; _i8 <= lastEndIndex; _i8++) {
+				var _aNode = lastChildren[_i8];
 				var _j = keyIndex.get(_aNode.key);
 				if (_j !== void 0) {
-					var _bNode = b[_j];
-					sources[_j - bStart] = _i8;
+					var _bNode = nextChildren[_j];
+					sources[_j - nextStartIndex] = _i8;
 					if (lastTarget > _j) {
 						moved = true;
 					} else {
@@ -961,17 +961,17 @@ function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) 
 			var _j2 = seq.length - 1;
 			for (var _i9 = bLength - 1; _i9 >= 0; _i9--) {
 				if (sources[_i9] === -1) {
-					pos = _i9 + bStart;
-					node = b[pos];
+					pos = _i9 + nextStartIndex;
+					node = nextChildren[pos];
 					nextPos = pos + 1;
-					nextNode = nextPos < bLength ? b[nextPos].dom : null;
+					nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
 					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
 				} else {
 					if (_j2 < 0 || _i9 !== seq[_j2]) {
-						pos = _i9 + bStart;
-						node = b[pos];
+						pos = _i9 + nextStartIndex;
+						node = nextChildren[pos];
 						nextPos = pos + 1;
-						nextNode = nextPos < bLength ? b[nextPos].dom : null;
+						nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
 						insertOrAppendKeyed(dom, node.dom, nextNode);
 					} else {
 						_j2--;
@@ -981,10 +981,10 @@ function patchKeyedChildren(a, b, dom, namespace, lifecycle, context, instance) 
 		} else if (aLength - removeOffset !== bLength) {
 			for (var _i10 = bLength - 1; _i10 >= 0; _i10--) {
 				if (sources[_i10] === -1) {
-					pos = _i10 + bStart;
-					node = b[pos];
+					pos = _i10 + nextStartIndex;
+					node = nextChildren[pos];
 					nextPos = pos + 1;
-					nextNode = nextPos < bLength ? b[nextPos].dom : null;
+					nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
 					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
 				}
 			}
