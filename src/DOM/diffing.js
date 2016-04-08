@@ -177,21 +177,25 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 
 			if (lastChildrenType > 0) {
 				const nextChildrenType = nextTpl.childrenType;
+				const lastChildren = lastNode.children;
+				const nextChildren = nextNode.children;
 
-				if (lastChildrenType === 4) {
-					if (nextChildrenType === 4) {
-						patchKeyedChildren(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance);
+				if (lastChildren !== nextChildren) {
+					if (lastChildrenType === 4) {
+						if (nextChildrenType === 4) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+						}
+					} else if (lastChildrenType === 2) {
+						if (nextChildrenType === 2) {
+							patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+						}
+					} else if (lastChildrenType === 1) {
+						if (nextChildrenType === 1) {
+							updateTextNode(dom, lastChildren, nextChildren);
+						}
+					} else {
+						diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
 					}
-				} else if (lastChildrenType === 2) {
-					if (nextChildrenType === 2) {
-						patchNode(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance, deepCheck);
-					}
-				} else if (lastChildrenType === 1) {
-					if (nextChildrenType === 1) {
-						updateTextNode(dom, lastNode.children, nextNode.children);
-					}
-				} else {
-					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
 				}
 			}
 			if (lastTpl.hasAttrs === true) {
