@@ -6,46 +6,17 @@
 	var NAME = 'inferno';
 	var VERSION = '0.7';
 
-	var t1 = {
-		dom: Inferno.universal.createElement('div'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var t1 = Inferno.createTemplate({
 		tag: 'div',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 4 // multiple children keyed
-	};
+		key: { arg: 0 },
+		children: { arg: 1 }
+	}, 4);
 
-	var t2 = {
-		dom: Inferno.universal.createElement('span'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+	var t2 = Inferno.createTemplate({
 		tag: 'span',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 1 // text child
-	};
-
-	function createNode(tpl, key, children) {
-		return {
-			dom: null,
-			tpl: tpl,
-			key: key,
-			children: children
-		};
-	}
+		key: { arg: 0 },
+		children: { arg: 1 }
+	}, 1);
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
@@ -55,9 +26,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = createNode(t1, n.key, renderTree(n.children));
+				children[i] = t1(n.key, renderTree(n.children));
 			} else {
-				children[i] = createNode(t2, n.key, n.key);
+				children[i] = t2(n.key, n.key);
 			}
 		}
 		return children;
@@ -77,11 +48,11 @@
 	};
 
 	BenchmarkImpl.prototype.render = function() {
-		InfernoDOM.render(createNode(t1, null, renderTree(this.a)), this.container);
+		InfernoDOM.render(t1(null, renderTree(this.a)), this.container);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
-		InfernoDOM.render(createNode(t1, null, renderTree(this.b)), this.container);
+		InfernoDOM.render(t1(null, renderTree(this.b)), this.container);
 	};
 
 	document.addEventListener('DOMContentLoaded', function() {
