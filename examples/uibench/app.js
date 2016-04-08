@@ -57,19 +57,24 @@
 		tag: 'td',
 		className: 'TableCell',
 		children: { arg: 0 },
-		events: { arg: 1 }
+		events: { arg: 1 },
+		attrs: { arg: 2 }
 	}, 1);
 
 	function updateTableCell(domNode, lastProps, nextProps) {
 		return lastProps.text !== nextProps.text;
 	}
 
+	function onClick(e) {
+		console.log('Clicked' + e.target.xtag);
+		e.stopPropagation();
+	}
+
 	var TableCell = function (props) {
 		return tableCell1(props.text, {
-			onclick: (e) => {
-				console.log('Clicked' + props.text);
-				e.stopPropagation();
-			}
+			onclick: onClick
+		}, {
+			xtag: props.text
 		});
 	};
 
