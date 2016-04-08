@@ -10,8 +10,8 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "devDependencies": {
-    "babel-cli": "^6.6.5",
-    "babel-core": "^6.7.4",
+    "babel-cli": "^6.7.5",
+    "babel-core": "^6.7.6",
     "babel-eslint": "6.0.2",
     "babel-loader": "^6.2.4",
     "babel-plugin-inferno": "https://github.com/trueadm/babel-plugin-inferno.git#dev",
