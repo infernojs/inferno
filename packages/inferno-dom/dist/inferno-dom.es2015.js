@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.6.5
+ * inferno-dom v0.7.0
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -247,6 +247,23 @@ function getActiveNode() {
 	return document.activeElement;
 }
 
+function removeAllChildren(dom, children) {
+	if (recyclingEnabled) {
+		var childrenLength = children.length;
+
+		if (childrenLength > 5) {
+			for (var i = 0; i < childrenLength; i++) {
+				var child = children[i];
+
+				if (!isInvalidNode(child)) {
+					pool(child);
+				}
+			}
+		}
+	}
+	dom.textContent = '';
+}
+
 function resetActiveNode(activeNode) {
 	if (activeNode !== document.body && document.activeElement !== activeNode) {
 		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
@@ -413,7 +430,7 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 		}
 	} else {
 		if (isInvalidNode(nextChildren)) {
-			dom.textContent = '';
+			removeAllChildren(dom, lastChildren);
 		} else {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
@@ -550,7 +567,7 @@ function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, 
 			if (nextTpl.isComponent === true) {
 				nextNode.instance = lastNode.instance;
 				nextNode.dom = lastNode.dom;
-				patchComponentWithTemplate(nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				patchComponent(true, nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 			}
 		} else {
 			var dom = lastNode.dom;
@@ -569,7 +586,15 @@ function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, 
 						}
 					} else if (lastChildrenType === 2) {
 						if (nextChildrenType === 2) {
-							patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+							if (isInvalidNode(nextChildren)) {
+								removeAllChildren(dom, lastChildren);
+							} else {
+								if (isInvalidNode(lastChildren)) {
+									mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+								} else {
+									patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+								}
+							}
 						}
 					} else if (lastChildrenType === 1) {
 						if (nextChildrenType === 1) {
@@ -646,11 +671,10 @@ function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context,
 			nextNode.dom = lastNode.dom;
 		} else {
 			if (isFunction(lastTag)) {
-				// Firefox doesn't like && too much
 				if (isFunction(nextTag)) {
 					nextNode.instance = lastNode.instance;
 					nextNode.dom = lastNode.dom;
-					patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
 			} else {
 				var dom = lastNode.dom;
@@ -820,7 +844,7 @@ function patchAttribute(attrName, nextAttrValue, dom) {
 	}
 }
 
-function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
@@ -836,62 +860,13 @@ function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl, insta
 		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+			patchNode(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
 	} else {
 		var shouldUpdate = true;
-
-		if (nextTpl.hasHooks === true) {
-			if (!isNullOrUndefined(nextHooks.componentShouldUpdate)) {
-				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
-			}
-		}
-		if (shouldUpdate !== false) {
-			if (nextTpl.hasHooks === true) {
-				if (!isNullOrUndefined(nextHooks.componentWillUpdate)) {
-					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
-				}
-			}
-			var _nextNode = Component(nextProps);
-			var dom = lastNode.dom;
-			_nextNode.dom = dom;
-
-			diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
-			lastNode.instance = _nextNode;
-			if (nextTpl.hasHooks === true) {
-				if (!isNullOrUndefined(nextHooks.componentDidUpdate)) {
-					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
-				}
-			}
-		}
-	}
-}
-
-function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
-	nextProps = addChildrenToProps(nextChildren, nextProps);
-
-	if (isStatefulComponent(Component)) {
-		var prevProps = instance.props;
-		var prevState = instance.state;
-		var nextState = instance.state;
-
-		var childContext = instance.getChildContext();
-		if (!isNullOrUndefined(childContext)) {
-			context = babelHelpers.extends({}, context, childContext);
-		}
-		instance.context = context;
-		var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
-
-		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
-			lastNode.dom = nextNode.dom;
-			instance._lastNode = nextNode;
-		}
-	} else {
-		var shouldUpdate = true;
-		var nextHooksDefined = !isNullOrUndefined(nextHooks);
+		var nextHooksDefined = hasTemplate && nextTpl.hasHooks === true || !isNullOrUndefined(nextHooks);
 
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
@@ -900,12 +875,11 @@ function patchComponent(lastNode, Component, instance, lastProps, nextProps, nex
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
-			var _nextNode2 = Component(nextProps);
+			var _nextNode = Component(nextProps);
 			var dom = lastNode.dom;
-			_nextNode2.dom = dom;
-
-			diffNodes(instance, _nextNode2, dom, null, lifecycle, context, null, true);
-			lastNode.instance = _nextNode2;
+			_nextNode.dom = dom;
+			patchNode(instance, _nextNode, dom, null, lifecycle, context, null, true);
+			lastNode.instance = _nextNode;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 			}
@@ -1586,7 +1560,6 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 			context = babelHelpers.extends({}, context, childContext);
 		}
 		instance.context = context;
-
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
 		instance.componentWillMount();
@@ -1597,12 +1570,12 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 			var oldState = instance.state;
 			instance.state = babelHelpers.extends({}, oldState, pendingState);
 		}
-		var _node = instance.render();
+		var node = instance.render();
 		instance._pendingSetState = false;
 
-		if (!isNullOrUndefined(_node)) {
-			dom = mountNode(_node, null, null, lifecycle, context, instance);
-			instance._lastNode = _node;
+		if (!isNullOrUndefined(node)) {
+			dom = mountNode(node, null, null, lifecycle, context, instance);
+			instance._lastNode = node;
 			if (parentDom !== null) {
 				// avoid DEOPT
 				parentDom.appendChild(dom);
@@ -1613,29 +1586,28 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 
 		parentNode.dom = dom;
 		parentNode.instance = instance;
-		return dom;
-	}
-	if (!isNullOrUndefined(hooks)) {
-		if (!isNullOrUndefined(hooks.componentWillMount)) {
-			hooks.componentWillMount(null, props);
+	} else {
+		if (!isNullOrUndefined(hooks)) {
+			if (!isNullOrUndefined(hooks.componentWillMount)) {
+				hooks.componentWillMount(null, props);
+			}
+			if (!isNullOrUndefined(hooks.componentDidMount)) {
+				lifecycle.addListener(function () {
+					hooks.componentDidMount(dom, props);
+				});
+			}
 		}
-		if (!isNullOrUndefined(hooks.componentDidMount)) {
-			lifecycle.addListener(function () {
-				hooks.componentDidMount(dom, props);
-			});
+		/* eslint new-cap: 0 */
+		var _node = Component(props);
+		dom = mountNode(_node, null, null, lifecycle, context, null);
+
+		parentNode.instance = _node;
+
+		if (parentDom !== null) {
+			parentDom.appendChild(dom);
 		}
+		parentNode.dom = dom;
 	}
-
-	/* eslint new-cap: 0 */
-	var node = Component(props);
-	dom = mountNode(node, null, null, lifecycle, context, null);
-
-	parentNode.instance = node;
-
-	if (parentDom !== null) {
-		parentDom.appendChild(dom);
-	}
-	parentNode.dom = dom;
 	return dom;
 }
 

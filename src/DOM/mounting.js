@@ -237,7 +237,6 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 			context = { ...context, ...childContext };
 		}
 		instance.context = context;
-
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
 		instance.componentWillMount();
@@ -263,29 +262,28 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 
 		parentNode.dom = dom;
 		parentNode.instance = instance;
-		return dom;
-	}
-	if (!isNullOrUndefined(hooks)) {
-		if (!isNullOrUndefined(hooks.componentWillMount)) {
-			hooks.componentWillMount(null, props);
+	} else {
+		if (!isNullOrUndefined(hooks)) {
+			if (!isNullOrUndefined(hooks.componentWillMount)) {
+				hooks.componentWillMount(null, props);
+			}
+			if (!isNullOrUndefined(hooks.componentDidMount)) {
+				lifecycle.addListener(() => {
+					hooks.componentDidMount(dom, props);
+				});
+			}
 		}
-		if (!isNullOrUndefined(hooks.componentDidMount)) {
-			lifecycle.addListener(() => {
-				hooks.componentDidMount(dom, props);
-			});
+		/* eslint new-cap: 0 */
+		const node = Component(props);
+		dom = mountNode(node, null, null, lifecycle, context, null);
+
+		parentNode.instance = node;
+
+		if (parentDom !== null) {
+			parentDom.appendChild(dom);
 		}
+		parentNode.dom = dom;
 	}
-
-	/* eslint new-cap: 0 */
-	const node = Component(props);
-	dom = mountNode(node, null, null, lifecycle, context, null);
-
-	parentNode.instance = node;
-
-	if (parentDom !== null) {
-		parentDom.appendChild(dom);
-	}
-	parentNode.dom = dom;
 	return dom;
 }
 

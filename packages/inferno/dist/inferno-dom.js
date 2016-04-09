@@ -255,8 +255,16 @@
 
 	function removeAllChildren(dom, children) {
 		if (recyclingEnabled) {
-			for (var i = 0; i < children.length; i++) {
-				pool(children[i]);
+			var childrenLength = children.length;
+
+			if (childrenLength > 5) {
+				for (var i = 0; i < childrenLength; i++) {
+					var child = children[i];
+
+					if (!isInvalidNode(child)) {
+						pool(child);
+					}
+				}
 			}
 		}
 		dom.textContent = '';
@@ -1558,7 +1566,6 @@
 				context = babelHelpers.extends({}, context, childContext);
 			}
 			instance.context = context;
-
 			// Block setting state - we should render only once, using latest state
 			instance._pendingSetState = true;
 			instance.componentWillMount();
@@ -1569,12 +1576,12 @@
 				var oldState = instance.state;
 				instance.state = babelHelpers.extends({}, oldState, pendingState);
 			}
-			var _node = instance.render();
+			var node = instance.render();
 			instance._pendingSetState = false;
 
-			if (!isNullOrUndefined(_node)) {
-				dom = mountNode(_node, null, null, lifecycle, context, instance);
-				instance._lastNode = _node;
+			if (!isNullOrUndefined(node)) {
+				dom = mountNode(node, null, null, lifecycle, context, instance);
+				instance._lastNode = node;
 				if (parentDom !== null) {
 					// avoid DEOPT
 					parentDom.appendChild(dom);
@@ -1585,29 +1592,28 @@
 
 			parentNode.dom = dom;
 			parentNode.instance = instance;
-			return dom;
-		}
-		if (!isNullOrUndefined(hooks)) {
-			if (!isNullOrUndefined(hooks.componentWillMount)) {
-				hooks.componentWillMount(null, props);
+		} else {
+			if (!isNullOrUndefined(hooks)) {
+				if (!isNullOrUndefined(hooks.componentWillMount)) {
+					hooks.componentWillMount(null, props);
+				}
+				if (!isNullOrUndefined(hooks.componentDidMount)) {
+					lifecycle.addListener(function () {
+						hooks.componentDidMount(dom, props);
+					});
+				}
 			}
-			if (!isNullOrUndefined(hooks.componentDidMount)) {
-				lifecycle.addListener(function () {
-					hooks.componentDidMount(dom, props);
-				});
+			/* eslint new-cap: 0 */
+			var _node = Component(props);
+			dom = mountNode(_node, null, null, lifecycle, context, null);
+
+			parentNode.instance = _node;
+
+			if (parentDom !== null) {
+				parentDom.appendChild(dom);
 			}
+			parentNode.dom = dom;
 		}
-
-		/* eslint new-cap: 0 */
-		var node = Component(props);
-		dom = mountNode(node, null, null, lifecycle, context, null);
-
-		parentNode.instance = node;
-
-		if (parentDom !== null) {
-			parentDom.appendChild(dom);
-		}
-		parentNode.dom = dom;
 		return dom;
 	}
 
