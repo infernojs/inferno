@@ -162,7 +162,11 @@ export function removeAllChildren(dom ,children) {
 
 		if (childrenLength > 5) {
 			for (let i = 0; i < childrenLength; i++) {
-				pool(children[i]);
+				const child = children[i];
+
+				if (!isInvalidNode(child)) {
+					pool(child);
+				}
 			}
 		}
 	}
