@@ -1,7 +1,7 @@
 import { isNullOrUndefined } from './utils';
 import { createUniversalElement } from './universal';
 
-function InfernoVNode(tpl) {
+function VNode(tpl) {
 	this.tpl = tpl;
 	this.dom = null;
 	this.instance = null;
@@ -13,6 +13,45 @@ function InfernoVNode(tpl) {
 	this.events = null;
 	this.hooks = null;
 	this.key = null;
+}
+
+VNode.prototype = {
+	setAttrs(attrs) {
+		this.attrs = attrs;
+		return this;
+	},
+	setTag(tag) {
+		this.tag = tag;
+		return this;
+	},
+	setStyle(style) {
+		this.style = style;
+		return this;
+	},
+	setClassName(className) {
+		this.className = className;
+		return this;
+	},
+	setChildren(children) {
+		this.children = children;
+		return this;
+	},
+	setHooks(hooks) {
+		this.hooks = hooks;
+		return this;
+	},
+	setEvents(events) {
+		this.events = events;
+		return this;
+	},
+	setKey(key) {
+		this.key = key;
+		return this;
+	}
+};
+
+export function createVNode(tpl) {
+	return new VNode(tpl);
 }
 
 export default function createTemplate(shape, childrenType) {
@@ -64,7 +103,7 @@ export default function createTemplate(shape, childrenType) {
 	};
 
 	return function () {
-		const vNode = new InfernoVNode(tpl);
+		const vNode = new VNode(tpl);
 
 		if (tagIsDynamic === true) {
 			vNode.tag = arguments[tag.arg];

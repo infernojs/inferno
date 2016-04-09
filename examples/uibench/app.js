@@ -1,7 +1,9 @@
 (function() {
 	"use strict";
 
-	uibench.init('Inferno', '0.6.5');
+	uibench.init('Inferno', '0.9');
+
+	var createVNode = Inferno.createVNode;
 
 	var animBox1 = {
 		dom: Inferno.universal.createElement('div', { className : 'AnimBox' }),
@@ -27,11 +29,9 @@
 			'border-radius:' + (time % 10).toString() + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')';
 
-		return {
-			tpl: animBox1,
-			style: style,
-			attrs: { 'data-id': data.id }
-		};
+		return createVNode(animBox1)
+			.setStyle(style)
+			.setAttrs({ 'data-id': data.id });
 	};
 
 	var anim1 = {
@@ -65,20 +65,6 @@
 		childrenType: 0
 	};
 
-	function createAnimNode(key, data) {
-		return {
-			tpl: anim2,
-			tag: AnimBox,
-			key: key,
-			attrs: {
-				data: data
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var Anim = function (props) {
 		var data = props.data;
 		var items = data.items;
@@ -86,13 +72,19 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(createAnimNode(item.id, item));
+			children.push(
+				createVNode(anim2)
+					.setTag(AnimBox)
+					.setAttrs({
+						data: item
+					})
+					.setHooks({
+						componentShouldUpdate: appUpdateCheck
+					})
+					.setKey(item.id)
+			)
 		}
-
-		return {
-			tpl: anim1,
-			children: children
-		};
+		return createVNode(anim1).setChildren(children);
 	};
 
 	var tableCell1 = {
@@ -122,16 +114,11 @@
 	}
 
 	var TableCell = function (props) {
-		return {
-			tpl: tableCell1,
-			events: {
-				onclick: onClick
-			},
-			attrs: {
-				xtag: props.text
-			},
-			children: props.text
-		};
+		return createVNode(tableCell1).setChildren(props.text).setEvents({
+			onclick: onClick
+		}).setAttrs({
+			xtag: props.text
+		});
 	};
 
 	var tableRow1 = {
@@ -147,7 +134,7 @@
 		hasEvents: false,
 		hasClassName: true,
 		hasStyle: false,
-		childrenType: 3
+		childrenType: 4
 	};
 
 	var tableRow2 = {
@@ -164,18 +151,6 @@
 		childrenType: 0
 	};
 
-	function createTableCellNode(key, text) {
-		return {
-			tpl: tableRow2,
-			tag: TableCell,
-			key: key,
-			attrs: { text: text },
-			hooks: {
-				componentShouldUpdate: updateTableCell
-			}
-		};
-	}
-
 	var TableRow = function (props) {
 		var data = props.data;
 		var classes = 'TableRow';
@@ -183,20 +158,21 @@
 			classes = 'TableRow active';
 		}
 		var cells = data.props;
-
-		var children = [ createTableCellNode(-1, '#' + data.id) ];
+		var children = [
+			createVNode(tableRow2).setTag(TableCell).setAttrs({ text: '#' + data.id }).setKey(-1).setHooks({
+				componentShouldUpdate: updateTableCell
+			})
+		];
 
 		for (var i = 0; i < cells.length; i++) {
 			children.push(
-				createTableCellNode(i, cells[i])
+				createVNode(tableRow2).setTag(TableCell).setAttrs({ text: cells[i] }).setKey(i).setHooks({
+					componentShouldUpdate: updateTableCell
+				})
 			);
 		}
-		return {
-			tpl: tableRow1,
-			attrs: { 'data-id': data.id },
-			className: classes,
-			children: children
-		};
+
+		return createVNode(tableRow1).setChildren(children).setClassName(classes).setAttrs({ 'data-id': data.id });
 	};
 
 	var table1 = {
@@ -246,36 +222,24 @@
 		childrenType: 0
 	};
 
-	function createTableRowNode(key, item) {
-		return {
-			tpl: table3,
-			tag: TableRow,
-			key: key,
-			attrs: {
-				data: item
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var Table = function (props) {
 		var items = props.data.items;
 
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(createTableRowNode(item.id, item));
+			children.push(
+				createVNode(table3).setTag(TableRow).setAttrs({
+					data: item
+				}).setHooks({
+					componentShouldUpdate: appUpdateCheck
+				}).setKey(item.id)
+			);
 		}
 
-		return {
-			tpl: table1,
-			children: {
-				tpl: table2,
-				children: children
-			}
-		};
+		return createVNode(table1).setChildren(
+			createVNode(table2).setChildren(children)
+		);
 	};
 
 	var treeLeaf1 = {
@@ -296,10 +260,7 @@
 	};
 
 	var TreeLeaf = function (props) {
-		return {
-			tpl: treeLeaf1,
-			children: '' + props.data.id
-		};
+		return createVNode(treeLeaf1).setChildren(props.data.id);
 	};
 
 	var treeNode1 = {
@@ -347,20 +308,6 @@
 		childrenType: 0
 	};
 
-	function createTreeNode(tpl, tag, key, data) {
-		return {
-			tpl: tpl,
-			tag: tag,
-			key: key,
-			attrs: {
-				data: data
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var TreeNode = function (props) {
 		var data = props.data;
 		var children = [];
@@ -369,19 +316,24 @@
 			var n = data.children[i];
 			if (n.container) {
 				children.push(
-					createTreeNode(treeNode2, TreeNode, n.id, n)
+					createVNode(treeNode2).setTag(TreeNode).setAttrs({
+						data: n
+					}).setHooks({
+						componentShouldUpdate: appUpdateCheck
+					}).setKey(n.id)
 				);
 			} else {
 				children.push(
-					createTreeNode(treeNode3, TreeLeaf, n.id, n)
+					createVNode(treeNode3).setTag(TreeLeaf).setAttrs({
+						data: n
+					}).setHooks({
+						componentShouldUpdate: appUpdateCheck
+					}).setKey(n.id)
 				);
 			}
 		}
 
-		return {
-			tpl: treeNode1,
-			children: children
-		};
+		return createVNode(treeNode1).setChildren(children);
 	};
 
 	var tree1 = {
@@ -416,19 +368,13 @@
 	};
 
 	var Tree = function (props) {
-		return {
-			tpl: tree1,
-			children: {
-				tpl: tree2,
-				tag: TreeNode,
-				attrs: {
-					data: props.data.root
-				},
-				hooks: {
-					componentShouldUpdate: appUpdateCheck
-				}
-			}
-		};
+		return createVNode(tree1).setChildren(
+			createVNode(tree2).setTag(TreeNode).setAttrs({
+				data: props.data.root
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			})
+		);
 	};
 
 	var main1 = {
@@ -490,36 +436,32 @@
 		childrenType: 0
 	};
 
-	function createMainNode(tpl, tag, data) {
-		return {
-			tpl: tpl,
-			tag: tag,
-			attrs: {
-				data: data
-			},
-			hooks: {
-				componentShouldUpdate: appUpdateCheck
-			}
-		};
-	}
-
 	var Main = function (props) {
 		var data = props.data;
 		var location = data.location;
 
 		var section;
 		if (location === 'table') {
-			section = createMainNode(main2, Table, data.table);
+			section = createVNode(main2).setTag(Table).setAttrs({
+				data: data.table
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			});
 		} else if (location === 'anim') {
-			section = createMainNode(main3, Anim, data.anim);
+			section = createVNode(main3).setTag(Anim).setAttrs({
+				data: data.anim
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			});
 		} else if (location === 'tree') {
-			section = createMainNode(main4, Tree, data.tree);
+			section = createVNode(main4).setTag(Tree).setAttrs({
+				data: data.tree
+			}).setHooks({
+				componentShouldUpdate: appUpdateCheck
+			});
 		}
 
-		return {
-			tpl: main1,
-			children: section
-		};
+		return createVNode(main1).setChildren(section);
 	};
 
 	var app1 = {
@@ -561,22 +503,18 @@
 
 		uibench.run(
 			function(state) {
-				InfernoDOM.render({
-					tpl: app1,
-					tag: Main,
-					attrs: {
+				InfernoDOM.render(
+					createVNode(app1).setTag(Main).setAttrs({
 						data: state
-					},
-					hooks: {
+					}).setHooks({
 						componentShouldUpdate: appUpdateCheck
-					}
-				}, container);
+					})
+					, container);
 			},
 			function(samples) {
-				InfernoDOM.render({
-					tpl: app2,
-					children: JSON.stringify(samples, null, ' ')
-				}, container);
+				InfernoDOM.render(
+					createVNode(app2).setChildren(JSON.stringify(samples, null, ' '))
+					, container);
 			}
 		);
 	});
