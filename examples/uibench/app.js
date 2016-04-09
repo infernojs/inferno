@@ -1,22 +1,24 @@
 (function() {
 	"use strict";
 
-	uibench.init('Inferno', '0.7');
+	uibench.init('Inferno', '0.6.5');
 
-	var defaultAppUpdateCheck = {
-		componentShouldUpdate: appUpdateCheck
-	};
-
-	var defaultUpdateTableCell = {
-		componentShouldUpdate: updateTableCell
-	};
-
-	var animBox1 = Inferno.createTemplate({
+	var animBox1 = {
+		dom: Inferno.universal.createElement('div', { className : 'AnimBox' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'div',
 		className: 'AnimBox',
-		attrs: { arg: 0 },
-		style: { arg: 1 }
-	});
+		isComponent: false,
+		hasAttrs: true,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: true,
+		childrenType: 0
+	};
 
 	var AnimBox = function (props) {
 		var data = props.data;
@@ -25,21 +27,57 @@
 			'border-radius:' + (time % 10).toString() + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')';
 
-		return animBox1({ 'data-id': data.id }, style)
+		return {
+			tpl: animBox1,
+			style: style,
+			attrs: { 'data-id': data.id }
+		};
 	};
 
-	var anim1 = Inferno.createTemplate({
+	var anim1 = {
+		dom: Inferno.universal.createElement('div', { className : 'Anim' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'div',
 		className: 'Anim',
-		children: { arg: 0 }
-	}, 4);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 4
+	};
 
-	var anim2 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
+	var anim2 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
+
+	function createAnimNode(key, data) {
+		return {
+			tpl: anim2,
+			tag: AnimBox,
+			key: key,
+			attrs: {
+				data: data
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var Anim = function (props) {
 		var data = props.data;
@@ -48,18 +86,31 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(anim2(AnimBox, { data: item }, defaultAppUpdateCheck, item.id));
+			children.push(createAnimNode(item.id, item));
 		}
-		return anim1(children);
+
+		return {
+			tpl: anim1,
+			children: children
+		};
 	};
 
-	var tableCell1 = Inferno.createTemplate({
+	var tableCell1 = {
+		dom: Inferno.universal.createElement('td', { className: 'TableCell' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'td',
 		className: 'TableCell',
-		children: { arg: 0 },
-		events: { arg: 1 },
-		attrs: { arg: 2 }
-	}, 1);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: true,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1
+	};
 
 	function updateTableCell(domNode, lastProps, nextProps) {
 		return lastProps.text !== nextProps.text;
@@ -71,26 +122,59 @@
 	}
 
 	var TableCell = function (props) {
-		return tableCell1(props.text, {
-			onclick: onClick
-		}, {
-			xtag: props.text
-		});
+		return {
+			tpl: tableCell1,
+			events: {
+				onclick: onClick
+			},
+			attrs: {
+				xtag: props.text
+			},
+			children: props.text
+		};
 	};
 
-	var tableRow1 = Inferno.createTemplate({
+	var tableRow1 = {
+		dom: Inferno.universal.createElement('tr'),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'tr',
-		children: { arg: 0 },
-		className: { arg: 1 },
-		attrs: { arg: 2 }
-	}, 4);
+		isComponent: false,
+		hasAttrs: true,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: true,
+		hasStyle: false,
+		childrenType: 3
+	};
 
-	var tableRow2 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
+	var tableRow2 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
+
+	function createTableCellNode(key, text) {
+		return {
+			tpl: tableRow2,
+			tag: TableCell,
+			key: key,
+			attrs: { text: text },
+			hooks: {
+				componentShouldUpdate: updateTableCell
+			}
+		};
+	}
 
 	var TableRow = function (props) {
 		var data = props.data;
@@ -99,36 +183,82 @@
 			classes = 'TableRow active';
 		}
 		var cells = data.props;
-		var children = [
-			tableRow2(TableCell, { text: '#' + data.id }, defaultUpdateTableCell, -1)
-		];
+
+		var children = [ createTableCellNode(-1, '#' + data.id) ];
 
 		for (var i = 0; i < cells.length; i++) {
 			children.push(
-				tableRow2(TableCell, { text: cells[i] }, defaultUpdateTableCell, i)
+				createTableCellNode(i, cells[i])
 			);
 		}
-
-		return tableRow1(children, classes, { 'data-id': data.id });
+		return {
+			tpl: tableRow1,
+			attrs: { 'data-id': data.id },
+			className: classes,
+			children: children
+		};
 	};
 
-	var table1 = Inferno.createTemplate({
+	var table1 = {
+		dom: Inferno.universal.createElement('table', { className: 'Table' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'table',
 		className: 'Table',
-		children: { arg: 0 }
-	}, 2);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
+	};
 
-	var table2 = Inferno.createTemplate({
+	var table2 = {
+		dom: Inferno.universal.createElement('tbody'),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'tbody',
-		children: { arg: 0 }
-	}, 4);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 4
+	};
 
-	var table3 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
+	var table3 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
+
+	function createTableRowNode(key, item) {
+		return {
+			tpl: table3,
+			tag: TableRow,
+			key: key,
+			attrs: {
+				data: item
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var Table = function (props) {
 		var items = props.data.items;
@@ -136,43 +266,100 @@
 		var children = [];
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			children.push(
-				table3(TableRow, { data: item }, defaultAppUpdateCheck, item.id)
-			);
+			children.push(createTableRowNode(item.id, item));
 		}
 
-		return table1(table2(children));
+		return {
+			tpl: table1,
+			children: {
+				tpl: table2,
+				children: children
+			}
+		};
 	};
 
-	var treeLeaf1 = Inferno.createTemplate({
+	var treeLeaf1 = {
+		dom: Inferno.universal.createElement('li', { className: 'TreeLeaf' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'li',
 		className: 'TreeLeaf',
-		children: { arg: 0 }
-	}, 1);
-
-	var TreeLeaf = function (props) {
-		return treeLeaf1(props.data.id);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1
 	};
 
-	var treeNode1 = Inferno.createTemplate({
+	var TreeLeaf = function (props) {
+		return {
+			tpl: treeLeaf1,
+			children: '' + props.data.id
+		};
+	};
+
+	var treeNode1 = {
+		dom: Inferno.universal.createElement('ul', { className: 'TreeNode' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'ul',
 		className: 'TreeNode',
-		children: { arg: 0 }
-	}, 4);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 4
+	};
 
-	var treeNode2 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
+	var treeNode2 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
 
-	var treeNode3 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
+	var treeNode3 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
+
+	function createTreeNode(tpl, tag, key, data) {
+		return {
+			tpl: tpl,
+			tag: tag,
+			key: key,
+			attrs: {
+				data: data
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var TreeNode = function (props) {
 		var data = props.data;
@@ -182,65 +369,139 @@
 			var n = data.children[i];
 			if (n.container) {
 				children.push(
-					treeNode2(TreeNode, {
-						data: n
-					}, defaultAppUpdateCheck, n.id)
+					createTreeNode(treeNode2, TreeNode, n.id, n)
 				);
 			} else {
 				children.push(
-					treeNode3(TreeLeaf, {
-						data: n
-					}, defaultAppUpdateCheck, n.id)
+					createTreeNode(treeNode3, TreeLeaf, n.id, n)
 				);
 			}
 		}
 
-		return treeNode1(children);
+		return {
+			tpl: treeNode1,
+			children: children
+		};
 	};
 
-	var tree1 = Inferno.createTemplate({
+	var tree1 = {
+		dom: Inferno.universal.createElement('div', { className: 'Tree' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'div',
 		className: 'Tree',
-		children: { arg: 0 }
-	}, 2);
-
-	var tree2 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
-
-	var Tree = function (props) {
-		return tree1(
-			tree2(TreeNode, {
-				data: props.data.root
-			}, defaultAppUpdateCheck)
-		);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
 	};
 
-	var main1 = Inferno.createTemplate({
+	var tree2 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
+
+	var Tree = function (props) {
+		return {
+			tpl: tree1,
+			children: {
+				tpl: tree2,
+				tag: TreeNode,
+				attrs: {
+					data: props.data.root
+				},
+				hooks: {
+					componentShouldUpdate: appUpdateCheck
+				}
+			}
+		};
+	};
+
+	var main1 = {
+		dom: Inferno.universal.createElement('div', { className: 'Main' }),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'div',
 		className: 'Main',
-		children: { arg: 0 }
-	}, 2);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 2
+	};
 
-	var main2 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
+	var main2 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
 
-	var main3 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
+	var main3 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
 
-	var main4 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
+	var main4 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
+
+	function createMainNode(tpl, tag, data) {
+		return {
+			tpl: tpl,
+			tag: tag,
+			attrs: {
+				data: data
+			},
+			hooks: {
+				componentShouldUpdate: appUpdateCheck
+			}
+		};
+	}
 
 	var Main = function (props) {
 		var data = props.data;
@@ -248,32 +509,48 @@
 
 		var section;
 		if (location === 'table') {
-			section = main2(Table, {
-				data: data.table
-			}, defaultAppUpdateCheck);
+			section = createMainNode(main2, Table, data.table);
 		} else if (location === 'anim') {
-			section = main3(Anim, {
-				data: data.anim
-			}, defaultAppUpdateCheck);
+			section = createMainNode(main3, Anim, data.anim);
 		} else if (location === 'tree') {
-			section = main4(Tree, {
-				data: data.tree
-			}, defaultAppUpdateCheck);
+			section = createMainNode(main4, Tree, data.tree);
 		}
 
-		return new main1(section);
+		return {
+			tpl: main1,
+			children: section
+		};
 	};
 
-	var app1 = Inferno.createTemplate({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
+	var app1 = {
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
+		isComponent: true,
+		hasAttrs: false,
+		hasHooks: true,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 0
+	};
 
-	var app2 = Inferno.createTemplate({
+	var app2 = {
+		dom: Inferno.universal.createElement('pre'),
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'pre',
-		children: { arg: 0 }
-	}, 5);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 5
+	};
 
 	function appUpdateCheck(domNode, lastProps, nextProps) {
 		return lastProps.data !== nextProps.data;
@@ -284,16 +561,22 @@
 
 		uibench.run(
 			function(state) {
-				InfernoDOM.render(
-					app1(Main, {
+				InfernoDOM.render({
+					tpl: app1,
+					tag: Main,
+					attrs: {
 						data: state
-					}, defaultAppUpdateCheck)
-				, container);
+					},
+					hooks: {
+						componentShouldUpdate: appUpdateCheck
+					}
+				}, container);
 			},
 			function(samples) {
-				InfernoDOM.render(
-					app2(JSON.stringify(samples, null, ' '))
-				, container);
+				InfernoDOM.render({
+					tpl: app2,
+					children: JSON.stringify(samples, null, ' ')
+				}, container);
 			}
 		);
 	});
