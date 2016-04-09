@@ -54,7 +54,7 @@ export function createVNode(tpl) {
 	return new VNode(tpl);
 }
 
-export default function createTemplate(shape, childrenType) {
+export function createTemplate(shape, childrenType) {
 	const tag = shape.tag || null;
 	const tagIsDynamic = tag && tag.arg !== undefined ? true : false;
 

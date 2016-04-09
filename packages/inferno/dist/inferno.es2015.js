@@ -409,7 +409,7 @@ function createStaticAttributes(attrs, dom) {
 	}
 }
 
-function InfernoVNode(tpl) {
+function VNode(tpl) {
 	this.tpl = tpl;
 	this.dom = null;
 	this.instance = null;
@@ -421,6 +421,45 @@ function InfernoVNode(tpl) {
 	this.events = null;
 	this.hooks = null;
 	this.key = null;
+}
+
+VNode.prototype = {
+	setAttrs: function setAttrs(attrs) {
+		this.attrs = attrs;
+		return this;
+	},
+	setTag: function setTag(tag) {
+		this.tag = tag;
+		return this;
+	},
+	setStyle: function setStyle(style) {
+		this.style = style;
+		return this;
+	},
+	setClassName: function setClassName(className) {
+		this.className = className;
+		return this;
+	},
+	setChildren: function setChildren(children) {
+		this.children = children;
+		return this;
+	},
+	setHooks: function setHooks(hooks) {
+		this.hooks = hooks;
+		return this;
+	},
+	setEvents: function setEvents(events) {
+		this.events = events;
+		return this;
+	},
+	setKey: function setKey(key) {
+		this.key = key;
+		return this;
+	}
+};
+
+function createVNode(tpl) {
+	return new VNode(tpl);
 }
 
 function createTemplate(shape, childrenType) {
@@ -472,7 +511,7 @@ function createTemplate(shape, childrenType) {
 	};
 
 	return function () {
-		var vNode = new InfernoVNode(tpl);
+		var vNode = new VNode(tpl);
 
 		if (tagIsDynamic === true) {
 			vNode.tag = arguments[tag.arg];
@@ -506,6 +545,7 @@ function createTemplate(shape, childrenType) {
 var index = {
 	createElement: createElement,
 	createTemplate: createTemplate,
+	createVNode: createVNode,
 	universal: {
 		createElement: createUniversalElement
 	}
