@@ -1,7 +1,7 @@
 {
   "name": "inferno-src",
   "license": "MPL-2.0",
-  "version": "0.6.5",
+  "version": "0.7.0",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -10,8 +10,8 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "devDependencies": {
-    "babel-cli": "^6.6.5",
-    "babel-core": "^6.7.4",
+    "babel-cli": "^6.7.5",
+    "babel-core": "^6.7.6",
     "babel-eslint": "6.0.2",
     "babel-loader": "^6.2.4",
     "babel-plugin-inferno": "https://github.com/trueadm/babel-plugin-inferno.git#dev",
@@ -87,17 +87,20 @@
     "build:inferno-server:prod": "babel-node config/rollup.config.js prod packages/inferno/dist packages/inferno-server/src inferno-server InfernoServer",
     "build:inferno-component:dev": "babel-node config/rollup.config.js dev packages/inferno/dist packages/inferno-component/src inferno-component InfernoComponent",
     "build:inferno-component:prod": "babel-node config/rollup.config.js prod packages/inferno/dist packages/inferno-component/src inferno-component InfernoComponent",
+    "build:inferno-create-element:dev": "babel-node config/rollup.config.js dev packages/inferno/dist packages/inferno-create-element/src inferno-create-element InfernoCreateElement",
+    "build:inferno-create-element:prod": "babel-node config/rollup.config.js prod packages/inferno/dist packages/inferno-create-element/src inferno-create-element InfernoCreateElement",
     "build:inferno-test-utils:dev": "babel-node config/rollup.config.js dev packages/inferno/dist packages/inferno-test-utils/src inferno-test-utils InfernoTestUtils",
     "build:inferno-test-utils:prod": "babel-node config/rollup.config.js prod packages/inferno/dist packages/inferno-test-utils/src inferno-test-utils InfernoTestUtils",
     "build:inferno:dev": "babel-node config/rollup.config.js dev packages/inferno/dist packages/inferno/src inferno Inferno",
     "build:inferno:prod": "babel-node config/rollup.config.js prod packages/inferno/dist packages/inferno/src inferno Inferno",
     "build:inferno-dom:es6": "babel-node config/rollup.config.js dev packages/inferno-dom/dist packages/inferno-dom/src inferno-dom InfernoDOM es6",
     "build:inferno-server:es6": "babel-node config/rollup.config.js dev packages/inferno-server/dist packages/inferno-server/src inferno-server InfernoServer es6",
+    "build:inferno-create-element:es6": "babel-node config/rollup.config.js dev packages/inferno-create-element/dist packages/inferno-create-element/src inferno-create-element InfernoCreateElement es6",
     "build:inferno-component:es6": "babel-node config/rollup.config.js dev packages/inferno-component/dist packages/inferno-component/src inferno-component InfernoComponent es6",
     "build:inferno-test-utils:es6": "babel-node config/rollup.config.js dev packages/inferno-test-utils/dist packages/inferno-test-utils/src inferno-component InfernoTestUtils es6",
     "build:inferno:es6": "babel-node config/rollup.config.js dev packages/inferno/dist packages/inferno/src inferno Inferno es6",
-    "build:es6": "npm run build:inferno-dom:es6 && npm run build:inferno-server:es6 && npm run build:inferno-component:es6 && npm run build:inferno-test-utils:es6 && npm run build:inferno:es6",
-    "build": "npm run build:es6 && npm run build:inferno-test-utils:dev && npm run build:inferno-test-utils:prod && npm run build:inferno-dom:dev && npm run build:inferno-dom:prod && npm run build:inferno:dev && npm run build:inferno:prod && npm run build:inferno-server:dev && npm run build:inferno-server:prod && npm run build:inferno-component:dev && npm run build:inferno-component:prod",
+    "build:es6": "npm run build:inferno-dom:es6 && npm run build:inferno-server:es6 && npm run build:inferno-component:es6 && npm run build:inferno-test-utils:es6 && npm run build:inferno:es6 && npm run build:inferno-create-element:es6",
+    "build": "npm run build:es6 && npm run build:inferno-test-utils:dev && npm run build:inferno-test-utils:prod && npm run build:inferno-dom:dev && npm run build:inferno-dom:prod && npm run build:inferno:dev && npm run build:inferno:prod && npm run build:inferno-server:dev && npm run build:inferno-server:prod && npm run build:inferno-component:dev && npm run build:inferno-component:prod && npm run build:inferno-create-element:dev && npm run build:inferno-create-element:prod",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js",
     "test:server": "mocha --opts config/mocha.opts",
     "test:browser": "karma start config/karma.conf.js",

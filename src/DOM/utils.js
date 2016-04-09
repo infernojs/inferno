@@ -44,20 +44,24 @@ export function createElement(tag, namespace) {
 }
 
 export function appendText(text, parentDom, singleChild) {
-	if (singleChild) {
-		if (text !== '') {
-			parentDom.textContent = text;
+	if (parentDom) {
+		if (singleChild) {
+			if (text !== '') {
+				parentDom.textContent = text;
+			} else {
+				const textNode = document.createTextNode('');
+
+				parentDom.appendChild(textNode);
+				return textNode;
+			}
 		} else {
-			const textNode = document.createTextNode('');
+			const textNode = document.createTextNode(text);
 
 			parentDom.appendChild(textNode);
 			return textNode;
 		}
 	} else {
-		const textNode = document.createTextNode(text);
-
-		parentDom.appendChild(textNode);
-		return textNode;
+		return document.createTextNode(text);
 	}
 }
 
@@ -224,8 +228,8 @@ export function createVirtualFragment() {
 }
 
 export function isKeyed(lastChildren, nextChildren) {
-	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
-		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && nextChildren[0].key !== undefined
+		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && lastChildren[0].key !== undefined;
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
@@ -267,5 +271,28 @@ export function selectValue(vdom) {
 
 	if (vdom.attrs && vdom.attrs[value]) {
 		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+	}
+}
+
+export function placeholder(node, parentDom) {
+	const dom = createEmptyTextNode();
+
+	if (parentDom !== null) {
+		parentDom.appendChild(dom);
+	}
+	if (!isInvalidNode(node)) {
+		node.dom = dom;
+	}
+	return dom;
+}
+
+export function handleAttachedHooks(hooks, lifecycle, dom) {
+	if (!isNullOrUndefined(hooks.created)) {
+		hooks.created(dom);
+	}
+	if (!isNullOrUndefined(hooks.attached)) {
+		lifecycle.addListener(() => {
+			hooks.attached(dom);
+		});
 	}
 }

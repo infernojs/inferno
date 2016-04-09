@@ -32,164 +32,15 @@
 
 	babelHelpers;
 
-	function isArray(obj) {
-		return obj instanceof Array;
-	}
-
 	function isNullOrUndefined(obj) {
 		return obj === undefined || obj === null;
-	}
-
-	function isInvalidNode(obj) {
-		return obj === undefined || obj === null || obj === false;
-	}
-
-	function isFunction(obj) {
-		return typeof obj === 'function';
 	}
 
 	function isAttrAnEvent(attr) {
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	/*
-	export function isObject(obj) {
-		return typeof obj === 'object' && obj !== null;
-	}
-
-	*/
-
-	function isAttrAHook(hook) {
-		return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate';
-	}
-
-	function isAttrAComponentHook(hook) {
-		return hook === 'onComponentWillMount' || hook === 'onComponentDidMount' || hook === 'onComponentWillUnmount' || hook === 'onComponentShouldUpdate' || hook === 'onComponentWillUpdate' || hook === 'onComponentDidUpdate';
-	}
-
-	function createAttrsAndEvents(props, tag) {
-		var events = null;
-		var hooks = null;
-		var attrs = null;
-		var className = null;
-		var style = null;
-
-		if (!isNullOrUndefined(props)) {
-			if (isArray(props)) {
-				return props;
-			}
-			for (var prop in props) {
-				if (prop === 'className') {
-					className = props[prop];
-				} else if (prop === 'style') {
-					style = props[prop];
-				} else if (isAttrAHook(prop) && !isFunction(tag)) {
-					if (isNullOrUndefined(hooks)) {
-						hooks = {};
-					}
-					hooks[prop.substring(2).toLowerCase()] = props[prop];
-					delete props[prop];
-				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
-					if (isNullOrUndefined(events)) {
-						events = {};
-					}
-					events[prop.substring(2).toLowerCase()] = props[prop];
-					delete props[prop];
-				} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
-					if (isNullOrUndefined(hooks)) {
-						hooks = {};
-					}
-					hooks['c' + prop.substring(3)] = props[prop];
-					delete props[prop];
-				} else if (!isFunction(tag)) {
-					if (isNullOrUndefined(attrs)) {
-						attrs = {};
-					}
-					attrs[prop] = props[prop];
-				} else {
-					attrs = props;
-				}
-			}
-		}
-		return { attrs: attrs, events: events, className: className, style: style, hooks: hooks };
-	}
-
-	function createChild(_ref) {
-		var tag = _ref.tag;
-		var attrs = _ref.attrs;
-		var children = _ref.children;
-		var className = _ref.className;
-		var style = _ref.style;
-		var events = _ref.events;
-		var hooks = _ref.hooks;
-
-		if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
-			return null;
-		}
-		var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : null;
-
-		if (!isNullOrUndefined(children) && children.length === 0) {
-			children = null;
-		} else if (!isInvalidNode(children)) {
-			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
-		}
-
-		if (key !== null) {
-			delete attrs.key;
-		}
-		var attrsAndEvents = createAttrsAndEvents(attrs, tag);
-
-		return {
-			dom: null,
-			tag: tag,
-			key: key,
-			attrs: attrsAndEvents.attrs,
-			events: events || attrsAndEvents.events,
-			hooks: hooks || attrsAndEvents.hooks,
-			className: className || attrsAndEvents.className,
-			style: style || attrsAndEvents.style,
-			children: children,
-			instance: null
-		};
-	}
-
-	function createChildren(children) {
-		var childrenDefined = !isNullOrUndefined(children);
-		if (childrenDefined && isArray(children)) {
-			var newChildren = [];
-
-			for (var i = 0; i < children.length; i++) {
-				var child = children[i];
-				if (!isNullOrUndefined(child) && (typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
-					if (isArray(child)) {
-						if (child.length > 0) {
-							newChildren.push(createChildren(child));
-						} else {
-							newChildren.push(null);
-						}
-					} else {
-						newChildren.push(createChild(child));
-					}
-				} else {
-					newChildren.push(child);
-				}
-			}
-			return newChildren;
-		} else if (childrenDefined && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
-			return children.dom === undefined ? createChild(children) : children;
-		}
-		return children;
-	}
-
-	function createElement(tag, props) {
-		for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-			children[_key - 2] = arguments[_key];
-		}
-
-		return createChild({ tag: tag, attrs: props, children: children });
-	}
-
-	function createElement$1(tag, namespace) {
+	function createElement(tag, namespace) {
 		if (isNullOrUndefined(namespace)) {
 			return document.createElement(tag);
 		} else {
@@ -202,7 +53,7 @@
 
 	function createUniversalElement(tag, attrs) {
 		if (isBrowser) {
-			var dom = createElement$1(tag);
+			var dom = createElement(tag);
 			if (attrs) {
 				createStaticAttributes(attrs, dom);
 			}
@@ -230,8 +81,142 @@
 		}
 	}
 
+	function VNode(tpl) {
+		this.tpl = tpl;
+		this.dom = null;
+		this.instance = null;
+		this.tag = null;
+		this.children = null;
+		this.style = null;
+		this.className = null;
+		this.attrs = null;
+		this.events = null;
+		this.hooks = null;
+		this.key = null;
+	}
+
+	VNode.prototype = {
+		setAttrs: function setAttrs(attrs) {
+			this.attrs = attrs;
+			return this;
+		},
+		setTag: function setTag(tag) {
+			this.tag = tag;
+			return this;
+		},
+		setStyle: function setStyle(style) {
+			this.style = style;
+			return this;
+		},
+		setClassName: function setClassName(className) {
+			this.className = className;
+			return this;
+		},
+		setChildren: function setChildren(children) {
+			this.children = children;
+			return this;
+		},
+		setHooks: function setHooks(hooks) {
+			this.hooks = hooks;
+			return this;
+		},
+		setEvents: function setEvents(events) {
+			this.events = events;
+			return this;
+		},
+		setKey: function setKey(key) {
+			this.key = key;
+			return this;
+		}
+	};
+
+	function createVNode(tpl) {
+		return new VNode(tpl);
+	}
+
+	function createTemplate(shape, childrenType) {
+		var tag = shape.tag || null;
+		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
+
+		var children = !isNullOrUndefined(shape.children) ? shape.children : null;
+		var childrenIsDynamic = children && children.arg !== undefined ? true : false;
+
+		var attrs = shape.attrs || null;
+		var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
+
+		var hooks = shape.hooks || null;
+		var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
+
+		var events = shape.events || null;
+		var eventsIsDynamic = events && events.arg !== undefined ? true : false;
+
+		var key = shape.key !== undefined ? shape.key : null;
+		var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
+
+		var style = shape.style || null;
+		var styleIsDynamic = style && style.arg !== undefined ? true : false;
+
+		var className = shape.className !== undefined ? shape.className : null;
+		var classNameIsDynamic = className && className.arg !== undefined ? true : false;
+
+		var dom = null;
+
+		if (typeof tag === 'string') {
+			var newAttrs = Object.assign({}, className ? { className: className } : {}, shape.attrs || {});
+			dom = createUniversalElement(tag, newAttrs);
+		}
+
+		var tpl = {
+			dom: dom,
+			pools: {
+				keyed: {},
+				nonKeyed: []
+			},
+			tag: !tagIsDynamic ? tag : null,
+			isComponent: tagIsDynamic,
+			hasAttrs: attrsIsDynamic,
+			hasHooks: hooksIsDynamic,
+			hasEvents: eventsIsDynamic,
+			hasStyle: styleIsDynamic,
+			hasClassName: classNameIsDynamic,
+			childrenType: childrenType === undefined ? children ? 5 : 0 : childrenType
+		};
+
+		return function () {
+			var vNode = new VNode(tpl);
+
+			if (tagIsDynamic === true) {
+				vNode.tag = arguments[tag.arg];
+			}
+			if (childrenIsDynamic === true) {
+				vNode.children = arguments[children.arg];
+			}
+			if (attrsIsDynamic === true) {
+				vNode.attrs = arguments[attrs.arg];
+			}
+			if (hooksIsDynamic === true) {
+				vNode.hooks = arguments[hooks.arg];
+			}
+			if (eventsIsDynamic === true) {
+				vNode.events = arguments[events.arg];
+			}
+			if (keyIsDynamic === true) {
+				vNode.key = arguments[key.arg];
+			}
+			if (styleIsDynamic === true) {
+				vNode.style = arguments[style.arg];
+			}
+			if (classNameIsDynamic === true) {
+				vNode.className = arguments[className.arg];
+			}
+
+			return vNode;
+		};
+	}
+
 	var index = {
-		createElement: createElement,
+		createTemplate: createTemplate,
+		createVNode: createVNode,
 		universal: {
 			createElement: createUniversalElement
 		}

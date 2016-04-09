@@ -1,4 +1,3 @@
-// import Component from './../component/index';
 
 export function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
@@ -48,12 +47,9 @@ export function isString(obj) {
 	return typeof obj === 'string';
 }
 
-/*
 export function isObject(obj) {
 	return typeof obj === 'object' && obj !== null;
 }
-
-*/
 
 export function isAttrAHook(hook) {
 	return hook === 'onCreated'
@@ -79,9 +75,3 @@ export function isPromise(obj) {
 export function replaceInArray(array, obj, newObj) {
 	array.splice(array.indexOf(obj), 1, newObj);
 }
-
-/*
- export function removeInArray(array, obj) {
- array.splice(array.indexOf(obj), 1);
- }
- */

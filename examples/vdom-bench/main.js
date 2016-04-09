@@ -4,7 +4,9 @@
 	var benchmark = require('vdom-benchmark-base');
 
 	var NAME = 'inferno';
-	var VERSION = '0.6';
+	var VERSION = '0.7';
+
+	var createVNode = Inferno.createVNode;
 
 	var t1 = {
 		dom: Inferno.universal.createElement('div'),
@@ -12,7 +14,14 @@
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'div'
+		tag: 'div',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 4 // multiple children keyed
 	};
 
 	var t2 = {
@@ -21,7 +30,14 @@
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'span'
+		tag: 'span',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1 // text child
 	};
 
 	function renderTree(nodes) {
@@ -32,19 +48,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = {
-					tpl: t1,
-					dom: null,
-					key: n.key,
-					children: renderTree(n.children)
-				};
+				children[i] = createVNode(t1).setKey(n.key).setChildren(renderTree(n.children));
 			} else {
-				children[i] = {
-					tpl: t2,
-					dom: null,
-					key: n.key,
-					children: n.key
-				};
+				children[i] = createVNode(t2).setKey(n.key).setChildren(n.key);
 			}
 		}
 		return children;
@@ -64,19 +70,11 @@
 	};
 
 	BenchmarkImpl.prototype.render = function() {
-		InfernoDOM.render({
-			tpl: t1,
-			dom: null,
-			children: renderTree(this.a)
-		}, this.container);
+		InfernoDOM.render(createVNode(t1).setChildren(renderTree(this.a)), this.container);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
-		InfernoDOM.render({
-			tpl: t1,
-			dom: null,
-			children: renderTree(this.b)
-		}, this.container);
+		InfernoDOM.render(createVNode(t1).setChildren(renderTree(this.b)), this.container);
 	};
 
 	document.addEventListener('DOMContentLoaded', function() {

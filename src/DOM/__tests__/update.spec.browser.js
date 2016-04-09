@@ -1,6 +1,6 @@
-import { render } from '../rendering';
-import createElement from '../../core/createElement';
-import innerHTML from '../../../tools/innerHTML';
+import { render } from './../rendering';
+import createElement from './../../core/createElement';
+import innerHTML from './../../../tools/innerHTML';
 
 describe('Update (non-jsx)', () => {
 	let container;

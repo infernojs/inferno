@@ -1,8 +1,8 @@
-//import createTemplate from '../createTemplate';
-//import { addTreeConstructor } from '../createTemplate';
-//import { render, renderToString } from '../../DOM/rendering';
-//import createDOMTree from '../../DOM/createTree';
-//import innerHTML from '../../../tools/innerHTML';
+//import createTemplate from './../createTemplate';
+//import { addTreeConstructor } from './../createTemplate';
+//import { render, renderToString } from './../../DOM/rendering';
+//import createDOMTree from './../../DOM/createTree';
+//import innerHTML from './../../../tools/innerHTML';
 //
 //addTreeConstructor('dom', createDOMTree);
 //

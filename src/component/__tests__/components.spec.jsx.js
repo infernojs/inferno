@@ -1,8 +1,6 @@
-// var sinon = require('sinon');
-
-import { render } from '../../DOM/rendering';
-import Component from '../../component/index';
-import innerHTML from '../../../tools/innerHTML';
+import { render } from './../../DOM/rendering';
+import Component from './../../component/index';
+import innerHTML from './../../../tools/innerHTML';
 
 describe('Components (JSX)', () => {
 	let container;
@@ -705,9 +703,11 @@ describe('Components (JSX)', () => {
 		class SomeError extends Component {
 			constructor(props) {
 				super(props);
+
 				this.state = {
 					show: false
 				};
+
 				this.toggle = this.toggle.bind(this);
 			}
 

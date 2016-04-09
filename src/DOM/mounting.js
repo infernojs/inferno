@@ -1,8 +1,137 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from '../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray, isObject } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue } from './utils';
+import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
 import { patchAttribute, patchStyle } from './patching';
 import { diffNodes } from './diffing';
+
+export function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
+	if (isInvalidNode(node) || isArray(node)) {
+		return placeholder(node, parentDom);
+	}
+
+	const tpl = node.tpl;
+
+	if (recyclingEnabled) {
+		const dom = recycle(node, tpl, lifecycle, context, instance);
+
+		if (dom !== null) {
+			if (parentDom !== null) {
+				parentDom.appendChild(dom);
+			}
+			return dom;
+		}
+	}
+
+	if (tpl === undefined) {
+		return appendNode(node, parentDom, namespace, lifecycle, context, instance);
+	} else {
+		return appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance);
+	}
+}
+
+function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance) {
+	const tag = node.tag;
+
+	if (tpl.isComponent === true) {
+		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
+	}
+	const dom = tpl.dom.cloneNode(false);
+
+	node.dom = dom;
+	if (tpl.hasHooks === true) {
+		handleAttachedHooks(node.hooks, lifecycle, dom);
+	}
+	// tpl.childrenType:
+	// 0: no children
+	// 1: text node
+	// 2: single child
+	// 3: multiple children
+	// 4: multiple children (keyed)
+	// 5: variable children (defaults to no optimisation)
+
+	switch (tpl.childrenType) {
+		case 1:
+			appendText(node.children, dom, true);
+			break;
+		case 2:
+			mountNode(node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		case 3:
+			mountArrayChildren(node, node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		case 4:
+			mountArrayChildrenWithKeys(node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		case 5:
+			mountChildren(node, node.children, dom, namespace, lifecycle, context, instance);
+			break;
+		default:
+			break;
+	}
+
+	if (tpl.hasAttrs === true) {
+		mountAttributes(node, node.attrs, dom, instance);
+	}
+	if (tpl.hasClassName === true) {
+		dom.className = node.className;
+	}
+	if (tpl.hasStyle === true) {
+		patchStyle(null, node.style, dom);
+	}
+	if (tpl.hasEvents === true) {
+		mountEvents(node.events, dom);
+	}
+	if (parentDom !== null) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
+}
+
+function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
+	const tag = node.tag;
+
+	if (tag === null) {
+		return placeholder(node, parentDom);
+	}
+	if (isFunction(tag)) {
+		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
+	}
+	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
+	if (!isString(tag) || tag === '') {
+		throw Error('Inferno Error: Expected function or string for element tag type');
+	}
+	const dom = createElement(tag, namespace);
+	const children = node.children;
+	const attrs = node.attrs;
+	const events = node.events;
+	const hooks = node.hooks;
+	const className = node.className;
+	const style = node.style;
+
+	node.dom = dom;
+	if (!isNullOrUndefined(hooks)) {
+		handleAttachedHooks(hooks, lifecycle, dom);
+	}
+	if (!isInvalidNode(children)) {
+		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
+	}
+	if (!isNullOrUndefined(attrs)) {
+		mountAttributes(node, attrs, dom, instance);
+	}
+	if (!isNullOrUndefined(className)) {
+		dom.className = className;
+	}
+	if (!isNullOrUndefined(style)) {
+		patchStyle(null, style, dom);
+	}
+	if (!isNullOrUndefined(events)) {
+		mountEvents(events, dom);
+	}
+	if (parentDom !== null) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
+}
 
 function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
 	const placeholder = createEmptyTextNode();
@@ -18,8 +147,14 @@ function appendPromise(child, parentDom, domChildren, namespace, lifecycle, cont
 	parentDom.appendChild(placeholder);
 }
 
+export function mountArrayChildrenWithKeys(children, parentDom, namespace, lifecycle, context, instance) {
+	for (let i = 0; i < children.length; i++) {
+		mountNode(children[i], parentDom, namespace, lifecycle, context, instance);
+	}
+}
+
 export function mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
-	const domChildren = [];
+	let domChildren = null;
 	let isNonKeyed = false;
 	let hasKeyedAssumption = false;
 
@@ -28,6 +163,7 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 
 		if (isStringOrNumber(child)) {
 			isNonKeyed = true;
+			domChildren = domChildren || [];
 			domChildren.push(appendText(child, parentDom, false));
 		} else if (!isNullOrUndefined(child) && isArray(child)) {
 			const virtualFragment = createVirtualFragment();
@@ -35,6 +171,7 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 			isNonKeyed = true;
 			mountArrayChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
 			insertOrAppendNonKeyed(parentDom, virtualFragment);
+			domChildren = domChildren || [];
 			domChildren.push(virtualFragment);
 		} else if (isPromise(child)) {
 			appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);
@@ -43,22 +180,23 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 
 			if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
 				isNonKeyed = true;
+				domChildren = domChildren || [];
 				domChildren.push(domNode);
 			} else if (isInvalidNode(child)) {
 				isNonKeyed = true;
+				domChildren = domChildren || [];
 				domChildren.push(domNode);
 			} else if (hasKeyedAssumption === false) {
-				// this will be true if a single node comes back with a key, if it does, we assume the rest have keys for a perf boost
 				hasKeyedAssumption = true;
 			}
 		}
 	}
-	if (domChildren.length > 1 && isNonKeyed === true) {
+	if (domChildren !== null && domChildren.length > 1 && isNonKeyed === true) {
 		node.domChildren = domChildren;
 	}
 }
 
-export function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
 	if (isArray(children)) {
 		mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance);
 	} else if (isStringOrNumber(children)) {
@@ -144,111 +282,14 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 
 	parentNode.instance = node;
 
-	if (parentDom !== null) { // avoid DEOPT
+	if (parentDom !== null) {
 		parentDom.appendChild(dom);
 	}
 	parentNode.dom = dom;
 	return dom;
 }
 
-function placeholder(node, parentDom) {
-	const dom = createEmptyTextNode();
-
-	if (parentDom !== null) {
-		parentDom.appendChild(dom);
-	}
-	if (!isInvalidNode(node)) {
-		node.dom = dom;
-	}
-	return dom;
-}
-
-export function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
-	if (isInvalidNode(node) || isArray(node)) {
-		return placeholder(node, parentDom);
-	}
-
-	let dom;
-	if (isStringOrNumber(node)) {
-		dom = document.createTextNode(node);
-
-		if (parentDom !== null) {
-			parentDom.appendChild(dom);
-		}
-		return dom;
-	}
-	if (recyclingEnabled) {
-		dom = recycle(node, lifecycle, context, instance);
-		if (!isNullOrUndefined(dom)) {
-			if (parentDom !== null) {
-				parentDom.appendChild(dom);
-			}
-			return dom;
-		}
-	}
-	const tag = node.tag;
-
-	if (tag === null) {
-		return placeholder(node, parentDom);
-	}
-	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
-	}
-	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
-
-	const tpl = node.tpl;
-	if (!isNullOrUndefined(tpl) && !isNullOrUndefined(tpl.dom)) {
-		dom = tpl.dom.cloneNode(false); // Only one level used in dom
-	} else {
-		if (!isString(tag) || tag === '') {
-			throw Error('Inferno Error: Expected function or string for element tag type');
-		}
-		dom = createElement(tag, namespace);
-	}
-	const children = node.children;
-	const attrs = node.attrs;
-	const events = node.events;
-	const hooks = node.hooks;
-	const className = node.className;
-	const style = node.style;
-
-	node.dom = dom;
-	if (!isNullOrUndefined(hooks)) {
-		if (!isNullOrUndefined(hooks.created)) {
-			hooks.created(dom);
-		}
-		if (!isNullOrUndefined(hooks.attached)) {
-			lifecycle.addListener(() => {
-				hooks.attached(dom);
-			});
-		}
-	}
-	if (!isInvalidNode(children)) {
-		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
-	}
-	if (!isNullOrUndefined(attrs)) {
-		mountAttributes(node, attrs, dom, instance);
-	}
-	// TODO! Fix this. Svg issue + booleans and empty object etc.
-	// Solution? Dunno, but for empty object cast to string
-	if (!isNullOrUndefined(className)) {
-		dom.className = className;
-	}
-	if (!isNullOrUndefined(style)) {
-		patchStyle(null, style, dom);
-	}
-	if (!isNullOrUndefined(events)) {
-		mountEvents(events, dom);
-	}
-	if (parentDom !== null) {
-		parentDom.appendChild(dom);
-	}
-	return dom;
-}
-
-
 function mountAttributes(node, attrs, dom, instance) {
-	// IMPORTANT! This has to be executed BEFORE 'attrsKeys' are created
 	if (node.tag === 'select') {
 		selectValue(node);
 	}

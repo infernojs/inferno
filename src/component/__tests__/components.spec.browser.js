@@ -1,8 +1,8 @@
-import { render } from '../../DOM/rendering';
-import Component from '../index';
-import createElement from '../../core/createElement';
-import innerHTML from '../../../tools/innerHTML';
-import waits from '../../../tools/waits';
+import { render } from './../../DOM/rendering';
+import Component from './../index';
+import createElement from './../../core/createElement';
+import innerHTML from './../../../tools/innerHTML';
+import waits from './../../../tools/waits';
 
 describe('Components (non-JSX)', () => {
 	let container;

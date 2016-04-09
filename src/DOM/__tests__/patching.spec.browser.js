@@ -1,5 +1,5 @@
-import { render } from '../rendering';
-import { createUniversalElement } from '../../core/universal';
+import { render } from './../rendering';
+import { createUniversalElement } from './../../core/universal';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {
@@ -83,19 +83,33 @@ describe('patching keyed lists (non-jsx)', () => {
 	const t1 = {
 		dom: createUniversalElement('div'),
 		pools: {
-			keyed: [],
+			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'div'
+		tag: 'div',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 3 // multiple children
 	};
 
 	const t2 = {
 		dom: createUniversalElement('span'),
 		pools: {
-			keyed: [],
+			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'span'
+		tag: 'span',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1 // text child
 	};
 
 	function renderTree(nodes) {

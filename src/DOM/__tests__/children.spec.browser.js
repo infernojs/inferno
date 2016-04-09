@@ -1,12 +1,4 @@
-import { render } from '../rendering';
-
-var staticNode = {
-	tag: null,
-	pools: {
-		keyed: [],
-		nonKeyed: []
-	}
-};
+import { render } from './../rendering';
 
 describe('Children - (non-JSX)', () => {
 
@@ -192,7 +184,6 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set static children as ' + arg.name,
 			template: () => ({
-				tpl: staticNode,
 				tag: 'div',
 				children: arg.value
 			})
@@ -215,10 +206,8 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set static deep children as ' + arg.name,
 			template: () => ({
-				tpl: staticNode,
 				tag: 'div',
 				children: {
-					tpl: staticNode,
 					tag: 'span',
 					children: arg.value
 				}
@@ -247,16 +236,12 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set very deep static children as ' + arg.name,
 			template: () => ({
-				tpl: staticNode,
 				tag: 'div',
 				children: {
-					tpl: staticNode,
 					tag: 'span',
 					children: {
-						tpl: staticNode,
 						tag: 'b',
 						children: {
-							tpl: staticNode,
 							tag: 'b',
 							children: arg.value
 						}
@@ -288,7 +273,6 @@ describe('Children - (non-JSX)', () => {
 			description: 'should set dynamic children as ' + arg.name,
 
 			template: (child) => ({
-				tpl: staticNode,
 				tag: 'div',
 				children: child
 			})
@@ -371,10 +355,8 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set deep dynamic children as ' + arg.name,
 			template: (child) => ({
-				tpl: staticNode,
 				tag: 'div',
 				children: {
-					tpl: staticNode,
 					tag: 'b',
 					children: child
 				}
@@ -591,14 +573,11 @@ describe('Children - (non-JSX)', () => {
 
 			renderIt();
 
-			debugger;
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
 			const addTab = container.querySelector('#add');
-			debugger;
 			addTab.click();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>');
-			debugger;
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});

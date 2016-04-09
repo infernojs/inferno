@@ -1,4 +1,4 @@
-import Lifecycle from '../core/lifecycle';
+import Lifecycle from './../core/lifecycle';
 import { mountNode } from './mounting';
 import { patchNode } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';

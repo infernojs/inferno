@@ -1,5 +1,5 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from '../core/utils';
-import { diffNodes } from './diffing';
+import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from './../core/utils';
+import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
 import { recyclingEnabled, pool } from './recycling';
@@ -22,9 +22,16 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 	}
 }
 
-export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck) {
-	if (staticCheck !== null) {
-		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, staticCheck);
+export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, deepCheck) {
+	if (deepCheck !== null) {
+		const lastTpl = lastNode.tpl;
+		const nextTpl = nextNode.tpl;
+
+		if (lastTpl === undefined) {
+			diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+		} else {
+			diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, true);
+		}
 	} else if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, namespace, lifecycle, context, instance);
 	} else if (isInvalidNode(nextNode)) {
@@ -41,7 +48,15 @@ export function patchNode(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		const textNode = document.createTextNode(nextNode);
 		parentDom.replaceChild(textNode, lastNode.dom);
 	} else {
-		diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, lastNode.tpl !== null && nextNode.tpl !== null);
+		const lastTpl = lastNode.tpl;
+		const nextTpl = nextNode.tpl;
+		const deepCheck = lastTpl !== nextTpl;
+
+		if (lastTpl === undefined) {
+			diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, deepCheck);
+		} else {
+			diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, deepCheck);
+		}
 	}
 }
 
@@ -107,20 +122,67 @@ export function patchEvents(lastEvents, nextEvents, dom) {
 }
 
 export function patchAttribute(attrName, nextAttrValue, dom) {
-	if (!isAttrAnEvent(attrName)) {
-		if (booleanProps(attrName)) {
-			dom[attrName] = nextAttrValue;
-			return;
-		}
-		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-			dom.removeAttribute(attrName);
+	if (booleanProps(attrName)) {
+		dom[attrName] = nextAttrValue;
+		return;
+	}
+	if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+		dom.removeAttribute(attrName);
+	} else {
+		if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
+			dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
+		} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
+			dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
 		} else {
-			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-				dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
-				dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			} else {
-				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+		}
+	}
+}
+
+export function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+	nextProps = addChildrenToProps(nextChildren, nextProps);
+
+	if (isStatefulComponent(Component)) {
+		const prevProps = instance.props;
+		const prevState = instance.state;
+		const nextState = instance.state;
+
+		const childContext = instance.getChildContext();
+		if (!isNullOrUndefined(childContext)) {
+			context = { ...context, ...childContext };
+		}
+		instance.context = context;
+		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+		if (!isNullOrUndefined(nextNode)) {
+			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+			lastNode.dom = nextNode.dom;
+			instance._lastNode = nextNode;
+		}
+	} else {
+		let shouldUpdate = true;
+
+		if (nextTpl.hasHooks === true) {
+			if (!isNullOrUndefined(nextHooks.componentShouldUpdate)) {
+				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
+			}
+		}
+		if (shouldUpdate !== false) {
+			if (nextTpl.hasHooks === true) {
+				if (!isNullOrUndefined(nextHooks.componentWillUpdate)) {
+					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
+				}
+			}
+			const nextNode = Component(nextProps);
+			const dom = lastNode.dom;
+			nextNode.dom = dom;
+
+			diffNodes(instance, nextNode, dom, null, lifecycle, context, null, true);
+			lastNode.instance = nextNode;
+			if (nextTpl.hasHooks === true) {
+				if (!isNullOrUndefined(nextHooks.componentDidUpdate)) {
+					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+				}
 			}
 		}
 	}
@@ -142,7 +204,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
-			patchNode(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
@@ -161,7 +223,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 			const dom = lastNode.dom;
 			nextNode.dom = dom;
 
-			patchNode(instance, nextNode, dom, null, lifecycle, context, null, true);
+			diffNodes(instance, nextNode, dom, null, lifecycle, context, null, true);
 			lastNode.instance = nextNode;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
@@ -190,7 +252,13 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 		} else {
 			while (lastChildrenLength !== nextChildrenLength) {
 				const nextChild = nextChildren[lastChildrenLength];
-				const domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+				let domNode;
+
+				if (isStringOrNumber(nextChild)) {
+					domNode = document.createTextNode(nextChild);
+				} else {
+					domNode = mountNode(nextChild, null, namespace, lifecycle, context, instance);
+				}
 
 				insertOrAppendNonKeyed(dom, domNode);
 				if (isNotVirtualFragment) {
@@ -317,132 +385,251 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 	}
 }
 
-export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
-	let nextChildrenLength = nextChildren.length;
-	let lastChildrenLength = lastChildren.length;
-	if (nextChildrenLength === 0 && lastChildrenLength >= 5) {
-		if (recyclingEnabled) {
-			for (let i = 0; i < lastChildrenLength; i++) {
-				pool(lastChildren[i]);
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+function lis_algorithm(a) {
+	const p = a.slice(0);
+	const result = [];
+	result.push(0);
+	let u;
+	let v;
+	let c;
+
+	for (let i = 0, il = a.length; i < il; i++) {
+		if (a[i] === -1) {
+			continue;
+		}
+
+		let j = result[result.length - 1];
+		if (a[j] < a[i]) {
+			p[i] = j;
+			result.push(i);
+			continue;
+		}
+
+		u = 0;
+		v = result.length - 1;
+
+		while (u < v) {
+			c = ((u + v) / 2) | 0;
+			if (a[result[c]] < a[i]) {
+				u = c + 1;
+			} else {
+				v = c;
 			}
 		}
-		// TODO can we improve the removal all nodes vs textContent = ''?
-		dom.textContent = '';
+
+		if (a[i] < a[result[u]]) {
+			if (u > 0) {
+				p[i] = result[u - 1];
+			}
+			result[u] = i;
+		}
+	}
+
+	u = result.length;
+	v = result[u - 1];
+
+	while (u-- > 0) {
+		result[u] = v;
+		v = p[v];
+	}
+
+	return result;
+}
+
+export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
+	let lastEndIndex = lastChildren.length - 1;
+	let nextEndIndex = nextChildren.length - 1;
+
+	if (lastEndIndex === -1) {
+		for (let i = 0; i <= nextEndIndex; i++) {
+			mountNode(nextChildren[i], dom, namespace, lifecycle, context, instance);
+		}
+		return;
+	} else if (nextEndIndex === -1) {
+		for (let i = 0; i <= lastEndIndex; i++) {
+			remove(lastChildren[i], dom);
+		}
 		return;
 	}
-	let oldItem;
+
+	let lastStartIndex = 0;
+	let nextStartIndex = 0;
+	let lastStartNode = lastChildren[lastStartIndex];
+	let nextStartNode = nextChildren[nextStartIndex];
+	let lastEndNode = lastChildren[lastEndIndex];
+	let nextEndNode = nextChildren[nextEndIndex];
 	let stop = false;
-	let startIndex = 0;
-	let oldStartIndex = 0;
-	let endIndex = nextChildrenLength - 1;
-	let oldEndIndex = lastChildrenLength - 1;
-	let oldStartItem = (lastChildrenLength > 0) ? lastChildren[oldStartIndex] : null;
-	let startItem = (nextChildrenLength > 0) ? nextChildren[startIndex] : null;
-	let endItem;
-	let oldEndItem;
+	let nextPos;
 	let nextNode;
+	let lastTarget = 0;
+	let pos;
+	let node;
 
-	// TODO don't read key too often
-	outer: while (!stop && startIndex <= endIndex && oldStartIndex <= oldEndIndex) {
+	outer: do {
 		stop = true;
-		while (startItem.key === oldStartItem.key) {
-			patchNode(oldStartItem, startItem, dom, namespace, lifecycle, context, instance, true);
-			startIndex++;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (lastStartNode.key === nextStartNode.key) {
+			patchNode(lastStartNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+			lastStartIndex++;
+			nextStartIndex++;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
-			} else {
-				startItem = nextChildren[startIndex];
-				oldStartItem = lastChildren[oldStartIndex];
-				stop = false;
 			}
+			lastStartNode = lastChildren[lastStartIndex];
+			nextStartNode = nextChildren[nextStartIndex];
+			stop = false;
 		}
-		endItem = nextChildren[endIndex];
-		oldEndItem = lastChildren[oldEndIndex];
-		while (endItem.key === oldEndItem.key) {
-			patchNode(oldEndItem, endItem, dom, namespace, lifecycle, context, instance, true);
-			endIndex--;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (lastEndNode.key === nextEndNode.key) {
+			patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+			lastEndIndex--;
+			nextEndIndex--;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
-			} else {
-				endItem = nextChildren[endIndex];
-				oldEndItem = lastChildren[oldEndIndex];
-				stop = false;
 			}
+			lastEndNode = lastChildren[lastEndIndex];
+			nextEndNode = nextChildren[nextEndIndex];
+			stop = false;
 		}
-		while (endItem.key === oldStartItem.key) {
-			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
-			patchNode(oldStartItem, endItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppendKeyed(dom, endItem.dom, nextNode);
-			endIndex--;
-			oldStartIndex++;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (lastStartNode.key === nextEndNode.key) {
+			patchNode(lastStartNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+			nextPos = nextEndIndex + 1;
+			nextNode = nextPos < nextChildren.length ? nextChildren[nextPos].dom : null;
+			insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
+			lastStartIndex++;
+			nextEndIndex--;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
-			} else {
-				endItem = nextChildren[endIndex];
-				oldStartItem = lastChildren[oldStartIndex];
-				stop = false;
 			}
+			lastStartNode = lastChildren[lastStartIndex];
+			nextEndNode = nextChildren[nextEndIndex];
+			stop = false;
+			continue outer;
 		}
-		while (startItem.key === oldEndItem.key) {
-			nextNode = lastChildren[oldStartIndex].dom;
-			patchNode(oldEndItem, startItem, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppendKeyed(dom, startItem.dom, nextNode);
-			startIndex++;
-			oldEndIndex--;
-			if (startIndex > endIndex || oldStartIndex > oldEndIndex) {
+		while (lastEndNode.key === nextStartNode.key) {
+			patchNode(lastEndNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+			insertOrAppendKeyed(dom, nextStartNode.dom, lastStartNode.dom);
+			lastEndIndex--;
+			nextStartIndex++;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
 				break outer;
-			} else {
-				startItem = nextChildren[startIndex];
-				oldEndItem = lastChildren[oldEndIndex];
-				stop = false;
 			}
+			lastEndNode = lastChildren[lastEndIndex];
+			nextStartNode = nextChildren[nextStartIndex];
+			stop = false;
 		}
-	}
+	} while (!stop && lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex);
 
-	if (oldStartIndex > oldEndIndex) {
-		if (startIndex <= endIndex) {
-			nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1].dom : null;
-			for (; startIndex <= endIndex; startIndex++) {
-				insertOrAppendKeyed(dom, mountNode(nextChildren[startIndex], null, namespace, lifecycle, context, instance), nextNode);
-			}
+	if (lastStartIndex > lastEndIndex) {
+		nextPos = nextEndIndex + 1;
+		nextNode = nextPos < nextChildren.length ? nextChildren[nextPos].dom : null;
+		while (nextStartIndex <= nextEndIndex) {
+			insertOrAppendKeyed(dom, mountNode(nextChildren[nextStartIndex++], null, namespace, lifecycle, context, instance), nextNode);
 		}
-	} else if (startIndex > endIndex) {
-		for (; oldStartIndex <= oldEndIndex; oldStartIndex++) {
-			oldItem = lastChildren[oldStartIndex];
-			remove(oldItem, dom);
+	} else if (nextStartIndex > nextEndIndex) {
+		while (lastStartIndex <= lastEndIndex) {
+			remove(lastChildren[lastStartIndex++], dom);
 		}
 	} else {
-		const oldItemsMap = new Map();
+		// Perform more complex sync algorithm on the remaining nodes.
+		//
+		// We start by marking all nodes from b as inserted, then we try to find all removed nodes and
+		// simultaneously perform syncs on the nodes that exists in both lists and replacing "inserted"
+		// marks with the position of the node from the list b in list a. Then we just need to perform
+		// slightly modified LIS algorithm, that ignores "inserted" marks and find common subsequence and
+		// move all nodes that doesn't belong to this subsequence, or insert if they have "inserted" mark.
+		const aLength = lastEndIndex - lastStartIndex + 1;
+		const bLength = nextEndIndex - nextStartIndex + 1;
+		const sources = new Array(bLength);
 
-		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
-			oldItem = lastChildren[i];
-			oldItemsMap.set(oldItem.key, oldItem);
+		// Mark all nodes as inserted.
+		for (let i = 0; i < bLength; i++) {
+			sources[i] = -1;
 		}
-		nextNode = (endIndex + 1 < nextChildrenLength) ? nextChildren[endIndex + 1] : null;
 
-		for (let i = endIndex; i >= startIndex; i--) {
-			const item = nextChildren[i];
-			const key = item.key;
-			oldItem = oldItemsMap.get(key);
-			nextNode = isNullOrUndefined(nextNode) ? undefined : nextNode.dom; // Default to undefined instead null, because nextSibling in DOM is null
-			if (oldItem === undefined) {
-				insertOrAppendKeyed(dom, mountNode(item, null, namespace, lifecycle, context, instance), nextNode);
-			} else {
-				oldItemsMap.delete(key);
-				patchNode(oldItem, item, dom, namespace, lifecycle, context, instance, true);
+		let moved = false;
+		let removeOffset = 0;
 
-				if (item.dom.nextSibling !== nextNode) {
-					insertOrAppendKeyed(dom, item.dom, nextNode);
+		// When lists a and b are small, we are using naive O(M*N) algorithm to find removed children.
+		if (aLength * bLength <= 16) {
+			for (let i = lastStartIndex; i <= lastEndIndex; i++) {
+				let removed = true;
+				let aNode = lastChildren[i];
+				for (let j = nextStartIndex; j <= nextEndIndex; j++) {
+					let bNode = nextChildren[j];
+					if (aNode.key === bNode.key) {
+						sources[j - nextStartIndex] = i;
+
+						if (lastTarget > j) {
+							moved = true;
+						} else {
+							lastTarget = j;
+						}
+						patchNode(aNode, bNode, dom, namespace, lifecycle, context, instance, true);
+						removed = false;
+						break;
+					}
+				}
+				if (removed) {
+					remove(aNode, dom);
+					removeOffset++;
 				}
 			}
-			nextNode = item;
+		} else {
+			const keyIndex = new Map();
+
+			for (let i = nextStartIndex; i <= nextEndIndex; i++) {
+				node = nextChildren[i];
+				keyIndex.set(node.key, i);
+			}
+			for (let i = lastStartIndex; i <= lastEndIndex; i++) {
+				let aNode = lastChildren[i];
+				let j = keyIndex.get(aNode.key);
+				if (j !== void 0) {
+					let bNode = nextChildren[j];
+					sources[j - nextStartIndex] = i;
+					if (lastTarget > j) {
+						moved = true;
+					} else {
+						lastTarget = j;
+					}
+					patchNode(aNode, bNode, dom, namespace, lifecycle, context, instance, true);
+				} else {
+					remove(aNode, dom);
+					removeOffset++;
+				}
+			}
 		}
-		for (let i = oldStartIndex; i <= oldEndIndex; i++) {
-			oldItem = lastChildren[i];
-			if (oldItemsMap.has(oldItem.key)) {
-				remove(oldItem, dom);
+		if (moved) {
+			const seq = lis_algorithm(sources);
+			let j = seq.length - 1;
+			for (let i = bLength - 1; i >= 0; i--) {
+				if (sources[i] === -1) {
+					pos = i + nextStartIndex;
+					node = nextChildren[pos];
+					nextPos = pos + 1;
+					nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
+					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
+				} else {
+					if (j < 0 || i !== seq[j]) {
+						pos = i + nextStartIndex;
+						node = nextChildren[pos];
+						nextPos = pos + 1;
+						nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
+						insertOrAppendKeyed(dom, node.dom, nextNode);
+					} else {
+						j--;
+					}
+				}
+			}
+		} else if (aLength - removeOffset !== bLength) {
+			for (let i = bLength - 1; i >= 0; i--) {
+				if (sources[i] === -1) {
+					pos = i + nextStartIndex;
+					node = nextChildren[pos];
+					nextPos = pos + 1;
+					nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
+					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
+				}
 			}
 		}
 	}
