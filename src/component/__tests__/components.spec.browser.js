@@ -1,6 +1,6 @@
 import { render } from './../../DOM/rendering';
 import Component from './../index';
-import createElement from './../../core/createElement';
+import createElement from './../../createElement';
 import innerHTML from './../../../tools/innerHTML';
 import waits from './../../../tools/waits';
 
