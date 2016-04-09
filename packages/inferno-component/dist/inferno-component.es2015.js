@@ -91,33 +91,28 @@ function queueStateChanges(component, newState, callback) {
 }
 
 function applyState(component, force, callback) {
-	var blockRender = component._blockRender;
-
 	if (component._deferSetState === false || force) {
-		component._pendingSetState = false;
-		var pendingState = component._pendingState;
-		var oldState = component.state;
-		var nextState = babelHelpers.extends({}, oldState, pendingState);
+		(function () {
+			component._pendingSetState = false;
+			var pendingState = component._pendingState;
+			var oldState = component.state;
+			var nextState = babelHelpers.extends({}, oldState, pendingState);
 
-		component._pendingState = {};
-		var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+			component._pendingState = {};
+			var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+			var lastNode = component._lastNode;
+			var parentDom = lastNode.dom.parentNode;
 
-		if (!blockRender) {
-			(function () {
-				var lastNode = component._lastNode;
-				var parentDom = lastNode.dom.parentNode;
-
-				var activeNode = getActiveNode();
-				var subLifecycle = new Lifecycle();
-				component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
-				component._lastNode = nextNode;
-				subLifecycle.addListener(function () {
-					subLifecycle.trigger();
-					callback && callback();
-				});
-				resetActiveNode(activeNode);
-			})();
-		}
+			var activeNode = getActiveNode();
+			var subLifecycle = new Lifecycle();
+			component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
+			component._lastNode = nextNode;
+			subLifecycle.addListener(function () {
+				subLifecycle.trigger();
+				callback && callback();
+			});
+			resetActiveNode(activeNode);
+		})();
 	}
 }
 
@@ -133,7 +128,6 @@ var Component = function () {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -199,9 +193,9 @@ var Component = function () {
 			}
 			if (prevProps !== nextProps || prevState !== nextState || force) {
 				if (prevProps !== nextProps) {
-					this._blockRender = true;
+					this._blockSetState = true;
 					this.componentWillReceiveProps(nextProps);
-					this._blockRender = false;
+					this._blockSetState = false;
 				}
 				var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
