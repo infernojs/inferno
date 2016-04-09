@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.6.5
+ * inferno-dom v0.7.0
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -253,6 +253,15 @@
 		return document.activeElement;
 	}
 
+	function removeAllChildren(dom, children) {
+		if (recyclingEnabled) {
+			for (var i = 0; i < children.length; i++) {
+				pool(children[i]);
+			}
+		}
+		dom.textContent = '';
+	}
+
 	function resetActiveNode(activeNode) {
 		if (activeNode !== document.body && document.activeElement !== activeNode) {
 			activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
@@ -419,7 +428,7 @@
 			}
 		} else {
 			if (isInvalidNode(nextChildren)) {
-				dom.textContent = '';
+				removeAllChildren(dom, lastChildren);
 			} else {
 				if (isArray(lastChildren)) {
 					if (isArray(nextChildren)) {
@@ -556,7 +565,7 @@
 				if (nextTpl.isComponent === true) {
 					nextNode.instance = lastNode.instance;
 					nextNode.dom = lastNode.dom;
-					patchComponentWithTemplate(nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					patchComponent(true, nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
 			} else {
 				var dom = lastNode.dom;
@@ -575,7 +584,15 @@
 							}
 						} else if (lastChildrenType === 2) {
 							if (nextChildrenType === 2) {
-								patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+								if (isInvalidNode(nextChildren)) {
+									removeAllChildren(dom, lastChildren);
+								} else {
+									if (isInvalidNode(lastChildren)) {
+										mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+									} else {
+										patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+									}
+								}
 							}
 						} else if (lastChildrenType === 1) {
 							if (nextChildrenType === 1) {
@@ -652,11 +669,10 @@
 				nextNode.dom = lastNode.dom;
 			} else {
 				if (isFunction(lastTag)) {
-					// Firefox doesn't like && too much
 					if (isFunction(nextTag)) {
 						nextNode.instance = lastNode.instance;
 						nextNode.dom = lastNode.dom;
-						patchComponent(nextNode, nextNode.tag, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 					}
 				} else {
 					var dom = lastNode.dom;
@@ -826,7 +842,7 @@
 		}
 	}
 
-	function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+	function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 		nextProps = addChildrenToProps(nextChildren, nextProps);
 
 		if (isStatefulComponent(Component)) {
@@ -842,62 +858,13 @@
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 			if (!isNullOrUndefined(nextNode)) {
-				diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+				patchNode(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
 			}
 		} else {
 			var shouldUpdate = true;
-
-			if (nextTpl.hasHooks === true) {
-				if (!isNullOrUndefined(nextHooks.componentShouldUpdate)) {
-					shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
-				}
-			}
-			if (shouldUpdate !== false) {
-				if (nextTpl.hasHooks === true) {
-					if (!isNullOrUndefined(nextHooks.componentWillUpdate)) {
-						nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
-					}
-				}
-				var _nextNode = Component(nextProps);
-				var dom = lastNode.dom;
-				_nextNode.dom = dom;
-
-				diffNodes(instance, _nextNode, dom, null, lifecycle, context, null, true);
-				lastNode.instance = _nextNode;
-				if (nextTpl.hasHooks === true) {
-					if (!isNullOrUndefined(nextHooks.componentDidUpdate)) {
-						nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
-					}
-				}
-			}
-		}
-	}
-
-	function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
-		nextProps = addChildrenToProps(nextChildren, nextProps);
-
-		if (isStatefulComponent(Component)) {
-			var prevProps = instance.props;
-			var prevState = instance.state;
-			var nextState = instance.state;
-
-			var childContext = instance.getChildContext();
-			if (!isNullOrUndefined(childContext)) {
-				context = babelHelpers.extends({}, context, childContext);
-			}
-			instance.context = context;
-			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
-
-			if (!isNullOrUndefined(nextNode)) {
-				diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
-				lastNode.dom = nextNode.dom;
-				instance._lastNode = nextNode;
-			}
-		} else {
-			var shouldUpdate = true;
-			var nextHooksDefined = !isNullOrUndefined(nextHooks);
+			var nextHooksDefined = hasTemplate && nextTpl.hasHooks === true || !isNullOrUndefined(nextHooks);
 
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
@@ -906,12 +873,11 @@
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 				}
-				var _nextNode2 = Component(nextProps);
+				var _nextNode = Component(nextProps);
 				var dom = lastNode.dom;
-				_nextNode2.dom = dom;
-
-				diffNodes(instance, _nextNode2, dom, null, lifecycle, context, null, true);
-				lastNode.instance = _nextNode2;
+				_nextNode.dom = dom;
+				patchNode(instance, _nextNode, dom, null, lifecycle, context, null, true);
+				lastNode.instance = _nextNode;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 				}

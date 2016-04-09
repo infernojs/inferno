@@ -156,6 +156,19 @@ export function getActiveNode() {
 	return document.activeElement;
 }
 
+export function removeAllChildren(dom ,children) {
+	if (recyclingEnabled) {
+		const childrenLength = children.length;
+
+		if (childrenLength > 5) {
+			for (let i = 0; i < childrenLength; i++) {
+				pool(children[i]);
+			}
+		}
+	}
+	dom.textContent = '';
+}
+
 export function resetActiveNode(activeNode) {
 	if (activeNode !== document.body && document.activeElement !== activeNode) {
 		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it

@@ -139,7 +139,7 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 	}
 }
 
-export function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+export function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
@@ -155,62 +155,13 @@ export function patchComponentWithTemplate(lastNode, Component, lastTpl, nextTpl
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
+			patchNode(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
 	} else {
 		let shouldUpdate = true;
-
-		if (nextTpl.hasHooks === true) {
-			if (!isNullOrUndefined(nextHooks.componentShouldUpdate)) {
-				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
-			}
-		}
-		if (shouldUpdate !== false) {
-			if (nextTpl.hasHooks === true) {
-				if (!isNullOrUndefined(nextHooks.componentWillUpdate)) {
-					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
-				}
-			}
-			const nextNode = Component(nextProps);
-			const dom = lastNode.dom;
-			nextNode.dom = dom;
-
-			diffNodes(instance, nextNode, dom, null, lifecycle, context, null, true);
-			lastNode.instance = nextNode;
-			if (nextTpl.hasHooks === true) {
-				if (!isNullOrUndefined(nextHooks.componentDidUpdate)) {
-					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
-				}
-			}
-		}
-	}
-}
-
-export function patchComponent(lastNode, Component, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
-	nextProps = addChildrenToProps(nextChildren, nextProps);
-
-	if (isStatefulComponent(Component)) {
-		const prevProps = instance.props;
-		const prevState = instance.state;
-		const nextState = instance.state;
-
-		const childContext = instance.getChildContext();
-		if (!isNullOrUndefined(childContext)) {
-			context = { ...context, ...childContext };
-		}
-		instance.context = context;
-		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
-
-		if (!isNullOrUndefined(nextNode)) {
-			diffNodes(lastNode, nextNode, parentDom, null, lifecycle, context, instance, true);
-			lastNode.dom = nextNode.dom;
-			instance._lastNode = nextNode;
-		}
-	} else {
-		let shouldUpdate = true;
-		const nextHooksDefined = !isNullOrUndefined(nextHooks);
+		const nextHooksDefined = (hasTemplate && nextTpl.hasHooks === true) || !isNullOrUndefined(nextHooks);
 
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
@@ -222,8 +173,7 @@ export function patchComponent(lastNode, Component, instance, lastProps, nextPro
 			const nextNode = Component(nextProps);
 			const dom = lastNode.dom;
 			nextNode.dom = dom;
-
-			diffNodes(instance, nextNode, dom, null, lifecycle, context, null, true);
+			patchNode(instance, nextNode, dom, null, lifecycle, context, null, true);
 			lastNode.instance = nextNode;
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
