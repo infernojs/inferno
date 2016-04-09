@@ -13,8 +13,6 @@ function queueStateChanges(component, newState, callback) {
 }
 
 function applyState(component, force, callback) {
-	const blockRender = component._blockRender;
-
 	if (component._deferSetState === false || force) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
@@ -23,21 +21,18 @@ function applyState(component, force, callback) {
 
 		component._pendingState = {};
 		const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+		const lastNode = component._lastNode;
+		const parentDom = lastNode.dom.parentNode;
 
-		if (!blockRender) {
-			const lastNode = component._lastNode;
-			const parentDom = lastNode.dom.parentNode;
-
-			const activeNode = getActiveNode();
-			const subLifecycle = new Lifecycle();
-			component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
-			component._lastNode = nextNode;
-			subLifecycle.addListener(() => {
-				subLifecycle.trigger();
-				callback && callback();
-			});
-			resetActiveNode(activeNode);
-		}
+		const activeNode = getActiveNode();
+		const subLifecycle = new Lifecycle();
+		component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
+		component._lastNode = nextNode;
+		subLifecycle.addListener(() => {
+			subLifecycle.trigger();
+			callback && callback();
+		});
+		resetActiveNode(activeNode);
 	}
 }
 
@@ -51,7 +46,6 @@ export default class Component {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -90,9 +84,9 @@ export default class Component {
 		}
 		if (prevProps !== nextProps || prevState !== nextState || force) {
 			if (prevProps !== nextProps) {
-				this._blockRender = true;
+				this._blockSetState = true;
 				this.componentWillReceiveProps(nextProps);
-				this._blockRender = false;
+				this._blockSetState = false;
 			}
 			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
