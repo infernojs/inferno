@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isAttrAnEvent, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from './../core/utils';
+import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isObject } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mountNode } from './mounting';
 import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
@@ -122,21 +122,19 @@ export function patchEvents(lastEvents, nextEvents, dom) {
 }
 
 export function patchAttribute(attrName, nextAttrValue, dom) {
-	if (!isAttrAnEvent(attrName)) {
-		if (booleanProps(attrName)) {
-			dom[attrName] = nextAttrValue;
-			return;
-		}
-		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-			dom.removeAttribute(attrName);
+	if (booleanProps(attrName)) {
+		dom[attrName] = nextAttrValue;
+		return;
+	}
+	if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+		dom.removeAttribute(attrName);
+	} else {
+		if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
+			dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
+		} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
+			dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
 		} else {
-			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-				dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
-				dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			} else {
-				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			}
+			dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 		}
 	}
 }
