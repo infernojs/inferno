@@ -2,7 +2,7 @@
   "name": "inferno",
   "version": "0.7.0",
   "license": "MPL-2.0",
-  "description": "A framework for building lightning fast user interfaces",
+  "description": "An extremely fast, isomorphic JavaScript library for building modern user interfaces",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
