@@ -236,21 +236,25 @@ function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, 
 
 			if (lastChildrenType > 0) {
 				var nextChildrenType = nextTpl.childrenType;
+				var lastChildren = lastNode.children;
+				var nextChildren = nextNode.children;
 
-				if (lastChildrenType === 4) {
-					if (nextChildrenType === 4) {
-						patchKeyedChildren(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance);
+				if (lastChildren !== nextChildren) {
+					if (lastChildrenType === 4) {
+						if (nextChildrenType === 4) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+						}
+					} else if (lastChildrenType === 2) {
+						if (nextChildrenType === 2) {
+							patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+						}
+					} else if (lastChildrenType === 1) {
+						if (nextChildrenType === 1) {
+							updateTextNode(dom, lastChildren, nextChildren);
+						}
+					} else {
+						diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
 					}
-				} else if (lastChildrenType === 2) {
-					if (nextChildrenType === 2) {
-						patchNode(lastNode.children, nextNode.children, dom, namespace, lifecycle, context, instance, deepCheck);
-					}
-				} else if (lastChildrenType === 1) {
-					if (nextChildrenType === 1) {
-						updateTextNode(dom, lastNode.children, nextNode.children);
-					}
-				} else {
-					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
 				}
 			}
 			if (lastTpl.hasAttrs === true) {
@@ -476,21 +480,19 @@ function patchEvents(lastEvents, nextEvents, dom) {
 }
 
 function patchAttribute(attrName, nextAttrValue, dom) {
-	if (!isAttrAnEvent(attrName)) {
-		if (booleanProps(attrName)) {
-			dom[attrName] = nextAttrValue;
-			return;
-		}
-		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-			dom.removeAttribute(attrName);
+	if (booleanProps(attrName)) {
+		dom[attrName] = nextAttrValue;
+		return;
+	}
+	if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+		dom.removeAttribute(attrName);
+	} else {
+		if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
+			dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
+		} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
+			dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
 		} else {
-			if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-				dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
-				dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			} else {
-				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
-			}
+			dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 		}
 	}
 }
@@ -1503,10 +1505,6 @@ function isInvalidNode(obj) {
 
 function isFunction(obj) {
 	return typeof obj === 'function';
-}
-
-function isAttrAnEvent(attr) {
-	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
 
 function isString(obj) {
