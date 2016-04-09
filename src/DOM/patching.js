@@ -171,12 +171,16 @@ export function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTp
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
 			const nextNode = Component(nextProps);
-			const dom = lastNode.dom;
-			nextNode.dom = dom;
-			patchNode(instance, nextNode, dom, null, lifecycle, context, null, true);
-			lastNode.instance = nextNode;
-			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
-				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+			
+			if (!isNullOrUndefined(nextNode)) {
+				const dom = lastNode.dom;
+				
+				nextNode.dom = dom;
+				patchNode(instance, nextNode, dom, null, lifecycle, context, null, true);
+				lastNode.instance = nextNode;
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
+					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+				}
 			}
 		}
 	}
