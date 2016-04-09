@@ -38,18 +38,24 @@ Core package:
 
 ```sh
 npm install --save inferno
- ```
+```
  
  ES2015 stateful components (with lifecycle events) package:
  
-  ```sh
- npm install --save inferno-component 
- ```
+```sh
+npm install --save inferno-component 
+```
  
 Browser DOM rendering package:
 
- ```sh
+```sh
 npm install --save inferno-dom 
+```
+
+Helper for creating Inferno VNodes (similar to `React.createElement`):
+
+```sh
+npm install --save inferno-create-element 
 ```
 
 Server-side rendering package:
@@ -61,10 +67,11 @@ npm install --save inferno-server
 Pre-bundled files for browser consumption:
  
 ```
-http://infernojs.org/releases/0.6.4/inferno.min.js
-http://infernojs.org/releases/0.6.4/inferno-component.min.js
-http://infernojs.org/releases/0.6.4/inferno-dom.min.js
-http://infernojs.org/releases/0.6.4/inferno-server.min.js
+http://infernojs.org/releases/0.7.0/inferno.min.js
+http://infernojs.org/releases/0.7.0/inferno-create-element.min.js
+http://infernojs.org/releases/0.7.0/inferno-component.min.js
+http://infernojs.org/releases/0.7.0/inferno-dom.min.js
+http://infernojs.org/releases/0.7.0/inferno-server.min.js
 ```
 
 ## Overview
@@ -86,7 +93,9 @@ InfernoDOM.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```jsx
+import Inferno from 'inferno';
 import { Component } from `inferno-component`;
+import InfernoDOM from 'inferno-dom';
 
 class MyComponent extends Component {
   constructor(props) {
@@ -112,11 +121,20 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ## Inferno Top-Level API
 
-### Inferno.createElement
+### Inferno.createVNode
 
 ```jsx
-import { Component } from 'inferno-component';
-import { createElement } from 'inferno';
+import createVNode from `inferno`;
+
+InfernoDOM.render(createVNode().setTag('div').setAttrs({ className: 'test' }).setChildren('Hello world!'), document.body);
+```
+
+### InfernoCreateElement
+
+```jsx
+import InfernoDOM from 'inferno-dom';
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
 
 class BasicComponent extends Component {
     render() {
@@ -133,12 +151,12 @@ class BasicComponent extends Component {
 InfernoDOM.render(createElement(BasicComponent, { title: 'abc' }), container);
 ```
 
-### InfernoComponent.Component
+### InfernoComponent
 
 **Stateful component:**
 
 ```jsx
-import { Component } from 'inferno-component';
+import Component from 'inferno-component';
 
 class MyComponent extends Component {
   render() {

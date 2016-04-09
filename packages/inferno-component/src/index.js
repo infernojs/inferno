@@ -1,5 +1,3 @@
 import Component from '../../../src/component';
 
-export default {
-	Component
-};
+export default Component;

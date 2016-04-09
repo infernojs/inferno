@@ -1,8 +1,8 @@
 {
-  "name": "inferno",
-  "version": "0.7.0",
+  "name": "inferno-create-element",
+  "version": "0.7",
   "license": "MPL-2.0",
-  "description": "A framework for building lightning fast user interfaces",
+  "description": "Provides methods to create Inferno VNodes",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -11,21 +11,18 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
+  "main": "inferno-dom.js",
+  "jsnext:main": "dist/inferno-dom.es2015.js",
   "keywords": [
     "babel",
     "react",
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces",
-    "html",
-    "renderToString",
-    "server",
-    "dom",
-    "browser",
-    "rollup"
+    "user interfaces"
   ],
-  "main": "inferno.js",
-  "jsnext:main": "dist/inferno.es2015.js",
+  "dependencies": {
+    "inferno": "^0.7.0"
+  },
   "repository": "https://github.com/trueadm/inferno"
 }
