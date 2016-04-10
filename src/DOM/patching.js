@@ -98,8 +98,8 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	}
 }
 
-export function patchEvents(lastEvents, nextEvents, dom) {
-	const nextEventKeys = Object.keys(nextEvents);
+export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
+	const nextEventKeys =  _nextEventKeys || Object.keys(nextEvents);
 
 	for (let i = 0; i < nextEventKeys.length; i++) {
 		const event = nextEventKeys[i];
@@ -110,7 +110,7 @@ export function patchEvents(lastEvents, nextEvents, dom) {
 			dom[event] = nextEvent;
 		}
 	}
-	const lastEventKeys = Object.keys(lastEvents);
+	const lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
 
 	for (let i = 0; i < lastEventKeys.length; i++) {
 		const event = lastEventKeys[i];

@@ -28,6 +28,11 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 		return appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance);
 	}
 }
+function handleSelects(node) {
+	if (node.tag === 'select') {
+		selectValue(node);
+	}
+}
 
 function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance) {
 	const tag = node.tag;
@@ -70,7 +75,14 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	}
 
 	if (tpl.hasAttrs === true) {
-		mountAttributes(node, node.attrs, dom, instance);
+		const attrs = node.attrs;
+
+		if (tpl.attrKeys === null) {
+			tpl.attrKeys = Object.keys(attrs);
+		}
+		const attrKeys = tpl.attrKeys;
+
+		mountAttributes(attrs, attrKeys, dom, instance);
 	}
 	if (tpl.hasClassName === true) {
 		dom.className = node.className;
@@ -79,7 +91,15 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 		patchStyle(null, node.style, dom);
 	}
 	if (tpl.hasEvents === true) {
-		mountEvents(node.events, dom);
+		handleSelects(node);
+		const events = node.events;
+
+		if (tpl.eventKeys === null) {
+			tpl.eventKeys = Object.keys(events);
+		}
+		const eventKeys = tpl.eventKeys;
+
+		mountEvents(events, eventKeys, dom);
 	}
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
@@ -116,7 +136,8 @@ function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
 		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 	}
 	if (!isNullOrUndefined(attrs)) {
-		mountAttributes(node, attrs, dom, instance);
+		handleSelects(node);
+		mountAttributes(attrs, Object.keys(attrs), dom, instance);
 	}
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
@@ -125,7 +146,7 @@ function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
 		patchStyle(null, style, dom);
 	}
 	if (!isNullOrUndefined(events)) {
-		mountEvents(events, dom);
+		mountEvents(events, Object.keys(events), dom);
 	}
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
@@ -214,9 +235,7 @@ function mountRef(instance, value, dom) {
 	}
 }
 
-export function mountEvents(events, dom) {
-	const eventKeys = Object.keys(events);
-
+export function mountEvents(events, eventKeys, dom) {
 	for (let i = 0; i < eventKeys.length; i++) {
 		const event = eventKeys[i];
 
@@ -287,14 +306,9 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 	return dom;
 }
 
-function mountAttributes(node, attrs, dom, instance) {
-	if (node.tag === 'select') {
-		selectValue(node);
-	}
-	const attrsKeys = Object.keys(attrs);
-
-	for (let i = 0; i < attrsKeys.length; i++) {
-		const attr = attrsKeys[i];
+function mountAttributes(attrs, attrKeys, dom, instance) {
+	for (let i = 0; i < attrKeys.length; i++) {
+		const attr = attrKeys[i];
 
 		if (attr === 'ref') {
 			mountRef(instance, attrs[attr], dom);

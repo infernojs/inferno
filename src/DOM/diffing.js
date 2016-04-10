@@ -72,7 +72,7 @@ function diffRef(instance, lastValue, nextValue, dom) {
 	}
 }
 
-export function diffEvents(lastNode, nextNode, dom) {
+export function diffEvents(lastNode, nextNode, lastEventKeys, nextEventKeys, dom) {
 	const nextEvents = nextNode.events;
 	const lastEvents = lastNode.events;
 	const nextEventsDefined = !isNullOrUndefined(nextEvents);
@@ -80,16 +80,16 @@ export function diffEvents(lastNode, nextNode, dom) {
 
 	if (nextEventsDefined) {
 		if (lastEventsDefined) {
-			patchEvents(lastEvents, nextEvents, dom);
+			patchEvents(lastEvents, nextEvents, lastEventKeys, nextEventKeys, dom);
 		} else {
-			mountEvents(nextEvents, dom);
+			mountEvents(nextEvents, nextEventKeys, dom);
 		}
 	} else if (lastEventsDefined) {
-		removeEvents(lastEvents, dom);
+		removeEvents(lastEvents, lastEventKeys, dom);
 	}
 }
 
-function diffAttributes(lastNode, nextNode, dom, instance) {
+function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, instance) {
 	if (lastNode.tag === 'select') {
 		selectValue(nextNode);
 	}
@@ -98,9 +98,8 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 	const nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
 	const lastAttrsIsUndef = isNullOrUndefined(lastAttrs);
 
-
 	if (!nextAttrsIsUndef) {
-		const nextAttrsKeys = Object.keys(nextAttrs);
+		const nextAttrsKeys = nextAttrKeys || Object.keys(nextAttrs);
 		const attrKeysLength = nextAttrsKeys.length;
 
 		for (let i = 0; i < attrKeysLength; i++) {
@@ -118,7 +117,7 @@ function diffAttributes(lastNode, nextNode, dom, instance) {
 		}
 	}
 	if (!lastAttrsIsUndef) {
-		const lastAttrsKeys = Object.keys(lastAttrs);
+		const lastAttrsKeys = lastAttrKeys || Object.keys(lastAttrs);
 		const attrKeysLength = lastAttrsKeys.length;
 
 		for (let i = 0; i < attrKeysLength; i++) {
@@ -207,10 +206,10 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 				}
 			}
 			if (lastTpl.hasAttrs === true) {
-				diffAttributes(lastNode, nextNode, dom, instance);
+				diffAttributes(lastNode, nextNode, lastTpl.attrKeys, nextTpl.attrKeys, dom, instance);
 			}
 			if (lastTpl.hasEvents === true) {
-				diffEvents(lastNode, nextNode, dom);
+				diffEvents(lastNode, nextNode, lastTpl.eventKeys, nextTpl.eventKeys, dom);
 			}
 			if (lastTpl.hasClassName === true) {
 				const nextClassName = nextNode.className;
@@ -286,8 +285,8 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 				nextNode.dom = dom;
 
 				diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
-				diffAttributes(lastNode, nextNode, dom, instance);
-				diffEvents(lastNode, nextNode, dom);
+				diffAttributes(lastNode, nextNode, null, null, dom, instance);
+				diffEvents(lastNode, nextNode, null, null, dom);
 
 				if (lastNode.className !== nextClassName) {
 					if (isNullOrUndefined(nextClassName)) {

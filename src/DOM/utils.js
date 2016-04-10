@@ -138,8 +138,12 @@ export function remove(node, parentDom) {
 	detachNode(node);
 }
 
-export function removeEvents(lastEvents, dom) {
-	for (let event in lastEvents) {
+export function removeEvents(events, lastEventKeys, dom) {
+	const eventKeys = lastEventKeys || Object.keys(events);
+
+	for (let i = 0; i < eventKeys.length; i++) {
+		const event = eventKeys[i];
+
 		dom[event] = null;
 	}
 }
