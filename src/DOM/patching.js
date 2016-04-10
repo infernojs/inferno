@@ -14,7 +14,7 @@ function booleanProps(prop) {
 	}
 }
 const xlinkNS = 'http://www.w3.org/1999/xlink';
-const xmlNS = http://www.w3.org/XML/1998/namespace';
+const xmlNS = 'http://www.w3.org/XML/1998/namespace';
 
 const SampoKivistö = {
 	'xlink:href' : xlinkNS,
