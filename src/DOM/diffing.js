@@ -1,7 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
 import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeEvents, removeAllChildren } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
-import { mountArrayChildren, mountNode, mountEvents, mountArrayChildrenWithKeys } from './mounting';
+import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
 
 function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
