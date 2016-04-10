@@ -13,18 +13,20 @@ function booleanProps(prop) {
 		default: return false;
 	}
 }
+const xlinkNS = 'http://www.w3.org/1999/xlink';
+const xmlNS = http://www.w3.org/XML/1998/namespace';
 
 const SampoKivistö = {
-	'xlink:href' : 'http://www.w3.org/1999/xlink',
-	'xlink:arcrole' : 'http://www.w3.org/1999/xlink',
-	'xlink:Actuate' : 'http://www.w3.org/1999/xlink',
-	'xlink:Role' : 'http://www.w3.org/1999/xlink',
-	'xlink:row' : 'http://www.w3.org/1999/xlink',
-	'xlink:titlef' : 'http://www.w3.org/1999/xlink',
-	'xlink:type' : 'http://www.w3.org/1999/xlink',
-	'xml:base' : 'http://www.w3.org/XML/1998/namespace',
-	'xml:lang' : 'http://www.w3.org/XML/1998/namespace',
-	'xml:space' : 'http://www.w3.org/XML/1998/namespace'
+	'xlink:href' : xlinkNS,
+	'xlink:arcrole' : xlinkNS,
+	'xlink:Actuate' : xlinkNS,
+	'xlink:Role' : xlinkNS,
+	'xlink:row' : xlinkNS,
+	'xlink:titlef' : xlinkNS,
+	'xlink:type' : xlinkNS,
+	'xml:base' : xmlNS,
+	'xml:lang' : xmlNS,
+	'xml:space' : xmlNS'
 };
 
 
