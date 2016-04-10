@@ -362,8 +362,8 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 	let nextChildrenLength = nextChildren.length;
 	let lastEndIndex = lastChildrenLength - 1;
 	let nextEndIndex = nextChildrenLength - 1;
-	let lastStartNode = (lastChildrenLength > 0) ? lastChildren[lastStartIndex] : null;
-	let nextStartNode = (nextChildrenLength > 0) ? nextChildren[nextStartIndex] : null;
+	let lastStartNode = null;
+	let nextStartNode = null;
 	let i;
 	let index;
 	let nextNode;
@@ -372,59 +372,63 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 	let prevItem;
 
 	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+		nextStartNode = nextChildren[nextStartIndex];
+		lastStartNode = lastChildren[lastStartIndex];
 
 		if (nextStartNode.key !== lastStartNode.key) {
 			break;
 		}
+
 		patchNode(lastStartNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
 		nextStartIndex++;
 		lastStartIndex++;
-		nextStartNode = nextChildren[nextStartIndex];
-		lastStartNode = lastChildren[lastStartIndex];
 	}
 
 	let nextEndNode = nextChildren[nextEndIndex];
 	let lastEndNode = lastChildren[lastEndIndex];
 
 	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+		nextEndNode = nextChildren[nextEndIndex];
+		lastEndNode = lastChildren[lastEndIndex];
 
 		if (nextEndNode.key !== lastEndNode.key) {
 			break;
 		}
+
 		patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
 		nextEndIndex--;
 		lastEndIndex--;
-
-		nextEndNode = nextChildren[nextEndIndex];
-		lastEndNode = lastChildren[lastEndIndex];
 	}
 
 
 	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+		nextEndNode = nextChildren[nextEndIndex];
+		lastStartNode = lastChildren[lastStartIndex];
 
 		if (nextEndNode.key !== lastStartNode.key) {
 			break;
 		}
+
 		nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1].dom : null;
 		patchNode(lastStartNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
 		insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
 		nextEndIndex--;
 		lastStartIndex++;
-		nextEndNode = nextChildren[nextEndIndex];
-		lastStartNode = lastChildren[lastStartIndex];
 	}
 
 	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+		nextStartNode = nextChildren[nextStartIndex];
+		lastEndNode = lastChildren[lastEndIndex];
+
 		if (nextStartNode.key !== lastEndNode.key) {
 			break;
 		}
+
 		nextNode = lastChildren[lastStartIndex].dom;
 		patchNode(lastEndNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
 		insertOrAppendKeyed(dom, nextStartNode.dom, nextNode);
 		nextStartIndex++;
 		lastEndIndex--;
-		nextStartNode = nextChildren[nextStartIndex];
-		lastEndNode = lastChildren[lastEndIndex];
 	}
 
 	if (lastStartIndex > lastEndIndex) {
