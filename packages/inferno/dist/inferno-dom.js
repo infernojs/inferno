@@ -1423,6 +1423,7 @@
 		}
 
 		if (tpl.hasAttrs === true) {
+			handleSelects(node);
 			var attrs = node.attrs;
 
 			if (tpl.attrKeys === null) {
@@ -1439,7 +1440,6 @@
 			patchStyle(null, node.style, dom);
 		}
 		if (tpl.hasEvents === true) {
-			handleSelects(node);
 			var events = node.events;
 
 			if (tpl.eventKeys === null) {

@@ -75,6 +75,7 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	}
 
 	if (tpl.hasAttrs === true) {
+		handleSelects(node);
 		const attrs = node.attrs;
 
 		if (tpl.attrKeys === null) {
@@ -91,7 +92,6 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 		patchStyle(null, node.style, dom);
 	}
 	if (tpl.hasEvents === true) {
-		handleSelects(node);
 		const events = node.events;
 
 		if (tpl.eventKeys === null) {
