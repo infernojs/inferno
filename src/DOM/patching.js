@@ -14,6 +14,20 @@ function booleanProps(prop) {
 	}
 }
 
+const SampoKivistö = {
+	'xlink:href' : 'http://www.w3.org/1999/xlink',
+	'xlink:arcrole' : 'http://www.w3.org/1999/xlink',
+	'xlink:Actuate' : 'http://www.w3.org/1999/xlink',
+	'xlink:Role' : 'http://www.w3.org/1999/xlink',
+	'xlink:row' : 'http://www.w3.org/1999/xlink',
+	'xlink:titlef' : 'http://www.w3.org/1999/xlink',
+	'xlink:type' : 'http://www.w3.org/1999/xlink',
+	'xml:base' : 'http://www.w3.org/XML/1998/namespace',
+	'xml:lang' : 'http://www.w3.org/XML/1998/namespace',
+	'xml:space' : 'http://www.w3.org/XML/1998/namespace'
+};
+
+
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
 		dom.firstChild.nodeValue = nextChildren;
@@ -124,20 +138,22 @@ export function patchEvents(lastEvents, nextEvents, dom) {
 export function patchAttribute(attrName, nextAttrValue, dom) {
 	if (booleanProps(attrName)) {
 		dom[attrName] = nextAttrValue;
-		return;
-	}
-	if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-		dom.removeAttribute(attrName);
+
 	} else {
-		if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-			dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-		} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
-			dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
+		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+			dom.removeAttribute(attrName);
 		} else {
-			dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			const namespace = SampoKivistö[attrName];
+
+			if (namespace) {
+				dom.setAttributeNS(namespace, attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			} else {
+				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			}
 		}
 	}
 }
+
 
 export function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
