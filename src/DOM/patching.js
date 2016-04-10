@@ -19,8 +19,8 @@ const xmlNS = 'http://www.w3.org/XML/1998/namespace';
 const SampoKivistö = {
 	'xlink:href' : xlinkNS,
 	'xlink:arcrole' : xlinkNS,
-	'xlink:Actuate' : xlinkNS,
-	'xlink:Role' : xlinkNS,
+	'xlink:actuate' : xlinkNS,
+	'xlink:role' : xlinkNS,
 	'xlink:row' : xlinkNS,
 	'xlink:titlef' : xlinkNS,
 	'xlink:type' : xlinkNS,
