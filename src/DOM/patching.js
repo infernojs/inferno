@@ -114,7 +114,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 }
 
 export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
-	const nextEventKeys =  _nextEventKeys || Object.keys(nextEvents);
+	const nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
 
 	for (let i = 0; i < nextEventKeys.length; i++) {
 		const event = nextEventKeys[i];

@@ -4,11 +4,6 @@
  * Released under the MPL-2.0 License.
  */
 var babelHelpers = {};
-babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
 
 babelHelpers.extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
