@@ -890,13 +890,18 @@ function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, inst
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
+
 			var _nextNode = Component(nextProps);
-			var dom = lastNode.dom;
-			_nextNode.dom = dom;
-			patchNode(instance, _nextNode, dom, null, lifecycle, context, null, true);
-			lastNode.instance = _nextNode;
-			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
-				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+
+			if (!isInvalidNode(_nextNode)) {
+				var dom = lastNode.dom;
+
+				_nextNode.dom = dom;
+				patchNode(instance, _nextNode, dom, null, lifecycle, context, null, true);
+				lastNode.instance = _nextNode;
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
+					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+				}
 			}
 		}
 	}
@@ -1145,8 +1150,8 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 			}
 		}
 	} else if (nextStartIndex > nextEndIndex) {
-		for (; lastStartIndex <= lastEndIndex; lastStartIndex++) {
-			remove(lastChildren[lastStartIndex], dom);
+		while (lastStartIndex <= lastEndIndex) {
+			remove(lastChildren[lastStartIndex++], dom);
 		}
 	} else {
 
@@ -1217,7 +1222,7 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 		}
 
 		if (moved) {
-			var seq = filterChildren(sources);
+			var seq = lis_algorithm(sources);
 			index = seq.length - 1;
 			for (i = bLength - 1; i >= 0; i--) {
 				if (sources[i] === -1) {
@@ -1246,8 +1251,9 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 	}
 }
 
-function filterChildren(children) {
-	var p = children.slice(0);
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+function lis_algorithm(a) {
+	var p = a.slice(0);
 	var result = [];
 	result.push(0);
 	var i = void 0;
@@ -1257,13 +1263,13 @@ function filterChildren(children) {
 	var v = void 0;
 	var c = void 0;
 
-	for (i = 0; i < children.length; i++) {
-		if (children[i] === -1) {
+	for (i = 0; i < a.length; i++) {
+		if (a[i] === -1) {
 			continue;
 		}
 
 		j = result[result.length - 1];
-		if (children[j] < children[i]) {
+		if (a[j] < a[i]) {
 			p[i] = j;
 			result.push(i);
 			continue;
@@ -1274,14 +1280,14 @@ function filterChildren(children) {
 
 		while (u < v) {
 			c = (u + v) / 2 | 0;
-			if (children[result[c]] < children[i]) {
+			if (a[result[c]] < a[i]) {
 				u = c + 1;
 			} else {
 				v = c;
 			}
 		}
 
-		if (children[i] < children[result[u]]) {
+		if (a[i] < a[result[u]]) {
 			if (u > 0) {
 				p[i] = result[u - 1];
 			}
