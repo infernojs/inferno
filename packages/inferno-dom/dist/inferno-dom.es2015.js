@@ -1069,76 +1069,66 @@ function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycl
 	var nextEndIndex = nextChildrenLength - 1;
 	var lastStartNode = lastChildrenLength > 0 ? lastChildren[lastStartIndex] : null;
 	var nextStartNode = nextChildrenLength > 0 ? nextChildren[nextStartIndex] : null;
-	var lastEndNode = lastChildren[lastEndIndex];
-	var nextEndNode = nextChildren[nextEndIndex];
 	var i = void 0;
 	var index = void 0;
-	var stop = false;
 	var nextNode = void 0;
 	var lastTarget = 0;
 	var pos = void 0;
 	var prevItem = void 0;
 
-	outer: while (!stop && lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
-		stop = true;
+	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
 
-		while (lastStartNode.key === nextStartNode.key) {
-			patchNode(lastStartNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
-			lastStartIndex++;
-			nextStartIndex++;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			} else {
-				lastStartNode = lastChildren[lastStartIndex];
-				nextStartNode = nextChildren[nextStartIndex];
-				stop = false;
-			}
+		if (nextStartNode.key !== lastStartNode.key) {
+			break;
 		}
+		patchNode(lastStartNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+		nextStartIndex++;
+		lastStartIndex++;
+		nextStartNode = nextChildren[nextStartIndex];
+		lastStartNode = lastChildren[lastStartIndex];
+	}
 
-		// Sync nodes with the same key at the end.
-		while (nextEndNode.key === lastEndNode.key) {
-			patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
-			lastEndIndex--;
-			nextEndIndex--;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			} else {
-				nextEndNode = nextChildren[nextEndIndex];
-				lastEndNode = lastChildren[lastEndIndex];
-				stop = false;
-			}
-		}
+	var nextEndNode = nextChildren[nextEndIndex];
+	var lastEndNode = lastChildren[lastEndIndex];
 
-		// Move and sync nodes from left to right.
-		while (lastStartNode.key === nextEndNode.key) {
-			patchNode(lastStartNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
-			nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
-			insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
-			lastStartIndex++;
-			nextEndIndex--;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			} else {
-				nextEndNode = nextChildren[nextEndIndex];
-				lastStartNode = lastChildren[lastStartIndex];
-				stop = false;
-			}
-		}
+	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
 
-		while (nextStartNode.key === lastEndNode.key) {
-			nextNode = lastChildren[lastStartIndex].dom;
-			patchNode(lastEndNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppendKeyed(dom, nextStartNode.dom, nextNode);
-			nextStartIndex++;
-			lastEndIndex--;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			} else {
-				nextStartNode = nextChildren[nextStartIndex];
-				lastEndNode = lastChildren[lastEndIndex];
-				stop = false;
-			}
+		if (nextEndNode.key !== lastEndNode.key) {
+			break;
 		}
+		patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+		nextEndIndex--;
+		lastEndIndex--;
+
+		nextEndNode = nextChildren[nextEndIndex];
+		lastEndNode = lastChildren[lastEndIndex];
+	}
+
+	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+
+		if (nextEndNode.key !== lastStartNode.key) {
+			break;
+		}
+		nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
+		patchNode(lastStartNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+		insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
+		nextEndIndex--;
+		lastStartIndex++;
+		nextEndNode = nextChildren[nextEndIndex];
+		lastStartNode = lastChildren[lastStartIndex];
+	}
+
+	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+		if (nextStartNode.key !== lastEndNode.key) {
+			break;
+		}
+		nextNode = lastChildren[lastStartIndex].dom;
+		patchNode(lastEndNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+		insertOrAppendKeyed(dom, nextStartNode.dom, nextNode);
+		nextStartIndex++;
+		lastEndIndex--;
+		nextStartNode = nextChildren[nextStartIndex];
+		lastEndNode = lastChildren[lastEndIndex];
 	}
 
 	if (lastStartIndex > lastEndIndex) {
