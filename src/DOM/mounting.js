@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray, isObject } from './../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
 import { patchAttribute, patchStyle } from './patching';
@@ -292,6 +292,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 				});
 			}
 		}
+
 		/* eslint new-cap: 0 */
 		const node = Component(props);
 		dom = mountNode(node, null, null, lifecycle, context, null);

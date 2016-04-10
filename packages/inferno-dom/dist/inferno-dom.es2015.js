@@ -718,6 +718,21 @@ function booleanProps(prop) {
 			return false;
 	}
 }
+var xlinkNS = 'http://www.w3.org/1999/xlink';
+var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+
+var namespaces = {
+	'xlink:href': xlinkNS,
+	'xlink:arcrole': xlinkNS,
+	'xlink:actuate': xlinkNS,
+	'xlink:role': xlinkNS,
+	'xlink:row': xlinkNS,
+	'xlink:titlef': xlinkNS,
+	'xlink:type': xlinkNS,
+	'xml:base': xmlNS,
+	'xml:lang': xmlNS,
+	'xml:space': xmlNS
+};
 
 function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -829,17 +844,17 @@ function patchEvents(lastEvents, nextEvents, dom) {
 function patchAttribute(attrName, nextAttrValue, dom) {
 	if (booleanProps(attrName)) {
 		dom[attrName] = nextAttrValue;
-		return;
-	}
-	if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-		dom.removeAttribute(attrName);
 	} else {
-		if (attrName[5] === ':' && attrName.indexOf('xlink:') !== -1) {
-			dom.setAttributeNS('http://www.w3.org/1999/xlink', attrName, nextAttrValue === true ? attrName : nextAttrValue);
-		} else if (attrName[4] === ':' && attrName.indexOf('xml:') !== -1) {
-			dom.setAttributeNS('http://www.w3.org/XML/1998/namespace', attrName, nextAttrValue === true ? attrName : nextAttrValue);
+		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+			dom.removeAttribute(attrName);
 		} else {
-			dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			var namespace = namespaces[attrName];
+
+			if (namespace) {
+				dom.setAttributeNS(namespace, attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			} else {
+				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			}
 		}
 	}
 }
@@ -875,13 +890,18 @@ function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, inst
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
+
 			var _nextNode = Component(nextProps);
-			var dom = lastNode.dom;
-			_nextNode.dom = dom;
-			patchNode(instance, _nextNode, dom, null, lifecycle, context, null, true);
-			lastNode.instance = _nextNode;
-			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
-				nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+
+			if (!isInvalidNode(_nextNode)) {
+				var dom = lastNode.dom;
+
+				_nextNode.dom = dom;
+				patchNode(instance, _nextNode, dom, null, lifecycle, context, null, true);
+				lastNode.instance = _nextNode;
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
+					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+				}
 			}
 		}
 	}
@@ -1041,21 +1061,214 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, nam
 	}
 }
 
+function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
+	var lastStartIndex = 0;
+	var nextStartIndex = 0;
+	var lastChildrenLength = lastChildren.length;
+	var nextChildrenLength = nextChildren.length;
+	var lastEndIndex = lastChildrenLength - 1;
+	var nextEndIndex = nextChildrenLength - 1;
+	var lastStartNode = lastChildrenLength > 0 ? lastChildren[lastStartIndex] : null;
+	var nextStartNode = nextChildrenLength > 0 ? nextChildren[nextStartIndex] : null;
+	var lastEndNode = lastChildren[lastEndIndex];
+	var nextEndNode = nextChildren[nextEndIndex];
+	var i = void 0;
+	var index = void 0;
+	var stop = false;
+	var nextNode = void 0;
+	var lastTarget = 0;
+	var pos = void 0;
+	var prevItem = void 0;
+
+	outer: while (!stop && lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+		stop = true;
+
+		while (lastStartNode.key === nextStartNode.key) {
+			patchNode(lastStartNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+			lastStartIndex++;
+			nextStartIndex++;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
+				break outer;
+			} else {
+				lastStartNode = lastChildren[lastStartIndex];
+				nextStartNode = nextChildren[nextStartIndex];
+				stop = false;
+			}
+		}
+
+		// Sync nodes with the same key at the end.
+		while (nextEndNode.key === lastEndNode.key) {
+			patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+			lastEndIndex--;
+			nextEndIndex--;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
+				break outer;
+			} else {
+				nextEndNode = nextChildren[nextEndIndex];
+				lastEndNode = lastChildren[lastEndIndex];
+				stop = false;
+			}
+		}
+
+		// Move and sync nodes from left to right.
+		while (lastStartNode.key === nextEndNode.key) {
+			patchNode(lastStartNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+			nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
+			insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
+			lastStartIndex++;
+			nextEndIndex--;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
+				break outer;
+			} else {
+				nextEndNode = nextChildren[nextEndIndex];
+				lastStartNode = lastChildren[lastStartIndex];
+				stop = false;
+			}
+		}
+
+		while (nextStartNode.key === lastEndNode.key) {
+			nextNode = lastChildren[lastStartIndex].dom;
+			patchNode(lastEndNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
+			insertOrAppendKeyed(dom, nextStartNode.dom, nextNode);
+			nextStartIndex++;
+			lastEndIndex--;
+			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
+				break outer;
+			} else {
+				nextStartNode = nextChildren[nextStartIndex];
+				lastEndNode = lastChildren[lastEndIndex];
+				stop = false;
+			}
+		}
+	}
+
+	if (lastStartIndex > lastEndIndex) {
+		if (nextStartIndex <= nextEndIndex) {
+			nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
+			for (; nextStartIndex <= nextEndIndex; nextStartIndex++) {
+				insertOrAppendKeyed(dom, mountNode(nextChildren[nextStartIndex], null, namespace, lifecycle, context, instance), nextNode);
+			}
+		}
+	} else if (nextStartIndex > nextEndIndex) {
+		while (lastStartIndex <= lastEndIndex) {
+			remove(lastChildren[lastStartIndex++], dom);
+		}
+	} else {
+
+		var aLength = lastEndIndex - lastStartIndex + 1;
+		var bLength = nextEndIndex - nextStartIndex + 1;
+		var sources = new Array(bLength);
+
+		// Mark all nodes as inserted.
+		for (i = 0; i < bLength; i++) {
+			sources[i] = -1;
+		}
+
+		var moved = false;
+		var removeOffset = 0;
+
+		if (aLength * bLength <= 16) {
+			for (i = lastStartIndex; i <= lastEndIndex; i++) {
+				var removed = true;
+				lastEndNode = lastChildren[i];
+				for (index = nextStartIndex; index <= nextEndIndex; index++) {
+					nextEndNode = nextChildren[index];
+					if (lastEndNode.key === nextEndNode.key) {
+						sources[index - nextStartIndex] = i;
+
+						if (lastTarget > index) {
+							moved = true;
+						} else {
+							lastTarget = index;
+						}
+						patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+						removed = false;
+						break;
+					}
+				}
+				if (removed) {
+					remove(lastEndNode, dom);
+					removeOffset++;
+				}
+			}
+		} else {
+
+			var prevItemsMap = new Map();
+
+			for (i = nextStartIndex; i <= nextEndIndex; i++) {
+				prevItem = nextChildren[i];
+				prevItemsMap.set(prevItem.key, i);
+			}
+
+			for (i = lastEndIndex; i >= lastStartIndex; i--) {
+				lastEndNode = lastChildren[i];
+				index = prevItemsMap.get(lastEndNode.key);
+
+				if (index === undefined) {
+					remove(lastEndNode, dom);
+					removeOffset++;
+				} else {
+					nextEndNode = nextChildren[index];
+
+					sources[index - nextStartIndex] = i;
+					if (lastTarget > index) {
+						moved = true;
+					} else {
+						lastTarget = index;
+					}
+					patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
+				}
+			}
+		}
+
+		if (moved) {
+			var seq = lis_algorithm(sources);
+			index = seq.length - 1;
+			for (i = bLength - 1; i >= 0; i--) {
+				if (sources[i] === -1) {
+					pos = i + nextStartIndex;
+					nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
+					insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, namespace, lifecycle, context, instance), nextNode);
+				} else {
+					if (index < 0 || i !== seq[index]) {
+						pos = i + nextStartIndex;
+						nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
+						insertOrAppendKeyed(dom, nextChildren[pos].dom, nextNode);
+					} else {
+						index--;
+					}
+				}
+			}
+		} else if (aLength - removeOffset !== bLength) {
+			for (i = bLength - 1; i >= 0; i--) {
+				if (sources[i] === -1) {
+					pos = i + nextStartIndex;
+					nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
+					insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, namespace, lifecycle, context, instance), nextNode);
+				}
+			}
+		}
+	}
+}
+
 // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(a) {
 	var p = a.slice(0);
 	var result = [];
 	result.push(0);
+	var i = void 0;
+	var il = void 0;
+	var j = void 0;
 	var u = void 0;
 	var v = void 0;
 	var c = void 0;
 
-	for (var i = 0, il = a.length; i < il; i++) {
+	for (i = 0; i < a.length; i++) {
 		if (a[i] === -1) {
 			continue;
 		}
 
-		var j = result[result.length - 1];
+		j = result[result.length - 1];
 		if (a[j] < a[i]) {
 			p[i] = j;
 			result.push(i);
@@ -1091,204 +1304,6 @@ function lis_algorithm(a) {
 	}
 
 	return result;
-}
-
-function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
-	var lastEndIndex = lastChildren.length - 1;
-	var nextEndIndex = nextChildren.length - 1;
-
-	if (lastEndIndex === -1) {
-		for (var i = 0; i <= nextEndIndex; i++) {
-			mountNode(nextChildren[i], dom, namespace, lifecycle, context, instance);
-		}
-		return;
-	} else if (nextEndIndex === -1) {
-		for (var _i4 = 0; _i4 <= lastEndIndex; _i4++) {
-			remove(lastChildren[_i4], dom);
-		}
-		return;
-	}
-
-	var lastStartIndex = 0;
-	var nextStartIndex = 0;
-	var lastStartNode = lastChildren[lastStartIndex];
-	var nextStartNode = nextChildren[nextStartIndex];
-	var lastEndNode = lastChildren[lastEndIndex];
-	var nextEndNode = nextChildren[nextEndIndex];
-	var stop = false;
-	var nextPos = void 0;
-	var nextNode = void 0;
-	var lastTarget = 0;
-	var pos = void 0;
-	var node = void 0;
-
-	outer: do {
-		stop = true;
-		while (lastStartNode.key === nextStartNode.key) {
-			patchNode(lastStartNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
-			lastStartIndex++;
-			nextStartIndex++;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			}
-			lastStartNode = lastChildren[lastStartIndex];
-			nextStartNode = nextChildren[nextStartIndex];
-			stop = false;
-		}
-		while (lastEndNode.key === nextEndNode.key) {
-			patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
-			lastEndIndex--;
-			nextEndIndex--;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			}
-			lastEndNode = lastChildren[lastEndIndex];
-			nextEndNode = nextChildren[nextEndIndex];
-			stop = false;
-		}
-		while (lastStartNode.key === nextEndNode.key) {
-			patchNode(lastStartNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
-			nextPos = nextEndIndex + 1;
-			nextNode = nextPos < nextChildren.length ? nextChildren[nextPos].dom : null;
-			insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
-			lastStartIndex++;
-			nextEndIndex--;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			}
-			lastStartNode = lastChildren[lastStartIndex];
-			nextEndNode = nextChildren[nextEndIndex];
-			stop = false;
-			continue outer;
-		}
-		while (lastEndNode.key === nextStartNode.key) {
-			patchNode(lastEndNode, nextStartNode, dom, namespace, lifecycle, context, instance, true);
-			insertOrAppendKeyed(dom, nextStartNode.dom, lastStartNode.dom);
-			lastEndIndex--;
-			nextStartIndex++;
-			if (lastStartIndex > lastEndIndex || nextStartIndex > nextEndIndex) {
-				break outer;
-			}
-			lastEndNode = lastChildren[lastEndIndex];
-			nextStartNode = nextChildren[nextStartIndex];
-			stop = false;
-		}
-	} while (!stop && lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex);
-
-	if (lastStartIndex > lastEndIndex) {
-		nextPos = nextEndIndex + 1;
-		nextNode = nextPos < nextChildren.length ? nextChildren[nextPos].dom : null;
-		while (nextStartIndex <= nextEndIndex) {
-			insertOrAppendKeyed(dom, mountNode(nextChildren[nextStartIndex++], null, namespace, lifecycle, context, instance), nextNode);
-		}
-	} else if (nextStartIndex > nextEndIndex) {
-		while (lastStartIndex <= lastEndIndex) {
-			remove(lastChildren[lastStartIndex++], dom);
-		}
-	} else {
-		// Perform more complex sync algorithm on the remaining nodes.
-		//
-		// We start by marking all nodes from b as inserted, then we try to find all removed nodes and
-		// simultaneously perform syncs on the nodes that exists in both lists and replacing "inserted"
-		// marks with the position of the node from the list b in list a. Then we just need to perform
-		// slightly modified LIS algorithm, that ignores "inserted" marks and find common subsequence and
-		// move all nodes that doesn't belong to this subsequence, or insert if they have "inserted" mark.
-		var aLength = lastEndIndex - lastStartIndex + 1;
-		var bLength = nextEndIndex - nextStartIndex + 1;
-		var sources = new Array(bLength);
-
-		// Mark all nodes as inserted.
-		for (var _i5 = 0; _i5 < bLength; _i5++) {
-			sources[_i5] = -1;
-		}
-
-		var moved = false;
-		var removeOffset = 0;
-
-		// When lists a and b are small, we are using naive O(M*N) algorithm to find removed children.
-		if (aLength * bLength <= 16) {
-			for (var _i6 = lastStartIndex; _i6 <= lastEndIndex; _i6++) {
-				var removed = true;
-				var aNode = lastChildren[_i6];
-				for (var j = nextStartIndex; j <= nextEndIndex; j++) {
-					var bNode = nextChildren[j];
-					if (aNode.key === bNode.key) {
-						sources[j - nextStartIndex] = _i6;
-
-						if (lastTarget > j) {
-							moved = true;
-						} else {
-							lastTarget = j;
-						}
-						patchNode(aNode, bNode, dom, namespace, lifecycle, context, instance, true);
-						removed = false;
-						break;
-					}
-				}
-				if (removed) {
-					remove(aNode, dom);
-					removeOffset++;
-				}
-			}
-		} else {
-			var keyIndex = new Map();
-
-			for (var _i7 = nextStartIndex; _i7 <= nextEndIndex; _i7++) {
-				node = nextChildren[_i7];
-				keyIndex.set(node.key, _i7);
-			}
-			for (var _i8 = lastStartIndex; _i8 <= lastEndIndex; _i8++) {
-				var _aNode = lastChildren[_i8];
-				var _j = keyIndex.get(_aNode.key);
-				if (_j !== void 0) {
-					var _bNode = nextChildren[_j];
-					sources[_j - nextStartIndex] = _i8;
-					if (lastTarget > _j) {
-						moved = true;
-					} else {
-						lastTarget = _j;
-					}
-					patchNode(_aNode, _bNode, dom, namespace, lifecycle, context, instance, true);
-				} else {
-					remove(_aNode, dom);
-					removeOffset++;
-				}
-			}
-		}
-		if (moved) {
-			var seq = lis_algorithm(sources);
-			var _j2 = seq.length - 1;
-			for (var _i9 = bLength - 1; _i9 >= 0; _i9--) {
-				if (sources[_i9] === -1) {
-					pos = _i9 + nextStartIndex;
-					node = nextChildren[pos];
-					nextPos = pos + 1;
-					nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
-					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
-				} else {
-					if (_j2 < 0 || _i9 !== seq[_j2]) {
-						pos = _i9 + nextStartIndex;
-						node = nextChildren[pos];
-						nextPos = pos + 1;
-						nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
-						insertOrAppendKeyed(dom, node.dom, nextNode);
-					} else {
-						_j2--;
-					}
-				}
-			}
-		} else if (aLength - removeOffset !== bLength) {
-			for (var _i10 = bLength - 1; _i10 >= 0; _i10--) {
-				if (sources[_i10] === -1) {
-					pos = _i10 + nextStartIndex;
-					node = nextChildren[pos];
-					nextPos = pos + 1;
-					nextNode = nextPos < bLength ? nextChildren[nextPos].dom : null;
-					insertOrAppendKeyed(dom, mountNode(node, null, namespace, lifecycle, context, instance), nextNode);
-				}
-			}
-		}
-	}
 }
 
 var recyclingEnabled = true;
@@ -1597,6 +1612,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 				});
 			}
 		}
+
 		/* eslint new-cap: 0 */
 		var _node = Component(props);
 		dom = mountNode(_node, null, null, lifecycle, context, null);
