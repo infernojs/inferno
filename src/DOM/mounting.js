@@ -272,7 +272,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		if (!isNullOrUndefined(node)) {
 			dom = mountNode(node, null, null, lifecycle, context, instance);
 			instance._lastNode = node;
-			if (parentDom !== null) { // avoid DEOPT
+			if (parentDom !== null) {
 				parentDom.appendChild(dom);
 			}
 			instance.componentDidMount();

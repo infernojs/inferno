@@ -136,7 +136,7 @@
 	}
 
 	function appendText(text, parentDom, singleChild) {
-		if (parentDom) {
+		if (parentDom !== null) {
 			if (singleChild) {
 				if (text !== '') {
 					parentDom.textContent = text;
@@ -373,12 +373,12 @@
 		}
 
 		var values = {};
-		if (!isArray(value)) {
-			values[value] = value;
-		} else {
+		if (isArray(value)) {
 			for (var i = 0, len = value.length; i < len; i++) {
 				values[value[i]] = value[i];
 			}
+		} else {
+			values[value] = value;
 		}
 		selectOptionValueIfNeeded(vdom, values);
 
@@ -501,7 +501,7 @@
 		var nextAttrs = nextNode.attrs;
 		var lastAttrs = lastNode.attrs;
 		var nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
-		var lastAttrsIsUndef = isNullOrUndefined(lastAttrs);
+		var lastAttrsIsNotUndef = !isNullOrUndefined(lastAttrs);
 
 		if (!nextAttrsIsUndef) {
 			var nextAttrsKeys = nextAttrKeys || Object.keys(nextAttrs);
@@ -509,7 +509,7 @@
 
 			for (var i = 0; i < attrKeysLength; i++) {
 				var attr = nextAttrsKeys[i];
-				var lastAttrVal = !lastAttrsIsUndef && lastAttrs[attr];
+				var lastAttrVal = lastAttrsIsNotUndef && lastAttrs[attr];
 				var nextAttrVal = nextAttrs[attr];
 
 				if (lastAttrVal !== nextAttrVal) {
@@ -521,7 +521,7 @@
 				}
 			}
 		}
-		if (!lastAttrsIsUndef) {
+		if (lastAttrsIsNotUndef) {
 			var lastAttrsKeys = lastAttrKeys || Object.keys(lastAttrs);
 			var _attrKeysLength = lastAttrsKeys.length;
 
@@ -794,9 +794,8 @@
 
 				for (var i = 0; i < styleKeys.length; i++) {
 					var style = styleKeys[i];
-					var value = nextAttrValue[style];
 
-					dom.style[style] = value;
+					dom.style[style] = nextAttrValue[style];
 				}
 			}
 		} else if (isNullOrUndefined(nextAttrValue)) {
@@ -806,9 +805,8 @@
 
 			for (var _i = 0; _i < _styleKeys.length; _i++) {
 				var _style = _styleKeys[_i];
-				var _value = nextAttrValue[_style];
 
-				dom.style[_style] = _value;
+				dom.style[_style] = nextAttrValue[_style];
 			}
 			// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
 			// TODO: needs performance benchmark
@@ -1252,7 +1250,6 @@
 		var result = [];
 		result.push(0);
 		var i = void 0;
-		var il = void 0;
 		var j = void 0;
 		var u = void 0;
 		var v = void 0;
@@ -1606,7 +1603,6 @@
 				dom = mountNode(node, null, null, lifecycle, context, instance);
 				instance._lastNode = node;
 				if (parentDom !== null) {
-					// avoid DEOPT
 					parentDom.appendChild(dom);
 				}
 				instance.componentDidMount();

@@ -44,7 +44,7 @@ export function createElement(tag, namespace) {
 }
 
 export function appendText(text, parentDom, singleChild) {
-	if (parentDom) {
+	if (parentDom !== null) {
 		if (singleChild) {
 			if (text !== '') {
 				parentDom.textContent = text;
@@ -281,12 +281,12 @@ export function selectValue(vdom) {
 	}
 
 	let values = {};
-	if (!isArray(value)) {
-		values[value] = value;
-	} else {
+	if (isArray(value)) {
 		for (let i = 0, len = value.length; i < len; i++) {
 			values[value[i]] = value[i];
 		}
+	} else {
+		values[value] = value;
 	}
 	selectOptionValueIfNeeded(vdom, values);
 

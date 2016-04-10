@@ -96,7 +96,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	const nextAttrs = nextNode.attrs;
 	const lastAttrs = lastNode.attrs;
 	const nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
-	const lastAttrsIsUndef = isNullOrUndefined(lastAttrs);
+	const lastAttrsIsNotUndef = !isNullOrUndefined(lastAttrs);
 
 	if (!nextAttrsIsUndef) {
 		const nextAttrsKeys = nextAttrKeys || Object.keys(nextAttrs);
@@ -104,7 +104,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 
 		for (let i = 0; i < attrKeysLength; i++) {
 			const attr = nextAttrsKeys[i];
-			const lastAttrVal = !lastAttrsIsUndef && lastAttrs[attr];
+			const lastAttrVal = lastAttrsIsNotUndef && lastAttrs[attr];
 			const nextAttrVal = nextAttrs[attr];
 
 			if (lastAttrVal !== nextAttrVal) {
@@ -116,7 +116,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 			}
 		}
 	}
-	if (!lastAttrsIsUndef) {
+	if (lastAttrsIsNotUndef) {
 		const lastAttrsKeys = lastAttrKeys || Object.keys(lastAttrs);
 		const attrKeysLength = lastAttrsKeys.length;
 
