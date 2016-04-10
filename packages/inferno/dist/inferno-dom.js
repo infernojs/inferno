@@ -1194,18 +1194,21 @@
 				}
 			} else {
 
-				var prevItemsMap = {};
+				var prevItemsMap = new Map();
 
 				for (i = nextStartIndex; i <= nextEndIndex; i++) {
 					prevItem = nextChildren[i];
-					prevItemsMap[prevItem.key] = i;
+					prevItemsMap.set(prevItem.key, i);
 				}
 
 				for (i = lastEndIndex; i >= lastStartIndex; i--) {
 					lastEndNode = lastChildren[i];
-					index = prevItemsMap[lastEndNode.key];
+					index = prevItemsMap.get(lastEndNode.key);
 
-					if (index !== undefined) {
+					if (index === undefined) {
+						remove(lastEndNode, dom);
+						removeOffset++;
+					} else {
 						nextEndNode = nextChildren[index];
 
 						sources[index - nextStartIndex] = i;
@@ -1215,13 +1218,6 @@
 							lastTarget = index;
 						}
 						patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
-					} else {
-						// Avoid issues with central pivot
-						// if (lastEndNode.dom !== null) {
-						remove(lastEndNode, dom);
-						// }
-
-						removeOffset++;
 					}
 				}
 			}
@@ -1616,6 +1612,7 @@
 					});
 				}
 			}
+
 			/* eslint new-cap: 0 */
 			var _node = Component(props);
 			dom = mountNode(_node, null, null, lifecycle, context, null);

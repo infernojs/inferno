@@ -441,8 +441,8 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			}
 		}
 	} else if (nextStartIndex > nextEndIndex) {
-		for (; lastStartIndex <= lastEndIndex; lastStartIndex++) {
-			remove(lastChildren[lastStartIndex], dom);
+		while (lastStartIndex <= lastEndIndex) {
+			remove(lastChildren[lastStartIndex++], dom);
 		}
 	} else {
 
@@ -484,18 +484,21 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			}
 		} else {
 
-			let prevItemsMap = {};
+			let prevItemsMap = new Map();
 
 			for (i = nextStartIndex; i <= nextEndIndex; i++) {
 				prevItem = nextChildren[i];
-				prevItemsMap[prevItem.key] = i;
+				prevItemsMap.set(prevItem.key, i);
 			}
 
 			for (i = lastEndIndex; i >= lastStartIndex; i--) {
 				lastEndNode = lastChildren[i];
-				index = prevItemsMap[lastEndNode.key];
+				index = prevItemsMap.get(lastEndNode.key);
 
-				if (index !== undefined) {
+				if (index === undefined) {
+					remove(lastEndNode, dom);
+					removeOffset++;
+				} else {
 					nextEndNode = nextChildren[index];
 
 					sources[index - nextStartIndex] = i;
@@ -505,15 +508,12 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 						lastTarget = index;
 					}
 					patchNode(lastEndNode, nextEndNode, dom, namespace, lifecycle, context, instance, true);
-				} else {
-					remove(lastEndNode, dom);
-					removeOffset++;
 				}
 			}
 		}
 
 		if (moved) {
-			let seq = filterChildren(sources);
+			let seq = lis_algorithm(sources);
 			index = seq.length - 1;
 			for (i = bLength - 1; i >= 0; i--) {
 				if (sources[i] === -1) {
@@ -542,8 +542,9 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 	}
 }
 
-function filterChildren(children) {
-	let p = children.slice(0);
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+function lis_algorithm(a) {
+	let p = a.slice(0);
 	let result = [];
 	result.push(0);
 	let i;
@@ -553,13 +554,13 @@ function filterChildren(children) {
 	let v;
 	let c;
 
-	for (i = 0; i < children.length; i++) {
-		if (children[i] === -1) {
+	for (i = 0; i < a.length; i++) {
+		if (a[i] === -1) {
 			continue;
 		}
 
 		j = result[result.length - 1];
-		if (children[j] < children[i]) {
+		if (a[j] < a[i]) {
 			p[i] = j;
 			result.push(i);
 			continue;
@@ -570,14 +571,14 @@ function filterChildren(children) {
 
 		while (u < v) {
 			c = ((u + v) / 2) | 0;
-			if (children[result[c]] < children[i]) {
+			if (a[result[c]] < a[i]) {
 				u = c + 1;
 			} else {
 				v = c;
 			}
 		}
 
-		if (children[i] < children[result[u]]) {
+		if (a[i] < a[result[u]]) {
 			if (u > 0) {
 				p[i] = result[u - 1];
 			}
