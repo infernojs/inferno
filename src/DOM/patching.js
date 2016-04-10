@@ -84,9 +84,8 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 			for (let i = 0; i < styleKeys.length; i++) {
 				const style = styleKeys[i];
-				let value = nextAttrValue[style];
 
-				dom.style[style] = value;
+				dom.style[style] = nextAttrValue[style];
 			}
 		}
 	} else if (isNullOrUndefined(nextAttrValue)) {
@@ -96,9 +95,8 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 		for (let i = 0; i < styleKeys.length; i++) {
 			const style = styleKeys[i];
-			let value = nextAttrValue[style];
 
-			dom.style[style] = value;
+			dom.style[style] = nextAttrValue[style];
 		}
 		// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
 		// TODO: needs performance benchmark
@@ -544,7 +542,6 @@ function lis_algorithm(a) {
 	let result = [];
 	result.push(0);
 	let i;
-	let il;
 	let j;
 	let u;
 	let v;
