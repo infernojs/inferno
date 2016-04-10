@@ -47,10 +47,6 @@ export function isString(obj) {
 	return typeof obj === 'string';
 }
 
-export function isObject(obj) {
-	return typeof obj === 'object' && obj !== null;
-}
-
 export function isAttrAHook(hook) {
 	return hook === 'onCreated'
 		|| hook === 'onAttached'

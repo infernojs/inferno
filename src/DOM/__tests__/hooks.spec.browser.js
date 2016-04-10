@@ -695,7 +695,7 @@ describe('lifecycle hooks', () => {
 			expect(onComponentShouldUpdateDomNode).to.equal(expectedDomNode);
 		});
 	});
-
+	
 	describe('github issue with willDetach', () => {
 
 		it('should raise willDetach', () => {
