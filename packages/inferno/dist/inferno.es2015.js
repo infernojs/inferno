@@ -173,7 +173,9 @@ function createTemplate(shape, childrenType) {
 		hasEvents: eventsIsDynamic,
 		hasStyle: styleIsDynamic,
 		hasClassName: classNameIsDynamic,
-		childrenType: childrenType === undefined ? children ? 5 : 0 : childrenType
+		childrenType: childrenType === undefined ? children ? 5 : 0 : childrenType,
+		attrKeys: null,
+		eventKeys: null
 	};
 
 	return function () {

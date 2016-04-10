@@ -235,8 +235,12 @@
 		detachNode(node);
 	}
 
-	function removeEvents(lastEvents, dom) {
-		for (var event in lastEvents) {
+	function removeEvents(events, lastEventKeys, dom) {
+		var eventKeys = lastEventKeys || Object.keys(events);
+
+		for (var i = 0; i < eventKeys.length; i++) {
+			var event = eventKeys[i];
+
 			dom[event] = null;
 		}
 	}
@@ -478,7 +482,7 @@
 		}
 	}
 
-	function diffEvents(lastNode, nextNode, dom) {
+	function diffEvents(lastNode, nextNode, lastEventKeys, nextEventKeys, dom) {
 		var nextEvents = nextNode.events;
 		var lastEvents = lastNode.events;
 		var nextEventsDefined = !isNullOrUndefined(nextEvents);
@@ -486,16 +490,16 @@
 
 		if (nextEventsDefined) {
 			if (lastEventsDefined) {
-				patchEvents(lastEvents, nextEvents, dom);
+				patchEvents(lastEvents, nextEvents, lastEventKeys, nextEventKeys, dom);
 			} else {
-				mountEvents(nextEvents, dom);
+				mountEvents(nextEvents, nextEventKeys, dom);
 			}
 		} else if (lastEventsDefined) {
-			removeEvents(lastEvents, dom);
+			removeEvents(lastEvents, lastEventKeys, dom);
 		}
 	}
 
-	function diffAttributes(lastNode, nextNode, dom, instance) {
+	function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, instance) {
 		if (lastNode.tag === 'select') {
 			selectValue(nextNode);
 		}
@@ -505,7 +509,7 @@
 		var lastAttrsIsUndef = isNullOrUndefined(lastAttrs);
 
 		if (!nextAttrsIsUndef) {
-			var nextAttrsKeys = Object.keys(nextAttrs);
+			var nextAttrsKeys = nextAttrKeys || Object.keys(nextAttrs);
 			var attrKeysLength = nextAttrsKeys.length;
 
 			for (var i = 0; i < attrKeysLength; i++) {
@@ -523,7 +527,7 @@
 			}
 		}
 		if (!lastAttrsIsUndef) {
-			var lastAttrsKeys = Object.keys(lastAttrs);
+			var lastAttrsKeys = lastAttrKeys || Object.keys(lastAttrs);
 			var _attrKeysLength = lastAttrsKeys.length;
 
 			for (var _i = 0; _i < _attrKeysLength; _i++) {
@@ -612,10 +616,10 @@
 					}
 				}
 				if (lastTpl.hasAttrs === true) {
-					diffAttributes(lastNode, nextNode, dom, instance);
+					diffAttributes(lastNode, nextNode, lastTpl.attrKeys, nextTpl.attrKeys, dom, instance);
 				}
 				if (lastTpl.hasEvents === true) {
-					diffEvents(lastNode, nextNode, dom);
+					diffEvents(lastNode, nextNode, lastTpl.eventKeys, nextTpl.eventKeys, dom);
 				}
 				if (lastTpl.hasClassName === true) {
 					var nextClassName = nextNode.className;
@@ -690,8 +694,8 @@
 					nextNode.dom = dom;
 
 					diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
-					diffAttributes(lastNode, nextNode, dom, instance);
-					diffEvents(lastNode, nextNode, dom);
+					diffAttributes(lastNode, nextNode, null, null, dom, instance);
+					diffEvents(lastNode, nextNode, null, null, dom);
 
 					if (lastNode.className !== nextClassName) {
 						if (isNullOrUndefined(nextClassName)) {
@@ -824,8 +828,8 @@
 		}
 	}
 
-	function patchEvents(lastEvents, nextEvents, dom) {
-		var nextEventKeys = Object.keys(nextEvents);
+	function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
+		var nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
 
 		for (var i = 0; i < nextEventKeys.length; i++) {
 			var event = nextEventKeys[i];
@@ -836,7 +840,7 @@
 				dom[event] = nextEvent;
 			}
 		}
-		var lastEventKeys = Object.keys(lastEvents);
+		var lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
 
 		for (var _i3 = 0; _i3 < lastEventKeys.length; _i3++) {
 			var _event = lastEventKeys[_i3];
@@ -1372,6 +1376,11 @@
 			return appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance);
 		}
 	}
+	function handleSelects(node) {
+		if (node.tag === 'select') {
+			selectValue(node);
+		}
+	}
 
 	function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance) {
 		var tag = node.tag;
@@ -1414,7 +1423,14 @@
 		}
 
 		if (tpl.hasAttrs === true) {
-			mountAttributes(node, node.attrs, dom, instance);
+			var attrs = node.attrs;
+
+			if (tpl.attrKeys === null) {
+				tpl.attrKeys = Object.keys(attrs);
+			}
+			var attrKeys = tpl.attrKeys;
+
+			mountAttributes(attrs, attrKeys, dom, instance);
 		}
 		if (tpl.hasClassName === true) {
 			dom.className = node.className;
@@ -1423,7 +1439,15 @@
 			patchStyle(null, node.style, dom);
 		}
 		if (tpl.hasEvents === true) {
-			mountEvents(node.events, dom);
+			handleSelects(node);
+			var events = node.events;
+
+			if (tpl.eventKeys === null) {
+				tpl.eventKeys = Object.keys(events);
+			}
+			var eventKeys = tpl.eventKeys;
+
+			mountEvents(events, eventKeys, dom);
 		}
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);
@@ -1460,7 +1484,8 @@
 			mountChildren(node, children, dom, namespace, lifecycle, context, instance);
 		}
 		if (!isNullOrUndefined(attrs)) {
-			mountAttributes(node, attrs, dom, instance);
+			handleSelects(node);
+			mountAttributes(attrs, Object.keys(attrs), dom, instance);
 		}
 		if (!isNullOrUndefined(className)) {
 			dom.className = className;
@@ -1469,7 +1494,7 @@
 			patchStyle(null, style, dom);
 		}
 		if (!isNullOrUndefined(events)) {
-			mountEvents(events, dom);
+			mountEvents(events, Object.keys(events), dom);
 		}
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);
@@ -1558,9 +1583,7 @@
 		}
 	}
 
-	function mountEvents(events, dom) {
-		var eventKeys = Object.keys(events);
-
+	function mountEvents(events, eventKeys, dom) {
 		for (var i = 0; i < eventKeys.length; i++) {
 			var event = eventKeys[i];
 
@@ -1633,14 +1656,9 @@
 		return dom;
 	}
 
-	function mountAttributes(node, attrs, dom, instance) {
-		if (node.tag === 'select') {
-			selectValue(node);
-		}
-		var attrsKeys = Object.keys(attrs);
-
-		for (var i = 0; i < attrsKeys.length; i++) {
-			var attr = attrsKeys[i];
+	function mountAttributes(attrs, attrKeys, dom, instance) {
+		for (var i = 0; i < attrKeys.length; i++) {
+			var attr = attrKeys[i];
 
 			if (attr === 'ref') {
 				mountRef(instance, attrs[attr], dom);
