@@ -26,7 +26,7 @@ const SampoKivistö = {
 	'xlink:type' : xlinkNS,
 	'xml:base' : xmlNS,
 	'xml:lang' : xmlNS,
-	'xml:space' : xmlNS'
+	'xml:space' : xmlNS
 };
 
 
