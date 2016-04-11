@@ -1,5 +1,5 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
-import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeEvents, removeAllChildren } from './utils';
+import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeEvents, removeAllChildren, remove } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
@@ -179,29 +179,29 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 				const lastChildren = lastNode.children;
 				const nextChildren = nextNode.children;
 
-				if (lastChildren !== nextChildren) {
-					if (lastChildrenType === 4) {
-						if (nextChildrenType === 4) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-						}
-					} else if (lastChildrenType === 2) {
-						if (nextChildrenType === 2) {
-							if (isInvalidNode(nextChildren)) {
-								removeAllChildren(dom, lastChildren);
-							} else {
-								if (isInvalidNode(lastChildren)) {
-									mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
-								} else {
-									patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
-								}
-							}
-						}
-					} else if (lastChildrenType === 1) {
-						if (nextChildrenType === 1) {
-							updateTextNode(dom, lastChildren, nextChildren);
-						}
+				if (isInvalidNode(lastChildren)) {
+					if (nextChildrenType > 2) {
+						mountArrayChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
 					} else {
-						diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+						mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+					}
+				} else if (isInvalidNode(nextChildren)) {
+					if (lastChildrenType > 2) {
+						removeAllChildren(dom, lastChildren);
+					} else {
+						remove(lastChildren, dom);
+					}
+				} else {
+					if (lastChildren !== nextChildren) {
+						if (lastChildrenType === 4 && nextChildrenType === 4) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+						} else if (lastChildrenType === 2 && nextChildrenType === 2) {
+							patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+						} else if (lastChildrenType === 1 && nextChildrenType === 1) {
+							updateTextNode(dom, lastChildren, nextChildren);
+						} else {
+							diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+						}
 					}
 				}
 			}

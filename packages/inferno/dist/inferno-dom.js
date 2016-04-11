@@ -584,29 +584,29 @@
 					var lastChildren = lastNode.children;
 					var nextChildren = nextNode.children;
 
-					if (lastChildren !== nextChildren) {
-						if (lastChildrenType === 4) {
-							if (nextChildrenType === 4) {
-								patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-							}
-						} else if (lastChildrenType === 2) {
-							if (nextChildrenType === 2) {
-								if (isInvalidNode(nextChildren)) {
-									removeAllChildren(dom, lastChildren);
-								} else {
-									if (isInvalidNode(lastChildren)) {
-										mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
-									} else {
-										patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
-									}
-								}
-							}
-						} else if (lastChildrenType === 1) {
-							if (nextChildrenType === 1) {
-								updateTextNode(dom, lastChildren, nextChildren);
-							}
+					if (isInvalidNode(lastChildren)) {
+						if (nextChildrenType > 2) {
+							mountArrayChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
 						} else {
-							diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+							mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+						}
+					} else if (isInvalidNode(nextChildren)) {
+						if (lastChildrenType > 2) {
+							removeAllChildren(dom, lastChildren);
+						} else {
+							remove(lastChildren, dom);
+						}
+					} else {
+						if (lastChildren !== nextChildren) {
+							if (lastChildrenType === 4 && nextChildrenType === 4) {
+								patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+							} else if (lastChildrenType === 2 && nextChildrenType === 2) {
+								patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
+							} else if (lastChildrenType === 1 && nextChildrenType === 1) {
+								updateTextNode(dom, lastChildren, nextChildren);
+							} else {
+								diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+							}
 						}
 					}
 				}
@@ -1065,15 +1065,17 @@
 	}
 
 	function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
-		var lastStartIndex = 0;
-		var nextStartIndex = 0;
 		var lastChildrenLength = lastChildren.length;
 		var nextChildrenLength = nextChildren.length;
+		var i = void 0;
 		var lastEndIndex = lastChildrenLength - 1;
 		var nextEndIndex = nextChildrenLength - 1;
+		var lastStartIndex = 0;
+		var nextStartIndex = 0;
 		var lastStartNode = null;
 		var nextStartNode = null;
-		var i = void 0;
+		var nextEndNode = null;
+		var lastEndNode = null;
 		var index = void 0;
 		var nextNode = void 0;
 		var lastTarget = 0;
@@ -1092,9 +1094,6 @@
 			nextStartIndex++;
 			lastStartIndex++;
 		}
-
-		var nextEndNode = nextChildren[nextEndIndex];
-		var lastEndNode = lastChildren[lastEndIndex];
 
 		while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
 			nextEndNode = nextChildren[nextEndIndex];
@@ -1151,7 +1150,6 @@
 				remove(lastChildren[lastStartIndex++], dom);
 			}
 		} else {
-
 			var aLength = lastEndIndex - lastStartIndex + 1;
 			var bLength = nextEndIndex - nextStartIndex + 1;
 			var sources = new Array(bLength);

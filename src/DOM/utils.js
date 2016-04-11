@@ -160,7 +160,7 @@ export function getActiveNode() {
 	return document.activeElement;
 }
 
-export function removeAllChildren(dom ,children) {
+export function removeAllChildren(dom, children) {
 	if (recyclingEnabled) {
 		const childrenLength = children.length;
 

@@ -356,15 +356,17 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 }
 
 export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance) {
-	let lastStartIndex = 0;
-	let nextStartIndex = 0;
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
+	let i;
 	let lastEndIndex = lastChildrenLength - 1;
 	let nextEndIndex = nextChildrenLength - 1;
+	let lastStartIndex = 0;
+	let nextStartIndex = 0;
 	let lastStartNode = null;
 	let nextStartNode = null;
-	let i;
+	let nextEndNode = null;
+	let lastEndNode = null;
 	let index;
 	let nextNode;
 	let lastTarget = 0;
@@ -383,9 +385,6 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 		nextStartIndex++;
 		lastStartIndex++;
 	}
-
-	let nextEndNode = nextChildren[nextEndIndex];
-	let lastEndNode = lastChildren[lastEndIndex];
 
 	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
 		nextEndNode = nextChildren[nextEndIndex];
@@ -443,7 +442,6 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, namespace, l
 			remove(lastChildren[lastStartIndex++], dom);
 		}
 	} else {
-
 		let aLength = lastEndIndex - lastStartIndex + 1;
 		let bLength = nextEndIndex - nextStartIndex + 1;
 		let sources = new Array(bLength);
