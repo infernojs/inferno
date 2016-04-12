@@ -1,3 +1,4 @@
+import { createVNode } from '../core/createTemplate';
 import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './../core/utils';
 
 export function createAttrsAndEvents(props, tag) {
@@ -63,19 +64,21 @@ function createChild({ tag, attrs, children, className, style, events, hooks }) 
 		delete attrs.key;
 	}
 	const attrsAndEvents = createAttrsAndEvents(attrs, tag);
+	const vNode = createVNode();
 
-	return {
-		dom: null,
-		tag: tag,
-		key: key,
-		attrs: attrsAndEvents.attrs,
-		events: events || attrsAndEvents.events,
-		hooks: hooks || attrsAndEvents.hooks,
-		className: className || attrsAndEvents.className,
-		style: style || attrsAndEvents.style,
-		children: children,
-		instance: null
-	};
+	className = className || attrsAndEvents.className;
+	style = style || attrsAndEvents.style;
+
+	vNode.tag = tag || null;
+	vNode.attrs = attrsAndEvents.attrs || null;
+	vNode.events = attrsAndEvents.events || null;
+	vNode.hooks = attrsAndEvents.hooks || null;
+	vNode.children = children !== undefined ? children : null;
+	vNode.key = key !== undefined ? key : null;
+	vNode.className = className !== undefined ? className : null;
+	vNode.style = style !== undefined ? style : null;
+
+	return vNode;
 }
 
 export function createChildren(children) {

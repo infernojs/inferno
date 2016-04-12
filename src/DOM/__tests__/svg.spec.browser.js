@@ -95,29 +95,29 @@ describe('SVG (non-jsx)', () => {
 	it('should unset a namespaced attributes', () => {
 
 		let template = (val) => ({
-			dom: null,
-			tag: 'image',
-			attrs: {
-				xmlns: 'http://www.w3.org/2000/svg',
-				'xlink:href': val
+			tag: 'svg',
+			children: {
+				dom: null,
+				tag: 'image',
+				attrs: {
+					'xlink:href': val
+				}
 			}
 		});
 
 		render(template(null), container);
 		render(template('test.jpg'), container);
-		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');
+		expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
+		expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
 	});
 
 	it('should unset a namespaced attributes', () => {
 
 		let template = (val) => ({
-			dom: null,
 			tag: 'image',
 			attrs: {
-				xmlns: 'http://www.w3.org/2000/svg',
 				'xlink:href': val
 			}
 		});

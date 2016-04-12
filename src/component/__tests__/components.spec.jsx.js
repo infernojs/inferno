@@ -451,7 +451,7 @@ describe('Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xml="http://www.w3.org/XML/1998/namespace" class="alert-icon"><use xlink:href="#error"></use></svg>')
+			innerHTML('<svg class="alert-icon"><use xlink:href="#error"></use></svg>')
 		);
 
 		// unset
@@ -468,7 +468,7 @@ describe('Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xml="http://www.w3.org/XML/1998/namespace" class="alert-icon"><use xlink:href="#error"></use></svg>')
+			innerHTML('<svg class="alert-icon"><use xlink:href="#error"></use></svg>')
 		);
 	});
 

@@ -1,8 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, createElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
-import { patchAttribute, patchStyle } from './patching';
-import { diffNodes } from './diffing';
+import { patchAttribute, patchStyle, patchNode } from './patching';
 
 export function mountNode(node, parentDom, lifecycle, context, instance) {
 	if (isInvalidNode(node) || isArray(node)) {
@@ -248,7 +247,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 	let dom;
 	if (isStatefulComponent(Component)) {
 		const instance = new Component(props);
-		instance._diffNodes = diffNodes;
+		instance._patchNode = patchNode;
 
 		const childContext = instance.getChildContext();
 		if (!isNullOrUndefined(childContext)) {

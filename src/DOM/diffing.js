@@ -244,7 +244,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck) {
 	if (isPromise(nextNode)) {
 		nextNode.then(node => {
-			diffNodes(lastNode, node, parentDom, lifecycle, context, deepCheck, instance);
+			patchNode(lastNode, node, parentDom, lifecycle, context, deepCheck, instance);
 		});
 	} else {
 		const nextHooks = nextNode.hooks;

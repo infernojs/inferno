@@ -33,10 +33,12 @@ export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
 }
 
 export function createElement(tag) {
-	const dom = document.createElement(tag);
+	let dom;
 
 	if (tag === 'svg') {
-		applySVGNamespaces(dom);
+		dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
+	} else {
+		dom = document.createElement(tag);
 	}
 	return dom;
 }
@@ -292,13 +294,6 @@ export function selectValue(vdom) {
 		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
 }
-
-export function applySVGNamespaces(dom) {
-	dom.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-	dom.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-	dom.setAttribute('xmlns:xml', 'http://www.w3.org/XML/1998/namespace');
-}
-
 export function placeholder(node, parentDom) {
 	const dom = createEmptyTextNode();
 

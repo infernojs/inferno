@@ -32,7 +32,7 @@ export function render(node, parentDom) {
 	const lifecycle = new Lifecycle();
 
 	if (root === null) {
-		mountNode(node, parentDom, null, lifecycle, {}, null);
+		mountNode(node, parentDom, lifecycle, {}, null);
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });
 	} else {

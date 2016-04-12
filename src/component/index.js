@@ -26,7 +26,7 @@ function applyState(component, force, callback) {
 
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
-		component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
+		component._patchNode(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
 		component._lastNode = nextNode;
 		subLifecycle.addListener(() => {
 			subLifecycle.trigger();
@@ -53,7 +53,7 @@ export default class Component {
 		this._lastNode = null;
 		this._unmounted = false;
 		this.context = {};
-		this._diffNodes = null;
+		this._patchNode = null;
 	}
 	render() {}
 	forceUpdate(callback) {

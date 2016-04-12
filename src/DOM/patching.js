@@ -13,6 +13,22 @@ function booleanProps(prop) {
 	}
 }
 
+const xlinkNS = 'http://www.w3.org/1999/xlink';
+const xmlNS = 'http://www.w3.org/XML/1998/namespace';
+
+const namespaces = {
+	'xlink:href': xlinkNS,
+	'xlink:arcrole': xlinkNS,
+	'xlink:actuate': xlinkNS,
+	'xlink:role': xlinkNS,
+	'xlink:row': xlinkNS,
+	'xlink:titlef': xlinkNS,
+	'xlink:type': xlinkNS,
+	'xml:base': xmlNS,
+	'xml:lang': xmlNS,
+	'xml:space': xmlNS
+};
+
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
 		dom.firstChild.nodeValue = nextChildren;
@@ -26,7 +42,7 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 		const lastTpl = lastNode.tpl;
 		const nextTpl = nextNode.tpl;
 
-		if (lastTpl === undefined) {
+		if (lastTpl === undefined || nextTpl === undefined) {
 			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 		} else {
 			diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, lifecycle, context, instance, true);
@@ -126,7 +142,11 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 			dom.removeAttribute(attrName);
 		} else {
-			dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			if (namespaces[attrName]) {
+				dom.setAttributeNS(namespaces[attrName], attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			} else {
+				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			}
 		}
 	}
 }
