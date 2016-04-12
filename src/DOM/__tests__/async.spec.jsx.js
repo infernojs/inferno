@@ -1,4 +1,9 @@
 import { render } from './../../DOM/rendering';
+import { createTemplate } from './../../core/createTemplate';
+
+const Inferno = {
+	createTemplate
+};
 
 describe('Async rendering (JSX)', () => {
 	let container;

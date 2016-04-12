@@ -38,7 +38,7 @@ export function render(node, parentDom) {
 	} else {
 		const activeNode = getActiveNode();
 
-		patchNode(root.node, node, parentDom, null, lifecycle, {}, null, null);
+		patchNode(root.node, node, parentDom, lifecycle, {}, null, null);
 		lifecycle.trigger();
 		if (node === null) {
 			removeRoot(root);

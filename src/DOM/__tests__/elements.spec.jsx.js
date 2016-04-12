@@ -1,5 +1,10 @@
 import { render } from './../rendering';
 import innerHTML from './../../../tools/innerHTML';
+import { createTemplate } from './../../core/createTemplate';
+
+const Inferno = {
+	createTemplate
+};
 
 describe('Elements - SVG (JSX)', () => {
 	let container;

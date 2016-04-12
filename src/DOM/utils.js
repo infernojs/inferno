@@ -2,9 +2,6 @@ import { mountNode } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
-export const MathNamespace = 'http://www.w3.org/1998/Math/MathML';
-export const SVGNamespace = 'http://www.w3.org/2000/svg';
-
 function isVirtualFragment(obj) {
 	return !isNullOrUndefined(obj.append);
 }
@@ -35,12 +32,13 @@ export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
 	}
 }
 
-export function createElement(tag, namespace) {
-	if (isNullOrUndefined(namespace)) {
-		return document.createElement(tag);
-	} else {
-		return document.createElementNS(namespace, tag);
+export function createElement(tag) {
+	const dom = document.createElement(tag);
+
+	if (tag === 'svg') {
+		applySVGNamespaces(dom);
 	}
+	return dom;
 }
 
 export function appendText(text, parentDom, singleChild) {
@@ -249,8 +247,8 @@ export function createVirtualFragment() {
 }
 
 export function isKeyed(lastChildren, nextChildren) {
-	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && nextChildren[0].key !== undefined
-		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && lastChildren[0].key !== undefined;
+	return (nextChildren.length && !isNullOrUndefined(nextChildren[0]) && nextChildren[0].key !== undefined &&
+		!isNullOrUndefined(nextChildren[1]) && nextChildren[1].key !== undefined);
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
@@ -293,6 +291,12 @@ export function selectValue(vdom) {
 	if (vdom.attrs && vdom.attrs[value]) {
 		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
+}
+
+export function applySVGNamespaces(dom) {
+	dom.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+	dom.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+	dom.setAttribute('xmlns:xml', 'http://www.w3.org/XML/1998/namespace');
 }
 
 export function placeholder(node, parentDom) {

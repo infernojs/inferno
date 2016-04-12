@@ -82,7 +82,7 @@ export function createTemplate(shape, childrenType) {
 	let dom = null;
 
 	if (typeof tag === 'string') {
-		const newAttrs = Object.assign({}, className ? { className: className } : {}, shape.attrs || {});
+		const newAttrs = Object.assign({}, (!classNameIsDynamic && className) ? { className: className } : {}, (!attrsIsDynamic && shape.attrs) || {});
 		dom = createUniversalElement(tag, newAttrs);
 	}
 
@@ -115,6 +115,10 @@ export function createTemplate(shape, childrenType) {
 		}
 		if (attrsIsDynamic === true) {
 			vNode.attrs = arguments[attrs.arg];
+		} else {
+			if (tagIsDynamic && attrs) {
+				vNode.attrs = attrs;
+			}
 		}
 		if (hooksIsDynamic === true) {
 			vNode.hooks = arguments[hooks.arg];

@@ -1,10 +1,10 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, createElement, SVGNamespace, MathNamespace, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
+import { appendText, createElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
 import { patchAttribute, patchStyle } from './patching';
 import { diffNodes } from './diffing';
 
-export function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
+export function mountNode(node, parentDom, lifecycle, context, instance) {
 	if (isInvalidNode(node) || isArray(node)) {
 		return placeholder(node, parentDom);
 	}
@@ -23,9 +23,9 @@ export function mountNode(node, parentDom, namespace, lifecycle, context, instan
 	}
 
 	if (tpl === undefined) {
-		return appendNode(node, parentDom, namespace, lifecycle, context, instance);
+		return appendNode(node, parentDom, lifecycle, context, instance);
 	} else {
-		return appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance);
+		return appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instance);
 	}
 }
 function handleSelects(node) {
@@ -34,7 +34,7 @@ function handleSelects(node) {
 	}
 }
 
-function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, context, instance) {
+function appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instance) {
 	const tag = node.tag;
 
 	if (tpl.isComponent === true) {
@@ -59,16 +59,16 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 			appendText(node.children, dom, true);
 			break;
 		case 2:
-			mountNode(node.children, dom, namespace, lifecycle, context, instance);
+			mountNode(node.children, dom, lifecycle, context, instance);
 			break;
 		case 3:
-			mountArrayChildren(node, node.children, dom, namespace, lifecycle, context, instance);
+			mountArrayChildren(node, node.children, dom, lifecycle, context, instance);
 			break;
 		case 4:
-			mountArrayChildrenWithKeys(node.children, dom, namespace, lifecycle, context, instance);
+			mountArrayChildrenWithKeys(node.children, dom, lifecycle, context, instance);
 			break;
 		case 5:
-			mountChildren(node, node.children, dom, namespace, lifecycle, context, instance);
+			mountChildren(node, node.children, dom, lifecycle, context, instance);
 			break;
 		default:
 			break;
@@ -107,7 +107,7 @@ function appendNodeWithTemplate(node, tpl, parentDom, namespace, lifecycle, cont
 	return dom;
 }
 
-function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
+function appendNode(node, parentDom, lifecycle, context, instance) {
 	const tag = node.tag;
 
 	if (tag === null) {
@@ -116,11 +116,10 @@ function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
 	if (isFunction(tag)) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 	}
-	namespace = namespace || tag === 'svg' ? SVGNamespace : tag === 'math' ? MathNamespace : null;
 	if (!isString(tag) || tag === '') {
 		throw Error('Inferno Error: Expected function or string for element tag type');
 	}
-	const dom = createElement(tag, namespace);
+	const dom = createElement(tag);
 	const children = node.children;
 	const attrs = node.attrs;
 	const events = node.events;
@@ -133,7 +132,7 @@ function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
 		handleAttachedHooks(hooks, lifecycle, dom);
 	}
 	if (!isInvalidNode(children)) {
-		mountChildren(node, children, dom, namespace, lifecycle, context, instance);
+		mountChildren(node, children, dom, lifecycle, context, instance);
 	}
 	if (!isNullOrUndefined(attrs)) {
 		handleSelects(node);
@@ -154,13 +153,13 @@ function appendNode(node, parentDom, namespace, lifecycle, context, instance) {
 	return dom;
 }
 
-function appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance) {
+function appendPromise(child, parentDom, domChildren, lifecycle, context, instance) {
 	const placeholder = createEmptyTextNode();
 	domChildren && domChildren.push(placeholder);
 
 	child.then(node => {
 		// TODO check for text nodes and arrays
-		const dom = mountNode(node, null, namespace, lifecycle, context, instance);
+		const dom = mountNode(node, null, lifecycle, context, instance);
 
 		parentDom.replaceChild(dom, placeholder);
 		domChildren && replaceInArray(domChildren, placeholder, dom);
@@ -168,13 +167,13 @@ function appendPromise(child, parentDom, domChildren, namespace, lifecycle, cont
 	parentDom.appendChild(placeholder);
 }
 
-export function mountArrayChildrenWithKeys(children, parentDom, namespace, lifecycle, context, instance) {
+export function mountArrayChildrenWithKeys(children, parentDom, lifecycle, context, instance) {
 	for (let i = 0; i < children.length; i++) {
-		mountNode(children[i], parentDom, namespace, lifecycle, context, instance);
+		mountNode(children[i], parentDom, lifecycle, context, instance);
 	}
 }
 
-export function mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+export function mountArrayChildren(node, children, parentDom, lifecycle, context, instance) {
 	let domChildren = null;
 	let isNonKeyed = false;
 	let hasKeyedAssumption = false;
@@ -190,14 +189,14 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 			const virtualFragment = createVirtualFragment();
 
 			isNonKeyed = true;
-			mountArrayChildren(node, child, virtualFragment, namespace, lifecycle, context, instance);
+			mountArrayChildren(node, child, virtualFragment, lifecycle, context, instance);
 			insertOrAppendNonKeyed(parentDom, virtualFragment);
 			domChildren = domChildren || [];
 			domChildren.push(virtualFragment);
 		} else if (isPromise(child)) {
-			appendPromise(child, parentDom, domChildren, namespace, lifecycle, context, instance);
+			appendPromise(child, parentDom, domChildren, lifecycle, context, instance);
 		} else {
-			const domNode = mountNode(child, parentDom, namespace, lifecycle, context, instance);
+			const domNode = mountNode(child, parentDom, lifecycle, context, instance);
 
 			if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
 				isNonKeyed = true;
@@ -217,15 +216,15 @@ export function mountArrayChildren(node, children, parentDom, namespace, lifecyc
 	}
 }
 
-function mountChildren(node, children, parentDom, namespace, lifecycle, context, instance) {
+function mountChildren(node, children, parentDom, lifecycle, context, instance) {
 	if (isArray(children)) {
-		mountArrayChildren(node, children, parentDom, namespace, lifecycle, context, instance);
+		mountArrayChildren(node, children, parentDom, lifecycle, context, instance);
 	} else if (isStringOrNumber(children)) {
 		appendText(children, parentDom, true);
 	} else if (isPromise(children)) {
-		appendPromise(children, parentDom, null, namespace, lifecycle, context, instance);
+		appendPromise(children, parentDom, null, lifecycle, context, instance);
 	} else {
-		mountNode(children, parentDom, namespace, lifecycle, context, instance);
+		mountNode(children, parentDom, lifecycle, context, instance);
 	}
 }
 
@@ -270,7 +269,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		instance._pendingSetState = false;
 
 		if (!isNullOrUndefined(node)) {
-			dom = mountNode(node, null, null, lifecycle, context, instance);
+			dom = mountNode(node, null, lifecycle, context, instance);
 			instance._lastNode = node;
 			if (parentDom !== null) {
 				parentDom.appendChild(dom);
@@ -295,7 +294,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 
 		/* eslint new-cap: 0 */
 		const node = Component(props);
-		dom = mountNode(node, null, null, lifecycle, context, null);
+		dom = mountNode(node, null, lifecycle, context, null);
 
 		parentNode.instance = node;
 

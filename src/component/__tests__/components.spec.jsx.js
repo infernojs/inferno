@@ -1,6 +1,11 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/index';
 import innerHTML from './../../../tools/innerHTML';
+import { createTemplate } from './../../core/createTemplate';
+
+const Inferno = {
+	createTemplate
+};
 
 describe('Components (JSX)', () => {
 	let container;
@@ -446,7 +451,7 @@ describe('Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>')
+			innerHTML('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xml="http://www.w3.org/XML/1998/namespace" class="alert-icon"><use xlink:href="#error"></use></svg>')
 		);
 
 		// unset
@@ -463,7 +468,7 @@ describe('Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>')
+			innerHTML('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xml="http://www.w3.org/XML/1998/namespace" class="alert-icon"><use xlink:href="#error"></use></svg>')
 		);
 	});
 

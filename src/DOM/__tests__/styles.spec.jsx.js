@@ -1,6 +1,10 @@
 import { render } from './../rendering';
 import { createTemplate } from './../../core/createTemplate';
 
+const Inferno = {
+	createTemplate
+};
+
 function styleNode() {
 	return createTemplate({
 		tag: 'div',

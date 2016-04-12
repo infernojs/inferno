@@ -1,10 +1,10 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
-import { replaceNode, SVGNamespace, MathNamespace, isKeyed, selectValue, removeEvents, removeAllChildren, remove } from './utils';
+import { replaceNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
 
-function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, staticCheck) {
+function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, staticCheck) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
 
@@ -22,9 +22,9 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 			updateTextNode(dom, lastChildren, nextChildren);
 		} else if (!isNullOrUndefined(nextChildren)) {
 			if (isArray(nextChildren)) {
-				mountArrayChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
+				mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance);
 			} else {
-				mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
+				mountNode(nextChildren, dom, lifecycle, context, instance);
 			}
 		}
 	} else {
@@ -34,26 +34,26 @@ function diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, in
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
 					if (domChildren === null && lastChildren.length > 1) {
-						patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
 					} else {
 						if (isKeyed(lastChildren, nextChildren)) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
+							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
 						} else {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), namespace, lifecycle, context, instance, 0);
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0);
 						}
 					}
 				} else {
-					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], namespace, lifecycle, context, instance, 0);
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], lifecycle, context, instance, 0);
 				}
 			} else {
 				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), namespace, lifecycle, context, instance, 0);
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), lifecycle, context, instance, 0);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else if (isStringOrNumber(lastChildren)) {
-					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, null);
+					patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, null);
 				} else {
-					patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, staticCheck);
+					patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, staticCheck);
 				}
 			}
 		}
@@ -134,7 +134,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	}
 }
 
-export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, namespace, lifecycle, context, instance, deepCheck) {
+export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, lifecycle, context, instance, deepCheck) {
 	let nextHooks;
 
 	if (nextNode.hasHooks === true) {
@@ -151,14 +151,14 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 			const lastNodeInstance = lastNode.instance;
 
 			if (nextTpl.isComponent === true) {
-				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
 			} else if (isStatefulComponent(lastTag)) {
-				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 			} else {
-				diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
 			}
 		} else {
-			replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+			replaceNode(lastNode, nextNode, parentDom, lifecycle, context, instance);
 		}
 	} else if (isNullOrUndefined(lastTag)) {
 		nextNode.dom = lastNode.dom;
@@ -172,35 +172,39 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 		} else {
 			const dom = lastNode.dom;
 			const lastChildrenType = lastTpl.childrenType;
+			const nextChildrenType = nextTpl.childrenType;
 			nextNode.dom = dom;
 
-			if (lastChildrenType > 0) {
-				const nextChildrenType = nextTpl.childrenType;
-				const lastChildren = lastNode.children;
-				const nextChildren = nextNode.children;
-
-				if (isInvalidNode(lastChildren)) {
-					if (nextChildrenType > 2) {
-						mountArrayChildren(nextNode, nextChildren, dom, namespace, lifecycle, context, instance);
-					} else {
-						mountNode(nextChildren, dom, namespace, lifecycle, context, instance);
-					}
-				} else if (isInvalidNode(nextChildren)) {
-					if (lastChildrenType > 2) {
-						removeAllChildren(dom, lastChildren);
-					} else {
-						remove(lastChildren, dom);
-					}
+			if (lastChildrenType > 0 || nextChildrenType > 0) {
+				if (nextChildrenType === 5 || lastChildrenType === 5) {
+					diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck);
 				} else {
-					if (lastChildren !== nextChildren) {
-						if (lastChildrenType === 4 && nextChildrenType === 4) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance);
-						} else if (lastChildrenType === 2 && nextChildrenType === 2) {
-							patchNode(lastChildren, nextChildren, dom, namespace, lifecycle, context, instance, deepCheck);
-						} else if (lastChildrenType === 1 && nextChildrenType === 1) {
-							updateTextNode(dom, lastChildren, nextChildren);
+					const lastChildren = lastNode.children;
+					const nextChildren = nextNode.children;
+
+					if (lastChildrenType === 0 || isInvalidNode(lastChildren)) {
+						if (nextChildrenType > 2) {
+							mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance);
 						} else {
-							diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+							mountNode(nextChildren, dom, lifecycle, context, instance);
+						}
+					} else if (nextChildrenType === 0 || isInvalidNode(nextChildren)) {
+						if (lastChildrenType > 2) {
+							removeAllChildren(dom, lastChildren);
+						} else {
+							remove(lastChildren, dom);
+						}
+					} else {
+						if (lastChildren !== nextChildren) {
+							if (lastChildrenType === 4 && nextChildrenType === 4) {
+								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
+							} else if (lastChildrenType === 2 && nextChildrenType === 2) {
+								patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, deepCheck);
+							} else if (lastChildrenType === 1 && nextChildrenType === 1) {
+								updateTextNode(dom, lastChildren, nextChildren);
+							} else {
+								diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck);
+							}
 						}
 					}
 				}
@@ -237,10 +241,10 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 }
 
 
-export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, deepCheck) {
+export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck) {
 	if (isPromise(nextNode)) {
 		nextNode.then(node => {
-			diffNodes(lastNode, node, parentDom, namespace, lifecycle, context, deepCheck, instance);
+			diffNodes(lastNode, node, parentDom, lifecycle, context, deepCheck, instance);
 		});
 	} else {
 		const nextHooks = nextNode.hooks;
@@ -252,21 +256,19 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 		const nextTag = nextNode.tag || ((deepCheck && !isNullOrUndefined(nextNode.tpl)) ? nextNode.tpl.tag : null);
 		const lastTag = lastNode.tag || ((deepCheck && !isNullOrUndefined(lastNode.tpl)) ? lastNode.tpl.tag : null);
 
-		namespace = namespace || nextTag === 'svg' ? SVGNamespace : nextTag === 'math' ? MathNamespace : null;
-
 		if (lastTag !== nextTag) {
 			const lastNodeInstance = lastNode.instance;
 
 			if (isFunction(lastTag)) {
 				if (isFunction(nextTag)) {
-					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
 				} else if (isStatefulComponent(lastTag)) {
-					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 				} else {
-					diffNodes(lastNodeInstance, nextNode, parentDom, namespace, lifecycle, context, instance, true);
+					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
 				}
 			} else {
-				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, namespace, lifecycle, context, instance);
+				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
 			nextNode.dom = lastNode.dom;
@@ -284,7 +286,7 @@ export function diffNodes(lastNode, nextNode, parentDom, namespace, lifecycle, c
 
 				nextNode.dom = dom;
 
-				diffChildren(lastNode, nextNode, dom, namespace, lifecycle, context, instance, deepCheck);
+				diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck);
 				diffAttributes(lastNode, nextNode, null, null, dom, instance);
 				diffEvents(lastNode, nextNode, null, null, dom);
 
