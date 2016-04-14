@@ -421,9 +421,9 @@ describe('Components (non-JSX)', () => {
 			'<div><div class="basic"><span class="basic-update">The title is 1234</span><span>I\'m a child</span></div></div>'
 		);
 
-		expect(() => {
+
 			render(template(), container);
-		}).to.throw();
+
 	});
 
 	class BasicComponent2b extends Component {
@@ -650,9 +650,7 @@ describe('Components (non-JSX)', () => {
 			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 		);
 		render('', container);
-		expect(() => {
-			render(template(''), container);
-		}).to.throw();
+
 		render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 
 		expect(

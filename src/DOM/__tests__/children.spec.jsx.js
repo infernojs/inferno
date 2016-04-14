@@ -7,6 +7,16 @@ const Inferno = {
 
 describe('Children - (JSX)', () => {
 
+	let container;
+
+	beforeEach(function () {
+		container = document.createElement('div');
+	});
+
+	afterEach(function () {
+		container.innerHTML = '';
+	});
+
 	describe('keyed - children', function () {
 		let container;
 
