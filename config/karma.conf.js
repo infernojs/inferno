@@ -1,82 +1,95 @@
-const path = require('path');
+const babel = require('rollup-plugin-babel');
+const multi = require('rollup-plugin-multi-entry').default;
+const nodeResolve = require('rollup-plugin-node-resolve');
+const typescript = require('rollup-plugin-typescript');
+const stub = require('rollup-plugin-stub');
+const istanbul = require('rollup-plugin-istanbul');
+const glob = require('glob');
 
-// Karma configuration
+const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
+	.concat(glob.sync('./src/**/*__tests__*/**/*spec.jsx.js'))
+	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.js'));
+
+/* global module */
 module.exports = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
 		basePath: '../',
-
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-		frameworks: [ 'mocha', 'sinon-chai' ],
-
-		// list of files / patterns to load in the browser
-		files: [
-			'src/**/*__tests__*/**/*spec.browser.js',
-			'src/**/*__tests__*/**/*spec.jsx.js',
-			'src/**/*__tests__*/**/*spec.ssr.js'
+		frameworks: [
+			'sinon-chai',
+			'chai-as-promised',
+			'chai',
+			'mocha'
 		],
+		files: testFiles,
+		// Start these browsers, currently available:
+		// - Chrome
+		// - ChromeCanary
+		// - Firefox
+		// - Opera (has to be installed with `npm install karma-opera-launcher`)
+		// - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
+		// - PhantomJS
+		// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
+		browsers: ['Chrome'],
+		// custom launchers
+		customLaunchers: {
+			ChromeForTravisCI: {
+				base: 'Chrome',
+				flags: ['--no-sandbox']
+			}
+		},
 		// list of files to exclude
 		exclude: [],
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
-			'src/**/*__tests__*/**/*spec.browser.js': ['webpack'],
-			'src/**/*__tests__*/**/*spec.jsx.js': ['webpack'],
-			'src/**/*__tests__*/**/*spec.ssr.js': ['webpack']
+			'src/**/*.js': ['rollup']
 		},
-		webpack: {
-			module: {
-				preLoaders: [{
-					test: /\.js$/,
-					exclude: /(src\/dist|packages|.git|node_modules|__tests__)/,
-					loader: 'isparta',
-					include: path.join(__dirname, '../src')
-				}],
-				loaders: [{
-					test: /\.js$/,
-					exclude: /(src\/dist|packages|.git|node_modules)/,
-					loader: 'babel-loader'
-				}]
+		rollupPreprocessor: {
+			rollup: {
+				plugins: [
+					multi(),
+					babel({
+						babelrc: false,
+						presets: 'es2015-rollup',
+						exclude: 'node_modules/**',
+						plugins: [
+							'transform-inline-environment-variables',
+							'transform-flow-strip-types',
+							'syntax-flow',
+							'transform-undefined-to-void',
+							'babel-plugin-syntax-jsx',
+							'babel-plugin-inferno'
+
+						]
+					}), istanbul({
+						exclude: ['test/**/*.js']
+					}),
+					nodeResolve({
+						jsnext: true,
+						main: true
+					}),
+					stub(),
+					typescript()
+				]
+			},
+			bundle: {
 			}
-		},
-		webpackMiddleware: {
-			noInfo: true
 		},
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: [ 'mocha', 'coverage' ],
-		// reporter options
-		mochaReporter: {
-			colors: {
-				success: 'green',
-				info: 'bgYellow',
-				warning: 'cyan',
-				error: 'bgRed'
-			},
-			divider: ''
-		},
+		reporters: ['mocha', 'coverage'],
 		coverageReporter: {
-			reporters: [{
-				type: 'html',
-				dir: './coverage'
-			}, {
-				type: 'text',
-				dir: './coverage'
-			}, {
-				type: 'lcov',
-				dir: './coverage'
-			}]
-		},
-
-		browsers: ['Chrome'],
-		// custom launchers
-		customLaunchers: {
-			Chrome_for_Travis_CI: {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
+			dir: 'dist/coverage',
+			//includeAllSources: true,
+			reporters: [
+				{'type': 'text'},
+				{'type': 'html', subdir: 'html'},
+				{'type': 'lcov', subdir: './'}
+			]
 		},
 
 		browserDisconnectTimeout: 10000,
@@ -95,14 +108,15 @@ module.exports = function (config) {
 		autoWatch: false,
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: true
+		//singleRun: true
 	});
 
 	if (process.env.TRAVIS) {
+
 		// Use Chrome as default browser for Travis CI
-		config.browsers = ['Chrome_for_Travis_CI'];
+		config.browsers = ['ChromeForTravisCI'];
 		// Used by Travis to push coveralls info corretly to example coveralls.io
-		config.reporters = [ 'mocha', 'coverage', 'coveralls' ];
+		config.reporters = ['mocha', 'coverage', 'coveralls'];
 		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
 		config.browserNoActivityTimeout = 120000;
 	}

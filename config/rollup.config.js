@@ -5,68 +5,38 @@ import babel from 'rollup-plugin-babel';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
+import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
-
-const development = process.argv[2] === 'dev';
-const production = process.argv[2] === 'prod';
-const dist = process.argv[3];
-const src = process.argv[4];
-const packageName = process.argv[5];
-const moduleName = process.argv[6];
-const es6 = process.argv[7];
-
-if (development) {
-	process.env.NODE_ENV = 'development';
-} else {
-	process.env.NODE_ENV = 'production';
-}
-
-/**
- * Banner
- */
-const copyright =
-	'/*!\n' +
-	' * ' + packageName + ' v' + pack.version + '\n' +
-	' * (c) ' + new Date().getFullYear() + ' ' + pack.author.name + '\n' +
-	' * Released under the ' + pack.license + ' License.\n' +
-	' */';
-
-const entry = p.resolve(src, 'index.js');
-const filename = production ? packageName + '.min.js' : packageName + (es6 ? '.es2015.js' : '.js');
-const dest = p.resolve(dist, filename);
-const bundleConfig = {
-	dest,
-	format: es6 ? 'es6' : 'umd',
-	moduleName: moduleName,
-	globals: {
-		inferno: 'Inferno'
-	},
-	banner: copyright,
-	sourceMap: false // set to false to generate sourceMap
-};
-
-const babelConfig = JSON.parse(fs.readFileSync('.babelrc', 'utf8'));
-babelConfig.babelrc = false;
-babelConfig.presets = babelConfig.presets.map((preset) => {
-	return preset === 'es2015' ? 'es2015-rollup' : preset;
-});
+import typescript from 'rollup-plugin-typescript';
+import stub from 'rollup-plugin-stub';
 
 const plugins = [
-	babel(babelConfig),
+	babel({
+		babelrc: false,
+		presets: 'es2015-rollup',
+		plugins: [
+			'transform-inline-environment-variables',
+			'transform-flow-strip-types',
+			'syntax-flow',
+			'transform-undefined-to-void',
+			'babel-plugin-syntax-jsx',
+			'babel-plugin-inferno'
+		]
+	}),
 	nodeResolve({
 		jsnext: true,
 		main: true
 	}),
+	stub(),
+	typescript(),
+	filesize(),
 	replace({
-		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-	//	exclude: 'node_modules/**',
+		'process.env.NODE_ENV': JSON.stringify('production'),
 		VERSION: pack.version
 	})
 ];
 
-const external = ['inferno'];
-
-if (production && !es6) {
+if (process.env.NODE_ENV === 'production') {
 	plugins.push(
 		uglify({
 			warnings: false,
@@ -74,7 +44,7 @@ if (production && !es6) {
 				screw_ie8: true,
 				dead_code: true,
 				unused: true,
-				drop_debugger: true,
+				drop_debugger: true, //
 				booleans: true // various optimizations for boolean context, for example !!a ? b : c → a ? b : c
 			},
 			mangle: {
@@ -84,7 +54,62 @@ if (production && !es6) {
 	);
 }
 
-Promise.resolve(rollup({ entry, plugins, external }))
-	.then(({ write }) => write(bundleConfig));
+const bundles = [
+	{
+		moduleGlobal: 'Inferno',
+		moduleName: 'inferno',
+		moduleEntry: 'packages/inferno/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoDOM',
+		moduleName: 'inferno-dom',
+		moduleEntry: 'packages/inferno-dom/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoServer',
+		moduleName: 'inferno-server',
+		moduleEntry: 'packages/inferno-server/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoComponent',
+		moduleName: 'inferno-component',
+		moduleEntry: 'packages/inferno-component/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoTestUtils',
+		moduleName: 'inferno-test-utils',
+		moduleEntry: 'packages/inferno-test-utils/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoCreateElement',
+		moduleName: 'inferno-create-element',
+		moduleEntry: 'packages/inferno-create-element/src/index.js'
+	}
+];
 
-process.on('unhandledRejection', (reason) => {throw reason;});
+function createBundle(moduleGlobal, moduleName, moduleEntry) {
+	const copyright =
+		'/*!\n' +
+		' * ' + moduleName + ' v' + pack.version + '\n' +
+		' * (c) ' + new Date().getFullYear() + ' ' + pack.author.name + '\n' +
+		' * Released under the ' + pack.license + ' License.\n' +
+		' */';
+	const entry = p.resolve(moduleEntry);
+	const dest  = p.resolve(`packages/inferno/dist/${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
+
+	const bundleConfig = {
+		dest,
+		format: 'umd',
+		moduleName: moduleName,
+		globals: {
+			havunen: moduleGlobal
+		},
+		banner: copyright,
+		sourceMap: false // set to true to generate sourceMap
+	};
+
+	return Promise.resolve(rollup({entry, plugins}))
+		.then(({write}) => write(bundleConfig));
+}
+
+Promise.all(bundles.map(bundle => createBundle(bundle))).then(_ => console.log('All bundles created!'));

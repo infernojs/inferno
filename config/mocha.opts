@@ -1,9 +1,9 @@
-./src/**/*__tests__*/**/*spec.server.js
+./test/specs/*.js
 
---require ./config/mocha.conf.js
+--compilers js:babel-core/register
+--require babel-core/register ./config/dom.js
 --reporter spec
 --ui bdd
---compilers js:babel-core/register
 --recursive
 --timeout 15000
 --bail
