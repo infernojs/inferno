@@ -25,12 +25,7 @@ install:
   - npm install -g npm@3.5.2
    # Instal npm dependecies and ensure that npm cache is not stale
   - npm install
-   
+  - npm run server:cov:publish
+
 notifications:
   email: true
-
-  after_script:
-# Upload to coveralls, but don't _fail_ if coveralls is down.
-  - ./node_modules/karma/bin/karma start
-  - cat coverage/lcov.info | node_modules/.bin/coveralls || echo "Coveralls upload failed"
-  - node node_modules/lcov-filter/index.js lcov.info config | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
