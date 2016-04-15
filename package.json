@@ -40,7 +40,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.2.0",
-    "npm-check-updates": "^2.6.1",
+    "npm-check-updates": "^2.6.2",
     "pre-commit": "^1.1.2",
     "rimraf": "^2.5.2",
     "rollup": "^0.25.6",
