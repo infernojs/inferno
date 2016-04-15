@@ -1,5 +1,6 @@
-./test/specs/*.js
-
+./src/**/*__tests__*/**/*spec.browser.js
+./src/**/*__tests__*/**/*spec.jsx.js
+ 
 --compilers js:babel-core/register
 --require babel-core/register ./config/dom.js
 --reporter spec
