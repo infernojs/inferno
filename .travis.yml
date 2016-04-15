@@ -10,6 +10,21 @@ cache:
   directories:
     - node_modules
 
+env:
+
+  matrix:
+    - BROWSER=Chrome-stable ARGS='-x -b Chrome -u'
+    - BROWSER=Chrome-beta ARGS='-x -b Chrome -u'
+    - BROWSER=Chrome-unstable ARGS='-x -b Chrome -u'
+    - BROWSER=Chrome-unstable ARGS='-x -b Chrome -u --flag=--enable-experimental-web-platform-features'
+    - BROWSER=Firefox-stable ARGS='-x -b Firefox -u'
+    - BROWSER=Firefox-beta ARGS='-x -b Firefox -u'
+    - BROWSER=Firefox-aurora ARGS='-x -b Firefox -u'
+    - BROWSER=Remote ARGS='--verbose -b Remote --sauce --remote-caps=INTERNETEXPLORER --remote-caps=version=10 --remote-caps=platform="Windows 8"'
+    - BROWSER=Remote ARGS='--verbose -b Remote --sauce --remote-caps=SAFARI --remote-caps=version=6 --remote-caps=platform="OS X 10.8"'
+    - BROWSER=Remote ARGS='--verbose -b Remote --sauce --remote-caps=IPHONE --remote-caps=version=6 --remote-caps=platform="OS X 10.8"'
+    - BROWSER=Remote ARGS='--verbose -b Remote --sauce --remote-caps=ANDROID --remote-caps=version=4.0 --remote-caps=platform=Linux'
+    
 before_install:
    - "sudo apt-get remove chromium-browser"
   - "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections"
