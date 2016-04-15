@@ -71,8 +71,7 @@ module.exports = function (config) {
 						jsnext: true,
 						main: true
 					}),
-					stub(),
-					typescript()
+					stub()
 				]
 			},
 			bundle: {

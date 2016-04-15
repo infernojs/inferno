@@ -1,10 +1,10 @@
-./src/**/*__tests__*/**/*spec.browser.js
-./src/**/*__tests__*/**/*spec.jsx.js
- 
 --compilers js:babel-core/register
---require babel-core/register ./config/dom.js
+--require babel-core/register ./config/DOM.js
 --reporter spec
 --ui bdd
 --recursive
 --timeout 15000
 --bail
+
+./src/**/*__tests__*/**/*spec.browser.js
+./src/**/*__tests__*/**/*spec.jsx.js
