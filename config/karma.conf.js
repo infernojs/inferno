@@ -64,8 +64,6 @@ module.exports = function (config) {
 							'babel-plugin-inferno',
 							'transform-object-rest-spread'
 						]
-					}), istanbul({
-						exclude: testFiles
 					}),
 					nodeResolve({
 						jsnext: true,
