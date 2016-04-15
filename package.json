@@ -23,7 +23,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "chai": "^3.5.0",
-    "eslint": "^2.5.1",
+    "eslint": "^2.8.0",
     "glob": "^7.0.3",
     "isparta": "^4.0.0",
     "isparta-loader": "^2.0.0",
