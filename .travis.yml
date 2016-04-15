@@ -10,18 +10,19 @@ cache:
   directories:
     - node_modules
 
-before_install:  
- - export CHROME_BIN=/usr/bin/google-chrome
- - export DISPLAY=:99.0 
- - sh -e /etc/init.d/xvfb start
- - sudo apt-get update
- - sudo apt-get install chromium-browser
- 
+before_install:
+  - export CHROME_BIN=/usr/bin/google-chrome
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sudo apt-get update
+  - sudo apt-get install -y libappindicator1 fonts-liberation
+  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - sudo dpkg -i google-chrome*.deb
 
 install:
   # Log HTTP requests
   - npm config set loglevel http
-  - npm install -g npm@3.8.7
+  - npm install -g npm@3.5.2
    # Instal npm dependecies and ensure that npm cache is not stale
   - npm install
    
