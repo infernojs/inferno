@@ -1,3 +1,5 @@
-/**
- * Created by ADM on 09/04/2016.
- */
+import createElement from '../../../src/createElement';
+
+export default {
+	createElement
+};

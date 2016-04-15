@@ -6,7 +6,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoServer = factory());
+	(global.inferno-server = factory());
 }(this, function () { 'use strict';
 
 	var babelHelpers = {};
@@ -53,7 +53,7 @@
 	}
 
 	function isStatefulComponent(obj) {
-		return obj.prototype.render !== undefined;
+		return obj.prototype.render !== void 0;
 	}
 
 	function isStringOrNumber(obj) {
@@ -61,11 +61,11 @@
 	}
 
 	function isNullOrUndefined(obj) {
-		return obj === undefined || obj === null;
+		return obj === void 0 || obj === null;
 	}
 
 	function isInvalidNode(obj) {
-		return obj === undefined || obj === null || obj === false;
+		return obj === void 0 || obj === null || obj === false;
 	}
 
 	function isFunction(obj) {

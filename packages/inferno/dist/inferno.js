@@ -6,10 +6,39 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Inferno = factory());
+	(global.inferno = factory());
 }(this, function () { 'use strict';
 
 	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
+
+	babelHelpers.classCallCheck = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+
+	babelHelpers.createClass = function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
+	      Object.defineProperty(target, descriptor.key, descriptor);
+	    }
+	  }
+
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	}();
 
 	babelHelpers.extends = Object.assign || function (target) {
 	  for (var i = 1; i < arguments.length; i++) {
@@ -28,19 +57,22 @@
 	babelHelpers;
 
 	function isNullOrUndefined(obj) {
-		return obj === undefined || obj === null;
+		return obj === void 0 || obj === null;
 	}
 
 	function isAttrAnEvent(attr) {
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	function createElement(tag, namespace) {
-		if (isNullOrUndefined(namespace)) {
-			return document.createElement(tag);
+	function createElement(tag) {
+		var dom = void 0;
+
+		if (tag === 'svg') {
+			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 		} else {
-			return document.createElementNS(namespace, tag);
+			dom = document.createElement(tag);
 		}
+		return dom;
 	}
 
 	// Runs only once in applications lifetime
@@ -131,33 +163,33 @@
 
 	function createTemplate(shape, childrenType) {
 		var tag = shape.tag || null;
-		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
+		var tagIsDynamic = tag && tag.arg !== void 0 ? true : false;
 
 		var children = !isNullOrUndefined(shape.children) ? shape.children : null;
-		var childrenIsDynamic = children && children.arg !== undefined ? true : false;
+		var childrenIsDynamic = children && children.arg !== void 0 ? true : false;
 
 		var attrs = shape.attrs || null;
-		var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
+		var attrsIsDynamic = attrs && attrs.arg !== void 0 ? true : false;
 
 		var hooks = shape.hooks || null;
-		var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
+		var hooksIsDynamic = hooks && hooks.arg !== void 0 ? true : false;
 
 		var events = shape.events || null;
-		var eventsIsDynamic = events && events.arg !== undefined ? true : false;
+		var eventsIsDynamic = events && events.arg !== void 0 ? true : false;
 
-		var key = shape.key !== undefined ? shape.key : null;
+		var key = shape.key !== void 0 ? shape.key : null;
 		var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
 
 		var style = shape.style || null;
-		var styleIsDynamic = style && style.arg !== undefined ? true : false;
+		var styleIsDynamic = style && style.arg !== void 0 ? true : false;
 
-		var className = shape.className !== undefined ? shape.className : null;
-		var classNameIsDynamic = className && className.arg !== undefined ? true : false;
+		var className = shape.className !== void 0 ? shape.className : null;
+		var classNameIsDynamic = className && className.arg !== void 0 ? true : false;
 
 		var dom = null;
 
 		if (typeof tag === 'string') {
-			var newAttrs = Object.assign({}, className ? { className: className } : {}, shape.attrs || {});
+			var newAttrs = Object.assign({}, !classNameIsDynamic && className ? { className: className } : {}, !attrsIsDynamic && shape.attrs || {});
 			dom = createUniversalElement(tag, newAttrs);
 		}
 
@@ -174,7 +206,7 @@
 			hasEvents: eventsIsDynamic,
 			hasStyle: styleIsDynamic,
 			hasClassName: classNameIsDynamic,
-			childrenType: childrenType === undefined ? children ? 5 : 0 : childrenType,
+			childrenType: childrenType === void 0 ? children ? 5 : 0 : childrenType,
 			attrKeys: null,
 			eventKeys: null
 		};
@@ -190,6 +222,10 @@
 			}
 			if (attrsIsDynamic === true) {
 				vNode.attrs = arguments[attrs.arg];
+			} else {
+				if (tagIsDynamic && attrs) {
+					vNode.attrs = attrs;
+				}
 			}
 			if (hooksIsDynamic === true) {
 				vNode.hooks = arguments[hooks.arg];

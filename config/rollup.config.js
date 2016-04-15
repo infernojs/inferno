@@ -20,7 +20,8 @@ const plugins = [
 			'syntax-flow',
 			'transform-undefined-to-void',
 			'babel-plugin-syntax-jsx',
-			'babel-plugin-inferno'
+			'babel-plugin-inferno',
+			'transform-object-rest-spread'
 		]
 	}),
 	nodeResolve({
@@ -28,7 +29,6 @@ const plugins = [
 		main: true
 	}),
 	stub(),
-	typescript(),
 	filesize(),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
@@ -87,7 +87,7 @@ const bundles = [
 	}
 ];
 
-function createBundle(moduleGlobal, moduleName, moduleEntry) {
+function createBundle({moduleGlobal, moduleName, moduleEntry}) {
 	const copyright =
 		'/*!\n' +
 		' * ' + moduleName + ' v' + pack.version + '\n' +
@@ -102,14 +102,15 @@ function createBundle(moduleGlobal, moduleName, moduleEntry) {
 		format: 'umd',
 		moduleName: moduleName,
 		globals: {
-			havunen: moduleGlobal
+			moduleName: moduleGlobal
 		},
 		banner: copyright,
-		sourceMap: false // set to true to generate sourceMap
+		sourceMap: false
 	};
 
-	return Promise.resolve(rollup({entry, plugins}))
-		.then(({write}) => write(bundleConfig));
+	return rollup({entry, plugins}).then(({write}) => write(bundleConfig)).catch(err => {
+		console.log(err)
+	});
 }
 
-Promise.all(bundles.map(bundle => createBundle(bundle))).then(_ => console.log('All bundles created!'));
+Promise.all(bundles.map(bundle => createBundle(bundle))).then(_ => console.log('Bundles created!'));

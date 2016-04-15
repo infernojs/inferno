@@ -6,10 +6,15 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoComponent = factory());
+	(global.inferno-component = factory());
 }(this, function () { 'use strict';
 
 	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
 
 	babelHelpers.classCallCheck = function (instance, Constructor) {
 	  if (!(instance instanceof Constructor)) {
@@ -67,7 +72,7 @@
 	};
 
 	function isNullOrUndefined(obj) {
-		return obj === undefined || obj === null;
+		return obj === void 0 || obj === null;
 	}
 
 	// TODO: for node we need to check if document is valid
@@ -106,7 +111,7 @@
 
 				var activeNode = getActiveNode();
 				var subLifecycle = new Lifecycle();
-				component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
+				component._patchNode(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
 				component._lastNode = nextNode;
 				subLifecycle.addListener(function () {
 					subLifecycle.trigger();
@@ -136,7 +141,7 @@
 			this._lastNode = null;
 			this._unmounted = false;
 			this.context = {};
-			this._diffNodes = null;
+			this._patchNode = null;
 		}
 
 		babelHelpers.createClass(Component, [{
