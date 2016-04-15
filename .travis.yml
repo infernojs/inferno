@@ -4,7 +4,7 @@ node_js:
   - 'stable'
 
 # Use container-based Travis infrastructure.
-sudo: true
+sudo: false
 
 cache:
   directories:
