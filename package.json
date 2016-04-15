@@ -105,7 +105,7 @@
     "build": "npm run clean && mkdirp dist && npm run build:dev && npm run build:prod",
     "build:dev": "cross-env NODE_ENV=development babel-node --presets es2015 config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
-    "test": "npm run test:browser && npm run server:cov",
+    "test": "npm run test:browser",
     "test:browser": "./node_modules/.bin/karma start config/karma.conf.js --no-auto-watch --single-run",
     "watch:browser": "./node_modules/.bin/karma start config/karma.conf.js --auto-watch",
     "test:server": "mocha --recursive --bail --opts config/mocha.opts",
