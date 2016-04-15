@@ -61,11 +61,11 @@ module.exports = function (config) {
 							'syntax-flow',
 							'transform-undefined-to-void',
 							'babel-plugin-syntax-jsx',
-							'babel-plugin-inferno'
-
+							'babel-plugin-inferno',
+							'transform-object-rest-spread'
 						]
 					}), istanbul({
-						exclude: ['test/**/*.js']
+						exclude: testFiles
 					}),
 					nodeResolve({
 						jsnext: true,
