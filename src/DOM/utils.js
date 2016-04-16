@@ -65,7 +65,7 @@ export function appendText(text, parentDom, singleChild) {
 	}
 }
 
-export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, isSVG) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, isSVG) {
 	let lastInstance = null;
 	const instanceLastNode = lastNode._lastNode;
 
@@ -76,11 +76,19 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 	const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
-	parentDom.replaceChild(dom, lastNode.dom);
+	replaceNode(parentDom, dom, lastNode.dom);
 	if (lastInstance !== null) {
 		lastInstance._lastNode = nextNode;
 	}
 	detachNode(lastNode);
+}
+
+export function replaceNode(parentDom, nextDom, lastDom) {
+	if (isVirtualFragment(lastDom)) {
+		lastDom.replaceWith(nextDom);
+	} else {
+		parentDom.replaceChild(nextDom, lastDom);
+	}
 }
 
 export function detachNode(node) {
@@ -225,6 +233,13 @@ export function createVirtualFragment() {
 		},
 		remove() {
 			parentNode.removeChild(dom);
+			for (let i = 0; i < childNodes.length; i++) {
+				parentNode.removeChild(childNodes[i]);
+			}
+			parentNode = null;
+		},
+		replaceWith(newNode) {
+			parentNode.replaceChild(newNode, dom);
 			for (let i = 0; i < childNodes.length; i++) {
 				parentNode.removeChild(childNodes[i]);
 			}

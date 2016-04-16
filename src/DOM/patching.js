@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed } from './utils';
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
 
 // Checks if property is boolean type
 function booleanProps(prop) {
@@ -57,11 +57,11 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 		} else {
 			const dom = mountNode(nextNode, null, lifecycle, context, instance, isSVG);
 			nextNode.dom = dom;
-			parentDom.replaceChild(dom, parentDom.firstChild);
+			replaceNode(parentDom, dom, parentDom.firstChild);
 		}
 	} else if (isStringOrNumber(nextNode)) {
 		const textNode = document.createTextNode(nextNode);
-		parentDom.replaceChild(textNode, lastNode.dom);
+		replaceNode(parentDom, textNode, lastNode.dom);
 	} else {
 		const lastBp = lastNode.bp;
 		const nextBp = nextNode.bp;
@@ -253,15 +253,13 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						if (isStringOrNumber(lastChild)) {
 							childNode.nodeValue = '';
 						} else if (sameLength === true) {
-							const textNode = createEmptyTextNode();
-
 							if (isArray(lastChild) && lastChild.length === 0) {
-								insertOrAppendNonKeyed(dom, textNode);
-								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
+								// TODO
 							} else {
-								dom.replaceChild(textNode, domChildren[index]);
-								isNotVirtualFragment && domChildren.splice(index, 1, textNode);
+								dom.removeChild(domChildren[index]);
+								isNotVirtualFragment && domChildren.splice(index, 1);
 								detachNode(lastChild);
+								domChildrenIndex--;
 							}
 						}
 					}
@@ -273,7 +271,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						const domChild = domChildren[index];
 
 						if (!isNullOrUndefined(domChild)) {
-							dom.replaceChild(textNode, domChild);
+							replaceNode(dom, textNode, domChild);
 						} else {
 							// TODO move to next node if need be
 							const nextChild = domChildren[index + 1];
@@ -285,13 +283,14 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						const domChild = domChildren[index];
 
 						if (!isNullOrUndefined(domChild)) {
-							dom.replaceChild(domNode, domChildren[index]);
+							insertOrAppendNonKeyed(dom, domNode, domChild);
+							isNotVirtualFragment && domChildren.splice(index, 0, domNode);
 						} else {
 							// TODO move to next node if need be
 							const nextChild = domChildren[index + 1];
 							insertOrAppendNonKeyed(dom, domNode, nextChild);
+							isNotVirtualFragment && domChildren.splice(index, 1, domNode);
 						}
-						isNotVirtualFragment && domChildren.splice(index, 1, domNode);
 					}
 				} else if (isStringOrNumber(nextChild)) {
 					if (lastChildrenLength === 1) {
@@ -318,9 +317,9 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 								// Next is single string so remove all children
 								if (child.append === undefined) {
 									isNotVirtualFragment && domChildren.splice(index, 1, textNode);
-									dom.replaceChild(textNode, child);
+									replaceNode(dom, textNode, child);
 								} else { // If previous child is virtual fragment remove all its content and replace with textNode
-									dom.insertBefore(textNode, child.firstChild);
+									insertOrAppendNonKeyed(dom, textNode, child.firstChild);
 									child.remove();
 									domChildren.splice(0, domChildren.length, textNode);
 								}
