@@ -26,10 +26,10 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install -y libappindicator1 fonts-liberation
   - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
-  - sudo dpkg -i google-chrome-stable_current_i386.deb
+  - - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - sudo dpkg -i google-chrome*.deb
   - sudo apt-get -f install
-
+ 
 install:
   # Log HTTP requests
   - npm config set loglevel http
