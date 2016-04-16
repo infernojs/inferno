@@ -153,10 +153,10 @@
 		}
 	}
 
-	function createElement(tag) {
+	function createElement(tag, isSVG) {
 		var dom = void 0;
 
-		if (tag === 'svg') {
+		if (tag === 'svg' || isSVG) {
 			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 		} else {
 			dom = document.createElement(tag);
@@ -567,7 +567,7 @@
 		}
 	}
 
-	function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, lifecycle, context, instance, deepCheck) {
+	function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, deepCheck) {
 		var nextHooks = void 0;
 
 		if (nextNode.hasHooks === true) {
@@ -576,14 +576,14 @@
 				nextHooks.willUpdate(lastNode.dom);
 			}
 		}
-		var nextTag = nextNode.tag || deepCheck && lastTpl.tag;
-		var lastTag = lastNode.tag || deepCheck && nextTpl.tag;
+		var nextTag = nextNode.tag || deepCheck && lastBp.tag;
+		var lastTag = lastNode.tag || deepCheck && nextBp.tag;
 
 		if (lastTag !== nextTag) {
-			if (lastNode.tpl.isComponent === true) {
+			if (lastNode.bp.isComponent === true) {
 				var lastNodeInstance = lastNode.instance;
 
-				if (nextTpl.isComponent === true) {
+				if (nextBp.isComponent === true) {
 					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
 				} else if (isStatefulComponent(lastTag)) {
 					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
@@ -596,16 +596,16 @@
 		} else if (isNullOrUndefined(lastTag)) {
 			nextNode.dom = lastNode.dom;
 		} else {
-			if (lastTpl.isComponent === true) {
-				if (nextTpl.isComponent === true) {
+			if (lastBp.isComponent === true) {
+				if (nextBp.isComponent === true) {
 					nextNode.instance = lastNode.instance;
 					nextNode.dom = lastNode.dom;
-					patchComponent(true, nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
 			} else {
 				var dom = lastNode.dom;
-				var lastChildrenType = lastTpl.childrenType;
-				var nextChildrenType = nextTpl.childrenType;
+				var lastChildrenType = lastBp.childrenType;
+				var nextChildrenType = nextBp.childrenType;
 				nextNode.dom = dom;
 
 				if (lastChildrenType > 0 || nextChildrenType > 0) {
@@ -642,13 +642,13 @@
 						}
 					}
 				}
-				if (lastTpl.hasAttrs === true) {
-					diffAttributes(lastNode, nextNode, lastTpl.attrKeys, nextTpl.attrKeys, dom, instance);
+				if (lastBp.hasAttrs === true || nextBp.hasAttrs === true) {
+					diffAttributes(lastNode, nextNode, lastBp.attrKeys, nextBp.attrKeys, dom, instance);
 				}
-				if (lastTpl.hasEvents === true) {
-					diffEvents(lastNode, nextNode, lastTpl.eventKeys, nextTpl.eventKeys, dom);
+				if (lastBp.hasEvents === true || nextBp.hasEvents === true) {
+					diffEvents(lastNode, nextNode, lastBp.eventKeys, nextBp.eventKeys, dom);
 				}
-				if (lastTpl.hasClassName === true) {
+				if (lastBp.hasClassName === true || nextBp.hasClassName === true) {
 					var nextClassName = nextNode.className;
 
 					if (lastNode.className !== nextClassName) {
@@ -659,7 +659,7 @@
 						}
 					}
 				}
-				if (lastTpl.hasStyle === true) {
+				if (lastBp.hasStyle === true || nextBp.hasStyle === true) {
 					var nextStyle = nextNode.style;
 
 					if (lastNode.style !== nextStyle) {
@@ -685,8 +685,8 @@
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 				nextHooks.willUpdate(lastNode.dom);
 			}
-			var nextTag = nextNode.tag || (deepCheck && !isNullOrUndefined(nextNode.tpl) ? nextNode.tpl.tag : null);
-			var lastTag = lastNode.tag || (deepCheck && !isNullOrUndefined(lastNode.tpl) ? lastNode.tpl.tag : null);
+			var nextTag = nextNode.tag || (deepCheck && !isNullOrUndefined(nextNode.bp) ? nextNode.bp.tag : null);
+			var lastTag = lastNode.tag || (deepCheck && !isNullOrUndefined(lastNode.bp) ? lastNode.bp.tag : null);
 
 			if (lastTag !== nextTag) {
 				var lastNodeInstance = lastNode.instance;
@@ -780,13 +780,13 @@
 
 	function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck) {
 		if (deepCheck !== null) {
-			var lastTpl = lastNode.tpl;
-			var nextTpl = nextNode.tpl;
+			var lastBp = lastNode.bp;
+			var nextBp = nextNode.bp;
 
-			if (lastTpl === void 0 || nextTpl === void 0) {
+			if (lastBp === void 0 || nextBp === void 0) {
 				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 			} else {
-				diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, lifecycle, context, instance, true);
+				diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, true);
 			}
 		} else if (isInvalidNode(lastNode)) {
 			mountNode(nextNode, parentDom, lifecycle, context, instance);
@@ -804,14 +804,14 @@
 			var textNode = document.createTextNode(nextNode);
 			parentDom.replaceChild(textNode, lastNode.dom);
 		} else {
-			var _lastTpl = lastNode.tpl;
-			var _nextTpl = nextNode.tpl;
-			var _deepCheck = _lastTpl !== _nextTpl;
+			var _lastBp = lastNode.bp;
+			var _nextBp = nextNode.bp;
+			var _deepCheck = _lastBp !== _nextBp;
 
-			if (_lastTpl === void 0) {
+			if (_lastBp === void 0) {
 				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, _deepCheck);
 			} else {
-				diffNodesWithTemplate(lastNode, nextNode, _lastTpl, _nextTpl, parentDom, lifecycle, context, instance, _deepCheck);
+				diffNodesWithTemplate(lastNode, nextNode, _lastBp, _nextBp, parentDom, lifecycle, context, instance, _deepCheck);
 			}
 		}
 	}
@@ -891,7 +891,7 @@
 		}
 	}
 
-	function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+	function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 		nextProps = addChildrenToProps(nextChildren, nextProps);
 
 		if (isStatefulComponent(Component)) {
@@ -913,7 +913,7 @@
 			}
 		} else {
 			var shouldUpdate = true;
-			var nextHooksDefined = hasTemplate && nextTpl.hasHooks === true || !isNullOrUndefined(nextHooks);
+			var nextHooksDefined = hasTemplate && nextBp.hasHooks === true || !isNullOrUndefined(nextHooks);
 
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
@@ -1009,7 +1009,13 @@
 					if (isInvalidNode(_lastChild)) {
 						if (isStringOrNumber(_nextChild)) {
 							var _textNode = document.createTextNode(_nextChild);
-							dom.replaceChild(_textNode, domChildren[index]);
+							var domChild = domChildren[index];
+
+							if (!isNullOrUndefined(domChild)) {
+								dom.replaceChild(_textNode, domChild);
+							} else {
+								insertOrAppendNonKeyed(dom, _textNode, domChildren[index + 1]);
+							}
 							isNotVirtualFragment && domChildren.splice(index, 1, _textNode);
 						} else if (sameLength === true) {
 							var _domNode = mountNode(_nextChild, null, lifecycle, context, instance);
@@ -1057,14 +1063,14 @@
 							patchKeyedChildren(_lastChild, _nextChild, domChildren[index], lifecycle, context, instance);
 						} else {
 							if (isArray(_lastChild)) {
-								var domChild = domChildren[index];
+								var _domChild = domChildren[index];
 
-								if (domChild.append === void 0) {
+								if (_domChild.append === void 0) {
 									if (_nextChild.length > 1 && _lastChild.length === 1) {
 										var virtualFragment = createVirtualFragment();
 
-										virtualFragment.insert(dom, domChild);
-										virtualFragment.appendChild(domChild);
+										virtualFragment.insert(dom, _domChild);
+										virtualFragment.appendChild(_domChild);
 										isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
 										patchNonKeyedChildren(_lastChild, _nextChild, virtualFragment, virtualFragment.childNodes, lifecycle, context, instance, 0);
 									} else {
@@ -1335,10 +1341,10 @@
 
 	var recyclingEnabled = true;
 
-	function recycle(node, tpl, lifecycle, context, instance) {
-		if (tpl !== void 0) {
+	function recycle(node, bp, lifecycle, context, instance) {
+		if (bp !== void 0) {
 			var key = node.key;
-			var _pool = key === null ? tpl.pools.nonKeyed : tpl.pools.keyed[key];
+			var _pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed[key];
 			if (!isNullOrUndefined(_pool)) {
 				var recycledNode = _pool.pop();
 				if (!isNullOrUndefined(recycledNode)) {
@@ -1351,11 +1357,11 @@
 	}
 
 	function pool(node) {
-		var tpl = node.tpl;
+		var bp = node.bp;
 
-		if (!isNullOrUndefined(tpl)) {
+		if (!isNullOrUndefined(bp)) {
 			var key = node.key;
-			var pools = tpl.pools;
+			var pools = bp.pools;
 
 			if (key === null) {
 				var _pool2 = pools.nonKeyed;
@@ -1370,14 +1376,17 @@
 	}
 
 	function mountNode(node, parentDom, lifecycle, context, instance) {
-		if (isInvalidNode(node) || isArray(node)) {
+		if (isArray(node)) {
 			return placeholder(node, parentDom);
 		}
+		if (isInvalidNode(node)) {
+			return null;
+		}
 
-		var tpl = node.tpl;
+		var bp = node.bp;
 
 		if (recyclingEnabled) {
-			var dom = recycle(node, tpl, lifecycle, context, instance);
+			var dom = recycle(node, bp, lifecycle, context, instance);
 
 			if (dom !== null) {
 				if (parentDom !== null) {
@@ -1387,10 +1396,10 @@
 			}
 		}
 
-		if (tpl === void 0) {
+		if (bp === void 0) {
 			return appendNode(node, parentDom, lifecycle, context, instance);
 		} else {
-			return appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instance);
+			return appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance);
 		}
 	}
 	function handleSelects(node) {
@@ -1399,19 +1408,19 @@
 		}
 	}
 
-	function appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instance) {
+	function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
 		var tag = node.tag;
 
-		if (tpl.isComponent === true) {
+		if (bp.isComponent === true) {
 			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 		}
-		var dom = tpl.dom.cloneNode(false);
+		var dom = createElement(bp.tag, bp.isSVG);
 
 		node.dom = dom;
-		if (tpl.hasHooks === true) {
+		if (bp.hasHooks === true) {
 			handleAttachedHooks(node.hooks, lifecycle, dom);
 		}
-		// tpl.childrenType:
+		// bp.childrenType:
 		// 0: no children
 		// 1: text node
 		// 2: single child
@@ -1419,7 +1428,7 @@
 		// 4: multiple children (keyed)
 		// 5: variable children (defaults to no optimisation)
 
-		switch (tpl.childrenType) {
+		switch (bp.childrenType) {
 			case 1:
 				appendText(node.children, dom, true);
 				break;
@@ -1439,30 +1448,31 @@
 				break;
 		}
 
-		if (tpl.hasAttrs === true) {
+		if (bp.hasAttrs === true) {
 			handleSelects(node);
 			var attrs = node.attrs;
 
-			if (tpl.attrKeys === null) {
-				tpl.attrKeys = Object.keys(attrs);
+			if (bp.attrKeys === null) {
+				var newKeys = Object.keys(attrs);
+				bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
 			}
-			var attrKeys = tpl.attrKeys;
+			var attrKeys = bp.attrKeys;
 
 			mountAttributes(attrs, attrKeys, dom, instance);
 		}
-		if (tpl.hasClassName === true) {
-			dom.className = node.className;
+		if (bp.hasClassName === true) {
+			dom.className = node.className || bp.className;
 		}
-		if (tpl.hasStyle === true) {
+		if (bp.hasStyle === true) {
 			patchStyle(null, node.style, dom);
 		}
-		if (tpl.hasEvents === true) {
+		if (bp.hasEvents === true) {
 			var events = node.events;
 
-			if (tpl.eventKeys === null) {
-				tpl.eventKeys = Object.keys(events);
+			if (bp.eventKeys === null) {
+				bp.eventKeys = Object.keys(events);
 			}
-			var eventKeys = tpl.eventKeys;
+			var eventKeys = bp.eventKeys;
 
 			mountEvents(events, eventKeys, dom);
 		}

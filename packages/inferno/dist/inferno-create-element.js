@@ -84,8 +84,8 @@
 		return hook === 'onComponentWillMount' || hook === 'onComponentDidMount' || hook === 'onComponentWillUnmount' || hook === 'onComponentShouldUpdate' || hook === 'onComponentWillUpdate' || hook === 'onComponentDidUpdate';
 	}
 
-	function VNode(tpl) {
-		this.tpl = tpl;
+	function VNode(blueprint) {
+		this.bp = blueprint;
 		this.dom = null;
 		this.instance = null;
 		this.tag = null;

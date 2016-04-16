@@ -102,7 +102,7 @@ function createBundle({moduleGlobal, moduleName, moduleEntry}) {
 		format: 'umd',
 		moduleName: moduleName,
 		globals: {
-			moduleName: moduleGlobal
+			moduleGlobal: moduleGlobal
 		},
 		banner: copyright,
 		sourceMap: false

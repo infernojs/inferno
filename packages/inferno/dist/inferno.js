@@ -64,10 +64,10 @@
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	function createElement(tag) {
+	function createElement(tag, isSVG) {
 		var dom = void 0;
 
-		if (tag === 'svg') {
+		if (tag === 'svg' || isSVG) {
 			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 		} else {
 			dom = document.createElement(tag);
@@ -78,9 +78,9 @@
 	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
-	function createUniversalElement(tag, attrs) {
+	function createUniversalElement(tag, attrs, isSVG) {
 		if (isBrowser) {
-			var dom = createElement(tag);
+			var dom = createElement(tag, isSVG);
 			if (attrs) {
 				createStaticAttributes(attrs, dom);
 			}
@@ -108,8 +108,8 @@
 		}
 	}
 
-	function VNode(tpl) {
-		this.tpl = tpl;
+	function VNode(blueprint) {
+		this.bp = blueprint;
 		this.dom = null;
 		this.instance = null;
 		this.tag = null;
@@ -161,7 +161,7 @@
 		return new VNode(tpl);
 	}
 
-	function createTemplate(shape, childrenType) {
+	function createBlueprint(shape, childrenType) {
 		var tag = shape.tag || null;
 		var tagIsDynamic = tag && tag.arg !== void 0 ? true : false;
 
@@ -186,33 +186,27 @@
 		var className = shape.className !== void 0 ? shape.className : null;
 		var classNameIsDynamic = className && className.arg !== void 0 ? true : false;
 
-		var dom = null;
-
-		if (typeof tag === 'string') {
-			var newAttrs = Object.assign({}, !classNameIsDynamic && className ? { className: className } : {}, !attrsIsDynamic && shape.attrs || {});
-			dom = createUniversalElement(tag, newAttrs);
-		}
-
-		var tpl = {
-			dom: dom,
+		var blueprint = {
+			dom: null,
 			pools: {
 				keyed: {},
 				nonKeyed: []
 			},
 			tag: !tagIsDynamic ? tag : null,
+			className: className !== '' && className ? className : null,
 			isComponent: tagIsDynamic,
 			hasAttrs: attrsIsDynamic,
 			hasHooks: hooksIsDynamic,
 			hasEvents: eventsIsDynamic,
 			hasStyle: styleIsDynamic,
-			hasClassName: classNameIsDynamic,
+			hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
 			childrenType: childrenType === void 0 ? children ? 5 : 0 : childrenType,
 			attrKeys: null,
 			eventKeys: null
 		};
 
 		return function () {
-			var vNode = new VNode(tpl);
+			var vNode = new VNode(blueprint);
 
 			if (tagIsDynamic === true) {
 				vNode.tag = arguments[tag.arg];
@@ -248,7 +242,7 @@
 	}
 
 	var index = {
-		createTemplate: createTemplate,
+		createBlueprint: createBlueprint,
 		createVNode: createVNode,
 		universal: {
 			createElement: createUniversalElement
