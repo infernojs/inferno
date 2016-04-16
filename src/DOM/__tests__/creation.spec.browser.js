@@ -74,7 +74,7 @@ describe('Creation - (non-JSX)', () => {
 			};
 		},
 		tagName: 'div',
-		children: 3,
+		children: 2,
 		textContent: ''
 	}, {
 		description: 'should render div with three span children and unset first, and middle child',
@@ -92,7 +92,7 @@ describe('Creation - (non-JSX)', () => {
 			};
 		},
 		tagName: 'div',
-		children: 3,
+		children: 1,
 		textContent: ''
 	}, {
 		description: 'should render div with three span children and unset first, and middle child',
@@ -108,7 +108,7 @@ describe('Creation - (non-JSX)', () => {
 			};
 		},
 		tagName: 'div',
-		children: 3,
+		children: 0,
 		textContent: ''
 	}, {
 		description: 'should render div with two null children and one text node',
@@ -124,7 +124,7 @@ describe('Creation - (non-JSX)', () => {
 			};
 		},
 		tagName: 'div',
-		children: 3,
+		children: 1,
 		textContent: 'Baboy'
 	}, {
 		description: 'should render div with one textNode and a span children',
@@ -142,7 +142,7 @@ describe('Creation - (non-JSX)', () => {
 			};
 		},
 		tagName: 'div',
-		children: 3,
+		children: 2,
 		textContent: 'Hello!'
 	}, {
 		description: 'should render div with two textNodes and a span children',
@@ -161,7 +161,7 @@ describe('Creation - (non-JSX)', () => {
 			};
 		},
 		tagName: 'div',
-		children: 4,
+		children: 3,
 		textContent: 'Hello, World!'
 	}, {
 		description: 'should render div with two textNodes and a two span children',
@@ -217,7 +217,7 @@ describe('Creation - (non-JSX)', () => {
 			};
 		},
 		tagName: 'div',
-		children: 3,
+		children: 0,
 		textContent: ''
 	}, {
 		description: 'should render div with b child, and tree null values in an array for children',

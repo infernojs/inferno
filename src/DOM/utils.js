@@ -35,7 +35,7 @@ export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
 export function createElement(tag, isSVG) {
 	let dom;
 
-	if (tag === 'svg' || isSVG) {
+	if (isSVG === true) {
 		dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 	} else {
 		dom = document.createElement(tag);
@@ -65,7 +65,7 @@ export function appendText(text, parentDom, singleChild) {
 	}
 }
 
-export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
+export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, isSVG) {
 	let lastInstance = null;
 	const instanceLastNode = lastNode._lastNode;
 
@@ -73,7 +73,7 @@ export function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle,
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+	const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
 	parentDom.replaceChild(dom, lastNode.dom);

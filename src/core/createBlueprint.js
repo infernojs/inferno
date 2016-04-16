@@ -86,16 +86,18 @@ export function createBlueprint(shape, childrenType) {
 			nonKeyed: []
 		},
 		tag: !tagIsDynamic ? tag : null,
-		className: className !== '' && className ? className: null,
+		className: className !== '' && className ? className : null,
+		style: style !== '' && style ? style : null,
 		isComponent: tagIsDynamic,
 		hasAttrs: attrsIsDynamic,
 		hasHooks: hooksIsDynamic,
 		hasEvents: eventsIsDynamic,
-		hasStyle: styleIsDynamic,
+		hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
 		hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
 		childrenType: childrenType === undefined ? (children ? 5 : 0) : childrenType,
 		attrKeys: null,
-		eventKeys: null
+		eventKeys: null,
+		isSVG: shape.isSVG || false
 	};
 
 	return function () {
@@ -125,10 +127,15 @@ export function createBlueprint(shape, childrenType) {
 		}
 		if (styleIsDynamic === true) {
 			vNode.style = arguments[style.arg];
+		} else {
+			vNode.style = blueprint.style;
 		}
 		if (classNameIsDynamic === true) {
 			vNode.className = arguments[className.arg];
+		} else {
+			vNode.className = blueprint.className;
 		}
+
 
 		return vNode;
 	};

@@ -81,7 +81,7 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
 
-	it('should set and remove dynamic className property', () => {
+	it('should set and remove dynamic class attr', () => {
 
 		let value = 'foo';
 
