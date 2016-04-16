@@ -100,7 +100,7 @@ function createBundle({moduleGlobal, moduleName, moduleEntry}) {
 	const bundleConfig = {
 		dest,
 		format: 'umd',
-		moduleName: moduleName,
+		moduleName: moduleGlobal,
 		globals: {
 			moduleGlobal: moduleGlobal
 		},

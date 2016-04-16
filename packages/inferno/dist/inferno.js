@@ -6,7 +6,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.inferno = factory());
+	(global.Inferno = factory());
 }(this, function () { 'use strict';
 
 	var babelHelpers = {};
@@ -67,7 +67,7 @@
 	function createElement(tag, isSVG) {
 		var dom = void 0;
 
-		if (tag === 'svg' || isSVG) {
+		if (isSVG === true) {
 			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 		} else {
 			dom = document.createElement(tag);
@@ -194,15 +194,17 @@
 			},
 			tag: !tagIsDynamic ? tag : null,
 			className: className !== '' && className ? className : null,
+			style: style !== '' && style ? style : null,
 			isComponent: tagIsDynamic,
-			hasAttrs: attrsIsDynamic,
+			hasAttrs: attrsIsDynamic || (attrs ? true : false),
 			hasHooks: hooksIsDynamic,
 			hasEvents: eventsIsDynamic,
-			hasStyle: styleIsDynamic,
+			hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
 			hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
 			childrenType: childrenType === void 0 ? children ? 5 : 0 : childrenType,
 			attrKeys: null,
-			eventKeys: null
+			eventKeys: null,
+			isSVG: shape.isSVG || false
 		};
 
 		return function () {
@@ -217,9 +219,7 @@
 			if (attrsIsDynamic === true) {
 				vNode.attrs = arguments[attrs.arg];
 			} else {
-				if (tagIsDynamic && attrs) {
-					vNode.attrs = attrs;
-				}
+				vNode.attrs = attrs;
 			}
 			if (hooksIsDynamic === true) {
 				vNode.hooks = arguments[hooks.arg];
@@ -232,9 +232,13 @@
 			}
 			if (styleIsDynamic === true) {
 				vNode.style = arguments[style.arg];
+			} else {
+				vNode.style = blueprint.style;
 			}
 			if (classNameIsDynamic === true) {
 				vNode.className = arguments[className.arg];
+			} else {
+				vNode.className = blueprint.className;
 			}
 
 			return vNode;

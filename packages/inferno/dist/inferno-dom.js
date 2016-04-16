@@ -6,7 +6,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.inferno-dom = factory());
+	(global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
 	var babelHelpers = {};
@@ -138,7 +138,7 @@
 			if (isVirtualFragment(newNode)) {
 				newNode.insert(parentDom, nextNode);
 			} else if (isVirtualFragment(nextNode)) {
-				parentDom.insertBefore(newNode, nextNode.childNodes[0]);
+				parentDom.insertBefore(newNode, nextNode.childNodes[0] || nextNode.dom);
 			} else {
 				parentDom.insertBefore(newNode, nextNode);
 			}
@@ -156,7 +156,7 @@
 	function createElement(tag, isSVG) {
 		var dom = void 0;
 
-		if (tag === 'svg' || isSVG) {
+		if (isSVG === true) {
 			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 		} else {
 			dom = document.createElement(tag);
@@ -186,7 +186,7 @@
 		}
 	}
 
-	function replaceNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance) {
+	function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, isSVG) {
 		var lastInstance = null;
 		var instanceLastNode = lastNode._lastNode;
 
@@ -194,14 +194,22 @@
 			lastInstance = lastNode;
 			lastNode = instanceLastNode;
 		}
-		var dom = mountNode(nextNode, null, namespace, lifecycle, context, instance);
+		var dom = mountNode(nextNode, null, namespace, lifecycle, context, instance, isSVG);
 
 		nextNode.dom = dom;
-		parentDom.replaceChild(dom, lastNode.dom);
+		replaceNode(parentDom, dom, lastNode.dom);
 		if (lastInstance !== null) {
 			lastInstance._lastNode = nextNode;
 		}
 		detachNode(lastNode);
+	}
+
+	function replaceNode(parentDom, nextDom, lastDom) {
+		if (isVirtualFragment(lastDom)) {
+			lastDom.replaceWith(nextDom);
+		} else {
+			parentDom.replaceChild(nextDom, lastDom);
+		}
 	}
 
 	function detachNode(node) {
@@ -310,6 +318,7 @@
 		var parentNode = null;
 
 		var fragment = {
+			dom: dom,
 			childNodes: childNodes,
 			appendChild: function appendChild(domNode) {
 				// TODO we need to check if the domNode already has a parentNode of VirtualFragment so we can remove it
@@ -346,6 +355,13 @@
 			},
 			remove: function remove() {
 				parentNode.removeChild(dom);
+				for (var i = 0; i < childNodes.length; i++) {
+					parentNode.removeChild(childNodes[i]);
+				}
+				parentNode = null;
+			},
+			replaceWith: function replaceWith(newNode) {
+				parentNode.replaceChild(newNode, dom);
 				for (var i = 0; i < childNodes.length; i++) {
 					parentNode.removeChild(childNodes[i]);
 				}
@@ -438,7 +454,7 @@
 		}
 	}
 
-	function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, staticCheck) {
+	function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, staticCheck, isSVG) {
 		var nextChildren = nextNode.children;
 		var lastChildren = lastNode.children;
 
@@ -456,9 +472,9 @@
 				updateTextNode(dom, lastChildren, nextChildren);
 			} else if (!isNullOrUndefined(nextChildren)) {
 				if (isArray(nextChildren)) {
-					mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance);
+					mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance, isSVG);
 				} else {
-					mountNode(nextChildren, dom, lifecycle, context, instance);
+					mountNode(nextChildren, dom, lifecycle, context, instance, isSVG);
 				}
 			}
 		} else {
@@ -468,12 +484,12 @@
 				if (isArray(lastChildren)) {
 					if (isArray(nextChildren)) {
 						if (domChildren === null && lastChildren.length > 1) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
+							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						} else {
 							if (isKeyed(lastChildren, nextChildren)) {
-								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
+								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 							} else {
-								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0);
+								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);
 							}
 						}
 					} else {
@@ -481,13 +497,13 @@
 					}
 				} else {
 					if (isArray(nextChildren)) {
-						patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), lifecycle, context, instance, 0);
+						patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), lifecycle, context, instance, 0, isSVG);
 					} else if (isStringOrNumber(nextChildren)) {
 						updateTextNode(dom, lastChildren, nextChildren);
 					} else if (isStringOrNumber(lastChildren)) {
-						patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, null);
+						patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, null, isSVG);
 					} else {
-						patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, staticCheck);
+						patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, staticCheck, isSVG);
 					}
 				}
 			}
@@ -584,14 +600,14 @@
 				var lastNodeInstance = lastNode.instance;
 
 				if (nextBp.isComponent === true) {
-					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
+					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
 				} else if (isStatefulComponent(lastTag)) {
 					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 				} else {
 					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
 				}
 			} else {
-				replaceNode(lastNode, nextNode, parentDom, lifecycle, context, instance);
+				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
 			nextNode.dom = lastNode.dom;
@@ -673,7 +689,7 @@
 		}
 	}
 
-	function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck) {
+	function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck, isSVG) {
 		if (isPromise(nextNode)) {
 			nextNode.then(function (node) {
 				patchNode(lastNode, node, parentDom, lifecycle, context, deepCheck, instance);
@@ -688,19 +704,23 @@
 			var nextTag = nextNode.tag || (deepCheck && !isNullOrUndefined(nextNode.bp) ? nextNode.bp.tag : null);
 			var lastTag = lastNode.tag || (deepCheck && !isNullOrUndefined(lastNode.bp) ? lastNode.bp.tag : null);
 
+			if (nextTag === 'svg') {
+				isSVG = true;
+			}
+
 			if (lastTag !== nextTag) {
 				var lastNodeInstance = lastNode.instance;
 
 				if (isFunction(lastTag)) {
 					if (isFunction(nextTag)) {
-						replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
+						replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 					} else if (isStatefulComponent(lastTag)) {
-						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
+						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
 					} else {
-						diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
+						diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
 					}
 				} else {
-					replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
+					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				}
 			} else if (isNullOrUndefined(lastTag)) {
 				nextNode.dom = lastNode.dom;
@@ -718,7 +738,7 @@
 
 					nextNode.dom = dom;
 
-					diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck);
+					diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck, isSVG);
 					diffAttributes(lastNode, nextNode, null, null, dom, instance);
 					diffEvents(lastNode, nextNode, null, null, dom);
 
@@ -778,38 +798,38 @@
 		}
 	}
 
-	function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck) {
+	function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck, isSVG) {
 		if (deepCheck !== null) {
 			var lastBp = lastNode.bp;
 			var nextBp = nextNode.bp;
 
 			if (lastBp === void 0 || nextBp === void 0) {
-				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, true);
+				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
 			} else {
 				diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, true);
 			}
 		} else if (isInvalidNode(lastNode)) {
-			mountNode(nextNode, parentDom, lifecycle, context, instance);
+			mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isInvalidNode(nextNode)) {
 			remove(lastNode, parentDom);
 		} else if (isStringOrNumber(lastNode)) {
 			if (isStringOrNumber(nextNode)) {
 				parentDom.firstChild.nodeValue = nextNode;
 			} else {
-				var dom = mountNode(nextNode, null, lifecycle, context, instance);
+				var dom = mountNode(nextNode, null, lifecycle, context, instance, isSVG);
 				nextNode.dom = dom;
-				parentDom.replaceChild(dom, parentDom.firstChild);
+				replaceNode(parentDom, dom, parentDom.firstChild);
 			}
 		} else if (isStringOrNumber(nextNode)) {
 			var textNode = document.createTextNode(nextNode);
-			parentDom.replaceChild(textNode, lastNode.dom);
+			replaceNode(parentDom, textNode, lastNode.dom);
 		} else {
 			var _lastBp = lastNode.bp;
 			var _nextBp = nextNode.bp;
 			var _deepCheck = _lastBp !== _nextBp;
 
-			if (_lastBp === void 0) {
-				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, _deepCheck);
+			if (_lastBp === void 0 || _nextBp === void 0) {
+				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, _deepCheck, isSVG);
 			} else {
 				diffNodesWithTemplate(lastNode, nextNode, _lastBp, _nextBp, parentDom, lifecycle, context, instance, _deepCheck);
 			}
@@ -939,7 +959,7 @@
 		}
 	}
 
-	function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, lifecycle, context, instance, domChildrenIndex) {
+	function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, lifecycle, context, instance, domChildrenIndex, isSVG) {
 		var isNotVirtualFragment = dom.append === void 0;
 		var lastChildrenLength = lastChildren.length;
 		var nextChildrenLength = nextChildren.length;
@@ -952,19 +972,24 @@
 
 					if (!isInvalidNode(lastChild)) {
 						dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
+						if (isNotVirtualFragment) {
+							domChildren.splice(lastChildrenLength - 1 + domChildrenIndex, 1);
+						}
 						detachNode(lastChild);
+						lastChildrenLength--;
+						lastChildren.pop();
 					}
-					lastChildrenLength--;
 				}
 			} else {
 				while (lastChildrenLength !== nextChildrenLength) {
 					var nextChild = nextChildren[lastChildrenLength];
 					var domNode = void 0;
 
+					lastChildren.push(nextChild);
 					if (isStringOrNumber(nextChild)) {
 						domNode = document.createTextNode(nextChild);
 					} else {
-						domNode = mountNode(nextChild, null, context, instance);
+						domNode = mountNode(nextChild, null, context, instance, isSVG);
 					}
 
 					insertOrAppendNonKeyed(dom, domNode);
@@ -986,41 +1011,50 @@
 			if (_lastChild !== _nextChild) {
 				if (isInvalidNode(_nextChild)) {
 					if (!isInvalidNode(_lastChild)) {
-						var childNode = domChildren[index];
+						if (isArray(_lastChild) && _lastChild.length === 0) {
+							// TODO
+						} else {
+								var childNode = domChildren[index];
 
-						if (!isNullOrUndefined(childNode)) {
-							if (isStringOrNumber(_lastChild)) {
-								childNode.nodeValue = '';
-							} else if (sameLength === true) {
-								var textNode = createEmptyTextNode();
-
-								if (isArray(_lastChild) && _lastChild.length === 0) {
-									insertOrAppendNonKeyed(dom, textNode);
-									isNotVirtualFragment && domChildren.splice(index, 0, textNode);
-								} else {
-									dom.replaceChild(textNode, domChildren[index]);
-									isNotVirtualFragment && domChildren.splice(index, 1, textNode);
-									detachNode(_lastChild);
+								if (isNullOrUndefined(childNode)) {
+									index--;
 								}
+								dom.removeChild(domChildren[index]);
+								if (isNotVirtualFragment) {
+									domChildren.splice(index, 1);
+									domChildrenIndex--;
+								}
+								detachNode(_lastChild);
 							}
-						}
 					}
 				} else {
 					if (isInvalidNode(_lastChild)) {
 						if (isStringOrNumber(_nextChild)) {
-							var _textNode = document.createTextNode(_nextChild);
+							var textNode = document.createTextNode(_nextChild);
 							var domChild = domChildren[index];
 
 							if (!isNullOrUndefined(domChild)) {
-								dom.replaceChild(_textNode, domChild);
+								insertOrAppendNonKeyed(dom, textNode, domChild);
+								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 							} else {
-								insertOrAppendNonKeyed(dom, _textNode, domChildren[index + 1]);
+								// TODO move to next node if need be
+								var _nextChild2 = domChildren[index + 1];
+								insertOrAppendNonKeyed(dom, textNode, _nextChild2);
+								isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 							}
-							isNotVirtualFragment && domChildren.splice(index, 1, _textNode);
 						} else if (sameLength === true) {
-							var _domNode = mountNode(_nextChild, null, lifecycle, context, instance);
-							dom.replaceChild(_domNode, domChildren[index]);
-							isNotVirtualFragment && domChildren.splice(index, 1, _domNode);
+							var _domNode = mountNode(_nextChild, null, lifecycle, context, instance, isSVG);
+							var _domChild = domChildren[index];
+
+							if (!isNullOrUndefined(_domChild)) {
+								insertOrAppendNonKeyed(dom, _domNode, _domChild);
+								isNotVirtualFragment && domChildren.splice(index, 0, _domNode);
+							} else {
+								// TODO move to next node if need be
+								var _nextChild3 = domChildren[index + 1];
+								insertOrAppendNonKeyed(dom, _domNode, _nextChild3);
+								isNotVirtualFragment && domChildren.splice(index, 1, _domNode);
+							}
 						}
 					} else if (isStringOrNumber(_nextChild)) {
 						if (lastChildrenLength === 1) {
@@ -1035,24 +1069,24 @@
 								dom.textContent = _nextChild;
 							}
 						} else {
-							var _textNode2 = document.createTextNode(_nextChild);
+							var _textNode = document.createTextNode(_nextChild);
 							var child = domChildren[index];
 
 							if (isNullOrUndefined(child)) {
-								dom.nodeValue = _textNode2.nodeValue;
+								dom.nodeValue = _textNode.nodeValue;
 							} else {
 								if (isStringOrNumber(_lastChild)) {
 									child.nodeValue = _nextChild;
 								} else {
 									// Next is single string so remove all children
 									if (child.append === void 0) {
-										isNotVirtualFragment && domChildren.splice(index, 1, _textNode2);
-										dom.replaceChild(_textNode2, child);
+										isNotVirtualFragment && domChildren.splice(index, 1, _textNode);
+										replaceNode(dom, _textNode, child);
 									} else {
 										// If previous child is virtual fragment remove all its content and replace with textNode
-										dom.insertBefore(_textNode2, child.firstChild);
+										insertOrAppendNonKeyed(dom, _textNode, child.firstChild);
 										child.remove();
-										domChildren.splice(0, domChildren.length, _textNode2);
+										domChildren.splice(0, domChildren.length, _textNode);
 									}
 								}
 							}
@@ -1060,24 +1094,24 @@
 						}
 					} else if (isArray(_nextChild)) {
 						if (isKeyed(_lastChild, _nextChild)) {
-							patchKeyedChildren(_lastChild, _nextChild, domChildren[index], lifecycle, context, instance);
+							patchKeyedChildren(_lastChild, _nextChild, domChildren[index], lifecycle, context, instance, isSVG);
 						} else {
 							if (isArray(_lastChild)) {
-								var _domChild = domChildren[index];
+								var _domChild2 = domChildren[index];
 
-								if (_domChild.append === void 0) {
+								if (_domChild2.append === void 0) {
 									if (_nextChild.length > 1 && _lastChild.length === 1) {
 										var virtualFragment = createVirtualFragment();
 
-										virtualFragment.insert(dom, _domChild);
-										virtualFragment.appendChild(_domChild);
+										virtualFragment.insert(dom, _domChild2);
+										virtualFragment.appendChild(_domChild2);
 										isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
-										patchNonKeyedChildren(_lastChild, _nextChild, virtualFragment, virtualFragment.childNodes, lifecycle, context, instance, 0);
+										patchNonKeyedChildren(_lastChild, _nextChild, virtualFragment, virtualFragment.childNodes, lifecycle, context, instance, 0, isSVG);
 									} else {
-										patchNonKeyedChildren(_lastChild, _nextChild, dom, domChildren, lifecycle, context, instance, 0);
+										patchNonKeyedChildren(_lastChild, _nextChild, dom, domChildren, lifecycle, context, instance, 0, isSVG);
 									}
 								} else {
-									patchNonKeyedChildren(_lastChild, _nextChild, domChildren[index], domChildren[index].childNodes, lifecycle, context, instance, 0);
+									patchNonKeyedChildren(_lastChild, _nextChild, domChildren[index], domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
 								}
 							} else {
 								if (_nextChild.length > 1) {
@@ -1085,17 +1119,17 @@
 									_virtualFragment.appendChild(dom.firstChild);
 									insertOrAppendNonKeyed(dom, _virtualFragment, dom.firstChild);
 									isNotVirtualFragment && domChildren.splice(index, 1, _virtualFragment);
-									patchNonKeyedChildren([_lastChild], _nextChild, _virtualFragment, _virtualFragment.childNodes, lifecycle, context, instance, i);
+									patchNonKeyedChildren([_lastChild], _nextChild, _virtualFragment, _virtualFragment.childNodes, lifecycle, context, instance, i, isSVG);
 								} else {
-									patchNonKeyedChildren([_lastChild], _nextChild, dom, domChildren, lifecycle, context, instance, i);
+									patchNonKeyedChildren([_lastChild], _nextChild, dom, domChildren, lifecycle, context, instance, i, isSVG);
 								}
 							}
 						}
 					} else {
 						if (isArray(_lastChild)) {
-							patchNonKeyedChildren(_lastChild, [_nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0);
+							patchNonKeyedChildren(_lastChild, [_nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
 						} else {
-							patchNode(_lastChild, _nextChild, dom, lifecycle, context, instance, null);
+							patchNode(_lastChild, _nextChild, dom, lifecycle, context, instance, null, isSVG);
 						}
 					}
 				}
@@ -1103,7 +1137,7 @@
 		}
 	}
 
-	function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance) {
+	function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG) {
 		var lastChildrenLength = lastChildren.length;
 		var nextChildrenLength = nextChildren.length;
 		var i = void 0;
@@ -1129,7 +1163,7 @@
 				break;
 			}
 
-			patchNode(lastStartNode, nextStartNode, dom, lifecycle, context, instance, true);
+			patchNode(lastStartNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
 			nextStartIndex++;
 			lastStartIndex++;
 		}
@@ -1142,7 +1176,7 @@
 				break;
 			}
 
-			patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true);
+			patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 			nextEndIndex--;
 			lastEndIndex--;
 		}
@@ -1156,7 +1190,7 @@
 			}
 
 			nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
-			patchNode(lastStartNode, nextEndNode, dom, lifecycle, context, instance, true);
+			patchNode(lastStartNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 			insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
 			nextEndIndex--;
 			lastStartIndex++;
@@ -1171,7 +1205,7 @@
 			}
 
 			nextNode = lastChildren[lastStartIndex].dom;
-			patchNode(lastEndNode, nextStartNode, dom, lifecycle, context, instance, true);
+			patchNode(lastEndNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
 			insertOrAppendKeyed(dom, nextStartNode.dom, nextNode);
 			nextStartIndex++;
 			lastEndIndex--;
@@ -1181,7 +1215,7 @@
 			if (nextStartIndex <= nextEndIndex) {
 				nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
 				for (; nextStartIndex <= nextEndIndex; nextStartIndex++) {
-					insertOrAppendKeyed(dom, mountNode(nextChildren[nextStartIndex], null, lifecycle, context, instance), nextNode);
+					insertOrAppendKeyed(dom, mountNode(nextChildren[nextStartIndex], null, lifecycle, context, instance, isSVG), nextNode);
 				}
 			}
 		} else if (nextStartIndex > nextEndIndex) {
@@ -1215,7 +1249,7 @@
 							} else {
 								lastTarget = index;
 							}
-							patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true);
+							patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 							removed = false;
 							break;
 						}
@@ -1250,7 +1284,7 @@
 						} else {
 							lastTarget = index;
 						}
-						patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true);
+						patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 					}
 				}
 			}
@@ -1262,7 +1296,7 @@
 					if (sources[i] === -1) {
 						pos = i + nextStartIndex;
 						nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
-						insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, lifecycle, context, instance), nextNode);
+						insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
 					} else {
 						if (index < 0 || i !== seq[index]) {
 							pos = i + nextStartIndex;
@@ -1278,7 +1312,7 @@
 					if (sources[i] === -1) {
 						pos = i + nextStartIndex;
 						nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
-						insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, lifecycle, context, instance), nextNode);
+						insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
 					}
 				}
 			}
@@ -1375,7 +1409,7 @@
 		return false;
 	}
 
-	function mountNode(node, parentDom, lifecycle, context, instance) {
+	function mountNode(node, parentDom, lifecycle, context, instance, isSVG) {
 		if (isArray(node)) {
 			return placeholder(node, parentDom);
 		}
@@ -1397,7 +1431,7 @@
 		}
 
 		if (bp === void 0) {
-			return appendNode(node, parentDom, lifecycle, context, instance);
+			return appendNode(node, parentDom, lifecycle, context, instance, isSVG);
 		} else {
 			return appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance);
 		}
@@ -1461,7 +1495,7 @@
 			mountAttributes(attrs, attrKeys, dom, instance);
 		}
 		if (bp.hasClassName === true) {
-			dom.className = node.className || bp.className;
+			dom.className = node.className;
 		}
 		if (bp.hasStyle === true) {
 			patchStyle(null, node.style, dom);
@@ -1482,7 +1516,7 @@
 		return dom;
 	}
 
-	function appendNode(node, parentDom, lifecycle, context, instance) {
+	function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 		var tag = node.tag;
 
 		if (tag === null) {
@@ -1494,7 +1528,10 @@
 		if (!isString(tag) || tag === '') {
 			throw Error('Inferno Error: Expected function or string for element tag type');
 		}
-		var dom = createElement(tag);
+		if (tag === 'svg') {
+			isSVG = true;
+		}
+		var dom = createElement(tag, isSVG);
 		var children = node.children;
 		var attrs = node.attrs;
 		var events = node.events;
@@ -1507,7 +1544,7 @@
 			handleAttachedHooks(hooks, lifecycle, dom);
 		}
 		if (!isInvalidNode(children)) {
-			mountChildren(node, children, dom, lifecycle, context, instance);
+			mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
 		}
 		if (!isNullOrUndefined(attrs)) {
 			handleSelects(node);
@@ -1528,13 +1565,13 @@
 		return dom;
 	}
 
-	function appendPromise(child, parentDom, domChildren, lifecycle, context, instance) {
+	function appendPromise(child, parentDom, domChildren, lifecycle, context, instance, isSVG) {
 		var placeholder = createEmptyTextNode();
 		domChildren && domChildren.push(placeholder);
 
 		child.then(function (node) {
 			// TODO check for text nodes and arrays
-			var dom = mountNode(node, null, lifecycle, context, instance);
+			var dom = mountNode(node, null, lifecycle, context, instance, isSVG);
 
 			parentDom.replaceChild(dom, placeholder);
 			domChildren && replaceInArray(domChildren, placeholder, dom);
@@ -1548,7 +1585,7 @@
 		}
 	}
 
-	function mountArrayChildren(node, children, parentDom, lifecycle, context, instance) {
+	function mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
 		var domChildren = null;
 		var isNonKeyed = false;
 		var hasKeyedAssumption = false;
@@ -1564,14 +1601,14 @@
 				var virtualFragment = createVirtualFragment();
 
 				isNonKeyed = true;
-				mountArrayChildren(node, child, virtualFragment, lifecycle, context, instance);
+				mountArrayChildren(node, child, virtualFragment, lifecycle, context, instance, isSVG);
 				insertOrAppendNonKeyed(parentDom, virtualFragment);
 				domChildren = domChildren || [];
 				domChildren.push(virtualFragment);
 			} else if (isPromise(child)) {
-				appendPromise(child, parentDom, domChildren, lifecycle, context, instance);
+				appendPromise(child, parentDom, domChildren, lifecycle, context, instance, isSVG);
 			} else {
-				var domNode = mountNode(child, parentDom, lifecycle, context, instance);
+				var domNode = mountNode(child, parentDom, lifecycle, context, instance, isSVG);
 
 				if (isNonKeyed || !hasKeyedAssumption && child && isNullOrUndefined(child.key)) {
 					isNonKeyed = true;
@@ -1591,15 +1628,15 @@
 		}
 	}
 
-	function mountChildren(node, children, parentDom, lifecycle, context, instance) {
+	function mountChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
 		if (isArray(children)) {
-			mountArrayChildren(node, children, parentDom, lifecycle, context, instance);
+			mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
 		} else if (isPromise(children)) {
-			appendPromise(children, parentDom, null, lifecycle, context, instance);
+			appendPromise(children, parentDom, null, lifecycle, context, instance, isSVG);
 		} else {
-			mountNode(children, parentDom, lifecycle, context, instance);
+			mountNode(children, parentDom, lifecycle, context, instance, isSVG);
 		}
 	}
 
@@ -1722,13 +1759,13 @@
 		var lifecycle = new Lifecycle();
 
 		if (root === null) {
-			mountNode(node, parentDom, lifecycle, {}, null);
+			mountNode(node, parentDom, lifecycle, {}, null, false);
 			lifecycle.trigger();
 			roots.push({ node: node, dom: parentDom });
 		} else {
 			var activeNode = getActiveNode();
 
-			patchNode(root.node, node, parentDom, lifecycle, {}, null, null);
+			patchNode(root.node, node, parentDom, lifecycle, {}, null, null, false);
 			lifecycle.trigger();
 			if (node === null) {
 				removeRoot(root);

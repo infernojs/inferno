@@ -11,7 +11,7 @@
 		componentShouldUpdate: updateTableCell
 	};
 
-	var animBox1 = Inferno.createTemplate({
+	var animBox1 = Inferno.createBlueprint({
 		tag: 'div',
 		className: 'AnimBox',
 		attrs: { arg: 0 },
@@ -28,13 +28,13 @@
 		return animBox1({ 'data-id': data.id }, style)
 	};
 
-	var anim1 = Inferno.createTemplate({
+	var anim1 = Inferno.createBlueprint({
 		tag: 'div',
 		className: 'Anim',
 		children: { arg: 0 }
 	}, 4);
 
-	var anim2 = Inferno.createTemplate({
+	var anim2 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -53,7 +53,7 @@
 		return anim1(children);
 	};
 
-	var tableCell1 = Inferno.createTemplate({
+	var tableCell1 = Inferno.createBlueprint({
 		tag: 'td',
 		className: 'TableCell',
 		children: { arg: 0 },
@@ -78,14 +78,14 @@
 		});
 	};
 
-	var tableRow1 = Inferno.createTemplate({
+	var tableRow1 = Inferno.createBlueprint({
 		tag: 'tr',
 		children: { arg: 0 },
 		className: { arg: 1 },
 		attrs: { arg: 2 }
 	}, 4);
 
-	var tableRow2 = Inferno.createTemplate({
+	var tableRow2 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -112,18 +112,18 @@
 		return tableRow1(children, classes, { 'data-id': data.id });
 	};
 
-	var table1 = Inferno.createTemplate({
+	var table1 = Inferno.createBlueprint({
 		tag: 'table',
 		className: 'Table',
 		children: { arg: 0 }
 	}, 2);
 
-	var table2 = Inferno.createTemplate({
+	var table2 = Inferno.createBlueprint({
 		tag: 'tbody',
 		children: { arg: 0 }
 	}, 4);
 
-	var table3 = Inferno.createTemplate({
+	var table3 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -144,7 +144,7 @@
 		return table1(table2(children));
 	};
 
-	var treeLeaf1 = Inferno.createTemplate({
+	var treeLeaf1 = Inferno.createBlueprint({
 		tag: 'li',
 		className: 'TreeLeaf',
 		children: { arg: 0 }
@@ -154,20 +154,20 @@
 		return treeLeaf1(props.data.id);
 	};
 
-	var treeNode1 = Inferno.createTemplate({
+	var treeNode1 = Inferno.createBlueprint({
 		tag: 'ul',
 		className: 'TreeNode',
 		children: { arg: 0 }
 	}, 4);
 
-	var treeNode2 = Inferno.createTemplate({
+	var treeNode2 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
 		key: { arg: 3 }
 	});
 
-	var treeNode3 = Inferno.createTemplate({
+	var treeNode3 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 },
@@ -198,13 +198,13 @@
 		return treeNode1(children);
 	};
 
-	var tree1 = Inferno.createTemplate({
+	var tree1 = Inferno.createBlueprint({
 		tag: 'div',
 		className: 'Tree',
 		children: { arg: 0 }
 	}, 2);
 
-	var tree2 = Inferno.createTemplate({
+	var tree2 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
@@ -218,25 +218,25 @@
 		);
 	};
 
-	var main1 = Inferno.createTemplate({
+	var main1 = Inferno.createBlueprint({
 		tag: 'div',
 		className: 'Main',
 		children: { arg: 0 }
 	}, 2);
 
-	var main2 = Inferno.createTemplate({
+	var main2 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
 	});
 
-	var main3 = Inferno.createTemplate({
+	var main3 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
 	});
 
-	var main4 = Inferno.createTemplate({
+	var main4 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
@@ -264,13 +264,13 @@
 		return new main1(section);
 	};
 
-	var app1 = Inferno.createTemplate({
+	var app1 = Inferno.createBlueprint({
 		tag: { arg: 0 },
 		attrs: { arg: 1 },
 		hooks: { arg: 2 }
 	});
 
-	var app2 = Inferno.createTemplate({
+	var app2 = Inferno.createBlueprint({
 		tag: 'pre',
 		children: { arg: 0 }
 	}, 5);
