@@ -89,7 +89,7 @@ export function createBlueprint(shape, childrenType) {
 		className: className !== '' && className ? className : null,
 		style: style !== '' && style ? style : null,
 		isComponent: tagIsDynamic,
-		hasAttrs: attrsIsDynamic,
+		hasAttrs: attrsIsDynamic || (attrs ? true : false),
 		hasHooks: hooksIsDynamic,
 		hasEvents: eventsIsDynamic,
 		hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
@@ -112,9 +112,7 @@ export function createBlueprint(shape, childrenType) {
 		if (attrsIsDynamic === true) {
 			vNode.attrs = arguments[attrs.arg];
 		} else {
-			if (tagIsDynamic && attrs) {
-				vNode.attrs = attrs;
-			}
+			vNode.attrs = attrs;
 		}
 		if (hooksIsDynamic === true) {
 			vNode.hooks = arguments[hooks.arg];
