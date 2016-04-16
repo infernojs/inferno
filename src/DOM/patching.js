@@ -213,15 +213,20 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 
 				if (!isInvalidNode(lastChild)) {
 					dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
+					if (isNotVirtualFragment) {
+						domChildren.splice(lastChildrenLength - 1 + domChildrenIndex, 1);
+					}
 					detachNode(lastChild);
+					lastChildrenLength--;
+					lastChildren.pop();
 				}
-				lastChildrenLength--;
 			}
 		} else {
 			while (lastChildrenLength !== nextChildrenLength) {
 				const nextChild = nextChildren[lastChildrenLength];
 				let domNode;
 
+				lastChildren.push(nextChild);
 				if (isStringOrNumber(nextChild)) {
 					domNode = document.createTextNode(nextChild);
 				} else {
@@ -242,26 +247,25 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 	for (let i = 0; i < nextChildrenLength; i++) {
 		const lastChild = lastChildren[i];
 		const nextChild = nextChildren[i];
-		const index = i + domChildrenIndex;
+		let index = i + domChildrenIndex;
 
 		if (lastChild !== nextChild) {
 			if (isInvalidNode(nextChild)) {
 				if (!isInvalidNode(lastChild)) {
-					const childNode = domChildren[index];
+					if(isArray(lastChild) && lastChild.length === 0) {
+						// TODO
+					} else {
+						const childNode = domChildren[index];
 
-					if (!isNullOrUndefined(childNode)) {
-						if (isStringOrNumber(lastChild)) {
-							childNode.nodeValue = '';
-						} else if (sameLength === true) {
-							if (isArray(lastChild) && lastChild.length === 0) {
-								// TODO
-							} else {
-								dom.removeChild(domChildren[index]);
-								isNotVirtualFragment && domChildren.splice(index, 1);
-								detachNode(lastChild);
-								domChildrenIndex--;
-							}
+						if (isNullOrUndefined(childNode)) {
+							index--;
 						}
+						dom.removeChild(domChildren[index]);
+						if (isNotVirtualFragment) {
+							domChildren.splice(index, 1);
+							domChildrenIndex--;
+						}
+						detachNode(lastChild);
 					}
 				}
 			} else {
@@ -271,13 +275,14 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						const domChild = domChildren[index];
 
 						if (!isNullOrUndefined(domChild)) {
-							replaceNode(dom, textNode, domChild);
+							insertOrAppendNonKeyed(dom, textNode, domChild);
+							isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 						} else {
 							// TODO move to next node if need be
 							const nextChild = domChildren[index + 1];
 							insertOrAppendNonKeyed(dom, textNode, nextChild);
+							isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 						}
-						isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 					} else if (sameLength === true) {
 						const domNode = mountNode(nextChild, null, lifecycle, context, instance, isSVG);
 						const domChild = domChildren[index];

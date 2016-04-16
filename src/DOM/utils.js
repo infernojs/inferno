@@ -17,7 +17,7 @@ export function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
 		if (isVirtualFragment(newNode)) {
 			newNode.insert(parentDom, nextNode);
 		} else if (isVirtualFragment(nextNode)) {
-			parentDom.insertBefore(newNode, nextNode.childNodes[0]);
+			parentDom.insertBefore(newNode, nextNode.childNodes[0] || nextNode.dom);
 		} else {
 			parentDom.insertBefore(newNode, nextNode);
 		}
@@ -197,6 +197,7 @@ export function createVirtualFragment() {
 	let parentNode = null;
 
 	const fragment = {
+		dom,
 		childNodes,
 		appendChild(domNode) {
 			// TODO we need to check if the domNode already has a parentNode of VirtualFragment so we can remove it
