@@ -1,8 +1,8 @@
-import { createTemplate, createVNode }from '../../../src/core/createTemplate';
+import { createBlueprint, createVNode }from '../../../src/core/createBlueprint';
 import { createUniversalElement } from '../../../src/core/universal';
 
 export default {
-	createTemplate,
+	createBlueprint,
 	createVNode,
 	universal: {
 		createElement: createUniversalElement

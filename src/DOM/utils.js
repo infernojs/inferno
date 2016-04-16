@@ -32,10 +32,10 @@ export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
 	}
 }
 
-export function createElement(tag) {
+export function createElement(tag, isSVG) {
 	let dom;
 
-	if (tag === 'svg') {
+	if (tag === 'svg' || isSVG) {
 		dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 	} else {
 		dom = document.createElement(tag);

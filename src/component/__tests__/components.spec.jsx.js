@@ -1,10 +1,10 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/index';
 import innerHTML from './../../../tools/innerHTML';
-import { createTemplate } from './../../core/createTemplate';
+import { createBlueprint } from './../../core/createBlueprint';
 
 const Inferno = {
-	createTemplate
+	createBlueprint
 };
 
 describe('Components (JSX)', () => {

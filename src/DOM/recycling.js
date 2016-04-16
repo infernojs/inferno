@@ -3,10 +3,10 @@ import { isNullOrUndefined } from './../core/utils';
 
 export const recyclingEnabled = true;
 
-export function recycle(node, tpl, lifecycle, context, instance) {
-	if (tpl !== undefined) {
+export function recycle(node, bp, lifecycle, context, instance) {
+	if (bp !== undefined) {
 		const key = node.key;
-		const pool = key === null ? tpl.pools.nonKeyed : tpl.pools.keyed[key];
+		const pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed[key];
 		if (!isNullOrUndefined(pool)) {
 			const recycledNode = pool.pop();
 			if (!isNullOrUndefined(recycledNode)) {
@@ -19,11 +19,11 @@ export function recycle(node, tpl, lifecycle, context, instance) {
 }
 
 export function pool(node) {
-	const tpl = node.tpl;
+	const bp = node.bp;
 
-	if (!isNullOrUndefined(tpl)) {
+	if (!isNullOrUndefined(bp)) {
 		const key = node.key;
-		const pools = tpl.pools;
+		const pools = bp.pools;
 
 		if (key === null) {
 			const pool = pools.nonKeyed;

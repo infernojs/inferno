@@ -1,8 +1,8 @@
 import { isNullOrUndefined } from './utils';
 import { createUniversalElement } from './universal';
 
-function VNode(tpl) {
-	this.tpl = tpl;
+function VNode(blueprint) {
+	this.bp = blueprint;
 	this.dom = null;
 	this.instance = null;
 	this.tag = null;
@@ -54,7 +54,7 @@ export function createVNode(tpl) {
 	return new VNode(tpl);
 }
 
-export function createTemplate(shape, childrenType) {
+export function createBlueprint(shape, childrenType) {
 	const tag = shape.tag || null;
 	const tagIsDynamic = tag && tag.arg !== undefined ? true : false;
 
@@ -79,33 +79,27 @@ export function createTemplate(shape, childrenType) {
 	const className = shape.className !== undefined ? shape.className : null;
 	const classNameIsDynamic = className && className.arg !== undefined ? true : false;
 
-	let dom = null;
-
-	if (typeof tag === 'string') {
-		const newAttrs = Object.assign({}, (!classNameIsDynamic && className) ? { className: className } : {}, (!attrsIsDynamic && shape.attrs) || {});
-		dom = createUniversalElement(tag, newAttrs);
-	}
-
-	const tpl = {
-		dom: dom,
+	const blueprint = {
+		dom: null,
 		pools: {
 			keyed: {},
 			nonKeyed: []
 		},
 		tag: !tagIsDynamic ? tag : null,
+		className: className !== '' && className ? className: null,
 		isComponent: tagIsDynamic,
 		hasAttrs: attrsIsDynamic,
 		hasHooks: hooksIsDynamic,
 		hasEvents: eventsIsDynamic,
 		hasStyle: styleIsDynamic,
-		hasClassName: classNameIsDynamic,
+		hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
 		childrenType: childrenType === undefined ? (children ? 5 : 0) : childrenType,
 		attrKeys: null,
 		eventKeys: null
 	};
 
 	return function () {
-		const vNode = new VNode(tpl);
+		const vNode = new VNode(blueprint);
 
 		if (tagIsDynamic === true) {
 			vNode.tag = arguments[tag.arg];

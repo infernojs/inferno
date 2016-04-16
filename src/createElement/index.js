@@ -1,4 +1,4 @@
-import { createVNode } from '../core/createTemplate';
+import { createVNode } from '../core/createBlueprint';
 import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './../core/utils';
 
 export function createAttrsAndEvents(props, tag) {

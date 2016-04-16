@@ -1,8 +1,8 @@
 import { render } from './../rendering';
-import { createTemplate } from './../../core/createTemplate';
+import { createBlueprint } from './../../core/createBlueprint';
 
 const Inferno = {
-	createTemplate
+	createBlueprint
 };
 
 describe('createTree - SVG (JSX)', () => {

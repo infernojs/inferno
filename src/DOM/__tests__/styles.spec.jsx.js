@@ -1,12 +1,12 @@
 import { render } from './../rendering';
-import { createTemplate } from './../../core/createTemplate';
+import { createBlueprint } from './../../core/createBlueprint';
 
 const Inferno = {
-	createTemplate
+	createBlueprint
 };
 
 function styleNode() {
-	return createTemplate({
+	return createBlueprint({
 		tag: 'div',
 		style: {arg: 0}
 	});

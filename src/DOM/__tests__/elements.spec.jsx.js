@@ -1,9 +1,9 @@
 import { render } from './../rendering';
 import innerHTML from './../../../tools/innerHTML';
-import { createTemplate } from './../../core/createTemplate';
+import { createBlueprint } from './../../core/createBlueprint';
 
 const Inferno = {
-	createTemplate
+	createBlueprint
 };
 
 describe('Elements - SVG (JSX)', () => {

@@ -1,8 +1,8 @@
 import { render } from './../../DOM/rendering';
-import { createTemplate } from './../../core/createTemplate';
+import { createBlueprint } from './../../core/createBlueprint';
 
 const Inferno = {
-	createTemplate
+	createBlueprint
 };
 
 describe('Async rendering (JSX)', () => {

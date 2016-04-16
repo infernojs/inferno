@@ -39,13 +39,13 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck) {
 	if (deepCheck !== null) {
-		const lastTpl = lastNode.tpl;
-		const nextTpl = nextNode.tpl;
+		const lastBp = lastNode.bp;
+		const nextBp = nextNode.bp;
 
-		if (lastTpl === undefined || nextTpl === undefined) {
+		if (lastBp === undefined || nextBp === undefined) {
 			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 		} else {
-			diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, lifecycle, context, instance, true);
+			diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, true);
 		}
 	} else if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, lifecycle, context, instance);
@@ -63,14 +63,14 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 		const textNode = document.createTextNode(nextNode);
 		parentDom.replaceChild(textNode, lastNode.dom);
 	} else {
-		const lastTpl = lastNode.tpl;
-		const nextTpl = nextNode.tpl;
-		const deepCheck = lastTpl !== nextTpl;
+		const lastBp = lastNode.bp;
+		const nextBp = nextNode.bp;
+		const deepCheck = lastBp !== nextBp;
 
-		if (lastTpl === undefined) {
+		if (lastBp === undefined) {
 			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck);
 		} else {
-			diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, lifecycle, context, instance, deepCheck);
+			diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, deepCheck);
 		}
 	}
 }
@@ -152,7 +152,7 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 }
 
 
-export function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTpl, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
@@ -174,7 +174,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastTpl, nextTp
 		}
 	} else {
 		let shouldUpdate = true;
-		const nextHooksDefined = (hasTemplate && nextTpl.hasHooks === true) || !isNullOrUndefined(nextHooks);
+		const nextHooksDefined = (hasTemplate && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
 
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
@@ -270,7 +270,13 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				if (isInvalidNode(lastChild)) {
 					if (isStringOrNumber(nextChild)) {
 						const textNode = document.createTextNode(nextChild);
-						dom.replaceChild(textNode, domChildren[index]);
+						const domChild = domChildren[index];
+
+						if (!isNullOrUndefined(domChild)) {
+							dom.replaceChild(textNode, domChild);
+						} else {
+							insertOrAppendNonKeyed(dom, textNode, domChildren[index + 1]);
+						}
 						isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 					} else if (sameLength === true) {
 						const domNode = mountNode(nextChild, null, lifecycle, context, instance);

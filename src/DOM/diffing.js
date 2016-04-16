@@ -134,7 +134,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	}
 }
 
-export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, parentDom, lifecycle, context, instance, deepCheck) {
+export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, deepCheck) {
 	let nextHooks;
 
 	if (nextNode.hasHooks === true) {
@@ -143,14 +143,14 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 			nextHooks.willUpdate(lastNode.dom);
 		}
 	}
-	const nextTag = nextNode.tag || (deepCheck && lastTpl.tag);
-	const lastTag = lastNode.tag || (deepCheck && nextTpl.tag);
+	const nextTag = nextNode.tag || (deepCheck && lastBp.tag);
+	const lastTag = lastNode.tag || (deepCheck && nextBp.tag);
 
 	if (lastTag !== nextTag) {
-		if (lastNode.tpl.isComponent === true) {
+		if (lastNode.bp.isComponent === true) {
 			const lastNodeInstance = lastNode.instance;
 
-			if (nextTpl.isComponent === true) {
+			if (nextBp.isComponent === true) {
 				replaceNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
 			} else if (isStatefulComponent(lastTag)) {
 				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
@@ -163,16 +163,16 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 	} else if (isNullOrUndefined(lastTag)) {
 		nextNode.dom = lastNode.dom;
 	} else {
-		if (lastTpl.isComponent === true) {
-			if (nextTpl.isComponent === true) {
+		if (lastBp.isComponent === true) {
+			if (nextBp.isComponent === true) {
 				nextNode.instance = lastNode.instance;
 				nextNode.dom = lastNode.dom;
-				patchComponent(true, nextNode, nextNode.tag, lastTpl, nextTpl, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 			}
 		} else {
 			const dom = lastNode.dom;
-			const lastChildrenType = lastTpl.childrenType;
-			const nextChildrenType = nextTpl.childrenType;
+			const lastChildrenType = lastBp.childrenType;
+			const nextChildrenType = nextBp.childrenType;
 			nextNode.dom = dom;
 
 			if (lastChildrenType > 0 || nextChildrenType > 0) {
@@ -209,13 +209,13 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 					}
 				}
 			}
-			if (lastTpl.hasAttrs === true) {
-				diffAttributes(lastNode, nextNode, lastTpl.attrKeys, nextTpl.attrKeys, dom, instance);
+			if (lastBp.hasAttrs === true || nextBp.hasAttrs === true) {
+				diffAttributes(lastNode, nextNode, lastBp.attrKeys, nextBp.attrKeys, dom, instance);
 			}
-			if (lastTpl.hasEvents === true) {
-				diffEvents(lastNode, nextNode, lastTpl.eventKeys, nextTpl.eventKeys, dom);
+			if (lastBp.hasEvents === true || nextBp.hasEvents === true) {
+				diffEvents(lastNode, nextNode, lastBp.eventKeys, nextBp.eventKeys, dom);
 			}
-			if (lastTpl.hasClassName === true) {
+			if (lastBp.hasClassName === true || nextBp.hasClassName === true) {
 				const nextClassName = nextNode.className;
 
 				if (lastNode.className !== nextClassName) {
@@ -226,7 +226,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastTpl, nextTpl, pare
 					}
 				}
 			}
-			if (lastTpl.hasStyle === true) {
+			if (lastBp.hasStyle === true || nextBp.hasStyle === true) {
 				const nextStyle = nextNode.style;
 
 				if (lastNode.style !== nextStyle) {
@@ -253,8 +253,8 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
-		const nextTag = nextNode.tag || ((deepCheck && !isNullOrUndefined(nextNode.tpl)) ? nextNode.tpl.tag : null);
-		const lastTag = lastNode.tag || ((deepCheck && !isNullOrUndefined(lastNode.tpl)) ? lastNode.tpl.tag : null);
+		const nextTag = nextNode.tag || ((deepCheck && !isNullOrUndefined(nextNode.bp)) ? nextNode.bp.tag : null);
+		const lastTag = lastNode.tag || ((deepCheck && !isNullOrUndefined(lastNode.bp)) ? lastNode.bp.tag : null);
 
 		if (lastTag !== nextTag) {
 			const lastNodeInstance = lastNode.instance;

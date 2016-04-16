@@ -26,7 +26,7 @@
     "babel-plugin-transform-undefined-to-void": "^6.5.0",
     "babel-plugin-transform-object-assign": "^6.5.0",
     "babel-plugin-transform-inline-environment-variables": "^6.5.0",
-    "babel-plugin-inferno": "^0.6.0",
+    "babel-plugin-inferno": "https://github.com/trueadm/babel-plugin-inferno.git#dev",
     "babel-polyfill": "^6.5.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",

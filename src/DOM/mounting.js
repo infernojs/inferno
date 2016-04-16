@@ -4,14 +4,17 @@ import { appendText, createElement, createVirtualFragment, insertOrAppendNonKeye
 import { patchAttribute, patchStyle, patchNode } from './patching';
 
 export function mountNode(node, parentDom, lifecycle, context, instance) {
-	if (isInvalidNode(node) || isArray(node)) {
+	if (isArray(node)) {
 		return placeholder(node, parentDom);
 	}
+	if (isInvalidNode(node)) {
+		return null;
+	}
 
-	const tpl = node.tpl;
+	const bp = node.bp;
 
 	if (recyclingEnabled) {
-		const dom = recycle(node, tpl, lifecycle, context, instance);
+		const dom = recycle(node, bp, lifecycle, context, instance);
 
 		if (dom !== null) {
 			if (parentDom !== null) {
@@ -21,10 +24,10 @@ export function mountNode(node, parentDom, lifecycle, context, instance) {
 		}
 	}
 
-	if (tpl === undefined) {
+	if (bp === undefined) {
 		return appendNode(node, parentDom, lifecycle, context, instance);
 	} else {
-		return appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instance);
+		return appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance);
 	}
 }
 function handleSelects(node) {
@@ -33,19 +36,19 @@ function handleSelects(node) {
 	}
 }
 
-function appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instance) {
+function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
 	const tag = node.tag;
 
-	if (tpl.isComponent === true) {
+	if (bp.isComponent === true) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 	}
-	const dom = tpl.dom.cloneNode(false);
+	const dom = createElement(bp.tag, bp.isSVG);
 
 	node.dom = dom;
-	if (tpl.hasHooks === true) {
+	if (bp.hasHooks === true) {
 		handleAttachedHooks(node.hooks, lifecycle, dom);
 	}
-	// tpl.childrenType:
+	// bp.childrenType:
 	// 0: no children
 	// 1: text node
 	// 2: single child
@@ -53,7 +56,7 @@ function appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instan
 	// 4: multiple children (keyed)
 	// 5: variable children (defaults to no optimisation)
 
-	switch (tpl.childrenType) {
+	switch (bp.childrenType) {
 		case 1:
 			appendText(node.children, dom, true);
 			break;
@@ -73,30 +76,31 @@ function appendNodeWithTemplate(node, tpl, parentDom, lifecycle, context, instan
 			break;
 	}
 
-	if (tpl.hasAttrs === true) {
+	if (bp.hasAttrs === true) {
 		handleSelects(node);
 		const attrs = node.attrs;
 
-		if (tpl.attrKeys === null) {
-			tpl.attrKeys = Object.keys(attrs);
+		if (bp.attrKeys === null) {
+			const newKeys = Object.keys(attrs);
+			bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
 		}
-		const attrKeys = tpl.attrKeys;
+		const attrKeys = bp.attrKeys;
 
 		mountAttributes(attrs, attrKeys, dom, instance);
 	}
-	if (tpl.hasClassName === true) {
-		dom.className = node.className;
+	if (bp.hasClassName === true) {
+		dom.className = node.className || bp.className;
 	}
-	if (tpl.hasStyle === true) {
+	if (bp.hasStyle === true) {
 		patchStyle(null, node.style, dom);
 	}
-	if (tpl.hasEvents === true) {
+	if (bp.hasEvents === true) {
 		const events = node.events;
 
-		if (tpl.eventKeys === null) {
-			tpl.eventKeys = Object.keys(events);
+		if (bp.eventKeys === null) {
+			bp.eventKeys = Object.keys(events);
 		}
-		const eventKeys = tpl.eventKeys;
+		const eventKeys = bp.eventKeys;
 
 		mountEvents(events, eventKeys, dom);
 	}
