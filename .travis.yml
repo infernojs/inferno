@@ -18,7 +18,8 @@ addons:
 cache:
   directories:
     - node_modules
-
+before_script:
+ - chmod +x .travis-setup
 install:
   # Log HTTP requests
   - npm config set loglevel http
