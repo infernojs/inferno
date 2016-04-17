@@ -387,7 +387,7 @@
 	}
 
 	function isKeyed(lastChildren, nextChildren) {
-		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && nextChildren[0].key !== void 0 && !isNullOrUndefined(nextChildren[1]) && nextChildren[1].key !== void 0;
+		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) && !isNullOrUndefined(nextChildren[1]) && !isNullOrUndefined(nextChildren[1].key);
 	}
 
 	function selectOptionValueIfNeeded(vdom, values) {
