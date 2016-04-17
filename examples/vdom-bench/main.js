@@ -8,7 +8,7 @@
 
 	var createVNode = Inferno.createVNode;
 
-	var t1 = {
+	var bp1 = {
 		dom: Inferno.universal.createElement('div'),
 		pools: {
 			keyed: {},
@@ -24,7 +24,7 @@
 		childrenType: 4 // multiple children keyed
 	};
 
-	var t2 = {
+	var bp2 = {
 		dom: Inferno.universal.createElement('span'),
 		pools: {
 			keyed: {},
@@ -48,9 +48,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = createVNode(t1).setKey(n.key).setChildren(renderTree(n.children));
+				children[i] = createVNode(bp1).setKey(n.key).setChildren(renderTree(n.children));
 			} else {
-				children[i] = createVNode(t2).setKey(n.key).setChildren(n.key);
+				children[i] = createVNode(bp2).setKey(n.key).setChildren(n.key);
 			}
 		}
 		return children;
@@ -70,11 +70,11 @@
 	};
 
 	BenchmarkImpl.prototype.render = function() {
-		InfernoDOM.render(createVNode(t1).setChildren(renderTree(this.a)), this.container);
+		InfernoDOM.render(createVNode(bp1).setChildren(renderTree(this.a)), this.container);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
-		InfernoDOM.render(createVNode(t1).setChildren(renderTree(this.b)), this.container);
+		InfernoDOM.render(createVNode(bp2).setChildren(renderTree(this.b)), this.container);
 	};
 
 	document.addEventListener('DOMContentLoaded', function() {

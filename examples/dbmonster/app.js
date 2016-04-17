@@ -196,25 +196,25 @@
 
 	function createQuery(query) {
 		return {
-			tpl: queryTemplate1,
+			bp: queryTemplate1,
 			dom: null,
 			children: [
 				{
-					tpl: queryTemplate2,
+					bp: queryTemplate2,
 					dom: null,
 					children: query.formatElapsed
 				},
 				{
-					tpl: queryTemplate3,
+					bp: queryTemplate3,
 					dom: null,
 					children: [
 						{
-							tpl: queryTemplate4,
+							bp: queryTemplate4,
 							dom: null,
 							children: query.query
 						},
 						{
-							tpl: queryTemplate5,
+							bp: queryTemplate5,
 							dom: null
 						}
 					]
@@ -228,19 +228,19 @@
 		var lastSample = db.lastSample;
 
 		return {
-			tpl: dbTemplate1,
+			bp: dbTemplate1,
 			dom: null,
 			children: [
 				{
-					tpl: dbTemplate2,
+					bp: dbTemplate2,
 					dom: null,
 					children: db.dbname
 				},
 				{
-					tpl: dbTemplate3,
+					bp: dbTemplate3,
 					dom: null,
 					children: {
-						tpl: dbTemplate4,
+						bp: dbTemplate4,
 						dom: null,
 						children: lastSample.nbQueries,
 						className: lastSample.countClassName
@@ -254,10 +254,10 @@
 		var dbs = ENV.generateData().toArray();
 		Monitoring.renderRate.ping();
 		InfernoDOM.render({
-			tpl: appTemplate1,
+			bp: appTemplate1,
 			dom: null,
 			children: {
-				tpl: appTemplate2,
+				bp: appTemplate2,
 				dom: null,
 				children: map(createDatabase, dbs)
 			}

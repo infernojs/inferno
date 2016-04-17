@@ -50,8 +50,8 @@ VNode.prototype = {
 	}
 };
 
-export function createVNode(tpl) {
-	return new VNode(tpl);
+export function createVNode(bp) {
+	return new VNode(bp);
 }
 
 export function createBlueprint(shape, childrenType) {

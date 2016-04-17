@@ -19,65 +19,65 @@ describe('CSS style properties', () => {
 			width: "200px",
 			height: "200px"
 		},
-		expected: 'width: 200px; height: 200px;'
+		expected: ['width: 200px; height: 200px;']
 	}, {
 		name: 'ignore null styles',
 		value: {
 			backgroundColor: null,
 			display: 'none'
 		},
-		expected: 'display: none;'
+		expected: ['display: none;']
 	}, {
 		name: 'ignore null styles',
 		value: {
 			backgroundColor: null,
 			display: 'null'
 		},
-		expected: null
+		expected: [null, '']
 	}, {
 		name: 'ignore null styles',
 		value: {},
-		expected: null
+		expected: [null]
 	}, {
 		name: 'ignore undefined styles',
 		value: {
 			backgroundColor: undefined,
 			display: 'none'
 		},
-		expected: 'display: none;'
+		expected: ['display: none;']
 	}, {
 		name: 'ignore undefined styles',
 		value: {
 			backgroundColor: undefined,
 			display: 'undefined'
 		},
-		expected: null
+		expected: [null, '']
 	}, {
 		name: 'ignore undefined styles',
 		value: {
 			'background-color': undefined,
 			display: 'none'
 		},
-		expected: 'display: none;'
+		expected: ['display: none;']
 	}, {
 		name: 'ignore empty string styles',
 		value: {
 			display: 'none'
 		},
-		expected: 'display: none;'
+		expected: ['display: none;']
 	}, {
 		name: 'return null for no styles',
 		value: {
 			backgroundColor: null,
 			display: null
 		},
-		expected: null
+		expected: [null]
 	}, {
 		name: 'correctly set fontSize css property',
 		value: {
 			fontSize: "123px"
 		},
-		expected: 'font-size: 123px;'
+		expected: ['font-size: 123px;']
 	}, {
 		name: 'not add px suffix to some css properties',
 		value: {
@@ -85,25 +85,25 @@ describe('CSS style properties', () => {
 			zIndex: 5,
 			lineHeight: 5
 		},
-		expected: 'widows: 5; z-index: 5; line-height: 5;'
+		expected: ['widows: 5; z-index: 5; line-height: 5;']
 	}, {
 		name: 'not set non-browser supported style properties',
 		value: {
 			someProp: 5
 		},
-		expected: null
+		expected: [null]
 	}, {
 		name: 'support transform',
 		value: {
 			transform: 'rotate(245deg)'
 		},
-		expected: 'transform: rotate(245deg);'
+		expected: ['transform: rotate(245deg);']
 	}, {
 		name: 'handle hypenhated markup correctly',
 		value: {
 			fontFamily: 'Inferno'
 		},
-		expected: 'font-family: Inferno;'
+		expected: ['font-family: Inferno;']
 	}, {
 		name: 'handle different units - em, cm, mm etc',
 		value: {
@@ -111,7 +111,7 @@ describe('CSS style properties', () => {
 			width: '200cm',
 			marginLeft: '200mm'
 		},
-		expected: 'height: 200em; width: 200cm; margin-left: 200mm;'
+		expected: ['height: 200em; width: 200cm; margin-left: 200mm;']
 	}];
 
 	preDefined.forEach((arg) => {
@@ -128,10 +128,10 @@ describe('CSS style properties', () => {
 
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 
 			});
 		});
@@ -154,20 +154,20 @@ describe('CSS style properties', () => {
 
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
 
 			it(test.description, () => {
 
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
 		});
 	});
@@ -187,10 +187,10 @@ describe('CSS style properties', () => {
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
 
 			it(test.description, () => {
@@ -223,14 +223,14 @@ describe('CSS style properties', () => {
 
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
 
 			it(test.description, () => {
 
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
@@ -256,10 +256,10 @@ describe('CSS style properties', () => {
 
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 
 			});
 
@@ -270,7 +270,7 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 
 			});
 
@@ -325,12 +325,12 @@ describe('CSS style properties', () => {
 				render(test.template({}), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 
 			});
 
@@ -338,11 +338,11 @@ describe('CSS style properties', () => {
 
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
 
 			});
@@ -351,12 +351,12 @@ describe('CSS style properties', () => {
 
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 
 			});
 
@@ -365,11 +365,11 @@ describe('CSS style properties', () => {
 				render(test.template({}), container);
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
 
 			});
@@ -458,12 +458,12 @@ describe('CSS style properties', () => {
             style: {
                 width: '200px',
                 height: '200px',
-                background: 'red'
+                backgroundColor: 'red'
             }
 		});
 
 		render(template(), container);
-		expect(container.innerHTML).to.equal('<div style="width: 200px; height: 200px; background: red;"></div>');
+		expect(container.innerHTML).to.equal('<div style="width: 200px; height: 200px; background-color: red;"></div>');
 	});
 
 });

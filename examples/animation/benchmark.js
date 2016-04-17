@@ -188,7 +188,7 @@ var N = 200;
 
 // The Inferno implementation:
 (function(){
-	var tpl1 = {
+	var bp1 = {
 		dom: Inferno.staticCompiler.createElement('div'),
 		pools: {
 			keyed: [],
@@ -197,7 +197,7 @@ var N = 200;
 		tag: 'div'
 	};
 
-	var tpl2 = {
+	var bp2 = {
 		dom: Inferno.staticCompiler.createElement('div', { className: 'box-view' }),
 		pools: {
 			keyed: [],
@@ -206,7 +206,7 @@ var N = 200;
 		tag: 'div'
 	};
 
-	var tpl3 = {
+	var bp3 = {
 		dom: Inferno.staticCompiler.createElement('div', { className: 'box' }),
 		pools: {
 			keyed: [],
@@ -226,10 +226,10 @@ var N = 200;
 
 			boxes.push({
 				div: null,
-				tpl: tpl2,
+				bp: bp2,
 				children: {
 					div: null,
-					tpl: tpl3,
+					bp: bp3,
 					style: style,
 					children: count % 100
 				}
@@ -240,7 +240,7 @@ var N = 200;
 
 	var infernoAnimate = function() {
 		InfernoDOM.render({
-			tpl: tpl1,
+			bp: bp1,
 			dom: null,
 			children: createBoxes(counter++)
 		}, container);
