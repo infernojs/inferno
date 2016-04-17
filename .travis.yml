@@ -22,7 +22,8 @@ install:
   # Add the Google Chrome packages.
   - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
   - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-  - sudo apt-get update > /dev/null
+  - sudo apt-get update
+  - sudo apt-get install -y libappindicator1 fonts-liberation
 
   # Log HTTP requests
   - npm config set loglevel http
@@ -33,7 +34,7 @@ install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 5
-# Get Chrome and ChromeDriver
+  # Get Chrome and ChromeDriver
   - sudo apt-get install google-chrome-stable
   - wget http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip
   - unzip -a chromedriver_linux64.zip
