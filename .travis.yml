@@ -18,18 +18,17 @@ addons:
 cache:
   directories:
     - node_modules
-before_install:  
- - sudo apt-get update -q
- - export CHROME_BIN=/usr/bin/google-chrome
- - export DISPLAY=:99.0
- - sh -e /etc/init.d/xvfb start
- - sudo apt-get update
- - sudo apt-get install libgconf2-4 libnss3-1d libxss1
- - sudo apt-get install -y libappindicator1 fonts-liberation
- - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
- - sudo apt-get install -f
- - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
- - sudo dpkg -i google-chrome-stable_current_amd64.deb    
+before_script:
+  # Setup headless X per http://about.travis-ci.org/docs/user/gui-and-headless-browsers/
+  - sudo apt-get update -q
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+
+  #- 'if [ -n "$REMOTE_ARG" ]; then (java -jar selenium-server.jar > /dev/null &); fi'
+  #- 'if [ -n "$REMOTE_ARG" ]; then sleep 60; fi'
+script:
+  - chmod u+x ./.travis-setup.sh
+  - bash -c ./.travis-setup.sh   
 install:
   # Log HTTP requests
   - npm config set loglevel http
