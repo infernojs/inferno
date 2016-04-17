@@ -18,15 +18,34 @@ addons:
 cache:
   directories:
     - node_modules
-before_script:
- - sudo chmod +x .travis-setup.sh
 install:
+  # Add the Google Chrome packages.
+  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  - sudo apt-get update > /dev/null
+
   # Log HTTP requests
   - npm config set loglevel http
   - npm install -g npm@3.5.2
    # Instal npm dependecies and ensure that npm cache is not stale
   - npm install
-  - ./.travis-setup.sh
+ # Setup display for Selenium
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sleep 5
+# Get Chrome and ChromeDriver
+  - sudo apt-get install google-chrome-stable
+  - wget http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip
+  - unzip -a chromedriver_linux64.zip
+    # Insane hack from jsdevel:
+  #   https://github.com/jsdevel/travis-debugging/blob/master/shim.bash
+  # This allows chrome-sandbox to work in side of OpenVZ, because I can't
+  # figure out how to start chrome with --no-sandbox.
+  - export CHROME_SANDBOX=/opt/google/chrome/chrome-sandbox
+  - sudo rm -f $CHROME_SANDBOX
+  - sudo wget https://googledrive.com/host/0B5VlNZ_Rvdw6NTJoZDBSVy1ZdkE -O $CHROME_SANDBOX
+  - sudo chown root:root $CHROME_SANDBOX; sudo chmod 4755 $CHROME_SANDBOX
+  - sudo md5sum $CHROME_SANDBOX
   
 notifications:
   email: true
