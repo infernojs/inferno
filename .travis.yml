@@ -19,7 +19,7 @@ cache:
   directories:
     - node_modules
 before_script:
- - chmod +x .travis-setup.sh
+ - sudo chmod +x .travis-setup.sh
 install:
   # Log HTTP requests
   - npm config set loglevel http
