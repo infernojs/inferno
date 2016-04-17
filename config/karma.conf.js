@@ -19,8 +19,9 @@ module.exports = function (config) {
 		],
 		files: [
 
-            './node-modules/es6-map/polyfill.js',
-            './node-modules/raf/index.js',
+            'node_modules/es6-map/polyfill.js',
+            'node_modules/raf/index.js',
+            'node_modules/promises/polyfill.js',
             './src/**/*__tests__*/**/*spec.browser.js'
 		],
 		// Start these browsers, currently available:
@@ -91,8 +92,6 @@ module.exports = function (config) {
 	});
 
 	if (process.env.TRAVIS) {
-		// Use Chrome as default browser for Travis CI
-		config.browsers = ['ChromeForTravisCI'];
 		// Used by Travis to push coveralls info corretly to example coveralls.io
 		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
 		config.browserNoActivityTimeout = 120000;
