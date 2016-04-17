@@ -25,9 +25,11 @@ before_script:
  # - rackup  # start a Web server
   - sleep 3 # give Web server some time to bind to sockets, etc
   - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+#  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  #- sudo dpkg -i google-chrome*.deb
   - sudo apt-get update -qq
-  - sudo apt-get install -qq google-chrome-stable
+  - sudo apt-get install -qq google-chrome*.deb
 install:
   # Log HTTP requests
   - npm config set loglevel http
