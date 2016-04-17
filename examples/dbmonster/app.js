@@ -11,257 +11,89 @@
 		return newArray;
 	}
 
-	var appTemplate1 = {
-		dom: Inferno.universal.createElement('table', { className: 'table table-striped latest-data' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'table',
-		className: 'table table-striped latest-data',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 2
-	};
-
-	var appTemplate2 = {
-		dom: Inferno.universal.createElement('tbody'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'tbody',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 3
-	};
-
-	var dbTemplate1 = {
-		dom: Inferno.universal.createElement('tr'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'tr',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 3
-	};
-
-	var dbTemplate2 = {
-		dom: Inferno.universal.createElement('td', { className: 'dbname' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate1 = Inferno.createBlueprint({
 		tag: 'td',
-		className: 'dbname',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 1
-	};
+		className: {arg: 0},
+		children: {arg: 1}
+	}, 4);
 
-	var dbTemplate3 = {
-		dom: Inferno.universal.createElement('td', { className: 'query-count' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'td',
-		className: 'query-count',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 2
-	};
-
-	var dbTemplate4 = {
-		dom: Inferno.universal.createElement('span'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'span',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: true,
-		hasStyle: false,
-		childrenType: 1
-	};
-
-	var queryTemplate1 = {
-		dom: Inferno.universal.createElement('td'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'td',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: true,
-		hasStyle: false,
-		childrenType: 3
-	};
-
-	var queryTemplate2 = {
-		dom: Inferno.universal.createElement('span', {className: 'foo'}),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate2 = Inferno.createBlueprint({
 		tag: 'span',
 		className: 'foo',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 1
-	};
+		children: {arg: 0}
+	}, 1);
 
-	var queryTemplate3 = {
-		dom: Inferno.universal.createElement('div', { className: 'popover left' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate3 = Inferno.createBlueprint({
 		tag: 'div',
 		className: 'popover left',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 3
-	};
+		children: {arg: 0}
+	}, 4);
 
-	var queryTemplate4 = {
-		dom: Inferno.universal.createElement('div', { className: 'popover-content' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate4 = Inferno.createBlueprint({
 		tag: 'div',
 		className: 'popover-content',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 1
-	};
+		children: {arg: 0}
+	}, 1);
 
-	var queryTemplate5 = {
-		dom: Inferno.universal.createElement('div', { className: 'arrow' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate5 = Inferno.createBlueprint({
 		tag: 'div',
-		className: 'arrow',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 0
-	};
+		className: 'arrow'
+	}, 0);
 
 	function createQuery(query) {
-		return {
-			bp: queryTemplate1,
-			dom: null,
-			children: [
-				{
-					bp: queryTemplate2,
-					dom: null,
-					children: query.formatElapsed
-				},
-				{
-					bp: queryTemplate3,
-					dom: null,
-					children: [
-						{
-							bp: queryTemplate4,
-							dom: null,
-							children: query.query
-						},
-						{
-							bp: queryTemplate5,
-							dom: null
-						}
-					]
-				}
-			],
-			className: query.elapsedClassName
-		};
+		return queryTemplate1(query.elapsedClassName, [
+			queryTemplate2(query.formatElapsed),
+			queryTemplate3([
+				queryTemplate4(query.query),
+				queryTemplate5()
+			])
+		]);
 	}
+
+	var dbTemplate1 = Inferno.createBlueprint({
+		tag: 'tr',
+		children: {arg: 0}
+	}, 4);
+
+	var dbTemplate2 = Inferno.createBlueprint({
+		tag: 'td',
+		className: 'dbname',
+		children: {arg: 0}
+	}, 1);
+
+	var dbTemplate3 = Inferno.createBlueprint({
+		tag: 'td',
+		className: 'query-count',
+		children: {arg: 0}
+	}, 2);
+
+	var dbTemplate4 = Inferno.createBlueprint({
+		tag: 'span',
+		className: {arg: 0},
+		children: {arg: 1}
+	}, 1);
 
 	function createDatabase(db) {
 		var lastSample = db.lastSample;
 
-		return {
-			bp: dbTemplate1,
-			dom: null,
-			children: [
-				{
-					bp: dbTemplate2,
-					dom: null,
-					children: db.dbname
-				},
-				{
-					bp: dbTemplate3,
-					dom: null,
-					children: {
-						bp: dbTemplate4,
-						dom: null,
-						children: lastSample.nbQueries,
-						className: lastSample.countClassName
-					}
-				}
-			].concat(map(createQuery, lastSample.topFiveQueries))
-		};
+		return dbTemplate1([dbTemplate2(db.dbname), dbTemplate3(dbTemplate4(lastSample.countClassName, lastSample.nbQueries))].concat(map(createQuery, lastSample.topFiveQueries)));
 	}
+
+	var appTemplate1 = Inferno.createBlueprint({
+		tag: 'table',
+		className: 'table table-striped latest-data',
+		children: {arg: 0}
+	}, 2);
+
+	var appTemplate2 = Inferno.createBlueprint({
+		tag: 'tbody',
+		children: {arg: 0}
+	}, 4);
 
 	function render() {
 		var dbs = ENV.generateData().toArray();
 		Monitoring.renderRate.ping();
-		InfernoDOM.render({
-			bp: appTemplate1,
-			dom: null,
-			children: {
-				bp: appTemplate2,
-				dom: null,
-				children: map(createDatabase, dbs)
-			}
-		}, elem);
+		InfernoDOM.render(appTemplate1(appTemplate2(map(createDatabase, dbs))), elem);
 		setTimeout(render, ENV.timeout);
 	}
 	render();

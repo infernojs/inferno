@@ -157,8 +157,8 @@
 		}
 	};
 
-	function createVNode(tpl) {
-		return new VNode(tpl);
+	function createVNode(bp) {
+		return new VNode(bp);
 	}
 
 	function createBlueprint(shape, childrenType) {

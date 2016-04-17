@@ -133,8 +133,8 @@
 		}
 	};
 
-	function createVNode(tpl) {
-		return new VNode(tpl);
+	function createVNode(bp) {
+		return new VNode(bp);
 	}
 
 	function createAttrsAndEvents(props, tag) {
@@ -261,10 +261,6 @@
 		return createChild({ tag: tag, attrs: props, children: children });
 	}
 
-	var index = {
-		createElement: createElement
-	};
-
-	return index;
+	return createElement;
 
 }));
