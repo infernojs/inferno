@@ -28,7 +28,7 @@ before_script:
 install:
   # Log HTTP requests
   - npm config set loglevel http
-  - npm install -g npm@3.5.2
+  - npm install npm@3 -g
    # Instal npm dependecies and ensure that npm cache is not stale
   - npm install
 notifications:
