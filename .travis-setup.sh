@@ -24,8 +24,6 @@ popd > /dev/null
 mute sudo apt-get update --fix-missing
 echo "Getting $BVER version of $BROWSER"
 
-case $BROWSER in
-chrome)
   CHROME=google-chrome-${BVER}_current_amd64.deb
   wget https://dl.google.com/linux/direct/$CHROME
   ( mute sudo dpkg --install $CHROME ) || mute sudo apt-get -f install
@@ -45,6 +43,5 @@ chrome)
   sudo md5sum $CHROME_SANDBOX
 
   google-chrome --version
-  ;;
 
 esac
