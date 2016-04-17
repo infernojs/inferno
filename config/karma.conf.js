@@ -30,6 +30,12 @@ module.exports = function (config) {
 		// - PhantomJS
 		// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
 		browsers: ['PhantomJS'],
+		customLaunchers: {
+			Chrome_travis_ci: {
+				base: 'Chrome',
+				flags: ['--no-sandbox']
+			}
+		},
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
@@ -89,6 +95,7 @@ module.exports = function (config) {
 	});
 
 	if (process.env.TRAVIS) {
+		config.browsers = ['Chrome_travis_ci'];
 		// Used by Travis to push coveralls info corretly to example coveralls.io
 		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
 		config.browserNoActivityTimeout = 120000;
