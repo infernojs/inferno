@@ -18,7 +18,10 @@ module.exports = function (config) {
 			'mocha'
 		],
 		files: [
-			'./src/**/*__tests__*/**/*spec.browser.js'
+
+            './node-modules/es6-map/polyfill.js',
+            './node-modules/raf/index.js',
+            './src/**/*__tests__*/**/*spec.browser.js'
 		],
 		// Start these browsers, currently available:
 		// - Chrome
@@ -28,13 +31,7 @@ module.exports = function (config) {
 		// - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
 		// - PhantomJS
 		// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-		browsers: ['Chrome'],
-		customLaunchers: {
-			ChromeForTravisCI: {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
-		},
+		browsers: ['PhantomJS'],
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
