@@ -4,7 +4,7 @@ node_js:
   - 'stable'
 
 # Use container-based Travis infrastructure.
-sudo: false
+sudo: true
 
 env:
   - CXX=g++-4.8
@@ -18,10 +18,16 @@ addons:
 cache:
   directories:
     - node_modules
-before_install:
-  - export CHROME_BIN=/usr/bin/google-chrome
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+  - rackup  # start a Web server
+  - sleep 3 # give Web server some time to bind to sockets, etc
+  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq google-chrome-stable
 install:
   # Log HTTP requests
   - npm config set loglevel http
