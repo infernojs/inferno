@@ -18,10 +18,7 @@ module.exports = function (config) {
 			'mocha'
 		],
 		files: [
-
-            'node_modules/es6-map/polyfill.js',
-            'node_modules/raf/index.js',
-            'node_modules/promises/polyfill.js',
+            'node_modules/babel-polyfill/dist/polyfill.js',
             './src/**/*__tests__*/**/*spec.browser.js'
 		],
 		// Start these browsers, currently available:
@@ -45,7 +42,7 @@ module.exports = function (config) {
 					babel({
 						babelrc: false,
 						presets: 'es2015-rollup',
-						exclude: 'node_modules/**',
+//						exclude: 'node_modules/**',
 						plugins: [
 							'transform-inline-environment-variables',
 							'transform-flow-strip-types',
