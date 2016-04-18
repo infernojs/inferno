@@ -895,7 +895,12 @@
 
 	function patchAttribute(attrName, nextAttrValue, dom) {
 		if (booleanProps(attrName)) {
-			dom[attrName] = nextAttrValue;
+			// We need to manually handle null 'value' for IE and Edge
+			if (attrName === 'value') {
+				dom.value = nextAttrValue === null ? '' : nextAttrValue;
+			} else {
+				dom[attrName] = nextAttrValue;
+			}
 		} else {
 			if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 				dom.removeAttribute(attrName);
