@@ -1,6 +1,8 @@
 import { render } from './../rendering';
 import style from './../../../tools/style';
 
+const isPhantomJS = window && window.navigator && /PhantomJS/.test(window.navigator.userAgent);
+
 describe('CSS style properties', () => {
 
 	let container;
@@ -16,8 +18,8 @@ describe('CSS style properties', () => {
 	const preDefined = [{
 		name: 'set width and height',
 		value: {
-			width: "200px",
-			height: "200px"
+			width: '200px',
+			height: '200px'
 		},
 		expected: ['width: 200px; height: 200px;']
 	}, {
@@ -75,7 +77,7 @@ describe('CSS style properties', () => {
 	}, {
 		name: 'correctly set fontSize css property',
 		value: {
-			fontSize: "123px"
+			fontSize: '123px'
 		},
 		expected: ['font-size: 123px;']
 	}, {
@@ -93,12 +95,6 @@ describe('CSS style properties', () => {
 		},
 		expected: [null]
 	}, {
-		name: 'support transform',
-		value: {
-			transform: 'rotate(245deg)'
-		},
-		expected: ['transform: rotate(245deg);']
-	}, {
 		name: 'handle hypenhated markup correctly',
 		value: {
 			fontFamily: 'Inferno'
@@ -114,13 +110,31 @@ describe('CSS style properties', () => {
 		expected: ['height: 200em; width: 200cm; margin-left: 200mm;']
 	}];
 
+	if (isPhantomJS) {
+		preDefined.push({
+			name: 'support webkit transform',
+			value: {
+				webkitTransform: 'rotate(245deg)'
+			},
+			expected: ['-webkit-transform: rotate(245deg);']
+		});
+	} else {
+		preDefined.push({
+			name: 'support css3 transform',
+			value: {
+				transform: 'rotate(245deg)'
+			},
+			expected: ['transform: rotate(245deg);']
+		});
+	}
+
 	preDefined.forEach((arg) => {
 
 		[{
 			description: 'should ' + arg.name + ' on root node',
 			template: () => ({
 				tag: 'div',
-                style: arg.value
+				style: arg.value
 			})
 		}].forEach((test) => {
 
@@ -145,7 +159,7 @@ describe('CSS style properties', () => {
 				tag: 'div',
 				children: {
 					tag: 'div',
-                    style: arg.value
+					style: arg.value
 				}
 			})
 		}].forEach((test) => {
@@ -178,7 +192,7 @@ describe('CSS style properties', () => {
 			description: 'should dynamically ' + arg.name + ' on root node',
 			template: (value) => ({
 				tag: 'div',
-                style: value
+				style: value
 			})
 		}].forEach((test) => {
 
@@ -247,7 +261,7 @@ describe('CSS style properties', () => {
 				tag: 'div',
 				children: {
 					tag: 'div',
-                    style: value
+					style: value
 				}
 			})
 		}].forEach((test) => {
@@ -307,15 +321,14 @@ describe('CSS style properties', () => {
 	});
 
 	preDefined.forEach((arg) => {
-
 		[{
 			description: 'should dynamically and statically ' + arg.name + ' on first child node',
 			template: (value) => ({
 				tag: 'div',
-                style: arg.value,
+				style: arg.value,
 				children: {
 					tag: 'div',
-                    style: value
+					style: value
 				}
 			})
 		}].forEach((test) => {
@@ -376,90 +389,90 @@ describe('CSS style properties', () => {
 		});
 	});
 
-    /*
-	describe('Shorthand CSS Styles', () => {
-		Object.keys(shortCuts).forEach(shortCut => {
-			let stylePropName = cssToJSName(shortCut);
-			let shorthands = shortCuts[ shortCut ];
-			let mustBeString = (/style/ig).test(shortCut);
+	/*
+	 describe('Shorthand CSS Styles', () => {
+	 Object.keys(shortCuts).forEach(shortCut => {
+	 let stylePropName = cssToJSName(shortCut);
+	 let shorthands = shortCuts[ shortCut ];
+	 let mustBeString = (/style/ig).test(shortCut);
 
-			if (shorthands.length) {
-				let val = mustBeString ? 'dotted' : 1;
-				let style = { [ stylePropName ]: val };
-				let comparator = mustBeString ? val : val + 'px';
+	 if (shorthands.length) {
+	 let val = mustBeString ? 'dotted' : 1;
+	 let style = { [ stylePropName ]: val };
+	 let comparator = mustBeString ? val : val + 'px';
 
-				describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
+	 describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
 
-					beforeEach(() => {
-						let template = createTemplate(() => {
-							return {
-								tag: 'div',
-								attrs: {
-									style: style
-								}
-							};
-						});
-						render(template(), container);
-					});
+	 beforeEach(() => {
+	 let template = createTemplate(() => {
+	 return {
+	 tag: 'div',
+	 attrs: {
+	 style: style
+	 }
+	 };
+	 });
+	 render(template(), container);
+	 });
 
-					shorthands.forEach(cssProperty => {
-						it(`should set ${ cssProperty } to ${ style[ stylePropName ] }px`, () => {
-							expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
-						});
-					});
-				});
-			}
+	 shorthands.forEach(cssProperty => {
+	 it(`should set ${ cssProperty } to ${ style[ stylePropName ] }px`, () => {
+	 expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+	 });
+	 });
+	 });
+	 }
 
-			if (shorthands.length) {
-				[{
-					numbers: [ 1, 2 ],
-					strings: [ 'dotted', 'solid' ]
-				}, {
-					numbers: [ 1, 2, 3, 4 ],
-					strings: [ 'dotted', 'solid', 'dashed', 'double' ]
-				}].forEach(vals => {
+	 if (shorthands.length) {
+	 [{
+	 numbers: [ 1, 2 ],
+	 strings: [ 'dotted', 'solid' ]
+	 }, {
+	 numbers: [ 1, 2, 3, 4 ],
+	 strings: [ 'dotted', 'solid', 'dashed', 'double' ]
+	 }].forEach(vals => {
 
-					let values = mustBeString ? vals.strings : vals.numbers.map(x => x + 'px');
-					let val = values.join(' ');
-					let style = { [ stylePropName ]: val };
+	 let values = mustBeString ? vals.strings : vals.numbers.map(x => x + 'px');
+	 let val = values.join(' ');
+	 let style = { [ stylePropName ]: val };
 
-					describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
+	 describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
 
-						beforeEach(() => {
-							let template = createTemplate(() => {
-								return {
-									tag: 'div',
-									attrs: {
-										style: style
-									}
-								};
-							});
-							render(template(), container);
-							render(template(), container);
-						});
-						shorthands.forEach((cssProperty, index) => {
-							let comparator = values[ index % values.length ];
+	 beforeEach(() => {
+	 let template = createTemplate(() => {
+	 return {
+	 tag: 'div',
+	 attrs: {
+	 style: style
+	 }
+	 };
+	 });
+	 render(template(), container);
+	 render(template(), container);
+	 });
+	 shorthands.forEach((cssProperty, index) => {
+	 let comparator = values[ index % values.length ];
 
-							it(`should set ${ cssProperty } to ${ comparator }`, () => {
-								expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
-							});
-						});
-					});
-				});
-			}
-		});
-	}); */
+	 it(`should set ${ cssProperty } to ${ comparator }`, () => {
+	 expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+	 });
+	 });
+	 });
+	 });
+	 }
+	 });
+	 }); */
 
 
 	it('should support CSS background property', () => {
 
 		let template = () => ({
 			tag: 'div',
-            style: {
-                width: '200px',
-                height: '200px',
-                backgroundColor: 'red'
-            }
+			style: {
+				width: '200px',
+				height: '200px',
+				backgroundColor: 'red'
+			}
 		});
 
 		render(template(), container);

@@ -283,18 +283,14 @@ function selectOptionValueIfNeeded(vdom, values) {
 	if (values[value]) {
 		vdom.attrs = vdom.attrs || {};
 		vdom.attrs.selected = 'selected';
+		vdom.dom.selected = true;
+	} else {
+		vdom.dom.selected = false;
 	}
 }
 
 export function selectValue(vdom) {
-	if (vdom.tag !== 'select') {
-		return;
-	}
 	let value = vdom.attrs && vdom.attrs.value;
-
-	if (isNullOrUndefined(value)) {
-		return;
-	}
 
 	let values = {};
 	if (isArray(value)) {
@@ -304,7 +300,9 @@ export function selectValue(vdom) {
 	} else {
 		values[value] = value;
 	}
-	selectOptionValueIfNeeded(vdom, values);
+	for (let i = 0, len = vdom.children.length; i < len; i++) {
+		selectOptionValueIfNeeded(vdom.children[i], values);
+	}
 
 	if (vdom.attrs && vdom.attrs[value]) {
 		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev

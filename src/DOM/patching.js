@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mountNode } from './mounting';
-import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, createEmptyTextNode, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, removeAllChildren, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
 
 // Checks if property is boolean type
 function booleanProps(prop) {
@@ -252,8 +252,10 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 		if (lastChild !== nextChild) {
 			if (isInvalidNode(nextChild)) {
 				if (!isInvalidNode(lastChild)) {
-					if(isArray(lastChild) && lastChild.length === 0) {
-						// TODO
+					if (isArray(lastChild) && lastChild.length === 0) {
+						for (let j = 0; j < lastChild.length; j++) {
+							remove(lastChild[j], dom);
+						}
 					} else {
 						const childNode = domChildren[index];
 
