@@ -1,12 +1,12 @@
 import { isAttrAnEvent, isNullOrUndefined } from './utils';
-import { createElement } from './../DOM/utils';
+import { documentCreateElement } from './../DOM/utils';
 
 // Runs only once in applications lifetime
 const isBrowser = typeof window !== 'undefined' && window.document;
 
 export function createUniversalElement(tag, attrs, isSVG) {
 	if (isBrowser) {
-		const dom = createElement(tag, isSVG);
+		const dom = documentCreateElement(tag, isSVG);
 		if (attrs) {
 			createStaticAttributes(attrs, dom);
 		}

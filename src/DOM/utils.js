@@ -32,7 +32,7 @@ export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
 	}
 }
 
-export function createElement(tag, isSVG) {
+export function documentCreateElement(tag, isSVG) {
 	let dom;
 
 	if (isSVG === true) {

@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, createElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
+import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
 import { patchAttribute, patchStyle, patchNode } from './patching';
 
 export function mountNode(node, parentDom, lifecycle, context, instance, isSVG) {
@@ -42,7 +42,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 	if (bp.isComponent === true) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 	}
-	const dom = createElement(bp.tag, bp.isSVG);
+	const dom = documentCreateElement(bp.tag, bp.isSVG);
 
 	node.dom = dom;
 	if (bp.hasHooks === true) {
@@ -125,7 +125,7 @@ function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 	if (tag === 'svg') {
 		isSVG = true;
 	}
-	const dom = createElement(tag, isSVG);
+	const dom = documentCreateElement(tag, isSVG);
 	const children = node.children;
 	const attrs = node.attrs;
 	const events = node.events;
