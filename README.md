@@ -124,13 +124,38 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ### Inferno.createVNode
 
+Creates an Inferno VNode object that has chainable setting methods.
+
 ```jsx
 import createVNode from `inferno`;
 
 InfernoDOM.render(createVNode().setTag('div').setAttrs({ className: 'test' }).setChildren('Hello world!'), document.body);
 ```
 
+### Inferno.createBlueprint
+
+Creates an Inferno VNode using a predefined blueprint. Using the reference to the blueprint, it allows for faster optimisations with little overhead.
+
+```jsx
+import InfernoDOM from 'inferno-dom';
+
+const myBlueprint = Inferno.createBlueprint({
+    tag: 'div',
+    attrs: {
+        id: 'foo'
+    },
+    children: { arg: 0 }
+});
+
+InfernoDOM.render(myBlueprint('foo'), document.body);
+```
+
+For each property on the object passed as the argument to `createBlueprint`, anything that has been defined with `{ arg: X }` is regarded as a dnyamic value (matching the argument of calling this blueprint), otherwise the propeties are regarded as static.
+For example: if my object is `const blueprint = Inferno.createBlueprint({ tag: { arg: 0 } })`, then you'd expect to call `blueprint('div')` with the `argument 0` (first argument) being the tag for the VNode.
+
 ### InfernoCreateElement
+
+Creates an Inferno VNode using a similar API to that found with React's `createElement`
 
 ```jsx
 import InfernoDOM from 'inferno-dom';
@@ -149,7 +174,7 @@ class BasicComponent extends Component {
     }
 }
 
-InfernoDOM.render(createElement(BasicComponent, { title: 'abc' }), container);
+InfernoDOM.render(createElement(BasicComponent, { title: 'abc' }), document.body);
 ```
 
 ### InfernoComponent
