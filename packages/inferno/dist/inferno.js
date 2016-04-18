@@ -64,7 +64,7 @@
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	function createElement(tag, isSVG) {
+	function documentCreateElement(tag, isSVG) {
 		var dom = void 0;
 
 		if (isSVG === true) {
@@ -80,7 +80,7 @@
 
 	function createUniversalElement(tag, attrs, isSVG) {
 		if (isBrowser) {
-			var dom = createElement(tag, isSVG);
+			var dom = documentCreateElement(tag, isSVG);
 			if (attrs) {
 				createStaticAttributes(attrs, dom);
 			}

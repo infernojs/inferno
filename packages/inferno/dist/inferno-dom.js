@@ -153,7 +153,7 @@
 		}
 	}
 
-	function createElement(tag, isSVG) {
+	function documentCreateElement(tag, isSVG) {
 		var dom = void 0;
 
 		if (isSVG === true) {
@@ -404,18 +404,14 @@
 		if (values[value]) {
 			vdom.attrs = vdom.attrs || {};
 			vdom.attrs.selected = 'selected';
+			vdom.dom.selected = true;
+		} else {
+			vdom.dom.selected = false;
 		}
 	}
 
 	function selectValue(vdom) {
-		if (vdom.tag !== 'select') {
-			return;
-		}
 		var value = vdom.attrs && vdom.attrs.value;
-
-		if (isNullOrUndefined(value)) {
-			return;
-		}
 
 		var values = {};
 		if (isArray(value)) {
@@ -425,7 +421,9 @@
 		} else {
 			values[value] = value;
 		}
-		selectOptionValueIfNeeded(vdom, values);
+		for (var _i = 0, _len = vdom.children.length; _i < _len; _i++) {
+			selectOptionValueIfNeeded(vdom.children[_i], values);
+		}
 
 		if (vdom.attrs && vdom.attrs[value]) {
 			delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
@@ -1012,20 +1010,22 @@
 				if (isInvalidNode(_nextChild)) {
 					if (!isInvalidNode(_lastChild)) {
 						if (isArray(_lastChild) && _lastChild.length === 0) {
-							// TODO
-						} else {
-								var childNode = domChildren[index];
-
-								if (isNullOrUndefined(childNode)) {
-									index--;
-								}
-								dom.removeChild(domChildren[index]);
-								if (isNotVirtualFragment) {
-									domChildren.splice(index, 1);
-									domChildrenIndex--;
-								}
-								detachNode(_lastChild);
+							for (var j = 0; j < _lastChild.length; j++) {
+								remove(_lastChild[j], dom);
 							}
+						} else {
+							var childNode = domChildren[index];
+
+							if (isNullOrUndefined(childNode)) {
+								index--;
+							}
+							dom.removeChild(domChildren[index]);
+							if (isNotVirtualFragment) {
+								domChildren.splice(index, 1);
+								domChildrenIndex--;
+							}
+							detachNode(_lastChild);
+						}
 					}
 				} else {
 					if (isInvalidNode(_lastChild)) {
@@ -1448,7 +1448,7 @@
 		if (bp.isComponent === true) {
 			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
 		}
-		var dom = createElement(bp.tag, bp.isSVG);
+		var dom = documentCreateElement(bp.tag, bp.isSVG);
 
 		node.dom = dom;
 		if (bp.hasHooks === true) {
@@ -1531,7 +1531,7 @@
 		if (tag === 'svg') {
 			isSVG = true;
 		}
-		var dom = createElement(tag, isSVG);
+		var dom = documentCreateElement(tag, isSVG);
 		var children = node.children;
 		var attrs = node.attrs;
 		var events = node.events;

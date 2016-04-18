@@ -6,6 +6,7 @@
 [![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
+[![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg)](https://www.npmjs.org/package/inferno-dom)
 
 Inferno is an isomorphic library for building user interfaces with high performance, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses intelligent compile-time techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
 

@@ -50,7 +50,6 @@ module.exports = function (config) {
 						presets: 'es2015-rollup',
 //						exclude: 'node_modules/**',
 						plugins: [
-							'transform-inline-environment-variables',
 							'transform-flow-strip-types',
 							'syntax-flow',
 							'transform-undefined-to-void',
