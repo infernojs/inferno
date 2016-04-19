@@ -43,15 +43,15 @@ module.exports = function (config) {
 				presets: ['es2015'],
 				'plugins': [
 					'transform-es2015-modules-umd',
-					'rewire',
 					'transform-object-rest-spread',
 					'transform-flow-strip-types',
 					'syntax-flow',
 					'babel-plugin-syntax-jsx',
-					'babel-plugin-inferno',
+					'babel-plugin-inferno'
 				]
-			//	sourceMap: 'inline'
-			},
+				//	sourceMap: 'inline'
+			}
+		},
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
