@@ -110,7 +110,7 @@ describe('CSS style properties', () => {
 		expected: ['height: 200em; width: 200cm; margin-left: 200mm;']
 	}];
 
-	if (!global.usingJSDOM) {
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		if (isPhantomJS) {
 			preDefined.push({
 				name: 'support webkit transform',

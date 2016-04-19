@@ -466,7 +466,7 @@ describe('Components (non-JSX)', () => {
 		}
 	}
 
-	if (!global.usingJSDOM) {
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		it('should render a basic component with styling', () => {
 
 			let template = (Component, props) =>

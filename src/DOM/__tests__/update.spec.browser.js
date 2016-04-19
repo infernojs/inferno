@@ -1137,7 +1137,7 @@ describe('Update (non-jsx)', () => {
 		);
 	});
 
-	if (!global.usingJSDOM) {
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		describe('should render styling on root node, and set and remove styling on multiple children', () => {
 			let template;
 

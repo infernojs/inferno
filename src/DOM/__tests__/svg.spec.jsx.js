@@ -227,7 +227,7 @@ describe('createTree - SVG (JSX)', () => {
 		)).to.equal(false);
 	});
 
-	if (!global.usingJSDOM) {
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		it('should add / change / remove xlink:href attribute', () => {
 
 			render(<svg>
