@@ -1,9 +1,3 @@
-const babel = require('rollup-plugin-babel');
-const multiEntry = require('rollup-plugin-multi-entry').default;
-const nodeResolve = require('rollup-plugin-node-resolve');
-const TypeScript = require('rollup-plugin-typescript');
-const Stub = require('rollup-plugin-stub');
-
 /* global module */
 module.exports = function (config) {
 	config.set({
@@ -13,6 +7,7 @@ module.exports = function (config) {
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: [
 			'sinon-chai',
+			'sinon',
 			'chai-as-promised',
 			'chai',
 			'mocha'
@@ -40,37 +35,23 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./src/**/*__tests__*/**/*spec.browser.js': ['rollup'],
-			'./src/**/*__tests__*/**/*spec.jsx.js': ['rollup']
+			'./src/**/*__tests__*/**/*spec.browser.js': ['babel'],
+			'./src/**/*__tests__*/**/*spec.jsx.js': ['babel']
 		},
-		rollupPreprocessor: {
-			rollup: {
-				plugins: [
-					multiEntry(),
-					babel({
-						babelrc: false,
-						presets: 'es2015-rollup',
-//						exclude: 'node_modules/**',
-						plugins: [
-							'transform-flow-strip-types',
-							'syntax-flow',
-							'transform-undefined-to-void',
-							'transform-object-rest-spread',
-							'babel-plugin-inferno',
-							'babel-plugin-syntax-jsx'
-						]
-					}),
-					nodeResolve({
-						jsnext: true,
-						main: true
-					}),
-					Stub(),
-					TypeScript()
+		babelPreprocessor: {
+			options: {
+				presets: ['es2015'],
+				'plugins': [
+					'transform-es2015-modules-umd',
+					'rewire',
+					'transform-object-rest-spread',
+					'transform-flow-strip-types',
+					'syntax-flow',
+					'babel-plugin-syntax-jsx',
+					'babel-plugin-inferno',
 				]
+			//	sourceMap: 'inline'
 			},
-			bundle: {
-			}
-		},
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
