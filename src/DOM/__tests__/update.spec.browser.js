@@ -1137,67 +1137,69 @@ describe('Update (non-jsx)', () => {
 		);
 	});
 
-	describe('should render styling on root node, and set and remove styling on multiple children', () => {
-		let template;
+	if (!global.usingJSDOM) {
+		describe('should render styling on root node, and set and remove styling on multiple children', () => {
+			let template;
 
-		template = (styleRule) =>
-			createElement('div', {
-				style: {
-					width: '200px'
-				}
-			}, createElement('div', {
-				class: 'Hello, world!'
-			}, createElement('div', {
-				style: styleRule
-			})));
+			template = (styleRule) =>
+				createElement('div', {
+					style: {
+						width: '200px'
+					}
+				}, createElement('div', {
+					class: 'Hello, world!'
+				}, createElement('div', {
+					style: styleRule
+				})));
 
-		it('Initial render (creation)', () => {
-			render(template({
-				color: 'red',
-				paddingTop: '10px'
-			}), container);
+			it('Initial render (creation)', () => {
+				render(template({
+					color: 'red',
+					paddingTop: '10px'
+				}), container);
 
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>')
-			);
-			render(template({
-				color: 'red',
-				paddingLeft: '10px'
-			}), container);
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>')
+				);
+				render(template({
+					color: 'red',
+					paddingLeft: '10px'
+				}), container);
 
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>')
-			);
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>')
+				);
 
+			});
+
+			it('Second render (update)', () => {
+				render(template(null), container);
+
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>')
+				);
+			});
+
+			it('Third render (update)', () => {
+				render(template({
+					color: 'blue',
+					marginBottom: '20px'
+				}), container);
+
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>')
+				);
+			});
 		});
-
-		it('Second render (update)', () => {
-			render(template(null), container);
-
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>')
-			);
-		});
-
-		it('Third render (update)', () => {
-			render(template({
-				color: 'blue',
-				marginBottom: '20px'
-			}), container);
-
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>')
-			);
-		});
-	});
+	}
 
 	describe('Github #142', () => {
 		describe('nonKeyed updates', () => {

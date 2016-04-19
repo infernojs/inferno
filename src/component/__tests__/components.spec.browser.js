@@ -466,54 +466,56 @@ describe('Components (non-JSX)', () => {
 		}
 	}
 
-	it('should render a basic component with styling', () => {
+	if (!global.usingJSDOM) {
+		it('should render a basic component with styling', () => {
 
-		let template = (Component, props) =>
-			createElement(Component, props)
-		;
+			let template = (Component, props) =>
+					createElement(Component, props)
+				;
 
-		render(template(null, null, false), container);
+			render(template(null, null, false), container);
 
-		render(template(BasicComponent3, {
-			title: 'styled!',
-			styles: {
-				color: 'red',
-				paddingLeft: '10px'
-			}
-		}), container);
+			render(template(BasicComponent3, {
+				title: 'styled!',
+				styles: {
+					color: 'red',
+					paddingLeft: '10px'
+				}
+			}), container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
-		);
-		render(template(BasicComponent3, {
-			title: 'styled!',
-			styles: {
-				color: 'red',
-				paddingLeft: '10px'
-			}
-		}), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
+			);
+			render(template(BasicComponent3, {
+				title: 'styled!',
+				styles: {
+					color: 'red',
+					paddingLeft: '10px'
+				}
+			}), container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
-		);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
+			);
 
-		render(template(BasicComponent3, {
-			title: 'styled (again)!',
-			styles: {
-				color: 'blue',
-				paddingRight: '20px'
-			}
-		}), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div style="color: blue; padding-right: 20px;"><span style="color: blue; padding-right: 20px;">The title is styled (again)!</span></div>'
-		);
-	});
+			render(template(BasicComponent3, {
+				title: 'styled (again)!',
+				styles: {
+					color: 'blue',
+					paddingRight: '20px'
+				}
+			}), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: blue; padding-right: 20px;"><span style="color: blue; padding-right: 20px;">The title is styled (again)!</span></div>'
+			);
+		});
+	}
 
 	it('should render a basic component with component children', () => {
 		let template = (Component1, Component2, Component3) =>
