@@ -929,7 +929,7 @@
 			instance.context = context;
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-			if (!isNullOrUndefined(nextNode)) {
+			if (!isInvalidNode(nextNode)) {
 				patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
