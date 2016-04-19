@@ -6,5 +6,5 @@
 --timeout 15000
 --bail
 
-./src/**/*__tests__*/**/*spec.browser.js
 ./src/**/*__tests__*/**/*spec.jsx.js
+./src/**/*__tests__*/**/*spec.browser.js

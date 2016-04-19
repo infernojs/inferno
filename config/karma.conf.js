@@ -19,7 +19,8 @@ module.exports = function (config) {
 		],
 		files: [
             'node_modules/babel-polyfill/dist/polyfill.js',
-            './src/**/*__tests__*/**/*spec.browser.js'
+            './src/**/*__tests__*/**/*spec.browser.js',
+			'./src/**/*__tests__*/**/*spec.jsx.js'
 		],
 		// Start these browsers, currently available:
 		// - Chrome
@@ -39,7 +40,8 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./src/**/*__tests__*/**/*spec.browser.js': ['rollup']
+			'./src/**/*__tests__*/**/*spec.browser.js': ['rollup'],
+			'./src/**/*__tests__*/**/*spec.jsx.js': ['rollup']
 		},
 		rollupPreprocessor: {
 			rollup: {

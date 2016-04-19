@@ -6,7 +6,7 @@ const Inferno = {
     createBlueprint
 };
 
-describe('Statefull Component updates', () => {
+describe('Stateful Component updates', () => {
 
     let container;
 
@@ -62,8 +62,7 @@ describe('Statefull Component updates', () => {
 
         // delayed update triggers for A
         updatesAfromOutside();
-        expect(container.innerHTML).to.equal('<div>B Component B</div>');
-
+        expect(container.innerHTML).to.equal('<div>A Component A</div>');
 
         done();
     });

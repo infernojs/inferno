@@ -35,7 +35,7 @@ describe('CSS style properties', () => {
 			backgroundColor: null,
 			display: 'null'
 		},
-		expected: [null, '']
+		expected: [null, '', 'display: null;']
 	}, {
 		name: 'ignore null styles',
 		value: {},
@@ -53,7 +53,7 @@ describe('CSS style properties', () => {
 			backgroundColor: undefined,
 			display: 'undefined'
 		},
-		expected: [null, '']
+		expected: [null, '', 'display: undefined;']
 	}, {
 		name: 'ignore undefined styles',
 		value: {
@@ -110,22 +110,24 @@ describe('CSS style properties', () => {
 		expected: ['height: 200em; width: 200cm; margin-left: 200mm;']
 	}];
 
-	if (isPhantomJS) {
-		preDefined.push({
-			name: 'support webkit transform',
-			value: {
-				webkitTransform: 'rotate(245deg)'
-			},
-			expected: ['-webkit-transform: rotate(245deg);']
-		});
-	} else {
-		preDefined.push({
-			name: 'support css3 transform',
-			value: {
-				transform: 'rotate(245deg)'
-			},
-			expected: ['transform: rotate(245deg);']
-		});
+	if (!global.usingJSDOM) {
+		if (isPhantomJS) {
+			preDefined.push({
+				name: 'support webkit transform',
+				value: {
+					webkitTransform: 'rotate(245deg)'
+				},
+				expected: ['-webkit-transform: rotate(245deg);']
+			});
+		} else {
+			preDefined.push({
+				name: 'support css3 transform',
+				value: {
+					transform: 'rotate(245deg)'
+				},
+				expected: ['transform: rotate(245deg);']
+			});
+		}
 	}
 
 	preDefined.forEach((arg) => {

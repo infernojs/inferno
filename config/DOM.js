@@ -8,6 +8,7 @@ var jsdom = require('jsdom');
 global.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
 global.window = document.defaultView;
 global.navigator = global.window.navigator;
+global.usingJSDOM = true;
 
 global.chai = require('chai');
 global.expect = global.chai.expect;
@@ -34,5 +35,10 @@ function propagateToGlobal (window) {
 		if (key in global) continue;
 
 		global[key] = window[key];
+	}
+}
+if (!global.requestAnimationFrame) {
+	global.requestAnimationFrame = function (func) {
+		setTimeout(func, 1000 / 60);
 	}
 }
