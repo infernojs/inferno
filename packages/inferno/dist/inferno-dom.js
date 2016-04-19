@@ -590,8 +590,8 @@
 				nextHooks.willUpdate(lastNode.dom);
 			}
 		}
-		var nextTag = nextNode.tag || deepCheck && lastBp.tag;
-		var lastTag = lastNode.tag || deepCheck && nextBp.tag;
+		var nextTag = nextNode.tag || deepCheck && nextBp.tag;
+		var lastTag = lastNode.tag || deepCheck && lastBp.tag;
 
 		if (lastTag !== nextTag) {
 			if (lastNode.bp.isComponent === true) {

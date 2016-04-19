@@ -143,8 +143,8 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			nextHooks.willUpdate(lastNode.dom);
 		}
 	}
-	const nextTag = nextNode.tag || (deepCheck && lastBp.tag);
-	const lastTag = lastNode.tag || (deepCheck && nextBp.tag);
+	const nextTag = nextNode.tag || (deepCheck && nextBp.tag);
+	const lastTag = lastNode.tag || (deepCheck && lastBp.tag);
 
 	if (lastTag !== nextTag) {
 		if (lastNode.bp.isComponent === true) {
