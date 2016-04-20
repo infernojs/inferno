@@ -19,25 +19,19 @@ addons:
 cache:
   directories:
     - node_modules
+addons:
+  at:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+      - google-chrome-beta
 before_script:
-  - "export CHROME_BIN=chromium-browser"
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
- # - sleep 3 # give xvfb some time to start
- # - rackup  # start a Web server
-  - sleep 3 # give Web server some time to bind to sockets, etc
-install:
-  # Log HTTP requests
-  - npm config set loglevel http
-  - npm install npm@3 -g
-   # Instal npm dependecies and ensure that npm cache is not stale
-  - npm install
 before_install:
-  - export CHROME_BIN=/usr/bin/google-chrome
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - sudo apt-get install -y libappindicator1 fonts-liberation
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome*.deb
+  - "nvm use $TRAVIS_NODE_VERSION"
+  - npm config set loglevel http
+  - npm install
 notifications:
   email: true
