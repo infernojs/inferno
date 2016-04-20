@@ -6,6 +6,7 @@ module.exports = function (config) {
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: [
+			'commonjs',
 			'sinon-chai',
 			'sinon',
 			'chai-as-promised',
@@ -14,8 +15,8 @@ module.exports = function (config) {
 		],
 		files: [
             'node_modules/babel-polyfill/dist/polyfill.js',
-            './src/**/*__tests__*/**/*spec.browser.js',
-			'./src/**/*__tests__*/**/*spec.jsx.js'
+            './src/**',
+			'./tools/**'
 		],
 		// Start these browsers, currently available:
 		// - Chrome
@@ -35,17 +36,14 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./src/**/*__tests__*/**/*spec.browser.js': ['babel'],
-			'./src/**/*__tests__*/**/*spec.jsx.js': ['babel']
+			'./src/**': ['babel', 'commonjs'],
+			'./tools/**': ['babel', 'commonjs']
 		},
 		babelPreprocessor: {
 			options: {
 				presets: ['es2015'],
-				'plugins': [
-					'transform-es2015-modules-umd',
+				plugins: [
 					'transform-object-rest-spread',
-					'transform-flow-strip-types',
-					'syntax-flow',
 					'babel-plugin-syntax-jsx',
 					'babel-plugin-inferno'
 				]

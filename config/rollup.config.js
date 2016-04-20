@@ -7,8 +7,7 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
-import typescript from 'rollup-plugin-typescript';
-import stub from 'rollup-plugin-stub';
+imporgit  stub from 'rollup-plugin-stub';
 
 const plugins = [
 	babel({
@@ -16,8 +15,6 @@ const plugins = [
 		presets: 'es2015-rollup',
 		plugins: [
 			'transform-inline-environment-variables',
-			'transform-flow-strip-types',
-			'syntax-flow',
 			'transform-undefined-to-void',
 			'babel-plugin-syntax-jsx',
 			'babel-plugin-inferno',
