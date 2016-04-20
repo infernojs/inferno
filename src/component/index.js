@@ -2,6 +2,8 @@ import Lifecycle from './../core/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
 import { getActiveNode, resetActiveNode } from './../DOM/utils';
 
+const noOp = 'Inferno Warning: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+
 function queueStateChanges(component, newState, callback) {
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
@@ -57,13 +59,19 @@ export default class Component {
 	}
 	render() {}
 	forceUpdate(callback) {
+		if (this._unmounted === true) {
+			throw Error(noOp);
+		}
 		applyState(this, true, callback);
 	}
 	setState(newState, callback) {
+		if (this._unmounted === true) {
+			throw Error(noOp);
+		}
 		if (this._blockSetState === false) {
 			queueStateChanges(this, newState, callback);
 		} else {
-			throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
+			throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
 		}
 	}
 	componentDidMount() {}

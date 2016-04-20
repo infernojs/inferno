@@ -1,5 +1,5 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
-import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove } from './utils';
+import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
@@ -151,14 +151,15 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			const lastNodeInstance = lastNode.instance;
 
 			if (nextBp.isComponent === true) {
-				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
+				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+				detachNode(lastNode);
 			} else if (isStatefulComponent(lastTag)) {
 				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 			} else {
 				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
 			}
 		} else {
-			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance);
+			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 		}
 	} else if (isNullOrUndefined(lastTag)) {
 		nextNode.dom = lastNode.dom;

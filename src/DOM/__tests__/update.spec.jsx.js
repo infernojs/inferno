@@ -60,12 +60,12 @@ describe('Stateful Component updates', () => {
         // Render B
         render(<B />, container);
         expect(container.innerHTML).to.equal('<div>B Component B</div>');
-        spy.restore();
         sinon.assert.calledOnce(spy); // componentUnMount should have been called
+	    spy.restore();
 
         // delayed update triggers for A
-        updatesAfromOutside();
-        expect(container.innerHTML).to.equal('<div>A Component A</div>'); // TODO: Should we block render in this case?
+        expect(() => updatesAfromOutside()).to.throw();
+        expect(container.innerHTML).to.equal('<div>B Component B</div>');
 
         done();
     });

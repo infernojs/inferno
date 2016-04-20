@@ -38,7 +38,11 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 }
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck, isSVG) {
-	if (deepCheck !== null) {
+	if (isInvalidNode(lastNode)) {
+		mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
+	} else if (isInvalidNode(nextNode)) {
+		remove(lastNode, parentDom);
+	} else if (deepCheck !== null) {
 		const lastBp = lastNode.bp;
 		const nextBp = nextNode.bp;
 
@@ -47,10 +51,6 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 		} else {
 			diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, true);
 		}
-	} else if (isInvalidNode(lastNode)) {
-		mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
-	} else if (isInvalidNode(nextNode)) {
-		remove(lastNode, parentDom);
 	} else if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;

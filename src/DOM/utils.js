@@ -81,6 +81,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lif
 		lastInstance._lastNode = nextNode;
 	}
 	detachNode(lastNode);
+
 }
 
 export function replaceNode(parentDom, nextDom, lastDom) {
