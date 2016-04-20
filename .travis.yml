@@ -31,6 +31,5 @@ install:
   - npm install npm@3 -g
    # Instal npm dependecies and ensure that npm cache is not stale
   - npm install
-  - npm run server:cov:publish
 notifications:
   email: true
