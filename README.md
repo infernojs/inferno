@@ -129,7 +129,7 @@ Creates an Inferno VNode object that has chainable setting methods.
 ```jsx
 import createVNode from `inferno`;
 
-InfernoDOM.render(createVNode().setTag('div').setAttrs({ className: 'test' }).setChildren('Hello world!'), document.body);
+InfernoDOM.render(createVNode().setTag('div').setClassName('foo').setAttrs({ id: 'test' }).setChildren('Hello world!'), document.body);
 ```
 
 ### Inferno.createBlueprint
