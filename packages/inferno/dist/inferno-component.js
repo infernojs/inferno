@@ -113,7 +113,7 @@
 
 				var activeNode = getActiveNode();
 				var subLifecycle = new Lifecycle();
-				component._patchNode(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
+				component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
 				component._lastNode = nextNode;
 				subLifecycle.addListener(function () {
 					subLifecycle.trigger();
@@ -143,7 +143,7 @@
 			this._lastNode = null;
 			this._unmounted = false;
 			this.context = {};
-			this._patchNode = null;
+			this._patch = null;
 		}
 
 		babelHelpers.createClass(Component, [{
