@@ -1,7 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
-import { patchAttribute, patchStyle, patchNode } from './patching';
+import { patchAttribute, patchStyle, patch } from './patching';
 
 export function mountNode(node, parentDom, lifecycle, context, instance, isSVG) {
 	if (isArray(node)) {
@@ -254,7 +254,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 	let dom;
 	if (isStatefulComponent(Component)) {
 		const instance = new Component(props);
-		instance._patchNode = patchNode;
+		instance._patch = patch;
 
 		const childContext = instance.getChildContext();
 		if (!isNullOrUndefined(childContext)) {

@@ -1,10 +1,10 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
 import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patchNode, patchEvents } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
 
-function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, staticCheck, isSVG) {
+function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
 
@@ -51,9 +51,9 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, sta
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else if (isStringOrNumber(lastChildren)) {
-					patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, null, isSVG);
+					patch(lastChildren, nextChildren, dom, lifecycle, context, instance, null, isSVG);
 				} else {
-					patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, staticCheck, isSVG);
+					patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, isSVG);
 				}
 			}
 		}
@@ -134,7 +134,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	}
 }
 
-export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, deepCheck) {
+export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance) {
 	let nextHooks;
 
 	if (nextNode.hasHooks === true) {
@@ -143,8 +143,8 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			nextHooks.willUpdate(lastNode.dom);
 		}
 	}
-	const nextTag = nextNode.tag || (deepCheck && nextBp.tag);
-	const lastTag = lastNode.tag || (deepCheck && lastBp.tag);
+	const nextTag = nextNode.tag || nextBp.tag;
+	const lastTag = lastNode.tag || lastBp.tag;
 
 	if (lastTag !== nextTag) {
 		if (lastNode.bp.isComponent === true) {
@@ -178,7 +178,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 			if (lastChildrenType > 0 || nextChildrenType > 0) {
 				if (nextChildrenType === 5 || lastChildrenType === 5) {
-					diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck);
+					diffChildren(lastNode, nextNode, dom, lifecycle, context, instance);
 				} else {
 					const lastChildren = lastNode.children;
 					const nextChildren = nextNode.children;
@@ -200,11 +200,11 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 							if (lastChildrenType === 4 && nextChildrenType === 4) {
 								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
 							} else if (lastChildrenType === 2 && nextChildrenType === 2) {
-								patchNode(lastChildren, nextChildren, dom, lifecycle, context, instance, deepCheck);
+								patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, false);
 							} else if (lastChildrenType === 1 && nextChildrenType === 1) {
 								updateTextNode(dom, lastChildren, nextChildren);
 							} else {
-								diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck);
+								diffChildren(lastNode, nextNode, dom, lifecycle, context, instance);
 							}
 						}
 					}
@@ -242,10 +242,10 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 }
 
 
-export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck, isSVG) {
+export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
 	if (isPromise(nextNode)) {
 		nextNode.then(node => {
-			patchNode(lastNode, node, parentDom, lifecycle, context, deepCheck, instance);
+			patch(lastNode, node, parentDom, lifecycle, context, instance, null, false);
 		});
 	} else {
 		const nextHooks = nextNode.hooks;
@@ -254,8 +254,8 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
-		const nextTag = nextNode.tag || ((deepCheck && !isNullOrUndefined(nextNode.bp)) ? nextNode.bp.tag : null);
-		const lastTag = lastNode.tag || ((deepCheck && !isNullOrUndefined(lastNode.bp)) ? lastNode.bp.tag : null);
+		const nextTag = nextNode.tag || ((!isNullOrUndefined(nextNode.bp)) ? nextNode.bp.tag : null);
+		const lastTag = lastNode.tag || ((!isNullOrUndefined(lastNode.bp)) ? lastNode.bp.tag : null);
 
 		if (nextTag === 'svg') {
 			isSVG = true;
@@ -291,7 +291,7 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 
 				nextNode.dom = dom;
 
-				diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, deepCheck, isSVG);
+				diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
 				diffAttributes(lastNode, nextNode, null, null, dom, instance);
 				diffEvents(lastNode, nextNode, null, null, dom);
 

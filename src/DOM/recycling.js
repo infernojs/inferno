@@ -1,4 +1,4 @@
-import { patchNode } from './patching';
+import { patch } from './patching';
 import { isNullOrUndefined } from './../core/utils';
 
 export const recyclingEnabled = true;
@@ -10,7 +10,7 @@ export function recycle(node, bp, lifecycle, context, instance) {
 		if (!isNullOrUndefined(pool)) {
 			const recycledNode = pool.pop();
 			if (!isNullOrUndefined(recycledNode)) {
-				patchNode(recycledNode, node, null, null, lifecycle, context, instance, true);
+				patch(recycledNode, node, null, null, lifecycle, context, instance, true);
 				return node.dom;
 			}
 		}

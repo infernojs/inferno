@@ -37,20 +37,24 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 	}
 }
 
-export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck, isSVG) {
-	if (isInvalidNode(lastNode)) {
+function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
+	const lastBp = lastNode.bp;
+	const nextBp = nextNode.bp;
+
+	if (lastBp === undefined || nextBp === undefined) {
+		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+	} else {
+		diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance);
+	}
+}
+
+export function patch(lastNode, nextNode, parentDom, lifecycle, context, instance, isNode, isSVG) {
+	if (isNode !== null) {
+		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+	} else if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
 	} else if (isInvalidNode(nextNode)) {
 		remove(lastNode, parentDom);
-	} else if (deepCheck !== null) {
-		const lastBp = lastNode.bp;
-		const nextBp = nextNode.bp;
-
-		if (lastBp === undefined || nextBp === undefined) {
-			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
-		} else {
-			diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, true);
-		}
 	} else if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
@@ -63,15 +67,7 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 		const textNode = document.createTextNode(nextNode);
 		replaceNode(parentDom, textNode, lastNode.dom);
 	} else {
-		const lastBp = lastNode.bp;
-		const nextBp = nextNode.bp;
-		const deepCheck = lastBp !== nextBp;
-
-		if (lastBp === undefined || nextBp === undefined) {
-			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck, isSVG);
-		} else {
-			diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, deepCheck);
-		}
+		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 	}
 }
 
@@ -172,7 +168,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isInvalidNode(nextNode)) {
-			patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, true);
+			patch(lastNode, nextNode, parentDom, lifecycle, context, instance, true, false);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
@@ -194,7 +190,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 				const dom = lastNode.dom;
 
 				nextNode.dom = dom;
-				patchNode(instance, nextNode, dom, lifecycle, context, null, true);
+				patch(instance, nextNode, dom, lifecycle, context, null, true, false);
 				lastNode.instance = nextNode;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
@@ -375,7 +371,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					if (isArray(lastChild)) {
 						patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
 					} else {
-						patchNode(lastChild, nextChild, dom, lifecycle, context, instance, null, isSVG);
+						patch(lastChild, nextChild, dom, lifecycle, context, instance, null, isSVG);
 					}
 				}
 			}
@@ -409,7 +405,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			break;
 		}
 
-		patchNode(lastStartNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
+		patch(lastStartNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
 		nextStartIndex++;
 		lastStartIndex++;
 	}
@@ -422,7 +418,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			break;
 		}
 
-		patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+		patch(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 		nextEndIndex--;
 		lastEndIndex--;
 	}
@@ -437,7 +433,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		}
 
 		nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1].dom : null;
-		patchNode(lastStartNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+		patch(lastStartNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 		insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
 		nextEndIndex--;
 		lastStartIndex++;
@@ -452,7 +448,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		}
 
 		nextNode = lastChildren[lastStartIndex].dom;
-		patchNode(lastEndNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
+		patch(lastEndNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
 		insertOrAppendKeyed(dom, nextStartNode.dom, nextNode);
 		nextStartIndex++;
 		lastEndIndex--;
@@ -496,7 +492,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 						} else {
 							lastTarget = index;
 						}
-						patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+						patch(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 						removed = false;
 						break;
 					}
@@ -531,7 +527,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 					} else {
 						lastTarget = index;
 					}
-					patchNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+					patch(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
 				}
 			}
 		}
