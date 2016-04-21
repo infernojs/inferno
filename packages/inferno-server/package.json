@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "0.6.5",
+  "version": "0.7.0",
   "license": "MPL-2.0",
   "description": "Provides methods to render HTML strings from Inferno elements",
   "author": {
