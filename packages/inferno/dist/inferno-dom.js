@@ -598,14 +598,15 @@
 				var lastNodeInstance = lastNode.instance;
 
 				if (nextBp.isComponent === true) {
-					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance);
+					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+					detachNode(lastNode);
 				} else if (isStatefulComponent(lastTag)) {
 					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
 				} else {
 					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
 				}
 			} else {
-				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance);
+				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
 			nextNode.dom = lastNode.dom;
@@ -797,7 +798,11 @@
 	}
 
 	function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, deepCheck, isSVG) {
-		if (deepCheck !== null) {
+		if (isInvalidNode(lastNode)) {
+			mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
+		} else if (isInvalidNode(nextNode)) {
+			remove(lastNode, parentDom);
+		} else if (deepCheck !== null) {
 			var lastBp = lastNode.bp;
 			var nextBp = nextNode.bp;
 
@@ -806,10 +811,6 @@
 			} else {
 				diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, true);
 			}
-		} else if (isInvalidNode(lastNode)) {
-			mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
-		} else if (isInvalidNode(nextNode)) {
-			remove(lastNode, parentDom);
 		} else if (isStringOrNumber(lastNode)) {
 			if (isStringOrNumber(nextNode)) {
 				parentDom.firstChild.nodeValue = nextNode;

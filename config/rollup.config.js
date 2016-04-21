@@ -7,7 +7,7 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
-imporgit  stub from 'rollup-plugin-stub';
+import stub from 'rollup-plugin-stub';
 
 const plugins = [
 	babel({

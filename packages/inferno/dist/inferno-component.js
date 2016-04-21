@@ -86,6 +86,8 @@
 		}
 	}
 
+	var noOp = 'Inferno Warning: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+
 	function queueStateChanges(component, newState, callback) {
 		for (var stateKey in newState) {
 			component._pendingState[stateKey] = newState[stateKey];
@@ -150,15 +152,21 @@
 		}, {
 			key: 'forceUpdate',
 			value: function forceUpdate(callback) {
+				if (this._unmounted === true) {
+					throw Error(noOp);
+				}
 				applyState(this, true, callback);
 			}
 		}, {
 			key: 'setState',
 			value: function setState(newState, callback) {
+				if (this._unmounted === true) {
+					throw Error(noOp);
+				}
 				if (this._blockSetState === false) {
 					queueStateChanges(this, newState, callback);
 				} else {
-					throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
+					throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
 				}
 			}
 		}, {
