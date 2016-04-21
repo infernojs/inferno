@@ -1,9 +1,9 @@
 
 
 (function() {
-	var t = Inferno.createElement;
+	var t = InfernoCreateElement;
 
-	var template = Inferno.createTemplate(function () {
+	var template = Inferno.createBlueprint(function () {
 		return {
 			tag: "div",
 			style: {
