@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "license": "MPL-2.0",
   "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
   "author": {
@@ -11,8 +11,6 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-test-utils.js",
-  "jsnext:main": "inferno-test-utils.js",
   "keywords": [
     "babel",
     "react",
@@ -22,7 +20,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.6.4"
+    "inferno": "^0.6.5"
   },
   "main": "inferno-test-utils.js",
   "jsnext:main": "dist/inferno-test-utils.es2015.js",

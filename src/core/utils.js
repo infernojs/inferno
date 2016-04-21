@@ -1,3 +1,4 @@
+
 export function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
 		const isChildrenArray = isArray(children);
@@ -15,11 +16,11 @@ export function addChildrenToProps(children, props) {
 }
 
 export function isArray(obj) {
-	return obj.constructor === Array;
+	return obj instanceof Array;
 }
 
 export function isStatefulComponent(obj) {
-	return !isNullOrUndefined(obj) && !isNullOrUndefined(obj.prototype.render);
+	return obj.prototype.render !== undefined;
 }
 
 export function isStringOrNumber(obj) {
@@ -46,20 +47,6 @@ export function isString(obj) {
 	return typeof obj === 'string';
 }
 
-export function isNumber(obj) {
-	return typeof obj === 'number';
-}
-
-export function isObject(obj) {
-	return typeof obj === 'object';
-}
-
-/*
-export function isAttrAComponentEvent(attr) {
-	return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
-}
-*/
-
 export function isAttrAHook(hook) {
 	return hook === 'onCreated'
 		|| hook === 'onAttached'
@@ -78,15 +65,9 @@ export function isAttrAComponentHook(hook) {
 }
 
 export function isPromise(obj) {
-	return obj && obj.then;
+	return obj instanceof Promise;
 }
 
 export function replaceInArray(array, obj, newObj) {
 	array.splice(array.indexOf(obj), 1, newObj);
 }
-
-/*
-export function removeInArray(array, obj) {
-	array.splice(array.indexOf(obj), 1);
-}
-*/

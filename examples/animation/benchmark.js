@@ -188,32 +188,24 @@ var N = 200;
 
 // The Inferno implementation:
 (function(){
-	var tpl1 = {
-		dom: Inferno.staticCompiler.createElement('div'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'div'
-	};
 
-	var tpl2 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'box-view' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'div'
-	};
+	var bp1 = Inferno.createBlueprint({
+		tag: 'div',
+		children: {arg: 0}
+	}, 4);
 
-	var tpl3 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'box' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'div'
-	};
+	var bp2 = Inferno.createBlueprint({
+		tag: 'div',
+		className: 'box-view',
+		children: {arg: 0}
+	}, 2);
+
+	var bp3 = Inferno.createBlueprint({
+		tag: 'div',
+		className: 'box',
+		style: {arg: 0},
+		children: {arg: 1}
+	}, 1);
 
 	var container = document.getElementById('grid');
 
@@ -224,26 +216,14 @@ var N = 200;
 					'left:' + Math.cos(count / 10) * 10 + 'px;' +
 					'background-color:' + 'rgb(0, 0,' + count % 255 + ');'
 
-			boxes.push({
-				div: null,
-				tpl: tpl2,
-				children: {
-					div: null,
-					tpl: tpl3,
-					style: style,
-					children: count % 100
-				}
-			});
+			boxes.push(bp2(bp3(style, count % 100)));
+
 		}
 		return boxes;
 	}
 
 	var infernoAnimate = function() {
-		InfernoDOM.render({
-			tpl: tpl1,
-			dom: null,
-			children: createBoxes(counter++)
-		}, container);
+		InfernoDOM.render(bp1(createBoxes(counter++)), container);
 	};
 
 	var counter;

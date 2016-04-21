@@ -1,14 +1,9 @@
 /*!
- * inferno-component v0.6.3
+ * inferno-component v0.7.0
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
 var babelHelpers = {};
-babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
 
 babelHelpers.classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -50,30 +45,20 @@ babelHelpers.extends = Object.assign || function (target) {
 
 babelHelpers;
 
-// TODO! Use object literal or at least prototype? --- class is prototype (jsperf needed for perf verification)
+function Lifecycle() {
+	this._listeners = [];
+}
 
-var Lifecycle = function () {
-	function Lifecycle() {
-		babelHelpers.classCallCheck(this, Lifecycle);
-
-		this._listeners = [];
+Lifecycle.prototype = {
+	addListener: function addListener(callback) {
+		this._listeners.push(callback);
+	},
+	trigger: function trigger() {
+		for (var i = 0; i < this._listeners.length; i++) {
+			this._listeners[i]();
+		}
 	}
-
-	babelHelpers.createClass(Lifecycle, [{
-		key: "addListener",
-		value: function addListener(callback) {
-			this._listeners.push(callback);
-		}
-	}, {
-		key: "trigger",
-		value: function trigger() {
-			for (var i = 0; i < this._listeners.length; i++) {
-				this._listeners[i]();
-			}
-		}
-	}]);
-	return Lifecycle;
-}();
+};
 
 function isNullOrUndefined(obj) {
 	return obj === undefined || obj === null;
@@ -86,7 +71,7 @@ function getActiveNode() {
 
 function resetActiveNode(activeNode) {
 	if (activeNode !== document.body && document.activeElement !== activeNode) {
-		activeNode.focus();
+		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 	}
 }
 
@@ -101,33 +86,28 @@ function queueStateChanges(component, newState, callback) {
 }
 
 function applyState(component, force, callback) {
-	var blockRender = component._blockRender;
-
 	if (component._deferSetState === false || force) {
-		component._pendingSetState = false;
-		var pendingState = component._pendingState;
-		var oldState = component.state;
-		var nextState = babelHelpers.extends({}, oldState, pendingState);
+		(function () {
+			component._pendingSetState = false;
+			var pendingState = component._pendingState;
+			var oldState = component.state;
+			var nextState = babelHelpers.extends({}, oldState, pendingState);
 
-		component._pendingState = {};
-		var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+			component._pendingState = {};
+			var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+			var lastNode = component._lastNode;
+			var parentDom = lastNode.dom.parentNode;
 
-		if (!blockRender) {
-			(function () {
-				var lastNode = component._lastNode;
-				var parentDom = lastNode.dom.parentNode;
-
-				var activeNode = getActiveNode();
-				var subLifecycle = new Lifecycle();
-				component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
-				component._lastNode = nextNode;
-				subLifecycle.addListener(function () {
-					subLifecycle.trigger();
-					callback && callback();
-				});
-				resetActiveNode(activeNode);
-			})();
-		}
+			var activeNode = getActiveNode();
+			var subLifecycle = new Lifecycle();
+			component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
+			component._lastNode = nextNode;
+			subLifecycle.addListener(function () {
+				subLifecycle.trigger();
+				callback && callback();
+			});
+			resetActiveNode(activeNode);
+		})();
 	}
 }
 
@@ -143,7 +123,6 @@ var Component = function () {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -209,9 +188,9 @@ var Component = function () {
 			}
 			if (prevProps !== nextProps || prevState !== nextState || force) {
 				if (prevProps !== nextProps) {
-					this._blockRender = true;
+					this._blockSetState = true;
 					this.componentWillReceiveProps(nextProps);
-					this._blockRender = false;
+					this._blockSetState = false;
 				}
 				var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
@@ -232,8 +211,4 @@ var Component = function () {
 	return Component;
 }();
 
-var index = {
-	Component: Component
-};
-
-export default index;
+export default Component;

@@ -1,20 +1,18 @@
 
 
 (function() {
-	var t = Inferno.createElement;
+	var t = InfernoCreateElement;
 
-	var template = Inferno.createTemplate(function () {
+	var template = Inferno.createBlueprint(function () {
 		return {
 			tag: "div",
-			attrs: {
-				style: {
-					width: "200px",
-					height: "200px",
-					backgroundColor: "red",
+			style: {
+				width: "200px",
+				height: "200px",
+				backgroundColor: "red",
 
-					border: "5px solid black",
-					borderRadius: "5px"
-				}
+				border: "5px solid black",
+				borderRadius: "5px"
 			}
 		};
 	});

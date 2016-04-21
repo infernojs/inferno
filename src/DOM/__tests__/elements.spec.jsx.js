@@ -1,5 +1,10 @@
-import { render } from '../rendering';
-import innerHTML from '../../../tools/innerHTML';
+import { render } from './../rendering';
+import innerHTML from './../../../tools/innerHTML';
+import { createBlueprint } from './../../core/createBlueprint';
+
+const Inferno = {
+	createBlueprint
+};
 
 describe('Elements - SVG (JSX)', () => {
 	let container;

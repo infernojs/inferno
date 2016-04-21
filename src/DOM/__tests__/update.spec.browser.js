@@ -1,6 +1,6 @@
-import { render } from '../rendering';
-import createElement from '../../core/createElement';
-import innerHTML from '../../../tools/innerHTML';
+import { render } from './../rendering';
+import createElement from './../../createElement';
+import innerHTML from './../../../tools/innerHTML';
 
 describe('Update (non-jsx)', () => {
 	let container;
@@ -1119,7 +1119,7 @@ describe('Update (non-jsx)', () => {
 
 		render(template({
 			color: 'red',
-			paddingLeft: 10
+			paddingLeft: '10px'
 		}), container);
 
 		expect(
@@ -1137,67 +1137,69 @@ describe('Update (non-jsx)', () => {
 		);
 	});
 
-	describe('should render styling on root node, and set and remove styling on multiple children', () => {
-		let template;
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
+		describe('should render styling on root node, and set and remove styling on multiple children', () => {
+			let template;
 
-		template = (styleRule) =>
-			createElement('div', {
-				style: {
-					width: '200px'
-				}
-			}, createElement('div', {
-				class: 'Hello, world!'
-			}, createElement('div', {
-				style: styleRule
-			})));
+			template = (styleRule) =>
+				createElement('div', {
+					style: {
+						width: '200px'
+					}
+				}, createElement('div', {
+					class: 'Hello, world!'
+				}, createElement('div', {
+					style: styleRule
+				})));
 
-		it('Initial render (creation)', () => {
-			render(template({
-				color: 'red',
-				paddingTop: 10
-			}), container);
+			it('Initial render (creation)', () => {
+				render(template({
+					color: 'red',
+					paddingTop: '10px'
+				}), container);
 
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>')
-			);
-			render(template({
-				color: 'red',
-				paddingLeft: 10
-			}), container);
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>')
+				);
+				render(template({
+					color: 'red',
+					paddingLeft: '10px'
+				}), container);
 
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>')
-			);
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>')
+				);
 
+			});
+
+			it('Second render (update)', () => {
+				render(template(null), container);
+
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>')
+				);
+			});
+
+			it('Third render (update)', () => {
+				render(template({
+					color: 'blue',
+					marginBottom: '20px'
+				}), container);
+
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>')
+				);
+			});
 		});
-
-		it('Second render (update)', () => {
-			render(template(null), container);
-
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>')
-			);
-		});
-
-		it('Third render (update)', () => {
-			render(template({
-				color: 'blue',
-				marginBottom: 20
-			}), container);
-
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>')
-			);
-		});
-	});
+	}
 
 	describe('Github #142', () => {
 		describe('nonKeyed updates', () => {
@@ -2633,4 +2635,77 @@ describe('Update (non-jsx)', () => {
 			});
 		});
 	});
+
+	describe('Github #162', () => {
+		it("works", function() {
+			const A = [];
+
+			A[0] =  {
+				"tag": "div",
+				"children": [
+					"text 1"
+				]
+			};
+			A[1] =  {
+				"tag": "div",
+				"children": [
+					"text 2",
+					{
+						"tag": "br"
+					},
+					"text 3"
+				]
+			};
+			A[2] =  {
+				"tag": "div",
+				"children": [
+					"text 4"
+				]
+			};
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1</div>');
+			render(A[1], container);
+			expect(container.innerHTML).to.equal('<div>text 2<br>text 3</div>');
+			render(A[2], container);
+			expect(container.innerHTML).to.equal('<div>text 4</div>');
+		});
+	});
+
+	describe('Github #162', () => {
+		it("works", function() {
+			const A = [];
+			A[0] =  {
+				"tag": "div",
+				"children": [
+					"text 1",
+					{
+						"tag": "br"
+					}
+				]
+			};
+
+			A[1] =  {
+				"tag": "div",
+				"children": "text 2"
+			};
+
+			A[2] =  {
+				"tag": "div",
+				"children": [
+					{
+						"tag": "br"
+					},
+					"text 4"
+				]
+			};
+
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1<br></div>');
+			render(A[1], container);
+			expect(container.innerHTML).to.equal('<div>text 2</div>');
+			render(A[2], container);
+			expect(container.innerHTML).to.equal('<div><br>text 4</div>');
+		});
+	});
 });
+

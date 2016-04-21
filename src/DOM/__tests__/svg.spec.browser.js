@@ -1,7 +1,5 @@
-import { render } from '../rendering';
-import createElement from '../../core/createElement';
-
-var staticNode = null;
+import { render } from './../rendering';
+import createElement from './../../createElement';
 
 describe('SVG (non-jsx)', () => {
 	let container;
@@ -74,7 +72,6 @@ describe('SVG (non-jsx)', () => {
 
 		template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'svg'
 		});
 
@@ -84,11 +81,9 @@ describe('SVG (non-jsx)', () => {
 
 		template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'svg',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'path'
 			}
 		});
@@ -100,31 +95,29 @@ describe('SVG (non-jsx)', () => {
 	it('should unset a namespaced attributes', () => {
 
 		let template = (val) => ({
-			dom: null,
-			tpl: staticNode,
-			tag: 'image',
-			attrs: {
-				xmlns: 'http://www.w3.org/2000/svg',
-				'xlink:href': val
+			tag: 'svg',
+			children: {
+				dom: null,
+				tag: 'image',
+				attrs: {
+					'xlink:href': val
+				}
 			}
 		});
 
 		render(template(null), container);
 		render(template('test.jpg'), container);
-		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');
+		expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
+		expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
 	});
 
 	it('should unset a namespaced attributes', () => {
 
 		let template = (val) => ({
-			dom: null,
-			tpl: staticNode,
 			tag: 'image',
 			attrs: {
-				xmlns: 'http://www.w3.org/2000/svg',
 				'xlink:href': val
 			}
 		});
@@ -140,7 +133,6 @@ describe('SVG (non-jsx)', () => {
 
 		let template = (val) => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'image',
 			attrs: {
 				xmlns: 'http://www.w3.org/2000/svg',
@@ -161,11 +153,9 @@ describe('SVG (non-jsx)', () => {
 
 		template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'svg',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'circle'
 			}
 		});
@@ -180,11 +170,9 @@ describe('SVG (non-jsx)', () => {
 
 		template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'svg',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'path',
 				children: null
 			}
@@ -196,7 +184,6 @@ describe('SVG (non-jsx)', () => {
 
 		template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'svg',
 			children: null
 		});
@@ -209,11 +196,9 @@ describe('SVG (non-jsx)', () => {
 
 		let template = (child) => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'div',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'svg'
 			}
 		});
@@ -230,7 +215,6 @@ describe('SVG (non-jsx)', () => {
 		let child,
 			template = (child) => ({
 				dom: null,
-				tpl: staticNode,
 				tag: 'svg',
 				attrs: {
 					xmlns: 'http://www.w3.org/2000/svg'
@@ -240,7 +224,6 @@ describe('SVG (non-jsx)', () => {
 
 		child = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'circle'
 		});
 
@@ -251,14 +234,12 @@ describe('SVG (non-jsx)', () => {
 
 		child = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'circle',
 			attrs: {
 				xmlns: 'http://www.w3.org/2000/svg'
 			},
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'circle',
 				attrs: {
 					xmlns: 'http://www.w3.org/2000/svg'
@@ -274,15 +255,12 @@ describe('SVG (non-jsx)', () => {
 
 		child = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'circle',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'circle',
 				children: {
 					dom: null,
-					tpl: staticNode,
 					tag: 'g',
 					attrs: {
 						xmlns: 'http://www.w3.org/2000/svg'
@@ -297,19 +275,15 @@ describe('SVG (non-jsx)', () => {
 
 		child = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'circle',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'circle',
 				children: {
 					dom: null,
-					tpl: staticNode,
 					tag: 'g',
 					children: {
 						dom: null,
-						tpl: staticNode,
 						tag: 'g'
 					}
 				}
@@ -321,23 +295,18 @@ describe('SVG (non-jsx)', () => {
 
 		child = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'circle',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'circle',
 				children: {
 					dom: null,
-					tpl: staticNode,
 					tag: 'g',
 					children: {
 						dom: null,
-						tpl: staticNode,
 						tag: 'g',
 						children: {
 							dom: null,
-							tpl: staticNode,
 							tag: 'circle'
 						}
 
@@ -359,7 +328,6 @@ describe('SVG (non-jsx)', () => {
 
 		const template = (val) => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'image',
 			attrs: {
 				class: val
@@ -389,7 +357,6 @@ describe('SVG (non-jsx)', () => {
 
 		const template = (val1, val2) => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'svg',
 			attrs: {
 				xmlns: 'http://www.w3.org/2000/svg',
@@ -425,7 +392,6 @@ describe('SVG (non-jsx)', () => {
 
 		const template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'svg',
 			attrs: {
 				xmlns: 'http://www.w3.org/2000/svg',
@@ -452,11 +418,9 @@ describe('SVG (non-jsx)', () => {
 
 		let template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'div',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'svg'
 			}
 		});
@@ -472,14 +436,12 @@ describe('SVG (non-jsx)', () => {
 
 		let template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'div',
 			attrs: {
 				xmlns: 'http://www.w3.org/2000/svg'
 			},
 			children: {
 				dom: null,
-				tpl: staticNode,
 				tag: 'svg'
 			}
 		});
@@ -495,11 +457,9 @@ describe('SVG (non-jsx)', () => {
 
 		let template = () => ({
 			dom: null,
-			tpl: staticNode,
 			tag: 'div',
 			children: {
 				dom: null,
-				tpl: staticNode,
 				attrs: {
 					xmlns: 'http://www.w3.org/2000/svg'
 				},

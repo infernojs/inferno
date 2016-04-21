@@ -1,5 +1,5 @@
 /*!
- * inferno v0.6.3
+ * inferno v0.7.0
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -15,6 +15,30 @@
 	} : function (obj) {
 	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
 	};
+
+	babelHelpers.classCallCheck = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+
+	babelHelpers.createClass = function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
+	      Object.defineProperty(target, descriptor.key, descriptor);
+	    }
+	  }
+
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	}();
 
 	babelHelpers.extends = Object.assign || function (target) {
 	  for (var i = 1; i < arguments.length; i++) {
@@ -32,176 +56,31 @@
 
 	babelHelpers;
 
-	function isArray(obj) {
-		return obj.constructor === Array;
-	}
-
 	function isNullOrUndefined(obj) {
-		return obj === undefined || obj === null;
-	}
-
-	function isInvalidNode(obj) {
-		return obj === undefined || obj === null || obj === false;
-	}
-
-	function isFunction(obj) {
-		return typeof obj === 'function';
+		return obj === void 0 || obj === null;
 	}
 
 	function isAttrAnEvent(attr) {
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
-	/*
-	export function isAttrAComponentEvent(attr) {
-		return attr.substring(0, 11) === 'onComponent' && attr.length > 12;
-	}
-	*/
+	function documentCreateElement(tag, isSVG) {
+		var dom = void 0;
 
-	function isAttrAHook(hook) {
-		return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate';
-	}
-
-	function isAttrAComponentHook(hook) {
-		return hook === 'onComponentWillMount' || hook === 'onComponentDidMount' || hook === 'onComponentWillUnmount' || hook === 'onComponentShouldUpdate' || hook === 'onComponentWillUpdate' || hook === 'onComponentDidUpdate';
-	}
-
-	function createAttrsAndEvents(props, tag) {
-		var events = null;
-		var hooks = null;
-		var attrs = null;
-		var className = null;
-		var style = null;
-
-		if (!isNullOrUndefined(props)) {
-			if (isArray(props)) {
-				return props;
-			}
-			for (var prop in props) {
-				if (prop === 'className') {
-					className = props[prop];
-				} else if (prop === 'style') {
-					style = props[prop];
-				} else if (isAttrAHook(prop) && !isFunction(tag)) {
-					if (isNullOrUndefined(hooks)) {
-						hooks = {};
-					}
-					hooks[prop.substring(2).toLowerCase()] = props[prop];
-					delete props[prop];
-				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
-					if (isNullOrUndefined(events)) {
-						events = {};
-					}
-					events[prop.substring(2).toLowerCase()] = props[prop];
-					delete props[prop];
-				} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
-					if (isNullOrUndefined(hooks)) {
-						hooks = {};
-					}
-					hooks['c' + prop.substring(3)] = props[prop];
-					delete props[prop];
-				} else if (!isFunction(tag)) {
-					if (isNullOrUndefined(attrs)) {
-						attrs = {};
-					}
-					attrs[prop] = props[prop];
-				} else {
-					attrs = props;
-				}
-			}
-		}
-		return { attrs: attrs, events: events, className: className, style: style, hooks: hooks };
-	}
-
-	function createChild(_ref) {
-		var tag = _ref.tag;
-		var attrs = _ref.attrs;
-		var children = _ref.children;
-		var className = _ref.className;
-		var style = _ref.style;
-		var events = _ref.events;
-		var hooks = _ref.hooks;
-
-		if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
-			return null;
-		}
-		var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : null;
-
-		if (!isNullOrUndefined(children) && children.length === 0) {
-			children = null;
-		} else if (!isInvalidNode(children)) {
-			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
-		}
-
-		if (key !== null) {
-			delete attrs.key;
-		}
-		var attrsAndEvents = createAttrsAndEvents(attrs, tag);
-
-		return {
-			dom: null,
-			tag: tag,
-			key: key,
-			attrs: attrsAndEvents.attrs,
-			events: events || attrsAndEvents.events,
-			hooks: hooks || attrsAndEvents.hooks,
-			className: className || attrsAndEvents.className,
-			style: style || attrsAndEvents.style,
-			children: children,
-			instance: null
-		};
-	}
-
-	function createChildren(children) {
-		var childrenDefined = !isNullOrUndefined(children);
-		if (childrenDefined && isArray(children)) {
-			var newChildren = [];
-
-			for (var i = 0; i < children.length; i++) {
-				var child = children[i];
-				if (!isNullOrUndefined(child) && (typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
-					if (isArray(child)) {
-						if (child.length > 0) {
-							newChildren.push(createChildren(child));
-						} else {
-							newChildren.push(null);
-						}
-					} else {
-						newChildren.push(createChild(child));
-					}
-				} else {
-					newChildren.push(child);
-				}
-			}
-			return newChildren;
-		} else if (childrenDefined && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
-			return children.dom === undefined ? createChild(children) : children;
-		}
-		return children;
-	}
-
-	function createElement(tag, props) {
-		for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-			children[_key - 2] = arguments[_key];
-		}
-
-		return createChild({ tag: tag, attrs: props, children: children });
-	}
-
-	function createElement$1(tag, namespace) {
-		if (isNullOrUndefined(namespace)) {
-			return document.createElement(tag);
+		if (isSVG === true) {
+			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
 		} else {
-			return document.createElementNS(namespace, tag);
+			dom = document.createElement(tag);
 		}
+		return dom;
 	}
 
 	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
-	function createStaticElement(tag, attrs) {
+	function createUniversalElement(tag, attrs, isSVG) {
 		if (isBrowser) {
-			var dom = createElement$1(tag);
+			var dom = documentCreateElement(tag, isSVG);
 			if (attrs) {
 				createStaticAttributes(attrs, dom);
 			}
@@ -217,7 +96,6 @@
 			var attr = attrKeys[i];
 			var value = attrs[attr];
 
-			// TODO! What about SVG?
 			if (attr === 'className') {
 				dom.className = value;
 			} else {
@@ -230,19 +108,148 @@
 		}
 	}
 
-	/*
-	function createStaticChildren(children, parentDom) {
-		if (isArray(children)) {
-		} else if (isStringOrNumber(children)) {
-			parentDom.textContent = children;
-		}
+	function VNode(blueprint) {
+		this.bp = blueprint;
+		this.dom = null;
+		this.instance = null;
+		this.tag = null;
+		this.children = null;
+		this.style = null;
+		this.className = null;
+		this.attrs = null;
+		this.events = null;
+		this.hooks = null;
+		this.key = null;
 	}
-	*/
+
+	VNode.prototype = {
+		setAttrs: function setAttrs(attrs) {
+			this.attrs = attrs;
+			return this;
+		},
+		setTag: function setTag(tag) {
+			this.tag = tag;
+			return this;
+		},
+		setStyle: function setStyle(style) {
+			this.style = style;
+			return this;
+		},
+		setClassName: function setClassName(className) {
+			this.className = className;
+			return this;
+		},
+		setChildren: function setChildren(children) {
+			this.children = children;
+			return this;
+		},
+		setHooks: function setHooks(hooks) {
+			this.hooks = hooks;
+			return this;
+		},
+		setEvents: function setEvents(events) {
+			this.events = events;
+			return this;
+		},
+		setKey: function setKey(key) {
+			this.key = key;
+			return this;
+		}
+	};
+
+	function createVNode(bp) {
+		return new VNode(bp);
+	}
+
+	function createBlueprint(shape, childrenType) {
+		var tag = shape.tag || null;
+		var tagIsDynamic = tag && tag.arg !== void 0 ? true : false;
+
+		var children = !isNullOrUndefined(shape.children) ? shape.children : null;
+		var childrenIsDynamic = children && children.arg !== void 0 ? true : false;
+
+		var attrs = shape.attrs || null;
+		var attrsIsDynamic = attrs && attrs.arg !== void 0 ? true : false;
+
+		var hooks = shape.hooks || null;
+		var hooksIsDynamic = hooks && hooks.arg !== void 0 ? true : false;
+
+		var events = shape.events || null;
+		var eventsIsDynamic = events && events.arg !== void 0 ? true : false;
+
+		var key = shape.key !== void 0 ? shape.key : null;
+		var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
+
+		var style = shape.style || null;
+		var styleIsDynamic = style && style.arg !== void 0 ? true : false;
+
+		var className = shape.className !== void 0 ? shape.className : null;
+		var classNameIsDynamic = className && className.arg !== void 0 ? true : false;
+
+		var blueprint = {
+			dom: null,
+			pools: {
+				keyed: {},
+				nonKeyed: []
+			},
+			tag: !tagIsDynamic ? tag : null,
+			className: className !== '' && className ? className : null,
+			style: style !== '' && style ? style : null,
+			isComponent: tagIsDynamic,
+			hasAttrs: attrsIsDynamic || (attrs ? true : false),
+			hasHooks: hooksIsDynamic,
+			hasEvents: eventsIsDynamic,
+			hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
+			hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
+			childrenType: childrenType === void 0 ? children ? 5 : 0 : childrenType,
+			attrKeys: null,
+			eventKeys: null,
+			isSVG: shape.isSVG || false
+		};
+
+		return function () {
+			var vNode = new VNode(blueprint);
+
+			if (tagIsDynamic === true) {
+				vNode.tag = arguments[tag.arg];
+			}
+			if (childrenIsDynamic === true) {
+				vNode.children = arguments[children.arg];
+			}
+			if (attrsIsDynamic === true) {
+				vNode.attrs = arguments[attrs.arg];
+			} else {
+				vNode.attrs = attrs;
+			}
+			if (hooksIsDynamic === true) {
+				vNode.hooks = arguments[hooks.arg];
+			}
+			if (eventsIsDynamic === true) {
+				vNode.events = arguments[events.arg];
+			}
+			if (keyIsDynamic === true) {
+				vNode.key = arguments[key.arg];
+			}
+			if (styleIsDynamic === true) {
+				vNode.style = arguments[style.arg];
+			} else {
+				vNode.style = blueprint.style;
+			}
+			if (classNameIsDynamic === true) {
+				vNode.className = arguments[className.arg];
+			} else {
+				vNode.className = blueprint.className;
+			}
+
+			return vNode;
+		};
+	}
 
 	var index = {
-		createElement: createElement,
-		staticCompiler: {
-			createElement: createStaticElement
+		createBlueprint: createBlueprint,
+		createVNode: createVNode,
+		universal: {
+			createElement: createUniversalElement
 		}
 	};
 

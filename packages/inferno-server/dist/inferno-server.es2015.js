@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.6.3
+ * inferno-server v0.7.0
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -9,10 +9,45 @@ babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator ===
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
 };
+
+babelHelpers.extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
 babelHelpers;
 
+function addChildrenToProps(children, props) {
+	if (!isNullOrUndefined(children)) {
+		var isChildrenArray = isArray(children);
+		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
+			if (props) {
+				props.children = children;
+			} else {
+				props = {
+					children: children
+				};
+			}
+		}
+	}
+	return props;
+}
+
 function isArray(obj) {
-	return obj.constructor === Array;
+	return obj instanceof Array;
+}
+
+function isStatefulComponent(obj) {
+	return obj.prototype.render !== undefined;
 }
 
 function isStringOrNumber(obj) {
@@ -27,7 +62,41 @@ function isInvalidNode(obj) {
 	return obj === undefined || obj === null || obj === false;
 }
 
-function renderChildren(children) {
+function isFunction(obj) {
+	return typeof obj === 'function';
+}
+
+function renderComponent(Component, props, children, context) {
+	props = addChildrenToProps(children, props);
+
+	if (isStatefulComponent(Component)) {
+		var instance = new Component(props);
+		var childContext = instance.getChildContext();
+
+		if (!isNullOrUndefined(childContext)) {
+			context = babelHelpers.extends({}, context, childContext);
+		}
+		instance.context = context;
+		// Block setting state - we should render only once, using latest state
+		instance._pendingSetState = true;
+		instance.componentWillMount();
+		var shouldUpdate = instance.shouldComponentUpdate();
+		if (shouldUpdate) {
+			instance.componentWillUpdate();
+			var pendingState = instance._pendingState;
+			var oldState = instance.state;
+			instance.state = babelHelpers.extends({}, oldState, pendingState);
+		}
+		var node = instance.render();
+		instance._pendingSetState = false;
+		return renderNode(node, context);
+	} else {
+		var _node = Component(props);
+		return renderNode(_node, context);
+	}
+}
+
+function renderChildren(children, context) {
 	if (children && isArray(children)) {
 		var childrenResult = [];
 		var insertComment = false;
@@ -43,7 +112,7 @@ function renderChildren(children) {
 				insertComment = true;
 			} else {
 				insertComment = false;
-				childrenResult.push(renderNode(child));
+				childrenResult.push(renderNode(child, context));
 			}
 		}
 		return childrenResult.join('');
@@ -51,17 +120,22 @@ function renderChildren(children) {
 		if (isStringOrNumber(children)) {
 			return children;
 		} else {
-			return renderNode(children);
+			return renderNode(children, context);
 		}
 	}
 }
 
-function renderNode(node) {
+function renderNode(node, context) {
 	if (!isInvalidNode(node)) {
 		var _ret = function () {
 			var tag = node.tag;
 			var outputAttrs = [];
 
+			if (isFunction(tag)) {
+				return {
+					v: renderComponent(tag, node.attrs, node.children, context)
+				};
+			}
 			if (!isNullOrUndefined(node.className)) {
 				outputAttrs.push('class="' + node.className + '"');
 			}
@@ -80,7 +154,7 @@ function renderNode(node) {
 			}
 
 			return {
-				v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + (renderChildren(node.children) || '') + '</' + tag + '>'
+				v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + (renderChildren(node.children, context) || '') + '</' + tag + '>'
 			};
 		}();
 
@@ -89,7 +163,7 @@ function renderNode(node) {
 }
 
 function renderToString(node) {
-	return renderNode(node);
+	return renderNode(node, null);
 }
 
 var index = {

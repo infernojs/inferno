@@ -1,4 +1,9 @@
-import { render } from '../rendering';
+import { render } from './../rendering';
+import { createBlueprint } from './../../core/createBlueprint';
+
+const Inferno = {
+	createBlueprint
+};
 
 describe('createTree - SVG (JSX)', () => {
 
@@ -76,7 +81,7 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
 
-	it('should set and remove dynamic className property', () => {
+	it('should set and remove dynamic class property', () => {
 
 		let value = 'foo';
 
@@ -222,4 +227,27 @@ describe('createTree - SVG (JSX)', () => {
 		)).to.equal(false);
 	});
 
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
+		it('should add / change / remove xlink:href attribute', () => {
+
+			render(<svg>
+				<use xlink:href="#test"></use>
+			</svg>, container);
+
+			expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#test"></use></svg>'); // Add
+
+			render(<svg>
+				<use xlink:href="#changed"></use>
+			</svg>, container);
+
+			expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#changed"></use></svg>'); // Change
+
+			render(<svg>
+				<use></use>
+			</svg>, container);
+
+			expect(container.innerHTML).to.equal('<svg><use></use></svg>'); // Remove
+
+		});
+	}
 });

@@ -1,6 +1,6 @@
-import Lifecycle from '../core/lifecycle';
+import Lifecycle from './../core/lifecycle';
 import { mountNode } from './mounting';
-import { patchNode } from './patching';
+import { patch } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
 
 const roots = [];
@@ -32,13 +32,13 @@ export function render(node, parentDom) {
 	const lifecycle = new Lifecycle();
 
 	if (root === null) {
-		mountNode(node, parentDom, null, lifecycle, {}, null);
+		mountNode(node, parentDom, lifecycle, {}, null, false);
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });
 	} else {
 		const activeNode = getActiveNode();
 
-		patchNode(root.node, node, parentDom, null, lifecycle, {}, null, null);
+		patch(root.node, node, parentDom, lifecycle, {}, null, null, false);
 		lifecycle.trigger();
 		if (node === null) {
 			removeRoot(root);

@@ -1,9 +1,10 @@
-import createElement from '../../../src/core/createElement';
-import { createStaticElement } from '../../../src/core/static';
+import { createBlueprint, createVNode }from '../../../src/core/createBlueprint';
+import { createUniversalElement } from '../../../src/core/universal';
 
 export default {
-	createElement,
-	staticCompiler: {
-		createElement: createStaticElement
+	createBlueprint,
+	createVNode,
+	universal: {
+		createElement: createUniversalElement
 	}
 };

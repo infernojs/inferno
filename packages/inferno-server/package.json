@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "license": "MPL-2.0",
   "description": "Provides methods to render HTML strings from Inferno elements",
   "author": {
@@ -11,7 +11,6 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-server.js",
   "jsnext:main": "dist/inferno-server.es2015.js",
   "keywords": [
     "babel",
@@ -28,7 +27,7 @@
     "rollup"
   ],
   "dependencies": {
-    "inferno": "^0.6.4"
+    "inferno": "^0.6.5"
   },
   "main": "inferno-server.js",
   "repository": "https://github.com/trueadm/inferno"

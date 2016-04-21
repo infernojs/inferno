@@ -4,33 +4,34 @@ node_js:
   - 'stable'
 
 # Use container-based Travis infrastructure.
-sudo: true
+sudo: required
+dist: trusty
 
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+      
 cache:
   directories:
     - node_modules
-
+addons:
+  at:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+      - google-chrome-beta
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 before_install:
-  - export CHROME_BIN=/usr/bin/google-chrome
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - sudo apt-get update
-  - sudo apt-get install -y libappindicator1 fonts-liberation
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome*.deb
-
-install:
-  # Log HTTP requests
+  - "nvm use $TRAVIS_NODE_VERSION"
   - npm config set loglevel http
-  - npm install -g npm@3.5.2
-   # Instal npm dependecies and ensure that npm cache is not stale
   - npm install
-   
 notifications:
   email: true
-
-  after_script:
-# Upload to coveralls, but don't _fail_ if coveralls is down.
-  - ./node_modules/karma/bin/karma start
-  - cat coverage/lcov.info | node_modules/.bin/coveralls || echo "Coveralls upload failed"
-  - node node_modules/lcov-filter/index.js lcov.info config | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage

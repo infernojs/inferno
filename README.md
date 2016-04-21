@@ -6,6 +6,7 @@
 [![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
 [![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
+[![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg)](https://www.npmjs.org/package/inferno-dom)
 
 Inferno is an isomorphic library for building user interfaces with high performance, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses intelligent compile-time techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
 
@@ -38,18 +39,24 @@ Core package:
 
 ```sh
 npm install --save inferno
- ```
+```
  
  ES2015 stateful components (with lifecycle events) package:
  
-  ```sh
- npm install --save inferno-component 
- ```
+```sh
+npm install --save inferno-component 
+```
  
 Browser DOM rendering package:
 
- ```sh
+```sh
 npm install --save inferno-dom 
+```
+
+Helper for creating Inferno VNodes (similar to `React.createElement`):
+
+```sh
+npm install --save inferno-create-element 
 ```
 
 Server-side rendering package:
@@ -61,10 +68,11 @@ npm install --save inferno-server
 Pre-bundled files for browser consumption:
  
 ```
-http://infernojs.org/releases/0.6.4/inferno.min.js
-http://infernojs.org/releases/0.6.4/inferno-component.min.js
-http://infernojs.org/releases/0.6.4/inferno-dom.min.js
-http://infernojs.org/releases/0.6.4/inferno-server.min.js
+http://infernojs.org/releases/0.7.0/inferno.min.js
+http://infernojs.org/releases/0.7.0/inferno-create-element.min.js
+http://infernojs.org/releases/0.7.0/inferno-component.min.js
+http://infernojs.org/releases/0.7.0/inferno-dom.min.js
+http://infernojs.org/releases/0.7.0/inferno-server.min.js
 ```
 
 ## Overview
@@ -86,7 +94,9 @@ InfernoDOM.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```jsx
+import Inferno from 'inferno';
 import { Component } from `inferno-component`;
+import InfernoDOM from 'inferno-dom';
 
 class MyComponent extends Component {
   constructor(props) {
@@ -112,11 +122,45 @@ This is essential for low-power devices such as tablets and phones, where users 
 
 ## Inferno Top-Level API
 
-### Inferno.createElement
+### Inferno.createVNode
+
+Creates an Inferno VNode object that has chainable setting methods.
 
 ```jsx
-import { Component } from 'inferno-component';
-import { createElement } from 'inferno';
+import createVNode from `inferno`;
+
+InfernoDOM.render(createVNode().setTag('div').setAttrs({ className: 'test' }).setChildren('Hello world!'), document.body);
+```
+
+### Inferno.createBlueprint
+
+Creates an Inferno VNode using a predefined blueprint. Using the reference to the blueprint, it allows for faster optimisations with little overhead.
+
+```jsx
+import InfernoDOM from 'inferno-dom';
+
+const myBlueprint = Inferno.createBlueprint({
+    tag: 'div',
+    attrs: {
+        id: 'foo'
+    },
+    children: { arg: 0 }
+});
+
+InfernoDOM.render(myBlueprint('foo'), document.body);
+```
+
+For each property on the object passed as the argument to `createBlueprint`, anything that has been defined with `{ arg: X }` is regarded as a dnyamic value (matching the argument of calling this blueprint), otherwise the propeties are regarded as static.
+For example: if my object is `const blueprint = Inferno.createBlueprint({ tag: { arg: 0 } })`, then you'd expect to call `blueprint('div')` with the `argument 0` (first argument) being the tag for the VNode.
+
+### InfernoCreateElement
+
+Creates an Inferno VNode using a similar API to that found with React's `createElement`
+
+```jsx
+import InfernoDOM from 'inferno-dom';
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
 
 class BasicComponent extends Component {
     render() {
@@ -130,15 +174,15 @@ class BasicComponent extends Component {
     }
 }
 
-InfernoDOM.render(createElement(BasicComponent, { title: 'abc' }), container);
+InfernoDOM.render(createElement(BasicComponent, { title: 'abc' }), document.body);
 ```
 
-### InfernoComponent.Component
+### InfernoComponent
 
 **Stateful component:**
 
 ```jsx
-import { Component } from 'inferno-component';
+import Component from 'inferno-component';
 
 class MyComponent extends Component {
   render() {
@@ -236,6 +280,24 @@ time a framework offered more fun without compromising performance.
 ## JSX
  
 Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
+
+## Differences from React
+
+Inferno strives to be compatible with much of React's basic API. However, in some places, alternative implementations have been used or
+non-performant features have been removed or replaced where an alternative solution is easy to adopt without too many changes.
+
+### The stateful ES2015 Component is located in its own package
+ 
+React's ES2015 component is references as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
+into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless components with
+Inferno's `hooks` to give similar funcitonality as that provided by ES2015 components.
+
+### Automatic unit insertion on properties and properties
+
+Inferno makes no attempt to add the unit to numerical attributes or properties that React attempts to automatically add. For example: 
+`<div style={ { left: 10 } }/>` will result in `px` being added automatically to the style property in React. To ensure Inferno is kept lean and fast, the 
+code base does not contain these expensive checks and overheads have been removed. It's completely down to the user to specify the property. 
+So with Inferno, you should use the following to achieve the same result `<div style={ { left: '10px' } } />`.
 
 ## Contributing
 

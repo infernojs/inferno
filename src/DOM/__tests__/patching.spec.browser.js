@@ -1,5 +1,5 @@
-import { render } from '../rendering';
-import { createStaticElement } from '../../core/static';
+import { render } from './../rendering';
+import { createUniversalElement } from './../../core/universal';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {
@@ -80,22 +80,36 @@ describe('patching keyed lists (non-jsx)', () => {
 		dataModels = null;
 	});
 
-	const t1 = {
-		dom: createStaticElement('div'),
+	const bp1 = {
+		dom: createUniversalElement('div'),
 		pools: {
-			keyed: [],
+			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'div'
+		tag: 'div',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 4 // multiple children
 	};
 
-	const t2 = {
-		dom: createStaticElement('span'),
+	const bp2 = {
+		dom: createUniversalElement('span'),
 		pools: {
-			keyed: [],
+			keyed: {},
 			nonKeyed: []
 		},
-		tag: 'span'
+		tag: 'span',
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		childrenType: 1 // text child
 	};
 
 	function renderTree(nodes) {
@@ -108,14 +122,14 @@ describe('patching keyed lists (non-jsx)', () => {
 			if (n.children !== null) {
 				children[i] = {
 					dom: null,
-					tpl: t1,
+					bp: bp1,
 					key: n.key,
 					children: renderTree(n.children)
 				};
 			} else {
 				children[i] = {
 					dom: null,
-					tpl: t2,
+					bp: bp2,
 					key: n.key,
 					children: n.key
 				};
@@ -127,7 +141,7 @@ describe('patching keyed lists (non-jsx)', () => {
 	function renderModel(dataModel) {
 		render({
 			dom: null,
-			tpl: t1,
+			bp: bp1,
 			children: renderTree(dataModel)
 		}, container);
 	}

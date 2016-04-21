@@ -2,6 +2,8 @@ import Lifecycle from './../core/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
 import { getActiveNode, resetActiveNode } from './../DOM/utils';
 
+const noOp = 'Inferno Warning: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+
 function queueStateChanges(component, newState, callback) {
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
@@ -13,8 +15,6 @@ function queueStateChanges(component, newState, callback) {
 }
 
 function applyState(component, force, callback) {
-	const blockRender = component._blockRender;
-
 	if (component._deferSetState === false || force) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
@@ -23,21 +23,18 @@ function applyState(component, force, callback) {
 
 		component._pendingState = {};
 		const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+		const lastNode = component._lastNode;
+		const parentDom = lastNode.dom.parentNode;
 
-		if (!blockRender) {
-			const lastNode = component._lastNode;
-			const parentDom = lastNode.dom.parentNode;
-
-			const activeNode = getActiveNode();
-			const subLifecycle = new Lifecycle();
-			component._diffNodes(lastNode, nextNode, parentDom, null, subLifecycle, component.context, false, component.instance);
-			component._lastNode = nextNode;
-			subLifecycle.addListener(() => {
-				subLifecycle.trigger();
-				callback && callback();
-			});
-			resetActiveNode(activeNode);
-		}
+		const activeNode = getActiveNode();
+		const subLifecycle = new Lifecycle();
+		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
+		component._lastNode = nextNode;
+		subLifecycle.addListener(() => {
+			subLifecycle.trigger();
+			callback && callback();
+		});
+		resetActiveNode(activeNode);
 	}
 }
 
@@ -51,7 +48,6 @@ export default class Component {
 
 		/** @type {object} */
 		this.refs = {};
-		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -59,17 +55,23 @@ export default class Component {
 		this._lastNode = null;
 		this._unmounted = false;
 		this.context = {};
-		this._diffNodes = null;
+		this._patch = null;
 	}
 	render() {}
 	forceUpdate(callback) {
+		if (this._unmounted === true) {
+			throw Error(noOp);
+		}
 		applyState(this, true, callback);
 	}
 	setState(newState, callback) {
+		if (this._unmounted === true) {
+			throw Error(noOp);
+		}
 		if (this._blockSetState === false) {
 			queueStateChanges(this, newState, callback);
 		} else {
-			throw Error('Inferno Error: Cannot update state via setState() in componentWillUpdate()');
+			throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
 		}
 	}
 	componentDidMount() {}
@@ -90,9 +92,9 @@ export default class Component {
 		}
 		if (prevProps !== nextProps || prevState !== nextState || force) {
 			if (prevProps !== nextProps) {
-				this._blockRender = true;
+				this._blockSetState = true;
 				this.componentWillReceiveProps(nextProps);
-				this._blockRender = false;
+				this._blockSetState = false;
 			}
 			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 

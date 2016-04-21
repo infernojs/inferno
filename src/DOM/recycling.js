@@ -1,35 +1,29 @@
-import { diffNodes } from './diffing';
+import { patch } from './patching';
 import { isNullOrUndefined } from './../core/utils';
 
 export const recyclingEnabled = true;
 
-export function recycle(node, lifecycle, context, instance) {
-	const tpl = node.tpl;
-
-	if (!isNullOrUndefined(tpl)) {
+export function recycle(node, bp, lifecycle, context, instance) {
+	if (bp !== undefined) {
 		const key = node.key;
-		let recycledNode;
-
-		if (key !== null) {
-			const keyPool = tpl.pools.keyed[key];
-			recycledNode = keyPool && keyPool.pop();
-		} else {
-			const keyPool = tpl.pools.nonKeyed;
-			recycledNode = keyPool && keyPool.pop();
-		}
-		if (!isNullOrUndefined(recycledNode)) {
-			diffNodes(recycledNode, node, null, null, lifecycle, context, instance, true);
-			return node.dom;
+		const pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed[key];
+		if (!isNullOrUndefined(pool)) {
+			const recycledNode = pool.pop();
+			if (!isNullOrUndefined(recycledNode)) {
+				patch(recycledNode, node, null, null, lifecycle, context, instance, true);
+				return node.dom;
+			}
 		}
 	}
+	return null;
 }
 
 export function pool(node) {
-	const tpl = node.tpl;
+	const bp = node.bp;
 
-	if (!isNullOrUndefined(tpl)) {
+	if (!isNullOrUndefined(bp)) {
 		const key = node.key;
-		const pools = tpl.pools;
+		const pools = bp.pools;
 
 		if (key === null) {
 			const pool = pools.nonKeyed;
@@ -42,3 +36,4 @@ export function pool(node) {
 	}
 	return false;
 }
+

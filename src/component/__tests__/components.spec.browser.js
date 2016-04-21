@@ -1,10 +1,10 @@
-import { render } from '../../DOM/rendering';
-import Component from '../index';
-import createElement from '../../core/createElement';
-import innerHTML from '../../../tools/innerHTML';
-import waits from '../../../tools/waits';
+import { render } from './../../DOM/rendering';
+import Component from './../index';
+import createElement from './../../createElement';
+import innerHTML from './../../../tools/innerHTML';
+import waits from './../../../tools/waits';
 
-describe('Components', () => {
+describe('Components (non-JSX)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -421,9 +421,9 @@ describe('Components', () => {
 			'<div><div class="basic"><span class="basic-update">The title is 1234</span><span>I\'m a child</span></div></div>'
 		);
 
-		expect(() => {
+
 			render(template(), container);
-		}).to.throw();
+
 	});
 
 	class BasicComponent2b extends Component {
@@ -466,54 +466,56 @@ describe('Components', () => {
 		}
 	}
 
-	it('should render a basic component with styling', () => {
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
+		it('should render a basic component with styling', () => {
 
-		let template = (Component, props) =>
-			createElement(Component, props)
-		;
+			let template = (Component, props) =>
+					createElement(Component, props)
+				;
 
-		render(template(null, null, false), container);
+			render(template(null, null, false), container);
 
-		render(template(BasicComponent3, {
-			title: 'styled!',
-			styles: {
-				color: 'red',
-				paddingLeft: 10
-			}
-		}), container);
+			render(template(BasicComponent3, {
+				title: 'styled!',
+				styles: {
+					color: 'red',
+					paddingLeft: '10px'
+				}
+			}), container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
-		);
-		render(template(BasicComponent3, {
-			title: 'styled!',
-			styles: {
-				color: 'red',
-				paddingLeft: 10
-			}
-		}), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
+			);
+			render(template(BasicComponent3, {
+				title: 'styled!',
+				styles: {
+					color: 'red',
+					paddingLeft: '10px'
+				}
+			}), container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
-		);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>'
+			);
 
-		render(template(BasicComponent3, {
-			title: 'styled (again)!',
-			styles: {
-				color: 'blue',
-				paddingRight: 20
-			}
-		}), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div style="color: blue; padding-right: 20px;"><span style="color: blue; padding-right: 20px;">The title is styled (again)!</span></div>'
-		);
-	});
+			render(template(BasicComponent3, {
+				title: 'styled (again)!',
+				styles: {
+					color: 'blue',
+					paddingRight: '20px'
+				}
+			}), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div style="color: blue; padding-right: 20px;"><span style="color: blue; padding-right: 20px;">The title is styled (again)!</span></div>'
+			);
+		});
+	}
 
 	it('should render a basic component with component children', () => {
 		let template = (Component1, Component2, Component3) =>
@@ -650,9 +652,7 @@ describe('Components', () => {
 			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 		);
 		render('', container);
-		expect(() => {
-			render(template(''), container);
-		}).to.throw();
+
 		render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 
 		expect(
@@ -1055,6 +1055,7 @@ describe('Components', () => {
 				children: 'VISIBLE'
 			};
 		};
+
 		const tpl3754840163 = function (v0) {
 			return {
 				tag: 'div',
@@ -1067,18 +1068,22 @@ describe('Components', () => {
 				}
 			};
 		};
-		function TEST() {
-			this.state = {
-				show: false
-			};
 
-			this.makeVisible = function () {
-				this.setState({
-					show: true
-				});
-			}.bind(this);
+		class TEST extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					show: false
+				};
 
-			this.render = function () {
+				this.makeVisible = function () {
+					this.setState({
+						show: true
+					});
+				}.bind(this);
+			}
+
+			render() {
 				return tpl3578458729((function () {
 					if (this.state.show === true) {
 						return tpl188998005(null);
@@ -1086,10 +1091,8 @@ describe('Components', () => {
 						return tpl3754840163(this.makeVisible);
 					}
 				}).call(this));
-			};
+			}
 		}
-		TEST.prototype = new Component(null);
-		TEST.constructor = TEST;
 
 		const tpl79713834 = function (v0) {
 			return {
@@ -1163,12 +1166,15 @@ describe('Components', () => {
 			};
 		};
 
-		function SomeError() {
-			this.state = {
-				list: [ 'SS', 'SS1' ]
-			};
+		class SomeError extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					list: [ 'SS', 'SS1' ]
+				};
+			}
 
-			this.render = function () {
+			render() {
 				/* eslint new-cap:0 */
 				return BaseView(this.toggle, (function () {
 					return this.state.list.map(function (result){
@@ -1177,8 +1183,6 @@ describe('Components', () => {
 				}).call(this));
 			};
 		}
-		SomeError.prototype = new Component(null);
-		SomeError.constructor = SomeError;
 
 		it('Initial render (creation)', () => {
 			render(starter(null), container);

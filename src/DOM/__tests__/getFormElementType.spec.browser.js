@@ -1,5 +1,5 @@
-//import getFormElementType from '../getFormElementType';
-//import { render, renderToString } from '../rendering';
+//import getFormElementType from './../getFormElementType';
+//import { render, renderToString } from './../rendering';
 //
 //describe('getFormElementType', () => {
 //

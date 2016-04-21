@@ -11,180 +11,89 @@
 		return newArray;
 	}
 
-	var appTemplate1 = {
-		dom: Inferno.staticCompiler.createElement('table', { className: 'table table-striped latest-data' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'table',
-		className: 'table table-striped latest-data'
-	};
-
-	var appTemplate2 = {
-		dom: Inferno.staticCompiler.createElement('tbody'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'tbody'
-	};
-
-	var dbTemplate1 = {
-		dom: Inferno.staticCompiler.createElement('tr'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'tr'
-	};
-
-	var dbTemplate2 = {
-		dom: Inferno.staticCompiler.createElement('td', { className: 'dbname' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate1 = Inferno.createBlueprint({
 		tag: 'td',
-		className: 'dbname'
-	};
+		className: {arg: 0},
+		children: {arg: 1}
+	}, 4);
 
-	var dbTemplate3 = {
-		dom: Inferno.staticCompiler.createElement('td', { className: 'query-count' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'td',
-		className: 'query-count'
-	};
-
-	var dbTemplate4 = {
-		dom: Inferno.staticCompiler.createElement('span'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'span'
-	};
-
-	var queryTemplate1 = {
-		dom: Inferno.staticCompiler.createElement('td'),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
-		tag: 'td'
-	};
-
-	var queryTemplate2 = {
-		dom: Inferno.staticCompiler.createElement('span', {className: 'foo'}),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate2 = Inferno.createBlueprint({
 		tag: 'span',
-		className: 'foo'
-	};
+		className: 'foo',
+		children: {arg: 0}
+	}, 1);
 
-	var queryTemplate3 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'popover left' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate3 = Inferno.createBlueprint({
 		tag: 'div',
-		className: 'popover left'
-	};
+		className: 'popover left',
+		children: {arg: 0}
+	}, 4);
 
-	var queryTemplate4 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'popover-content' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate4 = Inferno.createBlueprint({
 		tag: 'div',
-		className: 'popover-content'
-	};
+		className: 'popover-content',
+		children: {arg: 0}
+	}, 1);
 
-	var queryTemplate5 = {
-		dom: Inferno.staticCompiler.createElement('div', { className: 'arrow' }),
-		pools: {
-			keyed: [],
-			nonKeyed: []
-		},
+	var queryTemplate5 = Inferno.createBlueprint({
 		tag: 'div',
 		className: 'arrow'
-	};
+	}, 0);
 
 	function createQuery(query) {
-		return {
-			tpl: queryTemplate1,
-			dom: null,
-			children: [
-				{
-					tpl: queryTemplate2,
-					dom: null,
-					children: query.formatElapsed
-				},
-				{
-					tpl: queryTemplate3,
-					dom: null,
-					children: [
-						{
-							tpl: queryTemplate4,
-							dom: null,
-							children: query.query
-						},
-						{
-							tpl: queryTemplate5,
-							dom: null
-						}
-					]
-				}
-			],
-			className: query.elapsedClassName
-		};
+		return queryTemplate1(query.elapsedClassName, [
+			queryTemplate2(query.formatElapsed),
+			queryTemplate3([
+				queryTemplate4(query.query),
+				queryTemplate5()
+			])
+		]);
 	}
+
+	var dbTemplate1 = Inferno.createBlueprint({
+		tag: 'tr',
+		children: {arg: 0}
+	}, 4);
+
+	var dbTemplate2 = Inferno.createBlueprint({
+		tag: 'td',
+		className: 'dbname',
+		children: {arg: 0}
+	}, 1);
+
+	var dbTemplate3 = Inferno.createBlueprint({
+		tag: 'td',
+		className: 'query-count',
+		children: {arg: 0}
+	}, 2);
+
+	var dbTemplate4 = Inferno.createBlueprint({
+		tag: 'span',
+		className: {arg: 0},
+		children: {arg: 1}
+	}, 1);
 
 	function createDatabase(db) {
 		var lastSample = db.lastSample;
 
-		return {
-			tpl: dbTemplate1,
-			dom: null,
-			children: [
-				{
-					tpl: dbTemplate2,
-					dom: null,
-					children: db.dbname
-				},
-				{
-					tpl: dbTemplate3,
-					dom: null,
-					children: {
-						tpl: dbTemplate4,
-						dom: null,
-						children: lastSample.nbQueries,
-						className: lastSample.countClassName
-					}
-				}
-			].concat(map(createQuery, lastSample.topFiveQueries))
-		};
+		return dbTemplate1([dbTemplate2(db.dbname), dbTemplate3(dbTemplate4(lastSample.countClassName, lastSample.nbQueries))].concat(map(createQuery, lastSample.topFiveQueries)));
 	}
+
+	var appTemplate1 = Inferno.createBlueprint({
+		tag: 'table',
+		className: 'table table-striped latest-data',
+		children: {arg: 0}
+	}, 2);
+
+	var appTemplate2 = Inferno.createBlueprint({
+		tag: 'tbody',
+		children: {arg: 0}
+	}, 4);
 
 	function render() {
 		var dbs = ENV.generateData().toArray();
 		Monitoring.renderRate.ping();
-		InfernoDOM.render({
-			tpl: appTemplate1,
-			dom: null,
-			children: {
-				tpl: appTemplate2,
-				dom: null,
-				children: map(createDatabase, dbs)
-			}
-		}, elem);
+		InfernoDOM.render(appTemplate1(appTemplate2(map(createDatabase, dbs))), elem);
 		setTimeout(render, ENV.timeout);
 	}
 	render();

@@ -1,8 +1,8 @@
-//import { updateKeyed } from '../domMutate';
-//import createDOMTree from '../createTree';
-//import { render, renderToString } from '../rendering';
-//import createTemplate from '../../core/createTemplate';
-//import { addTreeConstructor } from '../../core/createTemplate';
+//import { updateKeyed } from './../domMutate';
+//import createDOMTree from './../createTree';
+//import { render, renderToString } from './../rendering';
+//import createTemplate from './../../core/createTemplate';
+//import { addTreeConstructor } from './../../core/createTemplate';
 //
 //addTreeConstructor('dom', createDOMTree);
 //

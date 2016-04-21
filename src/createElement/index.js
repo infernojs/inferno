@@ -1,4 +1,5 @@
-import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './utils';
+import { createVNode } from '../core/createBlueprint';
+import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './../core/utils';
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;
@@ -51,7 +52,7 @@ function createChild({ tag, attrs, children, className, style, events, hooks }) 
 	if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
 		return null;
 	}
-	const key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : null;
+	const key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : undefined;
 
 	if (!isNullOrUndefined(children) && children.length === 0) {
 		children = null;
@@ -59,23 +60,25 @@ function createChild({ tag, attrs, children, className, style, events, hooks }) 
 		children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 	}
 
-	if (key !== null) {
+	if (key !== undefined) {
 		delete attrs.key;
 	}
 	const attrsAndEvents = createAttrsAndEvents(attrs, tag);
+	const vNode = createVNode();
 
-	return {
-		dom: null,
-		tag: tag,
-		key: key,
-		attrs: attrsAndEvents.attrs,
-		events: events || attrsAndEvents.events,
-		hooks: hooks || attrsAndEvents.hooks,
-		className: className || attrsAndEvents.className,
-		style: style || attrsAndEvents.style,
-		children: children,
-		instance: null
-	};
+	className = className || attrsAndEvents.className;
+	style = style || attrsAndEvents.style;
+
+	vNode.tag = tag || null;
+	vNode.attrs = attrsAndEvents.attrs || null;
+	vNode.events = attrsAndEvents.events || null;
+	vNode.hooks = attrsAndEvents.hooks || null;
+	vNode.children = children !== undefined ? children : null;
+	vNode.key = key !== undefined ? key : null;
+	vNode.className = className !== undefined ? className : null;
+	vNode.style = style !== undefined ? style : null;
+
+	return vNode;
 }
 
 export function createChildren(children) {

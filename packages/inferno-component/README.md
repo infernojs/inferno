@@ -14,7 +14,9 @@ npm install inferno-component
 ## Usage
 
 ```
-class MyComponent extends InfernoComponent.Component {
+const Component = InfernoComponent;
+
+class MyComponent extends Component {
 	render() { 
 		return <div></div>;
 	}

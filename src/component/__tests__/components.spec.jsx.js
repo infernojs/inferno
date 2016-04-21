@@ -1,6 +1,11 @@
-import { render } from '../../DOM/rendering';
-import Component from '../../component/index';
-import innerHTML from '../../../tools/innerHTML';
+import { render } from './../../DOM/rendering';
+import Component from './../../component/index';
+import innerHTML from './../../../tools/innerHTML';
+import { createBlueprint } from './../../core/createBlueprint';
+
+const Inferno = {
+	createBlueprint
+};
 
 describe('Components (JSX)', () => {
 	let container;
@@ -381,7 +386,7 @@ describe('Components (JSX)', () => {
 	it('should render a basic component with styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingLeft: 10 } } />
+			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingLeft: '10px' } } />
 		), container);
 
 		expect(
@@ -395,7 +400,7 @@ describe('Components (JSX)', () => {
 		), container);
 
 		render((
-			<BasicComponent3 title="styled (again)!" styles={ { color: 'blue', marginBottom: 20 } } />
+			<BasicComponent3 title="styled (again)!" styles={ { color: 'blue', marginBottom: '20px' } } />
 		), container);
 
 		expect(
@@ -408,7 +413,7 @@ describe('Components (JSX)', () => {
 	it('should render a basic component and remove styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingTop: 20 } } />
+			<BasicComponent3 title="styled!" styles={ { color: 'red', paddingTop: '20px' } } />
 		), container);
 
 		expect(
@@ -446,7 +451,7 @@ describe('Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>')
+			innerHTML('<svg class="alert-icon"><use xlink:href="#error"></use></svg>')
 		);
 
 		// unset
@@ -463,7 +468,7 @@ describe('Components (JSX)', () => {
 		expect(
 			container.innerHTML
 		).to.equal(
-			innerHTML('<svg class="alert-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#error"></use></svg>')
+			innerHTML('<svg class="alert-icon"><use xlink:href="#error"></use></svg>')
 		);
 	});
 
@@ -703,9 +708,11 @@ describe('Components (JSX)', () => {
 		class SomeError extends Component {
 			constructor(props) {
 				super(props);
+
 				this.state = {
 					show: false
 				};
+
 				this.toggle = this.toggle.bind(this);
 			}
 
@@ -1555,7 +1562,7 @@ describe('Components (JSX)', () => {
 
 			componentWillMount() {
 				setTimeout(() => {
-					this.setState({z: true});
+					expect(() => this.setState({z: true})).to.throw();
 				}, 20);
 			};
 
@@ -1563,7 +1570,7 @@ describe('Components (JSX)', () => {
 				if (!this.state.z) {
 					return (<div>A</div>);
 				}
-				
+
 				return (<MakeB />);
 			};
 		}
@@ -1582,5 +1589,120 @@ describe('Components (JSX)', () => {
 		setTimeout(function() {
 			done();
 		}, 50);
+	});
+
+	it('Events should propagate between components (github #135)', (done) => {
+		class Label extends Component {
+			render() {
+				const style = { backgroundColor: 'red', padding: '0 20px', fontSize: '40px' };
+				return <span style={style}>{this.props.text}</span>;
+			}
+		}
+
+		var btnFlag = false;
+		var containerFlag = false;
+
+		class Button extends Component {
+			onClick(event) {
+				btnFlag = !btnFlag;
+			}
+			render() {
+				const { text } = this.props;
+				return <button onClick={this.onClick}><Label text={text} /></button>;
+			}
+		}
+
+		class Container extends Component {
+			onClick(event) {
+				containerFlag = !containerFlag;
+			}
+			render() {
+				return <div onClick={this.onClick}><Button text="Click me" /></div>
+			}
+		}
+
+		render(<Container />, container);
+
+		expect(btnFlag).to.equal(false);
+		expect(containerFlag).to.equal(false);
+
+		const spans = Array.prototype.slice.call(container.querySelectorAll('span'));
+		spans.forEach(span => span.click());
+
+		expect(btnFlag).to.equal(true);
+		expect(containerFlag).to.equal(true);
+		done();
+	});
+
+	it('Should be possible to stop propagation', (done) => {
+		class Label extends Component {
+			render() {
+				const style = { backgroundColor: 'red', padding: '0 20px', fontSize: '40px' };
+				return <span style={style}>{this.props.text}</span>;
+			}
+		}
+
+		var btnFlag = false;
+		var containerFlag = false;
+
+		class Button extends Component {
+			onClick(event) {
+				event.stopPropagation();
+				btnFlag = !btnFlag;
+			}
+			render() {
+				const { text } = this.props;
+				return <button onClick={this.onClick}><Label text={text} /></button>;
+			}
+		}
+
+		class Container extends Component {
+			onClick(event) {
+				containerFlag = !containerFlag;
+			}
+			render() {
+				return <div onClick={this.onClick}><Button text="Click me" /></div>
+			}
+		}
+
+		render(<Container />, container);
+
+		expect(btnFlag).to.equal(false);
+		expect(containerFlag).to.equal(false);
+
+		const spans = Array.prototype.slice.call(container.querySelectorAll('span'));
+		spans.forEach(span => span.click());
+
+		expect(btnFlag).to.equal(true);
+		expect(containerFlag).to.equal(false);
+		done();
+	});
+
+	describe('Inheritance should work', () => {
+		it('Should render div', () => {
+			class A extends Component {
+				constructor(props) {
+					super(props);
+				}
+			}
+
+			class B extends A {
+				constructor(props) {
+					super(props);
+				}
+			}
+
+			class C extends B {
+				constructor(props) {
+					super(props);
+				}
+				render() {
+					return (<div></div>)
+				}
+			}
+
+			render(<C />, container);
+			expect(container.innerHTML).to.equal('<div></div>');
+		});
 	});
 });
