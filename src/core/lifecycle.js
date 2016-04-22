@@ -3,9 +3,16 @@ let screenHeight = window.screen.height;
 let scrollX = 0;
 let scrollY = 0;
 
-document.onscroll = function(e) {
+window.onscroll = function(e) {
 	scrollX = window.scrollX;
 	scrollY = window.scrollY;
+};
+
+window.resize = function(e) {
+	scrollX = window.scrollX;
+	scrollY = window.scrollY;
+	screenWidth = window.screen.width;
+	screenHeight = window.screen.height;
 };
 
 export default function Lifecycle() {

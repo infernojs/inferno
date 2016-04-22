@@ -1,8 +1,20 @@
 import Lifecycle from './../core/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
-import { getActiveNode, resetActiveNode } from './../DOM/utils';
 
 const noOp = 'Inferno Warning: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+
+// Copy of the util from dom/util, otherwise it makes massive bundles
+function getActiveNode() {
+	return document.activeElement;
+}
+
+// Copy of the util from dom/util, otherwise it makes massive bundles
+function resetActiveNode(activeNode) {
+	if (activeNode !== document.body && document.activeElement !== activeNode) {
+		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
+	}
+}
+
 
 function queueStateChanges(component, newState, callback) {
 	for (let stateKey in newState) {

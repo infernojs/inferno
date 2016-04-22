@@ -1,5 +1,4 @@
 import { isNullOrUndefined } from './utils';
-import { createUniversalElement } from './universal';
 
 function VNode(blueprint) {
 	this.bp = blueprint;

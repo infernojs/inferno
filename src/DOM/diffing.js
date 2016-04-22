@@ -141,20 +141,34 @@ function patchLazyNode(value) {
 	value.clipData.pending = false;
 }
 
-function patchLazyNodes() {
-	lazyNodeMap.forEach(patchLazyNode);
-	lazyNodeMap.clear();
+function runPatchLazyNodes() {
 	if (typeof requestIdleCallback !== 'undefined') {
 		requestIdleCallback(patchLazyNodes);
 	} else {
-		setTimeout(patchLazyNodes, 300);
+		setTimeout(patchLazyNodes, 100);
 	}
 }
 
-if (typeof requestIdleCallback !== 'undefined') {
-	requestIdleCallback(patchLazyNodes);
-} else {
-	setTimeout(patchLazyNodes, 300);
+function patchLazyNodes() {
+	lazyNodeMap.forEach(patchLazyNode);
+	lazyNodeMap.clear();
+	runPatchLazyNodes();
+}
+
+runPatchLazyNodes();
+
+function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
+	if (lifecycle.scrollY === null) {
+		lifecycle.refresh();
+	}
+	const lazyNodeEntry = lazyNodeMap.get(dom);
+
+	if (lazyNodeEntry === undefined) {
+		lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
+	} else {
+		lazyNodeEntry.nextNode = nextNode;
+	}
+	clipData.pending = true;
 }
 
 export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
@@ -204,28 +218,11 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 				nextNode.clipData = clipData;
 				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-					if (lifecycle.scrollY === null) {
-						lifecycle.refresh();
-					}
-					const lazyNodeEntry = lazyNodeMap.get(dom);
-
-					if (lazyNodeEntry === undefined) {
-						lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
-					} else {
-						lazyNodeEntry.nextNode = nextNode;
-					}
-					clipData.pending = true;
+					setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
 					return;
 				}
 				if (clipData.bottom < lifecycle.scrollY) {
-					const lazyNodeEntry = lazyNodeMap.get(dom);
-
-					if (lazyNodeEntry === undefined) {
-						lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
-					} else {
-						lazyNodeEntry.nextNode = nextNode;
-					}
-					clipData.pending = true;
+					setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
 					return;
 				}
 			}

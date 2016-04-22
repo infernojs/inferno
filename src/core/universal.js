@@ -1,8 +1,19 @@
 import { isAttrAnEvent, isNullOrUndefined } from './utils';
-import { documentCreateElement } from './../DOM/utils';
 
 // Runs only once in applications lifetime
 const isBrowser = typeof window !== 'undefined' && window.document;
+
+// Copy of the util from dom/util, otherwise it makes massive bundles
+function documentCreateElement(tag, isSVG) {
+	let dom;
+
+	if (isSVG === true) {
+		dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
+	} else {
+		dom = document.createElement(tag);
+	}
+	return dom;
+}
 
 export function createUniversalElement(tag, attrs, isSVG) {
 	if (isBrowser) {
