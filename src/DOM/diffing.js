@@ -204,6 +204,9 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 				nextNode.clipData = clipData;
 				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+					if (lifecycle.scrollY === null) {
+						lifecycle.refresh();
+					}
 					const lazyNodeEntry = lazyNodeMap.get(dom);
 
 					if (lazyNodeEntry === undefined) {

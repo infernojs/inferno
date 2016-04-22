@@ -311,6 +311,9 @@
 
 					nextNode.clipData = clipData;
 					if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+						if (lifecycle.scrollY === null) {
+							lifecycle.refresh();
+						}
 						var lazyNodeEntry = lazyNodeMap.get(dom);
 
 						if (lazyNodeEntry === void 0) {
