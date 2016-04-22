@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-element",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "license": "MPL-2.0",
   "description": "Provides methods to create Inferno VNodes",
   "author": {

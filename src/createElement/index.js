@@ -27,7 +27,7 @@ export function createAttrsAndEvents(props, tag) {
 				if (isNullOrUndefined(events)) {
 					events = {};
 				}
-				events[prop.substring(2).toLowerCase()] = props[prop];
+				events[prop.toLowerCase()] = props[prop];
 				delete props[prop];
 			} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
 				if (isNullOrUndefined(hooks)) {
