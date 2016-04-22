@@ -630,20 +630,31 @@
 		value.clipData.pending = false;
 	}
 
-	function patchLazyNodes() {
-		lazyNodeMap.forEach(patchLazyNode);
-		lazyNodeMap.clear();
+	function runPatchLazyNodes() {
 		if (typeof requestIdleCallback !== 'undefined') {
 			requestIdleCallback(patchLazyNodes);
 		} else {
-			setTimeout(patchLazyNodes, 300);
+			setTimeout(patchLazyNodes, 100);
 		}
 	}
 
-	if (typeof requestIdleCallback !== 'undefined') {
-		requestIdleCallback(patchLazyNodes);
-	} else {
-		setTimeout(patchLazyNodes, 300);
+	function patchLazyNodes() {
+		lazyNodeMap.forEach(patchLazyNode);
+		lazyNodeMap.clear();
+		runPatchLazyNodes();
+	}
+
+	runPatchLazyNodes();
+
+	function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
+		var lazyNodeEntry = lazyNodeMap.get(dom);
+
+		if (lazyNodeEntry === void 0) {
+			lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData, lifecycle: lifecycle });
+		} else {
+			lazyNodeEntry.nextNode = nextNode;
+		}
+		clipData.pending = true;
 	}
 
 	function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
@@ -691,30 +702,17 @@
 				if (nextBp.lazy === true && skipLazyCheck === false) {
 					var clipData = lastNode.clipData;
 
+					if (lifecycle.scrollY === null) {
+						lifecycle.refresh();
+					}
+
 					nextNode.clipData = clipData;
 					if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-						if (lifecycle.scrollY === null) {
-							lifecycle.refresh();
-						}
-						var lazyNodeEntry = lazyNodeMap.get(dom);
-
-						if (lazyNodeEntry === void 0) {
-							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData, lifecycle: lifecycle });
-						} else {
-							lazyNodeEntry.nextNode = nextNode;
-						}
-						clipData.pending = true;
+						setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
 						return;
 					}
 					if (clipData.bottom < lifecycle.scrollY) {
-						var _lazyNodeEntry = lazyNodeMap.get(dom);
-
-						if (_lazyNodeEntry === void 0) {
-							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData, lifecycle: lifecycle });
-						} else {
-							_lazyNodeEntry.nextNode = nextNode;
-						}
-						clipData.pending = true;
+						setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
 						return;
 					}
 				}

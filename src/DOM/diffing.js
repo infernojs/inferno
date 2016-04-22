@@ -158,9 +158,6 @@ function patchLazyNodes() {
 runPatchLazyNodes();
 
 function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
-	if (lifecycle.scrollY === null) {
-		lifecycle.refresh();
-	}
 	const lazyNodeEntry = lazyNodeMap.get(dom);
 
 	if (lazyNodeEntry === undefined) {
@@ -215,6 +212,10 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 			if (nextBp.lazy === true && skipLazyCheck === false) {
 				const clipData = lastNode.clipData;
+
+				if (lifecycle.scrollY === null) {
+					lifecycle.refresh();
+				}
 
 				nextNode.clipData = clipData;
 				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
