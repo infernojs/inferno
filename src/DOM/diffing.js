@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
 import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents, patchNode } from './patching';
 import { mountArrayChildren, mountNode, mountEvents } from './mounting';
 
 
@@ -134,7 +134,47 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	}
 }
 
-export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance) {
+const lazyNodeMap = new Map();
+
+function patchLazyNodes() {
+	const values = lazyNodeMap.values();
+
+	// Taken from Babel, otherwise it uses the non-loose version and adds try/catches in
+	for (let _iterator = values, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
+		let _ref;
+
+		if (_isArray) {
+			if (_i >= _iterator.length) {
+				break;
+			}
+			_ref = _iterator[_i++];
+		} else {
+			_i = _iterator.next();
+			if (_i.done) {
+				break;
+			}
+			_ref = _i.value;
+		}
+		const value = _ref;
+
+		value.clipData.pending = false;
+		patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
+	}
+	lazyNodeMap.clear();
+	if (typeof requestIdleCallback !== 'undefined') {
+		requestIdleCallback(patchLazyNodes);
+	} else {
+		setTimeout(patchLazyNodes, 300);
+	}
+}
+
+if (typeof requestIdleCallback !== 'undefined') {
+	requestIdleCallback(patchLazyNodes);
+} else {
+	setTimeout(patchLazyNodes, 300);
+}
+
+export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 	let nextHooks;
 
 	if (nextNode.hasHooks === true) {
@@ -176,16 +216,30 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			const nextChildrenType = nextBp.childrenType;
 			nextNode.dom = dom;
 
-			if (nextBp.lazy == true) {
+			if (nextBp.lazy === true) {
 				const clipData = lastNode.clipData;
 
 				nextNode.clipData = clipData;
-				if (clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-					nextNode.children = lastNode.children;
+				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+					const lazyNodeEntry = lazyNodeMap.get(dom);
+
+					if (lazyNodeEntry === undefined) {
+						lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
+					} else {
+						lazyNodeEntry.nextNode = nextNode;
+					}
+					clipData.pending = true;
 					return;
 				}
 				if (clipData.bottom < lifecycle.scrollY) {
-					nextNode.children = lastNode.children;
+					const lazyNodeEntry = lazyNodeMap.get(dom);
+
+					if (lazyNodeEntry === undefined) {
+						lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
+					} else {
+						lazyNodeEntry.nextNode = nextNode;
+					}
+					clipData.pending = true;
 					return;
 				}
 			}

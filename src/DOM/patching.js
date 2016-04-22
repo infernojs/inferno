@@ -37,14 +37,14 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 	}
 }
 
-function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
+export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, skipLazyCheck) {
 	const lastBp = lastNode.bp;
 	const nextBp = nextNode.bp;
 
 	if (lastBp === undefined || nextBp === undefined) {
 		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance);
+		diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
 	}
 }
 

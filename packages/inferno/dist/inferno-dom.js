@@ -473,7 +473,8 @@
 				top: rect.top + lifecycle.scrollY,
 				left: rect.left + lifecycle.scrollX,
 				bottom: rect.bottom + lifecycle.scrollY,
-				right: rect.right + +lifecycle.scrollX
+				right: rect.right + +lifecycle.scrollX,
+				pending: false
 			};
 		});
 	}
@@ -607,7 +608,46 @@
 		}
 	}
 
-	function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance) {
+	var lazyNodeMap = new Map();
+
+	function patchLazyNodes() {
+		var values = lazyNodeMap.values();
+
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+
+		var _iteratorError = void 0;
+
+		try {
+			for (var _iterator = values[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var value = _step.value;
+
+				value.clipData.pending = false;
+				patchNode(value.lastNode, value.nextNode, value.parentDom, {}, null, null, false, true);
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator.return) {
+					_iterator.return();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+
+		lazyNodeMap.clear();
+
+		requestIdleCallback(patchLazyNodes);
+	}
+
+	requestIdleCallback(patchLazyNodes);
+
+	function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 		var nextHooks = void 0;
 
 		if (nextNode.hasHooks === true) {
@@ -649,16 +689,30 @@
 				var nextChildrenType = nextBp.childrenType;
 				nextNode.dom = dom;
 
-				if (nextBp.lazy == true) {
+				if (nextBp.lazy === true) {
 					var clipData = lastNode.clipData;
 
 					nextNode.clipData = clipData;
-					if (clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-						nextNode.children = lastNode.children;
+					if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+						var lazyNodeEntry = lazyNodeMap.get(dom);
+
+						if (lazyNodeEntry === void 0) {
+							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData });
+						} else {
+							lazyNodeEntry.nextNode = nextNode;
+						}
+						clipData.pending = true;
 						return;
 					}
 					if (clipData.bottom < lifecycle.scrollY) {
-						nextNode.children = lastNode.children;
+						var _lazyNodeEntry = lazyNodeMap.get(dom);
+
+						if (_lazyNodeEntry === void 0) {
+							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData });
+						} else {
+							_lazyNodeEntry.nextNode = nextNode;
+						}
+						clipData.pending = true;
 						return;
 					}
 				}
@@ -837,14 +891,14 @@
 		}
 	}
 
-	function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
+	function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, skipLazyCheck) {
 		var lastBp = lastNode.bp;
 		var nextBp = nextNode.bp;
 
 		if (lastBp === void 0 || nextBp === void 0) {
 			diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 		} else {
-			diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance);
+			diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
 		}
 	}
 

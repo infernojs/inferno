@@ -339,7 +339,8 @@ export function handleLazyAttached(node, lifecycle,  dom) {
 			top: rect.top + lifecycle.scrollY,
 			left: rect.left + lifecycle.scrollX,
 			bottom: rect.bottom + lifecycle.scrollY,
-			right: rect.right + + lifecycle.scrollX
+			right: rect.right + + lifecycle.scrollX,
+			pending: false
 		};
 	});
 }
