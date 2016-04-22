@@ -60,7 +60,7 @@
     "phantomjs-prebuilt": "^2.1.7",
     "pre-commit": "^1.1.2",
     "rimraf": "^2.5.2",
-    "rollup": "^0.25.8",
+    "rollup": "^0.26.0",
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-eslint": "^2.0.0",
     "rollup-plugin-filesize": "^0.2.1",
