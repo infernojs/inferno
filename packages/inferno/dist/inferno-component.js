@@ -56,8 +56,22 @@
 
 	babelHelpers;
 
+	var screenWidth = window.screen.width;
+	var screenHeight = window.screen.height;
+	var scrollX = window.scrollX;
+	var scrollY = window.scrollY;
+
+	document.onscroll = function (e) {
+		scrollX = window.scrollX;
+		scrollY = window.scrollY;
+	};
+
 	function Lifecycle() {
 		this._listeners = [];
+		this.scrollX = scrollX;
+		this.scrollY = scrollY;
+		this.screenHeight = screenHeight;
+		this.screenWidth = screenWidth;
 	}
 
 	Lifecycle.prototype = {

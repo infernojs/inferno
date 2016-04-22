@@ -96,6 +96,7 @@
 		this.events = null;
 		this.hooks = null;
 		this.key = null;
+		this.clipData = null;
 	}
 
 	VNode.prototype = {

@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
+import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, handleLazyAttached } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 
 export function mountNode(node, parentDom, lifecycle, context, instance, isSVG) {
@@ -47,6 +47,9 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 	node.dom = dom;
 	if (bp.hasHooks === true) {
 		handleAttachedHooks(node.hooks, lifecycle, dom);
+	}
+	if (bp.lazy === true) {
+		handleLazyAttached(node, lifecycle, dom);
 	}
 	// bp.childrenType:
 	// 0: no children

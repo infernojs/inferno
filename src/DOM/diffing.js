@@ -176,6 +176,20 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			const nextChildrenType = nextBp.childrenType;
 			nextNode.dom = dom;
 
+			if (nextBp.lazy == true) {
+				const clipData = lastNode.clipData;
+
+				nextNode.clipData = clipData;
+				if (clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+					nextNode.children = lastNode.children;
+					return;
+				}
+				if (clipData.bottom < lifecycle.scrollY) {
+					nextNode.children = lastNode.children;
+					return;
+				}
+			}
+
 			if (lastChildrenType > 0 || nextChildrenType > 0) {
 				if (nextChildrenType === 5 || lastChildrenType === 5) {
 					diffChildren(lastNode, nextNode, dom, lifecycle, context, instance);

@@ -120,6 +120,7 @@
 		this.events = null;
 		this.hooks = null;
 		this.key = null;
+		this.clipData = null;
 	}
 
 	VNode.prototype = {
@@ -187,6 +188,7 @@
 		var classNameIsDynamic = className && className.arg !== void 0 ? true : false;
 
 		var blueprint = {
+			lazy: shape.lazy || false,
 			dom: null,
 			pools: {
 				keyed: {},

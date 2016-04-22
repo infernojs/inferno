@@ -56,8 +56,22 @@
 
 	babelHelpers;
 
+	var screenWidth = window.screen.width;
+	var screenHeight = window.screen.height;
+	var scrollX = window.scrollX;
+	var scrollY = window.scrollY;
+
+	document.onscroll = function (e) {
+		scrollX = window.scrollX;
+		scrollY = window.scrollY;
+	};
+
 	function Lifecycle() {
 		this._listeners = [];
+		this.scrollX = scrollX;
+		this.scrollY = scrollY;
+		this.screenHeight = screenHeight;
+		this.screenWidth = screenWidth;
 	}
 
 	Lifecycle.prototype = {
@@ -452,6 +466,18 @@
 		}
 	}
 
+	function handleLazyAttached(node, lifecycle, dom) {
+		lifecycle.addListener(function () {
+			var rect = dom.getBoundingClientRect();
+			node.clipData = {
+				top: rect.top + lifecycle.scrollY,
+				left: rect.left + lifecycle.scrollX,
+				bottom: rect.bottom + lifecycle.scrollY,
+				right: rect.right + +lifecycle.scrollX
+			};
+		});
+	}
+
 	function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
 		var nextChildren = nextNode.children;
 		var lastChildren = lastNode.children;
@@ -622,6 +648,20 @@
 				var lastChildrenType = lastBp.childrenType;
 				var nextChildrenType = nextBp.childrenType;
 				nextNode.dom = dom;
+
+				if (nextBp.lazy == true) {
+					var clipData = lastNode.clipData;
+
+					nextNode.clipData = clipData;
+					if (clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+						nextNode.children = lastNode.children;
+						return;
+					}
+					if (clipData.bottom < lifecycle.scrollY) {
+						nextNode.children = lastNode.children;
+						return;
+					}
+				}
 
 				if (lastChildrenType > 0 || nextChildrenType > 0) {
 					if (nextChildrenType === 5 || lastChildrenType === 5) {
@@ -1455,6 +1495,9 @@
 		node.dom = dom;
 		if (bp.hasHooks === true) {
 			handleAttachedHooks(node.hooks, lifecycle, dom);
+		}
+		if (bp.lazy === true) {
+			handleLazyAttached(node, lifecycle, dom);
 		}
 		// bp.childrenType:
 		// 0: no children

@@ -13,6 +13,7 @@ function VNode(blueprint) {
 	this.events = null;
 	this.hooks = null;
 	this.key = null;
+	this.clipData = null;
 }
 
 VNode.prototype = {
@@ -80,6 +81,7 @@ export function createBlueprint(shape, childrenType) {
 	const classNameIsDynamic = className && className.arg !== undefined ? true : false;
 
 	const blueprint = {
+		lazy: shape.lazy || false,
 		dom: null,
 		pools: {
 			keyed: {},
