@@ -50,7 +50,7 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 
 export function patch(lastNode, nextNode, parentDom, lifecycle, context, instance, isNode, isSVG) {
 	if (isNode !== null) {
-		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
 	} else if (isInvalidNode(lastNode)) {
 		mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
 	} else if (isInvalidNode(nextNode)) {
@@ -67,7 +67,7 @@ export function patch(lastNode, nextNode, parentDom, lifecycle, context, instanc
 		const textNode = document.createTextNode(nextNode);
 		replaceNode(parentDom, textNode, lastNode.dom);
 	} else {
-		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
 	}
 }
 

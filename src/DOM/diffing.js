@@ -136,11 +136,13 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 
 const lazyNodeMap = new Map();
 
+function patchLazyNode(value) {
+	patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
+	value.clipData.pending = false;
+}
+
 function patchLazyNodes() {
-	lazyNodeMap.forEach((value) => {
-		value.clipData.pending = false;
-		patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
-	});
+	lazyNodeMap.forEach(patchLazyNode);
 	lazyNodeMap.clear();
 	if (typeof requestIdleCallback !== 'undefined') {
 		requestIdleCallback(patchLazyNodes);
@@ -197,7 +199,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			const nextChildrenType = nextBp.childrenType;
 			nextNode.dom = dom;
 
-			if (nextBp.lazy === true) {
+			if (nextBp.lazy === true && skipLazyCheck === false) {
 				const clipData = lastNode.clipData;
 
 				nextNode.clipData = clipData;

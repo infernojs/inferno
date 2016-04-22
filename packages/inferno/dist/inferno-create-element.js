@@ -251,11 +251,13 @@
 
 	var lazyNodeMap = new Map();
 
+	function patchLazyNode(value) {
+		patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
+		value.clipData.pending = false;
+	}
+
 	function patchLazyNodes() {
-		lazyNodeMap.forEach(function (value) {
-			value.clipData.pending = false;
-			patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
-		});
+		lazyNodeMap.forEach(patchLazyNode);
 		lazyNodeMap.clear();
 		if (typeof requestIdleCallback !== 'undefined') {
 			requestIdleCallback(patchLazyNodes);
@@ -312,7 +314,7 @@
 				var nextChildrenType = nextBp.childrenType;
 				nextNode.dom = dom;
 
-				if (nextBp.lazy === true) {
+				if (nextBp.lazy === true && skipLazyCheck === false) {
 					var clipData = lastNode.clipData;
 
 					nextNode.clipData = clipData;
@@ -527,7 +529,7 @@
 
 	function patch(lastNode, nextNode, parentDom, lifecycle, context, instance, isNode, isSVG) {
 		if (isNode !== null) {
-			patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+			patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
 		} else if (isInvalidNode(lastNode)) {
 			mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isInvalidNode(nextNode)) {
@@ -544,7 +546,7 @@
 			var textNode = document.createTextNode(nextNode);
 			replaceNode(parentDom, textNode, lastNode.dom);
 		} else {
-			patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+			patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
 		}
 	}
 
@@ -1773,11 +1775,15 @@
 	function handleLazyAttached(node, lifecycle, dom) {
 		lifecycle.addListener(function () {
 			var rect = dom.getBoundingClientRect();
+
+			if (lifecycle.scrollY === null) {
+				lifecycle.refresh();
+			}
 			node.clipData = {
 				top: rect.top + lifecycle.scrollY,
 				left: rect.left + lifecycle.scrollX,
 				bottom: rect.bottom + lifecycle.scrollY,
-				right: rect.right + +lifecycle.scrollX,
+				right: rect.right + lifecycle.scrollX,
 				pending: false
 			};
 		});

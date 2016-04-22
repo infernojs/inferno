@@ -1,7 +1,7 @@
 let screenWidth = window.screen.width;
 let screenHeight = window.screen.height;
-let scrollX = window.scrollX;
-let scrollY = window.scrollY;
+let scrollX = 0;
+let scrollY = 0;
 
 document.onscroll = function(e) {
 	scrollX = window.scrollX;
@@ -10,13 +10,17 @@ document.onscroll = function(e) {
 
 export default function Lifecycle() {
 	this._listeners = [];
-	this.scrollX = scrollX;
-	this.scrollY = scrollY;
+	this.scrollX = null;
+	this.scrollY = null;
 	this.screenHeight = screenHeight;
 	this.screenWidth = screenWidth;
 }
 
 Lifecycle.prototype = {
+	refresh() {
+		this.scrollX = window.scrollX;
+		this.scrollY = window.scrollY;
+	},
 	addListener(callback) {
 		this._listeners.push(callback);
 	},
