@@ -137,29 +137,10 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 const lazyNodeMap = new Map();
 
 function patchLazyNodes() {
-	const values = lazyNodeMap.values();
-
-	// Taken from Babel, otherwise it uses the non-loose version and adds try/catches in
-	for (let _iterator = values, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-		let _ref;
-
-		if (_isArray) {
-			if (_i >= _iterator.length) {
-				break;
-			}
-			_ref = _iterator[_i++];
-		} else {
-			_i = _iterator.next();
-			if (_i.done) {
-				break;
-			}
-			_ref = _i.value;
-		}
-		const value = _ref;
-
+	lazyNodeMap.forEach((value) => {
 		value.clipData.pending = false;
 		patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
-	}
+	});
 	lazyNodeMap.clear();
 	if (typeof requestIdleCallback !== 'undefined') {
 		requestIdleCallback(patchLazyNodes);

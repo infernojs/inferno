@@ -269,41 +269,23 @@
 	var lazyNodeMap = new Map();
 
 	function patchLazyNodes() {
-		var values = lazyNodeMap.values();
-
-		var _iteratorNormalCompletion = true;
-		var _didIteratorError = false;
-
-		var _iteratorError = void 0;
-
-		try {
-			for (var _iterator = values[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-				var value = _step.value;
-
-				value.clipData.pending = false;
-				patchNode(value.lastNode, value.nextNode, value.parentDom, {}, null, null, false, true);
-			}
-		} catch (err) {
-			_didIteratorError = true;
-			_iteratorError = err;
-		} finally {
-			try {
-				if (!_iteratorNormalCompletion && _iterator.return) {
-					_iterator.return();
-				}
-			} finally {
-				if (_didIteratorError) {
-					throw _iteratorError;
-				}
-			}
-		}
-
+		lazyNodeMap.forEach(function (value) {
+			value.clipData.pending = false;
+			patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
+		});
 		lazyNodeMap.clear();
-
-		requestIdleCallback(patchLazyNodes);
+		if (typeof requestIdleCallback !== 'undefined') {
+			requestIdleCallback(patchLazyNodes);
+		} else {
+			setTimeout(patchLazyNodes, 300);
+		}
 	}
 
-	requestIdleCallback(patchLazyNodes);
+	if (typeof requestIdleCallback !== 'undefined') {
+		requestIdleCallback(patchLazyNodes);
+	} else {
+		setTimeout(patchLazyNodes, 300);
+	}
 
 	function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 		var nextHooks = void 0;
@@ -355,7 +337,7 @@
 						var lazyNodeEntry = lazyNodeMap.get(dom);
 
 						if (lazyNodeEntry === void 0) {
-							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData });
+							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData, lifecycle: lifecycle });
 						} else {
 							lazyNodeEntry.nextNode = nextNode;
 						}
@@ -366,7 +348,7 @@
 						var _lazyNodeEntry = lazyNodeMap.get(dom);
 
 						if (_lazyNodeEntry === void 0) {
-							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData });
+							lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData, lifecycle: lifecycle });
 						} else {
 							_lazyNodeEntry.nextNode = nextNode;
 						}
