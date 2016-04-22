@@ -37,13 +37,14 @@ export function render(node, parentDom) {
 		roots.push({ node: node, dom: parentDom });
 	} else {
 		const activeNode = getActiveNode();
-
+		
 		patch(root.node, node, parentDom, lifecycle, {}, null, null, false);
 		lifecycle.trigger();
 		if (node === null) {
 			removeRoot(root);
 		}
 		root.node = node;
+		window.node = node;
 		resetActiveNode(activeNode);
 	}
 }

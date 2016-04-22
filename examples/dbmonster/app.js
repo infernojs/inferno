@@ -40,7 +40,14 @@
 		className: 'arrow'
 	}, 0);
 
-	function createQuery(query) {
+	var queryTemplate6 = Inferno.createBlueprint({
+		tag: { arg: 0 },
+		attrs: { arg: 1 },
+		hooks: { arg: 2 }
+	}, 0);
+
+	function Query(props) {
+		var query = props.query;
 		return queryTemplate1(query.elapsedClassName, [
 			queryTemplate2(query.formatElapsed),
 			queryTemplate3([
@@ -48,6 +55,16 @@
 				queryTemplate5()
 			])
 		]);
+	}
+
+	const queryHooks = {
+		componentShouldUpdate: function(domNode, lastProps, nextProps) {
+			return lastProps.query !== nextProps.query || lastProps.elapsed !== nextProps.elapsed;
+		}
+	};
+
+	function renderQuery(query) {
+		return queryTemplate6(Query, { query: query, elapsed: query.elapsed }, queryHooks);
 	}
 
 	var dbTemplate1 = Inferno.createBlueprint({
@@ -74,7 +91,14 @@
 		children: {arg: 1}
 	}, 1);
 
-	function createDatabase(db) {
+	var dbTemplate5 = Inferno.createBlueprint({
+		tag: {arg: 0},
+		attrs: {arg: 1},
+		hooks: {arg: 2}
+	}, 0);
+
+	function Database(props) {
+		var db = props.db;
 		var lastSample = db.lastSample;
 		var children = [
 			dbTemplate2(db.dbname),
@@ -82,10 +106,19 @@
 		];
 
 		for (var i = 0; i < 5; i++) {
-			children.push(createQuery(lastSample.topFiveQueries[i]))
+			children.push(renderQuery(lastSample.topFiveQueries[i]))
 		}
-
 		return dbTemplate1(children);
+	}
+
+	const databaseHooks = {
+		componentShouldUpdate: function(domNode, lastProps, nextProps) {
+			return lastProps.lastMutationId !== nextProps.lastMutationId;
+		}
+	};
+
+	function createDatabase(db) {
+		return dbTemplate5(Database, { db: db, lastMutationId: db.lastMutationId }, databaseHooks);
 	}
 
 	var appTemplate1 = Inferno.createBlueprint({
@@ -100,7 +133,7 @@
 	}, 4);
 
 	function render() {
-		var dbs = ENV.generateData().toArray();
+		var dbs = ENV.generateData(true).toArray();
 		Monitoring.renderRate.ping();
 		InfernoDOM.render(appTemplate1(appTemplate2(map(createDatabase, dbs))), elem);
 		setTimeout(render, ENV.timeout);

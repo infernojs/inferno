@@ -1870,6 +1870,7 @@
 				removeRoot(root);
 			}
 			root.node = node;
+			window.node = node;
 			resetActiveNode(activeNode);
 		}
 	}
