@@ -97,6 +97,15 @@ describe('SSR Creation - (non-JSX)', () => {
 			},
 			result: '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
 		}, {
+			description: 'should render div with falsy children',
+			template: () => {
+				return {
+					tag: 'div',
+					children: 0
+				};
+			},
+			result: '<div>0</div>'
+		}, {
 			description: 'should render a stateful component',
 			template: (value) => {
 				return {

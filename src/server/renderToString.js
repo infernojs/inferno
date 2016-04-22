@@ -54,9 +54,11 @@ function renderChildren(children, context) {
 		if (isStringOrNumber(children)) {
 			return children;
 		} else {
-			return renderNode(children, context);
+			return renderNode(children, context) || '';
 		}
 	}
+
+	return '';
 }
 
 function renderNode(node, context) {
@@ -82,7 +84,7 @@ function renderNode(node, context) {
 			});
 		}
 
-		return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>${ renderChildren(node.children, context) || '' }</${ tag }>`;
+		return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>${ renderChildren(node.children, context) }</${ tag }>`;
 	}
 }
 
