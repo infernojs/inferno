@@ -75,8 +75,16 @@
 
 	function createDatabase(db) {
 		var lastSample = db.lastSample;
+		var children = [
+			dbTemplate2(db.dbname),
+			dbTemplate3(dbTemplate4(lastSample.countClassName, lastSample.nbQueries))
+		];
 
-		return dbTemplate1([dbTemplate2(db.dbname), dbTemplate3(dbTemplate4(lastSample.countClassName, lastSample.nbQueries))].concat(map(createQuery, lastSample.topFiveQueries)));
+		for (var i = 0; i < 5; i++) {
+			children.push(createQuery(lastSample.topFiveQueries[i]))
+		}
+
+		return dbTemplate1(children);
 	}
 
 	var appTemplate1 = Inferno.createBlueprint({
