@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.0
+ * inferno-dom v0.7.1
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -624,6 +624,7 @@
 	}
 
 	var lazyNodeMap = new Map();
+	var lazyCheckRunning = false;
 
 	function patchLazyNode(value) {
 		patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
@@ -631,6 +632,7 @@
 	}
 
 	function runPatchLazyNodes() {
+		lazyCheckRunning = true;
 		if (typeof requestIdleCallback !== 'undefined') {
 			requestIdleCallback(patchLazyNodes);
 		} else {
@@ -641,10 +643,8 @@
 	function patchLazyNodes() {
 		lazyNodeMap.forEach(patchLazyNode);
 		lazyNodeMap.clear();
-		runPatchLazyNodes();
+		lazyCheckRunning = false;
 	}
-
-	runPatchLazyNodes();
 
 	function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
 		var lazyNodeEntry = lazyNodeMap.get(dom);
@@ -655,6 +655,9 @@
 			lazyNodeEntry.nextNode = nextNode;
 		}
 		clipData.pending = true;
+		if (lazyCheckRunning === false) {
+			runPatchLazyNodes();
+		}
 	}
 
 	function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
