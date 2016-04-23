@@ -1,4 +1,4 @@
-import { mountNode } from './mounting';
+import { mount } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 
@@ -73,7 +73,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lif
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	const dom = mountNode(nextNode, null, namespace, lifecycle, context, instance, isSVG);
+	const dom = mount(nextNode, null, namespace, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
 	replaceNode(parentDom, dom, lastNode.dom);

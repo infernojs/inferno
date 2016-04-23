@@ -27,7 +27,7 @@
     "rollup"
   ],
   "dependencies": {
-    "inferno": "^0.7.0"
+    "inferno": "^0.7.1"
   },
   "main": "inferno-server.js",
   "repository": "https://github.com/trueadm/inferno"

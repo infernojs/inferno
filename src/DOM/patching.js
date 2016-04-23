@@ -1,7 +1,7 @@
 import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
-import { mountNode } from './mounting';
-import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, removeAllChildren, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
+import { mount } from './mounting';
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
 
 // Checks if property is boolean type
 function booleanProps(prop) {
@@ -52,14 +52,14 @@ export function patch(lastNode, nextNode, parentDom, lifecycle, context, instanc
 	if (isNode !== null) {
 		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
 	} else if (isInvalidNode(lastNode)) {
-		mountNode(nextNode, parentDom, lifecycle, context, instance, isSVG);
+		mount(nextNode, parentDom, lifecycle, context, instance, isSVG);
 	} else if (isInvalidNode(nextNode)) {
 		remove(lastNode, parentDom);
 	} else if (isStringOrNumber(lastNode)) {
 		if (isStringOrNumber(nextNode)) {
 			parentDom.firstChild.nodeValue = nextNode;
 		} else {
-			const dom = mountNode(nextNode, null, lifecycle, context, instance, isSVG);
+			const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 			nextNode.dom = dom;
 			replaceNode(parentDom, dom, parentDom.firstChild);
 		}
@@ -168,7 +168,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 		if (!isInvalidNode(nextNode)) {
-			patch(lastNode, nextNode, parentDom, lifecycle, context, instance, true, false);
+			patch(lastNode, nextNode, parentDom, lifecycle, context, instance, false, false);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
 		}
@@ -190,7 +190,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 				const dom = lastNode.dom;
 
 				nextNode.dom = dom;
-				patch(instance, nextNode, dom, lifecycle, context, null, true, false);
+				patch(instance, nextNode, dom, lifecycle, context, null, false, false);
 				lastNode.instance = nextNode;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
@@ -230,7 +230,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				if (isStringOrNumber(nextChild)) {
 					domNode = document.createTextNode(nextChild);
 				} else {
-					domNode = mountNode(nextChild, null, context, instance, isSVG);
+					domNode = mount(nextChild, null, context, instance, isSVG);
 				}
 
 				insertOrAppendNonKeyed(dom, domNode);
@@ -286,7 +286,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							isNotVirtualFragment && domChildren.splice(index, 1, textNode);
 						}
 					} else if (sameLength === true) {
-						const domNode = mountNode(nextChild, null, lifecycle, context, instance, isSVG);
+						const domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 						const domChild = domChildren[index];
 
 						if (!isNullOrUndefined(domChild)) {
@@ -458,7 +458,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		if (nextStartIndex <= nextEndIndex) {
 			nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1].dom : null;
 			for (; nextStartIndex <= nextEndIndex; nextStartIndex++) {
-				insertOrAppendKeyed(dom, mountNode(nextChildren[nextStartIndex], null, lifecycle, context, instance, isSVG), nextNode);
+				insertOrAppendKeyed(dom, mount(nextChildren[nextStartIndex], null, lifecycle, context, instance, isSVG), nextNode);
 			}
 		}
 	} else if (nextStartIndex > nextEndIndex) {
@@ -539,7 +539,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 				if (sources[i] === -1) {
 					pos = i + nextStartIndex;
 					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1].dom : null;
-					insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
+					insertOrAppendKeyed(dom, mount(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
 				} else {
 					if (index < 0 || i !== seq[index]) {
 						pos = i + nextStartIndex;
@@ -555,7 +555,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 				if (sources[i] === -1) {
 					pos = i + nextStartIndex;
 					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1].dom : null;
-					insertOrAppendKeyed(dom, mountNode(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
+					insertOrAppendKeyed(dom, mount(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
 				}
 			}
 		}

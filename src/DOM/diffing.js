@@ -1,7 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
 import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents, patchNode } from './patching';
-import { mountArrayChildren, mountNode, mountEvents } from './mounting';
+import { mountArrayChildren, mount, mountEvents } from './mounting';
 
 
 function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
@@ -24,7 +24,7 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 			if (isArray(nextChildren)) {
 				mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance, isSVG);
 			} else {
-				mountNode(nextChildren, dom, lifecycle, context, instance, isSVG);
+				mount(nextChildren, dom, lifecycle, context, instance, isSVG);
 			}
 		}
 	} else {
@@ -239,7 +239,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 						if (nextChildrenType > 2) {
 							mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance);
 						} else {
-							mountNode(nextChildren, dom, lifecycle, context, instance);
+							mount(nextChildren, dom, lifecycle, context, instance);
 						}
 					} else if (nextChildrenType === 0 || isInvalidNode(nextChildren)) {
 						if (lastChildrenType > 2) {

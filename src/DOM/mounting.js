@@ -3,7 +3,7 @@ import { recyclingEnabled, recycle } from './recycling';
 import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, handleLazyAttached } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 
-export function mountNode(node, parentDom, lifecycle, context, instance, isSVG) {
+export function mount(node, parentDom, lifecycle, context, instance, isSVG) {
 	if (isArray(node)) {
 		return placeholder(node, parentDom);
 	}
@@ -64,7 +64,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 			appendText(node.children, dom, true);
 			break;
 		case 2:
-			mountNode(node.children, dom, lifecycle, context, instance);
+			mount(node.children, dom, lifecycle, context, instance);
 			break;
 		case 3:
 			mountArrayChildren(node, node.children, dom, lifecycle, context, instance);
@@ -168,7 +168,7 @@ function appendPromise(child, parentDom, domChildren, lifecycle, context, instan
 
 	child.then(node => {
 		// TODO check for text nodes and arrays
-		const dom = mountNode(node, null, lifecycle, context, instance, isSVG);
+		const dom = mount(node, null, lifecycle, context, instance, isSVG);
 
 		parentDom.replaceChild(dom, placeholder);
 		domChildren && replaceInArray(domChildren, placeholder, dom);
@@ -178,7 +178,7 @@ function appendPromise(child, parentDom, domChildren, lifecycle, context, instan
 
 export function mountArrayChildrenWithKeys(children, parentDom, lifecycle, context, instance) {
 	for (let i = 0; i < children.length; i++) {
-		mountNode(children[i], parentDom, lifecycle, context, instance);
+		mount(children[i], parentDom, lifecycle, context, instance);
 	}
 }
 
@@ -205,7 +205,7 @@ export function mountArrayChildren(node, children, parentDom, lifecycle, context
 		} else if (isPromise(child)) {
 			appendPromise(child, parentDom, domChildren, lifecycle, context, instance, isSVG);
 		} else {
-			const domNode = mountNode(child, parentDom, lifecycle, context, instance, isSVG);
+			const domNode = mount(child, parentDom, lifecycle, context, instance, isSVG);
 
 			if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
 				isNonKeyed = true;
@@ -233,7 +233,7 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 	} else if (isPromise(children)) {
 		appendPromise(children, parentDom, null, lifecycle, context, instance, isSVG);
 	} else {
-		mountNode(children, parentDom, lifecycle, context, instance, isSVG);
+		mount(children, parentDom, lifecycle, context, instance, isSVG);
 	}
 }
 
@@ -278,7 +278,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		instance._pendingSetState = false;
 
 		if (!isNullOrUndefined(node)) {
-			dom = mountNode(node, null, lifecycle, context, instance);
+			dom = mount(node, null, lifecycle, context, instance);
 			instance._lastNode = node;
 			if (parentDom !== null) {
 				parentDom.appendChild(dom);
@@ -303,7 +303,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 
 		/* eslint new-cap: 0 */
 		const node = Component(props);
-		dom = mountNode(node, null, lifecycle, context, null);
+		dom = mount(node, null, lifecycle, context, null);
 
 		parentNode.instance = node;
 
