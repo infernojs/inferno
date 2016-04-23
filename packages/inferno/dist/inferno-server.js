@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.7.1
+ * inferno-server v0.7.3
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -126,9 +126,11 @@
 			if (isStringOrNumber(children)) {
 				return children;
 			} else {
-				return renderNode(children, context);
+				return renderNode(children, context) || '';
 			}
 		}
+
+		return '';
 	}
 
 	function renderNode(node, context) {
@@ -160,7 +162,7 @@
 				}
 
 				return {
-					v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + (renderChildren(node.children, context) || '') + '</' + tag + '>'
+					v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + renderChildren(node.children, context) + '</' + tag + '>'
 				};
 			}();
 
