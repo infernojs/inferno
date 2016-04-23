@@ -25,6 +25,7 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
 - [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
+- [dbmonster (lazy optimisation)](http://infernojs.org/benchmarks/dbmonster-lazy/)
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 
 ## Install
