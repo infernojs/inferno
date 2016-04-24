@@ -1089,7 +1089,9 @@
 						domNode = mount(nextChild, null, context, instance, isSVG);
 					}
 
-					insertOrAppendNonKeyed(dom, domNode);
+					if (!isInvalidNode(domNode)) {
+						insertOrAppendNonKeyed(dom, domNode);
+					}
 					if (isNotVirtualFragment) {
 						if (lastChildrenLength === 1) {
 							domChildren.push(dom.firstChild);
