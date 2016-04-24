@@ -8,7 +8,7 @@
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg)](https://www.npmjs.org/package/inferno-dom)
 
-Inferno is an isomorphic library for building user interfaces with high performance, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses intelligent compile-time techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
+Inferno is an isomorphic library for building user interfaces with high performance, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses intelligent techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
 
 In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
