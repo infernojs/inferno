@@ -123,6 +123,62 @@ describe('Stateful Component updates', () => {
         }
 
         render(<Parent />, container);
+    });
+
+    it('Should update boolean properties when children change same time', () => {
+        let updateCaller = null;
+
+        class A extends Component {
+            constructor(props) {
+                super(props);
+
+                this.state = {
+                    values: [
+                        {checked: false},
+                        {checked: false},
+                        {checked: false}
+                    ]
+                };
+
+                this.updateCaller = this.updateCaller.bind(this);
+                updateCaller = this.updateCaller;
+            }
+
+            updateCaller() {
+               this.setState({
+                   values: [
+                       {checked: false},
+                       {checked: false}
+                   ]
+               });
+            }
+
+            render() {
+               return (
+                   <div>
+                       {this.state.values.map(function(value) {
+                           return <input type="checkbox" checked={value.checked} />
+                       })}
+                   </div>
+               )
+            }
+        }
+
+        render(<A />, container);
+        expect(container.innerHTML).to.equal('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>');
+        let firstChild = container.firstChild;
+        expect(firstChild.childNodes[0].checked).to.equal(false);
+        expect(firstChild.childNodes[1].checked).to.equal(false);
+        expect(firstChild.childNodes[2].checked).to.equal(false);
+
+        const checkbox = container.querySelector('input');
+        checkbox.checked = true; // SIMULATE user selecting checkbox
+        expect(firstChild.childNodes[0].checked).to.equal(true, 'USER SHOULD BE ABLE TO TICK CHECKBOX');
+
+        updateCaller(); // New render
+        expect(container.innerHTML).to.equal('<div><input type="checkbox"><input type="checkbox"></div>');
+        expect(firstChild.childNodes[0].checked).to.equal(false, 'AFTER NEW RENDER IT SHOULD RENDER INPUT AS UNCHECKED');
+        expect(firstChild.childNodes[1].checked).to.equal(false);
 
     });
 });
