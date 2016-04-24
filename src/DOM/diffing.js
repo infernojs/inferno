@@ -3,6 +3,26 @@ import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildr
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents, patchNode } from './patching';
 import { mountArrayChildren, mount, mountEvents } from './mounting';
 
+function setValueProperty(nextNode) {
+	const value = nextNode.attrs.value;
+	if (!isNullOrUndefined(value)) {
+		nextNode.dom.value = value;
+	}
+}
+
+function setFormElementProperties(nextTag, nextNode) {
+	if (nextTag === 'input') {
+		const inputType = nextNode.attrs.type;
+		if (inputType === 'text') {
+			setValueProperty(nextNode);
+		} else if (inputType === 'checkbox' || inputType === 'radio') {
+			const checked = nextNode.attrs.checked;
+			nextNode.dom.checked = !!checked;
+		}
+	} else if (nextTag === 'textarea') {
+		setValueProperty(nextNode);
+	}
+}
 
 function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
 	const nextChildren = nextNode.children;
@@ -292,6 +312,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			if (nextNode.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
 				nextHooks.didUpdate(dom);
 			}
+			setFormElementProperties(nextTag, nextNode);
 		}
 	}
 }
@@ -363,6 +384,7 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}
+				setFormElementProperties(nextTag, nextNode);
 			}
 		}
 	}

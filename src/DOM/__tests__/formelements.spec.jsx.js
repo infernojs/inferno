@@ -20,8 +20,8 @@ describe('HTML Form Elements', () => {
 
     describe('After external change', () => {
         it('Should update input check property', () => {
-            render(<input type="input" checked={true} />, container);
-            expect(container.innerHTML).to.equal('<input type="input">');
+            render(<input type="checkbox" checked={true} />, container);
+            expect(container.innerHTML).to.equal('<input type="checkbox">');
             expect(container.firstChild.checked).to.equal(true);
 
             //
@@ -30,30 +30,30 @@ describe('HTML Form Elements', () => {
 
             const input = container.querySelector('input');
             input.checked = false;
-            expect(container.innerHTML).to.equal('<input type="input">');
+            expect(container.innerHTML).to.equal('<input type="checkbox">');
             expect(container.firstChild.checked).to.equal(false);
 
             //
             // New Render
             //
 
-            render(<input type="input" checked={true} />, container);
-            expect(container.innerHTML).to.equal('<input type="input">');
+            render(<input type="checkbox" checked={true} />, container);
+            expect(container.innerHTML).to.equal('<input type="checkbox">');
             expect(container.firstChild.checked).to.equal(true);
         });
 
         it('Should update textarea value', () => {
             render(<textarea value="Hey People" />, container);
-            expect(container.innerHTML).to.equal('<textarea>Hey People</textarea>');
+            expect(container.innerHTML).to.equal('<textarea></textarea>');
             expect(container.firstChild.value).to.equal("Hey People");
 
             //
             // Exernal change verification
             //
 
-            const input = container.querySelector('input');
+            const input = container.querySelector('textarea');
             input.value = "Inferno is cool";
-            expect(container.innerHTML).to.equal('<textarea>Inferno is cool</textarea>');
+            expect(container.innerHTML).to.equal('<textarea></textarea>');
             expect(container.firstChild.value).to.equal("Inferno is cool");
 
             //
@@ -61,16 +61,16 @@ describe('HTML Form Elements', () => {
             //
 
             render(<textarea value="Hey People" />, container);
-            expect(container.innerHTML).to.equal('<textarea>Hey People</textarea>');
-            expect(container.firstChild.checked).to.equal("Hey People");
+            expect(container.innerHTML).to.equal('<textarea></textarea>');
+            expect(container.firstChild.value).to.equal("Hey People");
 
             //
             // New Render, new value
             //
 
             render(<textarea value="Hey People again" />, container);
-            expect(container.innerHTML).to.equal('<textarea>Hey People again</textarea>');
-            expect(container.firstChild.checked).to.equal("Hey People again");
+            expect(container.innerHTML).to.equal('<textarea></textarea>');
+            expect(container.firstChild.value).to.equal("Hey People again");
         });
 
         it('Should update text input value', () => {
@@ -112,7 +112,6 @@ describe('HTML Form Elements', () => {
                     <input type="radio" name="gender" value="other"/> Other
                 </div>, container);
 
-            expect(container.innerHTML).to.equal('<div><input type="radio" name="gender" value="male"> Male<input type="radio" name="gender" value="female"> Female<input type="radio" name="gender" value="other"> Other</div>');
             expect(container.firstChild.firstChild.value).to.equal("male");
             expect(container.firstChild.firstChild.checked).to.equal(true);
 
@@ -122,7 +121,6 @@ describe('HTML Form Elements', () => {
 
             const radiobutton = container.querySelector('input');
             radiobutton.checked = false;
-            expect(container.innerHTML).to.equal('<div><input type="radio" name="gender" value="male"> Male<input type="radio" name="gender" value="female"> Female<input type="radio" name="gender" value="other"> Other</div>');
             expect(container.firstChild.firstChild.checked).to.equal(false);
 
             //
@@ -135,10 +133,9 @@ describe('HTML Form Elements', () => {
                     <input type="radio" name="gender" value="female"/> Female
                     <input type="radio" name="gender" value="other"/> Other
                 </div>, container);
-
-            expect(container.innerHTML).to.equal('<div><input type="radio" name="gender" value="male"> Male<input type="radio" name="gender" value="female"> Female<input type="radio" name="gender" value="other"> Other</div>');
+            
             expect(container.firstChild.firstChild.value).to.equal("male");
-            expect(container.firstChild.firstChild.checked).to.equal(true);
+            expect(container.firstChild.firstChild.checked).to.equal(true, 'this fails');
 
 
             //
@@ -155,8 +152,8 @@ describe('HTML Form Elements', () => {
             expect(container.innerHTML).to.equal('<div><input type="radio" name="gender" value="male"> Male<input type="radio" name="gender" value="female"> Female<input type="radio" name="gender" value="other"> Other</div>');
             expect(container.firstChild.firstChild.value).to.equal("male");
             expect(container.firstChild.firstChild.checked).to.equal(false);
-            expect(container.firstChild.childNodes[1].value).to.equal("female");
-            expect(container.firstChild.childNodes[1].checked).to.equal(false);
+            expect(container.firstChild.children[1].value).to.equal("female");
+            expect(container.firstChild.children[1].checked).to.equal(true);
 
         });
 
