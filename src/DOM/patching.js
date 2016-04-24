@@ -6,7 +6,7 @@ import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, create
 // Checks if property is boolean type
 function booleanProps(prop) {
 	switch (prop.length) {
-		case 5: return prop === 'value';
+		case 5: return prop === 'value' || prop === 'muted';
 		case 7: return prop === 'checked';
 		case 8: return prop === 'disabled' || prop === 'selected';
 		default: return false;
