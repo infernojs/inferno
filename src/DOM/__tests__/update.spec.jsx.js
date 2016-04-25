@@ -70,7 +70,7 @@ describe('Stateful Component updates', () => {
         done();
     });
 
-    it('Should give better error message when calling setState from constructor ??', (done) => {
+    it('Should give better error message when calling setState from constructor ??', () => {
 
         // Following test simulates situation that setState is called when mounting process has not finished, fe. in constructor
 
