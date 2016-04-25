@@ -3,31 +3,20 @@ import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mount } from './mounting';
 import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
 
-// Checks if property is boolean type
-function booleanProps(prop) {
-	switch (prop.length) {
-		case 5: return prop === 'value' || prop === 'muted';
-		case 7: return prop === 'checked';
-		case 8: return prop === 'disabled' || prop === 'selected';
-		default: return false;
-	}
+function constructDefaults(string, object, value) {
+	string.split(',').forEach(i => object[i] = value);
 }
 
 const xlinkNS = 'http://www.w3.org/1999/xlink';
 const xmlNS = 'http://www.w3.org/XML/1998/namespace';
+const strictProps = {};
+const booleanProps = {};
+const namespaces = {};
 
-const namespaces = {
-	'xlink:href': xlinkNS,
-	'xlink:arcrole': xlinkNS,
-	'xlink:actuate': xlinkNS,
-	'xlink:role': xlinkNS,
-	'xlink:row': xlinkNS,
-	'xlink:titlef': xlinkNS,
-	'xlink:type': xlinkNS,
-	'xml:base': xmlNS,
-	'xml:lang': xmlNS,
-	'xml:space': xmlNS
-};
+constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+constructDefaults('volume,checked', strictProps, true);
+constructDefaults('muted,value,disabled,selected', booleanProps, true);
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -131,21 +120,20 @@ export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKe
 }
 
 export function patchAttribute(attrName, nextAttrValue, dom) {
-	if (booleanProps(attrName)) {
-		// We need to manually handle null 'value' for IE and Edge
-		if (attrName === 'value') {
-			dom.value = nextAttrValue === null ? '' : nextAttrValue;
-		} else {
-			dom[attrName] = nextAttrValue;
-		}
+	if(strictProps[attrName]) {
+		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 	} else {
-		if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-			dom.removeAttribute(attrName);
+		if (booleanProps[attrName]) {
+			dom[attrName] = nextAttrValue;
 		} else {
-			if (namespaces[attrName]) {
-				dom.setAttributeNS(namespaces[attrName], attrName, nextAttrValue === true ? attrName : nextAttrValue);
+			if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+				dom.removeAttribute(attrName);
 			} else {
-				dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+				if (namespaces[attrName]) {
+					dom.setAttributeNS(namespaces[attrName], attrName, nextAttrValue === true ? attrName : nextAttrValue);
+				} else {
+					dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+				}
 			}
 		}
 	}

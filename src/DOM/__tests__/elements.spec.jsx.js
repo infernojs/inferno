@@ -678,4 +678,16 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.contentWindow).to.not.equal(undefined);
 		document.body.removeChild(container);
 	});
+
+	it('should render a HTML5 video', () => {
+		document.body.appendChild(container);
+		render((
+			<video width="400" controls volume={ 0 }>
+				<source src="http://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+			</video>
+		), container);
+		expect(container.firstChild.volume).to.not.equal(undefined);
+		expect(container.firstChild.volume).to.be.equal(0);
+		document.body.removeChild(container);
+	});
 });

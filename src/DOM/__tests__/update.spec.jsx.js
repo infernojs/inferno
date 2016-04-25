@@ -85,9 +85,9 @@ describe('Stateful Component updates', () => {
                 this.domagic = this.domagic.bind(this);
 
                 // Call setState
-                this.setState({
-                    show: true
-                });
+	            expect(() => this.setState({
+		            show: true
+	            })).to.throw;
             }
 
             domagic() {
