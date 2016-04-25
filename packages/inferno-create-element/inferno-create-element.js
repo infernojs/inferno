@@ -1,3 +1,3 @@
-import createElement from '../../../src/createElement';
+'use strict';
 
-export default createElement;
+module.exports = require('inferno/dist/inferno-create-element');
