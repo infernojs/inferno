@@ -265,6 +265,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		}
 		instance.context = context;
 		// Block setting state - we should render only once, using latest state
+		instance._unmounted = false;
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		const shouldUpdate = instance.shouldComponentUpdate();

@@ -1,7 +1,7 @@
 import Lifecycle from './../core/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
 
-const noOp = 'Inferno Warning: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
 function getActiveNode() {
@@ -65,7 +65,7 @@ export default class Component {
 		this._pendingSetState = false;
 		this._pendingState = {};
 		this._lastNode = null;
-		this._unmounted = false;
+		this._unmounted = true;
 		this.context = {};
 		this._patch = null;
 	}
