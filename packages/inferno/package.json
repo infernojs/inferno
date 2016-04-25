@@ -26,6 +26,5 @@
     "rollup"
   ],
   "main": "inferno.js",
-  "jsnext:main": "dist/inferno.es2015.js",
   "repository": "https://github.com/trueadm/inferno"
 }

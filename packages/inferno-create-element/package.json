@@ -23,6 +23,5 @@
   ],
   "dependencies": {
     "inferno": "^0.7.3"
-  },
-  "repository": "https://github.com/trueadm/inferno"
+  }
 }

@@ -12,7 +12,6 @@
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
   "main": "inferno-component.js",
-  "jsnext:main": "dist/inferno-component.es2015.js",
   "keywords": [
     "babel",
     "react",
