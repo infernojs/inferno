@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-element",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "license": "MPL-2.0",
   "description": "Provides methods to create Inferno VNodes",
   "author": {
@@ -11,7 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-dom.js",
+  "main": "inferno-create-element.js",
   "jsnext:main": "dist/inferno-dom.es2015.js",
   "keywords": [
     "babel",
