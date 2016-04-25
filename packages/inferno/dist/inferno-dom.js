@@ -411,8 +411,8 @@
 		return fragment;
 	}
 
-	function isKeyed(lastChildren, nextChildren) {
-		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) && !isNullOrUndefined(nextChildren[1]) && !isNullOrUndefined(nextChildren[1].key);
+	function isKeyed(nextChildren) {
+		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key);
 	}
 
 	function selectOptionValueIfNeeded(vdom, values) {
@@ -494,6 +494,27 @@
 		});
 	}
 
+	function setValueProperty(nextNode) {
+		var value = nextNode.attrs.value;
+		if (!isNullOrUndefined(value)) {
+			nextNode.dom.value = value;
+		}
+	}
+
+	function setFormElementProperties(nextTag, nextNode) {
+		if (nextTag === 'input') {
+			var inputType = nextNode.attrs.type;
+			if (inputType === 'text') {
+				setValueProperty(nextNode);
+			} else if (inputType === 'checkbox' || inputType === 'radio') {
+				var checked = nextNode.attrs.checked;
+				nextNode.dom.checked = !!checked;
+			}
+		} else if (nextTag === 'textarea') {
+			setValueProperty(nextNode);
+		}
+	}
+
 	function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
 		var nextChildren = nextNode.children;
 		var lastChildren = lastNode.children;
@@ -526,7 +547,7 @@
 						if (domChildren === null && lastChildren.length > 1) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						} else {
-							if (isKeyed(lastChildren, nextChildren)) {
+							if (isKeyed(nextChildren)) {
 								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 							} else {
 								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);
@@ -781,6 +802,7 @@
 				if (nextNode.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}
+				setFormElementProperties(nextTag, nextNode);
 			}
 		}
 	}
@@ -851,6 +873,7 @@
 					if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
 						nextHooks.didUpdate(dom);
 					}
+					setFormElementProperties(nextTag, nextNode);
 				}
 			}
 		}
@@ -860,7 +883,7 @@
 	function booleanProps(prop) {
 		switch (prop.length) {
 			case 5:
-				return prop === 'value';
+				return prop === 'value' || prop === 'muted';
 			case 7:
 				return prop === 'checked';
 			case 8:
@@ -1194,7 +1217,7 @@
 							detachNode(_lastChild);
 						}
 					} else if (isArray(_nextChild)) {
-						if (isKeyed(_lastChild, _nextChild)) {
+						if (isKeyed(_nextChild)) {
 							patchKeyedChildren(_lastChild, _nextChild, domChildren[index], lifecycle, context, instance, isSVG);
 						} else {
 							if (isArray(_lastChild)) {
