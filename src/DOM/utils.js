@@ -65,7 +65,7 @@ export function appendText(text, parentDom, singleChild) {
 	}
 }
 
-export function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, isSVG) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
 	let lastInstance = null;
 	const instanceLastNode = lastNode._lastNode;
 
@@ -73,7 +73,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lif
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	const dom = mount(nextNode, null, namespace, lifecycle, context, instance, isSVG);
+	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
 	replaceNode(parentDom, dom, lastNode.dom);
