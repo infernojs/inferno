@@ -532,7 +532,7 @@
 		}
 	}
 
-	function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, isSVG) {
+	function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
 		var lastInstance = null;
 		var instanceLastNode = lastNode._lastNode;
 
@@ -540,7 +540,7 @@
 			lastInstance = lastNode;
 			lastNode = instanceLastNode;
 		}
-		var dom = mount(nextNode, null, namespace, lifecycle, context, instance, isSVG);
+		var dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 		nextNode.dom = dom;
 		replaceNode(parentDom, dom, lastNode.dom);
