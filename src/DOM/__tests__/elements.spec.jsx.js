@@ -670,6 +670,12 @@ describe('Elements - SVG (JSX)', () => {
 		render(<div />, container);
 		render(<div dir="ltr" />, container);
 		render(<div dir={ [] } />, container);
+	});
 
+	it('should render an iframe', () => {
+		document.body.appendChild(container);
+		render(<iframe src="http://infernojs.org"></iframe>, container);
+		expect(container.firstChild.contentWindow).to.not.equal(undefined);
+		document.body.removeChild(container);
 	});
 });
