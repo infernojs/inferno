@@ -2,6 +2,7 @@ import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulCom
 import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents, patchNode } from './patching';
 import { mountArrayChildren, mount, mountEvents } from './mounting';
+import { setClipNode } from './lifecycle';
 
 function setValueProperty(nextNode) {
 	const value = nextNode.attrs.value;
@@ -154,43 +155,6 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	}
 }
 
-const lazyNodeMap = new Map();
-let lazyCheckRunning = false;
-
-function patchLazyNode(value) {
-	patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
-	value.clipData.pending = false;
-}
-
-function runPatchLazyNodes() {
-	lazyCheckRunning = true;
-	if (typeof requestIdleCallback !== 'undefined') {
-		requestIdleCallback(patchLazyNodes);
-	} else {
-		setTimeout(patchLazyNodes, 100);
-	}
-}
-
-function patchLazyNodes() {
-	lazyNodeMap.forEach(patchLazyNode);
-	lazyNodeMap.clear();
-	lazyCheckRunning = false;
-}
-
-function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
-	const lazyNodeEntry = lazyNodeMap.get(dom);
-
-	if (lazyNodeEntry === undefined) {
-		lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
-	} else {
-		lazyNodeEntry.nextNode = nextNode;
-	}
-	clipData.pending = true;
-	if (lazyCheckRunning === false) {
-		runPatchLazyNodes();
-	}
-}
-
 export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 	let nextHooks;
 
@@ -242,12 +206,14 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 				nextNode.clipData = clipData;
 				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-					setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
-					return;
+					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+						return;
+					}
 				}
 				if (clipData.bottom < lifecycle.scrollY) {
-					setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
-					return;
+					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+						return;
+					}
 				}
 			}
 

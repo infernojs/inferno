@@ -57,7 +57,7 @@
 		]);
 	}
 
-	const queryHooks = {
+	var queryHooks = {
 		componentShouldUpdate: function(domNode, lastProps, nextProps) {
 			return lastProps.query !== nextProps.query || lastProps.elapsed !== nextProps.elapsed;
 		}
@@ -111,7 +111,7 @@
 		return dbTemplate1(children);
 	}
 
-	const databaseHooks = {
+	var databaseHooks = {
 		componentShouldUpdate: function(domNode, lastProps, nextProps) {
 			return lastProps.lastMutationId !== nextProps.lastMutationId;
 		}

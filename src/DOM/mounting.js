@@ -1,7 +1,8 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, handleLazyAttached } from './utils';
+import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
+import { handleLazyAttached } from './lifecycle';
 
 export function mount(node, parentDom, lifecycle, context, instance, isSVG) {
 	if (isArray(node)) {

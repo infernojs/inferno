@@ -330,20 +330,3 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 		});
 	}
 }
-
-export function handleLazyAttached(node, lifecycle, dom) {
-	lifecycle.addListener(() => {
-		const rect = dom.getBoundingClientRect();
-
-		if (lifecycle.scrollY === null) {
-			lifecycle.refresh();
-		}
-		node.clipData = {
-			top: rect.top + lifecycle.scrollY,
-			left: rect.left + lifecycle.scrollX,
-			bottom: rect.bottom + lifecycle.scrollY,
-			right: rect.right + lifecycle.scrollX,
-			pending: false
-		};
-	});
-}

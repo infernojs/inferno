@@ -1,4 +1,4 @@
-import Lifecycle from './../core/lifecycle';
+import Lifecycle from './../DOM/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
