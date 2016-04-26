@@ -124,7 +124,7 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 	} else {
 		if (booleanProps[attrName]) {
-			dom[attrName] = nextAttrValue;
+			dom[attrName] = nextAttrValue ? true : false;
 		} else {
 			if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 				dom.removeAttribute(attrName);
