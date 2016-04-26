@@ -1,6 +1,5 @@
 import { render } from './../rendering';
 import { createBlueprint } from './../../core/createBlueprint';
-import Component from './../../component/index';
 
 const Inferno = {
     createBlueprint
