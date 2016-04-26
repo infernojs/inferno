@@ -65,7 +65,7 @@
 	}
 
 	function isInvalidNode(obj) {
-		return obj === void 0 || obj === null || obj === false;
+		return obj === null || obj === false || obj === void 0;
 	}
 
 	function isFunction(obj) {

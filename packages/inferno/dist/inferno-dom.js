@@ -89,7 +89,7 @@
 	}
 
 	function isInvalidNode(obj) {
-		return obj === void 0 || obj === null || obj === false;
+		return obj === null || obj === false || obj === void 0;
 	}
 
 	function isFunction(obj) {
@@ -310,8 +310,9 @@
 		child.then(function (node) {
 			// TODO check for text nodes and arrays
 			var dom = mount(node, null, lifecycle, context, instance, isSVG);
-
-			parentDom.replaceChild(dom, placeholder);
+			if (parentDom !== null && !isInvalidNode(dom)) {
+				parentDom.replaceChild(dom, placeholder);
+			}
 			domChildren && replaceInArray(domChildren, placeholder, dom);
 		});
 		parentDom.appendChild(placeholder);
@@ -422,7 +423,7 @@
 			if (!isNullOrUndefined(node)) {
 				dom = mount(node, null, lifecycle, context, instance);
 				instance._lastNode = node;
-				if (parentDom !== null) {
+				if (parentDom !== null && !isInvalidNode(dom)) {
 					parentDom.appendChild(dom);
 				}
 				instance.componentDidMount();
@@ -449,7 +450,7 @@
 
 			parentNode.instance = _node;
 
-			if (parentDom !== null) {
+			if (parentDom !== null && !isInvalidNode(dom)) {
 				parentDom.appendChild(dom);
 			}
 			parentNode.dom = dom;
