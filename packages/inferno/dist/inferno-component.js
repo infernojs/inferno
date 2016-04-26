@@ -74,8 +74,8 @@
 
 	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-	constructDefaults('volume,checked', strictProps, true);
-	constructDefaults('muted,value,disabled,selected', booleanProps, true);
+	constructDefaults('volume,value', strictProps, true);
+	constructDefaults('muted,checked,disabled,selected', booleanProps, true);
 
 	var screenWidth = window.screen.width;
 	var screenHeight = window.screen.height;
@@ -138,14 +138,14 @@
 		for (var stateKey in newState) {
 			component._pendingState[stateKey] = newState[stateKey];
 		}
-		if (component._pendingSetState === false) {
+		if (!component._pendingSetState) {
 			component._pendingSetState = true;
 			applyState(component, false, callback);
 		}
 	}
 
 	function applyState(component, force, callback) {
-		if (component._deferSetState === false || force) {
+		if (!component._deferSetState || force) {
 			(function () {
 				component._pendingSetState = false;
 				var pendingState = component._pendingState;
@@ -198,7 +198,7 @@
 		}, {
 			key: 'forceUpdate',
 			value: function forceUpdate(callback) {
-				if (this._unmounted === true) {
+				if (this._unmounted) {
 					throw Error(noOp);
 				}
 				applyState(this, true, callback);
@@ -206,7 +206,7 @@
 		}, {
 			key: 'setState',
 			value: function setState(newState, callback) {
-				if (this._unmounted === true) {
+				if (this._unmounted) {
 					throw Error(noOp);
 				}
 				if (this._blockSetState === false) {
@@ -271,6 +271,7 @@
 						return node;
 					}
 				}
+				return false;
 			}
 		}]);
 		return Component;

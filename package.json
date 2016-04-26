@@ -12,7 +12,7 @@
   "devDependencies": {
     "babel-cli": "^6.7.7",
     "babel-core": "^6.7.7",
-    "babel-eslint": "^6.0.3",
+    "babel-eslint": "^6.0.4",
     "babel-loader": "^6.2.4",
     "babel-plugin-inferno": "^0.7.0",
     "babel-plugin-syntax-jsx": "^6.5.0",
@@ -116,7 +116,7 @@
     "eslint:source": "eslint ./src/**/*.js",
     "eslint:test": "eslint ./src/**/__tests__/*.js",
     "karma:firefox": "./node_modules/.bin/karma start config/karma.conf.js --browsers=Firefox --single-run",
-    "karma:chrome": "./node_modules/.bin/karma start config/karma.conf.js --browsers=Chrome --single-run",
+    "karma:chrome": "./node_modules/.bin/karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "./node_modules/.bin/karma start config/karma.conf.js --browsers=IE --single-run",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
     "packages": "npm list --depth=0",

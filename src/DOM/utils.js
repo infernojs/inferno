@@ -44,10 +44,13 @@ export function documentCreateElement(tag, isSVG) {
 }
 
 export function appendText(text, parentDom, singleChild) {
-	if (parentDom !== null) {
+	if (parentDom === null) {
+		return document.createTextNode(text);
+	} else {
 		if (singleChild) {
 			if (text !== '') {
 				parentDom.textContent = text;
+				return parentDom.firstChild;
 			} else {
 				const textNode = document.createTextNode('');
 
@@ -60,8 +63,6 @@ export function appendText(text, parentDom, singleChild) {
 			parentDom.appendChild(textNode);
 			return textNode;
 		}
-	} else {
-		return document.createTextNode(text);
 	}
 }
 

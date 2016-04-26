@@ -20,14 +20,14 @@ function queueStateChanges(component, newState, callback) {
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
-	if (component._pendingSetState === false) {
+	if (!component._pendingSetState) {
 		component._pendingSetState = true;
 		applyState(component, false, callback);
 	}
 }
 
 function applyState(component, force, callback) {
-	if (component._deferSetState === false || force) {
+	if (!component._deferSetState || force) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const oldState = component.state;
@@ -71,13 +71,13 @@ export default class Component {
 	}
 	render() {}
 	forceUpdate(callback) {
-		if (this._unmounted === true) {
+		if (this._unmounted) {
 			throw Error(noOp);
 		}
 		applyState(this, true, callback);
 	}
 	setState(newState, callback) {
-		if (this._unmounted === true) {
+		if (this._unmounted) {
 			throw Error(noOp);
 		}
 		if (this._blockSetState === false) {
@@ -122,5 +122,6 @@ export default class Component {
 				return node;
 			}
 		}
+		return false;
 	}
 }

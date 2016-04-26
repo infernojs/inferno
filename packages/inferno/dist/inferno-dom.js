@@ -348,7 +348,7 @@
 			} else {
 				var domNode = mount(child, parentDom, lifecycle, context, instance, isSVG);
 
-				if (isNonKeyed || !hasKeyedAssumption && child && isNullOrUndefined(child.key)) {
+				if (isNonKeyed || !hasKeyedAssumption && !isNullOrUndefined(child) && isNullOrUndefined(child.key)) {
 					isNonKeyed = true;
 					domChildren = domChildren || [];
 					domChildren.push(domNode);
@@ -511,10 +511,13 @@
 	}
 
 	function appendText(text, parentDom, singleChild) {
-		if (parentDom !== null) {
+		if (parentDom === null) {
+			return document.createTextNode(text);
+		} else {
 			if (singleChild) {
 				if (text !== '') {
 					parentDom.textContent = text;
+					return parentDom.firstChild;
 				} else {
 					var textNode = document.createTextNode('');
 
@@ -527,8 +530,6 @@
 				parentDom.appendChild(_textNode);
 				return _textNode;
 			}
-		} else {
-			return document.createTextNode(text);
 		}
 	}
 
@@ -1088,8 +1089,8 @@
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 				nextHooks.willUpdate(lastNode.dom);
 			}
-			var nextTag = nextNode.tag || (!isNullOrUndefined(nextNode.bp) ? nextNode.bp.tag : null);
-			var lastTag = lastNode.tag || (!isNullOrUndefined(lastNode.bp) ? lastNode.bp.tag : null);
+			var nextTag = nextNode.tag || (isNullOrUndefined(nextNode.bp) ? null : nextNode.bp.tag);
+			var lastTag = lastNode.tag || (isNullOrUndefined(lastNode.bp) ? null : lastNode.bp.tag);
 
 			if (nextTag === 'svg') {
 				isSVG = true;
@@ -1162,8 +1163,8 @@
 
 	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-	constructDefaults('volume,checked', strictProps, true);
-	constructDefaults('muted,value,disabled,selected', booleanProps, true);
+	constructDefaults('volume,value', strictProps, true);
+	constructDefaults('muted,checked,disabled,selected', booleanProps, true);
 
 	function updateTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
@@ -1412,36 +1413,36 @@
 							var textNode = document.createTextNode(_nextChild);
 							var domChild = domChildren[index];
 
-							if (!isNullOrUndefined(domChild)) {
-								insertOrAppendNonKeyed(dom, textNode, domChild);
-								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
-							} else {
+							if (isNullOrUndefined(domChild)) {
 								// TODO move to next node if need be
 								var _nextChild2 = domChildren[index + 1];
 								insertOrAppendNonKeyed(dom, textNode, _nextChild2);
 								isNotVirtualFragment && domChildren.splice(index, 1, textNode);
+							} else {
+								insertOrAppendNonKeyed(dom, textNode, domChild);
+								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 							}
 						} else if (sameLength === true) {
 							var _domNode = mount(_nextChild, null, lifecycle, context, instance, isSVG);
 							var _domChild = domChildren[index];
 
-							if (!isNullOrUndefined(_domChild)) {
-								insertOrAppendNonKeyed(dom, _domNode, _domChild);
-								isNotVirtualFragment && domChildren.splice(index, 0, _domNode);
-							} else {
+							if (isNullOrUndefined(_domChild)) {
 								// TODO move to next node if need be
 								var _nextChild3 = domChildren[index + 1];
 								insertOrAppendNonKeyed(dom, _domNode, _nextChild3);
 								isNotVirtualFragment && domChildren.splice(index, 1, _domNode);
+							} else {
+								insertOrAppendNonKeyed(dom, _domNode, _domChild);
+								isNotVirtualFragment && domChildren.splice(index, 0, _domNode);
 							}
 						}
 					} else if (isStringOrNumber(_nextChild)) {
 						if (lastChildrenLength === 1) {
 							if (isStringOrNumber(_lastChild)) {
-								if (dom.getElementsByTagName !== void 0) {
-									dom.firstChild.nodeValue = _nextChild;
-								} else {
+								if (dom.getElementsByTagName === void 0) {
 									dom.nodeValue = _nextChild;
+								} else {
+									dom.firstChild.nodeValue = _nextChild;
 								}
 							} else {
 								detachNode(_lastChild);

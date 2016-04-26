@@ -120,7 +120,7 @@ export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKe
 }
 
 export function patchAttribute(attrName, nextAttrValue, dom) {
-	if(strictProps[attrName]) {
+	if (strictProps[attrName]) {
 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 	} else {
 		if (booleanProps[attrName]) {
@@ -272,36 +272,36 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						const textNode = document.createTextNode(nextChild);
 						const domChild = domChildren[index];
 
-						if (!isNullOrUndefined(domChild)) {
-							insertOrAppendNonKeyed(dom, textNode, domChild);
-							isNotVirtualFragment && domChildren.splice(index, 0, textNode);
-						} else {
+						if (isNullOrUndefined(domChild)) {
 							// TODO move to next node if need be
 							const nextChild = domChildren[index + 1];
 							insertOrAppendNonKeyed(dom, textNode, nextChild);
 							isNotVirtualFragment && domChildren.splice(index, 1, textNode);
+						} else {
+							insertOrAppendNonKeyed(dom, textNode, domChild);
+							isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 						}
 					} else if (sameLength === true) {
 						const domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 						const domChild = domChildren[index];
 
-						if (!isNullOrUndefined(domChild)) {
-							insertOrAppendNonKeyed(dom, domNode, domChild);
-							isNotVirtualFragment && domChildren.splice(index, 0, domNode);
-						} else {
+						if (isNullOrUndefined(domChild)) {
 							// TODO move to next node if need be
 							const nextChild = domChildren[index + 1];
 							insertOrAppendNonKeyed(dom, domNode, nextChild);
 							isNotVirtualFragment && domChildren.splice(index, 1, domNode);
+						} else {
+							insertOrAppendNonKeyed(dom, domNode, domChild);
+							isNotVirtualFragment && domChildren.splice(index, 0, domNode);
 						}
 					}
 				} else if (isStringOrNumber(nextChild)) {
 					if (lastChildrenLength === 1) {
 						if (isStringOrNumber(lastChild)) {
-							if (dom.getElementsByTagName !== undefined) {
-								dom.firstChild.nodeValue = nextChild;
-							} else {
+							if (dom.getElementsByTagName === undefined) {
 								dom.nodeValue = nextChild;
+							} else {
+								dom.firstChild.nodeValue = nextChild;
 							}
 						} else {
 							detachNode(lastChild);

@@ -116,7 +116,7 @@ describe('SSR Creation - (non-JSX)', () => {
 							value
 						}
 					}
-				}
+				};
 			},
 			result: '<div><span>stateless foo!</span></div>'
 		}, {
@@ -133,7 +133,7 @@ describe('SSR Creation - (non-JSX)', () => {
 							value
 						}
 					}
-				}
+				};
 			},
 			result: '<div><span>stateless foo!</span></div>'
 		}

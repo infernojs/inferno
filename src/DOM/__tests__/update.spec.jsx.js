@@ -282,6 +282,7 @@ describe('Stateful Component updates', () => {
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
 
 
+        debugger;
         updateCaller(); // TODO: Now component is stuck as unmounted!!!
         expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
 

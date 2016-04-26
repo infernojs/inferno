@@ -296,8 +296,8 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
-		const nextTag = nextNode.tag || ((!isNullOrUndefined(nextNode.bp)) ? nextNode.bp.tag : null);
-		const lastTag = lastNode.tag || ((!isNullOrUndefined(lastNode.bp)) ? lastNode.bp.tag : null);
+		const nextTag = nextNode.tag || ((isNullOrUndefined(nextNode.bp)) ? null : nextNode.bp.tag);
+		const lastTag = lastNode.tag || ((isNullOrUndefined(lastNode.bp)) ? null : lastNode.bp.tag);
 
 		if (nextTag === 'svg') {
 			isSVG = true;

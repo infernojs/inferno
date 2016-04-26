@@ -122,7 +122,7 @@
 		var tag = shape.tag || null;
 		var tagIsDynamic = tag && tag.arg !== void 0 ? true : false;
 
-		var children = !isNullOrUndefined(shape.children) ? shape.children : null;
+		var children = isNullOrUndefined(shape.children) ? null : shape.children;
 		var childrenIsDynamic = children && children.arg !== void 0 ? true : false;
 
 		var attrs = shape.attrs || null;
@@ -134,13 +134,13 @@
 		var events = shape.events || null;
 		var eventsIsDynamic = events && events.arg !== void 0 ? true : false;
 
-		var key = shape.key !== void 0 ? shape.key : null;
+		var key = shape.key === void 0 ? null : shape.key;
 		var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
 
 		var style = shape.style || null;
 		var styleIsDynamic = style && style.arg !== void 0 ? true : false;
 
-		var className = shape.className !== void 0 ? shape.className : null;
+		var className = shape.className === void 0 ? null : shape.className;
 		var classNameIsDynamic = className && className.arg !== void 0 ? true : false;
 
 		var blueprint = {
@@ -150,7 +150,7 @@
 				keyed: {},
 				nonKeyed: []
 			},
-			tag: !tagIsDynamic ? tag : null,
+			tag: tagIsDynamic ? null : tag,
 			className: className !== '' && className ? className : null,
 			style: style !== '' && style ? style : null,
 			isComponent: tagIsDynamic,

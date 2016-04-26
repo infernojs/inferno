@@ -208,7 +208,7 @@ export function mountArrayChildren(node, children, parentDom, lifecycle, context
 		} else {
 			const domNode = mount(child, parentDom, lifecycle, context, instance, isSVG);
 
-			if (isNonKeyed || (!hasKeyedAssumption && child && isNullOrUndefined(child.key))) {
+			if (isNonKeyed || (!hasKeyedAssumption && !isNullOrUndefined(child) && isNullOrUndefined(child.key))) {
 				isNonKeyed = true;
 				domChildren = domChildren || [];
 				domChildren.push(domNode);
