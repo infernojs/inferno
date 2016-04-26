@@ -15,8 +15,8 @@ const namespaces = {};
 
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,checked', strictProps, true);
-constructDefaults('muted,value,disabled,selected', booleanProps, true);
+constructDefaults('volume,value', strictProps, true);
+constructDefaults('muted,checked,disabled,selected', booleanProps, true);
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
