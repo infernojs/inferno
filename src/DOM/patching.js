@@ -126,11 +126,17 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 		if (booleanProps[attrName]) {
 			dom[attrName] = nextAttrValue ? true : false;
 		} else {
+			const ns = namespaces[attrName];
+			
 			if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-				dom.removeAttribute(attrName);
+				if (ns !== undefined) {
+					dom.removeAttributeNS(ns, attrName);
+				} else {
+					dom.removeAttribute(attrName);
+				}
 			} else {
-				if (namespaces[attrName]) {
-					dom.setAttributeNS(namespaces[attrName], attrName, nextAttrValue === true ? attrName : nextAttrValue);
+				if (ns !== undefined) {
+					dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
 				} else {
 					dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 				}
