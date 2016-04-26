@@ -1272,13 +1272,19 @@
 			dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 		} else {
 			if (booleanProps[attrName]) {
-				dom[attrName] = nextAttrValue;
+				dom[attrName] = nextAttrValue ? true : false;
 			} else {
+				var ns = namespaces[attrName];
+
 				if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
-					dom.removeAttribute(attrName);
+					if (ns !== void 0) {
+						dom.removeAttributeNS(ns, attrName);
+					} else {
+						dom.removeAttribute(attrName);
+					}
 				} else {
-					if (namespaces[attrName]) {
-						dom.setAttributeNS(namespaces[attrName], attrName, nextAttrValue === true ? attrName : nextAttrValue);
+					if (ns !== void 0) {
+						dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
 					} else {
 						dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
 					}
