@@ -1310,7 +1310,7 @@
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 			if (!isInvalidNode(nextNode)) {
-				patch(lastNode, nextNode, parentDom, lifecycle, context, instance, false, false);
+				patch(lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
 			}
@@ -1332,7 +1332,7 @@
 					var dom = lastNode.dom;
 
 					_nextNode.dom = dom;
-					patch(instance, _nextNode, parentDom, lifecycle, context, null, false, false);
+					patch(instance, _nextNode, parentDom, lifecycle, context, null, null, false);
 					lastNode.instance = _nextNode;
 					if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 						nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
