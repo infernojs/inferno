@@ -287,6 +287,10 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 Inferno strives to be compatible with much of React's basic API. However, in some places, alternative implementations have been used or
 non-performant features have been removed or replaced where an alternative solution is easy to adopt without too many changes.
 
+### Custom namespaces on elements is not supported
+
+Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
+
 ### The stateful ES2015 Component is located in its own package
  
 React's ES2015 component is references as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
