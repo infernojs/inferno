@@ -127,7 +127,7 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 			dom[attrName] = nextAttrValue ? true : false;
 		} else {
 			const ns = namespaces[attrName];
-			
+
 			if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
 				if (ns !== undefined) {
 					dom.removeAttributeNS(ns, attrName);
@@ -184,7 +184,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 				const dom = lastNode.dom;
 
 				nextNode.dom = dom;
-				patch(instance, nextNode, dom, lifecycle, context, null, false, false);
+				patch(instance, nextNode, parentDom, lifecycle, context, null, false, false);
 				lastNode.instance = nextNode;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);

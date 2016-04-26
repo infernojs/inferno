@@ -1331,7 +1331,7 @@
 					var dom = lastNode.dom;
 
 					_nextNode.dom = dom;
-					patch(instance, _nextNode, dom, lifecycle, context, null, false, false);
+					patch(instance, _nextNode, parentDom, lifecycle, context, null, false, false);
 					lastNode.instance = _nextNode;
 					if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
 						nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
