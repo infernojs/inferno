@@ -32,7 +32,7 @@ export function isNullOrUndefined(obj) {
 }
 
 export function isInvalidNode(obj) {
-	return obj === undefined || obj === null || obj === false;
+	return obj === null || obj === false || obj === undefined;
 }
 
 export function isFunction(obj) {

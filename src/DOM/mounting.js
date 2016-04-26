@@ -170,8 +170,9 @@ function appendPromise(child, parentDom, domChildren, lifecycle, context, instan
 	child.then(node => {
 		// TODO check for text nodes and arrays
 		const dom = mount(node, null, lifecycle, context, instance, isSVG);
-
-		parentDom.replaceChild(dom, placeholder);
+		if (parentDom !== null && !isInvalidNode(dom)) {
+			parentDom.replaceChild(dom, placeholder);
+		}
 		domChildren && replaceInArray(domChildren, placeholder, dom);
 	});
 	parentDom.appendChild(placeholder);
@@ -282,7 +283,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		if (!isNullOrUndefined(node)) {
 			dom = mount(node, null, lifecycle, context, instance);
 			instance._lastNode = node;
-			if (parentDom !== null) {
+			if (parentDom !== null && !isInvalidNode(dom)) {
 				parentDom.appendChild(dom);
 			}
 			instance.componentDidMount();
@@ -309,7 +310,7 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 
 		parentNode.instance = node;
 
-		if (parentDom !== null) {
+		if (parentDom !== null && !isInvalidNode(dom)) {
 			parentDom.appendChild(dom);
 		}
 		parentNode.dom = dom;
