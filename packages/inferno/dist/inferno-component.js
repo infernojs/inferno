@@ -61,6 +61,7 @@
 	}
 
 	function constructDefaults(string, object, value) {
+		/* eslint no-return-assign: 0 */
 		string.split(',').forEach(function (i) {
 			return object[i] = value;
 		});

@@ -1173,6 +1173,7 @@
 	}
 
 	function constructDefaults(string, object, value) {
+		/* eslint no-return-assign: 0 */
 		string.split(',').forEach(function (i) {
 			return object[i] = value;
 		});
@@ -1332,7 +1333,7 @@
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 			if (!isInvalidNode(nextNode)) {
-				patch(lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
+				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
 			}
