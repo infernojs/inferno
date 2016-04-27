@@ -146,7 +146,7 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 }
 
 
-export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+export function patchComponent(hasTemplate, lastNode, Component, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {

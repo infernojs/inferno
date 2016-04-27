@@ -72,18 +72,26 @@ export default class Component {
 	render() {}
 	forceUpdate(callback) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			if (process.env.NODE_ENV !== 'production') {
+				throw Error(noOp);
+			}
+			return;
 		}
 		applyState(this, true, callback);
 	}
 	setState(newState, callback) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			if (process.env.NODE_ENV !== 'production') {
+				throw Error(noOp);
+			}
+			return;
 		}
 		if (this._blockSetState === false) {
 			queueStateChanges(this, newState, callback);
 		} else {
-			throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+			if (process.env.NODE_ENV !== 'production') {
+				throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+			}
 		}
 	}
 	componentDidMount() {}

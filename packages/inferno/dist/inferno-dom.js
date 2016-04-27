@@ -151,7 +151,6 @@
 		if (isInvalidNode(input)) {
 			return null;
 		}
-
 		var bp = input.bp;
 
 		if (recyclingEnabled) {
@@ -164,12 +163,7 @@
 				return dom;
 			}
 		}
-
-		if (bp === void 0) {
-			return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
-		} else {
-			return appendNodeWithTemplate(input, bp, parentDom, lifecycle, context, instance);
-		}
+		return appendNode(bp !== void 0, input, bp, parentDom, lifecycle, context, instance, isSVG);
 	}
 
 	function handleSelects(node) {
@@ -178,19 +172,35 @@
 		}
 	}
 
-	function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
+	function appendNode(hasBlueprint, node, bp, parentDom, lifecycle, context, instance, isSVG) {
 		var tag = node.tag;
 
-		if (bp.isComponent === true) {
+		if (hasBlueprint && !tag) {
+			tag = bp.tag;
+		}
+		if (tag === null) {
+			return placeholder(node, parentDom);
+		}
+		if (hasBlueprint && bp.isComponent || !hasBlueprint && isFunction(tag)) {
 			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 		}
-		var dom = documentCreateElement(bp.tag, bp.isSVG);
+		if (!isString(tag) || tag === '') {
+			if ('development' !== 'production') {
+				throw Error('Inferno Error: Expected function or string for element tag type');
+			}
+			return;
+		}
+		if (hasBlueprint && bp.isSVG || tag === 'svg') {
+			isSVG = true;
+		}
+		var dom = documentCreateElement(tag, isSVG);
+		var hooks = node.hooks;
 
 		node.dom = dom;
-		if (bp.hasHooks === true) {
-			handleAttachedHooks(node.hooks, lifecycle, dom);
+		if (hasBlueprint && bp.hasHooks || !hasBlueprint && !isNullOrUndefined(hooks)) {
+			handleAttachedHooks(hooks, lifecycle, dom);
 		}
-		if (bp.lazy === true) {
+		if (hasBlueprint && bp.lazy) {
 			handleLazyAttached(node, lifecycle, dom);
 		}
 		// bp.childrenType:
@@ -200,94 +210,50 @@
 		// 3: multiple children
 		// 4: multiple children (keyed)
 		// 5: variable children (defaults to no optimisation)
-
-		switch (bp.childrenType) {
-			case 1:
-				appendText(node.children, dom, true);
-				break;
-			case 2:
-				mount(node.children, dom, lifecycle, context, instance);
-				break;
-			case 3:
-				mountArrayChildren(node, node.children, dom, lifecycle, context, instance);
-				break;
-			case 4:
-				mountArrayChildrenWithKeys(node.children, dom, lifecycle, context, instance);
-				break;
-			case 5:
-				mountChildren(node, node.children, dom, lifecycle, context, instance);
-				break;
-			default:
-				break;
-		}
-
-		if (bp.hasAttrs === true) {
-			handleSelects(node);
-			var attrs = node.attrs;
-
-			if (bp.attrKeys === null) {
-				var newKeys = Object.keys(attrs);
-				bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
-			}
-			var attrKeys = bp.attrKeys;
-
-			mountAttributes(attrs, attrKeys, dom, instance);
-		}
-		if (bp.hasClassName === true) {
-			dom.className = node.className;
-		}
-		if (bp.hasStyle === true) {
-			patchStyle(null, node.style, dom);
-		}
-		if (bp.hasEvents === true) {
-			var events = node.events;
-
-			if (bp.eventKeys === null) {
-				bp.eventKeys = Object.keys(events);
-			}
-			var eventKeys = bp.eventKeys;
-
-			mountEvents(events, eventKeys, dom);
-		}
-		if (parentDom !== null) {
-			parentDom.appendChild(dom);
-		}
-		return dom;
-	}
-
-	function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
-		var tag = node.tag;
-
-		if (tag === null) {
-			return placeholder(node, parentDom);
-		}
-		if (isFunction(tag)) {
-			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
-		}
-		if (!isString(tag) || tag === '') {
-			throw Error('Inferno Error: Expected function or string for element tag type');
-		}
-		if (tag === 'svg') {
-			isSVG = true;
-		}
-		var dom = documentCreateElement(tag, isSVG);
 		var children = node.children;
+
+		if (hasBlueprint) {
+			switch (bp.childrenType) {
+				case 1:
+					appendText(children, dom, true);
+					break;
+				case 2:
+					mount(children, dom, lifecycle, context, instance, isSVG);
+					break;
+				case 3:
+					mountArrayChildren(node, children, dom, lifecycle, context, instance, isSVG);
+					break;
+				case 4:
+					mountArrayChildrenWithKeys(children, dom, lifecycle, context, instance, isSVG);
+					break;
+				case 5:
+					mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
+					break;
+				default:
+					break;
+			}
+		} else if (!isInvalidNode(children)) {
+			mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
+		}
 		var attrs = node.attrs;
 		var events = node.events;
-		var hooks = node.hooks;
 		var className = node.className;
 		var style = node.style;
 
-		node.dom = dom;
-		if (!isNullOrUndefined(hooks)) {
-			handleAttachedHooks(hooks, lifecycle, dom);
-		}
-		if (!isInvalidNode(children)) {
-			mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
-		}
-		if (!isNullOrUndefined(attrs)) {
+		if (hasBlueprint && bp.hasAttrs || !hasBlueprint && !isNullOrUndefined(attrs)) {
 			handleSelects(node);
-			mountAttributes(attrs, Object.keys(attrs), dom, instance);
+			var attrKeys = void 0;
+
+			if (hasBlueprint) {
+				if (bp.attrKeys === null) {
+					var newKeys = Object.keys(attrs);
+					bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
+				}
+				attrKeys = bp.attrKeys;
+			} else {
+				attrKeys = Object.keys(attrs);
+			}
+			mountAttributes(attrs, attrKeys, dom, instance);
 		}
 		if (!isNullOrUndefined(className)) {
 			dom.className = className;
@@ -295,8 +261,18 @@
 		if (!isNullOrUndefined(style)) {
 			patchStyle(null, style, dom);
 		}
-		if (!isNullOrUndefined(events)) {
-			mountEvents(events, Object.keys(events), dom);
+		if (hasBlueprint && bp.hasEvents || !hasBlueprint && !isNullOrUndefined(events)) {
+			var eventKeys = void 0;
+
+			if (hasBlueprint) {
+				if (bp.eventKeys === null) {
+					bp.eventKeys = Object.keys(events);
+				}
+				eventKeys = bp.eventKeys;
+			} else {
+				eventKeys = Object.keys(events);
+			}
+			mountEvents(events, eventKeys, dom);
 		}
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);
@@ -319,9 +295,9 @@
 		parentDom.appendChild(placeholder);
 	}
 
-	function mountArrayChildrenWithKeys(children, parentDom, lifecycle, context, instance) {
+	function mountArrayChildrenWithKeys(children, parentDom, lifecycle, context, instance, isSVG) {
 		for (var i = 0; i < children.length; i++) {
-			mount(children[i], parentDom, lifecycle, context, instance);
+			mount(children[i], parentDom, lifecycle, context, instance, isSVG);
 		}
 	}
 
@@ -1172,22 +1148,9 @@
 		}
 	}
 
-	function constructDefaults(string, object, value) {
-		string.split(',').forEach(function (i) {
-			return object[i] = value;
-		});
-	}
-
-	var xlinkNS = 'http://www.w3.org/1999/xlink';
-	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
 	var strictProps = {};
 	var booleanProps = {};
 	var namespaces = {};
-
-	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-	constructDefaults('volume,value', strictProps, true);
-	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 
 	function updateTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
@@ -1332,7 +1295,7 @@
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
 			if (!isInvalidNode(nextNode)) {
-				patch(lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
+				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
 			}

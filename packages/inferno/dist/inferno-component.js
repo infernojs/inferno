@@ -60,23 +60,6 @@
 		return obj === void 0 || obj === null;
 	}
 
-	function constructDefaults(string, object, value) {
-		string.split(',').forEach(function (i) {
-			return object[i] = value;
-		});
-	}
-
-	var xlinkNS = 'http://www.w3.org/1999/xlink';
-	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-	var strictProps = {};
-	var booleanProps = {};
-	var namespaces = {};
-
-	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-	constructDefaults('volume,value', strictProps, true);
-	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-
 	var screenWidth = window.screen.width;
 	var screenHeight = window.screen.height;
 	var scrollX = 0;
@@ -199,7 +182,10 @@
 			key: 'forceUpdate',
 			value: function forceUpdate(callback) {
 				if (this._unmounted) {
-					throw Error(noOp);
+					if ('development' !== 'production') {
+						throw Error(noOp);
+					}
+					return;
 				}
 				applyState(this, true, callback);
 			}
@@ -207,12 +193,17 @@
 			key: 'setState',
 			value: function setState(newState, callback) {
 				if (this._unmounted) {
-					throw Error(noOp);
+					if ('development' !== 'production') {
+						throw Error(noOp);
+					}
+					return;
 				}
 				if (this._blockSetState === false) {
 					queueStateChanges(this, newState, callback);
 				} else {
-					throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+					if ('development' !== 'production') {
+						throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+					}
 				}
 			}
 		}, {

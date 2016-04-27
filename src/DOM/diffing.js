@@ -197,7 +197,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 				} else {
 					nextNode.instance = instance;
 					nextNode.dom = lastNode.dom;
-					patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					patchComponent(true, nextNode, nextNode.tag, nextBp, instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
 			}
 		} else {
@@ -341,7 +341,7 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 					} else {
 						nextNode.instance = lastNode.instance;
 						nextNode.dom = lastNode.dom;
-						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+						patchComponent(false, nextNode, nextNode.tag, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 					}
 				}
 			} else {

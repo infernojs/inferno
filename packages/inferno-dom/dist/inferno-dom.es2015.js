@@ -1335,7 +1335,7 @@ function mountNode(node, parentDom, namespace, lifecycle, context, instance) {
 		return placeholder(node, parentDom);
 	}
 
-	var tpl = node.tpl;
+	con tpl = node.tpl;
 
 	if (recyclingEnabled) {
 		var dom = recycle(node, tpl, lifecycle, context, instance);
