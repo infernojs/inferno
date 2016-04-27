@@ -23,7 +23,7 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 			return dom;
 		}
 	}
-	return appendNode(bp !== undefined, input, bp, parentDom, lifecycle, context, instance, isSVG);
+	return mountNode(bp !== undefined, input, bp, parentDom, lifecycle, context, instance, isSVG);
 }
 
 function handleSelects(node) {
@@ -32,7 +32,7 @@ function handleSelects(node) {
 	}
 }
 
-function appendNode(hasBlueprint, node, bp, parentDom, lifecycle, context, instance, isSVG) {
+function mountNode(hasBlueprint, node, bp, parentDom, lifecycle, context, instance, isSVG) {
 	let tag = node.tag;
 
 	if (hasBlueprint && !tag) {
@@ -57,7 +57,7 @@ function appendNode(hasBlueprint, node, bp, parentDom, lifecycle, context, insta
 	const hooks = node.hooks;
 
 	node.dom = dom;
-	if ((hasBlueprint && bp.hasHooks) || (!hasBlueprint && !isNullOrUndefined(hooks))) {
+	if (!isNullOrUndefined(hooks)) {
 		handleAttachedHooks(hooks, lifecycle, dom);
 	}
 	if (hasBlueprint && bp.lazy) {
@@ -100,7 +100,7 @@ function appendNode(hasBlueprint, node, bp, parentDom, lifecycle, context, insta
 	const className = node.className;
 	const style = node.style;
 
-	if ((hasBlueprint && bp.hasAttrs) || (!hasBlueprint && !isNullOrUndefined(attrs))) {
+	if (!isNullOrUndefined(attrs)) {
 		handleSelects(node);
 		let attrKeys;
 
@@ -121,7 +121,7 @@ function appendNode(hasBlueprint, node, bp, parentDom, lifecycle, context, insta
 	if (!isNullOrUndefined(style)) {
 		patchStyle(null, style, dom);
 	}
-	if ((hasBlueprint && bp.hasEvents) || (!hasBlueprint && !isNullOrUndefined(events))) {
+	if (!isNullOrUndefined(events)) {
 		let eventKeys;
 
 		if (hasBlueprint) {

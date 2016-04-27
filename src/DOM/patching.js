@@ -1,7 +1,8 @@
-import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from './../core/utils';
-import { diffNodes, diffNodesWithTemplate } from './diffing';
-import { mount } from './mounting';
-import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
+import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isFunction, isPromise } from './../core/utils';
+import { diffChildren, diffAttributes, diffEvents } from './diffing';
+import { mount, mountComponent, mountArrayChildren } from './mounting';
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode, replaceWithNewNode, removeAllChildren } from './utils';
+import { setClipNode } from './lifecycle';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -28,13 +29,173 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 }
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, skipLazyCheck) {
+	if (isPromise(nextNode)) {
+		nextNode.then(node => {
+			patch(lastNode, node, parentDom, lifecycle, context, instance, null, false);
+		});
+		return;
+	}
 	const lastBp = lastNode.bp;
 	const nextBp = nextNode.bp;
+	const hasBlueprint = lastBp !== undefined && nextBp !== undefined;
+	const nextHooks = nextNode.hooks;
 
-	if (lastBp === undefined || nextBp === undefined) {
-		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+	if (nextHooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+		nextHooks.willUpdate(lastNode.dom);
+	}
+	let nextTag = nextNode.tag;
+	let lastTag = lastNode.tag;
+
+	if (hasBlueprint) {
+		if (isNullOrUndefined(lastTag)) {
+			lastTag = lastBp.tag;
+		}
+		if (isNullOrUndefined(nextTag)) {
+			nextTag = nextBp.tag;
+		}
+	} else if (nextTag === 'svg') {
+		isSVG = true;
+	}
+	if (lastTag !== nextTag) {
+		if ((hasBlueprint && lastBp.isComponent === true) || (!hasBlueprint && isFunction(lastTag))) {
+			const lastNodeInstance = lastNode.instance;
+
+			if ((hasBlueprint && nextBp.isComponent === true) || (!hasBlueprint && isFunction(lastTag))) {
+				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+				detachNode(lastNode);
+			} else if (isStatefulComponent(lastTag)) {
+				patchNode(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+			} else {
+				patchNode(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+			}
+		} else {
+			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+		}
+	} else if (isNullOrUndefined(lastTag)) {
+		nextNode.dom = lastNode.dom;
 	} else {
-		diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
+		if ((hasBlueprint && lastBp.isComponent === true) || (!hasBlueprint && isFunction(lastTag))) {
+			if ((hasBlueprint && nextBp.isComponent === true) || (!hasBlueprint && isFunction(nextTag))) {
+				const instance = lastNode.instance;
+
+				if (!isNullOrUndefined(instance) && instance._unmounted) {
+					if (parentDom !== null) {
+						remove(lastNode, parentDom);
+					}
+					mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
+				} else {
+					nextNode.instance = instance;
+					nextNode.dom = lastNode.dom;
+					patchComponent(hasBlueprint, nextNode, nextNode.tag, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				}
+			}
+		} else {
+			const dom = lastNode.dom;
+
+			nextNode.dom = dom;
+			if (hasBlueprint && nextBp.lazy === true && skipLazyCheck === false) {
+				const clipData = lastNode.clipData;
+
+				if (lifecycle.scrollY === null) {
+					lifecycle.refresh();
+				}
+
+				nextNode.clipData = clipData;
+				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+						return;
+					}
+				}
+				if (clipData.bottom < lifecycle.scrollY) {
+					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+						return;
+					}
+				}
+			}
+			if (hasBlueprint) {
+				const lastChildrenType = lastBp.childrenType;
+				const nextChildrenType = nextBp.childrenType;
+
+				if (lastChildrenType > 0 || nextChildrenType > 0) {
+					if (nextChildrenType === 5 || lastChildrenType === 5) {
+						diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
+					} else {
+						const lastChildren = lastNode.children;
+						const nextChildren = nextNode.children;
+
+						if (lastChildrenType === 0 || isInvalidNode(lastChildren)) {
+							if (nextChildrenType > 2) {
+								mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance, isSVG);
+							} else {
+								mount(nextChildren, dom, lifecycle, context, instance, isSVG);
+							}
+						} else if (nextChildrenType === 0 || isInvalidNode(nextChildren)) {
+							if (lastChildrenType > 2) {
+								removeAllChildren(dom, lastChildren);
+							} else {
+								remove(lastChildren, dom);
+							}
+						} else {
+							if (lastChildren !== nextChildren) {
+								if (lastChildrenType === 4 && nextChildrenType === 4) {
+									patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
+								} else if (lastChildrenType === 2 && nextChildrenType === 2) {
+									patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, isSVG);
+								} else if (lastChildrenType === 1 && nextChildrenType === 1) {
+									updateTextNode(dom, lastChildren, nextChildren);
+								} else {
+									diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
+								}
+							}
+						}
+					}
+				}
+			} else {
+				diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
+			}
+			const nextClassName = nextNode.className;
+			const nextStyle = nextNode.style;
+
+			diffAttributes(lastNode, nextNode, hasBlueprint ? lastBp.attrKeys : null, hasBlueprint ? nextBp.attrKeys : null, dom, instance);
+			diffEvents(lastNode, nextNode, hasBlueprint ? lastBp.eventKeys : null, hasBlueprint ? nextBp.eventKeys : null, dom);
+
+			if (lastNode.className !== nextClassName) {
+				if (isNullOrUndefined(nextClassName)) {
+					dom.removeAttribute('class');
+				} else {
+					dom.className = nextClassName;
+				}
+			}
+			if (lastNode.style !== nextStyle) {
+				patchStyle(lastNode.style, nextStyle, dom);
+			}
+			if (nextHooks && !isNullOrUndefined(nextHooks.didUpdate)) {
+				nextHooks.didUpdate(dom);
+			}
+			setFormElementProperties(nextTag, nextNode);
+		}
+	}
+}
+
+function setValueProperty(nextNode) {
+	const value = nextNode.attrs.value;
+	if (!isNullOrUndefined(value)) {
+		nextNode.dom.value = value;
+	}
+}
+
+
+function setFormElementProperties(nextTag, nextNode) {
+	if (nextTag === 'input') {
+		const inputType = nextNode.attrs.type;
+		if (inputType === 'text') {
+			setValueProperty(nextNode);
+		} else if (inputType === 'checkbox' || inputType === 'radio') {
+			const checked = nextNode.attrs.checked;
+			nextNode.dom.checked = !!checked;
+		}
+	} else if (nextTag === 'textarea') {
+		setValueProperty(nextNode);
 	}
 }
 
