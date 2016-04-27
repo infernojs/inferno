@@ -1705,4 +1705,54 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div></div>');
 		});
 	});
+
+	describe('A component rendering a component should work as expected', () => {
+		let forceUpdate;
+		let forceUpdate2;
+		let foo;
+		let bar;
+
+		class Bar extends Component {
+			constructor() {
+				super();
+				bar = this;
+				forceUpdate = this.forceUpdate.bind(this);
+			}
+			render() {
+				return <div>Hello world</div>;
+			}
+		}
+		class Foo extends Component {
+			constructor() {
+				super();
+				foo = this;
+				forceUpdate2 = this.forceUpdate.bind(this);
+			}
+			render() {
+				return <Bar />;
+			}
+		}
+
+		it('should render the div correctly', () => {
+			render(<Foo />, container);
+			expect(container.firstChild.innerHTML).to.equal('Hello world');
+		});
+
+		it('should update correctly', () => {
+			render(<Foo />, container);
+			render(<Foo />, container);
+			expect(container.firstChild.innerHTML).to.equal('Hello world');
+		});
+
+		it('should update correctly via forceUpdate', () => {
+			console.log(foo, bar)
+			render(<Foo />, container);
+			forceUpdate();
+			forceUpdate2();
+			render(<Foo />, container);
+			forceUpdate2();
+			forceUpdate();
+			expect(container.firstChild.innerHTML).to.equal('Hello world');
+		});
+	});
 });
