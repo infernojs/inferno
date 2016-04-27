@@ -32,7 +32,7 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 
 Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM. Inferno also has the `inferno-server` package for
 server-side rendering of virtual DOM to HTML strings (differing from React's route of using `react-dom/server` for server-side rendering). Furthermore, rather than include the
-ES2015 component with class syntax in core (like React), the comopnent is in a separate package `inferno-component` to allow for better modularity.
+ES2015 component with class syntax in core (like React), the component is in a separate package `inferno-component` to allow for better modularity.
 
 NPM:
 
