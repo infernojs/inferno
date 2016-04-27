@@ -189,7 +189,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			if (nextBp.isComponent === true) {
 				const instance = lastNode.instance;
 
-				if (instance._unmounted) {
+				if (!isNullOrUndefined(instance) && instance._unmounted) {
 					if (parentDom !== null) {
 						remove(lastNode, parentDom);
 					}
@@ -331,9 +331,18 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 		} else {
 			if (isFunction(lastTag)) {
 				if (isFunction(nextTag)) {
-					nextNode.instance = lastNode.instance;
-					nextNode.dom = lastNode.dom;
-					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					const instance = lastNode._instance;
+
+					if (!isNullOrUndefined(instance) && instance._unmounted) {
+						if (parentDom !== null) {
+							remove(lastNode, parentDom);
+						}
+						mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
+					} else {
+						nextNode.instance = lastNode.instance;
+						nextNode.dom = lastNode.dom;
+						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					}
 				}
 			} else {
 				const dom = lastNode.dom;

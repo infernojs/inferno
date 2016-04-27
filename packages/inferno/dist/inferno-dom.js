@@ -402,7 +402,7 @@
 			var instance = new Component(props);
 			instance._patch = patch;
 
-			if (props.ref) {
+			if (!isNullOrUndefined(lastInstance) && props.ref) {
 				mountRef(lastInstance, props.ref, instance);
 			}
 			var childContext = instance.getChildContext();
@@ -988,8 +988,10 @@
 				if (nextBp.isComponent === true) {
 					var _instance = lastNode.instance;
 
-					if (_instance._unmounted) {
-						remove(lastNode, parentDom);
+					if (!isNullOrUndefined(_instance) && _instance._unmounted) {
+						if (parentDom !== null) {
+							remove(lastNode, parentDom);
+						}
 						mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, parentDom, lifecycle, context);
 					} else {
 						nextNode.instance = _instance;
@@ -1127,9 +1129,18 @@
 			} else {
 				if (isFunction(lastTag)) {
 					if (isFunction(nextTag)) {
-						nextNode.instance = lastNode.instance;
-						nextNode.dom = lastNode.dom;
-						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+						var _instance2 = lastNode._instance;
+
+						if (!isNullOrUndefined(_instance2) && _instance2._unmounted) {
+							if (parentDom !== null) {
+								remove(lastNode, parentDom);
+							}
+							mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance2, parentDom, lifecycle, context);
+						} else {
+							nextNode.instance = lastNode.instance;
+							nextNode.dom = lastNode.dom;
+							patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+						}
 					}
 				} else {
 					var dom = lastNode.dom;

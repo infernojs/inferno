@@ -262,7 +262,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		const instance = new Component(props);
 		instance._patch = patch;
 
-		if (props.ref) {
+		if (!isNullOrUndefined(lastInstance) && props.ref) {
 			mountRef(lastInstance, props.ref, instance);
 		}
 		const childContext = instance.getChildContext();
