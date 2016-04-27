@@ -375,7 +375,6 @@ describe('Stateful Component updates', () => {
             }
 
             render() {
-                debugger;
                 return (
                     <div>
                         {this.props.data.test+''}
