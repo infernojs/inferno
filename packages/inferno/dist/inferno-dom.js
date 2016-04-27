@@ -144,18 +144,18 @@
 		return false;
 	}
 
-	function mount(node, parentDom, lifecycle, context, instance, isSVG) {
-		if (isArray(node)) {
-			return placeholder(node, parentDom);
+	function mount(input, parentDom, lifecycle, context, instance, isSVG) {
+		if (isArray(input)) {
+			return placeholder(input, parentDom);
 		}
-		if (isInvalidNode(node)) {
+		if (isInvalidNode(input)) {
 			return null;
 		}
 
-		var bp = node.bp;
+		var bp = input.bp;
 
 		if (recyclingEnabled) {
-			var dom = recycle(node, bp, lifecycle, context, instance);
+			var dom = recycle(input, bp, lifecycle, context, instance);
 
 			if (dom !== null) {
 				if (parentDom !== null) {
@@ -166,11 +166,12 @@
 		}
 
 		if (bp === void 0) {
-			return appendNode(node, parentDom, lifecycle, context, instance, isSVG);
+			return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
 		} else {
-			return appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance);
+			return appendNodeWithTemplate(input, bp, parentDom, lifecycle, context, instance);
 		}
 	}
+
 	function handleSelects(node) {
 		if (node.tag === 'select') {
 			selectValue(node);
@@ -181,7 +182,7 @@
 		var tag = node.tag;
 
 		if (bp.isComponent === true) {
-			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
+			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 		}
 		var dom = documentCreateElement(bp.tag, bp.isSVG);
 
@@ -261,7 +262,7 @@
 			return placeholder(node, parentDom);
 		}
 		if (isFunction(tag)) {
-			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
+			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 		}
 		if (!isString(tag) || tag === '') {
 			throw Error('Inferno Error: Expected function or string for element tag type');
@@ -379,9 +380,9 @@
 		}
 	}
 
-	function mountRef(instance, value, dom) {
+	function mountRef(instance, value, refValue) {
 		if (!isInvalidNode(instance) && isString(value)) {
-			instance.refs[value] = dom;
+			instance.refs[value] = refValue;
 		}
 	}
 
@@ -393,7 +394,7 @@
 		}
 	}
 
-	function mountComponent(parentNode, Component, props, hooks, children, parentDom, lifecycle, context) {
+	function mountComponent(parentNode, Component, props, hooks, children, lastInstance, parentDom, lifecycle, context) {
 		props = addChildrenToProps(children, props);
 
 		var dom = void 0;
@@ -401,6 +402,9 @@
 			var instance = new Component(props);
 			instance._patch = patch;
 
+			if (props.ref) {
+				mountRef(lastInstance, props.ref, instance);
+			}
 			var childContext = instance.getChildContext();
 			if (!isNullOrUndefined(childContext)) {
 				context = babelHelpers.extends({}, context, childContext);
@@ -963,7 +967,7 @@
 		var lastTag = lastNode.tag || lastBp.tag;
 
 		if (lastTag !== nextTag) {
-			if (lastNode.bp.isComponent === true) {
+			if (lastBp.isComponent === true) {
 				var lastNodeInstance = lastNode.instance;
 
 				if (nextBp.isComponent === true) {
@@ -982,9 +986,16 @@
 		} else {
 			if (lastBp.isComponent === true) {
 				if (nextBp.isComponent === true) {
-					nextNode.instance = lastNode.instance;
-					nextNode.dom = lastNode.dom;
-					patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					var _instance = lastNode.instance;
+
+					if (_instance._unmounted) {
+						remove(lastNode, parentDom);
+						mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, parentDom, lifecycle, context);
+					} else {
+						nextNode.instance = _instance;
+						nextNode.dom = lastNode.dom;
+						patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, _instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					}
 				}
 			} else {
 				var dom = lastNode.dom;
@@ -1165,7 +1176,7 @@
 	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 	constructDefaults('volume,value', strictProps, true);
-	constructDefaults('muted,checked,disabled,selected', booleanProps, true);
+	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 
 	function updateTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
@@ -1186,26 +1197,26 @@
 		}
 	}
 
-	function patch(lastNode, nextNode, parentDom, lifecycle, context, instance, isNode, isSVG) {
+	function patch(lastInput, nextInput, parentDom, lifecycle, context, instance, isNode, isSVG) {
 		if (isNode !== null) {
-			patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
-		} else if (isInvalidNode(lastNode)) {
-			mount(nextNode, parentDom, lifecycle, context, instance, isSVG);
-		} else if (isInvalidNode(nextNode)) {
-			remove(lastNode, parentDom);
-		} else if (isStringOrNumber(lastNode)) {
-			if (isStringOrNumber(nextNode)) {
-				parentDom.firstChild.nodeValue = nextNode;
+			patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
+		} else if (isInvalidNode(lastInput)) {
+			mount(nextInput, parentDom, lifecycle, context, instance, isSVG);
+		} else if (isInvalidNode(nextInput)) {
+			remove(lastInput, parentDom);
+		} else if (isStringOrNumber(lastInput)) {
+			if (isStringOrNumber(nextInput)) {
+				parentDom.firstChild.nodeValue = nextInput;
 			} else {
-				var dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
-				nextNode.dom = dom;
+				var dom = mount(nextInput, null, lifecycle, context, instance, isSVG);
+				nextInput.dom = dom;
 				replaceNode(parentDom, dom, parentDom.firstChild);
 			}
-		} else if (isStringOrNumber(nextNode)) {
-			var textNode = document.createTextNode(nextNode);
-			replaceNode(parentDom, textNode, lastNode.dom);
+		} else if (isStringOrNumber(nextInput)) {
+			var textNode = document.createTextNode(nextInput);
+			replaceNode(parentDom, textNode, lastInput.dom);
 		} else {
-			patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
+			patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 		}
 	}
 
