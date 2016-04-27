@@ -290,5 +290,117 @@ describe('Stateful Component updates', () => {
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
         StuckChild();
         expect(container.innerHTML).to.equal('<div><div><div>falsetrue</div></div></div>');
-    })
+    });
+
+    it('Should Not get stuck in UNMOUNTED state - variation2', () => {
+        let updateCaller = null;
+
+        // This parent is used for setting up Test scenario, not much related
+        class Parent extends Component {
+            constructor(props) {
+                super(props);
+            }
+            render() {
+                return (
+                    <div>
+                        <A></A>
+                    </div>
+                )
+            }
+        }
+
+        // A component holds all the stuff together
+        class A extends Component {
+            constructor(props) {
+                super(props);
+
+                this.state = {
+                    obj: {
+                        test: true
+                    }
+                };
+
+                this.updateCaller = this.updateCaller.bind(this);
+                updateCaller = this.updateCaller;
+            }
+
+            updateCaller() {
+                this.setState({
+                    obj: {
+                        test: !this.state.obj.test
+                    }
+                });
+            }
+
+            render() {
+                return (
+                    <div>
+                        <B data={this.state.obj}></B>
+                    </div>
+                )
+            }
+        }
+        // B has direct child C, B Is simple wrapper component
+        class B extends Component {
+            constructor(props) {
+                super(props);
+            }
+            render() {
+                return (
+                    <C data={this.props.data}></C>
+                )
+            }
+        }
+
+        let StuckChild = null;
+
+        // C is real component which does the job
+        // C is the one that gets unmounted...
+        class C extends Component {
+            constructor(props) {
+                super(props);
+
+                this.state = {
+                    b: false
+                };
+
+                this.imstuck = this.imstuck.bind(this);
+                StuckChild = this.imstuck;
+            }
+
+            imstuck() {
+                this.setState({
+                    b: !this.state.b
+                });
+            }
+
+            render() {
+                debugger;
+                return (
+                    <div>
+                        {this.props.data.test+''}
+                        {this.state.b +''}
+                    </div>
+                )
+            }
+        }
+
+        render(<Parent />, container);
+
+        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
+
+        StuckChild();
+        expect(container.innerHTML).to.equal('<div><div><div>truetrue</div></div></div>', 'failed here?');
+        StuckChild();
+        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
+        StuckChild();
+        expect(container.innerHTML).to.equal('<div><div><div>truetrue</div></div></div>');
+
+        updateCaller();
+        expect(container.innerHTML).to.equal('<div><div><div>falsetrue</div></div></div>', 'failed second?');
+        updateCaller();
+        expect(container.innerHTML).to.equal('<div><div><div>truetrue</div></div></div>');
+        updateCaller();
+        expect(container.innerHTML).to.equal('<div><div><div>falsetrue</div></div></div>');
+    });
 });
