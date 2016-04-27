@@ -4,6 +4,7 @@ import { mount } from './mounting';
 import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
 
 function constructDefaults(string, object, value) {
+	/* eslint no-return-assign: 0 */
 	string.split(',').forEach(i => object[i] = value);
 }
 

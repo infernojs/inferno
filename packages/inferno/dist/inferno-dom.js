@@ -972,7 +972,7 @@
 					} else {
 						nextNode.instance = _instance;
 						nextNode.dom = lastNode.dom;
-						patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, _instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+						patchComponent(true, nextNode, nextNode.tag, nextBp, _instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 					}
 				}
 			} else {
@@ -1115,7 +1115,7 @@
 						} else {
 							nextNode.instance = lastNode.instance;
 							nextNode.dom = lastNode.dom;
-							patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+							patchComponent(false, nextNode, nextNode.tag, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 						}
 					}
 				} else {
@@ -1148,9 +1148,23 @@
 		}
 	}
 
+	function constructDefaults(string, object, value) {
+		/* eslint no-return-assign: 0 */
+		string.split(',').forEach(function (i) {
+			return object[i] = value;
+		});
+	}
+
+	var xlinkNS = 'http://www.w3.org/1999/xlink';
+	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
 	var strictProps = {};
 	var booleanProps = {};
 	var namespaces = {};
+
+	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+	constructDefaults('volume,value', strictProps, true);
+	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 
 	function updateTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
@@ -1279,7 +1293,7 @@
 		}
 	}
 
-	function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+	function patchComponent(hasTemplate, lastNode, Component, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 		nextProps = addChildrenToProps(nextChildren, nextProps);
 
 		if (isStatefulComponent(Component)) {

@@ -1745,7 +1745,6 @@ describe('Components (JSX)', () => {
 		});
 
 		it('should update correctly via forceUpdate', () => {
-			console.log(foo, bar)
 			render(<Foo />, container);
 			forceUpdate();
 			forceUpdate2();
