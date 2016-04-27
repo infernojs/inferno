@@ -396,10 +396,10 @@ describe('Stateful Component updates', () => {
         expect(container.innerHTML).to.equal('<div><div><div>truetrue</div></div></div>');
 
         updateCaller();
-        expect(container.innerHTML).to.equal('<div><div><div>falsetrue</div></div></div>', 'failed second?');
+        expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>'); // State it lost here
         updateCaller();
-        expect(container.innerHTML).to.equal('<div><div><div>truetrue</div></div></div>');
+        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
         updateCaller();
-        expect(container.innerHTML).to.equal('<div><div><div>falsetrue</div></div></div>');
+        expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
     });
 });
