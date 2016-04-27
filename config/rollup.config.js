@@ -5,9 +5,7 @@ import babel from 'rollup-plugin-babel';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
-// TODO: There is issue in this plugin, it does not ship file specified in main opened issue in their github:
-// https://github.com/ritz078/rollup-plugin-filesize/issues/3
-// import filesize from 'rollup-plugin-filesize';
+import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
 import stub from 'rollup-plugin-stub';
 
@@ -28,7 +26,7 @@ const plugins = [
 		main: true
 	}),
 	stub(),
-	// filesize(),
+	filesize(),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
 		VERSION: pack.version

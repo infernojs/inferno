@@ -190,7 +190,9 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 				const instance = lastNode.instance;
 
 				if (instance._unmounted) {
-					remove(lastNode, parentDom);
+					if (parentDom !== null) {
+						remove(lastNode, parentDom);
+					}
 					mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
 				} else {
 					nextNode.instance = instance;
