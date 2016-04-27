@@ -37,26 +37,26 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 	}
 }
 
-export function patch(lastNode, nextNode, parentDom, lifecycle, context, instance, isNode, isSVG) {
+export function patch(lastInput, nextInput, parentDom, lifecycle, context, instance, isNode, isSVG) {
 	if (isNode !== null) {
-		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
-	} else if (isInvalidNode(lastNode)) {
-		mount(nextNode, parentDom, lifecycle, context, instance, isSVG);
-	} else if (isInvalidNode(nextNode)) {
-		remove(lastNode, parentDom);
-	} else if (isStringOrNumber(lastNode)) {
-		if (isStringOrNumber(nextNode)) {
-			parentDom.firstChild.nodeValue = nextNode;
+		patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
+	} else if (isInvalidNode(lastInput)) {
+		mount(nextInput, parentDom, lifecycle, context, instance, isSVG);
+	} else if (isInvalidNode(nextInput)) {
+		remove(lastInput, parentDom);
+	} else if (isStringOrNumber(lastInput)) {
+		if (isStringOrNumber(nextInput)) {
+			parentDom.firstChild.nodeValue = nextInput;
 		} else {
-			const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
-			nextNode.dom = dom;
+			const dom = mount(nextInput, null, lifecycle, context, instance, isSVG);
+			nextInput.dom = dom;
 			replaceNode(parentDom, dom, parentDom.firstChild);
 		}
-	} else if (isStringOrNumber(nextNode)) {
-		const textNode = document.createTextNode(nextNode);
-		replaceNode(parentDom, textNode, lastNode.dom);
+	} else if (isStringOrNumber(nextInput)) {
+		const textNode = document.createTextNode(nextInput);
+		replaceNode(parentDom, textNode, lastInput.dom);
 	} else {
-		patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, false);
+		patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 	}
 }
 

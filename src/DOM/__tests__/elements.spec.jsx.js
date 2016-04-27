@@ -611,8 +611,8 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('type')).to.equal('file');
-		expect(container.firstChild.getAttribute('multiple')).to.equal('multiple');
-		expect(container.firstChild.getAttribute('capture')).to.equal('capture');
+		expect(container.firstChild.getAttribute('multiple')).to.equal('');
+		expect(container.firstChild.capture).to.equal(true);
 		expect(container.firstChild.getAttribute('accept')).to.equal('image/*');
 
 		render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
@@ -620,8 +620,8 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('type')).to.equal('file');
-		expect(container.firstChild.getAttribute('multiple')).to.equal('multiple');
-		expect(container.firstChild.getAttribute('capture')).to.equal('capture');
+		expect(container.firstChild.getAttribute('multiple')).to.equal('');
+		expect(container.firstChild.capture).to.equal(true);
 		expect(container.firstChild.getAttribute('accept')).to.equal('image/*');
 	});
 

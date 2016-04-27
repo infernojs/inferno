@@ -4,18 +4,18 @@ import { appendText, documentCreateElement, createVirtualFragment, insertOrAppen
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 
-export function mount(node, parentDom, lifecycle, context, instance, isSVG) {
-	if (isArray(node)) {
-		return placeholder(node, parentDom);
+export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
+	if (isArray(input)) {
+		return placeholder(input, parentDom);
 	}
-	if (isInvalidNode(node)) {
+	if (isInvalidNode(input)) {
 		return null;
 	}
 
-	const bp = node.bp;
+	const bp = input.bp;
 
 	if (recyclingEnabled) {
-		const dom = recycle(node, bp, lifecycle, context, instance);
+		const dom = recycle(input, bp, lifecycle, context, instance);
 
 		if (dom !== null) {
 			if (parentDom !== null) {
@@ -26,11 +26,12 @@ export function mount(node, parentDom, lifecycle, context, instance, isSVG) {
 	}
 
 	if (bp === undefined) {
-		return appendNode(node, parentDom, lifecycle, context, instance, isSVG);
+		return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		return appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance);
+		return appendNodeWithTemplate(input, bp, parentDom, lifecycle, context, instance);
 	}
 }
+
 function handleSelects(node) {
 	if (node.tag === 'select') {
 		selectValue(node);
@@ -41,7 +42,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 	const tag = node.tag;
 
 	if (bp.isComponent === true) {
-		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
+		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 	}
 	const dom = documentCreateElement(bp.tag, bp.isSVG);
 
@@ -121,7 +122,7 @@ function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 		return placeholder(node, parentDom);
 	}
 	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, parentDom, lifecycle, context);
+		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 	}
 	if (!isString(tag) || tag === '') {
 		throw Error('Inferno Error: Expected function or string for element tag type');
@@ -239,9 +240,9 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 	}
 }
 
-function mountRef(instance, value, dom) {
+function mountRef(instance, value, refValue) {
 	if (!isInvalidNode(instance) && isString(value)) {
-		instance.refs[value] = dom;
+		instance.refs[value] = refValue;
 	}
 }
 
@@ -253,7 +254,7 @@ export function mountEvents(events, eventKeys, dom) {
 	}
 }
 
-function mountComponent(parentNode, Component, props, hooks, children, parentDom, lifecycle, context) {
+export function mountComponent(parentNode, Component, props, hooks, children, lastInstance, parentDom, lifecycle, context) {
 	props = addChildrenToProps(children, props);
 
 	let dom;
@@ -261,6 +262,9 @@ function mountComponent(parentNode, Component, props, hooks, children, parentDom
 		const instance = new Component(props);
 		instance._patch = patch;
 
+		if (props.ref) {
+			mountRef(lastInstance, props.ref, instance);
+		}
 		const childContext = instance.getChildContext();
 		if (!isNullOrUndefined(childContext)) {
 			context = { ...context, ...childContext };

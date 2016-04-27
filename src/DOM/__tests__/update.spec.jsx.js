@@ -280,26 +280,15 @@ describe('Stateful Component updates', () => {
 
         updateCaller();
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
-
-
-        debugger;
-        updateCaller(); // TODO: Now component is stuck as unmounted!!!
-        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
-
+        updateCaller();
+	    expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
         updateCaller();
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
-        updateCaller();
-        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
-        updateCaller();
+        StuckChild();
+        expect(container.innerHTML).to.equal('<div><div><div>falsetrue</div></div></div>');
+        StuckChild();
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
-
-        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
-
         StuckChild();
-        expect(container.innerHTML).to.equal('<div><div><div>truetrue</div></div></div>');
-        StuckChild();
-        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
-        StuckChild();
-        expect(container.innerHTML).to.equal('<div><div><div>truetrue</div></div></div>');
+        expect(container.innerHTML).to.equal('<div><div><div>falsetrue</div></div></div>');
     })
 });

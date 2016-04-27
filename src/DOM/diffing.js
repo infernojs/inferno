@@ -1,7 +1,7 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
 import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
-import { mountArrayChildren, mount, mountEvents } from './mounting';
+import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
 import { setClipNode } from './lifecycle';
 
 function setValueProperty(nextNode) {
@@ -168,7 +168,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 	const lastTag = lastNode.tag || lastBp.tag;
 
 	if (lastTag !== nextTag) {
-		if (lastNode.bp.isComponent === true) {
+		if (lastBp.isComponent === true) {
 			const lastNodeInstance = lastNode.instance;
 
 			if (nextBp.isComponent === true) {
@@ -187,9 +187,16 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 	} else {
 		if (lastBp.isComponent === true) {
 			if (nextBp.isComponent === true) {
-				nextNode.instance = lastNode.instance;
-				nextNode.dom = lastNode.dom;
-				patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				const instance = lastNode.instance;
+
+				if (instance._unmounted) {
+					remove(lastNode, parentDom);
+					mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
+				} else {
+					nextNode.instance = instance;
+					nextNode.dom = lastNode.dom;
+					patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				}
 			}
 		} else {
 			const dom = lastNode.dom;
