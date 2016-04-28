@@ -236,23 +236,23 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 	let dom;
 	if (isStatefulComponent(Component)) {
 		const instance = new Component(props);
-		instance._patch = patch;
 
+		instance._patch = patch;
 		if (!isNullOrUndefined(lastInstance) && props.ref) {
 			mountRef(lastInstance, props.ref, instance);
 		}
 		const childContext = instance.getChildContext();
+
 		if (!isNullOrUndefined(childContext)) {
 			context = { ...context, ...childContext };
 		}
 		instance.context = context;
-		// Block setting state - we should render only once, using latest state
 		instance._unmounted = false;
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		const node = instance.render();
-		instance._pendingSetState = false;
 
+		instance._pendingSetState = false;
 		if (!isNullOrUndefined(node)) {
 			dom = mount(node, null, lifecycle, context, instance);
 			instance._lastNode = node;
@@ -260,9 +260,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 				parentDom.appendChild(dom);
 			}
 			instance.componentDidMount();
-			instance.componentDidUpdate();
 		}
-
 		parentNode.dom = dom;
 		parentNode.instance = instance;
 	} else {

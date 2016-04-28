@@ -791,6 +791,57 @@ describe('Components (non-JSX)', () => {
 					counter: this.state.counter + 1
 				});
 			}
+		}
+
+		beforeEach((done) => {
+			componentWillMountCount = 0;
+			template = (Component) =>
+				createElement(Component)
+			;
+			render(template(ComponentLifecycleCheck), container);
+			waits(30, done);
+		});
+
+		it('componentWillMountCount to have fired once', () => {
+			expect(componentWillMountCount).to.equal(1);
+		});
+		it('the element in the component should show the new state', () => {
+			expect(container.innerHTML).to.equal(
+				'<div><span>1</span></div>'
+			);
+		});
+	});
+
+	describe('state changes should trigger all lifecycle events for an update #2', () => {
+		let componentWillMountCount;
+		let shouldComponentUpdateCount;
+		let componentDidUpdateCount;
+		let componentWillUpdateCount;
+		let template;
+
+		class ComponentLifecycleCheck extends Component {
+			constructor() {
+				super(null);
+				this.state = {
+					counter: 0
+				};
+			}
+			render() {
+				const template = (counter) =>
+						createElement('div', null,
+							createElement('span', {}, counter)
+						)
+					;
+				return template(this.state.counter);
+			}
+			componentWillMount() {
+				componentWillMountCount++;
+				setTimeout(() => {
+					this.setState({
+						counter: this.state.counter + 1
+					});
+				}, 20)
+			}
 			shouldComponentUpdate() {
 				shouldComponentUpdateCount++;
 				return true;
@@ -801,9 +852,6 @@ describe('Components (non-JSX)', () => {
 			componentWillUpdate() {
 				componentWillUpdateCount++;
 			}
-			componentWillReceiveProps() {
-				componentWillReceivePropsCount++;
-			}
 		}
 
 		beforeEach((done) => {
@@ -811,7 +859,6 @@ describe('Components (non-JSX)', () => {
 			shouldComponentUpdateCount = 0;
 			componentDidUpdateCount = 0;
 			componentWillUpdateCount = 0;
-			componentWillReceivePropsCount = 0;
 			template = (Component) =>
 				createElement(Component)
 			;
@@ -830,9 +877,6 @@ describe('Components (non-JSX)', () => {
 		});
 		it('componentDidUpdateCount to have fired once', () => {
 			expect(componentDidUpdateCount).to.equal(1);
-		});
-		it('componentWillReceivePropsCount not to have fired', () => {
-			expect(componentWillReceivePropsCount).to.equal(0);
 		});
 		it('the element in the component should show the new state', () => {
 			expect(container.innerHTML).to.equal(

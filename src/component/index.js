@@ -23,6 +23,12 @@ function queueStateChanges(component, newState, callback) {
 	if (!component._pendingSetState) {
 		component._pendingSetState = true;
 		applyState(component, false, callback);
+	} else {
+		const pendingState = component._pendingState;
+		const oldState = component.state;
+
+		component.state = { ...oldState, ...pendingState };
+		component._pendingState = {};
 	}
 }
 
