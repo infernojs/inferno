@@ -79,10 +79,13 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 				const instance = lastNode.instance;
 
 				if (!isNullOrUndefined(instance) && instance._unmounted) {
+					const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, null, lifecycle, context);
+
 					if (parentDom !== null) {
-						remove(lastNode, parentDom);
+						replaceNode(parentDom, newDom, lastNode.dom);
+					} else {
+						insertOrAppendKeyed(parentDom, newDom);
 					}
-					mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
 				} else {
 					nextNode.instance = instance;
 					nextNode.dom = lastNode.dom;
