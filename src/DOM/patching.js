@@ -78,18 +78,9 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 			if ((hasBlueprint && nextBp.isComponent === true) || (!hasBlueprint && isFunction(nextTag))) {
 				const instance = lastNode.instance;
 
-				if (!isNullOrUndefined(instance) && instance._unmounted) {
-					const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, null, lifecycle, context);
-
-					if (parentDom === null) {
-						parentDom = lastNode.dom.parentNode;
-					}
-					replaceNode(parentDom, newDom, lastNode.dom);
-				} else {
-					nextNode.instance = instance;
-					nextNode.dom = lastNode.dom;
-					patchComponent(hasBlueprint, nextNode, nextNode.tag, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
-				}
+				nextNode.instance = instance;
+				nextNode.dom = lastNode.dom;
+				patchComponent(hasBlueprint, nextNode, nextNode.tag, nextBp, instance, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 			}
 		} else {
 			const dom = lastNode.dom;
@@ -310,25 +301,33 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 }
 
 
-export function patchComponent(hasTemplate, lastNode, Component, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+export function patchComponent(hasTemplate, lastNode, Component, nextBp, lastInstance, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
-		const prevProps = instance.props;
-		const prevState = instance.state;
-		const nextState = instance.state;
+		if (instance._unmounted) {
+			instance = new Component(nextProps);
 
-		const childContext = instance.getChildContext();
-		if (!isNullOrUndefined(childContext)) {
-			context = { ...context, ...childContext };
-		}
-		instance.context = context;
-		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+			instance._patch = patch;
+			instance._mount = mount;
+			instance._init(lastInstance, nextProps, null, lifecycle, context);
+		} else {
+			const prevProps = instance.props;
+			const prevState = instance.state;
+			const nextState = instance.state;
 
-		if (!isInvalidNode(nextNode)) {
-			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
-			lastNode.dom = nextNode.dom;
-			instance._lastNode = nextNode;
+			const childContext = instance.getChildContext();
+			if (!isNullOrUndefined(childContext)) {
+				context = {...context, ...childContext};
+			}
+			instance.context = context;
+			const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+			if (!isInvalidNode(nextNode)) {
+				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
+				lastNode.dom = nextNode.dom;
+				instance._lastNode = nextNode;
+			}
 		}
 	} else {
 		let shouldUpdate = true;

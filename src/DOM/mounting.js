@@ -216,17 +216,17 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 	}
 }
 
-function mountRef(instance, value, refValue) {
-	if (!isInvalidNode(instance) && isString(value)) {
-		instance.refs[value] = refValue;
-	}
-}
-
 export function mountEvents(events, eventKeys, dom) {
 	for (let i = 0; i < eventKeys.length; i++) {
 		const event = eventKeys[i];
 
 		dom[event] = events[event];
+	}
+}
+
+function mountRef(instance, value, refValue) {
+	if (!isInvalidNode(instance) && isString(value)) {
+		instance.refs[value] = refValue;
 	}
 }
 
@@ -238,29 +238,8 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		const instance = new Component(props);
 
 		instance._patch = patch;
-		if (!isNullOrUndefined(lastInstance) && props.ref) {
-			mountRef(lastInstance, props.ref, instance);
-		}
-		const childContext = instance.getChildContext();
-
-		if (!isNullOrUndefined(childContext)) {
-			context = { ...context, ...childContext };
-		}
-		instance.context = context;
-		instance._unmounted = false;
-		instance._pendingSetState = true;
-		instance.componentWillMount();
-		const node = instance.render();
-
-		instance._pendingSetState = false;
-		if (!isNullOrUndefined(node)) {
-			dom = mount(node, null, lifecycle, context, instance, false);
-			instance._lastNode = node;
-			if (parentDom !== null && !isInvalidNode(dom)) {
-				parentDom.appendChild(dom);
-			}
-			instance.componentDidMount();
-		}
+		instance._mount = mount;
+		dom = instance._init(lastInstance, props, parentDom, lifecycle, context);
 		parentNode.dom = dom;
 		parentNode.instance = instance;
 	} else {

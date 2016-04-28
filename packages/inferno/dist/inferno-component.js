@@ -60,6 +60,14 @@
 		return obj === void 0 || obj === null;
 	}
 
+	function isInvalidNode(obj) {
+		return obj === null || obj === false || obj === void 0;
+	}
+
+	function isString(obj) {
+		return typeof obj === 'string';
+	}
+
 	function constructDefaults(string, object, value) {
 		/* eslint no-return-assign: 0 */
 		string.split(',').forEach(function (i) {
@@ -177,6 +185,12 @@
 		}
 	}
 
+	function mountRef(instance, value, refValue) {
+		if (!isInvalidNode(instance) && isString(value)) {
+			instance.refs[value] = refValue;
+		}
+	}
+
 	var Component = function () {
 		function Component(props) {
 			babelHelpers.classCallCheck(this, Component);
@@ -197,6 +211,7 @@
 			this._unmounted = true;
 			this.context = {};
 			this._patch = null;
+			this._mount = null;
 		}
 
 		babelHelpers.createClass(Component, [{
@@ -256,6 +271,36 @@
 		}, {
 			key: 'getChildContext',
 			value: function getChildContext() {}
+		}, {
+			key: '_init',
+			value: function _init(lastInstance, props, parentDom, lifecycle, context) {
+				var dom = void 0;
+
+				if (!isNullOrUndefined(lastInstance) && props.ref) {
+					mountRef(lastInstance, props.ref, this);
+				}
+				var childContext = this.getChildContext();
+
+				if (!isNullOrUndefined(childContext)) {
+					context = babelHelpers.extends({}, context, childContext);
+				}
+				this.context = context;
+				this._unmounted = false;
+				this._pendingSetState = true;
+				this.componentWillMount();
+				var node = this.render();
+
+				this._pendingSetState = false;
+				if (!isNullOrUndefined(node)) {
+					dom = this._mount(node, null, lifecycle, context, this, false);
+					this._lastNode = node;
+					if (parentDom !== null && !isInvalidNode(dom)) {
+						parentDom.appendChild(dom);
+					}
+				}
+				this.componentDidMount();
+				return dom;
+			}
 		}, {
 			key: '_updateComponent',
 			value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {

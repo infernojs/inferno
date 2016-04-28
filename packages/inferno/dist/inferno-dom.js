@@ -356,17 +356,17 @@
 		}
 	}
 
-	function mountRef(instance, value, refValue) {
-		if (!isInvalidNode(instance) && isString(value)) {
-			instance.refs[value] = refValue;
-		}
-	}
-
 	function mountEvents(events, eventKeys, dom) {
 		for (var i = 0; i < eventKeys.length; i++) {
 			var event = eventKeys[i];
 
 			dom[event] = events[event];
+		}
+	}
+
+	function mountRef(instance, value, refValue) {
+		if (!isInvalidNode(instance) && isString(value)) {
+			instance.refs[value] = refValue;
 		}
 	}
 
@@ -378,29 +378,8 @@
 			var instance = new Component(props);
 
 			instance._patch = patch;
-			if (!isNullOrUndefined(lastInstance) && props.ref) {
-				mountRef(lastInstance, props.ref, instance);
-			}
-			var childContext = instance.getChildContext();
-
-			if (!isNullOrUndefined(childContext)) {
-				context = babelHelpers.extends({}, context, childContext);
-			}
-			instance.context = context;
-			instance._unmounted = false;
-			instance._pendingSetState = true;
-			instance.componentWillMount();
-			var node = instance.render();
-
-			instance._pendingSetState = false;
-			if (!isNullOrUndefined(node)) {
-				dom = mount(node, null, lifecycle, context, instance, false);
-				instance._lastNode = node;
-				if (parentDom !== null && !isInvalidNode(dom)) {
-					parentDom.appendChild(dom);
-				}
-				instance.componentDidMount();
-			}
+			instance._mount = mount;
+			dom = instance._init(lastInstance, props, parentDom, lifecycle, context);
 			parentNode.dom = dom;
 			parentNode.instance = instance;
 		} else {
@@ -416,10 +395,10 @@
 			}
 
 			/* eslint new-cap: 0 */
-			var _node = Component(props);
-			dom = mount(_node, null, lifecycle, context, null);
+			var node = Component(props);
+			dom = mount(node, null, lifecycle, context, null);
 
-			parentNode.instance = _node;
+			parentNode.instance = node;
 
 			if (parentDom !== null && !isInvalidNode(dom)) {
 				parentDom.appendChild(dom);
@@ -976,19 +955,9 @@
 				if (hasBlueprint && nextBp.isComponent === true || !hasBlueprint && isFunction(nextTag)) {
 					var _instance = lastNode.instance;
 
-					if (!isNullOrUndefined(_instance) && _instance._unmounted) {
-						var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, null, lifecycle, context);
-
-						if (parentDom !== null) {
-							replaceNode(parentDom, newDom, lastNode.dom);
-						} else {
-							insertOrAppendKeyed(parentDom, newDom);
-						}
-					} else {
-						nextNode.instance = _instance;
-						nextNode.dom = lastNode.dom;
-						patchComponent(hasBlueprint, nextNode, nextNode.tag, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
-					}
+					nextNode.instance = _instance;
+					nextNode.dom = lastNode.dom;
+					patchComponent(hasBlueprint, nextNode, nextNode.tag, nextBp, _instance, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
 			} else {
 				var dom = lastNode.dom;
@@ -1207,25 +1176,33 @@
 		}
 	}
 
-	function patchComponent(hasTemplate, lastNode, Component, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+	function patchComponent(hasTemplate, lastNode, Component, nextBp, lastInstance, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 		nextProps = addChildrenToProps(nextChildren, nextProps);
 
 		if (isStatefulComponent(Component)) {
-			var prevProps = instance.props;
-			var prevState = instance.state;
-			var nextState = instance.state;
+			if (instance._unmounted) {
+				instance = new Component(nextProps);
 
-			var childContext = instance.getChildContext();
-			if (!isNullOrUndefined(childContext)) {
-				context = babelHelpers.extends({}, context, childContext);
-			}
-			instance.context = context;
-			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+				instance._patch = patch;
+				instance._mount = mount;
+				instance._init(lastInstance, nextProps, null, lifecycle, context);
+			} else {
+				var prevProps = instance.props;
+				var prevState = instance.state;
+				var nextState = instance.state;
 
-			if (!isInvalidNode(nextNode)) {
-				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
-				lastNode.dom = nextNode.dom;
-				instance._lastNode = nextNode;
+				var childContext = instance.getChildContext();
+				if (!isNullOrUndefined(childContext)) {
+					context = babelHelpers.extends({}, context, childContext);
+				}
+				instance.context = context;
+				var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+				if (!isInvalidNode(nextNode)) {
+					patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
+					lastNode.dom = nextNode.dom;
+					instance._lastNode = nextNode;
+				}
 			}
 		} else {
 			var shouldUpdate = true;

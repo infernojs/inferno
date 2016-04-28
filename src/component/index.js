@@ -1,5 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndefined } from './../core/utils';
+import { isNullOrUndefined, isInvalidNode, isString } from './../core/utils';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
@@ -56,6 +56,12 @@ function applyState(component, force, callback) {
 	}
 }
 
+function mountRef(instance, value, refValue) {
+	if (!isInvalidNode(instance) && isString(value)) {
+		instance.refs[value] = refValue;
+	}
+}
+
 export default class Component {
 	constructor(props) {
 		/** @type {object} */
@@ -74,6 +80,7 @@ export default class Component {
 		this._unmounted = true;
 		this.context = {};
 		this._patch = null;
+		this._mount = null;
 	}
 	render() {}
 	forceUpdate(callback) {
@@ -108,6 +115,34 @@ export default class Component {
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
 	getChildContext() {}
+	_init(lastInstance, props, parentDom, lifecycle, context) {
+		let dom;
+
+		if (!isNullOrUndefined(lastInstance) && props.ref) {
+			mountRef(lastInstance, props.ref, this);
+		}
+		const childContext = this.getChildContext();
+
+		if (!isNullOrUndefined(childContext)) {
+			context = { ...context, ...childContext };
+		}
+		this.context = context;
+		this._unmounted = false;
+		this._pendingSetState = true;
+		this.componentWillMount();
+		const node = this.render();
+
+		this._pendingSetState = false;
+		if (!isNullOrUndefined(node)) {
+			dom = this._mount(node, null, lifecycle, context, this, false);
+			this._lastNode = node;
+			if (parentDom !== null && !isInvalidNode(dom)) {
+				parentDom.appendChild(dom);
+			}
+		}
+		this.componentDidMount();
+		return dom;
+	}
 	_updateComponent(prevState, nextState, prevProps, nextProps, force) {
 		if (this._unmounted === true) {
 			this._unmounted = false;
