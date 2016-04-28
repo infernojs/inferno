@@ -250,13 +250,6 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		instance._unmounted = false;
 		instance._pendingSetState = true;
 		instance.componentWillMount();
-		const shouldUpdate = instance.shouldComponentUpdate();
-		if (shouldUpdate) {
-			instance.componentWillUpdate();
-			const pendingState = instance._pendingState;
-			const oldState = instance.state;
-			instance.state = { ...oldState, ...pendingState };
-		}
 		const node = instance.render();
 		instance._pendingSetState = false;
 

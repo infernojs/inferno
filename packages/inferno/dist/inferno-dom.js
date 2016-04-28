@@ -390,13 +390,6 @@
 			instance._unmounted = false;
 			instance._pendingSetState = true;
 			instance.componentWillMount();
-			var shouldUpdate = instance.shouldComponentUpdate();
-			if (shouldUpdate) {
-				instance.componentWillUpdate();
-				var pendingState = instance._pendingState;
-				var oldState = instance.state;
-				instance.state = babelHelpers.extends({}, oldState, pendingState);
-			}
 			var node = instance.render();
 			instance._pendingSetState = false;
 
