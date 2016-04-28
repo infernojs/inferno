@@ -238,8 +238,15 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		const instance = new Component(props);
 
 		instance._patch = patch;
-		instance._mount = mount;
-		dom = instance._init(lastInstance, props, parentDom, lifecycle, context);
+		const node = instance._init(lastInstance, props, lifecycle, context);
+
+		if (!isNullOrUndefined(node)) {
+			dom = mount(node, null, lifecycle, context, instance, false);
+			instance._lastNode = node;
+			if (parentDom !== null && !isInvalidNode(dom)) {
+				parentDom.appendChild(dom);
+			}
+		}
 		parentNode.dom = dom;
 		parentNode.instance = instance;
 	} else {

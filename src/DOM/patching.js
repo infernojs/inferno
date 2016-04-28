@@ -300,7 +300,6 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 	}
 }
 
-
 export function patchComponent(hasTemplate, lastNode, Component, nextBp, lastInstance, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
@@ -310,7 +309,12 @@ export function patchComponent(hasTemplate, lastNode, Component, nextBp, lastIns
 
 			instance._patch = patch;
 			instance._mount = mount;
-			instance._init(lastInstance, nextProps, null, lifecycle, context);
+			const node = instance._init(lastInstance, nextProps, lifecycle, context);
+
+			if (!isNullOrUndefined(node)) {
+				patch(lastNode, node, null, lifecycle, context, instance, false, false);
+				instance._lastNode = node;
+			}
 		} else {
 			const prevProps = instance.props;
 			const prevState = instance.state;

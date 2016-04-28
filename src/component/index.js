@@ -80,7 +80,6 @@ export default class Component {
 		this._unmounted = true;
 		this.context = {};
 		this._patch = null;
-		this._mount = null;
 	}
 	render() {}
 	forceUpdate(callback) {
@@ -115,9 +114,7 @@ export default class Component {
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
 	getChildContext() {}
-	_init(lastInstance, props, parentDom, lifecycle, context) {
-		let dom;
-
+	_init(lastInstance, props, lifecycle, context) {
 		if (!isNullOrUndefined(lastInstance) && props.ref) {
 			mountRef(lastInstance, props.ref, this);
 		}
@@ -133,15 +130,10 @@ export default class Component {
 		const node = this.render();
 
 		this._pendingSetState = false;
-		if (!isNullOrUndefined(node)) {
-			dom = this._mount(node, null, lifecycle, context, this, false);
-			this._lastNode = node;
-			if (parentDom !== null && !isInvalidNode(dom)) {
-				parentDom.appendChild(dom);
-			}
-		}
-		this.componentDidMount();
-		return dom;
+		lifecycle.addListener(() => {
+			this.componentDidMount();
+		});
+		return node;
 	}
 	_updateComponent(prevState, nextState, prevProps, nextProps, force) {
 		if (this._unmounted === true) {
