@@ -83,8 +83,6 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 
 					if (parentDom !== null) {
 						replaceNode(parentDom, newDom, lastNode.dom);
-					} else {
-						insertOrAppendKeyed(parentDom, newDom);
 					}
 				} else {
 					nextNode.instance = instance;
