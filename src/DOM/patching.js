@@ -81,9 +81,10 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 				if (!isNullOrUndefined(instance) && instance._unmounted) {
 					const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, null, lifecycle, context);
 
-					if (parentDom !== null) {
-						replaceNode(parentDom, newDom, lastNode.dom);
+					if (parentDom === null) {
+						parentDom = lastNode.dom.parentNode;
 					}
+					replaceNode(parentDom, newDom, lastNode.dom);
 				} else {
 					nextNode.instance = instance;
 					nextNode.dom = lastNode.dom;
