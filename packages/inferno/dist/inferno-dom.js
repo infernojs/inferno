@@ -977,10 +977,13 @@
 					var _instance = lastNode.instance;
 
 					if (!isNullOrUndefined(_instance) && _instance._unmounted) {
+						var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, null, lifecycle, context);
+
 						if (parentDom !== null) {
-							remove(lastNode, parentDom);
+							replaceNode(parentDom, newDom, lastNode.dom);
+						} else {
+							insertOrAppendKeyed(parentDom, newDom);
 						}
-						mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, parentDom, lifecycle, context);
 					} else {
 						nextNode.instance = _instance;
 						nextNode.dom = lastNode.dom;
