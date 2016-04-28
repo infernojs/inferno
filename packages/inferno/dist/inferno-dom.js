@@ -117,7 +117,7 @@
 			if (!isNullOrUndefined(_pool)) {
 				var recycledNode = _pool.pop();
 				if (!isNullOrUndefined(recycledNode)) {
-					patch(recycledNode, node, null, null, lifecycle, context, instance, true);
+					patch(recycledNode, node, null, lifecycle, context, instance, true, bp.isSVG);
 					return node.dom;
 				}
 			}
@@ -394,7 +394,7 @@
 
 			instance._pendingSetState = false;
 			if (!isNullOrUndefined(node)) {
-				dom = mount(node, null, lifecycle, context, instance);
+				dom = mount(node, null, lifecycle, context, instance, false);
 				instance._lastNode = node;
 				if (parentDom !== null && !isInvalidNode(dom)) {
 					parentDom.appendChild(dom);
