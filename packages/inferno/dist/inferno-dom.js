@@ -376,23 +376,23 @@
 		var dom = void 0;
 		if (isStatefulComponent(Component)) {
 			var instance = new Component(props);
-			instance._patch = patch;
 
+			instance._patch = patch;
 			if (!isNullOrUndefined(lastInstance) && props.ref) {
 				mountRef(lastInstance, props.ref, instance);
 			}
 			var childContext = instance.getChildContext();
+
 			if (!isNullOrUndefined(childContext)) {
 				context = babelHelpers.extends({}, context, childContext);
 			}
 			instance.context = context;
-			// Block setting state - we should render only once, using latest state
 			instance._unmounted = false;
 			instance._pendingSetState = true;
 			instance.componentWillMount();
 			var node = instance.render();
-			instance._pendingSetState = false;
 
+			instance._pendingSetState = false;
 			if (!isNullOrUndefined(node)) {
 				dom = mount(node, null, lifecycle, context, instance);
 				instance._lastNode = node;
@@ -400,9 +400,7 @@
 					parentDom.appendChild(dom);
 				}
 				instance.componentDidMount();
-				instance.componentDidUpdate();
 			}
-
 			parentNode.dom = dom;
 			parentNode.instance = instance;
 		} else {
@@ -964,9 +962,9 @@
 					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 					detachNode(lastNode);
 				} else if (isStatefulComponent(lastTag)) {
-					patchNode(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+					patchNode(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, true);
 				} else {
-					patchNode(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+					patchNode(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG, true);
 				}
 			} else {
 				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);

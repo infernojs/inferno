@@ -64,9 +64,9 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				detachNode(lastNode);
 			} else if (isStatefulComponent(lastTag)) {
-				patchNode(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+				patchNode(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, true);
 			} else {
-				patchNode(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+				patchNode(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG, true);
 			}
 		} else {
 			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
