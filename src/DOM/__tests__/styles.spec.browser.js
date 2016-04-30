@@ -202,8 +202,9 @@ describe('CSS style properties', () => {
 
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				render(test.template(), container);
+				render(test.template(null), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -270,6 +271,7 @@ describe('CSS style properties', () => {
 
 			it(test.description, () => {
 
+				render(test.template(undefined), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -317,7 +319,6 @@ describe('CSS style properties', () => {
 				render(test.template({}), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
-
 			});
 		});
 	});

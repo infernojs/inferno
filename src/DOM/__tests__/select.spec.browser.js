@@ -66,6 +66,11 @@ describe('Select / select multiple', () => {
 		).to.equal(
 			innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>')
 		);
+
+		render(template(null), container);
+
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
 	});
 
 	it('should render "select" boolean on select options', () => {
@@ -263,6 +268,11 @@ describe('Select / select multiple', () => {
 		).to.equal(
 			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 		);
+
+		render(template(undefined), container);
+
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
 
 		render(template(), container);
 

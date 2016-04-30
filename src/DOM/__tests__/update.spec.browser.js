@@ -26,6 +26,7 @@ describe('Update (non-jsx)', () => {
 			children: [ 'hello', ' to' ]
 		});
 
+		render(template(null), container);
 		render(template(span()), container);
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -2523,7 +2524,16 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
 				render(C, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+				// repeat
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+
 			});
+
 
 			it('variation 7', () => {
 				const A = [];
@@ -2632,6 +2642,16 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
 				render(A[3], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				// reverse
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+
 			});
 		});
 	});
@@ -2668,6 +2688,9 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div>text 2<br>text 3</div>');
 			render(A[2], container);
 			expect(container.innerHTML).to.equal('<div>text 4</div>');
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1</div>');
+
 		});
 	});
 
@@ -2705,6 +2728,13 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div>text 2</div>');
 			render(A[2], container);
 			expect(container.innerHTML).to.equal('<div><br>text 4</div>');
+			// reverse
+			render(A[2], container);
+			expect(container.innerHTML).to.equal('<div><br>text 4</div>');
+			render(A[1], container);
+			expect(container.innerHTML).to.equal('<div>text 2</div>');
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1<br></div>');
 		});
 	});
 });
