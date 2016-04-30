@@ -47,7 +47,6 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 
 	// TOOD: Is mixin keyed non keyed supported this way?
     it('should remove two keyed nodes, and move a non-key child node', () => {
-		debugger;
         render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c')]), container);
         expect(container.textContent).to.equal('bc');
         expect(container.firstChild.childNodes.length).to.equal(2);
