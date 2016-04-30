@@ -2,6 +2,10 @@
 	"use strict";
 	var elem = document.getElementById('app');
 
+	perfMonitor.startFPSMonitor();
+	perfMonitor.startMemMonitor();
+	perfMonitor.initProfiler('view update');
+
 	//allows support in < IE9
 	function map(func, array) {
 		var newArray = new Array(array.length);
@@ -134,8 +138,9 @@
 
 	function render() {
 		var dbs = ENV.generateData(true).toArray();
-		Monitoring.renderRate.ping();
+		perfMonitor.startProfile('view update');
 		InfernoDOM.render(appTemplate1(appTemplate2(map(createDatabase, dbs))), elem);
+		perfMonitor.endProfile('view update');
 		setTimeout(render, ENV.timeout);
 	}
 	render();
