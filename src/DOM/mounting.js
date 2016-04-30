@@ -285,7 +285,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		instance._pendingSetState = false;
 
 		if (!isNullOrUndefined(node)) {
-			dom = mount(node, null, lifecycle, context, instance);
+			dom = mount(node, null, lifecycle, context, instance, false);
 			instance._lastNode = node;
 			if (parentDom !== null && !isInvalidNode(dom)) {
 				parentDom.appendChild(dom);
