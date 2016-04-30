@@ -65,6 +65,14 @@ describe('Children - (non-JSX)', () => {
 		value: [],
 		expected: ''
 	}, {
+		name: 'empty object',
+		value: {},
+		expected: ''
+	}, {
+		name: 'json',
+		value: [{}],
+		expected: ''
+	}, {
 		name: 'simple math',
 		value: 123 - 33,
 		expected: '90'
